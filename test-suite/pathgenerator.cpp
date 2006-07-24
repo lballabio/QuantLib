@@ -51,25 +51,33 @@ void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
 
     sample_type sample = generator.next();
     Real calculated = sample.value.back();
-    if (std::fabs(calculated-expected) > 1.0e-8) {
+    Real error = std::fabs(calculated-expected);
+    Real tolerance = 2.0e-8;
+    if (error > tolerance) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
                     << "brownian bridge:\n"
                     << std::setprecision(13)
                     << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << expected);
+                    << "    expected:   " << expected << "\n"
+                    << "    error:      " << error << "\n"
+                    << "    tolerance:  " << tolerance);
     }
 
     sample = generator.antithetic();
     calculated = sample.value.back();
-    if (std::fabs(calculated-antithetic) > 1.0e-8) {
+    error = std::fabs(calculated-antithetic);
+    tolerance = 2.0e-7;
+    if (error > tolerance) {
         BOOST_ERROR("using " << tag << " process "
                     << (brownianBridge ? "with " : "without ")
                     << "brownian bridge:\n"
                     << "antithetic sample:\n"
                     << std::setprecision(13)
                     << "    calculated: " << calculated << "\n"
-                    << "    expected:   " << antithetic);
+                    << "    expected:   " << antithetic << "\n"
+                    << "    error:      " << error << "\n"
+                    << "    tolerance:  " << tolerance);
     }
 
 }
@@ -94,15 +102,19 @@ void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
 
     sample_type sample = generator.next();
     Array calculated(assets);
+    Real error, tolerance = 2.0e-7;
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
     for (j=0; j<assets; j++) {
-        if (std::fabs(calculated[j]-expected[j]) > 1.0e-8) {
+        error = std::fabs(calculated[j]-expected[j]);
+        if (error > tolerance) {
             BOOST_ERROR("using " << tag << " process "
                         << "(" << io::ordinal(j+1) << " asset:)\n"
                         << std::setprecision(13)
                         << "    calculated: " << calculated[j] << "\n"
-                        << "    expected:   " << expected[j]);
+                        << "    expected:   " << expected[j] << "\n"
+                        << "    error:      " << error << "\n"
+                        << "    tolerance:  " << tolerance);
         }
     }
 
@@ -110,13 +122,16 @@ void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
     for (j=0; j<assets; j++)
         calculated[j] = sample.value[j].back();
     for (j=0; j<assets; j++) {
-        if (std::fabs(calculated[j]-antithetic[j]) > 1.0e-8) {
+        error = std::fabs(calculated[j]-antithetic[j]);
+        if (error > tolerance) {
             BOOST_ERROR("using " << tag << " process "
                         << "(" << io::ordinal(j+1) << " asset:)\n"
                         << "antithetic sample:\n"
                         << std::setprecision(13)
                         << "    calculated: " << calculated[j] << "\n"
-                        << "    expected:   " << antithetic[j]);
+                        << "    expected:   " << antithetic[j] << "\n"
+                        << "    error:      " << error << "\n"
+                        << "    tolerance:  " << tolerance);
         }
     }
 }

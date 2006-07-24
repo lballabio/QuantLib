@@ -211,8 +211,8 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
         Real calculated = varianceSwap.fairVariance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
-        std::cout << calculated << "\t" << "N/A\t\t"
-                  << expected << "\t\t" << error << std::endl;
+        //std::cout << calculated << "\t" << "N/A\t\t"
+        //          << expected << "\t\t" << error << std::endl;
 
         if (error>values[i].tol)
             REPORT_FAILURE("value", values[i].type, values[i].varStrike,
@@ -292,8 +292,8 @@ void VarianceSwapTest::testMCVarianceSwap() {
         Real calculated = varianceSwap.fairVariance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
-        std::cout << calculated << "\t" << "N/A\t\t"
-                  << expected << "\t\t" << error << std::endl;
+        //std::cout << calculated << "\t" << "N/A\t\t"
+        //          << expected << "\t\t" << error << std::endl;
         if (error>values[i].tol)
             REPORT_FAILURE("value", values[i].type, values[i].varStrike,
                            values[i].nominal, values[i].s, values[i].q,
