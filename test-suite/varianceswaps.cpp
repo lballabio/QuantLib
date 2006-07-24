@@ -238,7 +238,7 @@ void VarianceSwapTest::testMCVarianceSwap() {
         // Result should be v*v for arbitrary t1 and v1 (as long as 0<=t1<t and 0<=v1<v)
 
         //type, varStrike, nominal,     s,    q,    r,  t1,     t,     v1,    v, result, tol
-        {   Position::Long,      0.04,   50000, 100.0, 0.00, 0.05, 0.1, 0.246575, 0.1, 0.20,   0.04, 1.0e-4}
+        {   Position::Long,      0.04,   50000, 100.0, 0.00, 0.05, 0.1, 0.246575, 0.1, 0.20,   0.04, 3.0e-4}
 
     };
 
