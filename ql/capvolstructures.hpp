@@ -54,13 +54,16 @@ namespace QuantLib {
         virtual ~CapVolatilityStructure() {}
         //! \name Volatility
         //@{
-        Volatility volatility(const Date& end, Rate strike,
+        Volatility volatility(const Date& end,
+                              Rate strike,
                               bool extrapolate = false) const;
         //! returns the volatility for a given cap/floor length and strike rate
-        Volatility volatility(const Period& length, Rate strike,
+        Volatility volatility(const Period& length,
+                              Rate strike,
                               bool extrapolate = false) const;
         //! returns the volatility for a given end time and strike rate
-        Volatility volatility(Time t, Rate strike,
+        Volatility volatility(Time t,
+                              Rate strike,
                               bool extrapolate = false) const;
         //@}
         //! \name Limits
@@ -103,11 +106,21 @@ namespace QuantLib {
         //! \name Volatility
         //@{
         //! returns the volatility for a given start date and strike rate
-        Volatility volatility(const Date& start, Rate strike,
+        Volatility volatility(const Date& start,
+                              Rate strike,
                               bool extrapolate = false) const ;
         //! returns the volatility for a given start time and strike rate
-        Volatility volatility(Time t, Rate strike,
+        Volatility volatility(Time t,
+                              Rate strike,
                               bool extrapolate = false) const;
+        //! returns the black variance for a given start date and strike rate
+        Real blackVariance(const Date& start,
+                           Rate strike,
+                           bool extrapolate = false) const ;
+        //! returns the black variance for a given start time and strike rate
+        Real blackVariance(Time t,
+                           Rate strike,
+                           bool extrapolate = false) const;
         //@}
         //! \name Limits
         //@{
@@ -118,7 +131,8 @@ namespace QuantLib {
         //@}
       protected:
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
+        virtual Volatility volatilityImpl(Time length,
+                                          Rate strike) const = 0;
       private:
         void checkRange(Time, Rate strike, bool extrapolate) const;
     };
@@ -202,6 +216,27 @@ namespace QuantLib {
                                                                        const {
         checkRange(t,strike,extrapolate);
         return volatilityImpl(t,strike);
+    }
+
+    inline Volatility CapletVolatilityStructure::blackVariance(
+                                                        const Date& start,
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        Time t = timeFromReference(start);
+        checkRange(t,strike,extrapolate);
+        Volatility vol = volatilityImpl(t,strike);
+        return vol*vol*t;
+    }
+
+    inline Volatility CapletVolatilityStructure::blackVariance(
+                                                        Time t,
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        checkRange(t,strike,extrapolate);
+        Volatility vol = volatilityImpl(t,strike);
+        return vol*vol*t;
     }
 
     inline void CapletVolatilityStructure::checkRange(
