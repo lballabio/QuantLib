@@ -33,6 +33,9 @@
 #  undef BOOST_LIB_NAME
 #  undef BOOST_LIB_DIAGNOSTIC
 
+/* uncomment the following lines to unmask floating-point exceptions.
+   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
+*/
 //#  include <float.h>
 //   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
