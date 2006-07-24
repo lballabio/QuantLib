@@ -101,6 +101,9 @@
 #include <iostream>
 #include <iomanip>
 
+//#include <float.h>
+//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+
 using namespace boost::unit_test_framework;
 
 namespace {
