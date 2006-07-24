@@ -683,6 +683,12 @@
 				RelativePath=".\ql\CashFlows\cmscoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\conundrumpricer.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\conundrumpricer.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\CashFlows\core.hpp">
 			</File>
 			<File
