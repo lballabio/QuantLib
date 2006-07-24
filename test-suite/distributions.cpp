@@ -215,7 +215,7 @@ void DistributionTest::testNormal() {
     std::transform(x.begin(),x.end(),temp.begin(),diff.begin(),
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
-    if (e > 1.0e-8) {
+    if (e > 3.0e-8) {
         BOOST_ERROR("norm of invCum . cum minus identity: "
                     << QL_SCIENTIFIC << e << "\n"
                     << "tolerance exceeded");
