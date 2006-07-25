@@ -48,10 +48,12 @@ namespace QuantLib {
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const;
-        Real drift(Time, Real) const { QL_FAIL("not implemented"); }
-        Real diffusion(Time, Real) const { QL_FAIL("not implemented"); }
+        Real drift(Time, Real) const {
+            QL_FAIL("Merton76Process drift not implemented"); }
+        Real diffusion(Time, Real) const {
+            QL_FAIL("Merton76Process diffusion not implemented"); }
         Real apply(Real x0, Real dx) const {
-            QL_FAIL("not implemented");
+            QL_FAIL("Merton76Process apply not implemented");
         }
         //@}
         Time time(const Date&) const;

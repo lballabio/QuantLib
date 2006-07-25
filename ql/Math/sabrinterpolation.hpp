@@ -252,13 +252,13 @@ namespace QuantLib {
                 return (alpha_/D)*multiplier*d;;
             }
             Real primitive(Real x) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("SABR primitive not implemented");
             }
             Real derivative(Real x) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("SABR derivative not implemented");
             }
             Real secondDerivative(Real x) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("SABR secondDerivative not implemented");
             }
 
             Real interpolationSquaredNonNormalizedError() const {

@@ -125,7 +125,7 @@ namespace QuantLib {
     }
 
     inline void Instrument::setupArguments(Arguments*) const {
-        QL_FAIL("setupArguments() not implemented");
+        QL_FAIL("Instrument::setupArguments() not implemented");
     }
 
     inline void Instrument::calculate() const {

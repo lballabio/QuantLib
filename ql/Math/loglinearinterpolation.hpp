@@ -57,13 +57,13 @@ namespace QuantLib {
                 return std::exp(linearInterpolation_(x,true));
             }
             Real primitive(Real) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("LogLinear primitive not implemented");
             }
             Real derivative(Real) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("LogLinear derivative not implemented");
             }
             Real secondDerivative(Real) const {
-                QL_FAIL("not implemented");
+                QL_FAIL("LogLinear secondDerivative not implemented");
             }
           private:
             std::vector<Real> logY_;
