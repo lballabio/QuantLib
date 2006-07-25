@@ -100,7 +100,7 @@ namespace QuantLib {
     //    return index_->fixing(fixingDate());
     //}
     Rate ParCoupon::indexFixing() const {
-        DayCounter dayCount = index_->termStructure()->dayCounter();
+        DayCounter dayCount = index_->dayCounter();
         Date begin = index_->calendar().advance(
                                 fixingDate(), index_->settlementDays(), Days);
         Date temp = index_->calendar().advance(accrualEndDate_,
