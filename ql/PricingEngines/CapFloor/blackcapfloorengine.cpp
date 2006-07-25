@@ -72,8 +72,7 @@ namespace QuantLib {
         CapFloor::Type type = arguments_.type;
 
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
-            Time fixing = arguments_.fixingTimes[i],
-                 end = arguments_.endTimes[i],
+            Time end = arguments_.endTimes[i],
                  accrualTime = arguments_.accrualTimes[i];
             if (end > 0.0) {    // discard expired caplets
                 Real nominal = arguments_.nominals[i];
@@ -84,16 +83,18 @@ namespace QuantLib {
                 if ((type == CapFloor::Cap) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.capRates[i];
-                    Volatility vol = volatility_->volatility(fixing, strike);
+                    Real variance = volatility_->blackVariance(
+                        arguments_.fixingDates[i], strike);
                     value += q * accrualTime * nominal * gearing *
-                        capletValue(fixing,forward,strike,vol);
+                        capletValue(forward, strike, variance);
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.floorRates[i];
-                    Volatility vol = volatility_->volatility(fixing, strike);
+                    Real variance = volatility_->blackVariance(
+                        arguments_.fixingDates[i], strike);
                     Real temp = q * accrualTime * nominal * gearing *
-                        floorletValue(fixing,forward,strike,vol);
+                        floorletValue(forward, strike, variance);
                     if (type == CapFloor::Floor)
                         value += temp;
                     else
@@ -105,28 +106,28 @@ namespace QuantLib {
         results_.value = value;
     }
 
-    Real BlackCapFloorEngine::capletValue(Time start, Rate forward,
-                                          Rate strike, Volatility vol) const {
-        if (start <= 0.0) {
+    Real BlackCapFloorEngine::capletValue(Rate forward,
+                                          Rate strike, Real variance) const {
+        if (variance == 0.0) {
             // the rate was fixed
             return std::max<Rate>(forward-strike,0.0);
         } else {
             // forecast
             return detail::blackFormula(forward, strike,
-                                        vol*std::sqrt(start), 1);
+                                        std::sqrt(variance), 1);
         }
     }
 
-    Real BlackCapFloorEngine::floorletValue(Time start, Rate forward,
-                                            Rate strike, Volatility vol)
+    Real BlackCapFloorEngine::floorletValue(Rate forward,
+                                            Rate strike, Real variance)
                                                                        const {
-        if (start <= 0.0) {
+        if (variance == 0.0) {
             // the rate was fixed
             return std::max<Rate>(strike-forward,0.0);
         } else {
             // forecast
             return detail::blackFormula(forward, strike,
-                                        vol*std::sqrt(start), -1);
+                                        std::sqrt(variance), -1);
         }
     }
 
