@@ -110,7 +110,7 @@ void setup() {
     settlementDays_ = 2;
     fixingDays_ = 2;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual360()));
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
 }
 
 void teardown() {
@@ -393,22 +393,22 @@ void CapFloorTest::testCachedValue() {
     boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
                                                        0.03,0.20);
 #ifndef QL_USE_INDEXED_COUPON
-    Real cachedCapNPV   = 6.960233718984,
-         cachedFloorNPV = 2.701296290808;
+    Real cachedCapNPV   = 6.87570026732,
+         cachedFloorNPV = 2.65812927959;
 #else
-    Real cachedCapNPV   = 6.960840451560,
-         cachedFloorNPV = 2.701133385568;
+    Real cachedCapNPV   = 6.87630307745,
+         cachedFloorNPV = 2.65796764715;
 #endif
 
     if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
-        BOOST_FAIL(
+        BOOST_ERROR(
             "failed to reproduce cached cap value:\n"
             << std::setprecision(12)
             << "    calculated: " << cap->NPV() << "\n"
             << "    expected:   " << cachedCapNPV);
 
     if (std::fabs(floor->NPV()-cachedFloorNPV) > 1.0e-11)
-        BOOST_FAIL(
+        BOOST_ERROR(
             "failed to reproduce cached floor value:\n"
             << std::setprecision(12)
             << "    calculated: " << floor->NPV() << "\n"
