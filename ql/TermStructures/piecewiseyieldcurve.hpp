@@ -349,7 +349,7 @@ namespace QuantLib {
                                      accuracy_, guess, min, max);
                 } catch (std::exception& e) {
                     QL_FAIL("could not bootstrap the " << io::ordinal(i) <<
-                            "instrument, maturity " << dates_[i] <<
+                            "instrument, maturity " << this->dates_[i] <<
                             "\n error message: " << e.what());
                 }
             }
