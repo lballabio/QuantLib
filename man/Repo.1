@@ -1,30 +1,32 @@
 .\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
 .\" and released under the Quantlib license
-.TH BERMUDANSWAPTION 1 "04 May 2002" QuantLib
+.TH REPO 1 "07 Jul 2006" QuantLib
 .SH NAME
-BermudanSwaption - Example of using QuantLib
+Repo - Example of using QuantLib
 .SH SYNOPSIS
-.B BermudanSwaption
+.B Repo
 .SH DESCRIPTION
 .PP
-.B BermudanSwaption
+.B Repo
 is an example of using the \fIQuantLib\fP interest-rate model framework.
 
-.B BermudanSwaption
-prices a bermudan swaption using different models calibrated to market
-swaptions. The calibration examples include Hull and White's using both an
-analytic formula as well as numerically, and Black and Karasinski's
-model. Using these three calibrations, Bermudan swaptions are priced for
-at-the-money, out-of-the-money and in-the-money volatilities.
+.B Repo
+values a fixed-coupon bond repurchase (repo). The repurchase agreement
+example  is set up to use the repo rate to do all discounting
+(including the underlying bond income). Forward delivery price is
+also obtained using this repo rate. All this is done by supplying
+the FixedCouponBondForward constructor with a flat repo
+YieldTermStructure.
+
 .SH SEE ALSO
 The source code
-.IR BermudanSwaption.cpp ,
+.IR Repo.cpp ,
+.BR BermudanSwaption (1),
 .BR ConvertibleBonds (1),
 .BR DiscreteHedging (1),
 .BR EquityOption (1),
 .BR FRA (1),
 .BR Replication (1),
-.BR Repo (1),
 .BR SwapValuation (1),
 the QuantLib documentation and website at
 .IR http://quantlib.org .

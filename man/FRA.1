@@ -1,28 +1,27 @@
 .\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
 .\" and released under the Quantlib license
-.TH BERMUDANSWAPTION 1 "04 May 2002" QuantLib
+.TH FRA 1 "07 Jul 2006" QuantLib
 .SH NAME
-BermudanSwaption - Example of using QuantLib
+FRA - Example of using QuantLib
 .SH SYNOPSIS
-.B BermudanSwaption
+.B FRA
 .SH DESCRIPTION
 .PP
-.B BermudanSwaption
+.B FRA
 is an example of using the \fIQuantLib\fP interest-rate model framework.
 
-.B BermudanSwaption
-prices a bermudan swaption using different models calibrated to market
-swaptions. The calibration examples include Hull and White's using both an
-analytic formula as well as numerically, and Black and Karasinski's
-model. Using these three calibrations, Bermudan swaptions are priced for
-at-the-money, out-of-the-money and in-the-money volatilities.
+.B FRA
+values a forward-rate agreement (FRA) at different forward dates under two
+yield curve assumptions. It thereby illustrates how 
+set up a term structure, and to use it to price a simple
+forward-rate agreement.
 .SH SEE ALSO
 The source code
-.IR BermudanSwaption.cpp ,
+.IR FRA.cpp ,
+.BR BermudanSwaption (1),
 .BR ConvertibleBonds (1),
 .BR DiscreteHedging (1),
 .BR EquityOption (1),
-.BR FRA (1),
 .BR Replication (1),
 .BR Repo (1),
 .BR SwapValuation (1),
