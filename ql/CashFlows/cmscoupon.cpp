@@ -115,7 +115,8 @@ namespace QuantLib {
                        index_->fixedLegFrequency(),
                        index_->fixedLegConvention());
             Date tp = date();
-            DiscountFactor D_s0 = index_->termStructure()->discount(d);
+            DiscountFactor D_s0 =
+                index_->iborIndex()->termStructure()->discount(d);
             Real g = G(Rs,tp,D_s0,s,dc), g1 = Gprime(Rs,tp,D_s0,s,dc);
             Spread adjustment = (g1/g)*Rs*Rs*(std::exp(sigma*sigma*tau)-1.0);
             rate += adjustment;

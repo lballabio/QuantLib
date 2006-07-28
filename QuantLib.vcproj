@@ -719,12 +719,6 @@
 				RelativePath="ql\CashFlows\indexedcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\interestrateindex.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Indexes\interestrateindex.hpp">
-			</File>
-			<File
 				RelativePath="ql\CashFlows\parcoupon.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
@@ -855,12 +849,6 @@
 			</File>
 			<File
 				RelativePath="ql\CashFlows\simplecashflow.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\Indexes\swapindex.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Indexes\swapindex.hpp">
 			</File>
 			<File
 				RelativePath="ql\CashFlows\timebasket.cpp">
@@ -1439,6 +1427,12 @@
 				RelativePath=".\ql\Indexes\indexmanager.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\interestrateindex.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\interestrateindex.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\jibar.hpp">
 			</File>
 			<File
@@ -1452,6 +1446,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\Indexes\nzdlibor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\swapindex.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\swapindex.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Indexes\tibor.hpp">

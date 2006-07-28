@@ -304,12 +304,14 @@ namespace QuantLib
         switch (typeOfConvexityAdjustment_) {
           case ConvexityAdjustmentPricer::ConundrumByBlack:
             return ConundrumPricerByBlack(
-                    GFunctionFactory::standard,index()->termStructure(),
+                    GFunctionFactory::standard,
+                    index()->iborIndex()->termStructure(),
                     *this,
                     vanillaOptionPricer).rate();
           case ConvexityAdjustmentPricer::ConundrumByNumericalIntegration:
             return ConundrumPricerByNumericalIntegration(
-                    GFunctionFactory::standard,index()->termStructure(),
+                    GFunctionFactory::standard,
+                    index()->iborIndex()->termStructure(),
                     *this,
                     vanillaOptionPricer).rate();
           default:
