@@ -22,7 +22,7 @@
 #ifndef quantlib_cms_coupon_hpp
 #define quantlib_cms_coupon_hpp
 
-#include <ql/Indexes/swaprate.hpp>
+#include <ql/Indexes/swapindex.hpp>
 #include <ql/CashFlows/all.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         CMSCoupon(Real nominal,
                   const Date& paymentDate,
-                  const boost::shared_ptr<SwapRate>& index,
+                  const boost::shared_ptr<SwapIndex>& index,
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
@@ -65,7 +65,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<SwapRate>& index() const { return index_; }
+        const boost::shared_ptr<SwapIndex>& index() const { return index_; }
         Rate baseRate() const { return baseRate_; }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
@@ -85,7 +85,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        boost::shared_ptr<SwapRate> index_;
+        boost::shared_ptr<SwapIndex> index_;
         DayCounter dayCounter_;
         Rate baseRate_, cap_, floor_;
         Real multiplier_;
@@ -97,7 +97,7 @@ namespace QuantLib {
     CMSCouponVector(const Schedule& schedule,
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapRate>& index,
+                    const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
                     const std::vector<Rate>& baseRate,

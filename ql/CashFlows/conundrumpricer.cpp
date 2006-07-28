@@ -29,7 +29,7 @@ namespace QuantLib {
 	ConundrumPricer::ConundrumPricer(const boost::shared_ptr<CMSCoupon> coupon) : 
 	mCoupon(coupon), mCutoffForCaplet(2), mCutoffForFloorlet(0)  {
 
-		const boost::shared_ptr<SwapRate>& index = mCoupon->index();
+		const boost::shared_ptr<SwapIndex>& index = mCoupon->index();
 
 		mRateCurve = index->termStructure(); 
 
@@ -147,7 +147,7 @@ namespace QuantLib {
 
 		mInfinity = 1.0;
 
-		const boost::shared_ptr<SwapRate> swapRate = coupon->index();
+		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
 
 		mIntegrandForCap = boost::shared_ptr<ConundrumIntegrandStandard>(new ConundrumIntegrandStandard(
 			mVanillaOptionPricer, swapRate, mRateCurve, mExpiryTime, mPaymentTime, mAnnuity, mSwapRateValue, mSwapRateValue, true));
@@ -196,7 +196,7 @@ namespace QuantLib {
 	////////////////		ConundrumIntegrand
 
 	ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer> o,
-												 const boost::shared_ptr<SwapRate> swapRate,	
+												 const boost::shared_ptr<SwapIndex> swapRate,	
 												 const boost::shared_ptr<YieldTermStructure> rateCurve,
 												 double expiryTime,
 												 double paymentTime,
@@ -271,7 +271,7 @@ namespace QuantLib {
 
 	ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::ConundrumIntegrandStandard(
 				const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapRate> swapRate,	
+				const boost::shared_ptr<SwapIndex> swapRate,	
 				const boost::shared_ptr<YieldTermStructure> rateCurve,
 				double expiryTime,
 				double paymentTime,

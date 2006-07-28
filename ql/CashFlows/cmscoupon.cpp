@@ -22,7 +22,7 @@ namespace QuantLib {
 
     CMSCoupon::CMSCoupon(Real nominal,
                          const Date& paymentDate,
-                         const boost::shared_ptr<SwapRate>& index,
+                         const boost::shared_ptr<SwapIndex>& index,
                          const Date& startDate, const Date& endDate,
                          Integer fixingDays,
                          const DayCounter& dayCounter,
@@ -230,7 +230,7 @@ namespace QuantLib {
     CMSCouponVector(const Schedule& schedule,
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapRate>& index,
+                    const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
                     const std::vector<Rate>& baseRates,

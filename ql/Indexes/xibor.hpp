@@ -25,14 +25,13 @@
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp
 
-#include <ql/index.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/Indexes/interestrateindex.hpp>
 
 namespace QuantLib {
 
     //! base class for LIBOR-like indexes
     /*! \todo add methods returning InterestRate */
-    class Xibor : public Index, public Observer {
+    class Xibor : public InterestRateIndex {
       public:
         #ifndef QL_DISABLE_DEPRECATED
         //! \deprecated use the corresponding Period-based constructor
@@ -55,79 +54,34 @@ namespace QuantLib {
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        //! \name Index interface
+        //! \name InterestRateIndex interface
         //@{
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
+        Rate forecastFixing(const Date& fixingDate) const;
         //@}
         //! \name Inspectors
         //@{
-        std::string name() const;
-        std::string familyName() const;
-        Period tenor() const;
         /*! \note this method does not always apply. Use tenor() if
                   possible.
         */
         Frequency frequency() const;
-        Integer settlementDays() const;
-        const Currency& currency() const;
-        Calendar calendar() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-        DayCounter dayCounter() const;
-        boost::shared_ptr<YieldTermStructure> termStructure() const;
+        boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const;
         //@}
-        /*! \name Date calculations
-
-            These methods can be overridden to implement particular
-            conventions
-
-            @{
-        */
-        virtual Date valueDate(const Date& fixingDate) const;
+        //! \name Date calculations
+        //@{
         virtual Date maturityDate(const Date& valueDate) const;
         // @}
       protected:
-        std::string familyName_;
-        Period tenor_;
-        Integer settlementDays_;
-        Currency currency_;
-        Calendar calendar_;
         BusinessDayConvention convention_;
-        DayCounter dayCounter_;
         Handle<YieldTermStructure> termStructure_;
     };
 
-
+    //#ifndef QL_DISABLE_DEPRECATED
+    //typedef IborIndex Xibor;
+    //#endif
+    
     // inline definitions
-
-    inline void Xibor::update() {
-        notifyObservers();
-    }
-
-    inline std::string Xibor::familyName() const {
-        return familyName_;
-    }
-
-    inline Period Xibor::tenor() const {
-        return tenor_;
-    }
-
-    inline Integer Xibor::settlementDays() const {
-        return settlementDays_;
-    }
-
-    inline const Currency& Xibor::currency() const {
-        return currency_;
-    }
-
-    inline Calendar Xibor::calendar() const {
-        return calendar_;
-    }
 
     inline bool Xibor::isAdjusted() const {
         return (convention_ != Unadjusted);
@@ -137,15 +91,10 @@ namespace QuantLib {
         return convention_;
     }
 
-    inline DayCounter Xibor::dayCounter() const {
-        return dayCounter_;
-    }
-
-    inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
-        return termStructure_.currentLink();
-    }
+   inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
+       return termStructure_.currentLink();
+   }
 
 }
-
 
 #endif

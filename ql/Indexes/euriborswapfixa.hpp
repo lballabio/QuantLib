@@ -24,7 +24,7 @@
 #ifndef quantlib_euriborswapfixa_hpp
 #define quantlib_euriborswapfixa_hpp
 
-#include <ql/Indexes/swaprate.hpp>
+#include <ql/Indexes/swapindex.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/thirty360.hpp>
@@ -37,10 +37,10 @@ namespace QuantLib {
         on the Euribor 6M and is fixed at 11:00AM FRANKFURT.
         Reuters page ISDAFIX2 or EURSFIXA=
     */
-    class EuriborSwapFixA : public SwapRate {
+    class EuriborSwapFixA : public SwapIndex {
       public:
         EuriborSwapFixA(Integer years)
-        : SwapRate("EURIBORSWAPFIXA", years, 2, EURCurrency(), TARGET(), 
+        : SwapIndex("EURIBORSWAPFIXA", years, 2, EURCurrency(), TARGET(), 
                    Annual, ModifiedFollowing, Thirty360(Thirty360::BondBasis), 
                    boost::shared_ptr<Xibor>(new Euribor6M())) {}
     };

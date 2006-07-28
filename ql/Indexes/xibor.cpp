@@ -33,15 +33,9 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), tenor_(n, units),
-      settlementDays_(settlementDays),
-      currency_(currency), calendar_(calendar),
-      convention_(convention),
-      dayCounter_(dayCounter), termStructure_(h) {
-        registerWith(termStructure_);
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name()));
-    }
+    : InterestRateIndex(familyName, Period(n, units), settlementDays, currency,
+                        calendar, dayCounter),
+      convention_(convention), termStructure_(h) {}
     #endif
     Xibor::Xibor(const std::string& familyName,
                  const Period& tenor,
@@ -51,22 +45,9 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : familyName_(familyName), tenor_(tenor),
-      settlementDays_(settlementDays),
-      currency_(currency), calendar_(calendar),
-      convention_(convention),
-      dayCounter_(dayCounter), termStructure_(h) {
-        registerWith(termStructure_);
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(IndexManager::instance().notifier(name()));
-    }
-
-    std::string Xibor::name() const {
-        std::ostringstream out;
-        out << familyName_ << io::short_period(tenor_)
-            << " " << dayCounter_.name();
-        return out.str();
-    }
+    : InterestRateIndex(familyName, tenor, settlementDays, currency,
+                        calendar, dayCounter),
+      convention_(convention), termStructure_(h) {}
 
     Frequency Xibor::frequency() const {
         Integer length = tenor_.length();
@@ -83,34 +64,8 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Once)
     }
 
-    Rate Xibor::fixing(const Date& fixingDate,
-                       bool forecastTodaysFixing) const {
-        Date today = Settings::instance().evaluationDate();
-        // check fixing date is not a holiday
-        QL_REQUIRE(calendar_.isBusinessDay(fixingDate),
-                       "Fixing date " << fixingDate << " is not a business day");        
-        if (fixingDate < today) {
-            // must have been fixed
-            Rate pastFixing =
-                IndexManager::instance().getHistory(name())[fixingDate];
-            QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << fixingDate);
-            return pastFixing;
-        }
-        if ((fixingDate == today) && !forecastTodaysFixing) {
-            // might have been fixed
-            try {
-                Rate pastFixing =
-                    IndexManager::instance().getHistory(name())[fixingDate];
-                if (pastFixing != Null<Real>())
-                    return pastFixing;
-                else
-                    ;   // fall through and forecast
-            } catch (Error&) {
-                ;       // fall through and forecast
-            }
-        }
-        // forecast
+    Rate Xibor::forecastFixing(const Date& fixingDate) const
+    {
         QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date fixingValueDate = valueDate(fixingDate);
         Date endValueDate = maturityDate(fixingValueDate);
@@ -121,10 +76,6 @@ namespace QuantLib {
         Time fixingPeriod =
             dayCounter_.yearFraction(fixingValueDate, endValueDate);
         return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
-    }
-
-    Date Xibor::valueDate(const Date& fixingDate) const {
-        return calendar_.advance(fixingDate, settlementDays_, Days);
     }
 
     Date Xibor::maturityDate(const Date& valueDate) const {

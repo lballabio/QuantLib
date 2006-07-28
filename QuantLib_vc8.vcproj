@@ -1523,6 +1523,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\interestrateindex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\interestrateindex.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\jibar.hpp"
 				>
 			</File>
@@ -1543,11 +1551,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\swaprate.cpp"
+				RelativePath=".\ql\Indexes\swapindex.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\swaprate.hpp"
+				RelativePath=".\ql\Indexes\swapindex.hpp"
 				>
 			</File>
 			<File

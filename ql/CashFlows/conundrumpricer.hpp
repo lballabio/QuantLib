@@ -110,7 +110,7 @@ namespace QuantLib {
 		public:
 
 			ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapRate> swapRate,	
+				const boost::shared_ptr<SwapIndex> swapRate,	
 				const boost::shared_ptr<YieldTermStructure> rateCurve,
 				double expiryTime,											
 				double paymentTime,
@@ -139,7 +139,7 @@ namespace QuantLib {
 				
 			ConundrumIntegrandStandard(
 				const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapRate> swapRate,	
+				const boost::shared_ptr<SwapIndex> swapRate,	
 				const boost::shared_ptr<YieldTermStructure> rateCurve,
 				double expiryTime,
 				double paymentTime,
