@@ -10,8 +10,7 @@ dist_man_MANS = quantlib-config.1 \
 		FRA.1 \
                 SwapValuation.1 \
 		Replication.1 \
-		Repo.1 \
-
+		Repo.1 
 else
 
 dist_man_MANS = quantlib-config.1 \
