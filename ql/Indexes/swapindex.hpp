@@ -41,7 +41,6 @@ namespace QuantLib {
         : InterestRateIndex(familyName, Period(years, Years), settlementDays,
                             currency, calendar, fixedLegDayCounter),
           years_(years), iborIndex_(iborIndex),
-          indexFixingDays_(iborIndex_->settlementDays()),
           fixedLegFrequency_(fixedLegFrequency),
           floatingLegFrequency_(iborIndex_->frequency()),
           fixedLegConvention_(fixedLegConvention),
@@ -66,13 +65,11 @@ namespace QuantLib {
             return floatingLegConvention_;
         }
         boost::shared_ptr<Xibor> iborIndex() const { return iborIndex_; }
-        Integer indexFixingDays() const { return indexFixingDays_; }
 		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
 		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
       private:
         Integer years_;
         boost::shared_ptr<Xibor> iborIndex_;
-        Integer indexFixingDays_;
         Frequency fixedLegFrequency_, floatingLegFrequency_;
         BusinessDayConvention fixedLegConvention_, floatingLegConvention_;
     };

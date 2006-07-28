@@ -44,6 +44,7 @@ namespace QuantLib {
               const DayCounter& dayCounter);
         //! \name Index interface
         //@{
+        std::string name() const;
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
         //@}
@@ -53,7 +54,6 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        std::string name() const;
         std::string familyName() const;
         Period tenor() const;
         Integer settlementDays() const;
