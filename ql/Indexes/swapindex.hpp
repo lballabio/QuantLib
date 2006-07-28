@@ -42,9 +42,7 @@ namespace QuantLib {
                             currency, calendar, fixedLegDayCounter),
           years_(years), iborIndex_(iborIndex),
           fixedLegFrequency_(fixedLegFrequency),
-          floatingLegFrequency_(iborIndex_->frequency()),
-          fixedLegConvention_(fixedLegConvention),
-          floatingLegConvention_(iborIndex_->businessDayConvention())
+          fixedLegConvention_(fixedLegConvention)
         {
             registerWith(iborIndex_);
         }
@@ -58,20 +56,14 @@ namespace QuantLib {
         BusinessDayConvention fixedLegConvention() const {
             return fixedLegConvention_;
         }
-        Frequency floatingLegFrequency() const {
-            return floatingLegFrequency_;
-        }
-        BusinessDayConvention floatingLegConvention() const {
-            return floatingLegConvention_;
-        }
         boost::shared_ptr<Xibor> iborIndex() const { return iborIndex_; }
 		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
 		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
       private:
         Integer years_;
         boost::shared_ptr<Xibor> iborIndex_;
-        Frequency fixedLegFrequency_, floatingLegFrequency_;
-        BusinessDayConvention fixedLegConvention_, floatingLegConvention_;
+        Frequency fixedLegFrequency_;
+        BusinessDayConvention fixedLegConvention_;
     };
 
 }

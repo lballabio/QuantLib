@@ -30,8 +30,9 @@ namespace QuantLib {
         return swap->fairRate();
     }
 
-	boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(const Date& fixingDate) const {
-
+	boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
+        const Date& fixingDate) const
+    {
 		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
         Date end = calendar_.advance(start,years_,Years);
         Schedule fixedLegSchedule(calendar_, start, end,
