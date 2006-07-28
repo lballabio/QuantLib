@@ -103,7 +103,7 @@ namespace QuantLib {
         CapletVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~CapletVolatilityStructure() {}
-        //! \name Volatility
+        //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given start date and strike rate
         Volatility volatility(const Date& start,

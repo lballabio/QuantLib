@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -52,7 +53,7 @@ namespace QuantLib {
         SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
-        //! \name Volatility
+        //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given starting date and length
         Volatility volatility(const Date& start,
@@ -64,6 +65,16 @@ namespace QuantLib {
                               Time length,
                               Rate strike,
                               bool extrapolate = false) const;
+        //! returns the Black variance for a given starting date and length
+        Real blackVariance(const Date& start,
+                           const Period& length,
+                           Rate strike,
+                           bool extrapolate = false) const;
+        //! returns the Black variance for a given starting time and length
+        Real blackVariance(Time start,
+                           Time length,
+                           Rate strike,
+                           bool extrapolate = false) const;
         //@}
         //! \name Limits
         //@{
@@ -112,9 +123,9 @@ namespace QuantLib {
                                                         Rate strike,
                                                         bool extrapolate)
                                                                        const {
-        std::pair<Time,Time> times = convertDates(start,length);
-        checkRange(times.first,times.second,strike,extrapolate);
-        return volatilityImpl(times.first,times.second,strike);
+        std::pair<Time,Time> times = convertDates(start, length);
+        checkRange(times.first, times.second, strike, extrapolate);
+        return volatilityImpl(times.first, times.second, strike);
     }
 
     inline Volatility SwaptionVolatilityStructure::volatility(
@@ -123,8 +134,31 @@ namespace QuantLib {
                                                         Rate strike,
                                                         bool extrapolate)
                                                                        const {
-        checkRange(start,length,strike,extrapolate);
-        return volatilityImpl(start,length,strike);
+        checkRange(start, length, strike, extrapolate);
+        return volatilityImpl(start, length, strike);
+    }
+
+    inline Real SwaptionVolatilityStructure::blackVariance(
+                                                        const Date& start,
+                                                        const Period& length,
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        std::pair<Time,Time> times = convertDates(start, length);
+        checkRange(times.first, times.second, strike, extrapolate);
+        Volatility vol = volatilityImpl(times.first, times.second, strike);
+        return vol*vol*times.first;
+    }
+
+    inline Real SwaptionVolatilityStructure::blackVariance(
+                                                        Time start,
+                                                        Time length,
+                                                        Rate strike,
+                                                        bool extrapolate)
+                                                                       const {
+        checkRange(start, length, strike, extrapolate);
+        Volatility vol = volatilityImpl(start, length, strike);
+        return vol*vol*start;
     }
 
     inline Time SwaptionVolatilityStructure::maxStartTime() const {
