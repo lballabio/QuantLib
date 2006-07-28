@@ -66,7 +66,7 @@ namespace QuantLib {
         Frequency frequency() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-        boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const;
+        boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
         //! \name Date calculations
         //@{
