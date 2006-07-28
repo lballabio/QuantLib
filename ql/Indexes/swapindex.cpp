@@ -38,8 +38,8 @@ namespace QuantLib {
         Schedule fixedLegSchedule(calendar_, start, end,
                                   fixedLegFrequency_, fixedLegConvention_);
         Schedule floatingLegSchedule(calendar_, start, end,
-                                     floatingLegFrequency_,
-                                     floatingLegConvention_);
+                                     iborIndex_->frequency(),
+                                     iborIndex_->businessDayConvention());
 
 		return boost::shared_ptr<VanillaSwap>(new VanillaSwap (true, 100.0,
                         fixedLegSchedule, 0.0, dayCounter_,
