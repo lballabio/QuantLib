@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,151 +20,210 @@
     \brief 
 */
 
-#if !defined(quantlib_conundrum_pricer_hpp)
+#ifndef quantlib_conundrum_pricer_hpp
 #define quantlib_conundrum_pricer_hpp
 
 #include <ql\cashflows\cmscoupon.hpp>
+#include <ql/PricingEngines/blackmodel.hpp>
 
-namespace QuantLib {
-
-	 //! VanillaOptionPricer
-    /*! 
-		Interface 
-    */
+namespace QuantLib
+{
 	class VanillaOptionPricer {
-	public:
-		
-		virtual double operator()(double expiry, double strike, bool isCall, double deflator) const = 0;
+      public:
+		virtual ~VanillaOptionPricer() {};
+        virtual Real operator()(Date expiryDate,
+                                Real strike, 
+                                bool isCall, 
+                                Real deflator) const = 0;
 	};
 
-	//! ConundrumPricer
-    /*! 
-		Base class for the pricing of a CMS coupon via static replication as in Hagan's "Conundrums..." article
+	class BlackVanillaOptionPricer : public VanillaOptionPricer {
+      public:
+        BlackVanillaOptionPricer(
+            Rate forwardValue, 
+            const Period& swapTenor,
+            const Handle<SwaptionVolatilityStructure>& volatilityStructure)
+        : forwardValue_(forwardValue), swapTenor_(swapTenor),
+          volatilityStructure_(volatilityStructure) {};
+
+        Real operator()(Date expiryDate,
+                        Real strike,
+                        bool isCall,
+                        Real deflator) const;
+      private:
+        Rate forwardValue_;
+        Period swapTenor_;
+        const Handle<SwaptionVolatilityStructure>& volatilityStructure_;
+	};
+
+    class GFunction {
+      public:
+		virtual ~GFunction() {};
+        virtual Real operator()(Real x) = 0;
+        virtual Real firstDerivative(Real x) = 0;
+        virtual Real secondDerivative(Real x) = 0;
+	};
+
+	class GFunctionFactory
+    {
+      public:
+        enum ModelOfYieldCurve { standard,
+                                 exactYield,
+                                 parallelShifts,
+                                 nonParallelShifts };
+		/** pointer requires explicit delete. */
+		static boost::shared_ptr<GFunction> newGFunctionStandard(Size q,
+                                                                 Real delta,
+                                                                 Size swapLength);
+		private:
+		GFunctionFactory();
+
+        /*! Corresponds to Standard Model in Hagan's paper */		
+		class GFunctionStandard : public GFunction {
+          public:
+            GFunctionStandard(Size q,
+                              Real delta,
+                              Size swapLength)
+            : q_(q), delta_(delta), swapLength_(swapLength) {};
+			Real operator()(Real x) ;
+            Real firstDerivative(Real x);
+            Real secondDerivative(Real x);
+          protected:
+			/** number of period per year */
+			const int q_;
+			/** fraction of a period between the swap start date and the pay date  */
+			Real delta_;
+			/** length of swap*/
+			Size swapLength_;
+		};
+
+		class GFunctionParallelShifts : public GFunction {
+          public:
+            GFunctionParallelShifts() {};
+			Real operator()(Real x) ;
+            Real firstDerivative(Real x);
+            Real secondDerivative(Real x);
+          protected:
+			/** value determinated implicitly in term   */
+			Real x_;
+			/** fraction of a period between the swap start date and the pay date  */
+			Real delta_;
+			/** length of swap*/
+			Size swapLength_;
+		};
+
+    };
+
+    // forward declaration
+    class CMSCoupon;
+
+    //! ConundrumPricer
+    /*! Base class for the pricing of a CMS coupon via static replication
+        as in Hagan's "Conundrums..." article
 	*/
-	class ConundrumPricer {
+    class ConundrumPricer: public ConvexityAdjustmentPricer {
+      public:
+		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                        const boost::shared_ptr<YieldTermStructure>& rateCurve,
+                        const CMSCoupon& coupon);
+		Real price() const;
+        Real rate() const;
+      protected:
+		virtual Real optionLetPrice(bool isCall, Real strike) const = 0;
+		virtual Real swapLetPrice() const = 0;
 
-	protected:
-
-		boost::shared_ptr<YieldTermStructure> mRateCurve;
-		const boost::shared_ptr<CMSCoupon> mCoupon;
-
-		double mSwapRateValue, mExpiryTime;
-		double mDiscount, mAnnuity, mMin, mMax, mGearing, mSpread, mPaymentTime;
-		const double mCutoffForCaplet, mCutoffForFloorlet;
-
-		virtual double optionLetPrice(bool isCall, double strike) const = 0;
-		virtual double swapLetPrice() const = 0;
-
-		static double functionG_Standard(double x, int q, double delta, int swapLength);
-		static double firstDerivativeOfG_Standard(double x, int q, double delta, int swapLength);
-		static double secondDerivativeOfG_Standard(double x, int q, double delta, int swapLength);
-
-	public:
-
-		ConundrumPricer(const boost::shared_ptr<CMSCoupon> coupon);
-		virtual ~ConundrumPricer() {
-		}
-		double price() const;
+		const boost::shared_ptr<YieldTermStructure> rateCurve_;
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
+		boost::shared_ptr<GFunction> gFunction_;
+        const CMSCoupon& coupon_;
+        Date paymentDate_, fixingDate_;
+		Real swapRateValue_;
+		Real discount_, annuity_, min_, max_, gearing_, spread_;
+		const Real cutoffForCaplet_, cutoffForFloorlet_;
+        Period swapTenor_;
 	};
 
 
 	//! ConundrumPricerByNumericalIntegration
-    /*! 
-		Prices a CMS coupon via static replication as in Hagan's "Conundrums..." article 
-		via numerical integration based on prices of vanilla swaptions
+    /*! Prices a CMS coupon via static replication as in Hagan's "Conundrums..." article 
+		via numerical Integration based on prices of vanilla swaptions
 	*/
-	class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
-
-		
-		class Function : public std::unary_function<double, double> {
-		public:
-			virtual double operator()(const double& x) const = 0;
+	class ConundrumPricerByNumericalIntegration : public ConundrumPricer
+    {
+      public:
+		ConundrumPricerByNumericalIntegration( 
+            const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+            const boost::shared_ptr<YieldTermStructure>& rateCurve,
+            const CMSCoupon& coupon,
+		    const boost::shared_ptr<VanillaOptionPricer>& o);
+      private:
+		class Function : public std::unary_function<Real, Real> {
+          public:
+    		virtual ~Function() {};
+			virtual Real operator()(Real x) const = 0;
 		};
 
+		class ConundrumIntegrand : public Function
+        {
+          friend class ConundrumPricerByNumericalIntegration;
+          public:
+			ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer>& o,
+                               const boost::shared_ptr<YieldTermStructure>& rateCurve,
+                               const boost::shared_ptr<GFunction>& gFunction,
+                               Date fixingDate,											
+                               Date paymentDate,
+                               Real annuity,
+                               Real forwardValue,
+                               Real strike,
+                               bool isCaplet);
+			Real operator()(Real x) const;
+          protected:
+			Real functionF(const Real x) const;
+			Real firstDerivativeOfF(const Real x) const;	
+			Real secondDerivativeOfF(const Real x) const;
+
+			Real strike() const;
+			Real annuity() const;
+			Date fixingDate() const;
+            void setStrike(Real strike);
+
+			const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
+			const Real forwardValue_, annuity_;
+            const Date fixingDate_, paymentDate_;
+            Real strike_;
+			const bool isCaplet_, isPayer_;
+            boost::shared_ptr<GFunction> gFunction_;
+		};
+
+		Real integrate(Real a,
+                       Real b,
+                       const ConundrumIntegrand& Integrand) const;
+		virtual Real optionLetPrice(bool isCap, 
+                                    Real strike) const;
+		virtual Real swapLetPrice() const;
 		//! ConundrumIntegrand
-	    /*! 
-			Base class for the definition of the integrand for Hagan's integral
-		*/
-		class ConundrumIntegrand : public Function {
+	    /*!	Base class for the definition of the Integrand for Hagan's Integral */
+		const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
+		boost::shared_ptr<ConundrumIntegrand> integrandForCap_, integrandForFloor_;
+		Real mInfinity_;
+	};
 
-			friend class ConundrumPricerByNumericalIntegration;
-
-		protected:
-
-			const boost::shared_ptr<VanillaOptionPricer> mVanillaOptionPricer;
-			const double mForwardValue, mExpiryTime, mStrike, mAnnuity, mPaymentTime;
-			const int mSwapLength;
-			const bool mIsCaplet, mIsPayer;
-
-			virtual double functionG (const double x) const = 0;
-			virtual double firstDerivativeOfG (const double x) const = 0;	
-			virtual double secondDerivativeOfG (const double x) const = 0;
-		
-			virtual double functionF (const double x) const;
-			virtual double firstDerivativeOfF (const double x) const;	
-			virtual double secondDerivativeOfF (const double x) const;
-
-			double strike() const;
-			double annuity() const;
-			double expiryTime() const;
-
-		public:
-
-			ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapIndex> swapRate,	
-				const boost::shared_ptr<YieldTermStructure> rateCurve,
-				double expiryTime,											
-				double paymentTime,
-				double annuity,
-				double forwardValue,
-				double strike,
-				bool isCaplet);
-
-			virtual double operator()(const double& x) const;
-		};
-
-		//! ConundrumIntegrandStandard
-	    /*! 
-			Corresponds to Standard Model in Hagan's paper
-		*/
-		class ConundrumIntegrandStandard : public ConundrumIntegrand {
-
-			double mDelta;
-			int mQ;
-
-			virtual double functionG (const double x) const;
-			virtual double firstDerivativeOfG (const double x) const;	
-			virtual double secondDerivativeOfG (const double x) const;
-
-		public:
-				
-			ConundrumIntegrandStandard(
-				const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapIndex> swapRate,	
-				const boost::shared_ptr<YieldTermStructure> rateCurve,
-				double expiryTime,
-				double paymentTime,
-				double annuity,
-				double forwardValue,
-				double strike,
-				bool isCaplet);
-		};
-
-		const boost::shared_ptr<VanillaOptionPricer> mVanillaOptionPricer;
-		
-		boost::shared_ptr<ConundrumIntegrand> mIntegrandForCap, mIntegrandForFloor;
-		double mInfinity;
-	
-		double integrate(double a, double b, const ConundrumIntegrand& integrand) const;
-
-		virtual double optionLetPrice(bool isCap, double strike) const;
-		virtual double swapLetPrice() const;
-
-	public:
-
-		ConundrumPricerByNumericalIntegration(const boost::shared_ptr<VanillaOptionPricer> o, 
-			const boost::shared_ptr<CMSCoupon> coupon);
-		virtual ~ConundrumPricerByNumericalIntegration() {}
+    class ConundrumPricerByBlack : public ConundrumPricer
+    {
+      public:
+		ConundrumPricerByBlack(
+                    GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                    const boost::shared_ptr<YieldTermStructure>& rateCurve,
+                    const CMSCoupon& coupon,
+		            const boost::shared_ptr<VanillaOptionPricer>& o);
+      protected:
+		Real optionLetPrice(bool isCall,
+                            Real strike) const;
+		Real swapLetPrice() const;
+      private:
+		const Real variance_;
+		const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
+		Real firstDerivativeOfGAtForwardValue_;
 	};
 
 }

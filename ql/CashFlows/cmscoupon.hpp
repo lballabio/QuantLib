@@ -28,22 +28,38 @@
 
 namespace QuantLib {
 
+    //! CovexityAdjustemPricer
+    /*! 
+		
+	*/
+	class ConvexityAdjustmentPricer {
+      public:
+        enum Type {ConundrumByBlack,
+                   ConundrumByNumericalIntegration };
+		virtual ~ConvexityAdjustmentPricer() {};
+		virtual Real price() const = 0;
+        virtual Real rate() const = 0;
+	};
+
     //! CMS coupon class
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
+
+
     class CMSCoupon : public FloatingRateCoupon,
                       public Observer {
       public:
-        CMSCoupon(Real nominal,
+        CMSCoupon(const Real nominal,
                   const Date& paymentDate,
                   const boost::shared_ptr<SwapIndex>& index,
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
-                  Rate baseRate = 0.0,
-                  Real multiplier = 1.0,
+                  ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment,
+                  Real gearing,
+                  Rate spread,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
@@ -55,6 +71,7 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        Rate rate1() const;
         DayCounter dayCounter() const { return dayCounter_; }
         //@}
         //! \name FloatingRateCoupon interface
@@ -66,15 +83,15 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& index() const { return index_; }
-        Rate baseRate() const { return baseRate_; }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
-        Real multiplier() const { return multiplier_; }
+        //Real multiplier() const { return multiplier_; }
         //@}
         //! \name Modifiers
         //@{
         void setSwaptionVolatility(
                 const Handle<SwaptionVolatilityStructure>&);
+        Handle<SwaptionVolatilityStructure> CMSCoupon::swaptionVolatility() const;
         //@}
         //! \name Observer interface
         //@{
@@ -90,6 +107,7 @@ namespace QuantLib {
         Rate baseRate_, cap_, floor_;
         Real multiplier_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
+        ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment_;
     };
 
 
@@ -100,12 +118,15 @@ namespace QuantLib {
                     const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
-                    const std::vector<Rate>& baseRate,
+                    const std::vector<Real>& baseRate,
                     const std::vector<Real>& fractions,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors);
+                    const std::vector<Real>& caps,
+                    const std::vector<Real>& floors,
+                    const Handle<SwaptionVolatilityStructure>& vol =
+                                Handle<SwaptionVolatilityStructure>(),
+                    ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment =
+                                ConvexityAdjustmentPricer::ConundrumByBlack);
 
 }
-
 
 #endif

@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,285 +23,354 @@
 
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/math/gaussianquadratures.hpp>
-#include <ql/math/simpsonintegral.hpp>
+#include <ql/math/kronrodintegral.hpp>
 
-namespace QuantLib {
+namespace QuantLib
+{
+    Real BlackVanillaOptionPricer::operator()(Date expiryDate,
+                                              Real strike,
+                                              bool isCall,
+                                              Real deflator) const
+    {
+        Real optionType = isCall ? 1.0 : -1.0;
+        Real variance = volatilityStructure_->blackVariance(expiryDate,
+            swapTenor_, forwardValue_); 
+        return deflator * detail::blackFormula(forwardValue_, strike,
+            std::sqrt(variance), optionType);
+    };
 
-	ConundrumPricer::ConundrumPricer(const boost::shared_ptr<CMSCoupon> coupon) : 
-	mCoupon(coupon), mCutoffForCaplet(2), mCutoffForFloorlet(0)  {
 
-		const boost::shared_ptr<SwapIndex>& index = mCoupon->index();
+    ConundrumPricer::ConundrumPricer(
+                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                const boost::shared_ptr<YieldTermStructure>& rateCurve,
+                const CMSCoupon& coupon)
+    : modelOfYieldCurve_(modelOfYieldCurve), rateCurve_(rateCurve),
+      coupon_(coupon), cutoffForCaplet_(2), cutoffForFloorlet_(0),
+      fixingDate_(coupon.fixingDate()),
+      paymentDate_(coupon.date()), discount_(rateCurve_->discount(paymentDate_))
+    {
+		const boost::shared_ptr<SwapIndex>& swapRate = coupon_.index();
+        swapTenor_ = swapRate->tenor();
+        boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
+		swapRateValue_ = swap->fairRate();
 
-		mRateCurve = index->termStructure(); 
+		static const Spread basisPoSize = 1.0e-4;
+		annuity_ = swap->floatingLegBPS()/basisPoSize;
 
-		static const Spread basisPoint = 1.0e-4;
+		min_ = coupon_.floor();
+		max_ = coupon_.cap();
+		gearing_ = coupon_.gearing();
+		spread_ = coupon_.spread();
+        
+        Size q = swapRate->fixedLegFrequency();
 
-		DayCounter dc = mRateCurve->dayCounter();
+        boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(fixingDate_));
 
-		Date fixingDate(coupon->fixingDate());
-		Date paymentDate(coupon->date());
+        DayCounter dc = swapRate->dayCounter();
+		Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                         swap->startDate());
+		Time swapFirstPaymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                                    schedule->date(1));
+		Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                           paymentDate_);
+		Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
-		mExpiryTime = dc.yearFraction(mRateCurve->referenceDate(), fixingDate);
-		mPaymentTime = dc.yearFraction(mRateCurve->referenceDate(), paymentDate);
-
-		mDiscount = mRateCurve->discount(coupon->date());
-		
-		{
-			const boost::shared_ptr<VanillaSwap>& swap(index->underlyingSwap(fixingDate));
-			mSwapRateValue = swap->fairRate();
-			mAnnuity = swap->floatingLegBPS()/basisPoint;
-		}
-
-		mMin = coupon->floor();
-		mMax = coupon->cap();
-		mGearing = coupon->multiplier();
-		mSpread = coupon->spread();
-
+        gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.units());
 	}
 
-	double ConundrumPricer::price() const {
-	
-		const double swapLetPrice_ = swapLetPrice(); 
-		const double spreadLegValue = mSpread*mCoupon->accrualPeriod()*mDiscount;
+	Real ConundrumPricer::price() const
+    {
+		const Real swapLetPrice_ = swapLetPrice(); 
+		const Real spreadLegValue = spread_*coupon_.accrualPeriod()*discount_;
 
-		const double effectiveStrikeForMax = (mMax-mSpread)/mGearing;
-		double capLetPrice = 0;
+		const Real effectiveStrikeForMax = (max_-spread_)/gearing_;
+		Real capLetPrice = 0;
 
-		if(mMax < mCutoffForCaplet) {
-			if(effectiveStrikeForMax<=mSwapRateValue) {
+		if (max_ < cutoffForCaplet_) {
+			if (effectiveStrikeForMax<=swapRateValue_) {
 				capLetPrice = optionLetPrice(false, effectiveStrikeForMax) 
-					+ (swapLetPrice_ - effectiveStrikeForMax*mCoupon->accrualPeriod()*mDiscount);
-			}
-			else {
+					+ (swapLetPrice_ - effectiveStrikeForMax*coupon_.accrualPeriod()*discount_);
+			} else {
 				capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
 			}
 		}
 
-		const double effectiveStrikeForMin = (mMin-mSpread)/mGearing;
-		double floorLetPrice = 0;
+		const Real effectiveStrikeForMin = (min_-spread_)/gearing_;
+		Real floorLetPrice = 0;
 
-		if(mMin > mCutoffForFloorlet) { 
-			if(effectiveStrikeForMin<=mSwapRateValue) {
+		if (min_ > cutoffForFloorlet_) { 
+			if (effectiveStrikeForMin<=swapRateValue_) {
 				floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
-			}
-			else {
+			} else {
 				floorLetPrice = optionLetPrice(true, effectiveStrikeForMin) - 
-					(swapLetPrice_ - effectiveStrikeForMin*mCoupon->accrualPeriod()*mDiscount);
+					(swapLetPrice_ - effectiveStrikeForMin*coupon_.accrualPeriod()*discount_);
 			}
 		}
-		const double price = mGearing*(swapLetPrice_ + floorLetPrice - capLetPrice) + spreadLegValue;
+		const Real price = gearing_*(swapLetPrice_ + floorLetPrice - capLetPrice) + spreadLegValue;
 		return price;
 	}
 
-	double ConundrumPricer::functionG_Standard(double x, int q, double delta, int swapLength) {
-
-
-		const double n = swapLength *  q; 
-		const double g = x / std::pow((1.0 + x/q), delta) * 1.0 / (1.0 - 1.0 / std::pow((1.0 + x/q), n));
-		return  g;
+	Real ConundrumPricer::rate() const
+    {
+       return price()/(coupon_.accrualPeriod()*discount_);
 	}
 
-	double ConundrumPricer::firstDerivativeOfG_Standard(double x, int q, double delta, int swapLength) {
 
-		const double n = swapLength * q; 
-		const double a = 1.0 + x / q;
-		const double AA = a - delta/q * x;
-		const double B = std::pow(a,(n - delta - 1.0))/(std::pow(a,n) - 1.0);
-
-		const double secNum = n * x * std::pow(a,(n-1.0));
-		const double secDen = q * std::pow(a, delta) * (std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0);
-		const double sec = secNum / secDen;
-
-		const double g1 = AA * B - sec;
-		return  g1;
+    	
+    ////////////////		ConundrumPricerByNumericalIntegration
+    ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        const boost::shared_ptr<YieldTermStructure>& rateCurve,
+        const CMSCoupon& coupon,
+		const boost::shared_ptr<VanillaOptionPricer>& o)
+    : ConundrumPricer(modelOfYieldCurve, rateCurve,coupon),
+      vanillaOptionPricer_(o), mInfinity_(1.0)
+    {
+		integrandForCap_ = boost::shared_ptr<ConundrumIntegrand>(
+            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
+                                   gFunction_, fixingDate_, paymentDate_,
+                                   annuity_, swapRateValue_, swapRateValue_, true));
+		integrandForFloor_ = boost::shared_ptr<ConundrumIntegrand>(
+            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
+                                   gFunction_, fixingDate_, paymentDate_,
+                                   annuity_, swapRateValue_, swapRateValue_, false));
 	}
 
-	double ConundrumPricer::secondDerivativeOfG_Standard(double x, int q, double delta, int swapLength) {
-		
-		const double n = swapLength * q; 
-		const double a = 1.0 + x / q;
-		const double AA = a - delta/q * x;
-		const double A1 = (1.0 - delta)/q;
-		const double B = std::pow(a,(n - delta - 1.0))/(std::pow(a,n) - 1.0);
-		const double Num = (1.0 + delta - n) * std::pow(a, (n-delta-2.0) ) - (1.0 + delta) * std::pow(a, (2.0*n-delta-2.0)); 
-		const double Den = (std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0);
-		const double B1 = 1.0 / q * Num / Den;
+	Real ConundrumPricerByNumericalIntegration::integrate(Real a,
+        Real b, const ConundrumIntegrand& integrand) const
+    {
+        // grado polinomi di Legendre - Questa variabile serve soltanto in
+        // caso di GaussLegendreQuadrature
+        //const Size n = 25;
+		//GaussLegendre Integral(n);
 
-		const double C =  x / std::pow(a, delta);
-		const double C1 = (std::pow(a, delta) 
-			- delta /q * x * std::pow(a, (delta - 1.0))) / std::pow(a, 2 * delta);
-
-		const double D =  std::pow(a, (n-1.0))/ ((std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0));
-		const double D1 = ((n - 1.0) * std::pow(a, (n-2.0)) * (std::pow(a, n) - 1.0) 
-			- 2 * n * std::pow(a, (2 * (n-1.0)))) 
-			/ (q * (std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0));
-
-		return A1 * B + AA * B1 - n/q * (C1 * D + C * D1);
-
+        KronrodIntegral integral(0.0000000001, 1000000); 
+		return integral(integrand,a , b);
 	}
 
-	ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
-		const boost::shared_ptr<VanillaOptionPricer> o, 
-		const boost::shared_ptr<CMSCoupon> coupon) : 
-	ConundrumPricer(coupon), 
-	mVanillaOptionPricer(o) {
-
-		mInfinity = 1.0;
-
-		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
-
-		mIntegrandForCap = boost::shared_ptr<ConundrumIntegrandStandard>(new ConundrumIntegrandStandard(
-			mVanillaOptionPricer, swapRate, mRateCurve, mExpiryTime, mPaymentTime, mAnnuity, mSwapRateValue, mSwapRateValue, true));
-		mIntegrandForFloor =  boost::shared_ptr<ConundrumIntegrandStandard>(new ConundrumIntegrandStandard(
-			mVanillaOptionPricer, swapRate, mRateCurve, mExpiryTime, mPaymentTime, mAnnuity, mSwapRateValue, mSwapRateValue, false));
-	}
-
-	double ConundrumPricerByNumericalIntegration::integrate(double a, double b, const ConundrumIntegrand& integrand) const {
-
-		double integralValue = 0;
-
-		//const int n = 25;//grado polinomi di Legendre - Questa variabile serve soltanto in caso di GaussLegendreQuadrature
-		//GaussLegendre integral(n);
-
-		SimpsonIntegral integral(.00000001, 10000);
-		integralValue = integral(integrand,a , b);
-		return integralValue;
-	}
-
-	double ConundrumPricerByNumericalIntegration::optionLetPrice(bool isCap, double strike) const {
-		double integralValue, dFdK;
+	Real ConundrumPricerByNumericalIntegration::optionLetPrice(
+                                        bool isCap, Real strike) const {
+		Real integralValue, dFdK;
 		if(isCap) {
-			const double a = strike; 
-			const double b = strike + mInfinity;
-			integralValue = integrate(a, b, *mIntegrandForCap);
-			dFdK = mIntegrandForCap->firstDerivativeOfF(strike);
+			const Real a = strike; 
+			const Real b = strike + mInfinity_;
+            integrandForCap_->setStrike(strike);
+			integralValue = integrate(a, b, *integrandForCap_);
+			dFdK = integrandForCap_->firstDerivativeOfF(strike);
 		}
 		else {
-			const double a = 0.0; 
-			const double b = strike;
-			integralValue = -integrate(a, b, *mIntegrandForFloor);
-			dFdK = mIntegrandForFloor->firstDerivativeOfF(strike);
+			const Real a = 0.0; 
+			const Real b = strike;
+            integrandForFloor_->setStrike(strike);
+			integralValue = -integrate(a, b, *integrandForFloor_);
+			dFdK = integrandForFloor_->firstDerivativeOfF(strike);
 		}
-		const double swaptionPrice = (*mVanillaOptionPricer)(mExpiryTime, strike, isCap, mAnnuity);
-		const double price = mCoupon->accrualPeriod() * (mDiscount/mAnnuity) * ((1 + dFdK) * swaptionPrice + integralValue); // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
-		return price;
+		const Real swaptionPrice = (*vanillaOptionPricer_)(fixingDate_,
+            strike, isCap, annuity_);
+		// v. HAGAN, Conundrums..., formule 2.17a, 2.18a
+		return coupon_.accrualPeriod() * (discount_/annuity_) * 
+            ((1 + dFdK) * swaptionPrice + integralValue);
 	}
 
-	double ConundrumPricerByNumericalIntegration::swapLetPrice() const {
-		const double atmCapLetPrice = optionLetPrice(true, mSwapRateValue);
-		const double atmFloorLetPrice = optionLetPrice(false, mSwapRateValue);
-		const double price = mCoupon->accrualPeriod()*(mDiscount * mSwapRateValue) + atmCapLetPrice - atmFloorLetPrice;
-		return price;
+	Real ConundrumPricerByNumericalIntegration::swapLetPrice() const {
+		const Real atmCapLetPrice = optionLetPrice(true, swapRateValue_);
+		const Real atmFloorLetPrice = optionLetPrice(false, swapRateValue_);
+		return coupon_.accrualPeriod()*(discount_ * swapRateValue_)
+            + atmCapLetPrice - atmFloorLetPrice;
 	}
 
-	////////////////		ConundrumIntegrand
+	//////////////////		ConundrumIntegrand
+	ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(
+        const boost::shared_ptr<VanillaOptionPricer>& o,
+        const boost::shared_ptr<YieldTermStructure>& rateCurve,
+        const boost::shared_ptr<GFunction>& gFunction,
+        Date fixingDate,
+        Date paymentDate,
+        Real annuity,
+        Real forwardValue,
+        Real strike,
+        bool isCaplet)
+    : vanillaOptionPricer_(o), gFunction_(gFunction), strike_(strike),
+      paymentDate_(paymentDate), fixingDate_(fixingDate), annuity_(annuity),
+      isCaplet_(isCaplet), forwardValue_(forwardValue), isPayer_(isCaplet) {}
 
-	ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer> o,
-												 const boost::shared_ptr<SwapIndex> swapRate,	
-												 const boost::shared_ptr<YieldTermStructure> rateCurve,
-												 double expiryTime,
-												 double paymentTime,
-												 double annuity,
-												 double forwardValue,
-												 double strike,
-												 bool isCaplet) :
-	mVanillaOptionPricer(o), 
-	mStrike(strike), 
-	mPaymentTime(paymentTime), 
-	mExpiryTime(expiryTime), 
-	mAnnuity(annuity), 
-	mIsCaplet(isCaplet),
-	mForwardValue(forwardValue),
-	mSwapLength(swapRate->fixedRateSchedule(rateCurve->referenceDate())->size()),
-	mIsPayer(isCaplet) {
-		
+    void ConundrumPricerByNumericalIntegration::ConundrumIntegrand::setStrike(Real strike) {
+		strike_ = strike;
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::strike() const {
-		return mStrike;
+    Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::strike() const {
+		return strike_;
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::annuity() const {
-		return mAnnuity;
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::annuity() const {
+		return annuity_;
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::expiryTime() const {
-		return mExpiryTime;
+	Date ConundrumPricerByNumericalIntegration::ConundrumIntegrand::fixingDate() const {
+		return fixingDate_;
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::functionF (const double x) const {
-					
-		const double Gx = functionG(x); 
-		const double GR = functionG(mForwardValue); 
-		const double f = (x - mStrike) * (Gx/GR - 1.0) ;  
-
-		return  f;
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::functionF (const Real x) const
+    {
+        const Real Gx = gFunction_->operator()(x); 
+		const Real GR = gFunction_->operator()(forwardValue_); 
+		return (x - strike_) * (Gx/GR - 1.0);
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::firstDerivativeOfF (const double x) const {
-					
-		const double Gx = functionG(x); 
-		const double GR = functionG(mForwardValue) ; 
-		const double G1 = firstDerivativeOfG(x);
-		const double f1 = (Gx/GR - 1.0) + G1/GR * (x - mStrike);
-
-		return  f1;
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::firstDerivativeOfF (const Real x) const
+    {
+		const Real Gx = gFunction_->operator()(x); 
+		const Real GR = gFunction_->operator()(forwardValue_) ; 
+		const Real G1 = gFunction_->firstDerivative(x);
+		return (Gx/GR - 1.0) + G1/GR * (x - strike_);
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::secondDerivativeOfF (const double x) const {
-					
-		const double GR = functionG(mForwardValue) ; 
-		const double G1 = firstDerivativeOfG(x);
-		const double G2 = secondDerivativeOfG(x);
-		const double f2 = 2.0 * G1/GR + (x - mStrike) * G2/GR; 
-
-		return  f2;
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::secondDerivativeOfF (const Real x) const
+    {
+		const Real GR = gFunction_->operator()(forwardValue_) ; 
+		const Real G1 = gFunction_->firstDerivative(x);
+		const Real G2 = gFunction_->secondDerivative(x);
+		return 2.0 * G1/GR + (x - strike_) * G2/GR; 
 	}
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(const double& x) const { 
-
-		const double option = (*mVanillaOptionPricer)(mExpiryTime, x, mIsCaplet, mAnnuity); 
-		const double f2 = secondDerivativeOfF(x); 
-
-		return option * f2;
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const
+    { 
+		const Real option = (*vanillaOptionPricer_)(fixingDate_, x, isCaplet_, annuity_); 
+		return option * secondDerivativeOfF(x); 
 	}
 
 
-	////////////////////		ConundrumIntegrandStandard
+    ////////////////////// ConundrumPricerByBlack
+    ConundrumPricerByBlack::ConundrumPricerByBlack(
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        const boost::shared_ptr<YieldTermStructure>& rateCurve,
+        const CMSCoupon& coupon,
+		const boost::shared_ptr<VanillaOptionPricer>& o)
+    : ConundrumPricer(modelOfYieldCurve, rateCurve, coupon), 
+      vanillaOptionPricer_(o),
+      variance_(coupon.swaptionVolatility()->blackVariance(fixingDate_,
+                                                           swapTenor_,
+                                                           swapRateValue_)),
+      firstDerivativeOfGAtForwardValue_(gFunction_->firstDerivative(
+                                                        swapRateValue_)) {}
+
+     //Hagan, 3.5b, 3.5c
+     Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const
+     {
+	    Real price = 0;
+        
+	    const Real CK = (*vanillaOptionPricer_)(fixingDate_, strike, isCall, annuity_); 
+	    price += (discount_/annuity_)*CK;
+        const Real sqrtSigma2T = std::sqrt(variance_);
+        const Real lnRoverK =  std::log(swapRateValue_/strike);
+	    const Real d32 = (lnRoverK+1.5*variance_)/sqrtSigma2T;
+        const Real d12 =  (lnRoverK+.5*variance_)/sqrtSigma2T;
+        const Real dminus12 =  (lnRoverK-.5*variance_)/sqrtSigma2T;
+	    const int sgn = isCall ? 1 : -1;
+        CumulativeNormalDistribution cumulativeOfNormal;
+	    const Real N32 = cumulativeOfNormal(sgn*d32);
+        const Real N12 = cumulativeOfNormal(sgn*d12);
+        const Real Nminus12 = cumulativeOfNormal(sgn*dminus12);
+    	
+	    price += sgn * firstDerivativeOfGAtForwardValue_ * annuity_ *
+            swapRateValue_ * (swapRateValue_ * std::exp(variance_) * N32-
+            (swapRateValue_+strike) * N12 + strike * Nminus12);
+	    price *= coupon_.accrualPeriod();
+	    return price;
+    }
+
+    //Hagan 3.4c
+    Real ConundrumPricerByBlack::swapLetPrice() const
+    {
+	    Real price = 0;
+	    price += discount_*swapRateValue_;
+        price += firstDerivativeOfGAtForwardValue_*annuity_*swapRateValue_*swapRateValue_*
+            (std::exp(variance_)-1);
+	    price *= coupon_.accrualPeriod();
+	    return price;
+    }
 
 
-	ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::ConundrumIntegrandStandard(
-				const boost::shared_ptr<VanillaOptionPricer> o,
-				const boost::shared_ptr<SwapIndex> swapRate,	
-				const boost::shared_ptr<YieldTermStructure> rateCurve,
-				double expiryTime,
-				double paymentTime,
-				double annuity,
-				double forwardValue,
-				double strike,
-				bool isCaplet) : 
-	ConundrumPricerByNumericalIntegration::ConundrumIntegrand(o, swapRate, rateCurve, expiryTime, paymentTime, annuity, forwardValue, strike, isCaplet) {
+ 
+    ////////////////////// 
+    Rate CMSCoupon::rate() const
+    {
+        Date d = fixingDate();
+        const Rate forwardValue = index_->fixing(d);
+        boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer( 
+            new BlackVanillaOptionPricer(forwardValue, index()->tenor(),
+                                         swaptionVol_));
+        
+        switch (typeOfConvexityAdjustment_) {
+          case ConvexityAdjustmentPricer::ConundrumByBlack:
+            return ConundrumPricerByBlack(
+                    GFunctionFactory::standard,index()->termStructure(),
+                    *this,
+                    vanillaOptionPricer).rate();
+          case ConvexityAdjustmentPricer::ConundrumByNumericalIntegration:
+            return ConundrumPricerByNumericalIntegration(
+                    GFunctionFactory::standard,index()->termStructure(),
+                    *this,
+                    vanillaOptionPricer).rate();
+          default:
+            QL_FAIL("invalid ConvexityAdjustemPricer type");
+        }
+    }
 
-		boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(rateCurve->referenceDate()));
-		DayCounter dc = rateCurve->dayCounter();
-		const Time startTime = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate() );
-		const Time swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(), schedule->date(1) );
+    //Rate CMSCoupon::convexityAdjustment(Rate fixing) const {
+    //    return pricer_->rate(fixing, swaptionVol_, *this)-(gearing*fixing+spread);
+    //    return pricer_->adjustment(fixing, swaptionVol_, *this);
+    //}
+    Real GFunctionFactory::GFunctionStandard::operator()(Real x)
+    {
+	    const Real n = swapLength_ * q_; 
+	    return x / std::pow((1.0 + x/q_), delta_) * 1.0 /
+            (1.0 - 1.0 / std::pow((1.0 + x/q_), n));
+    }
 
-		mDelta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
-		mQ = schedule->frequency();
-	}
+    Real GFunctionFactory::GFunctionStandard::firstDerivative(Real x)
+    {
+	    const Real n = swapLength_ * q_; 
+	    const Real a = 1.0 + x / q_;
+	    const Real AA = a - delta_/q_ * x;
+	    const Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::functionG (const double x) const {
-		return ConundrumPricer::functionG_Standard(x, mQ, mDelta, mSwapLength);
-	}
+	    const Real secNum = n * x * std::pow(a,(n-1.0));
+	    const Real secDen = q_ * std::pow(a, delta_) * (std::pow(a, n) - 1.0) *
+            (std::pow(a, n) - 1.0);
+	    const Real sec = secNum / secDen;
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::firstDerivativeOfG (const double x) const {
-		return ConundrumPricer::firstDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
-	}
+	    return AA * B - sec;
+    }
 
-	double ConundrumPricerByNumericalIntegration::ConundrumIntegrandStandard::secondDerivativeOfG (const double x) const {
-		return ConundrumPricer::secondDerivativeOfG_Standard(x, mQ, mDelta, mSwapLength);
-	}
+    Real GFunctionFactory::GFunctionStandard::secondDerivative(Real x)
+    {
+	    const Real n = swapLength_ * q_; 
+	    const Real a = 1.0 + x/q_;
+	    const Real AA = a - delta_/q_ * x;
+	    const Real A1 = (1.0 - delta_)/q_;
+	    const Real B = std::pow(a,(n - delta_ - 1.0))/(std::pow(a,n) - 1.0);
+	    const Real Num = (1.0 + delta_ - n) * std::pow(a, (n-delta_-2.0)) -
+            (1.0 + delta_) * std::pow(a, (2.0*n-delta_-2.0)); 
+	    const Real Den = (std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0);
+	    const Real B1 = 1.0 / q_ * Num / Den;
 
+	    const Real C =  x / std::pow(a, delta_);
+	    const Real C1 = (std::pow(a, delta_) 
+		    - delta_ /q_ * x * std::pow(a, (delta_ - 1.0))) / std::pow(a, 2 * delta_);
+
+	    const Real D =  std::pow(a, (n-1.0))/ ((std::pow(a, n) - 1.0) * (std::pow(a, n) - 1.0));
+	    const Real D1 = ((n - 1.0) * std::pow(a, (n-2.0)) * (std::pow(a, n) - 1.0) 
+		    - 2 * n * std::pow(a, (2 * (n-1.0)))) 
+		    / (q_ * (std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0)*(std::pow(a, n) - 1.0));
+
+	    return A1 * B + AA * B1 - n/q_ * (C1 * D + C * D1);
+    }
+
+    boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionStandard(Size q,
+                                                            Real delta, Size swapLength)
+    {
+	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
+    }
 
 }

@@ -20,21 +20,24 @@
 
 namespace QuantLib {
 
-    CMSCoupon::CMSCoupon(Real nominal,
-                         const Date& paymentDate,
-                         const boost::shared_ptr<SwapIndex>& index,
-                         const Date& startDate, const Date& endDate,
-                         Integer fixingDays,
-                         const DayCounter& dayCounter,
-                         Rate baseRate,
-                         Real multiplier,
-                         Rate cap, Rate floor,
-                         const Date& refPeriodStart,
-                         const Date& refPeriodEnd)
+    CMSCoupon::CMSCoupon(const Real nominal,
+                  const Date& paymentDate,
+                  const boost::shared_ptr<SwapIndex>& index,
+                  const Date& startDate, const Date& endDate,
+                  Integer fixingDays,
+                  const DayCounter& dayCounter,
+                  ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment,
+                  Real gearing,
+                  Rate spread,
+                  Rate cap,
+                  Rate floor,
+                  const Date& refPeriodStart,
+                  const Date& refPeriodEnd)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, 1.0, 0.0, refPeriodStart, refPeriodEnd),
-      index_(index), dayCounter_(dayCounter), baseRate_(baseRate),
-      cap_(cap), floor_(floor), multiplier_(multiplier) {
+                         fixingDays, gearing, spread, refPeriodStart, refPeriodEnd),
+      index_(index), dayCounter_(dayCounter),
+      cap_(cap), floor_(floor), typeOfConvexityAdjustment_(typeOfConvexityAdjustment)
+    {
         registerWith(index_);
     }
 
@@ -85,7 +88,7 @@ namespace QuantLib {
 
     }
 
-    Rate CMSCoupon::rate() const {
+   Rate CMSCoupon::rate1() const {
         Date d = fixingDate();
         const Rate Rs = index_->fixing(d);
         Date today = Settings::instance().evaluationDate();
@@ -202,6 +205,10 @@ namespace QuantLib {
         notifyObservers();
     }
 
+   Handle<SwaptionVolatilityStructure> CMSCoupon::swaptionVolatility( ) const {
+        return swaptionVol_;
+   }
+
     void CMSCoupon::accept(AcyclicVisitor& v) {
         Visitor<CMSCoupon>* v1 = dynamic_cast<Visitor<CMSCoupon>*>(&v);
         if (v1 != 0)
@@ -233,12 +240,16 @@ namespace QuantLib {
                     const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
-                    const std::vector<Rate>& baseRates,
+                    const std::vector<Real>& baseRates,
                     const std::vector<Real>& fractions,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+                    const std::vector<Real>& caps,
+                    const std::vector<Real>& floors,
+                    const Handle<SwaptionVolatilityStructure>& vol,
+                    ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment) {
 
+        //std::vector<CMSCoupon> leg;
         std::vector<boost::shared_ptr<CashFlow> > leg;
+        //std::vector<boost::shared_ptr<CashFlow> > legCashFlow;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
 
@@ -250,19 +261,20 @@ namespace QuantLib {
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, dayCounter,
-                              get(baseRates,0,0.0), get(fractions,0,1.0),
+                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               start, end)));
+            
         } else {
             Date reference = end + Period(-12/schedule.frequency(),Months);
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, dayCounter,
-                              get(baseRates,0,0.0), get(fractions,0,1.0),
+                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               reference, end)));
@@ -273,8 +285,8 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, dayCounter,
-                              get(baseRates,i-1,0.0), get(fractions,i-1,1.0),
+                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              get(fractions,i-1,1.0), get(baseRates,i-1,0.0), 
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
                               start, end)));
@@ -286,9 +298,9 @@ namespace QuantLib {
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, dayCounter,
-                                  get(baseRates,N-2,0.0),
+                                  start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
                                   get(fractions,N-2,1.0),
+                                  get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
                                   start, end)));
@@ -299,14 +311,24 @@ namespace QuantLib {
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, dayCounter,
-                                  get(baseRates,N-2,0.0),
+                                  start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
                                   get(fractions,N-2,1.0),
+                                  get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
                                   start, reference)));
             }
         }
+
+        for (Size i=0; i<leg.size(); i++) {
+            const boost::shared_ptr<CMSCoupon> cmsCoupon =
+               boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
+            if (cmsCoupon)
+                cmsCoupon->setSwaptionVolatility(vol);
+            else
+                QL_FAIL("unexpected error when casting to CMSCoupon");
+        }
+
         return leg;
     }
 
