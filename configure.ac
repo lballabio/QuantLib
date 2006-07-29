@@ -323,7 +323,10 @@ AC_CONFIG_FILES([
     ql/Instruments/Makefile
     ql/Lattices/Makefile
     ql/MarketModels/Makefile
+    ql/MarketModels/BrownianGenerators/Makefile
+    ql/MarketModels/Evolvers/Makefile
     ql/MarketModels/Products/Makefile
+    ql/MarketModels/PseudoRoots/Makefile
     ql/Math/Makefile
     ql/MonteCarlo/Makefile
     ql/Optimization/Makefile
