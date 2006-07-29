@@ -22,12 +22,16 @@ include_HEADERS = \
     zibor.hpp \
     xibor.hpp \
     libor.hpp \
-    indexmanager.hpp
+    indexmanager.hpp \
+    interestrateindex.hpp \
+    swapindex.hpp
 
 libIndexes_la_SOURCES = \
     xibor.cpp \
     libor.cpp \
-    indexmanager.cpp
+    indexmanager.cpp \
+    interestrateindex.cpp \
+    swapindex.cpp 
 
 noinst_LTLIBRARIES = libIndexes.la
 
