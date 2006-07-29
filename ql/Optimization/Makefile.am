@@ -25,7 +25,8 @@ libOptimization_la_SOURCES = \
     levenbergmarquardt.cpp \
     lmdif.cpp \
     simplex.cpp \
-    steepestdescent.cpp
+    steepestdescent.cpp \
+    criteria.cpp
 
 noinst_LTLIBRARIES = libOptimization.la
 

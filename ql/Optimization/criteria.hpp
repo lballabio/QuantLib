@@ -25,8 +25,10 @@
 #define quantlib_optimization_criteria_hpp
 
 #include <ql/types.hpp>
+#include <iostream>
 
 namespace QuantLib {
+
 
     //! Criteria to end optimization process
     /*!   - stationary point
