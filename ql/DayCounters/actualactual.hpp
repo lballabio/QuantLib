@@ -55,7 +55,7 @@ namespace QuantLib {
         class ISMA_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
-                return std::string("act/act (Bond)");
+                return std::string("Actual/Actual (ISMA)");
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
@@ -63,7 +63,7 @@ namespace QuantLib {
         class ISDA_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
-                return std::string("act/act (ISDA)");
+                return std::string("Actual/Actual (ISDA)");
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
@@ -71,7 +71,7 @@ namespace QuantLib {
         class AFB_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
-                return std::string("act/act (Euro)");
+                return std::string("Actual/Actual (AFB)");
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;

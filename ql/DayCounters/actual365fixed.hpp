@@ -45,7 +45,7 @@ namespace QuantLib {
       private:
         class Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("act/365 (fixed)"); }
+            std::string name() const { return std::string("Actual/365 (Fixed)"); }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
                 return dayCount(d1,d2)/365.0;
