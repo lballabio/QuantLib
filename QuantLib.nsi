@@ -3,7 +3,7 @@
 
 SetCompressor lzma
 
-!define VER_NUMBER "0.3.13"
+!define VER_NUMBER "0.3.14"
 !define /date NOW "%Y%m%d-%H_%M"
 
 # HEADER CONFIGURATION COMMANDS
