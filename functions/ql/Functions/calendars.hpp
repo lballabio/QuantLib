@@ -32,16 +32,6 @@ namespace QuantLib {
         return evalDate;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! Returns the holidays between two dates
-        \deprecated use Calendar::holidayList instead
-    */
-    std::vector<Date> holidayList(const Calendar& calendar,
-                                  const Date& from,
-                                  const Date& to,
-                                  bool includeWeekEnds = false);
-
-    #endif
 }
 
 
