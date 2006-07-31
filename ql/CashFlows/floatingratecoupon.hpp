@@ -67,22 +67,22 @@ namespace QuantLib {
         //@{
         //! fixing days
         Integer fixingDays() const { return fixingDays_; }
-        //! index gearing, i.e. multiplicative coefficient for the index
-        virtual Real gearing() const { return gearing_; }
-        //! spread paid over the fixing of the underlying index
-        virtual Spread spread() const { return spread_; }
-        //! fixing of the underlying index
-        virtual Rate indexFixing() const = 0;
         //! fixing date
         virtual Date fixingDate() const = 0;
+        //! index gearing, i.e. multiplicative coefficient for the index
+        virtual Real gearing() const { return gearing_; }
+        //! fixing of the underlying index
+        virtual Rate indexFixing() const = 0;
+        //! convexity adjustment for the given index fixing
+        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
+        //! spread paid over the fixing of the underlying index
+        virtual Spread spread() const { return spread_; }
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
         Integer fixingDays_;
         Real gearing_;
         Spread spread_;

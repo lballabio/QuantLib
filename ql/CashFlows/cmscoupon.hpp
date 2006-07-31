@@ -71,11 +71,13 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        // ???
         Rate rate1() const;
         DayCounter dayCounter() const { return dayCounter_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
+        // ???
         Rate fixing() const;
         Date fixingDate() const;
         Rate indexFixing() const;
