@@ -227,27 +227,11 @@ SOURCE=.\ql\Calendars\argentina.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\beijing.cpp
+SOURCE=.\ql\Calendars\australia.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\beijing.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\bombay.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\bombay.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\bratislava.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\bratislava.hpp
+SOURCE=.\ql\Calendars\australia.hpp
 # End Source File
 # Begin Source File
 
@@ -259,19 +243,43 @@ SOURCE=.\ql\Calendars\brazil.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\budapest.cpp
+SOURCE=.\ql\Calendars\canada.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\budapest.hpp
+SOURCE=.\ql\Calendars\canada.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\copenhagen.cpp
+SOURCE=.\ql\Calendars\china.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\copenhagen.hpp
+SOURCE=.\ql\Calendars\china.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\czechrepublic.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\czechrepublic.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\denmark.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\denmark.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\finland.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\finland.hpp
 # End Source File
 # Begin Source File
 
@@ -283,19 +291,19 @@ SOURCE=.\ql\Calendars\germany.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\helsinki.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\helsinki.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\hongkong.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Calendars\hongkong.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\hungary.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\hungary.hpp
 # End Source File
 # Begin Source File
 
@@ -307,19 +315,19 @@ SOURCE=.\ql\Calendars\iceland.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\india.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\india.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\indonesia.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Calendars\indonesia.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\istanbul.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\istanbul.hpp
 # End Source File
 # Begin Source File
 
@@ -331,11 +339,11 @@ SOURCE=.\ql\Calendars\italy.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\johannesburg.cpp
+SOURCE=.\ql\Calendars\japan.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\johannesburg.hpp
+SOURCE=.\ql\Calendars\japan.hpp
 # End Source File
 # Begin Source File
 
@@ -355,39 +363,39 @@ SOURCE=.\ql\Calendars\mexico.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\newzealand.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\newzealand.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\norway.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\norway.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\nullcalendar.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\oslo.cpp
+SOURCE=.\ql\Calendars\poland.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\oslo.hpp
+SOURCE=.\ql\Calendars\poland.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\prague.cpp
+SOURCE=.\ql\Calendars\saudiarabia.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\prague.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\riyadh.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\riyadh.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\seoul.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\seoul.hpp
+SOURCE=.\ql\Calendars\saudiarabia.hpp
 # End Source File
 # Begin Source File
 
@@ -399,19 +407,43 @@ SOURCE=.\ql\Calendars\singapore.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\stockholm.cpp
+SOURCE=.\ql\Calendars\slovakia.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\stockholm.hpp
+SOURCE=.\ql\Calendars\slovakia.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\sydney.cpp
+SOURCE=.\ql\Calendars\southafrica.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\sydney.hpp
+SOURCE=.\ql\Calendars\southafrica.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\southkorea.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\southkorea.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\sweden.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\sweden.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\switzerland.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\switzerland.hpp
 # End Source File
 # Begin Source File
 
@@ -431,19 +463,11 @@ SOURCE=.\ql\Calendars\target.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\tokyo.cpp
+SOURCE=.\ql\Calendars\turkey.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\tokyo.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\toronto.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\toronto.hpp
+SOURCE=.\ql\Calendars\turkey.hpp
 # End Source File
 # Begin Source File
 
@@ -468,30 +492,6 @@ SOURCE=.\ql\Calendars\unitedstates.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\unitedstates.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\warsaw.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\warsaw.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\wellington.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\wellington.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\zurich.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\zurich.hpp
 # End Source File
 # End Group
 # Begin Group "CashFlows"
@@ -524,6 +524,10 @@ SOURCE=.\ql\CashFlows\core.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\coupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\dividend.cpp
 # End Source File
 # Begin Source File
 
@@ -712,6 +716,10 @@ SOURCE=.\ql\FiniteDifferences\mixedscheme.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\onefactoroperator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\operatorfactory.hpp
 # End Source File
 # Begin Source File
 
@@ -911,6 +919,14 @@ SOURCE=.\ql\Instruments\cliquetoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\compositeinstrument.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\compositeinstrument.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\convertiblebond.cpp
 # End Source File
 # Begin Source File
@@ -991,6 +1007,14 @@ SOURCE=.\ql\Instruments\forwardvanillaoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\lookbackoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\lookbackoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\multiassetoption.cpp
 # End Source File
 # Begin Source File
@@ -1035,14 +1059,6 @@ SOURCE=.\ql\Instruments\quantovanillaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\simpleswap.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Instruments\simpleswap.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Instruments\stock.cpp
 # End Source File
 # Begin Source File
@@ -1072,6 +1088,22 @@ SOURCE=.\ql\Instruments\vanillaoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\vanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\vanillaswap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\vanillaswap.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\varianceswap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\varianceswap.hpp
 # End Source File
 # Begin Source File
 
@@ -1319,6 +1351,14 @@ SOURCE=.\ql\Math\linearinterpolation.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\linearleastsquaresregression.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\linearleastsquaresregression.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\loglinearinterpolation.hpp
 # End Source File
 # Begin Source File
@@ -1368,6 +1408,10 @@ SOURCE=.\ql\Math\rounding.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\rounding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\sabrinterpolation.hpp
 # End Source File
 # Begin Source File
 
@@ -1820,6 +1864,14 @@ SOURCE=.\ql\PricingEngines\Forward\forwardengine.hpp
 
 SOURCE=.\ql\PricingEngines\Forward\forwardperformanceengine.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Forward\mcvarianceswapengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Forward\replicatingvarianceswapengine.hpp
+# End Source File
 # End Group
 # Begin Group "Quanto"
 
@@ -2018,10 +2070,6 @@ SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Vanilla\mchestonengine.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 # End Source File
 # End Group
@@ -2055,6 +2103,14 @@ SOURCE=.\ql\PricingEngines\CapFloor\discretizedcapfloor.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\CapFloor\discretizedcapfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\mchullwhiteengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\CapFloor\mchullwhiteengine.hpp
 # End Source File
 # Begin Source File
 
@@ -2159,6 +2215,30 @@ SOURCE=.\ql\PricingEngines\Hybrid\discretizedconvertible.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Hybrid\discretizedconvertible.hpp
+# End Source File
+# End Group
+# Begin Group "Lookback"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Lookback\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -2462,6 +2542,14 @@ SOURCE=.\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmconstwrappercorrmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmconstwrappervolmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp
 # End Source File
 # Begin Source File
@@ -2478,11 +2566,27 @@ SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.hpp
 # End Source File
 # Begin Source File
 
@@ -2587,14 +2691,6 @@ SOURCE=.\ql\Solvers1D\secant.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\TermStructures\affinetermstructure.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\affinetermstructure.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\TermStructures\all.hpp
 # End Source File
 # Begin Source File
@@ -2660,6 +2756,10 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\piecewiseflatforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\piecewiseyieldcurve.cpp
 # End Source File
 # Begin Source File
 
@@ -2807,6 +2907,14 @@ SOURCE=.\ql\Volatilities\localvolsurface.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\swaptionconstantvol.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolmatrix.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group
@@ -2871,6 +2979,22 @@ SOURCE=.\ql\Processes\eulerdiscretization.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Processes\forwardmeasureprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\forwardmeasureprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\g2process.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\g2process.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Processes\geometricbrownianprocess.cpp
 # End Source File
 # Begin Source File
@@ -2884,6 +3008,14 @@ SOURCE=.\ql\Processes\hestonprocess.cpp
 # Begin Source File
 
 SOURCE=.\ql\Processes\hestonprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\hullwhiteprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\hullwhiteprocess.hpp
 # End Source File
 # Begin Source File
 
@@ -2959,12 +3091,28 @@ SOURCE=.\ql\VolatilityModels\constantestimator.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\VolatilityModels\garch.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\VolatilityModels\garch.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\garmanklass.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\VolatilityModels\simplelocalestimator.hpp
 # End Source File
 # End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\auto_link.hpp
 # End Source File
 # Begin Source File
 
@@ -3076,6 +3224,10 @@ SOURCE=.\ql\history.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\index.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\index.hpp
 # End Source File
 # Begin Source File
@@ -3109,6 +3261,18 @@ SOURCE=.\ql\option.hpp
 # Begin Source File
 
 SOURCE=.\ql\payoff.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\position.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\prices.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\prices.hpp
 # End Source File
 # Begin Source File
 

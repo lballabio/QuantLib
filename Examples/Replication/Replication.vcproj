@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Replication"
-	ProjectGUID="{F4C7860F-00A0-47B3-B66F-C6D1B8A99CDE}"
+	ProjectGUID="{7FF22935-8C7D-4903-908C-B77A9CDBA840}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

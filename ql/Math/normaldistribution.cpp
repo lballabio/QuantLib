@@ -113,13 +113,13 @@ namespace QuantLib {
         // The relative error of the approximation has absolute value less
         // than 1.15e-9.  One iteration of Halley's rational method (third
         // order) gives full machine precision.
-//#define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-#ifdef  REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+        // #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+        #ifdef  REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
         // error (f_(z) - x) divided by the cumulative's derivative
         r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z*z);
-        //	Halley's method
+        //  Halley's method
         z -= r/(1+0.5*z*r);
-#endif
+        #endif
 
         return average_ + z*sigma_;
     }

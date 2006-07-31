@@ -20,6 +20,8 @@
 
 #include <ql/PricingEngines/CapFloor/mchullwhiteengine.hpp>
 
+#if !defined(QL_PATCH_BORLAND)
+
 namespace QuantLib {
 
     HullWhiteCapFloorPricer::HullWhiteCapFloorPricer(
@@ -85,4 +87,6 @@ namespace QuantLib {
     }
 
 }
+
+#endif
 

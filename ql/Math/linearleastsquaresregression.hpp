@@ -24,9 +24,15 @@
 #ifndef quantlib_linear_least_squares_regression_hpp
 #define quantlib_linear_least_squares_regression_hpp
 
-#include <vector>
-#include <boost/function.hpp>
 #include <ql/Math/array.hpp>
+#ifdef QL_PATCH_MSVC71
+#pragma warning(disable:4224)
+#endif
+#include <boost/function.hpp>
+#ifdef QL_PATCH_MSVC71
+#pragma warning(default:4224)
+#endif
+#include <vector>
 
 namespace QuantLib {
 

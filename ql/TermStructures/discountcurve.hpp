@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Decillion Pty(Ltd)
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,7 @@
 #include <ql/yieldtermstructure.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <vector>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,6 +50,7 @@ namespace QuantLib {
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<DiscountFactor>& discounts() const;
+        std::vector<std::pair<Date,DiscountFactor> > nodes() const;
         //@}
       protected:
         InterpolatedDiscountCurve(const DayCounter&,
@@ -113,6 +115,15 @@ namespace QuantLib {
     inline const std::vector<DiscountFactor>&
     InterpolatedDiscountCurve<T>::discounts() const {
         return data_;
+    }
+
+    template <class T>
+    inline std::vector<std::pair<Date,DiscountFactor> >
+    InterpolatedDiscountCurve<T>::nodes() const {
+        std::vector<std::pair<Date,DiscountFactor> > results(dates_.size());
+        for (Size i=0; i<dates_.size(); ++i)
+            results[i] = std::make_pair(dates_[i],data_[i]);
+        return results;
     }
 
     template <class T>

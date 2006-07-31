@@ -25,12 +25,13 @@ namespace QuantLib {
                         const Array& accruals,
                         const Array& paymentTimes,
                         const Array& strikes)
-                        : rateTimes_(rateTimes), accruals_(accruals), 
+                        : rateTimes_(rateTimes), accruals_(accruals),
                         paymentTimes_(paymentTimes), strikes_(strikes)
     {
     }
 
-    MarketModelCaplets::~MarketModelCaplets(){};
+    MarketModelCaplets::~MarketModelCaplets(){}
+
     EvolutionDescription MarketModelCaplets::suggestedEvolution() const
     {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
             evolutionTimes[i]=rateTimes_[i];
             numeraires[i]=i+1;
          }
-    
+
         std::vector<std::pair<Size,Size> > relevanceRates(
             evolutionTimes.size());
         for (Size i =0; i < evolutionTimes.size(); ++i)
@@ -48,15 +49,15 @@ namespace QuantLib {
 
          return EvolutionDescription(rateTimes_, evolutionTimes,
                                      numeraires, relevanceRates);
-    }    
+    }
 
-    Array MarketModelCaplets::possibleCashFlowTimes() const 
+    Array MarketModelCaplets::possibleCashFlowTimes() const
     {
       return paymentTimes_;
     }
       Size MarketModelCaplets::numberOfProducts() const
     {
-        return strikes_.size();    
+        return strikes_.size();
     }
        Size MarketModelCaplets::maxNumberOfCashFlowsPerProductPerStep() const
     {
@@ -68,8 +69,8 @@ namespace QuantLib {
     }
 
     bool MarketModelCaplets::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
+        const CurveState& currentState,
+        std::vector<Size>& numberCashFlowsThisStep,
         std::vector<std::vector<MarketModelProduct::CashFlow> >& genCashFlows)
     {
         double liborRate = currentState.forwardRate(currentIndex_);

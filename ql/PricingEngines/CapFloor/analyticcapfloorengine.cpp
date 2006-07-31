@@ -33,7 +33,7 @@ namespace QuantLib {
             Time fixingTime = arguments_.fixingTimes[i];
             Time bond = arguments_.endTimes[i];
 
-            #if QL_TODAYS_PAYMENTS
+            #if defined(QL_TODAYS_PAYMENTS)
             if (bond >= 0.0) {
             #else
             if (bond > 0.0) {

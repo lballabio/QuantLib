@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2002, 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -98,9 +99,9 @@ namespace QuantLib {
                                       Handle<Quote>(process->stateVariable()),
                                       flatDividends, flatRiskFree, flatVol));
 
-		// adjust the bermudan exercise times according to the tree steps
+        // adjust the bermudan exercise times according to the tree steps
         TimeGrid grid(maturity, timeSteps_);
-		for (Size k=0; k<arguments_.stoppingTimes.size(); ++k) {
+        for (Size k=0; k<arguments_.stoppingTimes.size(); ++k) {
             arguments_.stoppingTimes[k] =
                 grid.closestTime(arguments_.stoppingTimes[k]);
         }

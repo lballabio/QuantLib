@@ -27,6 +27,7 @@
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -37,16 +38,14 @@ namespace QuantLib {
         are the market volatilities of a set of swaption with given
         exercise date and length.
 
-        \warning The volatility matrix must have increasing exercise
-                 dates or periods from top to bottom and increasing
-                 lenghts from left to right
-
-        \todo either add correct copy behavior or inhibit copy. Right
-              now, a copied instance would end up with its own copy of
-              the exercise date and length vector but an interpolation
-              pointing to the original ones.
+        The volatility matrix <tt>M</tt> must be defined so that:
+        - the number of rows equals the number of exercise dates;
+        - the number of columns equals the number of swap tenors;
+        - <tt>M[i][j]</tt> contains the volatility corresponding
+          to the <tt>i</tt>-th exercise and <tt>j</tt>-th tenor.
     */
-    class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure {
+    class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure,
+                                     private boost::noncopyable {
       public:
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
@@ -68,8 +67,8 @@ namespace QuantLib {
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Period>& lengths() const;
 
-		// SwaptionVolatilityStructure interface
-		Date maxStartDate() const;
+        // SwaptionVolatilityStructure interface
+        Date maxStartDate() const;
         Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;

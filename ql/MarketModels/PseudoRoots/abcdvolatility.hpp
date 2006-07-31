@@ -31,9 +31,9 @@
 namespace QuantLib
 {
     //! Abcd functional form for instantaneous volatility
-    /*! 
+    /*!
         \f[
-        f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d 
+        f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d
         \f]
 
         following Rebonato notation.
@@ -47,8 +47,8 @@ namespace QuantLib
     */
     class Abcd : public std::unary_function<Real,Real> {
     public:
-        Abcd(Real a, Real b, Real c, Real d, Real T, Real S) 
-        : a_(a), b_(b), c_(c), d_(d), T_(T), S_(S)  { }
+        Abcd(Real a, Real b, Real c, Real d, Real T, Real S)
+        : a_(a), b_(b), c_(c), d_(d), S_(S), T_(T) { }
         Real operator()(Time u) const {
             return  ( (a_ + b_*(T_-u))*std::exp(-c_*(T_-u)) + d_ ) *
                     ( (a_ + b_*(S_-u))*std::exp(-c_*(S_-u)) + d_ );
@@ -91,8 +91,8 @@ namespace QuantLib
             const Array& displacements);
         const Array& initialRates() const ;// passed by the calibrator
         const Array& displacements() const ;// passed by the calibrator
-        Size numberOfRates() const ;// n 
-        Size numberOfFactors() const ;//F, A rank 
+        Size numberOfRates() const ;// n
+        Size numberOfFactors() const ;//F, A rank
         // number of steps method?
         const Matrix& pseudoRoot(Size i) const ;
 

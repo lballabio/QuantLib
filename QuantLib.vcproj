@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="QuantLib"
-	ProjectGUID="{4178494F-272C-4BF8-A4CF-E120C5FFA04E}"
+	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -5397,6 +5397,12 @@
 				<File
 					RelativePath="ql\PricingEngines\Forward\forwardperformanceengine.hpp">
 				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Forward\mcvarianceswapengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Forward\replicatingvarianceswapengine.hpp">
+				</File>
 			</Filter>
 			<Filter
 				Name="Quanto"
@@ -6089,6 +6095,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\CapFloor\discretizedcapfloor.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\CapFloor\mchullwhiteengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\CapFloor\mchullwhiteengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\CapFloor\treecapfloorengine.cpp">
@@ -8082,6 +8094,18 @@
 				RelativePath=".\ql\Processes\eulerdiscretization.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Processes\forwardmeasureprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\forwardmeasureprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\g2process.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\g2process.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Processes\geometricbrownianprocess.cpp">
 			</File>
 			<File
@@ -8092,6 +8116,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\Processes\hestonprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hullwhiteprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Processes\hullwhiteprocess.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Processes\lfmcovarparam.cpp">
@@ -8149,7 +8179,13 @@
 				RelativePath=".\ql\VolatilityModels\constantestimator.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\VolatilityModels\garch.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\VolatilityModels\garch.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\VolatilityModels\garmanklass.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\VolatilityModels\simplelocalestimator.hpp">

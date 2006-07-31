@@ -38,7 +38,11 @@ namespace QuantLib {
 
     boost::shared_ptr<Observable> IndexManager::notifier(
                                               const std::string& name) const {
+        #ifndef QL_PATCH_MSVC6
         return data_[uppercase(name)];
+        #else
+        return data_[uppercase(name)].observable();
+        #endif
     }
 
     std::vector<std::string> IndexManager::histories() const {

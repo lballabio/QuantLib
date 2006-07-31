@@ -27,8 +27,8 @@ namespace QuantLib {
                                        const Date& latest,
                                        bool payoffAtExpiry)
     : EarlyExercise(American, payoffAtExpiry) {
-        QL_REQUIRE(earliest<latest,
-                   "earliest>=latest exercise date");
+        QL_REQUIRE(earliest<=latest,
+                   "earliest > latest exercise date");
         dates_ = std::vector<Date>(2);
         dates_[0] = earliest;
         dates_[1] = latest;

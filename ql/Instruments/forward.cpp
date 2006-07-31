@@ -51,7 +51,7 @@ namespace QuantLib {
 
 
     bool Forward::isExpired() const {
-        #if QL_TODAYS_PAYMENTS
+        #if defined(QL_TODAYS_PAYMENTS)
         return maturityDate_ < settlementDate();
         #else
         return maturityDate_ <= settlementDate();

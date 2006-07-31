@@ -25,8 +25,11 @@ INCLUDE_DIR      = ..\..
 OBJS = \
     "blackscholesprocess.obj$(_mt)$(_D)" \
     "eulerdiscretization.obj$(_mt)$(_D)" \
+    "forwardmeasureprocess.obj$(_mt)$(_D)" \
+    "g2process.obj$(_mt)$(_D)" \
     "geometricbrownianprocess.obj$(_mt)$(_D)" \
     "hestonprocess.obj$(_mt)$(_D)" \
+    "hullwhiteprocess.obj$(_mt)$(_D)" \
     "lfmcovarparam.obj$(_mt)$(_D)" \
     "lfmhullwhiteparam.obj$(_mt)$(_D)" \
     "lfmprocess.obj$(_mt)$(_D)" \

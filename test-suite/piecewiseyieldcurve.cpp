@@ -103,9 +103,7 @@ BondDatum bondData[] = {
 Calendar calendar;
 Integer settlementDays, fixingDays;
 Date today, settlement;
-BusinessDayConvention depoConvention, fraConvention;
-DayCounter depoDayCounter, fraDayCounter;
-BusinessDayConvention fixedLegConvention, floatingLegConvention;
+BusinessDayConvention fixedLegConvention;
 Frequency fixedLegFrequency;
 DayCounter fixedLegDayCounter;
 Frequency floatingLegFrequency;
@@ -129,12 +127,7 @@ void setup() {
     today = calendar.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today;
     settlement = calendar.advance(today,settlementDays,Days);
-    depoConvention = ModifiedFollowing;
-    depoDayCounter = Actual360();
-    fraConvention = ModifiedFollowing;
-    fraDayCounter = Actual360();
     fixedLegConvention = Unadjusted;
-    floatingLegConvention = ModifiedFollowing;
     fixedLegFrequency = Annual;
     fixedLegDayCounter = Thirty360();
     floatingLegFrequency = Semiannual;
@@ -177,35 +170,33 @@ void setup() {
         std::vector<boost::shared_ptr<RateHelper> >(fras);
     bondHelpers =
         std::vector<boost::shared_ptr<RateHelper> >(bonds);
+
+    boost::shared_ptr<Xibor> euribor(new Euribor6M);
     for (i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
         instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n*depositData[i].units,
                                     settlementDays, calendar,
-                                    depoConvention, depoDayCounter));
+                                    euribor->businessDayConvention(),
+                                    euribor->dayCounter()));
     }
-    boost::shared_ptr<Xibor> index(new Xibor("dummy",
-                                             Period(12/floatingLegFrequency,
-                                                    Months),
-                                             settlementDays,
-                                             Currency(),
-                                             calendar,
-                                             floatingLegConvention,
-                                             Actual360()));
     for (i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
         instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, swapData[i].n*swapData[i].units,
                                    settlementDays, calendar,
                                    fixedLegFrequency, fixedLegConvention,
-                                   fixedLegDayCounter, index));
+                                   fixedLegDayCounter, euribor));
     }
+    Euribor3M euribor3m;
     for (i=0; i<fras; i++) {
         Handle<Quote> r(fraRates[i]);
         fraHelpers[i] = boost::shared_ptr<RateHelper>(
               new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
-                                settlementDays, calendar,
-                                fraConvention, fraDayCounter));
+                                euribor3m.settlementDays(),
+                                euribor3m.calendar(),
+                                euribor3m.businessDayConvention(),
+                                euribor3m.dayCounter()));
     }
     for (i=0; i<bonds; i++) {
         Handle<Quote> p(prices[i]);
@@ -261,18 +252,17 @@ void testCurveConsistency(const T&, const I& interpolator) {
     }
 
     // check swaps
-    boost::shared_ptr<Xibor> index(new Euribor(Period(12/floatingLegFrequency,
-                                                      Months),
-                                               curveHandle));
+    boost::shared_ptr<Xibor> euribor6m(new Euribor6M(curveHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
         Schedule fixedSchedule(calendar,settlement,maturity,
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,floatingLegConvention);
+                               floatingLegFrequency,
+                               euribor6m->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,fixingDays,0.0,
+                         floatSchedule,euribor6m,fixingDays,0.0,
                          Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
@@ -329,14 +319,17 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                                        interpolator));
     curveHandle.linkTo(termStructure);
 
+    boost::shared_ptr<Xibor> euribor3m(new Euribor3M(curveHandle));
     for (i=0; i<fras; i++) {
         Date start = calendar.advance(settlement,
                                       fraData[i].n, fraData[i].units,
-                                      fraConvention);
+                                      euribor3m->businessDayConvention());
+        Date end = calendar.advance(start, 3, Months,
+                                    euribor3m->businessDayConvention());
 
-        ForwardRateAgreement fra(start, 3, Position::Long, fraData[i].rate/100,
-                                 100.0, settlementDays, fraDayCounter,
-                                 calendar, fraConvention, curveHandle);
+        ForwardRateAgreement fra(start, end, Position::Long,
+                                 fraData[i].rate/100, 100.0,
+                                 euribor3m, curveHandle);
         Rate expectedRate = fraData[i].rate/100,
              estimatedRate = fra.forwardRate();
         Real tolerance = 1.0e-9;
@@ -574,7 +567,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
         Schedule fixedSchedule(calendar,settlement,maturity,
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,floatingLegConvention);
+                               floatingLegFrequency,
+                               index->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,fixingDays,0.0,
@@ -611,7 +605,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
         Schedule fixedSchedule(calendar,settlement,maturity,
                                fixedLegFrequency,fixedLegConvention);
         Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,floatingLegConvention);
+                               floatingLegFrequency,
+                               index->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,fixingDays,0.0,

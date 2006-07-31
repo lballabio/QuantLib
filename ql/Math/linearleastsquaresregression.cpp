@@ -41,7 +41,12 @@ namespace QuantLib {
 
         Matrix A(n, m);
         for (i=0; i<m; ++i) {
+            #ifndef QL_PATCH_MSVC6
             std::transform(x.begin(), x.end(), A.column_begin(i), v[i]);
+            #else
+            for (Size j=0; j<x.size(); j++)
+                A[j][i] = v[i](x[j]);
+            #endif
         }
 
         const SVD svd(A);

@@ -60,6 +60,8 @@ QL_TESTS = \
     "jumpdiffusion.obj$(_mt)$(_D)" \
     "libormarketmodel.obj$(_mt)$(_D)" \
     "libormarketmodelprocess.obj$(_mt)$(_D)" \
+    "linearleastsquaresregression.obj$(_mt)$(_D)" \
+    "lookbackoptions.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \
     "mersennetwister.obj$(_mt)$(_D)" \
@@ -87,6 +89,7 @@ QL_TESTS = \
     "tracing.obj$(_mt)$(_D)" \
     "transformedgrid.obj$(_mt)$(_D)" \
     "utilities.obj$(_mt)$(_D)" \
+    "varianceswaps.obj$(_mt)$(_D)" \
     "volatilitymodels.obj$(_mt)$(_D)"
 
 # Tools to be used

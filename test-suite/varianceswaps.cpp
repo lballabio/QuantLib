@@ -29,7 +29,6 @@
 #include <ql/Volatilities/blackvariancesurface.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -156,7 +155,8 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
         std::vector<Real> callStrikes, putStrikes, callVols, putVols;
 
         // Assumes ascending strikes and same min call and max put strikes
-        for (Size j=0; j<options; j++) {
+        Size j;
+        for (j=0; j<options; j++) {
             if (replicatingOptionData[j].type == Option::Call) {
                 callStrikes.push_back(replicatingOptionData[j].strike);
                 callVols.push_back(replicatingOptionData[j].v);
@@ -170,7 +170,7 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
 
         Matrix vols(options-1, 1);
         std::vector<Real> strikes;
-        for (Size j=0; j<putVols.size(); j++) {
+        for (j=0; j<putVols.size(); j++) {
             vols[j][0] = putVols[j];
             strikes.push_back(putStrikes[j]);
         }
@@ -211,9 +211,6 @@ void VarianceSwapTest::testReplicatingVarianceSwap() {
         Real calculated = varianceSwap.fairVariance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
-        //std::cout << calculated << "\t" << "N/A\t\t"
-        //          << expected << "\t\t" << error << std::endl;
-
         if (error>values[i].tol)
             REPORT_FAILURE("value", values[i].type, values[i].varStrike,
                            values[i].nominal, values[i].s, values[i].q,
@@ -277,7 +274,8 @@ void VarianceSwapTest::testMCVarianceSwap() {
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine =
+        boost::shared_ptr<PricingEngine> engine;
+        engine =
             MakeMCVarianceSwapEngine<PseudoRandom>().withStepsPerYear(250)
                                                     .withSamples(1023)
                                                     .withSeed(42);
@@ -292,8 +290,6 @@ void VarianceSwapTest::testMCVarianceSwap() {
         Real calculated = varianceSwap.fairVariance();
         Real expected = values[i].result;
         Real error = std::fabs(calculated-expected);
-        //std::cout << calculated << "\t" << "N/A\t\t"
-        //          << expected << "\t\t" << error << std::endl;
         if (error>values[i].tol)
             REPORT_FAILURE("value", values[i].type, values[i].varStrike,
                            values[i].nominal, values[i].s, values[i].q,

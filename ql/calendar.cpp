@@ -104,6 +104,9 @@ namespace QuantLib {
                 }
             }
             return d1;
+        } else if (unit == Weeks) {
+            Date d1 = d + n*unit;
+            return adjust(d1,c);
         } else {
             Date d1 = d + n*unit;
             return adjust(d1,c,d);
@@ -197,7 +200,7 @@ namespace QuantLib {
        return result;
     }
 
-    std::ostream& operator<<(std::ostream& out, const BusinessDayConvention &b) {
+    std::ostream& operator<<(std::ostream& out, BusinessDayConvention b) {
         switch (b) {
           case Following:
             return out << "Following";

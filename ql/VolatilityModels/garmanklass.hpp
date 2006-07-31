@@ -51,7 +51,7 @@ namespace QuantLib {
             start = quoteSeries.begin();
             for (cur = start; cur != quoteSeries.end(); ++cur) {
                 retval[cur->first] =
-                    std::sqrt(std::abs(calculatePoint(cur->second))/
+                    std::sqrt(std::fabs(calculatePoint(cur->second))/
                               yearFraction_);
             }
             return retval;

@@ -24,6 +24,10 @@
 #ifndef quantlib_pdeshortrate_hpp
 #define quantlib_pdeshortrate_hpp
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/FiniteDifferences/pde.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
 
@@ -48,3 +52,6 @@ namespace QuantLib {
 }
 
 #endif
+
+#endif
+

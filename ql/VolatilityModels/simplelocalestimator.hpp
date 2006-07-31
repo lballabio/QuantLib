@@ -49,7 +49,7 @@ namespace QuantLib {
             for (cur = start; cur != quoteSeries.end(); ++cur) {
                 prev = cur; --prev;
                 retval[cur->first] =
-                    std::abs(std::log(cur->second/prev->second))/
+                    std::fabs(std::log(cur->second/prev->second))/
                     std::sqrt(yearFraction_);
             }
             return retval;

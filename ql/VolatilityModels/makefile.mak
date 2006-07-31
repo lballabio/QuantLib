@@ -23,7 +23,8 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "constantestimator.obj$(_mt)$(_D)" 
+    "constantestimator.obj$(_mt)$(_D)" \
+    "garch.obj$(_mt)$(_D)" 
 
 # Tools to be used
 CC        = bcc32

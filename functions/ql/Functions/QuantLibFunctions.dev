@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLibFunctions.dev
 Name=QuantLibFunctions
-UnitCount=9
+UnitCount=11
 Type=2
 Ver=1
 ObjFiles=
@@ -118,7 +118,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=qlfunctions.hpp
+FileName=calendars.hpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1
@@ -128,7 +128,27 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit9]
-FileName=calendars.hpp
+FileName=prices.hpp
+CompileCpp=1
+Folder=QuantLibFunctions
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=auto_link.hpp
+CompileCpp=1
+Folder=QuantLibFunctions
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=prices.cpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1

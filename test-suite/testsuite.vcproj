@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="testsuite"
-	ProjectGUID="{7D1DCC0B-A9E4-4237-8554-476DF3C4D821}"
+	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -1062,9 +1062,6 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\defaultable.cpp">
 			</File>
 			<File
 				RelativePath="digitaloption.cpp">

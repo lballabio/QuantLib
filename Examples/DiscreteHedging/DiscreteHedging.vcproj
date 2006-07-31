@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="DiscreteHedging"
-	ProjectGUID="{1CD6F11F-D824-4957-8224-C8CECBCF6B0B}"
+	ProjectGUID="{C3E22CAD-0CAF-42DC-ADE0-B2FF4F644BCE}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

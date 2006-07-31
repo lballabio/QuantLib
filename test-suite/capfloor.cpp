@@ -30,6 +30,7 @@
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #endif
+#include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
@@ -110,7 +111,8 @@ void setup() {
     settlementDays_ = 2;
     fixingDays_ = 2;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+    termStructure_.linkTo(flatRate(settlement_,0.05,
+                                   ActualActual(ActualActual::ISDA)));
 }
 
 void teardown() {

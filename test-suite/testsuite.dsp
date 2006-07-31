@@ -365,6 +365,14 @@ SOURCE=.\libormarketmodelprocess.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\linearleastsquaresregression.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lookbackoptions.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\lowdiscrepancysequences.cpp
 # End Source File
 # Begin Source File
@@ -473,6 +481,10 @@ SOURCE=.\utilities.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\varianceswaps.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\volatilitymodels.cpp
 # End Source File
 # End Group
@@ -526,6 +538,10 @@ SOURCE=.\cliquetoption.hpp
 # Begin Source File
 
 SOURCE=.\compoundforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\convertiblebonds.hpp
 # End Source File
 # Begin Source File
 
@@ -597,7 +613,19 @@ SOURCE=.\jumpdiffusion.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\libormarketmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\libormarketmodelprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\linearleastsquaresregression.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\lookbackoptions.hpp
 # End Source File
 # Begin Source File
 
@@ -657,6 +685,10 @@ SOURCE=.\rounding.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\sampledcurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\shortratemodels.hpp
 # End Source File
 # Begin Source File
@@ -698,6 +730,10 @@ SOURCE=.\transformedgrid.hpp
 # Begin Source File
 
 SOURCE=.\utilities.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\varianceswaps.hpp
 # End Source File
 # Begin Source File
 

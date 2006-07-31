@@ -7,10 +7,11 @@ dist_man_MANS = quantlib-config.1 \
                 ConvertibleBonds.1 \
                 DiscreteHedging.1 \
                 EquityOption.1 \
-		FRA.1 \
+                FRA.1 \
                 SwapValuation.1 \
-		Replication.1 \
-		Repo.1 
+                Replication.1 \
+                Repo.1
+
 else
 
 dist_man_MANS = quantlib-config.1 \
@@ -22,7 +23,7 @@ EXTRA_DIST = BermudanSwaption.1 \
              FRA.1 \
              SwapValuation.1 \
              Replication.1 \
-             Repo.1 
+             Repo.1
 
 endif
 

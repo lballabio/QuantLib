@@ -26,6 +26,7 @@ OBJS = \
     "analyticcapfloorengine.obj$(_mt)$(_D)" \
     "blackcapfloorengine.obj$(_mt)$(_D)" \
     "discretizedcapfloor.obj$(_mt)$(_D)" \
+    "mchullwhiteengine.obj$(_mt)$(_D)" \
     "treecapfloorengine.obj$(_mt)$(_D)"
 
 

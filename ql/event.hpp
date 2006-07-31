@@ -53,7 +53,7 @@ namespace QuantLib {
             \todo make QL_TODAYS_PAYMENT dynamically configurable?
         */
         bool hasOccurred(const Date &d,
-                         #if QL_TODAYS_PAYMENTS
+                         #if defined(QL_TODAYS_PAYMENTS)
                          bool includeToday = true
                          #else
                          bool includeToday = false

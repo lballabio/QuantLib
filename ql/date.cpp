@@ -383,7 +383,7 @@ namespace QuantLib {
 
         Date referenceDate = (refDate != Date() ?
                               refDate :
-                              Settings::instance().evaluationDate());
+                              Date(Settings::instance().evaluationDate()));
 
         std::string code = QuantLib::uppercase(IMMcode);
         std::string ms = code.substr(0,1);

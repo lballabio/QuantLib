@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/TermStructures/forwardstructure.hpp>
 #include <ql/Math/backwardflatinterpolation.hpp>
 #include <vector>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,6 +49,8 @@ namespace QuantLib {
         Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
+        const std::vector<Rate>& forwards() const;
+        std::vector<std::pair<Date,Rate> > nodes() const;
       protected:
         InterpolatedForwardCurve(const DayCounter&,
                                  const Interpolator& interpolator
@@ -99,9 +102,24 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline const std::vector<Date>& InterpolatedForwardCurve<T>::dates()
-                                                                       const {
+    inline const std::vector<Date>&
+    InterpolatedForwardCurve<T>::dates() const {
         return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Rate>&
+    InterpolatedForwardCurve<T>::forwards() const {
+        return data_;
+    }
+
+    template <class T>
+    inline std::vector<std::pair<Date,Rate> >
+    InterpolatedForwardCurve<T>::nodes() const {
+        std::vector<std::pair<Date,Rate> > results(dates_.size());
+        for (Size i=0; i<dates_.size(); ++i)
+            results[i] = std::make_pair(dates_[i],data_[i]);
+        return results;
     }
 
     template <class T>

@@ -29,6 +29,17 @@
 #  include <ql/quantlib.hpp>
 #undef BOOST_LIB_DIAGNOSTIC
 
+#ifdef BOOST_MSVC
+/* Uncomment the following lines to unmask floating-point
+   exceptions. Warning: unpredictable results can arise...
+
+   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
+   Is there anyone with a definitive word about this?
+*/
+// #include <float.h>
+// namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#endif
+
 #include <boost/timer.hpp>
 #include <iostream>
 #include <iomanip>
@@ -85,16 +96,16 @@ int main(int, char* [])
 
         // bootstrap the yield/vol curves
         DayCounter dayCounter = Actual365Fixed();
+        Handle<Quote> h1(riskFreeRate);
+        Handle<Quote> h2(volatility);
         Handle<YieldTermStructure> flatRate(
             boost::shared_ptr<YieldTermStructure>(
                                   new FlatForward(0, NullCalendar(),
-                                                  Handle<Quote>(riskFreeRate),
-                                                  dayCounter)));
+                                                  h1, dayCounter)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
                                new BlackConstantVol(0, NullCalendar(),
-                                                    Handle<Quote>(volatility),
-                                                    dayCounter)));
+                                                    h2, dayCounter)));
 
         // instantiate the option
         boost::shared_ptr<Exercise> exercise(
@@ -148,7 +159,8 @@ int main(int, char* [])
         // Now we use puts struck at B to kill the value of the
         // portfolio on a number of points (B,t).  For the first
         // portfolio, we'll use 12 dates at one-month's distance.
-        for (Integer i=12; i>=1; i--) {
+        Integer i;
+        for (i=12; i>=1; i--) {
             // First, we instantiate the option...
             Date innerMaturity = today + i*Months;
             boost::shared_ptr<Exercise> innerExercise(
@@ -187,7 +199,7 @@ int main(int, char* [])
 
         // For the second portfolio, we'll use 26 dates at two-weeks'
         // distance.
-        for (Integer i=52; i>=2; i-=2) {
+        for (i=52; i>=2; i-=2) {
             // Same as above.
             Date innerMaturity = today + i*Weeks;
             boost::shared_ptr<Exercise> innerExercise(
@@ -218,7 +230,7 @@ int main(int, char* [])
 
         // For the third portfolio, we'll use 52 dates at one-week's
         // distance.
-        for (Integer i=52; i>=1; i--) {
+        for (i=52; i>=1; i--) {
             // Same as above.
             Date innerMaturity = today + i*Weeks;
             boost::shared_ptr<Exercise> innerExercise(

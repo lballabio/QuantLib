@@ -78,9 +78,9 @@ namespace QuantLib {
         retained.
 
         If the input matrix is not positive semi definite, it can return an
-        approximation of the pseudo square root using a (user selected) 
+        approximation of the pseudo square root using a (user selected)
         salvaging algorithm.
-    
+
         \pre the given matrix must be symmetric.
 
         \relates Matrix

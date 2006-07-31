@@ -95,6 +95,9 @@ namespace QuantLib {
     bool operator!=(const DayCounter&, const DayCounter&);
     std::ostream& operator<<(std::ostream&, const DayCounter&);
 
+    /*! \relates DayCounter */
+    std::ostream& operator<<(std::ostream&, const DayCounter&);
+
 
     // inline definitions
 

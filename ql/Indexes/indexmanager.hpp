@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     //! global repository for past index fixings
-    /*! \warning index names are case insensitive */
+    /*! \note index names are case insensitive */
     class IndexManager : public Singleton<IndexManager> {
         friend class Singleton<IndexManager>;
       private:

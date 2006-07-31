@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2005 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,11 +51,12 @@ namespace QuantLib {
         #endif
         GBPLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
+                                    Handle<YieldTermStructure>(),
+                 BusinessDayConvention convention = MonthEndReference)
         : Libor("GBPLibor", tenor, 0, GBPCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
                 UnitedKingdom(UnitedKingdom::Exchange),
-                ModifiedFollowing, Actual365Fixed(), h) {}
+                convention, Actual365Fixed(), h) {}
     };
 
 }

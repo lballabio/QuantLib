@@ -65,6 +65,20 @@ TLIB_OPTS    = /P128
 TLIB_OPTS    = /P128
 !endif
 
+# MAKE Options
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
+!endif
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
+
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<

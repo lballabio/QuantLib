@@ -25,7 +25,8 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "blackvariancecurve.obj$(_mt)$(_D)" \
     "blackvariancesurface.obj$(_mt)$(_D)" \
-    "localvolsurface.obj$(_mt)$(_D)"
+    "localvolsurface.obj$(_mt)$(_D)" \
+    "swaptionvolmatrix.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

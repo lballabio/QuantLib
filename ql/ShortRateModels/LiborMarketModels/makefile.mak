@@ -27,7 +27,9 @@ OBJS = \
     "liborforwardmodel.obj$(_mt)$(_D)" \
     "lmcorrmodel.obj$(_mt)$(_D)" \
     "lmexpcorrmodel.obj$(_mt)$(_D)" \
+    "lmextlinexpvolmodel.obj$(_mt)$(_D)" \
     "lmfixedvolmodel.obj$(_mt)$(_D)" \
+    "lmlinexpcorrmodel.obj$(_mt)$(_D)" \
     "lmlinexpvolmodel.obj$(_mt)$(_D)" \
     "lmvolmodel.obj$(_mt)$(_D)"
 

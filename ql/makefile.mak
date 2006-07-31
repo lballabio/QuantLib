@@ -33,8 +33,10 @@ CORE_OBJS = \
     "errors.obj$(_mt)$(_D)" \
     "exchangerate.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
+    "index.obj$(_mt)$(_D)" \
     "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
+    "prices.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
     "timegrid.obj$(_mt)$(_D)" \
@@ -59,7 +61,7 @@ SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
 TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
 UTILITIES_LIB        = "Utilities\Utilities$(_mt)$(_D).lib"
 VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
-VOLMODELS_LIB        = "Volatilities\VolatilityModel$(_mt)$(_D).lib"
+VOLMODELS_LIB        = "VolatilityModels\VolatilityModels$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
@@ -189,6 +191,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Volatilities
     $(MAKE)
+    cd ..\VolatilityModels
+    $(MAKE)
     cd ..
 
 
@@ -231,6 +235,8 @@ clean::
     cd ..\Utilities
     $(MAKE) clean
     cd ..\Volatilities
+    $(MAKE) clean
+    cd ..\VolatilityModels
     $(MAKE) clean
     cd ..
     if exist *.obj*                    del /q *.obj*

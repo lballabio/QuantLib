@@ -69,6 +69,7 @@ namespace QuantLib {
         arguments->capRates.clear();
         arguments->floorRates.clear();
         arguments->startTimes.clear();
+        arguments->fixingTimes.clear();
         arguments->fixingDates.clear();
         arguments->endTimes.clear();
         arguments->accrualTimes.clear();

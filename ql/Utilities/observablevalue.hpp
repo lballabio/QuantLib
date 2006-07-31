@@ -54,6 +54,9 @@ namespace QuantLib {
         operator boost::shared_ptr<Observable>() const;
         //! explicit inspector
         const T& value() const;
+        #ifdef QL_PATCH_MSVC6
+        boost::shared_ptr<Observable> observable() const;
+        #endif
       private:
         T value_;
         boost::shared_ptr<Observable> observable_;
@@ -103,6 +106,13 @@ namespace QuantLib {
     const T& ObservableValue<T>::value() const {
         return value_;
     }
+
+    #ifdef QL_PATCH_MSVC6
+    template <class T>
+    boost::shared_ptr<Observable> ObservableValue<T>::observable() const {
+        return observable_;
+    }
+    #endif
 
 }
 

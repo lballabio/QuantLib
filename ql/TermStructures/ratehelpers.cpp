@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2006 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,18 +40,19 @@ namespace QuantLib {
     }
     #endif
 
-    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
-                                         const Date& immDate,
-                                         Integer nMonths,
-                                         const Calendar& calendar,
-                                         BusinessDayConvention convention,
-                                         const DayCounter& dayCounter,
-                                         const Handle<Quote>& convexityAdjustment)
-    : RateHelper(price), convAdj_(convexityAdjustment)
-    {
-        QL_REQUIRE(convAdj_->value()>=0.0,
-            "Negative (" << convAdj_->value() <<
-            ") Futures convexity adjustment");
+    FuturesRateHelper::FuturesRateHelper(
+                                     const Handle<Quote>& price,
+                                     const Date& immDate,
+                                     Integer nMonths,
+                                     const Calendar& calendar,
+                                     BusinessDayConvention convention,
+                                     const DayCounter& dayCounter,
+                                     const Handle<Quote>& convexityAdjustment)
+    : RateHelper(price), convAdj_(convexityAdjustment) {
+        QL_REQUIRE(!convAdj_.empty(), "no convexity adjustment given");
+        QL_REQUIRE(convAdj_->value() >= 0.0,
+                   "Negative (" << convAdj_->value() <<
+                   ") futures convexity adjustment");
         earliestDate_ = immDate;
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);
@@ -69,8 +71,8 @@ namespace QuantLib {
                                        new SimpleQuote(convexityAdjustment))))
     {
         QL_REQUIRE(convAdj_->value()>=0.0,
-            "Negative (" << convAdj_->value() <<
-            ") Futures convexity adjustment");
+                   "Negative (" << convAdj_->value() <<
+                   ") Futures convexity adjustment");
         earliestDate_ = immDate;
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);
@@ -88,8 +90,8 @@ namespace QuantLib {
                                        new SimpleQuote(convexityAdjustment))))
     {
         QL_REQUIRE(convAdj_->value()>=0.0,
-            "Negative (" << convAdj_->value() <<
-            ") Futures convexity adjustment");
+                   "Negative (" << convAdj_->value() <<
+                   ") Futures convexity adjustment");
         earliestDate_ = immDate;
         latestDate_ =
             calendar.advance(earliestDate_, nMonths, Months, convention);

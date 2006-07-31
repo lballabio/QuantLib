@@ -35,6 +35,7 @@ OBJS = \
     "CapFloor\CapFloorEngines$(_mt)$(_D).lib" \
     "Cliquet\CliquetEngines$(_mt)$(_D).lib" \
     "Hybrid\HybridEngines$(_mt)$(_D).lib" \
+    "Lookback\LookbackEngines$(_mt)$(_D).lib" \
     "Swaption\SwaptionEngines$(_mt)$(_D).lib" \
     "Vanilla\VanillaEngines$(_mt)$(_D).lib"
 
@@ -69,6 +70,20 @@ TLIB_OPTS    = /P128
 TLIB_OPTS    = /P128
 !endif
 
+# MAKE Options
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
+!endif
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
+
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
@@ -94,6 +109,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Hybrid
     $(MAKE)
+    cd ..\Lookback
+    $(MAKE)
     cd ..\Swaption
     $(MAKE)
     cd ..\Vanilla
@@ -116,6 +133,8 @@ clean::
     cd ..\Cliquet
     $(MAKE) clean
     cd ..\Hybrid
+    $(MAKE) clean
+    cd ..\Lookback
     $(MAKE) clean
     cd ..\Swaption
     $(MAKE) clean

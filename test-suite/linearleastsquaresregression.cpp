@@ -37,7 +37,7 @@ QL_END_TEST_LOCALS(LinearLeastSquaresRegressionTest)
 
 void LinearLeastSquaresRegressionTest::testRegression() {
 
-    BOOST_MESSAGE("Testing linear least squares regression");
+    BOOST_MESSAGE("Testing linear least squares regression...");
 
     QL_TEST_BEGIN
     const Real tolerance = 0.025;

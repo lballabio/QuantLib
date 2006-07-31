@@ -26,6 +26,17 @@
 #  include <ql/quantlib.hpp>
 #undef BOOST_LIB_DIAGNOSTIC
 
+#ifdef BOOST_MSVC
+/* Uncomment the following lines to unmask floating-point
+   exceptions. Warning: unpredictable results can arise...
+
+   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
+   Is there anyone with a definitive word about this?
+*/
+// #include <float.h>
+// namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
+#endif
+
 #include <boost/timer.hpp>
 #include <iostream>
 
@@ -54,16 +65,17 @@ int main(int, char* []) {
          ***  MARKET DATA  ***
          *********************/
 
-        Calendar calendar = TARGET();
+        Handle<YieldTermStructure> euriborTermStructure;
+        boost::shared_ptr<Xibor> euribor3m(
+                                       new Euribor3M(euriborTermStructure));
 
-        Date settlementDate(25, May, 2006);
-        settlementDate = calendar.adjust(settlementDate);
-
-        Integer fixingDays = 2;
-        Date todaysDate = calendar.advance(settlementDate, -fixingDays, Days);
+        Date todaysDate = Date(23, May, 2006);
         Settings::instance().evaluationDate() = todaysDate;
 
-        todaysDate = Settings::instance().evaluationDate();
+        Calendar calendar = euribor3m->calendar();
+        Integer fixingDays = euribor3m->settlementDays();
+        Date settlementDate = calendar.advance(todaysDate, fixingDays, Days);
+
         std::cout << "Today: " << todaysDate.weekday()
                   << ", " << todaysDate << std::endl;
 
@@ -116,8 +128,8 @@ int main(int, char* []) {
         // relinkable handles which could be relinked to some other
         // data source later.
 
-        DayCounter fraDayCounter = Actual360();
-        BusinessDayConvention convention = ModifiedFollowing;
+        DayCounter fraDayCounter = euribor3m->dayCounter();
+        BusinessDayConvention convention = euribor3m->businessDayConvention();
 
         boost::shared_ptr<RateHelper> fra1x4(
                            new FraRateHelper(h1x4, 1, 4,
@@ -173,7 +185,6 @@ int main(int, char* []) {
         // Term structures used for pricing/discounting
 
         Handle<YieldTermStructure> discountingTermStructure;
-
         discountingTermStructure.linkTo(fraTermStructure);
 
 
@@ -181,21 +192,23 @@ int main(int, char* []) {
          ***  construct FRA's ***
          ***********************/
 
-        Integer fraSettlementDays = fixingDays;
-        Calendar fraCalendar = calendar;
-        BusinessDayConvention fraBusinessDayConvention = convention;
+        Calendar fraCalendar = euribor3m->calendar();
+        BusinessDayConvention fraBusinessDayConvention =
+            euribor3m->businessDayConvention();
         Position::Type fraFwdType = Position::Long;
         Real fraNotional = 100.0;
         const Integer FraTermMonths = 3;
         Integer monthsToStart[] = { 1, 2, 3, 6, 9 };
 
+        euriborTermStructure.linkTo(fraTermStructure);
 
         cout << endl;
         cout << "Test FRA construction, NPV calculation, and FRA purchase"
              << endl
              << endl;
 
-        for (Size i=0; i<LENGTH(monthsToStart); i++) {
+        Size i;
+        for (i=0; i<LENGTH(monthsToStart); i++) {
 
             Date fraValueDate = fraCalendar.advance(
                                        settlementDate,monthsToStart[i],Months,
@@ -207,11 +220,9 @@ int main(int, char* []) {
 
             Rate fraStrikeRate = threeMonthFraQuote[monthsToStart[i]];
 
-            ForwardRateAgreement myFRA(fraValueDate, FraTermMonths,
+            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
                                        fraFwdType,fraStrikeRate,
-                                       fraNotional, fraSettlementDays,
-                                       fraDayCounter,  fraCalendar,
-                                       fraBusinessDayConvention,
+                                       fraNotional, euribor3m,
                                        discountingTermStructure);
 
             cout << "3m Term FRA, Months to Start: "
@@ -275,7 +286,7 @@ int main(int, char* []) {
         fra9x12Rate->setValue(threeMonthFraQuote[9]);
 
 
-        for (Size i=0; i<LENGTH(monthsToStart); i++) {
+        for (i=0; i<LENGTH(monthsToStart); i++) {
 
             Date fraValueDate = fraCalendar.advance(
                                        settlementDate,monthsToStart[i],Months,
@@ -288,10 +299,9 @@ int main(int, char* []) {
             Rate fraStrikeRate =
                 threeMonthFraQuote[monthsToStart[i]] - BpsShift;
 
-            ForwardRateAgreement myFRA(fraValueDate, FraTermMonths, fraFwdType,
-                                       fraStrikeRate, fraNotional,
-                                       fraSettlementDays, fraDayCounter,
-                                       fraCalendar,  fraBusinessDayConvention,
+            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
+                                       fraFwdType, fraStrikeRate,
+                                       fraNotional, euribor3m,
                                        discountingTermStructure);
 
             cout << "3m Term FRA, 100 notional, Months to Start = "

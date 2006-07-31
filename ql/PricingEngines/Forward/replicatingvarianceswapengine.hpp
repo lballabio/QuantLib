@@ -24,6 +24,7 @@
 #ifndef quantlib_replicating_varianceswap_engine_hpp
 #define quantlib_replicating_varianceswap_engine_hpp
 
+#include <ql/Instruments/varianceswap.hpp>
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 
@@ -125,9 +126,9 @@ namespace QuantLib {
              // added end-strike discarded
              k<strikes.end()-1;
              k++) {
-            slope = std::abs((computeLogPayoff(*(k+1), f) -
-                              computeLogPayoff(*k, f))/
-                             (*(k+1) - *k));
+            slope = std::fabs((computeLogPayoff(*(k+1), f) -
+                               computeLogPayoff(*k, f))/
+                              (*(k+1) - *k));
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                             new PlainVanillaPayoff(type, *k));
             if ( k == strikes.begin() )

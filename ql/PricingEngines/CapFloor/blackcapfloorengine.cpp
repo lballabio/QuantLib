@@ -67,7 +67,7 @@ namespace QuantLib {
     }
 
     void BlackCapFloorEngine::calculate() const
-	{
+    {
         Real value = 0.0;
         CapFloor::Type type = arguments_.type;
 

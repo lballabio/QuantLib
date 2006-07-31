@@ -36,6 +36,7 @@ OBJS = \
     "generalstatistics.obj$(_mt)$(_D)" \
     "incompletegamma.obj$(_mt)$(_D)" \
     "incrementalstatistics.obj$(_mt)$(_D)" \
+    "linearleastsquaresregression.obj$(_mt)$(_D)" \
     "normaldistribution.obj$(_mt)$(_D)" \
     "primenumbers.obj$(_mt)$(_D)" \
     "pseudosqrt.obj$(_mt)$(_D)" \

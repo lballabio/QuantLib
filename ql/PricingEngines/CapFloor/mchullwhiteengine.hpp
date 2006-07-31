@@ -25,6 +25,10 @@
 #ifndef quantlib_mc_hull_white_cap_floor_engine_hpp
 #define quantlib_mc_hull_white_cap_floor_engine_hpp
 
+#include <ql/qldefines.hpp>
+
+#if !defined(QL_PATCH_BORLAND)
+
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
 #include <ql/Processes/hullwhiteprocess.hpp>
@@ -228,6 +232,8 @@ namespace QuantLib {
 
 }
 
+
+#endif
 
 #endif
 

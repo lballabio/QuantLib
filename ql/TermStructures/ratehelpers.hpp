@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2000-2006 StatPro Italia srl
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,8 +52,7 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
-                          const Handle<Quote>& convexityAdjustment =
-                                                        Handle<Quote>());
+                          const Handle<Quote>& convexityAdjustment);
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
                           Integer nMonths,
@@ -164,7 +164,7 @@ namespace QuantLib {
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
         #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the corresponding Period based constructor
+        //! \deprecated use the corresponding Period-based constructor
         SwapRateHelper(const Handle<Quote>& rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
@@ -177,7 +177,7 @@ namespace QuantLib {
                        Frequency floatingFrequency,
                        BusinessDayConvention floatingConvention,
                        const DayCounter& floatingDayCount);
-        //! \deprecated use the corresponding Period based constructor
+        //! \deprecated use the corresponding Period-based constructor
         SwapRateHelper(Rate rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,

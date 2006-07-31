@@ -521,28 +521,29 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Calculation of Modified Annuity (cash settlement)
             // Fixed leg conventions of swap: unadjusted, 30/360
             Real cashannuity_u360 = 0.;
-            for (Size i=0; i<swapFixedLeg_u360.size(); i++) {
+            Size i;
+            for (i=0; i<swapFixedLeg_u360.size(); i++) {
                 cashannuity_u360 += swapFixedLeg_u360[i]->amount()/strike
                                   * termStructure_u360->discount(
                                     swapFixedLeg_u360[i]->date());
             }
             // Fixed leg conventions of swap: unadjusted, act/365
             Real cashannuity_u365 = 0.;
-            for (Size i=0; i<swapFixedLeg_u365.size(); i++) {
+            for (i=0; i<swapFixedLeg_u365.size(); i++) {
                 cashannuity_u365 += swapFixedLeg_u365[i]->amount()/strike
                                   * termStructure_u365->discount(
                                     swapFixedLeg_u365[i]->date());
             }
             // Fixed leg conventions of swap: modified following, 30/360
             Real cashannuity_a360 = 0.;
-            for (Size i=0; i<swapFixedLeg_a360.size(); i++) {
+            for (i=0; i<swapFixedLeg_a360.size(); i++) {
                 cashannuity_a360 += swapFixedLeg_a360[i]->amount()/strike
                                   * termStructure_a360->discount(
                                     swapFixedLeg_a360[i]->date());
             }
             // Fixed leg conventions of swap: modified following, act/365
             Real cashannuity_a365 = 0.;
-            for (Size i=0; i<swapFixedLeg_a365.size(); i++) {
+            for (i=0; i<swapFixedLeg_a365.size(); i++) {
                 cashannuity_a365 += swapFixedLeg_a365[i]->amount()/strike
                                   * termStructure_a365->discount(
                                     swapFixedLeg_a365[i]->date());
@@ -604,7 +605,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             Real npv_ratio_u365 = value_c_u365 / value_p_u365;
             Real annuity_ratio_u365 =  cashannuity_u365 / annuity_u365;
 
-            if ( std::abs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
+            if ( std::fabs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -636,7 +637,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_u360-npv_ratio_u360) );
             }
-            if ( std::abs(annuity_ratio_a365-npv_ratio_a365)>1e-10 ) {
+            if ( std::fabs(annuity_ratio_a365-npv_ratio_a365)>1e-10 ) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -668,7 +669,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_a365-npv_ratio_a365) );
                 }
-            if ( std::abs(annuity_ratio_a360-npv_ratio_a360)>1e-10 ) {
+            if ( std::fabs(annuity_ratio_a360-npv_ratio_a360)>1e-10 ) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -700,7 +701,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_a360-npv_ratio_a360) );
             }
-            if ( std::abs(annuity_ratio_u365-npv_ratio_u365)>1e-10 ) {
+            if ( std::fabs(annuity_ratio_u365-npv_ratio_u365)>1e-10 ) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"

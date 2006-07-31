@@ -47,13 +47,12 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -w-8070
 !endif
 
 # Primary target:
-$(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D)-$(VERSION_STRING).exe: $(EXE_DIR) \
-                                                          DiscreteHedging.cpp
-    if exist $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D)-$(VERSION_STRING).exe \
-         del $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
+$(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe: $(EXE_DIR) DiscreteHedging.cpp
+    if exist $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe \
+         del $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) \
     -o"DiscreteHedging$(_mt)$(_D).obj" \
-    -e"$(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D)-$(VERSION_STRING).exe" \
+    -e"$(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe" \
     DiscreteHedging.cpp
 
 $(EXE_DIR):
@@ -65,5 +64,6 @@ $(EXE_DIR):
 # Clean up
 clean::
     if exist *.obj*  del /q *.obj*
-    if exist *.tds   del /q *.tds
-    if exist *.exe   del /q *.exe
+    if exist $(EXE_DIR)\*.tds   del /q $(EXE_DIR)\*.tds
+    if exist $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe \
+         del $(EXE_DIR)\DiscreteHedging-bcb$(_mt)$(_D).exe

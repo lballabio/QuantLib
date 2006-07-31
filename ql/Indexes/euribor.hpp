@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2006 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,11 +54,14 @@ namespace QuantLib {
         #endif
         Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
-        : Xibor("EURIBOR", tenor, 2, EURCurrency(),
+                                    Handle<YieldTermStructure>(),
+                BusinessDayConvention convention = MonthEndReference,
+                Integer settlementDays = 2)
+        : Xibor("Euribor", tenor, settlementDays, EURCurrency(),
                 TARGET(),
-                ModifiedFollowing, Actual360(), h) {}
+                convention, Actual360(), h) {}
     };
+
 
     //! Actual/365 %Euribor index
     /*! Euribor rate adjusted for the mismatch between the actual/360
@@ -67,10 +72,12 @@ namespace QuantLib {
       public:
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
-        : Xibor("EURIBOR", tenor, 2, EURCurrency(),
+                                    Handle<YieldTermStructure>(),
+                   BusinessDayConvention convention = MonthEndReference,
+                   Integer settlementDays = 2)
+        : Xibor("Euribor", tenor, settlementDays, EURCurrency(),
                 TARGET(),
-                ModifiedFollowing, Actual365Fixed(), h) {}
+                convention, Actual365Fixed(), h) {}
     };
 
 
@@ -79,7 +86,7 @@ namespace QuantLib {
       public:
         EuriborSW(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(1, Weeks), h) {}
+        : Euribor(Period(1, Weeks), h, Following) {}
     };
 
     //! 2-weeks %Euribor index
@@ -87,7 +94,7 @@ namespace QuantLib {
       public:
         Euribor2W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(2, Weeks), h) {}
+        : Euribor(Period(2, Weeks), h, Following) {}
     };
 
     //! 3-weeks %Euribor index
@@ -95,7 +102,7 @@ namespace QuantLib {
       public:
         Euribor3W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(3, Weeks), h) {}
+        : Euribor(Period(3, Weeks), h, Following) {}
     };
 
     //! 1-month %Euribor index

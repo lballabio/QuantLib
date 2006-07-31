@@ -18,7 +18,48 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.12 - March 2006</strong>
+    <strong>Release 0.3.13 - July 2006</strong>
+
+    CALENDARS
+    - Added NERC calendar (thanks to Joe Byers.)
+
+    INSTRUMENTS AND PRICING ENGINES
+    - Added continuous fixed and floating lookback options (thanks to
+      Warren Chou.)
+    - Added FRA and forward fixed-coupon bonds; examples provided
+      (thanks to Allen Kuo.)
+    - Added variance swaps (thanks to Warren Chou.)
+    - Added composite instrument; example provided.
+    - Added cash-settled swaption pricing in Black swaption engine;
+      test provided.
+    - Added discrete dividends and soft callability to convertible bonds.
+
+    INTEREST RATES
+    - Fixed business-day conventions for Euribor and LIBOR indices
+      (following below one month, month-end from one month onwards.)
+
+    MODELS
+    - Added more complex market parameterizations and performance
+      improvements for Libor market model (thanks to Klaus Spanderen.)
+
+    PROCESSES
+    - Renamed BlackScholedProcess to GeneralizedBlackScholedProcess;
+      specialized classes added for Black-Scholes, Merton, Black and
+      Garman-Kohlhagen processes.
+    - Added Hull-White and G2 processes for Monte Carlo simulation
+      (thanks to Banca Profilo.)
+
+    RANDOM NUMBERS
+    - Added possibility to skip directly to the n-th item in a Sobol
+      sequence (thanks to Richard Gould.)
+
+    MATH
+    - Added SABR interpolation for volatilities.
+    - Added general linear least-squares regression (thanks to Klaus
+      Spanderen.)
+
+
+    <strong>Release 0.3.12 - March 27th, 2006</strong>
 
     CALENDARS
     - Added Brazilian calendar (thanks to Piter Dias.)

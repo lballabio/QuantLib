@@ -65,15 +65,6 @@ namespace QuantLib {
               FraRateHelper to ensure consistency with the piecewise
               yield curve.
 
-        \todo May need to add a fixingDays parameter. This is the
-              number of days before the valueDate that the relevant
-              interbank rate fixes the settlement amount due on
-              valueDate. Not sure how this affects the math and how
-              this is related to floating rate indices...... The
-              settlementDays parameter in the constructor is simply
-              the number of days after the evaluation Date. Valuation
-              occurs on evaluation Date + settlementDays.
-
         \todo Differentiate between BBA (British)/AFB (French)
               [assumed here] and ABA (Australian) banker conventions
               in the calculations.
@@ -84,65 +75,14 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Forward {
       public:
-        //! \name Constructors
-        //@{
-        /*! FRA constructor with underlying loan/deposit having
-            tenor/term maturityDate-valueDate.
-        */
-        ForwardRateAgreement(
-                           const Date& valueDate,
-                           const Date& maturityDate,
-                           Position::Type type,
-                           Rate strikeForwardRate,
-                           Real notionalAmount,
-                           Integer settlementDays,
-                           const DayCounter& dayCount,
-                           const Calendar& calendar,
-                           BusinessDayConvention businessDayConvention,
-                           const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>(),
-                           Compounding compounding = Simple,
-                           Frequency frequency = Annual);
-
-        /*! FRA constructor with maturityDate defined in terms of
-            months from valueDate. (termMonths = the term of the
-            underlying loan or deposit)
-        */
-        ForwardRateAgreement(
-                           const Date& valueDate,
-                           Integer termMonths,
-                           Position::Type type,
-                           Rate strikeForwardRate,
-                           Real notionalAmount,
-                           Integer settlementDays,
-                           const DayCounter& dayCount,
-                           const Calendar& calendar,
-                           BusinessDayConvention businessDayConvention,
-                           const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>(),
-                           Compounding compounding = Simple,
-                           Frequency frequency = Annual);
-        
-        /*! FRA constructor using Index.
-        */
-        ForwardRateAgreement(
-                           const Date& valueDate,
-                           const Date& maturityDate,
-                           Position::Type type,
-                           Rate strikeForwardRate,
-                           Real notionalAmount,
-                           const boost::shared_ptr<Xibor>& index,
-                           //Integer settlementDays,
-                           //const DayCounter& dayCount,
-                           //const Calendar& calendar,
-                           //BusinessDayConvention businessDayConvention,
-                           const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>(),
-                           Compounding compounding = Simple);
-                           //Frequency frequency = Annual);
- 
-        //@}
-
+        ForwardRateAgreement(const Date& valueDate,
+                             const Date& maturityDate,
+                             Position::Type type,
+                             Rate strikeForwardRate,
+                             Real notionalAmount,
+                             const boost::shared_ptr<Xibor>& index,
+                             const Handle<YieldTermStructure>& discountCurve =
+                                                 Handle<YieldTermStructure>());
         //! \name Calculations
         //@{
         /*! A FRA expires/settles on the valueDate */
@@ -169,8 +109,7 @@ namespace QuantLib {
         //! aka FRA fixing rate, contract rate
         InterestRate strikeForwardRate_;
         Real notionalAmount_;
-        Compounding compounding_;
-        Frequency frequency_;
+        boost::shared_ptr<Xibor> index_;
     };
 
 }

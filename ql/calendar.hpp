@@ -68,6 +68,10 @@ namespace QuantLib {
         Unadjusted          /*!< Do not adjust. */
     };
 
+    /*! \relates BusinessDayConvention */
+    std::ostream& operator<<(std::ostream&, BusinessDayConvention);
+
+
     //! abstract base class for calendar implementations
     class CalendarImpl {
       public:
@@ -201,8 +205,10 @@ namespace QuantLib {
 
     /*! \relates Calendar */
     bool operator!=(const Calendar&, const Calendar&);
+
+    /*! \relates Calendar */
     std::ostream& operator<<(std::ostream&, const Calendar&);
-    std::ostream& operator<<(std::ostream&, const BusinessDayConvention&);
+
 
     // inline definitions
 

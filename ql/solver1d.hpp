@@ -70,11 +70,15 @@ namespace QuantLib {
         //! \name Modifiers
         //@{
         /*! This method returns the zero of the function \f$ f \f$,
-            determined with the given accuracy (i.e., \f$ x \f$ is
-            considered a zero if \f$ |f(x)| < accuracy \f$).  This
-            method contains a bracketing routine to which an initial
-            guess must be supplied as well as a step used to scan the
-            range of the possible bracketing values.
+            determined with the given accuracy \f$ \epsilon \f$;
+            depending on the particular solver, this might mean that
+            the returned \f$ x \f$ is such that \f$ |f(x)| < \epsilon
+            \f$, or that \f$ |x-\xi| < \epsilon \f$ where \f$ \xi \f$
+            is the real zero.
+
+            This method contains a bracketing routine to which an
+            initial guess must be supplied as well as a step used to
+            scan the range of the possible bracketing values.
         */
         template <class F>
         Real solve(const F& f,
@@ -137,13 +141,18 @@ namespace QuantLib {
                     << "-> [" << fxMin_ << "," << fxMax_ << "])");
         }
         /*! This method returns the zero of the function \f$ f \f$,
-            determined with the given accuracy (i.e., \f$ x \f$ is
-            considered a zero if \f$ |f(x)| < accuracy \f$). An
-            initial guess must be supplied, as well as two values \f$
-            x_\mathrm{min} \f$ and \f$ x_\mathrm{max} \f$ which must
-            bracket the zero (i.e., either \f$ f(x_\mathrm{min}) \leq
-            0 \leq f(x_\mathrm{max}) \f$, or \f$ f(x_\mathrm{max})
-            \leq 0 \leq f(x_\mathrm{min}) \f$ must be true).
+            determined with the given accuracy \f$ \epsilon \f$;
+            depending on the particular solver, this might mean that
+            the returned \f$ x \f$ is such that \f$ |f(x)| < \epsilon
+            \f$, or that \f$ |x-\xi| < \epsilon \f$ where \f$ \xi \f$
+            is the real zero.
+
+            An initial guess must be supplied, as well as two values
+            \f$ x_\mathrm{min} \f$ and \f$ x_\mathrm{max} \f$ which
+            must bracket the zero (i.e., either \f$ f(x_\mathrm{min})
+            \leq 0 \leq f(x_\mathrm{max}) \f$, or \f$
+            f(x_\mathrm{max}) \leq 0 \leq f(x_\mathrm{min}) \f$ must
+            be true).
         */
         template <class F>
         Real solve(const F& f,

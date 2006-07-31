@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/TermStructures/zeroyieldstructure.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <vector>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,6 +49,8 @@ namespace QuantLib {
         Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
+        const std::vector<Rate>& zeroRates() const;
+        std::vector<std::pair<Date,Rate> > nodes() const;
       protected:
         InterpolatedZeroCurve(const DayCounter&,
                               const Interpolator& interpolator
@@ -99,6 +102,21 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<Date>& InterpolatedZeroCurve<T>::dates() const {
         return dates_;
+    }
+
+    template <class T>
+    inline const std::vector<Rate>&
+    InterpolatedZeroCurve<T>::zeroRates() const {
+        return data_;
+    }
+
+    template <class T>
+    inline std::vector<std::pair<Date,Rate> >
+    InterpolatedZeroCurve<T>::nodes() const {
+        std::vector<std::pair<Date,Rate> > results(dates_.size());
+        for (Size i=0; i<dates_.size(); ++i)
+            results[i] = std::make_pair(dates_[i],data_[i]);
+        return results;
     }
 
     template <class T>

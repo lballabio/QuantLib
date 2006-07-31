@@ -25,18 +25,18 @@
 namespace QuantLib {
 
     CurveState::CurveState(const Array& rateTimes)
-    : rateTimes_(rateTimes), first_(0), last_(rateTimes.size()-1),
+    : rateTimes_(rateTimes), taus_(rateTimes.size()-1), 
       forwardRates_(rateTimes.size()-1), discountRatios_(rateTimes.size()),
       coterminalSwaps_(rateTimes.size()-1), annuities_(rateTimes.size()-1),
-      taus_(rateTimes.size()-1), firstSwapComputed_(last_) {
+      firstSwapComputed_(last_), first_(0), last_(rateTimes.size()-1) {
 
-        /* There will n+1 rate times expressing payment and reset times 
+        /* There will n+1 rate times expressing payment and reset times
            of forward rates.
 
                     |-----|-----|-----|-----|-----|      (size = 6)
                     t0    t1    t2    t3    t4    t5     rateTimes
                     f0    f1    f2    f3    f4           forwardRates
-                    d0    d1    d2    d3    d4    d5     discountBonds 
+                    d0    d1    d2    d3    d4    d5     discountBonds
                     d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
                     sr0   sr1   sr2   sr3   sr4          coterminalSwaps
         */
@@ -44,7 +44,7 @@ namespace QuantLib {
             taus_[i] = rateTimes_[i+1] - rateTimes_[i];
         }
     }
-     
+
     const Array& CurveState::rateTimes() const
     {
         return rateTimes_;
@@ -53,33 +53,33 @@ namespace QuantLib {
     void CurveState::setOnForwardRates(const Array& rates)
     {
         // Note: already fixed forwards are left in the vector rates
-        QL_REQUIRE(rates.size()==last_, "too many forward rates");       
+        QL_REQUIRE(rates.size()==last_, "too many forward rates");
         std::copy(rates.begin(),rates.end(),forwardRates_.begin());
         // Computation of discount ratios
-        discountRatios_[first_]=1.0; 
+        discountRatios_[first_]=1.0;
         for (Size i=first_+1; i<=last_; i++) {
             discountRatios_[i] = discountRatios_[i-1]/(1.+taus_[i-1]*forwardRates_[i-1]);
-        } 
+        }
         // Reset coterminal swap rates to be calculated
         firstSwapComputed_ = last_;
     }
 
     void CurveState::setOnDiscountRatios(const Array& discountRatios) {
         // already fixed forwards are still in the vector rates (they remain constant)
-        QL_REQUIRE(discountRatios.size()==last_, "too many discount ratios");       
+        QL_REQUIRE(discountRatios.size()==last_, "too many discount ratios");
         std::copy(discountRatios.begin(),discountRatios.end(),discountRatios_.begin());
         // Computation of forward rates
         for (Size i=first_; i<last_; i++) {
             forwardRates_[i] = (discountRatios_[i]/discountRatios_[i+1]-1.)/taus_[i];
-        } 
+        }
         // Reset coterminal swap rates to be calculated
         firstSwapComputed_ = last_;
     }
-    
+
     void CurveState::setOnCoterminalSwapRates(const Array& swapRates) {
         QL_FAIL("not yet implemented");
         // todo fwd and discount ratios
-        //QL_REQUIRE(swapRates.size()==last_, "too many swap rates");       
+        //QL_REQUIRE(swapRates.size()==last_, "too many swap rates");
         //std::copy(swapRates.begin(),swapRates.end(),coterminalSwaps_.begin());
         // etc.
     }
@@ -100,11 +100,11 @@ namespace QuantLib {
     const Array& CurveState::forwardRates() const {
         return forwardRates_;
     }
-        
+
     const Array& CurveState::discountRatios() const {
         return discountRatios_;
     }
-    
+
     const Array& CurveState::coterminalSwapRates() const {
         if (firstSwapComputed_>first_) {
             computeSwapRate();
@@ -115,11 +115,11 @@ namespace QuantLib {
     Rate CurveState::forwardRate(Size i) const {
         return forwardRates_[i];
     }
-    
+
     Rate CurveState::coterminalSwapRate(Size i) const {
         return coterminalSwapRates()[i];
     }
-        
+
     Real CurveState::discountRatio(Size i, Size j) const {
         return discountRatios_[i]/discountRatios_[j];
     }

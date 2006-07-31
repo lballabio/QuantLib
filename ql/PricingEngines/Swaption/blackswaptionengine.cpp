@@ -32,10 +32,11 @@ namespace QuantLib {
                                    const boost::shared_ptr<BlackModel>& model)
     : blackModel_(model) {
         Volatility vol = blackModel_->volatility();
-        Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(vol)));
+        boost::shared_ptr<Quote> q(new SimpleQuote(vol));
         volatility_.linkTo(boost::shared_ptr<SwaptionVolatilityStructure>(
                         new SwaptionConstantVolatility(0, NullCalendar(),
-                                                       q, Actual365Fixed())));
+                                                       Handle<Quote>(q),
+                                                       Actual365Fixed())));
         registerWith(blackModel_);
     }
 
