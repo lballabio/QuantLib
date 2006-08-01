@@ -100,7 +100,7 @@ namespace QuantLib {
             arguments->accrualTimes.push_back(coupon->accrualPeriod());
             // this is passed explicitly for precision
             if (arguments->endTimes.back() >= 0.0) { // but only if needed
-                arguments->forwards.push_back(coupon->indexFixing());
+                arguments->forwards.push_back(coupon->adjustedFixing());
                 arguments->discounts.push_back(
                                   termStructure_->discount(coupon->date()));
             } else {

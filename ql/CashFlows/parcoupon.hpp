@@ -48,12 +48,9 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter());
-        //! \name CashFlow interface
-        //@{
-        Real amount() const;
-        //@}
         //! \name Coupon interface
         //@{
+        Rate rate() const;
         DayCounter dayCounter() const;
         //@}
         //! \name FloatingRateCoupon interface
@@ -74,6 +71,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
+        Rate convexityAdjustment(Rate fixing) const;
         boost::shared_ptr<Xibor> index_;
         DayCounter dayCounter_;
     };

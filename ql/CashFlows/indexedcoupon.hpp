@@ -49,10 +49,6 @@ namespace QuantLib {
                       const Date& refPeriodEnd = Date(),
                       const DayCounter& dayCounter = DayCounter());
         virtual ~IndexedCoupon() {}
-        //! \name CashFlow interface
-        //@{
-        Real amount() const { return rate() * accrualPeriod() * nominal(); }
-        //@}
         //! \name Coupon interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }

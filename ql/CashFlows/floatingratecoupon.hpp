@@ -50,6 +50,7 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        Real amount() const;
         Real accruedAmount(const Date&) const;
         //@}
         //! \name Inspectors
@@ -62,8 +63,15 @@ namespace QuantLib {
         virtual Real gearing() const { return gearing_; }
         //! fixing of the underlying index
         virtual Rate indexFixing() const = 0;
-        //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
+        //! convexity adjustment
+        virtual Rate convexityAdjustment() const {
+            return convexityAdjustment(indexFixing());
+        }
+        //! convexity-adjusted fixing
+        Rate adjustedFixing() const {
+            Rate f = indexFixing();
+            return f + convexityAdjustment(f);
+        };
         //! spread paid over the fixing of the underlying index
         virtual Spread spread() const { return spread_; }
         //@}
@@ -72,6 +80,8 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
+        //! convexity adjustment for the given index fixing
+        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
         Integer fixingDays_;
         Real gearing_;
         Spread spread_;
@@ -89,6 +99,10 @@ namespace QuantLib {
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       fixingDays_(fixingDays), gearing_(gearing), spread_(spread) {}
+
+    inline Real FloatingRateCoupon::amount() const {
+        return rate() * accrualPeriod() * nominal();
+    }
 
     inline Rate FloatingRateCoupon::rate() const {
         Rate f = indexFixing();
@@ -117,6 +131,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

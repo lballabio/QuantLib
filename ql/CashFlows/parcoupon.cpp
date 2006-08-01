@@ -37,7 +37,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    Real ParCoupon::amount() const {
+    Rate ParCoupon::rate() const {
         boost::shared_ptr<YieldTermStructure> termStructure =
             index_->termStructure();
         QL_REQUIRE(termStructure,
@@ -51,7 +51,7 @@ namespace QuantLib {
             QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " << index_->name()
                        << " fixing for " << fixing_date);
-            return (gearing_*pastFixing+spread_)*accrualPeriod()*nominal();
+            return gearing_*pastFixing+spread_;
         }
         if (fixing_date == today) {
             // might have been fixed
@@ -59,7 +59,7 @@ namespace QuantLib {
                 Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
                 if (pastFixing != Null<Real>())
-                    return (gearing_*pastFixing+spread_)*accrualPeriod()*nominal();
+                    return gearing_*pastFixing+spread_;
                 else
                     ;   // fall through and forecast
             } catch (Error&) {
@@ -75,27 +75,19 @@ namespace QuantLib {
         DiscountFactor endDiscount =
             termStructure->discount(index_->calendar().advance(
                                        temp, index_->settlementDays(), Days));
-        return (gearing_*(startDiscount/endDiscount-1.0) +
-                spread_*accrualPeriod()) * nominal();
+        return gearing_*(startDiscount/endDiscount-1.0)/accrualPeriod() +
+               spread_;
     }
 
-    //Rate ParCoupon::indexFixing() const
-    //{
-    //    return index_->fixing(fixingDate());
-    //}
     Rate ParCoupon::indexFixing() const {
-        DayCounter dayCount = index_->dayCounter();
-        Date begin = index_->calendar().advance(
-                                fixingDate(), index_->settlementDays(), Days);
-        Date temp = index_->calendar().advance(accrualEndDate_,
-                                               -fixingDays_, Days);
-        Date end = index_->calendar().advance(
-                                        temp, index_->settlementDays(), Days);
-        Rate result = (amount()/nominal() - spread()*accrualPeriod()) /
-                (dayCount.yearFraction(begin,end));
-        if (gearing_==0.0)
-            return result;
-        else
-            return result/gearing_;
+        return index_->fixing(fixingDate());
     }
+
+    Rate ParCoupon::convexityAdjustment(Rate f) const {
+        if (gearing_ == 0.0)
+            return 0.0;
+        else
+            return (rate()-spread_)/gearing_ - f;
+    }
+
 }
