@@ -5,7 +5,6 @@ includedir = $(prefix)/include/ql/Functions
 include_HEADERS = \
 	auto_link.hpp \
 	calendars.hpp \
-	daycounters.hpp \
 	mathf.hpp \
 	prices.hpp \
 	vols.hpp
@@ -21,8 +20,6 @@ lib_LTLIBRARIES = libQuantLibFunctions.la
 libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLibFunctions_la_SOURCES = \
-	calendars.cpp \
-	daycounters.cpp \
 	mathf.cpp \
     prices.cpp \
 	vols.cpp
