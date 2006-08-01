@@ -24,19 +24,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Xibor::Xibor(const std::string& familyName,
-                 Integer n, TimeUnit units,
-                 Integer settlementDays,
-                 const Currency& currency,
-                 const Calendar& calendar,
-                 BusinessDayConvention convention,
-                 const DayCounter& dayCounter,
-                 const Handle<YieldTermStructure>& h)
-    : InterestRateIndex(familyName, Period(n, units), settlementDays, currency,
-                        calendar, dayCounter),
-      convention_(convention), termStructure_(h) {}
-    #endif
     Xibor::Xibor(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,

@@ -39,14 +39,6 @@ namespace QuantLib {
     */
     class Jibar : public Xibor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        Jibar(Integer n, TimeUnit units,
-              const Handle<YieldTermStructure>& h,
-              const DayCounter& dc = Actual365Fixed())
-        : Xibor("Jibar", n, units, 0, ZARCurrency(),
-                SouthAfrica(), ModifiedFollowing, dc, h) {}
-        #endif
         Jibar(const Period& tenor,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
