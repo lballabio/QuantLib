@@ -35,7 +35,6 @@
 #include <ql/exercise.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
-#include <ql/history.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/money.hpp>
