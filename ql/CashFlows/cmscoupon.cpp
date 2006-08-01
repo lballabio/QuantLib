@@ -179,10 +179,6 @@ namespace QuantLib {
         }
     }
 
-    Rate CMSCoupon::fixing() const {
-        return rate();
-    }
-
     Date CMSCoupon::fixingDate() const {
         return index_->calendar().advance(accrualStartDate_,
                                           -fixingDays_, Days);
@@ -193,7 +189,7 @@ namespace QuantLib {
     }
 
     Real CMSCoupon::amount() const {
-        return fixing() * accrualPeriod() * nominal();
+        return rate() * accrualPeriod() * nominal();
     }
 
     void CMSCoupon::setSwaptionVolatility(

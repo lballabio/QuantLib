@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         enum Type {ConundrumByBlack,
                    ConundrumByNumericalIntegration };
-		virtual ~ConvexityAdjustmentPricer() {};
+		virtual ~ConvexityAdjustmentPricer() {}
 		virtual Real price() const = 0;
         virtual Real rate() const = 0;
 	};
@@ -46,8 +46,6 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-
-
     class CMSCoupon : public FloatingRateCoupon,
                       public Observer {
       public:
@@ -77,8 +75,6 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        // ???
-        Rate fixing() const;
         Date fixingDate() const;
         Rate indexFixing() const;
         //@}
