@@ -40,9 +40,15 @@ namespace QuantLib {
     class EuriborSwapFixA : public SwapIndex {
       public:
         EuriborSwapFixA(Integer years)
-        : SwapIndex("EURIBORSWAPFIXA", years, 2, EURCurrency(), TARGET(), 
-                   Annual, ModifiedFollowing, Thirty360(Thirty360::BondBasis), 
-                   boost::shared_ptr<Xibor>(new Euribor6M())) {}
+        : SwapIndex("EURIBORSWAPFIXA", // familyName
+                    years,
+                    2, // settlementDays
+                    EURCurrency(),
+                    TARGET(), 
+                    Annual, // fixedLegFrequency
+                    Unadjusted, // fixedLegConvention
+                    Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
+                    boost::shared_ptr<Xibor>(new Euribor6M())) {}
     };
 
     //! 1-year %EuriborSwapFixA index

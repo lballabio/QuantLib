@@ -42,24 +42,13 @@ namespace QuantLib {
     */
     class Euribor : public Xibor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        Euribor(Integer n, TimeUnit units,
-                const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                const DayCounter& dc = Actual360())
-        : Xibor("EURIBOR", n, units, 2, EURCurrency(),
-                TARGET(),
-                ModifiedFollowing, dc, h) {}
-        #endif
         Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                BusinessDayConvention convention = MonthEndReference,
-                Integer settlementDays = 2)
-        : Xibor("Euribor", tenor, settlementDays, EURCurrency(),
-                TARGET(),
-                convention, Actual360(), h) {}
+                BusinessDayConvention convention = MonthEndReference)
+        : Xibor("Euribor", tenor,
+                2, // settlementDays
+                EURCurrency(), TARGET(), convention, Actual360(), h) {}
     };
 
 
@@ -73,132 +62,147 @@ namespace QuantLib {
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                   BusinessDayConvention convention = MonthEndReference,
-                   Integer settlementDays = 2)
-        : Xibor("Euribor", tenor, settlementDays, EURCurrency(),
-                TARGET(),
-                convention, Actual365Fixed(), h) {}
+                   BusinessDayConvention convention = MonthEndReference)
+        : Xibor("Euribor", tenor,
+                2, // settlementDays
+                EURCurrency(), TARGET(), convention, Actual365Fixed(), h) {}
     };
 
 
+    class WeeklyTenorEuribor : public Euribor {
+      public:
+        WeeklyTenorEuribor(const Period& tenor,
+                const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(tenor, h, Following) {}
+    };
+
+    class MonthlyTenorEuribor : public Euribor {
+      public:
+        MonthlyTenorEuribor(const Period& tenor,
+                const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>())
+        : Euribor(tenor, h, MonthEndReference) {}
+    };
+
     //! 1-week %Euribor index
-    class EuriborSW : public Euribor {
+    class EuriborSW : public WeeklyTenorEuribor {
       public:
         EuriborSW(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(1, Weeks), h, Following) {}
+        : WeeklyTenorEuribor(Period(1, Weeks), h) {}
     };
 
     //! 2-weeks %Euribor index
-    class Euribor2W : public Euribor {
+    class Euribor2W : public WeeklyTenorEuribor {
       public:
         Euribor2W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(2, Weeks), h, Following) {}
+        : WeeklyTenorEuribor(Period(2, Weeks), h) {}
     };
 
     //! 3-weeks %Euribor index
-    class Euribor3W : public Euribor {
+    class Euribor3W : public WeeklyTenorEuribor {
       public:
         Euribor3W(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(3, Weeks), h, Following) {}
+        : WeeklyTenorEuribor(Period(3, Weeks), h) {}
     };
 
     //! 1-month %Euribor index
-    class Euribor1M : public Euribor {
+    class Euribor1M : public MonthlyTenorEuribor {
       public:
         Euribor1M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(1, Months), h) {}
+        : MonthlyTenorEuribor(Period(1, Months), h) {}
     };
 
     //! 2-months %Euribor index
-    class Euribor2M : public Euribor {
+    class Euribor2M : public MonthlyTenorEuribor {
       public:
         Euribor2M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(2, Months), h) {}
+        : MonthlyTenorEuribor(Period(2, Months), h) {}
     };
 
     //! 3-months %Euribor index
-    class Euribor3M : public Euribor {
+    class Euribor3M : public MonthlyTenorEuribor {
       public:
         Euribor3M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(3, Months), h) {}
+        : MonthlyTenorEuribor(Period(3, Months), h) {}
     };
 
     //! 4-months %Euribor index
-    class Euribor4M : public Euribor {
+    class Euribor4M : public MonthlyTenorEuribor {
       public:
         Euribor4M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(4, Months), h) {}
+        : MonthlyTenorEuribor(Period(4, Months), h) {}
     };
 
     //! 5-months %Euribor index
-    class Euribor5M : public Euribor {
+    class Euribor5M : public MonthlyTenorEuribor {
       public:
         Euribor5M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(5, Months), h) {}
+        : MonthlyTenorEuribor(Period(5, Months), h) {}
     };
 
     //! 6-months %Euribor index
-    class Euribor6M : public Euribor {
+    class Euribor6M : public MonthlyTenorEuribor {
       public:
         Euribor6M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(6, Months), h) {}
+        : MonthlyTenorEuribor(Period(6, Months), h) {}
     };
 
     //! 7-months %Euribor index
-    class Euribor7M : public Euribor {
+    class Euribor7M : public MonthlyTenorEuribor {
       public:
         Euribor7M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(7, Months), h) {}
+        : MonthlyTenorEuribor(Period(7, Months), h) {}
     };
 
     //! 8-months %Euribor index
-    class Euribor8M : public Euribor {
+    class Euribor8M : public MonthlyTenorEuribor {
       public:
         Euribor8M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(8, Months), h) {}
+        : MonthlyTenorEuribor(Period(8, Months), h) {}
     };
 
     //! 9-months %Euribor index
-    class Euribor9M : public Euribor {
+    class Euribor9M : public MonthlyTenorEuribor {
       public:
         Euribor9M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(9, Months), h) {}
+        : MonthlyTenorEuribor(Period(9, Months), h) {}
     };
 
     //! 10-months %Euribor index
-    class Euribor10M : public Euribor {
+    class Euribor10M : public MonthlyTenorEuribor {
       public:
         Euribor10M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(10, Months), h) {}
+        : MonthlyTenorEuribor(Period(10, Months), h) {}
     };
 
     //! 11-months %Euribor index
-    class Euribor11M : public Euribor {
+    class Euribor11M : public MonthlyTenorEuribor {
       public:
         Euribor11M(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(11, Months), h) {}
+        : MonthlyTenorEuribor(Period(11, Months), h) {}
     };
 
     //! 1-year %Euribor index
-    class Euribor1Y : public Euribor {
+    class Euribor1Y : public MonthlyTenorEuribor {
       public:
         Euribor1Y(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(Period(1, Years), h) {}
+        : MonthlyTenorEuribor(Period(1, Years), h) {}
     };
 
 }
