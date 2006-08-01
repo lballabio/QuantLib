@@ -36,19 +36,12 @@ namespace QuantLib {
     class BlackCapFloorEngine : public CapFloor::engine,
                                 public Observer {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use one of the other constructors */
-        BlackCapFloorEngine(const boost::shared_ptr<BlackModel>&);
-        #endif
         BlackCapFloorEngine(const Handle<Quote>& volatility);
         BlackCapFloorEngine(const Handle<CapletVolatilityStructure>&);
         void calculate() const;
         void update();
       private:
         Handle<CapletVolatilityStructure> volatility_;
-        #ifndef QL_DISABLE_DEPRECATED
-        boost::shared_ptr<BlackModel> blackModel_;
-        #endif
         Real capletValue(Rate forward,
                          Rate strike,
                          Real variance) const;

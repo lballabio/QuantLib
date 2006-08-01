@@ -158,38 +158,6 @@ namespace QuantLib {
         return leg;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use the gearing-enabled function instead
-    template <class IndexedCouponType>
-    std::vector<boost::shared_ptr<CashFlow> >
-    IndexedCouponVector(const Schedule& schedule,
-                        BusinessDayConvention paymentAdjustment,
-                        const std::vector<Real>& nominals,
-                        const boost::shared_ptr<Xibor>& index,
-                        Integer fixingDays,
-                        const std::vector<Spread>& spreads,
-                        const DayCounter& dayCounter = DayCounter()
-                        #ifdef QL_PATCH_MSVC6
-                        , const IndexedCouponType* msvc6_bug = 0
-                        #endif
-                        )
-    {
-        return IndexedCouponVector<IndexedCouponType>(
-                                        schedule,
-                                        paymentAdjustment,
-                                        nominals,
-                                        fixingDays,
-                                        index,
-                                        std::vector<Real>(),
-                                        spreads,
-                                        dayCounter
-                                        #ifdef QL_PATCH_MSVC6
-                                        , (const coupon_type*) 0
-                                        #endif
-                                        );
-    }
-    #endif
-
 }
 
 #endif

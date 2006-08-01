@@ -68,14 +68,8 @@ namespace QuantLib {
         Date date_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated Moved into Callability as Callability::Price  */
-    typedef Callability::Price Price;
-    #endif
-
     typedef std::vector<boost::shared_ptr<Callability> > CallabilitySchedule;
 
 }
-
 
 #endif

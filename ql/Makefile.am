@@ -54,7 +54,6 @@ include_HEADERS = \
 	event.hpp \
 	grid.hpp \
 	handle.hpp \
-	history.hpp \
 	index.hpp \
 	instrument.hpp \
 	interestrate.hpp \

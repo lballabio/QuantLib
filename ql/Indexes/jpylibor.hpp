@@ -43,15 +43,6 @@ namespace QuantLib {
     */
     class JPYLibor : public Libor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        JPYLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Libor("JPYLibor", n, units, 2, JPYCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Japan(),
-                ModifiedFollowing, dc, h) {}
-        #endif
         JPYLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),

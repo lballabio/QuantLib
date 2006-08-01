@@ -40,15 +40,6 @@ namespace QuantLib {
     */
     class DKKLibor : public Libor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        DKKLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Libor("DKKLibor", n, units, 2, DKKCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Denmark(),
-                ModifiedFollowing, dc, h) {}
-        #endif
         DKKLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),

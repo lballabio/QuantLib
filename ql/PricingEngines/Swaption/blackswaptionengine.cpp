@@ -26,22 +26,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-
-    BlackSwaptionEngine::BlackSwaptionEngine(
-                                   const boost::shared_ptr<BlackModel>& model)
-    : blackModel_(model) {
-        Volatility vol = blackModel_->volatility();
-        boost::shared_ptr<Quote> q(new SimpleQuote(vol));
-        volatility_.linkTo(boost::shared_ptr<SwaptionVolatilityStructure>(
-                        new SwaptionConstantVolatility(0, NullCalendar(),
-                                                       Handle<Quote>(q),
-                                                       Actual365Fixed())));
-        registerWith(blackModel_);
-    }
-
-    #endif
-
     BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility) {
         volatility_.linkTo(boost::shared_ptr<SwaptionVolatilityStructure>(
                new SwaptionConstantVolatility(0, NullCalendar(),
@@ -55,17 +39,8 @@ namespace QuantLib {
         registerWith(volatility_);
     }
 
-    void BlackSwaptionEngine::update() {
-        #ifndef QL_DISABLE_DEPRECATED
-        if (blackModel_) {
-            Volatility vol = blackModel_->volatility();
-            Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(vol)));
-            volatility_.linkTo(
-                    boost::shared_ptr<SwaptionVolatilityStructure>(
-                        new SwaptionConstantVolatility(0, NullCalendar(),
-                                                       q, Actual365Fixed())));
-        }
-        #endif
+    void BlackSwaptionEngine::update()
+    {
         notifyObservers();
     }
 

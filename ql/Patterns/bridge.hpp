@@ -47,10 +47,6 @@ namespace QuantLib {
     class Bridge {
       public:
         typedef T_impl Impl;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated renamed to empty() */
-        bool isNull() const { return empty(); }
-        #endif
         bool empty() const { return !impl_; }
       protected:
         Bridge(const boost::shared_ptr<Impl>& impl = boost::shared_ptr<Impl>())

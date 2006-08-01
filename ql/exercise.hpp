@@ -35,25 +35,12 @@ namespace QuantLib {
     class Exercise {
       public:
         enum Type {
-            #ifndef QL_DISABLE_DEPRECATED
-            Undefined = -1,
-            #endif
             American, Bermudan, European
         };
         // constructor
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated initialize the exercise type explicitly */
-        Exercise() : type_(Undefined) {}
-        #endif
         explicit Exercise(Type type) : type_(type) {}
         virtual ~Exercise() {}
         // inspectors
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated no longer needed after initialization of an
-                        undefined exercise is forbidden
-        */
-        bool isNull() const { return type_ == Undefined; }
-        #endif
         Type type() const { return type_; }
         Date date(Size index) const { return dates_[index]; }
         //! Returns all exercise dates
@@ -68,10 +55,6 @@ namespace QuantLib {
     /*! The payoff can be at exercise (the default) or at expiry */
     class EarlyExercise : public Exercise {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated initialize the exercise type explicitly */
-        EarlyExercise() : payoffAtExpiry_(false) {}
-        #endif
         EarlyExercise(Type type,
                       bool payoffAtExpiry = false)
         : Exercise(type), payoffAtExpiry_(payoffAtExpiry) {}

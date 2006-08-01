@@ -37,18 +37,6 @@ namespace QuantLib {
     class ParCoupon : public FloatingRateCoupon,
                       public Observer {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the gearing-enabled constructor instead
-        ParCoupon(Real nominal,
-                  const Date& paymentDate,
-                  const boost::shared_ptr<Xibor>& index,
-                  const Date& startDate, const Date& endDate,
-                  Integer fixingDays,
-                  Spread spread = 0.0,
-                  const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date(),
-                  const DayCounter& dayCounter = DayCounter());
-        #endif
         ParCoupon(const Date& paymentDate,
                   const Real nominal,
                   const Date& startDate,

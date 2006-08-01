@@ -111,13 +111,6 @@ namespace QuantLib {
                  Real mean = 0.0,
                  Real standard_dev = 1.0);
 
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Size primeNumbers(Size absoluteIndex) {
-        return PrimeNumbers::get(absoluteIndex);
-    }
-    #endif
-
-
     Real rand();
     void randomize(BigNatural seed);
 

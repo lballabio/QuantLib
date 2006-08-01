@@ -40,13 +40,6 @@ namespace QuantLib {
     class Swap : public Instrument {
         typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor with the same parameters in
-                        different order */
-        Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
-             const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
-             const Handle<YieldTermStructure>& termStructure);
-        #endif
         /*! The cash flows belonging to the first leg are paid;
             the ones belonging to the second leg are received.
         */
@@ -65,12 +58,6 @@ namespace QuantLib {
         //@{
         Date startDate() const;
         Date maturity() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use legBPS(0) instead
-        Real firstLegBPS() const {return legBPS(0); }
-        //! \deprecated use legBPS(1) instead
-        Real secondLegBPS() const {return legBPS(1); }
-        #endif
         Real legBPS(Size j) const {
             QL_REQUIRE(j<legs_.size(),
                 "legBPS: leg# " << j << " doesn't exist!");

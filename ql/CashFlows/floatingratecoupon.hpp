@@ -38,17 +38,6 @@ namespace QuantLib {
     */
     class FloatingRateCoupon : public Coupon {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the gearing-enabled constructor instead
-        FloatingRateCoupon(Real nominal,
-                           const Date& paymentDate,
-                           const Date& startDate,
-                           const Date& endDate,
-                           Integer fixingDays,
-                           Spread spread = 0.0,
-                           const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date());
-        #endif
         FloatingRateCoupon(const Date& paymentDate,
                            const Real nominal,
                            const Date& startDate,
@@ -90,18 +79,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use the gearing-enabled constructor instead
-    inline FloatingRateCoupon::FloatingRateCoupon(
-                         Real nominal, const Date& paymentDate,
-                         const Date& startDate, const Date& endDate,
-                         Integer fixingDays, Spread spread,
-                         const Date& refPeriodStart, const Date& refPeriodEnd)
-    : Coupon(nominal, paymentDate,
-             startDate, endDate, refPeriodStart, refPeriodEnd),
-      fixingDays_(fixingDays), gearing_(1.0), spread_(spread) {}
-    #endif
 
     inline FloatingRateCoupon::FloatingRateCoupon(
                          const Date& paymentDate, const Real nominal,

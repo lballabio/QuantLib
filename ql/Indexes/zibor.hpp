@@ -41,14 +41,6 @@ namespace QuantLib {
     */
     class Zibor : public Xibor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        Zibor(Integer n, TimeUnit units,
-              const Handle<YieldTermStructure>& h,
-              const DayCounter& dc = Actual360())
-        : Xibor("Zibor", n, units, 2, CHFCurrency(),
-                Switzerland(), ModifiedFollowing, dc, h) {}
-        #endif
         Zibor(const Period& tenor,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())

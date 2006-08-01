@@ -41,14 +41,6 @@ namespace QuantLib {
     */
     class Tibor : public Xibor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        Tibor(Integer n, TimeUnit units,
-              const Handle<YieldTermStructure>& h,
-              const DayCounter& dc = Actual365Fixed())
-        : Xibor("Tibor", n, units, 2, JPYCurrency(),
-                Japan(), ModifiedFollowing, dc, h) {}
-        #endif
         Tibor(const Period& tenor,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())

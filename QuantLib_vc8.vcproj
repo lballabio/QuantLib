@@ -3767,10 +3767,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\symmetriceigenvalues.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\symmetricschurdecomposition.cpp"
 				>
 				<FileConfiguration
@@ -8513,10 +8509,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\handle.hpp"
-			>
-		</File>
-		<File
-			RelativePath="ql\history.hpp"
 			>
 		</File>
 		<File

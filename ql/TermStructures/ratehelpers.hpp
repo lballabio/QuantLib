@@ -37,15 +37,6 @@ namespace QuantLib {
     */
     class FuturesRateHelper : public RateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use constructors without matDate instead
-        FuturesRateHelper(const Handle<Quote>& price,
-                          const Date& immDate,
-                          const Date& matDate,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
-        #endif
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
                           Integer nMonths,
@@ -93,21 +84,6 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over deposit rates
     class DepositRateHelper : public RelativeDateRateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the corresponding Period based constructor
-        DepositRateHelper(const Handle<Quote>& rate,
-                          Integer n, TimeUnit units,
-                          Integer settlementDays,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
-        DepositRateHelper(Rate rate,
-                          Integer n, TimeUnit units,
-                          Integer settlementDays,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
-        #endif
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
                           Integer settlementDays,
@@ -163,34 +139,6 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over swap rates
     class SwapRateHelper : public RelativeDateRateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the corresponding Period-based constructor
-        SwapRateHelper(const Handle<Quote>& rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
-        //! \deprecated use the corresponding Period-based constructor
-        SwapRateHelper(Rate rate,
-                       Integer n, TimeUnit units,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       // fixed leg
-                       Frequency fixedFrequency,
-                       BusinessDayConvention fixedConvention,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       Frequency floatingFrequency,
-                       BusinessDayConvention floatingConvention,
-                       const DayCounter& floatingDayCount);
-        #endif
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        Integer settlementDays,

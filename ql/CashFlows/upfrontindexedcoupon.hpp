@@ -35,23 +35,6 @@ namespace QuantLib {
     */
     class UpFrontIndexedCoupon : public IndexedCoupon {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the gearing-enabled constructor instead
-        UpFrontIndexedCoupon(Real nominal,
-                             const Date& paymentDate,
-                             const boost::shared_ptr<Xibor>& index,
-                             const Date& startDate, const Date& endDate,
-                             Integer fixingDays,
-                             Spread spread = 0.0,
-                             const Date& refPeriodStart = Date(),
-                             const Date& refPeriodEnd = Date(),
-                             const DayCounter& dayCounter = DayCounter())
-        : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
-                        fixingDays, spread, refPeriodStart, refPeriodEnd,
-                        dayCounter) {
-            calendar_ = index->calendar();
-        }
-        #endif
         UpFrontIndexedCoupon(const Date& paymentDate,
                              const Real nominal,
                              const Date& startDate,

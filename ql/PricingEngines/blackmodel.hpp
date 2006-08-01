@@ -32,56 +32,6 @@ namespace QuantLib {
 
     namespace detail {
 
-        Real blackFormula(Real f, Real k, Real v, Real w);
-
-        Real itmBlackProbability(Real f, Real k, Real v, Real w);
-
-    }
-
-
-    #ifndef QL_DISABLE_DEPRECATED
-
-    //! Black-model for vanilla interest-rate derivatives
-    /*! \deprecated Use BlackFormula for pricing or pass volatility
-                    and term structure separately.
-    */
-    class BlackModel : public Observable, public Observer {
-      public:
-        BlackModel(const Handle<Quote>& volatility,
-                   const Handle<YieldTermStructure>& termStructure)
-        : termStructure_(termStructure), volatility_(volatility) {
-            registerWith(volatility_);
-            registerWith(termStructure_);
-        }
-        BlackModel(const Handle<Quote>& volatility)
-        : volatility_(volatility) {
-            registerWith(volatility_);
-        }
-        const Handle<YieldTermStructure>& termStructure() const {
-            return termStructure_;
-        }
-        void update() { notifyObservers(); }
-        //! Returns the Black volatility
-        Volatility volatility() const { return volatility_->value(); }
-        //! General Black formula
-        static Real formula(Real f, Real k, Real v, Real w) {
-            return detail::blackFormula(f,k,v,w);
-        }
-        //! In-the-money cash probability
-        static Real itmProbability(Real f, Real k, Real v, Real w) {
-            return detail::itmBlackProbability(f,k,v,w);
-        }
-      private:
-        Handle<YieldTermStructure> termStructure_;
-        Handle<Quote> volatility_;
-    };
-
-    #endif
-
-    // inline definitions
-
-    namespace detail {
-
         inline Real blackFormula(Real f, Real k, Real v, Real w) {
             if (std::fabs(v) < QL_EPSILON)
                 return std::max(f*w - k*w, Real(0.0));
@@ -107,6 +57,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

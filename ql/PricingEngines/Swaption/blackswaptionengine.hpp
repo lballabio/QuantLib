@@ -40,19 +40,12 @@ namespace QuantLib {
     class BlackSwaptionEngine : public Swaption::engine,
                                 public Observer {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use one of the other constructors */
-        BlackSwaptionEngine(const boost::shared_ptr<BlackModel>&);
-        #endif
         BlackSwaptionEngine(const Handle<Quote>& volatility);
         BlackSwaptionEngine(const Handle<SwaptionVolatilityStructure>&);
         void calculate() const;
         void update();
       private:
         Handle<SwaptionVolatilityStructure> volatility_;
-        #ifndef QL_DISABLE_DEPRECATED
-        boost::shared_ptr<BlackModel> blackModel_;
-        #endif
     };
 
 }

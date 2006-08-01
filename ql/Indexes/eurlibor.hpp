@@ -42,15 +42,6 @@ namespace QuantLib {
     */
     class EURLibor : public Libor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        EURLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Libor("EURLibor", n, units, 2, EURCurrency(),
-                TARGET(), TARGET(),
-                ModifiedFollowing, dc, h) {}
-        #endif
         EURLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),

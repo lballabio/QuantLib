@@ -36,22 +36,6 @@ namespace QuantLib {
     template <class IndexedCouponType>
     class Short : public IndexedCouponType {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the gearing-enabled constructor instead
-        Short(Real nominal,
-              const Date& paymentDate,
-              const boost::shared_ptr<Xibor>& index,
-              const Date& startDate,
-              const Date& endDate,
-              Integer fixingDays,
-              Spread spread = 0.0,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date(),
-              const DayCounter& dayCounter = DayCounter())
-        : IndexedCouponType(nominal, paymentDate, index, startDate,
-                            endDate, fixingDays, spread,
-                            refPeriodStart, refPeriodEnd, dayCounter) {}
-        #endif
         Short(const Date& paymentDate,
               const Real nominal,
               const Date& startDate,

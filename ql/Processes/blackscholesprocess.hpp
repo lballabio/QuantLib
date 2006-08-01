@@ -84,12 +84,6 @@ namespace QuantLib {
         mutable bool updated_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to GeneralizedBlackScholesProcess */
-    typedef GeneralizedBlackScholesProcess BlackScholesProcess;
-    #endif
-
-
     //! Black-Scholes (1973) stochastic process
     /*! This class describes the stochastic process for a stock given by
         \f[

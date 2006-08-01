@@ -52,7 +52,6 @@ include_HEADERS = \
 	simpsonintegral.hpp \
 	statistics.hpp \
 	svd.hpp \
-	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp \
 	tqreigendecomposition.hpp \
 	transformedgrid.hpp \

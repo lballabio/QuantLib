@@ -40,16 +40,6 @@ namespace QuantLib {
     */
     class USDLibor : public Libor {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the Period-based constructor */
-        USDLibor(Integer n, TimeUnit units,
-                 const Handle<YieldTermStructure>& h,
-                 const DayCounter& dc = Actual360())
-        : Libor("USDLibor", n, units, 2, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedStates(UnitedStates::NYSE),
-                ModifiedFollowing, dc, h) {}
-        #endif
         USDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),

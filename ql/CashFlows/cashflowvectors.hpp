@@ -65,29 +65,6 @@ namespace QuantLib {
         #endif
         ,
         const DayCounter& dayCounter = DayCounter());
-
-    #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use the gearing-enabled function instead
-    inline std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
-        const Schedule& schedule,
-        BusinessDayConvention paymentAdjustment,
-        const std::vector<Real>& nominals,
-        const boost::shared_ptr<Xibor>& index,
-        Integer fixingDays,
-        const std::vector<Spread>& spreads
-        #if !defined(QL_PATCH_MSVC6)
-        = std::vector<Spread>()
-        #endif
-        ,
-        const DayCounter& dayCounter = DayCounter())
-    {
-        return FloatingRateCouponVector(schedule, paymentAdjustment, nominals,
-                                        fixingDays, index,
-                                        std::vector<Real>(1, 1.0), spreads,
-                                        dayCounter);
-    }
-    #endif
-
 }
 
 #endif

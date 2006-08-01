@@ -26,24 +26,6 @@
 namespace QuantLib {
 
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Swap::Swap(const Swap::Leg& firstLeg,
-               const Swap::Leg& secondLeg,
-               const Handle<YieldTermStructure>& termStructure)
-    : termStructure_(termStructure), legs_(2), payer_(2), legBPS_(2, 0.0) {
-        legs_[0] = firstLeg;
-        legs_[1] = secondLeg;
-        payer_[0] = -1.0;
-        payer_[1] =  1.0;
-        registerWith(termStructure_);
-        Swap::Leg::iterator i;
-        for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
-            registerWith(*i);
-        for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
-            registerWith(*i);
-    }
-    #endif
-
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
                const Swap::Leg& firstLeg,
                const Swap::Leg& secondLeg)
