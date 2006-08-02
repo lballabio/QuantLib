@@ -145,7 +145,7 @@ namespace QuantLib {
 
     // specific models
 
-    BlackScholes73Process::BlackScholes73Process(
+    BlackScholesProcess::BlackScholesProcess(
                               const Handle<Quote>& x0,
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<BlackVolTermStructure>& blackVolTS,

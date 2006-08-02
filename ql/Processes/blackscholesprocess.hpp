@@ -92,15 +92,21 @@ namespace QuantLib {
 
         \ingroup processes
     */
-    class BlackScholes73Process : public GeneralizedBlackScholesProcess {
+    class BlackScholesProcess : public GeneralizedBlackScholesProcess {
       public:
-        BlackScholes73Process(
+        BlackScholesProcess(
             const Handle<Quote>& x0,
             const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<discretization>& d =
                   boost::shared_ptr<discretization>(new EulerDiscretization));
     };
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to BlackScholesProcess */
+    typedef BlackScholesProcess BlackScholes73Process;
+    #endif
+
 
     //! Merton (1973) extension to the Black-Scholes stochastic process
     /*! This class describes the stochastic process for a stock or

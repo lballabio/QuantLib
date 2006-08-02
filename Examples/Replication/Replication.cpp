@@ -114,7 +114,7 @@ int main(int, char* [])
                                         new PlainVanillaPayoff(type, strike));
 
         boost::shared_ptr<StochasticProcess> stochasticProcess(
-                          new BlackScholes73Process(Handle<Quote>(underlying),
+                            new BlackScholesProcess(Handle<Quote>(underlying),
                                                     flatRate, flatVol));
 
         BarrierOption referenceOption(barrierType, barrier, rebate,
