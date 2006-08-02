@@ -24,6 +24,7 @@
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/math/gaussianquadratures.hpp>
 #include <ql/math/kronrodintegral.hpp>
+#include <ql/Solvers1D/all.hpp>
 
 namespace QuantLib
 {
@@ -384,8 +385,8 @@ namespace QuantLib
 
 	Real GFunctionFactory::GFunctionParallelShifts::firstDerivative(Real R)
     {
-		return std::exp(-(timeToPayment_)*shift_) 
-			/ (1-discountRatios_*std::exp(-(timeToSwapEnd_)*shift_));
+		return std::exp(-paymentTime_*shift_) 
+			/ (1-discountRatio_*std::exp(-swapEndTime_*shift_));
     }
 
 	Real GFunctionFactory::GFunctionParallelShifts::secondDerivative(Real R)
@@ -394,6 +395,43 @@ namespace QuantLib
     }
 
 	GFunctionFactory::GFunctionParallelShifts::GFunctionParallelShifts(boost::shared_ptr<CMSCoupon> coupon) {
-	
+
+		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
+        const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(coupon->fixingDate());
+		swapRateValue_ = swap->fairRate();
+		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg = swap->fixedLeg();
+
+		const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(coupon->fixingDate()));
+
+		const boost::shared_ptr<YieldTermStructure> rateCurve = swapRate->iborIndex()->termStructure();
+        const DayCounter dc = swapRate->dayCounter();
+		paymentTime_ = dc.yearFraction(rateCurve->referenceDate(),
+                                           coupon->date());
+		
+		for(Size i=0; i<fixedLeg.size(); i++) {
+			accruals_.push_back(static_cast<const Coupon*>(fixedLeg[i].get())->accrualPeriod());
+			const Date paymentDate = static_cast<const Coupon*>(fixedLeg[i].get())->date();
+			swapPaymentTimes_.push_back(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
+			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
+		}
+		swapEndTime_ = swapPaymentTimes_.back();
+		discountRatio_ = swapPaymentDiscounts_.back()/swapPaymentDiscounts_.front();
+		
+		std::auto_ptr<ObjectiveFunction> objectiveFunction(new ObjectiveFunction(*this));
+
+		Bisection solver;
+		shift_ = solver.solve(*objectiveFunction, .00001, .03, .1); // ????
+	}
+
+	Real GFunctionFactory::GFunctionParallelShifts::ObjectiveFunction::operator ()(const Real& x) const {
+		Real result = 0;
+		for(Size i=0; i<o_.accruals_.size(); i++) {
+			result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]*std::exp((o_.swapPaymentTimes_[i]*o_.shift_));
+		}
+		result *=o_.swapRateValue_;
+
+		result += o_.swapPaymentDiscounts_.back()*std::exp(o_.swapPaymentTimes_.back()*o_.shift_)
+			- o_.swapPaymentDiscounts_.front();
+		return result;
 	}
 }

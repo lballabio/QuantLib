@@ -99,9 +99,21 @@ namespace QuantLib
 
 		class GFunctionParallelShifts : public GFunction {
 			
-			Real timeToPayment_, discountRatios_, timeToSwapEnd_;
+			Real paymentTime_, discountRatio_, swapEndTime_;
+			std::vector<Time> accruals_, swapPaymentTimes_;
+			std::vector<Real> swapPaymentDiscounts_;
 			/** value determinated implicitly  */
-			Real shift_;
+			Real shift_, swapRateValue_;
+
+			class ObjectiveFunction : public std::unary_function<Real, Real> {
+				
+				const GFunctionParallelShifts& o_;
+
+			public:
+				ObjectiveFunction(const GFunctionParallelShifts& o) : o_(o) {
+				}
+				virtual Real operator()(const Real& x) const;
+			};
 
           public:
             
