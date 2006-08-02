@@ -60,7 +60,7 @@ namespace QuantLib {
         //! fixing date
         virtual Date fixingDate() const = 0;
         //! index gearing, i.e. multiplicative coefficient for the index
-        virtual Real gearing() const { return gearing_; }
+        Real gearing() const { return gearing_; }
         //! fixing of the underlying index
         virtual Rate indexFixing() const = 0;
         //! convexity adjustment
@@ -73,7 +73,7 @@ namespace QuantLib {
             return f + convexityAdjustment(f);
         };
         //! spread paid over the fixing of the underlying index
-        virtual Spread spread() const { return spread_; }
+        Spread spread() const { return spread_; }
         //@}
         //! \name Visitability
         //@{
