@@ -55,7 +55,7 @@ namespace QuantLib
 		swapRateValue_ = swap->fairRate();
 
 		static const Spread basisPoSize = 1.0e-4;
-		annuity_ = swap->floatingLegBPS()/basisPoSize;
+        annuity_ = (swap->floatingLegBPS()/basisPoSize)/coupon_.nominal();
 
 		min_ = coupon_.floor();
 		max_ = coupon_.cap();
@@ -75,7 +75,7 @@ namespace QuantLib
                                            paymentDate_);
 		Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
-        gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.units());
+        gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
 	}
 
 	Real ConundrumPricer::price() const
@@ -144,7 +144,7 @@ namespace QuantLib
         //const Size n = 25;
 		//GaussLegendre Integral(n);
 
-        KronrodIntegral integral(0.0000000001, 1000000); 
+        KronrodIntegral integral(1.e-12, 1000000); 
 		return integral(integrand,a , b);
 	}
 
@@ -254,8 +254,8 @@ namespace QuantLib
       firstDerivativeOfGAtForwardValue_(gFunction_->firstDerivative(
                                                         swapRateValue_)) {}
 
-     //Hagan, 3.5b, 3.5c
-     Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const
+    //Hagan, 3.5b, 3.5c
+    Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const
      {
 	    Real price = 0;
         
@@ -266,7 +266,8 @@ namespace QuantLib
 	    const Real d32 = (lnRoverK+1.5*variance_)/sqrtSigma2T;
         const Real d12 =  (lnRoverK+.5*variance_)/sqrtSigma2T;
         const Real dminus12 =  (lnRoverK-.5*variance_)/sqrtSigma2T;
-	    const int sgn = isCall ? 1 : -1;
+	    const Real sgn = isCall ? 1.0 : -1.0;
+    
         CumulativeNormalDistribution cumulativeOfNormal;
 	    const Real N32 = cumulativeOfNormal(sgn*d32);
         const Real N12 = cumulativeOfNormal(sgn*d12);
@@ -308,6 +309,7 @@ namespace QuantLib
                     index()->iborIndex()->termStructure(),
                     *this,
                     vanillaOptionPricer).rate();
+              //return rate1();
           case ConvexityAdjustmentPricer::ConundrumByNumericalIntegration:
             return ConundrumPricerByNumericalIntegration(
                     GFunctionFactory::standard,
