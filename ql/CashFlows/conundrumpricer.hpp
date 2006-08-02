@@ -98,18 +98,21 @@ namespace QuantLib
 		};
 
 		class GFunctionParallelShifts : public GFunction {
+			
+			Real timeToPayment_, discountRatios_, timeToSwapEnd_;
+			/** value determinated implicitly  */
+			Real shift_;
+
           public:
-            GFunctionParallelShifts() {};
-			Real operator()(Real x) ;
-            Real firstDerivative(Real x);
-            Real secondDerivative(Real x);
-          protected:
-			/** value determinated implicitly in term   */
-			Real x_;
-			/** fraction of a period between the swap start date and the pay date  */
-			Real delta_;
-			/** length of swap*/
-			Size swapLength_;
+            
+			  GFunctionParallelShifts(boost::shared_ptr<CMSCoupon> coupon);
+			
+			  Real operator()(Real x) ;
+			  Real firstDerivative(Real x);
+			  Real secondDerivative(Real x);
+
+		protected:
+
 		};
 
     };

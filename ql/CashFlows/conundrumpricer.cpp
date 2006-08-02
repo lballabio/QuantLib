@@ -377,4 +377,23 @@ namespace QuantLib
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
 
+	Real GFunctionFactory::GFunctionParallelShifts::operator()(Real R)
+    {
+		return R*firstDerivative(R);
+    }
+
+	Real GFunctionFactory::GFunctionParallelShifts::firstDerivative(Real R)
+    {
+		return std::exp(-(timeToPayment_)*shift_) 
+			/ (1-discountRatios_*std::exp(-(timeToSwapEnd_)*shift_));
+    }
+
+	Real GFunctionFactory::GFunctionParallelShifts::secondDerivative(Real R)
+    {
+		return 0;
+    }
+
+	GFunctionFactory::GFunctionParallelShifts::GFunctionParallelShifts(boost::shared_ptr<CMSCoupon> coupon) {
+	
+	}
 }
