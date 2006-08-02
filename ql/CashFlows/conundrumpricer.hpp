@@ -97,27 +97,31 @@ namespace QuantLib
 			Size swapLength_;
 		};
 
-		class GFunctionParallelShifts : public GFunction {
+		class GFunctionWithShifts : public GFunction {
 			
-			Real paymentTime_, discountRatio_, swapEndTime_;
+			Time paymentTime_, swapEndTime_, swapStartTime_;
+			Real discountRatio_;
 			std::vector<Time> accruals_, swapPaymentTimes_;
 			std::vector<Real> swapPaymentDiscounts_;
 			/** value determinated implicitly  */
 			Real shift_, swapRateValue_;
+			Real meanReversion_;
+
+			Real shape(Real s) const;
 
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
 				
-				const GFunctionParallelShifts& o_;
+				const GFunctionWithShifts& o_;
 
 			public:
-				ObjectiveFunction(const GFunctionParallelShifts& o) : o_(o) {
+				ObjectiveFunction(const GFunctionWithShifts& o) : o_(o) {
 				}
 				virtual Real operator()(const Real& x) const;
 			};
 
           public:
             
-			  GFunctionParallelShifts(boost::shared_ptr<CMSCoupon> coupon);
+			  GFunctionWithShifts(boost::shared_ptr<CMSCoupon> coupon, Real meanReversion);
 			
 			  Real operator()(Real x) ;
 			  Real firstDerivative(Real x);

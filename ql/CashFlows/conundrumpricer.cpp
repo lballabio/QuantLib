@@ -378,23 +378,24 @@ namespace QuantLib
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
 
-	Real GFunctionFactory::GFunctionParallelShifts::operator()(Real R)
+	Real GFunctionFactory::GFunctionWithShifts::operator()(Real R)
     {
 		return R*firstDerivative(R);
     }
 
-	Real GFunctionFactory::GFunctionParallelShifts::firstDerivative(Real R)
+	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real R)
     {
 		return std::exp(-paymentTime_*shift_) 
 			/ (1-discountRatio_*std::exp(-swapEndTime_*shift_));
     }
 
-	Real GFunctionFactory::GFunctionParallelShifts::secondDerivative(Real R)
+	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real R)
     {
 		return 0;
     }
 
-	GFunctionFactory::GFunctionParallelShifts::GFunctionParallelShifts(boost::shared_ptr<CMSCoupon> coupon) {
+	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(boost::shared_ptr<CMSCoupon> coupon, 
+		Real meanReversion) : meanReversion_(meanReversion) {
 
 		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
         const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(coupon->fixingDate());
@@ -402,9 +403,11 @@ namespace QuantLib
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg = swap->fixedLeg();
 
 		const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(coupon->fixingDate()));
+		
 
 		const boost::shared_ptr<YieldTermStructure> rateCurve = swapRate->iborIndex()->termStructure();
         const DayCounter dc = swapRate->dayCounter();
+		swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
 		paymentTime_ = dc.yearFraction(rateCurve->referenceDate(),
                                            coupon->date());
 		
@@ -423,7 +426,7 @@ namespace QuantLib
 		shift_ = solver.solve(*objectiveFunction, .00001, .03, .1); // ????
 	}
 
-	Real GFunctionFactory::GFunctionParallelShifts::ObjectiveFunction::operator ()(const Real& x) const {
+	Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
 		Real result = 0;
 		for(Size i=0; i<o_.accruals_.size(); i++) {
 			result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]*std::exp((o_.swapPaymentTimes_[i]*o_.shift_));
@@ -433,5 +436,13 @@ namespace QuantLib
 		result += o_.swapPaymentDiscounts_.back()*std::exp(o_.swapPaymentTimes_.back()*o_.shift_)
 			- o_.swapPaymentDiscounts_.front();
 		return result;
+	}
+
+	Real GFunctionFactory::GFunctionWithShifts::shape(Real s) const {
+		if(meanReversion_>0) {
+			return (1.-std::exp(-meanReversion_*(s-swapStartTime_)))/meanReversion_;
+		}
+		else
+			return s-swapStartTime_;
 	}
 }
