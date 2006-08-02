@@ -385,8 +385,8 @@ namespace QuantLib
 
 	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real R)
     {
-		return std::exp(-(paymentTime_-swapStartTime_)*shift_) 
-			/ (1-discountRatio_*std::exp(-(swapEndTime_-swapStartTime_)*shift_));
+		return std::exp(-(shape(paymentTime_))*shift_) 
+			/ (1-discountRatio_*std::exp(-shape(swapEndTime_)*shift_));
     }
 
 	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real R)
@@ -396,8 +396,6 @@ namespace QuantLib
 
 	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(boost::shared_ptr<CMSCoupon> coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
-
-		meanReversion_ = 0; //>0 not implemented yet
 
 		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
         const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(coupon->fixingDate());
@@ -432,12 +430,12 @@ namespace QuantLib
 		Real result = 0;
 		for(Size i=0; i<o_.accruals_.size(); i++) {
 			result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]
-				*std::exp(((o_.swapPaymentTimes_[i]-o_.swapStartTime_)*o_.shift_));
+				*std::exp((o_.shape(o_.swapPaymentTimes_[i])*o_.shift_));
 		}
 		result *=o_.swapRateValue_;
 
 		result += o_.swapPaymentDiscounts_.back()
-			*std::exp((o_.swapPaymentTimes_.back()-o_.swapStartTime_)*o_.shift_)
+			*std::exp(o_.shape(o_.swapPaymentTimes_.back())*o_.shift_)
 			- o_.swapPaymentDiscounts_.front();
 		return result;
 	}
