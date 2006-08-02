@@ -248,7 +248,7 @@ void LiborMarketModelTest::testCalibration() {
     QL_TEST_BEGIN
 
     const Size size = 14;
-    const Real tolerance = 3e-3;
+    const Real tolerance = 8e-3;
 
     Volatility capVols[] = {0.145708,0.158465,0.166248,0.168672,
                             0.169007,0.167956,0.166261,0.164239,
