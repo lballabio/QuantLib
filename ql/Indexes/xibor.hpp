@@ -45,6 +45,7 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Rate forecastFixing(const Date& fixingDate) const;
+        boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
         //! \name Inspectors
         //@{
@@ -54,7 +55,6 @@ namespace QuantLib {
         Frequency frequency() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-        boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
         //! \name Date calculations
         //@{
@@ -65,9 +65,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure_;
     };
 
-    //#ifndef QL_DISABLE_DEPRECATED
-    //typedef IborIndex Xibor;
-    //#endif
+    #ifndef QL_DISABLE_DEPRECATED
+    typedef IborIndex Xibor;
+    #endif
     
     // inline definitions
 

@@ -37,17 +37,10 @@ namespace QuantLib {
                   Frequency fixedLegFrequency,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<Xibor>& iborIndex)
-        : InterestRateIndex(familyName, Period(years, Years), settlementDays,
-                            currency, calendar, fixedLegDayCounter),
-          years_(years), iborIndex_(iborIndex),
-          fixedLegFrequency_(fixedLegFrequency),
-          fixedLegConvention_(fixedLegConvention)
-        {
-            registerWith(iborIndex_);
-        }
+                  const boost::shared_ptr<Xibor>& iborIndex);
         //! \name InterestRateIndex interface
         //@{
+        boost::shared_ptr<YieldTermStructure> termStructure() const;
         Rate forecastFixing(const Date& fixingDate) const;
         //@}
         //! \name Inspectors
@@ -59,12 +52,16 @@ namespace QuantLib {
         boost::shared_ptr<Xibor> iborIndex() const { return iborIndex_; }
 		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
 		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
-      private:
+      protected:
         Integer years_;
         boost::shared_ptr<Xibor> iborIndex_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
     };
+
+   inline boost::shared_ptr<YieldTermStructure> SwapIndex::termStructure() const {
+       return iborIndex_->termStructure();
+   }
 
 }
 

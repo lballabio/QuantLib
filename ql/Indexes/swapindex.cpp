@@ -23,6 +23,24 @@
 
 namespace QuantLib {
 
+    SwapIndex::SwapIndex(const std::string& familyName,
+                         Integer years,
+                         Integer settlementDays,
+                         Currency currency,
+                         const Calendar& calendar,
+                         Frequency fixedLegFrequency,
+                         BusinessDayConvention fixedLegConvention,
+                         const DayCounter& fixedLegDayCounter,
+                         const boost::shared_ptr<Xibor>& iborIndex)
+    : InterestRateIndex(familyName, Period(years, Years), settlementDays,
+                        currency, calendar, fixedLegDayCounter),
+      years_(years), iborIndex_(iborIndex),
+      fixedLegFrequency_(fixedLegFrequency),
+      fixedLegConvention_(fixedLegConvention)
+    {
+        registerWith(iborIndex_);
+    }
+
     Rate SwapIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(iborIndex_, "no index set");
         QL_REQUIRE(iborIndex_->termStructure(), "no term structure set");
