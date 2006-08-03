@@ -62,25 +62,17 @@ namespace QuantLib {
                   Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
-        //! \name CashFlow interface
-        //@{
-        Real amount() const;
-        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const;
-        // ???
+        // legacy code (analytical integration) to be removed later
         Rate rate1() const;
-        DayCounter dayCounter() const { return dayCounter_; }
-        //@}
-        //! \name FloatingRateCoupon interface
-        //@{
-        Date fixingDate() const;
-        Rate indexFixing() const;
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<SwapIndex>& index() const { return index_; }
+        const boost::shared_ptr<SwapIndex>& swapIndex() const {
+            return swapIndex_;
+        }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
         //Real multiplier() const { return multiplier_; }
@@ -89,15 +81,17 @@ namespace QuantLib {
         //@{
         void setSwaptionVolatility(
                 const Handle<SwaptionVolatilityStructure>&);
-        Handle<SwaptionVolatilityStructure> CMSCoupon::swaptionVolatility() const;
+        Handle<SwaptionVolatilityStructure> swaptionVolatility() const;
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        boost::shared_ptr<SwapIndex> index_;
-        DayCounter dayCounter_;
+        Rate convexityAdjustment(Rate f) const {
+            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
+        }
+        boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
         boost::shared_ptr<VanillaCMSCouponPricer> Pricer_;

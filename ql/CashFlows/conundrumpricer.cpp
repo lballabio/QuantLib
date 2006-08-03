@@ -50,11 +50,11 @@ namespace QuantLib
         coupon_ = &coupon; 
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date(); 
-        const boost::shared_ptr<SwapIndex>& swapRate = coupon_->index();
-        rateCurve_ = swapRate->iborIndex()->termStructure();
+        const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
+        rateCurve_ = swapIndex->termStructure();
         discount_ = rateCurve_->discount(paymentDate_);
-	    swapTenor_ = swapRate->tenor();
-        boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
+	    swapTenor_ = swapIndex->tenor();
+        boost::shared_ptr<VanillaSwap> swap = swapIndex->underlyingSwap(fixingDate_);
 
 		swapRateValue_ = swap->fairRate();
 
@@ -65,11 +65,11 @@ namespace QuantLib
 		max_ = coupon_->cap();
 		gearing_ = coupon_->gearing();
 		spread_ = coupon_->spread();
-        const Size q = swapRate->fixedLegFrequency();
+        const Size q = swapIndex->fixedLegFrequency();
 
-        const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(fixingDate_));
+        const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(fixingDate_));
 
-        const DayCounter dc(swapRate->dayCounter());
+        const DayCounter dc(swapIndex->dayCounter());
 		const Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
                                          swap->startDate());
 		const Time swapFirstPaymentTime = dc.yearFraction(rateCurve_->referenceDate(),
@@ -355,15 +355,15 @@ namespace QuantLib
 	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
 
-		const boost::shared_ptr<SwapIndex>& swapRate(boost::dynamic_pointer_cast<SwapIndex>(coupon->index()));
-        const boost::shared_ptr<VanillaSwap> swap(swapRate->underlyingSwap(coupon->fixingDate()));
+		const boost::shared_ptr<SwapIndex>& swapIndex = coupon->swapIndex();
+        const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon->fixingDate());
 
 		swapRateValue_ = swap->fairRate();
 
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
-		const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(coupon->fixingDate()));
-		const boost::shared_ptr<YieldTermStructure> rateCurve(swapRate->termStructure());
-        const DayCounter dc(swapRate->dayCounter());
+		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon->fixingDate()));
+		const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
+        const DayCounter dc(swapIndex->dayCounter());
 
 		swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
 		discountAtStart_ = rateCurve->discount(schedule->startDate());

@@ -33,10 +33,10 @@ namespace QuantLib {
                   Rate floor,
                   const Date& refPeriodStart,
                   const Date& refPeriodEnd)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
-                         index, gearing, spread, refPeriodStart, refPeriodEnd,
-                         dayCounter),
-      cap_(cap), floor_(floor), Pricer_(Pricer) {}
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                         fixingDays, index, gearing, spread,
+                         refPeriodStart, refPeriodEnd, dayCounter),
+      swapIndex_(index), cap_(cap), floor_(floor), Pricer_(Pricer) {}
 
     namespace {
 
@@ -115,11 +115,11 @@ namespace QuantLib {
             Time tau = dc.yearFraction(today,d);
             Schedule s(index_->calendar(),
                        d, d+index_->tenor(),
-                       index_->fixedLegFrequency(),
-                       index_->fixedLegConvention());
+                       swapIndex_->fixedLegFrequency(),
+                       swapIndex_->fixedLegConvention());
             Date tp = date();
             DiscountFactor D_s0 =
-                index_->iborIndex()->termStructure()->discount(d);
+                index_->termStructure()->discount(d);
             Real g = G(Rs,tp,D_s0,s,dc), g1 = Gprime(Rs,tp,D_s0,s,dc);
             Spread adjustment = (g1/g)*Rs*Rs*(std::exp(sigma*sigma*tau)-1.0);
             rate += adjustment;
@@ -180,19 +180,6 @@ namespace QuantLib {
             }
             return gearing_*rate + spread_;
         }
-    }
-
-    Date CMSCoupon::fixingDate() const {
-        return index_->calendar().advance(accrualStartDate_,
-                                          -fixingDays_, Days);
-    }
-
-    Rate CMSCoupon::indexFixing() const {
-        return index_->fixing(fixingDate());
-    }
-
-    Real CMSCoupon::amount() const {
-        return rate() * accrualPeriod() * nominal();
     }
 
     void CMSCoupon::setSwaptionVolatility(
