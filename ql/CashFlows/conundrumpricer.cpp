@@ -391,26 +391,25 @@ namespace QuantLib
 	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
 
-		const boost::shared_ptr<SwapIndex>& swapRate =
-            boost::dynamic_pointer_cast<SwapIndex>(coupon->index());
-        const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(coupon->fixingDate());
+		const boost::shared_ptr<SwapIndex>& swapRate(boost::dynamic_pointer_cast<SwapIndex>(coupon->index()));
+        const boost::shared_ptr<VanillaSwap> swap(swapRate->underlyingSwap(coupon->fixingDate()));
 		swapRateValue_ = swap->fairRate();
-		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg = swap->fixedLeg();
+		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
 		const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(coupon->fixingDate()));
-		const boost::shared_ptr<YieldTermStructure> rateCurve = swapRate->termStructure();
-        const DayCounter dc = swapRate->dayCounter();
+		const boost::shared_ptr<YieldTermStructure> rateCurve(swapRate->termStructure());
+        const DayCounter dc(swapRate->dayCounter());
 		swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
 
 		discountAtStart_ = rateCurve->discount(schedule->startDate());
 
-		const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(), coupon->date());
+		const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon->date()));
 		shapedPaymentTime_ = shapeOfShift(paymentTime);
 
 		for(Size i=0; i<fixedLeg.size(); i++) {
-			const Coupon* coupon = static_cast<const Coupon*>(fixedLeg[i].get());
+			const Coupon* coupon(static_cast<const Coupon*>(fixedLeg[i].get()));
 			accruals_.push_back(coupon->accrualPeriod());
-			const Date paymentDate = coupon->date();
-			const double swapPaymentTime = dc.yearFraction(rateCurve->referenceDate(), paymentDate);
+			const Date paymentDate(coupon->date());
+			const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
 			shapedSwapPaymentTimes_.push_back(shapeOfShift(swapPaymentTime));
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
