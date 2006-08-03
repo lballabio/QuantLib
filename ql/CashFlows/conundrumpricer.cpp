@@ -88,24 +88,24 @@ namespace QuantLib
 		Real capLetPrice = 0;
 
 		if (max_ < cutoffForCaplet_) {
-			if (effectiveStrikeForMax<=swapRateValue_) {
-				capLetPrice = optionLetPrice(false, effectiveStrikeForMax) 
-					+ (swapLetPrice_ - effectiveStrikeForMax*coupon_.accrualPeriod()*discount_);
-			} else {
-				capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
-			}
+			//if (effectiveStrikeForMax<=swapRateValue_) {
+			//	capLetPrice = optionLetPrice(false, effectiveStrikeForMax) 
+			//		+ (swapLetPrice_ - effectiveStrikeForMax*coupon_.accrualPeriod()*discount_);
+			//} else {
+			capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
+			//}
 		}
 
 		const Real effectiveStrikeForMin = (min_-spread_)/gearing_;
 		Real floorLetPrice = 0;
 
 		if (min_ > cutoffForFloorlet_) { 
-			if (effectiveStrikeForMin<=swapRateValue_) {
-				floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
-			} else {
-				floorLetPrice = optionLetPrice(true, effectiveStrikeForMin) - 
-					(swapLetPrice_ - effectiveStrikeForMin*coupon_.accrualPeriod()*discount_);
-			}
+			//if (effectiveStrikeForMin<=swapRateValue_) {
+			floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
+			//} else {
+			//	floorLetPrice = optionLetPrice(true, effectiveStrikeForMin) - 
+			//		(swapLetPrice_ - effectiveStrikeForMin*coupon_.accrualPeriod()*discount_);
+			//}
 		}
 		const Real price = gearing_*(swapLetPrice_ + floorLetPrice - capLetPrice) + spreadLegValue;
 		return price;
