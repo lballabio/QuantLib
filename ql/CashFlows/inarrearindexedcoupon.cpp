@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,16 +40,10 @@ namespace QuantLib {
             if (d1 <= referenceDate) {
                 return 0.0;
             } else {
-                Volatility sigma = capletVolatility_->volatility(d1,f0);
-                DayCounter dayCount = capletVolatility_->dayCounter();
-                Date d2 = xibor_->calendar().advance(
-                                             d1, xibor_->tenor(),
-                                             xibor_->businessDayConvention());
-                Time tau = dayCount.yearFraction(d1,d2);
-                Real variance = sigma*sigma*tau;
-
-                Time t1 = dayCount.yearFraction(referenceDate,d1);
-                return f0*f0*variance*t1/(1.0+f0*tau);
+                Date d2 = index_->maturityDate(d1);
+                Time tau = index_->dayCounter().yearFraction(d1, d2);
+                Real variance = capletVolatility_->blackVariance(d1, f0);
+                return f0*f0*variance*tau/(1.0+f0*tau);
             }
         }
     }

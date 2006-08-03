@@ -30,16 +30,12 @@ namespace QuantLib {
                          const Date& refPeriodStart, const Date& refPeriodEnd,
                          const DayCounter& dayCounter)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, gearing, spread,
-                         refPeriodStart, refPeriodEnd),
-      index_(index), dayCounter_(dayCounter) {
-        registerWith(index_);
-        registerWith(Settings::instance().evaluationDate());
-    }
+                         fixingDays, index, gearing, spread,
+                         refPeriodStart, refPeriodEnd, dayCounter) {}
 
     Rate ParCoupon::rate() const {
         boost::shared_ptr<YieldTermStructure> termStructure =
-            index_->termStructure();
+            index()->termStructure();
         QL_REQUIRE(termStructure,
                    "null term structure set to par coupon");
         Date today = Settings::instance().evaluationDate();
@@ -47,47 +43,36 @@ namespace QuantLib {
         if (fixing_date < today) {
             // must have been fixed
             Rate pastFixing = IndexManager::instance().getHistory(
-                                                 index_->name())[fixing_date];
+                                                 index()->name())[fixing_date];
             QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << index_->name()
+                       "Missing " << index()->name()
                        << " fixing for " << fixing_date);
-            return gearing_*pastFixing+spread_;
+            return gearing()*pastFixing+spread();
         }
         if (fixing_date == today) {
             // might have been fixed
             try {
                 Rate pastFixing = IndexManager::instance().getHistory(
-                                                 index_->name())[fixing_date];
+                                                 index()->name())[fixing_date];
                 if (pastFixing != Null<Real>())
-                    return gearing_*pastFixing+spread_;
+                    return gearing()*pastFixing+spread();
                 else
                     ;   // fall through and forecast
             } catch (Error&) {
                 ;       // fall through and forecast
             }
         }
-        Date fixingValueDate = index_->calendar().advance(
-                                 fixing_date, index_->settlementDays(), Days);
+        Date fixingValueDate = index()->calendar().advance(
+                                 fixing_date, index()->settlementDays(), Days);
         DiscountFactor startDiscount =
             termStructure->discount(fixingValueDate);
-        Date temp = index_->calendar().advance(accrualEndDate_,
-                                               -fixingDays_, Days);
+        Date temp = index()->calendar().advance(accrualEndDate_,
+                                               -fixingDays(), Days);
         DiscountFactor endDiscount =
-            termStructure->discount(index_->calendar().advance(
-                                       temp, index_->settlementDays(), Days));
-        return gearing_*(startDiscount/endDiscount-1.0)/accrualPeriod() +
-               spread_;
-    }
-
-    Rate ParCoupon::indexFixing() const {
-        return index_->fixing(fixingDate());
-    }
-
-    Rate ParCoupon::convexityAdjustment(Rate f) const {
-        if (gearing_ == 0.0)
-            return 0.0;
-        else
-            return (rate()-spread_)/gearing_ - f;
+            termStructure->discount(index()->calendar().advance(
+                                       temp, index()->settlementDays(), Days));
+        return gearing()*(startDiscount/endDiscount-1.0)/accrualPeriod() +
+               spread();
     }
 
 }

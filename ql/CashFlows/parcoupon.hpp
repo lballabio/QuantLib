@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,8 +35,7 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-    class ParCoupon : public FloatingRateCoupon,
-                      public Observer {
+    class ParCoupon : public FloatingRateCoupon {
       public:
         ParCoupon(const Date& paymentDate,
                   const Real nominal,
@@ -51,51 +51,17 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
-        DayCounter dayCounter() const;
-        //@}
-        //! \name FloatingRateCoupon interface
-        //@{
-        Rate indexFixing() const;
-        Date fixingDate() const;
-        //@}
-        //! \name Inspectors
-        //@{
-        const boost::shared_ptr<Xibor>& index() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate convexityAdjustment(Rate fixing) const;
-        boost::shared_ptr<Xibor> index_;
-        DayCounter dayCounter_;
+        Rate convexityAdjustment(Rate f) const;
     };
 
 
     // inline definitions
-
-    inline DayCounter ParCoupon::dayCounter() const {
-        return dayCounter_.empty() ? index_->dayCounter() : dayCounter_;
-    }
-
-    inline Date ParCoupon::fixingDate() const {
-        return index_->calendar().advance(accrualStartDate_,
-                                          -fixingDays_, Days,
-                                          Preceding);
-    }
-
-    inline const boost::shared_ptr<Xibor>& ParCoupon::index() const {
-        return index_;
-    }
-
-    inline void ParCoupon::update() {
-        notifyObservers();
-    }
 
     inline void ParCoupon::accept(AcyclicVisitor& v) {
         Visitor<ParCoupon>* v1 = dynamic_cast<Visitor<ParCoupon>*>(&v);
@@ -105,7 +71,10 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
-}
+    inline Rate ParCoupon::convexityAdjustment(Rate f) const {
+        return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
+    }
 
+}
 
 #endif

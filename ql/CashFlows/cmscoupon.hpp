@@ -46,8 +46,7 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-    class CMSCoupon : public FloatingRateCoupon,
-                      public Observer {
+    class CMSCoupon : public FloatingRateCoupon {
       public:
         CMSCoupon(const Real nominal,
                   const Date& paymentDate,
@@ -62,25 +61,14 @@ namespace QuantLib {
                   Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
-        //! \name CashFlow interface
-        //@{
-        Real amount() const;
-        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const;
         // ???
         Rate rate1() const;
-        DayCounter dayCounter() const { return dayCounter_; }
-        //@}
-        //! \name FloatingRateCoupon interface
-        //@{
-        Date fixingDate() const;
-        Rate indexFixing() const;
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<SwapIndex>& index() const { return index_; }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
         //Real multiplier() const { return multiplier_; }
@@ -91,17 +79,15 @@ namespace QuantLib {
                 const Handle<SwaptionVolatilityStructure>&);
         Handle<SwaptionVolatilityStructure> CMSCoupon::swaptionVolatility() const;
         //@}
-        //! \name Observer interface
-        //@{
-        void update() { notifyObservers(); }
-        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        boost::shared_ptr<SwapIndex> index_;
-        DayCounter dayCounter_;
+        Rate convexityAdjustment(Rate f) const {
+            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
+        }
+        boost::shared_ptr<SwapIndex> swapIndex_;
         Rate baseRate_, cap_, floor_;
         Real multiplier_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;

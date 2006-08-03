@@ -49,7 +49,7 @@ namespace QuantLib {
               const Date& refPeriodEnd = Date(),
               const DayCounter& dayCounter = DayCounter());
         //! throws when an interpolated fixing is needed
-        Real amount() const;
+        Real rate() const;
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

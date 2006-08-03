@@ -33,7 +33,7 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-    class UpFrontIndexedCoupon : public IndexedCoupon {
+    class UpFrontIndexedCoupon : public FloatingRateCoupon {
       public:
         UpFrontIndexedCoupon(const Date& paymentDate,
                              const Real nominal,
@@ -46,32 +46,17 @@ namespace QuantLib {
                              const Date& refPeriodStart = Date(),
                              const Date& refPeriodEnd = Date(),
                              const DayCounter& dayCounter = DayCounter())
-        : IndexedCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
-                        index, gearing, spread, refPeriodStart, refPeriodEnd,
-                        dayCounter) {
-            calendar_ = index->calendar();
-        }
-        //! \name FloatingRateCoupon interface
-        //@{
-        Date fixingDate() const;
-        //@}
+        : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+                             index, gearing, spread, refPeriodStart, refPeriodEnd,
+                             dayCounter) {}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-      protected:
-        Calendar calendar_;
     };
 
 
     // inline definitions
-
-    inline Date UpFrontIndexedCoupon::fixingDate() const {
-        // fix at the beginning of period
-        return calendar_.advance(accrualStartDate_,
-                                 -fixingDays_, Days,
-                                 Preceding);
-    }
 
     inline void UpFrontIndexedCoupon::accept(AcyclicVisitor& v) {
         Visitor<UpFrontIndexedCoupon>* v1 =
@@ -79,7 +64,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            IndexedCoupon::accept(v);
+            FloatingRateCoupon::accept(v);
     }
 
 }

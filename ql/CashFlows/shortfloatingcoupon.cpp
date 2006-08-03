@@ -35,7 +35,7 @@ namespace QuantLib {
                 refPeriodStart, refPeriodEnd,
                 dayCounter) {}
 
-    Real Short<ParCoupon>::amount() const {
+    Real Short<ParCoupon>::rate() const {
         Date today = Settings::instance().evaluationDate();
         Date fixing_date = fixingDate();
         QL_REQUIRE(fixing_date >= today,
@@ -44,7 +44,7 @@ namespace QuantLib {
                    "short/long floating coupons not supported yet"
                    << " (start = " << accrualStartDate_
                    << ", end = " << accrualEndDate_ << ")");
-        return ParCoupon::amount();
+        return ParCoupon::rate();
     }
 
 }

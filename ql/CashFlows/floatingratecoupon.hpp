@@ -1,8 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +21,7 @@
 */
 
 /*! \file floatingratecoupon.hpp
-    \brief Coupon paying a variable rate
+    \brief Coupon paying a variable index-based rate
 */
 
 #ifndef quantlib_floating_rate_coupon_hpp
@@ -27,53 +29,60 @@
 
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/Utilities/null.hpp>
+#include <ql/Indexes/interestrateindex.hpp>
 
 namespace QuantLib {
 
-    //! %Coupon paying a variable rate
+    //! %Coupon paying a variable index-based rate
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
         \todo add gearing unit test
     */
-    class FloatingRateCoupon : public Coupon {
+    class FloatingRateCoupon : public Coupon,
+                               public Observer {
       public:
         FloatingRateCoupon(const Date& paymentDate,
                            const Real nominal,
                            const Date& startDate,
                            const Date& endDate,
                            const Integer fixingDays,
+                           const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing = 1.0,
                            const Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date());
+                           const Date& refPeriodEnd = Date(),
+                           const DayCounter& dayCounter = DayCounter());
+        virtual ~FloatingRateCoupon() {}
         //! \name Coupon interface
         //@{
-        Rate rate() const;
+        virtual Rate rate() const;
         Real amount() const;
         Real accruedAmount(const Date&) const;
+        DayCounter dayCounter() const;
         //@}
         //! \name Inspectors
         //@{
+        //! floating index
+        const boost::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
-        Integer fixingDays() const { return fixingDays_; }
+        Integer fixingDays() const;
         //! fixing date
-        virtual Date fixingDate() const = 0;
+        Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
-        Real gearing() const { return gearing_; }
+        Real gearing() const;
         //! fixing of the underlying index
-        virtual Rate indexFixing() const = 0;
+        Rate indexFixing() const;
         //! convexity adjustment
-        virtual Rate convexityAdjustment() const {
-            return convexityAdjustment(indexFixing());
-        }
+        Rate convexityAdjustment() const;
         //! convexity-adjusted fixing
-        Rate adjustedFixing() const {
-            Rate f = indexFixing();
-            return f + convexityAdjustment(f);
-        };
+        Rate adjustedFixing() const;
         //! spread paid over the fixing of the underlying index
-        Spread spread() const { return spread_; }
+        Spread spread() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
         //@}
         //! \name Visitability
         //@{
@@ -81,7 +90,9 @@ namespace QuantLib {
         //@}
       protected:
         //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustment(Rate fixing) const { return 0.0; }
+        virtual Rate convexityAdjustment(Rate fixing) const;
+        boost::shared_ptr<InterestRateIndex> index_;
+        DayCounter dayCounter_;
         Integer fixingDays_;
         Real gearing_;
         Spread spread_;
@@ -94,19 +105,27 @@ namespace QuantLib {
                          const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
                          const Integer fixingDays,
+                         const boost::shared_ptr<InterestRateIndex>& index,
                          const Real gearing, const Spread spread,
-                         const Date& refPeriodStart, const Date& refPeriodEnd)
+                         const Date& refPeriodStart, const Date& refPeriodEnd,
+                         const DayCounter& dayCounter)
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
-      fixingDays_(fixingDays), gearing_(gearing), spread_(spread) {}
-
-    inline Real FloatingRateCoupon::amount() const {
-        return rate() * accrualPeriod() * nominal();
+      index_(index), dayCounter_(dayCounter), fixingDays_(fixingDays),
+      gearing_(gearing), spread_(spread)
+    {
+        if (dayCounter_.empty())
+            dayCounter_ = index_->dayCounter();
+        registerWith(index_);
+        registerWith(Settings::instance().evaluationDate());
     }
 
     inline Rate FloatingRateCoupon::rate() const {
-        Rate f = indexFixing();
-        return gearing() * (f + convexityAdjustment(f)) + spread();
+        return gearing() * adjustedFixing() + spread();
+    }
+
+    inline Real FloatingRateCoupon::amount() const {
+        return rate() * accrualPeriod() * nominal();
     }
 
     inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
@@ -119,6 +138,56 @@ namespace QuantLib {
                                           refPeriodStart_,
                                           refPeriodEnd_);
         }
+    }
+
+    inline DayCounter FloatingRateCoupon::dayCounter() const {
+        return dayCounter_; 
+   }
+
+    inline const boost::shared_ptr<InterestRateIndex>&
+    FloatingRateCoupon::index() const {
+        return index_;
+    }
+
+    inline Integer FloatingRateCoupon::fixingDays() const {
+        return fixingDays_;
+    }
+
+    inline Date FloatingRateCoupon::fixingDate() const {
+        return index_->calendar().advance(accrualStartDate_,
+                                          -fixingDays(), Days,
+                                          Preceding);
+    }
+
+
+
+    inline Real FloatingRateCoupon::gearing() const {
+        return gearing_;
+    }
+
+    inline Rate FloatingRateCoupon::indexFixing() const {
+        return index_->fixing(fixingDate());
+    }
+
+    inline Rate FloatingRateCoupon::convexityAdjustment() const {
+        return convexityAdjustment(indexFixing());
+    }
+
+    inline Rate FloatingRateCoupon::adjustedFixing() const {
+        Rate f = indexFixing();
+        return f + convexityAdjustment(f);
+    };
+
+    inline Spread FloatingRateCoupon::spread() const {
+        return spread_;
+    }
+
+    inline void FloatingRateCoupon::update() {
+        notifyObservers();
+    }
+
+    inline Rate FloatingRateCoupon::convexityAdjustment(Rate fixing) const {
+        return 0.0;
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {

@@ -25,6 +25,7 @@
 #define quantlib_in_arrear_indexed_coupon_hpp
 
 #include <ql/CashFlows/indexedcoupon.hpp>
+#include <ql/Indexes/xibor.hpp>
 #include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
@@ -37,7 +38,7 @@ namespace QuantLib {
         \test The class is tested by comparing the value of an in-arrear
               swap against a known good value.
     */
-    class InArrearIndexedCoupon : public IndexedCoupon {
+    class InArrearIndexedCoupon : public FloatingRateCoupon {
       public:
         InArrearIndexedCoupon(const Date& paymentDate,
                               const Real nominal,
@@ -50,10 +51,9 @@ namespace QuantLib {
                               const Date& refPeriodStart = Date(),
                               const Date& refPeriodEnd = Date(),
                               const DayCounter& dayCounter = DayCounter())
-        : IndexedCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+        : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                         index, gearing, spread, refPeriodStart, refPeriodEnd,
-                        dayCounter), 
-          xibor_(index) {}
+                        dayCounter) {}
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
@@ -68,7 +68,6 @@ namespace QuantLib {
         //@}
       protected:
         Rate convexityAdjustment(Rate fixing) const;
-        boost::shared_ptr<Xibor> xibor_;
         Handle<CapletVolatilityStructure> capletVolatility_;
     };
 
@@ -77,7 +76,7 @@ namespace QuantLib {
 
     inline Date InArrearIndexedCoupon::fixingDate() const {
         // fix at the end of period
-        return xibor_->calendar().advance(accrualEndDate_,
+        return index_->calendar().advance(accrualEndDate_,
                                           -fixingDays_, Days,
                                           Preceding);
     }
@@ -88,7 +87,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            IndexedCoupon::accept(v);
+            FloatingRateCoupon::accept(v);
     }
 
 }
