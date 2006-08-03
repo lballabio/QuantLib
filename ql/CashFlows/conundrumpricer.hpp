@@ -114,6 +114,8 @@ namespace QuantLib
 			Real swapRateValue_;
 			Real meanReversion_;
 
+			Real accuracy_;
+
 			Real shape(Real s) const;
 
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
@@ -128,7 +130,7 @@ namespace QuantLib
 
           public:
             
-			  GFunctionWithShifts(boost::shared_ptr<CMSCoupon> coupon, Real meanReversion);
+			  GFunctionWithShifts(const boost::shared_ptr<CMSCoupon> coupon, Real meanReversion);
 			
 			  Real operator()(Real x) ;
 			  Real firstDerivative(Real x);

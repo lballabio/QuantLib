@@ -389,7 +389,7 @@ namespace QuantLib
 		return 0;
     }
 
-	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(boost::shared_ptr<CMSCoupon> coupon, 
+	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon> coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
 
 		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
@@ -408,19 +408,21 @@ namespace QuantLib
 		shapedPaymentTime_ = shape(paymentTime);
 		
 		for(Size i=0; i<fixedLeg.size(); i++) {
-			accruals_.push_back(static_cast<const Coupon*>(fixedLeg[i].get())->accrualPeriod());
-			const Date paymentDate = static_cast<const Coupon*>(fixedLeg[i].get())->date();
+			const Coupon* coupon = static_cast<const Coupon*>(fixedLeg[i].get());
+			accruals_.push_back(coupon->accrualPeriod());
+			const Date paymentDate = coupon->date();
 			const double swapPaymentTime = dc.yearFraction(rateCurve->referenceDate(), paymentDate);
-			shapedSwapPaymentTimes_.push_back(swapPaymentTime);
+			shapedSwapPaymentTimes_.push_back(shape(swapPaymentTime));
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
 		
 		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
 		
-		std::auto_ptr<ObjectiveFunction> objectiveFunction(new ObjectiveFunction(*this));
+		ObjectiveFunction objectiveFunction(*this);
 
 		Bisection solver;
-		shift_ = solver.solve(*objectiveFunction, .00001, .03, .1); // ????
+		accuracy_ = .0000001;
+		shift_ = solver.solve(objectiveFunction, accuracy_, .03, .1); // ????
 	}
 
 	Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
