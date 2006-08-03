@@ -42,7 +42,7 @@ namespace QuantLib
         BlackVanillaOptionPricer(
             Rate forwardValue, 
             const Period& swapTenor,
-            const Handle<SwaptionVolatilityStructure>& volatilityStructure)
+            const boost::shared_ptr<SwaptionVolatilityStructure>& volatilityStructure)
         : forwardValue_(forwardValue), swapTenor_(swapTenor),
           volatilityStructure_(volatilityStructure) {};
 
@@ -51,9 +51,9 @@ namespace QuantLib
                         bool isCall,
                         Real deflator) const;
       private:
-        Rate forwardValue_;
-        Period swapTenor_;
-        const Handle<SwaptionVolatilityStructure>& volatilityStructure_;
+        const Rate forwardValue_;
+        const Period swapTenor_;
+        const boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
 	};
 
     class GFunction {
@@ -150,26 +150,26 @@ namespace QuantLib
     /*! Base class for the pricing of a CMS coupon via static replication
         as in Hagan's "Conundrums..." article
 	*/
-    class ConundrumPricer: public ConvexityAdjustmentPricer {
+    class ConundrumPricer: public VanillaCMSCouponPricer {
       public:
-		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                        const boost::shared_ptr<YieldTermStructure>& rateCurve,
-                        const CMSCoupon& coupon);
+		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
 		Real price() const;
         Real rate() const;
+        void initialize(const CMSCoupon& coupon);
       protected:
 		virtual Real optionLetPrice(bool isCall, Real strike) const = 0;
 		virtual Real swapLetPrice() const = 0;
 
-		const boost::shared_ptr<YieldTermStructure> rateCurve_;
+		boost::shared_ptr<YieldTermStructure> rateCurve_;
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
 		boost::shared_ptr<GFunction> gFunction_;
-        const CMSCoupon& coupon_;
+        const CMSCoupon* coupon_;
         Date paymentDate_, fixingDate_;
 		Real swapRateValue_;
 		Real discount_, annuity_, min_, max_, gearing_, spread_;
 		const Real cutoffForCaplet_, cutoffForFloorlet_;
         Period swapTenor_;
+        boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
 	};
 
 
@@ -181,17 +181,16 @@ namespace QuantLib
     {
       public:
 		ConundrumPricerByNumericalIntegration( 
-            const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-            const boost::shared_ptr<YieldTermStructure>& rateCurve,
-            const CMSCoupon& coupon,
-		    const boost::shared_ptr<VanillaOptionPricer>& o);
+            const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = 
+            GFunctionFactory::standard);
       private:
 		class Function : public std::unary_function<Real, Real> {
           public:
     		virtual ~Function() {};
 			virtual Real operator()(Real x) const = 0;
 		};
-
+		//! ConundrumIntegrand
+	    /*!	Base class for the definition of the Integrand for Hagan's Integral */
 		class ConundrumIntegrand : public Function
         {
           friend class ConundrumPricerByNumericalIntegration;
@@ -230,29 +229,21 @@ namespace QuantLib
 		virtual Real optionLetPrice(bool isCap, 
                                     Real strike) const;
 		virtual Real swapLetPrice() const;
-		//! ConundrumIntegrand
-	    /*!	Base class for the definition of the Integrand for Hagan's Integral */
-		const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
-		boost::shared_ptr<ConundrumIntegrand> integrandForCap_, integrandForFloor_;
-		Real mInfinity_;
+		
+        Real mInfinity_;
 	};
 
     class ConundrumPricerByBlack : public ConundrumPricer
     {
       public:
 		ConundrumPricerByBlack(
-                    GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                    const boost::shared_ptr<YieldTermStructure>& rateCurve,
-                    const CMSCoupon& coupon,
-		            const boost::shared_ptr<VanillaOptionPricer>& o);
+                    GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = 
+                    GFunctionFactory::standard);
       protected:
 		Real optionLetPrice(bool isCall,
                             Real strike) const;
 		Real swapLetPrice() const;
-      private:
-		const Real variance_;
-		const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
-		Real firstDerivativeOfGAtForwardValue_;
+
 	};
 
 }

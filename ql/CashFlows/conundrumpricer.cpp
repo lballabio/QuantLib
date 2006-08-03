@@ -40,27 +40,31 @@ namespace QuantLib
     };
 
 
-    ConundrumPricer::ConundrumPricer(
-                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                const boost::shared_ptr<YieldTermStructure>& rateCurve,
-                const CMSCoupon& coupon)
-    : modelOfYieldCurve_(modelOfYieldCurve), rateCurve_(rateCurve),
-      coupon_(coupon), cutoffForCaplet_(2), cutoffForFloorlet_(0),
-      fixingDate_(coupon.fixingDate()),
-      paymentDate_(coupon.date()), discount_(rateCurve_->discount(paymentDate_)) {
+        ConundrumPricer::ConundrumPricer(
+                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
+    : modelOfYieldCurve_(modelOfYieldCurve), 
+      cutoffForCaplet_(2), cutoffForFloorlet_(0){	}
+    
+    void ConundrumPricer::initialize(const CMSCoupon& coupon)
+    {
+        coupon_ = &coupon; 
+        fixingDate_ = coupon_->fixingDate();
+        paymentDate_ = coupon_->date(); 
+        const boost::shared_ptr<SwapIndex>& swapRate = coupon_->index();
+        rateCurve_ = swapRate->iborIndex()->termStructure();
+        discount_ = rateCurve_->discount(paymentDate_);
+	    swapTenor_ = swapRate->tenor();
+        boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
 
-		const boost::shared_ptr<SwapIndex>& swapRate(boost::dynamic_pointer_cast<SwapIndex>(coupon_.index()));
-        swapTenor_ = swapRate->tenor();
-        const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
 		swapRateValue_ = swap->fairRate();
 
 		static const Spread basisPoSize = 1.0e-4;
-        annuity_ = (swap->floatingLegBPS()/basisPoSize)/coupon_.nominal();
+        annuity_ = (swap->floatingLegBPS()/basisPoSize)/coupon_->nominal();
 
-		min_ = coupon_.floor();
-		max_ = coupon_.cap();
-		gearing_ = coupon_.gearing();
-		spread_ = coupon_.spread();
+		min_ = coupon_->floor();
+		max_ = coupon_->cap();
+		gearing_ = coupon_->gearing();
+		spread_ = coupon_->spread();
         const Size q = swapRate->fixedLegFrequency();
 
         const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(fixingDate_));
@@ -75,12 +79,18 @@ namespace QuantLib
 		const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
         gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
+
+        vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>( 
+            new BlackVanillaOptionPricer(swapRateValue_, swapTenor_,
+                                         coupon_->swaptionVolatility().currentLink())); 
+        
 	}
 
 	Real ConundrumPricer::price() const
     {
+
 		const Real swapLetPrice_ = swapLetPrice();
-		const Real spreadLegValue = spread_*coupon_.accrualPeriod()*discount_;
+		const Real spreadLegValue = spread_*coupon_->accrualPeriod()*discount_;
 
 		const Real effectiveStrikeForMax = (max_-spread_)/gearing_;
 		Real capLetPrice = 0;
@@ -92,6 +102,7 @@ namespace QuantLib
 		const Real effectiveStrikeForMin = (min_-spread_)/gearing_;
 		Real floorLetPrice = 0;
 
+
 		if (min_ > cutoffForFloorlet_) {
 			floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
 		}
@@ -99,29 +110,19 @@ namespace QuantLib
 		return price;
 	}
 
-	Real ConundrumPricer::rate() const {
-       return price()/(coupon_.accrualPeriod()*discount_);
+	Real ConundrumPricer::rate() const
+    {
+       return price()/(coupon_->accrualPeriod()*discount_);
+
 	}
 
     ////////////////		ConundrumPricerByNumericalIntegration
 
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-        const boost::shared_ptr<YieldTermStructure>& rateCurve,
-        const CMSCoupon& coupon,
-		const boost::shared_ptr<VanillaOptionPricer>& o)
-    : ConundrumPricer(modelOfYieldCurve, rateCurve,coupon),
-      vanillaOptionPricer_(o), mInfinity_(1.0) {
-
-		integrandForCap_ = boost::shared_ptr<ConundrumIntegrand>(
-            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
-                                   gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, swapRateValue_, true));
-		integrandForFloor_ = boost::shared_ptr<ConundrumIntegrand>(
-            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
-                                   gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, swapRateValue_, false));
-	}
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
+    : ConundrumPricer(modelOfYieldCurve),
+       mInfinity_(1.0)
+    {	}
 
 	Real ConundrumPricerByNumericalIntegration::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
@@ -140,28 +141,37 @@ namespace QuantLib
 		if(isCap) {
 			const Real a = strike;
 			const Real b = strike + mInfinity_;
-            integrandForCap_->setStrike(strike);
-			integralValue = integrate(a, b, *integrandForCap_);
-			dFdK = integrandForCap_->firstDerivativeOfF(strike);
+            boost::shared_ptr<ConundrumIntegrand> integrandForCap = boost::shared_ptr<ConundrumIntegrand>(
+            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
+                                   gFunction_, fixingDate_, paymentDate_,
+                                   annuity_, swapRateValue_, strike, true));
+
+            integralValue = integrate(a, b, *integrandForCap);
+
+			dFdK = integrandForCap->firstDerivativeOfF(strike);
 		}
 		else {
 			const Real a = 0.0;
 			const Real b = strike;
-            integrandForFloor_->setStrike(strike);
-			integralValue = -integrate(a, b, *integrandForFloor_);
-			dFdK = integrandForFloor_->firstDerivativeOfF(strike);
+            boost::shared_ptr<ConundrumIntegrand> integrandForFloor = boost::shared_ptr<ConundrumIntegrand>(
+            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
+                                   gFunction_, fixingDate_, paymentDate_,
+                                   annuity_, swapRateValue_, strike, false));
+			integralValue = -integrate(a, b, *integrandForFloor);
+			dFdK = integrandForFloor->firstDerivativeOfF(strike);
 		}
 		const Real swaptionPrice = (*vanillaOptionPricer_)(fixingDate_,
             strike, isCap, annuity_);
 		// v. HAGAN, Conundrums..., formule 2.17a, 2.18a
-		return coupon_.accrualPeriod() * (discount_/annuity_) *
+
+		return coupon_->accrualPeriod() * (discount_/annuity_) *
             ((1 + dFdK) * swaptionPrice + integralValue);
 	}
 
 	Real ConundrumPricerByNumericalIntegration::swapLetPrice() const {
 		const Real atmCapLetPrice = optionLetPrice(true, swapRateValue_);
 		const Real atmFloorLetPrice = optionLetPrice(false, swapRateValue_);
-		return coupon_.accrualPeriod()*(discount_ * swapRateValue_)
+		return coupon_->accrualPeriod()*(discount_ * swapRateValue_)
             + atmCapLetPrice - atmFloorLetPrice;
 	}
 
@@ -228,87 +238,59 @@ namespace QuantLib
 
     ////////////////////// ConundrumPricerByBlack
     ConundrumPricerByBlack::ConundrumPricerByBlack(
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-        const boost::shared_ptr<YieldTermStructure>& rateCurve,
-        const CMSCoupon& coupon,
-		const boost::shared_ptr<VanillaOptionPricer>& o)
-    : ConundrumPricer(modelOfYieldCurve, rateCurve, coupon),
-      vanillaOptionPricer_(o),
-      variance_(coupon.swaptionVolatility()->blackVariance(fixingDate_,
-                                                           swapTenor_,
-                                                           swapRateValue_)),
-      firstDerivativeOfGAtForwardValue_(gFunction_->firstDerivative(
-                                                        swapRateValue_)) {}
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
+    : ConundrumPricer(modelOfYieldCurve)
+      { }
 
     //Hagan, 3.5b, 3.5c
     Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const
      {
+        Real variance(coupon_->swaptionVolatility()->blackVariance(fixingDate_,
+                                                           swapTenor_,
+                                                           swapRateValue_));
+        Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(
+                                                        swapRateValue_)); 
 	    Real price = 0;
 
 	    const Real CK = (*vanillaOptionPricer_)(fixingDate_, strike, isCall, annuity_);
 	    price += (discount_/annuity_)*CK;
-        const Real sqrtSigma2T = std::sqrt(variance_);
+        const Real sqrtSigma2T = std::sqrt(variance);
         const Real lnRoverK =  std::log(swapRateValue_/strike);
-	    const Real d32 = (lnRoverK+1.5*variance_)/sqrtSigma2T;
-        const Real d12 =  (lnRoverK+.5*variance_)/sqrtSigma2T;
-        const Real dminus12 =  (lnRoverK-.5*variance_)/sqrtSigma2T;
+	    const Real d32 = (lnRoverK+1.5*variance)/sqrtSigma2T;
+        const Real d12 =  (lnRoverK+.5*variance)/sqrtSigma2T;
+        const Real dminus12 =  (lnRoverK-.5*variance)/sqrtSigma2T;
 	    const Real sgn = isCall ? 1.0 : -1.0;
 
         CumulativeNormalDistribution cumulativeOfNormal;
 	    const Real N32 = cumulativeOfNormal(sgn*d32);
         const Real N12 = cumulativeOfNormal(sgn*d12);
         const Real Nminus12 = cumulativeOfNormal(sgn*dminus12);
-
-	    price += sgn * firstDerivativeOfGAtForwardValue_ * annuity_ *
-            swapRateValue_ * (swapRateValue_ * std::exp(variance_) * N32-
+    	
+	    price += sgn * firstDerivativeOfGAtForwardValue * annuity_ *
+            swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32-
             (swapRateValue_+strike) * N12 + strike * Nminus12);
-	    price *= coupon_.accrualPeriod();
+	    price *= coupon_->accrualPeriod();
 	    return price;
     }
 
     //Hagan 3.4c
-    Real ConundrumPricerByBlack::swapLetPrice() const {
+    Real ConundrumPricerByBlack::swapLetPrice() const
+    {
+        Real variance(coupon_->swaptionVolatility()->blackVariance(fixingDate_,
+                                                           swapTenor_,
+                                                           swapRateValue_));
+        Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(
+                                                        swapRateValue_)); 
 	    Real price = 0;
 	    price += discount_*swapRateValue_;
-        price += firstDerivativeOfGAtForwardValue_*annuity_*swapRateValue_*swapRateValue_*
-            (std::exp(variance_)-1);
-	    price *= coupon_.accrualPeriod();
+        price += firstDerivativeOfGAtForwardValue*annuity_*swapRateValue_*swapRateValue_*
+            (std::exp(variance)-1);
+	    price *= coupon_->accrualPeriod();
 	    return price;
     }
 
     //////////////////////
-    Rate CMSCoupon::rate() const
-    {
-        const Date d(fixingDate());
-        const Rate forwardValue(swapIndex_->fixing(d));
-        boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer(
-            new BlackVanillaOptionPricer(forwardValue,
-                                         swapIndex_->tenor(),
-                                         swaptionVol_));
 
-        switch (typeOfConvexityAdjustment_) {
-          case ConvexityAdjustmentPricer::ConundrumByBlack:
-            return ConundrumPricerByBlack(
-                    GFunctionFactory::standard,
-                    swapIndex_->termStructure(),
-                    *this,
-                    vanillaOptionPricer).rate();
-              //return rate1();
-          case ConvexityAdjustmentPricer::ConundrumByNumericalIntegration:
-            return ConundrumPricerByNumericalIntegration(
-                    GFunctionFactory::standard,
-                    swapIndex_->termStructure(),
-                    *this,
-                    vanillaOptionPricer).rate();
-          default:
-            QL_FAIL("invalid ConvexityAdjustemPricer type");
-        }
-    }
-
-    //Rate CMSCoupon::convexityAdjustment(Rate fixing) const {
-    //    return pricer_->rate(fixing, swaptionVol_, *this)-(gearing*fixing+spread);
-    //    return pricer_->adjustment(fixing, swaptionVol_, *this);
-    //}
     Real GFunctionFactory::GFunctionStandard::operator()(Real x) {
 	    const Real n = swapLength_ * q_;
 	    return x / std::pow((1.0 + x/q_), delta_) * 1.0 /

@@ -26,18 +26,17 @@ namespace QuantLib {
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
-                  ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment,
+                  const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
                   Real gearing,
                   Rate spread,
                   Rate cap,
                   Rate floor,
                   const Date& refPeriodStart,
                   const Date& refPeriodEnd)
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter),
-      swapIndex_(index), cap_(cap), floor_(floor),
-      typeOfConvexityAdjustment_(typeOfConvexityAdjustment) {}
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
+                         index, gearing, spread, refPeriodStart, refPeriodEnd,
+                         dayCounter),
+      cap_(cap), floor_(floor), Pricer_(Pricer) {}
 
     namespace {
 
@@ -86,13 +85,19 @@ namespace QuantLib {
 
     }
 
+    Rate CMSCoupon::rate() const
+    {
+            Pricer_->initialize(*this);
+            return Pricer_->rate();
+    }
+
    Rate CMSCoupon::rate1() const {
         Date d = fixingDate();
-        const Rate Rs = swapIndex_->fixing(d);
+        const Rate Rs = index_->fixing(d);
         Date today = Settings::instance().evaluationDate();
-        if (d <= today || multiplier_ == 0.0) {
+        if (d <= today || gearing_ == 0.0) {
             // the fixing is determined
-            Rate r = multiplier_*Rs + baseRate_;
+            Rate r = gearing_*Rs + spread_;
             if (cap_ != Null<Rate>())
                 r = std::min(r, cap_);
             if (floor_ != Null<Rate>())
@@ -103,18 +108,18 @@ namespace QuantLib {
             QL_REQUIRE(!swaptionVol_.empty(), "missing swaption volatility");
 
             Rate rate = Rs;
-            const DayCounter& dc = dayCounter();
+            const DayCounter& dc = dayCounter_;
             Volatility sigma =
-                swaptionVol_->volatility(d, swapIndex_->tenor(), Rs);
+                swaptionVol_->volatility(d, index_->tenor(), Rs);
             QL_REQUIRE(sigma > 0.0, "internal error: corrupted volatility");
             Time tau = dc.yearFraction(today,d);
-            Schedule s(swapIndex_->calendar(),
-                       d, d+swapIndex_->tenor(),
-                       swapIndex_->fixedLegFrequency(),
-                       swapIndex_->fixedLegConvention());
+            Schedule s(index_->calendar(),
+                       d, d+index_->tenor(),
+                       index_->fixedLegFrequency(),
+                       index_->fixedLegConvention());
             Date tp = date();
             DiscountFactor D_s0 =
-                swapIndex_->termStructure()->discount(d);
+                index_->iborIndex()->termStructure()->discount(d);
             Real g = G(Rs,tp,D_s0,s,dc), g1 = Gprime(Rs,tp,D_s0,s,dc);
             Spread adjustment = (g1/g)*Rs*Rs*(std::exp(sigma*sigma*tau)-1.0);
             rate += adjustment;
@@ -123,19 +128,19 @@ namespace QuantLib {
             // also ensure that both strikes are positive as we use BS.
             Rate capStrike = Null<Rate>(), floorStrike = Null<Rate>();
             if (cap_ != Null<Rate>()) {
-                if (multiplier_ > 0.0)
-                    capStrike = std::max((cap_-baseRate_)/multiplier_,
+                if (gearing_ > 0.0)
+                    capStrike = std::max((cap_-spread_)/gearing_,
                                          QL_EPSILON);
                 else
-                    floorStrike = std::max((cap_-baseRate_)/multiplier_,
+                    floorStrike = std::max((cap_-spread_)/gearing_,
                                            QL_EPSILON);
             }
             if (floor_ != Null<Rate>()) {
-                if (multiplier_ > 0.0)
-                    floorStrike = std::max((floor_-baseRate_)/multiplier_,
+                if (gearing_ > 0.0)
+                    floorStrike = std::max((floor_-spread_)/gearing_,
                                            QL_EPSILON);
                 else
-                    capStrike = std::max((floor_-baseRate_)/multiplier_,
+                    capStrike = std::max((floor_-spread_)/gearing_,
                                          QL_EPSILON);
             }
 
@@ -173,8 +178,21 @@ namespace QuantLib {
                 floorlet += adjustment;
                 rate += floorlet;
             }
-            return multiplier_*rate + baseRate_;
+            return gearing_*rate + spread_;
         }
+    }
+
+    Date CMSCoupon::fixingDate() const {
+        return index_->calendar().advance(accrualStartDate_,
+                                          -fixingDays_, Days);
+    }
+
+    Rate CMSCoupon::indexFixing() const {
+        return index_->fixing(fixingDate());
+    }
+
+    Real CMSCoupon::amount() const {
+        return rate() * accrualPeriod() * nominal();
     }
 
     void CMSCoupon::setSwaptionVolatility(
@@ -226,8 +244,8 @@ namespace QuantLib {
                     const std::vector<Real>& fractions,
                     const std::vector<Real>& caps,
                     const std::vector<Real>& floors,
-                    const Handle<SwaptionVolatilityStructure>& vol,
-                    ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment) {
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
+                    const Handle<SwaptionVolatilityStructure>& vol) {
 
         //std::vector<CMSCoupon> leg;
         std::vector<boost::shared_ptr<CashFlow> > leg;
@@ -243,7 +261,7 @@ namespace QuantLib {
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              start, end, fixingDays, dayCounter, Pricer,
                               get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
@@ -255,7 +273,7 @@ namespace QuantLib {
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              start, end, fixingDays, dayCounter, Pricer,
                               get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
@@ -267,7 +285,7 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                              start, end, fixingDays, dayCounter, Pricer,
                               get(fractions,i-1,1.0), get(baseRates,i-1,0.0), 
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
@@ -280,7 +298,7 @@ namespace QuantLib {
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                                  start, end, fixingDays, dayCounter, Pricer,
                                   get(fractions,N-2,1.0),
                                   get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
@@ -293,7 +311,7 @@ namespace QuantLib {
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, dayCounter, typeOfConvexityAdjustment,
+                                  start, end, fixingDays, dayCounter, Pricer,
                                   get(fractions,N-2,1.0),
                                   get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),

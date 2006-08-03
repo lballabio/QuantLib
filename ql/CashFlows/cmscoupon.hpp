@@ -28,17 +28,18 @@
 
 namespace QuantLib {
 
-    //! CovexityAdjustemPricer
+    //! VanillaCMSCouponPricer
     /*! 
 		
 	*/
-	class ConvexityAdjustmentPricer {
+    class CMSCoupon;
+
+	class VanillaCMSCouponPricer {
       public:
-        enum Type {ConundrumByBlack,
-                   ConundrumByNumericalIntegration };
-		virtual ~ConvexityAdjustmentPricer() {}
+		virtual ~VanillaCMSCouponPricer() {}
 		virtual Real price() const = 0;
         virtual Real rate() const = 0;
+        virtual void initialize(const CMSCoupon& coupon) = 0;
 	};
 
     //! CMS coupon class
@@ -54,21 +55,32 @@ namespace QuantLib {
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
-                  ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment,
+                  const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
                   Real gearing,
                   Rate spread,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
+        //! \name CashFlow interface
+        //@{
+        Real amount() const;
+        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const;
         // ???
         Rate rate1() const;
+        DayCounter dayCounter() const { return dayCounter_; }
+        //@}
+        //! \name FloatingRateCoupon interface
+        //@{
+        Date fixingDate() const;
+        Rate indexFixing() const;
         //@}
         //! \name Inspectors
         //@{
+        const boost::shared_ptr<SwapIndex>& index() const { return index_; }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
         //Real multiplier() const { return multiplier_; }
@@ -84,14 +96,11 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate convexityAdjustment(Rate f) const {
-            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
-        }
-        boost::shared_ptr<SwapIndex> swapIndex_;
-        Rate baseRate_, cap_, floor_;
-        Real multiplier_;
+        boost::shared_ptr<SwapIndex> index_;
+        DayCounter dayCounter_;
+        Rate cap_, floor_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
-        ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment_;
+        boost::shared_ptr<VanillaCMSCouponPricer> Pricer_;
     };
 
 
@@ -106,10 +115,9 @@ namespace QuantLib {
                     const std::vector<Real>& fractions,
                     const std::vector<Real>& caps,
                     const std::vector<Real>& floors,
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                     const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>(),
-                    ConvexityAdjustmentPricer::Type typeOfConvexityAdjustment =
-                                ConvexityAdjustmentPricer::ConundrumByBlack);
+                                Handle<SwaptionVolatilityStructure>());
 
 }
 
