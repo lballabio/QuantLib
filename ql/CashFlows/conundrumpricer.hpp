@@ -131,7 +131,7 @@ namespace QuantLib
 
           public:
             
-			  GFunctionWithShifts(const boost::shared_ptr<CMSCoupon> coupon, Real meanReversion);
+			  GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, Real meanReversion);
 			
 			  Real operator()(Real x) ;
 			  Real firstDerivative(Real x);

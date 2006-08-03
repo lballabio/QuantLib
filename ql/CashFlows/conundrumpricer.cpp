@@ -378,7 +378,7 @@ namespace QuantLib
 		return 0;
     }
 
-	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon> coupon, 
+	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
 
 		const boost::shared_ptr<SwapIndex> swapRate = coupon->index();
