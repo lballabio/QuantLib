@@ -58,7 +58,7 @@ namespace QuantLib {
         //@}
         //! \name Date calculations
         //@{
-        virtual Date maturityDate(const Date& valueDate) const;
+        Date maturityDate(const Date& valueDate) const;
         // @}
       protected:
         BusinessDayConvention convention_;
