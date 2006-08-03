@@ -382,7 +382,7 @@ namespace QuantLib
 
 	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real R) {
 		return std::exp(-shapedPaymentTime_*shift_) 
-			/ (1-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*shift_));
+			/ (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*shift_));
     }
 
 	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real R) {
@@ -405,24 +405,24 @@ namespace QuantLib
 		discountAtStart_ = rateCurve->discount(schedule->startDate());
 
 		const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(), coupon->date());
-		shapedPaymentTime_ = shape(paymentTime);
+		shapedPaymentTime_ = shapeOfShift(paymentTime);
 		
 		for(Size i=0; i<fixedLeg.size(); i++) {
 			const Coupon* coupon = static_cast<const Coupon*>(fixedLeg[i].get());
 			accruals_.push_back(coupon->accrualPeriod());
 			const Date paymentDate = coupon->date();
 			const double swapPaymentTime = dc.yearFraction(rateCurve->referenceDate(), paymentDate);
-			shapedSwapPaymentTimes_.push_back(shape(swapPaymentTime));
+			shapedSwapPaymentTimes_.push_back(shapeOfShift(swapPaymentTime));
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
-		
 		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
-		
-		ObjectiveFunction objectiveFunction(*this);
-
-		Bisection solver;
-		accuracy_ = .0000001;
-		shift_ = solver.solve(objectiveFunction, accuracy_, .03, .1); // ????
+		/** calibration of shift */
+		{
+			ObjectiveFunction objectiveFunction(*this);
+			Bisection solver;
+			accuracy_ = .0000001;
+			shift_ = solver.solve(objectiveFunction, accuracy_, .03, .1); // ????
+		}
 	}
 
 	Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
@@ -438,7 +438,7 @@ namespace QuantLib
 		return result;
 	}
 
-	Real GFunctionFactory::GFunctionWithShifts::shape(Real s) const {
+	Real GFunctionFactory::GFunctionWithShifts::shapeOfShift(Real s) const {
 		if(meanReversion_>0) {
 			return (1.-std::exp(-meanReversion_*(s-swapStartTime_)))/meanReversion_;
 		}

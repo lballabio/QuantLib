@@ -116,7 +116,8 @@ namespace QuantLib
 
 			Real accuracy_;
 
-			Real shape(Real s) const;
+			//* function describing the non-parallel shape of the curve shift*/
+			Real shapeOfShift(Real s) const;
 
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
 				
