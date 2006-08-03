@@ -52,7 +52,7 @@ namespace QuantLib
     {
 		const boost::shared_ptr<SwapIndex>& swapRate = coupon_.index();
         swapTenor_ = swapRate->tenor();
-        boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
+        const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(fixingDate_);
 		swapRateValue_ = swap->fairRate();
 
 		static const Spread basisPoSize = 1.0e-4;
@@ -63,18 +63,18 @@ namespace QuantLib
 		gearing_ = coupon_.gearing();
 		spread_ = coupon_.spread();
         
-        Size q = swapRate->fixedLegFrequency();
+        const Size q = swapRate->fixedLegFrequency();
 
-        boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(fixingDate_));
+        const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(fixingDate_));
 
-        DayCounter dc = swapRate->dayCounter();
-		Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
+        const DayCounter dc = swapRate->dayCounter();
+		const Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
                                          swap->startDate());
-		Time swapFirstPaymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+		const Time swapFirstPaymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                                     schedule->date(1));
-		Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+		const Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                            paymentDate_);
-		Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
+		const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
         gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
 	}
@@ -88,24 +88,14 @@ namespace QuantLib
 		Real capLetPrice = 0;
 
 		if (max_ < cutoffForCaplet_) {
-			//if (effectiveStrikeForMax<=swapRateValue_) {
-			//	capLetPrice = optionLetPrice(false, effectiveStrikeForMax) 
-			//		+ (swapLetPrice_ - effectiveStrikeForMax*coupon_.accrualPeriod()*discount_);
-			//} else {
 			capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
-			//}
 		}
 
 		const Real effectiveStrikeForMin = (min_-spread_)/gearing_;
 		Real floorLetPrice = 0;
 
 		if (min_ > cutoffForFloorlet_) { 
-			//if (effectiveStrikeForMin<=swapRateValue_) {
 			floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
-			//} else {
-			//	floorLetPrice = optionLetPrice(true, effectiveStrikeForMin) - 
-			//		(swapLetPrice_ - effectiveStrikeForMin*coupon_.accrualPeriod()*discount_);
-			//}
 		}
 		const Real price = gearing_*(swapLetPrice_ + floorLetPrice - capLetPrice) + spreadLegValue;
 		return price;
@@ -115,10 +105,9 @@ namespace QuantLib
     {
        return price()/(coupon_.accrualPeriod()*discount_);
 	}
-
-
     	
     ////////////////		ConundrumPricerByNumericalIntegration
+
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
         const boost::shared_ptr<YieldTermStructure>& rateCurve,
