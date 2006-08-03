@@ -90,7 +90,7 @@ namespace QuantLib {
         //@}
       protected:
         //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustment(Rate fixing) const;
+        virtual Rate convexityAdjustmentCalculation(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Integer fixingDays_;
@@ -170,12 +170,12 @@ namespace QuantLib {
     }
 
     inline Rate FloatingRateCoupon::convexityAdjustment() const {
-        return convexityAdjustment(indexFixing());
+        return convexityAdjustmentCalculation(indexFixing());
     }
 
     inline Rate FloatingRateCoupon::adjustedFixing() const {
         Rate f = indexFixing();
-        return f + convexityAdjustment(f);
+        return f + convexityAdjustmentCalculation(f);
     };
 
     inline Spread FloatingRateCoupon::spread() const {
@@ -186,7 +186,8 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Rate FloatingRateCoupon::convexityAdjustment(Rate fixing) const {
+    inline Rate
+    FloatingRateCoupon::convexityAdjustmentCalculation(Rate ) const {
         return 0.0;
     }
 

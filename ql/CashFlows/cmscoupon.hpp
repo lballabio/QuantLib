@@ -88,7 +88,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate convexityAdjustment(Rate f) const {
+        Rate convexityAdjustmentCalculation(Rate f) const {
             return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
