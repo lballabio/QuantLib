@@ -438,11 +438,12 @@ namespace QuantLib
 	}
 
 	Real GFunctionFactory::GFunctionWithShifts::shapeOfShift(Real s) const {
+		const Real x(s-swapStartTime_);
 		if(meanReversion_>0) {
-			return (1.-std::exp(-meanReversion_*(s-swapStartTime_)))/meanReversion_;
+			return (1.-std::exp(-meanReversion_*x))/meanReversion_;
 		}
 		else {
-			return s-swapStartTime_;
+			return x;
 		}
 	}
 }
