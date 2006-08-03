@@ -99,12 +99,19 @@ namespace QuantLib
 
 		class GFunctionWithShifts : public GFunction {
 			
-			Time paymentTime_, swapEndTime_, swapStartTime_;
-			Real discountRatio_;
-			std::vector<Time> accruals_, swapPaymentTimes_;
+			Time swapStartTime_;
+			
+			Time shapedPaymentTime_;
+			std::vector<Time> shapedSwapPaymentTimes_;
+
+			std::vector<Time> accruals_;
 			std::vector<Real> swapPaymentDiscounts_;
+			Real discountAtStart_, discountRatio_;
+
 			/** value determinated implicitly  */
-			Real shift_, swapRateValue_;
+			Real shift_;
+
+			Real swapRateValue_;
 			Real meanReversion_;
 
 			Real shape(Real s) const;

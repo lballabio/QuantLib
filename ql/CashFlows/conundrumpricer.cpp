@@ -333,8 +333,7 @@ namespace QuantLib
             (1.0 - 1.0 / std::pow((1.0 + x/q_), n));
     }
 
-    Real GFunctionFactory::GFunctionStandard::firstDerivative(Real x)
-    {
+    Real GFunctionFactory::GFunctionStandard::firstDerivative(Real x) {
 	    const Real n = swapLength_ * q_; 
 	    const Real a = 1.0 + x / q_;
 	    const Real AA = a - delta_/q_ * x;
@@ -348,8 +347,7 @@ namespace QuantLib
 	    return AA * B - sec;
     }
 
-    Real GFunctionFactory::GFunctionStandard::secondDerivative(Real x)
-    {
+    Real GFunctionFactory::GFunctionStandard::secondDerivative(Real x) {
 	    const Real n = swapLength_ * q_; 
 	    const Real a = 1.0 + x/q_;
 	    const Real AA = a - delta_/q_ * x;
@@ -378,19 +376,16 @@ namespace QuantLib
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::operator()(Real R)
-    {
+	Real GFunctionFactory::GFunctionWithShifts::operator()(Real R) {
 		return R*firstDerivative(R);
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real R)
-    {
-		return std::exp(-(shape(paymentTime_))*shift_) 
-			/ (1-discountRatio_*std::exp(-shape(swapEndTime_)*shift_));
+	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real R) {
+		return std::exp(-shapedPaymentTime_*shift_) 
+			/ (1-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*shift_));
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real R)
-    {
+	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real R) {
 		return 0;
     }
 
@@ -401,24 +396,26 @@ namespace QuantLib
         const boost::shared_ptr<VanillaSwap> swap = swapRate->underlyingSwap(coupon->fixingDate());
 		swapRateValue_ = swap->fairRate();
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg = swap->fixedLeg();
-
 		const boost::shared_ptr<Schedule> schedule(swapRate->fixedRateSchedule(coupon->fixingDate()));
-		
-
 		const boost::shared_ptr<YieldTermStructure> rateCurve = swapRate->iborIndex()->termStructure();
+
         const DayCounter dc = swapRate->dayCounter();
 		swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
-		paymentTime_ = dc.yearFraction(rateCurve->referenceDate(),
-                                           coupon->date());
+
+		discountAtStart_ = rateCurve->discount(schedule->startDate());
+
+		const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(), coupon->date());
+		shapedPaymentTime_ = shape(paymentTime);
 		
 		for(Size i=0; i<fixedLeg.size(); i++) {
 			accruals_.push_back(static_cast<const Coupon*>(fixedLeg[i].get())->accrualPeriod());
 			const Date paymentDate = static_cast<const Coupon*>(fixedLeg[i].get())->date();
-			swapPaymentTimes_.push_back(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
+			const double swapPaymentTime = dc.yearFraction(rateCurve->referenceDate(), paymentDate);
+			shapedSwapPaymentTimes_.push_back(swapPaymentTime);
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
-		swapEndTime_ = swapPaymentTimes_.back();
-		discountRatio_ = swapPaymentDiscounts_.back()/swapPaymentDiscounts_.front();
+		
+		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
 		
 		std::auto_ptr<ObjectiveFunction> objectiveFunction(new ObjectiveFunction(*this));
 
@@ -430,13 +427,12 @@ namespace QuantLib
 		Real result = 0;
 		for(Size i=0; i<o_.accruals_.size(); i++) {
 			result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]
-				*std::exp((o_.shape(o_.swapPaymentTimes_[i])*o_.shift_));
+				*std::exp(-o_.shapedSwapPaymentTimes_[i]*o_.shift_);
 		}
-		result *=o_.swapRateValue_;
+		result *= o_.swapRateValue_;
 
-		result += o_.swapPaymentDiscounts_.back()
-			*std::exp(o_.shape(o_.swapPaymentTimes_.back())*o_.shift_)
-			- o_.swapPaymentDiscounts_.front();
+		result += o_.swapPaymentDiscounts_.back()*std::exp(-o_.shapedSwapPaymentTimes_.back()*o_.shift_)
+			-o_.discountAtStart_;
 		return result;
 	}
 
@@ -444,7 +440,8 @@ namespace QuantLib
 		if(meanReversion_>0) {
 			return (1.-std::exp(-meanReversion_*(s-swapStartTime_)))/meanReversion_;
 		}
-		else
+		else {
 			return s-swapStartTime_;
+		}
 	}
 }
