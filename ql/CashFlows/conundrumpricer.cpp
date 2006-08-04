@@ -45,8 +45,7 @@ namespace QuantLib
     : modelOfYieldCurve_(modelOfYieldCurve), 
       cutoffForCaplet_(2), cutoffForFloorlet_(0){	}
     
-    void ConundrumPricer::initialize(const CMSCoupon& coupon)
-    {
+    void ConundrumPricer::initialize(const CMSCoupon& coupon){
         coupon_ = &coupon; 
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date(); 
@@ -58,8 +57,8 @@ namespace QuantLib
 
 		swapRateValue_ = swap->fairRate();
 
-		static const Spread basisPoSize = 1.0e-4;
-        annuity_ = (swap->floatingLegBPS()/basisPoSize)/coupon_->nominal();
+		const Spread bp = 1e-4;
+        annuity_ = (swap->floatingLegBPS()/bp);
 
 		min_ = coupon_->floor();
 		max_ = coupon_->cap();
@@ -86,8 +85,7 @@ namespace QuantLib
         
 	}
 
-	Real ConundrumPricer::price() const
-    {
+	Real ConundrumPricer::price() const {
 
 		const Real swapLetPrice_ = swapLetPrice();
 		const Real spreadLegValue = spread_*coupon_->accrualPeriod()*discount_;
@@ -206,31 +204,27 @@ namespace QuantLib
 		return fixingDate_;
 	}
 
-	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::functionF (const Real x) const
-    {
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::functionF (const Real x) const {
         const Real Gx = gFunction_->operator()(x);
 		const Real GR = gFunction_->operator()(forwardValue_);
 		return (x - strike_) * (Gx/GR - 1.0);
 	}
 
-	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::firstDerivativeOfF (const Real x) const
-    {
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::firstDerivativeOfF (const Real x) const {
 		const Real Gx = gFunction_->operator()(x);
 		const Real GR = gFunction_->operator()(forwardValue_) ;
 		const Real G1 = gFunction_->firstDerivative(x);
 		return (Gx/GR - 1.0) + G1/GR * (x - strike_);
 	}
 
-	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::secondDerivativeOfF (const Real x) const
-    {
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::secondDerivativeOfF (const Real x) const {
 		const Real GR = gFunction_->operator()(forwardValue_) ;
 		const Real G1 = gFunction_->firstDerivative(x);
 		const Real G2 = gFunction_->secondDerivative(x);
 		return 2.0 * G1/GR + (x - strike_) * G2/GR;
 	}
 
-	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const
-    {
+	Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const {
 		const Real option = (*vanillaOptionPricer_)(fixingDate_, x, isCaplet_, annuity_);
 		return option * secondDerivativeOfF(x);
 	}
@@ -243,13 +237,12 @@ namespace QuantLib
       { }
 
     //Hagan, 3.5b, 3.5c
-    Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const
-     {
-        Real variance(coupon_->swaptionVolatility()->blackVariance(fixingDate_,
+    Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const {
+        Real variance = coupon_->swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
-                                                           swapRateValue_));
-        Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(
-                                                        swapRateValue_)); 
+                                                           swapRateValue_);
+        Real firstDerivativeOfGAtForwardValue = gFunction_->firstDerivative(
+                                                        swapRateValue_); 
 	    Real price = 0;
 
 	    const Real CK = (*vanillaOptionPricer_)(fixingDate_, strike, isCall, annuity_);
@@ -274,8 +267,8 @@ namespace QuantLib
     }
 
     //Hagan 3.4c
-    Real ConundrumPricerByBlack::swapLetPrice() const
-    {
+    Real ConundrumPricerByBlack::swapLetPrice() const {
+
         Real variance(coupon_->swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
                                                            swapRateValue_));
@@ -284,9 +277,10 @@ namespace QuantLib
 	    Real price = 0;
 	    price += discount_*swapRateValue_;
         price += firstDerivativeOfGAtForwardValue*annuity_*swapRateValue_*swapRateValue_*
-            (std::exp(variance)-1);
+            (std::exp(variance)-1.);
 	    price *= coupon_->accrualPeriod();
 	    return price;
+
     }
 
     //////////////////////
