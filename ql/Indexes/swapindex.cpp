@@ -59,7 +59,7 @@ namespace QuantLib {
                                      iborIndex_->frequency(),
                                      iborIndex_->businessDayConvention());
 
-		return boost::shared_ptr<VanillaSwap>(new VanillaSwap (true, 100.0,
+		return boost::shared_ptr<VanillaSwap>(new VanillaSwap(true, 1.0,
                         fixedLegSchedule, 0.0, dayCounter_,
                         floatingLegSchedule,
                         iborIndex_, iborIndex_->settlementDays(),
