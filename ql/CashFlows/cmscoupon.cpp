@@ -31,12 +31,13 @@ namespace QuantLib {
                   Rate spread,
                   Rate cap,
                   Rate floor,
+                  Real meanReversion,
                   const Date& refPeriodStart,
                   const Date& refPeriodEnd)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter),
-      swapIndex_(index), cap_(cap), floor_(floor), Pricer_(Pricer) {}
+      swapIndex_(index), cap_(cap), floor_(floor), meanReversion_(meanReversion), Pricer_(Pricer) {}
 
     namespace {
 
@@ -231,6 +232,7 @@ namespace QuantLib {
                     const std::vector<Real>& fractions,
                     const std::vector<Real>& caps,
                     const std::vector<Real>& floors,
+                    const std::vector<Real>& meanReversions,
                     const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
                     const Handle<SwaptionVolatilityStructure>& vol) {
 
@@ -252,6 +254,7 @@ namespace QuantLib {
                               get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
+                              get(meanReversions,0,Null<Rate>()),
                               start, end)));
             
         } else {
@@ -264,6 +267,7 @@ namespace QuantLib {
                               get(fractions,0,1.0), get(baseRates,0,0.0), 
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
+                              get(meanReversions,0,Null<Rate>()),
                               reference, end)));
         }
         // regular periods
@@ -276,6 +280,7 @@ namespace QuantLib {
                               get(fractions,i-1,1.0), get(baseRates,i-1,0.0), 
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
+                              get(meanReversions,i-1,Null<Rate>()),
                               start, end)));
         }
         if (schedule.size() > 2) {
@@ -290,6 +295,7 @@ namespace QuantLib {
                                   get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
+                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, end)));
             } else {
                 Date reference =
@@ -303,6 +309,7 @@ namespace QuantLib {
                                   get(baseRates,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
+                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, reference)));
             }
         }

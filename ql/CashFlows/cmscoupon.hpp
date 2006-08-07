@@ -60,6 +60,7 @@ namespace QuantLib {
                   Rate spread,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>(),
+                  Real meanReversion = 0.,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
         //! \name Coupon interface
@@ -75,7 +76,7 @@ namespace QuantLib {
         }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
-        //Real multiplier() const { return multiplier_; }
+        Real meanReversion() const { return meanReversion_; }
         //@}
         //! \name Modifiers
         //@{
@@ -93,6 +94,7 @@ namespace QuantLib {
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
+        Real meanReversion_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
         boost::shared_ptr<VanillaCMSCouponPricer> Pricer_;
     };
@@ -109,6 +111,7 @@ namespace QuantLib {
                     const std::vector<Real>& fractions,
                     const std::vector<Real>& caps,
                     const std::vector<Real>& floors,
+                    const std::vector<Real>& meanReversions,
                     const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                     const Handle<SwaptionVolatilityStructure>& vol =
                                 Handle<SwaptionVolatilityStructure>());
