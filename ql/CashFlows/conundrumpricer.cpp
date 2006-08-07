@@ -40,7 +40,7 @@ namespace QuantLib
     };
 
 
-        ConundrumPricer::ConundrumPricer(
+    ConundrumPricer::ConundrumPricer(
                 const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
     : modelOfYieldCurve_(modelOfYieldCurve), 
       cutoffForCaplet_(2), cutoffForFloorlet_(0){	}
@@ -77,7 +77,22 @@ namespace QuantLib
                                            paymentDate_);
 		const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
-        gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
+        switch (modelOfYieldCurve_) {
+            case GFunctionFactory::standard:
+                gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
+                break;
+            case GFunctionFactory::exactYield:
+                QL_FAIL("GFunctionFactory::exactYield not implemented");
+                break;
+            case GFunctionFactory::parallelShifts:
+                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.);
+                break;
+            case GFunctionFactory::nonParallelShifts:
+                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, coupon.meanReversion());
+                break;
+            default:
+                QL_FAIL("unknown/illegal option type");
+        }
 
         vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>( 
             new BlackVanillaOptionPricer(swapRateValue_, swapTenor_,
@@ -90,14 +105,14 @@ namespace QuantLib
 		const Real swapLetPrice_ = swapLetPrice();
 		const Real spreadLegValue = spread_*coupon_->accrualPeriod()*discount_;
 
-		const Real effectiveStrikeForMax = (max_-spread_)/gearing_;
+		const Real effectiveStrikeForMax = std::max((max_-spread_)/gearing_,QL_EPSILON);
 		Real capLetPrice = 0;
 
 		if (max_ < cutoffForCaplet_) {
 			capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
 		}
 
-		const Real effectiveStrikeForMin = (min_-spread_)/gearing_;
+		const Real effectiveStrikeForMin = std::max((min_-spread_)/gearing_,QL_EPSILON);;
 		Real floorLetPrice = 0;
 
 
@@ -333,36 +348,40 @@ namespace QuantLib
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::operator()(Real R) {
-		return R*firstDerivative(R);
+    //////////////////////
+	Real GFunctionFactory::GFunctionWithShifts::operator()(Real Rs) {
+        Real calibratedShift = calibrationOfShift(Rs);
+		return Rs*std::exp(-shapedPaymentTime_*calibratedShift)
+			/ (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*calibratedShift));
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real) {
-		return std::exp(-shapedPaymentTime_*shift_)
-			/ (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*shift_));
+	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real Rs) {
+        Real dRs = 1.0e-6;
+        return (operator()(Rs+dRs)-operator()(Rs-dRs))/(2.0*dRs);
     }
 
-	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real) {
-		return 0;
+	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real Rs) {
+        Real dRs = 1.0e-6;
+        return (firstDerivative(Rs+dRs)-firstDerivative(Rs-dRs))/(2.0*dRs);
     }
 
-	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, 
+	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CMSCoupon& coupon, 
 		Real meanReversion) : meanReversion_(meanReversion) {
 
-		const boost::shared_ptr<SwapIndex>& swapIndex = coupon->swapIndex();
-        const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon->fixingDate());
+		const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
+        const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
 
 		swapRateValue_ = swap->fairRate();
 
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
-		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon->fixingDate()));
+		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
 		const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
         const DayCounter dc(swapIndex->dayCounter());
 
 		swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
 		discountAtStart_ = rateCurve->discount(schedule->startDate());
 
-		const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon->date()));
+		const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon.date()));
 
 		shapedPaymentTime_ = shapeOfShift(paymentTime);
 
@@ -375,24 +394,19 @@ namespace QuantLib
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
 		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
-		/** calibration of shift */
-		{
-			const ObjectiveFunction objectiveFunction(*this);
-			const Bisection solver;
-			accuracy_ = .0000001;
-			shift_ = solver.solve(objectiveFunction, accuracy_, .03, .1); // ????
-		}
+		accuracy_ = .0000001;
+        shift_ = calibrationOfShift(swapRateValue_);
 	}
 
 	Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
 		Real result = 0;
 		for(Size i=0; i<o_.accruals_.size(); i++) {
 			result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]
-				*std::exp(-o_.shapedSwapPaymentTimes_[i]*o_.shift_);
+				*std::exp(-o_.shapedSwapPaymentTimes_[i]*x);
 		}
-		result *= o_.swapRateValue_;
+		result *= Rs_;
 
-		result += o_.swapPaymentDiscounts_.back()*std::exp(-o_.shapedSwapPaymentTimes_.back()*o_.shift_)
+		result += o_.swapPaymentDiscounts_.back()*std::exp(-o_.shapedSwapPaymentTimes_.back()*x)
 			-o_.discountAtStart_;
 		return result;
 	}
@@ -406,4 +420,16 @@ namespace QuantLib
 			return x;
 		}
 	}
+    Real GFunctionFactory::GFunctionWithShifts::calibrationOfShift(Real Rs) const {
+			const ObjectiveFunction objectiveFunction(*this, Rs);
+			Bisection solver;
+            solver.setMaxEvaluations(10000);
+			Real calibratedShift = solver.solve(objectiveFunction, accuracy_, .03, -100.,100.); // ????
+			return calibratedShift;
+	}
+    boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionWithShifts(const CMSCoupon& coupon,
+                                                                          Real meanReversion) {
+	    return boost::shared_ptr<GFunction>(new GFunctionWithShifts(coupon,meanReversion));
+    }
+
 }

@@ -71,10 +71,12 @@ namespace QuantLib
                                  exactYield,
                                  parallelShifts,
                                  nonParallelShifts };
-		/** pointer requires explicit delete. */
+
 		static boost::shared_ptr<GFunction> newGFunctionStandard(Size q,
                                                                  Real delta,
                                                                  Size swapLength);
+        static boost::shared_ptr<GFunction> newGFunctionWithShifts(const CMSCoupon& coupon,
+                                                                  Real meanReversion);     
 		private:
 		GFunctionFactory();
 
@@ -118,20 +120,23 @@ namespace QuantLib
 
 			//* function describing the non-parallel shape of the curve shift*/
 			Real shapeOfShift(Real s) const;
+            //* calibration of shift*/
+            Real calibrationOfShift(Real Rs) const;
 
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
 				
 				const GFunctionWithShifts& o_;
+                const Real Rs_;
 
 			public:
-				ObjectiveFunction(const GFunctionWithShifts& o) : o_(o) {
+				ObjectiveFunction(const GFunctionWithShifts& o, const Real Rs) : o_(o), Rs_(Rs){
 				}
 				virtual Real operator()(const Real& x) const;
 			};
 
           public:
             
-			  GFunctionWithShifts(const boost::shared_ptr<CMSCoupon>& coupon, Real meanReversion);
+			  GFunctionWithShifts(const CMSCoupon& coupon, Real meanReversion);
 			
 			  Real operator()(Real x) ;
 			  Real firstDerivative(Real x);
