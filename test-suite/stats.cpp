@@ -33,9 +33,6 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(StatisticsTest)
 
-typedef GaussianStatistics<IncrementalStatistics>
-    IncrementalGaussianStatistics;
-
 Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
 Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
@@ -119,8 +116,8 @@ void StatisticsTest::testStatistics() {
 
     BOOST_MESSAGE("Testing statistics...");
 
-    check<IncrementalGaussianStatistics>(
-        std::string("IncrementalGaussianStatistics"));
+    check<IncrementalStatistics>(
+        std::string("IncrementalStatistics"));
     check<Statistics>(std::string("Statistics"));
 }
 
@@ -239,8 +236,8 @@ void StatisticsTest::testSequenceStatistics() {
 
     BOOST_MESSAGE("Testing sequence statistics...");
 
-    checkSequence<IncrementalGaussianStatistics>(
-        std::string("IncrementalGaussianStatistics"),5);
+    checkSequence<IncrementalStatistics>(
+        std::string("IncrementalStatistics"),5);
     checkSequence<Statistics>(std::string("Statistics"),5);
 }
 
@@ -318,8 +315,8 @@ void StatisticsTest::testConvergenceStatistics() {
 
     BOOST_MESSAGE("Testing convergence statistics...");
 
-    //checkConvergence<IncrementalGaussianStatistics>(
-    //                          std::string("IncrementalGaussianStatistics"));
+    checkConvergence<IncrementalStatistics>(
+                              std::string("IncrementalStatistics"));
     checkConvergence<Statistics>(std::string("Statistics"));
 }
 

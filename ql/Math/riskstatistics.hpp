@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! This class wraps a somewhat generic statistic tool and adds
         a number of risk measures (e.g.: value-at-risk, expected
         shortfall, etc.) based on the data distribution as reported by
-        the underlying tool.
+        the underlying statistic tool.
 
         \todo add historical annualized volatility
 
@@ -120,8 +120,7 @@ namespace QuantLib {
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
-    typedef GaussianStatistics<GenericRiskStatistics<GeneralStatistics> >
-                                                               RiskStatistics;
+    typedef GenericRiskStatistics<GaussianStatistics> RiskStatistics;
 
 
 

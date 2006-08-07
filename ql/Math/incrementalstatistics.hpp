@@ -64,19 +64,6 @@ namespace QuantLib {
         */
         Real standardDeviation() const;
 
-        /*! returns the downside variance, defined as
-            \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
-                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
-            where \f$ \theta \f$ = 0 if x > 0 and
-            \f$ \theta \f$ =1 if x <0
-        */
-        Real downsideVariance() const;
-
-        /*! returns the downside deviation, defined as the
-            square root of the downside variance.
-        */
-        Real downsideDeviation() const;
-
         /*! returns the error estimate \f$ \epsilon \f$, defined as the
             square root of the ratio of the variance to the number of
             samples.
@@ -103,6 +90,19 @@ namespace QuantLib {
 
         /*! returns the maximum sample value */
         Real max() const;
+
+        /*! returns the downside variance, defined as
+            \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
+                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
+            where \f$ \theta \f$ = 0 if x > 0 and
+            \f$ \theta \f$ =1 if x <0
+        */
+        Real downsideVariance() const;
+
+        /*! returns the downside deviation, defined as the
+            square root of the downside variance.
+        */
+        Real downsideDeviation() const;
 
         //@}
 
