@@ -47,8 +47,9 @@ namespace QuantLib {
         for (i=0; i<exerciseDates_.size(); i++) {
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
         }
+
+        Date startDate = exerciseDates_[0]; // as good as any
         for (i=0; i<lengths_.size(); i++) {
-            Date startDate = exerciseDates_[0]; // as good as any
             Date endDate = startDate + lengths_[i];
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
@@ -82,8 +83,9 @@ namespace QuantLib {
         for (i=0; i<exerciseDates_.size(); i++) {
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
         }
+
+        Date startDate = exerciseDates_[0]; // as good as any
         for (i=0; i<lengths_.size(); i++) {
-            Date startDate = exerciseDates_[0]; // as good as any
             Date endDate = startDate + lengths_[i];
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
@@ -115,6 +117,7 @@ namespace QuantLib {
             << vols.columns() << ") in the vol matrix");
 
         exerciseTimes_.resize(expiries.size());
+        exerciseDates_.resize(expiries.size());
         timeLengths_.resize(lengths_.size());
         Size i;
         for (i=0; i<expiries.size(); i++) {
@@ -122,8 +125,9 @@ namespace QuantLib {
                                                  expiries[i], bdc);
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
         }
+
+        Date startDate = exerciseDates_[0]; // as good as any
         for (i=0; i<lengths_.size(); i++) {
-            Date startDate = exerciseDates_[0]; // as good as any
             Date endDate = startDate + lengths_[i];
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }

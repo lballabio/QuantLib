@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2006 Ferdinando Ametrano
  Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,9 +43,11 @@ namespace QuantLib {
         virtual Real xMin() const = 0;
         virtual Real xMax() const = 0;
         virtual std::vector<Real> xValues() const = 0;
+        virtual Size locateX(Real x) const = 0;
         virtual Real yMin() const = 0;
         virtual Real yMax() const = 0;
         virtual std::vector<Real> yValues() const = 0;
+        virtual Size locateY(Real y) const = 0;
         virtual const Matrix& zData() const = 0;
         virtual bool isInRange(Real x, Real y) const = 0;
         virtual Real value(Real x, Real y) const = 0;
@@ -157,6 +159,9 @@ namespace QuantLib {
         std::vector<Real> xValues() const {
             return impl_->xValues();
         }
+        Size locateX(Real x) const {
+            return impl_->locateX(x);
+        }
         Real yMin() const {
             return impl_->yMin();
         }
@@ -165,6 +170,9 @@ namespace QuantLib {
         }
         std::vector<Real> yValues() const {
             return impl_->yValues();
+        }
+        Size locateY(Real y) const {
+            return impl_->locateY(y);
         }
         const Matrix& zData() const {
             return impl_->zData();

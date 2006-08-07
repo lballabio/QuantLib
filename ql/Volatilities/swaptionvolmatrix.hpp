@@ -63,9 +63,13 @@ namespace QuantLib {
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         // inspectors
-        DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& exerciseDates() const;
+        const std::vector<Time>& exerciseTimes() const;
         const std::vector<Period>& lengths() const;
+        const std::vector<Time>& timeLengths() const;
+
+        // TermStructure interface
+        DayCounter dayCounter() const { return dayCounter_; }
 
         // SwaptionVolatilityStructure interface
         Date maxStartDate() const;
@@ -74,6 +78,18 @@ namespace QuantLib {
         Time maxTimeLength() const;
         Rate minStrike() const;
         Rate maxStrike() const;
+        //! returns the lower indexes of sourrounding volatility matrix corners
+        std::pair<Size,Size> locate(const Date& start,
+                                    const Period& length) const {
+            std::pair<Time,Time> times = convertDates(start,length);
+            return locate(times.first, times.second);
+        }
+        //! returns the lower indexes of sourrounding volatility matrix corners
+        std::pair<Size,Size> locate(Time start,
+                                    Time length) const {
+            return std::make_pair(interpolation_.locateY(start),
+                                  interpolation_.locateX(length));
+        }
       private:
         DayCounter dayCounter_;
         std::vector<Date> exerciseDates_;
@@ -97,9 +113,19 @@ namespace QuantLib {
         return exerciseDates_;
     }
 
-    inline const std::vector<Period>&
-    SwaptionVolatilityMatrix::lengths() const {
-        return lengths_;
+    inline const std::vector<Time>&
+    SwaptionVolatilityMatrix::exerciseTimes() const {
+        return exerciseTimes_;
+    }
+
+     inline const std::vector<Period>&
+     SwaptionVolatilityMatrix::lengths() const {
+         return lengths_;
+     }
+ 
+    inline const std::vector<Time>&
+    SwaptionVolatilityMatrix::timeLengths() const {
+        return timeLengths_;
     }
 
     inline Date SwaptionVolatilityMatrix::maxStartDate() const {
