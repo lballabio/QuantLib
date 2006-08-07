@@ -73,7 +73,7 @@ namespace QuantLib {
         virtual ~TermStructure() {}
         //! \name Dates
         //@{
-        //! the reference date, i.e., the date at which discount = 1
+        //! the date at which discount = 1.0 and/or variance = 0.0
         virtual const Date& referenceDate() const;
         //! the calendar used for reference date calculation
         virtual Calendar calendar() const;
