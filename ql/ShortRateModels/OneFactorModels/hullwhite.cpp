@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -98,6 +99,43 @@ namespace QuantLib {
         Real w = (type==Option::Call)? 1.0 : -1.0;
 
         return detail::blackFormula(f, k, v, w);
+    }
+
+    Rate convexityBias(Real futuresPrice,
+                       Time t,
+                       Time T,
+                       Real sigma,
+                       Real a)
+    {
+        QL_REQUIRE(futuresPrice>=0.0,
+            "negative futures price (" << futuresPrice << ") not allowed");
+        QL_REQUIRE(t>=0.0,
+            "negative t (" << t << ") not allowed");
+        QL_REQUIRE(T>=t,
+            "T (" << T << ") must not be less than t (" << t << ")");
+        QL_REQUIRE(sigma>=0.0,
+            "negative sigma (" << sigma << ") not allowed");
+        QL_REQUIRE(a>=0.0,
+            "negative a (" << a << ") not allowed");
+
+        Time deltaT = (T-t);
+        Real tempDeltaT = (1.-std::exp(-a*deltaT)) / a;
+        Real halfSigmaSquare = sigma*sigma/2.0;
+        
+        // lambda adjusts for the fact that the underlying is an interest rate
+        Real lambda = halfSigmaSquare * (1.-std::exp(-2.0*a*t)) / a *
+            tempDeltaT * tempDeltaT;
+
+        Real tempT = (1.0 - std::exp(-a*t)) / a;
+
+        // phi is the MtM adjustment
+        Real phi = halfSigmaSquare * tempDeltaT * tempT * tempT;
+
+        // the adjustment
+        Real z = lambda + phi;
+
+        Rate futureRate = (100.0-futuresPrice)/100.0;
+        return (1.0-std::exp(-z)) * (futureRate + 1.0/(T-t));
     }
 
 }

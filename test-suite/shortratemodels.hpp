@@ -27,6 +27,7 @@
 
 class ShortRateModelTest {
   public:
+    static void testFuturesConvexityBias();
     static void testCachedHullWhite();
     static void testSwaps();
     static boost::unit_test_framework::test_suite* suite();

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -225,12 +226,43 @@ void ShortRateModelTest::testSwaps() {
     #endif
 }
 
+void ShortRateModelTest::testFuturesConvexityBias() {
+
+    BOOST_MESSAGE("Testing Hull-White futures convexity bias...");
+    
+    // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
+    Real futureQuote = 94.0;
+    Real a = 0.03;
+    Real sigma = 0.015;
+    Time t = 5.0;
+    Time T = 5.25;
+
+    Rate expectedForward = 0.0573037;
+    Real tolerance       = 0.0000001;
+
+    Rate futureImpliedRate = (100.0-futureQuote)/100.0;
+    Rate calculatedForward = futureImpliedRate -
+        convexityBias(futureQuote, t, T, sigma, a);
+
+    Real error = std::fabs(calculatedForward-expectedForward);
+
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce convexity bias:"
+                    << "\ncalculated: " << calculatedForward
+                    << "\n  expected: " << expectedForward
+                    << QL_SCIENTIFIC
+                    << "\n     error: " << error
+                    << "\n tolerance: " << tolerance);
+    }
+
+}
 
 test_suite* ShortRateModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
     #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testSwaps));
+    suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
     #endif
     return suite;
 }

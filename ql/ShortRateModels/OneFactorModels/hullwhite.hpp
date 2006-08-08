@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -134,6 +135,22 @@ namespace QuantLib {
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
+
+    /*! Futures convexity bias
+        \f[
+            ForwardRate = FuturesImpliedRate - ConvexityBias
+        \f]
+        calculated as in G. Kirikos, D. Novak, "Convexity Conundrums",
+        Risk Magazine, March 1997
+        
+        \note t and T should be expressed in yearfraction using
+              deposit day counter, F_quoted is futures' market price
+    */
+    Rate convexityBias(Real futurePrice,
+                       Time t,
+                       Time T,
+                       Real sigma,
+                       Real a = 0.03);
 
     // inline definitions
 
