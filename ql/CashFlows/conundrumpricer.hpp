@@ -116,12 +116,15 @@ namespace QuantLib
 			Real swapRateValue_;
 			Real meanReversion_;
 
-			Real accuracy_;
+			Real calibratedShift_, accuracy_;
 
 			//* function describing the non-parallel shape of the curve shift*/
 			Real shapeOfShift(Real s) const;
             //* calibration of shift*/
-            Real calibrationOfShift(Real Rs) const;
+            Real calibrationOfShift(Real Rs);
+            Real functionZ(Real x);
+            Real derRs_derX(Real x);
+            Real derZ_derX(Real x);
 
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
 				

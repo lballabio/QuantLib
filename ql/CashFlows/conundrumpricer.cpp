@@ -24,7 +24,7 @@
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/math/gaussianquadratures.hpp>
 #include <ql/math/kronrodintegral.hpp>
-#include <ql/Solvers1D/all.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib
 {
@@ -144,7 +144,7 @@ namespace QuantLib
         //const Size n = 25;
 		//GaussLegendre Integral(n);
 
-        const KronrodIntegral integral(1.e-12, 1000000);
+        const KronrodIntegral integral(1.e-6, 100000);
 		return integral(integrand,a , b);
 	}
 
@@ -349,24 +349,8 @@ namespace QuantLib
     }
 
     //////////////////////
-	Real GFunctionFactory::GFunctionWithShifts::operator()(Real Rs) {
-        Real calibratedShift = calibrationOfShift(Rs);
-		return Rs*std::exp(-shapedPaymentTime_*calibratedShift)
-			/ (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*calibratedShift));
-    }
-
-	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real Rs) {
-        Real dRs = 1.0e-6;
-        return (operator()(Rs+dRs)-operator()(Rs-dRs))/(2.0*dRs);
-    }
-
-	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real Rs) {
-        Real dRs = 1.0e-6;
-        return (firstDerivative(Rs+dRs)-firstDerivative(Rs-dRs))/(2.0*dRs);
-    }
-
-	GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CMSCoupon& coupon, 
-		Real meanReversion) : meanReversion_(meanReversion) {
+    GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CMSCoupon& coupon, 
+		Real meanReversion) : meanReversion_(meanReversion), calibratedShift_(.03) {
 
 		const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
@@ -394,9 +378,61 @@ namespace QuantLib
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
 		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
-		accuracy_ = .0000001;
+		accuracy_ = 1.e-12;
         shift_ = calibrationOfShift(swapRateValue_);
 	}
+
+	Real GFunctionFactory::GFunctionWithShifts::operator()(Real Rs) {
+        Real calibratedShift = calibrationOfShift(Rs);    
+		return Rs* functionZ(calibratedShift);                     
+    }
+    Real GFunctionFactory::GFunctionWithShifts::functionZ(Real x) {
+		return std::exp(-shapedPaymentTime_*x)
+			/ (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*x));
+    }
+    Real GFunctionFactory::GFunctionWithShifts::derRs_derX(Real x) {
+		Real sqrtDenominator = 0;
+        Real derSqrtDenominator = 0;
+		for(Size i=0; i<accruals_.size(); i++) {
+			sqrtDenominator += accruals_[i]*swapPaymentDiscounts_[i]
+				*std::exp(-shapedSwapPaymentTimes_[i]*x);
+            derSqrtDenominator -= shapedSwapPaymentTimes_[i]* accruals_[i]*swapPaymentDiscounts_[i]
+				*std::exp(-shapedSwapPaymentTimes_[i]*x);
+		}
+        Real denominator = sqrtDenominator* sqrtDenominator; 
+
+        Real numerator = 0;
+        numerator += shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()* 
+                     std::exp(-shapedSwapPaymentTimes_.back()*x)*sqrtDenominator;
+        numerator -= (discountAtStart_ - swapPaymentDiscounts_.back()* std::exp(-shapedSwapPaymentTimes_.back()*x))*
+                     derSqrtDenominator;
+        QL_REQUIRE(denominator!=0, "GFunctionWithShifts::derRs_derX: denominator == 0");
+		return numerator/denominator;
+    }
+
+    Real GFunctionFactory::GFunctionWithShifts::derZ_derX(Real x) {
+		Real sqrtDenominator = (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*x));
+        Real denominator = sqrtDenominator* sqrtDenominator; 
+
+        Real numerator = 0;
+        numerator -= shapedPaymentTime_* std::exp(-shapedPaymentTime_*x)* sqrtDenominator;
+		numerator -= shapedSwapPaymentTimes_.back()* std::exp(-shapedPaymentTime_*x)* (1.-sqrtDenominator);
+        QL_REQUIRE(denominator!=0, "GFunctionWithShifts::derZ_derX: denominator == 0");
+        return numerator/denominator;
+    }
+
+	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real Rs) {
+        //Real dRs = 1.0e-8;
+        //return (operator()(Rs+dRs)-operator()(Rs-dRs))/(2.0*dRs);
+        Real calibratedShift = calibrationOfShift(Rs); 
+        return functionZ(calibratedShift) + Rs * derZ_derX(calibratedShift)/derRs_derX(calibratedShift);
+    }
+
+	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real Rs) {
+        Real dRs = 1.0e-8;
+        return (firstDerivative(Rs+dRs)-firstDerivative(Rs-dRs))/(2.0*dRs);
+    }
+
 
 	Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
 		Real result = 0;
@@ -420,12 +456,12 @@ namespace QuantLib
 			return x;
 		}
 	}
-    Real GFunctionFactory::GFunctionWithShifts::calibrationOfShift(Real Rs) const {
+    Real GFunctionFactory::GFunctionWithShifts::calibrationOfShift(Real Rs){
 			const ObjectiveFunction objectiveFunction(*this, Rs);
-			Bisection solver;
-            solver.setMaxEvaluations(10000);
-			Real calibratedShift = solver.solve(objectiveFunction, accuracy_, .03, -100.,100.); // ????
-			return calibratedShift;
+			Brent solver;
+            solver.setMaxEvaluations(1000);
+			calibratedShift_ = solver.solve(objectiveFunction, accuracy_, calibratedShift_, -10., 10.); 
+			return calibratedShift_;
 	}
     boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionWithShifts(const CMSCoupon& coupon,
                                                                           Real meanReversion) {
