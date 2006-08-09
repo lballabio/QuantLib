@@ -600,7 +600,7 @@ namespace QuantLib {
     // period formatting
 
     std::ostream& operator<<(std::ostream& out, const Period& p) {
-        return out << io::long_period(p);
+        return out << io::short_period(p);
     }
 
     namespace detail {
@@ -629,13 +629,13 @@ namespace QuantLib {
             out << n;
             switch (holder.p.units()) {
               case Days:
-                return out << "d";
+                return out << "D";
               case Weeks:
-                return out << "w";
+                return out << "W";
               case Months:
-                return out << "m";
+                return out << "M";
               case Years:
-                return out << "y";
+                return out << "Y";
               default:
                 QL_FAIL("unknown time unit");
             }
