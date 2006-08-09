@@ -1415,6 +1415,9 @@
 				RelativePath="ql\Indexes\euribor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\euriborswapfixa.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\eurlibor.hpp">
 			</File>
 			<File
