@@ -51,6 +51,7 @@ namespace QuantLib {
         return result;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Real normDist(Real x, Real mean, Real standard_dev,
                   bool cumulative) {
         if (cumulative) {
@@ -65,7 +66,7 @@ namespace QuantLib {
         return InverseCumulativeNormal(mean, standard_dev)
             (probability);
     }
-
+    #endif
 
     static MersenneTwisterUniformRng rng;
 

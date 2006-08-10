@@ -103,6 +103,7 @@ namespace QuantLib {
 
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     Real normDist(Real x,
                   Real mean = 0.0,
                   Real standard_dev = 1.0,
@@ -110,6 +111,7 @@ namespace QuantLib {
     Real normInv(Real probability,
                  Real mean = 0.0,
                  Real standard_dev = 1.0);
+    #endif
 
     Real rand();
     void randomize(BigNatural seed);
