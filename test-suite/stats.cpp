@@ -127,7 +127,7 @@ QL_BEGIN_TEST_LOCALS(StatisticsTest)
 template <class S>
 void checkSequence(const std::string& name, Size dimension) {
 
-    SequenceStatistics<S> ss(dimension);
+    GenericSequenceStatistics<S> ss(dimension);
     Size i;
     for (i = 0; i<LENGTH(data); i++) {
         std::vector<Real> temp(dimension, data[i]);

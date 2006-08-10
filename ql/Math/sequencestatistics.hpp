@@ -24,7 +24,7 @@
 #ifndef quantlib_sequence_statistics_hpp
 #define quantlib_sequence_statistics_hpp
 
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
@@ -46,12 +46,12 @@ namespace QuantLib {
               checking them against numerical calculations.
     */
     template <class StatisticsType = Statistics>
-    class SequenceStatistics {
+    class GenericSequenceStatistics {
       public:
         // typedefs
         typedef StatisticsType statistics_type;
         // constructor
-        SequenceStatistics(Size dimension);
+        GenericSequenceStatistics(Size dimension);
         //! \name inspectors
         //@{
         Size size() const { return dimension_; }
@@ -136,22 +136,23 @@ namespace QuantLib {
         Matrix quadraticSum_;
     };
 
+    typedef GenericSequenceStatistics<RiskStatistics> SequenceStatistics;
 
     // inline definitions
 
     template <class Stat>
-    inline SequenceStatistics<Stat>::SequenceStatistics(Size dimension)
+    inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics(Size dimension)
     : dimension_(0) {
         reset(dimension);
     }
 
     template <class Stat>
-    inline Size SequenceStatistics<Stat>::samples() const {
+    inline Size GenericSequenceStatistics<Stat>::samples() const {
         return stats_[0].samples();
     }
 
     template <class Stat>
-    inline Real SequenceStatistics<Stat>::weightSum() const {
+    inline Real GenericSequenceStatistics<Stat>::weightSum() const {
         return stats_[0].weightSum();
     }
 
@@ -162,7 +163,7 @@ namespace QuantLib {
     #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(METHOD) \
     template <class Stat> \
     std::vector<Real> \
-    SequenceStatistics<Stat>::METHOD() const { \
+    GenericSequenceStatistics<Stat>::METHOD() const { \
         for (Size i=0; i<dimension_; i++) \
             results_[i] = stats_[i].METHOD(); \
         return results_; \
@@ -186,7 +187,7 @@ namespace QuantLib {
     #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(METHOD) \
     template <class Stat> \
     std::vector<Real> \
-    SequenceStatistics<Stat>::METHOD(Real x) const { \
+    GenericSequenceStatistics<Stat>::METHOD(Real x) const { \
         for (Size i=0; i<dimension_; i++) \
             results_[i] = stats_[i].METHOD(x); \
         return results_; \
@@ -210,7 +211,7 @@ namespace QuantLib {
 
 
     template <class Stat>
-    void SequenceStatistics<Stat>::reset(Size dimension) {
+    void GenericSequenceStatistics<Stat>::reset(Size dimension) {
         if (dimension == 0)           // if no size given,
             dimension = dimension_;   // keep the current one
         QL_REQUIRE(dimension > 0, "null dimension");
@@ -228,7 +229,7 @@ namespace QuantLib {
 
 
     template <class Stat>
-    Disposable<Matrix> SequenceStatistics<Stat>::covariance() const {
+    Disposable<Matrix> GenericSequenceStatistics<Stat>::covariance() const {
         Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
                    "sampleWeight=0, unsufficient");
@@ -250,7 +251,7 @@ namespace QuantLib {
 
 
     template <class Stat>
-    Disposable<Matrix> SequenceStatistics<Stat>::correlation() const {
+    Disposable<Matrix> GenericSequenceStatistics<Stat>::correlation() const {
         Matrix correlation = covariance();
         Array variances = correlation.diagonal();
         for (Size i=0; i<dimension_; i++){

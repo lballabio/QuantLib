@@ -113,7 +113,7 @@ namespace QuantLib {
         return weight;
     }
 
-    void AccountingEngine::multiplePathValues(SequenceStatistics<>& stats,
+    void AccountingEngine::multiplePathValues(SequenceStatistics& stats,
                                               Size numberOfPaths)
     {
         Array values(product_->numberOfProducts());

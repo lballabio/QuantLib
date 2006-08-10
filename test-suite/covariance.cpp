@@ -169,7 +169,7 @@ void CovarianceTest::testCovariance() {
     expCor[0][0] = 1.0000000000000000; expCor[0][1] = 0.9970544855015813;
     expCor[1][0] = 0.9970544855015813; expCor[1][1] = 1.0000000000000000;
 
-    SequenceStatistics<> s(n);
+    SequenceStatistics s(n);
     std::vector<Real> temp(n);
 
     for (i = 0; i<LENGTH(data); i++) {

@@ -141,7 +141,7 @@ void MarketModelTest::testForwards() {
 
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
-    SequenceStatistics<> stats(product->numberOfProducts());
+    SequenceStatistics stats(product->numberOfProducts());
     Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);
@@ -212,7 +212,7 @@ void MarketModelTest::testCaplets() {
 
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
-    SequenceStatistics<> stats(product->numberOfProducts());
+    SequenceStatistics stats(product->numberOfProducts());
     Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);
@@ -288,7 +288,7 @@ void MarketModelTest::testOneStepForwards() {
 
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
-    SequenceStatistics<> stats(product->numberOfProducts());
+    SequenceStatistics stats(product->numberOfProducts());
     Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);
@@ -357,7 +357,7 @@ void MarketModelTest::testOneStepCaplets() {
 
     AccountingEngine engine(evolver, product, evolution,
                             initialNumeraireValue);
-    SequenceStatistics<> stats(product->numberOfProducts());
+    SequenceStatistics stats(product->numberOfProducts());
     Size paths = 10000;
 
     engine.multiplePathValues(stats, paths);

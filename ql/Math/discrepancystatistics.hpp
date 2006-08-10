@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! It inherit from SequenceStatistics<Statistics> and adds
         \f$ L^2 \f$ discrepancy calculation
     */
-    class DiscrepancyStatistics : public SequenceStatistics<Statistics> {
+    class DiscrepancyStatistics : public SequenceStatistics {
       public:
         // constructor
         DiscrepancyStatistics(Size dimension);
@@ -49,7 +49,7 @@ namespace QuantLib {
         void add(Iterator begin,
                  Iterator end,
                  Real weight = 1.0) {
-            SequenceStatistics<Statistics>::add(begin,end,weight);
+            SequenceStatistics::add(begin,end,weight);
 
             Size k, m, N = samples();
 
@@ -100,7 +100,7 @@ namespace QuantLib {
     // inline definitions
 
     inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
-    : SequenceStatistics<Statistics>(dimension) {
+    : SequenceStatistics(dimension) {
         reset(dimension);
     }
 
@@ -110,7 +110,7 @@ namespace QuantLib {
         QL_REQUIRE(dimension != 1,
                    "dimension==1 not allowed");
 
-        SequenceStatistics<Statistics>::reset(dimension);
+        SequenceStatistics::reset(dimension);
 
         adiscr_ = 0.0;
         bdiscr_ = 1.0/std::pow(2.0, Integer(dimension-1));

@@ -36,7 +36,7 @@ namespace QuantLib {
                          double initialNumeraireValue);
 
         Real singlePathValues(Array& values);
-        void multiplePathValues(SequenceStatistics<>& stats,
+        void multiplePathValues(SequenceStatistics& stats,
                                 Size numberOfPaths);
     private:
         class Discounter;

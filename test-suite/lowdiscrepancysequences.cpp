@@ -129,7 +129,7 @@ void LowDiscrepancyTest::testSobol() {
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    SequenceStatistics<> stat(dimensionality);
+    SequenceStatistics stat(dimensionality);
     std::vector<Real> mean;
     Size k = 0;
     for (Integer j=1; j<5; j++) { // five cycle
@@ -432,7 +432,7 @@ void LowDiscrepancyTest::testHalton() {
     // testing homogeneity properties
     dimensionality = 33;
     rsg = HaltonRsg(dimensionality, 0, false, false);
-    SequenceStatistics<> stat(dimensionality);
+    SequenceStatistics stat(dimensionality);
     std::vector<Real> mean, stdev, variance, skewness, kurtosis;
     k = 0;
     Integer j;
