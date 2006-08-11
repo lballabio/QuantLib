@@ -75,6 +75,7 @@ namespace QuantLib
 		static boost::shared_ptr<GFunction> newGFunctionStandard(Size q,
                                                                  Real delta,
                                                                  Size swapLength);
+        static boost::shared_ptr<GFunction> newGFunctionExactYield(const CMSCoupon& coupon);
         static boost::shared_ptr<GFunction> newGFunctionWithShifts(const CMSCoupon& coupon,
                                                                   Real meanReversion);     
 		private:
@@ -99,7 +100,22 @@ namespace QuantLib
 			Size swapLength_;
 		};
 
-		class GFunctionWithShifts : public GFunction {
+		class GFunctionExactYield : public GFunction {
+          public:
+            GFunctionExactYield(const CMSCoupon& coupon);
+			Real operator()(Real x) ;
+            Real firstDerivative(Real x);
+            Real secondDerivative(Real x);
+          protected:
+
+			/** fraction of a period between the swap start date and the pay date  */
+			Real delta_;
+ 	        /** accruals fraction*/
+			std::vector<Time> accruals_;
+
+		};
+
+        class GFunctionWithShifts : public GFunction {
 			
 			Time swapStartTime_;
 			

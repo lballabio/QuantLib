@@ -88,7 +88,7 @@ namespace QuantLib
                 gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
                 break;
             case GFunctionFactory::exactYield:
-                QL_FAIL("GFunctionFactory::exactYield not implemented");
+                gFunction_ = GFunctionFactory::newGFunctionExactYield(coupon);
                 break;
             case GFunctionFactory::parallelShifts:
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.);
@@ -97,7 +97,7 @@ namespace QuantLib
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, coupon.meanReversion());
                 break;
             default:
-                QL_FAIL("unknown/illegal option type");
+                QL_FAIL("unknown/illegal gFunction type");
         }
 
         vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>( 
@@ -152,7 +152,7 @@ namespace QuantLib
         //const Size n = 25;
 		//GaussLegendre Integral(n);
 
-        const KronrodIntegral integral(1.e-8, 100000);
+        const KronrodIntegral integral(1.e-6, 1000000);
 		return integral(integrand,a , b);
 	}
 
@@ -363,6 +363,87 @@ namespace QuantLib
                                                             Real delta, Size swapLength) {
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
+
+//===========================================================================//
+//                              GFunctionExactYield                          //
+//===========================================================================//
+    GFunctionFactory::GFunctionExactYield::GFunctionExactYield(const CMSCoupon& coupon){
+
+		const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
+        const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
+
+		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
+		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
+		const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
+        const DayCounter dc(swapIndex->dayCounter());
+
+		Real swapStartTime = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
+		Real swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(),schedule->date(1));
+
+		const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon.date()));
+       
+        delta_ = (paymentTime-swapStartTime) / (swapFirstPaymentTime-swapStartTime);
+		
+        for(Size i=0; i<fixedLeg.size(); i++) {
+			const Coupon* coupon(static_cast<const Coupon*>(fixedLeg[i].get()));
+			accruals_.push_back(coupon->accrualPeriod());
+		}
+	}
+
+    Real GFunctionFactory::GFunctionExactYield::operator()(Real x) {
+		Real product = 1.;
+		for(Size i=0; i<accruals_.size(); i++) {
+			product *= 1./(1.+ accruals_[i]*x);
+		}
+        return x*std::pow(1.+ accruals_[0]*x,-delta_)*(1./(1.-product));
+    }
+
+    Real GFunctionFactory::GFunctionExactYield::firstDerivative(Real x) {
+		Real c = -1.;
+        Real derC = 0.;
+        std::vector<Real> b;
+        for(Size i=0; i<accruals_.size(); i++) {
+            b.push_back(1./(1.+ accruals_[i]*x));
+            c *= b.back();
+            derC += accruals_[i]*b.back(); 
+		}
+        c += 1.;
+        c = 1./c;
+        derC *= (c-c*c);
+
+        return -delta_*accruals_[0]*std::pow(b[0],delta_+1.)*x*c+
+                std::pow(b[0],delta_)*c+ std::pow(b[0],delta_)*x*derC;
+        //Real dx = 1.0e-8;
+        //return (operator()(x+dx)-operator()(x-dx))/(2.0*dx);
+    }
+
+    Real GFunctionFactory::GFunctionExactYield::secondDerivative(Real x) {
+        Real c = -1.;
+        Real sum = 0.;
+        Real sumOfSquare = 0.;
+        std::vector<Real> b;
+        for(Size i=0; i<accruals_.size(); i++) {
+            b.push_back(1./(1.+ accruals_[i]*x));
+            c *= b.back();
+            sum += accruals_[i]*b.back(); 
+            sumOfSquare += std::pow(accruals_[i]*b.back(),2.); 
+		}
+        c += 1.;
+        c = 1./c;
+        Real derC =sum*(c-c*c);
+
+        return (-delta_*accruals_[0]*std::pow(b[0],delta_+1.)*c+ std::pow(b[0],delta_)*derC)*
+               (-delta_*accruals_[0]*b[0]*x + 1. + x*(1.-c)*sum)+
+                std::pow(b[0],delta_)*c*(delta_*std::pow(accruals_[0]*b[0],2.)*x - delta_* accruals_[0]*b[0] -
+                x*derC*sum + (1.-c)*sum - x*(1.-c)*sumOfSquare);
+        //Real dx = 1.0e-8;
+        //return (firstDerivative(x+dx)-firstDerivative(x-dx))/(2.0*dx);
+    }
+
+    boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionExactYield(const CMSCoupon& coupon) {
+	    return boost::shared_ptr<GFunction>(new GFunctionExactYield(coupon));
+    }
+
 
 
 //===========================================================================//
