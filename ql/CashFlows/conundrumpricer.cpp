@@ -28,6 +28,9 @@
 
 namespace QuantLib
 {
+//===========================================================================//
+//                          BlackVanillaOptionPricer                         //
+//===========================================================================//
     Real BlackVanillaOptionPricer::operator()(Date expiryDate,
                                               Real strike,
                                               bool isCall,
@@ -40,6 +43,9 @@ namespace QuantLib
     };
 
 
+//===========================================================================//
+//                             ConundrumPricer                               //
+//===========================================================================//
     ConundrumPricer::ConundrumPricer(
                 const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
     : modelOfYieldCurve_(modelOfYieldCurve), 
@@ -129,7 +135,9 @@ namespace QuantLib
 
 	}
 
-    ////////////////		ConundrumPricerByNumericalIntegration
+//===========================================================================//
+//                  ConundrumPricerByNumericalIntegration                    //
+//===========================================================================//
 
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
@@ -144,7 +152,7 @@ namespace QuantLib
         //const Size n = 25;
 		//GaussLegendre Integral(n);
 
-        const KronrodIntegral integral(1.e-6, 100000);
+        const KronrodIntegral integral(1.e-8, 100000);
 		return integral(integrand,a , b);
 	}
 
@@ -188,7 +196,9 @@ namespace QuantLib
             + atmCapLetPrice - atmFloorLetPrice;
 	}
 
-	//////////////////		ConundrumIntegrand
+//===========================================================================//
+//                              ConundrumIntegrand                           //
+//===========================================================================//
 	ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(
         const boost::shared_ptr<VanillaOptionPricer>& o,
         const boost::shared_ptr<YieldTermStructure>& rateCurve,
@@ -245,7 +255,10 @@ namespace QuantLib
 	}
 
 
-    ////////////////////// ConundrumPricerByBlack
+
+//===========================================================================//
+//                          ConundrumPricerByBlack                           //
+//===========================================================================//
     ConundrumPricerByBlack::ConundrumPricerByBlack(
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
     : ConundrumPricer(modelOfYieldCurve)
@@ -298,7 +311,10 @@ namespace QuantLib
 
     }
 
-    //////////////////////
+
+//===========================================================================//
+//                              GFunctionStandard                            //
+//===========================================================================//
 
     Real GFunctionFactory::GFunctionStandard::operator()(Real x) {
 	    const Real n = swapLength_ * q_;
@@ -348,9 +364,12 @@ namespace QuantLib
 	    return boost::shared_ptr<GFunction>(new GFunctionStandard(q, delta, swapLength));
     }
 
-    //////////////////////
+
+//===========================================================================//
+//                            GFunctionWithShifts                            //
+//===========================================================================//
     GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CMSCoupon& coupon, 
-		Real meanReversion) : meanReversion_(meanReversion), calibratedShift_(.03) {
+		Real meanReversion) : meanReversion_(meanReversion), calibratedShift_(.03),tmpRs_(10000000.) {
 
 		const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
@@ -378,7 +397,7 @@ namespace QuantLib
 			swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
 		}
 		discountRatio_ = swapPaymentDiscounts_.back()/discountAtStart_;
-		accuracy_ = 1.e-12;
+		accuracy_ = 1.e-14;
         shift_ = calibrationOfShift(swapRateValue_);
 	}
 
@@ -409,6 +428,46 @@ namespace QuantLib
         QL_REQUIRE(denominator!=0, "GFunctionWithShifts::derRs_derX: denominator == 0");
 		return numerator/denominator;
     }
+    Real GFunctionFactory::GFunctionWithShifts::der2Rs_derX2(Real x) {
+        Real denOfRfunztion = 0.;
+        Real derDenOfRfunztion = 0.;
+        Real der2DenOfRfunztion = 0.;
+        for(Size i=0; i<accruals_.size(); i++) {
+			denOfRfunztion += accruals_[i]*swapPaymentDiscounts_[i]
+				*std::exp(-shapedSwapPaymentTimes_[i]*x);
+            derDenOfRfunztion -= shapedSwapPaymentTimes_[i]* accruals_[i]*swapPaymentDiscounts_[i]
+				*std::exp(-shapedSwapPaymentTimes_[i]*x);
+            der2DenOfRfunztion+= shapedSwapPaymentTimes_[i]*shapedSwapPaymentTimes_[i]* accruals_[i]*
+                swapPaymentDiscounts_[i]*std::exp(-shapedSwapPaymentTimes_[i]*x);
+		}
+
+        Real denominator = std::pow(denOfRfunztion,4); 
+
+        Real numOfDerR = 0;
+        numOfDerR += shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()* 
+                     std::exp(-shapedSwapPaymentTimes_.back()*x)*denOfRfunztion;
+        numOfDerR -= (discountAtStart_ - swapPaymentDiscounts_.back()* std::exp(-shapedSwapPaymentTimes_.back()*x))*
+                     derDenOfRfunztion;
+
+        Real denOfDerR = std::pow(denOfRfunztion,2); 
+        
+        Real derNumOfDerR = 0.;
+        derNumOfDerR -= shapedSwapPaymentTimes_.back()*shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()* 
+                     std::exp(-shapedSwapPaymentTimes_.back()*x)*denOfRfunztion;
+        derNumOfDerR += shapedSwapPaymentTimes_.back()* swapPaymentDiscounts_.back()* 
+                     std::exp(-shapedSwapPaymentTimes_.back()*x)*derDenOfRfunztion;
+
+        derNumOfDerR -= (shapedSwapPaymentTimes_.back()*swapPaymentDiscounts_.back()* 
+                        std::exp(-shapedSwapPaymentTimes_.back()*x))* derDenOfRfunztion;
+        derNumOfDerR -= (discountAtStart_ - swapPaymentDiscounts_.back()* std::exp(-shapedSwapPaymentTimes_.back()*x))*
+                     der2DenOfRfunztion;
+
+        Real derDenOfDerR = 2*denOfRfunztion*derDenOfRfunztion;
+
+        Real numerator = derNumOfDerR*denOfDerR -numOfDerR*derDenOfDerR; 
+        QL_REQUIRE(denominator!=0, "GFunctionWithShifts::der2Rs_derX2: denominator == 0");
+        return numerator/denominator;
+    }
 
     Real GFunctionFactory::GFunctionWithShifts::derZ_derX(Real x) {
 		Real sqrtDenominator = (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*x));
@@ -421,6 +480,31 @@ namespace QuantLib
         return numerator/denominator;
     }
 
+    Real GFunctionFactory::GFunctionWithShifts::der2Z_derX2(Real x) {
+		Real denOfZfunction = (1.-discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*x));
+       	Real derDenOfZfunction = shapedSwapPaymentTimes_.back()*discountRatio_*std::exp(-shapedSwapPaymentTimes_.back()*x);
+        Real denominator = std::pow(denOfZfunction,4); 
+
+        Real numOfDerZ = 0;
+        numOfDerZ -= shapedPaymentTime_* std::exp(-shapedPaymentTime_*x)* denOfZfunction;
+		numOfDerZ -= shapedSwapPaymentTimes_.back()* std::exp(-shapedPaymentTime_*x)* (1.-denOfZfunction);
+
+        Real denOfDerZ = std::pow(denOfZfunction,2); 
+        
+        Real derNumOfDerZ = (-shapedPaymentTime_* std::exp(-shapedPaymentTime_*x)* 
+                             (-shapedPaymentTime_+(shapedPaymentTime_*discountRatio_-
+                               shapedSwapPaymentTimes_.back()*discountRatio_)* std::exp(-shapedSwapPaymentTimes_.back()*x))
+                              -shapedSwapPaymentTimes_.back()*std::exp(-shapedPaymentTime_*x)*
+                              (shapedPaymentTime_*discountRatio_- shapedSwapPaymentTimes_.back()*discountRatio_)*
+                              std::exp(-shapedSwapPaymentTimes_.back()*x));
+
+        Real derDenOfDerZ = 2*denOfZfunction*derDenOfZfunction;
+
+        Real numerator = derNumOfDerZ*denOfDerZ -numOfDerZ*derDenOfDerZ; 
+        QL_REQUIRE(denominator!=0, "GFunctionWithShifts::der2Z_derX2: denominator == 0");
+        return numerator/denominator;
+    }
+
 	Real GFunctionFactory::GFunctionWithShifts::firstDerivative(Real Rs) {
         //Real dRs = 1.0e-8;
         //return (operator()(Rs+dRs)-operator()(Rs-dRs))/(2.0*dRs);
@@ -429,8 +513,13 @@ namespace QuantLib
     }
 
 	Real GFunctionFactory::GFunctionWithShifts::secondDerivative(Real Rs) {
-        Real dRs = 1.0e-8;
-        return (firstDerivative(Rs+dRs)-firstDerivative(Rs-dRs))/(2.0*dRs);
+        //Real dRs = 1.0e-8;
+        //return (firstDerivative(Rs+dRs)-firstDerivative(Rs-dRs))/(2.0*dRs);
+        Real calibratedShift = calibrationOfShift(Rs); 
+        return 2.*derZ_derX(calibratedShift)/derRs_derX(calibratedShift) + 
+            Rs * der2Z_derX2(calibratedShift)/std::pow(derRs_derX(calibratedShift),2.)-
+            Rs * derZ_derX(calibratedShift)*der2Rs_derX2(calibratedShift)/
+            std::pow(derRs_derX(calibratedShift),3.);
     }
 
 
@@ -457,10 +546,13 @@ namespace QuantLib
 		}
 	}
     Real GFunctionFactory::GFunctionWithShifts::calibrationOfShift(Real Rs){
-			const ObjectiveFunction objectiveFunction(*this, Rs);
-			Brent solver;
-            solver.setMaxEvaluations(1000);
-			calibratedShift_ = solver.solve(objectiveFunction, accuracy_, calibratedShift_, -10., 10.); 
+            if(Rs!=tmpRs_){
+                tmpRs_=Rs;
+			    const ObjectiveFunction objectiveFunction(*this, Rs);
+			    Brent solver;
+                solver.setMaxEvaluations(1000);
+                calibratedShift_ = solver.solve(objectiveFunction, accuracy_, calibratedShift_, -10., 10.); 
+            }
 			return calibratedShift_;
 	}
     boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionWithShifts(const CMSCoupon& coupon,
