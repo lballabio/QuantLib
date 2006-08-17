@@ -140,10 +140,13 @@ namespace QuantLib
 //===========================================================================//
 
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+		Real lowerLimit,
+		Real upperLimit)
     : ConundrumPricer(modelOfYieldCurve),
-       mInfinity_(1.0)
-    {	}
+       upperLimit_(upperLimit), 
+	   lowerLimit_(lowerLimit) {
+	}
 
 	Real ConundrumPricerByNumericalIntegration::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
@@ -160,24 +163,23 @@ namespace QuantLib
                                         bool isCap, Real strike) const {
 		Real integralValue, dFdK;
 		if(isCap) {
-			const Real a = strike;
-			const Real b = strike + mInfinity_;
-            boost::shared_ptr<ConundrumIntegrand> integrandForCap = boost::shared_ptr<ConundrumIntegrand>(
+			const Real a(strike), b(std::max(strike, upperLimit_));
+            const boost::shared_ptr<ConundrumIntegrand> integrandForCap = boost::shared_ptr<ConundrumIntegrand>(
             new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
                                    gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, strike, true));
-
+                                   annuity_, swapRateValue_, strike, true)
+								   );
             integralValue = integrate(a, b, *integrandForCap);
 
 			dFdK = integrandForCap->firstDerivativeOfF(strike);
 		}
 		else {
-			const Real a = 0.0;
-			const Real b = strike;
-            boost::shared_ptr<ConundrumIntegrand> integrandForFloor = boost::shared_ptr<ConundrumIntegrand>(
+			const Real a(std::min(strike, lowerLimit_)), b(strike);
+            const boost::shared_ptr<ConundrumIntegrand> integrandForFloor = boost::shared_ptr<ConundrumIntegrand>(
             new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
                                    gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, strike, false));
+                                   annuity_, swapRateValue_, strike, false)
+								   );
 			integralValue = -integrate(a, b, *integrandForFloor);
 			dFdK = integrandForFloor->firstDerivativeOfF(strike);
 		}
@@ -461,6 +463,8 @@ namespace QuantLib
 
 		swapRateValue_ = swap->fairRate();
 
+		objectiveFunction_ = std::auto_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
+
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
 		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
 		const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
@@ -621,6 +625,10 @@ namespace QuantLib
 		return result;
 	}
 
+	void GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::setSwapRateValue(Real x) {
+		Rs_ = x;
+	}
+
 	Real GFunctionFactory::GFunctionWithShifts::shapeOfShift(Real s) const {
 		const Real x(s-swapStartTime_);
 		if(meanReversion_>0) {
@@ -644,17 +652,17 @@ namespace QuantLib
 					N+=accruals_[i]*swapPaymentDiscounts_[i];
 					D+=accruals_[i]*shapedSwapPaymentTimes_[i]*(swapPaymentDiscounts_[i]-swapStartTime_);
 				}
-				N*=swapRateValue_;
-				D*=swapRateValue_;
+				N*=Rs;
+				D*=Rs;
 				N+=swapPaymentDiscounts_.back();
 				D+=swapPaymentDiscounts_.back()*(swapPaymentDiscounts_.back()-swapStartTime_);
 				initialGuess = N/D;
 			}
-			tmpRs_=Rs;
-			const ObjectiveFunction objectiveFunction(*this, Rs);
+			objectiveFunction_->setSwapRateValue(Rs);
 			Brent solver;
             solver.setMaxEvaluations(1000);
-            calibratedShift_ = solver.solve(objectiveFunction, accuracy_, initialGuess, -10., 10.); 
+            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_, initialGuess, -10., 10.); 
+			tmpRs_=Rs;
         }
 		return calibratedShift_;
 	}

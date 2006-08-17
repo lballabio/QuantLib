@@ -145,13 +145,16 @@ namespace QuantLib
 			class ObjectiveFunction : public std::unary_function<Real, Real> {
 				
 				const GFunctionWithShifts& o_;
-                const Real Rs_;
+                Real Rs_;
 
 			public:
 				ObjectiveFunction(const GFunctionWithShifts& o, const Real Rs) : o_(o), Rs_(Rs){
 				}
 				virtual Real operator()(const Real& x) const;
+				void setSwapRateValue(Real x);
 			};
+
+			std::auto_ptr<ObjectiveFunction> objectiveFunction_;
 
           public:
             
@@ -206,7 +209,9 @@ namespace QuantLib
       public:
 		ConundrumPricerByNumericalIntegration( 
             const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = 
-            GFunctionFactory::standard);
+            GFunctionFactory::standard,
+			Real lowerLimit = 0.0,
+			Real upperLimit = 1.0);
       private:
 		class Function : public std::unary_function<Real, Real> {
           public:
@@ -254,7 +259,7 @@ namespace QuantLib
                                     Real strike) const;
 		virtual Real swapLetPrice() const;
 		
-        Real mInfinity_;
+		const Real upperLimit_, lowerLimit_;
 	};
 
     class ConundrumPricerByBlack : public ConundrumPricer
