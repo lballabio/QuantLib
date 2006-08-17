@@ -126,13 +126,11 @@ namespace QuantLib
 			std::vector<Real> swapPaymentDiscounts_;
 			Real discountAtStart_, discountRatio_;
 
-			/** value determinated implicitly  */
-			Real shift_;
-
 			Real swapRateValue_;
 			Real meanReversion_;
 
-			Real calibratedShift_, accuracy_, tmpRs_;;
+			Real calibratedShift_, tmpRs_;
+			const Real accuracy_;
 
 			//* function describing the non-parallel shape of the curve shift*/
 			Real shapeOfShift(Real s) const;
