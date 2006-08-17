@@ -85,6 +85,7 @@ namespace QuantLib {
                       new detail::LinearInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                                  yBegin));
         }
+        LinearInterpolation() : Interpolation() {}
     };
 
     //! Linear interpolation factory and traits
