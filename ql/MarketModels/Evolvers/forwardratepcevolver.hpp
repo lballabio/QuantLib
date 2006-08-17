@@ -35,8 +35,8 @@ namespace QuantLib {
     class ForwardRatePcEvolver : public MarketModelEvolver {
     public:
         ForwardRatePcEvolver(const boost::shared_ptr<PseudoRoot>&,
-                           const EvolutionDescription&,
-                           const BrownianGeneratorFactory&);
+                             const EvolutionDescription&,
+                             const BrownianGeneratorFactory&);
 		virtual ~ForwardRatePcEvolver();
 
         Real startNewPath();

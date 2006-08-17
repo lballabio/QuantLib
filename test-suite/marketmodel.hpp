@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,12 +28,11 @@
 
 class MarketModelTest {
   public:
-    static void testForwards();
-    static void testCaplets();
-    static void testOneStepForwards();
-    static void testOneStepCaplets();
+    static void testLongJumpForwards();
+    static void testLongJumpCaplets();
+    static void testVeryLongJumpForwards();
+    static void testVeryLongJumpCaplets();
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 #endif
