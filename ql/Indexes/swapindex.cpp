@@ -62,7 +62,7 @@ namespace QuantLib {
 		return boost::shared_ptr<VanillaSwap>(new VanillaSwap(true, 1.0,
                         fixedLegSchedule, 0.0, dayCounter_,
                         floatingLegSchedule,
-                        iborIndex_, iborIndex_->settlementDays(),
+                        iborIndex_,
                         0.0,
 						dayCounter_,
                         Handle<YieldTermStructure>(iborIndex_->termStructure())));

@@ -47,7 +47,7 @@ BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<Xibor> index_;
-Integer settlementDays_, fixingDays_;
+Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 
 // utilities
@@ -65,7 +65,7 @@ boost::shared_ptr<VanillaSwap> makeSwap(const Date& start, Integer length,
     return boost::shared_ptr<VanillaSwap>(
             new VanillaSwap(payFixed,nominal_,
                             fixedSchedule,fixedRate,fixedDayCount_,
-                            floatSchedule,index_,fixingDays_,floatingSpread,
+                            floatSchedule,index_,floatingSpread,
                             index_->dayCounter(),termStructure_));
 }
 
@@ -90,7 +90,6 @@ boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
 
 void setup() {
     settlementDays_ = 2;
-    fixingDays_ = 2;
     nominal_ = 100.0;
     fixedConvention_ = Unadjusted;
     floatingConvention_ = ModifiedFollowing;
@@ -445,14 +444,14 @@ void SwaptionTest::testCashSettledSwaptions() {
             boost::shared_ptr<VanillaSwap> swap_u360(
                                     new VanillaSwap(payFixed[0], nominal_,
                                     fixedSchedule_u,strike,Thirty360(),
-                                    floatSchedule,index_,fixingDays_,0.0,
+                                    floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_u365(
                                     new VanillaSwap(payFixed[0],nominal_,
                                     fixedSchedule_u,strike,Actual365Fixed(),
-                                    floatSchedule,index_,fixingDays_,0.0,
+                                    floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = 30/360
@@ -462,14 +461,14 @@ void SwaptionTest::testCashSettledSwaptions() {
             boost::shared_ptr<VanillaSwap> swap_a360(
                                     new VanillaSwap(payFixed[0],nominal_,
                                     fixedSchedule_a,strike,Thirty360(),
-                                    floatSchedule,index_,fixingDays_,0.0,
+                                    floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_a365(
                                     new VanillaSwap(payFixed[0],nominal_,
                                     fixedSchedule_a,strike,Actual365Fixed(),
-                                    floatSchedule,index_,fixingDays_,0.0,
+                                    floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_u360 = swap_u360->fixedLeg();

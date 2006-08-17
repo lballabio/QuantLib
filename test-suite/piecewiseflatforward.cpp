@@ -69,7 +69,7 @@ Datum swapData[] = {
 // test-global variables
 
 Calendar calendar;
-Integer settlementDays, fixingDays;
+Integer settlementDays;
 Date today, settlement;
 BusinessDayConvention depoConvention;
 DayCounter depoDayCounter;
@@ -88,7 +88,6 @@ void setup() {
     // data
     calendar = TARGET();
     settlementDays = 2;
-    fixingDays = 2;
     today = calendar.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today;
     settlement = calendar.advance(today,settlementDays,Days);
@@ -194,7 +193,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
                                floatingLegFrequency,floatingLegConvention);
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,fixingDays,0.0,
+                         floatSchedule,index,0.0,
                          Actual360(),euriborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();

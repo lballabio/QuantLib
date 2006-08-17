@@ -293,7 +293,7 @@ namespace QuantLib {
                   new VanillaSwap(true, 100.0,
                                   fixedSchedule, 0.0, fixedDayCount_,
                                   floatSchedule, clonedIndex,
-                                  clonedIndex->settlementDays(), 0.0,
+                                  0.0,
                                   clonedIndex->dayCounter(),
                                   termStructureHandle_));
 

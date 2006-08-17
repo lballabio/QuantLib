@@ -429,7 +429,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
             boost::shared_ptr<VanillaSwap> forwardSwap(
                 new VanillaSwap(false, 1.0, schedule, swapRate,
                                 dayCounter, schedule, index,
-                                index->settlementDays(), 0.0,
+                                0.0,
                                 index->dayCounter(),
                                 Handle<YieldTermStructure>(
                                    index->termStructure())));
@@ -447,7 +447,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
             forwardSwap = boost::shared_ptr<VanillaSwap>(
                 new VanillaSwap(false, 1.0, schedule, swapRate,
                                 dayCounter, schedule, index,
-                                index->settlementDays(), 0.0,
+                                0.0,
                                 index->dayCounter(),
                                 Handle<YieldTermStructure>(
                                    index->termStructure())));

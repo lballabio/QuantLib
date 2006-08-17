@@ -64,7 +64,7 @@ Datum swapData[] = {
 // test-global variables
 
 Calendar calendar;
-Integer settlementDays, fixingDays;
+Integer settlementDays;
 Date today, settlement;
 BusinessDayConvention convention;
 DayCounter dayCounter;
@@ -80,7 +80,6 @@ void setup() {
     // data
     calendar = SouthAfrica();
     settlementDays = 0;
-    fixingDays = 0;
     today = calendar.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today;
     settlement = calendar.advance(today,settlementDays,Days);
@@ -146,7 +145,7 @@ void CompoundForwardTest::testSuppliedRates() {
                           frequency,convention);
         VanillaSwap swap(true,100.0,
                          schedule,0.0,dayCounter,
-                         schedule,index,fixingDays,0.0,
+                         schedule,index,0.0,
                          index->dayCounter(),liborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
@@ -187,7 +186,7 @@ void CompoundForwardTest::testConvertedRates() {
                           frequency,convention);
         VanillaSwap swap(true,100.0,
                          schedule,0.0,dayCounter,
-                         schedule,index,fixingDays,0.0,
+                         schedule,index,0.0,
                          index->dayCounter(),liborHandle);
         DayCounter tsdc  = termStructure->dayCounter();
         Rate expectedRate = termStructure->compoundForward(swap.maturity(),

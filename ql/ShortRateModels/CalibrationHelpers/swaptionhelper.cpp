@@ -59,13 +59,17 @@ namespace QuantLib {
         swap_ = boost::shared_ptr<VanillaSwap>(
                       new VanillaSwap(false, 1.0, fixedSchedule, fixedRate,
                                       fixedLegDayCounter, floatSchedule,
-                                      index, 0, 0.0, floatingLegDayCounter,
+                                      index,
+                                      0, // fixing days
+                                      0.0, floatingLegDayCounter,
                                       termStructure));
         Rate fairFixedRate = swap_->fairRate();
         swap_ = boost::shared_ptr<VanillaSwap>(
                       new VanillaSwap(false, 1.0, fixedSchedule, fairFixedRate,
                                       fixedLegDayCounter, floatSchedule,
-                                      index, 0, 0.0, floatingLegDayCounter,
+                                      index,
+                                      0, // fixing days
+                                      0.0, floatingLegDayCounter,
                                       termStructure));
 
         exerciseRate_ = fairFixedRate;

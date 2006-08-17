@@ -47,7 +47,7 @@ BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<Xibor> index_;
-Integer settlementDays_, fixingDays_;
+Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 
 // utilities
@@ -63,14 +63,13 @@ boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
     return boost::shared_ptr<VanillaSwap>(
             new VanillaSwap(payFixed_,nominal_,
                             fixedSchedule,fixedRate,fixedDayCount_,
-                            floatSchedule,index_,fixingDays_,floatingSpread,
+                            floatSchedule,index_,floatingSpread,
                             index_->dayCounter(),termStructure_));
 }
 
 void setup() {
     payFixed_ = true;
     settlementDays_ = 2;
-    fixingDays_ = 2;
     nominal_ = 100.0;
     fixedConvention_ = Unadjusted;
     floatingConvention_ = ModifiedFollowing;

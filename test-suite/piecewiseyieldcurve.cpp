@@ -101,7 +101,7 @@ BondDatum bondData[] = {
 // test-global variables
 
 Calendar calendar;
-Integer settlementDays, fixingDays;
+Integer settlementDays;
 Date today, settlement;
 BusinessDayConvention fixedLegConvention;
 Frequency fixedLegFrequency;
@@ -123,7 +123,6 @@ void setup() {
     // data
     calendar = TARGET();
     settlementDays = 2;
-    fixingDays = 2;
     today = calendar.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today;
     settlement = calendar.advance(today,settlementDays,Days);
@@ -262,7 +261,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                euribor6m->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,euribor6m,fixingDays,0.0,
+                         floatSchedule,euribor6m,0.0,
                          Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
@@ -571,7 +570,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                                index->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,fixingDays,0.0,
+                         floatSchedule,index,0.0,
                          Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
@@ -609,7 +608,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                                index->businessDayConvention());
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,fixingDays,0.0,
+                         floatSchedule,index,0.0,
                          Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();

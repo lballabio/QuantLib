@@ -63,6 +63,16 @@ namespace QuantLib {
                     Spread spread,
                     const DayCounter& floatingDayCount,
                     const Handle<YieldTermStructure>& termStructure);
+        VanillaSwap(bool payFixedRate,
+                    Real nominal,
+                    const Schedule& fixedSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDayCount,
+                    const Schedule& floatSchedule,
+                    const boost::shared_ptr<Xibor>& index,
+                    Spread spread,
+                    const DayCounter& floatingDayCount,
+                    const Handle<YieldTermStructure>& termStructure);
         // results
         Rate fairRate() const;
         Spread fairSpread() const;

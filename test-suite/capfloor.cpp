@@ -269,7 +269,7 @@ void CapFloorTest::testParity() {
                               frequency_,convention_);
             VanillaSwap swap(true,nominals_[0],
                              schedule,strikes[j],index_->dayCounter(),
-                             schedule,index_,fixingDays_,0.0,
+                             schedule,index_,0.0,
                              index_->dayCounter(), termStructure_);
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
