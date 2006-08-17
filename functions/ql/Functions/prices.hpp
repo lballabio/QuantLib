@@ -53,8 +53,9 @@ namespace QuantLib {
 
     /*! return the MidRobust price, i.e. the mid if 
         both bid and ask prices are available
-    */    Real midRobust(const Real bid,
-                         const Real ask);
+    */
+    Real midRobust(const Real bid,
+                   const Real ask);
 }
 
 #endif

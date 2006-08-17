@@ -25,6 +25,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     Real interpolate2D(const std::vector<Real>& x_values,
                        const std::vector<Real>& y_values,
                        const Matrix& dataMatrix,
@@ -51,7 +52,6 @@ namespace QuantLib {
         return result;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     Real normDist(Real x, Real mean, Real standard_dev,
                   bool cumulative) {
         if (cumulative) {

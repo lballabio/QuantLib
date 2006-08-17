@@ -26,11 +26,13 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     /*! set the evaluation date */
     inline Date setEvaluationDate(const Date &evalDate) {
         Settings::instance().evaluationDate() = evalDate;
         return evalDate;
     }
+    #endif
 
 }
 
