@@ -27,11 +27,9 @@
 #ifndef quantlib_date_hpp
 #define quantlib_date_hpp
 
-#include <ql/errors.hpp>
-#include <ql/types.hpp>
+#include <ql/period.hpp>
 #include <utility>
 #include <functional>
-#include <ostream>
 
 namespace QuantLib {
 
@@ -143,93 +141,6 @@ namespace QuantLib {
     //! Year number
     /*! \ingroup datetime */
     typedef Integer Year;
-
-    //! Frequency of events
-    /*! \ingroup datetime */
-    enum Frequency { NoFrequency = -1,     //!< null frequency
-                     Once = 0,             //!< only once, e.g., a zero-coupon
-                     Annual = 1,           //!< once a year
-                     Semiannual = 2,       //!< twice a year
-                     EveryFourthMonth = 3, //!< every fourth month
-                     Quarterly = 4,        //!< every third month
-                     Bimonthly = 6,        //!< every second month
-                     Monthly = 12          //!< once a month
-    };
-
-    /*! \relates Frequency */
-    std::ostream& operator<<(std::ostream&, Frequency);
-
-    //! Units used to describe time periods
-    /*! \ingroup datetime */
-    enum TimeUnit { Days,
-                    Weeks,
-                    Months,
-                    Years
-    };
-
-    //! Time period described by a number of a given time unit
-    /*! \ingroup datetime */
-    class Period {
-      public:
-        Period()
-        : length_(0), units_(Days) {}
-        Period(Integer n, TimeUnit units)
-        : length_(n), units_(units) {}
-        Integer length() const { return length_; }
-        TimeUnit units() const { return units_; }
-      private:
-        Integer length_;
-        TimeUnit units_;
-    };
-
-    /*! \relates Period */
-    Period operator*(Integer n, TimeUnit units);
-    /*! \relates Period */
-    Period operator*(TimeUnit units, Integer n);
-
-    /*! \relates Period */
-    bool operator<(const Period&, const Period&);
-    /*! \relates Period */
-    bool operator==(const Period&, const Period&);
-    /*! \relates Period */
-    bool operator!=(const Period&, const Period&);
-    /*! \relates Period */
-    bool operator>(const Period&, const Period&);
-    /*! \relates Period */
-    bool operator<=(const Period&, const Period&);
-    /*! \relates Period */
-    bool operator>=(const Period&, const Period&);
-
-    /*! \relates Period */
-    std::ostream& operator<<(std::ostream&, const Period&);
-
-    namespace detail {
-
-        struct long_period_holder {
-            long_period_holder(const Period& p) : p(p) {}
-            Period p;
-        };
-        std::ostream& operator<<(std::ostream&, const long_period_holder&);
-
-        struct short_period_holder {
-            short_period_holder(Period p) : p(p) {}
-            Period p;
-        };
-        std::ostream& operator<<(std::ostream&, const short_period_holder&);
-
-    }
-
-    namespace io {
-
-        //! output periods in long format (e.g. "2 weeks")
-        /*! \ingroup manips */
-        detail::long_period_holder long_period(const Period&);
-
-        //! output periods in short format (e.g. "2w")
-        /*! \ingroup manips */
-        detail::short_period_holder short_period(const Period&);
-
-    }
 
 
     //! Concrete date class
@@ -416,35 +327,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Period operator*(Integer n, TimeUnit units) {
-        return Period(n,units);
-    }
-
-    inline Period operator*(TimeUnit units, Integer n) {
-        return Period(n,units);
-    }
-
-    inline bool operator==(const Period& p1, const Period& p2) {
-        return !(p1 < p2 || p2 < p1);
-    }
-
-    inline bool operator!=(const Period& p1, const Period& p2) {
-        return !(p1 == p2);
-    }
-
-    inline bool operator>(const Period& p1, const Period& p2) {
-        return p2 < p1;
-    }
-
-    inline bool operator<=(const Period& p1, const Period& p2) {
-        return !(p1 > p2);
-    }
-
-    inline bool operator>=(const Period& p1, const Period& p2) {
-        return !(p1 < p2);
-    }
-
 
     inline Weekday Date::weekday() const {
         Integer w = serialNumber_ % 7;

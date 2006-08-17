@@ -8560,6 +8560,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\period.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\period.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\position.hpp"
 			>
 		</File>

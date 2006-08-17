@@ -61,6 +61,7 @@ include_HEADERS = \
 	numericalmethod.hpp \
 	option.hpp \
 	payoff.hpp \
+	period.hpp \
 	position.hpp \
 	prices.hpp \
 	pricingengine.hpp \
@@ -143,6 +144,7 @@ libQuantLib_la_SOURCES = \
     index.cpp \
     interestrate.cpp \
     money.cpp \
+	period.cpp \
     prices.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \

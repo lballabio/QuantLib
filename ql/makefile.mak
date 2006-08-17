@@ -36,6 +36,7 @@ CORE_OBJS = \
     "index.obj$(_mt)$(_D)" \
     "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
+    "period.obj$(_mt)$(_D)" \
     "prices.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
