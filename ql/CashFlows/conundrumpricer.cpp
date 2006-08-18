@@ -32,7 +32,6 @@
 #include <ql/Indexes/all.hpp>
 
 
-
 namespace QuantLib
 {
 //===========================================================================//
@@ -375,6 +374,7 @@ namespace QuantLib
 //===========================================================================//
 //                              GFunctionExactYield                          //
 //===========================================================================//
+
     GFunctionFactory::GFunctionExactYield::GFunctionExactYield(const CMSCoupon& coupon){
 
 		const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
