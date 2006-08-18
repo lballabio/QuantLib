@@ -741,6 +741,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cms.cpp"
+				>
+			</File>
+			<File
 				RelativePath="compoundforward.cpp"
 				>
 				<FileConfiguration
@@ -2241,6 +2245,10 @@
 			</File>
 			<File
 				RelativePath=".\cliquetoption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cms.hpp"
 				>
 			</File>
 			<File
