@@ -95,6 +95,11 @@ namespace QuantLib
         Size numberOfFactors() const ;//F, A rank
         // number of steps method?
         const Matrix& pseudoRoot(Size i) const ;
+        //
+        Real shortTermVolatility() const;
+        Real longTermVolatility() const;
+        Real maximumLocation() const;
+        Real maximumVolatility() const;
 
     private:
         Real a_, b_, c_, d_;

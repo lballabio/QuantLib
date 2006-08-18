@@ -110,5 +110,38 @@ namespace QuantLib {
         return pseudoRoots_[i];
     }
 
+    Real AbcdVolatility::shortTermVolatility() const
+    {
+        return a_ + d_;
+    }
+
+    Real AbcdVolatility::longTermVolatility() const
+    {
+        return d_;
+    }
+
+    Real AbcdVolatility::maximumLocation() const
+    {
+        Real location;
+        Real localInfinity = 100.;
+        if (b_>0) {
+            location = (b_ -c_*a_)/ (c_*b_);
+        } else {
+            location = (a_ + d_> a_) ? 0.0 : localInfinity;
+        }
+        return location;
+    }
+
+    Real AbcdVolatility::maximumVolatility() const
+    {
+        Real maximum;
+        if (b_>0) {
+            maximum = b_ / c_ * std::exp(-1.0 + c_*a_/b_) + d_;
+        } else {
+            maximum = (a_ + d_> a_) ? a_ + d_ : a_;
+        }
+        return maximum;
+    }
+
 }
 
