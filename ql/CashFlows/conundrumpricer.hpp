@@ -154,7 +154,7 @@ namespace QuantLib
 				void setSwapRateValue(Real x);
 			};
 
-			std::auto_ptr<ObjectiveFunction> objectiveFunction_;
+			boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
 
           public:
             

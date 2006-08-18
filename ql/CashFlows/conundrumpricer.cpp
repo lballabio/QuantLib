@@ -468,7 +468,7 @@ namespace QuantLib
 
 		swapRateValue_ = swap->fairRate();
 
-		objectiveFunction_ = std::auto_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
+		objectiveFunction_ = boost::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
 
 		const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
 		const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
