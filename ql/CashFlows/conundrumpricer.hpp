@@ -185,8 +185,6 @@ namespace QuantLib
 		Real price() const;
         Real rate() const;
 
-		static void testUnit();
-
 	protected:
 
 		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
