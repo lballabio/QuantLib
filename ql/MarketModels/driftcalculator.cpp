@@ -80,23 +80,26 @@ namespace QuantLib {
                                            Array& drifts) const {
 
         #if defined _DEBUG
-            QL_REQUIRE(forwards.size() == dim_, "");
-            QL_REQUIRE(drifts.size() == dim_, "");
-            QL_REQUIRE(factors<=pseudo_.columns(), "");
+            QL_REQUIRE(forwards.size()==dim_, "forwards.size()==dim_");
+            QL_REQUIRE(drifts.size()==dim_, "drifts.size()==dim_");
+            QL_REQUIRE(factors<=pseudo_.columns(), "factorspseudo_.columns()");
         #endif
 
         // Precompute forwards factor
-        Size i,r;
-        for(i=alive_; i<dim_; ++i)
+        for(Size i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (1.0/taus_[i]+forwards[i]);
+
         // Compute drifts with factor reduction,
         // using pseudo square root of the covariance matrix.
         // Divide the summation into 3 terms:
+
         // 1st: the drift corresponding to the numeraire P_N is zero:
         drifts[numeraire_] = 0.0;   // per caso e' gia' nullo ?
+
         // 2nd: then, move backward from N-2 (included) back to alive (included):
-        for (i=numeraire_-2; i>=alive_; --i) {
+        Integer alive = alive_;
+        for (Integer i=numeraire_-2; i>=alive; --i) {
         //  for (Size r=0; r<pseudo_.columns(); ++r) {
             for (Size r=0; r<factors; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
@@ -106,10 +109,11 @@ namespace QuantLib {
                                              pseudo_.row_begin(i)+downs_[i],
                                              0.0);
         }
+
         // 3rd: now, move forward from N (included) up to to n (excluded):
-        for (i=numeraire_; i<dim_; ++i) {
+        for (Size i=numeraire_; i<dim_; ++i) {
         //  for (r=0; r<pseudo_.columns(); ++r) {
-            for (r=0; r<factors; ++r) {
+            for (Size r=0; r<factors; ++r) {
                 e_[r][i] = e_[r][i-1]+tmp_[i]*pseudo_[i][r];
             }
             drifts[i] = std::inner_product(e_.column_begin(i)+downs_[i],
