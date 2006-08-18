@@ -19,18 +19,9 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/all.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/CashFlows/inarrearindexedcoupon.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/Volatilities/capletconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
 #include <ql/CashFlows/ConundrumPricer.hpp>
-#include <iostream>
 #include <ql/TermStructures/all.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
@@ -94,37 +85,6 @@ void teardown() {
 
 QL_END_TEST_LOCALS(SwapTest)
 
-
-//void SwapTest::testFairRate() {
-//
-//    BOOST_MESSAGE("Testing simple swap calculation of fair fixed rate...");
-//
-//    QL_TEST_BEGIN
-//    QL_TEST_SETUP
-//
-//    Integer lengths[] = { 1, 2, 5, 10, 20 };
-//    Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
-//
-//    for (Size i=0; i<LENGTH(lengths); i++) {
-//        for (Size j=0; j<LENGTH(spreads); j++) {
-//
-//            boost::shared_ptr<VanillaSwap> swap =
-//                makeSwap(lengths[i],0.0,spreads[j]);
-//            swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
-//            if (std::fabs(swap->NPV()) > 1.0e-10) {
-//                BOOST_ERROR("recalculating with implied rate:\n"
-//                            << std::setprecision(2)
-//                            << "    length: " << lengths[i] << " years\n"
-//                            << "    floating spread: "
-//                            << io::rate(spreads[j]) << "\n"
-//                            << "    swap value: " << swap->NPV());
-//            }
-//        }
-//    }
-//
-//    QL_TEST_TEARDOWN
-//}
-
 void CmsTest::testFairRate()  {
 
 	BOOST_MESSAGE("Testing constant maturity swap...");
@@ -132,10 +92,10 @@ void CmsTest::testFairRate()  {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-	       Handle<YieldTermStructure> discountingTermStructure;
+    Handle<YieldTermStructure> discountingTermStructure;
 
-		{
-		        /*********************
+	{
+	     /*********************
          ***  MARKET DATA  ***
          *********************/
 
@@ -153,11 +113,6 @@ void CmsTest::testFairRate()  {
 
 
         todaysDate = Settings::instance().evaluationDate();
-        std::cout << "Today: " << todaysDate.weekday()
-                  << ", " << todaysDate << std::endl;
-
-        std::cout << "Settlement date: " << settlementDate.weekday()
-                  << ", " << settlementDate << std::endl;
 
         // deposits
         Rate d1wQuote=0.0382;
@@ -437,82 +392,81 @@ void CmsTest::testFairRate()  {
 
 
         // Term structures that will be used for pricing:
-		discountingTermStructure.linkTo(depoFRASwapTermStructure);
-		
-		}
+	    discountingTermStructure.linkTo(depoFRASwapTermStructure);
+	}
 
-		const Handle<YieldTermStructure>& yieldTermStructure = discountingTermStructure;
-		const Date referenceDate = yieldTermStructure->referenceDate();
+	const Handle<YieldTermStructure>& yieldTermStructure = discountingTermStructure;
+	const Date referenceDate = yieldTermStructure->referenceDate();
 
-		const std::string familyName("");
-        const Integer years(10);
-        const Integer settlementDays(2);
-		const Currency currency = EURCurrency();
-        const Calendar calendar = TARGET();
-        const Frequency fixedLegFrequency(Annual);
-		const Period tenor(6, Months);
-        const BusinessDayConvention convention(Following);
-        const DayCounter dayCounter = Actual360();
-        const boost::shared_ptr<Xibor> iborIndex(new Euribor6M(yieldTermStructure));
+	const std::string familyName("");
+    const Integer years(10);
+    const Integer settlementDays(2);
+	const Currency currency = EURCurrency();
+    const Calendar calendar = TARGET();
+    const Frequency fixedLegFrequency(Annual);
+	const Period tenor(6, Months);
+    const BusinessDayConvention convention(Following);
+    const DayCounter dayCounter = Actual360();
+    const boost::shared_ptr<Xibor> iborIndex(new Euribor6M(yieldTermStructure));
 
-		const boost::shared_ptr<SwapIndex> index(
-			new SwapIndex(
-			familyName, 
-			years, 
-			settlementDays, 
-			currency, 
-			calendar, 
-			fixedLegFrequency, 
-			convention, 
-			dayCounter, 
-			iborIndex)
-			);
-		const Date paymentDate(referenceDate+365);
-		const Date startDate(referenceDate+180);
-		const Date endDate(startDate+365);
+	const boost::shared_ptr<SwapIndex> index(
+		new SwapIndex(
+		familyName, 
+		years, 
+		settlementDays, 
+		currency, 
+		calendar, 
+		fixedLegFrequency, 
+		convention, 
+		dayCounter, 
+		iborIndex)
+		);
+	const Date paymentDate(referenceDate+365);
+	const Date startDate(referenceDate+180);
+	const Date endDate(startDate+365);
 
-		const Real gearing(1);
-		const Real spread(0);
-		const Integer fixingDays(0);
+	const Real gearing(1);
+	const Real spread(0);
+	const Integer fixingDays(0);
 
 
-		boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration);
-		boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new ConundrumPricerByBlack);
+	boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration);
+	boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new ConundrumPricerByBlack);
 
-		std::vector<Date> exerciseDates(2);
-		exerciseDates[0] = referenceDate;
-		exerciseDates[1] = endDate;
+	std::vector<Date> exerciseDates(2);
+	exerciseDates[0] = referenceDate;
+	exerciseDates[1] = endDate;
 
-        std::vector<Period> lengths(2);
-		lengths[0] = Period(1, Years);
-		lengths[1] = Period(30, Years);
+    std::vector<Period> lengths(2);
+	lengths[0] = Period(1, Years);
+	lengths[1] = Period(30, Years);
 
-        const Matrix volatilities(2,2, .25);
+    const Matrix volatilities(2,2, .25);
 
-		const Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
-			boost::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(referenceDate, exerciseDates, lengths, volatilities, dayCounter))
-			);
+	const Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
+		boost::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(referenceDate, exerciseDates, lengths, volatilities, dayCounter))
+		);
 
-		CMSCoupon coupon1(1, paymentDate, index, startDate, endDate, fixingDays, 
-			dayCounter, numericalPricer, gearing, spread, 100, 0);
-		coupon1.setSwaptionVolatility(swaptionVolatilityStructure);
+	CMSCoupon coupon1(1, paymentDate, index, startDate, endDate, fixingDays, 
+		dayCounter, numericalPricer, gearing, spread, 100, 0);
+	coupon1.setSwaptionVolatility(swaptionVolatilityStructure);
 
-		CMSCoupon coupon2(1, paymentDate, index, startDate, endDate, fixingDays, 
-			dayCounter, analyticPricer, gearing, spread, 100, 0);
-		coupon2.setSwaptionVolatility(swaptionVolatilityStructure);
+	CMSCoupon coupon2(1, paymentDate, index, startDate, endDate, fixingDays, 
+		dayCounter, analyticPricer, gearing, spread, 100, 0);
+	coupon2.setSwaptionVolatility(swaptionVolatilityStructure);
 
-		const double rate1 = coupon1.rate();
-		const double rate2 = coupon2.rate();
-		const double difference =  rate2-rate1;
+	const double rate1 = coupon1.rate();
+	const double rate2 = coupon2.rate();
+	const double difference =  rate2-rate1;
 
-		std::cout << "rate1:\t" << rate1 << "\n";
-		std::cout << "rate2:\t" << rate2 << "\n";
-
-		std::cout << "difference:\t" << difference << "\n";
-
-		if (std::fabs(difference) > 1.0e-4) {
-                BOOST_ERROR("FAILED\n");
-            }
+    Real tolerance = 1.0e-5;
+	if (std::fabs(difference) > tolerance) {
+            BOOST_ERROR("\n" << 
+                        "rate1:      " << io::rate(rate1) << "\n"
+	                    "rate2:      " << io::rate(rate2) << "\n"
+	                    "difference: " << io::rate(difference) << "\n"
+	                    "tolerance:  " << io::rate(tolerance));
+    }
 		
 
     QL_TEST_TEARDOWN
@@ -523,4 +477,3 @@ test_suite* CmsTest::suite() {
     suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
     return suite;
 }
-
