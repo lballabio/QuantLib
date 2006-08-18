@@ -821,6 +821,9 @@
 				RelativePath=".\cliquetoption.cpp">
 			</File>
 			<File
+				RelativePath=".\cms.cpp">
+			</File>
+			<File
 				RelativePath="compoundforward.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2554,6 +2557,9 @@
 			</File>
 			<File
 				RelativePath=".\cliquetoption.hpp">
+			</File>
+			<File
+				RelativePath=".\cms.hpp">
 			</File>
 			<File
 				RelativePath="compoundforward.hpp">
