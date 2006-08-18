@@ -102,8 +102,9 @@ namespace QuantLib {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
             }
             drifts[i] = - std::inner_product(e_.column_begin(i)+downs_[i],
-                                       e_.column_begin(i)+ups_[i],
-                                       pseudo_.row_begin(i)+downs_[i], 0.0);
+                                             e_.column_begin(i)+ups_[i],
+                                             pseudo_.row_begin(i)+downs_[i],
+                                             0.0);
         }
         // 3rd: now, move forward from N (included) up to to n (excluded):
         for (i=numeraire_; i<dim_; ++i) {
@@ -112,8 +113,9 @@ namespace QuantLib {
                 e_[r][i] = e_[r][i-1]+tmp_[i]*pseudo_[i][r];
             }
             drifts[i] = std::inner_product(e_.column_begin(i)+downs_[i],
-                                       e_.column_begin(i)+ups_[i],
-                                       pseudo_.row_begin(i)+downs_[i], 0.0);
+                                           e_.column_begin(i)+ups_[i],
+                                           pseudo_.row_begin(i)+downs_[i],
+                                           0.0);
         }
       }
 
