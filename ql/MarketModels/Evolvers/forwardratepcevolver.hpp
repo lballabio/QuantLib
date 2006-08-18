@@ -55,7 +55,7 @@ namespace QuantLib {
         Size n_, F_;
         CurveState curveState_;
         Size currentStep_;
-        Array forwards_, logForwards_, initialLogForwards_;
+        Array forwards_, displacements_, logForwards_, initialLogForwards_;
         Array drifts1_, drifts2_, initialDrifts_;
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;

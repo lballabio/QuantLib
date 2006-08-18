@@ -26,18 +26,18 @@ namespace QuantLib {
                            const EvolutionDescription& evolution,
                            const BrownianGeneratorFactory& factory)
     : pseudoRoot_(pseudoRoot), evolution_(evolution),
-      n_(pseudoRoot->numberOfRates()), F_(pseudoRoot_->numberOfFactors()),
+      n_(pseudoRoot->numberOfRates()), F_(pseudoRoot->numberOfFactors()),
       curveState_(evolution.rateTimes()),
       forwards_(pseudoRoot->initialRates()),
-      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
+      displacements_(pseudoRoot->displacements()),
+      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
       initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution.evolutionTimes().size())
     {
         QL_REQUIRE(evolution.isInTerminalMeasure(),
-                   "terminal measure required");
+                   "terminal measure required for ipc ");
 
-        const Array& initialForwards = pseudoRoot_->initialRates();
-        const Array& displacements = pseudoRoot_->displacements();
+        const Array& initialForwards = pseudoRoot->initialRates();
         
         Size steps = evolution_.numberOfSteps();
 
@@ -49,7 +49,7 @@ namespace QuantLib {
 
         for (Size i=0; i<n_; ++i) {
             initialLogForwards_[i] = std::log(initialForwards[i] +
-                                              displacements[i]);
+                                              displacements_[i]);
         }
 
         Time lastTime = 0.0;
@@ -58,9 +58,9 @@ namespace QuantLib {
             while (rateTimes[alive] <= lastTime)
                 ++alive;
 
-            const Matrix& A = pseudoRoot_->pseudoRoot(j);
+            const Matrix& A = pseudoRoot->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
-                                                   displacements,
+                                                   displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive));
@@ -78,8 +78,7 @@ namespace QuantLib {
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
-        //calculators_.front().computeReduced(initialForwards, F_,
-        //                                    initialDrifts_);
+        //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
     Real ForwardRateIpcEvolver::startNewPath() {
@@ -91,16 +90,15 @@ namespace QuantLib {
 
     Real ForwardRateIpcEvolver::advanceStep()
     {
-        const Array& displacements = pseudoRoot_->displacements();
         const Array& rateTaus = evolution_.rateTaus();
 
         // we're going from T1 to T2:
-        if (currentStep_ == 0) {
-            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
-                      drifts1_.begin());
-        } else {
+        if (currentStep_ > 0) {
             calculators_[currentStep_].compute(forwards_, drifts1_);
             //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);
+        } else {
+            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
+                      drifts1_.begin());
         }
 
         Real weight = generator_->nextStep(brownians_);
@@ -108,17 +106,18 @@ namespace QuantLib {
         const Array& fixedDrift = fixedDrifts_[currentStep_];
 
         Integer alive = alive_[currentStep_];
+        Real drifts2;
         for (Integer i=n_-1; i>=alive; --i) {
-            drifts2_[i] = 0.0;
+            drifts2 = 0.0;
             for (Size j=i+1; j<n_; ++j) {
-                drifts2_[i] -= g_[j]*C_[currentStep_][i][j];
+                drifts2 -= g_[j]*C_[currentStep_][i][j];
             }
-            logForwards_[i] += 0.5*(drifts1_[i]+drifts2_[i]) + fixedDrift[i];
+            logForwards_[i] += 0.5*(drifts1_[i]+drifts2) + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
-            forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
-            g_[i] = rateTaus[i]*(forwards_[i]+displacements[i])/
+            forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
+            g_[i] = rateTaus[i]*(forwards_[i]+displacements_[i])/
                 (1.0+rateTaus[i]*forwards_[i]);
         }
 

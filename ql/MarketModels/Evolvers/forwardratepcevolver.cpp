@@ -29,12 +29,12 @@ namespace QuantLib {
       n_(pseudoRoot->numberOfRates()), F_(pseudoRoot_->numberOfFactors()),
       curveState_(evolution.rateTimes()),
       forwards_(pseudoRoot->initialRates()),
+      displacements_(pseudoRoot->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution.evolutionTimes().size())
     {
         const Array& initialForwards = pseudoRoot_->initialRates();
-        const Array& displacements = pseudoRoot_->displacements();
         
         Size steps = evolution_.numberOfSteps();
 
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         for (Size i=0; i<n_; ++i) {
             initialLogForwards_[i] = std::log(initialForwards[i] +
-                                              displacements[i]);
+                                              displacements_[i]);
         }
 
         Time lastTime = 0.0;
@@ -57,7 +57,7 @@ namespace QuantLib {
 
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
-                                                   displacements,
+                                                   displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive));
@@ -75,8 +75,7 @@ namespace QuantLib {
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
-        //calculators_.front().computeReduced(initialForwards, F_,
-        //                                    initialDrifts_);
+        //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
 	ForwardRatePcEvolver::~ForwardRatePcEvolver() {}
@@ -88,17 +87,17 @@ namespace QuantLib {
         return generator_->nextPath();
     }
 
-    Real ForwardRatePcEvolver::advanceStep() {
-        const Array& displacements = pseudoRoot_->displacements();
+    Real ForwardRatePcEvolver::advanceStep()
+    {
+        // we're going from T1 to T2
 
-        // we're going from T1 to T2:
-        if (currentStep_ == 0) {
-            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
-                      drifts1_.begin());
-        } else {
-            // a) compute drifts D1 at T1;
+        // a) compute drifts D1 at T1;
+        if (currentStep_ > 0) {
             calculators_[currentStep_].compute(forwards_, drifts1_);
             //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);
+        } else {
+            std::copy(initialDrifts_.begin(), initialDrifts_.end(),
+                      drifts1_.begin());
         }
 
         // b) evolve forwards up to T2 using D1;
@@ -112,7 +111,7 @@ namespace QuantLib {
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
-            forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
+            forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 
         // c) recompute drifts D2 using the predicted forwards;
@@ -122,7 +121,7 @@ namespace QuantLib {
         // d) correct forwards using both drifts
         for (Size i=alive; i<n_; ++i) {
             logForwards_[i] += (drifts2_[i]-drifts1_[i])/2.0;
-            forwards_[i] = std::exp(logForwards_[i]) - displacements[i];
+            forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 
         // e) update curve state
