@@ -177,13 +177,21 @@ namespace QuantLib
     /*! Base class for the pricing of a CMS coupon via static replication
         as in Hagan's "Conundrums..." article
 	*/
-    class ConundrumPricer: public VanillaCMSCouponPricer {
-      public:
-		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
+
+	class ConundrumPricer: public VanillaCMSCouponPricer {
+
+	public:
+
 		Real price() const;
         Real rate() const;
-        void initialize(const CMSCoupon& coupon);
-      protected:
+
+		static void testUnit();
+
+	protected:
+
+		ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
+		void initialize(const CMSCoupon& coupon);
+
 		virtual Real optionLetPrice(bool isCall, Real strike) const = 0;
 		virtual Real swapLetPrice() const = 0;
 
@@ -204,8 +212,7 @@ namespace QuantLib
     /*! Prices a CMS coupon via static replication as in Hagan's "Conundrums..." article 
 		via numerical Integration based on prices of vanilla swaptions
 	*/
-	class ConundrumPricerByNumericalIntegration : public ConundrumPricer
-    {
+	class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
       public:
 		ConundrumPricerByNumericalIntegration( 
             const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = 
