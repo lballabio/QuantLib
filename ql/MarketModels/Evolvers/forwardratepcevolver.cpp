@@ -32,7 +32,7 @@ namespace QuantLib {
       displacements_(pseudoRoot->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
-      alive_(evolution.evolutionTimes().size())
+      alive_(evolution_.firstAliveRate())
     {
         const Array& initialForwards = pseudoRoot_->initialRates();
         
@@ -49,21 +49,14 @@ namespace QuantLib {
                                               displacements_[i]);
         }
 
-        Time lastTime = 0.0;
-        for (Size j=0; j<steps; ++j) {
-            Size alive = 0;
-            while (rateTimes[alive] <= lastTime)
-                ++alive;
-
+        for (Size j=0; j<steps; ++j)
+        {
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
                                                    displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive));
-            alive_[j] = alive;
-            lastTime = evolutionTimes[j];
-
+                                                   alive_[j]));
             Array fixed(n_);
             for (Size k=0; k < n_; ++k) {
                 Real variance =

@@ -327,27 +327,27 @@ void MarketModelTest::testLongJumpForwards() {
 
     for (Size n=0; n<1; n++) {
         MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE(n+1 << ". Random Sequence: MTBrownianGeneratorFactory");
+        BOOST_MESSAGE("\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
 
         for (Size m=0; m<1; m++) {
             Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE(n+1 << "." << m+1 << "." << " Factors: " << factors);
+            BOOST_MESSAGE("\t" << n << "." << m << "." << " Factors: " << factors);
 
             PseudoRootType pseudoRoots[] = { ExpCorr, AbcdVol };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
                 MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket };
                 for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << " Measure: " << measureTypeToString(measures[j]));
+                    BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << i+1 << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testForwards(*stats, strikes);
@@ -371,27 +371,27 @@ void MarketModelTest::testVeryLongJumpForwards() {
 
     for (Size n=0; n<1; n++) {
         MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE(n+1 << ". Random Sequence: MTBrownianGeneratorFactory");
+        BOOST_MESSAGE("\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
 
         for (Size m=0; m<1; m++) {
             Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE(n+1 << "." << m+1 << "." << " Factors: " << factors);
+            BOOST_MESSAGE("\t" << n << "." << m << "." << " Factors: " << factors);
 
             PseudoRootType pseudoRoots[] = { ExpCorr, AbcdVol };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
                 MeasureType measures[] = { Terminal, MoneyMarket };
                 for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << " Measure: " << measureTypeToString(measures[j]));
+                    BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << i+1 << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testForwards(*stats, strikes);
@@ -415,27 +415,27 @@ void MarketModelTest::testLongJumpCaplets() {
 
     for (Size n=0; n<1; n++) {
         MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE(n+1 << ". Random Sequence: MTBrownianGeneratorFactory");
+        BOOST_MESSAGE("\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
 
         for (Size m=0; m<1; m++) {
             Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE(n+1 << "." << m+1 << "." << " Factors: " << factors);
+            BOOST_MESSAGE("\t" << n << "." << m << "." << " Factors: " << factors);
 
             PseudoRootType pseudoRoots[] = { ExpCorr, AbcdVol };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
                 MeasureType measures[] = { Terminal, MoneyMarket };
                 for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << " Measure: " << measureTypeToString(measures[j]));
+                    BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << i+1 << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testCaplets(*stats, strikes);
@@ -461,27 +461,27 @@ void MarketModelTest::testVeryLongJumpCaplets() {
 
     for (Size n=0; n<1; n++) {
         MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE(n+1 << ". Random Sequence: MTBrownianGeneratorFactory");
+        BOOST_MESSAGE("\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
 
         for (Size m=0; m<1; m++) {
             Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE(n+1 << "." << m+1 << "." << " Factors: " << factors);
+            BOOST_MESSAGE("\t" << n << "." << m << "." << " Factors: " << factors);
 
             PseudoRootType pseudoRoots[] = { ExpCorr, AbcdVol };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
                 MeasureType measures[] = { Terminal, MoneyMarket };
                 for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << " Measure: " << measureTypeToString(measures[j]));
+                    BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE(n+1 << "." << m+1 << "." << k+1 << "." << j+1 << "." << i+1 << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE("\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testCaplets(*stats, strikes);

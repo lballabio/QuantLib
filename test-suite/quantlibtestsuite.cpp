@@ -52,6 +52,7 @@
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "cliquetoption.hpp"
+#include "cms.hpp"
 #include "compoundforward.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
@@ -160,6 +161,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
+
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -171,6 +173,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CliquetOptionTest::suite());
+    test->add(CmsTest::suite());
     test->add(CompoundForwardTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());

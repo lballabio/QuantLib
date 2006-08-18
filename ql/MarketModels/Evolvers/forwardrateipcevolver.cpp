@@ -52,22 +52,15 @@ namespace QuantLib {
                                               displacements_[i]);
         }
 
-        Time lastTime = 0.0;
-        for (Size j=0; j<steps; ++j) {
-            Size alive = 0;
-            while (rateTimes[alive] <= lastTime)
-                ++alive;
-
+        for (Size j=0; j<steps; ++j)
+        {
             const Matrix& A = pseudoRoot->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A, 
                                                    displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
-                                                   alive));
+                                                   alive_[j]));
             C_.push_back(A*transpose(A));
-
-            alive_[j] = alive;
-            lastTime = evolutionTimes[j];
 
             Array fixed(n_);
             for (Size k=0; k < n_; ++k) {
