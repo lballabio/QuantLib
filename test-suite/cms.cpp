@@ -459,7 +459,7 @@ void CmsTest::testFairRate()  {
 	const double rate2 = coupon2.rate();
 	const double difference =  rate2-rate1;
 
-    Real tolerance = 1.0e-5;
+    Real tolerance = 2.0e-5;
 	if (std::fabs(difference) > tolerance) {
             BOOST_ERROR("\n" << 
                         "rate1:      " << io::rate(rate1) << "\n"
