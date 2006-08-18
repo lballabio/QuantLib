@@ -62,7 +62,7 @@ namespace QuantLib {
     private:
 
         Size dim_, numeraire_, alive_;
-        Array displacements_, taus_; 
+        Array displacements_, oneOverTaus_; 
 		Matrix C_, pseudo_;
 
 		// temporary variables to be added later

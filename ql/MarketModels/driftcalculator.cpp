@@ -30,10 +30,9 @@ namespace QuantLib {
                                      Size numeraire,
                                      Size alive)
     : dim_(taus.size()), numeraire_(numeraire), alive_(alive),
-      displacements_(displacements), taus_(taus), pseudo_(pseudo), 
+      displacements_(displacements), oneOverTaus_(taus.size()), pseudo_(pseudo), 
       tmp_(taus.size()), e_(pseudo_.columns(), pseudo_.rows(), 0.0),
       downs_(taus.size()), ups_(taus.size())
-        
     {
         QL_REQUIRE(dim_>0, "");
         QL_REQUIRE(displacements.size() == dim_, "");
@@ -42,6 +41,8 @@ namespace QuantLib {
         QL_REQUIRE(alive>=0 && alive<dim_, "");
         QL_REQUIRE(numeraire_<=dim_, "");
         QL_REQUIRE(numeraire_>=alive, "");
+
+        oneOverTaus_ = 1.0/taus;
 
         const Disposable<Matrix> pT = transpose(pseudo_);
         C_ = pseudo_*pT;
@@ -63,7 +64,7 @@ namespace QuantLib {
         Size i;
         for(i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
-                      (1.0/taus_[i]+forwards[i]);
+                      (oneOverTaus_[i]+forwards[i]);
         // Compute drifts without factor reduction,
         // using directly the covariance matrix.
         // for (Size k=down; k<=up; ++k) drifts[i] += tmp_[k] * C_[i][k];
@@ -79,23 +80,24 @@ namespace QuantLib {
                                            Size factors,
                                            Array& drifts) const {
 
-        #if defined _DEBUG
-            QL_REQUIRE(forwards.size()==dim_, "forwards.size()==dim_");
-            QL_REQUIRE(drifts.size()==dim_, "drifts.size()==dim_");
-            QL_REQUIRE(factors<=pseudo_.columns(), "factorspseudo_.columns()");
-        #endif
+        //#if defined _DEBUG
+        QL_REQUIRE(forwards.size()==dim_, "forwards.size()==dim_");
+        QL_REQUIRE(drifts.size()==dim_, "drifts.size()==dim_");
+        QL_REQUIRE(factors>0, "factors>0");
+        QL_REQUIRE(factors<=pseudo_.columns(), "factors<=pseudo_.columns()");
+        //#endif
 
         // Precompute forwards factor
         for(Size i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
-                      (1.0/taus_[i]+forwards[i]);
+                      (oneOverTaus_[i]+forwards[i]);
 
         // Compute drifts with factor reduction,
         // using pseudo square root of the covariance matrix.
         // Divide the summation into 3 terms:
 
         // 1st: the drift corresponding to the numeraire P_N is zero:
-        drifts[numeraire_] = 0.0;   // per caso e' gia' nullo ?
+        if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
         // 2nd: then, move backward from N-2 (included) back to alive (included):
         Integer alive = alive_;
