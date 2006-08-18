@@ -47,13 +47,18 @@ namespace QuantLib
     */
     class Abcd : public std::unary_function<Real,Real> {
     public:
-        Abcd(Real a, Real b, Real c, Real d, Real T, Real S)
-        : a_(a), b_(b), c_(c), d_(d), S_(S), T_(T) { }
+        Abcd(Real a, Real b, Real c, Real d, Real T, Real S);
         Real operator()(Time u) const {
             return  ( (a_ + b_*(T_-u))*std::exp(-c_*(T_-u)) + d_ ) *
                     ( (a_ + b_*(S_-u))*std::exp(-c_*(S_-u)) + d_ );
         }
-
+        Real shortTermVolatility() const;
+        Real longTermVolatility() const;
+        Real maximumLocation() const;
+        Real maximumVolatility() const;
+        Real variance(Time u) const {
+            return 0.0;
+        }
         Real primitive(Time u) const {
             const Real k1=std::exp(c_*u);
             const Real k2=std::exp(c_*S_);
@@ -68,7 +73,8 @@ namespace QuantLib
                                    - k1*k3*(1 + c_*(S_ - u))
                                    - k1*k2*(1 + c_*(T_ - u)))
                              )
-                    ) / (4*c_*c_*c_*k2*k3);}
+                    ) / (4*c_*c_*c_*k2*k3);
+        }
 
     private:
         Real a_, b_, c_, d_;
@@ -95,12 +101,6 @@ namespace QuantLib
         Size numberOfFactors() const ;//F, A rank
         // number of steps method?
         const Matrix& pseudoRoot(Size i) const ;
-        //
-        Real shortTermVolatility() const;
-        Real longTermVolatility() const;
-        Real maximumLocation() const;
-        Real maximumVolatility() const;
-
     private:
         Real a_, b_, c_, d_;
         std::vector<Real> ks_;

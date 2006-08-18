@@ -48,10 +48,6 @@ namespace QuantLib {
         Size n=ks.size();
         QL_REQUIRE(n==rateTimes_.size()-1, "rateTimes/ks mismatch");
 
-        QL_REQUIRE(a+d>=0, "a+d must be non negative");
-        QL_REQUIRE(d>=0, "d must be non negative");
-        QL_REQUIRE(c>=0, "c must be non negative");
-
         Matrix covariance(n, n);
         std::vector<Time> stdDev(n);
       
@@ -110,37 +106,27 @@ namespace QuantLib {
         return pseudoRoots_[i];
     }
 
-    Real AbcdVolatility::shortTermVolatility() const
-    {
-        return a_ + d_;
+    Abcd::Abcd(Real a, Real b, Real c, Real d, Real T, Real S)
+    : a_(a), b_(b), c_(c), d_(d), S_(S), T_(T) {
+        QL_REQUIRE(a+d>=0, "a+d must be non negative");
+        QL_REQUIRE(d>=0, "d must be non negative");
+        QL_REQUIRE(c>=0, "c must be non negative");
     }
 
-    Real AbcdVolatility::longTermVolatility() const
-    {
+    Real Abcd::shortTermVolatility() const {
+        return a_+d_;
+    }
+
+    Real Abcd::longTermVolatility() const {
         return d_;
     }
 
-    Real AbcdVolatility::maximumLocation() const
-    {
-        Real location;
-        Real localInfinity = 100.;
-        if (b_>0) {
-            location = (b_ -c_*a_)/ (c_*b_);
-        } else {
-            location = (a_ + d_> a_) ? 0.0 : localInfinity;
-        }
-        return location;
+    Real Abcd::maximumLocation() const {
+        return (b_>0.0 ? (b_-c_*a_)/(c_*b_) : 0.0);
     }
 
-    Real AbcdVolatility::maximumVolatility() const
-    {
-        Real maximum;
-        if (b_>0) {
-            maximum = b_ / c_ * std::exp(-1.0 + c_*a_/b_) + d_;
-        } else {
-            maximum = (a_ + d_> a_) ? a_ + d_ : a_;
-        }
-        return maximum;
+    Real Abcd::maximumVolatility() const {
+        return (b_>0.0 ? b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ : a_+d_);
     }
 
 }
