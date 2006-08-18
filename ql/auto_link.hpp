@@ -64,7 +64,7 @@
 
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC
-#  pragma message("Linking to lib file: " QL_LIB_NAME)
+#  pragma message("Will (need to) link to lib file: " QL_LIB_NAME)
 #endif
 
 #endif
