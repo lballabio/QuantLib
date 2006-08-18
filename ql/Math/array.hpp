@@ -307,52 +307,60 @@ namespace QuantLib {
 
     inline Real Array::operator[](Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(i<n_, "array access out of range");
+        QL_REQUIRE(i<n_,
+                   "index (" << i << ") must be less than " << n_ <<
+                   ": array access out of range");
         #endif
         return data_.get()[i];
     }
 
     inline Real Array::at(Size i) const {
-        QL_REQUIRE(i<n_, "array access out of range");
+        QL_REQUIRE(i<n_,
+                   "index (" << i << ") must be less than " << n_ <<
+                   ": array access out of range");
         return data_.get()[i];
     }
 
     inline Real Array::front() const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(n_>0, "array access out of range");
+        QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[0];
     }
 
     inline Real Array::back() const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(n_>0, "array access out of range");
+        QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[n_-1];
     }
 
     inline Real& Array::operator[](Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(i<n_, "array access out of range");
+        QL_REQUIRE(i<n_,
+                   "index (" << i << ") must be less than " << n_ <<
+                   ": array access out of range");
         #endif
         return data_.get()[i];
     }
 
     inline Real& Array::at(Size i) {
-        QL_REQUIRE(i<n_, "array access out of range");
+        QL_REQUIRE(i<n_,
+                   "index (" << i << ") must be less than " << n_ <<
+                   ": array access out of range");
         return data_.get()[i];
     }
 
     inline Real& Array::front() {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(n_>0, "array access out of range");
+        QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[0];
     }
 
     inline Real& Array::back() {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(n_>0, "array access out of range");
+        QL_REQUIRE(n_>0, "null Array: array access out of range");
         #endif
         return data_.get()[n_-1];
     }
