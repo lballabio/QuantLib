@@ -283,7 +283,8 @@ namespace QuantLib {
     Matrix::row_begin(Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<rows_,
-                   "matrix cannot be accessed out of range");
+                   "row index (" << i << ") must be less than " << rows_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return data_.get()+columns_*i;
     }
@@ -291,7 +292,8 @@ namespace QuantLib {
     inline Matrix::row_iterator Matrix::row_begin(Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<rows_,
-                   "matrix cannot be accessed out of range");
+                   "row index (" << i << ") must be less than " << rows_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return data_.get()+columns_*i;
     }
@@ -299,7 +301,8 @@ namespace QuantLib {
     inline Matrix::const_row_iterator Matrix::row_end(Size i) const{
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<rows_,
-                   "matrix cannot be accessed out of range");
+                   "row index (" << i << ") must be less than " << rows_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return data_.get()+columns_*(i+1);
     }
@@ -307,7 +310,8 @@ namespace QuantLib {
     inline Matrix::row_iterator Matrix::row_end(Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<rows_,
-                   "matrix cannot be accessed out of range");
+                   "row index (" << i << ") must be less than " << rows_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return data_.get()+columns_*(i+1);
     }
@@ -334,7 +338,8 @@ namespace QuantLib {
     Matrix::column_begin(Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<columns_,
-                   "matrix cannot be accessed out of range");
+                   "column index (" << i << ") must be less than " << columns_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return const_column_iterator(data_.get()+i,columns_);
     }
@@ -342,7 +347,8 @@ namespace QuantLib {
     inline Matrix::column_iterator Matrix::column_begin(Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<columns_,
-                   "matrix cannot be accessed out of range");
+                   "column index (" << i << ") must be less than " << columns_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return column_iterator(data_.get()+i,columns_);
     }
@@ -351,7 +357,8 @@ namespace QuantLib {
     Matrix::column_end(Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<columns_,
-                   "matrix cannot be accessed out of range");
+                   "column index (" << i << ") must be less than " << columns_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return const_column_iterator(data_.get()+i+rows_*columns_,columns_);
     }
@@ -359,7 +366,8 @@ namespace QuantLib {
     inline Matrix::column_iterator Matrix::column_end(Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<columns_,
-                   "matrix cannot be accessed out of range");
+                   "column index (" << i << ") must be less than " << columns_ <<
+                   ": matrix cannot be accessed out of range");
         #endif
         return column_iterator(data_.get()+i+rows_*columns_,columns_);
     }
