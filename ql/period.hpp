@@ -64,7 +64,7 @@ namespace QuantLib {
         : length_(0), units_(Days) {}
         Period(Integer n, TimeUnit units)
         : length_(n), units_(units) {}
-        Period(Frequency f);
+        explicit Period(Frequency f);
         Integer length() const { return length_; }
         TimeUnit units() const { return units_; }
       private:
