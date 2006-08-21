@@ -37,7 +37,6 @@ namespace QuantLib {
         ForwardRatePcEvolver(const boost::shared_ptr<PseudoRoot>&,
                              const EvolutionDescription&,
                              const BrownianGeneratorFactory&);
-		virtual ~ForwardRatePcEvolver();
 
         Real startNewPath();
         Real advanceStep();

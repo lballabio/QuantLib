@@ -20,7 +20,7 @@
 */
 
 #include <ql/MarketModels/driftcalculator.hpp>
-#include <vector>
+#include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 

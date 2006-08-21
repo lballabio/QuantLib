@@ -1,17 +1,78 @@
-DESIGN
-- Normal Forward-Rate Market Models
-- uBLAS, Duff's device?
-- relevantRates
+priority in first parenthesis, extimated complexity in the second one
 
-make rankReducedMatrix work
+Path generation
+- (1) Sobol with Brownian bridging (multiple methods of variate allocation)
+  (MEDIUM)
+- (4) antithetic sampling (EASY)
+- (4) moment matching (EASY)
 
+Drift
+- (1) Computation with rapid algorithm for reduced factor models (MEDIUM)
+- (4) Glasserman Zhao spot measure approximation (MEDIUM)
+- (4) ipc, capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
+
+Statistics
+- convergence tables (EASY)
+
+Termination criteria
+- ability to terminate on time passed and select termination criterion (EASY)
+
+Pseudo-roots\calibration
+- (1) make rankReducedMatrix work
+- (1) a,b,c,d form (EASY)
+- (2) calibrator to produce abcd form from market data, with displacements
+  (MEDIUM to HARD)
+- (3) swaption calibration using Z matrix with displacements (MEDIUM)
+- (2) different correlation structures (VARIABLE)
+- (2) alignment with covariance structures in legacy code (?)
+
+Curve state
+- (4) Set on coterminal swaps.  (MEDIUM)
+
+Evolution description
+- MoneyMarketPlus measure
+
+Products
+- floorlets with one or many steps.  (EASY)
+- (coterminal) swaps
+- coterminal European swaptions (EASY)
+- Some real products! (MEDIUM)
+
+Quantlib
+- Get LMM code in the same use format as other code via instrument classes
+  creating objects from new hierarchy as necessary (MEDIUM)
+- check why Duff's device is ineffective
 
 TEST
-* short step, terminal
-* short step, mma
-* long stepping, terminal
-* simulation with non null displacement
 - payment date different from reset dates
-- a, b, c, d parameterization:
-  - test integral
-- ipc
+
+============================
+
+Early Callability
+- (5) Lower bounds for early exercise
+- (5) Longstaff-schwartz\Amin (time consuming but not hard)
+- (5) Anderson method for Bermudan swaptions (time consuming but not hard)
+- (5) Jackel method for Bermudan swaptions (time consuming but not hard)
+- (5) Rogers\anderson-Broadie\Joshi methods for upper bounds  (time consuming )
+- (6) Jamshidian method for upper bounds (MEDIUM )
+- (5) Upper bounds for early exercise
+
+Evolvers
+- (4) Coterminal Swap-rate market model (MEDIUM TO HARD)
+- (4) Coinitial Swap-rate market model (MEDIUM TO HARD)
+- (4) CMS swap rate market model (MEDIUM TO HARD)
+- Normal Forward-Rate Market Models
+- relevantRates
+
+Scripting
+- (6) Ability to specify new pay-offs and price them without code recompilation.
+  (HARD)
+
+Variance reduction
+- Control variates, importance sampling (MEDIUM)
+
+Greeks
+- More sophisticated Greek methods (HARD)
+
+Calibration
+- Simultaneous calibration to caplets and swaptions (HARD)

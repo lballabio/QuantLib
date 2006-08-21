@@ -18,6 +18,7 @@
 */
 
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 
@@ -49,8 +50,7 @@ namespace QuantLib {
                                               displacements_[i]);
         }
 
-        for (Size j=0; j<steps; ++j)
-        {
+        for (Size j=0; j<steps; ++j) {
             const Matrix& A = pseudoRoot->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
@@ -58,9 +58,8 @@ namespace QuantLib {
                                                    evolution_.numeraires()[j],
                                                    alive_[j]));
             C_.push_back(A*transpose(A));
-
             std::vector<Real> fixed(n_);
-            for (Size k=0; k < n_; ++k) {
+            for (Size k=0; k<n_; ++k) {
                 Real variance = C_.back()[k][k];
                 fixed[k] = -0.5*variance;
             }
@@ -83,6 +82,8 @@ namespace QuantLib {
         const std::vector<Time>& rateTaus = evolution_.rateTaus();
 
         // we're going from T1 to T2:
+
+        // a) compute drifts D1 at T1;
         if (currentStep_ > 0) {
             calculators_[currentStep_].compute(forwards_, drifts1_);
             //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);

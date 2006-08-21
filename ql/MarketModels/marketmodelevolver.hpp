@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     class MarketModelEvolver {
-    public:
+      public:
         virtual ~MarketModelEvolver() {}
         
         virtual Real startNewPath()=0;
@@ -37,6 +37,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

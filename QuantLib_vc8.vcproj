@@ -7913,6 +7913,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\duffsdeviceinnerproduct.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\evolutiondescription.cpp"
 				>
 			</File>

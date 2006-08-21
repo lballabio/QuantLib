@@ -18,6 +18,7 @@
 */
 
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
+#include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 
@@ -46,8 +47,7 @@ namespace QuantLib {
                                               displacements_[i]);
         }
 
-        for (Size j=0; j<steps; ++j)
-        {
+        for (Size j=0; j<steps; ++j) {
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
@@ -55,7 +55,7 @@ namespace QuantLib {
                                                    evolution_.numeraires()[j],
                                                    alive_[j]));
             std::vector<Real> fixed(n_);
-            for (Size k=0; k < n_; ++k) {
+            for (Size k=0; k<n_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
                                        A.row_begin(k), 0.0);
