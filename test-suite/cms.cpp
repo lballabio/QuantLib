@@ -174,6 +174,7 @@ void CmsTest::testFairRate()  {
 }
 
 void CmsTest::testParity() {
+
 	BOOST_MESSAGE("testParity...");
 
     QL_TEST_BEGIN
@@ -204,7 +205,7 @@ void CmsTest::testParity() {
 	floorlet.setSwaptionVolatility(swaptionVolatilityStructure_);
 
 	//Computation
-	const double price1 = swaplet.price(termStructure_);
+	const double price1 = swaplet.price(termStructure_) - swaplet.accrualPeriod()*strike* termStructure_->discount(paymentDate_);
 	const double price2 = floorlet.price(termStructure_)-caplet.price(termStructure_);
 	
 	const double difference =  price1-price2;
