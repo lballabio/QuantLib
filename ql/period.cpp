@@ -28,10 +28,18 @@ namespace QuantLib {
         switch (f) {
           case NoFrequency:
           case Once:
-            QL_FAIL("cannot instantiate a Period from frequency " << Integer(f));
-          default:
+            QL_FAIL("cannot instantiate a Period from frequency " << f);
+          case Annual:
+          case Semiannual:
+          case EveryFourthMonth:
+          case Quarterly:
+          case Bimonthly:
+          case Monthly:
             units_ = Months;
             length_ = 12/f;
+            break;
+          default:
+            QL_FAIL("unknown frequency (" << Integer(f));
         }
     }
 
