@@ -62,6 +62,7 @@ DayCounter dayCounter;
 std::vector<Rate> todaysForwards, displacements;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities;
+Size measureOffset_;
 unsigned long seed;
 
 Size paths;
@@ -105,6 +106,8 @@ void setup() {
     volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<volatilities.size(); ++i)
         volatilities[i] = 0.10 + 0.005*i;
+
+    measureOffset_ = 5;
 
     seed = 42;
 
@@ -274,7 +277,7 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
     }
 }
 
-enum MeasureType { ProductSuggested, Terminal, MoneyMarket };
+enum MeasureType { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
 
 std::string measureTypeToString(MeasureType type) {
     switch (type) {
@@ -284,6 +287,8 @@ std::string measureTypeToString(MeasureType type) {
           return "Terminal";
       case MoneyMarket:
           return "Money Market";
+      case MoneyMarketPlus:
+          return "Money Market Plus";
       default:
         QL_FAIL("unknown measure type");
     }
@@ -299,6 +304,9 @@ void setMeasure(EvolutionDescription& evolution,
         break;
       case MoneyMarket:
         evolution.setMoneyMarketMeasure();
+        break;
+      case MoneyMarketPlus:
+        evolution.setMoneyMarketMeasurePlus(measureOffset_);
         break;
       default:
         QL_FAIL("unknown measure type");
@@ -366,7 +374,7 @@ void MarketModelTest::testLongJumpForwards() {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket };
+                MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
@@ -414,7 +422,7 @@ void MarketModelTest::testVeryLongJumpForwards() {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { Terminal, MoneyMarket };
+                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
@@ -460,7 +468,7 @@ void MarketModelTest::testLongJumpCaplets() {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { Terminal, MoneyMarket };
+                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
@@ -508,7 +516,7 @@ void MarketModelTest::testVeryLongJumpCaplets() {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
                 boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { Terminal, MoneyMarket };
+                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);

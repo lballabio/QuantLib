@@ -116,12 +116,12 @@ namespace QuantLib {
             rateTimes_.size()-1;
     }
 
-    void EvolutionDescription::setMoneyMarketMeasure() {
-        Size j = 0;
+    void EvolutionDescription::setMoneyMarketMeasurePlus(Size offset) {
+        Size j=0, maxNumeraire=rateTimes_.size()-1;
         for (Size i=0; i<evolutionTimes_.size(); ++i) {
             while (rateTimes_[j] < evolutionTimes_[i])
                 j++;
-            numeraires_[i] = j;
+            numeraires_[i] = std::min(j+offset, maxNumeraire);
         }
     }
 
