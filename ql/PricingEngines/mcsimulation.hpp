@@ -51,7 +51,8 @@ namespace QuantLib {
         virtual ~McSimulation() {}
         //! add samples until the required absolute tolerance is reached
         Real value(Real tolerance,
-                   Size maxSample = QL_MAX_INTEGER) const;
+                   Size maxSamples = QL_MAX_INTEGER,
+                   Size minSamples = 1023) const;
         //! simulate a fixed number of samples
         Real valueWithSamples(Size samples) const;
         //! error estimated using the samples simulated so far
@@ -81,22 +82,19 @@ namespace QuantLib {
             return Null<Real>();
         }
         mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
-        static const Size minSample_;
         bool antitheticVariate_, controlVariate_;
     };
 
 
-    template<class MC, class S>
-    const Size McSimulation<MC,S>::minSample_ = 1023; // (2^10 - 1)
-
     // inline definitions
     template<class MC, class S>
     inline Real McSimulation<MC,S>::value(Real tolerance,
-                                          Size maxSamples) const {
+                                          Size maxSamples,
+                                          Size minSamples) const {
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
-        if (sampleNumber<minSample_) {
-            mcModel_->addSamples(minSample_-sampleNumber);
+        if (sampleNumber<minSamples) {
+            mcModel_->addSamples(minSamples-sampleNumber);
             sampleNumber = mcModel_->sampleAccumulator().samples();
         }
 
@@ -113,7 +111,7 @@ namespace QuantLib {
             order = error*error/tolerance/tolerance;
             nextBatch =
                 Size(std::max<Real>(sampleNumber*order*0.8-sampleNumber,
-                                    minSample_));
+                                    minSamples));
 
             // do not exceed maxSamples
             nextBatch = std::min(nextBatch, maxSamples-sampleNumber);

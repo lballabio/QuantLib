@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,32 +44,31 @@ namespace QuantLib {
         virtual ~McPricer() {}
         //! add samples until the required tolerance is reached
         Real value(Real tolerance,
-                   Size maxSample = QL_MAX_INTEGER) const;
+                   Size maxSamples = QL_MAX_INTEGER,
+                   Size minSamples = 1023) const;
         //! simulate a fixed number of samples
-        Real valueWithSamples(Size samples) const;
-        //! error Estimated of the samples simulated so far
+        Real valueWithSamples(Size samples,
+                              Size minSamples = 1023) const;
+        //! estimated error of the samples simulated so far
         Real errorEstimate() const;
         //! access to the sample accumulator for more statistics
         const S& sampleAccumulator(void) const;
       protected:
         McPricer() {}
         mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
-        static const Size minSample_;
     };
 
-
-    template<class MC, class S>
-    const Size McPricer<MC,S>::minSample_ = 1023;
 
     // inline definitions
     template<class MC, class S>
     inline Real McPricer<MC,S>::value(Real tolerance,
-                                      Size maxSamples) const {
+                                      Size maxSamples,
+                                      Size minSamples) const {
 
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
-        if (sampleNumber<minSample_) {
-            mcModel_->addSamples(minSample_-sampleNumber);
+        if (sampleNumber<minSamples) {
+            mcModel_->addSamples(minSamples-sampleNumber);
             sampleNumber = mcModel_->sampleAccumulator().samples();
         }
 
@@ -82,7 +82,7 @@ namespace QuantLib {
 
             nextBatch =
                 Size(std::max<Real>(sampleNumber*order*0.8-sampleNumber,
-                                    minSample_));
+                                    minSamples));
             // do not exceed maxSamples
             nextBatch = std::min(nextBatch, maxSamples-sampleNumber);
             QL_REQUIRE(nextBatch>0,
@@ -100,11 +100,12 @@ namespace QuantLib {
 
 
     template<class MC, class S>
-    inline Real McPricer<MC,S>::valueWithSamples(Size samples) const {
+    inline Real McPricer<MC,S>::valueWithSamples(Size samples,
+                                                 Size minSamples) const {
 
-        QL_REQUIRE(samples>=minSample_,
+        QL_REQUIRE(samples>=minSamples,
                    "number of requested samples (" << samples
-                   << ") lower than minSample_ (" << minSample_ << ")");
+                   << ") lower than minSamples (" << minSamples << ")");
 
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
@@ -121,12 +122,6 @@ namespace QuantLib {
 
     template<class MC, class S>
     inline Real McPricer<MC,S>::errorEstimate() const {
-
-        Size sampleNumber = mcModel_->sampleAccumulator().samples();
-
-        QL_REQUIRE(sampleNumber>=minSample_,
-                   "number of simulated samples lower than minSample_");
-
         return mcModel_->sampleAccumulator().errorEstimate();
     }
 
