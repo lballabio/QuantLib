@@ -206,9 +206,9 @@ void CmsTest::testParity() {
 			pricers.push_back(numericalPricer);
 		}
 
-		for(Size j=0; j<pricers.size(); j++) {
+        for(Size j=0; j<pricers.size(); j++) {
 
-			CMSCoupon swaplet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_, 
+            CMSCoupon swaplet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_, 
 				iborIndex_->dayCounter(), pricers[j], gearing_, spread_, infiniteCap_, infiniteFloor_);
 			swaplet.setSwaptionVolatility(swaptionVolatilityStructure_);
 
@@ -218,7 +218,7 @@ void CmsTest::testParity() {
 
 				strike += .005;
 				CMSCoupon caplet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_, 
-					iborIndex_->dayCounter(), pricers[j], gearing_, spread_, strike, infiniteFloor_);
+                    iborIndex_->dayCounter(), pricers[j], gearing_, spread_, strike, infiniteFloor_);
 				caplet.setSwaptionVolatility(swaptionVolatilityStructure_);
 
 				CMSCoupon floorlet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_, 
@@ -235,12 +235,12 @@ void CmsTest::testParity() {
 				
 				if (std::fabs(difference) > priceTolerance_) {
 						BOOST_ERROR("\n" << 
-							"startDate:\t" << startDate_ << "\n" 
-							"strike:\t" << strike << "\n"
-									"price1:\t" << io::rate(price1) << "\n"
-									"price2:\t" << io::rate(price2) << "\n"
-									"difference:\t" << io::rate(difference) << "\n"
-									"tolerance: \t" << io::rate(priceTolerance_));
+                            "startDate:\t" << startDate_ << "\n" 
+                            "strike:\t" << strike << "\n"
+                            "price1:\t" << io::rate(price1) << "\n"
+                            "price2:\t" << io::rate(price2) << "\n"
+                            "difference:\t" << io::rate(difference) << "\n"
+                            "tolerance: \t" << io::rate(priceTolerance_));
 				}
 			}
 		}
