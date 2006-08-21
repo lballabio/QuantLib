@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -58,15 +59,15 @@ namespace QuantLib {
         typedef std::pair<Size,Size> range;
       public:
         EvolutionDescription(
-            const Array& rateTimes,
-            const Array& evolutionTimes,
+            const std::vector<Time>& rateTimes,
+            const std::vector<Time>& evolutionTimes,
             const std::vector<Size>& numeraires = std::vector<Size>(),
             const std::vector<std::pair<Size,Size> >& relevanceRates =
                                                         std::vector<range>());
-        const Array& rateTimes() const;
-        const Array& rateTaus() const;
-        const Array& evolutionTimes() const;
-        const Matrix& evolutionTaus() const;
+        const std::vector<Time>& rateTimes() const;
+        const std::vector<Time>& rateTaus() const;
+        const std::vector<Time>& evolutionTimes() const;
+        const Matrix& effectiveStopTime() const;
         const std::vector<Size>& firstAliveRate() const;
         const std::vector<Size>& numeraires() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
@@ -81,16 +82,54 @@ namespace QuantLib {
         bool isInMoneyMarketMeasure() const;
 
       private:
-        Array rateTimes_, evolutionTimes_;
+        std::vector<Time> rateTimes_, evolutionTimes_;
         Size steps_;
         std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
-        Array rateTaus_;
-        Matrix evolutionTaus_;
+        std::vector<Time> rateTaus_;
+        Matrix effStopTime_;
         std::vector<Size> firstAliveRate_;
     };
 
-}
 
+    // inline
+
+    inline const std::vector<Time>& EvolutionDescription::rateTimes() const {
+        return rateTimes_;
+    }
+
+    inline const std::vector<Time>& EvolutionDescription::rateTaus() const {
+        return rateTaus_;
+    }
+
+    inline const std::vector<Time>& EvolutionDescription::evolutionTimes() const {
+        return evolutionTimes_;
+    }
+
+    inline const Matrix& EvolutionDescription::effectiveStopTime() const {
+        return effStopTime_;
+    }
+
+    inline const std::vector<Size>& EvolutionDescription::firstAliveRate() const {
+        return firstAliveRate_;
+    }
+
+    inline const std::vector<Size>& EvolutionDescription::numeraires() const {
+        return numeraires_;
+    }
+
+    inline const std::vector<std::pair<Size,Size> >& EvolutionDescription::relevanceRates() const {
+        return relevanceRates_;
+    }
+
+    inline Size EvolutionDescription::numberOfRates() const {
+        return rateTimes_.size() - 1; 
+    }
+
+    inline Size EvolutionDescription::numberOfSteps() const {
+        return evolutionTimes_.size(); 
+    }
+
+}
 
 #endif
