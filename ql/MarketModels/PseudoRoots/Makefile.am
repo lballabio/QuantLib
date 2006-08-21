@@ -3,12 +3,16 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels/PseudoRoots
 
 include_HEADERS = \
-	abcdvolatility.hpp \
-	exponentialcorrelation.hpp
+	abcd.hpp \
+	calibratedmarketmodel.hpp \
+	expcorrabcdvol.hpp \
+	expcorrflatvol.hpp
 
 libMarketModelsPseudoRoots_la_SOURCES = \
-	abcdvolatility.cpp \
-	exponentialcorrelation.cpp
+	abcd.cpp \
+	calibratedmarketmodel.cpp \
+	expcorrabcdvol.cpp \
+	expcorrflatvol.cpp
 
 noinst_LTLIBRARIES = libMarketModelsPseudoRoots.la
 

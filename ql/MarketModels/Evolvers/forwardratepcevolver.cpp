@@ -35,11 +35,8 @@ namespace QuantLib {
       alive_(evolution_.firstAliveRate())
     {
         const std::vector<Rate>& initialForwards = pseudoRoot_->initialRates();
-        
-        Size steps = evolution_.numberOfSteps();
 
-        const std::vector<Time>& rateTimes = evolution_.rateTimes();
-        const std::vector<Time>& evolutionTimes = evolution_.evolutionTimes();
+        Size steps = evolution_.numberOfSteps();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -52,7 +49,7 @@ namespace QuantLib {
         for (Size j=0; j<steps; ++j)
         {
             const Matrix& A = pseudoRoot_->pseudoRoot(j);
-            calculators_.push_back(DriftCalculator(A, 
+            calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
@@ -71,7 +68,7 @@ namespace QuantLib {
         //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
-	ForwardRatePcEvolver::~ForwardRatePcEvolver() {}
+    ForwardRatePcEvolver::~ForwardRatePcEvolver() {}
 
     Real ForwardRatePcEvolver::startNewPath() {
         currentStep_ = 0;
@@ -110,7 +107,7 @@ namespace QuantLib {
         // c) recompute drifts D2 using the predicted forwards;
         calculators_[currentStep_].compute(forwards_, drifts2_);
         //calculators_[currentStep_].computeReduced(forwards_, F_, drifts2_);
-        
+
         // d) correct forwards using both drifts
         for (Size i=alive; i<n_; ++i) {
             logForwards_[i] += (drifts2_[i]-drifts1_[i])/2.0;

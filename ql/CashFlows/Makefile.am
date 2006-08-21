@@ -7,6 +7,8 @@ include_HEADERS = \
         core.hpp \
         analysis.hpp \
         cashflowvectors.hpp \
+        cmscoupon.hpp \
+        conundrumpricer.hpp \
         coupon.hpp \
         dividend.hpp \
         fixedratecoupon.hpp \
@@ -24,6 +26,8 @@ include_HEADERS = \
 libCashFlows_la_SOURCES = \
     analysis.cpp \
     cashflowvectors.cpp \
+    cmscoupon.cpp \
+    conundrumpricer.cpp \
     dividend.cpp \
     inarrearindexedcoupon.cpp \
     parcoupon.cpp \

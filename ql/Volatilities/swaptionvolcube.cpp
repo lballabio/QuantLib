@@ -43,16 +43,16 @@ namespace QuantLib {
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths), timeLengths_(lengths.size()), 
+      lengths_(lengths), timeLengths_(lengths.size()),
       nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
       volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
       volSpreadsInterpolator_(nStrikes_),
       localStrikes_(nStrikes_), localSmile_(nStrikes_),
       calendar_(calendar), fixedLegFrequency_(fixedLegFrequency),
-      fixedLegConvention_(fixedLegConvention), 
+      fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndexShortTenor_(iborIndexShortTenor),
-      iborIndex_(iborIndex), shortTenor_(shortTenor)
+      iborIndex_(iborIndex), shortTenor_(shortTenor),
+      iborIndexShortTenor_(iborIndexShortTenor)
     {
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
@@ -65,7 +65,7 @@ namespace QuantLib {
             exerciseDates_[i] = calendar_.advance(referenceDate(),
                                                    expiries[i],
                                                    Unadjusted); //FIXME
-            exerciseDatesAsReal_[i] = 
+            exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
             QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
@@ -98,7 +98,7 @@ namespace QuantLib {
 
         QL_REQUIRE(nStrikes_==volSpreads.columns(),
             "nStrikes_!=volSpreads.columns()");
-        QL_REQUIRE(nExercise*nlengths==volSpreads.rows(), 
+        QL_REQUIRE(nExercise*nlengths==volSpreads.rows(),
             "nExerci se*nlengths!=volSpreads.rows()");
         for (i=0; i<nStrikes_; i++) {
 
@@ -165,7 +165,7 @@ namespace QuantLib {
             fixedSchedule, fixedRate_, fixedLegDayCounter_,
             floatSchedule, iborIndex_,
             iborIndex_->settlementDays(), spread_, iborIndex_->dayCounter(),
-            termStructure); 
+            termStructure);
 
         return swap.fairRate();
     }

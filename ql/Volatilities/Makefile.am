@@ -15,12 +15,14 @@ include_HEADERS = \
     localvolcurve.hpp \
     localvolsurface.hpp \
     swaptionconstantvol.hpp \
+    swaptionvolcube.hpp \
     swaptionvolmatrix.hpp
 
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
     localvolsurface.cpp \
+    swaptionvolcube.cpp \
     swaptionvolmatrix.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la

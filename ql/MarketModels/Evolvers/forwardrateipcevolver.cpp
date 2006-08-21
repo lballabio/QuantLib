@@ -38,11 +38,8 @@ namespace QuantLib {
                    "terminal measure required for ipc ");
 
         const std::vector<Rate>& initialForwards = pseudoRoot->initialRates();
-        
-        Size steps = evolution_.numberOfSteps();
 
-        const std::vector<Time>& rateTimes = evolution_.rateTimes();
-        const std::vector<Time>& evolutionTimes = evolution_.evolutionTimes();
+        Size steps = evolution_.numberOfSteps();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -55,7 +52,7 @@ namespace QuantLib {
         for (Size j=0; j<steps; ++j)
         {
             const Matrix& A = pseudoRoot->pseudoRoot(j);
-            calculators_.push_back(DriftCalculator(A, 
+            calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
