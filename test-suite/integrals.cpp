@@ -26,7 +26,7 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/functional.hpp>
 
-#include <ql/MarketModels/PseudoRoots/abcdvolatility.hpp>
+#include <ql/MarketModels/PseudoRoots/abcd.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -8088,91 +8088,35 @@
 				Name="PseudoRoots"
 				>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.hpp"
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.cpp"
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.hpp"
 					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.hpp"
+					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.hpp"
 					>
 				</File>
 			</Filter>

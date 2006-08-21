@@ -8302,16 +8302,28 @@
 				Name="PseudoRoots"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.cpp">
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcdvolatility.hpp">
+					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.cpp">
+					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\exponentialcorrelation.hpp">
+					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.hpp">
 				</File>
 			</Filter>
 			<Filter
