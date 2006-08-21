@@ -65,6 +65,7 @@ namespace QuantLib {
                   const Date& refPeriodEnd = Date());
         //! \name Coupon interface
         //@{
+		Real price(const Handle<YieldTermStructure>& termstructure) const;
         Rate rate() const;
         // legacy code (analytical integration) to be removed later
         Rate rate1() const;

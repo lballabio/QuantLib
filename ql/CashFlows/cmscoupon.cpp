@@ -86,6 +86,10 @@ namespace QuantLib {
 
     }
 
+	Real CMSCoupon::price(const Handle<YieldTermStructure>& termstructure) const {
+		return amount()*termstructure->discount(date());
+	}
+
     Rate CMSCoupon::rate() const
     {
             Pricer_->initialize(*this);
