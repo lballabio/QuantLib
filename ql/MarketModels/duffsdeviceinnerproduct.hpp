@@ -22,93 +22,27 @@
 #ifndef quantlib_duffs_device_inner_product_hpp
 #define quantlib_duffs_device_inner_product_hpp
 
-#include <ql/Math/matrix.hpp>
-#include <vector>
+#include <numeric>
 
 namespace QuantLib {
 
   namespace dsd {
 
-    // This inner_product allows for the second vector to be longer. The
-    // hangover elements will be ignored.
-    template <class T>
-    inline T inner_product(const std::vector <T> &v,
-                           const std::vector <T> &w) {
-       const typename std::vector<T>::const_iterator &e = v.end();
-             typename std::vector<T>::const_iterator  i = v.begin();
-             typename std::vector<T>::const_iterator  j = w.begin();
-       // Loop unrolling using Duff's device.
-       T x = T();
-       x = 0;
-       switch ( v.size() % 8 ) while ( i != e ) {
-       case  8: x += *i * *j; ++i; ++j;
-       case  7: x += *i * *j; ++i; ++j;
-       case  6: x += *i * *j; ++i; ++j;
-       case  5: x += *i * *j; ++i; ++j;
-       case  4: x += *i * *j; ++i; ++j;
-       case  3: x += *i * *j; ++i; ++j;
-       case  2: x += *i * *j; ++i; ++j;
-       case  1: x += *i * *j; ++i; ++j;
+    template <class InputIterator1, class InputIterator2, class T>
+    inline T inner_product(InputIterator1 first1, InputIterator1 last1,
+                           InputIterator2 first2, T init) {
+       switch ( (last1-first1) % 8 ) while ( first1 != last1 ) {
+       case  8: init = init + *first1 * *first2; ++first1; ++first2;
+       case  7: init = init + *first1 * *first2; ++first1; ++first2;
+       case  6: init = init + *first1 * *first2; ++first1; ++first2;
+       case  5: init = init + *first1 * *first2; ++first1; ++first2;
+       case  4: init = init + *first1 * *first2; ++first1; ++first2;
+       case  3: init = init + *first1 * *first2; ++first1; ++first2;
+       case  2: init = init + *first1 * *first2; ++first1; ++first2;
+       case  1: init = init + *first1 * *first2; ++first1; ++first2;
        case  0: ;
        }
-       return x;
-    }
-
-    inline Real inner_product(std::vector<Real>::const_iterator  i,
-                              const std::vector<Real>::const_iterator &e,
-                              Matrix::const_row_iterator  j,
-                              Real startupValue) {
-       Real x = startupValue;
-       switch ( (e-i) % 8 ) while ( i != e ) {
-       case  8: x += *i * *j; ++i; ++j;
-       case  7: x += *i * *j; ++i; ++j;
-       case  6: x += *i * *j; ++i; ++j;
-       case  5: x += *i * *j; ++i; ++j;
-       case  4: x += *i * *j; ++i; ++j;
-       case  3: x += *i * *j; ++i; ++j;
-       case  2: x += *i * *j; ++i; ++j;
-       case  1: x += *i * *j; ++i; ++j;
-       case  0: ;
-       }
-       return x;
-    }
-
-    inline Real inner_product(Matrix::const_row_iterator  i,
-                              const Matrix::const_row_iterator &e,
-                              Array::const_iterator  j,
-                              Real startupValue) {
-       Real x = startupValue;
-       switch ( (e-i) % 8 ) while ( i != e ) {
-       case  8: x += *i * *j; ++i; ++j;
-       case  7: x += *i * *j; ++i; ++j;
-       case  6: x += *i * *j; ++i; ++j;
-       case  5: x += *i * *j; ++i; ++j;
-       case  4: x += *i * *j; ++i; ++j;
-       case  3: x += *i * *j; ++i; ++j;
-       case  2: x += *i * *j; ++i; ++j;
-       case  1: x += *i * *j; ++i; ++j;
-       case  0: ;
-       }
-       return x;
-    }
-
-    inline Real inner_product(Matrix::const_column_iterator  i,
-                              const Matrix::const_column_iterator &e,
-                              Matrix::const_row_iterator  j,
-                              Real startupValue) {
-       Real x = startupValue;
-       switch ( (e-i) % 8 ) while ( i != e ) {
-       case  8: x += *i * *j; ++i; ++j;
-       case  7: x += *i * *j; ++i; ++j;
-       case  6: x += *i * *j; ++i; ++j;
-       case  5: x += *i * *j; ++i; ++j;
-       case  4: x += *i * *j; ++i; ++j;
-       case  3: x += *i * *j; ++i; ++j;
-       case  2: x += *i * *j; ++i; ++j;
-       case  1: x += *i * *j; ++i; ++j;
-       case  0: ;
-       }
-       return x;
+       return init;
     }
 
   }
