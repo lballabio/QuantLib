@@ -68,8 +68,6 @@ namespace QuantLib {
         //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
-    ForwardRatePcEvolver::~ForwardRatePcEvolver() {}
-
     Real ForwardRatePcEvolver::startNewPath() {
         currentStep_ = 0;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),

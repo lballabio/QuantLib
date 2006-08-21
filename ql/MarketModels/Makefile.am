@@ -11,6 +11,7 @@ include_HEADERS = \
     browniangenerator.hpp \
     curvestate.hpp \
     driftcalculator.hpp \
+    duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
