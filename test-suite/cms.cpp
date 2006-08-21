@@ -85,16 +85,9 @@ void teardown() {
 
 QL_END_TEST_LOCALS(SwapTest)
 
-void CmsTest::testFairRate()  {
 
-	BOOST_MESSAGE("Testing constant maturity swap...");
+boost::shared_ptr<YieldTermStructure> CmsTest::getYieldTermStructure() {
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
-
-    Handle<YieldTermStructure> discountingTermStructure;
-
-	{
 	     /*********************
          ***  MARKET DATA  ***
          *********************/
@@ -140,6 +133,7 @@ void CmsTest::testFairRate()  {
         Rate s5yQuote=0.0443;
         Rate s10yQuote=0.05165;
         Rate s15yQuote=0.055175;
+		Rate s60yQuote=0.053175;
 
 
         /********************
@@ -176,6 +170,7 @@ void CmsTest::testFairRate()  {
         boost::shared_ptr<Quote> s5yRate(new SimpleQuote(s5yQuote));
         boost::shared_ptr<Quote> s10yRate(new SimpleQuote(s10yQuote));
         boost::shared_ptr<Quote> s15yRate(new SimpleQuote(s15yQuote));
+		boost::shared_ptr<Quote> s60yRate(new SimpleQuote(s60yQuote));
 
 
         /*********************
@@ -320,6 +315,12 @@ void CmsTest::testFairRate()  {
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegIndex));
+		boost::shared_ptr<RateHelper> s60y(new SwapRateHelper(
+            Handle<Quote>(s60yRate),
+            60*Years, fixingDays,
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegIndex));
 
 
         /*********************
@@ -347,6 +348,7 @@ void CmsTest::testFairRate()  {
         depoSwapInstruments.push_back(s5y);
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
+		depoSwapInstruments.push_back(s60y);
         boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(new
             PiecewiseFlatForward(settlementDate, depoSwapInstruments,
                                  termStructureDayCounter, tolerance));
@@ -368,6 +370,7 @@ void CmsTest::testFairRate()  {
         depoFutSwapInstruments.push_back(s5y);
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
+		depoFutSwapInstruments.push_back(s60y);
         boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(new
             PiecewiseFlatForward(settlementDate, depoFutSwapInstruments,
                                  termStructureDayCounter, tolerance));
@@ -386,20 +389,28 @@ void CmsTest::testFairRate()  {
         depoFRASwapInstruments.push_back(s5y);
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
+		depoFRASwapInstruments.push_back(s60y);
         boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(new
             PiecewiseFlatForward(settlementDate, depoFRASwapInstruments,
                                  termStructureDayCounter, tolerance));
+		return depoFRASwapTermStructure;
+}
 
+void CmsTest::testFairRate()  {
 
-        // Term structures that will be used for pricing:
-	    discountingTermStructure.linkTo(depoFRASwapTermStructure);
-	}
+	BOOST_MESSAGE("Testing constant maturity swap...");
 
-	const Handle<YieldTermStructure>& yieldTermStructure = discountingTermStructure;
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+	//Term Structure
+    Handle<YieldTermStructure> yieldTermStructure;
+	yieldTermStructure.linkTo(getYieldTermStructure());
+
+	//Coupon specs
 	const Date referenceDate = yieldTermStructure->referenceDate();
-
 	const std::string familyName("");
-    const Integer years(10);
+    const Integer years(30);
     const Integer settlementDays(2);
 	const Currency currency = EURCurrency();
     const Calendar calendar = TARGET();
@@ -421,18 +432,24 @@ void CmsTest::testFairRate()  {
 		dayCounter, 
 		iborIndex)
 		);
-	const Date paymentDate(referenceDate+365);
-	const Date startDate(referenceDate+180);
-	const Date endDate(startDate+365);
-
+	
+	const Date startDate(referenceDate+1800);
+	const Date paymentDate(startDate+365);
+	const Date endDate(paymentDate);
 	const Real gearing(1);
 	const Real spread(0);
-	const Integer fixingDays(0);
+	const Real cap = 1.02, floor = .00;
+	const Integer fixingDays(2);
 
-
-	boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration);
+	boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration(
+			//GFunctionFactory::standard,
+			GFunctionFactory::parallelShifts,
+			0,
+			1.0));
 	boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new ConundrumPricerByBlack);
 
+	// Volatility
+	const Real volatility = .20;
 	std::vector<Date> exerciseDates(2);
 	exerciseDates[0] = referenceDate;
 	exerciseDates[1] = endDate;
@@ -441,20 +458,22 @@ void CmsTest::testFairRate()  {
 	lengths[0] = Period(1, Years);
 	lengths[1] = Period(30, Years);
 
-    const Matrix volatilities(2,2, .25);
+    const Matrix volatilities(2,2, volatility);
 
 	const Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
 		boost::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(referenceDate, exerciseDates, lengths, volatilities, dayCounter))
 		);
 
+	//Coupons
 	CMSCoupon coupon1(1, paymentDate, index, startDate, endDate, fixingDays, 
-		dayCounter, numericalPricer, gearing, spread, 100, 0);
+		dayCounter, numericalPricer, gearing, spread, cap, floor);
 	coupon1.setSwaptionVolatility(swaptionVolatilityStructure);
 
 	CMSCoupon coupon2(1, paymentDate, index, startDate, endDate, fixingDays, 
-		dayCounter, analyticPricer, gearing, spread, 100, 0);
+		dayCounter, analyticPricer, gearing, spread, cap, floor);
 	coupon2.setSwaptionVolatility(swaptionVolatilityStructure);
 
+	//Computation
 	const double rate1 = coupon1.rate();
 	const double rate2 = coupon2.rate();
 	const double difference =  rate2-rate1;
@@ -462,14 +481,14 @@ void CmsTest::testFairRate()  {
     Real tolerance = 2.0e-5;
 	if (std::fabs(difference) > tolerance) {
             BOOST_ERROR("\n" << 
-                        "rate1:      " << io::rate(rate1) << "\n"
-	                    "rate2:      " << io::rate(rate2) << "\n"
-	                    "difference: " << io::rate(difference) << "\n"
-	                    "tolerance:  " << io::rate(tolerance));
+				"startDate:\t" << startDate << "\n" 
+                        "rate1:\t" << io::rate(rate1) << "\n"
+	                    "rate2:\t" << io::rate(rate2) << "\n"
+	                    "difference:\t" << io::rate(difference) << "\n"
+	                    "tolerance: \t" << io::rate(tolerance));
     }
-		
 
-    QL_TEST_TEARDOWN
+	QL_TEST_TEARDOWN
 }
 
 test_suite* CmsTest::suite() {

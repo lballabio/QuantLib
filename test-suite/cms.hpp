@@ -21,14 +21,19 @@
 #define quantlib_test_cms_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "cms.hpp"
+#include <ql/TermStructures/all.hpp>
+
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
+
 
 class CmsTest {
   
 public:
 
+	static boost::shared_ptr<QuantLib::YieldTermStructure> getYieldTermStructure();
 	static void testFairRate();
 	static boost::unit_test_framework::test_suite* suite();
 };
