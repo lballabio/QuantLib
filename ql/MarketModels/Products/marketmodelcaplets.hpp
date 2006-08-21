@@ -24,20 +24,16 @@
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
-    class MarketModelCaplets : public MarketModelProduct
-    {
-    public:
-  
-        MarketModelCaplets(const Array& rateTimes,
-                           const Array& accruals,
-                           const Array& paymentTimes,
-                           const Array& strikes);
+    class MarketModelCaplets : public MarketModelProduct {
+      public:
+        MarketModelCaplets(const std::vector<Time>& rateTimes,
+                           const std::vector<Real>& accruals,
+                           const std::vector<Time>& paymentTimes,
+                           const std::vector<Rate>& strikes);
       
-        virtual ~MarketModelCaplets();
-       
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
-        virtual Array possibleCashFlowTimes() const;
+        virtual std::vector<Time> possibleCashFlowTimes() const;
         virtual Size numberOfProducts() const;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
 
@@ -45,20 +41,40 @@ namespace QuantLib {
         //!put product at start of path
         virtual void reset(); 
         //! bool return indicates whether path is finished, true means done
-        virtual bool nextTimeStep(const CurveState& currentState, 
+        virtual bool nextTimeStep(
+            const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
 
-    private:
-            Array rateTimes_;
-            Array accruals_;
-            Array paymentTimes_;
-            Array strikes_;
-            // things that vary in a path
-            Size currentIndex_;
+      private:
+        std::vector<Time> rateTimes_;
+        std::vector<Real> accruals_;
+        std::vector<Time> paymentTimes_;
+        std::vector<Rate> strikes_;
+        // things that vary in a path
+        Size currentIndex_;
     };
 
-}
+    // inline 
 
+    inline std::vector<Time>
+    MarketModelCaplets::possibleCashFlowTimes() const {
+      return paymentTimes_;
+    }
+
+    inline Size MarketModelCaplets::numberOfProducts() const {
+        return strikes_.size();
+    }
+
+    inline Size
+    MarketModelCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 1;
+    }
+    
+    inline void MarketModelCaplets::reset() {
+       currentIndex_=0;
+    }
+
+}
 
 #endif

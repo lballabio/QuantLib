@@ -26,20 +26,16 @@
 namespace QuantLib {
     class MarketModelRatchet : public MarketModelProduct
     {
-    public:
-  
-        MarketModelRatchet(const Array& rateTimes,
-                           const Array& fixedAccruals,
-                           const Array& floatingAccruals,
-                           const Array& floatingSpreads,
-                           const Array& paymentTimes,
+      public:
+        MarketModelRatchet(const std::vector<Time>& rateTimes,
+                           const std::vector<Real>& fixedAccruals,
+                           const std::vector<Real>& floatingAccruals,
+                           const std::vector<Rate>& floatingSpreads,
+                           const std::vector<Time>& paymentTimes,
                            double initialCoupon);
-      
-        virtual ~MarketModelRatchet() {};
-       
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
-        virtual Array possibleCashFlowTimes() const;
+        virtual std::vector<Time> possibleCashFlowTimes() const;
         virtual Size numberOfProducts() const;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
 
@@ -50,23 +46,41 @@ namespace QuantLib {
         virtual bool nextTimeStep(const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+      private:
+        std::vector<Time> rateTimes_;
+        std::vector<Real> fixedAccruals_, floatingAccruals_;
+        std::vector<Rate> floatingSpreads_;
+        std::vector<Time> paymentTimes_;
+        double initialCoupon_;
 
-    private:
-            Array rateTimes_;
-            Array fixedAccruals_;
-            Array floatingAccruals_;
-            Array floatingSpreads_;
-            Array paymentTimes_;
-            double initialCoupon_;
+        Size lastIndex_;
 
-            Size lastIndex_;
-            
-            // things that vary in a path
-            Size currentIndex_;
-            double currentCoupon_;
+        // things that vary in a path
+        Size currentIndex_;
+        double currentCoupon_;
     };
 
-}
+    // inline 
 
+    inline std::vector<Time>
+    MarketModelRatchet::possibleCashFlowTimes() const {
+        return paymentTimes_;
+    }
+
+    inline Size MarketModelRatchet::numberOfProducts() const {
+        return 1;    
+    }
+
+    inline Size
+    MarketModelRatchet::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 2;
+    }
+
+    inline void MarketModelRatchet::reset() {
+       currentIndex_=0;
+       currentCoupon_=initialCoupon_;
+    }
+       
+}
 
 #endif

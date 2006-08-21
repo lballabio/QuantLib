@@ -22,23 +22,22 @@
 namespace QuantLib {
 
     MarketModelRatchet::MarketModelRatchet(
-        const Array& rateTimes,
-        const Array& fixedAccruals,
-        const Array& floatingAccruals,
-        const Array& floatingSpreads,
-        const Array& paymentTimes,
+        const std::vector<Time>& rateTimes,
+        const std::vector<Real>& fixedAccruals,
+        const std::vector<Real>& floatingAccruals,
+        const std::vector<Rate>& floatingSpreads,
+        const std::vector<Time>& paymentTimes,
         double initialCoupon)
     : rateTimes_(rateTimes), fixedAccruals_(fixedAccruals),
       floatingAccruals_(floatingAccruals), floatingSpreads_(floatingSpreads),
-      paymentTimes_(paymentTimes), initialCoupon_(initialCoupon)
-    {
+      paymentTimes_(paymentTimes), initialCoupon_(initialCoupon) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
     }
 
     EvolutionDescription MarketModelRatchet::suggestedEvolution() const
     {
-        Array evolutionTimes(rateTimes_.size()-1);
+        std::vector<Time> evolutionTimes(rateTimes_.size()-1);
         for (Size i = 0; i<evolutionTimes.size(); ++i)
             evolutionTimes[i]=rateTimes_[i];
 
@@ -51,33 +50,10 @@ namespace QuantLib {
         for (Size i =0; i < evolutionTimes.size(); ++i)
             relevanceRates[i] = std::make_pair(i,i+1);
 
-
-         return EvolutionDescription(rateTimes_, evolutionTimes,
-                                     numeraires, relevanceRates);
+        return EvolutionDescription(rateTimes_, evolutionTimes,
+                                    numeraires, relevanceRates);
     }
 
-
-    Array MarketModelRatchet::possibleCashFlowTimes() const
-    {
-        return paymentTimes_;
-    }
-
-    Size MarketModelRatchet::numberOfProducts() const
-    {
-        return 1;    
-    }
-
-    Size MarketModelRatchet::maxNumberOfCashFlowsPerProductPerStep() const
-    {
-        return 2;
-    }
-
-    void MarketModelRatchet::reset()
-    {
-       currentIndex_=0;
-       currentCoupon_=initialCoupon_;
-    }
-       
     bool MarketModelRatchet::nextTimeStep(
         const CurveState& currentState, 
         std::vector<Size>& numberCashFlowsThisStep, 
@@ -89,16 +65,16 @@ namespace QuantLib {
         genCashFlows[0][0].timeIndex = currentIndex_;
         genCashFlows[0][0].amount = currentCoupon_*fixedAccruals_[currentIndex_];
 
-  
+
         genCashFlows[0][1].timeIndex = currentIndex_;
         genCashFlows[0][1].amount = (liborRate+floatingSpreads_[currentIndex_])
                                     *floatingAccruals_[currentIndex_];
 
         numberCashFlowsThisStep[0] = 2;
 
-       ++currentIndex_;
+        ++currentIndex_;
 
-       return (currentIndex_ == lastIndex_);
+        return (currentIndex_ == lastIndex_);
     }
 
 }

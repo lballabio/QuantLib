@@ -25,8 +25,8 @@
 namespace QuantLib {
 
     DriftCalculator::DriftCalculator(const Matrix& pseudo,
-                                     const Array& displacements,
-                                     const Array& taus,
+                                     const std::vector<Rate>& displacements,
+                                     const std::vector<Time>& taus,
                                      Size numeraire,
                                      Size alive)
     : dim_(taus.size()), numeraire_(numeraire), alive_(alive),
@@ -42,7 +42,9 @@ namespace QuantLib {
         QL_REQUIRE(numeraire_<=dim_, "");
         QL_REQUIRE(numeraire_>=alive, "");
 
-        oneOverTaus_ = 1.0/taus;
+
+        for (Size i=0; i<taus.size(); ++i)
+            oneOverTaus_[i] = 1.0/taus[i];
 
         const Disposable<Matrix> pT = transpose(pseudo_);
         C_ = pseudo_*pT;
@@ -52,8 +54,8 @@ namespace QuantLib {
         }
     }
 
-    void DriftCalculator::compute(const Array& forwards,
-                                  Array& drifts) const {
+    void DriftCalculator::compute(const std::vector<Rate>& forwards,
+                                  std::vector<Real>& drifts) const {
 
         #if defined _DEBUG
             QL_REQUIRE(forwards.size() == dim_, "");
@@ -76,9 +78,9 @@ namespace QuantLib {
         }
     }
 
-      void DriftCalculator::computeReduced(const Array& forwards,
+      void DriftCalculator::computeReduced(const std::vector<Rate>& forwards,
                                            Size factors,
-                                           Array& drifts) const {
+                                           std::vector<Real>& drifts) const {
 
         //#if defined _DEBUG
         QL_REQUIRE(forwards.size()==dim_, "forwards.size()==dim_");

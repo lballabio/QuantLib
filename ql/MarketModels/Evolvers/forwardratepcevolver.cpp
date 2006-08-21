@@ -34,12 +34,12 @@ namespace QuantLib {
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution_.firstAliveRate())
     {
-        const Array& initialForwards = pseudoRoot_->initialRates();
+        const std::vector<Rate>& initialForwards = pseudoRoot_->initialRates();
         
         Size steps = evolution_.numberOfSteps();
 
-        const Array& rateTimes = evolution_.rateTimes();
-        const Array& evolutionTimes = evolution_.evolutionTimes();
+        const std::vector<Time>& rateTimes = evolution_.rateTimes();
+        const std::vector<Time>& evolutionTimes = evolution_.evolutionTimes();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -57,7 +57,7 @@ namespace QuantLib {
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive_[j]));
-            Array fixed(n_);
+            std::vector<Real> fixed(n_);
             for (Size k=0; k < n_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
@@ -96,7 +96,7 @@ namespace QuantLib {
         // b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);
         const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
-        const Array& fixedDrift = fixedDrifts_[currentStep_];
+        const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size alive = alive_[currentStep_];
         for (Size i=alive; i<n_; i++) {
@@ -123,14 +123,6 @@ namespace QuantLib {
         ++currentStep_;
 
         return weight;
-    }
-
-    Size ForwardRatePcEvolver::currentStep() const {
-        return currentStep_;
-    }
-
-    const CurveState& ForwardRatePcEvolver::currentState() const {
-        return curveState_;
     }
 
 }

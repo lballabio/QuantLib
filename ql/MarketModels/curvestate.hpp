@@ -22,6 +22,7 @@
 #define quantlib_curvestate_hpp
 
 #include <ql/Math/array.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -41,13 +42,13 @@ namespace QuantLib {
     class CurveState
     {
     public:
-        CurveState(const Array& rateTimes);
+        CurveState(const std::vector<Time>& rateTimes);
      
-        const Array& rateTimes() const;
+        const std::vector<Time>& rateTimes() const;
 
-        void setOnForwardRates(const Array& rates);
-        void setOnDiscountRatios(const Array& discountRatios);
-        void setOnCoterminalSwapRates(const Array& swapRates);
+        void setOnForwardRates(const std::vector<Rate>& rates);
+        void setOnDiscountRatios(const std::vector<DiscountFactor>& discountRatios);
+        void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates);
 
         // You should get an error if you look outside [first, last) range.
         /*
@@ -57,9 +58,9 @@ namespace QuantLib {
         void setOnCoterminalSwaps(const Array& swapRates, Size first);
         */
 
-        const Array& forwardRates() const;
-        const Array& discountRatios() const;
-        const Array& coterminalSwapRates() const;
+        const std::vector<Rate>& forwardRates() const;
+        const std::vector<DiscountFactor>& discountRatios() const;
+        const std::vector<Rate>& coterminalSwapRates() const;
 
         Rate forwardRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
@@ -67,8 +68,11 @@ namespace QuantLib {
     
     private:
         
-        Array rateTimes_, taus_, forwardRates_, discountRatios_;
-        mutable Array coterminalSwaps_, annuities_;
+        std::vector<Time> rateTimes_, taus_;
+        std::vector<Rate> forwardRates_;
+        std::vector<DiscountFactor> discountRatios_;
+        mutable std::vector<Rate> coterminalSwaps_;
+        mutable std::vector<Real> annuities_;
         mutable Size firstSwapComputed_;
         Size first_, last_;
 
@@ -79,7 +83,39 @@ namespace QuantLib {
 
     };
 
-}
+    // inline
 
+    inline const std::vector<Time>& CurveState::rateTimes() const {
+        return rateTimes_;
+    }
+
+    inline const std::vector<Rate>& CurveState::forwardRates() const {
+        return forwardRates_;
+    }
+
+    inline const std::vector<DiscountFactor>& CurveState::discountRatios() const {
+        return discountRatios_;
+    }
+
+    inline const std::vector<Rate>& CurveState::coterminalSwapRates() const {
+        if (firstSwapComputed_>first_)
+            computeSwapRate();
+
+        return coterminalSwaps_;
+    }
+
+    inline Rate CurveState::forwardRate(Size i) const {
+        return forwardRates_[i];
+    }
+
+    inline Rate CurveState::coterminalSwapRate(Size i) const {
+        return coterminalSwapRates()[i];
+    }
+
+    inline Real CurveState::discountRatio(Size i, Size j) const {
+        return discountRatios_[i]/discountRatios_[j];
+    }
+
+}
 
 #endif

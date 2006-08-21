@@ -22,18 +22,16 @@
 namespace QuantLib {
 
     MarketModelCapletsOneStep::MarketModelCapletsOneStep(
-                                                   const Array& rateTimes,
-                                                   const Array& accruals,
-                                                   const Array& paymentTimes,
-                                                   const Array& strikes)
-        : rateTimes_(rateTimes), accruals_(accruals), 
-          paymentTimes_(paymentTimes), strikes_(strikes)
-    {
-    }
+                                    const std::vector<Time>& rateTimes,
+                                    const std::vector<Real>& accruals,
+                                    const std::vector<Time>& paymentTimes,
+                                    const std::vector<Rate>& strikes)
+    : rateTimes_(rateTimes), accruals_(accruals), paymentTimes_(paymentTimes),
+      strikes_(strikes) {}
 
     EvolutionDescription MarketModelCapletsOneStep::suggestedEvolution() const
     {
-         Array evolutionTimes(1,rateTimes_[rateTimes_.size()-2]);
+         std::vector<Time> evolutionTimes(1,rateTimes_[rateTimes_.size()-2]);
          std::vector<Size> numeraires(1,rateTimes_.size()-1);
     
          std::vector<std::pair<Size,Size> > relevanceRates(1);
@@ -42,23 +40,6 @@ namespace QuantLib {
          return EvolutionDescription(rateTimes_, evolutionTimes,
                                      numeraires, relevanceRates);
     }    
-
-    Array MarketModelCapletsOneStep::possibleCashFlowTimes() const 
-    {
-      return paymentTimes_;
-    }
-
-    Size MarketModelCapletsOneStep::numberOfProducts() const
-    {
-        return strikes_.size();    
-    }
-
-    Size MarketModelCapletsOneStep::maxNumberOfCashFlowsPerProductPerStep() const
-    {
-        return 1;
-    }
-
-    void MarketModelCapletsOneStep::reset() {}
 
     bool MarketModelCapletsOneStep::nextTimeStep(
         const CurveState& currentState, 

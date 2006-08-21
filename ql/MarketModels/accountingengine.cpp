@@ -41,8 +41,8 @@ namespace QuantLib {
             cashFlowsGenerated_[i].resize(
                        product_->maxNumberOfCashFlowsPerProductPerStep());
         
-        const Array& cashFlowTimes = product_->possibleCashFlowTimes();
-        const Array& rateTimes = evolution_.rateTimes();
+        const std::vector<Time>& cashFlowTimes = product_->possibleCashFlowTimes();
+        const std::vector<Rate>& rateTimes = evolution_.rateTimes();
         for (Size j = 0; j < cashFlowTimes.size(); ++j)
             discounters_.push_back(Discounter(cashFlowTimes[j], rateTimes));
 
@@ -127,7 +127,7 @@ namespace QuantLib {
 
 
     AccountingEngine::Discounter::Discounter(Time paymentTime,
-                                             const Array& rateTimes)
+                                             const std::vector<Time>& rateTimes)
 	{
 		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),paymentTime)-
 			rateTimes.begin();

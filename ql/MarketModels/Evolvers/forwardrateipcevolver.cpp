@@ -37,12 +37,12 @@ namespace QuantLib {
         QL_REQUIRE(evolution.isInTerminalMeasure(),
                    "terminal measure required for ipc ");
 
-        const Array& initialForwards = pseudoRoot->initialRates();
+        const std::vector<Rate>& initialForwards = pseudoRoot->initialRates();
         
         Size steps = evolution_.numberOfSteps();
 
-        const Array& rateTimes = evolution_.rateTimes();
-        const Array& evolutionTimes = evolution_.evolutionTimes();
+        const std::vector<Time>& rateTimes = evolution_.rateTimes();
+        const std::vector<Time>& evolutionTimes = evolution_.evolutionTimes();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -62,7 +62,7 @@ namespace QuantLib {
                                                    alive_[j]));
             C_.push_back(A*transpose(A));
 
-            Array fixed(n_);
+            std::vector<Real> fixed(n_);
             for (Size k=0; k < n_; ++k) {
                 Real variance = C_.back()[k][k];
                 fixed[k] = -0.5*variance;
@@ -83,7 +83,7 @@ namespace QuantLib {
 
     Real ForwardRateIpcEvolver::advanceStep()
     {
-        const Array& rateTaus = evolution_.rateTaus();
+        const std::vector<Time>& rateTaus = evolution_.rateTaus();
 
         // we're going from T1 to T2:
         if (currentStep_ > 0) {
@@ -96,7 +96,7 @@ namespace QuantLib {
 
         Real weight = generator_->nextStep(brownians_);
         const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
-        const Array& fixedDrift = fixedDrifts_[currentStep_];
+        const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Integer alive = alive_[currentStep_];
         Real drifts2;
@@ -120,14 +120,6 @@ namespace QuantLib {
         ++currentStep_;
 
         return weight;
-    }
-
-    Size ForwardRateIpcEvolver::currentStep() const {
-        return currentStep_;
-    }
-
-    const CurveState& ForwardRateIpcEvolver::currentState() const {
-        return curveState_;
     }
 
 }

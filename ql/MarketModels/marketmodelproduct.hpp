@@ -56,7 +56,7 @@ namespace QuantLib {
        
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const=0;
-        virtual Array possibleCashFlowTimes() const=0;
+        virtual std::vector<Time> possibleCashFlowTimes() const=0;
         virtual Size numberOfProducts() const=0;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const=0;
 

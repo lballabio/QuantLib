@@ -29,14 +29,14 @@ namespace QuantLib {
     {
     public:
   
-        MarketModelCapletsOneStep(const Array& rateTimes,
-                                  const Array& accruals,
-                                  const Array& paymentTimes,
-                                  const Array& strikes);
+        MarketModelCapletsOneStep(const std::vector<Time>& rateTimes,
+                                  const std::vector<Real>& accruals,
+                                  const std::vector<Time>& paymentTimes,
+                                  const std::vector<Rate>& strikes);
         
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
-        virtual Array possibleCashFlowTimes() const;
+        virtual std::vector<Time> possibleCashFlowTimes() const;
         virtual Size numberOfProducts() const;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
 
@@ -49,13 +49,32 @@ namespace QuantLib {
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
 
     private:
-            Array rateTimes_;
-            Array accruals_;
-            Array paymentTimes_;
-            Array strikes_;
+            std::vector<Time> rateTimes_;
+            std::vector<Real> accruals_;
+            std::vector<Time> paymentTimes_;
+            std::vector<Rate> strikes_;
     };
 
-}
+    // inline 
 
+    inline std::vector<Time>
+    MarketModelCapletsOneStep::possibleCashFlowTimes() const {
+      return paymentTimes_;
+    }
+
+    inline Size MarketModelCapletsOneStep::numberOfProducts() const {
+        return strikes_.size();    
+    }
+
+    inline Size
+    MarketModelCapletsOneStep::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 1;
+    }
+
+    inline void MarketModelCapletsOneStep::reset() {
+        // nothing to do
+    }
+
+}
 
 #endif

@@ -41,28 +41,29 @@ namespace QuantLib {
 			Mark Joshi, Wilmott Magazine, May 2003.
 		*/
         DriftCalculator(const Matrix& pseudo,
-                        const Array& displacements,
-                        const Array& taus,
+                        const std::vector<Rate>& displacements,
+                        const std::vector<Time>& taus,
                         Size numeraire,
                         Size alive);
 	    /*! Returns the drift 
 			without factor reduction as in eqs. 2, 4 of ref. [1] 
 			(uses the covariance matrix directly).
 		*/
-		void compute(const Array& forwards,
-                     Array& drifts) const;
+		void compute(const std::vector<Rate>& forwards,
+                     std::vector<Real>& drifts) const;
 	    /*! Returns the drift 
 			with factor reduction as in eq. 7 of ref. [1] 
 			(uses pseudo square root of the covariance matrix).
 		*/
-		void computeReduced(const Array& forwards,
+		void computeReduced(const std::vector<Rate>& forwards,
                             Size factors, 
-                            Array& drifts) const;
+                            std::vector<Real>& drifts) const;
 
     private:
 
         Size dim_, numeraire_, alive_;
-        Array displacements_, oneOverTaus_; 
+        std::vector<Rate> displacements_;
+        std::vector<Real> oneOverTaus_; 
 		Matrix C_, pseudo_;
 
 		// temporary variables to be added later

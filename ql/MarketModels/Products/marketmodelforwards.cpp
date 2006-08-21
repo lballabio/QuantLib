@@ -21,20 +21,16 @@
 
 namespace QuantLib {
 
-    MarketModelForwards::MarketModelForwards(const Array& rateTimes,
-                        const Array& accruals,
-                        const Array& paymentTimes,
-                        const Array& strikes)
-                        : rateTimes_(rateTimes), accruals_(accruals),
-                        paymentTimes_(paymentTimes), strikes_(strikes)
-    {
-    }
-
-    MarketModelForwards::~MarketModelForwards(){}
+    MarketModelForwards::MarketModelForwards(const std::vector<Time>& rateTimes,
+                        const std::vector<Real>& accruals,
+                        const std::vector<Time>& paymentTimes,
+                        const std::vector<Rate>& strikes)
+    : rateTimes_(rateTimes), accruals_(accruals), paymentTimes_(paymentTimes),
+      strikes_(strikes) {}
 
     EvolutionDescription MarketModelForwards::suggestedEvolution() const
     {
-         Array evolutionTimes(rateTimes_.size()-1);
+         std::vector<Time> evolutionTimes(rateTimes_.size()-1);
          std::vector<Size> numeraires(evolutionTimes.size());
          for (Size i = 0; i<evolutionTimes.size(); ++i) {
             evolutionTimes[i]=rateTimes_[i];
@@ -46,25 +42,8 @@ namespace QuantLib {
         for (Size i =0; i < evolutionTimes.size(); ++i)
             relevanceRates[i] = std::make_pair(i,i+1);
 
-         return EvolutionDescription(rateTimes_, evolutionTimes,
-                                     numeraires, relevanceRates);
-    }
-
-    Array MarketModelForwards::possibleCashFlowTimes() const
-    {
-      return paymentTimes_;
-    }
-      Size MarketModelForwards::numberOfProducts() const
-    {
-        return strikes_.size();
-    }
-       Size MarketModelForwards::maxNumberOfCashFlowsPerProductPerStep() const
-    {
-        return 1;
-    }
-      void MarketModelForwards::reset()
-    {
-       currentIndex_=0;
+        return EvolutionDescription(rateTimes_, evolutionTimes,
+                                    numeraires, relevanceRates);
     }
 
     bool MarketModelForwards::nextTimeStep(

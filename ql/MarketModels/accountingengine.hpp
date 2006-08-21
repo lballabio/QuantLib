@@ -60,7 +60,7 @@ namespace QuantLib {
     class AccountingEngine::Discounter {
     public:
         Discounter(Time paymentTime,
-                   const Array& rateTimes);
+                   const std::vector<Time>& rateTimes);
         Real numeraireBonds(const CurveState&,
                             Size numeraire) const;
     private:

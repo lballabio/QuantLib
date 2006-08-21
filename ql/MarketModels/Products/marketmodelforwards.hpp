@@ -26,18 +26,15 @@
 namespace QuantLib {
     class MarketModelForwards : public MarketModelProduct
     {
-    public:
-  
-        MarketModelForwards(const Array& rateTimes,
-                            const Array& accruals,
-                            const Array& paymentTimes,
-                            const Array& strikes);
+      public:
+        MarketModelForwards(const std::vector<Time>& rateTimes,
+                            const std::vector<Real>& accruals,
+                            const std::vector<Time>& paymentTimes,
+                            const std::vector<Rate>& strikes);
       
-        virtual ~MarketModelForwards();
-       
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
-        virtual Array possibleCashFlowTimes() const;
+        virtual std::vector<Time> possibleCashFlowTimes() const;
         virtual Size numberOfProducts() const;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
 
@@ -48,17 +45,35 @@ namespace QuantLib {
         virtual bool nextTimeStep(const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
-
-    private:
-            Array rateTimes_;
-            Array accruals_;
-            Array paymentTimes_;
-            Array strikes_;
-            // things that vary in a path
-            Size currentIndex_;
+      private:
+        std::vector<Time> rateTimes_;
+        std::vector<Real> accruals_;
+        std::vector<Time> paymentTimes_;
+        std::vector<Rate> strikes_;
+        // things that vary in a path
+        Size currentIndex_;
     };
 
-}
+    // inline 
 
+    inline std::vector<Time>
+    MarketModelForwards::possibleCashFlowTimes() const {
+        return paymentTimes_;
+    }
+
+    inline Size MarketModelForwards::numberOfProducts() const {
+        return strikes_.size();
+    }
+
+    inline Size
+    MarketModelForwards::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 1;
+    }
+
+    inline void MarketModelForwards::reset() {
+       currentIndex_=0;
+    }
+
+}
 
 #endif

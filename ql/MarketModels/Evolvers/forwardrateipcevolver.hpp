@@ -49,13 +49,13 @@ namespace QuantLib {
         EvolutionDescription evolution_;
         boost::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
-        std::vector<Array> fixedDrifts_;
+        std::vector<std::vector<Real> > fixedDrifts_;
          // working variables
         Size n_, F_;
         CurveState curveState_;
         Size currentStep_;
-        Array forwards_, displacements_, logForwards_, initialLogForwards_;
-        Array drifts1_, initialDrifts_, g_;
+        std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
+        std::vector<Real> drifts1_, initialDrifts_, g_;
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         std::vector<Matrix> C_;
@@ -63,7 +63,15 @@ namespace QuantLib {
         std::vector<DriftCalculator> calculators_;
     };
 
-}
+    // inline
 
+    inline Size ForwardRateIpcEvolver::currentStep() const {
+        return currentStep_;
+    }
+
+    inline const CurveState& ForwardRateIpcEvolver::currentState() const {
+        return curveState_;
+    }
+}
 
 #endif
