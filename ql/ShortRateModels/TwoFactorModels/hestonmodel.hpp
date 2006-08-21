@@ -39,7 +39,7 @@ namespace QuantLib {
 
         \test calibration is tested against known good values.
     */
-    class HestonModel : public ShortRateModel {
+    class HestonModel : public CalibratedModel {
       public:
         HestonModel(const boost::shared_ptr<HestonProcess> & process);
 

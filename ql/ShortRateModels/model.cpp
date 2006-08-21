@@ -22,17 +22,17 @@
 namespace QuantLib {
 
     namespace {
-        void no_deletion(ShortRateModel*) {}
+        void no_deletion(CalibratedModel*) {}
     }
 
-    ShortRateModel::ShortRateModel(Size nArguments)
+    CalibratedModel::CalibratedModel(Size nArguments)
     : arguments_(nArguments),
       constraint_(new PrivateConstraint(arguments_)) {}
 
-    class ShortRateModel::CalibrationFunction : public CostFunction {
+    class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
         CalibrationFunction(
-                  ShortRateModel* model,
+                  CalibratedModel* model,
                   const std::vector<boost::shared_ptr<CalibrationHelper> >&
                                                                   instruments,
                   const std::vector<Real>& weights)
@@ -67,12 +67,12 @@ namespace QuantLib {
 
         virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
       private:
-        boost::shared_ptr<ShortRateModel> model_;
+        boost::shared_ptr<CalibratedModel> model_;
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments_;
         std::vector<Real> weights_;
     };
 
-    void ShortRateModel::calibrate(
+    void CalibratedModel::calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
         OptimizationMethod& method,
         const Constraint& additionalConstraint,
@@ -100,7 +100,7 @@ namespace QuantLib {
         setParams(result);
     }
 
-    Disposable<Array> ShortRateModel::params() const {
+    Disposable<Array> CalibratedModel::params() const {
         Size size = 0, i;
         for (i=0; i<arguments_.size(); i++)
             size += arguments_[i].size();
@@ -114,7 +114,7 @@ namespace QuantLib {
         return params;
     }
 
-    void ShortRateModel::setParams(const Array& params) {
+    void CalibratedModel::setParams(const Array& params) {
         Array::const_iterator p = params.begin();
         for (Size i=0; i<arguments_.size(); i++) {
             for (Size j=0; j<arguments_[i].size(); j++, p++) {
@@ -126,5 +126,7 @@ namespace QuantLib {
         update();
     }
 
-}
+    ShortRateModel::ShortRateModel(Size nArguments)
+    : CalibratedModel(nArguments) {}
 
+}

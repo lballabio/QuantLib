@@ -23,9 +23,7 @@
 namespace QuantLib {
 
     LmCorrelationModel::LmCorrelationModel(Size size, Size nArguments)
-    : size_(size),
-      arguments_(nArguments) {
-    }
+    : size_(size), arguments_(nArguments) {}
 
     Size LmCorrelationModel::size() const {
         return size_;

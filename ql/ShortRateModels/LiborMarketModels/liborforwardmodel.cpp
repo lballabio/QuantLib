@@ -22,24 +22,22 @@
 
 namespace QuantLib {
 
-     LiborForwardModel:: LiborForwardModel(
+     LiborForwardModel::LiborForwardModel(
           const boost::shared_ptr<LiborForwardModelProcess> & process,
           const boost::shared_ptr<LmVolatilityModel> & volaModel,
           const boost::shared_ptr<LmCorrelationModel> & corrModel)
-     : ShortRateModel(  volaModel->params().size()
-                      + corrModel->params().size()),
-       f_            (process->size()),
+     : CalibratedModel(volaModel->params().size()+corrModel->params().size()),
+       f_(process->size()),
        accrualPeriod_(process->size()),
-       covarProxy_   (new LfmCovarianceProxy(volaModel, corrModel)),
-       process_      (process)
+       covarProxy_(new LfmCovarianceProxy(volaModel, corrModel)),
+       process_(process)
      {
 
          const Size k=volaModel->params().size();
-
-         std::copy(volaModel->params().begin(),
-                   volaModel->params().end(), arguments_.begin());
-         std::copy(corrModel->params().begin(),
-                   corrModel->params().end(), arguments_.begin()+k);
+         std::copy(volaModel->params().begin(), volaModel->params().end(),
+                   arguments_.begin());
+         std::copy(corrModel->params().begin(), corrModel->params().end(),
+                   arguments_.begin()+k);
 
          for (Size i=0; i < process->size(); ++i) {
              accrualPeriod_[i] =  process->accrualEndTimes()[i]
@@ -49,7 +47,7 @@ namespace QuantLib {
     }
 
     void LiborForwardModel::setParams(const Array& params) {
-        ShortRateModel::setParams(params);
+        CalibratedModel::setParams(params);
 
         const Size k=covarProxy_->volatilityModel()->params().size();
 
@@ -198,9 +196,8 @@ namespace QuantLib {
                                           index->dayCounter()));
     }
 
-    // the next three methods are meaningless within this context
-    // may be we can remove them from the interface with one of
-    // the next QL releases
+    // the next two methods are meaningless within this context
+    // we might remove them from the AffineModel interface
     DiscountFactor LiborForwardModel::discount(Time t) const {
         return process_->index()->termStructure()->discount(t);
     }
@@ -210,10 +207,4 @@ namespace QuantLib {
         return discount(maturity);
     }
 
-    boost::shared_ptr<NumericalMethod> LiborForwardModel::tree(
-                                                      const TimeGrid&) const {
-        QL_FAIL("tree not yet supported");
-    }
-
 }
-

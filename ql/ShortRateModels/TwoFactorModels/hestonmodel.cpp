@@ -40,7 +40,7 @@ namespace QuantLib {
     };
 
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
-    : ShortRateModel(5) {
+    : CalibratedModel(5) {
         arguments_[0] = ConstantParameter(process->theta(),
                                           PositiveConstraint());
         arguments_[1] = ConstantParameter(process->kappa(),
@@ -51,11 +51,6 @@ namespace QuantLib {
                                           BoundaryConstraint(-1.0, 1.0));
         arguments_[4] = ConstantParameter(process->v0(), PositiveConstraint());
 	}
-
-    boost::shared_ptr<NumericalMethod> HestonModel::tree(
-                                                      const TimeGrid&) const {
-        QL_FAIL("tree not yet supported");
-    }
 
 }
 

@@ -71,23 +71,19 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure_;
     };
 
-    //! Abstract short-rate model class
-    /*! \ingroup shortrate */
-    class ShortRateModel : public Observer, public virtual Observable {
+    //! Calibrated model class
+    class CalibratedModel : public Observer, public virtual Observable {
       public:
-        ShortRateModel(Size nArguments);
+        CalibratedModel(Size nArguments);
 
         void update() {
             generateArguments();
             notifyObservers();
         }
 
-        virtual boost::shared_ptr<NumericalMethod> tree(
-                                                   const TimeGrid&) const = 0;
-
         //! Calibrate to a set of market instruments (caps/swaptions)
         /*! An additional constraint can be passed which must be
-          satisfied in addition to the constraints of the model.
+            satisfied in addition to the constraints of the model.
         */
         void calibrate(
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&,
@@ -114,14 +110,23 @@ namespace QuantLib {
         friend class CalibrationFunction;
     };
 
+    //! Abstract short-rate model class
+    /*! \ingroup shortrate */
+    class ShortRateModel : public CalibratedModel {
+      public:
+        ShortRateModel(Size nArguments);
+        virtual boost::shared_ptr<NumericalMethod> tree(
+                                                   const TimeGrid&) const = 0;
+    };
+
     // inline definitions
 
     inline const boost::shared_ptr<Constraint>&
-    ShortRateModel::constraint() const {
+    CalibratedModel::constraint() const {
         return constraint_;
     }
 
-    class ShortRateModel::PrivateConstraint : public Constraint {
+    class CalibratedModel::PrivateConstraint : public Constraint {
       private:
         class Impl :  public Constraint::Impl {
           public:
@@ -150,6 +155,4 @@ namespace QuantLib {
 
 }
 
-
 #endif
-

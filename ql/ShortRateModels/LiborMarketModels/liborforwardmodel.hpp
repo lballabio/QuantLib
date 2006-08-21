@@ -49,7 +49,7 @@ namespace QuantLib {
           reproduce swaption npvs, model calibration and exact cap pricing
     */
 
-    class LiborForwardModel : public ShortRateModel, public AffineModel {
+    class LiborForwardModel : public CalibratedModel, public AffineModel {
       public:
         LiborForwardModel(
             const boost::shared_ptr<LiborForwardModelProcess> & process,
@@ -68,8 +68,6 @@ namespace QuantLib {
                                 Time maturity, Time bondMaturity) const;
 
         void setParams(const Array& params);
-        boost::shared_ptr<NumericalMethod> tree(const TimeGrid&) const;
-
       protected:
         Disposable<Array> w_0(Size alpha, Size beta) const;
 

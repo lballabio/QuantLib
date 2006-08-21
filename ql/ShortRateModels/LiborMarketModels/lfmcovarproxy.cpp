@@ -30,8 +30,9 @@ namespace QuantLib {
       corrModel_(corrModel) {
 
         QL_REQUIRE(volaModel_->size() == corrModel_->size(),
-                   "volatility and correlation model hava to have"
-                   " the same size");
+            "different size for the volatility (" << volaModel_->size() <<
+            ") and correlation (" << corrModel_->size() <<
+            ") models");
     }
 
     boost::shared_ptr<LmVolatilityModel>
