@@ -27,17 +27,27 @@
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Math/sabrinterpolation.hpp>
+#include <ql/Math/linearinterpolation.hpp>
+#include <ql/Calendars/target.hpp>
+#include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 
     class SwaptionVolatilityCube : public SwaptionVolatilityStructure {
       public:
         SwaptionVolatilityCube(
-            const Handle<SwaptionVolatilityStructure>& atmVolMatrix,
+            const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const Matrix& volSpreads);
+            const Matrix& volSpreads,
+            const Calendar& calendar,
+            Frequency fixedLegFrequency,
+            BusinessDayConvention fixedLegConvention,
+            const DayCounter& fixedLegDayCounter,
+            const boost::shared_ptr<Xibor>& iborIndex,
+            Time shortTenor,
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor);
         //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
@@ -57,9 +67,16 @@ namespace QuantLib {
         Rate maxStrike() const { return 1.0; }
         //@}
         const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
-      protected:
+        Rate atmStrike(const Date& start,
+                       const Period& length) const {
+            std::pair<Time,Time> times = convertDates(start, length);
+            return atmStrike(times.first, times.second);
+        }
+      protected: 
         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
+        Rate atmStrike(Time start,
+                       Time length) const;
         Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
@@ -67,6 +84,8 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> atmVolStructure_;
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
+        std::vector<Real> exerciseDatesAsReal_;
+        LinearInterpolation exerciseInterpolator_;
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         Size nStrikes_;
@@ -75,6 +94,13 @@ namespace QuantLib {
         std::vector<Interpolation2D> volSpreadsInterpolator_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
+        const Calendar& calendar_ ;
+        Frequency fixedLegFrequency_;
+        BusinessDayConvention fixedLegConvention_;
+        DayCounter fixedLegDayCounter_;
+        boost::shared_ptr<Xibor> iborIndex_;
+        Time shortTenor_;
+        boost::shared_ptr<Xibor> iborIndexShortTenor_;
     };
 
 }

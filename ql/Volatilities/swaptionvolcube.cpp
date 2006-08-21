@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +24,7 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 
+
 namespace QuantLib {
 
     SwaptionVolatilityCube::SwaptionVolatilityCube(
@@ -30,30 +32,49 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Matrix& volSpreads)
+        const Matrix& volSpreads,
+        const Calendar& calendar,
+        Frequency fixedLegFrequency,
+        BusinessDayConvention fixedLegConvention,
+        const DayCounter& fixedLegDayCounter,
+        const boost::shared_ptr<Xibor>& iborIndex,
+        Time shortTenor,
+        const boost::shared_ptr<Xibor>& iborIndexShortTenor)
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
+      exerciseDatesAsReal_(expiries.size()),
       lengths_(lengths), timeLengths_(lengths.size()), 
       nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
       volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
       volSpreadsInterpolator_(nStrikes_),
-      localStrikes_(nStrikes_), localSmile_(nStrikes_)
+      localStrikes_(nStrikes_), localSmile_(nStrikes_),
+      calendar_(calendar), fixedLegFrequency_(fixedLegFrequency),
+      fixedLegConvention_(fixedLegConvention), 
+      fixedLegDayCounter_(fixedLegDayCounter),
+      iborIndexShortTenor_(iborIndexShortTenor),
+      iborIndex_(iborIndex), shortTenor_(shortTenor)
     {
         Size i, nExercise = expiries.size();
-        exerciseDates_[0] = calendar().advance(referenceDate(),
+        exerciseDates_[0] = calendar_.advance(referenceDate(),
                                                expiries[0],
                                                Unadjusted); //FIXME
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
         QL_REQUIRE(0.0<exerciseTimes_[0],
             "first exercise time is negative");
         for (i=1; i<nExercise; i++) {
-            exerciseDates_[i] = calendar().advance(referenceDate(),
+            exerciseDates_[i] = calendar_.advance(referenceDate(),
                                                    expiries[i],
                                                    Unadjusted); //FIXME
+            exerciseDatesAsReal_[i] = 
+                static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
             QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
                 "non increasing exercise times");
         }
+
+        exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
+                                                    exerciseTimes_.end(),
+                                                    exerciseDatesAsReal_.begin());
 
         Size nlengths = lengths_.size();
         Date startDate = exerciseDates_[0]; // as good as any
@@ -78,7 +99,7 @@ namespace QuantLib {
         QL_REQUIRE(nStrikes_==volSpreads.columns(),
             "nStrikes_!=volSpreads.columns()");
         QL_REQUIRE(nExercise*nlengths==volSpreads.rows(), 
-            "nExercise*nlengths!=volSpreads.rows()");
+            "nExerci se*nlengths!=volSpreads.rows()");
         for (i=0; i<nStrikes_; i++) {
 
 
@@ -103,7 +124,8 @@ namespace QuantLib {
     boost::shared_ptr<Interpolation>
     SwaptionVolatilityCube::smile(Time start, Time length) const
     {
-        Rate atmForward = 0.05; //FIXME
+        Rate atmForward = atmStrike(start, length);
+
         Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             localStrikes_[i] = atmForward + strikeSpreads_[i];
@@ -116,10 +138,42 @@ namespace QuantLib {
             );
     }
 
+    Rate SwaptionVolatilityCube::atmStrike(Time start,
+                                           Time length) const {
+
+        Date startDate = Date(static_cast<BigInteger>(exerciseInterpolator_(start)));
+        Date endDate = startDate+static_cast<BigInteger>(365.25*length);
+
+        // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
+
+        // vanilla swap's parameters
+        Calendar calendar_ = TARGET();
+        Schedule fixedSchedule = Schedule(calendar_, startDate, endDate,
+            fixedLegFrequency_, fixedLegConvention_, Date(), true, false);
+        Frequency floatingLegFrequency_ = iborIndex_->frequency();
+        BusinessDayConvention floatingLegBusinessDayConvention_ =
+            iborIndex_->businessDayConvention();
+        Schedule floatSchedule = Schedule(calendar_, startDate, endDate,
+            floatingLegFrequency_, floatingLegBusinessDayConvention_,
+            Date(), true, false);
+        Real nominal_= 1.0;
+        Rate fixedRate_= 0.0;
+        Spread spread_= 0.0;
+        Handle<YieldTermStructure> termStructure;
+        termStructure.linkTo(iborIndex_->termStructure());
+        VanillaSwap swap(true, nominal_,
+            fixedSchedule, fixedRate_, fixedLegDayCounter_,
+            floatSchedule, iborIndex_,
+            iborIndex_->settlementDays(), spread_, iborIndex_->dayCounter(),
+            termStructure); 
+
+        return swap.fairRate();
+    }
+
     Volatility SwaptionVolatilityCube::volatilityImpl(Time start,
                                                       Time length,
                                                       Rate strike) const {
-        return smile(start, length)->operator()(strike);
+        return smile(start, length)->operator()(strike, true);
     }
 
 }
