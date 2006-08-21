@@ -57,7 +57,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate convexityAdjustmentCalculation(Rate f) const;
+        Rate convexityAdjustmentImpl(Rate f) const;
     };
 
 
@@ -71,7 +71,7 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
-    inline Rate ParCoupon::convexityAdjustmentCalculation(Rate f) const {
+    inline Rate ParCoupon::convexityAdjustmentImpl(Rate f) const {
         return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
     }
 

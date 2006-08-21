@@ -30,7 +30,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    Rate InArrearIndexedCoupon::convexityAdjustmentCalculation(Rate f0) const {
+    Rate InArrearIndexedCoupon::convexityAdjustmentImpl(Rate f0) const {
         if (capletVolatility_.empty()) {
             return 0.0;
         } else {

@@ -67,7 +67,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        Rate convexityAdjustmentCalculation(Rate fixing) const;
+        Rate convexityAdjustmentImpl(Rate fixing) const;
         Handle<CapletVolatilityStructure> capletVolatility_;
     };
 

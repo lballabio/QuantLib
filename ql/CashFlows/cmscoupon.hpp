@@ -29,18 +29,18 @@
 namespace QuantLib {
 
     //! VanillaCMSCouponPricer
-    /*! 
-		
-	*/
+    /*!
+
+    */
     class CMSCoupon;
 
-	class VanillaCMSCouponPricer {
+    class VanillaCMSCouponPricer {
       public:
-		virtual ~VanillaCMSCouponPricer() {}
-		virtual Real price() const = 0;
+        virtual ~VanillaCMSCouponPricer() {}
+        virtual Real price() const = 0;
         virtual Real rate() const = 0;
         virtual void initialize(const CMSCoupon& coupon) = 0;
-	};
+    };
 
     //! CMS coupon class
     /*! \warning This class does not perform any date adjustment,
@@ -90,7 +90,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Rate convexityAdjustmentCalculation(Rate f) const {
+        Rate convexityAdjustmentImpl(Rate f) const {
             return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
         }
         boost::shared_ptr<SwapIndex> swapIndex_;

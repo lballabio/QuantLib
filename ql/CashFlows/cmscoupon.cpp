@@ -15,7 +15,7 @@
  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
-#include <ql/cashflows/cmscoupon.hpp>
+#include <ql/CashFlows/cmscoupon.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 
 namespace QuantLib {
@@ -86,9 +86,9 @@ namespace QuantLib {
 
     }
 
-	Real CMSCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
-		return amount()*discountingCurve->discount(date());
-	}
+    Real CMSCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
+        return amount()*discountingCurve->discount(date());
+    }
 
     Rate CMSCoupon::rate() const
     {
@@ -255,12 +255,12 @@ namespace QuantLib {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
                               start, end, fixingDays, dayCounter, Pricer,
-                              get(fractions,0,1.0), get(baseRates,0,0.0), 
+                              get(fractions,0,1.0), get(baseRates,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               get(meanReversions,0,Null<Rate>()),
                               start, end)));
-            
+
         } else {
             Date reference = end + Period(-12/schedule.frequency(),Months);
             reference =
@@ -268,7 +268,7 @@ namespace QuantLib {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
                               start, end, fixingDays, dayCounter, Pricer,
-                              get(fractions,0,1.0), get(baseRates,0,0.0), 
+                              get(fractions,0,1.0), get(baseRates,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               get(meanReversions,0,Null<Rate>()),
@@ -281,7 +281,7 @@ namespace QuantLib {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
                               start, end, fixingDays, dayCounter, Pricer,
-                              get(fractions,i-1,1.0), get(baseRates,i-1,0.0), 
+                              get(fractions,i-1,1.0), get(baseRates,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
                               get(meanReversions,i-1,Null<Rate>()),
