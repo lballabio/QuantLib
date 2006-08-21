@@ -12,64 +12,62 @@ Drift
 - (4) ipc, capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
 
 Statistics
-- convergence tables (EASY)
+- (2) convergence tables (EASY)
 
 Termination criteria
-- ability to terminate on time passed and select termination criterion (EASY)
+- (3) ability to terminate on time passed and select termination criterion (EASY)
 
 Pseudo-roots\calibration
 - (1) make rankReducedMatrix work
 - (1) a,b,c,d form (EASY)
 - (2) calibrator to produce abcd form from market data, with displacements
   (MEDIUM to HARD)
-- (3) swaption calibration using Z matrix with displacements (MEDIUM)
+- (2) swaption calibration using Z matrix with displacements (MEDIUM)
 - (2) different correlation structures (VARIABLE)
 - (2) alignment with covariance structures in legacy code (?)
 
 Curve state
 - (4) Set on coterminal swaps.  (MEDIUM)
 
-Evolution description
-- MoneyMarketPlus measure
-
 Products
-- floorlets with one or many steps.  (EASY)
-- (coterminal) swaps
-- coterminal European swaptions (EASY)
-- Some real products! (MEDIUM)
+- (3) floorlets with one or many steps.  (EASY)
+- (1) (coterminal) swaps
+- (1) coterminal European swaptions (EASY)
+- (1) Some real products! (MEDIUM)
 
 Quantlib
-- Get LMM code in the same use format as other code via instrument classes
+- (1) Get LMM code in the same use format as other code via instrument classes
   creating objects from new hierarchy as necessary (MEDIUM)
-- check why Duff's device is ineffective
+- (3) check why Duff's device is ineffective
+- (?) relevantRates
 
 TEST
-- payment date different from reset dates
+- (1) payment date different from reset dates
 
 ============================
 
 Early Callability
-- (5) Lower bounds for early exercise
-- (5) Longstaff-schwartz\Amin (time consuming but not hard)
-- (5) Anderson method for Bermudan swaptions (time consuming but not hard)
-- (5) Jackel method for Bermudan swaptions (time consuming but not hard)
-- (5) Rogers\anderson-Broadie\Joshi methods for upper bounds  (time consuming )
-- (6) Jamshidian method for upper bounds (MEDIUM )
-- (5) Upper bounds for early exercise
+- Lower bounds for early exercise
+- Longstaff-schwartz\Amin (time consuming but not hard)
+- Anderson method for Bermudan swaptions (time consuming but not hard)
+- Jackel method for Bermudan swaptions (time consuming but not hard)
+- Rogers\anderson-Broadie\Joshi methods for upper bounds  (time consuming )
+- Jamshidian method for upper bounds (MEDIUM )
+- Upper bounds for early exercise
 
 Evolvers
-- (4) Coterminal Swap-rate market model (MEDIUM TO HARD)
-- (4) Coinitial Swap-rate market model (MEDIUM TO HARD)
-- (4) CMS swap rate market model (MEDIUM TO HARD)
-- Normal Forward-Rate Market Models
-- relevantRates
+- Coterminal Swap-rate market model (MEDIUM TO HARD)
+- Coinitial Swap-rate market model (MEDIUM TO HARD)
+- CMS swap rate market model (MEDIUM TO HARD)
+- Normal Forward-Rate Market Models (?)
 
 Scripting
-- (6) Ability to specify new pay-offs and price them without code recompilation.
+- Ability to specify new pay-offs and price them without code recompilation.
   (HARD)
 
 Variance reduction
 - Control variates, importance sampling (MEDIUM)
+- Randomized QMC (HARD)
 
 Greeks
 - More sophisticated Greek methods (HARD)
