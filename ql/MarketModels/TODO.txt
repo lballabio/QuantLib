@@ -30,6 +30,7 @@ Curve state
 - (4) Set on coterminal swaps.  (MEDIUM)
 
 Products
+- (1) composite instrument
 - (3) floorlets with one or many steps.  (EASY)
 - (1) (coterminal) swaps
 - (1) coterminal European swaptions (EASY)
