@@ -52,12 +52,14 @@ namespace QuantLib {
         const Date& fixingDate) const
     {
 		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
-        Date end = calendar_.advance(start,years_,Years);
+        Date end = NullCalendar().advance(start,years_,Years);
         Schedule fixedLegSchedule(calendar_, start, end,
-                                  fixedLegFrequency_, fixedLegConvention_);
+                                  fixedLegFrequency_, fixedLegConvention_,
+								  Date(), true, false);
         Schedule floatingLegSchedule(calendar_, start, end,
                                      iborIndex_->frequency(),
-                                     iborIndex_->businessDayConvention());
+                                     iborIndex_->businessDayConvention(),
+									 Date(), true, false);
 
 		return boost::shared_ptr<VanillaSwap>(new VanillaSwap(true, 1.0,
                         fixedLegSchedule, 0.0, dayCounter_,
