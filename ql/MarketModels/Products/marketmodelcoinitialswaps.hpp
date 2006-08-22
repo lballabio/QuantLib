@@ -30,7 +30,6 @@ namespace QuantLib {
         MarketModelCoinitialSwaps(const std::vector<Time>& rateTimes,
                            const std::vector<Real>& fixedAccruals,
                            const std::vector<Real>& floatingAccruals,
-                           const std::vector<Rate>& floatingSpreads,
                            const std::vector<Time>& paymentTimes,
                            double swapRate);
         //! for initializing other objects
@@ -49,7 +48,6 @@ namespace QuantLib {
       private:
         std::vector<Time> rateTimes_;
         std::vector<Real> fixedAccruals_, floatingAccruals_;
-        std::vector<Rate> floatingSpreads_;
         std::vector<Time> paymentTimes_;
         double swapRate_;
 

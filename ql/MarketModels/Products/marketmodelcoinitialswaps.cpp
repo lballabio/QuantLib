@@ -25,11 +25,10 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes,
         const std::vector<Real>& fixedAccruals,
         const std::vector<Real>& floatingAccruals,
-        const std::vector<Rate>& floatingSpreads,
         const std::vector<Time>& paymentTimes,
         double swapRate)
     : rateTimes_(rateTimes), fixedAccruals_(fixedAccruals),
-      floatingAccruals_(floatingAccruals), floatingSpreads_(floatingSpreads),
+      floatingAccruals_(floatingAccruals), 
       paymentTimes_(paymentTimes), swapRate_(swapRate) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
