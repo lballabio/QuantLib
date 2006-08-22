@@ -138,14 +138,22 @@ namespace QuantLib {
     }
 
     Rate SwaptionVolatilityCube::atmStrike(Time start,
-                                           Time length) const {
-    Date startDate = Date(static_cast<BigInteger>(exerciseInterpolator_(start)));
-    Date endDate = startDate+static_cast<BigInteger>(365.25*length);
+                                           Time length) const
+	{
+
+		Date exerciseDate = Date(static_cast<BigInteger>(
+			exerciseInterpolator_(start)));
+
+        // vanilla swap's parameters
+        Calendar calendar_ = TARGET(); // FIXME
+		Integer swapFixingDays = 2; // FIXME
+		Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
+
+		Rounding rounder(0);
+        Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
 
         // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
 
-        // vanilla swap's parameters
-        Calendar calendar_ = TARGET();
         Schedule fixedSchedule = Schedule(calendar_, startDate, endDate,
             fixedLegFrequency_, fixedLegConvention_, Date(), true, false);
         Frequency floatingLegFrequency_ = iborIndex_->frequency();
