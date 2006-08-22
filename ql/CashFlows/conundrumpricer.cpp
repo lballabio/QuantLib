@@ -661,7 +661,11 @@ namespace QuantLib
             objectiveFunction_->setSwapRateValue(Rs);
             Brent solver;
             solver.setMaxEvaluations(1000);
-            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_, initialGuess, -10., 10.);
+
+            const Real lower = -20, upper = 20.;
+            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_, 
+                std::max( std::min(initialGuess, upper*.99), lower*.99), 
+                lower, upper);
             tmpRs_=Rs;
         }
         return calibratedShift_;
