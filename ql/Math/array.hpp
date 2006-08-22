@@ -307,17 +307,29 @@ namespace QuantLib {
 
     inline Real Array::operator[](Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(disable:4267)
+        #endif
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(default:4267)
+        #endif
         #endif
         return data_.get()[i];
     }
 
     inline Real Array::at(Size i) const {
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(disable:4267)
+        #endif
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(default:4267)
+        #endif
         return data_.get()[i];
     }
 
@@ -337,17 +349,29 @@ namespace QuantLib {
 
     inline Real& Array::operator[](Size i) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(disable:4267)
+        #endif
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(default:4267)
+        #endif
         #endif
         return data_.get()[i];
     }
 
     inline Real& Array::at(Size i) {
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(disable:4267)
+        #endif
         QL_REQUIRE(i<n_,
                    "index (" << i << ") must be less than " << n_ <<
                    ": array access out of range");
+        #if defined(QL_PATCH_MSVC71)
+        #pragma warning(default:4267)
+        #endif
         return data_.get()[i];
     }
 
