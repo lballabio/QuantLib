@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -168,6 +168,9 @@
 #  define QL_WORKING_BOOST_STREAMS
 // for some reason, Koenig lookup emits a warning
 #  pragma warning(disable: 4675)
+// also, sending a size_t to an output stream causes a warning.
+// we disable it and rely on other computers to catch genuine problems.
+#  pragma warning(disable: 4267)
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
 #  ifndef _SCL_SECURE_NO_DEPRECATE
@@ -178,6 +181,7 @@
 #  endif
 #  define QL_PATCH_MSVC80
 #  define QL_WORKING_BOOST_STREAMS
+// see the corresponding pragma in the 7.1 section
 #  pragma warning(disable: 4267)
 #else
 #  error "unknown Microsoft compiler"
