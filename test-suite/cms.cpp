@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
 #include "cms.hpp"
 #include "utilities.hpp"
 #include <ql/DayCounters/all.hpp>
@@ -33,8 +34,6 @@ QL_BEGIN_TEST_LOCALS(CmsTest)
 // global data
 
 Date today_, settlement_;
-bool payFixed_;
-Real nominal_;
 Calendar calendar_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
@@ -43,41 +42,24 @@ boost::shared_ptr<Xibor> iborIndex_;
 Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 Date referenceDate_;
-Date startDate_(referenceDate_+3600);
-Date paymentDate_(startDate_+365);
-Date endDate_(paymentDate_);
+Date startDate_;
+Date paymentDate_;
+Date endDate_;
 const Real gearing_(1), spread_(0);
-const Real infiniteCap_(100), infiniteFloor_(.00);
+const Real infiniteCap_(100), infiniteFloor_(-100);
 const Integer years_(30);
 boost::shared_ptr<SwapIndex> index_;
 std::string familyName_("");
 Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure_;
 const Real volatility_ = .080;
+std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
 
-const Real rateTolerance_ = 1.0e-4;
-const Real priceTolerance_ = 1.0e-4;
-
-// utilities
-
-//boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
-//                                        Spread floatingSpread) {
-//    Date maturity = calendar_.advance(settlement_,length,Years,
-//                                      floatingConvention_);
-//    Schedule fixedSchedule(calendar_,settlement_,maturity,
-//                           fixedFrequency_,fixedConvention_);
-//    Schedule floatSchedule(calendar_,settlement_,maturity,
-//                           floatingFrequency_,floatingConvention_);
-//    return boost::shared_ptr<VanillaSwap>(
-//            new VanillaSwap(payFixed_,nominal_,
-//                            fixedSchedule,fixedRate,fixedDayCount_,
-//                            floatSchedule,index_,floatingSpread,
-//                            iborIndex_->dayCounter(),termStructure_));
-//}
+const Real rateTolerance_ = 2.0e-4;
+const Real priceTolerance_ = 2.0e-4;
 
 void setup() {
-    payFixed_ = true;
+
     settlementDays_ = 2;
-    nominal_ = 100.0;
     fixedConvention_ = Unadjusted;
     floatingConvention_ = ModifiedFollowing;
     fixedFrequency_ = Annual;
@@ -92,7 +74,7 @@ void setup() {
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     referenceDate_ = termStructure_->referenceDate();
-    startDate_ = (referenceDate_+3600);
+    startDate_ = (referenceDate_+2*3600);
     paymentDate_ = (startDate_+365);
     endDate_ = (paymentDate_);
     index_ = boost::shared_ptr<SwapIndex>(
@@ -121,9 +103,16 @@ void setup() {
     const Matrix volatilities(2, 2, volatility_);
 
     swaptionVolatilityStructure_ = Handle<SwaptionVolatilityStructure>(
+
         boost::shared_ptr<SwaptionVolatilityStructure>(new
             SwaptionVolatilityMatrix(referenceDate_, exerciseDates, lengths,
                                      volatilities, iborIndex_->dayCounter())));
+    {
+		modelOfYieldCurves_.push_back(GFunctionFactory::standard);
+		modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
+		modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
+		modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
+	}
 }
 
 void teardown() {
@@ -139,12 +128,13 @@ void CmsTest::testFairRate()  {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
+    
+    for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
-    //const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = GFunctionFactory::standard;
-    const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = GFunctionFactory::parallelShifts;
+    const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = modelOfYieldCurves_[h];
 
     boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration(
-            modelOfYieldCurve, -.1, 2.50));
+            modelOfYieldCurve, 0, 1));
     boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new ConundrumPricerByBlack(
             modelOfYieldCurve)
             );
@@ -171,12 +161,9 @@ void CmsTest::testFairRate()  {
                         "difference:\t" << io::rate(difference) << "\n"
                         "tolerance: \t" << io::rate(rateTolerance_));
     }
-
+    }
     QL_TEST_TEARDOWN
 }
-
-#include <iostream>
-#include <vector>
 
 void CmsTest::testParity() {
 
@@ -185,24 +172,17 @@ void CmsTest::testParity() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves;
-    {
-        modelOfYieldCurves.push_back(GFunctionFactory::standard);
-        modelOfYieldCurves.push_back(GFunctionFactory::exactYield);
-        modelOfYieldCurves.push_back(GFunctionFactory::parallelShifts);
-        modelOfYieldCurves.push_back(GFunctionFactory::nonParallelShifts);
-    }
 
-    for(Size h=0; h<modelOfYieldCurves.size(); h++) {
+    for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
         std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
         {
             boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
-                new ConundrumPricerByBlack(modelOfYieldCurves[h]));
+                new ConundrumPricerByBlack(modelOfYieldCurves_[h]));
             pricers.push_back(analyticPricer);
 
             boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
-                new ConundrumPricerByNumericalIntegration(modelOfYieldCurves[h],
+                new ConundrumPricerByNumericalIntegration(modelOfYieldCurves_[h],
                 0, 1));
             pricers.push_back(numericalPricer);
         }
