@@ -56,37 +56,40 @@ namespace QuantLib {
     {
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
-                                               expiries[0],
-                                               Unadjusted); //FIXME
+                                              expiries[0],
+                                              Unadjusted); //FIXME
+        exerciseDatesAsReal_[0] =
+            static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
         QL_REQUIRE(0.0<exerciseTimes_[0],
-            "first exercise time is negative");
+                   "first exercise time is negative");
         for (i=1; i<nExercise; i++) {
             exerciseDates_[i] = calendar_.advance(referenceDate(),
-                                                   expiries[i],
-                                                   Unadjusted); //FIXME
+                                                  expiries[i],
+                                                  Unadjusted); //FIXME
             exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
             QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
-                "non increasing exercise times");
+                       "non increasing exercise times");
         }
 
         exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
                                                     exerciseTimes_.end(),
                                                     exerciseDatesAsReal_.begin());
+		exerciseInterpolator_.enableExtrapolation();
 
         Size nlengths = lengths_.size();
         Date startDate = exerciseDates_[0]; // as good as any
         Date endDate = startDate + lengths_[0];
         timeLengths_[0] = dayCounter().yearFraction(startDate,endDate);
         QL_REQUIRE(0.0<timeLengths_[0],
-            "first time length is negative");
+                   "first time length is negative");
         for (i=1; i<nlengths; i++) {
             Date endDate = startDate + lengths_[i];
             timeLengths_[i] = dayCounter().yearFraction(startDate,endDate);
             QL_REQUIRE(timeLengths_[i-1]<timeLengths_[i],
-                "non increasing time length");
+                       "non increasing time length");
         }
 
         QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
@@ -95,26 +98,22 @@ namespace QuantLib {
                 "non increasing strike spreads");
         }
 
-
         QL_REQUIRE(nStrikes_==volSpreads.columns(),
-            "nStrikes_!=volSpreads.columns()");
+                   "nStrikes_!=volSpreads.columns()");
         QL_REQUIRE(nExercise*nlengths==volSpreads.rows(),
-            "nExerci se*nlengths!=volSpreads.rows()");
-        for (i=0; i<nStrikes_; i++) {
-
-
-            Matrix temp(nExercise, nlengths);
+                   "nExercise*nlengths!=volSpreads.rows()");
+        for (i=0; i<nStrikes_; i++)
+		{
             for (Size j=0; j<nExercise; j++) {
                 for (Size k=0; k<nlengths; k++) {
-                    temp[j][k]=volSpreads[j*nlengths+k][i];
+                    volSpreads_[i][j][k]=volSpreads[j*nlengths+k][i];
                 }
             }
-
-            volSpreads_[i] = temp;
             volSpreadsInterpolator_[i] = BilinearInterpolation(
                 timeLengths_.begin(), timeLengths_.end(),
                 exerciseTimes_.begin(), exerciseTimes_.end(),
                 volSpreads_[i]);
+			volSpreadsInterpolator_[i].enableExtrapolation();
         }
 
         //registerWith(atmVolMatrix_);
@@ -129,7 +128,7 @@ namespace QuantLib {
         Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             localStrikes_[i] = atmForward + strikeSpreads_[i];
-            localSmile_[i]   = atmVol     + volSpreadsInterpolator_[i](length, start, true);
+            localSmile_[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
         }
         return boost::shared_ptr<Interpolation>(new
             //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
@@ -140,9 +139,8 @@ namespace QuantLib {
 
     Rate SwaptionVolatilityCube::atmStrike(Time start,
                                            Time length) const {
-
-        Date startDate = Date(static_cast<BigInteger>(exerciseInterpolator_(start)));
-        Date endDate = startDate+static_cast<BigInteger>(365.25*length);
+    Date startDate = Date(static_cast<BigInteger>(exerciseInterpolator_(start)));
+    Date endDate = startDate+static_cast<BigInteger>(365.25*length);
 
         // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
 
