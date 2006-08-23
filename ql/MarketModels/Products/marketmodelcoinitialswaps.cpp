@@ -60,12 +60,12 @@ namespace QuantLib {
     {
         double liborRate = currentState.forwardRate(currentIndex_);
         std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
-        for(Size i=0;i<=currentIndex_;i++){
+        for(Size i=currentIndex_;i<lastIndex_;i++){
             genCashFlows[i][0].timeIndex = currentIndex_;
             genCashFlows[i][0].amount = -swapRate_*fixedAccruals_[currentIndex_];
 
             genCashFlows[i][1].timeIndex = currentIndex_;
-            genCashFlows[i][1].amount = 0.;//liborRate*floatingAccruals_[currentIndex_];
+            genCashFlows[i][1].amount = liborRate*floatingAccruals_[currentIndex_];
 
             numberCashFlowsThisStep[i] = 2;
         }
