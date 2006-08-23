@@ -38,7 +38,7 @@ namespace QuantLib
                                               Real deflator) const {
         const Real optionType = isCall ? 1.0 : -1.0;
         const Real variance = volatilityStructure_->blackVariance(expiryDate,
-            swapTenor_, forwardValue_);
+            swapTenor_, strike);
         return deflator * detail::blackFormula(forwardValue_, strike,
             std::sqrt(variance), optionType);
     }
