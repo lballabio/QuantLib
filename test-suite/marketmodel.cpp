@@ -24,6 +24,8 @@
 #include <ql/MarketModels/Products/marketmodelcaplets.hpp>
 #include <ql/MarketModels/Products/marketmodelforwardsonestep.hpp>
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
+#include <ql/MarketModels/Products/marketmodelcoinitialswaps.hpp>
+#include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
@@ -205,6 +207,7 @@ void testForwards(const SequenceStatistics& stats,
     }
 }
 
+
 void testCaplets(const SequenceStatistics& stats,
                  const std::vector<Rate>& strikes)
 {
@@ -245,6 +248,79 @@ void testCaplets(const SequenceStatistics& stats,
     }
 }
 
+void testCoinitialSwaps(const SequenceStatistics& stats,
+                  const Real swapRate)
+{
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    std::vector<Real> stdDevs(todaysForwards.size());
+    
+    std::vector<Rate> expected(todaysForwards.size());
+    Real minError = QL_MAX_REAL;
+    Real maxError = QL_MIN_REAL;
+    Real tmp = 0.;
+    for (Size i=0; i<expected.size(); ++i) {
+        tmp += (todaysForwards[i]-swapRate)
+            *accruals[i]*todaysDiscounts[i+1];
+        expected[i] = tmp;
+        stdDevs[i] = (results[i]-expected[i])/errors[i];
+        if (stdDevs[i]>maxError)
+            maxError = stdDevs[i];
+        else if (stdDevs[i]<minError)
+            minError = stdDevs[i];
+    }
+
+    Real errorThreshold = 2.32;
+    if (minError <-errorThreshold || maxError > errorThreshold) {
+        for (Size i=0; i<results.size(); ++i) {
+            BOOST_MESSAGE(io::ordinal(i+1) << " coinitial swap: "
+                          << io::rate(results[i])
+                          << " +- " << io::rate(errors[i])
+                          << "; expected: " << io::rate(expected[i])
+                          << "; discrepancy = "
+                          << stdDevs[i]
+                          << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+}
+void testCoterminalSwaps(const SequenceStatistics& stats,
+                  const Real swapRate)
+{
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    std::vector<Real> stdDevs(todaysForwards.size());
+    
+    std::vector<Rate> expected(todaysForwards.size());
+    Real minError = QL_MAX_REAL;
+    Real maxError = QL_MIN_REAL;
+    Real tmp = 0.;
+    Size N = expected.size();
+    for (Size i=1; i<=N; ++i) {
+        tmp += (todaysForwards[N-i]-swapRate)
+            *accruals[N-i]*todaysDiscounts[N-i+1];
+        expected[N-i] = tmp;
+        stdDevs[N-i] = (results[N-i]-expected[N-i])/errors[N-i];
+        if (stdDevs[N-i]>maxError)
+            maxError = stdDevs[N-i];
+        else if (stdDevs[N-i]<minError)
+            minError = stdDevs[N-i];
+    }
+
+    Real errorThreshold = 2.32;
+    if (minError <-errorThreshold || maxError > errorThreshold) {
+        for (Size i=0; i<results.size(); ++i) {
+            BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap: "
+                          << io::rate(results[i])
+                          << " +- " << io::rate(errors[i])
+                          << "; expected: " << io::rate(expected[i])
+                          << "; discrepancy = "
+                          << stdDevs[i]
+                          << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+}
 enum PseudoRootType { ExponentialCorrelationFlatVolatility,
                       ExponentialCorrelationAbcdVolatility,
                       CalibratedMM
@@ -568,6 +644,99 @@ void MarketModelTest::testVeryLongJumpCaplets() {
 }
 
 
+void MarketModelTest::testLongJumpCoinitialSwaps() {
+
+    BOOST_MESSAGE("Repricing (long jump) coinitial swaps in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Real swapRate = 0.04;
+
+    boost::shared_ptr<MarketModelProduct> product(new
+        MarketModelCoinitialSwaps(rateTimes, accruals, accruals, paymentTimes, swapRate));
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    for (Size n=0; n<1; n++) {
+        MTBrownianGeneratorFactory generatorFactory(seed);
+        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
+
+        for (Size m=0; m<1; m++) {
+            Size factors = (m==0 ? todaysForwards.size() : m);
+            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
+
+            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+
+                MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
+                for (Size j=0; j<LENGTH(measures); j++) {
+                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
+                    setMeasure(evolution, measures[j]);
+
+                    EvolverType evolvers[] = { Pc, Ipc };
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
+                        testCoinitialSwaps(*stats, swapRate);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MarketModelTest::testLongJumpCoterminalSwaps() {
+
+    BOOST_MESSAGE("Repricing (long jump) coterminal swaps in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Real swapRate = 0.04;
+
+    boost::shared_ptr<MarketModelProduct> product(new
+        MarketModelCoterminalSwaps(rateTimes, accruals, accruals, paymentTimes, swapRate));
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    for (Size n=0; n<1; n++) {
+        MTBrownianGeneratorFactory generatorFactory(seed);
+        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
+
+        for (Size m=0; m<1; m++) {
+            Size factors = (m==0 ? todaysForwards.size() : m);
+            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
+
+            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+
+                MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
+                for (Size j=0; j<LENGTH(measures); j++) {
+                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
+                    setMeasure(evolution, measures[j]);
+
+                    EvolverType evolvers[] = { Pc, Ipc };
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
+                        testCoterminalSwaps(*stats, swapRate);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 /////
 
 
@@ -652,12 +821,15 @@ void MarketModelTest::testVeryLongJumpCaplets() {
 //        
 //}
 
+
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwards));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwards));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testFitAbcdVolatility));   
     return suite;
 }
