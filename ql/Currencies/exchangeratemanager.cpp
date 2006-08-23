@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -121,6 +121,8 @@ namespace QuantLib {
         // other obsoleted currencies
         add(ExchangeRate(TRYCurrency(), TRLCurrency(), 1000000.0),
             Date(1,January,2005), Date::maxDate());
+        add(ExchangeRate(RONCurrency(), ROLCurrency(), 10000.0),
+            Date(1,July,2005), Date::maxDate());
     }
 
     ExchangeRate ExchangeRateManager::directLookup(const Currency& source,

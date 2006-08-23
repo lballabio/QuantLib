@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -320,8 +320,10 @@ namespace QuantLib {
     };
 
     //! Romanian leu
-    /*! The ISO three-letter code is ROL; the numeric code is 642.
-        It is divided in 100 bani.
+    /*! The ISO three-letter code was ROL; the numeric code was 642.
+        It was divided in 100 bani.
+
+        Obsoleted by the new leu since July 2005.
 
         \ingroup currencies
     */
@@ -334,6 +336,25 @@ namespace QuantLib {
                                                    Rounding(),
                                                    "%1$.2f %3%"));
             data_ = rolData;
+        }
+    };
+
+    //! Romanian new leu
+    /*! The ISO three-letter code is RON; the numeric code is 946.
+        It is divided in 100 bani.
+
+        \ingroup currencies
+    */
+    class RONCurrency : public Currency {
+      public:
+        RONCurrency() {
+            static boost::shared_ptr<Data> ronData(
+                                          new Data("Romanian new leu",
+                                                   "RON", 946,
+                                                   "L", "", 100,
+                                                   Rounding(),
+                                                   "%1$.2f %3%"));
+            data_ = ronData;
         }
     };
 
@@ -392,8 +413,8 @@ namespace QuantLib {
     };
 
     //! Turkish lira
-    /*! The ISO three-letter code is TRL; the numeric code is 792.
-        It is divided in 100 kurus.
+    /*! The ISO three-letter code was TRL; the numeric code was 792.
+        It was divided in 100 kurus.
 
         Obsoleted by the new Turkish lira since 2005.
 
