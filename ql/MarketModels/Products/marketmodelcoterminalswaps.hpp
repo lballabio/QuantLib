@@ -31,7 +31,7 @@ namespace QuantLib {
                            const std::vector<Real>& fixedAccruals,
                            const std::vector<Real>& floatingAccruals,
                            const std::vector<Time>& paymentTimes,
-                           double swapRate);
+                           double fixedRate);
         //! for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const;
         virtual std::vector<Time> possibleCashFlowTimes() const;
@@ -49,7 +49,7 @@ namespace QuantLib {
         std::vector<Time> rateTimes_;
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Time> paymentTimes_;
-        double swapRate_;
+        double fixedRate_;
 
         Size lastIndex_;
 

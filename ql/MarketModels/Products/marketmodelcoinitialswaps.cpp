@@ -26,10 +26,10 @@ namespace QuantLib {
         const std::vector<Real>& fixedAccruals,
         const std::vector<Real>& floatingAccruals,
         const std::vector<Time>& paymentTimes,
-        double swapRate)
+        double fixedRate)
     : rateTimes_(rateTimes), fixedAccruals_(fixedAccruals),
       floatingAccruals_(floatingAccruals), 
-      paymentTimes_(paymentTimes), swapRate_(swapRate) {
+      paymentTimes_(paymentTimes), fixedRate_(fixedRate) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
     }
@@ -62,7 +62,7 @@ namespace QuantLib {
         std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
         for(Size i=currentIndex_;i<lastIndex_;i++){
             genCashFlows[i][0].timeIndex = currentIndex_;
-            genCashFlows[i][0].amount = -swapRate_*fixedAccruals_[currentIndex_];
+            genCashFlows[i][0].amount = -fixedRate_*fixedAccruals_[currentIndex_];
 
             genCashFlows[i][1].timeIndex = currentIndex_;
             genCashFlows[i][1].amount = liborRate*floatingAccruals_[currentIndex_];

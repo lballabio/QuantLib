@@ -249,7 +249,7 @@ void testCaplets(const SequenceStatistics& stats,
 }
 
 void testCoinitialSwaps(const SequenceStatistics& stats,
-                  const Real swapRate)
+                  const Real fixedRate)
 {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
@@ -260,7 +260,7 @@ void testCoinitialSwaps(const SequenceStatistics& stats,
     Real maxError = QL_MIN_REAL;
     Real tmp = 0.;
     for (Size i=0; i<expected.size(); ++i) {
-        tmp += (todaysForwards[i]-swapRate)
+        tmp += (todaysForwards[i]-fixedRate)
             *accruals[i]*todaysDiscounts[i+1];
         expected[i] = tmp;
         stdDevs[i] = (results[i]-expected[i])/errors[i];
@@ -285,7 +285,7 @@ void testCoinitialSwaps(const SequenceStatistics& stats,
     }
 }
 void testCoterminalSwaps(const SequenceStatistics& stats,
-                  const Real swapRate)
+                  const Real fixedRate)
 {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
@@ -297,7 +297,7 @@ void testCoterminalSwaps(const SequenceStatistics& stats,
     Real tmp = 0.;
     Size N = expected.size();
     for (Size i=1; i<=N; ++i) {
-        tmp += (todaysForwards[N-i]-swapRate)
+        tmp += (todaysForwards[N-i]-fixedRate)
             *accruals[N-i]*todaysDiscounts[N-i+1];
         expected[N-i] = tmp;
         stdDevs[N-i] = (results[N-i]-expected[N-i])/errors[N-i];
@@ -650,10 +650,10 @@ void MarketModelTest::testLongJumpCoinitialSwaps() {
 
     QL_TEST_SETUP
 
-    Real swapRate = 0.04;
+    Real fixedRate = 0.04;
 
     boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelCoinitialSwaps(rateTimes, accruals, accruals, paymentTimes, swapRate));
+        MarketModelCoinitialSwaps(rateTimes, accruals, accruals, paymentTimes, fixedRate));
     EvolutionDescription evolution = product->suggestedEvolution();
 
     for (Size n=0; n<1; n++) {
@@ -682,7 +682,7 @@ void MarketModelTest::testLongJumpCoinitialSwaps() {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCoinitialSwaps(*stats, swapRate);
+                        testCoinitialSwaps(*stats, fixedRate);
                     }
                 }
             }
@@ -696,10 +696,10 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
 
     QL_TEST_SETUP
 
-    Real swapRate = 0.04;
+    Real fixedRate = 0.04;
 
     boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelCoterminalSwaps(rateTimes, accruals, accruals, paymentTimes, swapRate));
+        MarketModelCoterminalSwaps(rateTimes, accruals, accruals, paymentTimes, fixedRate));
     EvolutionDescription evolution = product->suggestedEvolution();
 
     for (Size n=0; n<1; n++) {
@@ -728,7 +728,7 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCoterminalSwaps(*stats, swapRate);
+                        testCoterminalSwaps(*stats, fixedRate);
                     }
                 }
             }
