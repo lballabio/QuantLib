@@ -137,7 +137,12 @@ namespace QuantLib {
             );
     }
 
-    Smile SwaptionVolatilityCube::smile1(Time start,Time length) const {
+    Smile SwaptionVolatilityCube::smile1(Date start, Period length) const {
+        std::pair<Time, Time> p = convertDates(start, length);
+        return smile1(p.first, p.second);
+    }
+
+    Smile SwaptionVolatilityCube::smile1(Time start, Time length) const {
         
         std::vector<Real> strikes, volatilities;
 
