@@ -32,8 +32,10 @@ class MarketModelTest {
     static void testLongJumpCaplets();
     static void testVeryLongJumpForwards();
     static void testVeryLongJumpCaplets();
+    static void testFitAbcdVolatility();
     static void testLongJumpCoinitialSwaps();
     static void testLongJumpCoterminalSwaps();
+    static void testAbcdVolatilityIntegration();
     static boost::unit_test_framework::test_suite* suite();
 };
 

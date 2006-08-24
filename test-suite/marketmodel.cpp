@@ -709,7 +709,64 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
     }
 }
 
+#include "integrals.hpp"
+#include <ql/Math/segmentintegral.hpp>
+#include <ql/Math/functional.hpp>
 
+void MarketModelTest::testAbcdVolatilityIntegration() {
+
+    BOOST_MESSAGE("Testing AbcdVolatilityIntegration ... ");
+
+    Real a = 0.5;
+    Real b = 0.6;
+    Real c = 0.8;
+    Real d = 0.1;
+    
+    const Size N = 20;
+    const Real precision = 1e-04;
+
+    for (Size i=0; i<N; i++) {
+        Time T1 = 0.5*(1+i);                // expiry of forward 1: after T1 AbcdVol = 0
+        for (Size k=0; k<N-i; k++) {        
+            Time T2 = 0.5*(1+k);            // expiry of forward 2: after T2 AbcdVol = 0
+            boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d,T1,T2));
+            Time Tmin = std::min(T1,T2);
+            Time Tmax = std::max(T1,T2);
+            //Integration
+            for(Size j=0; j<N; j++) {
+                Real xMin = 0.5*j;
+                for (Size l=0; l<N-j; l++) {
+                    Real xMax = xMin + 0.5*l;
+                    //Numerical
+                    boost::shared_ptr<SegmentIntegral> SI( new SegmentIntegral(20000));
+                    Real numerical = SI->operator()(*instVol,xMin,xMax);
+                    //Analytical
+                    Real analytical;
+                    if(xMin>Tmin) {
+                        analytical = 0.0;
+                    } else {
+                        //if(xMax>Tmax)
+                        //    xMax = Tmax;
+                        //if(xMax>Tmin)
+                        //    xMax = Tmin;
+                        Real fMax = instVol->primitive(std::min(Tmin,std::min(xMax,Tmax)));
+                        Real fMin = instVol->primitive(xMin);
+                        analytical = fMax - fMin;
+                    }
+                    if (std::abs(analytical-numerical)>precision) {
+                        BOOST_MESSAGE("     T1=" << T1 << "," <<
+                                   "T2=" << T2 << ",\t\t" << 
+                                   "xMin=" << xMin << "," <<
+                                   "xMax=" << xMax << ",\t\t" <<
+                                   "analytical: " << analytical << ",\t" <<
+                                   "numerical:   " << numerical);
+                    }
+                }
+            }
+        }
+    }
+
+}
 
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
@@ -719,5 +776,6 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     return suite;
 }
