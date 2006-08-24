@@ -39,17 +39,14 @@ namespace QuantLib {
         if(inf>tMin) {
             return 0.0;
         } else {
-            Real fMax = primitive(std::min(tMin,std::min(max,tMax)));
-            Real fMin = primitive(inf);
-            return (fMax - fMin);
+            return (primitive(std::min(tMin,std::min(max,tMax))) - primitive(inf));
         }
     }
 
     Real Abcd::variance(Time max) const {
         QL_REQUIRE(S_==T_,"S_ and T_ are different")
-        Real fMax = primitive( std::min(max,T_) );
-        Real fMin = primitive(0.0);
-        return (primitive(std::min(max,T_)) - fMin);
+        // primitive(0.0) is equal to 0
+        return primitive(std::min(max,T_));
     }
 
 }
