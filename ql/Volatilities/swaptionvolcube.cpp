@@ -138,7 +138,7 @@ namespace QuantLib {
     }
 
     Smile SwaptionVolatilityCube::smile1(Date start, Period length) const {
-        std::pair<Time, Time> p = convertDates(start, length);
+        const std::pair<Time, Time> p = convertDates(start, length);
         return smile1(p.first, p.second);
     }
 
@@ -146,15 +146,14 @@ namespace QuantLib {
         
         std::vector<Real> strikes, volatilities;
 
-        Rate atmForward = atmStrike(start, length);
+        const Rate atmForward = atmStrike(start, length);
 
-        Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
+        const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             strikes[i] = atmForward + strikeSpreads_[i];
             volatilities[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
         }
-        return Smile(strikes, volatilities);
-    
+        return Smile(start, strikes, volatilities);
     }
     
     Rate SwaptionVolatilityCube::atmStrike(Time start,
