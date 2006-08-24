@@ -717,10 +717,10 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_MESSAGE("Testing AbcdVolatilityIntegration ... ");
 
-    Real a = 0.5;
-    Real b = 0.6;
-    Real c = 0.8;
-    Real d = 0.1;
+    Real a = -0.0597;
+    Real b = 0.1677;
+    Real c = 0.5403;
+    Real d = 0.1710;
     
     const Size N = 20;
     const Real precision = 1e-04;
@@ -745,10 +745,6 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     if(xMin>Tmin) {
                         analytical = 0.0;
                     } else {
-                        //if(xMax>Tmax)
-                        //    xMax = Tmax;
-                        //if(xMax>Tmin)
-                        //    xMax = Tmin;
                         Real fMax = instVol->primitive(std::min(Tmin,std::min(xMax,Tmax)));
                         Real fMin = instVol->primitive(xMin);
                         analytical = fMax - fMin;
@@ -760,6 +756,28 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                                    "xMax=" << xMax << ",\t\t" <<
                                    "analytical: " << analytical << ",\t" <<
                                    "numerical:   " << numerical);
+                    }
+                    // Test of direct implementation in Abcd class
+                    Real covariance = instVol->covariance(xMin,xMax);
+                    if (std::abs(analytical-covariance)>1e-10) {
+                        BOOST_FAIL("     T1=" << T1 << "," <<
+                                   "T2=" << T2 << ",\t\t" << 
+                                   "xMin=" << xMin << "," <<
+                                   "xMax=" << xMax << ",\t\t" <<
+                                   "covariance: " << covariance << ",\t" <<
+                                   "analytical: " << analytical);
+                    }
+                    // Test of direct implementation in Abcd class
+                    if ((xMin==0)&&(T1==T2)) {
+                        Real variance = instVol->variance(xMax);
+                        if (std::abs(analytical-variance)>1e-10) {
+                            BOOST_FAIL("     T1=" << T1 << "," <<
+                                       "T2=" << T2 << ",\t\t" << 
+                                       "xMin=" << xMin << "," <<
+                                       "xMax=" << xMax << ",\t\t" <<
+                                       "variance: " << variance << ",\t" <<
+                                       "analytical: " << analytical);
+                        }
                     }
                 }
             }
