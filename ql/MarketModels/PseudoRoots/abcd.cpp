@@ -21,13 +21,35 @@
 
 #include <ql/MarketModels/PseudoRoots/abcd.hpp>
 
+
 namespace QuantLib {
-    
+
+
     Abcd::Abcd(Real a, Real b, Real c, Real d, Real T, Real S)
     : a_(a), b_(b), c_(c), d_(d), S_(S), T_(T) {
         QL_REQUIRE(a+d>=0, "a+d must be non negative");
         QL_REQUIRE(d>=0, "d must be non negative");
         QL_REQUIRE(c>=0, "c must be non negative");
+    }
+
+    Real Abcd::covariance(Time inf, Time max) const {
+        QL_REQUIRE(max>=inf, "integrations bounds are in reverse order");
+        Time tMin = std::min(S_,T_);
+        Time tMax = std::max(S_,T_);
+        if(inf>tMin) {
+            return 0.0;
+        } else {
+            Real fMax = primitive(std::min(tMin,std::min(max,tMax)));
+            Real fMin = primitive(inf);
+            return (fMax - fMin);
+        }
+    }
+
+    Real Abcd::variance(Time max) const {
+        QL_REQUIRE(S_==T_,"S_ and T_ are different")
+        Real fMax = primitive( std::min(max,T_) );
+        Real fMin = primitive(0.0);
+        return (primitive(std::min(max,T_)) - fMin);
     }
 
 }

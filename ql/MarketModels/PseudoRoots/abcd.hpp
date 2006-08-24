@@ -57,9 +57,11 @@ namespace QuantLib
         Real longTermVolatility() const;
         Real maximumLocation() const;
         Real maximumVolatility() const;
-        Real variance(Time u) const {
-            return 0.0;
-        }
+        //! Returns  \f[ \int_{tMin}^{tMax} f(T-t)f(S-t)dt \f]
+        Real covariance(Time tMin, Time tMax) const;
+        //! Returns  \f[ \int_{0}^{T} f^2(T-t)dt \f]
+        Real variance(Time T) const;
+        //! Returns the primitive of the indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
         Real primitive(Time u) const {
 
             if(T_<u) return 0.0;
@@ -82,8 +84,10 @@ namespace QuantLib
         }
 
     private:
+        //! Parameters
         Real a_, b_, c_, d_;
-        Time S_, T_;
+        //! Expiry times of forwards correnspondings to instantaneous volatility
+        Time S_, T_;    
     };
 
     // inline
