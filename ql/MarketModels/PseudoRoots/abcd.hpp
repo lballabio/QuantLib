@@ -48,8 +48,10 @@ namespace QuantLib
     public:
         Abcd(Real a, Real b, Real c, Real d, Real T, Real S);
         Real operator()(Time u) const {
-            return  ( (a_ + b_*(T_-u))*std::exp(-c_*(T_-u)) + d_ ) *
-                    ( (a_ + b_*(S_-u))*std::exp(-c_*(S_-u)) + d_ );
+            if(T_<=u) return 0.0;
+            if(S_<=u) return 0.0;
+            return (  ((a_ + b_*(T_-u))*std::exp(-c_*(T_-u)) + d_ ) *
+                      ((a_ + b_*(S_-u))*std::exp(-c_*(S_-u)) + d_ ) );
         }
         Real shortTermVolatility() const;
         Real longTermVolatility() const;
@@ -59,6 +61,10 @@ namespace QuantLib
             return 0.0;
         }
         Real primitive(Time u) const {
+
+            if(T_<u) return 0.0;
+            if(S_<u) return 0.0;
+
             const Real k1=std::exp(c_*u);
             const Real k2=std::exp(c_*S_);
             const Real k3=std::exp(c_*T_);
