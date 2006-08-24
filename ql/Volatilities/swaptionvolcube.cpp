@@ -137,6 +137,21 @@ namespace QuantLib {
             );
     }
 
+    Smile SwaptionVolatilityCube::smile1(Time start,Time length) const {
+        
+        std::vector<Real> strikes, volatilities;
+
+        Rate atmForward = atmStrike(start, length);
+
+        Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
+        for (Size i=0; i<nStrikes_; i++) {
+            strikes[i] = atmForward + strikeSpreads_[i];
+            volatilities[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
+        }
+        return Smile(strikes, volatilities);
+    
+    }
+    
     Rate SwaptionVolatilityCube::atmStrike(Time start,
                                            Time length) const
 	{

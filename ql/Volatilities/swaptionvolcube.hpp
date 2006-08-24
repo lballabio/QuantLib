@@ -75,6 +75,9 @@ namespace QuantLib {
       protected: 
         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
+
+       Smile smile1(Time start,Time length) const;
+
         Rate atmStrike(Time start,
                        Time length) const;
         Volatility volatilityImpl(Time start,
