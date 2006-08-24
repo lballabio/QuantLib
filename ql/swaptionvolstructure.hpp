@@ -27,6 +27,7 @@
 #define quantlib_swaption_volatility_structure_hpp
 
 #include <ql/termstructure.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -103,6 +104,30 @@ namespace QuantLib {
       private:
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
     };
+
+    class Smile : std::unary_function<Real, Real> {
+    public:
+
+        Smile(const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities);
+        virtual ~Smile() {}
+        Real operator()(const Real& strike) const;
+
+    private:
+
+        const std::vector<Rate> strikes_, volatilities_;
+
+        boost::shared_ptr<Interpolation> interpolation_;
+		
+    };
+
+    inline Smile::Smile(const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities) :
+	volatilities_(volatilities), strikes_(strikes) {
+        interpolation_ = boost::shared_ptr<Interpolation>(new LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin()));
+	}
+
+    inline Real Smile::operator ()(const Real& strike) const {
+        return interpolation_->operator()(strike);
+    }
 
 
     // inline definitions
