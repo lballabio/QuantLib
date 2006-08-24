@@ -66,7 +66,6 @@ DayCounter dayCounter;
 std::vector<Rate> todaysForwards, displacements;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities;
-Real a, b, c, d;
 Size measureOffset_;
 unsigned long seed;
 
@@ -109,34 +108,9 @@ void setup() {
             (1.0+todaysForwards[i-1]*accruals[i-1]);
 
     // volatilities
-    Volatility mktVols[] = {    26.723105,
-                                29.155879,
-                                30.764028,
-                                31.728647,
-                                32.255761,
-                                32.468845,
-                                32.474319,
-                                32.341540,
-                                32.116407,
-                                31.840758,
-                                31.529932,
-                                31.208719,
-                                30.881461,
-                                30.564436,
-                                30.251958,
-                                29.957099,
-                                29.671729,
-                                29.405887,
-                                29.150905};
-
     volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<volatilities.size(); ++i)
-        volatilities[i] = mktVols[i]/100.;
-
-    a=-0.0597 + 0.06;
-    b=0.1677;
-    c=0.5403;
-    d=0.1710 + 0.06;
+        volatilities[i] = 0.10+ 0.005*i;
 
     measureOffset_ = 5;
 
@@ -349,10 +323,9 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
     std::vector<Time> fixingTimes(evolution.rateTimes());
     fixingTimes.pop_back();
     boost::shared_ptr<LmVolatilityModel> volModel(new
-        LmExtLinearExponentialVolModel(fixingTimes, b, c, d, a));
+        LmExtLinearExponentialVolModel(fixingTimes,0.5, 0.6, 0.1, 0.1));
     boost::shared_ptr<LmCorrelationModel> corrModel(new
         LmLinearExponentialCorrelationModel(evolution.numberOfRates(), longTermCorrelation, beta));
-    std::vector<Real> ks(volatilities.size(),1.0);
     switch (pseudoRootType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<PseudoRoot>(new
@@ -364,8 +337,8 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
                                displacements));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<PseudoRoot>(new
-                ExpCorrAbcdVol(a, b, c, d,
-                               ks,
+                ExpCorrAbcdVol(1.0,0.0,0.0,1.0,
+                               volatilities,
                                longTermCorrelation, beta,
                                evolution,
                                numberOfFactors,
@@ -737,90 +710,6 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
 }
 
 
-/////
-
-
-//void MarketModelTest::testFitAbcdVolatility() {
-//
-//
-//    BOOST_MESSAGE("Testing Abcd volatility ....");
-//
-//    QL_TEST_SETUP
-//
-//    //Time T = 2;
-//    //// set-up the model
-//    //// Parameters following Rebonato
-//    //Real a_ = 0.4;              // --> d 
-//    //Real b_ = 0.1;              // --> a 
-//    //Real c_ = 0.6;              // --> b
-//    //Real d_ = 0.5;              // --> c 
-//    //// instantaneous volatility
-//    //boost::shared_ptr<LmVolatilityModel> volaModel(
-//    //                new LmExtLinearExponentialVolModel(rateTimes,b_,c_,d_,a_));
-//
-//    //boost::shared_ptr<Abcd> volaModelMine(new Abcd(a_,b_,c_,d_));
-//    //Real varKlaus = volaModel->integratedVariance(1,2,T);
-//    //Real varMine = volaModelMine->primitive(T, 1, 1.5041095890410958);
-//
-//
-//    Real MktFwd[] = {3.415553126, 3.717360278,
-//                    3.726857521, 3.723640878,
-//                    3.739183376, 3.774429588,
-//                    3.816047345, 3.853840187,
-//                    3.893627619, 3.931578284,
-//                    3.985502557, 4.026108099,
-//                    4.087548052, 4.130912684,
-//                    4.179982923, 4.223786546,
-//                    4.264038801, 4.307456679,
-//                    4.336609257, 4.378736736 };
-//    
-//    //Volatility MktVols[] = { 10.63, 11.59,
-//    //                        13.06, 15.48,
-//    //                        16.69, 17.66,
-//    //                        16.91, 16.78,
-//    //                        16.70, 16.51,
-//    //                        16.35, 16.18,
-//    //                        15.98, 15.78,
-//    //                        15.54, 15.26,
-//    //                        14.99, 14.74,
-//    //                        14.53, 14.34 };
-//
-//
-//    std::vector<Rate> strikes;
-//    std::vector<Real> variances;
-//    for (Size i=0; i<LENGTH(MktFwd); i++) {
-//        strikes.push_back(MktFwd[i]/100.);
-//        variances.push_back(volatilities[i]*volatilities[i]*rateTimes[i]);
-//    }
-//
-//    Size nRates = todaysForwards.size();
-//
-//    boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d));
-//
-//    std::vector<Real> modelVariances(nRates);
-//    std::vector<Real> modelVols(nRates);
-//    std::vector<Real> ks(nRates);
-//    //std::vector<Real> blackNPV(nRates);
-//    //std::vector<Real> modelNPV(nRates);
-//
-//    for (Size i=0; i<nRates; i++) {
-//        Time expiry = rateTimes[i];
-//        modelVariances[i] = instVol->variance(expiry);
-//        modelVols[i] = std::sqrt(modelVariances[i]/expiry);
-//        ks[i] = volatilities[i]/modelVols[i];
-//        // no dispacement
-//        //blackNPV[i] = detail::blackFormula(todaysForwards[i],strikes[i],std::sqrt(variances[i]),1)
-//        //            * accruals[i] * todaysDiscounts[i+1];
-//        //modelNPV[i] = detail::blackFormula(todaysForwards[i],strikes[i],std::sqrt(modelVariances[i]),1)
-//        //            * accruals[i] * todaysDiscounts[i+1];
-//        BOOST_MESSAGE(i << " MktVol="    << io::rate(volatilities[i])      <<
-//                           " ModVol="    << io::rate(modelVols[i]) <<
-//                           " k=" << ks[i]);
-//
-//    } 
-//        
-//}
-
 
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
@@ -830,6 +719,5 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testFitAbcdVolatility));   
     return suite;
 }
