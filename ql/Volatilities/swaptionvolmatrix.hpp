@@ -80,17 +80,19 @@ namespace QuantLib {
         Rate minStrike() const;
         Rate maxStrike() const;
         //! returns the lower indexes of sourrounding volatility matrix corners
-        std::pair<Size,Size> locate(const Date& start,
+        std::pair<Size,Size> locate(const Date& exerciseDate,
                                     const Period& length) const {
-            std::pair<Time,Time> times = convertDates(start,length);
+            std::pair<Time,Time> times = convertDates(exerciseDate,length);
             return locate(times.first, times.second);
         }
         //! returns the lower indexes of sourrounding volatility matrix corners
-        std::pair<Size,Size> locate(Time start,
+        std::pair<Size,Size> locate(Time exerciseTime,
                                     Time length) const {
-            return std::make_pair(interpolation_.locateY(start),
+            return std::make_pair(interpolation_.locateY(exerciseTime),
                                   interpolation_.locateX(length));
         }
+        std::pair<Time,Time> convertDates(const Date& exerciseDate,
+                                          const Period& length) const;
       private:
         DayCounter dayCounter_;
         std::vector<Date> exerciseDates_;
@@ -99,11 +101,9 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
         Interpolation2D interpolation_;
-        Volatility volatilityImpl(Time start,
+        Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
                                   Rate strike) const;
-        std::pair<Time,Time> convertDates(const Date& start,
-                                          const Period& length) const;
     };
 
 
@@ -154,8 +154,8 @@ namespace QuantLib {
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                        Time start, Time length, Rate) const {
-        return interpolation_(length,start,true);
+                                        Time exerciseTime, Time length, Rate) const {
+        return interpolation_(length,exerciseTime,true);
     }
 
 }

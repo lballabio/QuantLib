@@ -140,8 +140,8 @@ namespace QuantLib {
     }
 
     std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
-                              const Date& start, const Period& length) const {
-        Time exerciseTime = timeFromReference(start);
+                              const Date& exerciseDate, const Period& length) const {
+        Time exerciseTime = timeFromReference(exerciseDate);
         Date startDate = exerciseDates_[0]; // for consistency
         Date endDate = startDate + length;
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
