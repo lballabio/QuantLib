@@ -23,6 +23,8 @@
 #include <ql/qldefines.hpp>
 #include <ql/MarketModels/Products/marketmodelcaplets.hpp>
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
+#include <ql/MarketModels/Products/marketmodelcoinitialswaps.hpp>
+#include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
 #include <ql/MarketModels/Products/marketmodelforwards.hpp>
 #include <ql/MarketModels/Products/marketmodelforwardsonestep.hpp>
 #include <ql/MarketModels/Products/marketmodelratchet.hpp>

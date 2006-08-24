@@ -7960,6 +7960,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoinitialswaps.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoinitialswaps.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswaps.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswaps.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp"
 					>
 				</File>

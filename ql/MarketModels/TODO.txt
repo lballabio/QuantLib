@@ -9,7 +9,7 @@ Path generation
 Drift
 - (1) Computation with rapid algorithm for reduced factor models (MEDIUM)
 - (4) Glasserman Zhao spot measure approximation (MEDIUM)
-- (4) ipc, capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
+- (4) capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
 
 Statistics
 - (2) convergence tables (EASY)
