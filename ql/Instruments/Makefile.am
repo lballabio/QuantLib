@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/Instruments
 include_HEADERS = \
     all.hpp \
     asianoption.hpp \
+    assetswap.hpp \
     barrieroption.hpp \
     basketoption.hpp \
     bond.hpp \
@@ -40,6 +41,7 @@ include_HEADERS = \
 
 libInstruments_la_SOURCES = \
     asianoption.cpp \
+    assetswap.cpp \
     barrieroption.cpp \
     basketoption.cpp \
     bond.cpp \

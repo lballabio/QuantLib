@@ -68,9 +68,10 @@ namespace QuantLib {
         Real dirtyPrice = bondCleanPrice + bond->accruedAmount();
         Real upfront=(dirtyPrice-100.0)*nominal;
         Date upfrontDate = floatSchedule.startDate();
-        boost::shared_ptr<CashFlow> upfrontCashFlow = boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(upfront, upfrontDate));
-        floatingLeg.insert(0, upfrontCashFlow);
+        boost::shared_ptr<CashFlow> upfrontCashFlow =
+            boost::shared_ptr<CashFlow>(new SimpleCashFlow(upfront,
+                                                           upfrontDate));
+        floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
 
         legs_[0] = fixedLeg;
         legs_[1] = floatingLeg;
