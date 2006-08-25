@@ -35,6 +35,8 @@ class MarketModelTest {
     static void testFitAbcdVolatility();
     static void testLongJumpCoinitialSwaps();
     static void testLongJumpCoterminalSwaps();
+    static void testVeryLongJumpCoinitialSwaps();
+    static void testVeryLongJumpCoterminalSwaps();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();

@@ -26,6 +26,8 @@
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
 #include <ql/MarketModels/Products/marketmodelcoinitialswaps.hpp>
 #include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
+#include <ql/MarketModels/Products/marketmodelcoinitialswapsonestep.hpp>
+#include <ql/MarketModels/Products/marketmodelcoterminalswapsonestep.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
@@ -723,6 +725,98 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
     }
 }
 
+void MarketModelTest::testVeryLongJumpCoinitialSwaps() {
+
+    BOOST_MESSAGE("Repricing (very long jump) coinitial swaps in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Real fixedRate = 0.04;
+
+    boost::shared_ptr<MarketModelProduct> product(new
+        MarketModelCoinitialSwapsOneStep(rateTimes, accruals, accruals, paymentTimes, fixedRate));
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    for (Size n=0; n<1; n++) {
+        MTBrownianGeneratorFactory generatorFactory(seed);
+        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
+
+        for (Size m=0; m<1; m++) {
+            Size factors = (m==0 ? todaysForwards.size() : m);
+            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
+
+            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+
+                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
+                for (Size j=0; j<LENGTH(measures); j++) {
+                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
+                    setMeasure(evolution, measures[j]);
+
+                    EvolverType evolvers[] = { Pc, Ipc };
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
+                        testCoinitialSwaps(*stats, fixedRate);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MarketModelTest::testVeryLongJumpCoterminalSwaps() {
+
+    BOOST_MESSAGE("Repricing (very long jump) coterminal swaps in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Real fixedRate = 0.04;
+
+    boost::shared_ptr<MarketModelProduct> product(new
+        MarketModelCoterminalSwapsOneStep(rateTimes, accruals, accruals, paymentTimes, fixedRate));
+    EvolutionDescription evolution = product->suggestedEvolution();
+
+    for (Size n=0; n<1; n++) {
+        MTBrownianGeneratorFactory generatorFactory(seed);
+        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
+
+        for (Size m=0; m<1; m++) {
+            Size factors = (m==0 ? todaysForwards.size() : m);
+            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
+
+            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
+                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+
+                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
+                for (Size j=0; j<LENGTH(measures); j++) {
+                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
+                    setMeasure(evolution, measures[j]);
+
+                    EvolverType evolvers[] = { Pc, Ipc };
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
+                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
+                        testCoterminalSwaps(*stats, fixedRate);
+                    }
+                }
+            }
+        }
+    }
+}
+
 #include "integrals.hpp"
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/functional.hpp>
@@ -891,6 +985,8 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCoinitialSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
