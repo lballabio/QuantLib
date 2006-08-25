@@ -32,13 +32,11 @@ namespace QuantLib
 //===========================================================================//
 //                          BlackVanillaOptionPricer                         //
 //===========================================================================//
-    Real BlackVanillaOptionPricer::operator()(Date expiryDate,
-                                              Real strike,
+    Real BlackVanillaOptionPricer::operator()(Real strike,
                                               bool isCall,
                                               Real deflator) const {
         const Real optionType = isCall ? 1.0 : -1.0;
-        const Real variance = volatilityStructure_->blackVariance(expiryDate,
-            swapTenor_, strike);
+        const Real variance = smile_.operator ()(strike);
         return deflator * detail::blackFormula(forwardValue_, strike,
             std::sqrt(variance), optionType);
     }
@@ -102,7 +100,7 @@ namespace QuantLib
         }
 
         vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(
-            new BlackVanillaOptionPricer(swapRateValue_, swapTenor_,
+            new BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
                                          coupon_->swaptionVolatility().currentLink()));
     }
 
@@ -181,8 +179,7 @@ namespace QuantLib
             integralValue = -integrate(a, b, *integrandForFloor);
             dFdK = integrandForFloor->firstDerivativeOfF(strike);
         }
-        const Real swaptionPrice = (*vanillaOptionPricer_)(fixingDate_,
-            strike, isCap, annuity_);
+        const Real swaptionPrice = (*vanillaOptionPricer_)(strike, isCap, annuity_);
         // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
 
         return coupon_->accrualPeriod() * (discount_/annuity_) *
@@ -252,7 +249,7 @@ namespace QuantLib
     }
 
     Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const {
-        const Real option = (*vanillaOptionPricer_)(fixingDate_, x, isCaplet_, annuity_);
+        const Real option = (*vanillaOptionPricer_)(x, isCaplet_, annuity_);
         return option * secondDerivativeOfF(x);
     }
 
@@ -276,7 +273,7 @@ namespace QuantLib
                                                         swapRateValue_);
         Real price = 0;
 
-        const Real CK = (*vanillaOptionPricer_)(fixingDate_, strike, isCall, annuity_);
+        const Real CK = (*vanillaOptionPricer_)(strike, isCall, annuity_);
         price += (discount_/annuity_)*CK;
         const Real sqrtSigma2T = std::sqrt(variance);
         const Real lnRoverK =  std::log(swapRateValue_/strike);

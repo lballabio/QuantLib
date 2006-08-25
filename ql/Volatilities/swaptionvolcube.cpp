@@ -131,8 +131,8 @@ namespace QuantLib {
             localSmile_[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
         }
         return boost::shared_ptr<Interpolation>(new
-            //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
-            LinearInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
+            SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
+            //LinearInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
             //NaturalCubicSpline(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
             );
     }
@@ -145,8 +145,8 @@ namespace QuantLib {
 
         const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
-            strikes[i] = atmForward + strikeSpreads_[i];
-            volatilities[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
+            strikes.push_back(atmForward + strikeSpreads_[i]);
+            volatilities.push_back(atmVol     + volSpreadsInterpolator_[i](length, start));
         }
         return Smile(start, strikes, volatilities);
     }
