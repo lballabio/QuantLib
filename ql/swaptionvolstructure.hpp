@@ -227,7 +227,7 @@ namespace QuantLib {
     }
 
     inline Real Smile::operator ()(const Real& strike) const {
-        const Real v = interpolation_->operator()(strike);
+        const Real v = interpolation_->operator()(strike, true);
         return v*v*timeToExpiry_;
     }
 
