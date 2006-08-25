@@ -25,6 +25,7 @@
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/TermStructures/all.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
+#include <ql/Volatilities/swaptionvolcube.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -50,7 +51,9 @@ const Real infiniteCap_(100), infiniteFloor_(-100);
 const Integer years_(30);
 boost::shared_ptr<SwapIndex> index_;
 std::string familyName_("");
-Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure_;
+Handle<SwaptionVolatilityStructure> swaptionVolatilityMatrix_;
+
+//Handle<SwaptionVolatilityStructure> swaptionVolatilityCube_;
 const Real volatility_ = .080;
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
 
@@ -65,8 +68,9 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
-    iborIndex_ = boost::shared_ptr<Xibor>(new Euribor(Period(12/floatingFrequency_,
-                                                         Months),
+    iborIndex_ = boost::shared_ptr<Xibor>(
+        new Euribor(Period(12/floatingFrequency_,
+        Months),
                                                   termStructure_));
     calendar_ = iborIndex_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
@@ -102,11 +106,38 @@ void setup() {
 
     const Matrix volatilities(2, 2, volatility_);
 
-    swaptionVolatilityStructure_ = Handle<SwaptionVolatilityStructure>(
-
+    swaptionVolatilityMatrix_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
             SwaptionVolatilityMatrix(referenceDate_, exerciseDates, lengths,
-                                     volatilities, iborIndex_->dayCounter())));
+                                     volatilities, 
+                                     iborIndex_->dayCounter())));
+
+    std::vector<Rate> strikeSpreads;
+    strikeSpreads.push_back(-1);
+    strikeSpreads.push_back(0);
+    strikeSpreads.push_back(1);
+    const Matrix volSpreads(lengths.size()*lengths.size(),
+        strikeSpreads.size(),0.0);
+
+
+    //swaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
+    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
+    //        SwaptionVolatilityCube(swaptionVolatilityMatrix_, 
+    //        lengths, 
+    //        lengths,
+    //        strikeSpreads,
+    //        volSpreads,
+    //        calendar_,
+    //        fixedFrequency_,
+    //        fixedConvention_,
+    //        iborIndex_->dayCounter(),
+    //        iborIndex_,
+    //        1,
+    //        iborIndex_
+    //        )));
+
+
+
     {
 		modelOfYieldCurves_.push_back(GFunctionFactory::standard);
 		modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
@@ -133,20 +164,24 @@ void CmsTest::testFairRate()  {
 
     const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve = modelOfYieldCurves_[h];
 
-    boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new ConundrumPricerByNumericalIntegration(
+    boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
+        new ConundrumPricerByNumericalIntegration(
             modelOfYieldCurve, 0, 1));
-    boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new ConundrumPricerByBlack(
+    boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
+        new ConundrumPricerByBlack(
             modelOfYieldCurve)
             );
 
     //Coupons
     CMSCoupon coupon1(1, paymentDate_, index_, startDate_, endDate_, settlementDays_,
-        iborIndex_->dayCounter(), numericalPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
-    coupon1.setSwaptionVolatility(swaptionVolatilityStructure_);
+        iborIndex_->dayCounter(), 
+        numericalPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
+    coupon1.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
     CMSCoupon coupon2(1, paymentDate_, index_, startDate_, endDate_, settlementDays_,
-        iborIndex_->dayCounter(), analyticPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
-    coupon2.setSwaptionVolatility(swaptionVolatilityStructure_);
+        iborIndex_->dayCounter(), 
+        analyticPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
+    coupon2.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
     //Computation
     const double rate1 = coupon1.rate();
@@ -190,8 +225,9 @@ void CmsTest::testParity() {
         for(Size j=0; j<pricers.size(); j++) {
 
             CMSCoupon swaplet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_,
-                iborIndex_->dayCounter(), pricers[j], gearing_, spread_, infiniteCap_, infiniteFloor_);
-            swaplet.setSwaptionVolatility(swaptionVolatilityStructure_);
+                iborIndex_->dayCounter(), 
+                pricers[j], gearing_, spread_, infiniteCap_, infiniteFloor_);
+            swaplet.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
             Real strike = .005;
 
@@ -199,12 +235,14 @@ void CmsTest::testParity() {
 
                 strike += .005;
                 CMSCoupon caplet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_,
-                    iborIndex_->dayCounter(), pricers[j], gearing_, spread_, strike, infiniteFloor_);
-                caplet.setSwaptionVolatility(swaptionVolatilityStructure_);
+                    iborIndex_->dayCounter(), 
+                    pricers[j], gearing_, spread_, strike, infiniteFloor_);
+                caplet.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
                 CMSCoupon floorlet(1, paymentDate_, index_, startDate_, endDate_, settlementDays_,
-                    iborIndex_->dayCounter(), pricers[j], gearing_, spread_, infiniteCap_, strike);
-                floorlet.setSwaptionVolatility(swaptionVolatilityStructure_);
+                    iborIndex_->dayCounter(), 
+                    pricers[j], gearing_, spread_, infiniteCap_, strike);
+                floorlet.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
                 //Computation
                 const double price1 = swaplet.price(termStructure_)
