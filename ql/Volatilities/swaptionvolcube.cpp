@@ -148,8 +148,8 @@ namespace QuantLib {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             volatilities.push_back(atmVol     + volSpreadsInterpolator_[i](length, start));
         }
-        strikes.insert(strikes.begin(),strikes.front());
-        strikes.insert(strikes.end(),strikes.back());
+        strikes.insert(strikes.begin(),strikes.front()-.1);
+        strikes.insert(strikes.end(),strikes.back())+.1;
 
         volatilities.insert(volatilities.begin(),volatilities.front());
         volatilities.insert(volatilities.end(),volatilities.back());
