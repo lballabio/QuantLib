@@ -2928,10 +2928,22 @@
 					RelativePath=".\ql\MarketModels\Products\marketmodelcoinitialswaps.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoinitialswapsonestep.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoinitialswapsonestep.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswaps.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswaps.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswapsonestep.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelcoterminalswapsonestep.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelforwards.cpp">
