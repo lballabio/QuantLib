@@ -41,7 +41,6 @@ namespace QuantLib
     };
 
     class BlackVanillaOptionPricer : public VanillaOptionPricer {
-        Date expiryDate_;
       public:
         BlackVanillaOptionPricer(
             Rate forwardValue,
@@ -54,6 +53,7 @@ namespace QuantLib
                         Real deflator) const;
       private:
         const Rate forwardValue_;
+        Date expiryDate_;
         const Period swapTenor_;
         const boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
         const VarianceSmileSection smile_;

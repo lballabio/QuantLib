@@ -39,10 +39,10 @@ namespace QuantLib {
         VarianceSmileSection(Time expiryTime,
               const std::vector<Rate>& strikes,
               const std::vector<Rate>& volatilities);
-        VarianceSmileSection(Time timeToExpiry, 
-            Rate forwardValue,
-            const std::vector<Rate>& strikes,
-            const std::vector<Volatility>& volatilities);
+        VarianceSmileSection(Time timeToExpiry,
+                             Rate forwardValue,
+                             const std::vector<Rate>& strikes,
+                             const std::vector<Volatility>& volatilities);
         Real operator()(const Rate& strike) const;
       private:
         const Time timeToExpiry_;

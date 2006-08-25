@@ -77,7 +77,7 @@ namespace QuantLib {
         exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
                                                     exerciseTimes_.end(),
                                                     exerciseDatesAsReal_.begin());
-		exerciseInterpolator_.enableExtrapolation();
+        exerciseInterpolator_.enableExtrapolation();
 
         Size nlengths = lengths_.size();
         Date startDate = exerciseDates_[0]; // as good as any
@@ -103,7 +103,7 @@ namespace QuantLib {
         QL_REQUIRE(nExercise*nlengths==volSpreads.rows(),
                    "nExercise*nlengths!=volSpreads.rows()");
         for (i=0; i<nStrikes_; i++)
-		{
+        {
             for (Size j=0; j<nExercise; j++) {
                 for (Size k=0; k<nlengths; k++) {
                     volSpreads_[i][j][k]=volSpreads[j*nlengths+k][i];
@@ -113,7 +113,7 @@ namespace QuantLib {
                 timeLengths_.begin(), timeLengths_.end(),
                 exerciseTimes_.begin(), exerciseTimes_.end(),
                 volSpreads_[i]);
-			volSpreadsInterpolator_[i].enableExtrapolation();
+            volSpreadsInterpolator_[i].enableExtrapolation();
         }
 
         //registerWith(atmVolMatrix_);
@@ -137,12 +137,12 @@ namespace QuantLib {
     }
 
     VarianceSmileSection SwaptionVolatilityCube::smileSection(Time start, Time length) const {
-        
+
         std::vector<Real> strikes, volatilities;
 
         const Rate atmForward = atmStrike(start, length);
 
-        const Volatility atmVol = 
+        const Volatility atmVol =
             atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
@@ -158,18 +158,18 @@ namespace QuantLib {
         return VarianceSmileSection(start, strikes, volatilities);
         //return VarianceSmileSection(start, atmForward, strikes, volatilities);
     }
-    
+
     Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const {
 
-		Date exerciseDate = Date(static_cast<BigInteger>(
-			exerciseInterpolator_(start)));
+        Date exerciseDate = Date(static_cast<BigInteger>(
+            exerciseInterpolator_(start)));
 
         // vanilla swap's parameters
         Calendar calendar_ = TARGET(); // FIXME
-		Integer swapFixingDays = 2; // FIXME
-		Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
+        Integer swapFixingDays = 2; // FIXME
+        Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
 
-		Rounding rounder(0);
+        Rounding rounder(0);
         Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
 
         // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
@@ -203,25 +203,25 @@ namespace QuantLib {
 
      VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
                         const std::vector<Rate>& strikes,
-                        const std::vector<Rate>& volatilities) : 
-     timeToExpiry_(timeToExpiry), 
+                        const std::vector<Rate>& volatilities) :
+     timeToExpiry_(timeToExpiry),
          strikes_(strikes),
          volatilities_(volatilities) {
-             interpolation_ = boost::shared_ptr<Interpolation>(new 
-                 LinearInterpolation(strikes_.begin(), 
+             interpolation_ = boost::shared_ptr<Interpolation>(new
+                 LinearInterpolation(strikes_.begin(),
                  strikes_.end(), volatilities_.begin())
                  );
          }
 
-      VarianceSmileSection::VarianceSmileSection(Time timeToExpiry, 
+      VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
           Rate forwardValue,
           const std::vector<Rate>& strikes,
-          const std::vector<Rate>& volatilities) : 
+          const std::vector<Rate>& volatilities) :
       timeToExpiry_(timeToExpiry), strikes_(strikes),
           volatilities_(volatilities) {
-              interpolation_ = boost::shared_ptr<Interpolation>(new 
-                  SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(), 
-                  timeToExpiry, forwardValue, Null<Real>(), Null<Real>(), Null<Real>(), 
+              interpolation_ = boost::shared_ptr<Interpolation>(new
+                  SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
+                  timeToExpiry, forwardValue, Null<Real>(), Null<Real>(), Null<Real>(),
                   Null<Real>())
                   );
           }
@@ -232,3 +232,4 @@ namespace QuantLib {
     }
 
 }
+

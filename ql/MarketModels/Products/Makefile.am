@@ -7,7 +7,9 @@ include_HEADERS = \
     marketmodelcaplets.hpp \
     marketmodelcapletsonestep.hpp \
     marketmodelcoinitialswaps.hpp \
+    marketmodelcoinitialswapsonestep.hpp \
     marketmodelcoterminalswaps.hpp \
+    marketmodelcoterminalswapsonestep.hpp \
     marketmodelforwards.hpp \
     marketmodelforwardsonestep.hpp \
     marketmodelratchet.hpp
@@ -16,7 +18,9 @@ libMarketModelsProducts_la_SOURCES = \
     marketmodelcaplets.cpp \
     marketmodelcapletsonestep.cpp \
     marketmodelcoinitialswaps.cpp \
+    marketmodelcoinitialswapsonestep.cpp \
     marketmodelcoterminalswaps.cpp \
+    marketmodelcoterminalswapsonestep.cpp \
     marketmodelforwards.cpp \
     marketmodelforwardsonestep.cpp \
     marketmodelratchet.cpp
