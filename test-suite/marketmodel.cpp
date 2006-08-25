@@ -337,7 +337,7 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
                                displacements));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<PseudoRoot>(new
-                ExpCorrAbcdVol(1.0,0.0,0.0,1.0,
+                ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
                                volatilities,
                                longTermCorrelation, beta,
                                evolution,
