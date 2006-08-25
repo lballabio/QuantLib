@@ -35,29 +35,16 @@ namespace QuantLib {
     /*! This class provides the volatility smile section
     */
     class Smile : std::unary_function<Real, Real> {
-    public:
-
-        Smile(Time expiryTime, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities);
-        virtual ~Smile() {}
+      public:
+        Smile(Time expiryTime,
+              const std::vector<Rate>& strikes,
+              const std::vector<Rate>& volatilities);
         Real operator()(const Real& strike) const;
-
-    private:
-
+      private:
         const Time timeToExpiry_;
         const std::vector<Rate> strikes_, volatilities_;
-
         boost::shared_ptr<Interpolation> interpolation_;
     };
-
-    inline Smile::Smile(Time timeToExpiry, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities) :
-	volatilities_(volatilities), strikes_(strikes), timeToExpiry_(timeToExpiry) {
-        interpolation_ = boost::shared_ptr<Interpolation>(new LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin()));
-	}
-
-    inline Real Smile::operator ()(const Real& strike) const {
-        const Real v = interpolation_->operator()(strike);
-        return v*v*timeToExpiry_;
-    }
 
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
@@ -137,7 +124,7 @@ namespace QuantLib {
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
     };
 
- 
+
 
     // inline definitions
 
@@ -152,32 +139,29 @@ namespace QuantLib {
     : TermStructure(settlementDays,calendar) {}
 
     inline Volatility SwaptionVolatilityStructure::volatility(
-                                                        const Date& exerciseDate,
-                                                        const Period& length,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                     const Date& exerciseDate,
+                                                     const Period& length,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         std::pair<Time,Time> times = convertDates(exerciseDate, length);
         checkRange(times.first, times.second, strike, extrapolate);
         return volatilityImpl(times.first, times.second, strike);
     }
 
     inline Volatility SwaptionVolatilityStructure::volatility(
-                                                        Time exerciseTime,
-                                                        Time length,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                     Time exerciseTime,
+                                                     Time length,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         checkRange(exerciseTime, length, strike, extrapolate);
         return volatilityImpl(exerciseTime, length, strike);
     }
 
     inline Real SwaptionVolatilityStructure::blackVariance(
-                                                        const Date& exerciseDate,
-                                                        const Period& length,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                     const Date& exerciseDate,
+                                                     const Period& length,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         std::pair<Time,Time> times = convertDates(exerciseDate, length);
         checkRange(times.first, times.second, strike, extrapolate);
         Volatility vol = volatilityImpl(times.first, times.second, strike);
@@ -185,11 +169,10 @@ namespace QuantLib {
     }
 
     inline Real SwaptionVolatilityStructure::blackVariance(
-                                                        Time exerciseTime,
-                                                        Time length,
-                                                        Rate strike,
-                                                        bool extrapolate)
-                                                                       const {
+                                                     Time exerciseTime,
+                                                     Time length,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
         checkRange(exerciseTime, length, strike, extrapolate);
         Volatility vol = volatilityImpl(exerciseTime, length, strike);
         return vol*vol*exerciseTime;
@@ -213,7 +196,7 @@ namespace QuantLib {
     }
 
     inline void SwaptionVolatilityStructure::checkRange(
-                    Time exerciseTime, Time length, Rate k, bool extrapolate) const {
+             Time exerciseTime, Time length, Rate k, bool extrapolate) const {
         TermStructure::checkRange(exerciseTime, extrapolate);
         QL_REQUIRE(length >= 0.0,
                    "negative length (" << length << ") given");
@@ -227,9 +210,25 @@ namespace QuantLib {
                    << minStrike() << "," << maxStrike()<< "]");
     }
 
-    inline Smile SwaptionVolatilityStructure::smileSection(Date start, Period length) const {
+    inline Smile SwaptionVolatilityStructure::smileSection(
+                                            Date start, Period length) const {
         const std::pair<Time, Time> p = convertDates(start, length);
         return smileSection(p.first, p.second);
+    }
+
+    inline Smile::Smile(Time timeToExpiry,
+                        const std::vector<Rate>& strikes,
+                        const std::vector<Rate>& volatilities)
+    : timeToExpiry_(timeToExpiry), strikes_(strikes),
+      volatilities_(volatilities) {
+        interpolation_ = boost::shared_ptr<Interpolation>(
+                     new LinearInterpolation(strikes_.begin(), strikes_.end(),
+                                             volatilities_.begin()));
+    }
+
+    inline Real Smile::operator ()(const Real& strike) const {
+        const Real v = interpolation_->operator()(strike);
+        return v*v*timeToExpiry_;
     }
 
 }
