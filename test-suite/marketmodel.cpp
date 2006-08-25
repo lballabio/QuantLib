@@ -717,6 +717,8 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_MESSAGE("Testing AbcdVolatilityIntegration ... ");
 
+    QL_TEST_SETUP
+
     Real a = -0.0597;
     Real b = 0.1677;
     Real c = 0.5403;
@@ -783,6 +785,58 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
             }
         }
     }
+}
+
+void MarketModelTest::testAbcdVolatilityCompare() {
+    
+    BOOST_MESSAGE("Testing AbcdVolatility different implementations ...");
+
+    QL_TEST_SETUP
+
+    /*
+        Given the instantaneous volatilities related to forward expiring at 
+        rateTimes[i1] and at rateTimes[i2], the methods:
+        - LmExtLinearExponentialVolModel::integratedVariance(i1,i2,T)
+        - Abcd::covariance(T)
+        return the same result only if T < min(rateTimes[i1],rateTimes[i2]).
+    */
+
+    // Parameters following Rebonato  --> Parameters following Brigo-Mercurio
+    // used in Abcd class                 used in LmExtLinearExponentialVolModel class
+    Real a = 0.0597;              // --> d 
+    Real b = 0.1677;              // --> a 
+    Real c = 0.5403;              // --> b
+    Real d = 0.1710;              // --> c 
+
+    
+    Size i1; // index of forward 1
+    Size i2; // index of forward 2
+        
+    boost::shared_ptr<LmVolatilityModel> lmAbcd(
+                    new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
+
+    for (i1=0; i1<rateTimes.size(); i1++ ) {
+        for (i2=0; i2<rateTimes.size(); i2++ ) {
+            boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d,rateTimes[i1],rateTimes[i2]));
+            Time T = 0.;
+            do {
+                
+                Real lmCovariance = lmAbcd->integratedVariance(i1,i2,T);
+                Real abcdCovariance = abcd->covariance(0,T);
+                if(std::abs(lmCovariance-abcdCovariance)>1e-10) {
+                    BOOST_FAIL("     " <<
+                                  "  T1="   << rateTimes[i1] << ","     <<
+                                  "T2="   << rateTimes[i2] << ",\t\t" << 
+                                  "xMin=" << 0  << ","     <<
+                                  "xMax=" << T  << ",\t\t" <<
+                                  "abcd: " << abcdCovariance << ",\t" <<
+                                  "lm: "   << lmCovariance);        
+                }
+                T = T + 0.5;
+            } while (T<std::min(rateTimes[i1],rateTimes[i2])) ;
+        }
+    }
+
 
 }
 
@@ -795,5 +849,6 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     return suite;
 }
