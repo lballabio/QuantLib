@@ -59,10 +59,9 @@ namespace QuantLib {
                 for (Size j=i; j<n; ++j) {
                     correlation = longTermCorr + (1.0-longTermCorr) * 
                          std::exp(-beta*std::abs(rateTimes_[i]-rateTimes_[j]));
-                    boost::shared_ptr<Abcd> abcd(new Abcd(b, c, d, a, rateTimes_[i], rateTimes_[j]));
+                    boost::shared_ptr<Abcd> abcd(new Abcd(a, b, c, d, rateTimes_[i], rateTimes_[j]));
                     effStartTime = k>0 ? evolution.effectiveStopTime()[k-1][i] : 0.0;
-                    covar = abcd->primitive(evolution.effectiveStopTime()[k][i]) -
-                            abcd->primitive(effStartTime);
+                    covar = abcd->covariance(effStartTime,evolution.effectiveStopTime()[k][i]);
                     covariance[j][i] = covariance[i][j] = ks_[i] * ks_[j] * covar * correlation ;
                  }
              }
