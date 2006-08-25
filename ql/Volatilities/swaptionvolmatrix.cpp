@@ -148,7 +148,7 @@ namespace QuantLib {
         return std::make_pair(exerciseTime,timeLength);
     }
                               
-    Smile SwaptionVolatilityMatrix::smileSection(Time start, Time length) const {
+    VarianceSmileSection SwaptionVolatilityMatrix::smileSection(Time start, Time length) const {
 
         //any strike
         const Real strike = .04;
@@ -160,7 +160,7 @@ namespace QuantLib {
         strikes.push_back(strike);
         strikes.push_back(strike+1);
 
-        return Smile(start, strikes, volatilities);
+        return VarianceSmileSection(start, strikes, volatilities);
     }
 
 }

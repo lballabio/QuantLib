@@ -60,7 +60,7 @@ namespace QuantLib {
         Real maxStrike() const;
 
         //! return trivial smile section
-        Smile smileSection(Time start, Time length) const;
+        VarianceSmileSection smileSection(Time start, Time length) const;
 
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
@@ -143,7 +143,7 @@ namespace QuantLib {
         return volatility_->value();
     }
 
-    inline Smile SwaptionConstantVolatility::smileSection(Time start, Time length) const {
+    inline VarianceSmileSection SwaptionConstantVolatility::smileSection(Time start, Time length) const {
         //any strike
         const Real strike = .04;
 
@@ -154,7 +154,7 @@ namespace QuantLib {
         strikes.push_back(strike);
         strikes.push_back(strike+1);
 
-        return Smile(start, strikes, volatilities);
+        return VarianceSmileSection(start, strikes, volatilities);
     }
 
 }

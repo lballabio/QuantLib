@@ -34,19 +34,20 @@ namespace QuantLib {
      //! swaption-volatility smile section
     /*! This class provides the volatility smile section
     */
-    class Smile : std::unary_function<Real, Real> {
+    class VarianceSmileSection : std::unary_function<Rate, Real> {
       public:
-        Smile(Time expiryTime,
+        VarianceSmileSection(Time expiryTime,
               const std::vector<Rate>& strikes,
               const std::vector<Rate>& volatilities);
-        Smile::Smile(Time timeToExpiry, 
+        VarianceSmileSection(Time timeToExpiry, 
             Rate forwardValue,
             const std::vector<Rate>& strikes,
-            const std::vector<Rate>& volatilities);
-        Real operator()(const Real& strike) const;
+            const std::vector<Volatility>& volatilities);
+        Real operator()(const Rate& strike) const;
       private:
         const Time timeToExpiry_;
-        const std::vector<Rate> strikes_, volatilities_;
+        const std::vector<Rate> strikes_;
+        const std::vector<Volatility> volatilities_;
         boost::shared_ptr<Interpolation> interpolation_;
     };
 
@@ -117,9 +118,9 @@ namespace QuantLib {
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
 
-        virtual Smile smileSection(Date start, Period length) const;
+        virtual VarianceSmileSection smileSection(Date start, Period length) const;
         //! return smile section
-        virtual Smile smileSection(Time start, Time length) const = 0;
+        virtual VarianceSmileSection smileSection(Time start, Time length) const = 0;
 
       protected:
         //! implements the actual volatility calculation in derived classes
@@ -214,7 +215,7 @@ namespace QuantLib {
                    << minStrike() << "," << maxStrike()<< "]");
     }
 
-    inline Smile SwaptionVolatilityStructure::smileSection(
+    inline VarianceSmileSection SwaptionVolatilityStructure::smileSection(
                                             Date start, Period length) const {
         const std::pair<Time, Time> p = convertDates(start, length);
         return smileSection(p.first, p.second);

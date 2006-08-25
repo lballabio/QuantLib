@@ -136,7 +136,7 @@ namespace QuantLib {
             );
     }
 
-    Smile SwaptionVolatilityCube::smileSection(Time start, Time length) const {
+    VarianceSmileSection SwaptionVolatilityCube::smileSection(Time start, Time length) const {
         
         std::vector<Real> strikes, volatilities;
 
@@ -155,8 +155,8 @@ namespace QuantLib {
         volatilities.insert(volatilities.begin(),volatilities.front());
         volatilities.insert(volatilities.end(),volatilities.back());
 
-        return Smile(start, strikes, volatilities);
-        //return Smile(start, atmForward, strikes, volatilities);
+        return VarianceSmileSection(start, strikes, volatilities);
+        //return VarianceSmileSection(start, atmForward, strikes, volatilities);
     }
     
     Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const {
@@ -201,7 +201,7 @@ namespace QuantLib {
             return smile(start, length)->operator()(strike, true);
         }
 
-     Smile::Smile(Time timeToExpiry,
+     VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
                         const std::vector<Rate>& strikes,
                         const std::vector<Rate>& volatilities) : 
      timeToExpiry_(timeToExpiry), 
@@ -213,7 +213,7 @@ namespace QuantLib {
                  );
          }
 
-      Smile::Smile(Time timeToExpiry, 
+      VarianceSmileSection::VarianceSmileSection(Time timeToExpiry, 
           Rate forwardValue,
           const std::vector<Rate>& strikes,
           const std::vector<Rate>& volatilities) : 
@@ -226,7 +226,7 @@ namespace QuantLib {
                   );
           }
 
-    Real Smile::operator ()(const Real& strike) const {
+    Volatility VarianceSmileSection::operator ()(const Real& strike) const {
         const Real v = interpolation_->operator()(strike, true);
         return v*v*timeToExpiry_;
     }

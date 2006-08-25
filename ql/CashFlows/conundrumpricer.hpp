@@ -56,7 +56,7 @@ namespace QuantLib
         const Rate forwardValue_;
         const Period swapTenor_;
         const boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
-        const Smile smile_;
+        const VarianceSmileSection smile_;
     };
 
     class GFunction {

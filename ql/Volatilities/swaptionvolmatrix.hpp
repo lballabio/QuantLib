@@ -94,7 +94,7 @@ namespace QuantLib {
         std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                           const Period& length) const;
         //! return trivial smile section
-        virtual Smile smileSection(Time start, Time length) const;
+        virtual VarianceSmileSection smileSection(Time start, Time length) const;
       
     private:
         DayCounter dayCounter_;
