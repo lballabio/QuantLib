@@ -39,6 +39,10 @@ namespace QuantLib {
         Smile(Time expiryTime,
               const std::vector<Rate>& strikes,
               const std::vector<Rate>& volatilities);
+        Smile::Smile(Time timeToExpiry, 
+            Rate forwardValue,
+            const std::vector<Rate>& strikes,
+            const std::vector<Rate>& volatilities);
         Real operator()(const Real& strike) const;
       private:
         const Time timeToExpiry_;
@@ -214,21 +218,6 @@ namespace QuantLib {
                                             Date start, Period length) const {
         const std::pair<Time, Time> p = convertDates(start, length);
         return smileSection(p.first, p.second);
-    }
-
-    inline Smile::Smile(Time timeToExpiry,
-                        const std::vector<Rate>& strikes,
-                        const std::vector<Rate>& volatilities)
-    : timeToExpiry_(timeToExpiry), strikes_(strikes),
-      volatilities_(volatilities) {
-        interpolation_ = boost::shared_ptr<Interpolation>(
-                     new LinearInterpolation(strikes_.begin(), strikes_.end(),
-                                             volatilities_.begin()));
-    }
-
-    inline Real Smile::operator ()(const Real& strike) const {
-        const Real v = interpolation_->operator()(strike, true);
-        return v*v*timeToExpiry_;
     }
 
 }

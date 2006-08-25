@@ -119,13 +119,12 @@ namespace QuantLib {
         //registerWith(atmVolMatrix_);
     }
 
-
     boost::shared_ptr<Interpolation>
     SwaptionVolatilityCube::smile(Time start, Time length) const
     {
-        Rate atmForward = atmStrike(start, length);
+        const Rate atmForward = atmStrike(start, length);
 
-        Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
+        const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             localStrikes_[i] = atmForward + strikeSpreads_[i];
             localSmile_[i]   = atmVol + volSpreadsInterpolator_[i](length, start);
@@ -150,17 +149,17 @@ namespace QuantLib {
             volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
         //add points to force flat extrapolation
-        strikes.insert(strikes.begin(),strikes.front()-.1);
-        strikes.insert(strikes.end(),strikes.back()+.1);
+        strikes.insert(strikes.begin(), strikes.front()-.1);
+        strikes.insert(strikes.end(), strikes.back()+.1);
 
         volatilities.insert(volatilities.begin(),volatilities.front());
         volatilities.insert(volatilities.end(),volatilities.back());
 
         return Smile(start, strikes, volatilities);
+        //return Smile(start, atmForward, strikes, volatilities);
     }
     
-    Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const
-	{
+    Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const {
 
 		Date exerciseDate = Date(static_cast<BigInteger>(
 			exerciseInterpolator_(start)));
@@ -197,10 +196,39 @@ namespace QuantLib {
         return swap.fairRate();
     }
 
-    Volatility SwaptionVolatilityCube::volatilityImpl(Time start,
-                                                      Time length,
-                                                      Rate strike) const {
-        return smile(start, length)->operator()(strike, true);
+    Volatility SwaptionVolatilityCube::
+        volatilityImpl(Time start, Time length, Rate strike) const {
+            return smile(start, length)->operator()(strike, true);
+        }
+
+     Smile::Smile(Time timeToExpiry,
+                        const std::vector<Rate>& strikes,
+                        const std::vector<Rate>& volatilities) : 
+     timeToExpiry_(timeToExpiry), 
+         strikes_(strikes),
+         volatilities_(volatilities) {
+             interpolation_ = boost::shared_ptr<Interpolation>(new 
+                 LinearInterpolation(strikes_.begin(), 
+                 strikes_.end(), volatilities_.begin())
+                 );
+         }
+
+      Smile::Smile(Time timeToExpiry, 
+          Rate forwardValue,
+          const std::vector<Rate>& strikes,
+          const std::vector<Rate>& volatilities) : 
+      timeToExpiry_(timeToExpiry), strikes_(strikes),
+          volatilities_(volatilities) {
+              interpolation_ = boost::shared_ptr<Interpolation>(new 
+                  SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(), 
+                  timeToExpiry, forwardValue, Null<Real>(), Null<Real>(), Null<Real>(), 
+                  Null<Real>())
+                  );
+          }
+
+    Real Smile::operator ()(const Real& strike) const {
+        const Real v = interpolation_->operator()(strike, true);
+        return v*v*timeToExpiry_;
     }
 
 }

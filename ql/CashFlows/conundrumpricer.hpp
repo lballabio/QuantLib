@@ -47,10 +47,7 @@ namespace QuantLib
             Rate forwardValue,
             Date expiryDate,
             const Period& swapTenor,
-            const boost::shared_ptr<SwaptionVolatilityStructure>& volatilityStructure)
-        : forwardValue_(forwardValue), expiryDate_(expiryDate), swapTenor_(swapTenor),
-          volatilityStructure_(volatilityStructure),
-          smile_(volatilityStructure_->smileSection(expiryDate_,swapTenor_)){  };
+            const boost::shared_ptr<SwaptionVolatilityStructure>& volatilityStructure);
 
         Real operator()(Real strike,
                         bool isCall,
