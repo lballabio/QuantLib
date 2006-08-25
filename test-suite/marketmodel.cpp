@@ -108,9 +108,23 @@ void setup() {
             (1.0+todaysForwards[i-1]*accruals[i-1]);
 
     // volatilities
+    Volatility mktVols[] = { 10.63, 11.59,
+                             13.06, 15.48,
+                             16.69, 17.66,
+                             16.91, 16.78,
+                             16.70, 16.51,
+                             16.35, 16.18,
+                             15.98, 15.78,
+                             15.54, 15.26,
+                             14.99, 14.74,
+                             14.53 };
     volatilities = std::vector<Volatility>(todaysForwards.size());
-    for (Size i=0; i<volatilities.size(); ++i)
-        volatilities[i] = 0.10+ 0.005*i;
+    for (Size i=0; i<LENGTH(mktVols); i++) {
+        volatilities[i]= mktVols[i]/100.;
+    }
+    //volatilities = std::vector<Volatility>(todaysForwards.size());
+    //for (Size i=0; i<volatilities.size(); ++i)
+    //    volatilities[i] = 0.10+ 0.005*i;
 
     measureOffset_ = 5;
 
@@ -836,8 +850,37 @@ void MarketModelTest::testAbcdVolatilityCompare() {
             } while (T<std::min(rateTimes[i1],rateTimes[i2])) ;
         }
     }
+}
 
+void MarketModelTest::testAbcdVolatilityFit() {
 
+    BOOST_MESSAGE("Testing AbcdVolatility fit ...");
+
+    QL_TEST_SETUP
+
+    Real a = -0.0597;
+    Real b = 0.1677;
+    Real c = 0.5403;
+    Real d = 0.1710;
+
+    std::vector<Real> mktVariances(volatilities.size());
+    for (Size i=0; i<volatilities.size(); i++) {
+        mktVariances[i] = volatilities[i]*volatilities[i]*rateTimes[i];
+    }
+    Size nRates = todaysForwards.size();
+
+    for (Size i=0; i<nRates; i++) {
+        Time expiry = rateTimes[i];
+        boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d, expiry, expiry));
+        Real modelVariances = instVol->variance(expiry);
+        Real modelVols = std::sqrt(modelVariances/expiry);
+        Real k = std::sqrt(mktVariances[i]/modelVariances);
+        
+        //BOOST_MESSAGE(i << " Fixing Time = " << expiry <<
+        //                   " MktVol = " << io::rate(volatilities[i])  <<
+        //                   " ModVol = " << io::rate(modelVols)     <<
+        //                   " k=" << k);
+    } 
 }
 
 test_suite* MarketModelTest::suite() {
@@ -850,5 +893,6 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
     return suite;
 }
