@@ -76,8 +76,8 @@ namespace QuantLib {
         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
 
-       Smile smile1(Time start, Time length) const;
-       Smile smile1(Date start, Period length) const;
+       virtual Smile smileSection(Time start, Time length) const;
+       
 
         Rate atmStrike(Time start,
                        Time length) const;

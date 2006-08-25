@@ -31,6 +31,34 @@
 
 namespace QuantLib {
 
+     //! swaption-volatility smile section
+    /*! This class provides the volatility smile section
+    */
+    class Smile : std::unary_function<Real, Real> {
+    public:
+
+        Smile(Time expiryTime, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities);
+        virtual ~Smile() {}
+        Real operator()(const Real& strike) const;
+
+    private:
+
+        const Time timeToExpiry_;
+        const std::vector<Rate> strikes_, volatilities_;
+
+        boost::shared_ptr<Interpolation> interpolation_;
+    };
+
+    inline Smile::Smile(Time timeToExpiry, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities) :
+	volatilities_(volatilities), strikes_(strikes), timeToExpiry_(timeToExpiry) {
+        interpolation_ = boost::shared_ptr<Interpolation>(new LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin()));
+	}
+
+    inline Real Smile::operator ()(const Real& strike) const {
+        const Real v = interpolation_->operator()(strike);
+        return v*v*timeToExpiry_;
+    }
+
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
@@ -97,6 +125,11 @@ namespace QuantLib {
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
+
+        virtual Smile smileSection(Date start, Period length) const;
+        //! return smile section
+        virtual Smile smileSection(Time start, Time length) const = 0;
+
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time exerciseTime, Time length,
@@ -104,31 +137,7 @@ namespace QuantLib {
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
     };
 
-    class Smile : std::unary_function<Real, Real> {
-    public:
-
-        Smile(Time expiryTime, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities);
-        virtual ~Smile() {}
-        Real operator()(const Real& strike) const;
-
-    private:
-
-        const Time timeToExpiry_;
-        const std::vector<Rate> strikes_, volatilities_;
-
-        boost::shared_ptr<Interpolation> interpolation_;
-    };
-
-    inline Smile::Smile(Time timeToExpiry, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities) :
-	volatilities_(volatilities), strikes_(strikes), timeToExpiry_(timeToExpiry) {
-        interpolation_ = boost::shared_ptr<Interpolation>(new LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin()));
-	}
-
-    inline Real Smile::operator ()(const Real& strike) const {
-        const Real v = interpolation_->operator()(strike);
-        return v*v*timeToExpiry_;
-    }
-
+ 
 
     // inline definitions
 
@@ -216,6 +225,11 @@ namespace QuantLib {
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["
                    << minStrike() << "," << maxStrike()<< "]");
+    }
+
+    inline Smile SwaptionVolatilityStructure::smileSection(Date start, Period length) const {
+        const std::pair<Time, Time> p = convertDates(start, length);
+        return smileSection(p.first, p.second);
     }
 
 }

@@ -58,6 +58,10 @@ namespace QuantLib {
         Time maxTimeLength() const;
         Real minStrike() const;
         Real maxStrike() const;
+
+        //! return trivial smile section
+        Smile smileSection(Time start, Time length) const;
+
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
         //@}
@@ -137,6 +141,20 @@ namespace QuantLib {
     inline Volatility SwaptionConstantVolatility::volatilityImpl(
                                                      Time, Time, Rate) const {
         return volatility_->value();
+    }
+
+    inline Smile SwaptionConstantVolatility::smileSection(Time start, Time length) const {
+        //any strike
+        const Real strike = .04;
+
+        const Volatility atmVol = volatility(start, length, strike);
+
+        std::vector<Real> strikes, volatilities(2, atmVol);
+        
+        strikes.push_back(strike);
+        strikes.push_back(strike+1);
+
+        return Smile(start, strikes, volatilities);
     }
 
 }

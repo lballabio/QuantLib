@@ -147,5 +147,20 @@ namespace QuantLib {
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
         return std::make_pair(exerciseTime,timeLength);
     }
+                              
+    Smile SwaptionVolatilityMatrix::smileSection(Time start, Time length) const {
+
+        //any strike
+        const Real strike = .04;
+
+        const Volatility atmVol = volatility(start, length, strike);
+
+        std::vector<Real> strikes, volatilities(2, atmVol);
+        
+        strikes.push_back(strike);
+        strikes.push_back(strike+1);
+
+        return Smile(start, strikes, volatilities);
+    }
 
 }
