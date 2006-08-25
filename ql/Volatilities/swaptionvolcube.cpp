@@ -128,7 +128,7 @@ namespace QuantLib {
         Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             localStrikes_[i] = atmForward + strikeSpreads_[i];
-            localSmile_[i]   = atmVol     + volSpreadsInterpolator_[i](length, start);
+            localSmile_[i]   = atmVol + volSpreadsInterpolator_[i](length, start);
         }
         return boost::shared_ptr<Interpolation>(new
             //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
@@ -143,13 +143,15 @@ namespace QuantLib {
 
         const Rate atmForward = atmStrike(start, length);
 
-        const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
+        const Volatility atmVol = 
+            atmVolStructure_->volatility(start, length, atmForward);
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
-            volatilities.push_back(atmVol     + volSpreadsInterpolator_[i](length, start));
+            volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
+        //add points to force flat extrapolation
         strikes.insert(strikes.begin(),strikes.front()-.1);
-        strikes.insert(strikes.end(),strikes.back())+.1;
+        strikes.insert(strikes.end(),strikes.back()+.1);
 
         volatilities.insert(volatilities.begin(),volatilities.front());
         volatilities.insert(volatilities.end(),volatilities.back());
@@ -157,8 +159,7 @@ namespace QuantLib {
         return Smile(start, strikes, volatilities);
     }
     
-    Rate SwaptionVolatilityCube::atmStrike(Time start,
-                                           Time length) const
+    Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const
 	{
 
 		Date exerciseDate = Date(static_cast<BigInteger>(
