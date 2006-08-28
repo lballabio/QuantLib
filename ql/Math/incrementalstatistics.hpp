@@ -39,6 +39,7 @@ namespace QuantLib {
     */
     class IncrementalStatistics {
       public:
+        typedef Real value_type;
         IncrementalStatistics();
         //! \name Inspectors
         //@{

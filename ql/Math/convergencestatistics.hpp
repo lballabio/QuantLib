@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Gary Kennedy
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,8 +57,10 @@ namespace QuantLib {
     template <class T, class U = DoublingConvergenceSteps>
     class ConvergenceStatistics : public T {
       public:
+        typedef typename T::value_type value_type;
+        typedef std::vector<std::pair<Size,value_type> > table_type;
         ConvergenceStatistics(const U& rule = U());
-        void add(Real value, Real weight = 1.0);
+        void add(const value_type& value, Real weight = 1.0);
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
             for (; begin != end; ++begin)
@@ -70,9 +73,10 @@ namespace QuantLib {
                 add(*begin,*wbegin);
         }
         void reset();
-        const std::vector<std::pair<Size,Real> >& convergenceTable() const;
+        const std::vector<std::pair<Size,value_type> >& convergenceTable()
+                                                                        const;
       private:
-        std::vector<std::pair<Size,Real> > table_;
+        table_type table_;
         U samplingRule_;
         Size nextSampleSize_;
     };
@@ -87,7 +91,9 @@ namespace QuantLib {
     }
 
     template <class T, class U>
-    void ConvergenceStatistics<T,U>::add(Real value, Real weight) {
+    void ConvergenceStatistics<T,U>::add(
+                          const ConvergenceStatistics<T,U>::value_type& value,
+                          Real weight) {
         T::add(value,weight);
         if (this->samples() == nextSampleSize_) {
             table_.push_back(std::make_pair(this->samples(),this->mean()));
@@ -103,7 +109,7 @@ namespace QuantLib {
     }
 
     template <class T, class U>
-    const std::vector<std::pair<Size,Real> >&
+    const typename ConvergenceStatistics<T,U>::table_type&
     ConvergenceStatistics<T,U>::convergenceTable() const {
         return table_;
     }

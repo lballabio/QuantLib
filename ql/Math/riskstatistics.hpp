@@ -42,6 +42,8 @@ namespace QuantLib {
     template <class S>
     class GenericRiskStatistics : public S {
       public:
+        typedef typename S::value_type value_type;
+
         /*! returns the variance of observations below the mean,
             \f[ \frac{N}{N-1}
                 \mathrm{E}\left[ (x-\langle x \rangle)^2 \;|\;

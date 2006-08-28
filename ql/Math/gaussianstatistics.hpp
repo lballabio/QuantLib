@@ -33,12 +33,13 @@ namespace QuantLib {
     //! Statistics tool for gaussian-assumption risk measures
     /*! This class wraps a somewhat generic statistic tool and adds
         a number of gaussian risk measures (e.g.: value-at-risk, expected
-        shortfall, etc.) based on the mean and variance provided by 
+        shortfall, etc.) based on the mean and variance provided by
         the underlying statistic tool.
     */
     template<class Stat>
     class GenericGaussianStatistics : public Stat {
       public:
+        typedef typename Stat::value_type value_type;
         GenericGaussianStatistics() {}
         GenericGaussianStatistics(const Stat& s) : Stat(s) {}
         //! \name Gaussian risk measures
@@ -111,14 +112,15 @@ namespace QuantLib {
 
     //! Helper class for precomputed distributions
     class StatsHolder {
-    public:
+      public:
+        typedef Real value_type;
         StatsHolder(Real mean,
                     Real standardDeviation)
                     : mean_(mean), standardDeviation_(standardDeviation) {}
         ~StatsHolder() {}
         Real mean() const { return mean_; }
         Real standardDeviation() const { return standardDeviation_; }
-    private:
+      private:
         Real mean_, standardDeviation_;
     };
 

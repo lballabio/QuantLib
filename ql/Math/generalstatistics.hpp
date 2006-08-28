@@ -44,6 +44,7 @@ namespace QuantLib {
     */
     class GeneralStatistics {
       public:
+        typedef Real value_type;
         GeneralStatistics();
         //! \name Inspectors
         //@{

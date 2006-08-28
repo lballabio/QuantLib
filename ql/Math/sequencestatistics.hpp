@@ -50,6 +50,7 @@ namespace QuantLib {
       public:
         // typedefs
         typedef StatisticsType statistics_type;
+        typedef std::vector<typename StatisticsType::value_type> value_type;
         // constructor
         GenericSequenceStatistics(Size dimension);
         //! \name inspectors

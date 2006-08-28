@@ -34,6 +34,7 @@ namespace QuantLib {
     */
     class DiscrepancyStatistics : public SequenceStatistics {
       public:
+        typedef SequenceStatistics::value_type value_type;
         // constructor
         DiscrepancyStatistics(Size dimension);
         //! \name 1-dimensional inspectors
