@@ -98,7 +98,7 @@ namespace QuantLib {
         std::vector<Interpolation2D> volSpreadsInterpolator_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
-        const Calendar& calendar_ ;
+        Calendar calendar_ ;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
         DayCounter fixedLegDayCounter_;

@@ -165,7 +165,6 @@ namespace QuantLib {
             exerciseInterpolator_(start)));
 
         // vanilla swap's parameters
-        Calendar calendar_ = TARGET(); // FIXME
         Integer swapFixingDays = 2; // FIXME
         Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
 
