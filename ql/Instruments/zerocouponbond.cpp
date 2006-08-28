@@ -35,13 +35,15 @@ namespace QuantLib {
            settlementDays, discountCurve) {
 
         issueDate_ = datedDate_ = issueDate;
-        maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
+        maturityDate_ = maturityDate;
         frequency_ = Once;
 
         cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
         // redemption
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(
-                               new SimpleCashFlow(redemption,maturityDate_)));
+        Date redemptionDate =
+            calendar.adjust(maturityDate, paymentConvention);
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(redemption, redemptionDate)));
     }
 
 }

@@ -46,7 +46,7 @@ namespace QuantLib {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;
-        maturityDate_ = calendar.adjust(maturityDate,paymentConvention);
+        maturityDate_ = maturityDate;
         frequency_ = couponFrequency;
 
         Schedule schedule(calendar, datedDate, maturityDate,
@@ -64,8 +64,10 @@ namespace QuantLib {
                                              #endif
                                              );
         // redemption
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(
-                               new SimpleCashFlow(redemption,maturityDate_)));
+        Date redemptionDate =
+            calendar.adjust(maturityDate, paymentConvention);
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(redemption, redemptionDate)));
 
         registerWith(index);
     }
