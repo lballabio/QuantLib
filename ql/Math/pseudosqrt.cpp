@@ -96,9 +96,6 @@ namespace QuantLib {
         QL_REQUIRE(componentRetainedPercentage>0.0,
                    "no eigenvalues retained");
 
-        QL_REQUIRE(componentRetainedPercentage<=1.0,
-                   "percentage to be retained > 100%");
-
         QL_REQUIRE(maxRank>=1,
                    "max rank required < 1");
 
@@ -124,29 +121,34 @@ namespace QuantLib {
             QL_FAIL("unknown salvaging algorithm");
         }
 
-        // rank reduction:
-        // output is granted to have a rank<=maxRank
-        // if maxRank>=size, then the required percentage of eigenvalues
-        // is retained
+        // factor reduction
+        Real components = 0.0;
         Real enough = componentRetainedPercentage *
                       std::accumulate(eigenValues.begin(),
                                       eigenValues.end(), 0.0);
-        Real components = 0.0;
-        Matrix diagonal(size, size, 0.0);
-        for (i=0; i<std::min(size, maxRank) && components<enough; i++) {
-            diagonal[i][i] = std::sqrt(eigenValues[i]);
+        Size retainedFactors = 0;
+        for (i=0; components<enough && i<size; i++) {
             components += eigenValues[i];
+            retainedFactors++;
         }
+        // output is granted to have a rank<=maxRank
+        retainedFactors=std::min(retainedFactors, maxRank);
+
+        Matrix diagonal(size, retainedFactors, 0.0);
+        for (i=0; i<retainedFactors; i++)
+            diagonal[i][i] = std::sqrt(eigenValues[i]);
         Matrix result = jd.eigenvectors() * diagonal;
 
         // row normalization
         for (i = 0; i < size;i++) {
             Real norm = 0.0;
-            for (j = 0; j < size; j++)
+            for (j = 0; j < retainedFactors; j++)
                 norm += result[i][j]*result[i][j];
+            if (norm>0.0) {
                 norm = std::sqrt(matrix[i][i]/norm);
-                for(j = 0; j < size; j++)
+                for(j = 0; j < retainedFactors; j++)
                     result[i][j] *= norm;
+            }
         }
 
         return result;
