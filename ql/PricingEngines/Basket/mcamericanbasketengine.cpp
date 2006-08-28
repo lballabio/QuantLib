@@ -588,7 +588,7 @@ namespace QuantLib {
             // END LOOP
         }
 
-        Statistics stats = GeneralStatistics();
+        Statistics stats = Statistics();
         for (i=0; i<N; i++) {
             stats.add(normalizedContinuationValue[i]*strike);
         }

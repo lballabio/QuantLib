@@ -24,7 +24,7 @@
 #ifndef quantlib_statistics_h
 #define quantlib_statistics_h
 
-#include <ql/Math/generalstatistics.hpp>
+#include <ql/Math/riskstatistics.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
-    typedef GeneralStatistics Statistics;
+    typedef RiskStatistics Statistics;
 
 }
 

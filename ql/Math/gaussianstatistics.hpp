@@ -26,7 +26,7 @@
 #define quantlib_gaussian_statistics_h
 
 #include <ql/Math/normaldistribution.hpp>
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/generalstatistics.hpp>
 
 namespace QuantLib {
 
@@ -107,7 +107,7 @@ namespace QuantLib {
     };
 
     //! default gaussian statistic tool
-    typedef GenericGaussianStatistics<Statistics> GaussianStatistics;
+    typedef GenericGaussianStatistics<GeneralStatistics> GaussianStatistics;
 
 
     //! Helper class for precomputed distributions

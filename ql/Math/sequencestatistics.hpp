@@ -24,7 +24,7 @@
 #ifndef quantlib_sequence_statistics_hpp
 #define quantlib_sequence_statistics_hpp
 
-#include <ql/Math/riskstatistics.hpp>
+#include <ql/Math/statistics.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
@@ -137,7 +137,11 @@ namespace QuantLib {
         Matrix quadraticSum_;
     };
 
-    typedef GenericSequenceStatistics<RiskStatistics> SequenceStatistics;
+    //! default multi-dimesional statistics tool
+    /*! \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
+    */
+    typedef GenericSequenceStatistics<> SequenceStatistics;
 
     // inline definitions
 
