@@ -48,7 +48,7 @@ namespace QuantLib {
 
     }
 
-    Real AccountingEngine::singlePathValues(Array& values)
+    Real AccountingEngine::singlePathValues(std::vector<Real>& values)
     {
         std::fill(numerairesHeld_.begin(),numerairesHeld_.end(),0.);
         Real weight = evolver_->startNewPath();
@@ -116,7 +116,7 @@ namespace QuantLib {
     void AccountingEngine::multiplePathValues(SequenceStatistics& stats,
                                               Size numberOfPaths)
     {
-        Array values(product_->numberOfProducts());
+        std::vector<Real> values(product_->numberOfProducts());
         for (Size i=0; i<numberOfPaths; ++i) {
             Real weight = singlePathValues(values);
             stats.add(values,weight);

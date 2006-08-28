@@ -35,7 +35,7 @@ namespace QuantLib {
                          const EvolutionDescription& evolution,
                          double initialNumeraireValue);
 
-        Real singlePathValues(Array& values);
+        Real singlePathValues(std::vector<Real>& values);
         void multiplePathValues(SequenceStatistics& stats,
                                 Size numberOfPaths);
     private:
