@@ -1691,6 +1691,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\assetswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\assetswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Instruments\barrieroption.cpp"
 				>
 				<FileConfiguration
