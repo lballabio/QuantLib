@@ -65,10 +65,20 @@ namespace QuantLib
                  }
             }
 
-            pseudoRoots_[k]=
-                //rankReducedSqrt(covariance, numberOfFactors, 1.0,
-                //                SalvagingAlgorithm::None);
-                pseudoSqrt(covariance, SalvagingAlgorithm::None);
+            pseudoRoots_[k] =
+                rankReducedSqrt(covariance, numberOfFactors, 1.1,
+                                SalvagingAlgorithm::None);
+                //pseudoSqrt(covariance, SalvagingAlgorithm::None);
+
+            QL_ENSURE(pseudoRoots_[k].rows()==n,
+                      "step " << k <<
+                      " flat vol wrong number of rows: " << pseudoRoots_[k].rows() <<
+                      " instead of " << n);
+            QL_ENSURE(pseudoRoots_[k].columns()==numberOfFactors,
+                      "step " << k <<
+                      " flat vol wrong number of columns: " << pseudoRoots_[k].columns() <<
+                      " instead of " << numberOfFactors);
+
         }
        
     }
