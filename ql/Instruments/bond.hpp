@@ -62,8 +62,10 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Date settlementDate() const;
-        /*! \warning unlike in previous versions, the returned vector
-                     now include the redemption as the last cash flow.
+        Date maturityDate() const;
+        Date firstCouponDate() const;
+        /*! \warning the returned vector includes the redemption as
+                     the last cash flow.
         */
         const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
@@ -142,6 +144,14 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline Date Bond::maturityDate() const {
+        return maturityDate_;
+    }
+
+    inline Date Bond::firstCouponDate() const {
+        return datedDate_;
+    }
 
     inline
     const std::vector<boost::shared_ptr<CashFlow> >& Bond::cashflows() const {
