@@ -52,10 +52,10 @@ namespace QuantLib {
 
         // You should get an error if you look outside [first, last) range.
         /*
-        void setOnForwardRates(const Array& rates, Size first, Size last);
-        void setOnDiscountRatios(const Array& discountRatios,
+        void setOnForwardRates(const std::vector<Rate>& rates, Size first, Size last);
+        void setOnDiscountRatios(const std::vector<DiscountFactor>& discountRatios,
                                  Size first, Size last);
-        void setOnCoterminalSwaps(const Array& swapRates, Size first);
+        void setOnCoterminalSwaps(const std::vector<Rate>&swapRates, Size first);
         */
 
         const std::vector<Rate>& forwardRates() const;
