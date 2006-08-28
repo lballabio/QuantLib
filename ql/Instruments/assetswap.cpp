@@ -29,7 +29,7 @@ namespace QuantLib {
                   bool payFixedRate,
                   Real nominal,
                   const boost::shared_ptr<Bond>& bond,
-                  const Real bondCleanPrice,
+                  const Real bondCleanPrice, // const Handle<Quote>&
                   const Schedule& floatSchedule,
                   const boost::shared_ptr<Xibor>& index,
                   Spread spread,
@@ -42,36 +42,40 @@ namespace QuantLib {
       nominal_(nominal) {
 
 
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg = bond->cashflows();
-        // remove redemption
-        fixedLeg.pop_back();
-        // adjust nominal
-
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
-                                        convention,
-                                        std::vector<Real>(1,nominal),
-                                        index->settlementDays(), index,
-                                        std::vector<Real>(1,1.0),
-                                        std::vector<Spread>(1,spread),
-                                        floatingDayCount);
+                                     convention,
+                                     std::vector<Real>(1,nominal),
+                                     index->settlementDays(), index,
+                                     std::vector<Real>(1,1.0),
+                                     std::vector<Spread>(1,spread),
+                                     floatingDayCount);
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
 
-        // register with bondprice too!
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
         // upfront
-        Real dirtyPrice = bondCleanPrice + bond->accruedAmount();
-        Real upfront=(dirtyPrice-100.0)*nominal;
         Date upfrontDate = floatSchedule.startDate();
-        boost::shared_ptr<CashFlow> upfrontCashFlow =
-            boost::shared_ptr<CashFlow>(new SimpleCashFlow(upfront,
-                                                           upfrontDate));
+        Real dirtyPrice = bondCleanPrice + bond->accruedAmount(upfrontDate);
+        Real upfront=(dirtyPrice-100.0)/100.0*nominal;
+        boost::shared_ptr<CashFlow> upfrontCashFlow (new
+            SimpleCashFlow(upfront, upfrontDate));
         floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
+
+        // register with bondprice too!
+
+        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+            bond->cashflows();
+        // remove redemption
+        fixedLeg.pop_back();
+
+        // handle when floating leg termination leg is earlier than
+        // bond maturity date
+
 
         legs_[0] = fixedLeg;
         legs_[1] = floatingLeg;
