@@ -39,7 +39,7 @@ namespace QuantLib {
            std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >()),
       payFixedRate_(payFixedRate), spread_(spread),
-      nominal_(nominal) {
+      nominal_(nominal), bondCleanPrice_(bondCleanPrice) {
 
 
         BusinessDayConvention convention =
@@ -59,11 +59,11 @@ namespace QuantLib {
             registerWith(*i);
 
         // upfront
-        Date upfrontDate = floatSchedule.startDate();
-        Real dirtyPrice = bondCleanPrice + bond->accruedAmount(upfrontDate);
+        upfrontDate_ = floatSchedule.startDate();
+        Real dirtyPrice = bondCleanPrice_ + bond->accruedAmount(upfrontDate_);
         Real upfront=(dirtyPrice-100.0)/100.0*nominal;
         boost::shared_ptr<CashFlow> upfrontCashFlow (new
-            SimpleCashFlow(upfront, upfrontDate));
+            SimpleCashFlow(upfront, upfrontDate_));
         floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
 
         // register with bondprice too!
@@ -73,7 +73,7 @@ namespace QuantLib {
         // remove redemption
         fixedLeg.pop_back();
 
-        // handle when floating leg termination leg is earlier than
+        // handle when termination date is earlier than
         // bond maturity date
 
 
@@ -164,11 +164,16 @@ namespace QuantLib {
         return legBPS_[1];
     }
 
+    Real AssetSwap::fairPrice() const {
+        calculate();
+        QL_REQUIRE(fairPrice_ != Null<Real>(), "result not available");
+        return fairPrice_;
+    }
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
         legBPS_[0] = legBPS_[1] = 0.0;
-        fairRate_ = Null<Rate>();
         fairSpread_ = Null<Spread>();
+        fairPrice_= 0.0;
     }
 
     void AssetSwap::performCalculations() const {
@@ -177,8 +182,11 @@ namespace QuantLib {
         } else {
             static const Spread basisPoint = 1.0e-4;
             Swap::performCalculations();
-            fairRate_ = fixedRate_ - NPV_/(legBPS_[0]/basisPoint);
             fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
+
+            // handle when upfrontDate_ is in the past
+            fairPrice_= bondCleanPrice_ -
+                NPV_/termStructure_->discount(upfrontDate_);
         }
     }
 
@@ -187,6 +195,7 @@ namespace QuantLib {
         const AssetSwap::results* results =
             dynamic_cast<const AssetSwap::results*>(r);
         fairSpread_ = results->fairSpread;
+        fairPrice_= results->fairPrice;
     }
 
     void AssetSwap::arguments::validate() const {

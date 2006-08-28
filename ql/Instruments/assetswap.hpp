@@ -53,6 +53,7 @@ namespace QuantLib {
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
+        Real fairPrice() const;
         // inspectors
         Rate fixedRate() const;
         Spread spread() const;
@@ -74,9 +75,12 @@ namespace QuantLib {
         Rate fixedRate_;
         Spread spread_;
         Real nominal_;
+        Date upfrontDate_;
+        Real bondCleanPrice_;
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
+        mutable Real fairPrice_;
     };
 
 
@@ -105,10 +109,12 @@ namespace QuantLib {
       public:
         Real floatingLegBPS;
         Spread fairSpread;
+        Real fairPrice;
         results() { reset(); }
         void reset() {
             floatingLegBPS = Null<Real>();
             fairSpread = Null<Spread>();
+            fairPrice = Null<Real>();
         }
     };
 
