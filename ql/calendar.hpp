@@ -55,17 +55,27 @@ namespace QuantLib {
                                  to a different month, in which case
                                  choose the first business day after
                                  the holiday. */
+        Unadjusted          /*!< Do not adjust. */
+        #ifndef QL_DISABLE_DEPRECATED
+        ,
+        //! \deprecated use FloatingRateCoupon instead
         MonthEndReference,  /*!< Choose the first business day after
                                  the given holiday. If the original
                                  date falls on last business day of
                                  the month, choose the last business
-                                 day of the month */
-        UnadjustedMonthEnd, /*!< Do not adjust, unless the original
+                                 day of the month
+
+                                 \deprecated use the endOfMonth boolean in
+                                             Calendar::advance instead */
+        UnadjustedMonthEnd  /*!< Do not adjust, unless the original
                                  date falls on the last business day
                                  of month. In this case, choose the
                                  last day of the month regardless of
-                                 whether it is a business day. */
-        Unadjusted          /*!< Do not adjust. */
+                                 whether it is a business day.
+
+                                 \deprecated use the endOfMonth boolean in
+                                             Calendar::advance instead */
+        #endif
     };
 
     /*! \relates BusinessDayConvention */
@@ -153,15 +163,16 @@ namespace QuantLib {
         Date advance(const Date&,
                      Integer n,
                      TimeUnit unit,
-                     BusinessDayConvention convention = Following,
-                     bool endOfMonth = false) const;
+                     BusinessDayConvention convention,
+                     bool endOfMonth) const;
         /*! Advances the given date as specified by the given period and
             returns the result.
             \note The input date is not modified.
         */
         Date advance(const Date& date,
                      const Period& period,
-                     BusinessDayConvention convention = Following) const;
+                     BusinessDayConvention convention,
+                     bool endOfMonth) const;
         //@}
 
         //! partial calendar implementation
