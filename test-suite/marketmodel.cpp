@@ -181,7 +181,7 @@ void testForwards(const SequenceStatistics& stats,
             minError = stdDevs[i];
     }
 
-    Real errorThreshold = 2.32;
+    Real errorThreshold = 2.35;
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
         for (Size i=0; i<results.size(); ++i) {
@@ -222,7 +222,7 @@ void testCaplets(const SequenceStatistics& stats,
             minError = stdDevs[i];
     }
 
-    Real errorThreshold = 1.98;
+    Real errorThreshold = 2.24;
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
         for (Size i=0; i<results.size(); ++i) {
