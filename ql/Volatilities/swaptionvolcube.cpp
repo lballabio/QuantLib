@@ -170,14 +170,16 @@ namespace QuantLib {
 
         Rounding rounder(0);
         Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
-
-        // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
+        boost::shared_ptr<Xibor> iborIndexEffective(iborIndex_);
+		if (length<=shortTenor_) {
+			iborIndexEffective = iborIndexShortTenor_;
+		} 
 
         Schedule fixedSchedule = Schedule(calendar_, startDate, endDate,
             fixedLegFrequency_, fixedLegConvention_, Date(), true, false);
-        Frequency floatingLegFrequency_ = iborIndex_->frequency();
+        Frequency floatingLegFrequency_ = iborIndexEffective->frequency();
         BusinessDayConvention floatingLegBusinessDayConvention_ =
-            iborIndex_->businessDayConvention();
+            iborIndexEffective->businessDayConvention();
         Schedule floatSchedule = Schedule(calendar_, startDate, endDate,
             floatingLegFrequency_, floatingLegBusinessDayConvention_,
             Date(), true, false);
@@ -185,12 +187,12 @@ namespace QuantLib {
         Rate fixedRate_= 0.0;
         Spread spread_= 0.0;
         Handle<YieldTermStructure> termStructure;
-        termStructure.linkTo(iborIndex_->termStructure());
+        termStructure.linkTo(iborIndexEffective->termStructure());
         VanillaSwap swap(true, nominal_,
             fixedSchedule, fixedRate_, fixedLegDayCounter_,
-            floatSchedule, iborIndex_,
-            iborIndex_->settlementDays(), spread_, iborIndex_->dayCounter(),
-            termStructure);
+            floatSchedule, iborIndexEffective,
+            iborIndexEffective->settlementDays(), spread_, 
+			iborIndexEffective->dayCounter(), termStructure);
 
         return swap.fairRate();
     }
