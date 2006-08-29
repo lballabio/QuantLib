@@ -151,14 +151,14 @@ namespace QuantLib {
             volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
         //add points to force flat extrapolation
-        strikes.insert(strikes.begin(), strikes.front()-.1);
-        strikes.insert(strikes.end(), strikes.back()+.1);
+        strikes.insert(strikes.begin(), strikes.front()-.001);
+        strikes.insert(strikes.end(), strikes.back()+.001);
 
         volatilities.insert(volatilities.begin(),volatilities.front());
         volatilities.insert(volatilities.end(),volatilities.back());
 
-        return VarianceSmileSection(start, strikes, volatilities);
-        //return VarianceSmileSection(start, atmForward, strikes, volatilities);
+        //return VarianceSmileSection(start, strikes, volatilities);
+        return VarianceSmileSection(start, atmForward, strikes, volatilities);
     }
 
     Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const {
