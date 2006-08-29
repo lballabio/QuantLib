@@ -122,12 +122,14 @@ void setup() {
 
     swaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityCube(swaptionVolatilityMatrix_, 
+        SwaptionVolatilityCube(
+            swaptionVolatilityMatrix_, 
             lengths, 
             lengths,
             strikeSpreads,
             volSpreads,
             calendar_,
+            2,
             fixedFrequency_,
             fixedConvention_,
             iborIndex_->dayCounter(),
