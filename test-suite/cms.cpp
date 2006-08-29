@@ -68,10 +68,12 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
+
     iborIndex_ = boost::shared_ptr<Xibor>(
         new Euribor(Period(12/floatingFrequency_,
         Months),
-                                                  termStructure_));
+        termStructure_));
+
     calendar_ = iborIndex_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
@@ -97,7 +99,7 @@ void setup() {
 
     // Volatility
     std::vector<Date> exerciseDates(2);
-    exerciseDates[0] = referenceDate_;
+    exerciseDates[0] = referenceDate_+30;
     exerciseDates[1] = endDate_;
 
     std::vector<Period> lengths(2);
@@ -114,7 +116,7 @@ void setup() {
 
     std::vector<Rate> strikeSpreads;
     for(int i=0; i<21; i++) {
-        strikeSpreads.push_back(-.1+i*.01);
+        strikeSpreads.push_back(-.02 + i*.01);
     }
     const Matrix volSpreads(lengths.size()*lengths.size(),
         strikeSpreads.size(), 0.0);
@@ -300,7 +302,8 @@ void CmsTest::testCmsSwap() {
             pricers.push_back(numericalPricer);
         }
 
-        Date startDate = today_ +5;
+        Date startDate = today_;
+        startDate += Period(10, Days);
         Date maturityDate = startDate;
         maturityDate += Period(n, Years);
 
@@ -311,7 +314,8 @@ void CmsTest::testCmsSwap() {
         
         for(Size pricerIndex=0; pricerIndex<pricers.size(); pricerIndex++) {
 
-            std::vector<boost::shared_ptr<CashFlow> > cmsLeg = CMSCouponVector(
+            std::vector<boost::shared_ptr<CashFlow> > cmsLeg = 
+                CMSCouponVector(
                 fixedSchedule,
                 fixedConvention_,
                 nominals,
@@ -324,9 +328,11 @@ void CmsTest::testCmsSwap() {
                 floors,
                 meanReversions,
                 pricers[pricerIndex],
-                swaptionVolatilityCube_);
+//                swaptionVolatilityCube_);
+                swaptionVolatilityMatrix_);
 
-            std::vector<boost::shared_ptr<CashFlow> > floatingLeg = FloatingRateCouponVector(
+            std::vector<boost::shared_ptr<CashFlow> > floatingLeg = 
+                FloatingRateCouponVector(
                 floatingSchedule, 
                 floatingConvention_, 
                 nominals,
