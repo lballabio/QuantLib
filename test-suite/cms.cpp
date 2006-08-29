@@ -328,8 +328,8 @@ void CmsTest::testCmsSwap() {
                 floors,
                 meanReversions,
                 pricers[pricerIndex],
-//                swaptionVolatilityCube_);
-                swaptionVolatilityMatrix_);
+                swaptionVolatilityCube_);
+//                swaptionVolatilityMatrix_);
 
             std::vector<boost::shared_ptr<CashFlow> > floatingLeg = 
                 FloatingRateCouponVector(
@@ -357,8 +357,8 @@ void CmsTest::testCmsSwap() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
     return suite;
 }
