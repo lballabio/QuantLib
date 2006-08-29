@@ -233,7 +233,7 @@ namespace QuantLib {
             }
 
             Real value(Real x) const {
-                QL_REQUIRE(x>0.0, "negative value not allowed");
+                QL_REQUIRE(x>0.0, "strike must be positive in Sabr function");
                 const Real oneMinusBeta = 1.0-beta_;
                 const Real A = std::pow(forward_*x, oneMinusBeta);
                 const Real sqrtA= std::sqrt(A);
