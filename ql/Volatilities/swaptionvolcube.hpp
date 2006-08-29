@@ -47,8 +47,8 @@ namespace QuantLib {
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
-            Time shortTenor,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor);
+            Time shortTenor = 2,
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
         //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
