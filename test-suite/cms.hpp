@@ -36,6 +36,7 @@ public:
 	static boost::shared_ptr<QuantLib::YieldTermStructure> getYieldTermStructure();
 	static void testFairRate();
 	static void testParity();
+    static void testCmsSwap();
 	static boost::unit_test_framework::test_suite* suite();
 };
 

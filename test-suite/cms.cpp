@@ -53,7 +53,7 @@ boost::shared_ptr<SwapIndex> index_;
 std::string familyName_("");
 Handle<SwaptionVolatilityStructure> swaptionVolatilityMatrix_;
 
-//Handle<SwaptionVolatilityStructure> swaptionVolatilityCube_;
+Handle<SwaptionVolatilityStructure> swaptionVolatilityCube_;
 const Real volatility_ = .080;
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
 
@@ -76,7 +76,7 @@ void setup() {
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+    termStructure_.linkTo(flatRate(settlement_, 0.05, Actual365Fixed()));
     referenceDate_ = termStructure_->referenceDate();
     startDate_ = (referenceDate_+2*3600);
     paymentDate_ = (startDate_+365);
@@ -113,28 +113,28 @@ void setup() {
                                      iborIndex_->dayCounter())));
 
     std::vector<Rate> strikeSpreads;
-    strikeSpreads.push_back(-1);
-    strikeSpreads.push_back(0);
-    strikeSpreads.push_back(1);
+    for(int i=0; i<21; i++) {
+        strikeSpreads.push_back(-.1+i*.01);
+    }
     const Matrix volSpreads(lengths.size()*lengths.size(),
-        strikeSpreads.size(),0.0);
+        strikeSpreads.size(), 0.0);
 
 
-    //swaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
-    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
-    //        SwaptionVolatilityCube(swaptionVolatilityMatrix_, 
-    //        lengths, 
-    //        lengths,
-    //        strikeSpreads,
-    //        volSpreads,
-    //        calendar_,
-    //        fixedFrequency_,
-    //        fixedConvention_,
-    //        iborIndex_->dayCounter(),
-    //        iborIndex_,
-    //        1,
-    //        iborIndex_
-    //        )));
+    swaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
+        boost::shared_ptr<SwaptionVolatilityStructure>(new
+            SwaptionVolatilityCube(swaptionVolatilityMatrix_, 
+            lengths, 
+            lengths,
+            strikeSpreads,
+            volSpreads,
+            calendar_,
+            fixedFrequency_,
+            fixedConvention_,
+            iborIndex_->dayCounter(),
+            iborIndex_,
+            1,
+            iborIndex_
+            )));
 
 
 
@@ -155,7 +155,7 @@ QL_END_TEST_LOCALS(CmsTest)
 void CmsTest::testFairRate()  {
 
     BOOST_MESSAGE(
-              "Testing fair-rate calculation for constant-maturity swaps...");
+              "Testing fair-rate calculation for constant-maturity coupons...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -202,7 +202,7 @@ void CmsTest::testFairRate()  {
 
 void CmsTest::testParity() {
 
-    BOOST_MESSAGE("Testing put-call parity for constant-maturity swaps...");
+    BOOST_MESSAGE("Testing put-call parity for constant-maturity coupons...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -267,10 +267,91 @@ void CmsTest::testParity() {
     QL_TEST_TEARDOWN
 }
 
+
+void CmsTest::testCmsSwap() {
+
+    BOOST_MESSAGE("Testing constant-maturity swaps...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    const Size n = 20;
+
+    std::vector<Real> meanReversions(n, 0);
+    std::vector<Real> nominals(n, 1);
+    std::vector<Real> caps(n, infiniteCap_);
+    std::vector<Real> floors(n, infiniteFloor_);
+    std::vector<Real> fractions(n, gearing_);
+    std::vector<Real> baseRate(n, 0);
+
+    for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
+ 
+        std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
+        {
+            boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
+                new ConundrumPricerByBlack(modelOfYieldCurves_[h]));
+            pricers.push_back(analyticPricer);
+
+            boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
+                new ConundrumPricerByNumericalIntegration(modelOfYieldCurves_[h],
+                0, 1));
+            pricers.push_back(numericalPricer);
+        }
+
+        Date startDate = today_ +5;
+        Date maturityDate = startDate;
+        maturityDate += Period(n, Years);
+
+        Schedule fixedSchedule(calendar_,startDate, maturityDate,
+            fixedFrequency_,fixedConvention_);
+        Schedule floatingSchedule(calendar_,startDate, maturityDate,
+            floatingFrequency_,floatingConvention_);
+        
+        for(Size pricerIndex=0; pricerIndex<pricers.size(); pricerIndex++) {
+
+            std::vector<boost::shared_ptr<CashFlow> > cmsLeg = CMSCouponVector(
+                fixedSchedule,
+                fixedConvention_,
+                nominals,
+                index_,
+                settlementDays_,
+                fixedDayCount_,
+                baseRate,
+                fractions,
+                caps,
+                floors,
+                meanReversions,
+                pricers[pricerIndex],
+                swaptionVolatilityCube_);
+
+            std::vector<boost::shared_ptr<CashFlow> > floatingLeg = FloatingRateCouponVector(
+                floatingSchedule, 
+                floatingConvention_, 
+                nominals,
+                settlementDays_, 
+                iborIndex_,
+                std::vector<Real>(),
+                std::vector<Spread>(),
+                iborIndex_->dayCounter());
+
+        
+            boost::shared_ptr<Swap> swap =  boost::shared_ptr<Swap>(
+                new Swap(termStructure_, cmsLeg, floatingLeg));
+
+            std::cout << "$" << "\n";
+
+            swap->NPV();
+
+        }
+    }
+    QL_TEST_TEARDOWN
+}
+
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
-    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    //suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
+    //suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
     return suite;
 }
 
