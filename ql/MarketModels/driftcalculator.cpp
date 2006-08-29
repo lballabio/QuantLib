@@ -67,6 +67,7 @@ namespace QuantLib {
         for(i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (oneOverTaus_[i]+forwards[i]);
+
         // Compute drifts without factor reduction,
         // using directly the covariance matrix.
         // for (Size k=down; k<=up; ++k) drifts[i] += tmp_[k] * C_[i][k];
@@ -74,7 +75,7 @@ namespace QuantLib {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
                                            C_.row_begin(i)+downs_[i], 0.0);
-            if (i+1<numeraire_) drifts[i] = -drifts[i];
+            if (numeraire_>i+1) drifts[i] = -drifts[i];
         }
     }
 
@@ -114,7 +115,7 @@ namespace QuantLib {
                                              0.0);
         }
 
-        // 3rd: now, move forward from N (included) up to to n (excluded):
+        // 3rd: now, move forward from N (included) up to n (excluded):
         for (Size i=numeraire_; i<dim_; ++i) {
         //  for (r=0; r<pseudo_.columns(); ++r) {
             for (Size r=0; r<factors; ++r) {
