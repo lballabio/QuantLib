@@ -115,12 +115,13 @@ void HestonModelTest::testBlackCalibration() {
         LevenbergMarquardt om;
         model->calibrate(options, om);
 
-        Real tolerance = 2.0e-3;
+        Real tolerance = 3.0e-3;
 
         if (model->sigma() > tolerance) {
             BOOST_ERROR("Failed to reproduce expected sigma"
                         << "\n    calculated: " << model->sigma()
-                        << "\n    expected:   " << 0.0);
+                        << "\n    expected:   " << 0.0,
+                        << "\n    tolerance:  " << tolerance);
         }
 
         if (std::fabs(model->kappa()
