@@ -120,7 +120,7 @@ void HestonModelTest::testBlackCalibration() {
         if (model->sigma() > tolerance) {
             BOOST_ERROR("Failed to reproduce expected sigma"
                         << "\n    calculated: " << model->sigma()
-                        << "\n    expected:   " << 0.0,
+                        << "\n    expected:   " << 0.0
                         << "\n    tolerance:  " << tolerance);
         }
 
