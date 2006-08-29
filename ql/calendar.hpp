@@ -153,7 +153,8 @@ namespace QuantLib {
         Date advance(const Date&,
                      Integer n,
                      TimeUnit unit,
-                     BusinessDayConvention convention = Following) const;
+                     BusinessDayConvention convention = Following,
+                     bool endOfMonth = false) const;
         /*! Advances the given date as specified by the given period and
             returns the result.
             \note The input date is not modified.

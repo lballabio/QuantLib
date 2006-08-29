@@ -82,7 +82,8 @@ namespace QuantLib {
     }
 
     Date Calendar::advance(const Date& d, Integer n, TimeUnit unit,
-                           BusinessDayConvention c) const {
+                           BusinessDayConvention c,
+                           bool endOfMonth) const {
         QL_REQUIRE(d!=Date(), "null date");
         if (n == 0) {
             return adjust(d,c);
@@ -109,14 +110,24 @@ namespace QuantLib {
             return adjust(d1,c);
         } else {
             Date d1 = d + n*unit;
-            return adjust(d1,c,d);
+
+            if (c == UnadjustedMonthEnd || c == MonthEndReference)
+                endOfMonth = true;
+
+            if (endOfMonth && (unit==Months || unit==Years)
+                           && isEndOfMonth(d)) {
+                d1 = Date::endOfMonth(d1);
+                return adjust(d1, Preceding);
+            }
+
+            return adjust(d1, c);
         }
         QL_DUMMY_RETURN(Date());
     }
 
     Date Calendar::advance(const Date & d,
                            const Period & p,
-                           BusinessDayConvention c)const {
+                           BusinessDayConvention c) const {
         return advance(d, p.length(), p.units(), c);
     }
 
