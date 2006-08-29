@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-	EvolutionDescription::EvolutionDescription(
+    EvolutionDescription::EvolutionDescription(
                            const std::vector<Time>& rateTimes,
                            const std::vector<Time>& evolutionTimes,
                            const std::vector<Size>& numeraires,
@@ -43,39 +43,45 @@ namespace QuantLib {
            |-----|-----|-----|-----|-----|      (size = 6)
            t0    t1    t2    t3    t4    t5     rateTimes
            f0    f1    f2    f3    f4           forwardRates
-           d0    d1    d2    d3    d4    d5     discountBonds 
+           d0    d1    d2    d3    d4    d5     discountBonds
            d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
            sr0   sr1   sr2   sr3   sr4          coterminalSwaps
         */
 
         // check coherence of input data
-        QL_REQUIRE(rateTimes_.size()>1, 
+        QL_REQUIRE(rateTimes_.size()>1,
                    "Rate times must have 2 elements at least");
-        QL_REQUIRE(rateTimes_[0]>=0.0, 
+        QL_REQUIRE(rateTimes_[0]>=0.0,
                    "first rate time must be non negative");
         for (Size i = 1; i<rateTimes.size(); ++i)
-            QL_REQUIRE(rateTimes[i]>rateTimes[i-1], 
+            QL_REQUIRE(rateTimes[i]>rateTimes[i-1],
                        "rate times must be strictly increasing");
 
-        QL_REQUIRE(steps_>0, 
-                   "Evolution times must have 1 elements at least");         
+        QL_REQUIRE(steps_>0,
+                   "Evolution times must have 1 elements at least");
         for (Size i = 1; i<steps_; ++i)
-            QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1], 
+            QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1],
                        "evolution times must be strictly increasing");
 
         QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
                    "last evolution time is past last rate time");
 
         if (numeraires.empty()) {
-            // default numeraire is the terminal one
-            std::fill(numeraires_.begin(), numeraires_.end(),
-                      rateTimes_.size()-1);
+            numeraires_ = std::vector<Size>(steps_, rateTimes_.size()-1);
         } else {
-            QL_REQUIRE(numeraires.size() == steps_, 
-                       "Numeraires / evolutionTimes mismatch");     
+            QL_REQUIRE(numeraires.size() == steps_,
+                       "Numeraires / evolutionTimes mismatch");
             for (Size i=0; i<numeraires.size()-1; i++)
                 QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
                            "Numeraire " << i << " expired");
+        }
+
+        if (relevanceRates.empty()) {
+            relevanceRates_ = std::vector<std::pair<Size,Size> >(
+                                steps_, std::make_pair(0,rateTimes.size()-1));
+        } else {
+            QL_REQUIRE(relevanceRates.size() == steps_,
+                       "relevanceRates / evolutionTimes mismatch");
         }
 
         for (Size i=0; i<rateTaus_.size(); i++)
@@ -86,7 +92,7 @@ namespace QuantLib {
                 effStopTime_[j][i] =
                     std::min(evolutionTimes_[j], rateTimes_[i]);
         }
-       
+
         Time currentEvolutionTime = 0.0;
         Size firstAliveRate = 0;
         for (Size j=0; j<steps_; ++j) {
@@ -98,10 +104,10 @@ namespace QuantLib {
     }
 
     void EvolutionDescription::setNumeraires(const std::vector<Size>& numeraires) {
-        QL_REQUIRE(numeraires.size() == evolutionTimes_.size(), 
-                   "Numeraires / evolutionTimes mismatch");     
+        QL_REQUIRE(numeraires.size() == evolutionTimes_.size(),
+                   "Numeraires / evolutionTimes mismatch");
         for (Size i=0; i<numeraires.size()-1; i++) {
-            QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i], 
+            QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i],
                        "Numeraire " << i << " expired");
         }
         std::copy(numeraires.begin(), numeraires.end(), numeraires_.begin());
