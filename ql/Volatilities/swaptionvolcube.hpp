@@ -42,6 +42,7 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const Matrix& volSpreads,
             const Calendar& calendar,
+			Integer swapSettlementDays,
             Frequency fixedLegFrequency,
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
@@ -99,6 +100,7 @@ namespace QuantLib {
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         Calendar calendar_ ;
+		Integer swapSettlementDays_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
         DayCounter fixedLegDayCounter_;

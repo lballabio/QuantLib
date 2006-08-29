@@ -34,6 +34,7 @@ namespace QuantLib {
         const std::vector<Spread>& strikeSpreads,
         const Matrix& volSpreads,
         const Calendar& calendar,
+		Integer swapSettlementDays,
         Frequency fixedLegFrequency,
         BusinessDayConvention fixedLegConvention,
         const DayCounter& fixedLegDayCounter,
@@ -48,7 +49,8 @@ namespace QuantLib {
       volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
       volSpreadsInterpolator_(nStrikes_),
       localStrikes_(nStrikes_), localSmile_(nStrikes_),
-      calendar_(calendar), fixedLegFrequency_(fixedLegFrequency),
+      calendar_(calendar), swapSettlementDays_(swapSettlementDays),
+	  fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
@@ -165,8 +167,7 @@ namespace QuantLib {
             exerciseInterpolator_(start)));
 
         // vanilla swap's parameters
-        Integer swapFixingDays = 2; // FIXME
-        Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
+        Date startDate = calendar_.advance(exerciseDate,swapSettlementDays_,Days);
 
         Rounding rounder(0);
         Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
