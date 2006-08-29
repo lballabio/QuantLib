@@ -85,8 +85,10 @@ namespace QuantLib {
             // possibly correct first inserted date
             if (dates_[0] < first) {
                 dates_[0] = first;
-                if (N > 1 && longFinal)
+                if (N > 1 && longFinal) {
                     dates_.erase(dates_.begin()+1);
+                    N--;
+                }
                 finalIsRegular_ = false;
             }
 
