@@ -58,7 +58,7 @@ Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCube_;
 const Real volatility_ = .080;
 
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
-std::vector<Handle<SwaptionVolatilityStructure>> swaptionVolatilityStructures_;
+std::vector<Handle<SwaptionVolatilityStructure> > swaptionVolatilityStructures_;
 
 const Real rateTolerance_ = 2.0e-4;
 const Real priceTolerance_ = 2.0e-4;
