@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     Volatility blackVol(const Date& refDate,
                         const DayCounter& dayCounter,
                         const std::vector<Date>& dates,
@@ -55,5 +57,6 @@ namespace QuantLib {
 
         return result;
     }
+    #endif
 
 }

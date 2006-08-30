@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     Volatility blackVol(const Date& refDate,
                         const DayCounter& dayCounter,
                         const std::vector<Date>& dates,
@@ -36,6 +38,7 @@ namespace QuantLib {
                         Real strike,
                         Integer interpolation2DType,
                         bool allowExtrapolation);
+    #endif
 
 }
 
