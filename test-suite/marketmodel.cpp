@@ -26,8 +26,6 @@
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
 #include <ql/MarketModels/Products/marketmodelcoinitialswaps.hpp>
 #include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
-#include <ql/MarketModels/Products/marketmodelcoinitialswapsonestep.hpp>
-#include <ql/MarketModels/Products/marketmodelcoterminalswapsonestep.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
@@ -42,8 +40,8 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <ql/MarketModels/PseudoRoots/abcd.hpp>
-
+#include <ql/MarketModels/PseudoRoots/abcdfit.hpp>
+#include <ql/Optimization/levenbergmarquardt.hpp>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -120,6 +118,7 @@ void setup() {
                              15.54, 15.26,
                              14.99, 14.74,
                              14.53 };
+
     volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<LENGTH(mktVols); i++) {
         volatilities[i]= mktVols[i]/100.;
@@ -725,98 +724,6 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
     }
 }
 
-void MarketModelTest::testVeryLongJumpCoinitialSwaps() {
-
-    BOOST_MESSAGE("Repricing (very long jump) coinitial swaps in a LIBOR market model...");
-
-    QL_TEST_SETUP
-
-    Real fixedRate = 0.04;
-
-    boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelCoinitialSwapsOneStep(rateTimes, accruals, accruals, paymentTimes, fixedRate));
-    EvolutionDescription evolution = product->suggestedEvolution();
-
-    for (Size n=0; n<1; n++) {
-        MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
-
-        for (Size m=0; m<1; m++) {
-            Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
-
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
-
-                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
-                for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
-                    setMeasure(evolution, measures[j]);
-
-                    EvolverType evolvers[] = { Pc, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
-                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCoinitialSwaps(*stats, fixedRate);
-                    }
-                }
-            }
-        }
-    }
-}
-
-void MarketModelTest::testVeryLongJumpCoterminalSwaps() {
-
-    BOOST_MESSAGE("Repricing (very long jump) coterminal swaps in a LIBOR market model...");
-
-    QL_TEST_SETUP
-
-    Real fixedRate = 0.04;
-
-    boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelCoterminalSwapsOneStep(rateTimes, accruals, accruals, paymentTimes, fixedRate));
-    EvolutionDescription evolution = product->suggestedEvolution();
-
-    for (Size n=0; n<1; n++) {
-        MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
-
-        for (Size m=0; m<1; m++) {
-            Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
-
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
-
-                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
-                for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
-                    setMeasure(evolution, measures[j]);
-
-                    EvolverType evolvers[] = { Pc, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
-                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCoterminalSwaps(*stats, fixedRate);
-                    }
-                }
-            }
-        }
-    }
-}
-
 #include "integrals.hpp"
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/functional.hpp>
@@ -828,7 +735,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
     QL_TEST_SETUP
 
     Real a = -0.0597;
-    Real b = 0.1677;
+    Real b =  0.1677;
     Real c = 0.5403;
     Real d = 0.1710;
     
@@ -952,6 +859,9 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
     QL_TEST_SETUP
 
+    // Parameters proposed in  "Modern Pricing of Interest-Rate Derivatives,
+    // the Libor Market Model and beyond", by R. Rebonato, Princeton University Press,
+    // 2002, pag. 307
     Real a = -0.0597;
     Real b = 0.1677;
     Real c = 0.5403;
@@ -963,18 +873,58 @@ void MarketModelTest::testAbcdVolatilityFit() {
     }
     Size nRates = todaysForwards.size();
 
+    // Starting error
+    Real startingError  = 0.;
+
     for (Size i=0; i<nRates; i++) {
         Time expiry = rateTimes[i];
         boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d, expiry, expiry));
         Real modelVariances = instVol->variance(expiry);
         Real modelVols = std::sqrt(modelVariances/expiry);
         Real k = std::sqrt(mktVariances[i]/modelVariances);
-        
-        //BOOST_MESSAGE(i << " Fixing Time = " << expiry <<
-        //                   " MktVol = " << io::rate(volatilities[i])  <<
-        //                   " ModVol = " << io::rate(modelVols)     <<
-        //                   " k=" << k);
-    } 
+        startingError += (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
+       
+        BOOST_MESSAGE(" Fixing Time = " << expiry <<
+                      " MktVol = " << io::rate(volatilities[i])  <<
+                      " ModVol = " << io::rate(modelVols)        <<
+                      " k=" << k );
+    }
+    startingError /= nRates;
+    
+    boost::shared_ptr<EndCriteria> endCriteria(new EndCriteria(100000,0.0001));
+    Array initialValue(4);
+    initialValue[0] = a;
+    initialValue[1] = b;
+    initialValue[2] = c;
+    initialValue[3] = d;
+    boost::shared_ptr<ConjugateGradient> method(new ConjugateGradient(*endCriteria,initialValue));
+
+    // Fitting with a and b fixed.
+    boost::shared_ptr<AbcdFit> fit(new AbcdFit(rateTimes.begin(), rateTimes.end()-1,
+                                   mktVariances.begin(),
+                                   a, b, c, d, rateTimes, method));
+
+    BOOST_MESSAGE("   Parameters: " << "\n" 
+        << "  a: " <<  "\t" << a << " ---> " << fit->a() << "\n"
+        << "  b: " <<  "\t" << b << " ---> " << fit->b() << "\n"
+        << "  c: " <<  "\t" << c << " ---> " << fit->c() << "\n"
+        << "  d: " <<  "\t" << d << " ---> " << fit->d() << "\n"        
+        << "  Rms error: " << std::sqrt(startingError) << " ---> " << fit->interpolationError()        
+        )
+        ;
+
+    for (Size i=0; i<nRates; i++) {
+        Time expiry = rateTimes[i];
+        boost::shared_ptr<Abcd> instVol1(new Abcd(fit->a(), fit->b(), fit->c(), fit->d(), expiry, expiry));
+        Real modelVariances = instVol1->variance(expiry);
+        Real modelVols = std::sqrt(modelVariances/expiry);
+        Real k = std::sqrt(mktVariances[i]/modelVariances);
+        startingError = startingError + (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
+        BOOST_MESSAGE(" Fixing Time = " << expiry <<
+                      " MktVol = " << io::rate(volatilities[i])  <<
+                      " ModVol = " << io::rate(modelVols)        <<
+                      " k=" << k);
+    }
 }
 
 test_suite* MarketModelTest::suite() {
@@ -985,8 +935,6 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCoinitialSwaps));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
