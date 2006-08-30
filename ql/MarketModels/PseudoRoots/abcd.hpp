@@ -83,6 +83,7 @@ namespace QuantLib
                     ) / (4*c_*c_*c_*k2*k3);
         }
 
+
     private:
         //! Parameters
         Real a_, b_, c_, d_;
