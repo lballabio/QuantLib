@@ -26,6 +26,7 @@
 #include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
 #include <ql/MarketModels/Products/marketmodelcoinitialswaps.hpp>
 #include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
+#include <ql/MarketModels/Products/marketmodelcomposite.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
@@ -41,6 +42,8 @@
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/MarketModels/PseudoRoots/abcdfit.hpp>
+#include <ql/Math/segmentintegral.hpp>
+#include <ql/Math/functional.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
 
 #if defined(BOOST_MSVC)
@@ -88,12 +91,12 @@ void setup() {
         rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
 
     std::copy(rateTimes.begin()+1, rateTimes.end(), paymentTimes.begin());
-    
+
     for (Size i=1; i<rateTimes.size(); ++i)
         accruals[i-1] = rateTimes[i] - rateTimes[i-1];
 
     // rates
-    
+
     todaysForwards = std::vector<Rate>(paymentTimes.size());
     displacements = std::vector<Rate>(paymentTimes.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
@@ -104,7 +107,7 @@ void setup() {
     todaysDiscounts = std::vector<DiscountFactor>(rateTimes.size());
     todaysDiscounts[0] = 0.95;
     for (Size i=1; i<rateTimes.size(); ++i)
-        todaysDiscounts[i] = todaysDiscounts[i-1] / 
+        todaysDiscounts[i] = todaysDiscounts[i-1] /
             (1.0+todaysForwards[i-1]*accruals[i-1]);
 
     // volatilities
@@ -137,10 +140,6 @@ void setup() {
 }
 
 
-QL_END_TEST_LOCALS(MarketModelTest)
-
-
-
 const boost::shared_ptr<SequenceStatistics> simulate(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const boost::shared_ptr<MarketModelProduct>& product,
@@ -159,83 +158,65 @@ const boost::shared_ptr<SequenceStatistics> simulate(
 }
 
 
-
-void testForwards(const SequenceStatistics& stats,
-                  const std::vector<Rate>& strikes)
-{
+void testForwardsAndCaplets(const SequenceStatistics& stats,
+                            const std::vector<Rate>& forwardStrikes,
+                            const std::vector<Rate>& capletStrikes) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
-    
-    std::vector<Rate> expected(todaysForwards.size());
+
+    Size N = todaysForwards.size();
+    std::vector<Rate> expectedForwards(N), expectedCaplets(N);
+    std::vector<Real> forwardStdDevs(N), capletStdDev(N);
     Real minError = QL_MAX_REAL;
     Real maxError = QL_MIN_REAL;
-    for (Size i=0; i<expected.size(); ++i) {
-        expected[i] = (todaysForwards[i]-strikes[i])
+    for (Size i=0; i<N; ++i) {
+        expectedForwards[i] = (todaysForwards[i]-forwardStrikes[i])
             *accruals[i]*todaysDiscounts[i+1];
-        stdDevs[i] = (results[i]-expected[i])/errors[i];
-        if (stdDevs[i]>maxError)
-            maxError = stdDevs[i];
-        else if (stdDevs[i]<minError)
-            minError = stdDevs[i];
+        forwardStdDevs[i] = (results[i]-expectedForwards[i])/errors[i];
+        if (forwardStdDevs[i]>maxError)
+            maxError = forwardStdDevs[i];
+        else if (forwardStdDevs[i]<minError)
+            minError = forwardStdDevs[i];
+
+        Time expiry = rateTimes[i];
+        expectedCaplets[i] =
+            detail::blackFormula(todaysForwards[i]+displacements[i],
+                                 capletStrikes[i]+displacements[i],
+                                 volatilities[i]*std::sqrt(expiry), 1)
+            *accruals[i]*todaysDiscounts[i+1];
+        capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
+        if (capletStdDev[i]>maxError)
+            maxError = capletStdDev[i];
+        else if (capletStdDev[i]<minError)
+            minError = capletStdDev[i];
     }
 
     Real errorThreshold = 2.35;
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
-        for (Size i=0; i<results.size(); ++i) {
+        for (Size i=0; i<N; ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
                           << io::rate(results[i])
                           << " +- " << io::rate(errors[i])
-                          << "; expected: " << io::rate(expected[i])
+                          << "; expected: " << io::rate(expectedForwards[i])
                           << "; discrepancy = "
-                          << stdDevs[i]
+                          << forwardStdDevs[i]
                           << " standard errors");
         }
-        BOOST_ERROR("test failed");
-    }
-}
-
-
-void testCaplets(const SequenceStatistics& stats,
-                 const std::vector<Rate>& strikes)
-{
-    std::vector<Real> results = stats.mean();
-    std::vector<Real> errors = stats.errorEstimate();
-    std::vector<Real> stdDevs(todaysForwards.size());
-    
-    std::vector<Rate> expected(todaysForwards.size());
-    Real minError = QL_MAX_REAL;
-    Real maxError = QL_MIN_REAL;
-    for (Size i=0; i<expected.size(); ++i) {
-        Time expiry = rateTimes[i];
-        expected[i] =
-            detail::blackFormula(todaysForwards[i]+displacements[i],
-                                 strikes[i]+displacements[i],
-                                 volatilities[i]*std::sqrt(expiry), 1)
-            *accruals[i]*todaysDiscounts[i+1];
-        stdDevs[i] = (results[i]-expected[i])/errors[i];
-        if (stdDevs[i]>maxError)
-            maxError = stdDevs[i];
-        else if (stdDevs[i]<minError)
-            minError = stdDevs[i];
-    }
-
-    Real errorThreshold = 2.24;
-    if (minError > 0.0 || maxError < 0.0 ||
-        minError <-errorThreshold || maxError > errorThreshold) {
-        for (Size i=0; i<results.size(); ++i) {
+        for (Size i=0; i<N; ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
-                          << io::rate(results[i])
-                          << " +- " << io::rate(errors[i])
-                          << "; expected: " << io::rate(expected[i])
+                          << io::rate(results[i+N])
+                          << " +- " << io::rate(errors[i+N])
+                          << "; expected: " << io::rate(expectedCaplets[i])
                           << "; discrepancy = "
-                          << (results[i]-expected[i])/(errors[i] == 0.0 ? 1.0 : errors[i])
+                          << (results[i+N]-expectedCaplets[i])/(errors[i+N] == 0.0 ? 1.0 : errors[i+N])
                           << " standard errors");
         }
         BOOST_ERROR("test failed");
     }
 }
+
 
 void testCoinitialSwaps(const SequenceStatistics& stats,
                   const Real fixedRate)
@@ -243,7 +224,7 @@ void testCoinitialSwaps(const SequenceStatistics& stats,
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
-    
+
     std::vector<Rate> expected(todaysForwards.size());
     Real minError = QL_MAX_REAL;
     Real maxError = QL_MIN_REAL;
@@ -279,7 +260,7 @@ void testCoterminalSwaps(const SequenceStatistics& stats,
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
-    
+
     std::vector<Rate> expected(todaysForwards.size());
     Real minError = QL_MAX_REAL;
     Real maxError = QL_MIN_REAL;
@@ -339,8 +320,9 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
     fixingTimes.pop_back();
     boost::shared_ptr<LmVolatilityModel> volModel(new
         LmExtLinearExponentialVolModel(fixingTimes,0.5, 0.6, 0.1, 0.1));
-    boost::shared_ptr<LmCorrelationModel> corrModel(new
-        LmLinearExponentialCorrelationModel(evolution.numberOfRates(), longTermCorrelation, beta));
+    boost::shared_ptr<LmCorrelationModel> corrModel(
+          new LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
+                                                  longTermCorrelation, beta));
     switch (pseudoRootType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<PseudoRoot>(new
@@ -408,7 +390,7 @@ void setMeasure(EvolutionDescription& evolution,
 }
 
 
-        
+
 enum EvolverType { Ipc, Pc };
 
 std::string evolverTypeToString(EvolverType type) {
@@ -430,28 +412,47 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 {
     switch (evolverType) {
         case Ipc:
-            return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRateIpcEvolver(pseudoRoot, evolution, generatorFactory));
+            return boost::shared_ptr<MarketModelEvolver>(
+                              new ForwardRateIpcEvolver(pseudoRoot, evolution,
+                                                        generatorFactory));
         case Pc:
-            return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRatePcEvolver(pseudoRoot, evolution, generatorFactory));
+            return boost::shared_ptr<MarketModelEvolver>(
+                               new ForwardRatePcEvolver(pseudoRoot, evolution,
+                                                        generatorFactory));
         default:
             QL_FAIL("unknown MarketModelEvolver type");
     }
 }
 
-void MarketModelTest::testLongJumpForwards() {
+QL_END_TEST_LOCALS(MarketModelTest)
 
-    BOOST_MESSAGE("Repricing (long jump) forwards in a LIBOR market model...");
+
+
+void MarketModelTest::testLongJumpForwardsAndCaplets() {
+
+    BOOST_MESSAGE("Repricing (long jump) forwards and caplets "
+                  "in a LIBOR market model...");
 
     QL_TEST_SETUP
 
-    std::vector<Rate> strikes(todaysForwards.size());
+    std::vector<Rate> forwardStrikes(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i)
-        strikes[i] = todaysForwards[i] + 0.01;
+        forwardStrikes[i] = todaysForwards[i] + 0.01;
+    std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelForwards(rateTimes, accruals, paymentTimes, strikes));
+    boost::shared_ptr<MarketModelProduct> forwards(
+                       new MarketModelForwards(rateTimes, accruals,
+                                               paymentTimes, forwardStrikes));
+
+    boost::shared_ptr<MarketModelProduct> caplets(
+                        new MarketModelCaplets(rateTimes, accruals,
+                                               paymentTimes, capletStrikes));
+
+    boost::shared_ptr<MarketModelComposite> product(new MarketModelComposite);
+    product->add(forwards);
+    product->add(caplets);
+    product->finalize();
+
     EvolutionDescription evolution = product->suggestedEvolution();
 
     for (Size n=0; n<1; n++) {
@@ -462,26 +463,36 @@ void MarketModelTest::testLongJumpForwards() {
             Size factors = (m==0 ? todaysForwards.size() : m);
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
-
             PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+                ExponentialCorrelationFlatVolatility,
+                ExponentialCorrelationAbcdVolatility };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+                boost::shared_ptr<PseudoRoot> pseudoRoot =
+                    makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
+                MeasureType measures[] = { ProductSuggested,
+                                           Terminal,
+                                           MoneyMarket,
+                                           MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testForwards(*stats, strikes);
+                        evolver = makeMarketModelEvolver(pseudoRoot,
+                                                         evolution,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, product, evolution, paths);
+                        testForwardsAndCaplets(*stats,
+                                               forwardStrikes,
+                                               capletStrikes);
                     }
                 }
             }
@@ -489,18 +500,32 @@ void MarketModelTest::testLongJumpForwards() {
     }
 }
 
-void MarketModelTest::testVeryLongJumpForwards() {
+void MarketModelTest::testVeryLongJumpForwardsAndCaplets() {
 
-    BOOST_MESSAGE("Repricing (very long jump) forwards in a LIBOR market model...");
+    BOOST_MESSAGE("Repricing (very long jump) forwards and caplets "
+                  "in a LIBOR market model...");
 
     QL_TEST_SETUP
 
-    std::vector<Rate> strikes(todaysForwards.size());
+    std::vector<Rate> forwardStrikes(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i)
-        strikes[i] = todaysForwards[i] + 0.01;
+        forwardStrikes[i] = todaysForwards[i] + 0.01;
+    std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelProduct> product(new
-        MarketModelForwardsOneStep(rateTimes, accruals, paymentTimes,strikes));
+    boost::shared_ptr<MarketModelProduct> forwards(
+                new MarketModelForwardsOneStep(rateTimes, accruals,
+                                               paymentTimes, forwardStrikes));
+    boost::shared_ptr<MarketModelProduct> caplets(
+                 new MarketModelCapletsOneStep(rateTimes, accruals,
+                                               paymentTimes, capletStrikes));
+
+    boost::shared_ptr<MarketModelComposite> product(new MarketModelComposite);
+    product->add(forwards);
+    product->add(caplets);
+    product->finalize();
+
+
+
     EvolutionDescription evolution = product->suggestedEvolution();
 
     for (Size n=0; n<1; n++) {
@@ -512,118 +537,34 @@ void MarketModelTest::testVeryLongJumpForwards() {
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
             PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
+                ExponentialCorrelationFlatVolatility,
+                ExponentialCorrelationAbcdVolatility };
             for (Size k=0; k<LENGTH(pseudoRoots); k++) {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+                boost::shared_ptr<PseudoRoot> pseudoRoot =
+                    makePseudoRoot(evolution, factors, pseudoRoots[k]);
 
-                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
+                MeasureType measures[] = { Terminal,
+                                           MoneyMarket,
+                                           MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
                     BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
                     setMeasure(evolution, measures[j]);
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testForwards(*stats, strikes);
-                    }
-                }
-            }
-        }
-    }
-}
-
-void MarketModelTest::testLongJumpCaplets() {
-
-    BOOST_MESSAGE("Repricing (long jump) caplets in a LIBOR market model...");
-
-    QL_TEST_SETUP
-
-    std::vector<Rate> strikes = todaysForwards;
-
-    boost::shared_ptr<MarketModelProduct> product(
-         new MarketModelCaplets(rateTimes, accruals, paymentTimes, strikes));
-    EvolutionDescription evolution = product->suggestedEvolution();
-
-    for (Size n=0; n<1; n++) {
-        MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
-
-        for (Size m=0; m<1; m++) {
-            Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
-
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
-
-                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
-                for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
-                    setMeasure(evolution, measures[j]);
-
-                    EvolverType evolvers[] = { Pc, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
-                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCaplets(*stats, strikes);
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-void MarketModelTest::testVeryLongJumpCaplets() {
-
-    BOOST_MESSAGE("Repricing (very long jump) caplets in a LIBOR market model...");
-
-    QL_TEST_SETUP
-
-    std::vector<Rate> strikes = todaysForwards;
-
-    boost::shared_ptr<MarketModelProduct> product(
-         new MarketModelCapletsOneStep(rateTimes, accruals,
-                                       paymentTimes, strikes));
-    EvolutionDescription evolution = product->suggestedEvolution();
-
-    for (Size n=0; n<1; n++) {
-        MTBrownianGeneratorFactory generatorFactory(seed);
-        BOOST_MESSAGE("\n\t" << n << ". Random Sequence: MTBrownianGeneratorFactory");
-
-        for (Size m=0; m<1; m++) {
-            Size factors = (m==0 ? todaysForwards.size() : m);
-            BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
-
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
-                ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
-
-                MeasureType measures[] = { Terminal, MoneyMarket, MoneyMarketPlus };
-                for (Size j=0; j<LENGTH(measures); j++) {
-                    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << " Measure: " << measureTypeToString(measures[j]));
-                    setMeasure(evolution, measures[j]);
-
-                    EvolverType evolvers[] = { Pc, Ipc };
-                    boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
-                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        testCaplets(*stats, strikes);
+                        evolver = makeMarketModelEvolver(pseudoRoot,
+                                                         evolution,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, product, evolution, paths);
+                        testForwardsAndCaplets(*stats,
+                                               forwardStrikes,
+                                               capletStrikes);
                     }
                 }
             }
@@ -665,7 +606,7 @@ void MarketModelTest::testLongJumpCoinitialSwaps() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
@@ -711,7 +652,7 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1; 
+                    Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
                         evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
@@ -724,10 +665,6 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
     }
 }
 
-#include "integrals.hpp"
-#include <ql/Math/segmentintegral.hpp>
-#include <ql/Math/functional.hpp>
-
 void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_MESSAGE("Testing AbcdVolatilityIntegration ... ");
@@ -738,13 +675,13 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
     Real b =  0.1677;
     Real c = 0.5403;
     Real d = 0.1710;
-    
+
     const Size N = 20;
     const Real precision = 1e-04;
 
     for (Size i=0; i<N; i++) {
         Time T1 = 0.5*(1+i);                // expiry of forward 1: after T1 AbcdVol = 0
-        for (Size k=0; k<N-i; k++) {        
+        for (Size k=0; k<N-i; k++) {
             Time T2 = 0.5*(1+k);            // expiry of forward 2: after T2 AbcdVol = 0
             boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d,T1,T2));
             Time Tmin = std::min(T1,T2);
@@ -768,7 +705,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     }
                     if (std::abs(analytical-numerical)>precision) {
                         BOOST_MESSAGE("     T1=" << T1 << "," <<
-                                   "T2=" << T2 << ",\t\t" << 
+                                   "T2=" << T2 << ",\t\t" <<
                                    "xMin=" << xMin << "," <<
                                    "xMax=" << xMax << ",\t\t" <<
                                    "analytical: " << analytical << ",\t" <<
@@ -778,7 +715,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                     Real covariance = instVol->covariance(xMin,xMax);
                     if (std::abs(analytical-covariance)>1e-10) {
                         BOOST_FAIL("     T1=" << T1 << "," <<
-                                   "T2=" << T2 << ",\t\t" << 
+                                   "T2=" << T2 << ",\t\t" <<
                                    "xMin=" << xMin << "," <<
                                    "xMax=" << xMax << ",\t\t" <<
                                    "covariance: " << covariance << ",\t" <<
@@ -789,7 +726,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                         Real variance = instVol->variance(xMax);
                         if (std::abs(analytical-variance)>1e-10) {
                             BOOST_FAIL("     T1=" << T1 << "," <<
-                                       "T2=" << T2 << ",\t\t" << 
+                                       "T2=" << T2 << ",\t\t" <<
                                        "xMin=" << xMin << "," <<
                                        "xMax=" << xMax << ",\t\t" <<
                                        "variance: " << variance << ",\t" <<
@@ -803,13 +740,13 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 }
 
 void MarketModelTest::testAbcdVolatilityCompare() {
-    
+
     BOOST_MESSAGE("Testing AbcdVolatility different implementations ...");
 
     QL_TEST_SETUP
 
     /*
-        Given the instantaneous volatilities related to forward expiring at 
+        Given the instantaneous volatilities related to forward expiring at
         rateTimes[i1] and at rateTimes[i2], the methods:
         - LmExtLinearExponentialVolModel::integratedVariance(i1,i2,T)
         - Abcd::covariance(T)
@@ -818,15 +755,15 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     // Parameters following Rebonato  --> Parameters following Brigo-Mercurio
     // used in Abcd class                 used in LmExtLinearExponentialVolModel class
-    Real a = 0.0597;              // --> d 
-    Real b = 0.1677;              // --> a 
+    Real a = 0.0597;              // --> d
+    Real b = 0.1677;              // --> a
     Real c = 0.5403;              // --> b
-    Real d = 0.1710;              // --> c 
+    Real d = 0.1710;              // --> c
 
-    
+
     Size i1; // index of forward 1
     Size i2; // index of forward 2
-        
+
     boost::shared_ptr<LmVolatilityModel> lmAbcd(
                     new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
 
@@ -835,17 +772,17 @@ void MarketModelTest::testAbcdVolatilityCompare() {
             boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d,rateTimes[i1],rateTimes[i2]));
             Time T = 0.;
             do {
-                
+
                 Real lmCovariance = lmAbcd->integratedVariance(i1,i2,T);
                 Real abcdCovariance = abcd->covariance(0,T);
                 if(std::abs(lmCovariance-abcdCovariance)>1e-10) {
                     BOOST_FAIL("     " <<
                                   "  T1="   << rateTimes[i1] << ","     <<
-                                  "T2="   << rateTimes[i2] << ",\t\t" << 
+                                  "T2="   << rateTimes[i2] << ",\t\t" <<
                                   "xMin=" << 0  << ","     <<
                                   "xMax=" << T  << ",\t\t" <<
                                   "abcd: " << abcdCovariance << ",\t" <<
-                                  "lm: "   << lmCovariance);        
+                                  "lm: "   << lmCovariance);
                 }
                 T = T + 0.5;
             } while (T<std::min(rateTimes[i1],rateTimes[i2])) ;
@@ -883,14 +820,14 @@ void MarketModelTest::testAbcdVolatilityFit() {
         Real modelVols = std::sqrt(modelVariances/expiry);
         Real k = std::sqrt(mktVariances[i]/modelVariances);
         startingError += (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
-       
+
         BOOST_MESSAGE(" Fixing Time = " << expiry <<
                       " MktVol = " << io::rate(volatilities[i])  <<
                       " ModVol = " << io::rate(modelVols)        <<
                       " k=" << k );
     }
     startingError /= nRates;
-    
+
     boost::shared_ptr<EndCriteria> endCriteria(new EndCriteria(100000,0.0001));
     Array initialValue(4);
     initialValue[0] = a;
@@ -904,12 +841,12 @@ void MarketModelTest::testAbcdVolatilityFit() {
                                    mktVariances.begin(),
                                    a, b, c, d, rateTimes, method));
 
-    BOOST_MESSAGE("   Parameters: " << "\n" 
+    BOOST_MESSAGE("   Parameters: " << "\n"
         << "  a: " <<  "\t" << a << " ---> " << fit->a() << "\n"
         << "  b: " <<  "\t" << b << " ---> " << fit->b() << "\n"
         << "  c: " <<  "\t" << c << " ---> " << fit->c() << "\n"
-        << "  d: " <<  "\t" << d << " ---> " << fit->d() << "\n"        
-        << "  Rms error: " << std::sqrt(startingError) << " ---> " << fit->interpolationError()        
+        << "  d: " <<  "\t" << d << " ---> " << fit->d() << "\n"
+        << "  Rms error: " << std::sqrt(startingError) << " ---> " << fit->interpolationError()
         )
         ;
 
@@ -929,10 +866,10 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwards));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwards));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpCaplets));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCaplets));
+    suite->add(
+           BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwardsAndCaplets));
+    suite->add(
+       BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));

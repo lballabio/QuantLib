@@ -28,15 +28,10 @@
 
 class MarketModelTest {
   public:
-    static void testLongJumpForwards();
-    static void testLongJumpCaplets();
-    static void testVeryLongJumpForwards();
-    static void testVeryLongJumpCaplets();
-    static void testFitAbcdVolatility();
+    static void testLongJumpForwardsAndCaplets();
+    static void testVeryLongJumpForwardsAndCaplets();
     static void testLongJumpCoinitialSwaps();
     static void testLongJumpCoterminalSwaps();
-    static void testVeryLongJumpCoinitialSwaps();
-    static void testVeryLongJumpCoterminalSwaps();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();
