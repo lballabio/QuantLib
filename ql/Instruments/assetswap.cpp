@@ -29,7 +29,7 @@ namespace QuantLib {
                   bool payFixedRate,
                   Real nominal,
                   const boost::shared_ptr<Bond>& bond,
-                  const Real bondCleanPrice, // const Handle<Quote>&
+                  Real bondCleanPrice,
                   const Schedule& floatSchedule,
                   const boost::shared_ptr<Xibor>& index,
                   Spread spread,
@@ -66,12 +66,12 @@ namespace QuantLib {
             SimpleCashFlow(upfront, upfrontDate_));
         floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
 
-        // register with bondprice too!
-
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             bond->cashflows();
         // remove redemption
         fixedLeg.pop_back();
+        for (i = fixedLeg.begin(); i < fixedLeg.end(); ++i)
+            registerWith(*i);
 
         // handle when termination date is earlier than
         // bond maturity date

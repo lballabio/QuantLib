@@ -44,7 +44,7 @@ namespace QuantLib {
         AssetSwap(bool payFixedRate,
                   Real nominal,
                   const boost::shared_ptr<Bond>& bond,
-                  const Real bondCleanPrice,
+                  Real bondCleanPrice,
                   const Schedule& floatSchedule,
                   const boost::shared_ptr<Xibor>& index,
                   Spread spread,
@@ -55,7 +55,6 @@ namespace QuantLib {
         Real floatingLegBPS() const;
         Real fairPrice() const;
         // inspectors
-        Rate fixedRate() const;
         Spread spread() const;
         Real nominal() const;
         bool payFixedRate() const;
@@ -72,7 +71,6 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         bool payFixedRate_;
-        Rate fixedRate_;
         Spread spread_;
         Real nominal_;
         Date upfrontDate_;
@@ -120,10 +118,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Rate AssetSwap::fixedRate() const {
-        return fixedRate_;
-    }
 
     inline Spread AssetSwap::spread() const {
         return spread_;
