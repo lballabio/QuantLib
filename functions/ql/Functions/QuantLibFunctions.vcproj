@@ -424,9 +424,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\prices.cpp">
-			</File>
-			<File
 				RelativePath="vols.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -492,9 +489,6 @@
 			</File>
 			<File
 				RelativePath="mathf.hpp">
-			</File>
-			<File
-				RelativePath=".\prices.hpp">
 			</File>
 			<File
 				RelativePath="vols.hpp">

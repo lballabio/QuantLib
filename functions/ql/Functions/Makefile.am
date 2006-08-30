@@ -6,7 +6,6 @@ include_HEADERS = \
 	auto_link.hpp \
 	calendars.hpp \
 	mathf.hpp \
-	prices.hpp \
 	vols.hpp
 
 EXTRA_DIST = \
@@ -21,7 +20,6 @@ libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLibFunctions_la_SOURCES = \
 	mathf.cpp \
-    prices.cpp \
 	vols.cpp
 
 dist-hook:

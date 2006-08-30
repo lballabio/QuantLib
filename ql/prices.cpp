@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,6 +21,36 @@
 #include <ql/prices.hpp>
 
 namespace QuantLib {
+
+    Real midEquivalent(const Real bid,
+                       const Real ask,
+                       const Real last,
+                       const Real close)
+    {
+        if (bid != Null<Real>() && bid > 0.0) {
+            if (ask != Null<Real>() && ask > 0.0) return ((bid+ask)/2.0);
+            else                                  return bid;
+        } else {
+            if (ask != Null<Real>() && ask > 0.0)          return ask;
+            else if (last != Null<Real>() && last > 0.0)   return last;
+            else {
+                QL_REQUIRE(close != Null<Real>() && close > 0.0,
+                    "all input prices are invalid");
+                return close;
+            }
+        }
+    }
+
+    Real midRobust(const Real bid,
+                   const Real ask)
+    {
+        QL_REQUIRE(bid != Null<Real>() && bid > 0.0,
+            "invalid bid price");
+        QL_REQUIRE(ask != Null<Real>() && ask > 0.0,
+            "invalid ask price");
+        return (bid+ask)/2.0;
+    }
+
 
     IntervalPrice::IntervalPrice()
     : open_(Null<Real>()), close_(Null<Real>()),

@@ -27,11 +27,10 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     Real rand();
     void randomize(BigNatural seed);
-
-
-    #ifndef QL_DISABLE_DEPRECATED
 
     template<class I1, class I2, class I3>
     std::vector<Real> interpolate(const I1& xx_begin,
@@ -119,6 +118,5 @@ namespace QuantLib {
     #endif
 
 }
-
 
 #endif

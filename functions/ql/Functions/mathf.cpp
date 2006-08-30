@@ -26,6 +26,16 @@
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
+
+    static MersenneTwisterUniformRng rng;
+
+    Real rand() {
+        return rng.next().value;
+    }
+    void randomize(BigNatural seed) {
+        rng = MersenneTwisterUniformRng(seed);
+    }
+
     Real interpolate2D(const std::vector<Real>& x_values,
                        const std::vector<Real>& y_values,
                        const Matrix& dataMatrix,
@@ -67,14 +77,5 @@ namespace QuantLib {
             (probability);
     }
     #endif
-
-    static MersenneTwisterUniformRng rng;
-
-    Real rand() {
-        return rng.next().value;
-    }
-    void randomize(BigNatural seed) {
-        rng = MersenneTwisterUniformRng(seed);
-    }
 
 }
