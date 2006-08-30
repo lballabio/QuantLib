@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/MarketModels/PseudoRoots
 
 include_HEADERS = \
 	abcd.hpp \
+	abcdfit.hpp \
 	calibratedmarketmodel.hpp \
 	expcorrabcdvol.hpp \
 	expcorrflatvol.hpp
