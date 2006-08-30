@@ -93,7 +93,7 @@ namespace QuantLib {
                 return Null<T>();
         }
         T& operator[](const Date& d) {
-            if (values_.find(d) != values_.end())
+            if (values_.find(d) == values_.end())
                 values_[d] = Null<T>();
             return values_[d];
         }
