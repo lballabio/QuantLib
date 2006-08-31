@@ -221,9 +221,9 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
+        Matrix volSpreads_;
         Cube marketVolCube_;
         Cube volCubeAtmCalibrated_;
-        std::vector<Interpolation2D> volSpreadsInterpolator_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         Calendar calendar_ ;

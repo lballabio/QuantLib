@@ -296,7 +296,7 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Matrix& marketVolCube,
+        const Matrix& volSpreads,
         const Calendar& calendar,
 		Integer swapSettlementDays,
         Frequency fixedLegFrequency,
@@ -310,7 +310,7 @@ namespace QuantLib {
       exerciseDatesAsReal_(expiries.size()),
       lengths_(lengths), timeLengths_(lengths.size()),
       nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
-      volSpreadsInterpolator_(nStrikes_),
+      volSpreads_(volSpreads),
       localStrikes_(nStrikes_), localSmile_(nStrikes_),
       calendar_(calendar), swapSettlementDays_(swapSettlementDays),
 	  fixedLegFrequency_(fixedLegFrequency),
@@ -363,24 +363,29 @@ namespace QuantLib {
                 "non increasing strike spreads");
         }
 
-        QL_REQUIRE(nStrikes_==marketVolCube.columns(),
+        QL_REQUIRE(nStrikes_==volSpreads_.columns(),
                    "nStrikes_!=marketVolCube.columns()");
-        QL_REQUIRE(nExercise*nlengths==marketVolCube.rows(),
+        QL_REQUIRE(nExercise*nlengths==volSpreads_.rows(),
                    "nExercise*nlengths!=marketVolCube.rows()");
-        
+
+        atmVolStructure_.currentLink()->enableExtrapolation();
         marketVolCube_ = Cube(exerciseTimes_, timeLengths_, nStrikes_);
         for (i=0; i<nStrikes_; i++)
         {
             for (Size j=0; j<nExercise; j++) {
                 for (Size k=0; k<nlengths; k++) {
-                    marketVolCube_.setElement(i, j, k, marketVolCube[j*nlengths+k][i]);
+                    const Rate atmForward = atmStrike(exerciseTimes_[j], timeLengths_[k]);        
+                    const Volatility atmVol = 
+                        atmVolStructure_->volatility(exerciseTimes_[j], timeLengths_[k], atmForward);
+                    const Volatility vol = atmVol + volSpreads_[j*nlengths+k][i];
+                    marketVolCube_.setElement(i, j, k, vol);
                 }
             }
         }
  
         sparseParameters_ = sabrCalibration(marketVolCube_);
         volCubeAtmCalibrated_= marketVolCube_;
-        fillVolatilityCube();
+        //fillVolatilityCube();
 
     }
 
@@ -515,8 +520,7 @@ namespace QuantLib {
         //std::vector<Real>::iterator::difference_type 
         //lengthsPreviousIndex = lengthsPreviousNode - lengths_.begin();
 
-        //Size expiriesNextIndex, lengthsNextIndex;
-
+        //spreadVol
         //                    std::vector<Real> strikes, volatilities, volAtmCalibrated;
         //            const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
         //                boost::shared_ptr<SABRInterpolation>(
@@ -524,7 +528,7 @@ namespace QuantLib {
         //            exerciseTimes_[j], atmForward, Null<Real>(), Null<Real>(), Null<Real>(),
         //            Null<Real>()));
 
-                  return 0.;
+        return 0.;
     }
     //////
     Volatility SwaptionVolatilityCubeBySabr::
