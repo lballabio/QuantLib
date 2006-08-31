@@ -6,9 +6,7 @@ Dirk Eddelbuettel
 Neil Firth, Mathematical Institute, University of Oxford
 Marco Marchioro, StatPro Italia srl
 Sadruddin Rejeb
-Niels Elken Sønderby
 Enrico Sirola, StatPro Italia srl
+Klaus Spanderen
+Niels Elken Sønderby
 Joseph Wang
-
-QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
-Methods in Finance".
