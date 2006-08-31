@@ -57,7 +57,7 @@ namespace QuantLib {
         Spread spread() const;
         Real nominal() const;
         bool payFixedRate() const;
-        const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const {
+        const std::vector<boost::shared_ptr<CashFlow> >& bondLeg() const {
             return legs_[0];
         }
         const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {

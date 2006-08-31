@@ -105,7 +105,7 @@ namespace QuantLib {
         Size i;
 
         const std::vector<boost::shared_ptr<CashFlow> >& fixedCoupons =
-            fixedLeg();
+            bondLeg();
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
             std::vector<Time>(fixedCoupons.size());
