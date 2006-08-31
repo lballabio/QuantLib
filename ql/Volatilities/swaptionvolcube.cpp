@@ -380,7 +380,7 @@ namespace QuantLib {
  
         sparseParameters_ = sabrCalibration(marketVolCube_);
         volCubeAtmCalibrated_= marketVolCube_;
-        //fillVolatilityCube();
+        fillVolatilityCube();
 
     }
 
@@ -488,16 +488,10 @@ namespace QuantLib {
                     const Rate atmForward = atmStrike(atmExerciseTimes[j], atmTimeLengths[k]);
                     const Volatility atmVol = 
                         atmVolStructure_->volatility(atmExerciseTimes[j], atmTimeLengths[k], atmForward);
-                    ///////
-                            std::vector<Real> strikes, volatilities, volAtmCalibrated;
-                    const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
-                        boost::shared_ptr<SABRInterpolation>(
-                    new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
-                    exerciseTimes_[j], atmForward, Null<Real>(), Null<Real>(), Null<Real>(),
-                    Null<Real>()));
-///////////
+                    std::vector<Real>  volAtmCalibrated;
                     for (Size i=0; i<nStrikes_; i++){
-                        Volatility spreadVol=0.;
+                        Volatility spreadVol=spreadVolInterpolation(atmExerciseTimes[j],
+                                                    atmTimeLengths[k], sparseParameters_);
                         volAtmCalibrated.push_back(atmVol + spreadVol);
                     }
                     volCubeAtmCalibrated_.setPoint(atmExerciseTimes[j], atmTimeLengths[k],volAtmCalibrated);
@@ -581,7 +575,7 @@ namespace QuantLib {
 	    std::vector<Matrix> points(nLayers_,Matrix(expiries_.size(), lengths_.size(), 0.0));
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),points_[k]));
+                                        lengths_.begin(), lengths_.end(),points[k]));
             interpolators_[k].enableExtrapolation();
         }   
    	    setPoints(points); 
