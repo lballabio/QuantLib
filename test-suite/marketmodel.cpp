@@ -674,17 +674,18 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
     Real a = -0.0597;
     Real b =  0.1677;
-    Real c = 0.5403;
-    Real d = 0.1710;
+    Real c =  0.5403;
+    Real d =  0.1710;
 
-    const Size N = 20;
+    const Size N = 10;
     const Real precision = 1e-04;
 
+    boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d));
+    SegmentIntegral SI(20000);
     for (Size i=0; i<N; i++) {
-        Time T1 = 0.5*(1+i);                // expiry of forward 1: after T1 AbcdVol = 0
+        Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
         for (Size k=0; k<N-i; k++) {
-            Time T2 = 0.5*(1+k);            // expiry of forward 2: after T2 AbcdVol = 0
-            boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d));
+            Time T2 = 0.5*(1+k); // expiry of forward 2: after T2 AbcdVol = 0
             Time tMin = std::min(T1,T2);
             Time tMax = std::max(T1,T2);
             //Integration
@@ -692,20 +693,9 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                 Real xMin = 0.5*j;
                 for (Size l=0; l<N-j; l++) {
                     Real xMax = xMin + 0.5*l;
-                    //Numerical                                       
-                    SegmentIntegral SI(20000);
                     AbcdSquared abcd2(a,b,c,d,T1,T2);
                     Real numerical = SI(abcd2,xMin,xMax);
-                    //Analytical
-                    Real analytical;
-                    if(tMin<xMin) {         // both forwards are expired
-                        analytical = 0.0;
-                    } else {                      
-                        //Real fMax = instVol->primitive(std::min(tMin,std::min(xMax,tMax)),T1,T2);
-                        //Real fMin = instVol->primitive(xMin,T1,T2);
-                        //analytical = fMax - fMin;
-                        analytical = instVol->covariance(xMin,xMax,T1,T2);
-                    }
+                    Real analytical = instVol->covariance(xMin,xMax,T1,T2);
                     if (std::abs(analytical-numerical)>precision) {
                         BOOST_MESSAGE("     T1=" << T1 << "," <<
                                    "T2=" << T2 << ",\t\t" <<
@@ -714,20 +704,9 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                                    "analytical: " << analytical << ",\t" <<
                                    "numerical:   " << numerical);
                     }
-                    // Test of direct implementation in Abcd class
-/*                    Real covariance = instVol->covariance(xMin,xMax,T1,T2);
-                    if (std::abs(analytical-covariance)>1e-10) {
-                        BOOST_FAIL("     T1=" << T1 << "," <<
-                                   "T2=" << T2 << ",\t\t" <<
-                                   "xMin=" << xMin << "," <<
-                                   "xMax=" << xMax << ",\t\t" <<
-                                   "covariance: " << covariance << ",\t" <<
-                                   "analytical: " << analytical);
-                    }
-  */                  // Test of direct implementation in Abcd class
-                    if ((xMin==0)&&(T1==T2)) {
-                        Real variance = instVol->variance(0,xMax,T1);
-                        if (std::abs(analytical-variance)>1e-10) {
+                    if (T1==T2) {
+                        Real variance = instVol->variance(xMin,xMax,T1);
+                        if (std::abs(analytical-variance)>1e-14) {
                             BOOST_FAIL("     T1=" << T1 << "," <<
                                        "T2=" << T2 << ",\t\t" <<
                                        "xMin=" << xMin << "," <<
@@ -769,25 +748,22 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     boost::shared_ptr<LmVolatilityModel> lmAbcd(
                     new LmExtLinearExponentialVolModel(rateTimes,b,c,d,a));
-
+    boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d));
     for (i1=0; i1<rateTimes.size(); i1++ ) {
         for (i2=0; i2<rateTimes.size(); i2++ ) {
-            boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d));
             Time T = 0.;
             do {
-
                 Real lmCovariance = lmAbcd->integratedVariance(i1,i2,T);
                 Real abcdCovariance = abcd->covariance(0,T,rateTimes[i1],rateTimes[i2]);
                 if(std::abs(lmCovariance-abcdCovariance)>1e-10) {
-                    BOOST_FAIL("     " <<
-                                  "  T1="   << rateTimes[i1] << ","     <<
+                    BOOST_FAIL(" T1="   << rateTimes[i1] << ","     <<
                                   "T2="   << rateTimes[i2] << ",\t\t" <<
                                   "xMin=" << 0  << ","     <<
                                   "xMax=" << T  << ",\t\t" <<
                                   "abcd: " << abcdCovariance << ",\t" <<
                                   "lm: "   << lmCovariance);
                 }
-                T = T + 0.5;
+                T += 0.5;
             } while (T<std::min(rateTimes[i1],rateTimes[i2])) ;
         }
     }
@@ -900,14 +876,14 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
     suite->add(
            BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwardsAndCaplets));
     suite->add(
        BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
     return suite;
 }
