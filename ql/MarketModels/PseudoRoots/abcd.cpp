@@ -25,28 +25,61 @@
 namespace QuantLib {
 
 
-    Abcd::Abcd(Real a, Real b, Real c, Real d, Real T, Real S)
-    : a_(a), b_(b), c_(c), d_(d), S_(S), T_(T) {
+    Abcd::Abcd(Real a, Real b, Real c, Real d)
+    : a_(a), b_(b), c_(c), d_(d) {
         QL_REQUIRE(a+d>=0, "a+d must be non negative");
         QL_REQUIRE(d>=0, "d must be non negative");
         QL_REQUIRE(c>=0, "c must be non negative");
     }
 
-    Real Abcd::covariance(Time inf, Time max) const {
-        QL_REQUIRE(max>=inf, "integrations bounds are in reverse order");
-        Time tMin = std::min(S_,T_);
-        Time tMax = std::max(S_,T_);
-        if(inf>tMin) {
+    Real Abcd::operator()(Time u) const {
+        if (u<=0)
+            return 0.0;
+        else
+            return (a_ + b_*u)*std::exp(-c_*u) + d_;
+    }
+
+    Real Abcd::instantaneousCovariance(Time u, Time T, Time S) const {
+        if (u>T || u>S)
+            return 0.0;
+        else
+            return (*this)(T-u)*(*this)(S-u);
+    }
+
+    Real Abcd::covariance(Time t1, Time t2, Time T, Time S) const {
+        QL_REQUIRE(t2>=t1, "integrations bounds are in reverse order");
+        if (t1>S || t1>T) {
             return 0.0;
         } else {
-            return (primitive(std::min(tMin,std::min(max,tMax))) - primitive(inf));
+            t2 = std::min(t2,std::min(S,T));
+            return primitive(t2, T, S) - primitive(t1, T, S);
         }
     }
 
-    Real Abcd::variance(Time max) const {
-        QL_REQUIRE(S_==T_,"S_ and T_ are different")
-        // primitive(0.0) is equal to 0
-        return primitive(std::min(max,T_));
+    Real Abcd::variance(Time tMin, Time tMax, Time T) const {
+        return covariance(tMin, tMax, T, T);
     }
+
+    Real Abcd::primitive(Time u, Time T, Time S) const {
+
+        if(T<u) return 0.0;
+        if(S<u) return 0.0;
+
+        const Real k1=std::exp(c_*u);
+        const Real k2=std::exp(c_*S);
+        const Real k3=std::exp(c_*T);
+
+        return (b_*b_*(-1 - 2*c_*c_*S*T - c_*(S + T)
+                     + k1*k1*(1 + c_*(S + T - 2*u) + 2*c_*c_*(S - u)*(T - u)))
+                + 2*c_*c_*(2*d_*a_*(k2 + k3)*(k1 - 1)
+                         +a_*a_*(k1*k1 - 1)+2*c_*d_*d_*k2*k3*u)
+                + 2*b_*c_*(a_*(-1 - c_*(S + T) + k1*k1*(1 + c_*(S + T - 2*u)))
+                         -2*d_*(k3*(1 + c_*S) + k2*(1 + c_*T)
+                               - k1*k3*(1 + c_*(S - u))
+                               - k1*k2*(1 + c_*(T - u)))
+                         )
+                ) / (4*c_*c_*c_*k2*k3);
+}
+
 
 }

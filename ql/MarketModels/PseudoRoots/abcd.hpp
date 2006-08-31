@@ -37,58 +37,37 @@ namespace QuantLib
 
         following Rebonato notation.
 
-        The class instantiates:
-        \f[
-        f(T-t) = [ ( a + b(T-t) ) e^{-c(T-t)} + d ]  [ ( a + b(S-t) ) e^{-c(S-t)} + d ]
-        \f]
-
-
     */
     class Abcd : public std::unary_function<Real,Real> {
     public:
-        Abcd(Real a, Real b, Real c, Real d, Real T, Real S);
-        Real operator()(Time u) const {
-            if(T_<=u) return 0.0;
-            if(S_<=u) return 0.0;
-            return (  ((a_ + b_*(T_-u))*std::exp(-c_*(T_-u)) + d_ ) *
-                      ((a_ + b_*(S_-u))*std::exp(-c_*(S_-u)) + d_ ) );
-        }
+        Abcd(Real a, Real b, Real c, Real d);
+        //! instantaneous volatility at time to maturity u: \f[ f(u) \f]
+        Real operator()(Time u) const;
+        /*! instantaneous covariance at time u between T and S fixing rates:
+            \f[ f(T-u)f(S-u) \f]
+        */
+        Real instantaneousCovariance(Time u, Time T, Time S) const;
+        /*! covariance in [tMin,tMax] between T and S fixing rates:
+            \f[ \int_{tMin}^{tMax} f(T-u)f(S-u)du \f]
+        */
+        Real covariance(Time tMin, Time tMax, Time T, Time S) const;
+        /*! variance in [tMin,tMax] of T fixing rate:
+            \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
+        */
+        Real variance(Time tMin, Time tMax, Time T) const;
+        //! instantaneous volatility when time to maturity = 0.0
         Real shortTermVolatility() const;
+        //! instantaneous volatility when time to maturity = +inf
         Real longTermVolatility() const;
+        //! time to maturity at which the instantaneous volatility reaches maximum (if any)
         Real maximumLocation() const;
+        //! maximum of the instantaneous volatility
         Real maximumVolatility() const;
-        //! Returns  \f[ \int_{tMin}^{tMax} f(T-t)f(S-t)dt \f]
-        Real covariance(Time tMin, Time tMax) const;
-        //! Returns  \f[ \int_{0}^{T} f^2(T-t)dt \f]
-        Real variance(Time T) const;
-        //! Returns the primitive of the indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
-        Real primitive(Time u) const {
-
-            if(T_<u) return 0.0;
-            if(S_<u) return 0.0;
-
-            const Real k1=std::exp(c_*u);
-            const Real k2=std::exp(c_*S_);
-            const Real k3=std::exp(c_*T_);
-
-            return (b_*b_*(-1 - 2*c_*c_*S_*T_ - c_*(S_ + T_)
-                         + k1*k1*(1 + c_*(S_ + T_ - 2*u) + 2*c_*c_*(S_ - u)*(T_ - u)))
-                    + 2*c_*c_*(2*d_*a_*(k2 + k3)*(k1 - 1)
-                             +a_*a_*(k1*k1 - 1)+2*c_*d_*d_*k2*k3*u)
-                    + 2*b_*c_*(a_*(-1 - c_*(S_ + T_) + k1*k1*(1 + c_*(S_ + T_ - 2*u)))
-                             -2*d_*(k3*(1 + c_*S_) + k2*(1 + c_*T_)
-                                   - k1*k3*(1 + c_*(S_ - u))
-                                   - k1*k2*(1 + c_*(T_ - u)))
-                             )
-                    ) / (4*c_*c_*c_*k2*k3);
-        }
-
-
     private:
+        //! indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
+        Real primitive(Time u, Time T, Time S) const;
         //! Parameters
         Real a_, b_, c_, d_;
-        //! Expiry times of forwards correnspondings to instantaneous volatility
-        Time S_, T_;    
     };
 
     // inline
@@ -108,6 +87,29 @@ namespace QuantLib
     inline Real Abcd::maximumVolatility() const {
         return (b_>0.0 ? b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ : a_+d_);
     }
+
+    //! Abcd Squared functional. Used only in test-suite.
+    class AbcdSquared : public std::unary_function<Real,Real> {
+    public:  
+        AbcdSquared(Real a, Real b, Real c, Real d, Time S, Time T)
+        : abcd_(new Abcd(a,b,c,d)), S_(S), T_(T) {
+            QL_REQUIRE(a+d>=0, "a+d must be non negative");
+            QL_REQUIRE(d>=0, "d must be non negative");
+            QL_REQUIRE(c>=0, "c must be non negative");
+        }
+        Real operator()(Time u) const {
+            if (u>T_ || u>S_)
+                return 0.0;
+            else
+                return (*abcd_)(T_-u)*(*abcd_)(S_-u);        
+        }
+
+    private:
+        //! Parameters
+        boost::shared_ptr<Abcd>  abcd_;
+        Time S_, T_;
+
+    };
 
 }
 
