@@ -43,6 +43,10 @@ namespace QuantLib {
                              Rate forwardValue,
                              const std::vector<Rate>& strikes,
                              const std::vector<Volatility>& volatilities);
+        VarianceSmileSection(
+          const std::vector<Real>& sabrParameters,
+          const std::vector<Rate>& strikes,
+          const Time timeToExpiry);
         Real operator()(const Rate& strike) const;
       private:
         const Time timeToExpiry_;
