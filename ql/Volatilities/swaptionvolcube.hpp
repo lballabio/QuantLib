@@ -66,13 +66,23 @@ namespace QuantLib {
         Rate minStrike() const { return 0.0; }
         Rate maxStrike() const { return 1.0; }
         //@}
+        //! \name Other inspectors
+        //@{
         const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
         Rate atmStrike(const Date& start,
                        const Period& length) const {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
+        //@}
       protected: 
+        //! \name SwaptionVolatilityStructure interface
+        //@{
+        std::pair<Time,Time> convertDates(const Date& exerciseDate,
+            const Period& length) const {
+            return atmVolStructure_->convertDates(exerciseDate, length);
+        }
+        //@}
         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
 

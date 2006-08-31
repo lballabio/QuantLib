@@ -69,16 +69,26 @@ namespace QuantLib {
         const std::vector<Period>& lengths() const;
         const std::vector<Time>& timeLengths() const;
 
-        // TermStructure interface
+        //! \name RateHelper interface
+        //@{
         DayCounter dayCounter() const { return dayCounter_; }
-
-        // SwaptionVolatilityStructure interface
+        //@}
+        //! \name SwaptionVolatilityStructure interface
+        //@{
         Date maxStartDate() const;
         Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;
         Rate minStrike() const;
         Rate maxStrike() const;
+        //! return trivial smile section
+        virtual VarianceSmileSection smileSection(Time start, Time length) const;
+        //! implements the conversion between dates and times
+        std::pair<Time,Time> convertDates(const Date& exerciseDate,
+                                          const Period& length) const;
+        //@}
+        //! \name Other inspectors
+        //@{
         //! returns the lower indexes of sourrounding volatility matrix corners
         std::pair<Size,Size> locate(const Date& exerciseDate,
                                     const Period& length) const {
@@ -91,11 +101,7 @@ namespace QuantLib {
             return std::make_pair(interpolation_.locateY(exerciseTime),
                                   interpolation_.locateX(length));
         }
-        std::pair<Time,Time> convertDates(const Date& exerciseDate,
-                                          const Period& length) const;
-        //! return trivial smile section
-        virtual VarianceSmileSection smileSection(Time start, Time length) const;
-      
+        //@}
     private:
         DayCounter dayCounter_;
         std::vector<Date> exerciseDates_;

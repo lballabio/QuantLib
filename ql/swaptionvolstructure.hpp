@@ -118,14 +118,12 @@ namespace QuantLib {
         //@}
         Date maxDate() const { return maxStartDate(); }
         Time maxTime() const { return maxStartTime(); }
-        //! implements the conversion between dates and times
-        virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
-                                                  const Period& length) const;
-
         virtual VarianceSmileSection smileSection(Date start, Period length) const;
         //! return smile section
         virtual VarianceSmileSection smileSection(Time start, Time length) const = 0;
-
+        //! implements the conversion between dates and times
+        virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
+                                                  const Period& length) const;
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time exerciseTime, Time length,
