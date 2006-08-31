@@ -45,6 +45,7 @@
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
+#include <ql/Optimization/steepestdescent.hpp>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -135,7 +136,7 @@ void setup() {
     seed = 42;
 
     paths = 16383; // 2^14-1
-    //paths = 32767; // 2^15-1
+    paths = 32767; // 2^15-1
 
 }
 
@@ -683,25 +684,27 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
         Time T1 = 0.5*(1+i);                // expiry of forward 1: after T1 AbcdVol = 0
         for (Size k=0; k<N-i; k++) {
             Time T2 = 0.5*(1+k);            // expiry of forward 2: after T2 AbcdVol = 0
-            boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d,T1,T2));
-            Time Tmin = std::min(T1,T2);
-            Time Tmax = std::max(T1,T2);
+            boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d));
+            Time tMin = std::min(T1,T2);
+            Time tMax = std::max(T1,T2);
             //Integration
             for(Size j=0; j<N; j++) {
                 Real xMin = 0.5*j;
                 for (Size l=0; l<N-j; l++) {
                     Real xMax = xMin + 0.5*l;
-                    //Numerical
-                    boost::shared_ptr<SegmentIntegral> SI( new SegmentIntegral(20000));
-                    Real numerical = SI->operator()(*instVol,xMin,xMax);
+                    //Numerical                                       
+                    SegmentIntegral SI(20000);
+                    AbcdSquared abcd2(a,b,c,d,T1,T2);
+                    Real numerical = SI(abcd2,xMin,xMax);
                     //Analytical
                     Real analytical;
-                    if(xMin>Tmin) {
+                    if(tMin<xMin) {         // both forwards are expired
                         analytical = 0.0;
-                    } else {
-                        Real fMax = instVol->primitive(std::min(Tmin,std::min(xMax,Tmax)));
-                        Real fMin = instVol->primitive(xMin);
-                        analytical = fMax - fMin;
+                    } else {                      
+                        //Real fMax = instVol->primitive(std::min(tMin,std::min(xMax,tMax)),T1,T2);
+                        //Real fMin = instVol->primitive(xMin,T1,T2);
+                        //analytical = fMax - fMin;
+                        analytical = instVol->covariance(xMin,xMax,T1,T2);
                     }
                     if (std::abs(analytical-numerical)>precision) {
                         BOOST_MESSAGE("     T1=" << T1 << "," <<
@@ -712,7 +715,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                                    "numerical:   " << numerical);
                     }
                     // Test of direct implementation in Abcd class
-                    Real covariance = instVol->covariance(xMin,xMax);
+/*                    Real covariance = instVol->covariance(xMin,xMax,T1,T2);
                     if (std::abs(analytical-covariance)>1e-10) {
                         BOOST_FAIL("     T1=" << T1 << "," <<
                                    "T2=" << T2 << ",\t\t" <<
@@ -721,9 +724,9 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
                                    "covariance: " << covariance << ",\t" <<
                                    "analytical: " << analytical);
                     }
-                    // Test of direct implementation in Abcd class
+  */                  // Test of direct implementation in Abcd class
                     if ((xMin==0)&&(T1==T2)) {
-                        Real variance = instVol->variance(xMax);
+                        Real variance = instVol->variance(0,xMax,T1);
                         if (std::abs(analytical-variance)>1e-10) {
                             BOOST_FAIL("     T1=" << T1 << "," <<
                                        "T2=" << T2 << ",\t\t" <<
@@ -769,12 +772,12 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     for (i1=0; i1<rateTimes.size(); i1++ ) {
         for (i2=0; i2<rateTimes.size(); i2++ ) {
-            boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d,rateTimes[i1],rateTimes[i2]));
+            boost::shared_ptr<Abcd> abcd(new Abcd(a,b,c,d));
             Time T = 0.;
             do {
 
                 Real lmCovariance = lmAbcd->integratedVariance(i1,i2,T);
-                Real abcdCovariance = abcd->covariance(0,T);
+                Real abcdCovariance = abcd->covariance(0,T,rateTimes[i1],rateTimes[i2]);
                 if(std::abs(lmCovariance-abcdCovariance)>1e-10) {
                     BOOST_FAIL("     " <<
                                   "  T1="   << rateTimes[i1] << ","     <<
@@ -815,8 +818,8 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
     for (Size i=0; i<nRates; i++) {
         Time expiry = rateTimes[i];
-        boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d, expiry, expiry));
-        Real modelVariances = instVol->variance(expiry);
+        boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d));
+        Real modelVariances = instVol->variance(0,expiry,expiry);
         Real modelVols = std::sqrt(modelVariances/expiry);
         Real k = std::sqrt(mktVariances[i]/modelVariances);
         startingError += (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
@@ -852,8 +855,8 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
     for (Size i=0; i<nRates; i++) {
         Time expiry = rateTimes[i];
-        boost::shared_ptr<Abcd> instVol1(new Abcd(fit->a(), fit->b(), fit->c(), fit->d(), expiry, expiry));
-        Real modelVariances = instVol1->variance(expiry);
+        boost::shared_ptr<Abcd> instVol1(new Abcd(fit->a(), fit->b(), fit->c(), fit->d()));
+        Real modelVariances = instVol1->variance(0,expiry,expiry);
         Real modelVols = std::sqrt(modelVariances/expiry);
         Real k = std::sqrt(mktVariances[i]/modelVariances);
         startingError = startingError + (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
@@ -861,6 +864,37 @@ void MarketModelTest::testAbcdVolatilityFit() {
                       " MktVol = " << io::rate(volatilities[i])  <<
                       " ModVol = " << io::rate(modelVols)        <<
                       " k=" << k);
+    }
+
+    boost::shared_ptr<SteepestDescent> method1(new SteepestDescent());
+    initialValue[0] = fit->a();
+    initialValue[1] = fit->b();
+    initialValue[2] = fit->c();
+    initialValue[3] = fit->d();
+    method1->setInitialValue(initialValue);
+    boost::shared_ptr<AbcdFit> fit1(new AbcdFit(rateTimes.begin(), rateTimes.end()-1,
+                                   mktVariances.begin(),
+                                   fit->a(), fit->b(), fit->c(), fit->d(), rateTimes, method1));
+    BOOST_MESSAGE("   Parameters: " << "\n" 
+        << "  a: " <<  "\t" << fit->a() << " ---> " << fit1->a() << "\n"
+        << "  b: " <<  "\t" << fit->b() << " ---> " << fit1->b() << "\n"
+        << "  c: " <<  "\t" << fit->c() << " ---> " << fit1->c() << "\n"
+        << "  d: " <<  "\t" << fit->d() << " ---> " << fit1->d() << "\n"        
+        << "  Rms error: " << fit->interpolationError()
+        << " ---> " << fit1->interpolationError());
+
+    for (Size i=0; i<nRates; i++) {
+        Time expiry = rateTimes[i];
+        boost::shared_ptr<Abcd> instVol2(new Abcd(fit1->a(), fit1->b(), fit1->c(), fit1->d()));
+        Real modelVariances = instVol2->variance(0,expiry,expiry);
+        Real modelVols = std::sqrt(modelVariances/expiry);
+        Real k = std::sqrt(mktVariances[i]/modelVariances);
+        startingError = startingError + (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
+        BOOST_MESSAGE(" Fixing Time = " << expiry <<
+                      " MktVol = " << io::rate(volatilities[i])  <<
+                      " ModVol = " << io::rate(modelVols)        <<
+                      " k=" << k);
+
     }
 }
 

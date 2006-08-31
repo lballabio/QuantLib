@@ -46,8 +46,8 @@ namespace QuantLib {
           public:
             // Constructor
             AbcdCoefficientHolder(Real a, Real b, Real c, Real d,
-                std::vector<Time> fixingTimes, bool aIsFixed = true, 
-                bool dIsFixed = true) 
+                std::vector<Time> fixingTimes, bool aIsFixed = false, 
+                bool dIsFixed = false) 
                 : fixingTimes_(fixingTimes),
                   a_(a), b_(b), c_(c), d_(d),
                   aIsFixed_(aIsFixed), bIsFixed_(false),
@@ -177,6 +177,7 @@ namespace QuantLib {
 
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
+
 				    Array result = problem.minimumValue();
                     if (!aIsFixed_) a_ = result[0];
                     if (!bIsFixed_) b_ = result[1];
@@ -195,8 +196,8 @@ namespace QuantLib {
 
             Real value(Real x) const {
                  boost::shared_ptr<Abcd>
-                      instVol(new Abcd(a_,b_,c_,d_,x,x));
-                return instVol->variance(x);
+                      instVol(new Abcd(a_,b_,c_,d_));
+                return instVol->variance(0,x,x);
             }
             Real primitive(Real x) const {
                 QL_FAIL("Abcd primitive not implemented");
