@@ -120,11 +120,10 @@ void setup() {
 
     std::vector<Rate> strikeSpreads;
     for(int i=0; i<21; i++) {
-        strikeSpreads.push_back(-.02 + i*.01);
+        strikeSpreads.push_back(-.02 + i*.005);
     }
     const Matrix volSpreads(lengths.size()*lengths.size(),
-        strikeSpreads.size(), 0.1);
-
+        strikeSpreads.size(), 0.0);
 
     flatSwaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
