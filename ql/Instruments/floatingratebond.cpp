@@ -73,4 +73,53 @@ namespace QuantLib {
         registerWith(index);
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
+    FloatingRateBond::FloatingRateBond(
+                const Date& issueDate,
+                const Date& datedDate,
+                const Date& maturityDate,
+                Integer settlementDays,
+                const boost::shared_ptr<Xibor>& index,
+                Integer fixingDays,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                Frequency couponFrequency,
+                const Calendar& calendar,
+                const DayCounter& dayCounter,
+                BusinessDayConvention accrualConvention,
+                BusinessDayConvention paymentConvention,
+                Real redemption,
+                const Handle<YieldTermStructure>& discountCurve,
+                const Date& stub, bool fromEnd)
+    : Bond(100.0, dayCounter, calendar, accrualConvention,
+           paymentConvention, settlementDays, discountCurve) {
+
+        issueDate_ = issueDate;
+        datedDate_ = datedDate;
+        maturityDate_ = maturityDate;
+        frequency_ = couponFrequency;
+
+        Schedule schedule(calendar, datedDate, maturityDate,
+                          couponFrequency, accrualConvention,
+                          stub, fromEnd);
+
+        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+                                             schedule, paymentConvention,
+                                             std::vector<Real>(1, faceAmount_),
+                                             fixingDays, index, 
+                                             gearings, spreads,
+                                             dayCounter
+                                             #ifdef QL_PATCH_MSVC6
+                                             , (const UpFrontIndexedCoupon*) 0
+                                             #endif
+                                             );
+        // redemption
+        Date redemptionDate =
+            calendar.adjust(maturityDate, paymentConvention);
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
+
+        registerWith(index);
+    }
+    #endif
 }

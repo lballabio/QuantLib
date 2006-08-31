@@ -180,7 +180,149 @@ namespace QuantLib {
                                       redemption));
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
+    ConvertibleBond::ConvertibleBond(
+            const boost::shared_ptr<StochasticProcess>& process,
+            const boost::shared_ptr<Exercise>&,
+            const boost::shared_ptr<PricingEngine>& engine,
+            Real conversionRatio,
+            const DividendSchedule& dividends,
+            const CallabilitySchedule& callability,
+            const Handle<Quote>& creditSpread,
+            const Date& issueDate,
+            Integer settlementDays,
+            const DayCounter& dayCounter,
+            const Schedule& schedule,
+            Real redemption)
+    : Bond(100.0, dayCounter, schedule.calendar(),
+           schedule.businessDayConvention(),
+           schedule.businessDayConvention(), settlementDays),
+      conversionRatio_(conversionRatio), callability_(callability),
+      dividends_(dividends), creditSpread_(creditSpread) {
 
+        issueDate_ = issueDate;
+        datedDate_ = schedule.startDate();
+        maturityDate_ = schedule.endDate();
+        frequency_ = schedule.frequency();
+
+        setPricingEngine(engine);
+
+        registerWith(process);
+        registerWith(creditSpread);
+    }
+
+    ConvertibleZeroCouponBond::ConvertibleZeroCouponBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule& dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption)
+    : ConvertibleBond(100.0, process, exercise, engine, conversionRatio,
+                      dividends, callability, creditSpread, issueDate,
+                      settlementDays, dayCounter, schedule, redemption) {
+
+        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+
+        // redemption
+        redemption *= faceAmount_/100.0;
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(redemption, maturityDate_)));
+
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashflows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption));
+    }
+
+
+    ConvertibleFixedCouponBond::ConvertibleFixedCouponBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule& dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const std::vector<Rate>& coupons,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption)
+    : ConvertibleBond(100.0, process, exercise, engine, conversionRatio,
+                      dividends, callability, creditSpread, issueDate,
+                      settlementDays, dayCounter, schedule, redemption) {
+
+        cashflows_ = FixedRateCouponVector(schedule,
+            schedule.businessDayConvention(), std::vector<Real>(1, faceAmount_),
+            coupons, dayCounter);
+
+        // redemption
+        redemption *= faceAmount_/100.0;
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(redemption, maturityDate_)));
+
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashflows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption));
+    }
+
+
+    ConvertibleFloatingRateBond::ConvertibleFloatingRateBond(
+                          const boost::shared_ptr<StochasticProcess>& process,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const boost::shared_ptr<PricingEngine>& engine,
+                          Real conversionRatio,
+                          const DividendSchedule& dividends,
+                          const CallabilitySchedule& callability,
+                          const Handle<Quote>& creditSpread,
+                          const Date& issueDate,
+                          Integer settlementDays,
+                          const boost::shared_ptr<Xibor>& index,
+                          Integer fixingDays,
+                          const std::vector<Spread>& spreads,
+                          const DayCounter& dayCounter,
+                          const Schedule& schedule,
+                          Real redemption)
+    : ConvertibleBond(100.0, process, exercise, engine, conversionRatio,
+                      dividends, callability, creditSpread, issueDate,
+                      settlementDays, dayCounter, schedule, redemption) {
+
+        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+                                   schedule, schedule.businessDayConvention(),
+                                   std::vector<Real>(1, faceAmount_),
+                                   fixingDays, index,
+                                   std::vector<Real>(1, 1.0), spreads,
+                                   dayCounter
+                                   #ifdef QL_PATCH_MSVC6
+                                   , (const UpFrontIndexedCoupon*) 0
+                                   #endif
+                                   );
+        // redemption
+        redemption *= faceAmount_/100.0;
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(redemption, maturityDate_)));
+
+        option_ = boost::shared_ptr<option>(
+                           new option(this, process, exercise, engine,
+                                      conversionRatio, dividends, callability,
+                                      creditSpread, cashflows_, dayCounter,
+                                      schedule, issueDate, settlementDays,
+                                      redemption));
+    }
+    #endif
 
     ConvertibleBond::option::option(
             const ConvertibleBond* bond,

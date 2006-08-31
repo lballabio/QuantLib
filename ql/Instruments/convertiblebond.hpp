@@ -69,6 +69,21 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         const Schedule& schedule,
                         Real redemption);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
+                        const boost::shared_ptr<Exercise>& exercise,
+                        const boost::shared_ptr<PricingEngine>& engine,
+                        Real conversionRatio,
+                        const DividendSchedule& dividends,
+                        const CallabilitySchedule& callability,
+                        const Handle<Quote>& creditSpread,
+                        const Date& issueDate,
+                        Integer settlementDays,
+                        const DayCounter& dayCounter,
+                        const Schedule& schedule,
+                        Real redemption);
+        #endif
         void performCalculations() const;
         Real conversionRatio_;
         CallabilitySchedule callability_;
@@ -100,6 +115,22 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Schedule& schedule,
                     Real redemption = 100);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        ConvertibleZeroCouponBond(
+                    const boost::shared_ptr<StochasticProcess>& process,
+                    const boost::shared_ptr<Exercise>& exercise,
+                    const boost::shared_ptr<PricingEngine>& engine,
+                    Real conversionRatio,
+                    const DividendSchedule& dividends,
+                    const CallabilitySchedule& callability,
+                    const Handle<Quote>& creditSpread,
+                    const Date& issueDate,
+                    Integer settlementDays,
+                    const DayCounter& dayCounter,
+                    const Schedule& schedule,
+                    Real redemption = 100);
+        #endif
     };
 
 
@@ -126,6 +157,23 @@ namespace QuantLib {
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
                 Real redemption = 100);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        ConvertibleFixedCouponBond(
+                const boost::shared_ptr<StochasticProcess>& process,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine,
+                Real conversionRatio,
+                const DividendSchedule& dividends,
+                const CallabilitySchedule& callability,
+                const Handle<Quote>& creditSpread,
+                const Date& issueDate,
+                Integer settlementDays,
+                const std::vector<Rate>& coupons,
+                const DayCounter& dayCounter,
+                const Schedule& schedule,
+                Real redemption = 100);
+        #endif
     };
 
 
@@ -154,6 +202,25 @@ namespace QuantLib {
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
                 Real redemption = 100);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        ConvertibleFloatingRateBond(
+                const boost::shared_ptr<StochasticProcess>& process,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine,
+                Real conversionRatio,
+                const DividendSchedule& dividends,
+                const CallabilitySchedule& callability,
+                const Handle<Quote>& creditSpread,
+                const Date& issueDate,
+                Integer settlementDays,
+                const boost::shared_ptr<Xibor>& index,
+                Integer fixingDays,
+                const std::vector<Spread>& spreads,
+                const DayCounter& dayCounter,
+                const Schedule& schedule,
+                Real redemption = 100);
+        #endif
     };
 
 

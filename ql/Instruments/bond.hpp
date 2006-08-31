@@ -59,6 +59,16 @@ namespace QuantLib {
              Integer settlementDays,
              const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        Bond(const DayCounter& dayCount,
+             const Calendar& calendar,
+             BusinessDayConvention accrualConvention,
+             BusinessDayConvention paymentConvention,
+             Integer settlementDays,
+             const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>());
+        #endif
       public:
         //! \name Inspectors
         //@{

@@ -55,6 +55,25 @@ namespace QuantLib {
                         const Date& stub = Date(),
                         bool fromEnd = true,
                         bool longFinal = false);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        FixedCouponBond(const Date& issueDate,
+                        const Date& datedDate,
+                        const Date& maturityDate,
+                        Integer settlementDays,
+                        const std::vector<Rate>& coupons,
+                        Frequency couponFrequency,
+                        const Calendar& calendar,
+                        const DayCounter& dayCounter,
+                        BusinessDayConvention accrualConvention = Following,
+                        BusinessDayConvention paymentConvention = Following,
+                        Real redemption = 100.0,
+                        const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>(),
+                        const Date& stub = Date(),
+                        bool fromEnd = true,
+                        bool longFinal = false);
+        #endif
     };
 
 }

@@ -56,9 +56,29 @@ namespace QuantLib {
                                               = Handle<YieldTermStructure>(),
                          const Date& stub = Date(),
                          bool fromEnd = true);
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use constructor with face amount instead
+        FloatingRateBond(const Date& issueDate,
+                         const Date& datedDate,
+                         const Date& maturityDate,
+                         Integer settlementDays,
+                         const boost::shared_ptr<Xibor>& index,
+                         Integer fixingDays,
+                         const std::vector<Real>& gearings,
+                         const std::vector<Spread>& spreads,
+                         Frequency couponFrequency,
+                         const Calendar& calendar,
+                         const DayCounter& dayCounter,
+                         BusinessDayConvention accrualConvention = Following,
+                         BusinessDayConvention paymentConvention = Following,
+                         Real redemption = 100.0,
+                         const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>(),
+                         const Date& stub = Date(),
+                         bool fromEnd = true);
+        #endif
     };
 
 }
-
 
 #endif

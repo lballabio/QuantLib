@@ -47,5 +47,31 @@ namespace QuantLib {
             SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
     }
 
-}
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use constructor with face amount instead
+    ZeroCouponBond::ZeroCouponBond(
+                        const Date& issueDate,
+                        const Date& maturityDate,
+                        Integer settlementDays,
+                        const DayCounter& dayCounter,
+                        const Calendar& calendar,
+                        BusinessDayConvention paymentConvention,
+                        Real redemption,
+                        const Handle<YieldTermStructure>& discountCurve)
+    : Bond(100.0,dayCounter, calendar, Unadjusted, paymentConvention,
+           settlementDays, discountCurve) {
 
+        issueDate_ = datedDate_ = issueDate;
+        maturityDate_ = maturityDate;
+        frequency_ = Once;
+
+        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        // redemption
+        Date redemptionDate =
+            calendar.adjust(maturityDate, paymentConvention);
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
+    }
+    #endif
+
+}
