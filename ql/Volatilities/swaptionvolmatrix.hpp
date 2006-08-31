@@ -52,7 +52,7 @@ namespace QuantLib {
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
                                  const std::vector<Period>& lengths,
-                                 const std::vector<std::vector<Handle<Quote>>>& vols,
+                                 const std::vector<std::vector<Handle<Quote> > >& vols,
                                  const DayCounter& dayCounter);
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
@@ -116,7 +116,7 @@ namespace QuantLib {
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
-        std::vector<std::vector<Handle<Quote>>> vols_;
+        std::vector<std::vector<Handle<Quote> > > vols_;
         Interpolation2D interpolation_;
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,

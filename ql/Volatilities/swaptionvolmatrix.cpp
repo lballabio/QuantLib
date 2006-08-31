@@ -28,7 +28,7 @@ namespace QuantLib {
                     const Date& today,
                     const std::vector<Date>& dates,
                     const std::vector<Period>& lengths,
-                    const std::vector<std::vector<Handle<Quote>>>& vols,
+                    const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
       exerciseDates_(dates), lengths_(lengths), vols_(vols)
