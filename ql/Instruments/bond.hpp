@@ -51,7 +51,8 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       protected:
-        Bond(const DayCounter& dayCount,
+        Bond(Real faceAmount,
+             const DayCounter& dayCount,
              const Calendar& calendar,
              BusinessDayConvention accrualConvention,
              BusinessDayConvention paymentConvention,
@@ -72,6 +73,7 @@ namespace QuantLib {
         const Calendar& calendar() const;
         BusinessDayConvention accrualConvention() const;
         BusinessDayConvention paymentConvention() const;
+        Real faceAmount() const { return faceAmount_;}
         const DayCounter& dayCounter() const;
         Frequency frequency() const;
         boost::shared_ptr<YieldTermStructure> discountCurve() const;
@@ -134,6 +136,7 @@ namespace QuantLib {
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention accrualConvention_, paymentConvention_;
+        Real faceAmount_;
 		DayCounter dayCount_;
 
         Date issueDate_, datedDate_, maturityDate_;
@@ -187,6 +190,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

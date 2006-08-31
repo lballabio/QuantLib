@@ -37,7 +37,8 @@ namespace QuantLib {
     */
     class FloatingRateBond : public Bond {
       public:
-        FloatingRateBond(const Date& issueDate,
+        FloatingRateBond(Real faceAmount,
+                         const Date& issueDate,
                          const Date& datedDate,
                          const Date& maturityDate,
                          Integer settlementDays,

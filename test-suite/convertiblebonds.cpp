@@ -55,7 +55,7 @@ Handle<Quote> creditSpread_;
 CallabilitySchedule no_callability;
 DividendSchedule no_dividends;
 
-Real redemption_, conversionRatio_;
+Real faceAmount_, redemption_, conversionRatio_;
 
 void setup() {
     calendar_ = TARGET();
@@ -83,6 +83,9 @@ void setup() {
 
     creditSpread_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(0.005)));
 
+    // it fails with 1000000
+    //faceAmount_ = 1000000.0;
+    faceAmount_ = 100.0;
     redemption_ = 100.0;
     conversionRatio_ = redemption_/underlying_->value();
 }
@@ -127,43 +130,37 @@ void ConvertibleBondTest::testBond() {
                                      issueDate_, maturityDate_,
                                      Once, Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(process_, euExercise, engine,
+    ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ConvertibleZeroCouponBond amZero(process_, amExercise, engine,
+    ConvertibleZeroCouponBond amZero(faceAmount_, process_, amExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ZeroCouponBond zero(issueDate_, maturityDate_, settlementDays_,
+    ZeroCouponBond zero(faceAmount_, issueDate_, maturityDate_, settlementDays_,
                         dayCounter_, calendar_, Following,
                         redemption_, discountCurve);
 
-    Real tolerance = 1.0e-2;
+    Real tolerance = 1.0e-2 * (faceAmount_/100.0);
 
     Real error = std::fabs(euZero.NPV()-zero.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce zero-coupon bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << euZero.NPV()
                     << "\n    expected:   " << zero.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
     error = std::fabs(amZero.NPV()-zero.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce zero-coupon bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << amZero.NPV()
                     << "\n    expected:   " << zero.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
@@ -175,46 +172,40 @@ void ConvertibleBondTest::testBond() {
                             issueDate_, maturityDate_,
                             frequency_, Following).backwards();
 
-    ConvertibleFixedCouponBond euFixed(process_, euExercise, engine,
+    ConvertibleFixedCouponBond euFixed(faceAmount_, process_, euExercise, engine,
                                        conversionRatio_, no_dividends,
                                        no_callability, creditSpread_,
                                        issueDate_, settlementDays_,
                                        coupons, dayCounter_,
                                        schedule, redemption_);
 
-    ConvertibleFixedCouponBond amFixed(process_, amExercise, engine,
+    ConvertibleFixedCouponBond amFixed(faceAmount_, process_, amExercise, engine,
                                        conversionRatio_, no_dividends,
                                        no_callability, creditSpread_,
                                        issueDate_, settlementDays_,
                                        coupons, dayCounter_,
                                        schedule, redemption_);
 
-    FixedCouponBond fixed(issueDate_, issueDate_, maturityDate_,
+    FixedCouponBond fixed(faceAmount_, issueDate_, issueDate_, maturityDate_,
                           settlementDays_, coupons, frequency_,
                           calendar_, dayCounter_, Following, Following,
                           redemption_, discountCurve);
 
-    tolerance = 2.0e-2;
+    tolerance = 2.0e-2 * (faceAmount_/100.0);
 
     error = std::fabs(euFixed.NPV()-fixed.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce fixed-coupon bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << euFixed.NPV()
                     << "\n    expected:   " << fixed.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
     error = std::fabs(amFixed.NPV()-fixed.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce fixed-coupon bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << amFixed.NPV()
                     << "\n    expected:   " << fixed.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
@@ -225,47 +216,41 @@ void ConvertibleBondTest::testBond() {
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
-    ConvertibleFloatingRateBond euFloating(process_, euExercise, engine,
+    ConvertibleFloatingRateBond euFloating(faceAmount_, process_, euExercise, engine,
                                            conversionRatio_, no_dividends,
                                            no_callability, creditSpread_,
                                            issueDate_, settlementDays_,
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    ConvertibleFloatingRateBond amFloating(process_, amExercise, engine,
+    ConvertibleFloatingRateBond amFloating(faceAmount_, process_, amExercise, engine,
                                            conversionRatio_, no_dividends,
                                            no_callability, creditSpread_,
                                            issueDate_, settlementDays_,
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    FloatingRateBond floating(issueDate_, issueDate_, maturityDate_,
+    FloatingRateBond floating(faceAmount_, issueDate_, issueDate_, maturityDate_,
                               settlementDays_, index, fixingDays, gearings,
                               spreads, frequency_, calendar_, dayCounter_,
                               Following, Following, redemption_,
                               discountCurve);
 
-    tolerance = 2.0e-2;
+    tolerance = 2.0e-2 * (faceAmount_/100.0);
 
     error = std::fabs(euFloating.NPV()-floating.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce floating-rate bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << euFloating.NPV()
                     << "\n    expected:   " << floating.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
     error = std::fabs(amFloating.NPV()-floating.NPV());
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce floating-rate bond price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << amFloating.NPV()
                     << "\n    expected:   " << floating.NPV()
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
@@ -283,8 +268,8 @@ void ConvertibleBondTest::testOption() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    boost::shared_ptr<Exercise> euExercise(
-                                         new EuropeanExercise(maturityDate_));
+    boost::shared_ptr<Exercise> euExercise(new
+                                    EuropeanExercise(maturityDate_));
 
     settlementDays_ = 0;
 
@@ -304,7 +289,7 @@ void ConvertibleBondTest::testOption() {
                                      issueDate_, maturityDate_,
                                      Once, Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(process_, euExercise, engine,
+    ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
@@ -313,18 +298,16 @@ void ConvertibleBondTest::testOption() {
 
     VanillaOption euOption(process_, payoff, euExercise, vanillaEngine);
 
-    Real tolerance = 5.0e-2;
+    Real tolerance = 5.0e-2 * (faceAmount_/100.0);
 
-    Real expected = redemption_ * riskFreeRate_->discount(maturityDate_)
-                  + conversionRatio_* euOption.NPV();
+    Real expected = faceAmount_/100.0 *
+        (redemption_ * riskFreeRate_->discount(maturityDate_)
+         + conversionRatio_* euOption.NPV());
     Real error = std::fabs(euZero.NPV()-expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce plain-option price:"
-                    << std::setprecision(5)
                     << "\n    calculated: " << euZero.NPV()
                     << "\n    expected:   " << expected
-                    << std::setprecision(2)
-                    << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
 
@@ -339,4 +322,3 @@ test_suite* ConvertibleBondTest::suite() {
 
     return suite;
 }
-

@@ -25,24 +25,25 @@
 namespace QuantLib {
 
     FloatingRateBond::FloatingRateBond(
-                             const Date& issueDate,
-                             const Date& datedDate,
-                             const Date& maturityDate,
-                             Integer settlementDays,
-                             const boost::shared_ptr<Xibor>& index,
-                             Integer fixingDays,
-                             const std::vector<Real>& gearings,
-                             const std::vector<Spread>& spreads,
-                             Frequency couponFrequency,
-                             const Calendar& calendar,
-                             const DayCounter& dayCounter,
-                             BusinessDayConvention accrualConvention,
-                             BusinessDayConvention paymentConvention,
-                             Real redemption,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             const Date& stub, bool fromEnd)
-    : Bond(dayCounter, calendar, accrualConvention, paymentConvention,
-           settlementDays, discountCurve) {
+                Real faceAmount,
+                const Date& issueDate,
+                const Date& datedDate,
+                const Date& maturityDate,
+                Integer settlementDays,
+                const boost::shared_ptr<Xibor>& index,
+                Integer fixingDays,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                Frequency couponFrequency,
+                const Calendar& calendar,
+                const DayCounter& dayCounter,
+                BusinessDayConvention accrualConvention,
+                BusinessDayConvention paymentConvention,
+                Real redemption,
+                const Handle<YieldTermStructure>& discountCurve,
+                const Date& stub, bool fromEnd)
+    : Bond(faceAmount, dayCounter, calendar, accrualConvention,
+           paymentConvention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;
@@ -55,7 +56,7 @@ namespace QuantLib {
 
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                              schedule, paymentConvention,
-                                             std::vector<Real>(1, 100.0),
+                                             std::vector<Real>(1, faceAmount_),
                                              fixingDays, index, 
                                              gearings, spreads,
                                              dayCounter
@@ -67,7 +68,7 @@ namespace QuantLib {
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(redemption, redemptionDate)));
+            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
 
         registerWith(index);
     }

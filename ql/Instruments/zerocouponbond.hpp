@@ -36,7 +36,8 @@ namespace QuantLib {
     */
     class ZeroCouponBond : public Bond {
       public:
-        ZeroCouponBond(const Date& issueDate,
+        ZeroCouponBond(Real faceAmount,
+                       const Date& issueDate,
                        const Date& maturityDate,
                        Integer settlementDays,
                        const DayCounter& dayCounter,

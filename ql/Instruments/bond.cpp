@@ -30,6 +30,7 @@ namespace QuantLib {
     namespace {
 
         Real dirtyPriceFromYield(
+                   Real faceAmount,
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    Rate yield,
                    Compounding compounding,
@@ -90,23 +91,26 @@ namespace QuantLib {
                 price += amount * discount;
             }
 
-            return price;
+            return price/faceAmount*100.0;
         }
 
         class YieldFinder {
           public:
             YieldFinder(
+                   Real faceAmount,
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
                    Real dirtyPrice,
                    Compounding compounding,
                    const DayCounter& dayCounter,
                    Frequency frequency,
                    const Date& settlement)
-            : cashflows_(cashflows), dirtyPrice_(dirtyPrice),
+            : faceAmount_(faceAmount), cashflows_(cashflows),
+              dirtyPrice_(dirtyPrice),
               compounding_(compounding), dayCounter_(dayCounter),
               frequency_(frequency), settlement_(settlement) {}
             Real operator()(Real yield) const {
-                return dirtyPrice_ - dirtyPriceFromYield(cashflows_,
+                return dirtyPrice_ - dirtyPriceFromYield(faceAmount_,
+                                                         cashflows_,
                                                          yield,
                                                          compounding_,
                                                          frequency_,
@@ -114,6 +118,7 @@ namespace QuantLib {
                                                          settlement_);
             }
           private:
+            Real faceAmount_;
             std::vector<boost::shared_ptr<CashFlow> > cashflows_;
             Real dirtyPrice_;
             Compounding compounding_;
@@ -125,14 +130,16 @@ namespace QuantLib {
     }
 
 
-    Bond::Bond(const DayCounter& dayCount, const Calendar& calendar,
+    Bond::Bond(Real faceAmount, 
+               const DayCounter& dayCount, const Calendar& calendar,
                BusinessDayConvention accrualConvention,
                BusinessDayConvention paymentConvention,
                Integer settlementDays,
                const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
       accrualConvention_(accrualConvention),
-      paymentConvention_(paymentConvention), dayCount_(dayCount),
+      paymentConvention_(paymentConvention), faceAmount_(faceAmount),
+      dayCount_(dayCount),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);
@@ -152,14 +159,14 @@ namespace QuantLib {
 
     Real Bond::dirtyPrice() const {
         calculate();
-        return NPV_;
+        return NPV_/faceAmount_*100.0;
     }
 
     Rate Bond::yield(Compounding compounding,
                      Real accuracy, Size maxEvaluations) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        YieldFinder objective(cashflows_, dirtyPrice(),
+        YieldFinder objective(faceAmount_, cashflows_, dirtyPrice(),
                               compounding, dayCount_, frequency_,
                               settlementDate());
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
@@ -177,7 +184,7 @@ namespace QuantLib {
                           Date settlement) const {
         if (settlement == Date())
             settlement = settlementDate();
-        return dirtyPriceFromYield(cashflows_, yield,
+        return dirtyPriceFromYield(faceAmount_, cashflows_, yield,
                                    compounding, frequency_, dayCount_,
                                    settlement);
     }
@@ -190,7 +197,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
-        YieldFinder objective(cashflows_, dirtyPrice,
+        YieldFinder objective(faceAmount_, cashflows_, dirtyPrice,
                               compounding, dayCount_, frequency_,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
@@ -206,7 +213,7 @@ namespace QuantLib {
                 boost::shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
                 if (coupon)
-                    return coupon->accruedAmount(settlement);
+                    return coupon->accruedAmount(settlement)/faceAmount_*100.0;
                 else
                     return 0.0;
             }

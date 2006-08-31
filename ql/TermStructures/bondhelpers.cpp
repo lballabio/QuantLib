@@ -61,7 +61,7 @@ namespace QuantLib {
         settlement_ = calendar_.advance(today,settlementDays_,Days);
 
         bond_ = boost::shared_ptr<FixedCouponBond>(
-                   new FixedCouponBond(issueDate_, datedDate_, maturityDate_,
+                   new FixedCouponBond(100.0, issueDate_, datedDate_, maturityDate_,
                                        settlementDays_, coupons_,
                                        frequency_, calendar_, dayCounter_,
                                        accrualConvention_, paymentConvention_,

@@ -38,7 +38,8 @@ namespace QuantLib {
     */
     class FixedCouponBond : public Bond {
       public:
-        FixedCouponBond(const Date& issueDate,
+        FixedCouponBond(Real faceAmount,
+                        const Date& issueDate,
                         const Date& datedDate,
                         const Date& maturityDate,
                         Integer settlementDays,
@@ -57,6 +58,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

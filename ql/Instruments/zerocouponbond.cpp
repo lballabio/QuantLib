@@ -23,15 +23,16 @@
 namespace QuantLib {
 
     ZeroCouponBond::ZeroCouponBond(
-                             const Date& issueDate,
-                             const Date& maturityDate,
-                             Integer settlementDays,
-                             const DayCounter& dayCounter,
-                             const Calendar& calendar,
-                             BusinessDayConvention paymentConvention,
-                             Real redemption,
-                             const Handle<YieldTermStructure>& discountCurve)
-    : Bond(dayCounter, calendar, Unadjusted, paymentConvention,
+                        Real faceAmount,
+                        const Date& issueDate,
+                        const Date& maturityDate,
+                        Integer settlementDays,
+                        const DayCounter& dayCounter,
+                        const Calendar& calendar,
+                        BusinessDayConvention paymentConvention,
+                        Real redemption,
+                        const Handle<YieldTermStructure>& discountCurve)
+    : Bond(faceAmount,dayCounter, calendar, Unadjusted, paymentConvention,
            settlementDays, discountCurve) {
 
         issueDate_ = datedDate_ = issueDate;
@@ -43,7 +44,7 @@ namespace QuantLib {
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(redemption, redemptionDate)));
+            SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
     }
 
 }

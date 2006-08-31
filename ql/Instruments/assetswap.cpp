@@ -27,7 +27,6 @@ namespace QuantLib {
 
     AssetSwap::AssetSwap(
                   bool payFixedRate,
-                  Real nominal,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
                   const Schedule& floatSchedule,
@@ -39,8 +38,10 @@ namespace QuantLib {
            std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >()),
       payFixedRate_(payFixedRate), spread_(spread),
-      nominal_(nominal), bondCleanPrice_(bondCleanPrice) {
+      bondCleanPrice_(bondCleanPrice) {
 
+        // par asset swap
+        nominal_ = bond->faceAmount();
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
@@ -48,7 +49,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
                                      convention,
-                                     std::vector<Real>(1,nominal),
+                                     std::vector<Real>(1,nominal_),
                                      index->settlementDays(), index,
                                      std::vector<Real>(1,1.0),
                                      std::vector<Spread>(1,spread),
@@ -61,7 +62,7 @@ namespace QuantLib {
         // upfront
         upfrontDate_ = floatSchedule.startDate();
         Real dirtyPrice = bondCleanPrice_ + bond->accruedAmount(upfrontDate_);
-        Real upfront=(dirtyPrice-100.0)/100.0*nominal;
+        Real upfront=(dirtyPrice-100.0)/100.0*nominal_;
         boost::shared_ptr<CashFlow> upfrontCashFlow (new
             SimpleCashFlow(upfront, upfrontDate_));
         floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
@@ -154,26 +155,26 @@ namespace QuantLib {
 
     Spread AssetSwap::fairSpread() const {
         calculate();
-        QL_REQUIRE(fairSpread_ != Null<Spread>(), "result not available");
+        QL_REQUIRE(fairSpread_ != Null<Spread>(), "fairSpread not available");
         return fairSpread_;
     }
 
     Real AssetSwap::floatingLegBPS() const {
         calculate();
-        QL_REQUIRE(legBPS_[1] != Null<Real>(), "result not available");
+        QL_REQUIRE(legBPS_[1] != Null<Real>(), "floatingLegBPS not available");
         return legBPS_[1];
     }
 
     Real AssetSwap::fairPrice() const {
         calculate();
-        QL_REQUIRE(fairPrice_ != Null<Real>(), "result not available");
+        QL_REQUIRE(fairPrice_ != Null<Real>(), "fairPrice not available");
         return fairPrice_;
     }
     void AssetSwap::setupExpired() const {
         Swap::setupExpired();
         legBPS_[0] = legBPS_[1] = 0.0;
         fairSpread_ = Null<Spread>();
-        fairPrice_= 0.0;
+        fairPrice_= Null<Real>();
     }
 
     void AssetSwap::performCalculations() const {
@@ -185,8 +186,13 @@ namespace QuantLib {
             fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
 
             // handle when upfrontDate_ is in the past
-            fairPrice_= bondCleanPrice_ -
-                NPV_/termStructure_->discount(upfrontDate_);
+            if (upfrontDate_<termStructure_->referenceDate())
+                fairPrice_ = Null<Real>();
+            else
+                fairPrice_= bondCleanPrice_ -
+                    NPV_/(nominal_/100.0)/termStructure_->discount(
+                                                            upfrontDate_);
+
         }
     }
 

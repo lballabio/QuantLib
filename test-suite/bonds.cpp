@@ -38,6 +38,7 @@ QL_BEGIN_TEST_LOCALS(BondTest)
 
 Calendar calendar;
 Date today;
+Real faceAmount = 1000000.0;
 
 void setup() {
     calendar = TARGET();
@@ -85,7 +86,8 @@ void BondTest::testYield() {
               Date issue = dated;
               Date maturity = calendar.advance(issue, lengths[j], Years);
 
-              FixedCouponBond bond(issue, dated, maturity, settlementDays,
+              FixedCouponBond bond(faceAmount, issue, dated, maturity,
+                                   settlementDays,
                                    std::vector<Rate>(1, coupons[k]),
                                    frequencies[l], calendar, bondDayCount,
                                    accrualConvention, paymentConvention,
@@ -161,7 +163,8 @@ void BondTest::testTheoretical() {
             Handle<YieldTermStructure> discountCurve(flatRate(today,rate,
                                                               bondDayCount));
 
-            FixedCouponBond bond(issue, dated, maturity, settlementDays,
+            FixedCouponBond bond(faceAmount, issue, dated, maturity,
+                                 settlementDays,
                                  std::vector<Rate>(1, coupons[k]),
                                  frequencies[l], calendar, bondDayCount,
                                  accrualConvention, paymentConvention,
@@ -231,7 +234,8 @@ void BondTest::testCached() {
 
     // actual market values from the evaluation date
 
-    FixedCouponBond bond1(Date(1,November,2004),
+    FixedCouponBond bond1(faceAmount,
+                          Date(1,November,2004),
                           Date(31,October,2004),
                           Date(31,October,2006),
                           settlementDays,
@@ -244,7 +248,8 @@ void BondTest::testCached() {
     Real marketPrice1 = 99.203125;
     Rate marketYield1 = 0.02925;
 
-    FixedCouponBond bond2(Date(15,November,2004),
+    FixedCouponBond bond2(faceAmount, 
+                          Date(15,November,2004),
                           Date(15,November,2004),
                           Date(15,November,2009),
                           settlementDays,
@@ -362,7 +367,8 @@ void BondTest::testCached() {
 
     // with explicit settlement date:
 
-    FixedCouponBond bond3(Date(30,November,2004),
+    FixedCouponBond bond3(faceAmount, 
+                          Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2006),
                           settlementDays,
@@ -423,7 +429,8 @@ void BondTest::testCachedZero() {
 
     // plain
 
-    ZeroCouponBond bond1(Date(30,November,2004),
+    ZeroCouponBond bond1(faceAmount, 
+                         Date(30,November,2004),
                          Date(30,November,2008),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
@@ -442,7 +449,8 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice1);
     }
 
-    ZeroCouponBond bond2(Date(30,November,2004),
+    ZeroCouponBond bond2(faceAmount, 
+                         Date(30,November,2004),
                          Date(30,November,2007),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
@@ -461,7 +469,8 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice2);
     }
 
-    ZeroCouponBond bond3(Date(30,November,2004),
+    ZeroCouponBond bond3(faceAmount, 
+                         Date(30,November,2004),
                          Date(30,November,2006),
                          settlementDays,
                          ActualActual(ActualActual::ISMA),
@@ -502,7 +511,8 @@ void BondTest::testCachedFixed() {
 
     // plain
 
-    FixedCouponBond bond1(Date(30,November,2004),
+    FixedCouponBond bond1(faceAmount, 
+                          Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2008),
                           settlementDays,
@@ -532,7 +542,8 @@ void BondTest::testCachedFixed() {
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
 
-    FixedCouponBond bond2(Date(30,November,2004),
+    FixedCouponBond bond2(faceAmount, 
+                          Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2008),
                           settlementDays,
@@ -556,7 +567,8 @@ void BondTest::testCachedFixed() {
 
     // stub date
 
-    FixedCouponBond bond3(Date(30,November,2004),
+    FixedCouponBond bond3(faceAmount, 
+                          Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,March,2009),
                           settlementDays,
@@ -605,7 +617,8 @@ void BondTest::testCachedFloating() {
 
     // plain
 
-    FloatingRateBond bond1(Date(30,November,2004),
+    FloatingRateBond bond1(faceAmount, 
+                           Date(30,November,2004),
                            Date(30,November,2004),
                            Date(30,November,2008),
                            settlementDays,
@@ -631,7 +644,8 @@ void BondTest::testCachedFloating() {
 
     // different risk-free and discount curve
 
-    FloatingRateBond bond2(Date(30,November,2004),
+    FloatingRateBond bond2(faceAmount,
+                           Date(30,November,2004),
                            Date(30,November,2004),
                            Date(30,November,2008),
                            settlementDays,
@@ -663,7 +677,8 @@ void BondTest::testCachedFloating() {
     spreads[2] = 0.0014;
     spreads[3] = 0.0016;
 
-    FloatingRateBond bond3(Date(30,November,2004),
+    FloatingRateBond bond3(faceAmount, 
+                           Date(30,November,2004),
                            Date(30,November,2004),
                            Date(30,November,2008),
                            settlementDays,

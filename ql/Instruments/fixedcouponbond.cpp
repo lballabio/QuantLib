@@ -26,20 +26,21 @@
 namespace QuantLib {
 
     FixedCouponBond::FixedCouponBond(
-                             const Date& issueDate,
-                             const Date& datedDate,
-                             const Date& maturityDate,
-                             Integer settlementDays,
-                             const std::vector<Rate>& coupons,
-                             Frequency couponFrequency,
-                             const Calendar& calendar,
-                             const DayCounter& dayCounter,
-                             BusinessDayConvention accrualConvention,
-                             BusinessDayConvention paymentConvention,
-                             Real redemption,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             const Date& stub, bool fromEnd, bool longFinal)
-    : Bond(dayCounter, calendar, accrualConvention, paymentConvention,
+                    Real faceAmount,
+                    const Date& issueDate,
+                    const Date& datedDate,
+                    const Date& maturityDate,
+                    Integer settlementDays,
+                    const std::vector<Rate>& coupons,
+                    Frequency couponFrequency,
+                    const Calendar& calendar,
+                    const DayCounter& dayCounter,
+                    BusinessDayConvention accrualConvention,
+                    BusinessDayConvention paymentConvention,
+                    Real redemption,
+                    const Handle<YieldTermStructure>& discountCurve,
+                    const Date& stub, bool fromEnd, bool longFinal)
+    : Bond(faceAmount, dayCounter, calendar, accrualConvention, paymentConvention,
            settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
@@ -52,13 +53,13 @@ namespace QuantLib {
                           stub, fromEnd, longFinal);
 
         cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
-                                           std::vector<Real>(1, 100.0),
-                                           coupons, dayCounter);
+            std::vector<Real>(1, faceAmount_), coupons, dayCounter);
+
         // redemption
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
-            SimpleCashFlow(redemption, redemptionDate)));
+            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
 
     }
 

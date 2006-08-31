@@ -42,7 +42,6 @@ namespace QuantLib {
         class arguments;
         class results;
         AssetSwap(bool payFixedRate,
-                  Real nominal,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
                   const Schedule& floatSchedule,

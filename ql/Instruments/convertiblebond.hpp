@@ -56,11 +56,12 @@ namespace QuantLib {
         const CallabilitySchedule& callability() const { return callability_; }
         const Handle<Quote>& creditSpread() const { return creditSpread_; }
       protected:
-        ConvertibleBond(const boost::shared_ptr<StochasticProcess>& process,
+        ConvertibleBond(Real faceAmount,
+                        const boost::shared_ptr<StochasticProcess>& process,
                         const boost::shared_ptr<Exercise>& exercise,
                         const boost::shared_ptr<PricingEngine>& engine,
                         Real conversionRatio,
-                        const DividendSchedule&  dividends,
+                        const DividendSchedule& dividends,
                         const CallabilitySchedule& callability,
                         const Handle<Quote>& creditSpread,
                         const Date& issueDate,
@@ -86,18 +87,19 @@ namespace QuantLib {
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
         ConvertibleZeroCouponBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
-                          Real conversionRatio,
-                          const DividendSchedule&  dividends,
-                          const CallabilitySchedule& callability,
-                          const Handle<Quote>& creditSpread,
-                          const Date& issueDate,
-                          Integer settlementDays,
-                          const DayCounter& dayCounter,
-                          const Schedule& schedule,
-                          Real redemption = 100);
+                    Real faceAmount,
+                    const boost::shared_ptr<StochasticProcess>& process,
+                    const boost::shared_ptr<Exercise>& exercise,
+                    const boost::shared_ptr<PricingEngine>& engine,
+                    Real conversionRatio,
+                    const DividendSchedule& dividends,
+                    const CallabilitySchedule& callability,
+                    const Handle<Quote>& creditSpread,
+                    const Date& issueDate,
+                    Integer settlementDays,
+                    const DayCounter& dayCounter,
+                    const Schedule& schedule,
+                    Real redemption = 100);
     };
 
 
@@ -110,19 +112,20 @@ namespace QuantLib {
     class ConvertibleFixedCouponBond : public ConvertibleBond {
       public:
         ConvertibleFixedCouponBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
-                          Real conversionRatio,
-                          const DividendSchedule&  dividends,
-                          const CallabilitySchedule& callability,
-                          const Handle<Quote>& creditSpread,
-                          const Date& issueDate,
-                          Integer settlementDays,
-                          const std::vector<Rate>& coupons,
-                          const DayCounter& dayCounter,
-                          const Schedule& schedule,
-                          Real redemption = 100);
+                Real faceAmount,
+                const boost::shared_ptr<StochasticProcess>& process,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine,
+                Real conversionRatio,
+                const DividendSchedule& dividends,
+                const CallabilitySchedule& callability,
+                const Handle<Quote>& creditSpread,
+                const Date& issueDate,
+                Integer settlementDays,
+                const std::vector<Rate>& coupons,
+                const DayCounter& dayCounter,
+                const Schedule& schedule,
+                Real redemption = 100);
     };
 
 
@@ -135,21 +138,22 @@ namespace QuantLib {
     class ConvertibleFloatingRateBond : public ConvertibleBond {
       public:
         ConvertibleFloatingRateBond(
-                          const boost::shared_ptr<StochasticProcess>& process,
-                          const boost::shared_ptr<Exercise>& exercise,
-                          const boost::shared_ptr<PricingEngine>& engine,
-                          Real conversionRatio,
-                          const DividendSchedule&  dividends,
-                          const CallabilitySchedule& callability,
-                          const Handle<Quote>& creditSpread,
-                          const Date& issueDate,
-                          Integer settlementDays,
-                          const boost::shared_ptr<Xibor>& index,
-                          Integer fixingDays,
-                          const std::vector<Spread>& spreads,
-                          const DayCounter& dayCounter,
-                          const Schedule& schedule,
-                          Real redemption = 100);
+                Real faceAmount,
+                const boost::shared_ptr<StochasticProcess>& process,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine,
+                Real conversionRatio,
+                const DividendSchedule& dividends,
+                const CallabilitySchedule& callability,
+                const Handle<Quote>& creditSpread,
+                const Date& issueDate,
+                Integer settlementDays,
+                const boost::shared_ptr<Xibor>& index,
+                Integer fixingDays,
+                const std::vector<Spread>& spreads,
+                const DayCounter& dayCounter,
+                const Schedule& schedule,
+                Real redemption = 100);
     };
 
 
@@ -162,7 +166,7 @@ namespace QuantLib {
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<PricingEngine>& engine,
                Real conversionRatio,
-               const DividendSchedule&  dividends,
+               const DividendSchedule& dividends,
                const CallabilitySchedule& callability,
                const Handle<Quote>& creditSpread,
                const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
@@ -220,6 +224,4 @@ namespace QuantLib {
 
 }
 
-
 #endif
-

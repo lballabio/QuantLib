@@ -293,7 +293,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
         Date issue = calendar.advance(maturity, -bondData[i].length, Years);
         std::vector<Rate> coupons(1, bondData[i].coupon/100.0);
 
-        FixedCouponBond bond(issue, issue, maturity, bondSettlementDays,
+        FixedCouponBond bond(100.0, issue, issue, maturity, bondSettlementDays,
                              coupons, bondData[i].frequency,
                              calendar, bondDayCounter,
                              bondConvention, bondConvention,
