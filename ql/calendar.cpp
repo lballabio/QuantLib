@@ -133,8 +133,7 @@ namespace QuantLib {
 
             if (endOfMonth && (unit==Months || unit==Years)
                            && isEndOfMonth(d)) {
-                d1 = Date::endOfMonth(d1);
-                return adjust(d1, Preceding);
+                return Calendar::endOfMonth(d1);
             }
 
             return adjust(d1, c);
