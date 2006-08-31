@@ -28,6 +28,44 @@ namespace QuantLib {
                     const Date& today,
                     const std::vector<Date>& dates,
                     const std::vector<Period>& lengths,
+                    const std::vector<std::vector<Handle<Quote>>>& vols,
+                    const DayCounter& dayCounter)
+    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
+      exerciseDates_(dates), lengths_(lengths), vols_(vols)
+      {
+        QL_REQUIRE(dates.size()==vols[0].size(),
+            "mismatch between number of exercise dates ("
+            << dates.size() << ") and number of rows ("
+            << vols.size() << ") in the vol matrix");
+        QL_REQUIRE(lengths.size()==vols.size(),
+            "mismatch between number of tenors ("
+            << lengths.size() << ") and number of rows ("
+            << vols.size() << ") in the vol matrix");
+
+        exerciseTimes_.resize(exerciseDates_.size());
+        timeLengths_.resize(lengths_.size());
+        Size i;
+        for (i=0; i<exerciseDates_.size(); i++) {
+            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
+        }
+
+        Date startDate = exerciseDates_[0]; // as good as any
+        for (i=0; i<lengths_.size(); i++) {
+            Date endDate = startDate + lengths_[i];
+            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        }
+        interpolation_ =
+            BilinearInterpolation(timeLengths_.begin(),
+                                  timeLengths_.end(),
+                                  exerciseTimes_.begin(),
+                                  exerciseTimes_.end(),
+                                  volatilities_);
+    }
+
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                    const Date& today,
+                    const std::vector<Date>& dates,
+                    const std::vector<Period>& lengths,
                     const Matrix& vols,
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),

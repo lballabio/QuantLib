@@ -30,6 +30,7 @@
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -51,6 +52,11 @@ namespace QuantLib {
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
                                  const std::vector<Period>& lengths,
+                                 const std::vector<std::vector<Handle<Quote>>>& vols,
+                                 const DayCounter& dayCounter);
+        SwaptionVolatilityMatrix(const Date& referenceDate,
+                                 const std::vector<Date>& exerciseDates,
+                                 const std::vector<Period>& lengths,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         SwaptionVolatilityMatrix(const std::vector<Date>& exerciseDates,
@@ -63,6 +69,7 @@ namespace QuantLib {
                                  const std::vector<Period>& tenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
+
         // inspectors
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Time>& exerciseTimes() const;
@@ -109,6 +116,7 @@ namespace QuantLib {
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
+        std::vector<std::vector<Handle<Quote>>> vols_;
         Interpolation2D interpolation_;
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
