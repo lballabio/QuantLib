@@ -43,18 +43,33 @@ namespace QuantLib
         Abcd(Real a, Real b, Real c, Real d);
         //! instantaneous volatility at time to maturity u: \f[ f(u) \f]
         Real operator()(Time u) const;
+
+        /*! instantaneous volatility at time u of the T-fixing rate:
+            \f[ f(T-u) \f]
+        */
+        Real instantaneousVolatility(Time u, Time T) const;
+        /*! instantaneous variance at time u of T-fixing rate:
+            \f[ f(T-u)f(T-u) \f]
+        */
+        Real instantaneousVariance(Time u, Time T) const;
         /*! instantaneous covariance at time u between T and S fixing rates:
             \f[ f(T-u)f(S-u) \f]
         */
         Real instantaneousCovariance(Time u, Time T, Time S) const;
+
+        /*! volatility in [tMin,tMax] of T-fixing rate:
+            \f[ \sqr_{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
+        */
+        Real volatility(Time tMin, Time tMax, Time T) const;
+        /*! variance in [tMin,tMax] of T-fixing rate:
+            \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
+        */
+        Real variance(Time tMin, Time tMax, Time T) const;
         /*! covariance in [tMin,tMax] between T and S fixing rates:
             \f[ \int_{tMin}^{tMax} f(T-u)f(S-u)du \f]
         */
         Real covariance(Time tMin, Time tMax, Time T, Time S) const;
-        /*! variance in [tMin,tMax] of T fixing rate:
-            \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
-        */
-        Real variance(Time tMin, Time tMax, Time T) const;
+
         //! instantaneous volatility when time to maturity = 0.0
         Real shortTermVolatility() const;
         //! instantaneous volatility when time to maturity = +inf
@@ -69,6 +84,25 @@ namespace QuantLib
         //! Parameters
         Real a_, b_, c_, d_;
     };
+
+    //! Abcd Squared functional. Helper class.
+    class AbcdSquared : public std::unary_function<Real,Real> {
+    public:  
+        AbcdSquared(Real a, Real b, Real c, Real d, Time S, Time T)
+        : abcd_(new Abcd(a,b,c,d)), S_(S), T_(T) {}
+        Real operator()(Time u) const {
+            if (u>T_ || u>S_)
+                return 0.0;
+            else
+                return (*abcd_)(T_-u)*(*abcd_)(S_-u);        
+        }
+
+    private:
+        boost::shared_ptr<Abcd> abcd_;
+        Time S_, T_;
+
+    };
+
 
     // inline
 
@@ -85,31 +119,26 @@ namespace QuantLib
     }
 
     inline Real Abcd::maximumVolatility() const {
-        return (b_>0.0 ? b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ : a_+d_);
+        return (b_>0.0 ?
+                b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ :
+                shortTermVolatility());
     }
 
-    //! Abcd Squared functional. Used only in test-suite.
-    class AbcdSquared : public std::unary_function<Real,Real> {
-    public:  
-        AbcdSquared(Real a, Real b, Real c, Real d, Time S, Time T)
-        : abcd_(new Abcd(a,b,c,d)), S_(S), T_(T) {
-            QL_REQUIRE(a+d>=0, "a+d must be non negative");
-            QL_REQUIRE(d>=0, "d must be non negative");
-            QL_REQUIRE(c>=0, "c must be non negative");
-        }
-        Real operator()(Time u) const {
-            if (u>T_ || u>S_)
-                return 0.0;
-            else
-                return (*abcd_)(T_-u)*(*abcd_)(S_-u);        
-        }
+    inline Real Abcd::instantaneousVolatility(Time u, Time T) const {
+        return std::sqrt(instantaneousVariance(u, T));
+    }
 
-    private:
-        //! Parameters
-        boost::shared_ptr<Abcd>  abcd_;
-        Time S_, T_;
+    inline Real Abcd::instantaneousVariance(Time u, Time T) const {
+        return instantaneousCovariance(u, T, T);
+    }
 
-    };
+    inline Real Abcd::volatility(Time tMin, Time tMax, Time T) const {
+        return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
+    }
+
+    inline Real Abcd::variance(Time tMin, Time tMax, Time T) const {
+        return covariance(tMin, tMax, T, T);
+    }
 
 }
 

@@ -24,16 +24,18 @@
 
 namespace QuantLib {
 
-
     Abcd::Abcd(Real a, Real b, Real c, Real d)
     : a_(a), b_(b), c_(c), d_(d) {
-        QL_REQUIRE(a+d>=0, "a+d must be non negative");
-        QL_REQUIRE(d>=0, "d must be non negative");
-        QL_REQUIRE(c>=0, "c must be non negative");
+        QL_REQUIRE(a+d>=0,
+                   "a+d (" << a << ", " << d <<") must be non negative");
+        QL_REQUIRE(d>=0,
+                   "d (" << d << ") must be non negative");
+        QL_REQUIRE(c>=0,
+                   "c (" << c << ") must be non negative");
     }
 
     Real Abcd::operator()(Time u) const {
-        if (u<=0)
+        if (u<0)
             return 0.0;
         else
             return (a_ + b_*u)*std::exp(-c_*u) + d_;
@@ -47,8 +49,10 @@ namespace QuantLib {
     }
 
     Real Abcd::covariance(Time t1, Time t2, Time T, Time S) const {
-        QL_REQUIRE(t2>=t1, "integrations bounds are in reverse order");
-        if (t1>S || t1>T) {
+        QL_REQUIRE(t1<=t2,
+                   "integrations bounds (" << t1 <<
+                   "," << t2 << ") are in reverse order");
+        if (t1>=S || t1>=T) {
             return 0.0;
         } else {
             t2 = std::min(t2,std::min(S,T));
@@ -56,14 +60,10 @@ namespace QuantLib {
         }
     }
 
-    Real Abcd::variance(Time tMin, Time tMax, Time T) const {
-        return covariance(tMin, tMax, T, T);
-    }
-
     Real Abcd::primitive(Time u, Time T, Time S) const {
 
-        if(T<u) return 0.0;
-        if(S<u) return 0.0;
+        if (u>T) return 0.0;
+        if (u>S) return 0.0;
 
         const Real k1=std::exp(c_*u);
         const Real k2=std::exp(c_*S);
@@ -79,7 +79,6 @@ namespace QuantLib {
                                - k1*k2*(1 + c_*(T - u)))
                          )
                 ) / (4*c_*c_*c_*k2*k3);
-}
-
+    }
 
 }
