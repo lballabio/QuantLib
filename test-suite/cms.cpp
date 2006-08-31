@@ -338,7 +338,21 @@ void CmsTest::testCmsSwap() {
 		modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
 	}
 
-    const Size n = 20;
+    std::vector<Size> swapLengths;
+    swapLengths.push_back(1);
+    swapLengths.push_back(5);
+    swapLengths.push_back(6);
+    swapLengths.push_back(10);
+    swapLengths.push_back(15);
+    swapLengths.push_back(20);
+    //swapLengths.push_back(30);
+
+    int priceIndex = 1;
+
+    for(Size swapLengthIndex = 0; swapLengthIndex<swapLengths.size();
+        swapLengthIndex++) {
+
+    const int n = swapLengths[swapLengthIndex];
 
     std::vector<Real> meanReversions(n, 0);
     std::vector<Real> fixedNominals(n, 1);
@@ -348,7 +362,7 @@ void CmsTest::testCmsSwap() {
     std::vector<Real> fractions(n, gearing_);
     std::vector<Real> baseRate(n, 0);
 
-    int priceIndex = 1;
+    
     
     for(Size volStructureIndex = 0; 
         volStructureIndex < swaptionVolatilityStructures_.size(); 
@@ -422,9 +436,10 @@ void CmsTest::testCmsSwap() {
                 BOOST_MESSAGE("(" 
                     << volStructureIndex << ", " 
                     << pricerIndex << ", " 
-                    << modelOfYieldCurveIndex << ")\t" 
-                    << "pricing " << priceIndex 
-                    << "-th cms swap...\n");
+                    << modelOfYieldCurveIndex << ", " 
+                    << swapLengthIndex << ")\t" 
+                    << priceIndex << "-th pricing "
+                    << "for cms swap test...\n");
                 priceIndex++;
 
                 prices.push_back(swap->NPV());
@@ -433,7 +448,7 @@ void CmsTest::testCmsSwap() {
 
             if (std::fabs(difference) > priceTolerance_) {
                 BOOST_ERROR("\n" <<
-                    "startDate:\t" << maturityDate << "\n"
+                    "startDate:\t" << startDate << "\n"
                     "maturityDate:\t" << maturityDate << "\n"
                     //"strike:\t" << 0 << "\n"
                     "price analytic:\t" << io::rate(prices[0]) << "\n"
@@ -442,6 +457,7 @@ void CmsTest::testCmsSwap() {
                             "tolerance: \t" << io::rate(priceTolerance_));
             }
         }
+    }
     }
     QL_TEST_TEARDOWN
 }
