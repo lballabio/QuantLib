@@ -133,7 +133,10 @@ namespace QuantLib
     }
 
     inline Real Abcd::volatility(Time tMin, Time tMax, Time T) const {
-        return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
+        if (tMax==tMin)
+            return instantaneousVolatility(tMax, T);
+        else
+            return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
     }
 
     inline Real Abcd::variance(Time tMin, Time tMax, Time T) const {
