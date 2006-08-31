@@ -30,6 +30,7 @@
     - Dirk Eddelbuettel
     - Neil Firth, Mathematical Institute, University of Oxford
     - Marco Marchioro, StatPro Italia srl
+    - Nicola Jean, StatPro Italia srl
     - Sadruddin Rejeb
     - Enrico Sirola, StatPro Italia srl
     - Klaus Spanderen
@@ -43,12 +44,11 @@
     Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo Boafo,
     Joe Byers, Antoine Cellerier, Aurelien Chanudet, Warren Chou, Jon
     Davidson, Daniele De Francesco, Piter Dias, Matteo Gallivanoni,
-    Roman Gitlin, Richard Gould, Nicola Jean, Tomoya Kawanishi, Gary
-    Kennedy, Allen Kuo, André Louw, Enrico Michelotti, Gilbert Peffer,
-    Walter Penschke, Gianni Piolanti, Fabio Ramponi, Peter
-    Schmitteckert, David Schwartz, Eugene Shevkoplyas, Maxim Sokolov,
-    Marco Tarenghi, Charles Whitmore, Bernd Johannes Wuebben, and 
-    Jeff Yu.
+    Roman Gitlin, Richard Gould, Tomoya Kawanishi, Gary Kennedy, Allen
+    Kuo, André Louw, Enrico Michelotti, Gilbert Peffer, Walter
+    Penschke, Gianni Piolanti, Fabio Ramponi, Peter Schmitteckert,
+    David Schwartz, Eugene Shevkoplyas, Maxim Sokolov, Marco Tarenghi,
+    Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
 
     %QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
     Methods in Finance".

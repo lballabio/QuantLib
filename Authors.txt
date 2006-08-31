@@ -4,6 +4,7 @@ Mario Aleppo, StatPro Italia srl
 Nicolas Di Césaré
 Dirk Eddelbuettel
 Neil Firth, Mathematical Institute, University of Oxford
+Nicola Jean, StatPro Italia srl
 Marco Marchioro, StatPro Italia srl
 Sadruddin Rejeb
 Enrico Sirola, StatPro Italia srl
