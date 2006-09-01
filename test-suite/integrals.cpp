@@ -65,10 +65,9 @@ void testSeveral(const T& I) {
                std::ptr_fun<Real,Real>(std::cos), 0.0, M_PI, 0.0);
     testSingle(I, "f(x) = Gaussian(x)",
                NormalDistribution(), -10.0, 10.0, 1.0);
-    Abcd abcd(0.07, 0.07, 0.5, 0.1);
     testSingle(I, "f(x) = Abcd2(x)",
                AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,               
-               abcd.covariance(5.0, 6.0, 8.0, 10.0));
+               Abcd(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
 
 }
 
