@@ -99,7 +99,7 @@ void HestonModelTest::testBlackCalibration() {
         }
     }
 
-    for (Real sigma = 0.1; sigma < 0.9; sigma += 0.2) {
+    for (Real sigma = 0.1; sigma < 0.7; sigma += 0.2) {
         boost::shared_ptr<HestonProcess> process(
                                      new HestonProcess(riskFreeTS, dividendTS,
                                                        s0, 0.01, 0.2, 0.02,
