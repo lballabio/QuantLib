@@ -386,14 +386,14 @@ namespace QuantLib {
         sparseParameters_ = sabrCalibration(marketVolCube_);
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
-        
-       fillVolatilityCube();
-        denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        denseParameters_.updateInterpolators(); 
+       
+        //fillVolatilityCube();
+        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+        //denseParameters_.updateInterpolators(); 
 
     }
 
-   SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const {
+    SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const {
            
         Matrix alphas(exerciseTimes_.size(), timeLengths_.size(),0.);
         Matrix betas(alphas);
@@ -622,7 +622,8 @@ namespace QuantLib {
         return VarianceSmileSection(sabrParameters, strikes, expiry);
     }
     VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
-        return smileSection(expiry, length, denseParameters_ );
+        //return smileSection(expiry, length, denseParameters_ );
+        return smileSection(expiry, length, sparseParameters_ );
     }
 
     VarianceSmileSection::VarianceSmileSection(
