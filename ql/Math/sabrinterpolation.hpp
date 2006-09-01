@@ -30,6 +30,7 @@
 #include <ql/Optimization/method.hpp>
 #include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/simplex.hpp>
 #include <ql/Utilities/null.hpp>
 #include <vector>
 
@@ -135,8 +136,6 @@ namespace QuantLib {
               public SABRCoefficientHolder {
           private:
             // function to minimize
-            class SABRError;
-            friend class SABRError;
             class SABRError : public CostFunction {
               public:
                 SABRError(SABRInterpolationImpl* sabr)
@@ -152,6 +151,21 @@ namespace QuantLib {
               private:
                 SABRInterpolationImpl* sabr_;
             };
+
+            class SABRErrorWithFixedBeta : public CostFunction {
+              public:
+                SABRErrorWithFixedBeta(SABRInterpolationImpl* sabr)
+                : sabr_(sabr) {}
+                Real value(const Array& x) const {
+                    sabr_->alpha_ = x[0]*x[0]+.00000001;
+                    sabr_->nu_    = x[1]*x[1]+.00000001;
+                    sabr_->rho_   = .9999*std::sin(x[2]);
+                    return sabr_->interpolationSquaredNonNormalizedError();
+                }
+              private:
+                SABRInterpolationImpl* sabr_;
+            };
+     
             // optimization constraints
             class SABRConstraint : public Constraint {
               private:
@@ -168,6 +182,23 @@ namespace QuantLib {
                 SABRConstraint()
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
             };
+
+            class SABRConstraintWithFixedBeta : public Constraint {
+              private:
+                class Impl : public Constraint::Impl {
+                  public:
+                    bool test(const Array& params) const {
+                        
+                        return params[0]<0.2                    // alpha
+                            && params[1]<0.2                   // nu
+                            ;
+                    }
+                };
+              public:
+                SABRConstraintWithFixedBeta()
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
+            };
+
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
 
@@ -194,7 +225,46 @@ namespace QuantLib {
                     maxError_ = interpolationMaxError(); 
 				    SABREndCriteria_ = EndCriteria::none;
                     return;
-                } else {
+                } 
+                else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
+
+                    SABRConstraintWithFixedBeta constraint;
+                    SABRErrorWithFixedBeta costFunction(this);
+
+                    if (!method_) {
+                        boost::shared_ptr<LineSearch> lineSearch(
+                            new ArmijoLineSearch(1e-12, 0.15, 0.55));
+                        method_ = boost::shared_ptr<OptimizationMethod>(
+                            new ConjugateGradient(lineSearch));
+                        //method_ = boost::shared_ptr<OptimizationMethod>(
+                        //    new Simplex(1000, .00000001));
+
+                        method_->setEndCriteria(EndCriteria(10000, 1e-12));
+                        Array guess(3);
+                        guess[0] = 0.2;  // alpha
+                        guess[1] = 0.4;  // nu
+                        guess[2] = 0; // rho
+                        method_->setInitialValue(guess);
+                    }
+
+                    Problem problem(costFunction, constraint, *method_);
+                    problem.minimize();
+				    Array result = problem.minimumValue();
+                    
+                    alpha_ = result[0];
+                    nu_    = result[1];
+                    rho_   = result[2];
+
+                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
+                    QL_ENSURE(nu_>=0.0, "nu must be non negative");
+                    QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
+
+				    SABREndCriteria_ = endCriteria();
+                    error_ = interpolationError();
+                    maxError_ = interpolationMaxError(); 
+                }
+                else {
+
                     SABRConstraint constraint;
                     SABRError costFunction(this);
 
