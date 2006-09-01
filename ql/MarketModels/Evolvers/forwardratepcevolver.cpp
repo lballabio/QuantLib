@@ -23,19 +23,19 @@
 namespace QuantLib {
 
     ForwardRatePcEvolver::ForwardRatePcEvolver(
-                           const boost::shared_ptr<PseudoRoot>& pseudoRoot,
+                           const boost::shared_ptr<MarketModel>& marketModel,
                            const EvolutionDescription& evolution,
                            const BrownianGeneratorFactory& factory)
-    : pseudoRoot_(pseudoRoot), evolution_(evolution),
-      n_(pseudoRoot->numberOfRates()), F_(pseudoRoot_->numberOfFactors()),
+    : marketModel_(marketModel), evolution_(evolution),
+      n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
       curveState_(evolution.rateTimes()),
-      forwards_(pseudoRoot->initialRates()),
-      displacements_(pseudoRoot->displacements()),
+      forwards_(marketModel->initialRates()),
+      displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution_.firstAliveRate())
     {
-        const std::vector<Rate>& initialForwards = pseudoRoot_->initialRates();
+        const std::vector<Rate>& initialForwards = marketModel_->initialRates();
 
         Size steps = evolution_.numberOfSteps();
 
@@ -48,7 +48,7 @@ namespace QuantLib {
         }
 
         for (Size j=0; j<steps; ++j) {
-            const Matrix& A = pseudoRoot_->pseudoRoot(j);
+            const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
                                                    evolution_.rateTaus(),
@@ -90,7 +90,7 @@ namespace QuantLib {
 
         // b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);
-        const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
+        const Matrix& A = marketModel_->pseudoRoot(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size alive = alive_[currentStep_];

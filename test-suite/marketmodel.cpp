@@ -31,15 +31,15 @@
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
-#include <ql/MarketModels/PseudoRoots/expcorrflatvol.hpp>
-#include <ql/MarketModels/PseudoRoots/expcorrabcdvol.hpp>
-#include <ql/MarketModels/PseudoRoots/calibratedmarketmodel.hpp>
+#include <ql/MarketModels/Models/expcorrflatvol.hpp>
+#include <ql/MarketModels/Models/expcorrabcdvol.hpp>
+#include <ql/MarketModels/Models/calibratedmarketmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/schedule.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Math/segmentintegral.hpp>
@@ -70,6 +70,7 @@ DayCounter dayCounter;
 std::vector<Rate> todaysForwards, displacements;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities;
+Real a, b, c, d;
 Size measureOffset_;
 unsigned long seed;
 
@@ -86,7 +87,7 @@ void setup() {
     rateTimes = std::vector<Time>(dates.size()-1);
     paymentTimes = std::vector<Time>(rateTimes.size()-1);
     accruals = std::vector<Real>(rateTimes.size()-1);
-    dayCounter = Actual365Fixed();
+    dayCounter = SimpleDayCounter();
 
     for (Size i=1; i<dates.size(); ++i)
         rateTimes[i-1] = dayCounter.yearFraction(todaysDate, dates[i]);
@@ -112,32 +113,42 @@ void setup() {
             (1.0+todaysForwards[i-1]*accruals[i-1]);
 
     // volatilities
-    Volatility mktVols[] = { 10.63, 11.59,
-                             13.06, 15.48,
-                             16.69, 17.66,
-                             16.91, 16.78,
-                             16.70, 16.51,
-                             16.35, 16.18,
-                             15.98, 15.78,
-                             15.54, 15.26,
-                             14.99, 14.74,
-                             14.53 };
+    Volatility mktVols[] = {
+                                0.15541283,
+                                0.18719678,
+                                0.20890740,
+                                0.22318179,
+                                0.23212717,
+                                0.23731450,
+                                0.23988649,
+                                0.24066384,
+                                0.24023111,
+                                0.23900189,
+                                0.23726699,
+                                0.23522952,
+                                0.23303022,
+                                0.23076564,
+                                0.22850101,
+                                0.22627951,
+                                0.22412881,
+                                0.22206569,
+                                0.22009939
+    };
+    a = -0.0597;
+    b =  0.1677;
+    c =  0.5403;
+    d =  0.1710;
 
     volatilities = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<LENGTH(mktVols); i++) {
-        volatilities[i]= mktVols[i]/100.;
+        volatilities[i]= mktVols[i];
     }
-    //volatilities = std::vector<Volatility>(todaysForwards.size());
-    //for (Size i=0; i<volatilities.size(); ++i)
-    //    volatilities[i] = 0.10+ 0.005*i;
 
     measureOffset_ = 5;
 
     seed = 42;
 
-    paths = 16383; // 2^14-1
     paths = 32767; // 2^15-1
-
 }
 
 
@@ -293,27 +304,27 @@ void testCoterminalSwaps(const SequenceStatistics& stats,
     }
 }
 enum PseudoRootType { ExponentialCorrelationFlatVolatility,
-                      ExponentialCorrelationAbcdVolatility,
-                      CalibratedMM
+                      ExponentialCorrelationAbcdVolatility/*,
+                      CalibratedMM*/
 };
 
-std::string pseudoRootTypeToString(PseudoRootType type) {
+std::string marketModelTypeToString(PseudoRootType type) {
     switch (type) {
       case ExponentialCorrelationFlatVolatility:
           return "Exponential Correlation Flat Volatility";
       case ExponentialCorrelationAbcdVolatility:
           return "Exponential Correlation Abcd Volatility";
-      case CalibratedMM:
-          return "CalibratedMarketModel";
+      //case CalibratedMM:
+      //    return "CalibratedMarketModel";
       default:
         QL_FAIL("unknown MarketModelEvolver type");
     }
 }
 
-boost::shared_ptr<PseudoRoot> makePseudoRoot(
+boost::shared_ptr<MarketModel> makePseudoRoot(
     const EvolutionDescription& evolution,
     const Size numberOfFactors,
-    PseudoRootType pseudoRootType)
+    PseudoRootType marketModelType)
 {
     Real longTermCorrelation = 0.5;
     Real beta = 0.2;
@@ -324,9 +335,9 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
     boost::shared_ptr<LmCorrelationModel> corrModel(
           new LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
                                                   longTermCorrelation, beta));
-    switch (pseudoRootType) {
+    switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
-            return boost::shared_ptr<PseudoRoot>(new
+            return boost::shared_ptr<MarketModel>(new
                 ExpCorrFlatVol(longTermCorrelation, beta,
                                volatilities,
                                evolution,
@@ -334,7 +345,7 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
                                todaysForwards,
                                displacements));
         case ExponentialCorrelationAbcdVolatility:
-            return boost::shared_ptr<PseudoRoot>(new
+            return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
                                volatilities,
                                longTermCorrelation, beta,
@@ -342,15 +353,15 @@ boost::shared_ptr<PseudoRoot> makePseudoRoot(
                                numberOfFactors,
                                todaysForwards,
                                displacements));
-        case CalibratedMM:
-            return boost::shared_ptr<PseudoRoot>(new
-                CalibratedMarketModel(volModel, corrModel,
-                                      evolution,
-                                      numberOfFactors,
-                                      todaysForwards,
-                                      displacements));
+        //case CalibratedMM:
+        //    return boost::shared_ptr<MarketModel>(new
+        //        CalibratedMarketModel(volModel, corrModel,
+        //                              evolution,
+        //                              numberOfFactors,
+        //                              todaysForwards,
+        //                              displacements));
         default:
-            QL_FAIL("unknown PseudoRoot type");
+            QL_FAIL("unknown MarketModel type");
     }
 }
 
@@ -406,7 +417,7 @@ std::string evolverTypeToString(EvolverType type) {
 }
 
 boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
-    const boost::shared_ptr<PseudoRoot>& pseudoRoot,
+    const boost::shared_ptr<MarketModel>& marketModel,
     const EvolutionDescription& evolution,
     const BrownianGeneratorFactory& generatorFactory,
     EvolverType evolverType)
@@ -414,11 +425,11 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     switch (evolverType) {
         case Ipc:
             return boost::shared_ptr<MarketModelEvolver>(
-                              new ForwardRateIpcEvolver(pseudoRoot, evolution,
+                              new ForwardRateIpcEvolver(marketModel, evolution,
                                                         generatorFactory));
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(
-                               new ForwardRatePcEvolver(pseudoRoot, evolution,
+                               new ForwardRatePcEvolver(marketModel, evolution,
                                                         generatorFactory));
         default:
             QL_FAIL("unknown MarketModelEvolver type");
@@ -464,13 +475,13 @@ void MarketModelTest::testLongJumpForwardsAndCaplets() {
             Size factors = (m==0 ? todaysForwards.size() : m);
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+            PseudoRootType marketModels[] = { //CalibratedMM,
                 ExponentialCorrelationFlatVolatility,
                 ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot =
-                    makePseudoRoot(evolution, factors, pseudoRoots[k]);
+            for (Size k=0; k<LENGTH(marketModels); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
+                boost::shared_ptr<MarketModel> marketModel =
+                    makePseudoRoot(evolution, factors, marketModels[k]);
 
                 MeasureType measures[] = { ProductSuggested,
                                            Terminal,
@@ -485,7 +496,7 @@ void MarketModelTest::testLongJumpForwardsAndCaplets() {
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot,
+                        evolver = makeMarketModelEvolver(marketModel,
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
@@ -537,13 +548,13 @@ void MarketModelTest::testVeryLongJumpForwardsAndCaplets() {
             Size factors = (m==0 ? todaysForwards.size() : m);
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+            PseudoRootType marketModels[] = { //CalibratedMM,
                 ExponentialCorrelationFlatVolatility,
                 ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot =
-                    makePseudoRoot(evolution, factors, pseudoRoots[k]);
+            for (Size k=0; k<LENGTH(marketModels); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
+                boost::shared_ptr<MarketModel> marketModel =
+                    makePseudoRoot(evolution, factors, marketModels[k]);
 
                 MeasureType measures[] = { Terminal,
                                            MoneyMarket,
@@ -557,7 +568,7 @@ void MarketModelTest::testVeryLongJumpForwardsAndCaplets() {
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot,
+                        evolver = makeMarketModelEvolver(marketModel,
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
@@ -594,11 +605,11 @@ void MarketModelTest::testLongJumpCoinitialSwaps() {
             Size factors = (m==0 ? todaysForwards.size() : m);
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+            PseudoRootType marketModels[] = { //CalibratedMM,
                 ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+            for (Size k=0; k<LENGTH(marketModels); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
+                boost::shared_ptr<MarketModel> marketModel = makePseudoRoot(evolution, factors, marketModels[k]);
 
                 MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
@@ -610,7 +621,7 @@ void MarketModelTest::testLongJumpCoinitialSwaps() {
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        evolver = makeMarketModelEvolver(marketModel, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testCoinitialSwaps(*stats, fixedRate);
                     }
@@ -640,11 +651,11 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
             Size factors = (m==0 ? todaysForwards.size() : m);
             BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
 
-            PseudoRootType pseudoRoots[] = { //CalibratedMM,
+            PseudoRootType marketModels[] = { //CalibratedMM,
                 ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
-            for (Size k=0; k<LENGTH(pseudoRoots); k++) {
-                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " PseudoRoot: " << pseudoRootTypeToString(pseudoRoots[k]));
-                boost::shared_ptr<PseudoRoot> pseudoRoot = makePseudoRoot(evolution, factors, pseudoRoots[k]);
+            for (Size k=0; k<LENGTH(marketModels); k++) {
+                BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
+                boost::shared_ptr<MarketModel> marketModel = makePseudoRoot(evolution, factors, marketModels[k]);
 
                 MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
@@ -656,7 +667,7 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
                     Size stop = evolution.isInTerminalMeasure() ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << j << "." << i << "." << " Evolver: " << evolverTypeToString(evolvers[i]));
-                        evolver = makeMarketModelEvolver(pseudoRoot, evolution, generatorFactory, evolvers[i]);
+                        evolver = makeMarketModelEvolver(marketModel, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
                         testCoterminalSwaps(*stats, fixedRate);
                     }
@@ -798,14 +809,18 @@ void MarketModelTest::testAbcdVolatilityFit() {
             "\nerror: " << error0 << " ---> " << error1);
 
     std::vector<Real> k = instVol.k(volatilities, rateTimes.begin());
+    Real tol = 2.0e-4;
     for (Size i=0; i<volatilities.size(); i++) {
-        Real modelVol = instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
-        BOOST_MESSAGE(" Fixing Time = " << std::setprecision(3) << rateTimes[i] <<
-                      " MktVol = " << io::rate(volatilities[i])  <<
-                      " ModVol = " << io::rate(modelVol)        <<
-                      " k=" << k[i]);
-
+        if (std::abs(k[i]-1.0)>tol) {
+            Real modelVol = instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
+            BOOST_FAIL("\nFixing Time = " << rateTimes[i] <<
+                       " MktVol = " << io::rate(volatilities[i]) <<
+                       " ModVol = " << io::rate(modelVol) <<
+                       " k=" << k[i] << " error=" << std::abs(k[i]-1.0) <<
+                       " tol=" << tol);
+        }
     }
+
 }
 
 test_suite* MarketModelTest::suite() {

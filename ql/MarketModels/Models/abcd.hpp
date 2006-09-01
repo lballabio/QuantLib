@@ -40,10 +40,10 @@ namespace QuantLib
     */
     class Abcd : public std::unary_function<Real,Real> {
     public:
-        Abcd(Real a = -0.0597,
-             Real b = 0.1677,
-             Real c = 0.5403,
-             Real d = 0.1710,
+        Abcd(Real a = -0.06,
+             Real b =  0.17,
+             Real c =  0.54,
+             Real d =  0.17,
              bool aIsFixed = false,
              bool bIsFixed = false,
              bool cIsFixed = false,

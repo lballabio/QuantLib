@@ -6687,15 +6687,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\marketmodel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodel.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\pseudoroot.hpp"
 				>
 			</File>
 			<Filter
@@ -6891,38 +6895,38 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="PseudoRoots"
+				Name="Models"
 				>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.cpp"
+					RelativePath=".\ql\MarketModels\Models\abcd.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.hpp"
+					RelativePath=".\ql\MarketModels\Models\abcd.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.cpp"
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.hpp"
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.cpp"
+					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.hpp"
+					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.cpp"
+					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.hpp"
+					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp"
 					>
 				</File>
 			</Filter>

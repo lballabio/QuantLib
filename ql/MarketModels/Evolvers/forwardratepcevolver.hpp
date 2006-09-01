@@ -22,7 +22,7 @@
 #define quantlib_forward_rate_pc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/pseudoroot.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/MarketModels/driftcalculator.hpp>
@@ -34,7 +34,7 @@ namespace QuantLib {
     */
     class ForwardRatePcEvolver : public MarketModelEvolver {
     public:
-        ForwardRatePcEvolver(const boost::shared_ptr<PseudoRoot>&,
+        ForwardRatePcEvolver(const boost::shared_ptr<MarketModel>&,
                              const EvolutionDescription&,
                              const BrownianGeneratorFactory&);
 
@@ -45,7 +45,7 @@ namespace QuantLib {
 
     private:
         // inputs
-        boost::shared_ptr<PseudoRoot> pseudoRoot_;
+        boost::shared_ptr<MarketModel> marketModel_;
         EvolutionDescription evolution_;
         boost::shared_ptr<BrownianGenerator> generator_;
         // fixed variables

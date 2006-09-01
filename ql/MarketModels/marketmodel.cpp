@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) Mark Joshi 2006
+ Copyright (C) 2006 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,28 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-#ifndef quantlib_pseudoroot_hpp
-#define quantlib_pseudoroot_hpp
-
-#include <ql/Math/matrix.hpp>
-#include <vector>
+#include <ql/MarketModels/marketmodel.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
-    /* For each time step, generates the pseudo-square root of the covariance
-       matrix for that time step.
-    */
-    class PseudoRoot {
-    public:
-        virtual ~PseudoRoot() {}
-        virtual const std::vector<Rate>& initialRates() const = 0;
-        virtual const std::vector<Rate>& displacements() const = 0;
-        virtual Size numberOfRates() const = 0;
-        virtual Size numberOfFactors() const = 0; 
-        virtual const Matrix& pseudoRoot(Size i) const = 0;
-    };
-
 }
-
-#endif

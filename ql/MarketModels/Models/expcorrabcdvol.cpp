@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/PseudoRoots/expcorrabcdvol.hpp>
+#include <ql/MarketModels/Models/expcorrabcdvol.hpp>
 #include <ql/Math/pseudosqrt.hpp>
 
 namespace QuantLib {
@@ -36,53 +36,61 @@ namespace QuantLib {
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Rate>& displacements)
-     :  a_(a), b_(b), c_(c), d_(d), ks_(ks),
-        longTermCorr_(longTermCorr), beta_(beta), 
-        rateTimes_(evolution.rateTimes()),
-        evolutionTimes_(evolution.evolutionTimes()),
-        numberOfFactors_(numberOfFactors),
+     :  numberOfFactors_(numberOfFactors),
+        numberOfRates_(initialRates.size()),
+        numberOfSteps_(evolution.evolutionTimes().size()),
         initialRates_(initialRates),
         displacements_(displacements),
-        pseudoRoots_(evolution.evolutionTimes().size())
+        pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
+        covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
+        totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
     {
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
+                   "initialRates/rateTimes mismatch");
+        QL_REQUIRE(numberOfRates_==displacements.size(),
+                   "initialRates/displacements mismatch");
+        QL_REQUIRE(numberOfRates_==ks.size(),
+                   "initialRates/ks mismatch");
 
-        Size n=ks.size();
-        QL_REQUIRE(n==rateTimes_.size()-1, "rateTimes/ks mismatch");
-
-        Matrix covariance(n, n);
-        std::vector<Time> stdDev(n);
+        std::vector<Time> stdDev(numberOfRates_);
       
         Time effStartTime;
         Real correlation, covar;
-        for (Size k=0; k<evolutionTimes_.size(); ++k) {
-            for (Size i=0; i<n; ++i) {
-                for (Size j=i; j<n; ++j) {
+        Abcd abcd(a, b, c, d);
+        const Matrix& effectiveStopTime = evolution.effectiveStopTime();
+        for (Size k=0; k<numberOfSteps_; ++k) {
+            for (Size i=0; i<numberOfRates_; ++i) {
+                for (Size j=i; j<numberOfRates_; ++j) {
                     correlation = longTermCorr + (1.0-longTermCorr) * 
-                         std::exp(-beta*std::abs(rateTimes_[i]-rateTimes_[j]));
-                    boost::shared_ptr<Abcd> abcd(new Abcd(a, b, c, d));
-                    effStartTime = k>0 ? evolution.effectiveStopTime()[k-1][i] : 0.0;
-                    covar = abcd->covariance(effStartTime,evolution.effectiveStopTime()[k][i],
-                                             rateTimes_[i], rateTimes_[j]);
-                    covariance[j][i] = covariance[i][j] = ks_[i] * ks_[j] * covar * correlation ;
+                         std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
+                    effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
+                    covar = abcd.covariance(effStartTime, effectiveStopTime[k][i],
+                                            rateTimes[i], rateTimes[j]);
+                    covariance_[k][j][i] = covariance_[k][i][j] = ks[i] * ks[j] * covar * correlation ;
                  }
              }
 
             pseudoRoots_[k] =
-                rankReducedSqrt(covariance, numberOfFactors, 1.1,
+                rankReducedSqrt(covariance_[k], numberOfFactors, 1.1,
                                 SalvagingAlgorithm::None);
                 //pseudoSqrt(covariance, SalvagingAlgorithm::None);
 
-            QL_ENSURE(pseudoRoots_[k].rows()==n,
+            totalCovariance_[k] = covariance_[k];
+            if (k>0)
+                totalCovariance_[k] += totalCovariance_[k-1];
+    
+            QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
                       "step " << k <<
                       " abcd vol wrong number of rows: " << pseudoRoots_[k].rows() <<
-                      " instead of " << n);
+                      " instead of " << numberOfRates_);
             QL_ENSURE(pseudoRoots_[k].columns()==numberOfFactors,
                       "step " << k <<
                       " abcd vol wrong number of columns: " << pseudoRoots_[k].columns() <<
                       " instead of " << numberOfFactors);
-       
+
         }
-       
+
     }
 
 }

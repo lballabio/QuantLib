@@ -26,8 +26,8 @@
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
-#include <ql/MarketModels/PseudoRoots/abcdvolatility.hpp>
-#include <ql/MarketModels/PseudoRoots/exponentialcorrelation.hpp>
+#include <ql/MarketModels/Models/abcdvolatility.hpp>
+#include <ql/MarketModels/Models/exponentialcorrelation.hpp>
 #include <ql/MarketModels/Products/all.hpp>
 
 

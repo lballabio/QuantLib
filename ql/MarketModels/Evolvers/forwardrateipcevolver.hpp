@@ -22,7 +22,7 @@
 #define quantlib_forward_rate_ipc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/pseudoroot.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/MarketModels/driftcalculator.hpp>
@@ -34,7 +34,7 @@ namespace QuantLib {
     */
     class ForwardRateIpcEvolver : public MarketModelEvolver {
     public:
-        ForwardRateIpcEvolver(const boost::shared_ptr<PseudoRoot>&,
+        ForwardRateIpcEvolver(const boost::shared_ptr<MarketModel>&,
                               const EvolutionDescription&,
                               const BrownianGeneratorFactory&);
 
@@ -45,7 +45,7 @@ namespace QuantLib {
 
     private:
         // inputs
-        boost::shared_ptr<PseudoRoot> pseudoRoot_;
+        boost::shared_ptr<MarketModel> marketModel_;
         EvolutionDescription evolution_;
         boost::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
@@ -58,7 +58,7 @@ namespace QuantLib {
         std::vector<Real> drifts1_, initialDrifts_, g_;
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
-        std::vector<Matrix> C_;
+        //std::vector<Matrix> C_;
         // helper classes
         std::vector<DriftCalculator> calculators_;
     };

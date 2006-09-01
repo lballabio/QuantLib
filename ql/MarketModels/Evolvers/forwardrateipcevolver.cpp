@@ -23,14 +23,14 @@
 namespace QuantLib {
 
     ForwardRateIpcEvolver::ForwardRateIpcEvolver(
-                           const boost::shared_ptr<PseudoRoot>& pseudoRoot,
+                           const boost::shared_ptr<MarketModel>& marketModel,
                            const EvolutionDescription& evolution,
                            const BrownianGeneratorFactory& factory)
-    : pseudoRoot_(pseudoRoot), evolution_(evolution),
-      n_(pseudoRoot->numberOfRates()), F_(pseudoRoot->numberOfFactors()),
+    : marketModel_(marketModel), evolution_(evolution),
+      n_(marketModel->numberOfRates()), F_(marketModel->numberOfFactors()),
       curveState_(evolution.rateTimes()),
-      forwards_(pseudoRoot->initialRates()),
-      displacements_(pseudoRoot->displacements()),
+      forwards_(marketModel->initialRates()),
+      displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
       initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(evolution.evolutionTimes().size())
@@ -38,7 +38,7 @@ namespace QuantLib {
         QL_REQUIRE(evolution.isInTerminalMeasure(),
                    "terminal measure required for ipc ");
 
-        const std::vector<Rate>& initialForwards = pseudoRoot->initialRates();
+        const std::vector<Rate>& initialForwards = marketModel->initialRates();
 
         Size steps = evolution_.numberOfSteps();
 
@@ -51,16 +51,16 @@ namespace QuantLib {
         }
 
         for (Size j=0; j<steps; ++j) {
-            const Matrix& A = pseudoRoot->pseudoRoot(j);
+            const Matrix& A = marketModel->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
                                                    evolution_.rateTaus(),
                                                    evolution_.numeraires()[j],
                                                    alive_[j]));
-            C_.push_back(A*transpose(A));
+            const Matrix& C = marketModel->covariance(j);
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
-                Real variance = C_.back()[k][k];
+                Real variance = C[k][k];
                 fixed[k] = -0.5*variance;
             }
             fixedDrifts_.push_back(fixed);
@@ -93,7 +93,8 @@ namespace QuantLib {
         }
 
         Real weight = generator_->nextStep(brownians_);
-        const Matrix& A = pseudoRoot_->pseudoRoot(currentStep_);
+        const Matrix& A = marketModel_->pseudoRoot(currentStep_);
+        const Matrix& C = marketModel_->covariance(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Integer alive = alive_[currentStep_];
@@ -101,7 +102,7 @@ namespace QuantLib {
         for (Integer i=n_-1; i>=alive; --i) {
             drifts2 = 0.0;
             for (Size j=i+1; j<n_; ++j) {
-                drifts2 -= g_[j]*C_[currentStep_][i][j];
+                drifts2 -= g_[j]*C[i][j];
             }
             logForwards_[i] += 0.5*(drifts1_[i]+drifts2) + fixedDrift[i];
             logForwards_[i] +=

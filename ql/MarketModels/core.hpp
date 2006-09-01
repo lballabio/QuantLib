@@ -27,7 +27,7 @@
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/pseudoroot.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
 
 
 #endif

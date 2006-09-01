@@ -2901,13 +2901,16 @@
 				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\marketmodel.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodel.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\pseudoroot.hpp">
 			</File>
 			<Filter
 				Name="Products"
@@ -2993,34 +2996,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="PseudoRoots"
-				Filter="">
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrabcdvol.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\expcorrflatvol.hpp">
-				</File>
-			</Filter>
-			<Filter
 				Name="BrownianGenerators"
 				Filter="">
 				<File
@@ -3028,6 +3003,178 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Models"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\Models\abcd.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\abcd.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp">
 				</File>
 			</Filter>
 		</Filter>

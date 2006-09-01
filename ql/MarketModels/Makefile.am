@@ -2,7 +2,7 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels
 
-SUBDIRS = Products PseudoRoots BrownianGenerators Evolvers
+SUBDIRS = Products Models BrownianGenerators Evolvers
 
 include_HEADERS = \
     all.hpp \
@@ -15,7 +15,7 @@ include_HEADERS = \
     evolutiondescription.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
-    pseudoroot.hpp
+    marketmodel.hpp
 
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
@@ -30,7 +30,7 @@ libMarketModels_la_LIBADD = \
     BrownianGenerators/libMarketModelsBrownianGenerators.la \
     Evolvers/libMarketModelsEvolvers.la \
     Products/libMarketModelsProducts.la \
-    PseudoRoots/libMarketModelsPseudoRoots.la
+    Models/libMarketModelsModels.la
 
 #EXTRA_DIST = makefile.mak
 
