@@ -55,8 +55,9 @@ std::string familyName_("");
 Handle<SwaptionVolatilityStructure> swaptionVolatilityMatrix_;
 Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCube_;
 Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCubeBySabr_;
+Handle<SwaptionVolatilityStructure> swaptionVolatilityCubeBySabr_;
 
-const Real volatility_ = .080;
+const Real volatility_ = .15;
 
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
 std::vector<Handle<SwaptionVolatilityStructure> > swaptionVolatilityStructures_;
@@ -64,7 +65,13 @@ std::vector<Handle<SwaptionVolatilityStructure> > swaptionVolatilityStructures_;
 const Real rateTolerance_ = 2.0e-4;
 const Real priceTolerance_ = 2.0e-4;
 
+void teardown() {
+    Settings::instance().evaluationDate() = Date();
+}
+
 void setup() {
+
+    QL_TEST_BEGIN
 
     settlementDays_ = 2;
     fixedConvention_ = Unadjusted;
@@ -119,10 +126,19 @@ void setup() {
                                      iborIndex_->dayCounter())));
 
     std::vector<Rate> strikeSpreads;
-    for(int i=0; i<21; i++) {
-        strikeSpreads.push_back(-.02 + i*.005);
-    }
-    const Matrix volSpreads(lengths.size()*lengths.size(),
+
+    strikeSpreads.push_back(-.02);
+    strikeSpreads.push_back(-.01);
+    strikeSpreads.push_back(-.005);
+    strikeSpreads.push_back(-.0025);
+    strikeSpreads.push_back(.0);
+    strikeSpreads.push_back(.0025);
+    strikeSpreads.push_back(.005);
+    strikeSpreads.push_back(.01);
+    strikeSpreads.push_back(.02);
+
+
+    const Matrix nullVolSpreads(lengths.size()*lengths.size(),
         strikeSpreads.size(), 0.0);
 
     flatSwaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
@@ -132,7 +148,7 @@ void setup() {
             lengths, 
             lengths,
             strikeSpreads,
-            volSpreads,
+            nullVolSpreads,
             calendar_,
             2,
             fixedFrequency_,
@@ -142,8 +158,37 @@ void setup() {
             1,
             iborIndex_
             )));
+    
+    //flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
+    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
+    //    SwaptionVolatilityCubeBySabr(
+    //        swaptionVolatilityMatrix_, 
+    //        lengths, 
+    //        lengths,
+    //        strikeSpreads,
+    //        nullVolSpreads,
+    //        calendar_,
+    //        2,
+    //        fixedFrequency_,
+    //        fixedConvention_,
+    //        iborIndex_->dayCounter(),
+    //        iborIndex_,
+    //        1,
+    //        iborIndex_
+    //        )));
 
-    flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
+    Matrix volSpreads(lengths.size()*lengths.size(),
+        strikeSpreads.size(), 0.0);
+
+    //for(Size i=0; i<strikeSpreads.size(); i++) {
+    //    const double x = strikeSpreads[i];
+    //    const double vs = 10*x*x;
+    //    volSpreads[0][i] = vs;
+    //    volSpreads[1][i] = vs;
+    //}
+
+
+    swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
         SwaptionVolatilityCubeBySabr(
             swaptionVolatilityMatrix_, 
@@ -161,9 +206,8 @@ void setup() {
             iborIndex_
             )));
 
-
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
     //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
 
     {
@@ -172,11 +216,9 @@ void setup() {
 		modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
 		modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
 	}
+    QL_TEST_TEARDOWN
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
 
 QL_END_TEST_LOCALS(CmsTest)
 
@@ -232,7 +274,6 @@ void CmsTest::testParity() {
     BOOST_MESSAGE("Testing put-call parity for constant-maturity coupons...");
 
     QL_TEST_BEGIN
-
 
     int priceIndex = 1;
 
@@ -464,6 +505,7 @@ void CmsTest::testCmsSwap() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
+
     QL_TEST_SETUP
     suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
     suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
