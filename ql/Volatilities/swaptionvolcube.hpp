@@ -127,9 +127,9 @@ namespace QuantLib {
             std::vector<Matrix> points_;
 
             bool extrapolation_;
-            std::vector<BilinearInterpolation> interpolators_;
+            mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
             
-            void updateInterpolators();
+            
 
           public:
 
@@ -153,6 +153,7 @@ namespace QuantLib {
 	        const std::vector<Matrix>& points() const;
 
 	        virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
+            void updateInterpolators()const ;
         };
 
         SwaptionVolatilityCubeBySabr(
@@ -198,6 +199,8 @@ namespace QuantLib {
         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
 
+       virtual VarianceSmileSection smileSection(Time start, Time length, 
+                                                 Cube sabrParametersCube) const;
        virtual VarianceSmileSection smileSection(Time start, Time length) const;
        
 
@@ -208,8 +211,9 @@ namespace QuantLib {
                                   Rate strike) const;
        Cube sabrCalibration(Cube& marketVolCube) const ;
        void fillVolatilityCube();
-       double spreadVolInterpolation(double atmExerciseTime, 
-              double atmTimeLengths, Cube& sabrParametersCube);
+       void createSparseSmiles();
+       std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
+                                                double atmTimeLength);
 
       private:
         Handle<SwaptionVolatilityStructure> atmVolStructure_;
@@ -237,6 +241,7 @@ namespace QuantLib {
 
         Cube sparseParameters_;
         Cube denseParameters_;
+        std::vector< std::vector<VarianceSmileSection > > sparseSmiles_;
     };
 
 }
