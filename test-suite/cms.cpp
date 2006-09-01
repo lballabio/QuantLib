@@ -157,25 +157,25 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_
-            )));
+           )));
     
-    //flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
-    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
-    //    SwaptionVolatilityCubeBySabr(
-    //        swaptionVolatilityMatrix_, 
-    //        lengths, 
-    //        lengths,
-    //        strikeSpreads,
-    //        nullVolSpreads,
-    //        calendar_,
-    //        2,
-    //        fixedFrequency_,
-    //        fixedConvention_,
-    //        iborIndex_->dayCounter(),
-    //        iborIndex_,
-    //        1,
-    //        iborIndex_
-    //        )));
+    flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
+        boost::shared_ptr<SwaptionVolatilityStructure>(new
+        SwaptionVolatilityCubeBySabr(
+            swaptionVolatilityMatrix_, 
+            lengths, 
+            lengths,
+            strikeSpreads,
+            nullVolSpreads,
+            calendar_,
+            2,
+            fixedFrequency_,
+            fixedConvention_,
+            iborIndex_->dayCounter(),
+            iborIndex_,
+            1,
+            iborIndex_
+            )));
 
     Matrix volSpreads(lengths.size()*lengths.size(),
         strikeSpreads.size(), 0.0);
@@ -207,7 +207,7 @@ void setup() {
     //        )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
-    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
+    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
     //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
 
     {

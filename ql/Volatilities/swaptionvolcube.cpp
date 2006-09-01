@@ -208,7 +208,7 @@ namespace QuantLib {
 
               interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, Null<Real>(), Null<Real>(), Null<Real>(),
+                  timeToExpiry, forwardValue, Null<Real>(), .7, Null<Real>(),
                   Null<Real>(), method));
 
                const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
@@ -387,9 +387,9 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        //fillVolatilityCube();
-        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        //denseParameters_.updateInterpolators(); 
+        fillVolatilityCube();
+        denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+        denseParameters_.updateInterpolators(); 
 
     }
 
@@ -415,7 +415,7 @@ namespace QuantLib {
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
                     boost::shared_ptr<SABRInterpolation>(
                   new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
-                  exerciseTimes_[j], atmForward, Null<Real>(), Null<Real>(), Null<Real>(),
+                  exerciseTimes_[j], atmForward, Null<Real>(), .7, Null<Real>(),
                   Null<Real>(), boost::shared_ptr<OptimizationMethod>()));
                 QL_ENSURE(sabrInterpolation->interpolationError()<1e-4, 
                    "VarianceSmileSection::VarianceSmileSection: accuracy not reached");
@@ -622,8 +622,8 @@ namespace QuantLib {
         return VarianceSmileSection(sabrParameters, strikes, expiry);
     }
     VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
-        //return smileSection(expiry, length, denseParameters_ );
-        return smileSection(expiry, length, sparseParameters_ );
+        return smileSection(expiry, length, denseParameters_ );
+        //return smileSection(expiry, length, sparseParameters_ );
     }
 
     VarianceSmileSection::VarianceSmileSection(

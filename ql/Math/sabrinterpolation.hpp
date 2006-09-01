@@ -189,9 +189,9 @@ namespace QuantLib {
                   public:
                     bool test(const Array& params) const {
                         
-                        return params[0]<0.2                    // alpha
-                            && params[1]<0.2                   // nu
-                            ;
+                        return params[0]>0.0                    // alpha
+                            && params[2]>=0.0                   // nu
+                            && params[3]*params[3] < 1.0;       // rho
                     }
                 };
               public:
@@ -228,7 +228,7 @@ namespace QuantLib {
                 } 
                 else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
-                    SABRConstraintWithFixedBeta constraint;
+                    NoConstraint constraint;
                     SABRErrorWithFixedBeta costFunction(this);
 
                     if (!method_) {
@@ -236,8 +236,8 @@ namespace QuantLib {
                             new ArmijoLineSearch(1e-12, 0.15, 0.55));
                         method_ = boost::shared_ptr<OptimizationMethod>(
                             new ConjugateGradient(lineSearch));
-                        //method_ = boost::shared_ptr<OptimizationMethod>(
-                        //    new Simplex(1000, .00000001));
+     /*                   method_ = boost::shared_ptr<OptimizationMethod>(
+                            new Simplex(1000, .00000001));*/
 
                         method_->setEndCriteria(EndCriteria(10000, 1e-12));
                         Array guess(3);
@@ -250,10 +250,17 @@ namespace QuantLib {
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
 				    Array result = problem.minimumValue();
-                    
-                    alpha_ = result[0];
-                    nu_    = result[1];
-                    rho_   = result[2];
+                    if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
+                        alpha_ = result[0]*result[0]+.00000001;
+                        nu_    = result[1]*result[1]+.00000001;
+                        rho_   = .9999*std::sin(result[2]); 
+                    }
+                    else{
+                        alpha_ = result[0];
+                        beta_ = result[1];
+                        nu_    = result[2];
+                        rho_   = result[3];
+                    }
 
                     QL_ENSURE(alpha_>0.0, "alpha must be positive");
                     QL_ENSURE(nu_>=0.0, "nu must be non negative");
