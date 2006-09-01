@@ -1,9 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando ametrano
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
- Copyright (C) 2005, 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,12 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_abcd_hpp
 #define quantlib_abcd_hpp
 
 #include <ql/types.hpp>
-#include <ql/Math/matrix.hpp>
+#include <ql/Optimization/method.hpp>
+#include <boost/shared_ptr.hpp>
+#include <functional>
 #include <vector>
 
 namespace QuantLib
@@ -40,9 +40,20 @@ namespace QuantLib
     */
     class Abcd : public std::unary_function<Real,Real> {
     public:
-        Abcd(Real a, Real b, Real c, Real d);
+        Abcd(Real a = -0.0597,
+             Real b = 0.1677,
+             Real c = 0.5403,
+             Real d = 0.1710,
+             bool aIsFixed = false,
+             bool bIsFixed = false,
+             bool cIsFixed = false,
+             bool dIsFixed = false);
         //! instantaneous volatility at time to maturity u: \f[ f(u) \f]
         Real operator()(Time u) const;
+        Real a() const { return a_; }
+        Real b() const { return b_; }
+        Real c() const { return c_; }
+        Real d() const { return d_; }
 
         /*! instantaneous volatility at time u of the T-fixing rate:
             \f[ f(T-u) \f]
@@ -58,7 +69,7 @@ namespace QuantLib
         Real instantaneousCovariance(Time u, Time T, Time S) const;
 
         /*! volatility in [tMin,tMax] of T-fixing rate:
-            \f[ \sqr_{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
+            \f[ \sqrt_{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
         */
         Real volatility(Time tMin, Time tMax, Time T) const;
         /*! variance in [tMin,tMax] of T-fixing rate:
@@ -78,11 +89,61 @@ namespace QuantLib
         Real maximumLocation() const;
         //! maximum of the instantaneous volatility
         Real maximumVolatility() const;
+
+        //! adjustment factors needed to match Black vols
+        std::vector<Real> k(const std::vector<Real>& blackVols,
+                            const std::vector<Real>::const_iterator& t) const;
+        //! vol error
+        Real error(const std::vector<Real>& blackVols,
+                   const std::vector<Real>::const_iterator& t) const;
+
+        //! calibration
+        EndCriteria::Type calibrate(const std::vector<Real>& blackVols,
+                       const std::vector<Real>::const_iterator& t,
+                       const boost::shared_ptr<OptimizationMethod>& method
+                                = boost::shared_ptr<OptimizationMethod>());
     private:
         //! indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
         Real primitive(Time u, Time T, Time S) const;
+        //! optimization constraints
+        class AbcdConstraint : public Constraint {
+            private:
+            class Impl : public Constraint::Impl {
+                public:
+                bool test(const Array& params) const {
+                    return params[0] + params[3] > 0.0  // a + d
+                        && params[2] > 0.0              // c
+                        && params[3] > 0.0;             // d
+                }
+            };
+            public:
+            AbcdConstraint()
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
+        };
+        //! function to minimize
+        class AbcdCostFunction;
+        friend class AbcdCostFunction;
+        class AbcdCostFunction : public CostFunction {
+            public:
+            AbcdCostFunction(Abcd* abcd,
+                             const std::vector<Real>& blackVols,
+                             const std::vector<Real>::const_iterator& t)
+            : abcd_(abcd), blackVols_(blackVols), t_(t) {}
+            Real value(const Array& x) const {
+                if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
+                if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
+                if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
+                if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+                return abcd_->error(blackVols_, t_);
+            }
+            private:
+            Abcd* abcd_;
+            std::vector<Real> blackVols_;
+            std::vector<Real>::const_iterator t_;
+        };
         //! Parameters
         Real a_, b_, c_, d_;
+        bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
     };
 
     //! Abcd Squared functional. Helper class.
@@ -100,7 +161,6 @@ namespace QuantLib
     private:
         boost::shared_ptr<Abcd> abcd_;
         Time S_, T_;
-
     };
 
 

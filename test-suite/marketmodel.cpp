@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -41,7 +42,6 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <ql/MarketModels/PseudoRoots/abcdfit.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
@@ -775,101 +775,35 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
     QL_TEST_SETUP
 
-    // Parameters proposed in  "Modern Pricing of Interest-Rate Derivatives,
-    // the Libor Market Model and beyond", by R. Rebonato, Princeton University Press,
-    // 2002, pag. 307
-    Real a = -0.0597;
-    Real b = 0.1677;
-    Real c = 0.5403;
-    Real d = 0.1710;
+    Abcd instVol;
+    Real a0 = instVol.a();
+    Real b0 = instVol.b();
+    Real c0 = instVol.c();
+    Real d0 = instVol.d();
+    Real error0 = instVol.error(volatilities, rateTimes.begin());
 
-    std::vector<Real> mktVariances(volatilities.size());
+    instVol.calibrate(volatilities, rateTimes.begin());
+    Real a1 = instVol.a();
+    Real b1 = instVol.b();
+    Real c1 = instVol.c();
+    Real d1 = instVol.d();
+    Real error1 = instVol.error(volatilities, rateTimes.begin());
+
+    if (error1>=error0)
+        BOOST_FAIL("Parameters:" <<
+            "\na:     " << a0 << " ---> " << a1 <<
+            "\nb:     " << b0 << " ---> " << b1 <<
+            "\nc:     " << c0 << " ---> " << c1 <<
+            "\nd:     " << d0 << " ---> " << d1 <<
+            "\nerror: " << error0 << " ---> " << error1);
+
+    std::vector<Real> k = instVol.k(volatilities, rateTimes.begin());
     for (Size i=0; i<volatilities.size(); i++) {
-        mktVariances[i] = volatilities[i]*volatilities[i]*rateTimes[i];
-    }
-    Size nRates = todaysForwards.size();
-
-    // Starting error
-    Real startingError  = 0.;
-
-    for (Size i=0; i<nRates; i++) {
-        Time expiry = rateTimes[i];
-        boost::shared_ptr<Abcd> instVol(new Abcd(a, b, c, d));
-        Real modelVariances = instVol->variance(0,expiry,expiry);
-        Real modelVols = std::sqrt(modelVariances/expiry);
-        Real k = std::sqrt(mktVariances[i]/modelVariances);
-        startingError += (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
-
-        BOOST_MESSAGE(" Fixing Time = " << expiry <<
+        Real modelVol = instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
+        BOOST_MESSAGE(" Fixing Time = " << std::setprecision(3) << rateTimes[i] <<
                       " MktVol = " << io::rate(volatilities[i])  <<
-                      " ModVol = " << io::rate(modelVols)        <<
-                      " k=" << k );
-    }
-    startingError /= nRates;
-
-    boost::shared_ptr<EndCriteria> endCriteria(new EndCriteria(100000,0.0001));
-    Array initialValue(4);
-    initialValue[0] = a;
-    initialValue[1] = b;
-    initialValue[2] = c;
-    initialValue[3] = d;
-    boost::shared_ptr<ConjugateGradient> method(new ConjugateGradient(*endCriteria,initialValue));
-
-    // Fitting with a and b fixed.
-    boost::shared_ptr<AbcdFit> fit(new AbcdFit(rateTimes.begin(), rateTimes.end()-1,
-                                   mktVariances.begin(),
-                                   a, b, c, d, rateTimes, method));
-
-    BOOST_MESSAGE("   Parameters: " << "\n"
-        << "  a: " <<  "\t" << a << " ---> " << fit->a() << "\n"
-        << "  b: " <<  "\t" << b << " ---> " << fit->b() << "\n"
-        << "  c: " <<  "\t" << c << " ---> " << fit->c() << "\n"
-        << "  d: " <<  "\t" << d << " ---> " << fit->d() << "\n"
-        << "  Rms error: " << std::sqrt(startingError) << " ---> " << fit->interpolationError()
-        )
-        ;
-
-    for (Size i=0; i<nRates; i++) {
-        Time expiry = rateTimes[i];
-        boost::shared_ptr<Abcd> instVol1(new Abcd(fit->a(), fit->b(), fit->c(), fit->d()));
-        Real modelVariances = instVol1->variance(0,expiry,expiry);
-        Real modelVols = std::sqrt(modelVariances/expiry);
-        Real k = std::sqrt(mktVariances[i]/modelVariances);
-        startingError = startingError + (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
-        BOOST_MESSAGE(" Fixing Time = " << expiry <<
-                      " MktVol = " << io::rate(volatilities[i])  <<
-                      " ModVol = " << io::rate(modelVols)        <<
-                      " k=" << k);
-    }
-
-    boost::shared_ptr<SteepestDescent> method1(new SteepestDescent());
-    initialValue[0] = fit->a();
-    initialValue[1] = fit->b();
-    initialValue[2] = fit->c();
-    initialValue[3] = fit->d();
-    method1->setInitialValue(initialValue);
-    boost::shared_ptr<AbcdFit> fit1(new AbcdFit(rateTimes.begin(), rateTimes.end()-1,
-                                   mktVariances.begin(),
-                                   fit->a(), fit->b(), fit->c(), fit->d(), rateTimes, method1));
-    BOOST_MESSAGE("   Parameters: " << "\n" 
-        << "  a: " <<  "\t" << fit->a() << " ---> " << fit1->a() << "\n"
-        << "  b: " <<  "\t" << fit->b() << " ---> " << fit1->b() << "\n"
-        << "  c: " <<  "\t" << fit->c() << " ---> " << fit1->c() << "\n"
-        << "  d: " <<  "\t" << fit->d() << " ---> " << fit1->d() << "\n"        
-        << "  Rms error: " << fit->interpolationError()
-        << " ---> " << fit1->interpolationError());
-
-    for (Size i=0; i<nRates; i++) {
-        Time expiry = rateTimes[i];
-        boost::shared_ptr<Abcd> instVol2(new Abcd(fit1->a(), fit1->b(), fit1->c(), fit1->d()));
-        Real modelVariances = instVol2->variance(0,expiry,expiry);
-        Real modelVols = std::sqrt(modelVariances/expiry);
-        Real k = std::sqrt(mktVariances[i]/modelVariances);
-        startingError = startingError + (mktVariances[i]-modelVariances)*(mktVariances[i]-modelVariances);
-        BOOST_MESSAGE(" Fixing Time = " << expiry <<
-                      " MktVol = " << io::rate(volatilities[i])  <<
-                      " ModVol = " << io::rate(modelVols)        <<
-                      " k=" << k);
+                      " ModVol = " << io::rate(modelVol)        <<
+                      " k=" << k[i]);
 
     }
 }

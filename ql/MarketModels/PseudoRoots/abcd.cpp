@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando ametrano
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2005, 2006 Klaus Spanderen
 
@@ -20,12 +20,16 @@
 */
 
 #include <ql/MarketModels/PseudoRoots/abcd.hpp>
-
+#include <ql/Optimization/problem.hpp>
+#include <ql/Optimization/conjugategradient.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    Abcd::Abcd(Real a, Real b, Real c, Real d)
-    : a_(a), b_(b), c_(c), d_(d) {
+    Abcd::Abcd(Real a, Real b, Real c, Real d,
+               bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed)
+    : a_(a), b_(b), c_(c), d_(d), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
+      cIsFixed_(cIsFixed), dIsFixed_(dIsFixed) {
         QL_REQUIRE(a+d>=0,
                    "a+d (" << a << ", " << d <<") must be non negative");
         QL_REQUIRE(d>=0,
@@ -59,6 +63,66 @@ namespace QuantLib {
             return primitive(t2, T, S) - primitive(t1, T, S);
         }
     }
+
+    std::vector<Real> Abcd::k(
+                    const std::vector<Real>& blackVols,
+                    const std::vector<Real>::const_iterator& t) const {
+        Size n = blackVols.size();
+        std::vector<Real> k(n);
+        for (Size i=0; i<n ; i++) {
+            k[i]=blackVols[i]/volatility(0.0, *(t+i), *(t+i));
+        }
+        return k;
+    }
+
+    Real Abcd::error(const std::vector<Real>& blackVols,
+                     const std::vector<Real>::const_iterator& t) const {
+        Real error = 0.0;
+        Size n = blackVols.size();
+        for (Size i=0; i<n ; i++) {
+            Real temp = blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+            error += temp*temp;
+        }
+        return std::sqrt(error/n);
+    }
+
+    EndCriteria::Type Abcd::calibrate(const std::vector<Real>& blackVols,
+                         const std::vector<Real>::const_iterator& t,
+                         const boost::shared_ptr<OptimizationMethod>& meth) {
+        boost::shared_ptr<OptimizationMethod> method = meth;
+        if (!method) {
+            boost::shared_ptr<LineSearch> lineSearch(
+                new ArmijoLineSearch(1e-12, 0.15, 0.55));
+            method = boost::shared_ptr<OptimizationMethod>(
+                new ConjugateGradient(lineSearch));
+            method->setEndCriteria(EndCriteria(100000, 1e-6));
+            Array guess(4);
+            guess[0] = a_;
+            guess[1] = b_;
+            guess[2] = c_;
+            guess[3] = d_;
+            method->setInitialValue(guess);
+        }
+
+        AbcdConstraint constraint;
+        AbcdCostFunction costFunction(this, blackVols, t);
+        Problem problem(costFunction, constraint, *method);
+        problem.minimize();
+
+		Array result = problem.minimumValue();
+        if (!aIsFixed_) a_ = result[0];
+        if (!bIsFixed_) b_ = result[1];
+        if (!cIsFixed_) c_ = result[2];
+        if (!dIsFixed_) d_ = result[3];
+
+        QL_ENSURE(d_>0.0, "d must be positive");
+        QL_ENSURE(a_+d_>0.0, "a+d must be positive");
+        QL_ENSURE(c_>0.0, "c must be positive");
+
+		return method->endCriteria().criteria();
+                         
+    }
+
 
     Real Abcd::primitive(Time u, Time T, Time S) const {
 

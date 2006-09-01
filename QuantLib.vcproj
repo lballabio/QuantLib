@@ -3002,9 +3002,6 @@
 					RelativePath=".\ql\MarketModels\PseudoRoots\abcd.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\PseudoRoots\abcdfit.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\MarketModels\PseudoRoots\calibratedmarketmodel.cpp">
 				</File>
 				<File
