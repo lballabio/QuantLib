@@ -6687,10 +6687,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodel.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\marketmodel.hpp"
 				>
 			</File>
