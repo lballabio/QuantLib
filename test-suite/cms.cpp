@@ -57,7 +57,7 @@ Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCube_;
 Handle<SwaptionVolatilityStructure> flatSwaptionVolatilityCubeBySabr_;
 Handle<SwaptionVolatilityStructure> swaptionVolatilityCubeBySabr_;
 
-const Real volatility_ = .15;
+const Real volatility_ = .10;
 
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_; 
 std::vector<Handle<SwaptionVolatilityStructure> > swaptionVolatilityStructures_;
@@ -188,23 +188,23 @@ void setup() {
     //}
 
 
-    swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
-        boost::shared_ptr<SwaptionVolatilityStructure>(new
-        SwaptionVolatilityCubeBySabr(
-            swaptionVolatilityMatrix_, 
-            lengths, 
-            lengths,
-            strikeSpreads,
-            volSpreads,
-            calendar_,
-            2,
-            fixedFrequency_,
-            fixedConvention_,
-            iborIndex_->dayCounter(),
-            iborIndex_,
-            1,
-            iborIndex_
-            )));
+    //swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
+    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
+    //    SwaptionVolatilityCubeBySabr(
+    //        swaptionVolatilityMatrix_, 
+    //        lengths, 
+    //        lengths,
+    //        strikeSpreads,
+    //        volSpreads,
+    //        calendar_,
+    //        2,
+    //        fixedFrequency_,
+    //        fixedConvention_,
+    //        iborIndex_->dayCounter(),
+    //        iborIndex_,
+    //        1,
+    //        iborIndex_
+    //        )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
     //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
