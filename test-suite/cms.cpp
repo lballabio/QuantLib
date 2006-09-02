@@ -176,7 +176,7 @@ void setup() {
             1,
             iborIndex_,
             1.,
-            1e-6
+            1e-5
             )));
 
     Matrix volSpreads(lengths.size()*lengths.size(),
