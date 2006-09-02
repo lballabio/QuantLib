@@ -205,7 +205,7 @@ namespace QuantLib {
                 class Impl : public Constraint::Impl {
                   public:
                     bool test(const Array& params) const {
-                        return true
+                        return true;
                         //return params[0]>0.0                    // alpha
                         //    && params[2]>=0.0                   // nu
                         //    && params[3]*params[3] < 1.0;       // rho
