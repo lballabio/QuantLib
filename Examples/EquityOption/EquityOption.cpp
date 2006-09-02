@@ -328,6 +328,28 @@ int main(int, char* [])
                   << std::setw(widths[3]) << std::left << "N/A"
                   << std::endl;
 
+        method = "MC (Longstaff Schwartz)";
+        // Be aware: using this engine for bermudan options is a hack here
+        bermudanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            MakeMCAmericanEngine<LowDiscrepancy>().withSteps(4)
+                .withSamples(16384)
+                .withCalibrationSamples(16384)
+                .withSeed(mcSeed)));
+        americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            MakeMCAmericanEngine<PseudoRandom>().withSteps(100)
+                                                .withAntitheticVariate()
+                                                .withCalibrationSamples(4096)
+                                                .withTolerance(0.02)
+                                                .withSeed(mcSeed)));
+
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << bermudanOption.NPV()
+                  << std::setw(widths[3]) << std::left << americanOption.NPV()
+                  << std::endl;
+
+
         Real seconds = timer.elapsed();
         Integer hours = int(seconds/3600);
         seconds -= hours * 3600;

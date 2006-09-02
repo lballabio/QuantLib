@@ -24,6 +24,9 @@
 #ifndef quantlib_gaussian_orthogonal_polynomial_hpp
 #define quantlib_gaussian_orthogonal_polynomial_hpp
 
+#include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include <ql/types.hpp>
 
 namespace QuantLib {
@@ -50,10 +53,13 @@ namespace QuantLib {
     class GaussianOrthogonalPolynomial {
       public:
         virtual ~GaussianOrthogonalPolynomial() {}
-        virtual Real mu_0() const = 0;
+        virtual Real mu_0()        const = 0;
         virtual Real alpha(Size i) const = 0;
-        virtual Real beta(Size i) const = 0;
-        virtual Real w(Real x) const = 0;
+        virtual Real beta(Size i)  const = 0;
+        virtual Real w(Real x)     const = 0;
+
+        Real value(Size i, Real x) const;
+        Real weightedValue(Size i, Real x) const;
     };
 
     //! Gauss-Laguerre polynomial
@@ -99,6 +105,30 @@ namespace QuantLib {
         const Real beta_;
     };
 
+    // Gauss-Legendre polynomial
+    class GaussLegendrePolynomial : public GaussJacobiPolynomial {
+      public:
+        GaussLegendrePolynomial();
+    };
+
+    // Gauss-Chebyshev polynomial
+    class GaussChebyshevPolynomial : public GaussJacobiPolynomial {
+      public:
+        GaussChebyshevPolynomial();
+    };
+
+    // Gauss-Chebyshev2th polynomial
+    class GaussChebyshev2thPolynomial : public GaussJacobiPolynomial {
+      public:
+        GaussChebyshev2thPolynomial();
+    };
+
+    // Gauss-Gegenbauer polynomial
+    class GaussGegenbauerPolynomial : public GaussJacobiPolynomial {
+      public:
+        GaussGegenbauerPolynomial(Real lambda);
+    };
+
     //! Gauss hyperbolic polynomial
     class GaussHyperbolicPolynomial : public GaussianOrthogonalPolynomial {
       public:
@@ -107,8 +137,6 @@ namespace QuantLib {
         Real beta(Size i) const;
         Real w(Real x) const;
     };
-
 }
-
 
 #endif

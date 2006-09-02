@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,16 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_monte_carlo_all_hpp
-#define quantlib_monte_carlo_all_hpp
+#ifndef quantlib_test_mc_longstaff_schwartz_engine_hpp
+#define quantlib_test_mc_longstaff_schwartz_engine_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/MonteCarlo/core.hpp>
+#include <boost/test/unit_test.hpp>
 
-#include <ql/MonteCarlo/brownianbridge.hpp>
-#include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/MonteCarlo/longstaffschwartzpathpricer.hpp>
-#include <ql/MonteCarlo/lsmbasissystem.hpp>
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
+
+class MCLongstaffSchwartzEngineTest {
+  public:
+    static void testAmericanOption();
+    static void testAmericanMaxOption();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
 
 #endif

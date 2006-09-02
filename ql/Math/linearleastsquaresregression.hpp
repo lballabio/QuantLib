@@ -24,7 +24,7 @@
 #ifndef quantlib_linear_least_squares_regression_hpp
 #define quantlib_linear_least_squares_regression_hpp
 
-#include <ql/Math/array.hpp>
+#include <vector>
 #ifdef QL_PATCH_MSVC71
 #pragma warning(disable:4224)
 #endif
@@ -32,7 +32,8 @@
 #ifdef QL_PATCH_MSVC71
 #pragma warning(default:4224)
 #endif
-#include <vector>
+#include <ql/Math/svd.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 
@@ -44,21 +45,68 @@ namespace QuantLib {
         \test the correctness of the returned values is tested by
               checking their properties.
     */
+    template <class ArgumentType = Real>
     class LinearLeastSquaresRegression {
       public:
         LinearLeastSquaresRegression(
-            const Array& x, const Array& y,
-            const std::vector<boost::function1<Real, Real> >& v);
+            const std::vector<ArgumentType> & x, 
+            const std::vector<Real> &         y, 
+            const std::vector<boost::function1<Real, ArgumentType> > & v);
 
-        const Array& a() const;
-        const Array& err() const;
+        const Array& a() const   { return a_;  }
+        const Array& err() const { return err_;}
 
       private:
         Array a_;
         Array err_;
     };
+
+    template <class ArgumentType> inline
+    LinearLeastSquaresRegression<ArgumentType>::LinearLeastSquaresRegression(
+        const std::vector<ArgumentType> & x, 
+        const std::vector<Real> &         y, 
+        const std::vector<boost::function1<Real, ArgumentType> > & v)
+    : a_  (v.size(), 0.0),
+      err_(v.size(), 0.0) {
+
+        QL_REQUIRE(x.size() == y.size(), 
+                   "sample set need to be of the same size");
+        QL_REQUIRE(x.size() >= v.size(), "sample set is too small");
+
+        Size i;
+        const Size n = x.size();
+        const Size m = v.size();
+
+        Matrix A(n, m);
+        for (i=0; i<m; ++i) {
+            #ifndef QL_PATCH_MSVC6
+            std::transform(x.begin(), x.end(), A.column_begin(i), v[i]);
+            #else
+            for (Size j=0; j<x.size(); j++)
+                A[j][i] = v[i](x[j]);
+            #endif
+        }
+
+        const SVD svd(A);
+        const Matrix& V = svd.V();
+        const Matrix& U = svd.U();
+        const Array&  w = svd.singularValues();
+        const Real threshold = n*QL_EPSILON;
+
+        for (i=0; i<m; ++i) {
+            if (w[i] > threshold) {
+                const Real u = std::inner_product(U.column_begin(i),
+                                                  U.column_end(i),
+                                                  y.begin(), 0.0)/w[i];
+                
+                for (Size j=0; j<m; ++j) {
+                    a_[j]  +=u*V[j][i];
+                    err_[j]+=V[j][i]*V[j][i]/(w[i]*w[i]);
+                }
+            }
+        }
+        err_=Sqrt(err_);
+    }
 }
 
-
 #endif
-

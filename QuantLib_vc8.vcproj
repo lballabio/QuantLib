@@ -3495,10 +3495,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\linearleastsquaresregression.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Math\linearleastsquaresregression.hpp"
 				>
 			</File>
@@ -3861,11 +3857,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\earlyexercisepathpricer.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MonteCarlo\getcovariance.cpp"
 				>
 			</File>
 			<File
 				RelativePath="ql\MonteCarlo\getcovariance.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\longstaffschwartzpathpricer.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\lsmbasissystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\lsmbasissystem.hpp"
 				>
 			</File>
 			<File
@@ -7029,6 +7041,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\mclongstaffschwartzengine.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\mcsimulation.hpp"
 				>
 			</File>
@@ -7931,6 +7947,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\PricingEngines\Vanilla\juquadraticengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mcamericanengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\mcamericanengine.hpp"
 					>
 				</File>
 				<File

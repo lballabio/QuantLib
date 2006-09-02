@@ -28,6 +28,7 @@ include_HEADERS = \
     fdstepconditionengine.hpp \
     fdvanillaengine.hpp \
     fdconditions.hpp \
+    mcamericanengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \
@@ -50,6 +51,7 @@ libVanillaEngines_la_SOURCES = \
     fdmultiperiodengine.cpp \
     fdstepconditionengine.cpp \
     fdvanillaengine.cpp \
+    mcamericanengine.cpp \
     mcdigitalengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la

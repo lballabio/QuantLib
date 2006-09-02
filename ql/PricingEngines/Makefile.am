@@ -15,6 +15,7 @@ include_HEADERS = \
     genericmodelengine.hpp \
     greeks.hpp \
     latticeshortratemodelengine.hpp \
+    mclongstaffschwartzengine.hpp \
     mcsimulation.hpp
 
 libPricingEngines_la_SOURCES = \

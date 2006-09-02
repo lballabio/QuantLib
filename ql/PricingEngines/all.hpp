@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/greeks.hpp>
+#include <ql/PricingEngines/mclongstaffschwartzengine.hpp>
 
 #include <ql/PricingEngines/Asian/all.hpp>
 #include <ql/PricingEngines/Barrier/all.hpp>

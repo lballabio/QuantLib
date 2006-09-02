@@ -79,6 +79,7 @@
 #include "lowdiscrepancysequences.hpp"
 #include "marketmodel.hpp"
 #include "matrices.hpp"
+#include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
 #include "money.hpp"
 #include "operators.hpp"
@@ -200,6 +201,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LowDiscrepancyTest::suite());
     test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
+    test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());

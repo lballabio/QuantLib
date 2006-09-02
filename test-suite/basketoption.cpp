@@ -362,16 +362,15 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61, 4.61},
 */
         // Table 3
-        // not working yet...
 
-   //     {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00, 0.00},
-   //     {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.13, 0.23},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00, 0.00},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.13, 0.23},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 2.26, 5.00},
-      // {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.01, 0.01},
-      //  {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.25, 0.44},
+        //{BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.01, 0.01},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.25, 0.44},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 1.55, 5.00},
-      //  {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.03, 0.04},
-     //   {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.31, 0.57},
+        //{BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.03, 0.04},
+        //{BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.31, 0.57},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 1.41, 5.00},
 
 /*
@@ -382,7 +381,9 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 0.72, 0.93},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 2.65, 5.00},
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.17, 0.20},
+*/
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.91, 1.19},
+/*
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 2.63, 5.00},
 
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.01, 0.01},
@@ -477,9 +478,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
                                       payoff, exercise, mcQuasiEngine);
 
         Real expected = values[i].euroValue;
-        // std::cerr<<"\n starting euro calculation";
         Real calculated = euroBasketOption.NPV();
-        // std::cerr<<"\neuro " << calculated << "\n";
         Real relError = relativeError(calculated, expected, values[i].s1);
         Real mcRelativeErrorTolerance = 0.01;
         if (relError > mcRelativeErrorTolerance ) {
@@ -492,22 +491,21 @@ void BasketOptionTest::testBarraquandThreeValues() {
         }
 
 
-        Size requiredSamples = 20000;
-        Size timeSteps = 20;
+        Size requiredSamples = 1000;
+        Size timeSteps = 500;
         BigNatural seed = 1;
         boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+            new MCAmericanBasketEngine<>(requiredSamples, timeSteps, 
+                                         seed, true));
 
 
         BasketOption amBasketOption(values[i].basketType, process,
                                     payoff, amExercise, mcLSMCEngine);
 
         expected = values[i].amValue;
-        // std::cerr<<"\n  starting american ";
         calculated = amBasketOption.NPV();
-        // std::cerr<<"\namerican " << calculated << "\n";
         relError = relativeError(calculated, expected, values[i].s1);
-        Real mcAmericanRelativeErrorTolerance = 0.1;
+        Real mcAmericanRelativeErrorTolerance = 0.01;
         if (relError > mcAmericanRelativeErrorTolerance) {
             REPORT_FAILURE_3("MC LSMC Value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -563,7 +561,7 @@ void BasketOptionTest::testTavellaValues() {
     Size timeSteps = 20;
     BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
-        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+        new MCAmericanBasketEngine<>(requiredSamples, timeSteps, seed));
 
 
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
@@ -699,7 +697,7 @@ void BasketOptionTest::testOneDAmericanValues() {
     Size timeSteps = 52;
     BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
-        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+        new MCAmericanBasketEngine<>(requiredSamples, timeSteps, seed));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
         BlackScholesMertonProcess(Handle<Quote>(spot1),
@@ -780,7 +778,7 @@ void BasketOptionTest::testOddSamples() {
 
     BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
-        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed,
+        new MCAmericanBasketEngine<>(requiredSamples, timeSteps, seed,
                                    true));
 
     boost::shared_ptr<StochasticProcess1D> stochProcess1(new
@@ -830,11 +828,11 @@ void BasketOptionTest::testOddSamples() {
 
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
-    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
+    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
-    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
-    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
-    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
+    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
+    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
+    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
     return suite;
 }
 

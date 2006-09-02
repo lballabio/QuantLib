@@ -27,6 +27,23 @@
 
 namespace QuantLib {
 
+    Real GaussianOrthogonalPolynomial::value(Size n, Real x) const {
+        if (n > 1) {
+            return  (x-alpha(n-1)) * value(n-1, x) 
+                       - beta(n-1) * value(n-2, x);
+        } 
+        else if (n == 1) {
+            return x-alpha(0);
+        }
+
+        return 1;
+    }
+
+    Real GaussianOrthogonalPolynomial::weightedValue(Size n, Real x) const {
+        return std::sqrt(w(x))*value(n, x);
+    }
+
+
     GaussLaguerrePolynomial::GaussLaguerrePolynomial(Real s)
     : s_(s) {
         QL_REQUIRE(s > -1.0, "s must be bigger than -1");
@@ -90,7 +107,7 @@ namespace QuantLib {
 
         if (!denom) {
             if (num) {
-                QL_FAIL("can't compute b_k for jacobi integration\n");
+                QL_FAIL("can't compute a_k for jacobi integration\n");
             }
             else {
                 // l'Hospital
@@ -127,6 +144,22 @@ namespace QuantLib {
         return std::pow(1-x, alpha_)*std::pow(1+x, beta_);
     }
 
+
+    GaussLegendrePolynomial::GaussLegendrePolynomial()
+    : GaussJacobiPolynomial(0.0, 0.0) {
+    }
+
+    GaussChebyshev2thPolynomial::GaussChebyshev2thPolynomial()
+    : GaussJacobiPolynomial(0.5, 0.5) {
+    }
+
+    GaussChebyshevPolynomial::GaussChebyshevPolynomial()
+    : GaussJacobiPolynomial(-0.5, -0.5) {
+    }
+
+    GaussGegenbauerPolynomial::GaussGegenbauerPolynomial(Real lambda) 
+    : GaussJacobiPolynomial(lambda-0.5, lambda-0.5){
+    }
 
     Real GaussHyperbolicPolynomial::mu_0() const {
         return M_PI;

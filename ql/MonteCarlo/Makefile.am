@@ -6,7 +6,10 @@ include_HEADERS = \
 	all.hpp \
 	core.hpp \
 	brownianbridge.hpp \
+	earlyexercisepathpricer.hpp \
 	getcovariance.hpp \
+	longstaffschwartzpathpricer.hpp \
+	lsmbasissystem.hpp \
 	mctypedefs.hpp \
 	mctraits.hpp \
 	montecarlomodel.hpp \
@@ -18,7 +21,8 @@ include_HEADERS = \
 	sample.hpp
 
 libMonteCarlo_la_SOURCES = \
-	getcovariance.cpp
+	getcovariance.cpp \
+	lsmbasissystem.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la
 

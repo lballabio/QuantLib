@@ -44,6 +44,7 @@
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
+#include <ql/PricingEngines/Vanilla/mcamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp>

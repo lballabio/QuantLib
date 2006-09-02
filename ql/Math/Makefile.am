@@ -71,7 +71,6 @@ libMath_la_SOURCES = \
 	generalstatistics.cpp \
 	incompletegamma.cpp \
 	incrementalstatistics.cpp \
-	linearleastsquaresregression.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \
 	pseudosqrt.cpp \
