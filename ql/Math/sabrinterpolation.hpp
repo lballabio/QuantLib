@@ -254,18 +254,18 @@ namespace QuantLib {
                             new ArmijoLineSearch(1e-12, 0.15, 0.55));
                         method_ = boost::shared_ptr<OptimizationMethod>(
                             new ConjugateGradient(lineSearch));
-     /*                   method_ = boost::shared_ptr<OptimizationMethod>(
-                            new Simplex(1000, .00000001));*/
+                        //method_ = boost::shared_ptr<OptimizationMethod>(
+                        //    new Simplex(10, .00000001));
 
                         method_->setEndCriteria(EndCriteria(10000, 1e-12));
                         Array guess(3);
-                        //guess[0] = 0.2;  
-                        //guess[1] = 0.4; 
-                        //guess[2] = 0;
+                        guess[0] = 0.2;  
+                        guess[1] = 0.4; 
+                        guess[2] = 0;
                       
-                        guess[0] = 0.3;  
-                        guess[1] = 0.;  
-                        guess[2] = 0; 
+                        //guess[0] = 0.3;  
+                        //guess[1] = 0.;  
+                        //guess[2] = 0; 
                         method_->setInitialValue(guess);
                     }
 

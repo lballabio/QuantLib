@@ -120,43 +120,43 @@ namespace QuantLib {
 
     ////////////////////
      class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityStructure {
-      public:
-        class Cube{
-            std::vector<Real> expiries_, lengths_;
-            Size nLayers_;
-            std::vector<Matrix> points_;
 
-            bool extrapolation_;
-            mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
-            
-            
+     public:
 
-          public:
+         class Cube {
+             std::vector<Real> expiries_, lengths_;
+             Size nLayers_;
+             std::vector<Matrix> points_;
 
-            Cube() {};
-            Cube(const std::vector<Real>& expiries, const std::vector<Real>& lengths, 
+             bool extrapolation_;
+             mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
+
+         public:
+
+             Cube() {};
+             Cube(const std::vector<Real>& expiries, const std::vector<Real>& lengths, 
                  Size nLayers, bool extrapolation = true);
-	        Cube& operator=(const Cube& o);
-	        Cube(const Cube&);
-            virtual ~Cube(){};
+             Cube& operator=(const Cube& o);
+             Cube(const Cube&);
+             virtual ~Cube(){};
 
-            virtual void setElement(Size IndexOfLayer, Size IndexOfRow,
+             virtual void setElement(Size IndexOfLayer, Size IndexOfRow,
                                                   Size IndexOfColumn, Real x);
-            virtual void setPoints(const std::vector<Matrix>& x);
-            virtual void setPoint(const Real& expiry, const Real& lengths,
+             virtual void setPoints(const std::vector<Matrix>& x);
+             virtual void setPoint(const Real& expiry, const Real& lengths,
                                                 const std::vector<Real> point);
-            void setLayer(Size i, const Matrix& x);
-            void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
+             void setLayer(Size i, const Matrix& x);
+             void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
 
-	        const std::vector<Real>& expiries() const;		
-	        const std::vector<Real>& lengths() const;		
-	        const std::vector<Matrix>& points() const;
+	         const std::vector<Real>& expiries() const;		
+	         const std::vector<Real>& lengths() const;		
+	         const std::vector<Matrix>& points() const;
 
-	        virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
-            void updateInterpolators()const ;
-        };
+	         virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
+             void updateInterpolators()const ;
+         };
 
-        SwaptionVolatilityCubeBySabr(
+         SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
@@ -169,7 +169,9 @@ namespace QuantLib {
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>(),
+            Real beta = Null<Real>(),
+            Real maxError = 10E-8);
         //! \name TermStructure interface
         //@{
 
@@ -195,17 +197,17 @@ namespace QuantLib {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
-      protected: 
-        boost::shared_ptr<Interpolation> smile(Time start,
+
+     protected: 
+
+         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
 
        virtual VarianceSmileSection smileSection(Time start, Time length, 
                                                  Cube sabrParametersCube) const;
        virtual VarianceSmileSection smileSection(Time start, Time length) const;
        
-
-        Rate atmStrike(Time start,
-                       Time length) const;
+       Rate atmStrike(Time start, Time length) const;
         Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
@@ -214,8 +216,8 @@ namespace QuantLib {
        void createSparseSmiles();
        std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
                                                 double atmTimeLength);
-
       private:
+
         Handle<SwaptionVolatilityStructure> atmVolStructure_;
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
@@ -242,6 +244,9 @@ namespace QuantLib {
         Cube sparseParameters_;
         Cube denseParameters_;
         std::vector< std::vector<VarianceSmileSection > > sparseSmiles_;
+
+        Real beta_;
+        Real maxError_;
     };
 
 }

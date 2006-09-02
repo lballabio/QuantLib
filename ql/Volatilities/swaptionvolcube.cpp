@@ -304,7 +304,9 @@ namespace QuantLib {
         const DayCounter& fixedLegDayCounter,
         const boost::shared_ptr<Xibor>& iborIndex,
         Time shortTenor,
-        const boost::shared_ptr<Xibor>& iborIndexShortTenor)
+        const boost::shared_ptr<Xibor>& iborIndexShortTenor,
+        Real beta,
+        Real maxError)
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -317,7 +319,9 @@ namespace QuantLib {
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
-      iborIndexShortTenor_(iborIndexShortTenor)
+      iborIndexShortTenor_(iborIndexShortTenor),
+      beta_(beta),
+      maxError_(maxError)
     {
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
@@ -415,9 +419,13 @@ namespace QuantLib {
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
                     boost::shared_ptr<SABRInterpolation>(
                   new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
-                  exerciseTimes_[j], atmForward, Null<Real>(), 1, Null<Real>(),
+                  exerciseTimes_[j], atmForward, 
+                  Null<Real>(), 
+                  beta_, 
+                  Null<Real>(),
                   Null<Real>(), boost::shared_ptr<OptimizationMethod>()));
-                QL_ENSURE(sabrInterpolation->interpolationError()<1e-4, 
+                const Real interpolationError = sabrInterpolation->interpolationError();
+                QL_ENSURE(interpolationError < maxError_, 
                    "VarianceSmileSection::VarianceSmileSection: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();

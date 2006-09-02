@@ -174,40 +174,45 @@ void setup() {
             iborIndex_->dayCounter(),
             iborIndex_,
             1,
-            iborIndex_
+            iborIndex_,
+            1.,
+            1e-4
             )));
 
-    //Matrix volSpreads(lengths.size()*lengths.size(),
-    //    strikeSpreads.size(), 0.0);
+    Matrix volSpreads(lengths.size()*lengths.size(),
+        strikeSpreads.size(), 0.0);
 
-    //for(Size i=0; i<strikeSpreads.size(); i++) {
-    //    const double x = strikeSpreads[i];
-    //    const double vs = 10*x*x;
-    //    volSpreads[0][i] = vs;
-    //    volSpreads[1][i] = vs;
-    //}
+    for(Size i=0; i<strikeSpreads.size(); i++) {
+        const double x = strikeSpreads[i];
+        const double vs = 10*x*x;
+        volSpreads[0][i] = vs;
+        volSpreads[1][i] = vs;
+    }
 
-    //swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
-    //    boost::shared_ptr<SwaptionVolatilityStructure>(new
-    //    SwaptionVolatilityCubeBySabr(
-    //        swaptionVolatilityMatrix_, 
-    //        lengths, 
-    //        lengths,
-    //        strikeSpreads,
-    //        volSpreads,
-    //        calendar_,
-    //        2,
-    //        fixedFrequency_,
-    //        fixedConvention_,
-    //        iborIndex_->dayCounter(),
-    //        iborIndex_,
-    //        1,
-    //        iborIndex_
-    //        )));
+    swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
+        boost::shared_ptr<SwaptionVolatilityStructure>(new
+        SwaptionVolatilityCubeBySabr(
+            swaptionVolatilityMatrix_, 
+            lengths, 
+            lengths,
+            strikeSpreads,
+            volSpreads,
+            calendar_,
+            2,
+            fixedFrequency_,
+            fixedConvention_,
+            iborIndex_->dayCounter(),
+            iborIndex_,
+            1,
+            iborIndex_,
+            .7,
+            1E-2
+            )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
-    //swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
+    swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
     {
 		modelOfYieldCurves_.push_back(GFunctionFactory::standard);
