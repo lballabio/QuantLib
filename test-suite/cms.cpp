@@ -176,7 +176,7 @@ void setup() {
             1,
             iborIndex_,
             1.,
-            1e-4
+            1e-6
             )));
 
     Matrix volSpreads(lengths.size()*lengths.size(),
@@ -206,7 +206,7 @@ void setup() {
             1,
             iborIndex_,
             .7,
-            1E-2
+            1E-3
             )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
