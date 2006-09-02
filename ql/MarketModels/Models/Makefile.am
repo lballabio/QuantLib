@@ -8,7 +8,7 @@ include_HEADERS = \
 	expcorrabcdvol.hpp \
 	expcorrflatvol.hpp
 
-libMarketModelsPseudoRoots_la_SOURCES = \
+libMarketModelsModels_la_SOURCES = \
 	abcd.cpp \
 	calibratedmarketmodel.cpp \
 	expcorrabcdvol.cpp \
