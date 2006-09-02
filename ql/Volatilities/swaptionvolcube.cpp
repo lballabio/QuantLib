@@ -208,7 +208,7 @@ namespace QuantLib {
 
               interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, Null<Real>(), .7, Null<Real>(),
+                  timeToExpiry, forwardValue, Null<Real>(), .4, Null<Real>(),
                   Null<Real>(), method));
 
                const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
@@ -415,7 +415,7 @@ namespace QuantLib {
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
                     boost::shared_ptr<SABRInterpolation>(
                   new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
-                  exerciseTimes_[j], atmForward, Null<Real>(), .7, Null<Real>(),
+                  exerciseTimes_[j], atmForward, Null<Real>(), 1, Null<Real>(),
                   Null<Real>(), boost::shared_ptr<OptimizationMethod>()));
                 QL_ENSURE(sabrInterpolation->interpolationError()<1e-4, 
                    "VarianceSmileSection::VarianceSmileSection: accuracy not reached");

@@ -36,6 +36,20 @@
 
 namespace QuantLib {
 
+    class SabrParametersTransformationWithFixedBeta : std::unary_function<Real, Real> {
+        mutable Array y_;
+    public:
+
+        SabrParametersTransformationWithFixedBeta() : y_(Array(3)) {
+        }
+        Array direct(const Array& x) const {
+            y_[0] = x[0]*x[0]+.0000001;
+            y_[1] = x[1]*x[1]+.0000001;
+            y_[2] = .9999*std::sin(x[2]);
+            return y_;
+        }
+    };
+
     namespace detail {
 
         template <class I1, class I2> class SABRInterpolationImpl;
@@ -134,7 +148,7 @@ namespace QuantLib {
         class SABRInterpolationImpl
             : public Interpolation::templateImpl<I1,I2>,
               public SABRCoefficientHolder {
-          private:
+          private:              
             // function to minimize
             class SABRError : public CostFunction {
               public:
@@ -157,9 +171,12 @@ namespace QuantLib {
                 SABRErrorWithFixedBeta(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
                 Real value(const Array& x) const {
-                    sabr_->alpha_ = x[0]*x[0]+.00000001;
-                    sabr_->nu_    = x[1]*x[1]+.00000001;
-                    sabr_->rho_   = .9999*std::sin(x[2]);
+
+                    Array y = sabr_->f_.direct(x);
+
+                    sabr_->alpha_ = y[0];
+                    sabr_->nu_    = y[1];
+                    sabr_->rho_   = y[2];
                     return sabr_->interpolationSquaredNonNormalizedError();
                 }
               private:
@@ -188,10 +205,10 @@ namespace QuantLib {
                 class Impl : public Constraint::Impl {
                   public:
                     bool test(const Array& params) const {
-                        
-                        return params[0]>0.0                    // alpha
-                            && params[2]>=0.0                   // nu
-                            && params[3]*params[3] < 1.0;       // rho
+                        return true
+                        //return params[0]>0.0                    // alpha
+                        //    && params[2]>=0.0                   // nu
+                        //    && params[3]*params[3] < 1.0;       // rho
                     }
                 };
               public:
@@ -201,6 +218,7 @@ namespace QuantLib {
 
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
+            SabrParametersTransformationWithFixedBeta f_;
 
           public:  
             SABRInterpolationImpl(
@@ -241,30 +259,28 @@ namespace QuantLib {
 
                         method_->setEndCriteria(EndCriteria(10000, 1e-12));
                         Array guess(3);
-                        guess[0] = 0.2;  // alpha
-                        guess[1] = 0.4;  // nu
-                        guess[2] = 0; // rho
+                        //guess[0] = 0.2;  
+                        //guess[1] = 0.4; 
+                        //guess[2] = 0;
+                      
+                        guess[0] = 0.3;  
+                        guess[1] = 0.;  
+                        guess[2] = 0; 
                         method_->setInitialValue(guess);
                     }
 
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
 				    Array result = problem.minimumValue();
-                    if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
-                        alpha_ = result[0]*result[0]+.00000001;
-                        nu_    = result[1]*result[1]+.00000001;
-                        rho_   = .9999*std::sin(result[2]); 
-                    }
-                    else{
-                        alpha_ = result[0];
-                        beta_ = result[1];
-                        nu_    = result[2];
-                        rho_   = result[3];
-                    }
 
-                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
-                    QL_ENSURE(nu_>=0.0, "nu must be non negative");
-                    QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
+                    Array y = f_.direct(result);
+                    alpha_ = y[0];
+                    nu_    = y[1];
+                    rho_   = y[2]; 
+
+                    //QL_ENSURE(alpha_>0.0, "alpha must be positive");
+                    //QL_ENSURE(nu_>=0.0, "nu must be non negative");
+                    //QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
 
 				    SABREndCriteria_ = endCriteria();
                     error_ = interpolationError();
