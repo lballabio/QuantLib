@@ -36,19 +36,7 @@
 
 namespace QuantLib {
 
-    class SabrParametersTransformationWithFixedBeta : std::unary_function<Real, Real> {
-        mutable Array y_;
-    public:
 
-        SabrParametersTransformationWithFixedBeta() : y_(Array(3)) {
-        }
-        Array direct(const Array& x) const {
-            y_[0] = x[0]*x[0]+.0000001;
-            y_[1] = x[1]*x[1]+.0000001;
-            y_[2] = .9999*std::sin(x[2]);
-            return y_;
-        }
-    };
 
     namespace detail {
 
@@ -100,7 +88,8 @@ namespace QuantLib {
 
     //! %SABR smile interpolation between discrete volatility points.
     class SABRInterpolation : public Interpolation {
-      public:
+
+    public:
         /*! */
         template <class I1, class I2>
         SABRInterpolation(const I1& xBegin,
@@ -148,6 +137,28 @@ namespace QuantLib {
         class SABRInterpolationImpl
             : public Interpolation::templateImpl<I1,I2>,
               public SABRCoefficientHolder {
+
+                      class SabrParametersTransformationWithFixedBeta : std::unary_function<Real, Real> {
+        mutable Array y_;
+    public:
+
+        SabrParametersTransformationWithFixedBeta() : y_(Array(3)) {
+        }
+        Array direct(const Array& x) const {
+            y_[0] = x[0]*x[0]+.0000001;
+            y_[1] = x[1]*x[1]+.0000001;
+            y_[2] = .9999* std::sin(x[2]);
+            return y_;
+        }
+        Array inverse(const Array& x) const {
+            y_[0] = std::sqrt(x[0]-.0000001);
+            y_[1] = std::sqrt(x[1]-.0000001);
+            const Real z = x[2]/.9999;
+            const Real z3 = z*z*z;
+            y_[2] = z+z3/6 +3*z3*z*z/40;
+            return y_;
+        }
+    };
           private:              
             // function to minimize
             class SABRError : public CostFunction {
