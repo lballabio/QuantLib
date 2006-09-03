@@ -146,7 +146,9 @@ namespace QuantLib {
                     const Real eps1, eps2;
              public:
 
-                 SabrParametersTransformationWithFixedBeta() : y_(Array(3)), eps1(.0000001), eps2(.9999) {
+                 SabrParametersTransformationWithFixedBeta() : y_(Array(3)),
+                     eps1(.0000001),
+                     eps2(.9999) {
                  }
                  Array direct(const Array& x) const {
                      y_[0] = x[0]*x[0] + eps1;
@@ -255,7 +257,8 @@ namespace QuantLib {
 				    SABREndCriteria_ = EndCriteria::none;
                     return;
                 } 
-                else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
+                else if (betaIsFixed_ 
+                    && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
                     NoConstraint constraint;
                     SABRErrorWithFixedBeta costFunction(this);
@@ -339,7 +342,8 @@ namespace QuantLib {
             }
 
             Real value(Real x) const {
-                QL_REQUIRE(x>0.0, "strike must be positive in Sabr function");
+                QL_REQUIRE(x>0.0, 
+                    "strike must be positive in Sabr function");
                 const Real oneMinusBeta = 1.0-beta_;
                 const Real A = std::pow(forward_*x, oneMinusBeta);
                 const Real sqrtA= std::sqrt(A);
