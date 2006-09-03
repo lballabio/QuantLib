@@ -136,30 +136,33 @@ namespace QuantLib {
         template <class I1, class I2>
         class SABRInterpolationImpl
             : public Interpolation::templateImpl<I1,I2>,
-              public SABRCoefficientHolder {
+              public SABRCoefficientHolder 
+        {
+          private:
+             
+             class SabrParametersTransformationWithFixedBeta : 
+                std::unary_function<Real, Real> {
+                    mutable Array y_;
+                    const Real eps1, eps2;
+             public:
 
-                      class SabrParametersTransformationWithFixedBeta : std::unary_function<Real, Real> {
-        mutable Array y_;
-    public:
-
-        SabrParametersTransformationWithFixedBeta() : y_(Array(3)) {
-        }
-        Array direct(const Array& x) const {
-            y_[0] = x[0]*x[0]+.0000001;
-            y_[1] = x[1]*x[1]+.0000001;
-            y_[2] = .9999* std::sin(x[2]);
-            return y_;
-        }
-        Array inverse(const Array& x) const {
-            y_[0] = std::sqrt(x[0]-.0000001);
-            y_[1] = std::sqrt(x[1]-.0000001);
-            const Real z = x[2]/.9999;
-            const Real z3 = z*z*z;
-            y_[2] = z+z3/6 +3*z3*z*z/40;
-            return y_;
-        }
-    };
-          private:              
+                 SabrParametersTransformationWithFixedBeta() : y_(Array(3)), eps1(.0000001), eps2(.9999) {
+                 }
+                 Array direct(const Array& x) const {
+                     y_[0] = x[0]*x[0] + eps1;
+                     y_[1] = x[1]*x[1] + eps1;
+                     y_[2] = eps2 * std::sin(x[2]);
+                     return y_;
+                 }
+                Array inverse(const Array& x) const {
+                    y_[0] = std::sqrt(x[0] - eps1);
+                    y_[1] = std::sqrt(x[1] - eps1);
+                    const Real z = x[2]/eps2;
+                    const Real z3 = z*z*z;
+                    y_[2] = z+z3/6 +3*z3*z*z/40;
+                    return y_;
+                }
+            };
             // function to minimize
             class SABRError : public CostFunction {
               public:
@@ -183,7 +186,7 @@ namespace QuantLib {
                 : sabr_(sabr) {}
                 Real value(const Array& x) const {
 
-                    Array y = sabr_->f_.direct(x);
+                    Array y = sabr_->tranformation_.direct(x);
 
                     sabr_->alpha_ = y[0];
                     sabr_->nu_    = y[1];
@@ -217,9 +220,6 @@ namespace QuantLib {
                   public:
                     bool test(const Array& params) const {
                         return true;
-                        //return params[0]>0.0                    // alpha
-                        //    && params[2]>=0.0                   // nu
-                        //    && params[3]*params[3] < 1.0;       // rho
                     }
                 };
               public:
@@ -229,7 +229,7 @@ namespace QuantLib {
 
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
-            SabrParametersTransformationWithFixedBeta f_;
+            SabrParametersTransformationWithFixedBeta tranformation_;
 
           public:  
             SABRInterpolationImpl(
@@ -270,10 +270,12 @@ namespace QuantLib {
 
                         method_->setEndCriteria(EndCriteria(10000, 1e-12));
                         Array guess(3);
+                        
                         guess[0] = 0.2;  
                         guess[1] = 0.4; 
                         guess[2] = 0;
                       
+                        //guess = f_.inverse(guess);
                         //guess[0] = 0.3;  
                         //guess[1] = 0.;  
                         //guess[2] = 0; 
@@ -284,7 +286,7 @@ namespace QuantLib {
                     problem.minimize();
 				    Array result = problem.minimumValue();
 
-                    Array y = f_.direct(result);
+                    Array y = tranformation_.direct(result);
                     alpha_ = y[0];
                     nu_    = y[1];
                     rho_   = y[2]; 
