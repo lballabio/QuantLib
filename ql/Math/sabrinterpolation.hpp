@@ -211,15 +211,34 @@ namespace QuantLib {
             };
              
             // function to minimize
+            //class SABRError : public CostFunction {
+            //  public:
+            //    SABRError(SABRInterpolationImpl* sabr)
+            //    : sabr_(sabr) {}
+            //    Real value(const Array& x) const {
+            //        if (!sabr_->alphaIsFixed_) sabr_->alpha_ = x[0];
+            //        if (!sabr_->betaIsFixed_)  sabr_->beta_  = x[1];
+            //        if (!sabr_->nuIsFixed_)    sabr_->nu_    = x[2];
+            //        if (!sabr_->rhoIsFixed_)   sabr_->rho_   = x[3];
+
+            //        return sabr_->interpolationSquaredNonNormalizedError();
+            //    }
+            //  private:
+            //    SABRInterpolationImpl* sabr_;
+            //};
+              
             class SABRError : public CostFunction {
               public:
                 SABRError(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
                 Real value(const Array& x) const {
-                    if (!sabr_->alphaIsFixed_) sabr_->alpha_ = x[0];
-                    if (!sabr_->betaIsFixed_)  sabr_->beta_  = x[1];
-                    if (!sabr_->nuIsFixed_)    sabr_->nu_    = x[2];
-                    if (!sabr_->rhoIsFixed_)   sabr_->rho_   = x[3];
+
+                   Array y = sabr_->tranformation_.direct(x);
+
+                    sabr_->alpha_ = y[0];
+                    sabr_->beta_ = y[1];
+                    sabr_->nu_   = y[2];
+                    sabr_->rho_   = y[3];
 
                     return sabr_->interpolationSquaredNonNormalizedError();
                 }
@@ -326,17 +345,14 @@ namespace QuantLib {
                     nu_    = y[1];
                     rho_   = y[2]; 
 
-                    //QL_ENSURE(alpha_>0.0, "alpha must be positive");
-                    //QL_ENSURE(nu_>=0.0, "nu must be non negative");
-                    //QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
-
 				    SABREndCriteria_ = endCriteria();
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError(); 
                 }
                 else {
 
-                    SABRConstraint constraint;
+                    NoConstraint constraint;
+                    //SABRConstraint constraint;
                     SABRError costFunction(this);
 
                     if (!method_) {
@@ -356,16 +372,22 @@ namespace QuantLib {
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
 				    Array result = problem.minimumValue();
-                    if (!alphaIsFixed_) alpha_ = result[0];
-                    if (!betaIsFixed_)  beta_  = result[1];
-                    if (!nuIsFixed_)    nu_    = result[2];
-                    if (!rhoIsFixed_)   rho_   = result[3];
 
-                    QL_ENSURE(alpha_>0.0, "alpha must be positive");
-                    QL_ENSURE(beta_>=0.0 && beta_<=1.0,
-                            "beta must be in [0.0, 1.0]");
-                    QL_ENSURE(nu_>=0.0, "nu must be non negative");
-                    QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
+                    Array y = tranformation_.direct(result);
+                    alpha_ = y[0];
+                    beta_ = y[1];
+                    nu_    = y[2];
+                    rho_   = y[3]; 
+                    //if (!alphaIsFixed_) alpha_ = result[0];
+                    //if (!betaIsFixed_)  beta_  = result[1];
+                    //if (!nuIsFixed_)    nu_    = result[2];
+                    //if (!rhoIsFixed_)   rho_   = result[3];
+
+                    //QL_ENSURE(alpha_>0.0, "alpha must be positive");
+                    //QL_ENSURE(beta_>=0.0 && beta_<=1.0,
+                    //        "beta must be in [0.0, 1.0]");
+                    //QL_ENSURE(nu_>=0.0, "nu must be non negative");
+                    //QL_ENSURE(rho_*rho_<1, "rho square must be less than 1");
 
 				    SABREndCriteria_ = endCriteria();
                     error_ = interpolationError();

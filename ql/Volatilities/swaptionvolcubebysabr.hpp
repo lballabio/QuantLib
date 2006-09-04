@@ -85,7 +85,7 @@ namespace QuantLib {
             Time shortTenor = 2,
             const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>(),
             Real beta = Null<Real>(),
-            Real maxError = 10E-4);
+            Real maxError = 1E-4);
         //! \name TermStructure interface
         //@{
 
