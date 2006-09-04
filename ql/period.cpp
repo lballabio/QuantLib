@@ -196,7 +196,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream& out, Frequency f) {
         switch (f) {
           case NoFrequency:
-            return out << "no frequency";
+            return out << "no-frequency";
           case Once:
             return out << "once";
           case Annual:
