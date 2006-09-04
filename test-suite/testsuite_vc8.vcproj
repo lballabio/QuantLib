@@ -1494,6 +1494,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\mclongstaffschwartzengine.cpp"
+				>
+			</File>
+			<File
 				RelativePath="mersennetwister.cpp"
 				>
 				<FileConfiguration
@@ -2354,6 +2358,10 @@
 			</File>
 			<File
 				RelativePath="matrices.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mclongstaffschwartzengine.hpp"
 				>
 			</File>
 			<File
