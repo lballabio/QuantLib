@@ -1067,6 +1067,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\defaultable.cpp">
+			</File>
+			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1698,6 +1701,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\mclongstaffschwartzengine.cpp">
 			</File>
 			<File
 				RelativePath="mersennetwister.cpp">
@@ -2638,6 +2644,9 @@
 			</File>
 			<File
 				RelativePath="matrices.hpp">
+			</File>
+			<File
+				RelativePath=".\mclongstaffschwartzengine.hpp">
 			</File>
 			<File
 				RelativePath="mersennetwister.hpp">
