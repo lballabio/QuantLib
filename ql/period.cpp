@@ -54,6 +54,41 @@ namespace QuantLib {
         }
     }
 
+    Frequency Period::frequency() const {
+        if (length_==0)
+            return NoFrequency;
+
+        switch (units_) {
+          case Years:
+              if (length_==1)
+                  return Annual;
+              else
+                  QL_FAIL("cannot instantiate a Frequency from " << this);
+          case Months:
+              if ((12%length_)==0 && length_<=12)
+                  return Frequency(12/length_);
+              else
+                  QL_FAIL("cannot instantiate a Frequency from " << this);
+          case Weeks:
+              if (length_==1)
+                  return Weekly;
+              else if (length_==2)
+                  return Biweekly;
+              else if (length_==3)
+                  return EveryThirdWeek;
+              else if (length_==4)
+                  return EveryFourthWeek;
+              else
+                  QL_FAIL("cannot instantiate a Frequency from " << this);
+          case Days:
+              if (length_==1)
+                  return Daily;
+              else
+                  QL_FAIL("cannot instantiate a Frequency from " << this);
+          default:
+            QL_FAIL("unknown time unit (" << Integer(units_));
+        }
+    }
 
     bool operator<(const Period& p1, const Period& p2) {
         if (p1.units() == p2.units())

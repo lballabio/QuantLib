@@ -262,7 +262,7 @@ namespace QuantLib {
                               start, end)));
 
         } else {
-            Date reference = end + Period(-12/schedule.frequency(),Months);
+            Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
@@ -302,8 +302,7 @@ namespace QuantLib {
                                   get(meanReversions,N-2,Null<Rate>()),
                                   start, end)));
             } else {
-                Date reference =
-                    start + Period(12/schedule.frequency(),Months);
+                Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(

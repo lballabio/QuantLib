@@ -72,6 +72,7 @@ namespace QuantLib {
         explicit Period(Frequency f);
         Integer length() const { return length_; }
         TimeUnit units() const { return units_; }
+        Frequency frequency() const;
       private:
         Integer length_;
         TimeUnit units_;
