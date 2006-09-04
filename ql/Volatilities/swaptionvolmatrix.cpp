@@ -33,14 +33,14 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
       exerciseDates_(dates), lengths_(lengths), vols_(vols)
       {
-        QL_REQUIRE(dates.size()==vols[0].size(),
-            "mismatch between number of exercise dates ("
-            << dates.size() << ") and number of rows ("
-            << vols.size() << ") in the vol matrix");
         QL_REQUIRE(lengths.size()==vols.size(),
             "mismatch between number of tenors ("
             << lengths.size() << ") and number of rows ("
             << vols.size() << ") in the vol matrix");
+        QL_REQUIRE(dates.size()==vols[0].size(),
+            "mismatch between number of exercise dates ("
+            << dates.size() << ") and number of rows ("
+            << vols[0].size() << ") in the vol matrix");
 
         exerciseTimes_.resize(exerciseDates_.size());
         timeLengths_.resize(lengths_.size());
