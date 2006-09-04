@@ -55,7 +55,7 @@ namespace QuantLib {
                                     start, end, start, end)));
         } else {
             //Integer tenor = 12/schedule.frequency();
-            Date reference = end - schedule.tenor();
+            Date reference = end - Period(schedule.frequency());
             reference = calendar.adjust(reference,
                                         schedule.businessDayConvention());
             DayCounter dc = firstPeriodDayCount.empty() ?
@@ -101,7 +101,7 @@ namespace QuantLib {
                                         start, end, start, end)));
             } else {
                 //Integer tenor = 12/schedule.frequency();
-                Date reference = start + schedule.tenor();
+                Date reference = start + Period(schedule.frequency());
                 reference = calendar.adjust(reference,
                                             schedule.businessDayConvention());
                 leg.push_back(boost::shared_ptr<CashFlow>(
