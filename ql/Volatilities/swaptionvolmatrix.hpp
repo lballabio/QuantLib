@@ -116,7 +116,6 @@ namespace QuantLib {
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
-        std::vector<std::vector<Handle<Quote> > > vols_;
         Interpolation2D interpolation_;
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,

@@ -19,8 +19,9 @@
 */
 
 
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
+#include <ql/Utilities/dataformatters.hpp>
+#include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 namespace QuantLib {
 
@@ -31,20 +32,29 @@ namespace QuantLib {
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
-      exerciseDates_(dates), lengths_(lengths), vols_(vols)
+      exerciseDates_(dates), lengths_(lengths),
+      volatilities_(dates.size(), lengths.size())
       {
-        QL_REQUIRE(lengths.size()==vols.size(),
-            "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
-            << vols.size() << ") in the vol matrix");
-        QL_REQUIRE(dates.size()==vols[0].size(),
+        QL_REQUIRE(!vols.empty(), "empty vol matrix"); 
+        QL_REQUIRE(dates.size()==vols.size(),
             "mismatch between number of exercise dates ("
             << dates.size() << ") and number of rows ("
-            << vols[0].size() << ") in the vol matrix");
+            << vols.size() << ") in the vol matrix");
+        Size i;
+        for (i=0; i<dates.size(); i++) {
+            QL_REQUIRE(lengths.size()==vols[i].size(),
+                "mismatch between number of tenors ("
+                << lengths.size() << ") and number of columns ("
+                << vols[i].size() << ") in the "
+                << io::ordinal(i) << " row of the vol matrix");
+            for (Size j=0; j<lengths.size(); j++) {
+                volatilities_[i][j]=vols[i][j]->value();
+                registerWith(vols[i][j]);
+            }
+        }
 
         exerciseTimes_.resize(exerciseDates_.size());
         timeLengths_.resize(lengths_.size());
-        Size i;
         for (i=0; i<exerciseDates_.size(); i++) {
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
         }
