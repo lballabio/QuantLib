@@ -66,7 +66,8 @@ namespace QuantLib {
 	         const std::vector<Matrix>& points() const;
 
 	         virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
-             void updateInterpolators()const ;
+             void updateInterpolators()const;
+             Matrix browse() const;
          };
 
          SwaptionVolatilityCubeBySabr(
@@ -129,6 +130,10 @@ namespace QuantLib {
        void createSparseSmiles();
        std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
                                                 double atmTimeLength);
+       Matrix sparseSabrParameters() const;
+       Matrix denseSabrParameters() const;
+       Matrix marketVolCube() const;
+       Matrix volCubeAtmCalibrated() const;
       private:
 
         Handle<SwaptionVolatilityStructure> atmVolStructure_;

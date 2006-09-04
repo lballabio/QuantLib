@@ -28,6 +28,10 @@
              
 namespace QuantLib {
 
+    //===========================================================================//
+    //                          SwaptionVolatilityCubeBySabr                     //
+    //===========================================================================//
+
     SwaptionVolatilityCubeBySabr::SwaptionVolatilityCubeBySabr(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& expiries,
@@ -349,7 +353,6 @@ namespace QuantLib {
 
         return result;
     }
-    //////
     Volatility SwaptionVolatilityCubeBySabr::
         volatilityImpl(Time expiry, Time length, Rate strike) const {
             return smileSection(expiry, length).volatility(strike);
@@ -371,6 +374,25 @@ namespace QuantLib {
         //return smileSection(expiry, length, sparseParameters_ );
     }
 
+
+    Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
+        return sparseParameters_.browse();
+    }
+    Matrix SwaptionVolatilityCubeBySabr::denseSabrParameters() const {
+        return denseParameters_.browse();
+    }
+
+    Matrix SwaptionVolatilityCubeBySabr::marketVolCube() const {
+        return marketVolCube_.browse();
+    }
+    Matrix SwaptionVolatilityCubeBySabr::volCubeAtmCalibrated() const {
+        return volCubeAtmCalibrated_.browse();
+    }
+
+    //===========================================================================//
+    //                            VarianceSmileSection                           //
+    //===========================================================================//
+
     VarianceSmileSection::VarianceSmileSection(
           const std::vector<Real>& sabrParameters, 
           const std::vector<Rate>& strikes,
@@ -389,7 +411,9 @@ namespace QuantLib {
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
-    /********************		SwaptionVolatilityCubeBySabr::Cube				*************************/
+    //===========================================================================//
+    //                      SwaptionVolatilityCubeBySabr::Cube                   //
+    //===========================================================================//
 
     SwaptionVolatilityCubeBySabr::Cube::Cube(const std::vector<Real>& expiries, const std::vector<Real>& lengths, 
                                     Size nLayers, bool extrapolation) : 
@@ -545,5 +569,18 @@ namespace QuantLib {
             interpolators_[k]->enableExtrapolation();
         }    
     }	
+    Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const{
+        Matrix result(nLayers_+2,lengths_.size()*expiries_.size(),0.);
+	    for(Size i=0;i<lengths_.size();i++){
+	        for(Size j=0;j<expiries_.size();j++){
+                result[i*lengths_.size()+j][0]= lengths_[i];
+                result[i*lengths_.size()+j][1]= expiries_[j];
+	            for(Size k=0;k<nLayers_;k++){
+                    result[i*lengths_.size()+j][2+k]= points_[k][j][i]; 
+                }   
+            }   
+        }  
+        return result;
+    }
 
 }
