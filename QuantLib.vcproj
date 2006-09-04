@@ -3941,9 +3941,6 @@
 				RelativePath="ql\Math\linearinterpolation.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\linearleastsquaresregression.cpp">
-			</File>
-			<File
 				RelativePath=".\ql\Math\linearleastsquaresregression.hpp">
 			</File>
 			<File
@@ -8487,6 +8484,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\swaptionvolcube.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionvolcubebysabr.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionvolcubebysabr.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\swaptionvolmatrix.cpp">

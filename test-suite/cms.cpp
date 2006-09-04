@@ -26,6 +26,7 @@
 #include <ql/TermStructures/all.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

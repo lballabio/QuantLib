@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube.hpp
-    \brief Swaption volatility cube
+/*! \file swaptionvolcubebysabr.hpp
+    \brief Swaption volatility cube by Sabr
 */
 
-#ifndef quantlib_swaption_volatility_cube_h
-#define quantlib_swaption_volatility_cube_h
+#ifndef quantlib_swaption_volatility_cube_by_sabr_h
+#define quantlib_swaption_volatility_cube_by_sabr_h
 
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
@@ -31,15 +31,50 @@
 #include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {
-  
-    class SwaptionVolatilityCube : public SwaptionVolatilityStructure {
-      public:
-        SwaptionVolatilityCube(
+
+     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityStructure {
+
+     public:
+
+         class Cube {
+             std::vector<Real> expiries_, lengths_;
+             Size nLayers_;
+             std::vector<Matrix> points_;
+
+             bool extrapolation_;
+             mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
+
+         public:
+
+             Cube() {};
+             Cube(const std::vector<Real>& expiries, const std::vector<Real>& lengths, 
+                 Size nLayers, bool extrapolation = true);
+             Cube& operator=(const Cube& o);
+             Cube(const Cube&);
+             virtual ~Cube(){};
+
+             virtual void setElement(Size IndexOfLayer, Size IndexOfRow,
+                                                  Size IndexOfColumn, Real x);
+             virtual void setPoints(const std::vector<Matrix>& x);
+             virtual void setPoint(const Real& expiry, const Real& lengths,
+                                                const std::vector<Real> point);
+             void setLayer(Size i, const Matrix& x);
+             void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
+
+	         const std::vector<Real>& expiries() const;		
+	         const std::vector<Real>& lengths() const;		
+	         const std::vector<Matrix>& points() const;
+
+	         virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
+             void updateInterpolators()const ;
+         };
+
+         SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const Matrix& volSpreads,
+            const Matrix& marketVolCube,
             const Calendar& calendar,
 			Integer swapSettlementDays,
             Frequency fixedLegFrequency,
@@ -47,9 +82,12 @@ namespace QuantLib {
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>(),
+            Real beta = Null<Real>(),
+            Real maxError = 10E-8);
         //! \name TermStructure interface
         //@{
+
         const Date& referenceDate() const {
             return atmVolStructure_->referenceDate();
         }
@@ -66,35 +104,33 @@ namespace QuantLib {
         Rate minStrike() const { return 0.0; }
         Rate maxStrike() const { return 1.0; }
         //@}
-        //! \name Other inspectors
-        //@{
-        const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
+        const Matrix& marketVolCube(Size i) const { return marketVolCube_.points()[i]; }
         Rate atmStrike(const Date& start,
                        const Period& length) const {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
-        //@}
-      protected: 
-        //! \name SwaptionVolatilityStructure interface
-        //@{
-        std::pair<Time,Time> convertDates(const Date& exerciseDate,
-            const Period& length) const {
-            return atmVolStructure_->convertDates(exerciseDate, length);
-        }
-        //@}
-        boost::shared_ptr<Interpolation> smile(Time start,
+
+     protected: 
+
+         boost::shared_ptr<Interpolation> smile(Time start,
                                                Time length) const;
 
+       virtual VarianceSmileSection smileSection(Time start, Time length, 
+                                                 Cube sabrParametersCube) const;
        virtual VarianceSmileSection smileSection(Time start, Time length) const;
        
-
-        Rate atmStrike(Time start,
-                       Time length) const;
+       Rate atmStrike(Time start, Time length) const;
         Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
+       Cube sabrCalibration(Cube& marketVolCube) const ;
+       void fillVolatilityCube();
+       void createSparseSmiles();
+       std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
+                                                double atmTimeLength);
       private:
+
         Handle<SwaptionVolatilityStructure> atmVolStructure_;
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
@@ -104,18 +140,26 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
-        std::vector<Matrix> volSpreads_;
-        std::vector<Interpolation2D> volSpreadsInterpolator_;
+        Matrix volSpreads_;
+        Cube marketVolCube_;
+        Cube volCubeAtmCalibrated_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         Calendar calendar_ ;
-        Integer swapSettlementDays_;
+		Integer swapSettlementDays_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
         DayCounter fixedLegDayCounter_;
         boost::shared_ptr<Xibor> iborIndex_;
         Time shortTenor_;
         boost::shared_ptr<Xibor> iborIndexShortTenor_;
+
+        Cube sparseParameters_;
+        Cube denseParameters_;
+        std::vector< std::vector<VarianceSmileSection > > sparseSmiles_;
+
+        Real beta_;
+        Real maxError_;
     };
 
 }
