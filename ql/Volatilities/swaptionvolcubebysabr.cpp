@@ -132,9 +132,9 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        fillVolatilityCube();
-        denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        denseParameters_.updateInterpolators(); 
+        //fillVolatilityCube();
+        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+        //denseParameters_.updateInterpolators(); 
 
     }
 
@@ -167,7 +167,7 @@ namespace QuantLib {
                   Null<Real>(), boost::shared_ptr<OptimizationMethod>()));
                 const Real interpolationError = sabrInterpolation->interpolationError();
                 QL_ENSURE(interpolationError < maxError_, 
-                   "VarianceSmileSection::VarianceSmileSection: accuracy not reached");
+                   "SwaptionVolatilityCubeBySabr::sabrCalibration: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();
                 nus[j][k]= sabrInterpolation->nu();
@@ -370,8 +370,8 @@ namespace QuantLib {
         return VarianceSmileSection(sabrParameters, strikes, expiry);
     }
     VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
-        return smileSection(expiry, length, denseParameters_ );
-        //return smileSection(expiry, length, sparseParameters_ );
+        //return smileSection(expiry, length, denseParameters_ );
+        return smileSection(expiry, length, sparseParameters_ );
     }
 
 
