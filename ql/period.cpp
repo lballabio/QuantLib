@@ -225,7 +225,7 @@ namespace QuantLib {
           case Biweekly:
             return out << "biweekly";
           case Weekly:
-            return out << "biweekly";
+            return out << "weekly";
           case Daily:
             return out << "daily";
           default:
