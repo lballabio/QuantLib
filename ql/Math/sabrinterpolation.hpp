@@ -139,9 +139,49 @@ namespace QuantLib {
               public SABRCoefficientHolder 
         {
           private:
+
+              class Transformation {
+              public:
+                  virtual Array direct(const Array& x) const = 0;
+                  virtual Array inverse(const Array& x) const = 0;
+              };
+
+              class SabrParametersTransformation : 
+                  public Transformation {
+                     mutable Array y_;
+                     const Real eps1, eps2;
+             public:
+
+                    SabrParametersTransformation() : y_(Array(4)),
+                        eps1(.0000001),
+                        eps2(.9999) {
+                    }
+
+                    Array direct(const Array& x) const {
+                        y_[0] = x[0]*x[0] + eps1;
+                        //y_[1] = std::abs(eps2 * std::sin(x[1]));
+                        y_[1] = std::exp(-x[1]);
+                        y_[2] = x[2]*x[2] + eps1;
+                        y_[3] = eps2 * std::sin(x[3]);
+                        return y_;
+                    }
+                    Array inverse(const Array& x) const {
+                     y_[0] = std::sqrt(x[0] - eps1);
+                     y_[1] = -std::log(x[1]);
+                     y_[2] = std::sqrt(x[2] - eps1);
+                     {
+                         //arcsin expansion
+                         const Real z = x[3]/eps2;
+                         const Real z3 = z*z*z;
+                         const Real z5 = z3*z*z;
+                         y_[3] = z+z3/6 +3*z5/40;
+                     }
+                     return y_;
+                    }
+             };
              
              class SabrParametersTransformationWithFixedBeta : 
-                std::unary_function<Real, Real> {
+                 public Transformation {
                     mutable Array y_;
                     const Real eps1, eps2;
              public:
@@ -159,12 +199,17 @@ namespace QuantLib {
                 Array inverse(const Array& x) const {
                     y_[0] = std::sqrt(x[0] - eps1);
                     y_[1] = std::sqrt(x[1] - eps1);
-                    const Real z = x[2]/eps2;
-                    const Real z3 = z*z*z;
-                    y_[2] = z+z3/6 +3*z3*z*z/40;
+                    {
+                        //arcsin expansion
+                        const Real z = x[2]/eps2;
+                        const Real z3 = z*z*z;
+                        const Real z5 = z3*z*z;
+                        y_[2] = z+z3/6 +3*z5/40;
+                    }
                     return y_;
                 }
             };
+             
             // function to minimize
             class SABRError : public CostFunction {
               public:
@@ -213,19 +258,6 @@ namespace QuantLib {
                 };
               public:
                 SABRConstraint()
-                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
-            };
-
-            class SABRConstraintWithFixedBeta : public Constraint {
-              private:
-                class Impl : public Constraint::Impl {
-                  public:
-                    bool test(const Array& params) const {
-                        return true;
-                    }
-                };
-              public:
-                SABRConstraintWithFixedBeta()
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
             };
 
