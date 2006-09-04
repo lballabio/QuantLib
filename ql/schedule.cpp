@@ -28,6 +28,7 @@ namespace QuantLib {
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
     : calendar_(calendar), frequency_(frequency),
+      tenor_(Period()),
       convention_(convention), stubDate_(stubDate),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
       finalIsRegular_(true) {
@@ -55,6 +56,7 @@ namespace QuantLib {
             dates_.push_back(calendar.adjust(startDate, convention));
             dates_.push_back(calendar.adjust(endDate, convention));
         } else if (startFromEnd) {
+            tenor_=Period(frequency);
             // calculations
             Date seed = endDate;
             Date first = calendar.adjust(startDate, convention);
@@ -100,6 +102,7 @@ namespace QuantLib {
                 finalIsRegular_ = true;
             }
         } else {
+            tenor_=Period(frequency);
             // calculations
             Date seed = startDate;
             Date last = calendar.adjust(endDate, convention);
@@ -146,6 +149,121 @@ namespace QuantLib {
         }
     }
 
+
+    Schedule::Schedule(const Calendar& calendar,
+                       const Date& startDate, const Date& endDate,
+                       const Period& tenor,
+                       BusinessDayConvention convention,
+                       const Date& stubDate, bool startFromEnd,
+                       bool longFinal)
+    : calendar_(calendar),
+      frequency_(NoFrequency),
+      tenor_(tenor),
+      convention_(convention), stubDate_(stubDate),
+      startFromEnd_(startFromEnd), longFinal_(longFinal),
+      finalIsRegular_(true) {
+
+        // sanity checks
+        QL_REQUIRE(startDate != Date(), "null start date");
+        QL_REQUIRE(endDate != Date(),   "null end date");
+        QL_REQUIRE(startDate < endDate,
+                   "start date (" << startDate
+                   << ") later than end date (" << endDate << ")");
+        if (stubDate != Date()) {
+            QL_REQUIRE((stubDate > startDate && stubDate < endDate),
+                       "stub date (" << stubDate
+                       << ") out of range (start date (" << startDate
+                       << "), end date (" << endDate << "))");
+        }
+
+        if (startFromEnd) {
+            // calculations
+            Date seed = endDate;
+            Date first = calendar.adjust(startDate, convention);
+            // add end date
+            dates_.push_back(calendar.adjust(endDate, convention));
+
+            // add stub date if given
+            if (stubDate != Date()) {
+                seed = stubDate;
+                dates_.insert(dates_.begin(),
+                              calendar.adjust(stubDate, convention));
+            }
+
+            // add subsequent dates
+            Integer periods = 1;
+            while (true) {
+                Date temp = calendar.advance(seed, -tenor, convention);
+                dates_.insert(dates_.begin(),temp);
+                // check exit condition
+                if (temp <= first)
+                    break;
+                else
+                    periods++;
+            }
+
+            Size N = dates_.size();
+            // possibly correct first inserted date
+            if (dates_[0] < first) {
+                dates_[0] = first;
+                if (N > 1 && longFinal) {
+                    dates_.erase(dates_.begin()+1);
+                    N--;
+                }
+                finalIsRegular_ = false;
+            }
+
+            // possibly collapse first two dates
+            if (N > 1 && calendar.adjust(dates_[0], convention) ==
+                calendar.adjust(dates_[1], convention)) {
+                dates_[1] = dates_[0];
+                dates_.erase(dates_.begin());
+                finalIsRegular_ = true;
+            }
+        } else {
+            // calculations
+            Date seed = startDate;
+            Date last = calendar.adjust(endDate, convention);
+            // add start date
+            dates_.push_back(calendar.adjust(startDate, convention));
+
+            // add stub date if given
+            if (stubDate != Date()) {
+                seed = stubDate;
+                dates_.push_back(calendar.adjust(stubDate, convention));
+            }
+
+            Integer periods = 1;
+            while (true) {
+                Date temp = calendar.advance(seed, tenor, convention);
+                dates_.push_back(temp);
+                // check exit condition
+                if (temp >= last)
+                    break;
+                else
+                    periods++;
+            }
+
+            Size N = dates_.size();
+            // possibly correct last inserted date
+            if (dates_.back() > last) {
+                if (N > 1 && longFinal) {
+                    dates_.pop_back();
+                    N--;
+                }
+                dates_.back() = last;
+                finalIsRegular_ = false;
+            }
+
+            // possibly collapse last two dates
+            if (N > 1 && calendar.adjust(dates_[N-2], convention) ==
+                calendar.adjust(dates_[N-1], convention)) {
+                dates_[N-2] = dates_[N-1];
+                dates_.pop_back();
+                finalIsRegular_ = true;
+            }
+        }
+    }
 
     bool Schedule::isRegular(Size i) const {
         if (frequency_ == 0) {

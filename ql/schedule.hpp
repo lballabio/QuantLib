@@ -46,6 +46,14 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
+        Schedule(const Calendar& calendar,
+                 const Date& startDate,
+                 const Date& endDate,
+                 const Period& tenor,
+                 BusinessDayConvention convention,
+                 const Date& stubDate = Date(),
+                 bool startFromEnd = false,
+                 bool longFinal = false);
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -61,6 +69,7 @@ namespace QuantLib {
         const Date& startDate() const;
         const Date& endDate() const;
         Frequency frequency() const;
+        const Period& tenor() const { return tenor_; }
         BusinessDayConvention businessDayConvention() const;
         //@}
         //! \name Iterators
@@ -72,6 +81,7 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Frequency frequency_;
+        Period tenor_;
         BusinessDayConvention convention_;
         Date stubDate_;
         bool startFromEnd_;
@@ -135,7 +145,8 @@ namespace QuantLib {
     inline Schedule::Schedule(const std::vector<Date>& dates,
                               const Calendar& calendar,
                               BusinessDayConvention convention)
-    : calendar_(calendar), frequency_(Frequency(-1)), convention_(convention),
+    : calendar_(calendar), frequency_(Frequency(-1)),
+      tenor_(Period()), convention_(convention),
       startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
 
