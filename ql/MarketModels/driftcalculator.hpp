@@ -67,8 +67,8 @@ namespace QuantLib {
 		Matrix C_, pseudo_;
 
 		// temporary variables to be added later
-        mutable std::vector<Real> tmp_;
-		mutable Matrix e_;
+         mutable std::vector<Real> tmp_;
+		 mutable Matrix e_;
         std::vector<Size> downs_, ups_;
     };
 
