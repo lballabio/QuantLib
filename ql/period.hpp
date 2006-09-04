@@ -42,7 +42,12 @@ namespace QuantLib {
                      EveryFourthMonth = 3, //!< every fourth month
                      Quarterly = 4,        //!< every third month
                      Bimonthly = 6,        //!< every second month
-                     Monthly = 12          //!< once a month
+                     Monthly = 12,         //!< once a month
+                     EveryFourthWeek = 13, //!< every fourth week
+                     EveryThirdWeek = 17,  //!< every third week
+                     Biweekly = 26,        //!< every second week
+                     Weekly = 52,          //!< once a week
+                     Daily = 365           //!< once a day
     };
 
     /*! \relates Frequency */
@@ -76,6 +81,10 @@ namespace QuantLib {
     Period operator*(Integer n, TimeUnit units);
     /*! \relates Period */
     Period operator*(TimeUnit units, Integer n);
+    /*! \relates Period */
+    Period operator-(const Period&);
+    /*! \relates Period */
+    Period operator*(Integer n, const Period&);
 
     /*! \relates Period */
     bool operator<(const Period&, const Period&);
@@ -121,8 +130,6 @@ namespace QuantLib {
 
     }
 
-
-
     // inline definitions
 
     inline Period operator*(Integer n, TimeUnit units) {
@@ -131,6 +138,14 @@ namespace QuantLib {
 
     inline Period operator*(TimeUnit units, Integer n) {
         return Period(n,units);
+    }
+
+    inline Period operator-(const Period& p) {
+        return Period(-p.length(),p.units());
+    }
+
+    inline Period operator*(Integer n, const Period& p) {
+        return Period(n*p.length(),p.units());
     }
 
     inline bool operator==(const Period& p1, const Period& p2) {

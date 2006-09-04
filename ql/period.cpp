@@ -38,6 +38,17 @@ namespace QuantLib {
             units_ = Months;
             length_ = 12/f;
             break;
+          case EveryFourthWeek:
+          case EveryThirdWeek:
+          case Biweekly:
+          case Weekly:
+            units_ = Weeks;
+            length_ = 52/f; // it does work for EveryThirdWeek too
+            break;
+          case Daily:
+            units_ = Days;
+            length_ = 1;
+            break;
           default:
             QL_FAIL("unknown frequency (" << Integer(f));
         }
@@ -165,6 +176,16 @@ namespace QuantLib {
             return out << "bimonthly";
           case Monthly:
             return out << "monthly";
+          case EveryFourthWeek:
+            return out << "every-fourth-week";
+          case EveryThirdWeek:
+            return out << "every-third-week";
+          case Biweekly:
+            return out << "biweekly";
+          case Weekly:
+            return out << "biweekly";
+          case Daily:
+            return out << "daily";
           default:
             QL_FAIL("unknown frequency (" << Integer(f) << ")");
         }
