@@ -26,10 +26,17 @@ namespace QuantLib {
 
     Period::Period(Frequency f) {
         switch (f) {
-          case NoFrequency:
           case Once:
             QL_FAIL("cannot instantiate a Period from frequency " << f);
+          case NoFrequency:
+            // same as Period()
+            units_ = Days;
+            length_ = 0;
+            break;
           case Annual:
+            units_ = Years;
+            length_ = 1;
+            break;
           case Semiannual:
           case EveryFourthMonth:
           case Quarterly:
@@ -63,12 +70,12 @@ namespace QuantLib {
               if (length_==1)
                   return Annual;
               else
-                  QL_FAIL("cannot instantiate a Frequency from " << this);
+                  QL_FAIL("cannot instantiate a Frequency from " << *this);
           case Months:
               if ((12%length_)==0 && length_<=12)
                   return Frequency(12/length_);
               else
-                  QL_FAIL("cannot instantiate a Frequency from " << this);
+                  QL_FAIL("cannot instantiate a Frequency from " << *this);
           case Weeks:
               if (length_==1)
                   return Weekly;
@@ -79,12 +86,12 @@ namespace QuantLib {
               else if (length_==4)
                   return EveryFourthWeek;
               else
-                  QL_FAIL("cannot instantiate a Frequency from " << this);
+                  QL_FAIL("cannot instantiate a Frequency from " << *this);
           case Days:
               if (length_==1)
                   return Daily;
               else
-                  QL_FAIL("cannot instantiate a Frequency from " << this);
+                  QL_FAIL("cannot instantiate a Frequency from " << *this);
           default:
             QL_FAIL("unknown time unit (" << Integer(units_));
         }
