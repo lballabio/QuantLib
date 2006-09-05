@@ -68,7 +68,7 @@ namespace QuantLib {
                     QL_REQUIRE(alpha_>0.0, "alpha must be positive");
                 }
                 else {
-                    alpha_ = .2;
+                    alpha_ = std::sqrt(.2);
                 }
                 if (beta_!= Null<Real>()) {
                     betaIsFixed_  = isBetaFixed;
@@ -83,7 +83,7 @@ namespace QuantLib {
                     QL_REQUIRE(nu_>=0.0, "nu must be non negative");
                 }
                 else {
-                    nu_ = .4;
+                    nu_ = std::sqrt(.4);
                 }
                 if (rho   != Null<Real>()) {
                     rhoIsFixed_   = false;
@@ -345,11 +345,15 @@ namespace QuantLib {
                         method_->setEndCriteria(EndCriteria(10000, 1e-12));
                         Array guess(3);
                         
-                        guess[0] = 0.2;  
-                        guess[1] = 0.4; 
-                        guess[2] = 0;
+                        //guess[0] = 0.2;  
+                        //guess[1] = 0.4; 
+                        //guess[2] = 0;
+                        guess[0] = alpha_;  
+                        guess[1] = nu_; 
+                        guess[2] = rho_;
+
                       
-                        //guess = f_.inverse(guess);
+                        guess = tranformation_.inverse(guess);
                         //guess[0] = 0.3;  
                         //guess[1] = 0.;  
                         //guess[2] = 0; 

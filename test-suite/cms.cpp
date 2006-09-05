@@ -176,9 +176,9 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_,
-            .2,
+            .02,
             1.,
-            .4,
+            .04,
             0.,
             true,
             1e-5
@@ -219,8 +219,8 @@ void setup() {
             )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
     //swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
     {
@@ -389,7 +389,7 @@ void CmsTest::testCmsSwap() {
 	//	modelOfYieldCurves_.push_back(GFunctionFactory::standard);
 	//	modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
 		modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
-		modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
+	//	modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
 	}
 
     std::vector<Size> swapLengths;
@@ -451,6 +451,7 @@ void CmsTest::testCmsSwap() {
                 floatingFrequency_,floatingConvention_);
             
             std::vector<Real> prices;
+            BOOST_MESSAGE("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
             for(Size pricerIndex=0; pricerIndex<pricers.size(); 
                 pricerIndex++) {
 
@@ -494,21 +495,30 @@ void CmsTest::testCmsSwap() {
                     << swapLengthIndex << ")\t" 
                     << priceIndex << "-th pricing "
                     << "for cms swap test...\n");
-                priceIndex++;
 
-                prices.push_back(swap->NPV());
+                if(true || priceIndex == 23 || priceIndex == 24) {
+                    const Real price = swap->NPV();
+                    prices.push_back(price);
+                }
+                else {
+                    prices.push_back(0);
+                }
+                priceIndex++;
             }
             const double difference =  prices[0]-prices[1];
+            BOOST_MESSAGE("\n" << "startDate:\t" << startDate << "\n"
+                    "maturityDate:\t" << maturityDate << "\n"
+                    "swapLength:\t" << swapLengths[swapLengthIndex] << "\n"
+                    "price analytic:\t" << io::rate(prices[0]) << "\n"
+                    "price numerical:\t" << io::rate(prices[1]) << "\n");
 
             if (std::fabs(difference) > priceTolerance_) {
                 BOOST_ERROR("\n" <<
-                    "startDate:\t" << startDate << "\n"
-                    "maturityDate:\t" << maturityDate << "\n"
-                    //"strike:\t" << 0 << "\n"
-                    "price analytic:\t" << io::rate(prices[0]) << "\n"
-                    "price numerical:\t" << io::rate(prices[1]) << "\n"
                             "difference:\t" << io::rate(difference) << "\n"
                             "tolerance: \t" << io::rate(priceTolerance_));
+            }
+            else {
+                BOOST_MESSAGE("difference = " << io::rate(difference) << "\n");    
             }
         }
     }

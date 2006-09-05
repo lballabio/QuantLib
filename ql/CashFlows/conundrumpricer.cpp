@@ -47,7 +47,7 @@ namespace QuantLib
                                               bool isCall,
                                               Real deflator) const {
         const Real optionType = isCall ? 1.0 : -1.0;
-        const Real variance = smile_(strike);
+        const Real variance = smile_->operator()(strike);
         return deflator * detail::blackFormula(forwardValue_, strike,
             std::sqrt(variance), optionType);
     }

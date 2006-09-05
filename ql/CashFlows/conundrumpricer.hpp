@@ -56,7 +56,7 @@ namespace QuantLib
         Date expiryDate_;
         const Period swapTenor_;
         const boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
-        const VarianceSmileSection smile_;
+        const boost::shared_ptr<VarianceSmileSection> smile_;
     };
 
     class GFunction {

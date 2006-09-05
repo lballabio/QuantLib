@@ -122,18 +122,17 @@ namespace QuantLib {
 
      protected: 
 
-         boost::shared_ptr<Interpolation> smile(Time start,
-                                               Time length) const;
+       boost::shared_ptr<Interpolation> smile(Time start, Time length) const;
 
-       virtual VarianceSmileSection smileSection(Time start, Time length, 
-                                                 Cube sabrParametersCube) const;
-       virtual VarianceSmileSection smileSection(Time start, Time length) const;
+       virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length, 
+                                                 const Cube& sabrParametersCube) const;
+       virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
        
        Rate atmStrike(Time start, Time length) const;
-        Volatility volatilityImpl(Time start,
+       Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
-       Cube sabrCalibration(Cube& marketVolCube) const ;
+       Cube sabrCalibration(const Cube& marketVolCube) const;
        void fillVolatilityCube();
        void createSparseSmiles();
        std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
@@ -166,7 +165,7 @@ namespace QuantLib {
 
         Cube sparseParameters_;
         Cube denseParameters_;
-        std::vector< std::vector<VarianceSmileSection > > sparseSmiles_;
+        std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > sparseSmiles_;
 
         Real alpha_, beta_, nu_, rho_;
         bool isBetaFixed_;

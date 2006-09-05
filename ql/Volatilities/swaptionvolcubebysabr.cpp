@@ -146,7 +146,7 @@ namespace QuantLib {
 
     }
 
-    SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const {
+    SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
            
         Matrix alphas(exerciseTimes_.size(), timeLengths_.size(),0.);
         Matrix betas(alphas);
@@ -179,7 +179,7 @@ namespace QuantLib {
                   boost::shared_ptr<OptimizationMethod>()));
                 const Real interpolationError = sabrInterpolation->interpolationError();
                 QL_ENSURE(interpolationError < maxTolerance_, 
-                   "SwaptionVolatilityCubeBySabr::sabrCalibration: accuracy not reached");
+                   "SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();
                 nus[j][k]= sabrInterpolation->nu();
@@ -285,7 +285,7 @@ namespace QuantLib {
         std::vector<Time> timeLengths(sparseParameters_.lengths());
    
         for (Size j=0; j<exerciseTimes.size(); j++) {
-            std::vector<VarianceSmileSection > tmp;
+            std::vector<boost::shared_ptr<VarianceSmileSection> > tmp;
             for (Size k=0; k<timeLengths.size(); k++) {
                 tmp.push_back(smileSection(exerciseTimes[j], timeLengths[k], sparseParameters_)); 
             }
@@ -314,9 +314,9 @@ namespace QuantLib {
         lengthsPreviousIndex = lengthsPreviousNode - timeLengths.begin();
         if(lengthsPreviousIndex == timeLengths.size()-1) lengthsPreviousIndex--;
 
-        std::vector< std::vector<VarianceSmileSection> > smiles;
-        std::vector<VarianceSmileSection >  smilesOnPreviousExpiry;
-        std::vector<VarianceSmileSection >  smilesOnNextExpiry;
+        std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > smiles;
+        std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnPreviousExpiry;
+        std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnNextExpiry;
         
         smilesOnPreviousExpiry.push_back(sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex]);
         smilesOnPreviousExpiry.push_back(sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex+1]);
@@ -343,7 +343,7 @@ namespace QuantLib {
         for (Size i=0; i<2; i++){
             for (Size j=0; j<2; j++){
                 atmForwards[i][j] = atmStrike(exercisesNodes[i], lengthsNodes[j]);
-                atmVols[i][j] = smiles[i][j].volatility(atmForwards[i][j]);
+                atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
             }
         }
 
@@ -356,7 +356,7 @@ namespace QuantLib {
            for (Size i=0; i<2; i++){
                 for (Size j=0; j<2; j++){
                     strikes[i][j] = atmForwards[i][j]/moneyness;
-                    spreadVols[i][j] = smiles[i][j].volatility(strikes[i][j])- atmVols[i][j];
+                    spreadVols[i][j] = smiles[i][j]->volatility(strikes[i][j])- atmVols[i][j];
                 }
             }
 
@@ -372,11 +372,11 @@ namespace QuantLib {
 
     Volatility SwaptionVolatilityCubeBySabr::
         volatilityImpl(Time expiry, Time length, Rate strike) const {
-            return smileSection(expiry, length).volatility(strike);
+            return smileSection(expiry, length)->volatility(strike);
     }
 
-    VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length, 
-                                                            Cube sabrParametersCube) const {
+    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length, 
+                                                            const Cube& sabrParametersCube) const {
 
         std::vector<Real> strikes, volatilities, sabrParameters;
         sabrParameters = sabrParametersCube.operator ()(expiry, length);
@@ -384,10 +384,10 @@ namespace QuantLib {
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(0.05*i+.01);
         }
-        return VarianceSmileSection(sabrParameters, strikes, expiry);
+        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(sabrParameters, strikes, expiry));
     }
 
-    VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
+    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
         //return smileSection(expiry, length, denseParameters_ );
         return smileSection(expiry, length, sparseParameters_ );
     }

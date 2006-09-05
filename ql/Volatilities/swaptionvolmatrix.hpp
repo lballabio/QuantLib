@@ -89,7 +89,7 @@ namespace QuantLib {
         Rate minStrike() const;
         Rate maxStrike() const;
         //! return trivial smile section
-        virtual VarianceSmileSection smileSection(Time start, Time length) const;
+        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
         //! implements the conversion between dates and times
         std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                           const Period& length) const;

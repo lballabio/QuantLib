@@ -147,7 +147,7 @@ namespace QuantLib {
             );
     }
 
-    VarianceSmileSection SwaptionVolatilityCube::smileSection(Time start, Time length) const {
+    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCube::smileSection(Time start, Time length) const {
 
         std::vector<Real> strikes, volatilities;
 
@@ -167,7 +167,7 @@ namespace QuantLib {
         //volatilities.insert(volatilities.end(),volatilities.back());
 
         //return VarianceSmileSection(start, strikes, volatilities);
-        return VarianceSmileSection(start, atmForward, strikes, volatilities);
+        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(start, atmForward, strikes, volatilities));
     }
 
 
@@ -244,7 +244,7 @@ namespace QuantLib {
 
               //log << s.str();
                  QL_ENSURE(sabrInterpolation->interpolationError()<1e-4, 
-                   "VarianceSmileSection::VarianceSmileSection: accuracy not reached");
+                   "VarianceSmileSection::VarianceSmileSection(Time timeToExpiry, Rate forwardValue, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities): accuracy not reached");
 
           }
 

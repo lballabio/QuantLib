@@ -139,9 +139,9 @@ namespace QuantLib {
         //@}
         Date maxDate() const { return maxStartDate(); }
         Time maxTime() const { return maxStartTime(); }
-        virtual VarianceSmileSection smileSection(Date start, Period length) const;
+        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Date start, Period length) const;
         //! return smile section
-        virtual VarianceSmileSection smileSection(Time start, Time length) const = 0;
+        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const = 0;
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
@@ -238,7 +238,7 @@ namespace QuantLib {
                    << minStrike() << "," << maxStrike()<< "]");
     }
 
-    inline VarianceSmileSection SwaptionVolatilityStructure::smileSection(
+    inline boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityStructure::smileSection(
                                             Date start, Period length) const {
         const std::pair<Time, Time> p = convertDates(start, length);
         return smileSection(p.first, p.second);
