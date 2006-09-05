@@ -52,6 +52,7 @@ namespace QuantLib {
                  const Period& tenor,
                  const Calendar& calendar,
                  BusinessDayConvention convention,
+                 BusinessDayConvention terminationDateConvention,
                  bool backward = true,
                  bool endOfMonth = false,
                  const Date& firstDate = Date(),

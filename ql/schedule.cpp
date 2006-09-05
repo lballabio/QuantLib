@@ -160,6 +160,7 @@ namespace QuantLib {
                        const Period& tenor,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
+                       BusinessDayConvention terminationDateConvention,
                        bool backward,
                        bool endOfMonth,
                        const Date& firstDate,
@@ -286,10 +287,15 @@ namespace QuantLib {
                 convention=Preceding;
         }
 
-        // termination date NOT adjusted as per ISDA specifications
         for (Size i=0; i<dates_.size()-1; i++)
             dates_[i]=calendar.adjust(dates_[i], convention);
 
+        // termination date is NOT adjusted as per ISDA specifications,
+        // unless otherwise specified in the confirmation of the deal 
+        if (terminationDateConvention!=Unadjusted) {                
+            dates_[dates_.size()-1]=calendar.adjust(dates_[dates_.size()-1],
+                                                    terminationDateConvention);
+        }
     }
 
     bool Schedule::isRegular(Size i) const {
