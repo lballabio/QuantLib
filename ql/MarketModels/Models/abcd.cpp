@@ -86,9 +86,10 @@ namespace QuantLib {
         return std::sqrt(error/n);
     }
 
-    EndCriteria::Type Abcd::calibrate(const std::vector<Real>& blackVols,
-                         const std::vector<Real>::const_iterator& t,
-                         const boost::shared_ptr<OptimizationMethod>& meth) {
+    EndCriteria::Type Abcd::capletCalibration(
+                const std::vector<Real>& blackVols,
+                const std::vector<Real>::const_iterator& t,
+                const boost::shared_ptr<OptimizationMethod>& meth) {
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
             boost::shared_ptr<LineSearch> lineSearch(

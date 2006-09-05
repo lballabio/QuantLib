@@ -98,9 +98,10 @@ namespace QuantLib
                    const std::vector<Real>::const_iterator& t) const;
 
         //! calibration
-        EndCriteria::Type calibrate(const std::vector<Real>& blackVols,
-                       const std::vector<Real>::const_iterator& t,
-                       const boost::shared_ptr<OptimizationMethod>& method
+        EndCriteria::Type capletCalibration(
+            const std::vector<Real>& blackVols,
+            const std::vector<Real>::const_iterator& t,
+            const boost::shared_ptr<OptimizationMethod>& method
                                 = boost::shared_ptr<OptimizationMethod>());
     private:
         //! indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
