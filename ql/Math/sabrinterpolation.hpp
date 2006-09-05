@@ -160,6 +160,7 @@ namespace QuantLib {
 
               class Transformation {
               public:
+                  virtual ~Transformation() {}
                   virtual Array direct(const Array& x) const = 0;
                   virtual Array inverse(const Array& x) const = 0;
               };

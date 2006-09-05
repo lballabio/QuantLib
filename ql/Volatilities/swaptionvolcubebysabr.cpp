@@ -557,7 +557,7 @@ namespace QuantLib {
         setPoints(newPoints);
 
         //updateInterpolators();
-    };
+    }
 
     const std::vector<Matrix>& SwaptionVolatilityCubeBySabr::Cube::points() const {
 	    return points_;
