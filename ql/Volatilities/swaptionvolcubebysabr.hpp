@@ -115,6 +115,10 @@ namespace QuantLib {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
+        Matrix sparseSabrParameters() const;
+        Matrix denseSabrParameters() const;
+        Matrix marketVolCube() const;
+        Matrix volCubeAtmCalibrated() const;
 
      protected: 
 
@@ -134,10 +138,7 @@ namespace QuantLib {
        void createSparseSmiles();
        std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
                                                 double atmTimeLength);
-       Matrix sparseSabrParameters() const;
-       Matrix denseSabrParameters() const;
-       Matrix marketVolCube() const;
-       Matrix volCubeAtmCalibrated() const;
+
       private:
 
         Handle<SwaptionVolatilityStructure> atmVolStructure_;

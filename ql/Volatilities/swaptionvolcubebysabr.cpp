@@ -153,6 +153,8 @@ namespace QuantLib {
         Matrix nus(alphas);
         Matrix rhos(alphas);
         Matrix forwards(alphas);
+        Matrix errors(alphas);
+        Matrix maxErrors(alphas);
 
         const std::vector<Matrix> tmpMarketVolCube = marketVolCube_.points(); 
 
@@ -183,15 +185,19 @@ namespace QuantLib {
                 nus[j][k]= sabrInterpolation->nu();
                 rhos[j][k]= sabrInterpolation->rho();
                 forwards[j][k]= atmForward;
+                errors[j][k]= interpolationError;
+                maxErrors[j][k]= sabrInterpolation->interpolationMaxError();
 
             }
         }
-        Cube sabrParametersCube(exerciseTimes_, timeLengths_, 5);
+        Cube sabrParametersCube(exerciseTimes_, timeLengths_, 7);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);
         sabrParametersCube.setLayer(3, rhos);
         sabrParametersCube.setLayer(4, forwards);
+        sabrParametersCube.setLayer(5, errors);
+        sabrParametersCube.setLayer(6, maxErrors);
 
         //sabrParametersCube.updateInterpolators();
         return sabrParametersCube;
@@ -389,6 +395,7 @@ namespace QuantLib {
     Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
         return sparseParameters_.browse();
     }
+
     Matrix SwaptionVolatilityCubeBySabr::denseSabrParameters() const {
         return denseParameters_.browse();
     }
@@ -418,7 +425,7 @@ namespace QuantLib {
 
            interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true, 
+                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true,
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
@@ -581,13 +588,13 @@ namespace QuantLib {
         }    
     }	
     Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const{
-        Matrix result(nLayers_+2,lengths_.size()*expiries_.size(),0.);
+        Matrix result(lengths_.size()*expiries_.size(),nLayers_+2,0.);
 	    for(Size i=0;i<lengths_.size();i++){
 	        for(Size j=0;j<expiries_.size();j++){
-                result[i*lengths_.size()+j][0]= lengths_[i];
-                result[i*lengths_.size()+j][1]= expiries_[j];
+                result[i*expiries_.size()+j][0]= lengths_[i];
+                result[i*expiries_.size()+j][1]= expiries_[j];
 	            for(Size k=0;k<nLayers_;k++){
-                    result[i*lengths_.size()+j][2+k]= points_[k][j][i]; 
+                    result[i*expiries_.size()+j][2+k]= points_[k][j][i]; 
                 }   
             }   
         }  

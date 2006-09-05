@@ -91,9 +91,22 @@ namespace QuantLib {
     }
 
     Rate CMSCoupon::rate() const
-    {
+    {  
+        Date d = fixingDate();
+        const Rate Rs = index_->fixing(d);
+        Date today = Settings::instance().evaluationDate();
+        if (d <= today) {
+            // the fixing is determined
+            Rate r = gearing_*Rs + spread_;
+            if (cap_ != Null<Rate>())
+                r = std::min(r, cap_);
+            if (floor_ != Null<Rate>())
+                r = std::max(r, floor_);
+            return r;
+        } else {   
             Pricer_->initialize(*this);
             return Pricer_->rate();
+        }
     }
 
    Rate CMSCoupon::rate1() const {
