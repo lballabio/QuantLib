@@ -63,7 +63,7 @@ namespace QuantLib {
             QL_REQUIRE(drifts.size() == dim_, "");
         #endif
 
-        // Precompute forward term
+        // Precompute forwards factor
         Size i;
         for(i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
@@ -96,21 +96,18 @@ namespace QuantLib {
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (oneOverTaus_[i]+forwards[i]);
 
-        // Force initialization of e_ matrix to zero
-        //for (Size i=0; i<pseudo_.columns(); ++i)
-        //    for (Size j=0; i<pseudo_.rows(); ++i)
-        //        e_[i][j]=0.0; // e_ matrix is transposed with respect to pseudo_
-
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
         // Taking the numeraire P_N as reference point, 
-        // divide the summation into 3 terms et impera:
+        // divide the summation into 3 steps et impera:
 
         // 1st: the drift corresponding to the numeraire P_N is zero:
         if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
         // 2nd: then, move backward from N-2 (included) back to alive (included):
         Integer alive = alive_;
+        for (Size r=0; r<factors; ++r)           // enforce initialization
+                e_[r][numeraire_-1] = 0.0;
         for (Integer i=numeraire_-2; i>=alive; --i) {
             for (Size r=0; r<factors; ++r) 
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
@@ -125,6 +122,8 @@ namespace QuantLib {
         }
 
         // 3rd: now, move forward from N (included) up to n (excluded):
+        for (Size r=0; r<factors; ++r)          // enforce initialization
+                e_[r][numeraire_-1] = 0.0;
         for (Size i=numeraire_; i<dim_; ++i) {
             for (Size r=0; r<factors; ++r)
                 e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
