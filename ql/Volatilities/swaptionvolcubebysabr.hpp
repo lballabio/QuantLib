@@ -167,6 +167,8 @@ namespace QuantLib {
         Cube denseParameters_;
         std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > sparseSmiles_;
 
+        std::vector<Real> fictitiousStrikes_;
+
         Real alpha_, beta_, nu_, rho_;
         bool isBetaFixed_;
         Real maxTolerance_;

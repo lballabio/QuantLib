@@ -72,6 +72,9 @@ namespace QuantLib {
       isBetaFixed_(isBetaFixed || beta==Null<Real>()),
       maxTolerance_(maxTolerance)
     {
+        for (Size i=0; i<nStrikes_; i++) {
+            fictitiousStrikes_.push_back(0.05*i+.01);
+        }
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
                                               expiries[0],
@@ -377,14 +380,8 @@ namespace QuantLib {
 
     boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length, 
                                                             const Cube& sabrParametersCube) const {
-
-        std::vector<Real> strikes, volatilities, sabrParameters;
-        sabrParameters = sabrParametersCube.operator ()(expiry, length);
-        
-        for (Size i=0; i<nStrikes_; i++) {
-            strikes.push_back(0.05*i+.01);
-        }
-        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(sabrParameters, strikes, expiry));
+        const std::vector<Real> sabrParameters = sabrParametersCube.operator ()(expiry, length);
+        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(sabrParameters, fictitiousStrikes_, expiry));
     }
 
     boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
