@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -46,14 +47,15 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
-        Schedule(const Calendar& calendar,
-                 const Date& startDate,
-                 const Date& endDate,
+        Schedule(const Date& effectiveDate,
+                 const Date& terminationDate,
                  const Period& tenor,
+                 const Calendar& calendar,
                  BusinessDayConvention convention,
-                 const Date& stubDate = Date(),
-                 bool startFromEnd = false,
-                 bool longFinal = false);
+                 bool backward = true,
+                 bool endOfMonth = false,
+                 const Date& firstDate = Date(),
+                 const Date& nextToLastDate = Date());
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -83,11 +85,12 @@ namespace QuantLib {
         Frequency frequency_;
         Period tenor_;
         BusinessDayConvention convention_;
-        Date stubDate_;
+        Date firstDate_, nextToLastDate_;
         bool startFromEnd_;
         bool longFinal_;
-        bool finalIsRegular_;
+        bool endOfMonth_, finalIsRegular_;
         std::vector<Date> dates_;
+        std::vector<bool> isRegular_;
     };
 
 
