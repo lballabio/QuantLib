@@ -45,9 +45,13 @@ namespace QuantLib {
         const DayCounter& fixedLegDayCounter,
         const boost::shared_ptr<Xibor>& iborIndex,
         Time shortTenor,
-        const boost::shared_ptr<Xibor>& iborIndexShortTenor,
+        const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
+        Real alpha,
         Real beta,
-        Real maxError)
+        Real nu,
+        Real rho,
+        bool isBetaFixed,
+        Real maxTolerance)
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -61,8 +65,12 @@ namespace QuantLib {
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
+      alpha_(alpha),
       beta_(beta),
-      maxError_(maxError)
+      nu_(nu),
+      rho_(rho),
+      isBetaFixed_(isBetaFixed || beta==Null<Real>()),
+      maxTolerance_(maxTolerance)
     {
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
@@ -161,12 +169,14 @@ namespace QuantLib {
                     boost::shared_ptr<SABRInterpolation>(
                   new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
                   exerciseTimes_[j], atmForward, 
-                  Null<Real>(), 
+                  alpha_, 
                   beta_, 
-                  Null<Real>(),
-                  Null<Real>(), boost::shared_ptr<OptimizationMethod>()));
+                  nu_,
+                  rho_, 
+                  true, 
+                  boost::shared_ptr<OptimizationMethod>()));
                 const Real interpolationError = sabrInterpolation->interpolationError();
-                QL_ENSURE(interpolationError < maxError_, 
+                QL_ENSURE(interpolationError < maxTolerance_, 
                    "SwaptionVolatilityCubeBySabr::sabrCalibration: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();

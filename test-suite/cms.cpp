@@ -176,7 +176,11 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_,
+            .2,
             1.,
+            .4,
+            0.,
+            true,
             1e-5
             )));
 
@@ -206,7 +210,11 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_,
+            .2,
             .7,
+            .4,
+            0.,
+            true,
             1E-3
             )));
 

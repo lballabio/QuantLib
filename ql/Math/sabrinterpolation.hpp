@@ -49,32 +49,48 @@ namespace QuantLib {
                                   Real alpha,
                                   Real beta,
                                   Real nu,
-                                  Real rho)
+                                  Real rho,
+                                  bool isBetaFixed)
             : t_(t), forward_(forward),
               alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-              alphaIsFixed_(false), betaIsFixed_(false),
-              nuIsFixed_(false), rhoIsFixed_(false),
-              error_(Null<Real>()), maxError_(Null<Real>()),
+              alphaIsFixed_(false), 
+              betaIsFixed_(false),
+              nuIsFixed_(false), 
+              rhoIsFixed_(false),
+              error_(Null<Real>()), 
+              maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::none)
             {
                 QL_REQUIRE(t>0, "time must be non-negative");
                 QL_REQUIRE(forward>0, "forward must be non-negative");
-                if (alpha != Null<Real>()) {
-                    alphaIsFixed_ = true;
+                if (alpha_ != Null<Real>()) {
+                    alphaIsFixed_ = false;
                     QL_REQUIRE(alpha_>0.0, "alpha must be positive");
                 }
-                if (beta  != Null<Real>()) {
-                    betaIsFixed_  = true;
+                else {
+                    alpha_ = .2;
+                }
+                if (beta_!= Null<Real>()) {
+                    betaIsFixed_  = isBetaFixed;
                     QL_REQUIRE(beta_>=0.0 && beta_<=1.0,
                                "beta must be in [0.0, 1.0]");
                 }
-                if (nu    != Null<Real>()) {
-                    nuIsFixed_    = true;
+                else {
+                    beta_=.5;
+                }
+                if (nu_!= Null<Real>()) {
+                    nuIsFixed_    = false;
                     QL_REQUIRE(nu_>=0.0, "nu must be non negative");
                 }
+                else {
+                    nu_ = .4;
+                }
                 if (rho   != Null<Real>()) {
-                    rhoIsFixed_   = true;
+                    rhoIsFixed_   = false;
                     QL_REQUIRE(rho_*rho_<1, "rho square must be less than 1");
+                }
+                else {
+                    rho_ = 0;
                 }
             }
             virtual ~SABRCoefficientHolder() {}
@@ -101,6 +117,7 @@ namespace QuantLib {
                           Real beta,
                           Real nu,
                           Real rho,
+                          bool isBetaFixed,
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
 
@@ -108,7 +125,8 @@ namespace QuantLib {
                         new detail::SABRInterpolationImpl<I1,I2>(
                             xBegin, xEnd, yBegin,
                             t, forward,
-                            alpha, beta, nu, rho,
+                            alpha, beta, nu, rho, 
+                            isBetaFixed,
                             method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
@@ -290,9 +308,10 @@ namespace QuantLib {
                 const I2& yBegin,
                 Time t, Real forward,
                 Real alpha, Real beta, Real nu, Real rho,
+                bool isBetaFixed,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho),
+              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, isBetaFixed),
 			  method_(method)
             {
                 calculate();

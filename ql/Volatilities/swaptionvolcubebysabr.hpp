@@ -82,10 +82,14 @@ namespace QuantLib {
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
-            Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>(),
-            Real beta = Null<Real>(),
-            Real maxError = 1E-4);
+            Time shortTenor,
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor,
+            Real alpha,
+            Real beta,
+            Real nu,
+            Real rho,
+            bool isBetaFixed,
+            Real maxTolerance = 1E-4);
         //! \name TermStructure interface
         //@{
 
@@ -163,8 +167,9 @@ namespace QuantLib {
         Cube denseParameters_;
         std::vector< std::vector<VarianceSmileSection > > sparseSmiles_;
 
-        Real beta_;
-        Real maxError_;
+        Real alpha_, beta_, nu_, rho_;
+        bool isBetaFixed_;
+        Real maxTolerance_;
     };
 
 }
