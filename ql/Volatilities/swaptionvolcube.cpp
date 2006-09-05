@@ -209,7 +209,7 @@ namespace QuantLib {
               interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
                   timeToExpiry, forwardValue, Null<Real>(), .4, Null<Real>(),
-                  Null<Real>(), method));
+                  Null<Real>(), false, true, false, false, method));
 
                const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                boost::dynamic_pointer_cast<SABRInterpolation>(interpolation_);

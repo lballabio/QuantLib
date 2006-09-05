@@ -50,7 +50,10 @@ namespace QuantLib {
                                   Real beta,
                                   Real nu,
                                   Real rho,
-                                  bool isBetaFixed)
+                                  bool isAlphaFixed,
+                                  bool isBetaFixed,
+                                  bool isNuFixed,
+                                  bool isRhoFixed)
             : t_(t), forward_(forward),
               alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
               alphaIsFixed_(false), 
@@ -64,7 +67,7 @@ namespace QuantLib {
                 QL_REQUIRE(t>0, "time must be non-negative");
                 QL_REQUIRE(forward>0, "forward must be non-negative");
                 if (alpha_ != Null<Real>()) {
-                    alphaIsFixed_ = false;
+                    alphaIsFixed_  = isAlphaFixed;
                     QL_REQUIRE(alpha_>0.0, "alpha must be positive");
                 }
                 else {
@@ -79,14 +82,14 @@ namespace QuantLib {
                     beta_=.5;
                 }
                 if (nu_!= Null<Real>()) {
-                    nuIsFixed_    = false;
+                    nuIsFixed_  = isNuFixed;
                     QL_REQUIRE(nu_>=0.0, "nu must be non negative");
                 }
                 else {
                     nu_ = std::sqrt(.4);
                 }
                 if (rho   != Null<Real>()) {
-                    rhoIsFixed_   = false;
+                    rhoIsFixed_  = isRhoFixed;
                     QL_REQUIRE(rho_*rho_<1, "rho square must be less than 1");
                 }
                 else {
@@ -117,7 +120,10 @@ namespace QuantLib {
                           Real beta,
                           Real nu,
                           Real rho,
+                          bool isAlphaFixed,
                           bool isBetaFixed,
+                          bool isNuFixed,
+                          bool isRhoFixed,
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
 
@@ -126,7 +132,10 @@ namespace QuantLib {
                             xBegin, xEnd, yBegin,
                             t, forward,
                             alpha, beta, nu, rho, 
+                            isAlphaFixed,
                             isBetaFixed,
+                            isNuFixed,
+                            isRhoFixed,
                             method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
@@ -309,10 +318,14 @@ namespace QuantLib {
                 const I2& yBegin,
                 Time t, Real forward,
                 Real alpha, Real beta, Real nu, Real rho,
+                bool isAlphaFixed,
                 bool isBetaFixed,
+                bool isNuFixed,
+                bool isRhoFixed,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, isBetaFixed),
+              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, 
+              isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
 			  method_(method)
             {
                 calculate();

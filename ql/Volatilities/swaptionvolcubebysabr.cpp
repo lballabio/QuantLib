@@ -178,7 +178,10 @@ namespace QuantLib {
                   beta_, 
                   nu_,
                   rho_, 
+                  false,
                   true, 
+                  false,
+                  false,
                   boost::shared_ptr<OptimizationMethod>()));
                 const Real interpolationError = sabrInterpolation->interpolationError();
                 QL_ENSURE(interpolationError < maxTolerance_, 
@@ -422,7 +425,7 @@ namespace QuantLib {
 
            interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true,
+                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true, true, true, true,
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
