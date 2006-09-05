@@ -389,7 +389,7 @@ void CmsTest::testCmsSwap() {
 	//	modelOfYieldCurves_.push_back(GFunctionFactory::standard);
 	//	modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
 		modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
-	//	modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
+		modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
 	}
 
     std::vector<Size> swapLengths;
