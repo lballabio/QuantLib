@@ -54,8 +54,18 @@ namespace QuantLib {
     std::string JointCalendar::Impl::name() const {
         std::string fullName = calendars_.front().name();
         std::vector<Calendar>::const_iterator i;
-        for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
-            fullName += " + " + i->name();
+        switch (rule_) {
+          case JoinHolidays:
+            for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
+                fullName += " ^ " + i->name();
+            break;
+          case JoinBusinessDays:
+            for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
+                fullName += " + " + i->name();
+            break;
+          default:
+            QL_FAIL("unknown joint calendar rule");
+        }
         return fullName;
     }
 
