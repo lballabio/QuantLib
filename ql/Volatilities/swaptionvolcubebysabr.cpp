@@ -150,7 +150,8 @@ namespace QuantLib {
 
     }
 
-    SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
+    SwaptionVolatilityCubeBySabr::Cube 
+        SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
            
         Matrix alphas(exerciseTimes_.size(), timeLengths_.size(),0.);
         Matrix betas(alphas);
@@ -180,7 +181,7 @@ namespace QuantLib {
                   nu_,
                   rho_, 
                   false,
-                  true, 
+                  isBetaFixed_, 
                   false,
                   false,
                   boost::shared_ptr<OptimizationMethod>()));
@@ -306,15 +307,17 @@ namespace QuantLib {
     }
 
 
-    std::vector<Real> SwaptionVolatilityCubeBySabr::spreadVolInterpolation(double atmExerciseTime, 
-      double atmTimeLength){
+    std::vector<Real> SwaptionVolatilityCubeBySabr::spreadVolInterpolation(
+        double atmExerciseTime, double atmTimeLength){
         std::vector<Real> result;
         std::vector<Time> exerciseTimes(sparseParameters_.expiries());
         std::vector<Time> timeLengths(sparseParameters_.lengths());
          
         std::vector<Real>::const_iterator expiriesPreviousNode, lengthsPreviousNode;
 
-        expiriesPreviousNode = std::lower_bound(exerciseTimes.begin(),exerciseTimes.end(),atmExerciseTime);      
+        expiriesPreviousNode = std::lower_bound(exerciseTimes.begin(),
+            exerciseTimes.end(), 
+            atmExerciseTime);      
         std::vector<Real>::iterator::difference_type 
             expiriesPreviousIndex = expiriesPreviousNode - exerciseTimes.begin();
          if(expiriesPreviousIndex == exerciseTimes.size()-1) expiriesPreviousIndex--;
@@ -390,14 +393,18 @@ namespace QuantLib {
             return smileSection(expiry, length)->volatility(strike);
     }
 
-    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length, 
-                                                            const Cube& sabrParametersCube) const {
+    boost::shared_ptr<VarianceSmileSection> 
+        SwaptionVolatilityCubeBySabr::smileSection(Time expiry, 
+        Time length,                        
+        const Cube& sabrParametersCube) const {
         const std::vector<Real> sabrParameters = sabrParametersCube.operator ()(expiry, length);
-        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(sabrParameters, fictitiousStrikes_, expiry));
+        return boost::shared_ptr<VarianceSmileSection>(
+            new VarianceSmileSection(sabrParameters, fictitiousStrikes_, expiry));
     }
 
 
-    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
+    boost::shared_ptr<VarianceSmileSection> 
+        SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
         //return smileSection(expiry, length, denseParameters_ );
         return smileSection(expiry, length, sparseParameters_ );
     }
@@ -425,7 +432,9 @@ namespace QuantLib {
           const std::vector<Real>& sabrParameters, 
           const std::vector<Rate>& strikes,
           const Time timeToExpiry) :
-      timeToExpiry_(timeToExpiry), strikes_(strikes),volatilities_(strikes) {
+    timeToExpiry_(timeToExpiry), 
+        strikes_(strikes),
+        volatilities_(strikes) {
 
            Real alpha = sabrParameters[0];
            Real beta = sabrParameters[1];
@@ -434,8 +443,11 @@ namespace QuantLib {
            Real forwardValue = sabrParameters[4];
 
            interpolation_ = boost::shared_ptr<Interpolation>(new
-                  SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true, true, true, true,
+                  SABRInterpolation(strikes_.begin(), strikes_.end(),
+                  volatilities_.begin(),
+                  timeToExpiry, forwardValue, 
+                  alpha, beta, nu, rho, 
+                  true, true, true, true,
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
@@ -453,12 +465,13 @@ namespace QuantLib {
 	    QL_REQUIRE(expiries.size()>1,"Cube::Cube(...): wrong input expiries");
 	    QL_REQUIRE(lengths.size()>1,"Cube::Cube(...): wrong input lengths");
 
-	    std::vector<Matrix> points(nLayers_,Matrix(expiries_.size(), lengths_.size(), 0.0));
+	    std::vector<Matrix> points(nLayers_, Matrix(expiries_.size(), lengths_.size(), 0.0));
         setPoints(points); 
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>( 
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),points_[k])));
+                                        lengths_.begin(), 
+                                        lengths_.end(),points_[k])));
             interpolators_[k]->enableExtrapolation();
         }   
    	    setPoints(points); 
@@ -478,7 +491,8 @@ namespace QuantLib {
 	    setPoints(o.points_);
     }
 
-    SwaptionVolatilityCubeBySabr::Cube& SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o){
+    SwaptionVolatilityCubeBySabr::Cube& 
+        SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o){
         expiries_ = o.expiries_;
 	    lengths_ = o.lengths_;
         nLayers_ = o.nLayers_;

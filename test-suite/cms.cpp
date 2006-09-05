@@ -180,7 +180,10 @@ void setup() {
             1.,
             .04,
             0.,
+            //false,
             true,
+            //false,
+            //false,
             1e-5
             )));
 
@@ -214,7 +217,10 @@ void setup() {
             .7,
             .4,
             0.,
+            //false,
             true,
+            //false,
+            //false,
             1E-3
             )));
 
