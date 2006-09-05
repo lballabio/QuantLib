@@ -143,9 +143,10 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        //fillVolatilityCube();
-        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        //denseParameters_.updateInterpolators(); 
+        fillVolatilityCube();
+        denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+        //denseParameters_ = sabrCalibration(marketVolCube_);
+        denseParameters_.updateInterpolators(); 
 
     }
 
@@ -159,7 +160,7 @@ namespace QuantLib {
         Matrix errors(alphas);
         Matrix maxErrors(alphas);
 
-        const std::vector<Matrix> tmpMarketVolCube = marketVolCube_.points(); 
+        const std::vector<Matrix> tmpMarketVolCube = marketVolCube.points(); 
 
         for (Size j=0; j<exerciseTimes_.size(); j++) {
             for (Size k=0; k<timeLengths_.size(); k++) {
@@ -258,6 +259,11 @@ namespace QuantLib {
         std::vector<Time> exerciseTimes(volCubeAtmCalibrated_.expiries());
         std::vector<Time> timeLengths(volCubeAtmCalibrated_.lengths());
         
+        atmExerciseTimes.insert( atmExerciseTimes.end(), exerciseTimes.begin(), exerciseTimes.end() );
+        atmTimeLengths.insert( atmTimeLengths.end(), timeLengths.begin(), timeLengths.end() );
+        std::sort(atmExerciseTimes.begin(),atmExerciseTimes.end());
+        std::sort(atmTimeLengths.begin(),atmTimeLengths.end()); 
+
         createSparseSmiles();
             
         for (Size j=0; j<atmExerciseTimes.size(); j++) {
@@ -370,7 +376,10 @@ namespace QuantLib {
                 lengthsNodes.begin(), lengthsNodes.end(),spreadVols);
            localInterpolator.enableExtrapolation(); 
             
-           result.push_back(localInterpolator.operator ()(atmExerciseTime, atmTimeLength));            
+           result.push_back(localInterpolator.operator ()(atmExerciseTime, atmTimeLength));    
+
+            
+           result.push_back(localInterpolator.operator ()(atmTimeLength, atmExerciseTime ));  
         }
 
         return result;
@@ -386,6 +395,7 @@ namespace QuantLib {
         const std::vector<Real> sabrParameters = sabrParametersCube.operator ()(expiry, length);
         return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(sabrParameters, fictitiousStrikes_, expiry));
     }
+
 
     boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
         //return smileSection(expiry, length, denseParameters_ );
@@ -541,7 +551,7 @@ namespace QuantLib {
         if(expandExpiries) expiries_.insert(expiries_.begin()+i,0.);
         if(expandLengths) lengths_.insert(lengths_.begin()+j,0.);
         
-        std::vector<Matrix> newPoints(nLayers_,Matrix(expiries_.size(), lengths_.size(), 0.0));
+        std::vector<Matrix> newPoints(nLayers_,Matrix(expiries_.size(), lengths_.size(), 0.));
 
         for(Size k=0;k<nLayers_;k++){
             for(Size u=0;u<points_[k].rows();u++){
