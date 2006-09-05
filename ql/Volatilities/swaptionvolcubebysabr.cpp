@@ -363,10 +363,12 @@ namespace QuantLib {
 
         return result;
     }
+
     Volatility SwaptionVolatilityCubeBySabr::
         volatilityImpl(Time expiry, Time length, Rate strike) const {
             return smileSection(expiry, length).volatility(strike);
-        }
+    }
+
     VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length, 
                                                             Cube sabrParametersCube) const {
 
@@ -376,14 +378,13 @@ namespace QuantLib {
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(0.05*i+.01);
         }
-
         return VarianceSmileSection(sabrParameters, strikes, expiry);
     }
+
     VarianceSmileSection SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
         //return smileSection(expiry, length, denseParameters_ );
         return smileSection(expiry, length, sparseParameters_ );
     }
-
 
     Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
         return sparseParameters_.browse();
@@ -417,7 +418,7 @@ namespace QuantLib {
 
            interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, alpha, beta, nu, rho,
+                  timeToExpiry, forwardValue, alpha, beta, nu, rho, true, 
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
