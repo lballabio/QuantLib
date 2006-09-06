@@ -144,7 +144,7 @@ void setup() {
 
     flatSwaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-        SwaptionVolatilityCube(
+        SwaptionVolatilityCubeByLinear(
             swaptionVolatilityMatrix_, 
             lengths, 
             lengths,
