@@ -143,10 +143,10 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        fillVolatilityCube();
-        denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        //denseParameters_ = sabrCalibration(marketVolCube_);
-        denseParameters_.updateInterpolators(); 
+        //fillVolatilityCube();
+        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+        ////denseParameters_ = sabrCalibration(marketVolCube_);
+        //denseParameters_.updateInterpolators(); 
 
     }
 
