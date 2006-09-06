@@ -285,7 +285,6 @@ void LiborMarketModelTest::testCalibration() {
                         new LiborForwardModel(process, volaModel, corrModel));
 
     Size swapVolIndex = 0;
-    Frequency frequency = index->frequency();
     DayCounter dayCounter=index->termStructure()->dayCounter();
 
     // set-up calibration helper
@@ -293,7 +292,7 @@ void LiborMarketModelTest::testCalibration() {
 
     Size i;
     for (i=2; i < size; ++i) {
-        const Period maturity(i*12/frequency, Months);
+        const Period maturity = i*index->tenor();
         Handle<Quote> capVol(
             boost::shared_ptr<Quote>(new SimpleQuote(capVols[i-2])));
 
@@ -309,14 +308,14 @@ void LiborMarketModelTest::testCalibration() {
         if (i<= size/2) {
             // add a few swaptions to test swaption calibration as well
             for (Size j=1; j <= size/2; ++j) {
-                const Period len(j*12/frequency, Months);
+                const Period len = j*index->tenor();
                 Handle<Quote> swaptionVol(
                     boost::shared_ptr<Quote>(
                         new SimpleQuote(swaptionVols[swapVolIndex++])));
 
                 boost::shared_ptr<CalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
-                                       frequency, dayCounter,
+                                       index->frequency(), dayCounter,
                                        index->dayCounter(),
                                        termStructure, true));
 
@@ -408,7 +407,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
         liborModel(new LiborForwardModel(process, volaModel, corrModel));
 
     Calendar calendar   = index->calendar();
-    Frequency frequency = index->frequency();
     DayCounter dayCounter=index->termStructure()->dayCounter();
     BusinessDayConvention convention = index->businessDayConvention();
 
@@ -423,7 +421,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
             Date fwdMaturity = fwdStart + Period(6*j, Months);
 
             Schedule schedule(calendar, fwdStart, fwdMaturity,
-                              frequency, convention);
+                              index->frequency(), convention);
 
             Rate swapRate  = 0.0404;
             boost::shared_ptr<VanillaSwap> forwardSwap(

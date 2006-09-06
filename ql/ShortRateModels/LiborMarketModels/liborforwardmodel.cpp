@@ -159,7 +159,7 @@ namespace QuantLib {
 
         std::vector<Period> lengths(size);
         for (Size i=0; i < size; ++i) {
-            lengths[i] = Period((i+1)*12/index->frequency(), Months);
+            lengths[i] = (i+1)*index->tenor();
         }
 
         const Array f = process_->initialValues();
