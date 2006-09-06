@@ -63,8 +63,10 @@ namespace QuantLib {
 	  fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndex_(iborIndex), shortTenor_(shortTenor),
+      iborIndex_(iborIndex), 
+      shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
+
       isParameterFixed_(isParameterFixed),
       volSpreads_(volSpreads)
     {

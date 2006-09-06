@@ -32,9 +32,9 @@
 
 namespace QuantLib {
   
-    class SwaptionVolatilityCube : public SwaptionVolatilityStructure {
+    class SwaptionVolatilityCubeByLinear : public SwaptionVolatilityStructure {
       public:
-        SwaptionVolatilityCube(
+        SwaptionVolatilityCubeByLinear(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,

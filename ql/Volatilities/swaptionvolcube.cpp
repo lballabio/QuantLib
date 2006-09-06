@@ -36,7 +36,7 @@ namespace QuantLib {
         double RHOGUESS = .2;
     }
 
-     SwaptionVolatilityCube::SwaptionVolatilityCube(
+     SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
@@ -65,8 +65,10 @@ namespace QuantLib {
 	  fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndex_(iborIndex), shortTenor_(shortTenor),
+      iborIndex_(iborIndex), 
+      shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
+
       volSpreadsInterpolator_(nStrikes_),
       volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0))
     {
@@ -136,7 +138,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<Interpolation>
-    SwaptionVolatilityCube::smile(Time start, Time length) const
+    SwaptionVolatilityCubeByLinear::smile(Time start, Time length) const
     {
         const Rate atmForward = atmStrike(start, length);
 
@@ -152,7 +154,7 @@ namespace QuantLib {
             );
     }
 
-    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCube::smileSection(Time start, Time length) const {
+    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeByLinear::smileSection(Time start, Time length) const {
 
         std::vector<Real> strikes, volatilities;
 
@@ -176,7 +178,7 @@ namespace QuantLib {
     }
 
 
-    Volatility SwaptionVolatilityCube::
+    Volatility SwaptionVolatilityCubeByLinear::
         volatilityImpl(Time start, Time length, Rate strike) const {
             return smile(start, length)->operator()(strike, true);
         }
@@ -258,7 +260,7 @@ namespace QuantLib {
         return v*v*timeToExpiry_;
     }
 
-    Rate SwaptionVolatilityCube::atmStrike(Time start, Time length) const {
+    Rate SwaptionVolatilityCubeByLinear::atmStrike(Time start, Time length) const {
 
         Date exerciseDate = Date(static_cast<BigInteger>(
             exerciseInterpolator_(start)));
