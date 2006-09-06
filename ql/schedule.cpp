@@ -155,6 +155,138 @@ namespace QuantLib {
     }
 
 
+    Schedule::Schedule(const Calendar& calendar,
+                       const Date& startDate, const Date& endDate,
+                       const Period& tenor,
+                       BusinessDayConvention convention,
+                       const Date& stubDate, bool startFromEnd,
+                       bool longFinal)
+    : calendar_(calendar), frequency_(tenor.frequency()),
+      tenor_(tenor),
+      convention_(convention),
+      startFromEnd_(startFromEnd), longFinal_(longFinal),
+      endOfMonth_(false), finalIsRegular_(true),
+      isRegular_(std::vector<bool>()) {
+
+        firstDate_ = (startFromEnd ? Date() : stubDate);
+        nextToLastDate_ = (startFromEnd ? stubDate : Date());
+
+        // sanity checks
+        QL_REQUIRE(startDate != Date(), "null start date");
+        QL_REQUIRE(endDate != Date(),   "null end date");
+        QL_REQUIRE(startDate < endDate,
+                   "start date (" << startDate
+                   << ") later than end date (" << endDate << ")");
+        if (stubDate != Date()) {
+            QL_REQUIRE((stubDate > startDate && stubDate < endDate),
+                       "stub date (" << stubDate
+                       << ") out of range (start date (" << startDate
+                       << "), end date (" << endDate << "))");
+        }
+        QL_REQUIRE(frequency_ == 0 || 12 % frequency_ == 0,
+                   "frequency (" << Integer(frequency_)
+                   << " per year) does not correspond to "
+                   << "a whole number of months");
+
+        if (frequency_ == 0) {
+            QL_REQUIRE(stubDate == Date(),
+                       "stub date incompatible with frequency_ 'once'");
+            dates_.push_back(calendar.adjust(startDate, convention));
+            dates_.push_back(calendar.adjust(endDate, convention));
+        } else if (startFromEnd) {
+            tenor_=Period(frequency_);
+            // calculations
+            Date seed = endDate;
+            Date first = calendar.adjust(startDate, convention);
+            // add end date
+            dates_.push_back(calendar.adjust(endDate, convention));
+
+            // add stub date if given
+            if (nextToLastDate_ != Date()) {
+                seed = nextToLastDate_;
+                dates_.insert(dates_.begin(),
+                              calendar.adjust(nextToLastDate_, convention));
+            }
+
+            // add subsequent dates
+            Integer periods = 1, months = 12/frequency_;
+            while (true) {
+                Date temp = calendar.advance(seed, -periods*months, Months,
+                                             convention);
+                dates_.insert(dates_.begin(),temp);
+                // check exit condition
+                if (temp <= first)
+                    break;
+                else
+                    periods++;
+            }
+
+            Size N = dates_.size();
+            // possibly correct first inserted date
+            if (dates_[0] < first) {
+                dates_[0] = first;
+                if (N > 1 && longFinal) {
+                    dates_.erase(dates_.begin()+1);
+                    N--;
+                }
+                finalIsRegular_ = false;
+            }
+
+            // possibly collapse first two dates
+            if (N > 1 && calendar.adjust(dates_[0], convention) ==
+                calendar.adjust(dates_[1], convention)) {
+                dates_[1] = dates_[0];
+                dates_.erase(dates_.begin());
+                finalIsRegular_ = true;
+            }
+        } else {
+            tenor_=Period(frequency_);
+            // calculations
+            Date seed = startDate;
+            Date last = calendar.adjust(endDate, convention);
+            // add start date
+            dates_.push_back(calendar.adjust(startDate, convention));
+
+            // add stub date if given
+            if (firstDate_ != Date()) {
+                seed = firstDate_;
+                dates_.push_back(calendar.adjust(firstDate_, convention));
+            }
+
+            // add subsequent dates
+            Integer periods = 1, months = 12/frequency_;
+            while (true) {
+                Date temp = calendar.advance(seed, periods*months, Months,
+                                             convention);
+                dates_.push_back(temp);
+                // check exit condition
+                if (temp >= last)
+                    break;
+                else
+                    periods++;
+            }
+
+            Size N = dates_.size();
+            // possibly correct last inserted date
+            if (dates_.back() > last) {
+                if (N > 1 && longFinal) {
+                    dates_.pop_back();
+                    N--;
+                }
+                dates_.back() = last;
+                finalIsRegular_ = false;
+            }
+
+            // possibly collapse last two dates
+            if (N > 1 && calendar.adjust(dates_[N-2], convention) ==
+                calendar.adjust(dates_[N-1], convention)) {
+                dates_[N-2] = dates_[N-1];
+                dates_.pop_back();
+                finalIsRegular_ = true;
+            }
+        }
+    }
+
     Schedule::Schedule(const Date& effectiveDate,
                        const Date& terminationDate,
                        const Period& tenor,

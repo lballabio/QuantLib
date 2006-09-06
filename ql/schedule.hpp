@@ -44,6 +44,14 @@ namespace QuantLib {
                  const Date& stubDate = Date(),
                  bool startFromEnd = false,
                  bool longFinal = false);
+        Schedule(const Calendar& calendar,
+                 const Date& startDate,
+                 const Date& endDate,
+                 const Period& tenor,
+                 BusinessDayConvention convention,
+                 const Date& stubDate = Date(),
+                 bool startFromEnd = false,
+                 bool longFinal = false);
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
