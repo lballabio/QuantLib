@@ -51,19 +51,24 @@ namespace QuantLib {
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor)
     : atmVolStructure_(atmVolStructure),
-      exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
+      exerciseDates_(expiries.size()), 
+      exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths), timeLengths_(lengths.size()),
-      nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
-      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
-      volSpreadsInterpolator_(nStrikes_),
-      localStrikes_(nStrikes_), localSmile_(nStrikes_),
-      calendar_(calendar), swapSettlementDays_(swapSettlementDays),
+      lengths_(lengths), 
+      timeLengths_(lengths.size()),
+      nStrikes_(strikeSpreads.size()), 
+      strikeSpreads_(strikeSpreads),
+      localStrikes_(nStrikes_), 
+      localSmile_(nStrikes_),
+      calendar_(calendar), 
+      swapSettlementDays_(swapSettlementDays),
 	  fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
-      iborIndexShortTenor_(iborIndexShortTenor)
+      iborIndexShortTenor_(iborIndexShortTenor),
+      volSpreadsInterpolator_(nStrikes_),
+      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0))
     {
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),

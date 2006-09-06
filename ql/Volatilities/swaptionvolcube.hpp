@@ -95,6 +95,7 @@ namespace QuantLib {
                                   Time length,
                                   Rate strike) const;
       private:
+
         Handle<SwaptionVolatilityStructure> atmVolStructure_;
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
@@ -104,11 +105,9 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
-        std::vector<Matrix> volSpreads_;
-        std::vector<Interpolation2D> volSpreadsInterpolator_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
-        Calendar calendar_ ;
+        Calendar calendar_;
         Integer swapSettlementDays_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
@@ -116,6 +115,9 @@ namespace QuantLib {
         boost::shared_ptr<Xibor> iborIndex_;
         Time shortTenor_;
         boost::shared_ptr<Xibor> iborIndexShortTenor_;
+
+        std::vector<Matrix> volSpreads_;
+        std::vector<Interpolation2D> volSpreadsInterpolator_;
     };
 
 }

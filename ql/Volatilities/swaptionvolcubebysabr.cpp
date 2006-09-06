@@ -49,19 +49,24 @@ namespace QuantLib {
         const Matrix& parametersGuess, 
         std::vector<bool> isParameterFixed)
     : atmVolStructure_(atmVolStructure),
-      exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
+      exerciseDates_(expiries.size()), 
+      exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths), timeLengths_(lengths.size()),
-      nStrikes_(strikeSpreads.size()), strikeSpreads_(strikeSpreads),
-      volSpreads_(volSpreads),
-      localStrikes_(nStrikes_), localSmile_(nStrikes_),
-      calendar_(calendar), swapSettlementDays_(swapSettlementDays),
+      lengths_(lengths), 
+      timeLengths_(lengths.size()),
+      nStrikes_(strikeSpreads.size()), 
+      strikeSpreads_(strikeSpreads),
+      localStrikes_(nStrikes_), 
+      localSmile_(nStrikes_),
+      calendar_(calendar), 
+      swapSettlementDays_(swapSettlementDays),
 	  fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
-      isParameterFixed_(isParameterFixed)
+      isParameterFixed_(isParameterFixed),
+      volSpreads_(volSpreads)
     {
 
         for (Size i=0; i<nStrikes_; i++) {

@@ -145,9 +145,6 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
-        Matrix volSpreads_;
-        Cube marketVolCube_;
-        Cube volCubeAtmCalibrated_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         Calendar calendar_ ;
@@ -159,6 +156,9 @@ namespace QuantLib {
         Time shortTenor_;
         boost::shared_ptr<Xibor> iborIndexShortTenor_;
 
+        Matrix volSpreads_;
+        Cube marketVolCube_;
+        Cube volCubeAtmCalibrated_;
         Cube sparseParameters_;
         Cube denseParameters_;
         std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > sparseSmiles_;
