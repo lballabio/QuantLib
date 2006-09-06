@@ -47,8 +47,7 @@ namespace QuantLib {
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
         const Matrix& parametersGuess, 
-        std::vector<bool> isParameterFixed,
-        Real maxTolerance)
+        std::vector<bool> isParameterFixed)
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -62,8 +61,7 @@ namespace QuantLib {
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
-      isParameterFixed_(isParameterFixed),
-      maxTolerance_(maxTolerance)
+      isParameterFixed_(isParameterFixed)
     {
 
         for (Size i=0; i<nStrikes_; i++) {
@@ -195,8 +193,6 @@ namespace QuantLib {
                     boost::shared_ptr<OptimizationMethod>()));
 
                 const Real interpolationError = sabrInterpolation->interpolationError();
-                //QL_ENSURE(interpolationError < maxTolerance_, 
-                //   "SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();
                 nus[j][k]= sabrInterpolation->nu();

@@ -85,8 +85,7 @@ namespace QuantLib {
             Time shortTenor,
             const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
             const Matrix& parametersGuess, 
-            std::vector<bool> isParameterFixed,
-            Real maxTolerance);
+            std::vector<bool> isParameterFixed);
         //! \name TermStructure interface
         //@{
 
@@ -168,7 +167,6 @@ namespace QuantLib {
 
         Cube parametersGuess_; 
         std::vector<bool> isParameterFixed_;
-        Real maxTolerance_;
     };
 
 }
