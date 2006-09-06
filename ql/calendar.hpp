@@ -56,7 +56,6 @@ namespace QuantLib {
                                  choose the first business day after
                                  the holiday. */
         Unadjusted          /*!< Do not adjust. */
-        #ifndef QL_DISABLE_DEPRECATED
         ,
         //! \deprecated use FloatingRateCoupon instead
         MonthEndReference,  /*!< Choose the first business day after
@@ -75,7 +74,6 @@ namespace QuantLib {
 
                                  \deprecated use the endOfMonth boolean in
                                              Calendar::advance instead */
-        #endif
     };
 
     /*! \relates BusinessDayConvention */

@@ -46,43 +46,33 @@ namespace QuantLib {
                           const Date& origin) const {
         QL_REQUIRE(d != Date(), "null date");
 
-        #ifndef QL_DISABLE_DEPRECATED
         if (c == UnadjustedMonthEnd && origin != Date()
             && isEndOfMonth(origin))
             return Date::endOfMonth(d);
-        #endif
 
         if (c == Unadjusted
-                    #ifndef QL_DISABLE_DEPRECATED
                         || c == UnadjustedMonthEnd
-                     #endif
            )
             return d;
 
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing
-                           #ifndef QL_DISABLE_DEPRECATED
                            || c == MonthEndReference
-                           #endif
                            ) {
             while (isHoliday(d1))
                 d1++;
             if (c == ModifiedFollowing
-                                        #ifndef QL_DISABLE_DEPRECATED
                                         || c == MonthEndReference
-                                        #endif
                                                                         ) {
                 if (d1.month() != d.month()) {
                     return adjust(d,Preceding);
                 }
-                #ifndef QL_DISABLE_DEPRECATED
                 if (c == MonthEndReference && origin != Date()) {
                     if (isEndOfMonth(origin) && !isEndOfMonth(d1)) {
                         d1 = Date::endOfMonth(d1);
                         return adjust(d1,Preceding);
                     }
                 }
-                #endif
             }
         } else if (c == Preceding || c == ModifiedPreceding) {
             while (isHoliday(d1))
@@ -126,10 +116,8 @@ namespace QuantLib {
         } else {
             Date d1 = d + n*unit;
 
-            #ifndef QL_DISABLE_DEPRECATED
             if (c == UnadjustedMonthEnd || c == MonthEndReference)
                 endOfMonth = true;
-            #endif
 
             if (endOfMonth && (unit==Months || unit==Years)
                            && isEndOfMonth(d)) {
@@ -240,12 +228,10 @@ namespace QuantLib {
             return out << "Modified Preceding";
           case Unadjusted:
             return out << "Unadjusted";
-          #ifndef QL_DISABLE_DEPRECATED
           case MonthEndReference:
             return out << "Month End Reference";
           case UnadjustedMonthEnd:
             return out << "Unadjusted Month End";
-          #endif
           default:
             QL_FAIL("unknown BusinessDayConvention (" << Integer(b) << ")");
         }
