@@ -57,7 +57,7 @@ namespace QuantLib {
                                   fixedLegFrequency_, fixedLegConvention_,
 								  Date(), true, false);
         Schedule floatingLegSchedule(calendar_, start, end,
-                                     iborIndex_->frequency(),
+                                     iborIndex_->tenor(),
                                      iborIndex_->businessDayConvention(),
 									 Date(), true, false);
 

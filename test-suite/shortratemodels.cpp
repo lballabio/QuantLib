@@ -81,7 +81,7 @@ void ShortRateModelTest::testCachedHullWhite() {
                                                 Period(data[i].length, Years),
                                                 Handle<Quote>(vol),
                                                 index,
-                                                Annual, Thirty360(),
+                                                Period(1, Years), Thirty360(),
                                                 Actual360(), termStructure));
         helper->setPricingEngine(boost::shared_ptr<PricingEngine>(
                                         new JamshidianSwaptionEngine(model)));

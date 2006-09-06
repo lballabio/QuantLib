@@ -276,7 +276,7 @@ namespace QuantLib {
         Schedule fixedSchedule(calendar_, earliestDate_, maturity,
                                fixedFrequency_, fixedConvention_);
         Schedule floatSchedule(calendar_, earliestDate_, maturity,
-                               index_->frequency(),
+                               index_->tenor(),
                                index_->businessDayConvention());
         // dummy Libor index with curve/swap arguments
         boost::shared_ptr<Xibor> clonedIndex(

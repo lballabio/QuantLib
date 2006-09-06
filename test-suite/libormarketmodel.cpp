@@ -315,7 +315,7 @@ void LiborMarketModelTest::testCalibration() {
 
                 boost::shared_ptr<CalibrationHelper> swaptionHelper(
                     new SwaptionHelper(maturity, len, swaptionVol, index,
-                                       index->frequency(), dayCounter,
+                                       index->tenor(), dayCounter,
                                        index->dayCounter(),
                                        termStructure, true));
 
@@ -421,7 +421,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
             Date fwdMaturity = fwdStart + Period(6*j, Months);
 
             Schedule schedule(calendar, fwdStart, fwdMaturity,
-                              index->frequency(), convention);
+                              index->tenor(), convention);
 
             Rate swapRate  = 0.0404;
             boost::shared_ptr<VanillaSwap> forwardSwap(

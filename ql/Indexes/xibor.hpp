@@ -52,7 +52,10 @@ namespace QuantLib {
         /*! \note this method does not always apply. Use tenor() if
                   possible.
         */
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use Index::tenor metho
         Frequency frequency() const { return tenor_.frequency(); }
+        #endif
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
         //@}

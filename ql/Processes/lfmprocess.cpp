@@ -183,7 +183,7 @@ namespace QuantLib {
                             refDate,
                             refDate + Period(index_->tenor().length()*size_,
                                              index_->tenor().units()),
-                            index_->frequency(),
+                            index_->tenor(),
                             index_->businessDayConvention()
                             ),
                    index_->businessDayConvention(),
