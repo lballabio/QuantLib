@@ -46,11 +46,8 @@ namespace QuantLib {
         const boost::shared_ptr<Xibor>& iborIndex,
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
-        Real alpha,
-        Real beta,
-        Real nu,
-        Real rho,
-        bool isBetaFixed,
+        const Matrix& parametersGuess, 
+        std::vector<bool> isParameterFixed,
         Real maxTolerance)
     : atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()), exerciseTimes_(expiries.size()),
@@ -65,13 +62,10 @@ namespace QuantLib {
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor),
-      alpha_(alpha),
-      beta_(beta),
-      nu_(nu),
-      rho_(rho),
-      isBetaFixed_(isBetaFixed || beta==Null<Real>()),
+      isParameterFixed_(isParameterFixed),
       maxTolerance_(maxTolerance)
     {
+
         for (Size i=0; i<nStrikes_; i++) {
             fictitiousStrikes_.push_back(0.05*i+.01);
         }
@@ -123,6 +117,17 @@ namespace QuantLib {
                    "nStrikes_!=marketVolCube.columns()");
         QL_REQUIRE(nExercise*nlengths==volSpreads_.rows(),
                    "nExercise*nlengths!=marketVolCube.rows()");
+        
+        parametersGuess_ = Cube(exerciseTimes_, timeLengths_, 4);
+        for (i=0; i<4; i++)
+        {
+            for (Size j=0; j<nExercise; j++) {
+                for (Size k=0; k<nlengths; k++) {
+                    parametersGuess_.setElement(i, j, k, parametersGuess[j*nlengths+k][i]);
+                }
+            }
+        }
+        parametersGuess_.updateInterpolators();
 
         atmVolStructure_.currentLink()->enableExtrapolation();
         marketVolCube_ = Cube(exerciseTimes_, timeLengths_, nStrikes_);
@@ -139,6 +144,7 @@ namespace QuantLib {
             }
         }
         marketVolCube_.updateInterpolators();
+
         sparseParameters_ = sabrCalibration(marketVolCube_);
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
@@ -150,10 +156,11 @@ namespace QuantLib {
 
     }
 
-    SwaptionVolatilityCubeBySabr::Cube 
-        SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
-           
-        Matrix alphas(exerciseTimes_.size(), timeLengths_.size(),0.);
+    SwaptionVolatilityCubeBySabr::Cube  SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
+        
+        std::vector<Time> exerciseTimes(marketVolCube.expiries());
+        std::vector<Time> timeLengths(marketVolCube.lengths());
+        Matrix alphas(exerciseTimes.size(), timeLengths.size(),0.);
         Matrix betas(alphas);
         Matrix nus(alphas);
         Matrix rhos(alphas);
@@ -163,28 +170,30 @@ namespace QuantLib {
 
         const std::vector<Matrix> tmpMarketVolCube = marketVolCube.points(); 
 
-        for (Size j=0; j<exerciseTimes_.size(); j++) {
-            for (Size k=0; k<timeLengths_.size(); k++) {
-                const Rate atmForward = atmStrike(exerciseTimes_[j], timeLengths_[k]);
+        for (Size j=0; j<exerciseTimes.size(); j++) {
+            for (Size k=0; k<timeLengths.size(); k++) {
+                const Rate atmForward = atmStrike(exerciseTimes[j], timeLengths[k]);
                 std::vector<Real> strikes, volatilities;
                 for (Size i=0; i<nStrikes_; i++){
                     strikes.push_back(atmForward+strikeSpreads_[i]);
                     volatilities.push_back(tmpMarketVolCube[i][j][k]);
                 }
+                std::vector<Real> guess = parametersGuess_.operator ()(exerciseTimes[j], timeLengths[k]);
 
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
                     boost::shared_ptr<SABRInterpolation>(
                   new SABRInterpolation(strikes.begin(), strikes.end(), volatilities.begin(),
-                  exerciseTimes_[j], atmForward, 
-                  alpha_, 
-                  beta_, 
-                  nu_,
-                  rho_, 
-                  false,
-                  isBetaFixed_, 
-                  false,
-                  false,
-                  boost::shared_ptr<OptimizationMethod>()));
+                    exerciseTimes[j], atmForward, 
+                    guess[0],
+                    guess[1], 
+                    guess[2],
+                    guess[3],
+                    isParameterFixed_[0],
+                    isParameterFixed_[1], 
+                    isParameterFixed_[2],
+                    isParameterFixed_[3],
+                    boost::shared_ptr<OptimizationMethod>()));
+
                 const Real interpolationError = sabrInterpolation->interpolationError();
                 //QL_ENSURE(interpolationError < maxTolerance_, 
                 //   "SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const: accuracy not reached");
@@ -198,7 +207,7 @@ namespace QuantLib {
 
             }
         }
-        Cube sabrParametersCube(exerciseTimes_, timeLengths_, 7);
+        Cube sabrParametersCube(exerciseTimes, timeLengths, 7);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);

@@ -159,7 +159,18 @@ void setup() {
             1,
             iborIndex_
            )));
+    Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
     
+    for(Size i=0; i<lengths.size()*lengths.size(); i++) {
+        parametersGuess[i][0] = .2;
+        parametersGuess[i][1] = 1.;
+        parametersGuess[i][2] = .4;
+        parametersGuess[i][3] = 0.;
+    }
+
+    std::vector<bool> isParameterFixed(4,false);
+    isParameterFixed[1]=true;
+
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
         SwaptionVolatilityCubeBySabr(
@@ -176,14 +187,8 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_,
-            .02,
-            1.,
-            .04,
-            0.,
-            //false,
-            true,
-            //false,
-            //false,
+            parametersGuess,
+            isParameterFixed,
             1e-5
             )));
 
@@ -193,8 +198,9 @@ void setup() {
     for(Size i=0; i<strikeSpreads.size(); i++) {
         const double x = strikeSpreads[i];
         const double vs = 10*x*x;
-        volSpreads[0][i] = vs;
-        volSpreads[1][i] = vs;
+        for(Size j=0; j<lengths.size()*lengths.size(); j++) {
+            volSpreads[j][i] = vs;
+        }
     }
 
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
@@ -213,15 +219,9 @@ void setup() {
             iborIndex_,
             1,
             iborIndex_,
-            .2,
-            .7,
-            .4,
-            0.,
-            //false,
-            true,
-            //false,
-            //false,
-            1E-3
+            parametersGuess,
+            isParameterFixed,
+            1E-1
             )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);

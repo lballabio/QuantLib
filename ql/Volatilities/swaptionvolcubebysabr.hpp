@@ -70,26 +70,23 @@ namespace QuantLib {
              Matrix browse() const;
          };
 
-         SwaptionVolatilityCubeBySabr(
+        SwaptionVolatilityCubeBySabr::SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const Matrix& marketVolCube,
+            const Matrix& volSpreads,
             const Calendar& calendar,
-			Integer swapSettlementDays,
+		    Integer swapSettlementDays,
             Frequency fixedLegFrequency,
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor,
-            Real alpha,
-            Real beta,
-            Real nu,
-            Real rho,
-            bool isBetaFixed,
-            Real maxTolerance = 1E-4);
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
+            const Matrix& parametersGuess, 
+            std::vector<bool> isParameterFixed,
+            Real maxTolerance);
         //! \name TermStructure interface
         //@{
 
@@ -169,8 +166,8 @@ namespace QuantLib {
 
         std::vector<Real> fictitiousStrikes_;
 
-        Real alpha_, beta_, nu_, rho_;
-        bool isBetaFixed_;
+        Cube parametersGuess_; 
+        std::vector<bool> isParameterFixed_;
         Real maxTolerance_;
     };
 
