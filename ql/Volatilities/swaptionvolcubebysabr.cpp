@@ -186,8 +186,8 @@ namespace QuantLib {
                   false,
                   boost::shared_ptr<OptimizationMethod>()));
                 const Real interpolationError = sabrInterpolation->interpolationError();
-                QL_ENSURE(interpolationError < maxTolerance_, 
-                   "SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const: accuracy not reached");
+                //QL_ENSURE(interpolationError < maxTolerance_, 
+                //   "SwaptionVolatilityCubeBySabr::sabrCalibration(Cube& marketVolCube) const: accuracy not reached");
                 alphas[j][k]= sabrInterpolation->alpha();
                 betas[j][k]= sabrInterpolation->beta();
                 nus[j][k]= sabrInterpolation->nu();
