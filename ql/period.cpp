@@ -61,37 +61,37 @@ namespace QuantLib {
         }
     }
 
-    Frequency Period::frequency() const {
-        if (length_==0)
-            return NoFrequency;
+    Frequency Period::frequency() const
+    {
+        // unsigned version
+        Size length = std::abs(length_);
+
+        if (length==0) return NoFrequency;
 
         switch (units_) {
           case Years:
-              if (length_==1)
-                  return Annual;
-              else
-                  QL_FAIL("cannot instantiate a Frequency from " << *this);
+            QL_REQUIRE(length==1,
+                       "cannot instantiate a Frequency from " << *this);
+            return Annual;
           case Months:
-              if ((12%length_)==0 && length_<=12)
-                  return Frequency(12/length_);
-              else
-                  QL_FAIL("cannot instantiate a Frequency from " << *this);
+            QL_REQUIRE((12%length)==0 && length<=12,
+                       "cannot instantiate a Frequency from " << *this);
+            return Frequency(12/length);
           case Weeks:
-              if (length_==1)
+              if (length==1)
                   return Weekly;
-              else if (length_==2)
+              else if (length==2)
                   return Biweekly;
-              else if (length_==3)
+              else if (length==3)
                   return EveryThirdWeek;
-              else if (length_==4)
+              else if (length==4)
                   return EveryFourthWeek;
               else
                   QL_FAIL("cannot instantiate a Frequency from " << *this);
           case Days:
-              if (length_==1)
-                  return Daily;
-              else
-                  QL_FAIL("cannot instantiate a Frequency from " << *this);
+            QL_REQUIRE(length==1,
+                       "cannot instantiate a Frequency from " << *this);
+            return Daily;
           default:
             QL_FAIL("unknown time unit (" << Integer(units_));
         }

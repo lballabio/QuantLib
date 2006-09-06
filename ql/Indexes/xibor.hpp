@@ -52,7 +52,7 @@ namespace QuantLib {
         /*! \note this method does not always apply. Use tenor() if
                   possible.
         */
-        Frequency frequency() const;
+        Frequency frequency() const { return tenor_.frequency(); }
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
