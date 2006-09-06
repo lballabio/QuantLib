@@ -345,7 +345,8 @@ namespace QuantLib {
                 }
                 else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
-                    tranformation_ = boost::shared_ptr<Transformation>(new SabrParametersTransformation);
+                    tranformation_ = boost::shared_ptr<Transformation>
+                        (new SabrParametersTransformation);
                     NoConstraint constraint;
                     SABRError costFunction(this);
 
@@ -368,9 +369,6 @@ namespace QuantLib {
                         guess = tranformation_->inverse(guess);
                         method_->setInitialValue(guess);
                     }
-                    else {
-                        QL_REQUIRE(false, "Selected Sabr calibration not implemented");
-                    }
 
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
@@ -381,9 +379,11 @@ namespace QuantLib {
                     beta_ = y[1];
                     nu_    = y[2];
                     rho_   = y[3]; 
-
                 }
-                
+                else {
+                        QL_REQUIRE(false, "Selected Sabr calibration not implemented");
+                }
+     
                 SABREndCriteria_ = endCriteria();
                 error_ = interpolationError();
                 maxError_ = interpolationMaxError(); 

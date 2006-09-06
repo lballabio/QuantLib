@@ -227,7 +227,7 @@ void setup() {
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
     //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
-    swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
+    //swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
     {
 		modelOfYieldCurves_.push_back(GFunctionFactory::standard);
