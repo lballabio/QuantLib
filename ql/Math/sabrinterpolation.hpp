@@ -343,7 +343,7 @@ namespace QuantLib {
                     rho_   = y[2]; 
 
                 }
-                else {
+                else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
                     tranformation_ = boost::shared_ptr<Transformation>(new SabrParametersTransformation);
                     NoConstraint constraint;
@@ -364,6 +364,9 @@ namespace QuantLib {
 
                         guess = tranformation_->inverse(guess);
                         method_->setInitialValue(guess);
+                    }
+                    else {
+                        QL_REQUIRE(false, "Selected Sabr calibration not implemented");
                     }
 
                     Problem problem(costFunction, constraint, *method_);
