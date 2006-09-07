@@ -88,6 +88,7 @@ int main(int, char* []) {
         BusinessDayConvention bondBusinessDayConvention = Unadjusted;
         Real bondCleanPrice = 89.97693786;
         Real bondRedemption = 100.0;
+        Real faceAmount = 100.0;
 
 
         Settings::instance().evaluationDate() = repoSettlementDate;
@@ -102,7 +103,8 @@ int main(int, char* []) {
 
 
         boost::shared_ptr<FixedCouponBond> bond(
-                     new FixedCouponBond(bondIssueDate,
+                     new FixedCouponBond(faceAmount,
+                                         bondIssueDate,
                                          bondDatedDate,
                                          bondMaturityDate,
                                          bondSettlementDays,

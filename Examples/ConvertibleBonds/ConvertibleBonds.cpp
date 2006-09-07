@@ -71,6 +71,7 @@ int main(int argc, char* argv[])
         Integer settlementDays = 3;
         Integer length = 5;
         Real redemption = 100.0;
+        Real faceAmount = 100.0;
         Real conversionRatio = redemption/underlying; // at the money
 
         // set up dates/schedules
@@ -205,13 +206,13 @@ int main(int argc, char* argv[])
         boost::shared_ptr<PricingEngine> engine(
                  new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
-        ConvertibleFixedCouponBond europeanBond(
+        ConvertibleFixedCouponBond europeanBond(faceAmount,
                                 stochasticProcess, exercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
                                 coupons, bondDayCount, schedule, redemption);
 
-        ConvertibleFixedCouponBond americanBond(
+        ConvertibleFixedCouponBond americanBond(faceAmount,
                                 stochasticProcess, amExercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
