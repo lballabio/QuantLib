@@ -69,29 +69,22 @@ namespace QuantLib {
     };
 
     //! 1-week %EURLibor index
-    class EURLiborSW : public WeeklyTenorEURLibor {
+    class EURLibor1WK : public WeeklyTenorEURLibor {
       public:
-        EURLiborSW(const Handle<YieldTermStructure>& h =
+        EURLibor1WK(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : WeeklyTenorEURLibor(Period(1, Weeks), h) {}
     };
 
     //! 2-weeks %Euribor index
-    class EURLibor2W : public WeeklyTenorEURLibor {
+    class EURLibor2WK : public WeeklyTenorEURLibor {
       public:
-        EURLibor2W(const Handle<YieldTermStructure>& h =
+        EURLibor2WK(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : WeeklyTenorEURLibor(Period(2, Weeks), h) {}
     };
 
-    //! 3-weeks %EURLibor index
-    class EURLibor3W : public WeeklyTenorEURLibor {
-      public:
-        EURLibor3W(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
-        : WeeklyTenorEURLibor(Period(3, Weeks), h) {}
-    };
-
+   
     //! 1-month %EURLibor index
     class EURLibor1M : public MonthlyTenorEURLibor {
       public:
