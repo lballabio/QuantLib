@@ -179,7 +179,7 @@ int main(int, char* [])
                                Period(swapLenghts[j], Years),
                                Handle<Quote>(vol),
                                indexSixMonths,
-                               indexSixMonths->frequency(),
+                               indexSixMonths->tenor(),
                                indexSixMonths->dayCounter(),
                                indexSixMonths->dayCounter(),
                                rhTermStructure)));
