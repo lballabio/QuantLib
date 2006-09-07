@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +23,6 @@
 
 #ifndef quantlib_gaussian_orthogonal_polynomial_hpp
 #define quantlib_gaussian_orthogonal_polynomial_hpp
-
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <ql/types.hpp>
 

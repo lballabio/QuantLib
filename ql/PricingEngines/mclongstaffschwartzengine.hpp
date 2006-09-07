@@ -32,11 +32,9 @@ namespace QuantLib {
     //! Longstaff Schwarz Monte Carlo engine for early exercise options
     /*! References:
 
-        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options 
-        by Simulation: A Simple Least-Squares Approach, The Review of 
+        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options
+        by Simulation: A Simple Least-Squares Approach, The Review of
         Financial Studies, Volume 14, No. 1, 113-147
-  
-        \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
@@ -54,21 +52,21 @@ namespace QuantLib {
             path_generator_type;
 
         MCLongstaffSchwartzEngine(
-            Size timeSteps, 
+            Size timeSteps,
             Size timeStepsPerYear,
             bool brownianBridge,
-            bool antitheticVariate, 
+            bool antitheticVariate,
             bool controlVariate,
-            Size requiredSamples, 
+            Size requiredSamples,
             Real requiredTolerance,
-            Size maxSamples, 
+            Size maxSamples,
             BigNatural seed,
             Size nCalibrationSamples = Null<Size>());
-        
+
         void calculate() const;
 
       protected:
-        virtual boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> > 
+        virtual boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
                                                    lsmPathPricer() const = 0;
 
         TimeGrid timeGrid() const;
@@ -84,20 +82,20 @@ namespace QuantLib {
         const Size seed_;
         const Size nCalibrationSamples_;
 
-        mutable boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> > 
+        mutable boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
             pathPricer_;
     };
 
     template <class GenericEngine, class MC, class S> inline
     MCLongstaffSchwartzEngine<GenericEngine,MC,S>::MCLongstaffSchwartzEngine(
-            Size timeSteps, 
+            Size timeSteps,
             Size timeStepsPerYear,
             bool brownianBridge,
-            bool antitheticVariate, 
+            bool antitheticVariate,
             bool controlVariate,
-            Size requiredSamples, 
+            Size requiredSamples,
             Real requiredTolerance,
-            Size maxSamples, 
+            Size maxSamples,
             BigNatural seed,
             Size nCalibrationSamples)
     : McSimulation<MC, S> (antitheticVariate, controlVariate),
@@ -108,12 +106,12 @@ namespace QuantLib {
       requiredTolerance_  (requiredTolerance),
       maxSamples_         (maxSamples),
       seed_               (seed),
-      nCalibrationSamples_( (nCalibrationSamples == Null<Size>()) 
+      nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
                             ? 2048 : nCalibrationSamples) {
     }
 
     template <class GenericEngine, class MC, class S> inline
-    boost::shared_ptr<typename 
+    boost::shared_ptr<typename
         MCLongstaffSchwartzEngine<GenericEngine, MC, S>::path_pricer_type>
         MCLongstaffSchwartzEngine<GenericEngine, MC, S>::pathPricer() const {
 
@@ -126,9 +124,9 @@ namespace QuantLib {
         pathPricer_ = this->lsmPathPricer();
         this->mcModel_ = boost::shared_ptr<MonteCarloModel<MC> >(
                           new MonteCarloModel<MC>
-                              (pathGenerator(), pathPricer_, 
+                              (pathGenerator(), pathPricer_,
                                stats_type(), this->antitheticVariate_));
-        
+
         this->mcModel_->addSamples(nCalibrationSamples_);
         this->pathPricer_->calibrate();
 
@@ -143,7 +141,7 @@ namespace QuantLib {
     }
 
     template <class GenericEngine, class MC, class S> inline
-    TimeGrid MCLongstaffSchwartzEngine<GenericEngine, MC, S>::timeGrid() 
+    TimeGrid MCLongstaffSchwartzEngine<GenericEngine, MC, S>::timeGrid()
         const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
         Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
@@ -158,7 +156,7 @@ namespace QuantLib {
     }
 
     template <class GenericEngine, class MC, class S> inline
-    boost::shared_ptr<typename 
+    boost::shared_ptr<typename
         MCLongstaffSchwartzEngine<GenericEngine, MC, S>::path_generator_type>
     MCLongstaffSchwartzEngine<GenericEngine, MC, S>::pathGenerator() const {
         typedef typename MC::rng_traits RNG;
@@ -173,4 +171,6 @@ namespace QuantLib {
     }
 
 }
+
+
 #endif

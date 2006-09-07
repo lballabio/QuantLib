@@ -24,16 +24,12 @@
 #ifndef quantlib_early_exercise_path_pricer_hpp
 #define quantlib_early_exercise_path_pricer_hpp
 
-#include <boost/function.hpp>
-
-#include <ql/types.hpp>
 #include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
-
+#include <boost/function.hpp>
 
 namespace QuantLib {
-
 
     template <class PathType>
     class EarlyExerciseTraits {
@@ -63,19 +59,19 @@ namespace QuantLib {
 
         \ingroup mcarlo
     */
-    template<class PathType, 
+    template<class PathType,
              class TimeType=Size, class ValueType=Real>
     class EarlyExercisePathPricer {
       public:
         typedef typename EarlyExerciseTraits<PathType>::StateType StateType;
 
         virtual ~EarlyExercisePathPricer() {}
-        virtual ValueType operator()(const PathType& path, 
+        virtual ValueType operator()(const PathType& path,
                                      TimeType t) const = 0;
 
         virtual StateType
             state(const PathType& path, TimeType t) const = 0;
-        virtual std::vector<boost::function1<ValueType, StateType> > 
+        virtual std::vector<boost::function1<ValueType, StateType> >
             basisSystem() const = 0;
     };
 }

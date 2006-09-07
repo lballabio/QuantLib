@@ -21,18 +21,16 @@
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
 
-#include <deque>
-#include <boost/bind.hpp>
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
 #include <ql/Math/functional.hpp>
 #include <ql/Math/gaussianorthogonalpolynomial.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <deque>
 
 using boost::bind;
-
 
 namespace QuantLib {
 
@@ -41,7 +39,7 @@ namespace QuantLib {
         // the most frequently used basis system
         const Size maxPolynomOrder = 10;
 
-        template <Size N> 
+        template <Size N>
         inline Real times(Real x) {
             return x*times<N-1>(x);
         }
@@ -64,24 +62,24 @@ namespace QuantLib {
         }
 
         // some compilers have problems with Array::operator[]
-        // in conjunction with boost::bind (e.g. gcc-4.1.1). 
+        // in conjunction with boost::bind (e.g. gcc-4.1.1).
         // Therefore this workaround function will be defined.
         inline Real f_workaround(const Array& a, Size i) {
             return a[i];
-        } 
+        }
     }
 
-    std::vector<boost::function1<Real, Real> > 
+    std::vector<boost::function1<Real, Real> >
     LsmBasisSystem::pathBasisSystem(Size order, PolynomType polynomType) {
 
-        QL_REQUIRE(order <= maxPolynomOrder, 
+        QL_REQUIRE(order <= maxPolynomOrder,
                    "order of basis system exceeds max order");
-        
+
         std::vector<boost::function1<Real, Real> > ret;
         for (Size i=0; i<=order; ++i) {
             switch (polynomType) {
               case Monomial:
-                  ret.push_back(monomials<maxPolynomOrder>()[i]);
+                ret.push_back(monomials<maxPolynomOrder>()[i]);
                 break;
               case Laguerre:
                 ret.push_back(
@@ -117,31 +115,31 @@ namespace QuantLib {
                 QL_FAIL("unknown regression type");
             }
         }
-        
+
         return ret;
     }
 
 
-    std::vector<boost::function1<Real, Array> > 
-    LsmBasisSystem::multiPathBasisSystem(Size dim, Size order, 
+    std::vector<boost::function1<Real, Array> >
+    LsmBasisSystem::multiPathBasisSystem(Size dim, Size order,
                                          PolynomType polynomType) {
 
-        const std::vector<boost::function1<Real, Real> > b 
+        const std::vector<boost::function1<Real, Real> > b
             = pathBasisSystem(order, polynomType);
 
         std::vector<boost::function1<Real, Array> > ret;
         ret.push_back(constant<Array, Real>(1.0));
 
         for (Size i=1; i<=order; ++i) {
-            const std::vector<boost::function1<Real, Array> > a 
+            const std::vector<boost::function1<Real, Array> > a
                 = w(dim, i, polynomType, b);
-            
+
             for (std::vector<boost::function1<Real, Array> >::const_iterator
                      iter = a.begin(); iter < a.end(); ++iter) {
                 ret.push_back(*iter);
             }
         }
-        
+
         // remove-o-zap: now remove redundant functions.
         // usually we do have a lot of them due to the construction schema.
         // We use a more "hands on" method here.
@@ -157,7 +155,7 @@ namespace QuantLib {
             for (k=0; k<dim; ++k) {
                 x[k] = rng.next().value;
             }
-            
+
             // get return values for all basis functions
             for (k=0; k<ret.size(); ++k) {
                 v[k] = ret[k](x);
@@ -165,9 +163,9 @@ namespace QuantLib {
 
             // find dublicates
             for (k=0; k<ret.size(); ++k) {
-                if (std::find_if(v.begin(), v.end(), 
-                                 bind(equal_with<Real>(10*v[k]*QL_EPSILON), 
-                                      v[k], _1) ) 
+                if (std::find_if(v.begin(), v.end(),
+                                 bind(equal_within<Real>(10*v[k]*QL_EPSILON),
+                                      v[k], _1) )
                     == v.begin() + k) {
 
                     // don't remove this item, it's unique!
@@ -192,7 +190,7 @@ namespace QuantLib {
     }
 
 
-    std::vector<boost::function1<Real, Array> > 
+    std::vector<boost::function1<Real, Array> >
     LsmBasisSystem::w(Size dim, Size order, PolynomType polynomType,
                       const std::vector<boost::function1<Real, Real> > & b) {
 
@@ -203,7 +201,7 @@ namespace QuantLib {
                 = w(dim, order-i, polynomType, b);
 
            for (Size j=0; j<dim; ++j) {
-               const boost::function1<Real, Array> a 
+               const boost::function1<Real, Array> a
                    = bind(b[i], bind(f_workaround, _1, j));
 
                if (i == order) {
@@ -212,7 +210,7 @@ namespace QuantLib {
                else {
                    // add linear combinations
                    for (Size j=0; j<left.size(); ++j) {
-                       ret.push_back( 
+                       ret.push_back(
                             boost::lambda::bind(a,      (boost::lambda::_1))
                            *boost::lambda::bind(left[j],(boost::lambda::_1)));
                    }
@@ -222,5 +220,6 @@ namespace QuantLib {
 
        return ret;
     }
+
 }
 

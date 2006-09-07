@@ -24,16 +24,17 @@
 #ifndef quantlib_linear_least_squares_regression_hpp
 #define quantlib_linear_least_squares_regression_hpp
 
-#include <vector>
+#include <ql/qldefines.hpp>
 #ifdef QL_PATCH_MSVC71
 #pragma warning(disable:4224)
 #endif
-#include <boost/function.hpp>
 #ifdef QL_PATCH_MSVC71
 #pragma warning(default:4224)
 #endif
 #include <ql/Math/svd.hpp>
 #include <ql/Math/array.hpp>
+#include <boost/function.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -49,8 +50,8 @@ namespace QuantLib {
     class LinearLeastSquaresRegression {
       public:
         LinearLeastSquaresRegression(
-            const std::vector<ArgumentType> & x, 
-            const std::vector<Real> &         y, 
+            const std::vector<ArgumentType> & x,
+            const std::vector<Real> &         y,
             const std::vector<boost::function1<Real, ArgumentType> > & v);
 
         const Array& a() const   { return a_;  }
@@ -63,13 +64,13 @@ namespace QuantLib {
 
     template <class ArgumentType> inline
     LinearLeastSquaresRegression<ArgumentType>::LinearLeastSquaresRegression(
-        const std::vector<ArgumentType> & x, 
-        const std::vector<Real> &         y, 
+        const std::vector<ArgumentType> & x,
+        const std::vector<Real> &         y,
         const std::vector<boost::function1<Real, ArgumentType> > & v)
     : a_  (v.size(), 0.0),
       err_(v.size(), 0.0) {
 
-        QL_REQUIRE(x.size() == y.size(), 
+        QL_REQUIRE(x.size() == y.size(),
                    "sample set need to be of the same size");
         QL_REQUIRE(x.size() >= v.size(), "sample set is too small");
 
@@ -98,7 +99,7 @@ namespace QuantLib {
                 const Real u = std::inner_product(U.column_begin(i),
                                                   U.column_end(i),
                                                   y.begin(), 0.0)/w[i];
-                
+
                 for (Size j=0; j<m; ++j) {
                     a_[j]  +=u*V[j][i];
                     err_[j]+=V[j][i]*V[j][i]/(w[i]*w[i]);

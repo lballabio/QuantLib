@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Neil Firth
-               2006 Klaus Spanderen
+ Copyright (C) 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,31 +18,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <boost/bind.hpp>
-
 #include <ql/Math/functional.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
+#include <boost/bind.hpp>
 
 using boost::bind;
 
 namespace QuantLib {
-    
+
     AmericanBasketPathPricer::AmericanBasketPathPricer(
         Size assetNumber,
         AmericanBasketPathPricer::BasketType basketType,
         const boost::shared_ptr<Payoff>& payoff,
         Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType) 
+        LsmBasisSystem::PolynomType polynomType)
     : assetNumber_ (assetNumber),
       basketType_  (basketType),
       payoff_      (payoff),
       scalingValue_(1.0),
       v_           (LsmBasisSystem::multiPathBasisSystem(assetNumber_,
-                                                         polynomOrder, 
+                                                         polynomOrder,
                                                          polynomType)) {
 
-        QL_REQUIRE(   basketType_ == BasketOption::Min 
+        QL_REQUIRE(   basketType_ == BasketOption::Min
                    || basketType_ == BasketOption::Max,
                    "unknwon basket option type");
 
@@ -53,18 +52,18 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Chebyshev2th,
                    "insufficient polynom type");
 
-        const boost::shared_ptr<StrikedTypePayoff> strikePayoff 
+        const boost::shared_ptr<StrikedTypePayoff> strikePayoff
             = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
         if (strikePayoff) {
             scalingValue_/=strikePayoff->strike();
         }
 
-        v_.push_back(boost::bind(&AmericanBasketPathPricer::payoff, 
+        v_.push_back(boost::bind(&AmericanBasketPathPricer::payoff,
                                  this, _1));
     }
 
-    Array AmericanBasketPathPricer::state(const MultiPath& path, 
+    Array AmericanBasketPathPricer::state(const MultiPath& path,
                                           Size t) const {
         QL_REQUIRE(path.assetNumber() == assetNumber_, "invalid multipath");
 
@@ -72,7 +71,7 @@ namespace QuantLib {
         for (Size i=0; i<assetNumber_; ++i) {
             tmp[i] = path[i][t]*scalingValue_;
         }
-        
+
         return tmp;
     }
 
@@ -93,12 +92,12 @@ namespace QuantLib {
         return (*payoff_)(value/scalingValue_);
     }
 
-    Real AmericanBasketPathPricer::operator()(const MultiPath& path, 
+    Real AmericanBasketPathPricer::operator()(const MultiPath& path,
                                               Size t) const {
         return this->payoff(this->state(path, t));
     }
 
-    std::vector<boost::function1<Real, Array> > 
+    std::vector<boost::function1<Real, Array> >
     AmericanBasketPathPricer::basisSystem() const {
         return v_;
     }

@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    //! American Monte Carlo engine 
+    //! American Monte Carlo engine
     /*! References:
 
         \ingroup vanillaengines
@@ -42,12 +42,12 @@ namespace QuantLib {
               reproducing results available in web/literature
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCAmericanEngine 
-        : public MCLongstaffSchwartzEngine<VanillaOption::engine, 
+    class MCAmericanEngine
+        : public MCLongstaffSchwartzEngine<VanillaOption::engine,
                                            SingleVariate<RNG>, S>{
       public:
         MCAmericanEngine(Size timeSteps,
-                         Size timeStepsPerYear, 
+                         Size timeStepsPerYear,
                          bool antitheticVariate,
                          bool controlVariate,
                          Size requiredSamples,
@@ -57,9 +57,9 @@ namespace QuantLib {
                          Size polynomOrder,
                          LsmBasisSystem::PolynomType polynomType,
                          Size nCalibrationSamples = Null<Size>());
-        
+
       protected:
-        boost::shared_ptr<LongstaffSchwartzPathPricer<Path> > 
+        boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
             lsmPathPricer() const;
 
         Real controlVariateValue() const;
@@ -81,7 +81,7 @@ namespace QuantLib {
         Real operator()(const Path& path, Size t) const;
 
         std::vector<boost::function1<Real, Real> > basisSystem() const;
-        
+
       protected:
         Real payoff(Real state) const;
 
@@ -116,32 +116,32 @@ namespace QuantLib {
         Size steps_, stepsPerYear_;
         Size samples_, maxSamples_, calibrationSamples_;
         Real tolerance_;
-        BigNatural seed_; 
+        BigNatural seed_;
         Size polynomOrder_;
         LsmBasisSystem::PolynomType polynomType_;
     };
 
     template <class RNG, class S> inline
     MCAmericanEngine<RNG,S>::MCAmericanEngine(
-        Size timeSteps, Size timeStepsPerYear, 
+        Size timeSteps, Size timeStepsPerYear,
         bool antitheticVariate, bool controlVariate,
         Size requiredSamples, Real requiredTolerance,
-        Size maxSamples,BigNatural seed, 
-        Size polynomOrder, LsmBasisSystem::PolynomType polynomType, 
+        Size maxSamples,BigNatural seed,
+        Size polynomOrder, LsmBasisSystem::PolynomType polynomType,
         Size nCalibrationSamples)
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
                                 SingleVariate<RNG>, S>(
         timeSteps, timeStepsPerYear,
         false, antitheticVariate,
         controlVariate, requiredSamples,
-        requiredTolerance, maxSamples, 
+        requiredTolerance, maxSamples,
         seed, nCalibrationSamples),
       polynomOrder_(polynomOrder),
       polynomType_(polynomType) {
     }
 
     template <class RNG, class S>
-    inline boost::shared_ptr<LongstaffSchwartzPathPricer<Path> > 
+    inline boost::shared_ptr<LongstaffSchwartzPathPricer<Path> >
     MCAmericanEngine<RNG,S>::lsmPathPricer() const {
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
@@ -156,19 +156,19 @@ namespace QuantLib {
                    "payoff at expiry not handled");
 
         boost::shared_ptr<AmericanPathPricer> earlyExercisePathPricer(
-            new AmericanPathPricer(this->arguments_.payoff, 
+            new AmericanPathPricer(this->arguments_.payoff,
                                    polynomOrder_, polynomType_));
 
         return boost::shared_ptr<LongstaffSchwartzPathPricer<Path> > (
-             new LongstaffSchwartzPathPricer<Path>(this->timeGrid(), 
+             new LongstaffSchwartzPathPricer<Path>(this->timeGrid(),
                                                    earlyExercisePathPricer,
                                                    process->riskFreeRate()));
     }
 
     template <class RNG, class S>
-    inline boost::shared_ptr<PathPricer<Path> > 
+    inline boost::shared_ptr<PathPricer<Path> >
     MCAmericanEngine<RNG,S>::controlPathPricer() const {
-        boost::shared_ptr<StrikedTypePayoff> payoff = 
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "StrikedTypePayoff needed for control variate");
@@ -180,14 +180,14 @@ namespace QuantLib {
 
         return boost::shared_ptr<PathPricer<Path> >(
             new EuropeanPathPricer(
-                payoff->optionType(), 
+                payoff->optionType(),
                 payoff->strike(),
                 process->riskFreeRate()->discount(this->timeGrid().back()))
             );
     }
 
     template <class RNG, class S>
-    inline boost::shared_ptr<PricingEngine> 
+    inline boost::shared_ptr<PricingEngine>
     MCAmericanEngine<RNG,S>::controlPricingEngine() const {
         return boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine());
     }
@@ -208,7 +208,7 @@ namespace QuantLib {
              new EuropeanExercise(this->arguments_.exercise->lastDate()));
 
         controlPE->calculate();
-        
+
         const VanillaOption::results* controlResults =
             dynamic_cast<const VanillaOption::results*>(controlPE->results());
 
@@ -333,4 +333,6 @@ namespace QuantLib {
     }
 
 }
+
+
 #endif

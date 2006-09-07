@@ -24,24 +24,23 @@
 #ifndef quantlib_longstaff_schwartz_path_pricer_hpp
 #define quantlib_longstaff_schwartz_path_pricer_hpp
 
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-
 #include <ql/yieldtermstructure.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Math/linearleastsquaresregression.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/earlyexercisepathpricer.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 namespace QuantLib {
 
     //! Longstaff Schwarz Path Pricer for early exercise options
     /*! References:
 
-        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options 
-        by Simulation: A Simple Least-Squares Approach, The Review of 
+        Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options
+        by Simulation: A Simple Least-Squares Approach, The Review of
         Financial Studies, Volume 14, No. 1, 113-147
-  
+
         \ingroup mcarlo
 
         \test the correctness of the returned value is tested by
@@ -62,9 +61,9 @@ namespace QuantLib {
 
       protected:
         bool  calibrationPhase_;
-        const boost::shared_ptr<EarlyExercisePathPricer<PathType> > 
+        const boost::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
-        
+
         boost::scoped_array<Array> coeff_;
         boost::scoped_array<DiscountFactor> dF_;
 
@@ -75,7 +74,7 @@ namespace QuantLib {
     template <class PathType> inline
     LongstaffSchwartzPathPricer<PathType>::LongstaffSchwartzPathPricer(
         const TimeGrid& times,
-        const boost::shared_ptr<EarlyExercisePathPricer<PathType> >& 
+        const boost::shared_ptr<EarlyExercisePathPricer<PathType> >&
             pathPricer,
         const boost::shared_ptr<YieldTermStructure>& termStructure)
     : calibrationPhase_(true),
@@ -119,7 +118,7 @@ namespace QuantLib {
                 }
             }
         }
-        
+
         return price*dF_[0];
     }
 
@@ -149,11 +148,11 @@ namespace QuantLib {
             }
 
             if (v_.size() <=  x.size()) {
-                coeff_[i] 
+                coeff_[i]
                     = LinearLeastSquaresRegression<StateType>(x, y, v_).a();
             }
             else {
-            // if number of itm paths is smaller then the number of 
+            // if number of itm paths is smaller then the number of
             // calibration functions -> no early exercise
                 coeff_[i] = Array(v_.size(), 0.0);
             }
@@ -169,7 +168,7 @@ namespace QuantLib {
                         prices[j] = exercise[j];
                     }
                     ++k;
-                }            
+                }
             }
         }
 
@@ -179,5 +178,6 @@ namespace QuantLib {
         calibrationPhase_ = false;
     }
 }
+
 
 #endif

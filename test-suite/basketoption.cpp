@@ -495,7 +495,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         Size timeSteps = 500;
         BigNatural seed = 1;
         boost::shared_ptr<PricingEngine> mcLSMCEngine(
-            new MCAmericanBasketEngine<>(requiredSamples, timeSteps, 
+            new MCAmericanBasketEngine<>(requiredSamples, timeSteps,
                                          seed, true));
 
 
@@ -828,11 +828,11 @@ void BasketOptionTest::testOddSamples() {
 
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
-    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
-    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
-    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
-    //suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
     return suite;
 }
 

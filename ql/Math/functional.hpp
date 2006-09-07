@@ -24,9 +24,9 @@
 #ifndef quantlib_functional_hpp
 #define quantlib_functional_hpp
 
+#include <ql/types.hpp>
 #include <cmath>
 #include <functional>
-#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -78,12 +78,12 @@ namespace QuantLib {
         nowhere() : constant<Real,bool>(false) {}
     };
 
-    template <class T> 
-    class equal_with : public std::binary_function<T, T, bool> {
+    template <class T>
+    class equal_within : public std::binary_function<T, T, bool> {
       public:
-        equal_with(const T& eps) : eps_(eps) {}
+        equal_within(const T& eps) : eps_(eps) {}
         bool operator()(const T a, const T b) const {
-            return std::fabs(a-b) <= eps_; 
+            return std::fabs(a-b) <= eps_;
         }
       private:
         const T eps_;
@@ -130,7 +130,7 @@ namespace QuantLib {
     }
 
     template <class F, class G, class H>
-    class binary_compose3_function : 
+    class binary_compose3_function :
         public std::binary_function<typename G::argument_type,
                                     typename H::argument_type,
                                     typename F::result_type>{
@@ -138,11 +138,11 @@ namespace QuantLib {
         typedef typename G::argument_type first_argument_type;
         typedef typename H::argument_type second_argument_type;
         typedef typename F::result_type result_type;
-        
-        binary_compose3_function(const F& f, const G& g, const H& h)
-        : f_(f), g_(g), h_(h) {} 
 
-        result_type operator()(const first_argument_type&  x, 
+        binary_compose3_function(const F& f, const G& g, const H& h)
+        : f_(f), g_(g), h_(h) {}
+
+        result_type operator()(const first_argument_type&  x,
                                const second_argument_type& y) const {
             return f_(g_(x), h_(y));
         }
@@ -153,7 +153,7 @@ namespace QuantLib {
         H h_;
     };
 
-    template <class F, class G, class H> binary_compose3_function<F, G, H> 
+    template <class F, class G, class H> binary_compose3_function<F, G, H>
     compose3(const F& f, const G& g, const H& h) {
         return binary_compose3_function<F, G, H>(f, g, h);
     }

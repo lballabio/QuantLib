@@ -37,7 +37,7 @@ QL_END_TEST_LOCALS(LinearLeastSquaresRegressionTest)
 
 void LinearLeastSquaresRegressionTest::testRegression() {
 
-    BOOST_MESSAGE("Testing linear least squares regression");
+    BOOST_MESSAGE("Testing linear least-squares regression...");
 
     QL_TEST_BEGIN
     const Real tolerance = 0.025;
@@ -56,8 +56,8 @@ void LinearLeastSquaresRegressionTest::testRegression() {
 
     for (Size k=0; k<3; ++k) {
         Size i;
-        const Real a[] = {rng.next().value, 
-                          rng.next().value, 
+        const Real a[] = {rng.next().value,
+                          rng.next().value,
                           rng.next().value,
                           rng.next().value};
 
@@ -66,7 +66,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
             x[i] = rng.next().value;
 
             // regression in y = a_1 + a_2*x + a_3*x^2 + a_4*sin(x) + eps
-            y[i] =  a[0]*v[0](x[i]) + a[1]*v[1](x[i]) + a[2]*v[2](x[i]) 
+            y[i] =  a[0]*v[0](x[i]) + a[1]*v[1](x[i]) + a[2]*v[2](x[i])
                   + a[3]*v[3](x[i]) + rng.next().value;
         }
 
@@ -83,13 +83,13 @@ void LinearLeastSquaresRegressionTest::testRegression() {
                             << "\n    calculated: " << m.a()[i]
                             << "\n    error:      " << m.err()[i]
                             << "\n    expected:   " << a[i]);
-            }        
+            }
         }
 
         m = LinearLeastSquaresRegression<>(x, y, w);
 
         const Real ma[] = {m.a()[0], m.a()[1], m.a()[2]+m.a()[4],m.a()[3]};
-        const Real err[] = {m.err()[0], m.err()[1], 
+        const Real err[] = {m.err()[0], m.err()[1],
                             std::sqrt( m.err()[2]*m.err()[2]
                                       +m.err()[4]*m.err()[4]), m.err()[3]};
         for (i=0; i<v.size(); ++i) {
@@ -107,7 +107,7 @@ void LinearLeastSquaresRegressionTest::testRegression() {
 
 
 test_suite* LinearLeastSquaresRegressionTest::suite() {
-    test_suite* suite = 
+    test_suite* suite =
         BOOST_TEST_SUITE("linear least squares regression tests");
 
     suite->add(BOOST_TEST_CASE(

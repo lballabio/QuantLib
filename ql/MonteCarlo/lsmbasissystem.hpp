@@ -24,23 +24,22 @@
 #ifndef quantlib_lsm_basis_system_hpp
 #define quantlib_lsm_basis_system_hpp
 
-#include <vector>
-#include <boost/function.hpp>
-
 #include <ql/Math/array.hpp>
+#include <boost/function.hpp>
+#include <vector>
 
 namespace QuantLib {
 
     class LsmBasisSystem {
       public:
-        enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic, 
+        enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
                            Legendre, Chebyshev, Chebyshev2th };
 
-        static std::vector<boost::function1<Real, Real> > 
+        static std::vector<boost::function1<Real, Real> >
             pathBasisSystem(Size order, PolynomType polynomType);
 
-        static std::vector<boost::function1<Real, Array> > 
-            multiPathBasisSystem(Size dim, Size order, 
+        static std::vector<boost::function1<Real, Array> >
+            multiPathBasisSystem(Size dim, Size order,
                                  PolynomType polynomType);
 
       private:
@@ -48,6 +47,7 @@ namespace QuantLib {
             w(Size dim, Size order, PolynomType polynomType,
               const std::vector<boost::function1<Real, Real> > & basis);
     };
+
 }
 
 
