@@ -70,7 +70,7 @@ namespace QuantLib {
              Matrix browse() const;
          };
 
-        SwaptionVolatilityCubeBySabr::SwaptionVolatilityCubeBySabr(
+        SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
