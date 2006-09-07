@@ -154,9 +154,8 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        //fillVolatilityCube();
+        fillVolatilityCube();
         //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        ////denseParameters_ = sabrCalibration(marketVolCube_);
         //denseParameters_.updateInterpolators(); 
 
     }
@@ -332,19 +331,23 @@ namespace QuantLib {
             atmExerciseTime);      
         std::vector<Real>::iterator::difference_type 
             expiriesPreviousIndex = expiriesPreviousNode - exerciseTimes.begin();
-         if(expiriesPreviousIndex == exerciseTimes.size()-1) expiriesPreviousIndex--;
+         if(expiriesPreviousIndex >= exerciseTimes.size()-1) expiriesPreviousIndex = exerciseTimes.size()-2;
   
 
 
         lengthsPreviousNode = std::lower_bound(timeLengths.begin(),timeLengths.end(),atmTimeLength);
         std::vector<Real>::iterator::difference_type 
         lengthsPreviousIndex = lengthsPreviousNode - timeLengths.begin();
-        if(lengthsPreviousIndex == timeLengths.size()-1) lengthsPreviousIndex--;
+        if(lengthsPreviousIndex >= timeLengths.size()-1) lengthsPreviousIndex = timeLengths.size()-2;
 
         std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > smiles;
         std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnPreviousExpiry;
         std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnNextExpiry;
-        
+
+        QL_REQUIRE(expiriesPreviousIndex+1 < sparseSmiles_.size(),
+            "SwaptionVolatilityCubeBySabr::spreadVolInterpolation: expiriesPreviousIndex+1 >= sparseSmiles_.size()");
+         QL_REQUIRE(lengthsPreviousIndex+1 < sparseSmiles_[0].size(),
+            "SwaptionVolatilityCubeBySabr::spreadVolInterpolation: lengthsPreviousIndex+1 >= sparseSmiles_[0].size()");       
         smilesOnPreviousExpiry.push_back(sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex]);
         smilesOnPreviousExpiry.push_back(sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex+1]);
         smilesOnNextExpiry.push_back(sparseSmiles_[expiriesPreviousIndex+1][lengthsPreviousIndex]);
@@ -386,15 +389,13 @@ namespace QuantLib {
                     spreadVols[i][j] = smiles[i][j]->volatility(strikes[i][j])- atmVols[i][j];
                 }
             }
-
-           BilinearInterpolation localInterpolator(exercisesNodes.begin(), exercisesNodes.end(),
-                lengthsNodes.begin(), lengthsNodes.end(),spreadVols);
-           localInterpolator.enableExtrapolation(); 
             
-           result.push_back(localInterpolator.operator ()(atmExerciseTime, atmTimeLength));    
-
+           Cube localInterpolator(exercisesNodes, lengthsNodes, 1);
+            localInterpolator.setLayer(0, spreadVols);
+            localInterpolator.updateInterpolators();
             
-           result.push_back(localInterpolator.operator ()(atmTimeLength, atmExerciseTime ));  
+           result.push_back(localInterpolator.operator ()(atmExerciseTime, atmTimeLength)[0]);    
+
         }
 
         return result;
@@ -554,11 +555,11 @@ namespace QuantLib {
             std::vector<Real>::iterator::difference_type 
                 expiriesIndex = expiriesPreviousNode - expiries_.begin();
 
-            lengthsPreviousNode = std::lower_bound(lengths_.begin(),lengths_.end(),length);
+             lengthsPreviousNode = std::lower_bound(lengths_.begin(),lengths_.end(),length);
             std::vector<Real>::iterator::difference_type 
                 lengthsIndex = lengthsPreviousNode - lengths_.begin();
-            
-            if(expandExpiries || expandLengths ) 
+
+             if(expandExpiries || expandLengths ) 
                 expandLayers(expiriesIndex, expandExpiries, lengthsIndex, expandLengths);
             
             for(Size k=0;k<nLayers_;k++){
@@ -571,8 +572,8 @@ namespace QuantLib {
     }
     void SwaptionVolatilityCubeBySabr::Cube::expandLayers(Size i, bool expandExpiries, 
                                                           Size j, bool expandLengths){
-	    QL_REQUIRE(i<expiries_.size(),"Cube::expandLayers: incompatible size 1");
-        QL_REQUIRE(j<lengths_.size(),"Cube::expandLayers: incompatible size 2");
+	    QL_REQUIRE(i<=expiries_.size(),"Cube::expandLayers: incompatible size 1");
+        QL_REQUIRE(j<=lengths_.size(),"Cube::expandLayers: incompatible size 2");
  
         if(expandExpiries) expiries_.insert(expiries_.begin()+i,0.);
         if(expandLengths) lengths_.insert(lengths_.begin()+j,0.);
