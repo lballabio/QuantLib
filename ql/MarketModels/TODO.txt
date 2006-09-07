@@ -1,39 +1,48 @@
+============   almost done (need a final touch)
+
+Drift: Computation with rapid algorithm for reduced factor models (MEDIUM)
+Statistics: convergence tables (EASY)
+Pseudo-roots\calibration: factor reduction
+
+
+============== TO DO before Sept 18th
+Path generation: Sobol with Brownian bridging (multiple methods of
+                 variate allocation) (MEDIUM)
+Curve state: Set on coterminal swaps.  (MEDIUM)
+Products: coterminal European swaptions (EASY)
+Products: coterminal European swaptions using Z matrix
+Products: ratchet
+Pseudo-roots\calibration: orthogonal combination of inst vol models and coor models
+
+============== MORE TO DO
+
 priority in first parenthesis, extimated complexity in the second one
 
-Path generation
-- (1) Sobol with Brownian bridging (multiple methods of variate allocation)
-  (MEDIUM)
 - (4) antithetic sampling (EASY)
 - (4) moment matching (EASY)
 
 Drift
-- (1) Computation with rapid algorithm for reduced factor models (MEDIUM)
 - (4) Glasserman Zhao spot measure approximation (MEDIUM)
 - (4) capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
 
 Statistics
-- (2) convergence tables (EASY)
+-
 
 Termination criteria
 - (3) ability to terminate on time passed and select termination criterion (EASY)
 
 Pseudo-roots\calibration
-- (1) make rankReducedMatrix work
-- (1) a,b,c,d form (EASY)
 - (2) calibrator to produce abcd form from market data, with displacements
   (MEDIUM to HARD)
 - (2) swaption calibration using Z matrix with displacements (MEDIUM)
-- (2) different correlation structures (VARIABLE)
+- (2) different correlation structures (Schoenmakers and Coffey, etc) (VARIABLE)
 - (2) alignment with covariance structures in legacy code (?)
 
 Curve state
-- (4) Set on coterminal swaps.  (MEDIUM)
+- (4) Set on coterminal swaps. (MEDIUM)
 
 Products
-- (1) composite instrument
 - (3) floorlets with one or many steps.  (EASY)
-- (1) (coterminal) swaps
-- (1) coterminal European swaptions (EASY)
 - (1) Some real products! (MEDIUM)
 
 Quantlib
@@ -45,7 +54,7 @@ Quantlib
 TEST
 - (1) payment date different from reset dates
 
-============================
+============ 4th & 5th weeks
 
 Early Callability
 - Lower bounds for early exercise
@@ -75,3 +84,6 @@ Greeks
 
 Calibration
 - Simultaneous calibration to caplets and swaptions (HARD)
+
+Stochastic vol
+- 
