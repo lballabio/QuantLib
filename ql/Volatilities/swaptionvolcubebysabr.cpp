@@ -126,9 +126,9 @@ namespace QuantLib {
         parametersGuess_ = Cube(exerciseTimes_, timeLengths_, 4);
         for (i=0; i<4; i++)
         {
-            for (Size j=0; j<nExercise; j++) {
+            for (Size j=0; j<nExercise ; j++) {
                 for (Size k=0; k<nlengths; k++) {
-                    parametersGuess_.setElement(i, j, k, parametersGuess[j*nlengths+k][i]);
+                    parametersGuess_.setElement(i, j, k, parametersGuess[j+k*nExercise][i]);
                 }
             }
         }
@@ -174,7 +174,7 @@ namespace QuantLib {
         Matrix maxErrors(alphas);
 
         const std::vector<Matrix> tmpMarketVolCube = marketVolCube.points(); 
-
+        
         for (Size j=0; j<exerciseTimes.size(); j++) {
             for (Size k=0; k<timeLengths.size(); k++) {
                 const Rate atmForward = atmStrike(exerciseTimes[j], timeLengths[k]);
@@ -183,6 +183,7 @@ namespace QuantLib {
                     strikes.push_back(atmForward+strikeSpreads_[i]);
                     volatilities.push_back(tmpMarketVolCube[i][j][k]);
                 }
+
                 std::vector<Real> guess = parametersGuess_.operator ()(exerciseTimes[j], timeLengths[k]);
 
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation = 
@@ -219,7 +220,6 @@ namespace QuantLib {
         sabrParametersCube.setLayer(5, errors);
         sabrParametersCube.setLayer(6, maxErrors);
 
-        //sabrParametersCube.updateInterpolators();
         return sabrParametersCube;
 
     }
@@ -478,15 +478,16 @@ namespace QuantLib {
 	    QL_REQUIRE(lengths.size()>1,"Cube::Cube(...): wrong input lengths");
 
 	    std::vector<Matrix> points(nLayers_, Matrix(expiries_.size(), lengths_.size(), 0.0));
-        setPoints(points); 
+         
         for(Size k=0;k<nLayers_;k++){
+            transposedPoints_.push_back(transpose(points[k]));
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>( 
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
                                         lengths_.begin(), 
-                                        lengths_.end(),points_[k])));
+                                        lengths_.end(),transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
-        }   
-   	    setPoints(points); 
+        }
+        setPoints(points);
      }
 
     SwaptionVolatilityCubeBySabr::Cube::Cube(const Cube& o) {
@@ -494,10 +495,11 @@ namespace QuantLib {
 	    lengths_ = o.lengths_;
         nLayers_ = o.nLayers_;
         extrapolation_ = o.extrapolation_;
+        transposedPoints_ = o.transposedPoints_;
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>( 
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),o.points_[k])));
+                                        lengths_.begin(), lengths_.end(),transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }  
 	    setPoints(o.points_);
@@ -509,10 +511,11 @@ namespace QuantLib {
 	    lengths_ = o.lengths_;
         nLayers_ = o.nLayers_;
         extrapolation_ = o.extrapolation_;
+        transposedPoints_ = o.transposedPoints_;
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>( 
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),o.points_[k])));
+                                        lengths_.begin(), lengths_.end(),transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }  
 	    setPoints(o.points_);
@@ -524,7 +527,6 @@ namespace QuantLib {
 	    QL_REQUIRE(IndexOfRow<expiries_.size(),"Cube::setElement: incompatible IndexOfRow");
         QL_REQUIRE(IndexOfColumn<lengths_.size(),"Cube::setElement: incompatible IndexOfColumn");
 	    points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
-        //updateInterpolators();
     }
     void SwaptionVolatilityCubeBySabr::Cube::setPoints(const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,"Cube::setPoints: incompatible number of layers ");
@@ -532,7 +534,6 @@ namespace QuantLib {
         QL_REQUIRE(x[0].columns()==lengths_.size(),"Cube::setPoints: incompatible size 2");
 
 	    points_ = x;
-        //updateInterpolators();
     }
     void SwaptionVolatilityCubeBySabr::Cube::setLayer(Size i, const Matrix& x) {
         QL_REQUIRE(i<nLayers_,"Cube::setLayer: incompatible number of layer ");
@@ -540,7 +541,6 @@ namespace QuantLib {
         QL_REQUIRE(x.columns()==lengths_.size(),"Cube::setLayer: incompatible size 2");
 
 	    points_[i] = x;
-        //updateInterpolators();
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::setPoint(const Real& expiry, const Real& length,
@@ -549,6 +549,7 @@ namespace QuantLib {
             bool expandLengths = !(std::binary_search(lengths_.begin(),lengths_.end(),length));
            
             std::vector<Real>::const_iterator expiriesPreviousNode, lengthsPreviousNode;
+            
             expiriesPreviousNode = std::lower_bound(expiries_.begin(),expiries_.end(),expiry);
             std::vector<Real>::iterator::difference_type 
                 expiriesIndex = expiriesPreviousNode - expiries_.begin();
@@ -559,14 +560,13 @@ namespace QuantLib {
             
             if(expandExpiries || expandLengths ) 
                 expandLayers(expiriesIndex, expandExpiries, lengthsIndex, expandLengths);
-            //if(expandExpiries) expiriesIndex--;
-            //if(expandLengths) lengthsIndex--;
+            
             for(Size k=0;k<nLayers_;k++){
                 points_[k][expiriesIndex][lengthsIndex]= point[k];
             } 
+            
             expiries_[expiriesIndex] = expiry;
             lengths_[lengthsIndex] = length;
-            //updateInterpolators();
   
     }
     void SwaptionVolatilityCubeBySabr::Cube::expandLayers(Size i, bool expandExpiries, 
@@ -591,8 +591,6 @@ namespace QuantLib {
             }
         }
         setPoints(newPoints);
-
-        //updateInterpolators();
     }
 
     const std::vector<Matrix>& SwaptionVolatilityCubeBySabr::Cube::points() const {
@@ -602,7 +600,6 @@ namespace QuantLib {
     std::vector<Real> SwaptionVolatilityCubeBySabr::Cube::operator()(const Real& expiry, 
                                                                 const Real& length) const {
         std::vector<Real> result;
-        //updateInterpolators();
         for(Size k=0;k<nLayers_;k++){
             result.push_back(interpolators_[k]->operator()(expiry, length));
         }   
@@ -619,9 +616,11 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::Cube::updateInterpolators() const{
 	    for(Size k=0;k<nLayers_;k++){
-            interpolators_[k] = boost::shared_ptr<BilinearInterpolation>( new BilinearInterpolation                       (expiries_.begin(), expiries_.end(),lengths_.begin(), lengths_.end(),points_[k]));
+            transposedPoints_[k]=transpose(points_[k]);
+            interpolators_[k] = boost::shared_ptr<BilinearInterpolation>( new BilinearInterpolation                       (expiries_.begin(), expiries_.end(),lengths_.begin(), lengths_.end(),transposedPoints_[k]));
+
             interpolators_[k]->enableExtrapolation();
-        }    
+        } 
     }	
     Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const{
         Matrix result(lengths_.size()*expiries_.size(),nLayers_+2,0.);

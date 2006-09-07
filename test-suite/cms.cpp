@@ -162,7 +162,7 @@ void setup() {
     Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
     
     for(Size i=0; i<lengths.size()*lengths.size(); i++) {
-        parametersGuess[i][0] = .2;
+        parametersGuess[i][0] = .002*i+0.001;
         parametersGuess[i][1] = 1.;
         parametersGuess[i][2] = .4;
         parametersGuess[i][3] = 0.;

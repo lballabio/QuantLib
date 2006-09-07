@@ -40,6 +40,7 @@ namespace QuantLib {
              std::vector<Real> expiries_, lengths_;
              Size nLayers_;
              std::vector<Matrix> points_;
+             mutable std::vector<Disposable<Matrix> > transposedPoints_;
 
              bool extrapolation_;
              mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
