@@ -12,7 +12,7 @@ Curve state: Set on coterminal swaps.  (MEDIUM)
 Products: coterminal European swaptions (EASY)
 Products: coterminal European swaptions using Z matrix
 Products: ratchet
-Pseudo-roots\calibration: orthogonal combination of inst vol models and coor models
+Pseudo-roots\calibration: orthogonal combination of inst vol models and corr models
 
 ============== MORE TO DO
 
@@ -86,4 +86,4 @@ Calibration
 - Simultaneous calibration to caplets and swaptions (HARD)
 
 Stochastic vol
-- 
+-

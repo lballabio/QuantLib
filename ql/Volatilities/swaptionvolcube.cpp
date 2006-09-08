@@ -230,14 +230,14 @@ namespace QuantLib {
 
         // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
 
-        Schedule fixedSchedule = Schedule(startDate, endDate,
+        Schedule fixedSchedule(startDate, endDate,
             Period(fixedLegFrequency_), calendar_,
             fixedLegConvention_, fixedLegConvention_,
             true, true);
         //Frequency floatingLegFrequency_ = iborIndex_->frequency();
         BusinessDayConvention floatingLegBusinessDayConvention_ =
             iborIndex_->businessDayConvention();
-        Schedule floatSchedule = Schedule(startDate, endDate,
+        Schedule floatSchedule(startDate, endDate,
             iborIndex_->tenor(), calendar_, 
             floatingLegBusinessDayConvention_, floatingLegBusinessDayConvention_,
             true, true);
