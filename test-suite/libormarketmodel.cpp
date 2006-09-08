@@ -420,8 +420,8 @@ void LiborMarketModelTest::testSwaptionPricing() {
             Date fwdStart    = settlement + Period(6*i, Months);
             Date fwdMaturity = fwdStart + Period(6*j, Months);
 
-            Schedule schedule(calendar, fwdStart, fwdMaturity,
-                              index->tenor(), convention);
+            Schedule schedule(fwdStart, fwdMaturity, index->tenor(), calendar,
+                               convention, convention, false, false);
 
             Rate swapRate  = 0.0404;
             boost::shared_ptr<VanillaSwap> forwardSwap(
