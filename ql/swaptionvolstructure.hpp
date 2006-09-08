@@ -88,6 +88,11 @@ namespace QuantLib {
         //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given starting date and length
+        Volatility volatility(const Period& optionTenor,
+                              const Period& swapTenor,
+                              Rate strike,
+                              bool extrapolate = false) const;
+        //! returns the volatility for a given starting date and length
         Volatility volatility(const Date& exerciseDate,
                               const Period& length,
                               Rate strike,
@@ -151,6 +156,19 @@ namespace QuantLib {
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
     : TermStructure(settlementDays,calendar) {}
+
+    inline Volatility SwaptionVolatilityStructure::volatility(
+                                                    const Period& optionTenor,
+                                                    const Period& length,
+                                                    Rate strike,
+                                                    bool extrapolate) const {
+        Date exerciseDate = calendar().advance(referenceDate(),
+                                            optionTenor,
+                                            Unadjusted); //FIXME
+        std::pair<Time,Time> times = convertDates(exerciseDate, length);
+        checkRange(times.first, times.second, strike, extrapolate);
+        return volatilityImpl(times.first, times.second, strike);
+    }
 
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                      const Date& exerciseDate,
