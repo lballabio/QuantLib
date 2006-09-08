@@ -49,12 +49,15 @@ namespace QuantLib {
                                           index->businessDayConvention());
         Date endDate = calendar.advance(startDate, length,
                                         index->businessDayConvention());
-        Schedule fixedSchedule(calendar, startDate, endDate,
-                               fixedLegFrequency,
-                               index->businessDayConvention());
-        Schedule floatSchedule(calendar, startDate, endDate,
-                               index->frequency(),
-                               index->businessDayConvention());
+        
+        Schedule fixedSchedule(startDate, endDate, Period(fixedLegFrequency), calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false, false);
+        Schedule floatSchedule(startDate, endDate, Period(index->frequency()), calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false, false);
 
         Rate fixedRate = 0.0;  //dummy value
         swap_ = boost::shared_ptr<VanillaSwap>(
@@ -107,12 +110,15 @@ namespace QuantLib {
                                           index->businessDayConvention());
         Date endDate = calendar.advance(startDate, length,
                                         index->businessDayConvention());
-        Schedule fixedSchedule(calendar, startDate, endDate,
-                               fixedLegTenor,
-                               index->businessDayConvention());
-        Schedule floatSchedule(calendar, startDate, endDate,
-                               index->tenor(),
-                               index->businessDayConvention());
+
+        Schedule fixedSchedule(startDate, endDate, fixedLegTenor, calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false, false);
+        Schedule floatSchedule(startDate, endDate, index->tenor(), calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false, false);
 
         Rate fixedRate = 0.0;  //dummy value
         swap_ = boost::shared_ptr<VanillaSwap>(
