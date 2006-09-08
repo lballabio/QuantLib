@@ -48,6 +48,7 @@ namespace QuantLib {
         Real trigger_;
     };
 
+    //! \bug the option is not correctly priced if faceAmount!=100.0
     class ConvertibleBond : public Bond {
       public:
         class option;
