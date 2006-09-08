@@ -35,10 +35,10 @@ QL_BEGIN_TEST_LOCALS(SwaptionVolatilityCubeTest)
 
 // global data
 
-Date referenceDate_(6, September, 2006);
-Calendar calendar_ = TARGET();
+Date referenceDate_;
+Calendar calendar_;
 
-BusinessDayConvention optionBDC_ = Following;
+BusinessDayConvention optionBDC_;
 std::vector<Period> atmOptionTenors_;
 std::vector<Period> atmSwapTenors_;
 Matrix atmVols_;
@@ -74,7 +74,7 @@ void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
           Volatility error = std::abs(expVol-actVol);
           if (error>tolerance)
               BOOST_FAIL("recovery of atm vols failed:"
-                         "\nexpiry time = " << atmOptionTenors_[i] << 
+                         "\nexpiry time = " << atmOptionTenors_[i] <<
                          "\nswap length = " << atmSwapTenors_[j] <<
                          "\n atm strike = " << io::rate(strike) <<
                          "\n   exp. vol = " << io::volatility(expVol) <<
@@ -103,7 +103,7 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
                   BOOST_FAIL("recovery of smile vol spreads failed:"
-                             "\n     expiry time = " << optionTenors_[i] << 
+                             "\n     expiry time = " << optionTenors_[i] <<
                              "\n     swap length = " << swapTenors_[j] <<
                              "\n      atm strike = " << io::rate(atmStrike) <<
                              "\n   strike spread = " << io::rate(strikeSpreads_[k]) <<
@@ -122,7 +122,12 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
 
 void setup() {
 
+    referenceDate_ = Date(6, September, 2006);
+    calendar_ = TARGET();
+
     Settings::instance().evaluationDate() = referenceDate_;
+
+    optionBDC_ = Following;
 
     // ATM swaptionvolmatrix
 
@@ -159,7 +164,7 @@ void setup() {
                                      atmVols_,
                                      dayCounter_)));
 
-    //swaptionvolcube 
+    //swaptionvolcube
 
     optionTenors_ = std::vector<Period>();
     optionTenors_.push_back(Period(1, Years));
@@ -180,41 +185,41 @@ void setup() {
 
     volSpreads_ = Matrix(optionTenors_.size()*swapTenors_.size(),
                          strikeSpreads_.size());
-    volSpreads_[0][0]=0.0599; volSpreads_[0][1]=0.0049; 
+    volSpreads_[0][0]=0.0599; volSpreads_[0][1]=0.0049;
     volSpreads_[0][2]=0.0000;
-    volSpreads_[0][3]=-0.0001; volSpreads_[0][4]=0.0127; 
+    volSpreads_[0][3]=-0.0001; volSpreads_[0][4]=0.0127;
 
-    volSpreads_[1][0]=0.0729; volSpreads_[1][1]=0.0086; 
+    volSpreads_[1][0]=0.0729; volSpreads_[1][1]=0.0086;
     volSpreads_[1][2]=0.0000;
-    volSpreads_[1][3]=-0.0024; volSpreads_[1][4]=0.0098; 
+    volSpreads_[1][3]=-0.0024; volSpreads_[1][4]=0.0098;
 
-    volSpreads_[2][0]=0.0738; volSpreads_[2][1]=0.0102; 
+    volSpreads_[2][0]=0.0738; volSpreads_[2][1]=0.0102;
     volSpreads_[2][2]=0.0000;
-    volSpreads_[2][3]=-0.0039; volSpreads_[2][4]=0.0065; 
+    volSpreads_[2][3]=-0.0039; volSpreads_[2][4]=0.0065;
 
-    volSpreads_[3][0]=0.0465; volSpreads_[3][1]=0.0063; 
+    volSpreads_[3][0]=0.0465; volSpreads_[3][1]=0.0063;
     volSpreads_[3][2]=0.0000;
-    volSpreads_[3][3]=-0.0032; volSpreads_[3][4]=-0.0010; 
+    volSpreads_[3][3]=-0.0032; volSpreads_[3][4]=-0.0010;
 
-    volSpreads_[4][0]=0.0558; volSpreads_[4][1]=0.0084; 
+    volSpreads_[4][0]=0.0558; volSpreads_[4][1]=0.0084;
     volSpreads_[4][2]=0.0000;
-    volSpreads_[4][3]=-0.0050; volSpreads_[4][4]=-0.0057; 
+    volSpreads_[4][3]=-0.0050; volSpreads_[4][4]=-0.0057;
 
-    volSpreads_[5][0]=0.0576; volSpreads_[5][1]=0.0083; 
+    volSpreads_[5][0]=0.0576; volSpreads_[5][1]=0.0083;
     volSpreads_[5][2]=0.0000;
-    volSpreads_[5][3]=-0.0043; volSpreads_[5][4]=-0.0014; 
+    volSpreads_[5][3]=-0.0043; volSpreads_[5][4]=-0.0014;
 
-    volSpreads_[6][0]=0.0437; volSpreads_[6][1]=0.0059; 
+    volSpreads_[6][0]=0.0437; volSpreads_[6][1]=0.0059;
     volSpreads_[6][2]=0.0000;
-    volSpreads_[6][3]=-0.0030; volSpreads_[6][4]=-0.0006; 
+    volSpreads_[6][3]=-0.0030; volSpreads_[6][4]=-0.0006;
 
-    volSpreads_[7][0]=0.0533; volSpreads_[7][1]=0.0078; 
+    volSpreads_[7][0]=0.0533; volSpreads_[7][1]=0.0078;
     volSpreads_[7][2]=0.0000;
-    volSpreads_[7][3]=-0.0045; volSpreads_[7][4]=-0.0046; 
+    volSpreads_[7][3]=-0.0045; volSpreads_[7][4]=-0.0046;
 
-    volSpreads_[8][0]=0.0545; volSpreads_[8][1]=0.0079; 
+    volSpreads_[8][0]=0.0545; volSpreads_[8][1]=0.0079;
     volSpreads_[8][2]=0.0000;
-    volSpreads_[8][3]=-0.0042; volSpreads_[8][4]=-0.0020; 
+    volSpreads_[8][3]=-0.0042; volSpreads_[8][4]=-0.0020;
 
     swapSettlementDays_ = 2;
     fixedLegFrequency_ = Annual;
@@ -240,6 +245,7 @@ QL_END_TEST_LOCALS(SwaptionVolatilityCubeTest)
 void SwaptionVolatilityCubeTest::testAtmVols() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (atm vols)...");
+
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
@@ -259,12 +265,14 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
 
     Real tolerance = 1.0e-16;
     makeAtmVolTest(volCube, tolerance);
+
     QL_TEST_TEARDOWN
 }
 
 void SwaptionVolatilityCubeTest::testSmile() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (smile)...");
+
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
@@ -284,6 +292,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
     Real tolerance = 1.0e-16;
     makeVolSpreadsTest(volCube, tolerance);
+
     QL_TEST_TEARDOWN
 }
 
