@@ -370,7 +370,8 @@ namespace QuantLib {
             if (endOfMonth && calendar.isEndOfMonth(seed))
                 convention=Preceding;
 
-            if (dates_.front()!=calendar.adjust(effectiveDate, convention)) {
+            if (calendar.adjust(dates_.front(),convention)!=
+                calendar.adjust(effectiveDate, convention)) {
                 dates_.insert(dates_.begin(), effectiveDate);
                 isRegular_.insert(isRegular_.begin(), false);
             }
@@ -414,7 +415,8 @@ namespace QuantLib {
             if (endOfMonth && calendar.isEndOfMonth(seed))
                 convention=Preceding;
 
-            if (dates_.back()!=calendar.adjust(terminationDate, terminationDateConvention)) {
+            if (calendar.adjust(dates_.back(),terminationDateConvention)!=
+                calendar.adjust(terminationDate, terminationDateConvention)) {
                 dates_.push_back(terminationDate);
                 isRegular_.push_back(false);
             }
