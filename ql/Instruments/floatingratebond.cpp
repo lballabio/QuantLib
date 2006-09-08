@@ -50,9 +50,11 @@ namespace QuantLib {
         maturityDate_ = maturityDate;
         frequency_ = couponFrequency;
 
-        Schedule schedule(calendar, datedDate, maturityDate,
-                          couponFrequency, accrualConvention,
-                          stub, fromEnd);
+        Date firstDate = (fromEnd ? Date() : stub);
+        Date nextToLastDate = (fromEnd ? stub : Date());
+        Schedule schedule(datedDate, maturityDate, Period(couponFrequency), calendar,
+                          accrualConvention, accrualConvention, fromEnd, false, 
+                          firstDate, nextToLastDate);
 
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                              schedule, paymentConvention,
@@ -99,9 +101,11 @@ namespace QuantLib {
         maturityDate_ = maturityDate;
         frequency_ = couponFrequency;
 
-        Schedule schedule(calendar, datedDate, maturityDate,
-                          couponFrequency, accrualConvention,
-                          stub, fromEnd);
+        Date firstDate = (fromEnd ? Date() : stub);
+        Date nextToLastDate = (fromEnd ? stub : Date());
+        Schedule schedule(datedDate, maturityDate, Period(couponFrequency), calendar,
+                          accrualConvention, accrualConvention, fromEnd, false, 
+                          firstDate, nextToLastDate);
 
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                              schedule, paymentConvention,

@@ -48,13 +48,14 @@ namespace QuantLib {
         maturityDate_ = maturityDate;
         frequency_ = couponFrequency;
 
-        Schedule schedule(calendar, datedDate, maturityDate,
-                          couponFrequency, accrualConvention,
-                          stub, fromEnd, longFinal);
+        Date firstDate = (fromEnd ? Date() : stub);
+        Date nextToLastDate = (fromEnd ? stub : Date());
+        Schedule schedule(datedDate, maturityDate, Period(couponFrequency), calendar,
+                          accrualConvention, accrualConvention, fromEnd, false, 
+                          firstDate, nextToLastDate);
 
         cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
             std::vector<Real>(1, faceAmount_), coupons, dayCounter);
-
         // redemption
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
