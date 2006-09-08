@@ -2080,6 +2080,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\swaptionvolatilitycube.cpp"
+				>
+			</File>
+			<File
 				RelativePath="termstructures.cpp"
 				>
 				<FileConfiguration
@@ -2434,6 +2438,10 @@
 			</File>
 			<File
 				RelativePath="swaption.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\swaptionvolatilitycube.hpp"
 				>
 			</File>
 			<File

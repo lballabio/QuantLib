@@ -40,7 +40,6 @@
 //   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
 
 #endif
-
 #include "americanoption.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
@@ -97,6 +96,7 @@
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swaption.hpp"
+#include "swaptionvolatilitycube.hpp"
 #include "termstructures.hpp"
 #include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
@@ -162,7 +162,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
 
     test->add(BOOST_TEST_CASE(startTimer));
-
+    
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -219,6 +219,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
+    test->add(SwaptionVolatilityCubeTest::suite());
     test->add(TermStructureTest::suite());
     test->add(TimeSeriesTest::suite());
     test->add(TqrEigenDecompositionTest::suite());
