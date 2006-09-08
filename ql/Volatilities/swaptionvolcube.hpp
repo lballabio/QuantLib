@@ -50,9 +50,6 @@ namespace QuantLib {
             Time shortTenor = 2,
             const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
     
-        ~SwaptionVolatilityCube() {
-        }
-
         //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
@@ -125,6 +122,13 @@ namespace QuantLib {
         Rate atmStrike(const Date& start, const Period& length) const {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
+        }
+        Rate atmStrike(const Period& optionTenor,
+                       const Period& length) const {
+            Date optionDate = calendar_.advance(referenceDate(),
+                                                optionTenor,
+                                                Unadjusted); //FIXME
+            return atmStrike(optionDate, length);
         }
         //@}
       protected: 
