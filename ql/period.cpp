@@ -106,32 +106,69 @@ namespace QuantLib {
             else if (p2.units() == Years)
                 return (p1.length() < p2.length() * 365);
             else if (p2.units() == Months)
-                QL_FAIL("undecidable comparison between days and months");
+                if (p1.length() < p2.length() * 28)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
             else
                 QL_FAIL("unknown units");
         } else if (p1.units() == Weeks) {
             if (p2.units() == Days)
                 return (p1.length() * 7 < p2.length());
-            else if (p2.units() == Months || p2.units() == Years)
-                QL_FAIL("undecidable comparison between "
-                        "weeks and months/years");
+            else if (p2.units() == Years)
+                if (p1.length() * 7 < p2.length() * 365)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
+            else if (p2.units() == Months)
+                if (p1.length() * 7 < p2.length() * 28)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
             else
                 QL_FAIL("unknown units");
         } else if (p1.units() == Months) {
             if (p2.units() == Years)
                 return (p1.length() < p2.length() * 12);
-            else if (p2.units() == Days || p2.units() == Weeks)
-                QL_FAIL("undecidable comparison between "
-                            "months and days/weeks");
+            else if (p2.units() == Days)
+                // Sup[days in p1.length() months] < days in p2
+                if (p1.length() * 31 < p2.length())
+                    return true;
+                // almost 28 days in p1 and less than 28 days in p2
+                else if ((p1.length()!=0) && p2.length()< 28)
+                    return false;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
+            else if (p2.units() == Weeks)
+                if (p1.length()* 31 < p2.length()  * 7)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
             else
                 QL_FAIL("unknown units");
         } else if (p1.units() == Years) {
             if (p2.units() == Days)
-                return (p1.length() * 365 < p2.length());
+                if (p1.length() * 366 < p2.length())
+                    return true;
+                // almost 365 days in p1 and less than 365 days in p2
+                else if ((p1.length()!=0) && p2.length()< 365)
+                    return false;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
             else if (p2.units() == Months)
                 return (p1.length() * 12 < p2.length());
             else if (p2.units() == Weeks)
-                QL_FAIL("undecidable outcome comparing years and weeks");
+                if (p1.length() * 366 < p2.length() * 7)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
             else
                 QL_FAIL("unknown units");
         } else {
