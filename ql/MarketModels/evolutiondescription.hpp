@@ -50,7 +50,16 @@ namespace QuantLib {
         relevance rates. The important part for the i-th step will then range
         from relevanceRates[i].first to relevanceRates[i].second
         Default values for relevance rates will be 0 and n. 
-    */
+
+        - Example n = 5:
+           |-----|-----|-----|-----|-----|      (size = 6)
+           t0    t1    t2    t3    t4    t5     rateTimes
+           f0    f1    f2    f3    f4           forwardRates
+           d0    d1    d2    d3    d4    d5     discountBonds
+           d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+           sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+        */
+
     class EvolutionDescription {
         // This typedef is used so that gcc 3.3 can parse the
         // constructor declaration (not even parenthesizing the
