@@ -298,7 +298,7 @@ namespace QuantLib {
                        const Date& firstDate,
                        const Date& nextToLastDate)
     : calendar_(calendar),
-      frequency_(NoFrequency),
+      frequency_(tenor.frequency()),
       tenor_(tenor),
       convention_(convention),
       firstDate_(firstDate), nextToLastDate_(nextToLastDate),
@@ -324,7 +324,7 @@ namespace QuantLib {
                        << "), termination date (" << terminationDate << "))");
         }
 
-        if (tenor_ == Period()) {
+        if (tenor_ < Period(1, Days)) {
             QL_REQUIRE(firstDate == Date(),
                        "first date incompatible with zero coupon date");
             QL_REQUIRE(nextToLastDate == Date(),
@@ -367,13 +367,14 @@ namespace QuantLib {
                 }
             }
 
-            if (dates_.front()!=effectiveDate) {
+            if (endOfMonth && calendar.isEndOfMonth(seed))
+                convention=Preceding;
+
+            if (dates_.front()!=calendar.adjust(effectiveDate, convention)) {
                 dates_.insert(dates_.begin(), effectiveDate);
                 isRegular_.insert(isRegular_.begin(), false);
             }
 
-            if (calendar.isEndOfMonth(seed))
-                convention=Preceding;
 
         } else { // forward roll date convention
             // calendar needed for endOfMonth adjustment
@@ -410,13 +411,14 @@ namespace QuantLib {
                 }
             }
 
-            if (dates_.back()!=terminationDate) {
+            if (endOfMonth && calendar.isEndOfMonth(seed))
+                convention=Preceding;
+
+            if (dates_.back()!=calendar.adjust(terminationDate, terminationDateConvention)) {
                 dates_.push_back(terminationDate);
                 isRegular_.push_back(false);
             }
 
-            if (calendar.isEndOfMonth(seed))
-                convention=Preceding;
         }
 
         for (Size i=0; i<dates_.size()-1; i++)

@@ -61,8 +61,8 @@ namespace QuantLib {
                  const Calendar& calendar,
                  BusinessDayConvention convention,
                  BusinessDayConvention terminationDateConvention,
-                 bool backward = true,
-                 bool endOfMonth = false,
+                 bool backward,
+                 bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
         //! \name Date access
