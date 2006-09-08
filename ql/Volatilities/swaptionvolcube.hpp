@@ -81,6 +81,8 @@ namespace QuantLib {
         LinearInterpolation exerciseInterpolator_;
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
+        Size nExercise_;
+        Size nlengths_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
         mutable std::vector<Rate> localStrikes_;

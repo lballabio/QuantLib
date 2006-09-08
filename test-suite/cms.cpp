@@ -188,7 +188,8 @@ void setup() {
             1,
             iborIndex_,
             parametersGuess,
-            isParameterFixed
+            isParameterFixed,
+            false
             )));
 
     Matrix volSpreads(lengths.size()*lengths.size(),
@@ -219,7 +220,8 @@ void setup() {
             1,
             iborIndex_,
             parametersGuess,
-            isParameterFixed
+            isParameterFixed,
+            false
             )));
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);

@@ -86,7 +86,8 @@ namespace QuantLib {
             Time shortTenor,
             const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
             const Matrix& parametersGuess, 
-            std::vector<bool> isParameterFixed);
+            std::vector<bool> isParameterFixed,
+            bool isAtmCalibrated);
 
         const Matrix& marketVolCube(Size i) const { return marketVolCube_.points()[i]; }
       
@@ -100,11 +101,12 @@ namespace QuantLib {
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
 
+        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
+
      protected: 
 
        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length, 
                                                  const Cube& sabrParametersCube) const;
-       virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
        
        Rate atmStrike(Time start, Time length) const;
        virtual Volatility volatilityImpl(Time start,
@@ -129,6 +131,7 @@ namespace QuantLib {
 
         Cube parametersGuess_; 
         std::vector<bool> isParameterFixed_;
+        bool isAtmCalibrated_;
     };
 
 }

@@ -61,6 +61,50 @@ namespace QuantLib {
       iborIndex_(iborIndex), 
       shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor) {
+        
+        nExercise_ = expiries.size();
+        exerciseDates_[0] = calendar_.advance(referenceDate(),
+                                              expiries[0],
+                                              Unadjusted); //FIXME
+        exerciseDatesAsReal_[0] =
+            static_cast<Real>(exerciseDates_[0].serialNumber());
+        exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
+        QL_REQUIRE(0.0<exerciseTimes_[0],
+                   "first exercise time is negative");
+        for (Size i=1; i<nExercise_; i++) {
+            exerciseDates_[i] = calendar_.advance(referenceDate(),
+                                                  expiries[i],
+                                                  Unadjusted); //FIXME
+            exerciseDatesAsReal_[i] =
+                static_cast<Real>(exerciseDates_[i].serialNumber());
+            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
+            QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
+                       "non increasing exercise times");
+        }
+
+        exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
+                                                    exerciseTimes_.end(),
+                                                    exerciseDatesAsReal_.begin());
+        exerciseInterpolator_.enableExtrapolation();
+
+        nlengths_ = lengths_.size();
+        Date startDate = exerciseDates_[0]; // as good as any
+        Date endDate = startDate + lengths_[0];
+        timeLengths_[0] = dayCounter().yearFraction(startDate,endDate);
+        QL_REQUIRE(0.0<timeLengths_[0],
+                   "first time length is negative");
+        for (Size i=1; i<nlengths_; i++) {
+            Date endDate = startDate + lengths_[i];
+            timeLengths_[i] = dayCounter().yearFraction(startDate,endDate);
+            QL_REQUIRE(timeLengths_[i-1]<timeLengths_[i],
+                       "non increasing time length");
+        }
+
+        QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
+        for (Size i=1; i<nStrikes_; i++) {
+            QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
+                "non increasing strike spreads");
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,59 +140,15 @@ namespace QuantLib {
       volSpreadsInterpolator_(nStrikes_),
       volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
 
-        Size i, nExercise = expiries.size();
-        exerciseDates_[0] = calendar_.advance(referenceDate(),
-                                              expiries[0],
-                                              Unadjusted); //FIXME
-        exerciseDatesAsReal_[0] =
-            static_cast<Real>(exerciseDates_[0].serialNumber());
-        exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
-        QL_REQUIRE(0.0<exerciseTimes_[0],
-                   "first exercise time is negative");
-        for (i=1; i<nExercise; i++) {
-            exerciseDates_[i] = calendar_.advance(referenceDate(),
-                                                  expiries[i],
-                                                  Unadjusted); //FIXME
-            exerciseDatesAsReal_[i] =
-                static_cast<Real>(exerciseDates_[i].serialNumber());
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-            QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
-                       "non increasing exercise times");
-        }
-
-        exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
-                                                    exerciseTimes_.end(),
-                                                    exerciseDatesAsReal_.begin());
-        exerciseInterpolator_.enableExtrapolation();
-
-        Size nlengths = lengths_.size();
-        Date startDate = exerciseDates_[0]; // as good as any
-        Date endDate = startDate + lengths_[0];
-        timeLengths_[0] = dayCounter().yearFraction(startDate,endDate);
-        QL_REQUIRE(0.0<timeLengths_[0],
-                   "first time length is negative");
-        for (i=1; i<nlengths; i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter().yearFraction(startDate,endDate);
-            QL_REQUIRE(timeLengths_[i-1]<timeLengths_[i],
-                       "non increasing time length");
-        }
-
-        QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
-        for (i=1; i<nStrikes_; i++) {
-            QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
-                "non increasing strike spreads");
-        }
-
         QL_REQUIRE(nStrikes_==volSpreads.columns(),
                    "nStrikes_!=volSpreads.columns()");
-        QL_REQUIRE(nExercise*nlengths==volSpreads.rows(),
+        QL_REQUIRE(nExercise_*nlengths_==volSpreads.rows(),
                    "nExercise*nlengths!=volSpreads.rows()");
-        for (i=0; i<nStrikes_; i++)
+        for (Size i=0; i<nStrikes_; i++)
         {
-            for (Size j=0; j<nExercise; j++) {
-                for (Size k=0; k<nlengths; k++) {
-                    volSpreads_[i][j][k]=volSpreads[j*nlengths+k][i];
+            for (Size j=0; j<nExercise_; j++) {
+                for (Size k=0; k<nlengths_; k++) {
+                    volSpreads_[i][j][k]=volSpreads[j*nlengths_+k][i];
                 }
             }
             volSpreadsInterpolator_[i] = BilinearInterpolation(

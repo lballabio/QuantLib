@@ -47,81 +47,40 @@ namespace QuantLib {
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
         const Matrix& parametersGuess, 
-        std::vector<bool> isParameterFixed) :
-    SwaptionVolatilityCube(
-        atmVolStructure,
-        expiries,
-        lengths,
-        strikeSpreads,
-        calendar,
-		swapSettlementDays,
-        fixedLegFrequency,
-        fixedLegConvention,
-        fixedLegDayCounter,
-        iborIndex,
-        shortTenor,
-        iborIndexShortTenor),
-      isParameterFixed_(isParameterFixed),
-      volSpreads_(volSpreads) {
+        std::vector<bool> isParameterFixed,
+        bool isAtmCalibrated):
+        SwaptionVolatilityCube(
+            atmVolStructure,
+            expiries,
+            lengths,
+            strikeSpreads,
+            calendar,
+		    swapSettlementDays,
+            fixedLegFrequency,
+            fixedLegConvention,
+            fixedLegDayCounter,
+            iborIndex,
+            shortTenor,
+            iborIndexShortTenor),
+        isParameterFixed_(isParameterFixed),
+        isAtmCalibrated_(isAtmCalibrated),
+        volSpreads_(volSpreads) {
 
         for (Size i=0; i<nStrikes_; i++) {
             fictitiousStrikes_.push_back(0.05*i+.01);
         }
-        Size i, nExercise = expiries.size();
-        exerciseDates_[0] = calendar_.advance(referenceDate(),
-                                              expiries[0],
-                                              Unadjusted); //FIXME
-        exerciseDatesAsReal_[0] =
-            static_cast<Real>(exerciseDates_[0].serialNumber());
-        exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
-        QL_REQUIRE(0.0<exerciseTimes_[0],
-                   "first exercise time is negative");
-        for (i=1; i<nExercise; i++) {
-            exerciseDates_[i] = calendar_.advance(referenceDate(),
-                                                  expiries[i],
-                                                  Unadjusted); //FIXME
-            exerciseDatesAsReal_[i] =
-                static_cast<Real>(exerciseDates_[i].serialNumber());
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-            QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
-                       "non increasing exercise times");
-        }
-
-        exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
-                                                    exerciseTimes_.end(),
-                                                    exerciseDatesAsReal_.begin());
-        exerciseInterpolator_.enableExtrapolation();
-
-        Size nlengths = lengths_.size();
-        Date startDate = exerciseDates_[0]; // as good as any
-        Date endDate = startDate + lengths_[0];
-        timeLengths_[0] = dayCounter().yearFraction(startDate,endDate);
-        QL_REQUIRE(0.0<timeLengths_[0],
-                   "first time length is negative");
-        for (i=1; i<nlengths; i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter().yearFraction(startDate,endDate);
-            QL_REQUIRE(timeLengths_[i-1]<timeLengths_[i],
-                       "non increasing time length");
-        }
-
-        QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
-        for (i=1; i<nStrikes_; i++) {
-            QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
-                "non increasing strike spreads");
-        }
 
         QL_REQUIRE(nStrikes_==volSpreads_.columns(),
                    "nStrikes_!=marketVolCube.columns()");
-        QL_REQUIRE(nExercise*nlengths==volSpreads_.rows(),
+        QL_REQUIRE(nExercise_*nlengths_==volSpreads_.rows(),
                    "nExercise*nlengths!=marketVolCube.rows()");
         
         parametersGuess_ = Cube(exerciseTimes_, timeLengths_, 4);
-        for (i=0; i<4; i++)
+        for (Size i=0; i<4; i++)
         {
-            for (Size j=0; j<nExercise ; j++) {
-                for (Size k=0; k<nlengths; k++) {
-                    parametersGuess_.setElement(i, j, k, parametersGuess[j+k*nExercise][i]);
+            for (Size j=0; j<nExercise_ ; j++) {
+                for (Size k=0; k<nlengths_; k++) {
+                    parametersGuess_.setElement(i, j, k, parametersGuess[j+k*nExercise_][i]);
                 }
             }
         }
@@ -129,14 +88,14 @@ namespace QuantLib {
 
         atmVolStructure_.currentLink()->enableExtrapolation();
         marketVolCube_ = Cube(exerciseTimes_, timeLengths_, nStrikes_);
-        for (i=0; i<nStrikes_; i++)
+        for (Size i=0; i<nStrikes_; i++)
         {
-            for (Size j=0; j<nExercise; j++) {
-                for (Size k=0; k<nlengths; k++) {
+            for (Size j=0; j<nExercise_; j++) {
+                for (Size k=0; k<nlengths_; k++) {
                     const Rate atmForward = atmStrike(exerciseTimes_[j], timeLengths_[k]);        
                     const Volatility atmVol = 
                         atmVolStructure_->volatility(exerciseTimes_[j], timeLengths_[k], atmForward);
-                    const Volatility vol = atmVol + volSpreads_[j*nlengths+k][i];
+                    const Volatility vol = atmVol + volSpreads_[j*nlengths_+k][i];
                     marketVolCube_.setElement(i, j, k, vol);
                 }
             }
@@ -147,9 +106,11 @@ namespace QuantLib {
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
        
-        fillVolatilityCube();
-        //denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-        //denseParameters_.updateInterpolators(); 
+        if(isAtmCalibrated_){
+            fillVolatilityCube();
+            denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+            denseParameters_.updateInterpolators();
+        } 
 
     }
 
@@ -411,8 +372,12 @@ namespace QuantLib {
 
     boost::shared_ptr<VarianceSmileSection> 
         SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
-        //return smileSection(expiry, length, denseParameters_ );
-        return smileSection(expiry, length, sparseParameters_ );
+        if(isAtmCalibrated_){
+            return smileSection(expiry, length, denseParameters_ );
+        } 
+        else{
+            return smileSection(expiry, length, sparseParameters_ );
+        }
     }
 
     Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
