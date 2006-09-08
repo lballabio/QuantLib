@@ -28,13 +28,11 @@
 #include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Calendars/target.hpp>
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/Volatilities/swaptionvolcube.hpp>
 
 namespace QuantLib {
 
-     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityStructure {
-
-     public:
+     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube {
 
          class Cube {
              std::vector<Real> expiries_, lengths_;
@@ -71,6 +69,8 @@ namespace QuantLib {
              Matrix browse() const;
          };
 
+     public:
+
         SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
@@ -87,31 +87,14 @@ namespace QuantLib {
             const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
             const Matrix& parametersGuess, 
             std::vector<bool> isParameterFixed);
-        //! \name TermStructure interface
-        //@{
 
-        const Date& referenceDate() const {
-            return atmVolStructure_->referenceDate();
-        }
-        DayCounter dayCounter() const {
-            return atmVolStructure_->dayCounter();
-        }
-        //@}
-        //! \name SwaptionVolatilityStructure interface
-        //@{
-        Date maxStartDate() const { return atmVolStructure_->maxStartDate(); }
-        Time maxStartTime() const { return atmVolStructure_->maxStartTime(); }
-        Period maxLength() const { return atmVolStructure_->maxLength(); }
-        Time maxTimeLength() const { return atmVolStructure_->maxTimeLength(); }
-        Rate minStrike() const { return 0.0; }
-        Rate maxStrike() const { return 1.0; }
-        //@}
         const Matrix& marketVolCube(Size i) const { return marketVolCube_.points()[i]; }
-        Rate atmStrike(const Date& start,
-                       const Period& length) const {
+      
+        Rate atmStrike(const Date& start, const Period& length) const {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
+
         Matrix sparseSabrParameters() const;
         Matrix denseSabrParameters() const;
         Matrix marketVolCube() const;
@@ -119,14 +102,12 @@ namespace QuantLib {
 
      protected: 
 
-       boost::shared_ptr<Interpolation> smile(Time start, Time length) const;
-
        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length, 
                                                  const Cube& sabrParametersCube) const;
        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
        
        Rate atmStrike(Time start, Time length) const;
-       Volatility volatilityImpl(Time start,
+       virtual Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
        Cube sabrCalibration(const Cube& marketVolCube) const;
@@ -136,26 +117,6 @@ namespace QuantLib {
                                                 double atmTimeLength);
 
       private:
-
-        Handle<SwaptionVolatilityStructure> atmVolStructure_;
-        std::vector<Date> exerciseDates_;
-        std::vector<Time> exerciseTimes_;
-        std::vector<Real> exerciseDatesAsReal_;
-        LinearInterpolation exerciseInterpolator_;
-        std::vector<Period> lengths_;
-        std::vector<Time> timeLengths_;
-        Size nStrikes_;
-        std::vector<Spread> strikeSpreads_;
-        mutable std::vector<Rate> localStrikes_;
-        mutable std::vector<Volatility> localSmile_;
-        Calendar calendar_ ;
-		Integer swapSettlementDays_;
-        Frequency fixedLegFrequency_;
-        BusinessDayConvention fixedLegConvention_;
-        DayCounter fixedLegDayCounter_;
-        boost::shared_ptr<Xibor> iborIndex_;
-        Time shortTenor_;
-        boost::shared_ptr<Xibor> iborIndexShortTenor_;
 
         Matrix volSpreads_;
         Cube marketVolCube_;

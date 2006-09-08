@@ -40,36 +40,22 @@ namespace QuantLib {
               const std::vector<Rate>& strikes,
               const std::vector<Rate>& volatilities);
 
-        VarianceSmileSection(Time timeToExpiry,
-                             Rate forwardValue,
-                             const std::vector<Rate>& strikes,
-                             const std::vector<Volatility>& volatilities);
-
         VarianceSmileSection(
           const std::vector<Real>& sabrParameters,
           const std::vector<Rate>& strikes,
           const Time timeToExpiry);
 
-        VarianceSmileSection(const VarianceSmileSection& o) {
-                timeToExpiry_ = o.timeToExpiry_;
-	            strikes_ = o.strikes_;
-                volatilities_ = o.volatilities_;
-                interpolation_ = o.interpolation_;
-        };
-
-        VarianceSmileSection& operator=(const VarianceSmileSection& o){
-            timeToExpiry_ = o.timeToExpiry_;
-	        strikes_ = o.strikes_;
-            volatilities_ = o.volatilities_;
-            interpolation_ = o.interpolation_;
-	        return *this;
-        };
         Real operator()(const Rate& strike) const;
 
-        Real volatility(const Rate& strike) const{
+        Real volatility(const Rate& strike) const {
             return std::sqrt(this->operator()(strike)/timeToExpiry_);
         };
-      private:
+
+    private:
+          
+        VarianceSmileSection& operator=(const VarianceSmileSection& o);
+        VarianceSmileSection(const VarianceSmileSection& o);
+
         Time timeToExpiry_;
         std::vector<Rate> strikes_;
         std::vector<Volatility> volatilities_;

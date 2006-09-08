@@ -47,29 +47,22 @@ namespace QuantLib {
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
         const Matrix& parametersGuess, 
-        std::vector<bool> isParameterFixed)
-    : atmVolStructure_(atmVolStructure),
-      exerciseDates_(expiries.size()), 
-      exerciseTimes_(expiries.size()),
-      exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths), 
-      timeLengths_(lengths.size()),
-      nStrikes_(strikeSpreads.size()), 
-      strikeSpreads_(strikeSpreads),
-      localStrikes_(nStrikes_), 
-      localSmile_(nStrikes_),
-      calendar_(calendar), 
-      swapSettlementDays_(swapSettlementDays),
-	  fixedLegFrequency_(fixedLegFrequency),
-      fixedLegConvention_(fixedLegConvention),
-      fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndex_(iborIndex), 
-      shortTenor_(shortTenor),
-      iborIndexShortTenor_(iborIndexShortTenor),
-
+        std::vector<bool> isParameterFixed) :
+    SwaptionVolatilityCube(
+        atmVolStructure,
+        expiries,
+        lengths,
+        strikeSpreads,
+        calendar,
+		swapSettlementDays,
+        fixedLegFrequency,
+        fixedLegConvention,
+        fixedLegDayCounter,
+        iborIndex,
+        shortTenor,
+        iborIndexShortTenor),
       isParameterFixed_(isParameterFixed),
-      volSpreads_(volSpreads)
-    {
+      volSpreads_(volSpreads) {
 
         for (Size i=0; i<nStrikes_; i++) {
             fictitiousStrikes_.push_back(0.05*i+.01);
@@ -437,32 +430,9 @@ namespace QuantLib {
         return volCubeAtmCalibrated_.browse();
     }
 
-    //===========================================================================//
-    //                            VarianceSmileSection                           //
-    //===========================================================================//
 
-    VarianceSmileSection::VarianceSmileSection(
-          const std::vector<Real>& sabrParameters, 
-          const std::vector<Rate>& strikes,
-          const Time timeToExpiry) :
-    timeToExpiry_(timeToExpiry), 
-        strikes_(strikes),
-        volatilities_(strikes) {
 
-           Real alpha = sabrParameters[0];
-           Real beta = sabrParameters[1];
-           Real nu = sabrParameters[2];
-           Real rho = sabrParameters[3];
-           Real forwardValue = sabrParameters[4];
-
-           interpolation_ = boost::shared_ptr<Interpolation>(new
-                  SABRInterpolation(strikes_.begin(), strikes_.end(),
-                  volatilities_.begin(),
-                  timeToExpiry, forwardValue, 
-                  alpha, beta, nu, rho, 
-                  true, true, true, true,
-                  boost::shared_ptr<OptimizationMethod>()));
-      }
+ 
 
     //===========================================================================//
     //                      SwaptionVolatilityCubeBySabr::Cube                   //

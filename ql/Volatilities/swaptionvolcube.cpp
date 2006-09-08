@@ -29,19 +29,12 @@
              
 namespace QuantLib {
 
-    namespace {
-        double ALPHAGUESS = .02;
-        double BETAGUESS = .36;
-        double NUGUESS = .4;
-        double RHOGUESS = .2;
-    }
 
-     SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
+    SwaptionVolatilityCube::SwaptionVolatilityCube(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Matrix& volSpreads,
         const Calendar& calendar,
 		Integer swapSettlementDays,
         Frequency fixedLegFrequency,
@@ -67,11 +60,42 @@ namespace QuantLib {
       fixedLegDayCounter_(fixedLegDayCounter),
       iborIndex_(iborIndex), 
       shortTenor_(shortTenor),
-      iborIndexShortTenor_(iborIndexShortTenor),
+      iborIndexShortTenor_(iborIndexShortTenor) {
+    }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+     SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
+        const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+        const std::vector<Period>& expiries,
+        const std::vector<Period>& lengths,
+        const std::vector<Spread>& strikeSpreads,
+        const Matrix& volSpreads,
+        const Calendar& calendar,
+		Integer swapSettlementDays,
+        Frequency fixedLegFrequency,
+        BusinessDayConvention fixedLegConvention,
+        const DayCounter& fixedLegDayCounter,
+        const boost::shared_ptr<Xibor>& iborIndex,
+        Time shortTenor,
+        const boost::shared_ptr<Xibor>& iborIndexShortTenor) :
+     SwaptionVolatilityCube(
+        atmVolStructure,
+        expiries,
+        lengths,
+        strikeSpreads,
+        calendar,
+		swapSettlementDays,
+        fixedLegFrequency,
+        fixedLegConvention,
+        fixedLegDayCounter,
+        iborIndex,
+        shortTenor,
+        iborIndexShortTenor),
       volSpreadsInterpolator_(nStrikes_),
-      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0))
-    {
+      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
+
         Size i, nExercise = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
                                               expiries[0],
@@ -166,15 +190,9 @@ namespace QuantLib {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
-        ////add points to force flat extrapolation
-        //strikes.insert(strikes.begin(), strikes.front()-.000000001);
-        //strikes.insert(strikes.end(), strikes.back()+.1);
-
-        //volatilities.insert(volatilities.begin(),volatilities.front());
-        //volatilities.insert(volatilities.end(),volatilities.back());
-
-        //return VarianceSmileSection(start, strikes, volatilities);
-        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(start, atmForward, strikes, volatilities));
+        return boost::shared_ptr<VarianceSmileSection>(
+            new VarianceSmileSection(start, strikes, volatilities)
+            );
     }
 
 
@@ -182,83 +200,6 @@ namespace QuantLib {
         volatilityImpl(Time start, Time length, Rate strike) const {
             return smile(start, length)->operator()(strike, true);
         }
-
-     VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
-                        const std::vector<Rate>& strikes,
-                        const std::vector<Rate>& volatilities) :
-     timeToExpiry_(timeToExpiry),
-         strikes_(strikes),
-         volatilities_(volatilities) {
-             interpolation_ = boost::shared_ptr<Interpolation>(new
-                 LinearInterpolation(strikes_.begin(),
-                 strikes_.end(), volatilities_.begin())
-                 );
-         }
-
-      VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
-          Rate forwardValue,
-          const std::vector<Rate>& strikes,
-          const std::vector<Rate>& volatilities) :
-      timeToExpiry_(timeToExpiry), strikes_(strikes),
-          volatilities_(volatilities) {
-
-                boost::shared_ptr<LineSearch> lineSearch(new ArmijoLineSearch(1e-12, 0.15, 0.55));
-                boost::shared_ptr<OptimizationMethod> method = boost::shared_ptr<OptimizationMethod>(
-                    new ConjugateGradient(lineSearch));
-                method->setEndCriteria(EndCriteria(100000, 1e-12));
-                Array guess(4);
-                guess[0] = ALPHAGUESS; 
-                guess[1] = BETAGUESS;  
-                guess[2] = NUGUESS; 
-                guess[3] = RHOGUESS; 
-                method->setInitialValue(guess);
-
-              interpolation_ = boost::shared_ptr<Interpolation>(new
-                  SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(),
-                  timeToExpiry, forwardValue, Null<Real>(), .4, Null<Real>(),
-                  Null<Real>(), false, true, false, false, method));
-
-               const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
-               boost::dynamic_pointer_cast<SABRInterpolation>(interpolation_);
-                
-
-
-              //std::stringstream s;
-              //ALPHAGUESS = sabrInterpolation->alpha();
-              //BETAGUESS = sabrInterpolation->beta();
-              //NUGUESS = sabrInterpolation->nu();
-              //RHOGUESS = sabrInterpolation->rho();
-
-              //s << "1:*********************\n";
-              //for(int i=0;i<strikes_.size();i++){
-              //s <<strikes_[i] << "\t";
-              //}
-              //s <<"\n";
-              //for(int i=0;i<volatilities_.size();i++){
-              //s <<volatilities_[i] << "\t";
-              //}
-              //s <<"\n";
-              //s << ALPHAGUESS << "\n";
-              //s << BETAGUESS << "\n";
-              //s << NUGUESS << "\n";
-              //s << RHOGUESS << "\n";
-              //s << sabrInterpolation->interpolationError() << "\n";
-              //s << sabrInterpolation->interpolationMaxError() << "\n";
-              //s << sabrInterpolation->endCriteria() << "\n";
-              //s << "2:*********************\n";
-
-              //static std::ofstream log("C:\\QL_LOG.txt");
-
-              //log << s.str();
-                 QL_ENSURE(sabrInterpolation->interpolationError()<1e-4, 
-                   "VarianceSmileSection::VarianceSmileSection(Time timeToExpiry, Rate forwardValue, const std::vector<Rate>& strikes, const std::vector<Rate>& volatilities): accuracy not reached");
-
-          }
-
-    Volatility VarianceSmileSection::operator ()(const Real& strike) const {
-        const Real v = interpolation_->operator()(strike, true);
-        return v*v*timeToExpiry_;
-    }
 
     Rate SwaptionVolatilityCubeByLinear::atmStrike(Time start, Time length) const {
 
@@ -296,6 +237,50 @@ namespace QuantLib {
         return swap.fairRate();
     }
 
+    //===========================================================================//
+    //                            VarianceSmileSection                           //
+    //===========================================================================//
 
+     VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
+                        const std::vector<Rate>& strikes,
+                        const std::vector<Rate>& volatilities) :
+     timeToExpiry_(timeToExpiry),
+         strikes_(strikes),
+         volatilities_(volatilities) {
+
+             interpolation_ = boost::shared_ptr<Interpolation>(new
+                 LinearInterpolation(strikes_.begin(),
+                 strikes_.end(), volatilities_.begin())
+                 );
+     }
+
+   
+     VarianceSmileSection::VarianceSmileSection(
+          const std::vector<Real>& sabrParameters, 
+          const std::vector<Rate>& strikes,
+          const Time timeToExpiry) :
+     timeToExpiry_(timeToExpiry), 
+         strikes_(strikes),
+         volatilities_(strikes) {
+
+           Real alpha = sabrParameters[0];
+           Real beta = sabrParameters[1];
+           Real nu = sabrParameters[2];
+           Real rho = sabrParameters[3];
+           Real forwardValue = sabrParameters[4];
+
+           interpolation_ = boost::shared_ptr<Interpolation>(new
+                  SABRInterpolation(strikes_.begin(), strikes_.end(),
+                  volatilities_.begin(),
+                  timeToExpiry, forwardValue, 
+                  alpha, beta, nu, rho, 
+                  true, true, true, true,
+                  boost::shared_ptr<OptimizationMethod>()));
+      }
+
+    Volatility VarianceSmileSection::operator ()(const Real& strike) const {
+        const Real v = interpolation_->operator()(strike, true);
+        return v*v*timeToExpiry_;
+    }
 
 }
