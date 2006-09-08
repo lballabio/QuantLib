@@ -29,11 +29,10 @@
 namespace QuantLib {
 
     /*! This class stores:
-		1) the times defining the rates that are to be evolved,
-		2) the times at which the rates need to be known, 
-		3) the numeraire to be used for each step. 
-		4) which rates need to be known at each time.
-
+		1) evolutionTimes = the times defining the rates that are to be evolved,
+		2) rateTimes = the times at which the rates need to be known, 
+		3) numeraires = the numeraire to be used for each step. 
+		4) relevanceRates = which rates need to be known at each time.
         This class is really just a 3-tuple of the evolutions times, the rate
         times and the numeraires.
         
