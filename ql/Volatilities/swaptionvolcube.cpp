@@ -62,6 +62,18 @@ namespace QuantLib {
       shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor) {
         
+        if (!atmVolStructure_.empty())
+            unregisterWith(atmVolStructure_);
+        atmVolStructure_ = atmVolStructure;
+        if (!atmVolStructure_.empty())
+            registerWith(atmVolStructure_);
+        notifyObservers();
+
+        if (!iborIndex_)
+            registerWith(iborIndex_);
+        if (!iborIndexShortTenor_)
+            registerWith(iborIndexShortTenor_);
+
         nExercise_ = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
                                               expiries[0],
@@ -70,7 +82,8 @@ namespace QuantLib {
             static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
         QL_REQUIRE(0.0<exerciseTimes_[0],
-                   "first exercise time is negative");
+                   "first exercise time is negative ("
+                   << exerciseTimes_[0] << ")");
         for (Size i=1; i<nExercise_; i++) {
             exerciseDates_[i] = calendar_.advance(referenceDate(),
                                                   expiries[i],
@@ -79,7 +92,9 @@ namespace QuantLib {
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
             QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
-                       "non increasing exercise times");
+                       "non increasing exercise times: time[" << i-1 <<
+                       "] = " << exerciseTimes_[i-1] << ", time[" << i <<
+                       "] = " << exerciseTimes_[i]);
         }
 
         exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
