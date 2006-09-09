@@ -347,14 +347,14 @@ void CmsTest::testParity() {
 
                 for(Size strikeIndex=0; strikeIndex<10; strikeIndex++) {
 
-                BOOST_MESSAGE("("
-                    << volStructureIndex << ", "
-                    << pricerIndex << ", "
-                    << modelOfYieldCurveIndex << ", "
-                    << strikeIndex
-                    << ")\t" << "testing " << priceIndex
-                    << "-th cms swaplet, caplet and floolet with strike "
-                    << io::rate(strike) << "\n");
+                //BOOST_MESSAGE("("
+                //    << volStructureIndex << ", "
+                //    << pricerIndex << ", "
+                //    << modelOfYieldCurveIndex << ", "
+                //    << strikeIndex
+                //    << ")\t" << "testing " << priceIndex
+                //    << "-th cms swaplet, caplet and floolet with strike "
+                //    << io::rate(strike) << "\n");
 
                     strike += .005;
                     CMSCoupon caplet(1,
@@ -473,7 +473,7 @@ void CmsTest::testCmsSwap() {
                 floatingFrequency_,floatingConvention_);
 
             std::vector<Real> prices;
-            BOOST_MESSAGE("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
+            //BOOST_MESSAGE("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
             for(Size pricerIndex=0; pricerIndex<pricers.size();
                 pricerIndex++) {
 
@@ -510,13 +510,13 @@ void CmsTest::testCmsSwap() {
                     new Swap(termStructure_, cmsLeg, floatingLeg));
 
 
-                BOOST_MESSAGE("("
-                    << volStructureIndex << ", "
-                    << pricerIndex << ", "
-                    << modelOfYieldCurveIndex << ", "
-                    << swapLengthIndex << ")\t"
-                    << priceIndex << "-th pricing "
-                    << "for cms swap test...\n");
+                //BOOST_MESSAGE("("
+                //    << volStructureIndex << ", "
+                //    << pricerIndex << ", "
+                //    << modelOfYieldCurveIndex << ", "
+                //    << swapLengthIndex << ")\t"
+                //    << priceIndex << "-th pricing "
+                //    << "for cms swap test...\n");
 
                 if(true || priceIndex == 23 || priceIndex == 24) {
                     const Real price = swap->NPV();
@@ -528,11 +528,11 @@ void CmsTest::testCmsSwap() {
                 priceIndex++;
             }
             const double difference =  prices[0]-prices[1];
-            BOOST_MESSAGE("\n" << "startDate:\t" << startDate << "\n"
-                    "maturityDate:\t" << maturityDate << "\n"
-                    "swapLength:\t" << swapLengths[swapLengthIndex] << "\n"
-                    "price analytic:\t" << io::rate(prices[0]) << "\n"
-                    "price numerical:\t" << io::rate(prices[1]) << "\n");
+            //BOOST_MESSAGE("\n" << "startDate:\t" << startDate << "\n"
+            //        "maturityDate:\t" << maturityDate << "\n"
+            //        "swapLength:\t" << swapLengths[swapLengthIndex] << "\n"
+            //        "price analytic:\t" << io::rate(prices[0]) << "\n"
+            //        "price numerical:\t" << io::rate(prices[1]) << "\n");
 
             if (std::fabs(difference) > priceTolerance_) {
                 BOOST_ERROR("\n" <<
@@ -540,7 +540,7 @@ void CmsTest::testCmsSwap() {
                             "tolerance: \t" << io::rate(priceTolerance_));
             }
             else {
-                BOOST_MESSAGE("difference = " << io::rate(difference) << "\n");
+                //BOOST_MESSAGE("difference = " << io::rate(difference) << "\n");
             }
         }
     }
@@ -553,8 +553,8 @@ test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
 
     QL_TEST_SETUP
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
     return suite;
 }
