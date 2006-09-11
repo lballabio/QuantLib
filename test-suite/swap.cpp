@@ -56,10 +56,12 @@ boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
                                         Spread floatingSpread) {
     Date maturity = calendar_.advance(settlement_,length,Years,
                                       floatingConvention_);
-    Schedule fixedSchedule(calendar_,settlement_,maturity,
-                           fixedFrequency_,fixedConvention_);
-    Schedule floatSchedule(calendar_,settlement_,maturity,
-                           floatingFrequency_,floatingConvention_);
+    Schedule fixedSchedule(settlement_,maturity,Period(fixedFrequency_),
+                           calendar_,fixedConvention_,fixedConvention_,
+                           false,false);
+    Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
+                           calendar_,floatingConvention_,floatingConvention_,
+                           false,false);
     return boost::shared_ptr<VanillaSwap>(
             new VanillaSwap(payFixed_,nominal_,
                             fixedSchedule,fixedRate,fixedDayCount_,
@@ -247,8 +249,8 @@ void SwapTest::testInArrears() {
 
     Date maturity = today_ + 5*Years;
     Calendar calendar = NullCalendar();
-    Schedule schedule(calendar, today_, maturity, Annual, Following);
-
+    Schedule schedule(today_, maturity,Period(Annual),calendar,
+                      Following,Following,false,false);
     DayCounter dayCounter = SimpleDayCounter();
     std::vector<Real> nominals(1, 100000000.0);
     boost::shared_ptr<Xibor> index(new Xibor("dummy", 1*Years, 0,
