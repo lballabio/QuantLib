@@ -194,11 +194,12 @@ void ShortRateModelTest::testSwaps() {
         for (Size j=0; j<LENGTH(length); j++) {
 
             Date maturity = calendar.advance(startDate,length[i],Years);
-            Schedule fixedSchedule(calendar,startDate,maturity,
-                                   Annual,Unadjusted);
-            Schedule floatSchedule(calendar,startDate,maturity,
-                                   Semiannual,Following);
-
+            Schedule fixedSchedule(startDate,maturity,Period(Annual),
+                                   calendar,Unadjusted,Unadjusted,
+                                   false,false);
+            Schedule floatSchedule(startDate,maturity,Period(Semiannual),
+                                   calendar,Following,Following,
+                                   false,false);                     
             for (Size k=0; k<LENGTH(rates); k++) {
 
                 VanillaSwap swap(true, 1000000.0,
