@@ -178,14 +178,12 @@ namespace QuantLib {
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
 
-        return FloatingRateCouponVector(
-                   Schedule(index_->calendar(),
-                            refDate,
-                            refDate + Period(index_->tenor().length()*size_,
-                                             index_->tenor().units()),
-                            index_->tenor(),
-                            index_->businessDayConvention()
-                            ),
+        return FloatingRateCouponVector(  
+                   Schedule(refDate, refDate + Period(index_->tenor().length()*size_,
+                                                      index_->tenor().units()),
+                            index_->tenor(), index_->calendar(),
+                            index_->businessDayConvention(),
+                            index_->businessDayConvention(), false, false),       
                    index_->businessDayConvention(),
                    std::vector<Real>(1, amount),
                    index_->settlementDays(),
