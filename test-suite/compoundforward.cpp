@@ -141,8 +141,8 @@ void CompoundForwardTest::testSuppliedRates() {
         Date maturity = calendar.advance(settlement,
                                          swapData[i].n,swapData[i].units,
                                          convention);
-        Schedule schedule(calendar,settlement,maturity,
-                          frequency,convention);
+        Schedule schedule(settlement, maturity, Period(frequency), calendar,
+                          convention, convention, false, false);
         VanillaSwap swap(true,100.0,
                          schedule,0.0,dayCounter,
                          schedule,index,0.0,
@@ -182,8 +182,8 @@ void CompoundForwardTest::testConvertedRates() {
         Date maturity = calendar.advance(settlement,
                                          swapData[i].n,swapData[i].units,
                                          convention);
-        Schedule schedule(calendar,settlement,maturity,
-                          frequency,convention);
+        Schedule schedule(settlement, maturity, Period(frequency), calendar,
+                          convention, convention, false, false);
         VanillaSwap swap(true,100.0,
                          schedule,0.0,dayCounter,
                          schedule,index,0.0,
