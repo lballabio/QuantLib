@@ -42,7 +42,7 @@ namespace QuantLib {
         EuriborSwapFixA(Integer years,
                         const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : SwapIndex("EURIBORSWAPFIXA", // familyName
+        : SwapIndex("EuriborSwapFixA", // familyName
                     years,
                     2, // settlementDays
                     EURCurrency(),
