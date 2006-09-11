@@ -254,11 +254,12 @@ void testCurveConsistency(const T&, const I& interpolator) {
     boost::shared_ptr<Xibor> euribor6m(new Euribor6M(curveHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
-        Schedule fixedSchedule(calendar,settlement,maturity,
-                               fixedLegFrequency,fixedLegConvention);
-        Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,
-                               euribor6m->businessDayConvention());
+        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
+                               fixedLegConvention,fixedLegConvention,false,false);
+        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+                               euribor6m->businessDayConvention(),
+                               euribor6m->businessDayConvention(),
+                               false,false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,euribor6m,0.0,
@@ -563,11 +564,13 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     boost::shared_ptr<Xibor> index(new Euribor6M(curveHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
-        Schedule fixedSchedule(calendar,settlement,maturity,
-                               fixedLegFrequency,fixedLegConvention);
-        Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,
-                               index->businessDayConvention());
+
+        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
+                               fixedLegConvention,fixedLegConvention,false,false);
+        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false,false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,0.0,
@@ -601,11 +604,13 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
-        Schedule fixedSchedule(calendar,settlement,maturity,
-                               fixedLegFrequency,fixedLegConvention);
-        Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,
-                               index->businessDayConvention());
+
+        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
+                               fixedLegConvention,fixedLegConvention,false,false);
+        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+                               index->businessDayConvention(),
+                               index->businessDayConvention(),
+                               false,false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,0.0,
