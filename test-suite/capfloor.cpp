@@ -55,7 +55,8 @@ Handle<YieldTermStructure> termStructure_;
 std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
                                                   Integer length) {
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
-    Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
+    Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
+                      convention_, convention_, false, false);
     return FloatingRateCouponVector(schedule, convention_, nominals_,
                                     fixingDays_, index_,
                                     std::vector<Real>(),
@@ -265,8 +266,8 @@ void CapFloorTest::testParity() {
                              strikes[j],vols[k]);
             Date maturity = calendar_.advance(startDate,lengths[i],Years,
                                               convention_);
-            Schedule schedule(calendar_,startDate,maturity,
-                              frequency_,convention_);
+            Schedule schedule(startDate,maturity,Period(frequency_),calendar_,
+                              convention_,convention_,false,false);
             VanillaSwap swap(true,nominals_[0],
                              schedule,strikes[j],index_->dayCounter(),
                              schedule,index_,0.0,
