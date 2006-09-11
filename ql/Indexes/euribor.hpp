@@ -38,7 +38,7 @@ namespace QuantLib {
     //! %Euribor index
     /*! Euribor rate fixed by the ECB.
 
-        \warning This is the rate fixed by the ECB. Use EURLibor
+        \warning This is the rate fixed by the ECB. Use EurLibor
                  if you're interested in the London fixing by BBA.
     */
     class Euribor : public Xibor {
