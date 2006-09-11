@@ -2387,6 +2387,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\swaptionvolatilitycube.cpp">
+			</File>
+			<File
 				RelativePath="termstructures.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2698,6 +2701,9 @@
 			</File>
 			<File
 				RelativePath="swaption.hpp">
+			</File>
+			<File
+				RelativePath=".\swaptionvolatilitycube.hpp">
 			</File>
 			<File
 				RelativePath="termstructures.hpp">
