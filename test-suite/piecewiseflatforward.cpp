@@ -187,10 +187,12 @@ void PiecewiseFlatForwardTest::testConsistency() {
                                                euriborHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
-        Schedule fixedSchedule(calendar,settlement,maturity,
-                               fixedLegFrequency,fixedLegConvention);
-        Schedule floatSchedule(calendar,settlement,maturity,
-                               floatingLegFrequency,floatingLegConvention);
+        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),
+                               calendar,fixedLegConvention,fixedLegConvention,
+                               false,false);
+        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),
+                               calendar,floatingLegConvention,floatingLegConvention,
+                               false,false);
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,0.0,
