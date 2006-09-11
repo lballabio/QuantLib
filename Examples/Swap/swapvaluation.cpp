@@ -394,10 +394,12 @@ int main(int, char* [])
         bool payFixedRate = true;
 
         Date maturity = settlementDate + lenghtInYears*Years;
-        Schedule fixedSchedule(calendar, settlementDate, maturity,
-                               fixedLegFrequency, fixedLegConvention);
-        Schedule floatSchedule(calendar, settlementDate, maturity,
-                               floatingLegFrequency, floatingLegConvention);
+        Schedule fixedSchedule(settlementDate, maturity, Period(fixedLegFrequency),
+                               calendar, fixedLegConvention, fixedLegConvention,
+                               false, false);
+        Schedule floatSchedule(settlementDate, maturity, Period(floatingLegFrequency),
+                               calendar, floatingLegConvention, floatingLegConvention,
+                               false, false);
         VanillaSwap spot5YearSwap(
             payFixedRate, nominal,
             fixedSchedule, fixedRate, fixedLegDayCounter,
@@ -406,10 +408,12 @@ int main(int, char* [])
 
         Date fwdStart = calendar.advance(settlementDate, 1, Years);
         Date fwdMaturity = fwdStart + lenghtInYears*Years;
-        Schedule fwdFixedSchedule(calendar, fwdStart, fwdMaturity,
-                                  fixedLegFrequency, fixedLegConvention);
-        Schedule fwdFloatSchedule(calendar, fwdStart, fwdMaturity,
-                                  floatingLegFrequency, floatingLegConvention);
+        Schedule fwdFixedSchedule(fwdStart, fwdMaturity, Period(fixedLegFrequency),
+                                  calendar, fixedLegConvention, fixedLegConvention,
+                                  false, false);
+        Schedule fwdFloatSchedule(fwdStart, fwdMaturity, Period(floatingLegFrequency),
+                                  calendar, floatingLegConvention, floatingLegConvention,
+                                  false, false);
         VanillaSwap oneYearForward5YearSwap(
             payFixedRate, nominal,
             fwdFixedSchedule, fixedRate, fixedLegDayCounter,
