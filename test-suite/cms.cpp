@@ -467,10 +467,17 @@ void CmsTest::testCmsSwap() {
             Date maturityDate = startDate;
             maturityDate += Period(n, Years);
 
-            Schedule fixedSchedule(calendar_,startDate, maturityDate,
-                fixedFrequency_,fixedConvention_);
-            Schedule floatingSchedule(calendar_,startDate, maturityDate,
-                floatingFrequency_,floatingConvention_);
+            Schedule fixedSchedule(startDate,maturityDate,Period(fixedFrequency_),
+                                   calendar_,fixedConvention_,fixedConvention_,
+                                   false,false);
+            Schedule floatingSchedule(startDate,maturityDate,Period(floatingFrequency_),
+                                      calendar_,floatingConvention_,fixedConvention_,
+                                      false,false);
+
+            //Schedule fixedSchedule(calendar_,startDate, maturityDate,
+            //    fixedFrequency_,fixedConvention_);
+            //Schedule floatingSchedule(calendar_,startDate, maturityDate,
+            //    floatingFrequency_,floatingConvention_);
 
             std::vector<Real> prices;
             //BOOST_MESSAGE("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n\n");
