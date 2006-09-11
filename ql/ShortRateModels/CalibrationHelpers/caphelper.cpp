@@ -61,7 +61,6 @@ namespace QuantLib {
         Schedule floatSchedule(startDate, maturity, index->tenor(), index->calendar(),
                                index->businessDayConvention(),
                                index->businessDayConvention(), false, false); 
-                  index->businessDayConvention());
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
                                      index->businessDayConvention(),
