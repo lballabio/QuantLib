@@ -87,8 +87,8 @@ int main(int argc, char* argv[])
 
         Frequency frequency = Annual;
 
-        Schedule schedule(calendar,issueDate,exerciseDate,
-                          frequency, convention,Date(), true);
+        Schedule schedule(issueDate,exerciseDate,Period(frequency),calendar,
+                          convention, convention, true, false);
 
         DividendSchedule dividends;
         CallabilitySchedule callability;

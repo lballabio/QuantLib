@@ -127,10 +127,13 @@ int main(int, char* [])
                                           floatingLegConvention);
         Date maturity = calendar.advance(startDate,5,Years,
                                          floatingLegConvention);
-        Schedule fixedSchedule(calendar,startDate,maturity,
-                               fixedLegFrequency,fixedLegConvention);
-        Schedule floatSchedule(calendar,startDate,maturity,
-                               floatingLegFrequency,floatingLegConvention);
+        Schedule fixedSchedule(startDate,maturity,Period(fixedLegFrequency),
+                               calendar,fixedLegConvention,fixedLegConvention,
+                               false,false);
+        Schedule floatSchedule(startDate,maturity,Period(floatingLegFrequency),
+                               calendar,floatingLegConvention,floatingLegConvention,
+                               false,false);
+
         boost::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
