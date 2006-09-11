@@ -57,18 +57,20 @@ namespace QuantLib {
                                                termStructure));
 
         std::vector<Real> nominals(1,1.0);
-        Schedule floatSchedule(index->calendar(), startDate, maturity,
-                               index->tenor(),
-                               index->businessDayConvention());
+
+        Schedule floatSchedule(startDate, maturity, index->tenor(), index->calendar(),
+                               index->businessDayConvention(),
+                               index->businessDayConvention(), false, false); 
+                  index->businessDayConvention());
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
                                      index->businessDayConvention(),
                                      nominals,
                                      0, index, std::vector<Real>(),
                                      std::vector<Spread>());
-
-        Schedule fixedSchedule(index->calendar(), startDate, maturity,
-                               fixedLegFrequency, Unadjusted);
+        Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
+                               index->calendar(), Unadjusted, Unadjusted,
+                               false, false); 
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
                                   index->businessDayConvention(),
