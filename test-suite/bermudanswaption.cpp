@@ -51,11 +51,11 @@ Handle<YieldTermStructure> termStructure_;
 
 boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
     Date start = calendar_.advance(settlement_,startYears_,Years);
-    Date maturity = calendar_.advance(start,length_,Years);
-    Schedule fixedSchedule(calendar_,start,maturity,
-                           fixedFrequency_,fixedConvention_);
-    Schedule floatSchedule(calendar_,start,maturity,
-                           floatingFrequency_,floatingConvention_);
+    Date maturity = calendar_.advance(start,length_,Years);     
+    Schedule fixedSchedule(start, maturity, Period(fixedFrequency_), calendar_,
+                           fixedConvention_, fixedConvention_, false, false);
+    Schedule floatSchedule(start, maturity, Period(floatingFrequency_), calendar_,
+                           floatingConvention_, floatingConvention_, false, false);
     return boost::shared_ptr<VanillaSwap>(
             new VanillaSwap(payFixed_,nominal_,
                             fixedSchedule,fixedRate,fixedDayCount_,
