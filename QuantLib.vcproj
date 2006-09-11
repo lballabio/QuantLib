@@ -8426,6 +8426,12 @@
 				RelativePath=".\ql\Volatilities\capletvariancecurve.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\cmsmarket.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\cmsmarket.hpp">
+			</File>
+			<File
 				RelativePath="ql\Volatilities\impliedvoltermstructure.hpp">
 			</File>
 			<File
