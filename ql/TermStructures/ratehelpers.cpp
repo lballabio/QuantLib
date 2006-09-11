@@ -273,11 +273,14 @@ namespace QuantLib {
         earliestDate_ =
             calendar_.advance(evaluationDate_,settlementDays_,Days);
         Date maturity = earliestDate_ + tenor_;
-        Schedule fixedSchedule(calendar_, earliestDate_, maturity,
-                               fixedFrequency_, fixedConvention_);
-        Schedule floatSchedule(calendar_, earliestDate_, maturity,
-                               index_->tenor(),
-                               index_->businessDayConvention());
+
+        Schedule fixedSchedule(earliestDate_, maturity, Period(fixedFrequency_),
+                               calendar_, fixedConvention_, fixedConvention_,
+                               false, false); 
+        Schedule floatSchedule(earliestDate_, maturity, index_->tenor(),
+                               calendar_, index_->businessDayConvention(),
+                               index_->businessDayConvention(),
+                               false, false); 
         // dummy Libor index with curve/swap arguments
         boost::shared_ptr<Xibor> clonedIndex(
                                      new Xibor(index_->familyName(),
