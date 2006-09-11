@@ -53,14 +53,12 @@ namespace QuantLib {
     {
 		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
         Date end = NullCalendar().advance(start,years_,Years);
-        Schedule fixedLegSchedule(calendar_, start, end,
-                                  fixedLegFrequency_, fixedLegConvention_,
-								  Date(), true, false);
-        Schedule floatingLegSchedule(calendar_, start, end,
-                                     iborIndex_->tenor(),
-                                     iborIndex_->businessDayConvention(),
-									 Date(), true, false);
-
+        
+        Schedule fixedLegSchedule(start, end, Period(fixedLegFrequency_), calendar_,
+                                  fixedLegConvention_, fixedLegConvention_, true, false);
+        Schedule floatingLegSchedule(start, end, iborIndex_->tenor(), calendar_,
+                                  iborIndex_->businessDayConvention(),
+                                  iborIndex_->businessDayConvention(), true, false);
 		return boost::shared_ptr<VanillaSwap>(new VanillaSwap(true, 1.0,
                         fixedLegSchedule, 0.0, dayCounter_,
                         floatingLegSchedule,
@@ -74,7 +72,10 @@ namespace QuantLib {
 	
 		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
         Date end = calendar_.advance(start,years_,Years);
-        return boost::shared_ptr<Schedule>(new Schedule(calendar_, start, end,
-                                  fixedLegFrequency_, fixedLegConvention_));
+
+        return boost::shared_ptr<Schedule>(new Schedule(start, end, 
+                                  Period(fixedLegFrequency_),calendar_,
+                                  fixedLegConvention_, fixedLegConvention_,
+                                  false, false));
 	}
 }
