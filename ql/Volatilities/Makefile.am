@@ -22,6 +22,7 @@ include_HEADERS = \
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
+    cmsmarket.cpp \
     localvolsurface.cpp \
     swaptionvolcube.cpp \
     swaptionvolcubebysabr.cpp \
