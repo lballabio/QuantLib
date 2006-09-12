@@ -95,7 +95,7 @@ namespace QuantLib {
             std::pair<Time,Time> times = convertDates(start, length);
             return atmStrike(times.first, times.second);
         }
-        void SwaptionVolatilityCubeBySabr::recalibration(Real beta);
+        void recalibration(Real beta);
 
         Matrix sparseSabrParameters() const;
         Matrix denseSabrParameters() const;
