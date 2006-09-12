@@ -35,31 +35,23 @@ using boost::bind;
 namespace QuantLib {
 
     namespace {
-        // do some simple template meta programming to speed-up
-        // the most frequently used basis system
-        const Size maxPolynomOrder = 10;
 
-        template <Size N>
-        inline Real times(Real x) {
-            return x*times<N-1>(x);
-        }
-        template <>
-        inline Real times<0>(Real x) {
-            return 1;
-        }
+        class MonomialFct : public std::unary_function<Real, Real> {
+          public:
+            MonomialFct(Size order) : order_(order) {}
+            
+            inline Real operator()(const Real x) const {
+                Real ret = 1.0;
+                for (Size i=0; i<order_; ++i) {
+                    ret*=x;
+                }
 
-        template <Size N>
-        std::vector<boost::function1<Real, Real> > monomials() {
-            std::vector<boost::function1<Real, Real> > ret(monomials<N-1>());
-            ret.push_back(&times<N>);
-            return ret;
-        }
-        template <>
-        std::vector<boost::function1<Real, Real> > monomials<0>() {
-            std::vector<boost::function1<Real, Real> > ret;
-            ret.push_back(&times<0>);
-            return ret;
-        }
+                return ret;
+            }
+
+          private:
+            const Size order_;
+        };
 
         // some compilers have problems with Array::operator[]
         // in conjunction with boost::bind (e.g. gcc-4.1.1).
@@ -72,14 +64,11 @@ namespace QuantLib {
     std::vector<boost::function1<Real, Real> >
     LsmBasisSystem::pathBasisSystem(Size order, PolynomType polynomType) {
 
-        QL_REQUIRE(order <= maxPolynomOrder,
-                   "order of basis system exceeds max order");
-
         std::vector<boost::function1<Real, Real> > ret;
         for (Size i=0; i<=order; ++i) {
             switch (polynomType) {
               case Monomial:
-                ret.push_back(monomials<maxPolynomOrder>()[i]);
+                  ret.push_back(MonomialFct(i));
                 break;
               case Laguerre:
                 ret.push_back(
@@ -161,7 +150,7 @@ namespace QuantLib {
                 v[k] = ret[k](x);
             }
 
-            // find dublicates
+            // find duplicates
             for (k=0; k<ret.size(); ++k) {
                 if (std::find_if(v.begin(), v.end(),
                                  bind(equal_within<Real>(10*v[k]*QL_EPSILON),
