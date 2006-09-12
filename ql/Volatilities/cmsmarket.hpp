@@ -51,6 +51,7 @@ namespace QuantLib {
             const Handle<SwaptionVolatilityStructure>& volStructure);
 
         Matrix impliedCmsSpreads(){return impliedCmsSpreads_;};
+        void reprice(const Handle<SwaptionVolatilityStructure>& volStructure);
         Matrix spreadErrors(){return spreadErrors_;};
         Real weightedError(const Matrix& weights);
  
@@ -107,11 +108,11 @@ namespace QuantLib {
       public:
 
         SmileAndCmsCalibrationBySabr(
-            SwaptionVolatilityCubeBySabr& volCube,
+            Handle<SwaptionVolatilityStructure>& volCube,
             CmsMarket& cmsMarket,
             const Matrix& weights);
         
-        SwaptionVolatilityCubeBySabr& volCube_;
+        Handle<SwaptionVolatilityStructure>& volCube_;
         CmsMarket& cmsMarket_;
         Matrix weights_;
         boost::shared_ptr<Transformation> tranformation_;
@@ -139,16 +140,20 @@ namespace QuantLib {
         class ObjectiveFunctionJustBeta : public CostFunction {
           public:
             ObjectiveFunctionJustBeta(SmileAndCmsCalibrationBySabr* smileAndCms)
-                :volCube_(smileAndCms->volCube_),
+                :smileAndCms_(smileAndCms),
+                volCube_(smileAndCms->volCube_),
                 cmsMarket_(smileAndCms->cmsMarket_),
                 weights_(smileAndCms->weights_){};
 
                 Real value(const Array& x) const;
           private:
-            SwaptionVolatilityCubeBySabr& volCube_;
+            SmileAndCmsCalibrationBySabr* smileAndCms_;
+            Handle<SwaptionVolatilityStructure>& volCube_;
             CmsMarket& cmsMarket_;
             Matrix weights_;
         };
+        Real error_; 
+		EndCriteria::Type endCriteria_;
   
     };
 

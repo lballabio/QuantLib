@@ -126,7 +126,42 @@ namespace QuantLib {
             swaps_.push_back(swapTmp);
         }
      }
-
+    void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure){
+ 	    volStructure_ = volStructure;
+        for (Size i=0; i<nExercise_; i++) {
+            std::vector<Leg> cmsTmp;
+            std::vector<Leg> floatingTmp;
+            std::vector< boost::shared_ptr<Swap> > swapTmp;
+            for (Size j=0; j<nLengths_ ; j++) {
+                Size nCoupons = schedules_[i]->size();
+                cmsLegs_[i][j] = CMSCouponVector(*(schedules_[i].get()),
+                                    bdc_, 
+                                    std::vector<double>(nCoupons,1.), 
+                                    swapIndices_[j], 
+                                    2, 
+                                    dayCounter_,
+                                    std::vector<double>(nCoupons, 0.),
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 0.),
+                                    std::vector<double>(nCoupons, meanReversions_[i][j]),
+                                    pricer_,
+                                    volStructure_ );
+                floatingLegs_[i][j] = FloatingRateCouponVector(*(schedules_[i].get()),
+                                    floatingIndex_->businessDayConvention(),
+                                    std::vector<double>(nCoupons, 1.),
+                                    floatingIndex_->settlementDays(),
+                                    floatingIndex_,
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 0.),
+                                    floatingIndex_->dayCounter());
+                swaps_[i][j] = boost::shared_ptr<Swap>(
+                    new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()));
+                impliedCmsSpreads_[i][j] = -swapTmp.back()->NPV()/swapTmp.back()->legBPS(1);
+                spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
+            }
+        }          
+    }
     Real CmsMarket::weightedError(const Matrix& weights){
  	    Real error=0.;
 	    Size count=0;
@@ -142,12 +177,13 @@ namespace QuantLib {
 
 
 
+    
     //===========================================================================//
     //                       SmileAndCmsCalibrationBySabr                        //
     //===========================================================================//
 
     SmileAndCmsCalibrationBySabr::SmileAndCmsCalibrationBySabr(
-        SwaptionVolatilityCubeBySabr& volCube,
+        Handle<SwaptionVolatilityStructure>& volCube,
         CmsMarket& cmsMarket,
         const Matrix& weights):
     volCube_(volCube),
@@ -180,14 +216,23 @@ namespace QuantLib {
 
         Array y = tranformation_->direct(result);
 
+        error_ = y[0];  
+		endCriteria_ = method->endCriteria().criteria(); 
+
         return y[0];
     }
+    
     //===========================================================================//
     //       SmileAndCmsCalibrationBySabr::ObjectiveFunctionJustBeta             //
     //===========================================================================//
+    
     Real SmileAndCmsCalibrationBySabr::ObjectiveFunctionJustBeta::value(const Array& x) const {
-
-
+        const Array y = smileAndCms_->tranformation_->direct(x);
+        Real beta = y[0];
+        const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
+        volCubeBySabr->recalibration(beta);
+        cmsMarket_.reprice(volCube_);
         return cmsMarket_.weightedError(weights_);
     }
 

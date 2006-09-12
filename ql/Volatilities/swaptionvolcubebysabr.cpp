@@ -396,7 +396,21 @@ namespace QuantLib {
         return volCubeAtmCalibrated_.browse();
     }
 
- 
+    void SwaptionVolatilityCubeBySabr::recalibration(Real beta){
+        Matrix newBetaGuess(nExercise_, nlengths_, beta);
+        parametersGuess_.setLayer(1, newBetaGuess);
+        parametersGuess_.updateInterpolators();
+        
+        sparseParameters_ = sabrCalibration(marketVolCube_);
+        sparseParameters_.updateInterpolators();
+        volCubeAtmCalibrated_= marketVolCube_;
+       
+        if(isAtmCalibrated_){
+            fillVolatilityCube();
+            denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
+            denseParameters_.updateInterpolators();
+        }  
+    }
 
     //===========================================================================//
     //                      SwaptionVolatilityCubeBySabr::Cube                   //
