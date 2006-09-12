@@ -39,7 +39,12 @@ namespace QuantLib {
       firstAliveRate_(evolutionTimes.size())
     {
 
-        // check coherence of input data
+        // Set up and check coherence of data: 
+        // rate times, evolution times, numeraires, relevance rates, times.
+
+        // Check rate times (n = rateTimes.size()-1):
+        // - rateTimes must have 2 elements at least (n >= 1);
+        // - rateTimes[i] are strictly increasing and non-negative.
         QL_REQUIRE(rateTimes_.size()>1,
                    "Rate times must have 2 elements at least");
         QL_REQUIRE(rateTimes_[0]>=0.0,
@@ -48,15 +53,22 @@ namespace QuantLib {
             QL_REQUIRE(rateTimes[i]>rateTimes[i-1],
                        "rate times must be strictly increasing");
 
+        // Check evolution times (steps_ = evolutionTimes.size()):
+        // - evolutionTimes has 1 elements at least (steps_ >= 1);
+        // - evolutionTimes[i] are strictly increasing;
+        // - the last evolutionTimes is <= the last rateTimes.
         QL_REQUIRE(steps_>0,
                    "Evolution times must have 1 elements at least");
         for (Size i = 1; i<steps_; ++i)
             QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1],
-                       "evolution times must be strictly increasing");
-
+                       "Evolution times must be strictly increasing");
         QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
-                   "last evolution time is past last rate time");
+                   "The last evolution time is past the last rate time");
 
+        // Set up and check numeraires (n_num = numeraires.size()):
+        // - if numeraires is empty, put the last ZCbond as default numeraire;
+        // - numeraires are as many as evolutionTimes (n_num = steps_);
+        // - the numeraire[i] must not have expired before the end of the step evolutionTimes[i].
         if (numeraires.empty()) {
             numeraires_ = std::vector<Size>(steps_, rateTimes_.size()-1);
         } else {
@@ -67,6 +79,9 @@ namespace QuantLib {
                            "Numeraire " << i << " expired");
         }
 
+        // Set up and check relevance rates (n_rr = relevanceRates.size()):
+        // - if relevanceRates is empty, put as default 0 and n;
+        // - relevanceRates are as many as evolutionTimes (n_rr = steps_).
         if (relevanceRates.empty()) {
             relevanceRates_ = std::vector<std::pair<Size,Size> >(
                                 steps_, std::make_pair(0,rateTimes.size()-1));
@@ -75,6 +90,10 @@ namespace QuantLib {
                        "relevanceRates / evolutionTimes mismatch");
         }
 
+        // Set up and check times:
+        // - set up rateTaus_
+        // - set up the effective stop time for step j and rate time i as MIN{evolutionTimes[j],rateTimes[i]}
+        // - set up firstAliveRate_ as the first alive rate for each step
         for (Size i=0; i<rateTaus_.size(); i++)
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
 

@@ -143,7 +143,6 @@ namespace QuantLib {
         setMoneyMarketMeasurePlus(0);
     }
 
-
 }
 
 #endif
