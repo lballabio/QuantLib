@@ -45,19 +45,22 @@ namespace QuantLib {
    
      SmileSection::SmileSection(
           const std::vector<Real>& sabrParameters, 
-          const std::vector<Rate>& strikes,
           const Time timeToExpiry) :
-     timeToExpiry_(timeToExpiry), 
-         strikes_(strikes),
-         volatilities_(strikes) {
+     timeToExpiry_(timeToExpiry) {
 
-           Real alpha = sabrParameters[0];
-           Real beta = sabrParameters[1];
-           Real nu = sabrParameters[2];
-           Real rho = sabrParameters[3];
-           Real forwardValue = sabrParameters[4];
+             //fictitious data due to SABRInterpolation redundant input needs
+             for (Size i=0; i<2; i++) {
+                 strikes_.push_back(0.05*i+.01);
+                 volatilities_.push_back(.9);
+             }
+       
+             Real alpha = sabrParameters[0];
+             Real beta = sabrParameters[1];
+             Real nu = sabrParameters[2];
+             Real rho = sabrParameters[3];
+             Real forwardValue = sabrParameters[4];
 
-           interpolation_ = boost::shared_ptr<Interpolation>(new
+             interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(),
                   volatilities_.begin(),
                   timeToExpiry, forwardValue, 

@@ -40,7 +40,6 @@ namespace QuantLib {
 
         SmileSection(
           const std::vector<Real>& sabrParameters,
-          const std::vector<Rate>& strikes,
           const Time timeToExpiry);
 
         Real variance(const Rate& strike) const;

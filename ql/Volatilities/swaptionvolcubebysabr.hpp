@@ -128,8 +128,6 @@ namespace QuantLib {
         Cube denseParameters_;
         std::vector< std::vector<boost::shared_ptr<SmileSection> > > sparseSmiles_;
 
-        std::vector<Real> fictitiousStrikes_;
-
         Cube parametersGuess_; 
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;

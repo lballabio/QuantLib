@@ -67,10 +67,6 @@ namespace QuantLib {
         isAtmCalibrated_(isAtmCalibrated),
         volSpreads_(volSpreads) {
 
-        for (Size i=0; i<nStrikes_; i++) {
-            fictitiousStrikes_.push_back(0.05*i+.01);
-        }
-
         QL_REQUIRE(nStrikes_==volSpreads_.columns(),
                    "nStrikes_!=marketVolCube.columns()");
         QL_REQUIRE(nExercise_*nlengths_==volSpreads_.rows(),
@@ -367,7 +363,7 @@ namespace QuantLib {
         const Cube& sabrParametersCube) const {
         const std::vector<Real> sabrParameters = sabrParametersCube.operator ()(expiry, length);
         return boost::shared_ptr<SmileSection>(
-            new SmileSection(sabrParameters, fictitiousStrikes_, expiry));
+            new SmileSection(sabrParameters, expiry));
     }
 
 
