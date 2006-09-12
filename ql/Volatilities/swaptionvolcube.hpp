@@ -29,6 +29,7 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/swaptionvolstructure.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -99,12 +100,13 @@ namespace QuantLib {
   
     class SwaptionVolatilityCubeByLinear : public SwaptionVolatilityCube {
       public:
+
         SwaptionVolatilityCubeByLinear(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const Matrix& volSpreads,
+            const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
             const Calendar& calendar,
 			Integer swapSettlementDays,
             Frequency fixedLegFrequency,
@@ -113,7 +115,6 @@ namespace QuantLib {
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor = 2,
             const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
-
 
         //! \name Other inspectors
         //@{

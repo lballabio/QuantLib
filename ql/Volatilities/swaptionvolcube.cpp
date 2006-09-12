@@ -27,7 +27,8 @@
 
 #include <fstream>
 #include <string>
-             
+#include <ql/Utilities/dataformatters.hpp>
+
 namespace QuantLib {
 
 
@@ -123,15 +124,12 @@ namespace QuantLib {
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-
-     SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
+    SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Matrix& volSpreads,
+        const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
         const Calendar& calendar,
 		Integer swapSettlementDays,
         Frequency fixedLegFrequency,
@@ -153,18 +151,29 @@ namespace QuantLib {
         iborIndex,
         shortTenor,
         iborIndexShortTenor),
-      volSpreadsInterpolator_(nStrikes_),
-      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
+        volSpreadsInterpolator_(nStrikes_),
+        volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
 
-        QL_REQUIRE(nStrikes_==volSpreads.columns(),
-                   "nStrikes_!=volSpreads.columns()");
-        QL_REQUIRE(nExercise_*nlengths_==volSpreads.rows(),
-                   "nExercise*nlengths!=volSpreads.rows()");
-        for (Size i=0; i<nStrikes_; i++)
-        {
+        QL_REQUIRE(!volatilitySpreads.empty(), "empty vol spreads matrix"); 
+        for (Size j=0; j<nExercise_; j++) {
+             for (Size k=0; k<nlengths_; k++) {
+                 QL_REQUIRE(nStrikes_==volatilitySpreads[j*k].size(),
+                     "mismatch between number of strikes ("
+                     << nStrikes_ << ") and number of columns ("
+                     << volatilitySpreads[j*k].size() << ") in row ("
+                     << j*nlengths_+k << ")");
+             }
+        }
+        QL_REQUIRE(nExercise_*nlengths_==volatilitySpreads.size(),
+                 "mismatch between number of option expiries * swap tenors ("
+                 << nExercise_*nlengths_ << ") and number of rows ("
+                 << volatilitySpreads.size() <<")");
+
+        for (Size i=0; i<nStrikes_; i++){
             for (Size j=0; j<nExercise_; j++) {
                 for (Size k=0; k<nlengths_; k++) {
-                    volSpreads_[i][j][k]=volSpreads[j*nlengths_+k][i];
+                    volSpreads_[i][j][k] = 
+                        volatilitySpreads[j*nlengths_+k][i]->value();
                 }
             }
             volSpreadsInterpolator_[i] = BilinearInterpolation(
@@ -174,7 +183,6 @@ namespace QuantLib {
             volSpreadsInterpolator_[i].enableExtrapolation();
         }
 
-        //registerWith(atmVolMatrix_);
     }
 
     boost::shared_ptr<Interpolation>

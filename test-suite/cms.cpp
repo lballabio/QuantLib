@@ -150,9 +150,16 @@ void setup() {
     strikeSpreads.push_back(.01);
     strikeSpreads.push_back(.02);
 
-
-    const Matrix nullVolSpreads(lengths.size()*lengths.size(),
-        strikeSpreads.size(), 0.0);
+    Size rows = lengths.size()*lengths.size();
+    Size columns = strikeSpreads.size();
+    std::vector<std::vector<Handle<Quote> > > nullVolSpreads(rows);
+    for (Size i=0; i<rows; i++) {
+        nullVolSpreads[i] = std::vector<Handle<Quote> >(columns);
+        for (Size j=0; j<columns; j++) {
+            nullVolSpreads[i][j].linkTo(
+                boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+        }
+    }
 
     flatSwaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
@@ -183,6 +190,9 @@ void setup() {
     std::vector<bool> isParameterFixed(4,false);
     isParameterFixed[1]=true;
 
+    const Matrix nullVolSpreads2(lengths.size()*lengths.size(),
+        strikeSpreads.size(), 0.0); 
+
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
         SwaptionVolatilityCubeBySabr(
@@ -190,7 +200,7 @@ void setup() {
             lengths,
             lengths,
             strikeSpreads,
-            nullVolSpreads,
+            nullVolSpreads2,
             calendar_,
             2,
             fixedFrequency_,

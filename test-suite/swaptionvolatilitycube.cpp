@@ -48,7 +48,8 @@ Handle<SwaptionVolatilityStructure> atmVolMatrix_;
 std::vector<Period> optionTenors_;
 std::vector<Period> swapTenors_;
 std::vector<Spread> strikeSpreads_;
-Matrix volSpreads_;
+Matrix volSpreadsMatrix_;
+std::vector<std::vector<Handle<Quote> > > volSpreads;
 Integer swapSettlementDays_;
 Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
@@ -99,7 +100,7 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
               Volatility vol = volCube.volatility(
                   optionTenors_[i], swapTenors_[j], atmStrike+strikeSpreads_[k], true);
               Volatility spread = vol-atmVol;
-              Volatility expVolSpread = volSpreads_[i*swapTenors_.size()+j][k];
+              Volatility expVolSpread = volSpreadsMatrix_[i*swapTenors_.size()+j][k];
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
                   BOOST_FAIL("recovery of smile vol spreads failed:"
@@ -183,43 +184,51 @@ void setup() {
     strikeSpreads_.push_back(+0.0050);
     strikeSpreads_.push_back(+0.0200);
 
-    volSpreads_ = Matrix(optionTenors_.size()*swapTenors_.size(),
+    volSpreadsMatrix_ = Matrix(optionTenors_.size()*swapTenors_.size(),
                          strikeSpreads_.size());
-    volSpreads_[0][0]=0.0599; volSpreads_[0][1]=0.0049;
-    volSpreads_[0][2]=0.0000;
-    volSpreads_[0][3]=-0.0001; volSpreads_[0][4]=0.0127;
+    volSpreadsMatrix_[0][0]=0.0599; volSpreadsMatrix_[0][1]=0.0049;
+    volSpreadsMatrix_[0][2]=0.0000;
+    volSpreadsMatrix_[0][3]=-0.0001; volSpreadsMatrix_[0][4]=0.0127;
 
-    volSpreads_[1][0]=0.0729; volSpreads_[1][1]=0.0086;
-    volSpreads_[1][2]=0.0000;
-    volSpreads_[1][3]=-0.0024; volSpreads_[1][4]=0.0098;
+    volSpreadsMatrix_[1][0]=0.0729; volSpreadsMatrix_[1][1]=0.0086;
+    volSpreadsMatrix_[1][2]=0.0000;
+    volSpreadsMatrix_[1][3]=-0.0024; volSpreadsMatrix_[1][4]=0.0098;
 
-    volSpreads_[2][0]=0.0738; volSpreads_[2][1]=0.0102;
-    volSpreads_[2][2]=0.0000;
-    volSpreads_[2][3]=-0.0039; volSpreads_[2][4]=0.0065;
+    volSpreadsMatrix_[2][0]=0.0738; volSpreadsMatrix_[2][1]=0.0102;
+    volSpreadsMatrix_[2][2]=0.0000;
+    volSpreadsMatrix_[2][3]=-0.0039; volSpreadsMatrix_[2][4]=0.0065;
 
-    volSpreads_[3][0]=0.0465; volSpreads_[3][1]=0.0063;
-    volSpreads_[3][2]=0.0000;
-    volSpreads_[3][3]=-0.0032; volSpreads_[3][4]=-0.0010;
+    volSpreadsMatrix_[3][0]=0.0465; volSpreadsMatrix_[3][1]=0.0063;
+    volSpreadsMatrix_[3][2]=0.0000;
+    volSpreadsMatrix_[3][3]=-0.0032; volSpreadsMatrix_[3][4]=-0.0010;
 
-    volSpreads_[4][0]=0.0558; volSpreads_[4][1]=0.0084;
-    volSpreads_[4][2]=0.0000;
-    volSpreads_[4][3]=-0.0050; volSpreads_[4][4]=-0.0057;
+    volSpreadsMatrix_[4][0]=0.0558; volSpreadsMatrix_[4][1]=0.0084;
+    volSpreadsMatrix_[4][2]=0.0000;
+    volSpreadsMatrix_[4][3]=-0.0050; volSpreadsMatrix_[4][4]=-0.0057;
 
-    volSpreads_[5][0]=0.0576; volSpreads_[5][1]=0.0083;
-    volSpreads_[5][2]=0.0000;
-    volSpreads_[5][3]=-0.0043; volSpreads_[5][4]=-0.0014;
+    volSpreadsMatrix_[5][0]=0.0576; volSpreadsMatrix_[5][1]=0.0083;
+    volSpreadsMatrix_[5][2]=0.0000;
+    volSpreadsMatrix_[5][3]=-0.0043; volSpreadsMatrix_[5][4]=-0.0014;
 
-    volSpreads_[6][0]=0.0437; volSpreads_[6][1]=0.0059;
-    volSpreads_[6][2]=0.0000;
-    volSpreads_[6][3]=-0.0030; volSpreads_[6][4]=-0.0006;
+    volSpreadsMatrix_[6][0]=0.0437; volSpreadsMatrix_[6][1]=0.0059;
+    volSpreadsMatrix_[6][2]=0.0000;
+    volSpreadsMatrix_[6][3]=-0.0030; volSpreadsMatrix_[6][4]=-0.0006;
 
-    volSpreads_[7][0]=0.0533; volSpreads_[7][1]=0.0078;
-    volSpreads_[7][2]=0.0000;
-    volSpreads_[7][3]=-0.0045; volSpreads_[7][4]=-0.0046;
+    volSpreadsMatrix_[7][0]=0.0533; volSpreadsMatrix_[7][1]=0.0078;
+    volSpreadsMatrix_[7][2]=0.0000;
+    volSpreadsMatrix_[7][3]=-0.0045; volSpreadsMatrix_[7][4]=-0.0046;
 
-    volSpreads_[8][0]=0.0545; volSpreads_[8][1]=0.0079;
-    volSpreads_[8][2]=0.0000;
-    volSpreads_[8][3]=-0.0042; volSpreads_[8][4]=-0.0020;
+    volSpreadsMatrix_[8][0]=0.0545; volSpreadsMatrix_[8][1]=0.0079;
+    volSpreadsMatrix_[8][2]=0.0000;
+    volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
+
+    //const std::vector<std::vector<Handle<Quote> > > volSpreads;
+    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
+        for (Size j=0; j<strikeSpreads_.size(); j++) {
+            volSpreads[i][j].linkTo(
+                boost::shared_ptr<Quote>(new SimpleQuote(volSpreadsMatrix_[i][j])));
+        }
+    }
 
     swapSettlementDays_ = 2;
     fixedLegFrequency_ = Annual;
@@ -253,7 +262,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
-                                           volSpreads_,
+                                           volSpreads,
                                            calendar_,
                                            swapSettlementDays_,
                                            fixedLegFrequency_,
@@ -280,7 +289,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
-                                           volSpreads_,
+                                           volSpreads,
                                            calendar_,
                                            swapSettlementDays_,
                                            fixedLegFrequency_,
