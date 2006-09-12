@@ -52,21 +52,23 @@ namespace QuantLib {
     }
 
     std::string JointCalendar::Impl::name() const {
-        std::string fullName = calendars_.front().name();
-        std::vector<Calendar>::const_iterator i;
+        std::ostringstream out;
         switch (rule_) {
           case JoinHolidays:
-            for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
-                fullName += " ^ " + i->name();
+            out << "JoinHolidays(";
             break;
           case JoinBusinessDays:
-            for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
-                fullName += " + " + i->name();
+            out << "JoinBusinessDays(";
             break;
           default:
             QL_FAIL("unknown joint calendar rule");
         }
-        return fullName;
+        out << calendars_.front().name();
+        std::vector<Calendar>::const_iterator i;
+        for (i=calendars_.begin()+1; i!=calendars_.end(); ++i)
+            out << ", " << i->name();
+        out << ")";
+        return out.str();
     }
 
     bool JointCalendar::Impl::isWeekend(Weekday w) const {
