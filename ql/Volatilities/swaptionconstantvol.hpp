@@ -60,7 +60,7 @@ namespace QuantLib {
         Real maxStrike() const;
 
         //! return trivial smile section
-        boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const;
+        boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const;
 
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
@@ -143,7 +143,7 @@ namespace QuantLib {
         return volatility_->value();
     }
 
-    inline boost::shared_ptr<VarianceSmileSection> SwaptionConstantVolatility::smileSection(Time start, Time length) const {
+    inline boost::shared_ptr<SmileSection> SwaptionConstantVolatility::smileSection(Time start, Time length) const {
         //any strike
         const Real strike = .04;
 
@@ -154,7 +154,7 @@ namespace QuantLib {
         strikes.push_back(strike);
         strikes.push_back(strike+1);
 
-        return boost::shared_ptr<VarianceSmileSection>(new VarianceSmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSection>(new SmileSection(start, strikes, volatilities));
     }
 
 }

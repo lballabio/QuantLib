@@ -264,7 +264,7 @@ namespace QuantLib {
         std::vector<Time> timeLengths(sparseParameters_.lengths());
    
         for (Size j=0; j<exerciseTimes.size(); j++) {
-            std::vector<boost::shared_ptr<VarianceSmileSection> > tmp;
+            std::vector<boost::shared_ptr<SmileSection> > tmp;
             for (Size k=0; k<timeLengths.size(); k++) {
                 tmp.push_back(smileSection(exerciseTimes[j], timeLengths[k], sparseParameters_)); 
             }
@@ -297,9 +297,9 @@ namespace QuantLib {
             lengthsPreviousIndex = timeLengths.size()-2; 
         }
 
-        std::vector< std::vector<boost::shared_ptr<VarianceSmileSection> > > smiles;
-        std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnPreviousExpiry;
-        std::vector<boost::shared_ptr<VarianceSmileSection> >  smilesOnNextExpiry;
+        std::vector< std::vector<boost::shared_ptr<SmileSection> > > smiles;
+        std::vector<boost::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
+        std::vector<boost::shared_ptr<SmileSection> >  smilesOnNextExpiry;
 
         QL_REQUIRE(expiriesPreviousIndex+1 < sparseSmiles_.size(),
             "SwaptionVolatilityCubeBySabr::spreadVolInterpolation: expiriesPreviousIndex+1 >= sparseSmiles_.size()");
@@ -360,17 +360,17 @@ namespace QuantLib {
             return smileSection(expiry, length)->volatility(strike);
     }
 
-    boost::shared_ptr<VarianceSmileSection> 
+    boost::shared_ptr<SmileSection> 
         SwaptionVolatilityCubeBySabr::smileSection(Time expiry, 
         Time length,                        
         const Cube& sabrParametersCube) const {
         const std::vector<Real> sabrParameters = sabrParametersCube.operator ()(expiry, length);
-        return boost::shared_ptr<VarianceSmileSection>(
-            new VarianceSmileSection(sabrParameters, fictitiousStrikes_, expiry));
+        return boost::shared_ptr<SmileSection>(
+            new SmileSection(sabrParameters, fictitiousStrikes_, expiry));
     }
 
 
-    boost::shared_ptr<VarianceSmileSection> 
+    boost::shared_ptr<SmileSection> 
         SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
         if(isAtmCalibrated_){
             return smileSection(expiry, length, denseParameters_ );

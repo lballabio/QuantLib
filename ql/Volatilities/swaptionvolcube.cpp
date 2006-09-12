@@ -193,7 +193,7 @@ namespace QuantLib {
             );
     }
 
-    boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityCubeByLinear::smileSection(Time start, Time length) const {
+    boost::shared_ptr<SmileSection> SwaptionVolatilityCubeByLinear::smileSection(Time start, Time length) const {
 
         std::vector<Real> strikes, volatilities;
 
@@ -205,8 +205,8 @@ namespace QuantLib {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
-        return boost::shared_ptr<VarianceSmileSection>(
-            new VarianceSmileSection(start, strikes, volatilities)
+        return boost::shared_ptr<SmileSection>(
+            new SmileSection(start, strikes, volatilities)
             );
     }
 
@@ -256,10 +256,10 @@ namespace QuantLib {
     }
 
     //===========================================================================//
-    //                            VarianceSmileSection                           //
+    //                            SmileSection                           //
     //===========================================================================//
 
-     VarianceSmileSection::VarianceSmileSection(Time timeToExpiry,
+     SmileSection::SmileSection(Time timeToExpiry,
                         const std::vector<Rate>& strikes,
                         const std::vector<Rate>& volatilities) :
      timeToExpiry_(timeToExpiry),
@@ -273,7 +273,7 @@ namespace QuantLib {
      }
 
    
-     VarianceSmileSection::VarianceSmileSection(
+     SmileSection::SmileSection(
           const std::vector<Real>& sabrParameters, 
           const std::vector<Rate>& strikes,
           const Time timeToExpiry) :
@@ -296,9 +296,14 @@ namespace QuantLib {
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
-    Volatility VarianceSmileSection::operator ()(const Real& strike) const {
+    Real SmileSection::variance(const Real& strike) const {
         const Real v = interpolation_->operator()(strike, true);
         return v*v*timeToExpiry_;
     }
+
+    Volatility SmileSection::volatility(const Rate& strike) const {
+        const Real v = interpolation_->operator()(strike, true);
+        return v;
+    };
 
 }

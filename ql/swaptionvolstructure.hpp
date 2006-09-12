@@ -31,30 +31,28 @@
 
 namespace QuantLib {
 
-     //! swaption-volatility smile section
+     //! swaption volatility smile section
     /*! This class provides the volatility smile section
     */
-    class VarianceSmileSection : std::unary_function<Rate, Real> {
+    class SmileSection : std::unary_function<Rate, Real> {
       public:
-        VarianceSmileSection(Time expiryTime,
+        SmileSection(Time expiryTime,
               const std::vector<Rate>& strikes,
               const std::vector<Rate>& volatilities);
 
-        VarianceSmileSection(
+        SmileSection(
           const std::vector<Real>& sabrParameters,
           const std::vector<Rate>& strikes,
           const Time timeToExpiry);
 
-        Real operator()(const Rate& strike) const;
+        Real variance(const Rate& strike) const;
 
-        Real volatility(const Rate& strike) const {
-            return std::sqrt(this->operator()(strike)/timeToExpiry_);
-        };
+        Volatility volatility(const Rate& strike) const;
 
     private:
           
-        VarianceSmileSection& operator=(const VarianceSmileSection& o);
-        VarianceSmileSection(const VarianceSmileSection& o);
+        SmileSection& operator=(const SmileSection& o);
+        SmileSection(const SmileSection& o);
 
         Time timeToExpiry_;
         std::vector<Rate> strikes_;
@@ -128,15 +126,22 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
-        Date maxDate() const { return maxStartDate(); }
-        Time maxTime() const { return maxStartTime(); }
-        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Date start, Period length) const;
-        //! return smile section
-        virtual boost::shared_ptr<VarianceSmileSection> smileSection(Time start, Time length) const = 0;
+        Date maxDate() const { 
+            return maxStartDate(); 
+        }
+        Time maxTime() const { 
+            return maxStartTime(); 
+        }
+
+        virtual boost::shared_ptr<SmileSection> smileSection(Date start, Period length) const;
+
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
       protected:
+
+        //! return smile section
+        virtual boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const = 0;
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time exerciseTime, Time length,
                                           Rate strike) const = 0;
@@ -242,7 +247,7 @@ namespace QuantLib {
                    << minStrike() << "," << maxStrike()<< "]");
     }
 
-    inline boost::shared_ptr<VarianceSmileSection> SwaptionVolatilityStructure::smileSection(
+    inline boost::shared_ptr<SmileSection> SwaptionVolatilityStructure::smileSection(
                                             Date start, Period length) const {
         const std::pair<Time, Time> p = convertDates(start, length);
         return smileSection(p.first, p.second);
