@@ -54,9 +54,10 @@ namespace QuantLib {
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure);
         Matrix spreadErrors(){return spreadErrors_;};
         Real weightedError(const Matrix& weights);
+        Matrix browse() const;
  
       private:
-         
+        
         std::vector<Period> expiries_;
         std::vector<Period> lengths_;
         Size nExercise_;
@@ -91,10 +92,10 @@ namespace QuantLib {
         std::vector< std::vector< Leg > > floatingLegs_;
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
 
-        Handle<SwaptionVolatilityStructure> volStructure_;
         Handle<YieldTermStructure> yieldTermStructure_;
-
-    };
+        Handle<SwaptionVolatilityStructure> volStructure_;
+ 
+     };
 
      class SmileAndCmsCalibrationBySabr{
         

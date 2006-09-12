@@ -48,11 +48,11 @@ namespace QuantLib {
     calendar_(TARGET()),
     frequency_(Quarterly),
     bdc_(Unadjusted),
-    stubDate_(0),
+    stubDate_(Date()),
     startFromEnd_(true), 
     longFinal_(false),
-    dayCounter_(),
-    floatingIndex_(boost::shared_ptr<Xibor>(new Euribor3M(yieldTermStructure_))){
+    dayCounter_(Actual360()),
+    floatingIndex_(boost::shared_ptr<Xibor>(new Euribor3M(yieldTermStructure))){
 
         referenceDate_ = yieldTermStructure_->referenceDate();
         effectiveDate_ = calendar_.advance(referenceDate_,2,Days,Following); //FIXME
@@ -69,6 +69,7 @@ namespace QuantLib {
         asks_ = Matrix(nExercise_, nLengths_, 0.);
         mids_ = Matrix(nExercise_, nLengths_, 0.);
         impliedCmsSpreads_ = Matrix(nExercise_, nLengths_, 0.);
+        spreadErrors_ = Matrix(nExercise_, nLengths_, 0.);
 
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA2Y(yieldTermStructure_)));
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA5Y(yieldTermStructure_)));
@@ -118,7 +119,7 @@ namespace QuantLib {
                 swapTmp.push_back(
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()))
                 );
-                impliedCmsSpreads_[i][j] = -swapTmp.back()->NPV()/swapTmp.back()->legBPS(1);
+                impliedCmsSpreads_[i][j] = -swapTmp.back()->NPV()/swapTmp.back()->legBPS(1)/10000;;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
             cmsLegs_.push_back(cmsTmp);
@@ -157,7 +158,7 @@ namespace QuantLib {
                                     floatingIndex_->dayCounter());
                 swaps_[i][j] = boost::shared_ptr<Swap>(
                     new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()));
-                impliedCmsSpreads_[i][j] = -swapTmp.back()->NPV()/swapTmp.back()->legBPS(1);
+                impliedCmsSpreads_[i][j] = -(swapTmp.back()->NPV()/swapTmp.back()->legBPS(1))/10000;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
         }          
@@ -177,7 +178,22 @@ namespace QuantLib {
 
 
 
-    
+    Matrix CmsMarket::browse() const{
+        Matrix result(nExercise_*nLengths_,7,0.);
+	        for(Size j=0;j<nLengths_;j++){
+                for(Size i=0;i<nExercise_;i++){
+                result[j*nLengths_+i][0]= lengths_[j].length();
+                result[j*nLengths_+i][1]= expiries_[i].length(); 
+                result[j*nLengths_+i][2]= bids_[i][j]*10000;
+                result[j*nLengths_+i][3]= asks_[i][j]*10000;
+                result[j*nLengths_+i][4]= mids_[i][j]*10000;
+                result[j*nLengths_+i][5]= impliedCmsSpreads_[i][j]*10000;
+                result[j*nLengths_+i][6]= spreadErrors_[i][j]*10000;
+            }   
+        }  
+        return result;
+    }
+ 
     //===========================================================================//
     //                       SmileAndCmsCalibrationBySabr                        //
     //===========================================================================//
