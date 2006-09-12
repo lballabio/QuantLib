@@ -200,7 +200,7 @@ namespace QuantLib {
 
     SmileAndCmsCalibrationBySabr::SmileAndCmsCalibrationBySabr(
         Handle<SwaptionVolatilityStructure>& volCube,
-        CmsMarket& cmsMarket,
+        boost::shared_ptr<CmsMarket>& cmsMarket,
         const Matrix& weights):
     volCube_(volCube),
     cmsMarket_(cmsMarket),
@@ -248,8 +248,8 @@ namespace QuantLib {
         const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
         volCubeBySabr->recalibration(beta);
-        cmsMarket_.reprice(volCube_);
-        return cmsMarket_.weightedError(weights_);
+        cmsMarket_->reprice(volCube_);
+        return cmsMarket_->weightedError(weights_);
     }
 
 

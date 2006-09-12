@@ -110,11 +110,11 @@ namespace QuantLib {
 
         SmileAndCmsCalibrationBySabr(
             Handle<SwaptionVolatilityStructure>& volCube,
-            CmsMarket& cmsMarket,
+            boost::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights);
         
         Handle<SwaptionVolatilityStructure>& volCube_;
-        CmsMarket& cmsMarket_;
+        boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         boost::shared_ptr<Transformation> tranformation_;
 
@@ -133,7 +133,7 @@ namespace QuantLib {
                     return y_;
                 }
              Array inverse(const Array& x) const {
-                    y_[0] = std::sqrt(-std::log(x[1]));
+                    y_[0] = std::sqrt(-std::log(x[0]));
                        return y_;
                 }
         };
@@ -150,7 +150,7 @@ namespace QuantLib {
           private:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure>& volCube_;
-            CmsMarket& cmsMarket_;
+            boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
         };
         Real error_; 
