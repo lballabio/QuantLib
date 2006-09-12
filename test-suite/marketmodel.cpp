@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 StatPro Italia srl
 
@@ -98,7 +99,6 @@ void setup() {
         accruals[i-1] = rateTimes[i] - rateTimes[i-1];
 
     // rates
-
     todaysForwards = std::vector<Rate>(paymentTimes.size());
     displacements = std::vector<Rate>(paymentTimes.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
@@ -401,8 +401,6 @@ void setMeasure(EvolutionDescription& evolution,
     }
 }
 
-
-
 enum EvolverType { Ipc, Pc };
 
 std::string evolverTypeToString(EvolverType type) {
@@ -536,8 +534,6 @@ void MarketModelTest::testVeryLongJumpForwardsAndCaplets() {
     product->add(caplets);
     product->finalize();
 
-
-
     EvolutionDescription evolution = product->suggestedEvolution();
 
     for (Size n=0; n<1; n++) {
@@ -655,7 +651,8 @@ void MarketModelTest::testLongJumpCoterminalSwaps() {
                 ExponentialCorrelationFlatVolatility, ExponentialCorrelationAbcdVolatility };
             for (Size k=0; k<LENGTH(marketModels); k++) {
                 BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
-                boost::shared_ptr<MarketModel> marketModel = makePseudoRoot(evolution, factors, marketModels[k]);
+                boost::shared_ptr<MarketModel> marketModel = 
+                    makePseudoRoot(evolution, factors, marketModels[k]);
 
                 MeasureType measures[] = { ProductSuggested, Terminal, MoneyMarket, MoneyMarketPlus };
                 for (Size j=0; j<LENGTH(measures); j++) {
@@ -748,11 +745,10 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     // Parameters following Rebonato  --> Parameters following Brigo-Mercurio
     // used in Abcd class                 used in LmExtLinearExponentialVolModel class
-    Real a = 0.0597;              // --> d
-    Real b = 0.1677;              // --> a
-    Real c = 0.5403;              // --> b
-    Real d = 0.1710;              // --> c
-
+    Real a = 0.0597;                      // --> d
+    Real b = 0.1677;                      // --> a
+    Real c = 0.5403;                      // --> b
+    Real d = 0.1710;                      // --> c
 
     Size i1; // index of forward 1
     Size i2; // index of forward 2
@@ -823,6 +819,53 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
 }
 
+void MarketModelTest::testDriftCalculator() {
+
+    BOOST_MESSAGE("Testing Drift Calculation ...");
+    QL_TEST_SETUP
+
+    Size alive = 0;
+    Size numeraire = 1;
+    Size numberOfSteps = 1;                  // 1 single step
+    Size factors = todaysForwards.size();
+    //std::vector<DriftCalculator> calculator;
+    std::vector<Time> evolutionTimes(numberOfSteps);
+    std::vector<Size> numeraires(numberOfSteps);
+    for (Size i=0; i<numberOfSteps; ++i) {
+        evolutionTimes[i] = rateTimes[i];
+        numeraires[i] = numeraire;
+    }
+    PseudoRootType marketModels[] = {ExponentialCorrelationFlatVolatility,
+                                     ExponentialCorrelationAbcdVolatility };
+    //Size factors = (i==0 ? todaysForwards.size() : i);
+    //BOOST_MESSAGE("\n\t" << n << "." << m << "." << " Factors: " << factors);
+
+    //for (Size k=0; k<LENGTH(marketModels); k++) {
+    //    BOOST_MESSAGE("\n\t" << n << "." << m << "." << k << "." << " MarketModel: " << marketModelTypeToString(marketModels[k]));
+
+    EvolutionDescription evolution(rateTimes,evolutionTimes,numeraires);
+    boost::shared_ptr<MarketModel> marketModel =
+        makePseudoRoot(evolution, factors, marketModels[0]);
+
+    Size dim = (marketModel->numberOfRates());
+    std::vector<Real> drifts(dim), driftsReduced(dim);
+    //calculator.push_back(DriftCalculator(marketModel->pseudoRoot(0), 
+    //                                     displacements, accruals,
+    //                                     numeraire, alive));
+    //calculator.front().compute(todaysForwards, drifts);
+    //calculator.front().computeReduced(todaysForwards, factors, driftsReduced);
+    DriftCalculator driftcomputer(marketModel->pseudoRoot(0), 
+                                         displacements, accruals,
+                                         numeraire, alive);
+    driftcomputer.compute(todaysForwards, drifts);
+    driftcomputer.computeReduced(todaysForwards, factors, driftsReduced);
+    for (Size i=0; i<LENGTH(drifts); ++i) {
+        BOOST_MESSAGE("\n\t" << i << 
+            " drift: " << drifts[i] << 
+            " driftReduced: " << driftsReduced[i] << 
+            " difference: " << driftsReduced[i]-drifts[i]);
+    }
+}
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
@@ -834,5 +877,6 @@ test_suite* MarketModelTest::suite() {
        BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
     return suite;
 }
