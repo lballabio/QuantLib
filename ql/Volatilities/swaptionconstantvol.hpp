@@ -25,6 +25,7 @@
 #define quantlib_swaption_constant_volatility_hpp
 
 #include <ql/swaptionvolstructure.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

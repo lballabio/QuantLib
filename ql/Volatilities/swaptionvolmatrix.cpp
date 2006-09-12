@@ -22,6 +22,7 @@
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 
 namespace QuantLib {
 

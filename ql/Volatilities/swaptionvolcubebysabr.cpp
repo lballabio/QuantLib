@@ -22,6 +22,7 @@
 #include <ql/Math/sabrinterpolation.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 
 #include <fstream>
 #include <string>

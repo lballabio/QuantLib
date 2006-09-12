@@ -28,38 +28,10 @@
 
 #include <ql/termstructure.hpp>
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 
 namespace QuantLib {
-
-     //! swaption volatility smile section
-    /*! This class provides the volatility smile section
-    */
-    class SmileSection : std::unary_function<Rate, Real> {
-      public:
-        SmileSection(Time expiryTime,
-              const std::vector<Rate>& strikes,
-              const std::vector<Rate>& volatilities);
-
-        SmileSection(
-          const std::vector<Real>& sabrParameters,
-          const std::vector<Rate>& strikes,
-          const Time timeToExpiry);
-
-        Real variance(const Rate& strike) const;
-
-        Volatility volatility(const Rate& strike) const;
-
-    private:
-          
-        SmileSection& operator=(const SmileSection& o);
-        SmileSection(const SmileSection& o);
-
-        Time timeToExpiry_;
-        std::vector<Rate> strikes_;
-        std::vector<Volatility> volatilities_;
-        boost::shared_ptr<Interpolation> interpolation_;
-    };
-
+     
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.

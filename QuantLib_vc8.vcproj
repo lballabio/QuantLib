@@ -6447,6 +6447,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\smilesection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\smilesection.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp"
 				>
 			</File>
