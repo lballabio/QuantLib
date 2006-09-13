@@ -49,7 +49,7 @@ std::vector<Period> optionTenors_;
 std::vector<Period> swapTenors_;
 std::vector<Spread> strikeSpreads_;
 Matrix volSpreadsMatrix_;
-std::vector<std::vector<Handle<Quote> > > volSpreads;
+std::vector<std::vector<Handle<Quote> > > volSpreads_;
 Integer swapSettlementDays_;
 Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
@@ -74,7 +74,7 @@ void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
               atmOptionTenors_[i], atmSwapTenors_[j], strike, true);
           Volatility error = std::abs(expVol-actVol);
           if (error>tolerance)
-              BOOST_FAIL("recovery of atm vols failed:"
+              BOOST_FAIL("\nrecovery of atm vols failed:"
                          "\nexpiry time = " << atmOptionTenors_[i] <<
                          "\nswap length = " << atmSwapTenors_[j] <<
                          "\n atm strike = " << io::rate(strike) <<
@@ -103,7 +103,7 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
               Volatility expVolSpread = volSpreadsMatrix_[i*swapTenors_.size()+j][k];
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
-                  BOOST_FAIL("recovery of smile vol spreads failed:"
+                  BOOST_FAIL("\nrecovery of smile vol spreads failed:"
                              "\n     expiry time = " << optionTenors_[i] <<
                              "\n     swap length = " << swapTenors_[j] <<
                              "\n      atm strike = " << io::rate(atmStrike) <<
@@ -184,8 +184,9 @@ void setup() {
     strikeSpreads_.push_back(+0.0050);
     strikeSpreads_.push_back(+0.0200);
 
-    volSpreadsMatrix_ = Matrix(optionTenors_.size()*swapTenors_.size(),
-                         strikeSpreads_.size());
+    Size nRows = optionTenors_.size()*swapTenors_.size();
+    Size nCols = strikeSpreads_.size();
+    volSpreadsMatrix_ = Matrix(nRows, nCols);
     volSpreadsMatrix_[0][0]=0.0599; volSpreadsMatrix_[0][1]=0.0049;
     volSpreadsMatrix_[0][2]=0.0000;
     volSpreadsMatrix_[0][3]=-0.0001; volSpreadsMatrix_[0][4]=0.0127;
@@ -222,15 +223,14 @@ void setup() {
     volSpreadsMatrix_[8][2]=0.0000;
     volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
 
-    volSpreads = std::vector<std::vector<Handle<Quote> > >(
-                                     optionTenors_.size()*swapTenors_.size());
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
-        volSpreads[i] = std::vector<Handle<Quote> >(strikeSpreads_.size());
+    volSpreads_ = std::vector<std::vector<Handle<Quote> > >(nRows);
+    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
+        volSpreads_[i] = std::vector<Handle<Quote> >(nCols);
         for (Size j=0; j<strikeSpreads_.size(); j++) {
             // every handle must be reassigned, as the ones created by
             // default are all linked together.
-            volSpreads[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
-                                   new SimpleQuote(volSpreadsMatrix_[i][j])));
+            volSpreads_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                SimpleQuote(volSpreadsMatrix_[i][j])));
         }
     }
 
@@ -266,7 +266,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
-                                           volSpreads,
+                                           volSpreads_,
                                            calendar_,
                                            swapSettlementDays_,
                                            fixedLegFrequency_,
@@ -293,7 +293,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
-                                           volSpreads,
+                                           volSpreads_,
                                            calendar_,
                                            swapSettlementDays_,
                                            fixedLegFrequency_,
