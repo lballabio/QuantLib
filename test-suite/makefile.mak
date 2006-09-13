@@ -39,6 +39,7 @@ QL_TESTS = \
     "calendars.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
     "cliquetoption.obj$(_mt)$(_D)" \
+    "cms.obj$(_mt)$(_D)" \
     "compoundforward.obj$(_mt)$(_D)" \
     "convertiblebonds.obj$(_mt)$(_D)" \
     "covariance.obj$(_mt)$(_D)" \
@@ -64,6 +65,7 @@ QL_TESTS = \
     "lookbackoptions.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \
+    "marketmodels.obj$(_mt)$(_D)" \
     "mersennetwister.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "old_pricers.obj$(_mt)$(_D)" \
@@ -83,6 +85,7 @@ QL_TESTS = \
     "stats.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
+    "swaptionvolatilitycube.obj$(_mt)$(_D)" \
     "termstructures.obj$(_mt)$(_D)" \
     "timeseries.obj$(_mt)$(_D)" \
     "tqreigendecomposition.obj$(_mt)$(_D)" \
