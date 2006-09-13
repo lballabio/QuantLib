@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +33,10 @@
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 #include <ql/Volatilities/swaptionconstantvol.hpp>
+#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
+#include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 

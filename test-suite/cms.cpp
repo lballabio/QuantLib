@@ -191,7 +191,7 @@ void setup() {
     isParameterFixed[1]=true;
 
     const Matrix nullVolSpreads2(lengths.size()*lengths.size(),
-        strikeSpreads.size(), 0.0); 
+        strikeSpreads.size(), 0.0);
 
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
@@ -568,8 +568,6 @@ void CmsTest::testCmsSwap() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
-
-    QL_TEST_SETUP
     suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
     suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));

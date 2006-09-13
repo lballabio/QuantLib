@@ -21,11 +21,8 @@
 
 #include <ql/Volatilities/smilesection.hpp>
 #include <ql/Math/linearinterpolation.hpp>
-#include <ql/Math/SABRinterpolation.hpp>
+#include <ql/Math/sabrinterpolation.hpp>
 
-#include <fstream>
-#include <string>
-             
 namespace QuantLib {
 
 
@@ -42,9 +39,9 @@ namespace QuantLib {
                  );
      }
 
-   
+
      SmileSection::SmileSection(
-          const std::vector<Real>& sabrParameters, 
+          const std::vector<Real>& sabrParameters,
           const Time timeToExpiry) :
      timeToExpiry_(timeToExpiry) {
 
@@ -53,7 +50,7 @@ namespace QuantLib {
                  strikes_.push_back(0.05*i+.01);
                  volatilities_.push_back(.9);
              }
-       
+
              Real alpha = sabrParameters[0];
              Real beta = sabrParameters[1];
              Real nu = sabrParameters[2];
@@ -63,8 +60,8 @@ namespace QuantLib {
              interpolation_ = boost::shared_ptr<Interpolation>(new
                   SABRInterpolation(strikes_.begin(), strikes_.end(),
                   volatilities_.begin(),
-                  timeToExpiry, forwardValue, 
-                  alpha, beta, nu, rho, 
+                  timeToExpiry, forwardValue,
+                  alpha, beta, nu, rho,
                   true, true, true, true,
                   boost::shared_ptr<OptimizationMethod>()));
       }
@@ -77,6 +74,7 @@ namespace QuantLib {
     Volatility SmileSection::volatility(const Rate& strike) const {
         const Real v = interpolation_->operator()(strike, true);
         return v;
-    };
+    }
 
 }
+

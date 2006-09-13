@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,7 +29,9 @@
 #include <ql/Indexes/chflibor.hpp>
 #include <ql/Indexes/dkklibor.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Indexes/euriborswapfixa.hpp>
 #include <ql/Indexes/eurlibor.hpp>
+#include <ql/Indexes/eurliborswapfixa.hpp>
 #include <ql/Indexes/gbplibor.hpp>
 #include <ql/Indexes/jibar.hpp>
 #include <ql/Indexes/jpylibor.hpp>

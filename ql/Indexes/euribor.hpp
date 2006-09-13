@@ -206,7 +206,8 @@ namespace QuantLib {
         : MonthlyTenorEuribor(Period(1, Years), h) {}
     };
 
- class WeeklyTenorEuribor365 : public Euribor365 {
+
+    class WeeklyTenorEuribor365 : public Euribor365 {
       public:
         WeeklyTenorEuribor365(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
@@ -341,6 +342,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>())
         : MonthlyTenorEuribor365(Period(1, Years), h) {}
     };
+
 }
 
 

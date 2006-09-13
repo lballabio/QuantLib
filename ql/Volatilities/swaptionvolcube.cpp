@@ -38,7 +38,7 @@ namespace QuantLib {
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
         const Calendar& calendar,
-		Integer swapSettlementDays,
+        Integer swapSettlementDays,
         Frequency fixedLegFrequency,
         BusinessDayConvention fixedLegConvention,
         const DayCounter& fixedLegDayCounter,
@@ -46,24 +46,24 @@ namespace QuantLib {
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor)
     : atmVolStructure_(atmVolStructure),
-      exerciseDates_(expiries.size()), 
+      exerciseDates_(expiries.size()),
       exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths), 
+      lengths_(lengths),
       timeLengths_(lengths.size()),
-      nStrikes_(strikeSpreads.size()), 
+      nStrikes_(strikeSpreads.size()),
       strikeSpreads_(strikeSpreads),
-      localStrikes_(nStrikes_), 
+      localStrikes_(nStrikes_),
       localSmile_(nStrikes_),
-      calendar_(calendar), 
+      calendar_(calendar),
       swapSettlementDays_(swapSettlementDays),
-	  fixedLegFrequency_(fixedLegFrequency),
+      fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
       fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndex_(iborIndex), 
+      iborIndex_(iborIndex),
       shortTenor_(shortTenor),
       iborIndexShortTenor_(iborIndexShortTenor) {
-        
+
         if (!atmVolStructure_.empty())
             unregisterWith(atmVolStructure_);
         atmVolStructure_ = atmVolStructure;
@@ -131,7 +131,7 @@ namespace QuantLib {
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
         const Calendar& calendar,
-		Integer swapSettlementDays,
+        Integer swapSettlementDays,
         Frequency fixedLegFrequency,
         BusinessDayConvention fixedLegConvention,
         const DayCounter& fixedLegDayCounter,
@@ -144,17 +144,17 @@ namespace QuantLib {
         lengths,
         strikeSpreads,
         calendar,
-		swapSettlementDays,
+        swapSettlementDays,
         fixedLegFrequency,
         fixedLegConvention,
         fixedLegDayCounter,
         iborIndex,
         shortTenor,
         iborIndexShortTenor),
-        volSpreadsInterpolator_(nStrikes_),
-        volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
+     volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
+     volSpreadsInterpolator_(nStrikes_) {
 
-        QL_REQUIRE(!volatilitySpreads.empty(), "empty vol spreads matrix"); 
+        QL_REQUIRE(!volatilitySpreads.empty(), "empty vol spreads matrix");
         for (Size j=0; j<nExercise_; j++) {
              for (Size k=0; k<nlengths_; k++) {
                  QL_REQUIRE(nStrikes_==volatilitySpreads[j*k].size(),
@@ -172,7 +172,7 @@ namespace QuantLib {
         for (Size i=0; i<nStrikes_; i++){
             for (Size j=0; j<nExercise_; j++) {
                 for (Size k=0; k<nlengths_; k++) {
-                    volSpreads_[i][j][k] = 
+                    volSpreads_[i][j][k] =
                         volatilitySpreads[j*nlengths_+k][i]->value();
                 }
             }
@@ -247,7 +247,7 @@ namespace QuantLib {
         BusinessDayConvention floatingLegBusinessDayConvention_ =
             iborIndex_->businessDayConvention();
         Schedule floatSchedule(startDate, endDate,
-            iborIndex_->tenor(), calendar_, 
+            iborIndex_->tenor(), calendar_,
             floatingLegBusinessDayConvention_, floatingLegBusinessDayConvention_,
             true, true);
         Real nominal_= 1.0;
@@ -265,3 +265,4 @@ namespace QuantLib {
     }
 
 }
+

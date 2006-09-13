@@ -34,7 +34,7 @@ namespace QuantLib {
     class Xibor : public InterestRateIndex {
       public:
         Xibor(const std::string& familyName,
-              const Period& p,
+              const Period& tenor,
               Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
@@ -49,11 +49,8 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        /*! \note this method does not always apply. Use tenor() if
-                  possible.
-        */
         #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use Index::tenor metho
+        //! \deprecated use tenor() instead
         Frequency frequency() const { return tenor_.frequency(); }
         #endif
         bool isAdjusted() const;
@@ -71,7 +68,7 @@ namespace QuantLib {
     //#ifndef QL_DISABLE_DEPRECATED
     //typedef IborIndex Xibor;
     //#endif
-    
+
     // inline definitions
 
     inline bool Xibor::isAdjusted() const {

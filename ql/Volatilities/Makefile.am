@@ -10,10 +10,12 @@ include_HEADERS = \
     capflatvolvector.hpp \
     capletconstantvol.hpp \
     capletvariancecurve.hpp \
+    cmsmarket.hpp \
     impliedvoltermstructure.hpp \
     localconstantvol.hpp \
     localvolcurve.hpp \
     localvolsurface.hpp \
+    smilesection.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
     swaptionvolcubebysabr.hpp \
@@ -24,6 +26,7 @@ libVolatilities_la_SOURCES = \
     blackvariancesurface.cpp \
     cmsmarket.cpp \
     localvolsurface.cpp \
+    smilesection.cpp \
     swaptionvolcube.cpp \
     swaptionvolcubebysabr.cpp \
     swaptionvolmatrix.cpp

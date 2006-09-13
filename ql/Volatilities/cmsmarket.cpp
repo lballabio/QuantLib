@@ -24,7 +24,7 @@
 
 #include <fstream>
 #include <string>
-             
+
 namespace QuantLib {
 
     //===========================================================================//
@@ -41,18 +41,19 @@ namespace QuantLib {
         const Handle<SwaptionVolatilityStructure>& volStructure):
     expiries_(expiries),
     lengths_(lengths),
-    volStructure_(volStructure),
-    meanReversions_(meanReversions),
-    pricer_(pricer),
-    yieldTermStructure_(yieldTermStructure),
     calendar_(TARGET()),
     frequency_(Quarterly),
     bdc_(Unadjusted),
     stubDate_(Date()),
-    startFromEnd_(true), 
+    startFromEnd_(true),
     longFinal_(false),
     dayCounter_(Actual360()),
-    floatingIndex_(boost::shared_ptr<Xibor>(new Euribor3M(yieldTermStructure))){
+    meanReversions_(meanReversions),
+    pricer_(pricer),
+    floatingIndex_(boost::shared_ptr<Xibor>(
+                                          new Euribor3M(yieldTermStructure))),
+    yieldTermStructure_(yieldTermStructure),
+    volStructure_(volStructure) {
 
         referenceDate_ = yieldTermStructure_->referenceDate();
         effectiveDate_ = calendar_.advance(referenceDate_,2,Days,Following); //FIXME
@@ -80,7 +81,7 @@ namespace QuantLib {
         for (Size i=0; i<nExercise_; i++) {
             exerciseDates_.push_back(calendar_.advance(referenceDate_,expiries[i],bdc_));//FIXME
             schedules_.push_back( boost::shared_ptr<Schedule>(
-                new Schedule(calendar_, effectiveDate_, exerciseDates_[i], frequency_, 
+                new Schedule(calendar_, effectiveDate_, exerciseDates_[i], frequency_,
                             bdc_,stubDate_, startFromEnd_, longFinal_))
             );
             std::vector<Leg> cmsTmp;
@@ -93,10 +94,10 @@ namespace QuantLib {
                 Size nCoupons = schedules_[i]->size();
                 cmsTmp.push_back(
                     CMSCouponVector(*(schedules_[i].get()),
-                                    bdc_, 
-                                    std::vector<double>(nCoupons,1.), 
-                                    swapIndices_[j], 
-                                    2, 
+                                    bdc_,
+                                    std::vector<double>(nCoupons,1.),
+                                    swapIndices_[j],
+                                    2,
                                     dayCounter_,
                                     std::vector<double>(nCoupons, 0.),
                                     std::vector<double>(nCoupons, 1.),
@@ -128,15 +129,15 @@ namespace QuantLib {
         }
      }
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure){
- 	    volStructure_ = volStructure;
+        volStructure_ = volStructure;
         for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nLengths_ ; j++) {
                 Size nCoupons = schedules_[i]->size();
                 cmsLegs_[i][j] = CMSCouponVector(*(schedules_[i].get()),
-                                    bdc_, 
-                                    std::vector<double>(nCoupons,1.), 
-                                    swapIndices_[j], 
-                                    2, 
+                                    bdc_,
+                                    std::vector<double>(nCoupons,1.),
+                                    swapIndices_[j],
+                                    2,
                                     dayCounter_,
                                     std::vector<double>(nCoupons, 0.),
                                     std::vector<double>(nCoupons, 1.),
@@ -158,39 +159,39 @@ namespace QuantLib {
                 impliedCmsSpreads_[i][j] = -(swaps_[i][j]->NPV()/swaps_[i][j]->legBPS(1))/10000;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
-        }          
+        }
     }
     Real CmsMarket::weightedError(const Matrix& weights){
- 	    Real error=0.;
-	    Size count=0;
-	    for(Size i=0;i<nExercise_;i++){
-		    for(Size j=0;j<nLengths_;j++){
-			    count++;
-			    error+=weights[i][j]*spreadErrors_[i][j]*spreadErrors_[i][j];
-		    }
-	    }
+        Real error=0.;
+        Size count=0;
+        for(Size i=0;i<nExercise_;i++){
+            for(Size j=0;j<nLengths_;j++){
+                count++;
+                error+=weights[i][j]*spreadErrors_[i][j]*spreadErrors_[i][j];
+            }
+        }
         error=std::sqrt(error/count);
-   	    return error;           
+        return error;
     }
 
 
 
     Matrix CmsMarket::browse() const{
         Matrix result(nExercise_*nLengths_,7,0.);
-	        for(Size j=0;j<nLengths_;j++){
+            for(Size j=0;j<nLengths_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nLengths_+i][0]= lengths_[j].length();
-                result[j*nLengths_+i][1]= expiries_[i].length(); 
+                result[j*nLengths_+i][1]= expiries_[i].length();
                 result[j*nLengths_+i][2]= bids_[i][j]*10000;
                 result[j*nLengths_+i][3]= asks_[i][j]*10000;
                 result[j*nLengths_+i][4]= mids_[i][j]*10000;
                 result[j*nLengths_+i][5]= impliedCmsSpreads_[i][j]*10000;
                 result[j*nLengths_+i][6]= spreadErrors_[i][j]*10000;
-            }   
-        }  
+            }
+        }
         return result;
     }
- 
+
     //===========================================================================//
     //                       SmileAndCmsCalibrationBySabr                        //
     //===========================================================================//
@@ -212,13 +213,13 @@ namespace QuantLib {
 
         boost::shared_ptr<LineSearch> lineSearch(
             new ArmijoLineSearch(1e-12, 0.15, 0.55));
-        boost::shared_ptr<OptimizationMethod> method = 
+        boost::shared_ptr<OptimizationMethod> method =
             boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
 
         method->setEndCriteria(EndCriteria(100, 1e-4));
 
         Array guess(1);
-        guess[0] = .7;  
+        guess[0] = .7;
 
         guess = tranformation_->inverse(guess);
         method->setInitialValue(guess);
@@ -229,16 +230,16 @@ namespace QuantLib {
 
         Array y = tranformation_->direct(result);
 
-        error_ = y[0];  
-		endCriteria_ = method->endCriteria().criteria(); 
+        error_ = y[0];
+        endCriteria_ = method->endCriteria().criteria();
 
         return y[0];
     }
-    
+
     //===========================================================================//
     //       SmileAndCmsCalibrationBySabr::ObjectiveFunctionJustBeta             //
     //===========================================================================//
-    
+
     Real SmileAndCmsCalibrationBySabr::ObjectiveFunctionJustBeta::value(const Array& x) const {
         const Array y = smileAndCms_->tranformation_->direct(x);
         Real beta = y[0];

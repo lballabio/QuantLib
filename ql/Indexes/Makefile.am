@@ -13,6 +13,7 @@ include_HEADERS = \
     euribor.hpp \
     euriborswapfixa.hpp \
     eurlibor.hpp \
+    eurliborswapfixa.hpp \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
@@ -32,7 +33,7 @@ libIndexes_la_SOURCES = \
     libor.cpp \
     indexmanager.cpp \
     interestrateindex.cpp \
-    swapindex.cpp 
+    swapindex.cpp
 
 noinst_LTLIBRARIES = libIndexes.la
 
