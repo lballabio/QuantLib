@@ -130,9 +130,6 @@ namespace QuantLib {
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure){
  	    volStructure_ = volStructure;
         for (Size i=0; i<nExercise_; i++) {
-            std::vector<Leg> cmsTmp;
-            std::vector<Leg> floatingTmp;
-            std::vector< boost::shared_ptr<Swap> > swapTmp;
             for (Size j=0; j<nLengths_ ; j++) {
                 Size nCoupons = schedules_[i]->size();
                 cmsLegs_[i][j] = CMSCouponVector(*(schedules_[i].get()),
@@ -157,8 +154,8 @@ namespace QuantLib {
                                     std::vector<double>(nCoupons, 0.),
                                     floatingIndex_->dayCounter());
                 swaps_[i][j] = boost::shared_ptr<Swap>(
-                    new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()));
-                impliedCmsSpreads_[i][j] = -(swapTmp.back()->NPV()/swapTmp.back()->legBPS(1))/10000;
+                    new Swap(yieldTermStructure_, cmsLegs_[i][j], floatingLegs_[i][j]));
+                impliedCmsSpreads_[i][j] = -(swaps_[i][j]->NPV()/swaps_[i][j]->legBPS(1))/10000;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
         }          
@@ -218,7 +215,7 @@ namespace QuantLib {
         boost::shared_ptr<OptimizationMethod> method = 
             boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
 
-        method->setEndCriteria(EndCriteria(10000, 1e-12));
+        method->setEndCriteria(EndCriteria(100, 1e-4));
 
         Array guess(1);
         guess[0] = .7;  

@@ -113,7 +113,7 @@ namespace QuantLib {
             boost::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights);
         
-        Handle<SwaptionVolatilityStructure>& volCube_;
+        Handle<SwaptionVolatilityStructure> volCube_;
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         boost::shared_ptr<Transformation> tranformation_;
@@ -149,7 +149,7 @@ namespace QuantLib {
                 Real value(const Array& x) const;
           private:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
-            Handle<SwaptionVolatilityStructure>& volCube_;
+            Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
         };
