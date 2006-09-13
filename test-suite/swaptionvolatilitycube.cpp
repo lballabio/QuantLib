@@ -222,11 +222,15 @@ void setup() {
     volSpreadsMatrix_[8][2]=0.0000;
     volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
 
-    //const std::vector<std::vector<Handle<Quote> > > volSpreads;
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
+    volSpreads = std::vector<std::vector<Handle<Quote> > >(
+                                     optionTenors_.size()*swapTenors_.size());
+    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+        volSpreads[i] = std::vector<Handle<Quote> >(strikeSpreads_.size());
         for (Size j=0; j<strikeSpreads_.size(); j++) {
-            volSpreads[i][j].linkTo(
-                boost::shared_ptr<Quote>(new SimpleQuote(volSpreadsMatrix_[i][j])));
+            // every handle must be reassigned, as the ones created by
+            // default are all linked together.
+            volSpreads[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
+                                   new SimpleQuote(volSpreadsMatrix_[i][j])));
         }
     }
 
