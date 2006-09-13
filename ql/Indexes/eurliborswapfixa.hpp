@@ -79,7 +79,7 @@ namespace QuantLib {
     };
 
     //! 4-year %EurliborSwapFixA index
-    class EurliborSwapFixA4Y : public EuriborSwapFixA {
+    class EurliborSwapFixA4Y : public EurliborSwapFixA {
       public:
         EurliborSwapFixA4Y(const Handle<YieldTermStructure>& h)
         : EurliborSwapFixA(4,h) {}
