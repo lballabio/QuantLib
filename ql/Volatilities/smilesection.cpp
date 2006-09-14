@@ -28,15 +28,15 @@ namespace QuantLib {
 
      SmileSection::SmileSection(Time timeToExpiry,
                                 const std::vector<Rate>& strikes,
-                                const std::vector<Rate>& volatilities) :
-     timeToExpiry_(timeToExpiry),
-         strikes_(strikes),
-         volatilities_(volatilities) {
+                                const std::vector<Rate>& volatilities)
+     : timeToExpiry_(timeToExpiry), strikes_(strikes),
+       volatilities_(volatilities) {
 
-             interpolation_ = boost::shared_ptr<Interpolation>(new
-                 LinearInterpolation(strikes_.begin(),
-                 strikes_.end(), volatilities_.begin())
-                 );
+        interpolation_ = boost::shared_ptr<Interpolation>(new
+            //SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
+            LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin())
+            //NaturalCubicSpline(strikes_.begin(), strikes_.end(), volatilities_.begin())
+            );
      }
 
 
