@@ -312,8 +312,8 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
 
     return suite;
 }
