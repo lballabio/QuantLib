@@ -171,7 +171,8 @@ namespace QuantLib {
         Size i;
         for (i=0; i<expiries.size(); i++) {
             exerciseDates_[i] = calendar.advance(referenceDate(),
-                                                 expiries[i], bdc);
+                                                 expiries[i],
+                                                 bdc); // FIXME
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
         }
 
@@ -189,7 +190,7 @@ namespace QuantLib {
     }
 
     std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
-                              const Date& exerciseDate, const Period& length) const {
+                      const Date& exerciseDate, const Period& length) const {
         Time exerciseTime = timeFromReference(exerciseDate);
         Date startDate = exerciseDates_[0]; // for consistency
         Date endDate = startDate + length;
@@ -197,7 +198,8 @@ namespace QuantLib {
         return std::make_pair(exerciseTime,timeLength);
     }
                               
-    boost::shared_ptr<SmileSection> SwaptionVolatilityMatrix::smileSection(Time start, Time length) const {
+    boost::shared_ptr<SmileSection> SwaptionVolatilityMatrix::smileSection(
+                                             Time start, Time length) const {
 
         //any strike
         const Real strike = .04;
@@ -209,7 +211,8 @@ namespace QuantLib {
         strikes.push_back(strike);
         strikes.push_back(strike+1);
 
-        return boost::shared_ptr<SmileSection>(new SmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSection>(new
+            SmileSection(start, strikes, volatilities));
     }
 
 }

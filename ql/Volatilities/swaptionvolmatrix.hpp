@@ -170,7 +170,7 @@ namespace QuantLib {
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                        Time exerciseTime, Time length, Rate) const {
+                                Time exerciseTime, Time length, Rate) const {
         return interpolation_(length,exerciseTime,true);
     }
 
