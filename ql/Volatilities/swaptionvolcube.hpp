@@ -128,7 +128,7 @@ namespace QuantLib {
                        const Period& length) const {
             Date optionDate = calendar_.advance(referenceDate(),
                                                 optionTenor,
-                                                Unadjusted); //FIXME
+                                                Following); //FIXME
             return atmStrike(optionDate, length);
         }
         //@}

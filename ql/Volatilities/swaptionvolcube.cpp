@@ -79,7 +79,7 @@ namespace QuantLib {
         nExercise_ = expiries.size();
         exerciseDates_[0] = calendar_.advance(referenceDate(),
                                               expiries[0],
-                                              Unadjusted); //FIXME
+                                              Following); //FIXME
         exerciseDatesAsReal_[0] =
             static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
@@ -89,7 +89,7 @@ namespace QuantLib {
         for (Size i=1; i<nExercise_; i++) {
             exerciseDates_[i] = calendar_.advance(referenceDate(),
                                                   expiries[i],
-                                                  Unadjusted); //FIXME
+                                                  Following); //FIXME
             exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);

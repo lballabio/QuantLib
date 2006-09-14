@@ -140,8 +140,8 @@ namespace QuantLib {
                                                     Rate strike,
                                                     bool extrapolate) const {
         Date exerciseDate = calendar().advance(referenceDate(),
-                                            optionTenor,
-                                            Unadjusted); //FIXME
+                                               optionTenor,
+                                               Following); //FIXME
         std::pair<Time,Time> times = convertDates(exerciseDate, length);
         checkRange(times.first, times.second, strike, extrapolate);
         return volatilityImpl(times.first, times.second, strike);
