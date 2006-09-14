@@ -136,7 +136,7 @@ namespace QuantLib {
             longFinal_ = !flag;
             return *this;
         }
-        operator Schedule() {
+        operator Schedule() const {
             return Schedule(calendar_,startDate_,endDate_,frequency_,
                             convention_,stubDate_,startFromEnd_,longFinal_);
         }
