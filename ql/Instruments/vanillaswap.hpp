@@ -140,6 +140,64 @@ namespace QuantLib {
         }
     };
 
+    //! helper class
+    /*! This class provides a more comfortable way
+        to instantiate standard market swap.
+    */
+    class MakeVanillaSwap {
+      public:
+        MakeVanillaSwap(const Date& effectiveDate,
+                        const Period& swapTenor, 
+                        const Calendar& cal,
+                        Rate fixedRate,
+                        const boost::shared_ptr<Xibor>& index,
+                        const boost::shared_ptr<YieldTermStructure>& termStructure);
+
+        MakeVanillaSwap& receiveFixed(bool flag = true);
+        MakeVanillaSwap& withNominal(Real n);
+        MakeVanillaSwap& withFixedLegTenor(const Period& t);
+        MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
+        MakeVanillaSwap& withFixedLegConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFixedLegForward(bool flag = true);
+        MakeVanillaSwap& withFixedLegNotEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withFixedLegFirstDate(const Date& d);
+        MakeVanillaSwap& withFixedLegNextToLastDate(const Date& d);
+        MakeVanillaSwap& withFixedLegDayCount(const DayCounter& dc);
+
+        MakeVanillaSwap& withFloatingLegTenor(const Period& t);
+        MakeVanillaSwap& withFloatingLegCalendar(const Calendar& cal);
+        MakeVanillaSwap& withFloatingLegConvention(const BusinessDayConvention bdc);
+        MakeVanillaSwap& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFloatingLegForward(bool flag = true);
+        MakeVanillaSwap& withFloatingLegNotEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
+        MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
+        MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
+        MakeVanillaSwap& withFloatingLegSpread(Spread sp);
+        
+        operator VanillaSwap() const;
+        operator boost::shared_ptr<VanillaSwap>() const ;
+
+      private:
+        bool payFixed_;
+        Real nominal_;
+        Date effectiveDate_;
+        Period swapTenor_, fixedTenor_, floatTenor_; 
+        Calendar fixedCalendar_, floatCalendar_;
+        BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;
+        BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
+        bool fixedBackward_, floatBackward_;
+        bool fixedEndOfMonth_, floatEndOfMonth_;
+        Date fixedFirstDate_, fixedNextToLastDate_;
+        Date floatFirstDate_, floatNextToLastDate_;
+        Rate fixedRate_;
+        Spread floatSpread_;
+        DayCounter fixedDayCount_, floatDayCount_;
+        boost::shared_ptr<Xibor> index_;
+        Handle<YieldTermStructure> termStructure_;
+        Date terminationDate_;
+    };
 
     // inline definitions
 
@@ -159,7 +217,134 @@ namespace QuantLib {
         return payFixedRate_;
     }
 
-}
 
+
+
+
+    inline MakeVanillaSwap& MakeVanillaSwap::receiveFixed(bool flag) {
+        payFixed_ = !flag;
+        return *this;
+    }
+
+    inline MakeVanillaSwap& MakeVanillaSwap::withNominal(Real n) {
+        nominal_ = n;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegTenor(const Period& t) {
+        fixedTenor_ = t;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegCalendar(const Calendar& cal) {
+        fixedCalendar_ = cal;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegConvention(BusinessDayConvention bdc) {
+        fixedConvention_ = bdc;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegTerminationDateConvention(BusinessDayConvention bdc) {
+        fixedTerminationDateConvention_ = bdc;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegForward(bool flag) {
+        fixedBackward_ = !flag;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegNotEndOfMonth(bool flag) {
+        fixedEndOfMonth_ = !flag;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegFirstDate(const Date& d) {
+        fixedFirstDate_ = d;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegNextToLastDate(const Date& d) {
+        fixedNextToLastDate_ = d;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFixedLegDayCount(const DayCounter& dc) {
+        fixedDayCount_ = dc;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegTenor(const Period& t) {
+        floatTenor_ = t;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegCalendar(const Calendar& cal) {
+        floatCalendar_ = cal;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegConvention(BusinessDayConvention bdc) {
+        floatConvention_ = bdc;
+        return *this;
+    }    
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegTerminationDateConvention(BusinessDayConvention bdc) {
+        floatTerminationDateConvention_ = bdc;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegForward(bool flag) {
+        floatBackward_ = !flag;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegNotEndOfMonth(bool flag) {
+        floatEndOfMonth_ = !flag;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegFirstDate(const Date& d) {
+        floatFirstDate_ = d;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegNextToLastDate(const Date& d) {
+        floatNextToLastDate_ = d;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegDayCount(const DayCounter& dc) {
+        floatDayCount_ = dc;
+        return *this;
+    }
+
+    inline MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegSpread(Spread sp) {
+        floatSpread_ = sp;
+        return *this;
+    }
+
+}
 
 #endif
