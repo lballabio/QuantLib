@@ -310,7 +310,8 @@ namespace QuantLib {
         QL_REQUIRE(terminationDate != Date(), "null termination date");
         QL_REQUIRE(effectiveDate < terminationDate,
                    "effective date (" << effectiveDate
-                   << ") later than termination date (" << terminationDate << ")");
+                   << ") later than or equal to termination date ("
+                   << terminationDate << ")");
         if (firstDate != Date()) {
             QL_REQUIRE((firstDate > effectiveDate && firstDate < terminationDate),
                        "first date (" << firstDate
