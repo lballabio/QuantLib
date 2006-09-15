@@ -36,6 +36,8 @@ namespace QuantLib {
 
          class Cube {
              std::vector<Real> expiries_, lengths_;
+             std::vector<Date> exerciseDates_;
+             std::vector<Period> swapTenors_;
              Size nLayers_;
              std::vector<Matrix> points_;
              mutable std::vector<Disposable<Matrix> > transposedPoints_;
@@ -46,25 +48,35 @@ namespace QuantLib {
          public:
 
              Cube() {};
-             Cube(const std::vector<Real>& expiries, const std::vector<Real>& lengths, 
-                 Size nLayers, bool extrapolation = true);
+             Cube(const std::vector<Date>& exerciseDates,
+                  const std::vector<Period>& swapTenors, 
+                  const std::vector<Real>& expiries,
+                  const std::vector<Real>& lengths, 
+                  Size nLayers,
+                  bool extrapolation = true);
              Cube& operator=(const Cube& o);
              Cube(const Cube&);
              virtual ~Cube(){};
 
-             virtual void setElement(Size IndexOfLayer, Size IndexOfRow,
+             void setElement(Size IndexOfLayer, Size IndexOfRow,
                                                   Size IndexOfColumn, Real x);
-             virtual void setPoints(const std::vector<Matrix>& x);
-             virtual void setPoint(const Real& expiry, const Real& lengths,
-                                                const std::vector<Real> point);
+             void setPoints(const std::vector<Matrix>& x);
+             void setPoint(const Date& exerciseDate,
+                                   const Period& swapTenor,
+                                   const Real expiry,
+                                   const Real lengths,
+                                   const std::vector<Real>& point);
              void setLayer(Size i, const Matrix& x);
              void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
 
+             const std::vector<Date>& exerciseDates() const { return exerciseDates_; }		
+             const std::vector<Period>& swapTenors() const { return swapTenors_; }		
 	         const std::vector<Real>& expiries() const;		
 	         const std::vector<Real>& lengths() const;		
 	         const std::vector<Matrix>& points() const;
 
-	         virtual std::vector<Real> operator()(const Real& expiry, const Real& lengths) const;
+	         std::vector<Real> operator()(const Real expiry,
+                                          const Real lengths) const;
              void updateInterpolators()const;
              Matrix browse() const;
          };
@@ -91,10 +103,6 @@ namespace QuantLib {
 
         const Matrix& marketVolCube(Size i) const { return marketVolCube_.points()[i]; }
       
-        Rate atmStrike(const Date& start, const Period& length) const {
-            std::pair<Time,Time> times = convertDates(start, length);
-            return atmStrike(times.first, times.second);
-        }
         void recalibration(Real beta);
 
         Matrix sparseSabrParameters() const;
@@ -102,25 +110,31 @@ namespace QuantLib {
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
 
-        virtual boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const;
-
+        boost::shared_ptr<SmileSection> smileSection(const Date& exerciseDate,
+                                                     const Period& length) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        boost::shared_ptr<SmileSection> smileSection(Time start,
+                                                     Time length) const;
+        #endif
      protected: 
-
-       virtual boost::shared_ptr<SmileSection> smileSection(Time start, Time length, 
-                                                 const Cube& sabrParametersCube) const;
-       
-       Rate atmStrike(Time start, Time length) const;
-       virtual Volatility volatilityImpl(Time start,
+        boost::shared_ptr<SmileSection> smileSection(
+                                    Time start,
+                                    Time length, 
+                                    const Cube& sabrParametersCube) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
-       Cube sabrCalibration(const Cube& marketVolCube) const;
-       void fillVolatilityCube();
-       void createSparseSmiles();
-       std::vector<Real> spreadVolInterpolation(double atmExerciseTime, 
-                                                double atmTimeLength);
-
+        #endif
+        Volatility volatilityImpl(const Date& exerciseDate,
+                                  const Period& length,
+                                  Rate strike) const;
+        Cube sabrCalibration(const Cube& marketVolCube) const;
+        void fillVolatilityCube();
+        void createSparseSmiles();
+        std::vector<Real> spreadVolInterpolation(const Date& atmExerciseDate,
+                                                 const Period& atmSwapTenor);
       private:
-
         Matrix volSpreads_;
         Cube marketVolCube_;
         Cube volCubeAtmCalibrated_;

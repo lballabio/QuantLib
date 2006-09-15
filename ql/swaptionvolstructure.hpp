@@ -64,33 +64,35 @@ namespace QuantLib {
                               bool extrapolate = false) const;
         //! returns the volatility for a given starting date and length
         Volatility volatility(const Date& exerciseDate,
-                              const Period& length,
+                              const Period& swapTenor,
                               Rate strike,
                               bool extrapolate = false) const;
+        //! returns the Black variance for a given starting date and length
+        Real blackVariance(const Date& exerciseDate,
+                           const Period& swapTenor,
+                           Rate strike,
+                           bool extrapolate = false) const;
+        #ifndef QL_DISABLE_DEPRECATED
         //! returns the volatility for a given starting time and length
         Volatility volatility(Time exerciseTime,
                               Time length,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the Black variance for a given starting date and length
-        Real blackVariance(const Date& exerciseDate,
-                           const Period& length,
-                           Rate strike,
-                           bool extrapolate = false) const;
         //! returns the Black variance for a given starting time and length
         Real blackVariance(Time exerciseTime,
                            Time length,
                            Rate strike,
                            bool extrapolate = false) const;
+        #endif
         //@}
         //! \name Limits
         //@{
         //! the latest start date for which the term structure can return vols
         virtual Date maxStartDate() const = 0;
-        //! the latest start time for which the term structure can return vols
-        virtual Time maxStartTime() const;
         //! the largest length for which the term structure can return vols
         virtual Period maxLength() const = 0;
+        //! the latest start time for which the term structure can return vols
+        virtual Time maxStartTime() const;
         //! the largest length for which the term structure can return vols
         virtual Time maxTimeLength() const;
         //! the minimum strike for which the term structure can return vols
@@ -105,19 +107,50 @@ namespace QuantLib {
             return maxStartTime(); 
         }
 
-        virtual boost::shared_ptr<SmileSection> smileSection(Date start, Period length) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        virtual boost::shared_ptr<SmileSection> smileSection(
+                                                 const Date& start,
+                                                 const Period& length) const {
+            const std::pair<Time, Time> p = convertDates(start, length);
+            return smileSection(p.first, p.second);
+        }
+        #else
+        virtual boost::shared_ptr<SmileSection> smileSection(
+                                             const Date& start,
+                                             const Period& length) const = 0;
+        #endif
 
+      //#ifndef QL_DISABLE_DEPRECATED
+      //protected:
+      //#endif
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
       protected:
-
+        #ifndef QL_DISABLE_DEPRECATED
         //! return smile section
-        virtual boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const = 0;
+        virtual boost::shared_ptr<SmileSection> smileSection(
+            Time start, Time length) const = 0;
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time exerciseTime, Time length,
+        virtual Volatility volatilityImpl(Time exerciseTime,
+                                          Time length,
                                           Rate strike) const = 0;
+        virtual Volatility volatilityImpl(const Date& exerciseDate,
+                                          const Period& length,
+                                          Rate strike) const {
+            const std::pair<Time, Time> p = convertDates(exerciseDate, length);
+            return volatilityImpl(p.first, p.second, strike);
+        }
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
+        #else
+        //! implements the actual volatility calculation in derived classes
+        virtual Volatility volatilityImpl(const Date& exerciseDate,
+                                          const Period& swapTenor,
+                                          Rate strike) const = 0;
+        #endif
+        void checkRange(const Date& exerciseDate,
+                        const Period& length,
+                        Rate strike, bool extrapolate) const;
     };
 
 
@@ -136,56 +169,54 @@ namespace QuantLib {
 
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                     const Period& optionTenor,
-                                                    const Period& length,
+                                                    const Period& swapTenor,
                                                     Rate strike,
                                                     bool extrapolate) const {
         Date exerciseDate = calendar().advance(referenceDate(),
                                                optionTenor,
                                                Following); //FIXME
-        std::pair<Time,Time> times = convertDates(exerciseDate, length);
-        checkRange(times.first, times.second, strike, extrapolate);
-        return volatilityImpl(times.first, times.second, strike);
+        return volatility(exerciseDate, swapTenor, strike, extrapolate);
     }
 
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                      const Date& exerciseDate,
-                                                     const Period& length,
+                                                     const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        std::pair<Time,Time> times = convertDates(exerciseDate, length);
-        checkRange(times.first, times.second, strike, extrapolate);
-        return volatilityImpl(times.first, times.second, strike);
-    }
-
-    inline Volatility SwaptionVolatilityStructure::volatility(
-                                                     Time exerciseTime,
-                                                     Time length,
-                                                     Rate strike,
-                                                     bool extrapolate) const {
-        checkRange(exerciseTime, length, strike, extrapolate);
-        return volatilityImpl(exerciseTime, length, strike);
+        checkRange(exerciseDate, swapTenor, strike, extrapolate);
+        return volatilityImpl(exerciseDate, swapTenor, strike);
     }
 
     inline Real SwaptionVolatilityStructure::blackVariance(
                                                      const Date& exerciseDate,
-                                                     const Period& length,
+                                                     const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        std::pair<Time,Time> times = convertDates(exerciseDate, length);
-        checkRange(times.first, times.second, strike, extrapolate);
-        Volatility vol = volatilityImpl(times.first, times.second, strike);
-        return vol*vol*times.first;
+        Volatility vol = volatility(exerciseDate, swapTenor, strike, extrapolate);
+        const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);
+        return vol*vol*p.first;
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Volatility SwaptionVolatilityStructure::volatility(
+                                                     Time exerciseTime,
+                                                     Time swapLength,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
+        checkRange(exerciseTime, swapLength, strike, extrapolate);
+        return volatilityImpl(exerciseTime, swapLength, strike);
     }
 
     inline Real SwaptionVolatilityStructure::blackVariance(
                                                      Time exerciseTime,
-                                                     Time length,
+                                                     Time swapLength,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        checkRange(exerciseTime, length, strike, extrapolate);
-        Volatility vol = volatilityImpl(exerciseTime, length, strike);
+        checkRange(exerciseTime, swapLength, strike, extrapolate);
+        Volatility vol = volatilityImpl(exerciseTime, swapLength, strike);
         return vol*vol*exerciseTime;
     }
+    #endif
 
     inline Time SwaptionVolatilityStructure::maxStartTime() const {
         return timeFromReference(maxStartDate());
@@ -204,6 +235,7 @@ namespace QuantLib {
         return std::make_pair(startTime,timeLength);
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline void SwaptionVolatilityStructure::checkRange(
              Time exerciseTime, Time length, Rate k, bool extrapolate) const {
         TermStructure::checkRange(exerciseTime, extrapolate);
@@ -218,14 +250,24 @@ namespace QuantLib {
                    "strike (" << k << ") is outside the curve domain ["
                    << minStrike() << "," << maxStrike()<< "]");
     }
+    #endif
 
-    inline boost::shared_ptr<SmileSection> SwaptionVolatilityStructure::smileSection(
-                                            Date start, Period length) const {
-        const std::pair<Time, Time> p = convertDates(start, length);
-        return smileSection(p.first, p.second);
+    inline void SwaptionVolatilityStructure::checkRange(
+             const Date& exerciseDate, const Period& swapTenor,
+             Rate k, bool extrapolate) const {
+        TermStructure::checkRange(timeFromReference(exerciseDate), extrapolate);
+        QL_REQUIRE(swapTenor.length() > 0,
+                   "negative swap tenor (" << swapTenor << ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   swapTenor <= maxLength(),
+                   "swap tenor (" << swapTenor << ") is past max tenor ("
+                   << maxLength() << ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
+                   (k >= minStrike() && k <= maxStrike()),
+                   "strike (" << k << ") is outside the curve domain ["
+                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 }
-
 
 #endif

@@ -185,84 +185,107 @@ namespace QuantLib {
 
     }
 
-    boost::shared_ptr<Interpolation>
-    SwaptionVolatilityCubeByLinear::smile(Time start, Time length) const
-    {
-        const Rate atmForward = atmStrike(start, length);
+    #ifndef QL_DISABLE_DEPRECATED
+    //boost::shared_ptr<Interpolation>
+    //SwaptionVolatilityCubeByLinear::smile(Time start, Time length) const
+    //{
+    //    const Rate atmForward = atmStrike(start, length);
 
-        const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
-        for (Size i=0; i<nStrikes_; i++) {
-            localStrikes_[i] = atmForward + strikeSpreads_[i];
-            localSmile_[i]   = atmVol + volSpreadsInterpolator_[i](length, start);
-        }
-        return boost::shared_ptr<Interpolation>(new
-            //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
-            LinearInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
-            //NaturalCubicSpline(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
-            );
-    }
+    //    const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
+    //    for (Size i=0; i<nStrikes_; i++) {
+    //        localStrikes_[i] = atmForward + strikeSpreads_[i];
+    //        localSmile_[i]   = atmVol + volSpreadsInterpolator_[i](length, start);
+    //    }
+    //    return boost::shared_ptr<Interpolation>(new
+    //        //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
+    //        LinearInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
+    //        //NaturalCubicSpline(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
+    //        );
+    //}
 
-    boost::shared_ptr<SmileSection> SwaptionVolatilityCubeByLinear::smileSection(Time start, Time length) const {
+    boost::shared_ptr<SmileSection>
+    SwaptionVolatilityCubeByLinear::smileSection(Time start,
+                                                 Time length) const {
 
-        std::vector<Real> strikes, volatilities;
-
-        const Rate atmForward = atmStrike(start, length);
-
+        Date exerciseDate = Date(static_cast<BigInteger>(
+            exerciseInterpolator_(start)));
+        Rounding rounder(0);
+        Period swaptenor = Period(static_cast<Integer>(rounder(length/12.0)), Months);
+        const Rate atmForward = atmStrike(exerciseDate, swaptenor);
         const Volatility atmVol =
             atmVolStructure_->volatility(start, length, atmForward);
+        std::vector<Real> strikes, volatilities;
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
         }
-        return boost::shared_ptr<SmileSection>(
-            new SmileSection(start, strikes, volatilities)
-            );
+        return boost::shared_ptr<SmileSection>(new
+            SmileSection(start, strikes, volatilities));
     }
 
+    Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(
+                        Time start, Time length, Rate strike) const {
+            return smileSection(start, length)->volatility(strike);
+    }
+    #endif
 
-    Volatility SwaptionVolatilityCubeByLinear::
-        volatilityImpl(Time start, Time length, Rate strike) const {
-            return smile(start, length)->operator()(strike, true);
+    boost::shared_ptr<SmileSection>
+    SwaptionVolatilityCubeByLinear::smileSection(const Date& exerciseDate,
+                                                 const Period& length) const {
+
+        const Rate atmForward = atmStrike(exerciseDate, length);
+        const Volatility atmVol =
+            atmVolStructure_->volatility(exerciseDate, length, atmForward);
+        std::vector<Real> strikes, volatilities;
+        const std::pair<Time, Time> p = convertDates(exerciseDate, length);
+        for (Size i=0; i<nStrikes_; i++) {
+            strikes.push_back(atmForward + strikeSpreads_[i]);
+            volatilities.push_back(atmVol + volSpreadsInterpolator_[i](p.second, p.first));
         }
+        return boost::shared_ptr<SmileSection>(new
+            SmileSection(p.first, strikes, volatilities));
+    }
 
-    Rate SwaptionVolatilityCubeByLinear::atmStrike(Time start, Time length) const {
+    Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(
+        const Date& exerciseDate, const Period& length, Rate strike) const {
+            return smileSection(exerciseDate, length)->volatility(strike);
+    }
 
-        Date exerciseDate = Date(static_cast<BigInteger>(
-            exerciseInterpolator_(start)));
+    Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,
+                                           const Period& swapTenor) const {
 
         // vanilla swap's parameters
-        Integer swapFixingDays = 2; // FIXME
-        Date startDate = calendar().advance(exerciseDate,swapFixingDays,Days);
+        Date startDate = calendar().advance(exerciseDate,swapSettlementDays_,Days);
+        Date endDate = NullCalendar().advance(startDate, swapTenor);
 
-        Rounding rounder(0);
-        Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
-
-        // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
+        boost::shared_ptr<Xibor> iborIndexEffective(iborIndex_);
+        //if (length<=shortTenor_) {
+        //    iborIndexEffective = iborIndexShortTenor_;
+        //}
 
         Schedule fixedSchedule(startDate, endDate,
             Period(fixedLegFrequency_), calendar(),
             fixedLegConvention_, fixedLegConvention_,
             true, true);
         //Frequency floatingLegFrequency_ = iborIndex_->frequency();
-        BusinessDayConvention floatingLegBusinessDayConvention_ =
-            iborIndex_->businessDayConvention();
+        BusinessDayConvention floatingLegBusinessDayConvention =
+            iborIndexEffective->businessDayConvention();
         Schedule floatSchedule(startDate, endDate,
-            iborIndex_->tenor(), calendar(),
-            floatingLegBusinessDayConvention_, floatingLegBusinessDayConvention_,
+            iborIndexEffective->tenor(), calendar(),
+            floatingLegBusinessDayConvention, floatingLegBusinessDayConvention,
             true, true);
-        Real nominal_= 1.0;
-        Rate fixedRate_= 0.0;
-        Spread spread_= 0.0;
+        Real nominal= 1.0;
+        Rate fixedRate= 0.0;
+        Spread spread= 0.0;
         Handle<YieldTermStructure> termStructure;
-        termStructure.linkTo(iborIndex_->termStructure());
-        VanillaSwap swap(true, nominal_,
-            fixedSchedule, fixedRate_, fixedLegDayCounter_,
-            floatSchedule, iborIndex_,
-            iborIndex_->settlementDays(), spread_, iborIndex_->dayCounter(),
-            termStructure);
+        termStructure.linkTo(iborIndexEffective->termStructure());
+        VanillaSwap swap(true, nominal,
+            fixedSchedule, fixedRate, fixedLegDayCounter_,
+            floatSchedule, iborIndexEffective,
+            iborIndexEffective->settlementDays(), spread,
+            iborIndexEffective->dayCounter(), termStructure);
 
         return swap.fairRate();
     }
 
 }
-

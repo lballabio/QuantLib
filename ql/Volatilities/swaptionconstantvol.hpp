@@ -61,10 +61,15 @@ namespace QuantLib {
         Real maxStrike() const;
 
         //! return trivial smile section
-        boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const;
+        boost::shared_ptr<SmileSection> smileSection(const Date& start,
+                                                     const Period& length) const;
 
       protected:
+        #ifndef QL_DISABLE_DEPRECATED
         Volatility volatilityImpl(Time, Time, Rate) const;
+        boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const;
+        #endif
+        Volatility volatilityImpl(const Date&, const Period&, Rate) const;
         //@}
       private:
         Handle<Quote> volatility_;
@@ -139,23 +144,41 @@ namespace QuantLib {
         return QL_MAX_REAL;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline Volatility SwaptionConstantVolatility::volatilityImpl(
                                                      Time, Time, Rate) const {
         return volatility_->value();
     }
+    #endif
 
-    inline boost::shared_ptr<SmileSection> SwaptionConstantVolatility::smileSection(Time start, Time length) const {
-        //any strike
-        const Real strike = .04;
+    inline Volatility SwaptionConstantVolatility::volatilityImpl(
+                                     const Date&, const Period&, Rate) const {
+        return volatility_->value();
+    }
 
-        const Volatility atmVol = volatility(start, length, strike);
+    #ifndef QL_DISABLE_DEPRECATED
+    inline boost::shared_ptr<SmileSection> SwaptionConstantVolatility::smileSection(Time start, Time) const {
+        const Volatility atmVol = volatility_->value();
 
         std::vector<Real> strikes, volatilities(2, atmVol);
-        
-        strikes.push_back(strike);
-        strikes.push_back(strike+1);
+        strikes.push_back(0.0);
+        strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSection>(new SmileSection(start, strikes, volatilities));
+    }
+    #endif
+
+    inline boost::shared_ptr<SmileSection>
+    SwaptionConstantVolatility::smileSection(const Date& start,
+                                             const Period&) const {
+        const Volatility atmVol = volatility_->value();
+
+        std::vector<Real> strikes, volatilities(2, atmVol);
+        strikes.push_back(0.0);
+        strikes.push_back(1.0);
+
+        return boost::shared_ptr<SmileSection>(
+            new SmileSection(timeFromReference(start), strikes, volatilities));
     }
 
 }

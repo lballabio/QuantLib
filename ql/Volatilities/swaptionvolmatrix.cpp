@@ -120,7 +120,8 @@ namespace QuantLib {
                        const std::vector<Period>& lengths,
                        const Matrix& vols,
                        const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, NullCalendar()), dayCounter_(dayCounter),
+    : SwaptionVolatilityStructure(0, NullCalendar()), // FIXME
+      dayCounter_(dayCounter),
       exerciseDates_(dates), lengths_(lengths), volatilities_(vols)
     {
         QL_REQUIRE(dates.size()==vols.rows(),
@@ -203,21 +204,37 @@ namespace QuantLib {
         return std::make_pair(exerciseTime,timeLength);
     }
                               
+    #ifndef QL_DISABLE_DEPRECATED
     boost::shared_ptr<SmileSection> SwaptionVolatilityMatrix::smileSection(
                                              Time start, Time length) const {
 
-        //any strike
-        const Real strike = .04;
-
-        const Volatility atmVol = volatility(start, length, strike);
+        // dummy strike
+        const Volatility atmVol = volatility(start, length, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
         
-        strikes.push_back(strike);
-        strikes.push_back(strike+1);
+        strikes.push_back(0.0);
+        strikes.push_back(1.0);
+
+        return boost::shared_ptr<SmileSection>(new SmileSection(start, strikes, volatilities));
+    }
+    #endif
+
+    boost::shared_ptr<SmileSection>
+    SwaptionVolatilityMatrix::smileSection(const Date& exerciseDate,
+                                           const Period& length) const {
+
+        // dummy strike
+        const Volatility atmVol = volatility(exerciseDate, length, 0.05);
+
+        std::vector<Real> strikes, volatilities(2, atmVol);
+        
+        strikes.push_back(0.0);
+        strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSection>(new
-            SmileSection(start, strikes, volatilities));
+            SmileSection(timeFromReference(exerciseDate),
+                         strikes, volatilities));
     }
 
 }

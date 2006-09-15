@@ -90,20 +90,27 @@ namespace QuantLib {
         Rate minStrike() const;
         Rate maxStrike() const;
         //! return trivial smile section
-        virtual boost::shared_ptr<SmileSection> smileSection(Time start, Time length) const;
+        boost::shared_ptr<SmileSection> smileSection(const Date& exerciseDate,
+                                                     const Period& length) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        //! return trivial smile section
+        virtual boost::shared_ptr<SmileSection> smileSection(
+                                                        Time start,
+                                                        Time length) const;
+        #endif
         //! implements the conversion between dates and times
         std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                           const Period& length) const;
         //@}
         //! \name Other inspectors
         //@{
-        //! returns the lower indexes of sourrounding volatility matrix corners
+        //! returns the lower indexes of surrounding volatility matrix corners
         std::pair<Size,Size> locate(const Date& exerciseDate,
                                     const Period& length) const {
             std::pair<Time,Time> times = convertDates(exerciseDate,length);
             return locate(times.first, times.second);
         }
-        //! returns the lower indexes of sourrounding volatility matrix corners
+        //! returns the lower indexes of surrounding volatility matrix corners
         std::pair<Size,Size> locate(Time exerciseTime,
                                     Time length) const {
             return std::make_pair(interpolation_.locateY(exerciseTime),
@@ -118,8 +125,13 @@ namespace QuantLib {
         std::vector<Time> timeLengths_;
         Matrix volatilities_;
         Interpolation2D interpolation_;
+        #ifndef QL_DISABLE_DEPRECATED
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
+                                  Rate strike) const;
+        #endif
+        Volatility volatilityImpl(const Date& exerciseDate,
+                                  const Period& length,
                                   Rate strike) const;
     };
 
@@ -170,9 +182,17 @@ namespace QuantLib {
         return QL_MAX_REAL;
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
                                 Time exerciseTime, Time length, Rate) const {
         return interpolation_(length,exerciseTime,true);
+    }
+    #endif
+
+    inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
+                                        const Date& exerciseDate, const Period& length, Rate) const {
+        const std::pair<Time, Time> p = convertDates(exerciseDate, length);
+        return interpolation_(p.second,p.first,true);
     }
 
 }
