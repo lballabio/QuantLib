@@ -81,9 +81,8 @@ void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
                          "\n atm strike = " << io::rate(strike) <<
                          "\n   exp. vol = " << io::volatility(expVol) <<
                          "\n actual vol = " << io::volatility(actVol) <<
-                         "\n      error = " << error <<
+                         "\n      error = " << io::volatility(error) <<
                          "\n  tolerance = " << tolerance);
-
       }
     }
 
@@ -113,7 +112,7 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
                              "\n      smiled vol = " << io::volatility(vol) <<
                              "\n      vol spread = " << io::volatility(spread) <<
                              "\n exp. vol spread = " << io::volatility(expVolSpread) <<
-                             "\n           error = " << error <<
+                             "\n           error = " << io::volatility(error) <<
                              "\n       tolerance = " << tolerance);
 
           }
@@ -256,6 +255,104 @@ void teardown() {
 QL_END_TEST_LOCALS(SwaptionVolatilityCubeTest)
 
 
+void SwaptionVolatilityCubeTest::testSwaptionVolMatrix() {
+
+    BOOST_MESSAGE("Testing swaption volatility ATM matrix...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Size i, j;
+
+    Date refDate = atmVolMatrix_->referenceDate();
+    atmVolMatrix_.currentLink();
+    boost::shared_ptr<SwaptionVolatilityMatrix> vol =
+        boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
+            atmVolMatrix_.currentLink());
+    for (i=0; i<atmOptionTenors_.size(); i++) {
+        Date expOptDate = calendar_.advance(refDate, atmOptionTenors_[i], optionBDC_);
+        Date actOptDate = vol->exerciseDates()[i];
+        if (actOptDate!=expOptDate)
+            BOOST_FAIL("\nrecovery of option dates failed:"
+                       "\n            calendar = " << calendar_ <<
+                       "\n       referenceDate = " << refDate <<
+                       "\n        expiry tenor = " << atmOptionTenors_[i] <<
+                       "\nexpected option date = " << expOptDate <<
+                       "\n  actual option date = " << actOptDate);
+    }
+
+    Date lengthRef = vol->exerciseDates()[0];
+    DayCounter volDC = atmVolMatrix_->dayCounter();
+    for (j=0; j<atmSwapTenors_.size(); j++) {
+        Period actSwapTenor = vol->lengths()[j];
+        Date endDate = lengthRef + atmSwapTenors_[j];
+        Time expSwapLength = volDC.yearFraction(lengthRef, endDate);
+        Time actSwapLength = vol->timeLengths()[j];
+        if ((atmSwapTenors_[j]!=actSwapTenor) ||
+            (expSwapLength!=actSwapLength))
+            BOOST_FAIL("\nrecovery of " << io::ordinal(j) <<
+                       " swap tenor failed:"
+                       "\nexpected swap tenor  = " << atmSwapTenors_[j] <<
+                       "\n  actual swap tenor  = " << actSwapTenor <<
+                       "\nexpected swap length = " << expSwapLength <<
+                       "\n  actual swap length = " << actSwapLength);
+    }
+
+    Real tolerance = 1.0e-16;
+    for (i=0; i<atmOptionTenors_.size(); i++) {
+      for (j=0; j<atmSwapTenors_.size(); j++) {
+
+          Period thisOptionTenor=  atmOptionTenors_[i];
+          Date thisOptionDate = vol->exerciseDates()[i];
+          Period thisSwapTenor = atmSwapTenors_[j];
+
+          std::pair<Time, Time> p = vol->convertDates(
+              thisOptionDate, thisSwapTenor);
+          if ((p.first !=vol->exerciseTimes()[i]) ||
+              (p.second!=vol->timeLengths()[j]))
+              BOOST_FAIL("\nconvertDates failure:"
+                         "\n       option date  = " << thisOptionDate <<
+                         "\n       option tenor = " << thisOptionTenor <<
+                         "\nactual option time  = " << p.first <<
+                         "\n  exp. option time  = " << vol->exerciseTimes()[i] <<
+                         "\n        swap tenor  = " << thisSwapTenor <<
+                         "\n actual swap length = " << p.second <<
+                         "\n   exp. swap length = " << vol->timeLengths()[j]);
+
+
+
+          Volatility error, actVol, expVol = atmVols_[i][j];
+
+          actVol = atmVolMatrix_->volatility(
+              thisOptionDate, thisSwapTenor, 0.05, true);
+          error = std::abs(expVol-actVol);
+          if (error>tolerance)
+              BOOST_FAIL("\nrecovery of atm vols failed:"
+                         "\noption date = " << thisOptionDate <<
+                         "\nswap length = " << thisSwapTenor <<
+                         "\n   exp. vol = " << io::volatility(expVol) <<
+                         "\n actual vol = " << io::volatility(actVol) <<
+                         "\n      error = " << io::volatility(error) <<
+                         "\n  tolerance = " << tolerance);
+
+          actVol = atmVolMatrix_->volatility(
+              thisOptionTenor, thisSwapTenor, 0.05, true);
+          error = std::abs(expVol-actVol);
+          if (error>tolerance)
+              BOOST_FAIL("\nrecovery of atm vols failed:"
+                         "\noption tenor = " << thisOptionTenor <<
+                         "\n swap length = " << thisSwapTenor <<
+                         "\nexpected vol = " << io::volatility(expVol) <<
+                         "\n  actual vol = " << io::volatility(actVol) <<
+                         "\n       error = " << io::volatility(error) <<
+                         "\n   tolerance = " << tolerance);
+
+      }
+    }
+
+    QL_TEST_TEARDOWN
+}
+
 void SwaptionVolatilityCubeTest::testAtmVols() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (atm vols)...");
@@ -312,6 +409,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSwaptionVolMatrix));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
 
