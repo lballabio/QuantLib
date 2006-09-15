@@ -849,7 +849,8 @@ void MarketModelTest::testDriftCalculator() {
 
         for (Size j=0; j<numberOfSteps; ++j) {              // cycle over steps
             const Matrix& A = marketModel->pseudoRoot(j);
-            BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
+            //BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
+
             // add cycle over numeraires
             DriftCalculator driftcalculator(A, displacements, rateTaus,
                                             numeraires[j], alive[j]);
