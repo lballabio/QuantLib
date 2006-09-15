@@ -75,14 +75,14 @@ void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
               atmOptionTenors_[i], atmSwapTenors_[j], strike, true);
           Volatility error = std::abs(expVol-actVol);
           if (error>tolerance)
-              BOOST_FAIL("\nrecovery of atm vols failed:"
-                         "\nexpiry time = " << atmOptionTenors_[i] <<
-                         "\nswap length = " << atmSwapTenors_[j] <<
-                         "\n atm strike = " << io::rate(strike) <<
-                         "\n   exp. vol = " << io::volatility(expVol) <<
-                         "\n actual vol = " << io::volatility(actVol) <<
-                         "\n      error = " << io::volatility(error) <<
-                         "\n  tolerance = " << tolerance);
+              BOOST_ERROR("\nrecovery of atm vols failed:"
+                          "\nexpiry time = " << atmOptionTenors_[i] <<
+                          "\nswap length = " << atmSwapTenors_[j] <<
+                          "\n atm strike = " << io::rate(strike) <<
+                          "\n   exp. vol = " << io::volatility(expVol) <<
+                          "\n actual vol = " << io::volatility(actVol) <<
+                          "\n      error = " << io::volatility(error) <<
+                          "\n  tolerance = " << tolerance);
       }
     }
 
@@ -103,17 +103,17 @@ void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
               Volatility expVolSpread = volSpreadsMatrix_[i*swapTenors_.size()+j][k];
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
-                  BOOST_FAIL("\nrecovery of smile vol spreads failed:"
-                             "\n     expiry time = " << optionTenors_[i] <<
-                             "\n     swap length = " << swapTenors_[j] <<
-                             "\n      atm strike = " << io::rate(atmStrike) <<
-                             "\n   strike spread = " << io::rate(strikeSpreads_[k]) <<
-                             "\n         atm vol = " << io::volatility(atmVol) <<
-                             "\n      smiled vol = " << io::volatility(vol) <<
-                             "\n      vol spread = " << io::volatility(spread) <<
-                             "\n exp. vol spread = " << io::volatility(expVolSpread) <<
-                             "\n           error = " << io::volatility(error) <<
-                             "\n       tolerance = " << tolerance);
+                  BOOST_ERROR("\nrecovery of smile vol spreads failed:"
+                              "\n     expiry time = " << optionTenors_[i] <<
+                              "\n     swap length = " << swapTenors_[j] <<
+                              "\n      atm strike = " << io::rate(atmStrike) <<
+                              "\n   strike spread = " << io::rate(strikeSpreads_[k]) <<
+                              "\n         atm vol = " << io::volatility(atmVol) <<
+                              "\n      smiled vol = " << io::volatility(vol) <<
+                              "\n      vol spread = " << io::volatility(spread) <<
+                              "\n exp. vol spread = " << io::volatility(expVolSpread) <<
+                              "\n           error = " << io::volatility(error) <<
+                              "\n       tolerance = " << tolerance);
 
           }
       }
@@ -273,12 +273,12 @@ void SwaptionVolatilityCubeTest::testSwaptionVolMatrix() {
         Date expOptDate = calendar_.advance(refDate, atmOptionTenors_[i], optionBDC_);
         Date actOptDate = vol->exerciseDates()[i];
         if (actOptDate!=expOptDate)
-            BOOST_FAIL("\nrecovery of option dates failed:"
-                       "\n            calendar = " << calendar_ <<
-                       "\n       referenceDate = " << refDate <<
-                       "\n        expiry tenor = " << atmOptionTenors_[i] <<
-                       "\nexpected option date = " << expOptDate <<
-                       "\n  actual option date = " << actOptDate);
+            BOOST_ERROR("\nrecovery of option dates failed:"
+                        "\n            calendar = " << calendar_ <<
+                        "\n       referenceDate = " << refDate <<
+                        "\n        expiry tenor = " << atmOptionTenors_[i] <<
+                        "\nexpected option date = " << expOptDate <<
+                        "\n  actual option date = " << actOptDate);
     }
 
     Date lengthRef = vol->exerciseDates()[0];
@@ -290,12 +290,12 @@ void SwaptionVolatilityCubeTest::testSwaptionVolMatrix() {
         Time actSwapLength = vol->timeLengths()[j];
         if ((atmSwapTenors_[j]!=actSwapTenor) ||
             (expSwapLength!=actSwapLength))
-            BOOST_FAIL("\nrecovery of " << io::ordinal(j) <<
-                       " swap tenor failed:"
-                       "\nexpected swap tenor  = " << atmSwapTenors_[j] <<
-                       "\n  actual swap tenor  = " << actSwapTenor <<
-                       "\nexpected swap length = " << expSwapLength <<
-                       "\n  actual swap length = " << actSwapLength);
+            BOOST_ERROR("\nrecovery of " << io::ordinal(j) <<
+                        " swap tenor failed:"
+                        "\nexpected swap tenor  = " << atmSwapTenors_[j] <<
+                        "\n  actual swap tenor  = " << actSwapTenor <<
+                        "\nexpected swap length = " << expSwapLength <<
+                        "\n  actual swap length = " << actSwapLength);
     }
 
     Real tolerance = 1.0e-16;
@@ -310,14 +310,14 @@ void SwaptionVolatilityCubeTest::testSwaptionVolMatrix() {
               thisOptionDate, thisSwapTenor);
           if ((p.first !=vol->exerciseTimes()[i]) ||
               (p.second!=vol->timeLengths()[j]))
-              BOOST_FAIL("\nconvertDates failure:"
-                         "\n       option date  = " << thisOptionDate <<
-                         "\n       option tenor = " << thisOptionTenor <<
-                         "\nactual option time  = " << p.first <<
-                         "\n  exp. option time  = " << vol->exerciseTimes()[i] <<
-                         "\n        swap tenor  = " << thisSwapTenor <<
-                         "\n actual swap length = " << p.second <<
-                         "\n   exp. swap length = " << vol->timeLengths()[j]);
+              BOOST_ERROR("\nconvertDates failure:"
+                          "\n       option date  = " << thisOptionDate <<
+                          "\n       option tenor = " << thisOptionTenor <<
+                          "\nactual option time  = " << p.first <<
+                          "\n  exp. option time  = " << vol->exerciseTimes()[i] <<
+                          "\n        swap tenor  = " << thisSwapTenor <<
+                          "\n actual swap length = " << p.second <<
+                          "\n   exp. swap length = " << vol->timeLengths()[j]);
 
 
 
@@ -327,25 +327,25 @@ void SwaptionVolatilityCubeTest::testSwaptionVolMatrix() {
               thisOptionDate, thisSwapTenor, 0.05, true);
           error = std::abs(expVol-actVol);
           if (error>tolerance)
-              BOOST_FAIL("\nrecovery of atm vols failed:"
-                         "\noption date = " << thisOptionDate <<
-                         "\nswap length = " << thisSwapTenor <<
-                         "\n   exp. vol = " << io::volatility(expVol) <<
-                         "\n actual vol = " << io::volatility(actVol) <<
-                         "\n      error = " << io::volatility(error) <<
-                         "\n  tolerance = " << tolerance);
+              BOOST_ERROR("\nrecovery of atm vols failed:"
+                          "\noption date = " << thisOptionDate <<
+                          "\nswap length = " << thisSwapTenor <<
+                          "\n   exp. vol = " << io::volatility(expVol) <<
+                          "\n actual vol = " << io::volatility(actVol) <<
+                          "\n      error = " << io::volatility(error) <<
+                          "\n  tolerance = " << tolerance);
 
           actVol = atmVolMatrix_->volatility(
               thisOptionTenor, thisSwapTenor, 0.05, true);
           error = std::abs(expVol-actVol);
           if (error>tolerance)
-              BOOST_FAIL("\nrecovery of atm vols failed:"
-                         "\noption tenor = " << thisOptionTenor <<
-                         "\n swap length = " << thisSwapTenor <<
-                         "\nexpected vol = " << io::volatility(expVol) <<
-                         "\n  actual vol = " << io::volatility(actVol) <<
-                         "\n       error = " << io::volatility(error) <<
-                         "\n   tolerance = " << tolerance);
+              BOOST_ERROR("\nrecovery of atm vols failed:"
+                          "\noption tenor = " << thisOptionTenor <<
+                          "\n swap length = " << thisSwapTenor <<
+                          "\nexpected vol = " << io::volatility(expVol) <<
+                          "\n  actual vol = " << io::volatility(actVol) <<
+                          "\n       error = " << io::volatility(error) <<
+                          "\n   tolerance = " << tolerance);
 
       }
     }
