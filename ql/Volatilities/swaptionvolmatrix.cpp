@@ -153,7 +153,7 @@ namespace QuantLib {
                         const std::vector<Period>& lengths,
                         const Matrix& vols,
                         const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, NullCalendar()), dayCounter_(dayCounter),
+    : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
       lengths_(lengths), volatilities_(vols)
     {
         QL_REQUIRE(expiries.size()==vols.rows(),
