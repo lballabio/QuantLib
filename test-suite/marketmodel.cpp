@@ -231,7 +231,7 @@ void testForwardsAndCaplets(const SequenceStatistics& stats,
 
 
 void testCoinitialSwaps(const SequenceStatistics& stats,
-                  const Real fixedRate)
+                        const Real fixedRate)
 {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
@@ -824,53 +824,65 @@ void MarketModelTest::testDriftCalculator() {
     BOOST_MESSAGE("Testing drift calculation ...");
     QL_TEST_SETUP
 
+    // full factor equivalence between compute() and computeReduced()
     Size factors = todaysForwards.size();
+
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
-    //EvolutionDescription evolution(rateTimes,evolutionTimes,numeraires);
     EvolutionDescription evolution(rateTimes,evolutionTimes);   // default numeraires
+
     std::vector<Real> rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = evolution.numeraires();
     std::vector<Size> alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
+    
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
+    
     PseudoRootType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                      ExponentialCorrelationAbcdVolatility};
-    for (Size j=0; j<numberOfSteps; ++j) {              // cycle over steps
-        BOOST_MESSAGE("\n\t" << j << "." << " Step: ");
-        for (Size k=0; k<LENGTH(marketModels); ++k) {   // cycle over market models
-            BOOST_MESSAGE(
-                "\n\t" << j << "." << k << "." << 
-                " MarketModel: " << marketModelTypeToString(marketModels[k]) << ": ");
-            boost::shared_ptr<MarketModel> marketModel =
-                makePseudoRoot(evolution, factors, marketModels[k]);
-            std::vector<Rate> displacements = marketModel->displacements();
+    
+    for (Size k=0; k<LENGTH(marketModels); ++k) {   // cycle over market models
+        boost::shared_ptr<MarketModel> marketModel =
+            makePseudoRoot(evolution, factors, marketModels[k]);
+
+        std::vector<Rate> displacements = marketModel->displacements();
+
+        for (Size j=0; j<numberOfSteps; ++j) {              // cycle over steps
             const Matrix& A = marketModel->pseudoRoot(j);
+            BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
+            // add cycle over numeraires
             DriftCalculator driftcalculator(A, displacements, rateTaus,
                                             numeraires[j], alive[j]);
             driftcalculator.compute(todaysForwards, drifts);
             driftcalculator.computeReduced(todaysForwards, factors, driftsReduced);
-            for (Size i=0; i<drifts.size()-1; ++i) {     // write resulting drifts
-                BOOST_MESSAGE(
-                    "\n\t" << j << "." << k << "." << i << ": " << 
-                    " drift=" << drifts[i] << "," <<
-                    " driftReduced=" << driftsReduced[i] << "," << 
-                    " difference=" << driftsReduced[i]-drifts[i] << ".");
+            for (Size i=0; i<drifts.size(); ++i) {     // write resulting drifts
+                Real tolerance = 1.0e-16;
+                Real error = std::abs(driftsReduced[i]-drifts[i]);
+                if (error>tolerance)
+                    BOOST_ERROR("MarketModel: " <<
+                                marketModelTypeToString(marketModels[k])
+                                << ", " << io::ordinal(j) << " step, "
+                                << ", " << io::ordinal(i) << " drift, "
+                                << "\ndrift        =" << drifts[i]
+                                << "\ndriftReduced =" << driftsReduced[i] 
+                                << "\n       error =" << error
+                                << "\n   tolerance =" << tolerance);
             }
         }
     }
 }
+
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
-    //suite->add(
-    //       BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwardsAndCaplets));
-    //suite->add(
-    //   BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwardsAndCaplets));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+    suite->add(
+           BOOST_TEST_CASE(&MarketModelTest::testLongJumpForwardsAndCaplets));
+    suite->add(
+       BOOST_TEST_CASE(&MarketModelTest::testVeryLongJumpForwardsAndCaplets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoinitialSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testLongJumpCoterminalSwaps));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
     return suite;
 }
