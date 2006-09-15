@@ -45,7 +45,8 @@ namespace QuantLib {
         const boost::shared_ptr<Xibor>& iborIndex,
         Time shortTenor,
         const boost::shared_ptr<Xibor>& iborIndexShortTenor)
-    : atmVolStructure_(atmVolStructure),
+    : SwaptionVolatilityStructure(0, calendar),
+      atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()),
       exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -55,7 +56,6 @@ namespace QuantLib {
       strikeSpreads_(strikeSpreads),
       localStrikes_(nStrikes_),
       localSmile_(nStrikes_),
-      calendar_(calendar),
       swapSettlementDays_(swapSettlementDays),
       fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention),
@@ -77,9 +77,9 @@ namespace QuantLib {
             registerWith(iborIndexShortTenor_);
 
         nExercise_ = expiries.size();
-        exerciseDates_[0] = calendar_.advance(referenceDate(),
-                                              expiries[0],
-                                              Following); //FIXME
+        exerciseDates_[0] = calendar.advance(referenceDate(),
+                                             expiries[0],
+                                             Following); //FIXME
         exerciseDatesAsReal_[0] =
             static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
@@ -87,9 +87,9 @@ namespace QuantLib {
                    "first exercise time is negative ("
                    << exerciseTimes_[0] << ")");
         for (Size i=1; i<nExercise_; i++) {
-            exerciseDates_[i] = calendar_.advance(referenceDate(),
-                                                  expiries[i],
-                                                  Following); //FIXME
+            exerciseDates_[i] = calendar.advance(referenceDate(),
+                                                 expiries[i],
+                                                 Following); //FIXME
             exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
@@ -232,7 +232,7 @@ namespace QuantLib {
 
         // vanilla swap's parameters
         Integer swapFixingDays = 2; // FIXME
-        Date startDate = calendar_.advance(exerciseDate,swapFixingDays,Days);
+        Date startDate = calendar().advance(exerciseDate,swapFixingDays,Days);
 
         Rounding rounder(0);
         Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
@@ -240,14 +240,14 @@ namespace QuantLib {
         // (lenght<shortTenor_, iborIndexShortTenor_, iborIndex_);
 
         Schedule fixedSchedule(startDate, endDate,
-            Period(fixedLegFrequency_), calendar_,
+            Period(fixedLegFrequency_), calendar(),
             fixedLegConvention_, fixedLegConvention_,
             true, true);
         //Frequency floatingLegFrequency_ = iborIndex_->frequency();
         BusinessDayConvention floatingLegBusinessDayConvention_ =
             iborIndex_->businessDayConvention();
         Schedule floatSchedule(startDate, endDate,
-            iborIndex_->tenor(), calendar_,
+            iborIndex_->tenor(), calendar(),
             floatingLegBusinessDayConvention_, floatingLegBusinessDayConvention_,
             true, true);
         Real nominal_= 1.0;

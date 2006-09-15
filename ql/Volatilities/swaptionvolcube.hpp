@@ -85,7 +85,6 @@ namespace QuantLib {
         std::vector<Spread> strikeSpreads_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
-        Calendar calendar_;
         Integer swapSettlementDays_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
@@ -126,9 +125,9 @@ namespace QuantLib {
         }
         Rate atmStrike(const Period& optionTenor,
                        const Period& length) const {
-            Date optionDate = calendar_.advance(referenceDate(),
-                                                optionTenor,
-                                                Following); //FIXME
+            Date optionDate = calendar().advance(referenceDate(),
+                                                 optionTenor,
+                                                 Following); //FIXME
             return atmStrike(optionDate, length);
         }
         //@}

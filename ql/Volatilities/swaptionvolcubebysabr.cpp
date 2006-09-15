@@ -178,7 +178,7 @@ namespace QuantLib {
             exerciseInterpolator_(start)));
 
         // vanilla swap's parameters
-        const Date startDate = calendar_.advance(exerciseDate,swapSettlementDays_,Days);
+        const Date startDate = calendar().advance(exerciseDate,swapSettlementDays_,Days);
 
         const Rounding rounder(0);
         const Date endDate = NullCalendar().advance(startDate,rounder(length),Years);
@@ -188,14 +188,14 @@ namespace QuantLib {
         }
 
         const Schedule fixedSchedule(startDate, endDate,
-            Period(fixedLegFrequency_), calendar_,
+            Period(fixedLegFrequency_), calendar(),
             fixedLegConvention_, fixedLegConvention_,
             true, true);
         //Frequency floatingLegFrequency_ = iborIndexEffective->frequency();
         const BusinessDayConvention floatingLegBusinessDayConvention_ =
             iborIndexEffective->businessDayConvention();
         const Schedule floatSchedule(startDate, endDate,
-            iborIndexEffective->tenor(), calendar_,
+            iborIndexEffective->tenor(), calendar(),
             floatingLegBusinessDayConvention_, floatingLegBusinessDayConvention_,
             true, true);
         const Real nominal_= 1.0;
