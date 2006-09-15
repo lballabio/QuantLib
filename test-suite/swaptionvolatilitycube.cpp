@@ -154,6 +154,20 @@ void setup() {
     atmVols_[4][0]=0.1400; atmVols_[4][1]=0.1300; atmVols_[4][2]=0.1250; atmVols_[4][3]=0.1100;
     atmVols_[5][0]=0.1130; atmVols_[5][1]=0.1090; atmVols_[5][2]=0.1070; atmVols_[5][3]=0.0930;
 
+    Size nRowsAtmVols = atmVols_.rows();
+    Size nColsAtmVols = atmVols_.columns();
+    std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
+    atmVolsHandle_ = std::vector<std::vector<Handle<Quote> > >(nRowsAtmVols);
+    for (Size i=0; i<nRowsAtmVols; i++){
+        atmVolsHandle_[i] = std::vector<Handle<Quote> >(nColsAtmVols);
+        for (Size j=0; j<nColsAtmVols; j++) {
+            // every handle must be reassigned, as the ones created by
+            // default are all linked together.
+            atmVolsHandle_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                SimpleQuote(atmVols_[i][j])));
+        }
+    }
+
     dayCounter_ = Actual365Fixed();
 
     atmVolMatrix_ = Handle<SwaptionVolatilityStructure>(
@@ -162,7 +176,7 @@ void setup() {
                                      calendar_,
                                      optionBDC_,
                                      atmSwapTenors_,
-                                     atmVols_,
+                                     atmVolsHandle_,
                                      dayCounter_)));
 
     //swaptionvolcube

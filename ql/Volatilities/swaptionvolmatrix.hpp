@@ -49,9 +49,10 @@ namespace QuantLib {
     class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure,
                                      private boost::noncopyable {
       public:
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& exerciseDates,
-                                 const std::vector<Period>& lengths,
+        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
+                                 const Calendar& calendar,
+                                 const BusinessDayConvention bdc,
+                                 const std::vector<Period>& tenors,
                                  const std::vector<std::vector<Handle<Quote> > >& vols,
                                  const DayCounter& dayCounter);
         SwaptionVolatilityMatrix(const Date& referenceDate,
