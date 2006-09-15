@@ -20,13 +20,12 @@
 
 #include "swaptionvolatilitycube.hpp"
 #include "utilities.hpp"
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -63,7 +62,7 @@ boost::shared_ptr<Xibor> iborIndexShortTenor_;
 // utilities
 
 
-void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
+void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                     Real tolerance) {
 
     for (Size i=0; i<atmOptionTenors_.size(); i++) {
@@ -88,7 +87,7 @@ void makeAtmVolTest(const SwaptionVolatilityCubeByLinear& volCube,
 
 }
 
-void makeVolSpreadsTest(const SwaptionVolatilityCubeByLinear& volCube,
+void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
                         Real tolerance) {
 
     for (Size i=0; i<optionTenors_.size(); i++) {
@@ -192,11 +191,11 @@ void setup() {
     swapTenors_.push_back(Period(30, Years));
 
     strikeSpreads_ = std::vector<Rate>();
-    strikeSpreads_.push_back(-0.0200);
-    strikeSpreads_.push_back(-0.0050);
-    strikeSpreads_.push_back(+0.0000);
-    strikeSpreads_.push_back(+0.0050);
-    strikeSpreads_.push_back(+0.0200);
+    strikeSpreads_.push_back(-0.020);
+    strikeSpreads_.push_back(-0.005);
+    strikeSpreads_.push_back(+0.000);
+    strikeSpreads_.push_back(+0.005);
+    strikeSpreads_.push_back(+0.020);
 
     Size nRows = optionTenors_.size()*swapTenors_.size();
     Size nCols = strikeSpreads_.size();
@@ -421,11 +420,54 @@ void SwaptionVolatilityCubeTest::testSmile() {
     QL_TEST_TEARDOWN
 }
 
+void SwaptionVolatilityCubeTest::testSabrVols() {
+
+    BOOST_MESSAGE("Testing swaption volatility cube sabr...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Matrix parametersGuess(optionTenors_.size()*swapTenors_.size(), 4);
+    for(Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+        parametersGuess[i][0] = 0.2;
+        parametersGuess[i][1] = 0.5;
+        parametersGuess[i][2] = 0.4;
+        parametersGuess[i][3] = 0.0;
+    }
+    std::vector<bool> isParameterFixed(4, false);
+
+    SwaptionVolatilityCubeBySabr volCube(atmVolMatrix_,
+                                         optionTenors_,
+                                         swapTenors_,
+                                         strikeSpreads_,
+                                         volSpreadsMatrix_,
+                                         calendar_,
+                                         swapSettlementDays_,
+                                         fixedLegFrequency_,
+                                         fixedLegConvention_,
+                                         fixedLegDayCounter_,
+                                         iborIndex_,
+                                         shortTenor_,
+                                         iborIndexShortTenor_,
+                                         parametersGuess,
+                                         isParameterFixed,
+                                         true);
+
+    Real tolerance = 2.0e-4;
+    makeAtmVolTest(volCube, tolerance);
+
+    tolerance = 8.0e-4;
+    makeVolSpreadsTest(volCube, tolerance);
+
+    QL_TEST_TEARDOWN
+}
+
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSwaptionVolMatrix));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
 
     return suite;
 }
