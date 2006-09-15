@@ -68,6 +68,7 @@ namespace QuantLib {
         Matrix mids_;
         Matrix impliedCmsSpreads_;
         Matrix spreadErrors_;
+        Matrix prices_;
 
         Date referenceDate_; 
         Date effectiveDate_;

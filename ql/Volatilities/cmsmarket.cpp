@@ -69,6 +69,7 @@ namespace QuantLib {
         bids_ = Matrix(nExercise_, nLengths_, 0.);
         asks_ = Matrix(nExercise_, nLengths_, 0.);
         mids_ = Matrix(nExercise_, nLengths_, 0.);
+        prices_= Matrix(nExercise_, nLengths_, 0.);
         impliedCmsSpreads_ = Matrix(nExercise_, nLengths_, 0.);
         spreadErrors_ = Matrix(nExercise_, nLengths_, 0.);
 
@@ -79,7 +80,7 @@ namespace QuantLib {
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA30Y(yieldTermStructure_)));
 
         for (Size i=0; i<nExercise_; i++) {
-            exerciseDates_.push_back(calendar_.advance(referenceDate_,expiries[i],bdc_));//FIXME
+            exerciseDates_.push_back(calendar_.advance(effectiveDate_,expiries[i],bdc_));//FIXME
             schedules_.push_back( boost::shared_ptr<Schedule>(
                 new Schedule(calendar_, effectiveDate_, exerciseDates_[i], frequency_,
                             bdc_,stubDate_, startFromEnd_, longFinal_))
@@ -120,7 +121,8 @@ namespace QuantLib {
                 swapTmp.push_back(
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()))
                 );
-                impliedCmsSpreads_[i][j] = -swapTmp.back()->NPV()/swapTmp.back()->legBPS(1)/10000;;
+                prices_[i][j] = swapTmp.back()->NPV();
+                impliedCmsSpreads_[i][j] = -(prices_[i][j]/swapTmp.back()->legBPS(1))/10000;;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
             cmsLegs_.push_back(cmsTmp);
@@ -156,7 +158,8 @@ namespace QuantLib {
                                     floatingIndex_->dayCounter());
                 swaps_[i][j] = boost::shared_ptr<Swap>(
                     new Swap(yieldTermStructure_, cmsLegs_[i][j], floatingLegs_[i][j]));
-                impliedCmsSpreads_[i][j] = -(swaps_[i][j]->NPV()/swaps_[i][j]->legBPS(1))/10000;
+                prices_[i][j] = swaps_[i][j]->NPV();
+                impliedCmsSpreads_[i][j] = -(prices_[i][j]/swaps_[i][j]->legBPS(1))/10000;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
             }
         }
@@ -177,8 +180,8 @@ namespace QuantLib {
 
 
     Matrix CmsMarket::browse() const{
-        Matrix result(nExercise_*nLengths_,7,0.);
-            for(Size j=0;j<nLengths_;j++){
+        Matrix result(nExercise_*nLengths_,9,0.);
+	        for(Size j=0;j<nLengths_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nLengths_+i][0]= lengths_[j].length();
                 result[j*nLengths_+i][1]= expiries_[i].length();
@@ -187,8 +190,16 @@ namespace QuantLib {
                 result[j*nLengths_+i][4]= mids_[i][j]*10000;
                 result[j*nLengths_+i][5]= impliedCmsSpreads_[i][j]*10000;
                 result[j*nLengths_+i][6]= spreadErrors_[i][j]*10000;
-            }
-        }
+                if(impliedCmsSpreads_[i][j]>asks_[i][j]){ 
+                    result[j*nLengths_+i][7]= (impliedCmsSpreads_[i][j]-asks_[i][j])*10000;
+                }
+                else if(impliedCmsSpreads_[i][j]<bids_[i][j]){
+                    result[j*nLengths_+i][7]= (bids_[i][j]-impliedCmsSpreads_[i][j])*10000;
+                }
+                else{ result[j*nLengths_+i][7]= 0.; } 
+                result[j*nLengths_+i][8]= prices_[i][j];
+            }   
+        }  
         return result;
     }
 
