@@ -52,7 +52,7 @@ namespace QuantLib {
                     Annual, // fixedLegFrequency
                     Unadjusted, // fixedLegConvention
                     Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                    boost::shared_ptr<Xibor>(new Eurlibor6M(h))) {}
+                    boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
     };
 
 
