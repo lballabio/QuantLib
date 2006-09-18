@@ -30,6 +30,43 @@
 
 namespace QuantLib {
 
+    inline Real blackFormula(Option::Type optionType,
+                             Real strike,
+                             Real forward,
+                             Real stdDev) {
+        if (stdDev==0.0)
+            return std::max((forward-strike)*optionType, Real(0.0));
+        if (strike==0.0)
+            return (optionType==Option::Call ? forward : 0.0);
+        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+        Real d2 = d1 - stdDev;
+        CumulativeNormalDistribution phi;
+        Real result = optionType *
+            (forward*phi(optionType*d1) - strike*phi(optionType*d2));
+        // numerical inaccuracies can yield a negative answer
+        return std::max(Real(0.0), result);
+    }
+
+    Real blackImpliedStdDev(Option::Type optionType,
+                            Real strike,
+                            Real forward,
+                            Real blackPrice,
+                            Real guess=Null<Real>());
+
+    inline Real blackItmProbability(Option::Type optionType,
+                                    Real strike,
+                                    Real forward,
+                                    Real stdDev) {
+        if (stdDev==0.0)
+            return (forward*optionType > strike*optionType ? 1.0 : 0.0);
+        if (strike==0.0)
+            return (optionType==Option::Call ? 1.0 : 0.0);
+        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+        Real d2 = d1 - stdDev;
+        CumulativeNormalDistribution phi;
+        return phi(optionType*d2);
+    }
+
     namespace detail {
 
         inline Real blackFormula(Real f, Real k, Real v, Real w) {
