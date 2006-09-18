@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,7 +19,7 @@
 */
 
 /*! \file blackmodel.hpp
-    \brief Abstract class for Black-type models (market models)
+    \brief Black formula and associated functions
 */
 
 #ifndef quantlib_black_model_hpp
@@ -68,26 +69,35 @@ namespace QuantLib {
 
     namespace detail {
 
-        inline Real blackFormula(Real f, Real k, Real v, Real w) {
-            if (std::fabs(v) < QL_EPSILON)
-                return std::max(f*w - k*w, Real(0.0));
-            if (k==0.0)
-                return (w==1.0 ? f : 0.0);
-            Real d1 = std::log(f/k)/v + 0.5*v;
-            Real d2 = d1 - v;
+        inline Real blackFormula(Real forward,
+                                 Real strike,
+                                 Real stdDev,
+                                 Option::Type optionType) {
+            if (stdDev==0.0)
+                return std::max((forward-strike)*optionType, Real(0.0));
+            if (strike==0.0)
+                return (optionType==Option::Call ? forward : 0.0);
+            Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+            Real d2 = d1 - stdDev;
             CumulativeNormalDistribution phi;
-            Real result = w*(f*phi(w*d1) - k*phi(w*d2));
+            Real result = optionType *
+                (forward*phi(optionType*d1) - strike*phi(optionType*d2));
             // numerical inaccuracies can yield a negative answer
             return std::max(Real(0.0), result);
         }
 
-        inline Real itmBlackProbability(Real f, Real k, Real v, Real w) {
-            if (std::fabs(v) < QL_EPSILON)
-                return (f*w > k*w ? 1.0 : 0.0);
-            Real d1 = std::log(f/k)/v + 0.5*v;
-            Real d2 = d1 - v;
+        inline Real itmBlackProbability(Real forward,
+                                        Real strike,
+                                        Real stdDev,
+                                        Option::Type optionType) {
+            if (stdDev==0.0)
+                return (forward*optionType > strike*optionType ? 1.0 : 0.0);
+            if (strike==0.0)
+                return (optionType==Option::Call ? 1.0 : 0.0);
+            Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+            Real d2 = d1 - stdDev;
             CumulativeNormalDistribution phi;
-            return phi(w*d2);
+            return phi(optionType*d2);
         }
 
     }
