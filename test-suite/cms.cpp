@@ -272,13 +272,10 @@ void CmsTest::testFairRate()  {
 
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
-    boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
-        new ConundrumPricerByNumericalIntegration(
-            modelOfYieldCurves_[h], 0, 1));
-    boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
-        new ConundrumPricerByBlack(
-            modelOfYieldCurves_[h])
-            );
+    boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new
+        ConundrumPricerByNumericalIntegration(modelOfYieldCurves_[h], 0, 1));
+    boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new
+        ConundrumPricerByBlack(modelOfYieldCurves_[h]));
 
     //Coupons
     CMSCoupon coupon1(1,

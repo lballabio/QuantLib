@@ -164,7 +164,7 @@ namespace QuantLib {
 
             if (capStrike != Null<Rate>()) {
                 Rate caplet = detail::blackFormula(Rs, capStrike,
-                                                   sigma*std::sqrt(tau), 1.0);
+                    sigma*std::sqrt(tau), Option::Call);
                 CumulativeNormalDistribution N;
                 Real N32 = N(d_lambda(1.5,Rs,capStrike,sigma,tau));
                 Real N12 = N(d_lambda(0.5,Rs,capStrike,sigma,tau));
@@ -182,7 +182,7 @@ namespace QuantLib {
             if (floorStrike != Null<Rate>()) {
                 Rate floorlet = detail::blackFormula(Rs, floorStrike,
                                                      sigma*std::sqrt(tau),
-                                                     -1.0);
+                                                     Option::Put);
                 CumulativeNormalDistribution N;
                 Real N32 = N(-d_lambda(1.5,Rs,floorStrike,sigma,tau));
                 Real N12 = N(-d_lambda(0.5,Rs,floorStrike,sigma,tau));

@@ -45,9 +45,8 @@ namespace QuantLib
         }
 
     Real BlackVanillaOptionPricer::operator()(Real strike,
-                                              bool isCall,
+                                              Option::Type optionType,
                                               Real deflator) const {
-        const Real optionType = isCall ? 1.0 : -1.0;
         const Real variance = smile_->variance(strike);
         return deflator * detail::blackFormula(forwardValue_, strike,
             std::sqrt(variance), optionType);
@@ -123,20 +122,16 @@ namespace QuantLib
 
         const Real effectiveStrikeForMax = std::max((max_-spread_)/gearing_,QL_EPSILON);
         Real capLetPrice = 0;
-
-        if (max_ < cutoffForCaplet_) {
-            capLetPrice = optionLetPrice(true, effectiveStrikeForMax);
-        }
+        if (max_ < cutoffForCaplet_)
+            capLetPrice=optionLetPrice(Option::Call, effectiveStrikeForMax);
 
         const Real effectiveStrikeForMin = std::max((min_-spread_)/gearing_,QL_EPSILON);;
         Real floorLetPrice = 0;
+        if (min_ > cutoffForFloorlet_)
+            floorLetPrice=optionLetPrice(Option::Put, effectiveStrikeForMin);
 
-
-        if (min_ > cutoffForFloorlet_) {
-            floorLetPrice = optionLetPrice(false, effectiveStrikeForMin);
-        }
-        const Real price = gearing_*(swapLetPrice_ + floorLetPrice - capLetPrice) + spreadLegValue;
-        return price;
+        return gearing_ * (swapLetPrice_ + floorLetPrice - capLetPrice) +
+               spreadLegValue;
     }
 
     Real ConundrumPricer::rate() const {
@@ -168,39 +163,32 @@ namespace QuantLib
     }
 
     Real ConundrumPricerByNumericalIntegration::optionLetPrice(
-                                        bool isCap, Real strike) const {
-        Real integralValue, dFdK;
-        if(isCap) {
-            const Real a(strike), b(std::max(strike, upperLimit_));
-            const boost::shared_ptr<ConundrumIntegrand> integrandForCap = boost::shared_ptr<ConundrumIntegrand>(
-            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
-                                   gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, strike, true)
-                                   );
-            integralValue = integrate(a, b, *integrandForCap);
+                                Option::Type optionType, Real strike) const {
+        Real a, b;
+        if (optionType==Option::Call) {
+            a = strike;
+            b = std::max(strike, upperLimit_);
+        } else {
+            a = std::min(strike, lowerLimit_);
+            b = strike;
+        }
+        boost::shared_ptr<ConundrumIntegrand> integrand(new
+            ConundrumIntegrand(vanillaOptionPricer_, rateCurve_, gFunction_,
+                               fixingDate_, paymentDate_, annuity_,
+                               swapRateValue_, strike, optionType));
+        Real integralValue = optionType*integrate(a, b, *integrand);
+        Real dFdK = integrand->firstDerivativeOfF(strike);
+        Real swaptionPrice =
+            (*vanillaOptionPricer_)(strike, optionType, annuity_);
 
-            dFdK = integrandForCap->firstDerivativeOfF(strike);
-        }
-        else {
-            const Real a(std::min(strike, lowerLimit_)), b(strike);
-            const boost::shared_ptr<ConundrumIntegrand> integrandForFloor = boost::shared_ptr<ConundrumIntegrand>(
-            new ConundrumIntegrand(vanillaOptionPricer_, rateCurve_,
-                                   gFunction_, fixingDate_, paymentDate_,
-                                   annuity_, swapRateValue_, strike, false)
-                                   );
-            integralValue = -integrate(a, b, *integrandForFloor);
-            dFdK = integrandForFloor->firstDerivativeOfF(strike);
-        }
-        const Real swaptionPrice = (*vanillaOptionPricer_)(strike, isCap, annuity_);
         // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
-
         return coupon_->accrualPeriod() * (discount_/annuity_) *
             ((1 + dFdK) * swaptionPrice + integralValue);
     }
 
     Real ConundrumPricerByNumericalIntegration::swapLetPrice() const {
-        const Real atmCapLetPrice = optionLetPrice(true, swapRateValue_);
-        const Real atmFloorLetPrice = optionLetPrice(false, swapRateValue_);
+        Real atmCapLetPrice = optionLetPrice(Option::Call, swapRateValue_);
+        Real atmFloorLetPrice = optionLetPrice(Option::Put, swapRateValue_);
         return coupon_->accrualPeriod()*(discount_ * swapRateValue_)
             + atmCapLetPrice - atmFloorLetPrice;
     }
@@ -218,10 +206,10 @@ namespace QuantLib
         Real annuity,
         Real forwardValue,
         Real strike,
-        bool isCaplet)
+        Option::Type optionType)
     : vanillaOptionPricer_(o), forwardValue_(forwardValue), annuity_(annuity),
       fixingDate_(fixingDate), paymentDate_(paymentDate), strike_(strike),
-      isCaplet_(isCaplet), isPayer_(isCaplet),
+      optionType_(optionType),
       gFunction_(gFunction) {}
 
     void ConundrumPricerByNumericalIntegration::ConundrumIntegrand::setStrike(Real strike) {
@@ -261,7 +249,7 @@ namespace QuantLib
     }
 
     Real ConundrumPricerByNumericalIntegration::ConundrumIntegrand::operator()(Real x) const {
-        const Real option = (*vanillaOptionPricer_)(x, isCaplet_, annuity_);
+        const Real option = (*vanillaOptionPricer_)(x, optionType_, annuity_);
         return option * secondDerivativeOfF(x);
     }
 
@@ -277,7 +265,8 @@ namespace QuantLib
       { }
 
     //Hagan, 3.5b, 3.5c
-    Real ConundrumPricerByBlack::optionLetPrice(bool isCall, Real strike) const {
+      Real ConundrumPricerByBlack::optionLetPrice(Option::Type optionType,
+                                                  Real strike) const {
         Real variance = coupon_->swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
                                                            swapRateValue_);
@@ -285,21 +274,20 @@ namespace QuantLib
                                                         swapRateValue_);
         Real price = 0;
 
-        const Real CK = (*vanillaOptionPricer_)(strike, isCall, annuity_);
+        Real CK = (*vanillaOptionPricer_)(strike, optionType, annuity_);
         price += (discount_/annuity_)*CK;
         const Real sqrtSigma2T = std::sqrt(variance);
         const Real lnRoverK =  std::log(swapRateValue_/strike);
         const Real d32 = (lnRoverK+1.5*variance)/sqrtSigma2T;
         const Real d12 =  (lnRoverK+.5*variance)/sqrtSigma2T;
         const Real dminus12 =  (lnRoverK-.5*variance)/sqrtSigma2T;
-        const Real sgn = isCall ? 1.0 : -1.0;
 
         CumulativeNormalDistribution cumulativeOfNormal;
-        const Real N32 = cumulativeOfNormal(sgn*d32);
-        const Real N12 = cumulativeOfNormal(sgn*d12);
-        const Real Nminus12 = cumulativeOfNormal(sgn*dminus12);
+        const Real N32 = cumulativeOfNormal(optionType*d32);
+        const Real N12 = cumulativeOfNormal(optionType*d12);
+        const Real Nminus12 = cumulativeOfNormal(optionType*dminus12);
 
-        price += sgn * firstDerivativeOfGAtForwardValue * annuity_ *
+        price += optionType * firstDerivativeOfGAtForwardValue * annuity_ *
             swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32-
             (swapRateValue_+strike) * N12 + strike * Nminus12);
         price *= coupon_->accrualPeriod();
