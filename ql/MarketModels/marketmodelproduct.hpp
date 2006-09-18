@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_marketmodelproduct_hpp
-#define quantlib_marketmodelproduct_hpp
+#ifndef quantlib_marketmodelmultiproduct_hpp
+#define quantlib_marketmodelmultiproduct_hpp
 
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/curvestate.hpp>
@@ -42,33 +42,27 @@ namespace QuantLib {
 
     */
 
-    class MarketModelProduct
-    {
-    public:
-  
-        struct CashFlow
-        {
+    class MarketModelMultiProduct {
+     public:
+        struct CashFlow {
             Size timeIndex;
             Real amount;
         }; 
-
-        virtual ~MarketModelProduct() {}
+        virtual ~MarketModelMultiProduct() {}
        
-        //! for initializing other objects
+        // for initializing other objects
         virtual EvolutionDescription suggestedEvolution() const=0;
         virtual std::vector<Time> possibleCashFlowTimes() const=0;
         virtual Size numberOfProducts() const=0;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const=0;
 
-        //!during simulation
-        //!put product at start of path
+        //! during simulation put product at start of path
         virtual void reset()=0; 
-        //! bool return indicates whether path is finished, true means done
+        //! return value indicates whether path is finished, TRUE means done
         virtual bool nextTimeStep(
             const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated)=0 ; //! the cash flows
-
     };
 
 }

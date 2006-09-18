@@ -2,32 +2,25 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels/Products
 
+SUBDIRS = OneStep MultiStep
+
 include_HEADERS = \
     all.hpp \
-    marketmodelcaplets.hpp \
-    marketmodelcapletsonestep.hpp \
-    marketmodelcoinitialswaps.hpp \
-    marketmodelcoinitialswapsonestep.hpp \
-    marketmodelcomposite.hpp \
-    marketmodelcoterminalswaps.hpp \
-    marketmodelcoterminalswapsonestep.hpp \
-    marketmodelforwards.hpp \
-    marketmodelforwardsonestep.hpp \
-    marketmodelratchet.hpp
+    marketmodelratchet.hpp \
+    multiproductcomposite.hpp \
+    multiproductmultistep.hpp \
+    multiproductonestep.hpp
 
 libMarketModelsProducts_la_SOURCES = \
-    marketmodelcaplets.cpp \
-    marketmodelcapletsonestep.cpp \
-    marketmodelcoinitialswaps.cpp \
-    marketmodelcoinitialswapsonestep.cpp \
-    marketmodelcomposite.cpp \
-    marketmodelcoterminalswaps.cpp \
-    marketmodelcoterminalswapsonestep.cpp \
-    marketmodelforwards.cpp \
-    marketmodelforwardsonestep.cpp \
-    marketmodelratchet.cpp
+    marketmodelratchet.cpp \
+    multiproductcomposite.cpp \
+    multiproductmultistep.cpp \
+    multiproductonestep.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProducts.la
 
-EXTRA_DIST = makefile.mak
+libMarketModels_la_LIBADD = \
+    MultiStep/libMarketModelsProductsMultiStep.la \
+    OneStep/libMarketModelsProductsOneStep.la
 
+#EXTRA_DIST = makefile.mak

@@ -132,8 +132,12 @@ namespace QuantLib {
             rateTimes_.size()-1;
     }
 
-    void EvolutionDescription::setMoneyMarketMeasurePlus(Size offset) {
+    void EvolutionDescription::setMoneyMarketPlusMeasure(Size offset) {
         Size j=0, maxNumeraire=rateTimes_.size()-1;
+        QL_REQUIRE(offset<=maxNumeraire,
+                   "offset (" << offset <<
+                   ") is greater than the max allowed value for numeraire ("
+                   << maxNumeraire << ")");
         for (Size i=0; i<evolutionTimes_.size(); ++i) {
             while (rateTimes_[j] < evolutionTimes_[i])
                 j++;
@@ -141,13 +145,17 @@ namespace QuantLib {
         }
     }
 
-    bool EvolutionDescription::isInMoneyMarketMeasure() const {
+    bool EvolutionDescription::isInMoneyMarketPlusMeasure(Size offset) const {
         bool result = true;
-        Size j = 0;
+        Size j=0, maxNumeraire=rateTimes_.size()-1;
+        QL_REQUIRE(offset<=maxNumeraire,
+                   "offset (" << offset <<
+                   ") is greater than the max allowed value for numeraire ("
+                   << maxNumeraire << ")");
         for (Size i=0; i<evolutionTimes_.size(); ++i) {
             while (rateTimes_[j] < evolutionTimes_[i])
                 j++;
-            result = result && (numeraires_[i] == j);
+            result = (numeraires_[i] == std::min(j+offset, maxNumeraire)) && result;
         }
         return result;
     }

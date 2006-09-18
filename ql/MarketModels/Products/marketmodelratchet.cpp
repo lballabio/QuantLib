@@ -38,17 +38,17 @@ namespace QuantLib {
     EvolutionDescription MarketModelRatchet::suggestedEvolution() const
     {
         std::vector<Time> evolutionTimes(rateTimes_.size()-1);
-        for (Size i = 0; i<evolutionTimes.size(); ++i)
+        std::vector<Size> numeraires(evolutionTimes.size());
+        for (Size i=0; i<evolutionTimes.size(); ++i) {
             evolutionTimes[i]=rateTimes_[i];
-
-        // terminal measure
-        std::vector<Size> numeraires(evolutionTimes.size(),
-                                     rateTimes_.size()-1);
+            // MoneyMarketPlus(1)
+            numeraires[i]=i+1;
+        }
 
         std::vector<std::pair<Size,Size> > relevanceRates(
             evolutionTimes.size());
-        for (Size i =0; i < evolutionTimes.size(); ++i)
-            relevanceRates[i] = std::make_pair(i,i+1);
+        for (Size i=0; i<evolutionTimes.size(); ++i)
+            relevanceRates[i] = std::make_pair(i, i+1);
 
         return EvolutionDescription(rateTimes_, evolutionTimes,
                                     numeraires, relevanceRates);
@@ -57,7 +57,7 @@ namespace QuantLib {
     bool MarketModelRatchet::nextTimeStep(
         const CurveState& currentState, 
         std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelProduct::CashFlow> >& genCashFlows)
+        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
     {
         double liborRate = currentState.forwardRate(currentIndex_);
         currentCoupon_= std::max(liborRate,currentCoupon_);

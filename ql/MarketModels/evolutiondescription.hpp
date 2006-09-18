@@ -83,12 +83,15 @@ namespace QuantLib {
         Size numberOfSteps() const;     // returns evolutionTimes().size()
 
         void setNumeraires(const std::vector<Size>&);
-        void setMoneyMarketMeasurePlus(Size offset = 1);
-        void setMoneyMarketMeasure();
-        void setTerminalMeasure();
 
-        bool isInMoneyMarketMeasure() const;
+        void setTerminalMeasure();
         bool isInTerminalMeasure() const;
+
+        void setMoneyMarketMeasure();
+        bool isInMoneyMarketMeasure() const;
+
+        void setMoneyMarketPlusMeasure(Size offset = 1);
+        bool isInMoneyMarketPlusMeasure(Size offset = 1) const;
 
       private:
         std::vector<Time> rateTimes_, evolutionTimes_;
@@ -140,7 +143,11 @@ namespace QuantLib {
     }
 
     inline void EvolutionDescription::setMoneyMarketMeasure() {
-        setMoneyMarketMeasurePlus(0);
+        setMoneyMarketPlusMeasure(0);
+    }
+
+    inline bool EvolutionDescription::isInMoneyMarketMeasure() const {
+        return isInMoneyMarketPlusMeasure(0);
     }
 
 }

@@ -31,7 +31,7 @@ namespace QuantLib {
     {
     public:
         AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const boost::shared_ptr<MarketModelProduct>& product,
+                         const boost::shared_ptr<MarketModelMultiProduct>& product,
                          const EvolutionDescription& evolution,
                          double initialNumeraireValue);
 
@@ -42,7 +42,7 @@ namespace QuantLib {
         class Discounter;
 
         boost::shared_ptr<MarketModelEvolver> evolver_;
-        boost::shared_ptr<MarketModelProduct> product_;
+        boost::shared_ptr<MarketModelMultiProduct> product_;
         EvolutionDescription evolution_;
         
         double initialNumeraireValue_;
@@ -51,7 +51,7 @@ namespace QuantLib {
         // workspace
         std::vector<Real> numerairesHeld_;
         std::vector<Size> numberCashFlowsThisStep_;
-        std::vector<std::vector<MarketModelProduct::CashFlow> >
+        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >
                                                          cashFlowsGenerated_;
         std::vector<Discounter> discounters_;
         

@@ -24,8 +24,7 @@
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
-    class MarketModelRatchet : public MarketModelProduct
-    {
+    class MarketModelRatchet : public MarketModelMultiProduct {
       public:
         MarketModelRatchet(const std::vector<Time>& rateTimes,
                            const std::vector<Real>& fixedAccruals,
@@ -33,28 +32,24 @@ namespace QuantLib {
                            const std::vector<Rate>& floatingSpreads,
                            const std::vector<Time>& paymentTimes,
                            double initialCoupon);
-        //! for initializing other objects
-        virtual EvolutionDescription suggestedEvolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-
-        //!during simulation
-        //!put product at start of path
-        virtual void reset(); 
-        //! bool return indicates whether path is finished, true means done
-        virtual bool nextTimeStep(const CurveState& currentState, 
+        //! \name MarketModelMultiProduct interface
+        //@{
+        EvolutionDescription suggestedEvolution() const;
+        std::vector<Time> possibleCashFlowTimes() const;
+        Size numberOfProducts() const;
+        Size maxNumberOfCashFlowsPerProductPerStep() const;
+        void reset(); 
+        bool nextTimeStep(const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        //@}
       private:
         std::vector<Time> rateTimes_;
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Rate> floatingSpreads_;
         std::vector<Time> paymentTimes_;
         double initialCoupon_;
-
         Size lastIndex_;
-
         // things that vary in a path
         Size currentIndex_;
         double currentCoupon_;

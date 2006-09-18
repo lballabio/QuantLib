@@ -24,7 +24,7 @@ namespace QuantLib {
 
     AccountingEngine::AccountingEngine(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
-        const boost::shared_ptr<MarketModelProduct>& product,
+        const boost::shared_ptr<MarketModelMultiProduct>& product,
         const EvolutionDescription& evolution,
         double initialNumeraireValue)
         :
@@ -68,7 +68,7 @@ namespace QuantLib {
             // for each product...
             for (Size i=0; i<numberProducts_; ++i) {
                 // ...and each cash flow...
-                const std::vector<MarketModelProduct::CashFlow>& cashflows =
+                const std::vector<MarketModelMultiProduct::CashFlow>& cashflows =
                     cashFlowsGenerated_[i];
                 for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) {
                     // ...convert the cash flow to numeraires.
