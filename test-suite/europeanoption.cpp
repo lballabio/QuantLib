@@ -791,16 +791,17 @@ void EuropeanOptionTest::testImpliedVol() {
                                                               tolerance,
                                                               maxEvaluations);
                       } catch (std::exception& e) {
-                          BOOST_FAIL(
-                              types[i] << " option :\n"
-                              << "    spot value:     " << u << "\n"
-                              << "    strike:         " << strikes[j] << "\n"
-                              << "    dividend yield: " << io::rate(q) << "\n"
-                              << "    risk-free rate: " << io::rate(r) << "\n"
-                              << "    maturity:       " << exDate << "\n"
-                              << "    volatility:     " << io::volatility(v)
-                              << "\n\n"
-                              << e.what());
+                          BOOST_FAIL("\nimplied vol calculation failed:" <<
+                              "\n   option:         " << types[i] <<
+                              "\n   strike:         " << strikes[j] <<
+                              "\n   spot value:     " << u <<
+                              "\n   dividend yield: " << io::rate(q) <<
+                              "\n   risk-free rate: " << io::rate(r) <<
+                              "\n   today:          " << today <<
+                              "\n   maturity:       " << exDate <<
+                              "\n   volatility:     " << io::volatility(v) <<
+                              "\n   option value:   " << value <<
+                              "\n" << e.what());
                       }
                       if (std::fabs(implVol-v) > tolerance) {
                           // the difference might not matter
