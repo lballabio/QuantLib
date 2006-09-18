@@ -86,6 +86,11 @@ namespace QuantLib {
                    Real guess,
                    Real step) const {
 
+            QL_REQUIRE(accuracy>0.0,
+                       "accuracy (" << accuracy << ") must be positive");
+            // check whether we really want to use epsilon
+            accuracy = std::max(accuracy, QL_EPSILON);
+
             const Real growthFactor = 1.6;
             Integer flipflop = -1;
 
@@ -93,7 +98,7 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            if (std::fabs(fxMax_) <= accuracy)
+             if (std::fabs(fxMax_) <= accuracy)
                 return root_;
             else if (fxMax_ > 0.0) {
                 xMin_ = enforceBounds_(root_ - step);
@@ -112,9 +117,7 @@ namespace QuantLib {
                     if (fxMin_ == 0.0)    return xMin_;
                     if (fxMax_ == 0.0)    return xMax_;
                     root_ = (xMax_+xMin_)/2.0;
-                    // check whether we really want to pass epsilon
-                    return this->impl().solveImpl(
-                        f, std::max(std::fabs(accuracy), QL_EPSILON));
+                    return this->impl().solveImpl(f, accuracy);
                 }
                 if (std::fabs(fxMin_) < std::fabs(fxMax_)) {
                     xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
@@ -161,6 +164,11 @@ namespace QuantLib {
                    Real xMin,
                    Real xMax) const {
 
+            QL_REQUIRE(accuracy>0.0,
+                       "accuracy (" << accuracy << ") must be positive");
+            // check whether we really want to use epsilon
+            accuracy = std::max(accuracy, QL_EPSILON);
+
             xMin_ = xMin;
             xMax_ = xMax;
 
@@ -175,7 +183,7 @@ namespace QuantLib {
                        << ") > enforced hi bound (" << upperBound_ << ")");
 
             fxMin_ = f(xMin_);
-            if (std::fabs(fxMin_) < accuracy)
+             if (std::fabs(fxMin_) < accuracy)
                 return xMin_;
 
             fxMax_ = f(xMax_);
@@ -197,8 +205,7 @@ namespace QuantLib {
 
             root_ = guess;
 
-            return this->impl().solveImpl(
-                f, std::max(std::fabs(accuracy), QL_EPSILON));
+            return this->impl().solveImpl(f, accuracy);
         }
 
         /*! This method sets the maximum number of function
