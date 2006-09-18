@@ -32,11 +32,60 @@
 #include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Optimization/simplex.hpp>
 #include <ql/Utilities/null.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <vector>
 
 namespace QuantLib {
 
+    inline Real unsafeSabrVolatility(Rate strike,
+                                     Rate forward,
+                                     Time expiryTime,
+                                     Real alpha,
+                                     Real beta,
+                                     Real nu,
+                                     Real rho) {
+        const Real oneMinusBeta = 1.0-beta;
+        const Real A = std::pow(forward*strike, oneMinusBeta);
+        const Real sqrtA= std::sqrt(A);
+        const Real logM = std::log(forward/strike);
+        const Real z = (nu/alpha)*sqrtA*logM;
+        const Real B = 1.0-2.0*rho*z+z*z;
+        const Real C = oneMinusBeta*oneMinusBeta*logM*logM;
+        const Real tmp = (std::sqrt(B)+z-rho)/(1.0-rho);
+        const Real xx = std::log(tmp);
+        const Real D = sqrtA*(1.0+C/24.0+C*C/1920.0);
+        const Real d = 1.0 + expiryTime *
+            (oneMinusBeta*oneMinusBeta*alpha*alpha/(24.0*A)
+                                + 0.25*rho*beta*nu*alpha/sqrtA
+                                    +(2.0-3.0*rho*rho)*(nu*nu/24.0));
+        const Real multiplier = (xx!=0.0 ? z/xx : 1.0);
+        return (alpha/D)*multiplier*d;
+    }
 
+    inline Real sabrVolatility(Rate strike,
+                               Rate forward,
+                               Time expiryTime,
+                               Real alpha,
+                               Real beta,
+                               Real nu,
+                               Real rho) {
+        QL_REQUIRE(strike>0.0, "strike must be positive: "
+                               << io::rate(strike) << " not allowed");
+        QL_REQUIRE(forward>0.0, "forward must be positive: "
+                                << io::rate(forward) << " not allowed");
+        QL_REQUIRE(expiryTime>0.0, "expiry time must be positive: "
+                                   << expiryTime << " not allowed");
+        QL_REQUIRE(alpha>0.0, "alpha must be positive: "
+                              << alpha << " not allowed");
+        QL_REQUIRE(beta>=0.0 && beta<=1.0, "beta must be in [0.0, 1.0]: "
+                                           << beta << " not allowed");
+        QL_REQUIRE(nu>=0.0, "nu must be non negative: "
+                            << nu << " not allowed");
+        QL_REQUIRE(rho*rho<=1.0, "rho square must be not greater than one: "
+                                 << rho << " not allowed");
+        return unsafeSabrVolatility(strike, forward, expiryTime,
+                                    alpha, beta, nu, rho);
+    }
 
     namespace detail {
 
@@ -64,37 +113,38 @@ namespace QuantLib {
               maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::none)
             {
-                QL_REQUIRE(t>0, "time must be non-negative");
-                QL_REQUIRE(forward>0, "forward must be non-negative");
+                QL_REQUIRE(forward>0.0, "forward must be positive: "
+                    << io::rate(forward) << " not allowed");
+                QL_REQUIRE(t>0.0, "expiry time must be positive: "
+                                  << t << " not allowed");
+
                 if (alpha_ != Null<Real>()) {
-                    alphaIsFixed_  = isAlphaFixed;
-                    QL_REQUIRE(alpha_>0.0, "alpha must be positive");
-                }
-                else {
-                    alpha_ = std::sqrt(.2);
-                }
+                    alphaIsFixed_ = isAlphaFixed;
+                    QL_REQUIRE(alpha>0.0,
+                               "alpha must be positive: " <<
+                               alpha << " not allowed");
+                } else alpha_ = std::sqrt(0.2);
+
                 if (beta_!= Null<Real>()) {
-                    betaIsFixed_  = isBetaFixed;
-                    QL_REQUIRE(beta_>=0.0 && beta_<=1.0,
-                               "beta must be in [0.0, 1.0]");
-                }
-                else {
-                    beta_=.5;
-                }
+                    betaIsFixed_ = isBetaFixed;
+                    QL_REQUIRE(beta>=0.0 && beta<=1.0,
+                               "beta must be in [0.0, 1.0]: " <<
+                               beta << " not allowed");
+                } else beta_=0.5;
+
                 if (nu_!= Null<Real>()) {
-                    nuIsFixed_  = isNuFixed;
-                    QL_REQUIRE(nu_>=0.0, "nu must be non negative");
-                }
-                else {
-                    nu_ = std::sqrt(.4);
-                }
+                    nuIsFixed_ = isNuFixed;
+                    QL_REQUIRE(nu>=0.0,
+                               "nu must be non negative: " <<
+                               nu << " not allowed");
+                } else nu_ = std::sqrt(0.4);
+
                 if (rho   != Null<Real>()) {
-                    rhoIsFixed_  = isRhoFixed;
-                    QL_REQUIRE(rho_*rho_<1, "rho square must be less than 1");
-                }
-                else {
-                    rho_ = 0;
-                }
+                    rhoIsFixed_ = isRhoFixed;
+                    QL_REQUIRE(rho*rho<=1,
+                               "rho square must be not greater than one: " <<
+                               rho << " not allowed");
+                } else rho_ = 0.0;
             }
             virtual ~SABRCoefficientHolder() {}
             Real t_, forward_, alpha_, beta_, nu_, rho_;
@@ -390,24 +440,10 @@ namespace QuantLib {
             }
 
             Real value(Real x) const {
-                QL_REQUIRE(x>0.0, 
-                    "strike must be positive in Sabr function");
-                const Real oneMinusBeta = 1.0-beta_;
-                const Real A = std::pow(forward_*x, oneMinusBeta);
-                const Real sqrtA= std::sqrt(A);
-                const Real logM = std::log(forward_/x);
-                const Real z = (nu_/alpha_)*sqrtA*logM;
-                const Real B = 1.0-2.0*rho_*z+z*z;
-                const Real C = oneMinusBeta*oneMinusBeta*logM*logM;
-                const Real tmp = (std::sqrt(B)+z-rho_)/(1.0-rho_);
-                const Real xx = std::log(tmp);
-                const Real D = sqrtA*(1.0+C/24.0+C*C/1920.0);
-                const Real d = 1.0 +
-                    t_ * (oneMinusBeta*oneMinusBeta*alpha_*alpha_/(24.0*A)
-                          + 0.25*rho_*beta_*nu_*alpha_/sqrtA
-                          +(2.0-3.0*rho_*rho_)*(nu_*nu_/24));
-                const Real multiplier = (xx!=0.0 ? z/xx : 1.0);
-                return (alpha_/D)*multiplier*d;;
+                QL_REQUIRE(x>0.0, "strike must be positive: " <<
+                                  io::rate(x) << " not allowed");
+                return sabrVolatility(x, forward_, t_,
+                                      alpha_, beta_, nu_, rho_);
             }
             Real primitive(Real x) const {
                 QL_FAIL("SABR primitive not implemented");
