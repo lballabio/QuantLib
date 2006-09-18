@@ -18,64 +18,56 @@
 */
 
 
-#ifndef quantlib_MarketModelCoterminalSwapsOneStep_hpp
-#define quantlib_MarketModelCoterminalSwapsOneStep_hpp
+#ifndef quantlib_MarketModelCoinitialSwaps_hpp
+#define quantlib_MarketModelCoinitialSwaps_hpp
 
-#include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
-    class MarketModelCoterminalSwapsOneStep : public MarketModelProduct
-    {
+    class MultiStepCoinitialSwaps : public MultiProductMultiStep {
       public:
-        MarketModelCoterminalSwapsOneStep(const std::vector<Time>& rateTimes,
+        MultiStepCoinitialSwaps(const std::vector<Time>& rateTimes,
                            const std::vector<Real>& fixedAccruals,
                            const std::vector<Real>& floatingAccruals,
                            const std::vector<Time>& paymentTimes,
                            double fixedRate);
-        //! for initializing other objects
-        virtual EvolutionDescription suggestedEvolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-
-        //!during simulation
-        //!put product at start of path
-        virtual void reset(); 
-        //! bool return indicates whether path is finished, true means done
-        virtual bool nextTimeStep(const CurveState& currentState, 
+        //! \name MarketModelMultiProduct interface
+        //@{
+        std::vector<Time> possibleCashFlowTimes() const;
+        Size numberOfProducts() const;
+        Size maxNumberOfCashFlowsPerProductPerStep() const;
+        void reset(); 
+        bool nextTimeStep(const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        //@}
       private:
-        std::vector<Time> rateTimes_;
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Time> paymentTimes_;
         double fixedRate_;
-
         Size lastIndex_;
-
         // things that vary in a path
         Size currentIndex_;
-        
     };
 
     // inline 
 
     inline std::vector<Time>
-    MarketModelCoterminalSwapsOneStep::possibleCashFlowTimes() const {
+    MultiStepCoinitialSwaps::possibleCashFlowTimes() const {
         return paymentTimes_;
     }
 
-    inline Size MarketModelCoterminalSwapsOneStep::numberOfProducts() const {
+    inline Size MultiStepCoinitialSwaps::numberOfProducts() const {
         return lastIndex_;    
     }
 
     inline Size
-    MarketModelCoterminalSwapsOneStep::maxNumberOfCashFlowsPerProductPerStep() const {
-        return 2*lastIndex_;
+    MultiStepCoinitialSwaps::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 2;
     }
 
-    inline void MarketModelCoterminalSwapsOneStep::reset() {
-       // nothing to do 
+    inline void MultiStepCoinitialSwaps::reset() {
+       currentIndex_=0;
     }
        
 }

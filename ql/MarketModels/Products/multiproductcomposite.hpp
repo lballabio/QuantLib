@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_marketmodelcomposite_hpp
-#define quantlib_marketmodelcomposite_hpp
+#ifndef quantlib_multiproduct_composite_hpp
+#define quantlib_multiproduct_composite_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <list>
@@ -35,10 +35,10 @@ namespace QuantLib {
              the composite product; otherwise, the terminal measure is
              used as a default.
     */
-    class MarketModelComposite : public MarketModelProduct {
+    class MultiProductComposite : public MarketModelMultiProduct {
       public:
-        MarketModelComposite();
-        //! \name MarketModelProduct interface
+        MultiProductComposite();
+        //! \name MarketModelMultiProduct interface
         //@{
         EvolutionDescription suggestedEvolution() const;
         std::vector<Time> possibleCashFlowTimes() const;
@@ -52,16 +52,16 @@ namespace QuantLib {
         //@}
         //! \name Composite facilities
         //@{
-        void add(const boost::shared_ptr<MarketModelProduct>&,
+        void add(const boost::shared_ptr<MarketModelMultiProduct>&,
                  Real multiplier = 1.0);
-        void subtract(const boost::shared_ptr<MarketModelProduct>&,
+        void subtract(const boost::shared_ptr<MarketModelMultiProduct>&,
                       Real multiplier = 1.0);
         void finalize();
         //@}
       private:
         // subproducts
         struct SubProduct {
-            boost::shared_ptr<MarketModelProduct> product;
+            boost::shared_ptr<MarketModelMultiProduct> product;
             Real multiplier;
             std::vector<Size> numberOfCashflows;
             std::vector<std::vector<CashFlow> > cashflows;

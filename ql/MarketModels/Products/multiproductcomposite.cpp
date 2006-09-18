@@ -17,28 +17,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/marketmodelcomposite.hpp>
+#include <ql/MarketModels/Products/multiproductcomposite.hpp>
 
 namespace QuantLib {
 
-    MarketModelComposite::MarketModelComposite()
+    MultiProductComposite::MultiProductComposite()
     : finalized_(false) {}
 
 
-    EvolutionDescription MarketModelComposite::suggestedEvolution() const {
+    EvolutionDescription MultiProductComposite::suggestedEvolution() const {
         QL_REQUIRE(finalized_, "composite not finalized");
         return EvolutionDescription(rateTimes_, evolutionTimes_,
                                     numeraires_, relevanceRates_);
     }
 
 
-    std::vector<Time> MarketModelComposite::possibleCashFlowTimes() const {
+    std::vector<Time> MultiProductComposite::possibleCashFlowTimes() const {
         QL_REQUIRE(finalized_, "composite not finalized");
         return cashflowTimes_;
     }
 
 
-    Size MarketModelComposite::numberOfProducts() const {
+    Size MultiProductComposite::numberOfProducts() const {
         Size result = 0;
         for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
             result += i->product->numberOfProducts();
@@ -46,7 +46,7 @@ namespace QuantLib {
     }
 
 
-    Size MarketModelComposite::maxNumberOfCashFlowsPerProductPerStep() const {
+    Size MultiProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
         Size result = 0;
         for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
             result = std::max(result,
@@ -56,7 +56,7 @@ namespace QuantLib {
     }
 
 
-    void MarketModelComposite::reset() {
+    void MultiProductComposite::reset() {
         for (iterator i=components_.begin(); i!=components_.end(); ++i) {
             i->product->reset();
             i->done = false;
@@ -64,7 +64,7 @@ namespace QuantLib {
     }
 
 
-    bool MarketModelComposite::nextTimeStep(
+    bool MultiProductComposite::nextTimeStep(
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
@@ -98,8 +98,8 @@ namespace QuantLib {
     }
 
 
-    void MarketModelComposite::add(
-                         const boost::shared_ptr<MarketModelProduct>& product,
+    void MultiProductComposite::add(
+                         const boost::shared_ptr<MarketModelMultiProduct>& product,
                          Real multiplier) {
 		QL_REQUIRE(!finalized_, "product already finalized");
         if (!components_.empty()) {
@@ -127,14 +127,14 @@ namespace QuantLib {
         components_.back().done = false;
     }
 
-    void MarketModelComposite::subtract(
-                         const boost::shared_ptr<MarketModelProduct>& product,
+    void MultiProductComposite::subtract(
+                         const boost::shared_ptr<MarketModelMultiProduct>& product,
                          Real multiplier) {
         add(product, -multiplier);
     }
 
 
-    void MarketModelComposite::finalize() {
+    void MultiProductComposite::finalize() {
 		QL_REQUIRE(!finalized_, "product already finalized");
         QL_REQUIRE(!components_.empty(), "no sub-product provided");
 

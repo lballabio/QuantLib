@@ -17,47 +17,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/marketmodelcapletsonestep.hpp>
+#include <ql/MarketModels/Products/OneStep/onestepforwards.hpp>
 
 namespace QuantLib {
 
-    MarketModelCapletsOneStep::MarketModelCapletsOneStep(
+    OneStepForwards::OneStepForwards(
                                     const std::vector<Time>& rateTimes,
                                     const std::vector<Real>& accruals,
                                     const std::vector<Time>& paymentTimes,
                                     const std::vector<Rate>& strikes)
-    : rateTimes_(rateTimes), accruals_(accruals), paymentTimes_(paymentTimes),
-      strikes_(strikes) {}
+    : MultiProductOneStep(rateTimes), accruals_(accruals),
+      paymentTimes_(paymentTimes), strikes_(strikes) {}
 
-    EvolutionDescription MarketModelCapletsOneStep::suggestedEvolution() const
-    {
-         std::vector<Time> evolutionTimes(1,rateTimes_[rateTimes_.size()-2]);
-         std::vector<Size> numeraires(1,rateTimes_.size()-1);
-    
-         std::vector<std::pair<Size,Size> > relevanceRates(1);
-         relevanceRates[0] = std::make_pair(0,rateTimes_.size()-1);
-
-         return EvolutionDescription(rateTimes_, evolutionTimes,
-                                     numeraires, relevanceRates);
-    }    
-
-    bool MarketModelCapletsOneStep::nextTimeStep(
+    bool OneStepForwards::nextTimeStep(
         const CurveState& currentState, 
         std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelProduct::CashFlow> >& genCashFlows)
+        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
     {
-        std::fill(numberCashFlowsThisStep.begin(),
-                  numberCashFlowsThisStep.end(), 0);
         for (Size i=0; i<strikes_.size(); ++i) {
-            Rate liborRate = currentState.forwardRate(i);
-            if (liborRate > strikes_[i]) {
-                numberCashFlowsThisStep[i] = 1;
-                genCashFlows[i][0].timeIndex = i;
-                genCashFlows[i][0].amount =
-                    (liborRate-strikes_[i])*accruals_[i];
-            }
+            double liborRate = currentState.forwardRate(i);
+            genCashFlows[i][0].timeIndex = i;
+            genCashFlows[i][0].amount =
+                (liborRate-strikes_[i])*accruals_[i];
         }
 
+        std::fill(numberCashFlowsThisStep.begin(),
+                  numberCashFlowsThisStep.end(), 1);
         return true;
     }
 

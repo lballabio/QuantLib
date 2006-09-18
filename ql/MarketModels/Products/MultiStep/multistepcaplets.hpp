@@ -21,33 +21,27 @@
 #ifndef quantlib_MarketModelCaplets_hpp
 #define quantlib_MarketModelCaplets_hpp
 
-#include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
-    class MarketModelCaplets : public MarketModelProduct {
+    class MultiStepCaplets : public MultiProductMultiStep {
       public:
-        MarketModelCaplets(const std::vector<Time>& rateTimes,
+        MultiStepCaplets(const std::vector<Time>& rateTimes,
                            const std::vector<Real>& accruals,
                            const std::vector<Time>& paymentTimes,
                            const std::vector<Rate>& strikes);
-      
-        //! for initializing other objects
-        virtual EvolutionDescription suggestedEvolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-
-        //!during simulation
-        //!put product at start of path
-        virtual void reset(); 
-        //! bool return indicates whether path is finished, true means done
-        virtual bool nextTimeStep(
+        //! \name MarketModelMultiProduct interface
+        //@{
+        std::vector<Time> possibleCashFlowTimes() const;
+        Size numberOfProducts() const;
+        Size maxNumberOfCashFlowsPerProductPerStep() const;
+        void reset(); 
+        bool nextTimeStep(
             const CurveState& currentState, 
             std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
-
+        //@}
       private:
-        std::vector<Time> rateTimes_;
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
         std::vector<Rate> strikes_;
@@ -58,20 +52,20 @@ namespace QuantLib {
     // inline 
 
     inline std::vector<Time>
-    MarketModelCaplets::possibleCashFlowTimes() const {
+    MultiStepCaplets::possibleCashFlowTimes() const {
       return paymentTimes_;
     }
 
-    inline Size MarketModelCaplets::numberOfProducts() const {
+    inline Size MultiStepCaplets::numberOfProducts() const {
         return strikes_.size();
     }
 
     inline Size
-    MarketModelCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
+    MultiStepCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
     
-    inline void MarketModelCaplets::reset() {
+    inline void MultiStepCaplets::reset() {
        currentIndex_=0;
     }
 

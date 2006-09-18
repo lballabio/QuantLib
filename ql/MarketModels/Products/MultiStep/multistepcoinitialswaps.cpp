@@ -17,50 +17,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/marketmodelcoterminalswaps.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepcoinitialswaps.hpp>
 
 namespace QuantLib {
 
-    MarketModelCoterminalSwaps::MarketModelCoterminalSwaps(
+    MultiStepCoinitialSwaps::MultiStepCoinitialSwaps(
         const std::vector<Time>& rateTimes,
         const std::vector<Real>& fixedAccruals,
         const std::vector<Real>& floatingAccruals,
         const std::vector<Time>& paymentTimes,
         double fixedRate)
-    : rateTimes_(rateTimes), fixedAccruals_(fixedAccruals),
-      floatingAccruals_(floatingAccruals),
+    : MultiProductMultiStep(rateTimes),
+      fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
       paymentTimes_(paymentTimes), fixedRate_(fixedRate) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
     }
 
-    EvolutionDescription MarketModelCoterminalSwaps::suggestedEvolution() const
-    {
-        std::vector<Time> evolutionTimes(rateTimes_.size()-1);
-        for (Size i = 0; i<evolutionTimes.size(); ++i)
-            evolutionTimes[i]=rateTimes_[i];
-
-        // terminal measure
-        std::vector<Size> numeraires(evolutionTimes.size(),
-                                     rateTimes_.size()-1);
-
-        std::vector<std::pair<Size,Size> > relevanceRates(
-            evolutionTimes.size());
-        for (Size i =0; i < evolutionTimes.size(); ++i)
-            relevanceRates[i] = std::make_pair(i,i+1);
-
-        return EvolutionDescription(rateTimes_, evolutionTimes,
-                                    numeraires, relevanceRates);
-    }
-
-    bool MarketModelCoterminalSwaps::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelProduct::CashFlow> >& genCashFlows)
+    bool MultiStepCoinitialSwaps::nextTimeStep(
+        const CurveState& currentState,
+        std::vector<Size>& numberCashFlowsThisStep,
+        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
     {
         double liborRate = currentState.forwardRate(currentIndex_);
         std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
-        for(Size i=0;i<=currentIndex_;i++){
+        for(Size i=currentIndex_;i<lastIndex_;i++){
             genCashFlows[i][0].timeIndex = currentIndex_;
             genCashFlows[i][0].amount = -fixedRate_*fixedAccruals_[currentIndex_];
 

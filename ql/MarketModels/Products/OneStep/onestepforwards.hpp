@@ -21,58 +21,52 @@
 #ifndef quantlib_MarketModelForwards_one_step_hpp
 #define quantlib_MarketModelForwards_one_step_hpp
 
-#include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/Products/multiproductonestep.hpp>
 
 namespace QuantLib {
 
-    class MarketModelForwardsOneStep : public MarketModelProduct
-    {
+    class OneStepForwards : public MultiProductOneStep {
       public:
-        MarketModelForwardsOneStep(const std::vector<Time>& rateTimes,
+        OneStepForwards(const std::vector<Time>& rateTimes,
                                    const std::vector<Real>& accruals,
                                    const std::vector<Time>& paymentTimes,
                                    const std::vector<Rate>& strikes);
-        
-        //! for initializing other objects
-        virtual EvolutionDescription suggestedEvolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-
-        //!during simulation
-        //!put product at start of path
-        virtual void reset(); 
-        //! bool return indicates whether path is finished, true means done
-        virtual bool nextTimeStep(const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
+        //! \name MarketModelMultiProduct interface
+        //@{
+        std::vector<Time> possibleCashFlowTimes() const;
+        Size numberOfProducts() const;
+        Size maxNumberOfCashFlowsPerProductPerStep() const;
+        void reset();
+        bool nextTimeStep(const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
-    private:
-        std::vector<Time> rateTimes_;
+        //@}
+      private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
         std::vector<Rate> strikes_;
     };
 
-    // inline 
+    // inline
 
     inline std::vector<Time>
-    MarketModelForwardsOneStep::possibleCashFlowTimes() const {
+    OneStepForwards::possibleCashFlowTimes() const {
       return paymentTimes_;
     }
 
     inline Size
-    MarketModelForwardsOneStep::numberOfProducts() const {
-        return strikes_.size();    
+    OneStepForwards::numberOfProducts() const {
+        return strikes_.size();
     }
 
     inline Size
-    MarketModelForwardsOneStep::maxNumberOfCashFlowsPerProductPerStep() const {
+    OneStepForwards::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
 
     inline void
-    MarketModelForwardsOneStep::reset() {
-        // nothing to do 
+    OneStepForwards::reset() {
+        // nothing to do
     }
 
 }
