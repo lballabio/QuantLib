@@ -35,7 +35,9 @@ namespace QuantLib {
     class Option : public Instrument {
       public:
         class arguments;
-        enum Type { Call, Put };
+        enum Type { Put = -1, 
+                    Call = 1
+        };
         Option(const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<PricingEngine>& engine =
