@@ -19,7 +19,7 @@ libMarketModelsProducts_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsProducts.la
 
-libMarketModels_la_LIBADD = \
+libMarketModelsProducts_la_LIBADD = \
     MultiStep/libMarketModelsProductsMultiStep.la \
     OneStep/libMarketModelsProductsOneStep.la
 

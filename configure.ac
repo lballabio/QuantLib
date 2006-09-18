@@ -327,6 +327,8 @@ AC_CONFIG_FILES([
     ql/MarketModels/Evolvers/Makefile
     ql/MarketModels/Models/Makefile
     ql/MarketModels/Products/Makefile
+    ql/MarketModels/Products/OneStep/Makefile
+    ql/MarketModels/Products/MultiStep/Makefile
     ql/Math/Makefile
     ql/MonteCarlo/Makefile
     ql/Optimization/Makefile
