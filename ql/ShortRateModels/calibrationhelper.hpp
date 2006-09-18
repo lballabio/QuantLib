@@ -25,6 +25,8 @@
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
 #include <ql/grid.hpp>
+#include <ql/quote.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 

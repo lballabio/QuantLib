@@ -62,9 +62,7 @@ namespace QuantLib {
         Real f = discountBond(0.0, bondMaturity, r0_);
         Real k = discountBond(0.0, maturity, r0_)*strike;
 
-        Real w = (type==Option::Call)? 1.0 : -1.0;
-
-        return detail::blackFormula(f, k, v, w);
+        return detail::blackFormula(f, k, v, type);
     }
 
 }

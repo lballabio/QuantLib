@@ -90,7 +90,7 @@ namespace QuantLib {
         } else {
             // forecast
             return detail::blackFormula(forward, strike,
-                                        std::sqrt(variance), 1);
+                std::sqrt(variance), Option::Call);
         }
     }
 
@@ -103,7 +103,7 @@ namespace QuantLib {
         } else {
             // forecast
             return detail::blackFormula(forward, strike,
-                                        std::sqrt(variance), -1);
+                std::sqrt(variance), Option::Put);
         }
     }
 

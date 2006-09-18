@@ -27,15 +27,15 @@ namespace QuantLib {
                    "cash-settled swaptions not priced with Lfm engine");
 
         static const Spread basisPoint = 1.0e-4;
-        const Time exercise = arguments_.stoppingTimes[0];
-        const Time length   =  arguments_.fixedPayTimes.back()
+        Time exercise = arguments_.stoppingTimes[0];
+        Time length   = arguments_.fixedPayTimes.back()
                              - arguments_.fixedResetTimes[0];
-        const Real w = arguments_.payFixed ? 1.0 : -1.0;
-        const Volatility vol = model_->getSwaptionVolatilityMatrix()
+        Option::Type w = arguments_.payFixed ? Option::Call : Option::Put;
+        Volatility vol = model_->getSwaptionVolatilityMatrix()
                                            ->volatility(exercise, length,
                                                         arguments_.fairRate,
                                                         true);
-        results_.value =  (arguments_.fixedBPS/basisPoint) *
+        results_.value = (arguments_.fixedBPS/basisPoint) *
             detail::blackFormula(arguments_.fairRate,
                                  arguments_.fixedRate,
                                  vol*std::sqrt(exercise), w);

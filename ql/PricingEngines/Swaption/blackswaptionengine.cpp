@@ -49,7 +49,6 @@ namespace QuantLib {
         static const Spread basisPoint = 1.0e-4;
         Time exercise = arguments_.stoppingTimes[0];
         Time maturity = arguments_.floatingPayTimes.back();
-        Real w = arguments_.payFixed ? 1.0 : -1.0;
         Real annuity;
         switch(arguments_.settlementType) {
           case Settlement::Physical :
@@ -64,6 +63,7 @@ namespace QuantLib {
         Volatility vol = volatility_->volatility(exercise,
                                                  maturity-exercise,
                                                  arguments_.fixedRate);
+        Option::Type w = arguments_.payFixed ? Option::Call : Option::Put;
         results_.value = annuity * detail::blackFormula(
                                  arguments_.fairRate, arguments_.fixedRate,
                                  vol*std::sqrt(exercise), w);

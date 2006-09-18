@@ -68,7 +68,7 @@ namespace QuantLib {
         return detail::blackFormula(
                             s0_*dividendYield_->discount(tau_),
                             strikePrice_*termStructure_->discount(tau_),
-                            volatility, 1.0);
+                            volatility, Option::Call);
     }
 
 }
