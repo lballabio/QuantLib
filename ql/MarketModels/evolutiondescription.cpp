@@ -26,11 +26,14 @@
 
 namespace QuantLib {
 
+    EvolutionDescription::EvolutionDescription()
+    : steps_(0) {}
+
     EvolutionDescription::EvolutionDescription(
-                           const std::vector<Time>& rateTimes,
-                           const std::vector<Time>& evolutionTimes,
-                           const std::vector<Size>& numeraires,
-                           const std::vector<std::pair<Size,Size> >& relevanceRates)
+                     const std::vector<Time>& rateTimes,
+                     const std::vector<Time>& evolutionTimes,
+                     const std::vector<Size>& numeraires,
+                     const std::vector<std::pair<Size,Size> >& relevanceRates)
     : rateTimes_(rateTimes), evolutionTimes_(evolutionTimes),
       steps_(evolutionTimes.size()),
       numeraires_(numeraires), relevanceRates_(relevanceRates),

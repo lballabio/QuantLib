@@ -66,6 +66,7 @@ namespace QuantLib {
         // default argument worked)
         typedef std::pair<Size,Size> range;
       public:
+        EvolutionDescription();
         EvolutionDescription(
             const std::vector<Time>& rateTimes,
             const std::vector<Time>& evolutionTimes,

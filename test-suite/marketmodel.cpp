@@ -75,6 +75,7 @@ std::vector<Rate> todaysForwards, displacements;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities;
 Real a, b, c, d;
+Real longTermCorrelation, beta;
 Size measureOffset_;
 unsigned long seed;
 
@@ -148,6 +149,9 @@ void setup() {
         volatilities[i]= mktVols[i];
     }
 
+    longTermCorrelation = 0.5;
+    beta = 0.2;
+
     measureOffset_ = 5;
 
     seed = 42;
@@ -197,8 +201,6 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     const Size numberOfFactors,
     MarketModelType marketModelType)
 {
-    Real longTermCorrelation = 0.5;
-    Real beta = 0.2;
     std::vector<Time> fixingTimes(evolution.rateTimes());
     fixingTimes.pop_back();
     boost::shared_ptr<LmVolatilityModel> volModel(new

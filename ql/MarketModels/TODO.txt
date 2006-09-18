@@ -69,7 +69,7 @@ Evolvers
 - Coterminal Swap-rate market model (MEDIUM TO HARD)
 - Coinitial Swap-rate market model (MEDIUM TO HARD)
 - CMS swap rate market model (MEDIUM TO HARD)
-- Normal Forward-Rate Market Models (?)
+- Normal Forward-Rate Market Models (EASY)
 
 Scripting
 - Ability to specify new pay-offs and price them without code recompilation.
