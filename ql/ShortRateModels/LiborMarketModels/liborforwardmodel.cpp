@@ -91,8 +91,9 @@ namespace QuantLib {
         const DiscountFactor dis
             = process_->index()->termStructure()->discount(bondMaturity);
 
-        const Real black = detail::blackFormula(forward, capRate,
-            std::sqrt(var), type == Option::Put ? Option::Call : Option::Put);
+        const Real black = blackFormula(
+            (type==Option::Put ? Option::Call : Option::Put),
+            capRate, forward, std::sqrt(var));
 
         const Real npv = dis * tenor * black;
 

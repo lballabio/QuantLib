@@ -69,6 +69,8 @@ namespace QuantLib {
 
     namespace detail {
 
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the same function in the QuantLib namespace
         inline Real blackFormula(Real forward,
                                  Real strike,
                                  Real stdDev,
@@ -86,6 +88,7 @@ namespace QuantLib {
             return std::max(Real(0.0), result);
         }
 
+        //! \deprecated use the same function in the QuantLib namespace
         inline Real itmBlackProbability(Real forward,
                                         Real strike,
                                         Real stdDev,
@@ -99,6 +102,7 @@ namespace QuantLib {
             CumulativeNormalDistribution phi;
             return phi(optionType*d2);
         }
+        #endif
 
     }
 

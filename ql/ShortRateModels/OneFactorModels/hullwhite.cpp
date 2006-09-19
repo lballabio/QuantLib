@@ -96,7 +96,7 @@ namespace QuantLib {
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(maturity)*strike;
 
-        return detail::blackFormula(f, k, v, type);
+        return blackFormula(type, k, f, v);
     }
 
     Rate convexityBias(Real futuresPrice,

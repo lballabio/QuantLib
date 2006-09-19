@@ -48,8 +48,8 @@ namespace QuantLib
                                               Option::Type optionType,
                                               Real deflator) const {
         const Real variance = smile_->variance(strike);
-        return deflator * detail::blackFormula(forwardValue_, strike,
-            std::sqrt(variance), optionType);
+        return deflator * blackFormula(optionType, strike,
+            forwardValue_, std::sqrt(variance));
     }
 
 

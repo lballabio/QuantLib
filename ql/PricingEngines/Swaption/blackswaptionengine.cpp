@@ -64,9 +64,10 @@ namespace QuantLib {
                                                  maturity-exercise,
                                                  arguments_.fixedRate);
         Option::Type w = arguments_.payFixed ? Option::Call : Option::Put;
-        results_.value = annuity * detail::blackFormula(
-                                 arguments_.fairRate, arguments_.fixedRate,
-                                 vol*std::sqrt(exercise), w);
+        results_.value = annuity * blackFormula(w,
+            arguments_.fixedRate,
+            arguments_.fairRate,
+            vol*std::sqrt(exercise));
     }
 
 }

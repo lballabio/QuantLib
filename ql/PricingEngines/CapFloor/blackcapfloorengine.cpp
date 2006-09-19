@@ -89,8 +89,8 @@ namespace QuantLib {
             return std::max<Rate>(forward-strike,0.0);
         } else {
             // forecast
-            return detail::blackFormula(forward, strike,
-                std::sqrt(variance), Option::Call);
+            return blackFormula(Option::Call, strike, forward,
+                std::sqrt(variance));
         }
     }
 
@@ -102,8 +102,8 @@ namespace QuantLib {
             return std::max<Rate>(strike-forward,0.0);
         } else {
             // forecast
-            return detail::blackFormula(forward, strike,
-                std::sqrt(variance), Option::Put);
+            return blackFormula(Option::Put, strike, forward,
+                std::sqrt(variance));
         }
     }
 

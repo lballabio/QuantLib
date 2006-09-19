@@ -36,9 +36,8 @@ namespace QuantLib {
                                                         arguments_.fairRate,
                                                         true);
         results_.value = (arguments_.fixedBPS/basisPoint) *
-            detail::blackFormula(arguments_.fairRate,
-                                 arguments_.fixedRate,
-                                 vol*std::sqrt(exercise), w);
+            blackFormula(w, arguments_.fixedRate, arguments_.fairRate,
+                         vol*std::sqrt(exercise));
     }
 
 }
