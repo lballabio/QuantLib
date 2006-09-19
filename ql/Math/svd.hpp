@@ -63,6 +63,8 @@ namespace QuantLib {
         Real norm2();
         Real cond();
         Integer rank();
+        // utilities
+        Disposable<Array> solveFor(const Array&) const;
       private:
         Matrix U_, V_;
         Array s_;

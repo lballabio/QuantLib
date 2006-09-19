@@ -21,9 +21,12 @@
 #define quantlib_market_models_products_multistep_all_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/MarketModels/Products/OneStep/multistepcaplets.hpp>
-#include <ql/MarketModels/Products/OneStep/multistepcoinitialswaps.hpp>
-#include <ql/MarketModels/Products/OneStep/multistepcoterminalswaps.hpp>
-#include <ql/MarketModels/Products/OneStep/multistepforwards.hpp>
+
+#include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
+#include <ql/MarketModels/Products/MultiStep/cashrebate.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepcaplets.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepcoinitialswaps.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepcoterminalswaps.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepforwards.hpp>
 
 #endif

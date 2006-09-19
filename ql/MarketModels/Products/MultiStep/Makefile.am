@@ -4,12 +4,16 @@ includedir = $(prefix)/include/ql/MarketModels/Products/MultiStep
 
 include_HEADERS = \
     all.hpp \
+    callspecifiedmultiproduct.hpp \
+    cashrebate.hpp \
     multistepcaplets.hpp \
     multistepcoinitialswaps.hpp \
     multistepcoterminalswaps.hpp \
     multistepforwards.hpp
 
 libMarketModelsProductsMultiStep_la_SOURCES = \
+    callspecifiedmultiproduct.cpp \
+    cashrebate.cpp \
     multistepcaplets.cpp \
     multistepcoinitialswaps.cpp \
     multistepcoterminalswaps.cpp \
