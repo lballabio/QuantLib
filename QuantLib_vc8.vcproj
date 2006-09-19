@@ -1511,6 +1511,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixa.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixb.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Indexes\gbplibor.hpp"
 				>
 			</File>
