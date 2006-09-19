@@ -73,7 +73,7 @@ DayCounter dayCounter;
 
 std::vector<Rate> todaysForwards, displacements;
 std::vector<DiscountFactor> todaysDiscounts;
-std::vector<Volatility> volatilities;
+std::vector<Volatility> volatilities, blackVols;
 Real a, b, c, d;
 Real longTermCorrelation, beta;
 Size measureOffset_;
@@ -145,8 +145,11 @@ void setup() {
     d =  0.1710;
 
     volatilities = std::vector<Volatility>(todaysForwards.size());
+    blackVols = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<LENGTH(mktVols); i++) {
-        volatilities[i]= mktVols[i];
+        volatilities[i]= todaysForwards[i]*mktVols[i]/
+            (todaysForwards[i]+displacements[i]);
+        blackVols[i]= mktVols[i];
     }
 
     longTermCorrelation = 0.5;
@@ -350,10 +353,10 @@ void testForwardsAndCaplets(const SequenceStatistics& stats,
 
         Time expiry = rateTimes[i];
         expectedCaplets[i] =
-            detail::blackFormula(todaysForwards[i]+displacements[i],
-                                 capletStrikes[i]+displacements[i],
-                                 volatilities[i]*std::sqrt(expiry),
-                                 Option::Call) *
+            blackFormula(Option::Call,
+                         capletStrikes[i]+displacements[i],
+                         todaysForwards[i]+displacements[i],
+                         volatilities[i]*std::sqrt(expiry)) *
             accruals[i]*todaysDiscounts[i+1];
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
@@ -362,7 +365,7 @@ void testForwardsAndCaplets(const SequenceStatistics& stats,
             minError = capletStdDev[i];
     }
 
-    Real errorThreshold = 2.35;
+    Real errorThreshold = 2.50;
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
         for (Size i=0; i<N; ++i) {
@@ -497,7 +500,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
         std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
-        BOOST_MESSAGE("\n\t" << num);
+        BOOST_MESSAGE("    " << num);
 
         for (Size m=0; m<1; m++) { // one step always full factors
             Size factors = (m==0 ? todaysForwards.size() : m);
@@ -520,7 +523,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE("\n\t" << measureTypeToString(measures[k]) <<
+                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
                                       ", " << factors <<
                                       "f, " << marketModelTypeToString(marketModels[j]) <<
                                       ", MT BGF" <<
@@ -550,13 +553,11 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
     std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelMultiProduct> forwards(
-                       new MultiStepForwards(rateTimes, accruals,
-                                               paymentTimes, forwardStrikes));
+    boost::shared_ptr<MarketModelMultiProduct> forwards(new
+        MultiStepForwards(rateTimes, accruals, paymentTimes,forwardStrikes));
 
-    boost::shared_ptr<MarketModelMultiProduct> caplets(
-                        new MultiStepCaplets(rateTimes, accruals,
-                                               paymentTimes, capletStrikes));
+    boost::shared_ptr<MarketModelMultiProduct> caplets(new
+        MultiStepCaplets(rateTimes, accruals, paymentTimes, capletStrikes));
 
     boost::shared_ptr<MultiProductComposite> product(new MultiProductComposite);
     product->add(forwards);
@@ -575,7 +576,7 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
         std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
-        BOOST_MESSAGE("\n\t" << num);
+        BOOST_MESSAGE("    " << num);
 
         //for (Size m=0; m<todaysForwards.size(); m++) {
         for (Size m=0; m<1; m++) {
@@ -599,7 +600,7 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE("\n\t" << measureTypeToString(measures[k]) <<
+                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
                                       ", " << factors <<
                                       "f, " << marketModelTypeToString(marketModels[j]) <<
                                       ", MT BGF" <<
@@ -638,7 +639,7 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
         std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
-        BOOST_MESSAGE("\n\t" << num);
+        BOOST_MESSAGE("    " << num);
 
         //for (Size m=0; m<todaysForwards.size(); m++) {
         for (Size m=0; m<1; m++) {
@@ -660,7 +661,7 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         evolver = makeMarketModelEvolver(marketModel, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        BOOST_MESSAGE("\n\t" << measureTypeToString(measures[k]) <<
+                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
                                       ", " << factors <<
                                       "f, " << marketModelTypeToString(marketModels[j]) <<
                                       ", MT BGF" <<
@@ -695,7 +696,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
         std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
-        BOOST_MESSAGE("\n\t" << num);
+        BOOST_MESSAGE("    " << num);
 
         //for (Size m=0; m<todaysForwards.size(); m++) {
         for (Size m=0; m<1; m++) {
@@ -717,7 +718,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         evolver = makeMarketModelEvolver(marketModel, evolution, generatorFactory, evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product, evolution, paths);
-                        BOOST_MESSAGE("\n\t" << measureTypeToString(measures[k]) <<
+                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
                                       ", " << factors <<
                                       "f, " << marketModelTypeToString(marketModels[j]) <<
                                       ", MT BGF" <<
@@ -843,14 +844,14 @@ void MarketModelTest::testAbcdVolatilityFit() {
     Real b0 = instVol.b();
     Real c0 = instVol.c();
     Real d0 = instVol.d();
-    Real error0 = instVol.error(volatilities, rateTimes.begin());
+    Real error0 = instVol.error(blackVols, rateTimes.begin());
 
-    instVol.capletCalibration(volatilities, rateTimes.begin());
+    instVol.capletCalibration(blackVols, rateTimes.begin());
     Real a1 = instVol.a();
     Real b1 = instVol.b();
     Real c1 = instVol.c();
     Real d1 = instVol.d();
-    Real error1 = instVol.error(volatilities, rateTimes.begin());
+    Real error1 = instVol.error(blackVols, rateTimes.begin());
 
     if (error1>=error0)
         BOOST_FAIL("Parameters:" <<
@@ -860,13 +861,13 @@ void MarketModelTest::testAbcdVolatilityFit() {
             "\nd:     " << d0 << " ---> " << d1 <<
             "\nerror: " << error0 << " ---> " << error1);
 
-    std::vector<Real> k = instVol.k(volatilities, rateTimes.begin());
+    std::vector<Real> k = instVol.k(blackVols, rateTimes.begin());
     Real tol = 2.0e-4;
-    for (Size i=0; i<volatilities.size(); i++) {
+    for (Size i=0; i<blackVols.size(); i++) {
         if (std::abs(k[i]-1.0)>tol) {
             Real modelVol = instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
             BOOST_FAIL("\nFixing Time = " << rateTimes[i] <<
-                       " MktVol = " << io::rate(volatilities[i]) <<
+                       " MktVol = " << io::rate(blackVols[i]) <<
                        " ModVol = " << io::rate(modelVol) <<
                        " k=" << k[i] << " error=" << std::abs(k[i]-1.0) <<
                        " tol=" << tol);
