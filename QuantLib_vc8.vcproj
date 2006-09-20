@@ -1507,6 +1507,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\euriborswapfixifr.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\eurlibor.hpp"
 				>
 			</File>
@@ -1516,6 +1520,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\Indexes\eurliborswapfixb.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixifr.hpp"
 				>
 			</File>
 			<File
@@ -3866,18 +3874,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\MonteCarlo\earlyexercisepathpricer.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MonteCarlo\exercisestrategy.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MonteCarlo\genericlsregression.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MonteCarlo\genericlsregression.hpp"
 				>
 			</File>
 			<File
@@ -6754,14 +6750,6 @@
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
 				>
 			</File>
-			<File
-				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp"
-				>
-			</File>
 			<Filter
 				Name="Products"
 				>
@@ -6846,22 +6834,6 @@
 					>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.hpp"
 						>
 					</File>
 					<File
