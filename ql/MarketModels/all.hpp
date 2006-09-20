@@ -23,6 +23,9 @@
 #include <ql/qldefines.hpp>
 #include <ql/MarketModels/core.hpp>
 #include <ql/MarketModels/driftcalculator.hpp>
+#include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/MarketModels/lsbasisfunctions.hpp>
+#include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>

@@ -38,6 +38,7 @@ namespace QuantLib {
                               const EvolutionDescription&,
                               const BrownianGeneratorFactory&);
 
+        EvolutionDescription evolution() const;
         Real startNewPath();
         Real advanceStep();
         Size currentStep() const;
@@ -64,6 +65,10 @@ namespace QuantLib {
     };
 
     // inline
+
+    inline EvolutionDescription ForwardRateIpcEvolver::evolution() const {
+        return evolution_;
+    }
 
     inline Size ForwardRateIpcEvolver::currentStep() const {
         return currentStep_;

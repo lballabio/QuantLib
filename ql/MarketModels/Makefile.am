@@ -13,6 +13,9 @@ include_HEADERS = \
     driftcalculator.hpp \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
+    exercisevalue.hpp \
+    lsbasisfunctions.hpp \
+    lsdatacollector.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp
@@ -21,7 +24,8 @@ libMarketModels_la_SOURCES = \
     accountingengine.cpp \
     curvestate.cpp \
     driftcalculator.cpp \
-    evolutiondescription.cpp
+    evolutiondescription.cpp \
+    lsdatacollector.cpp
 
 
 noinst_LTLIBRARIES = libMarketModels.la

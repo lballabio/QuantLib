@@ -27,19 +27,20 @@
 
 namespace QuantLib {
 
-    class AccountingEngine
-    {
-    public:
-        AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const boost::shared_ptr<MarketModelMultiProduct>& product,
-                         const EvolutionDescription& evolution,
-                         double initialNumeraireValue);
+    class MarketModelDiscounter;
+
+    class AccountingEngine {
+      public:
+        AccountingEngine(
+                   const boost::shared_ptr<MarketModelEvolver>& evolver,
+                   const boost::shared_ptr<MarketModelMultiProduct>& product,
+                   const EvolutionDescription& evolution,
+                   double initialNumeraireValue);
 
         Real singlePathValues(std::vector<Real>& values);
         void multiplePathValues(SequenceStatistics& stats,
                                 Size numberOfPaths);
-    private:
-        class Discounter;
+      private:
 
         boost::shared_ptr<MarketModelEvolver> evolver_;
         boost::shared_ptr<MarketModelMultiProduct> product_;
@@ -53,17 +54,17 @@ namespace QuantLib {
         std::vector<Size> numberCashFlowsThisStep_;
         std::vector<std::vector<MarketModelMultiProduct::CashFlow> >
                                                          cashFlowsGenerated_;
-        std::vector<Discounter> discounters_;
+        std::vector<MarketModelDiscounter> discounters_;
         
     };
 
-    class AccountingEngine::Discounter {
-    public:
-        Discounter(Time paymentTime,
-                   const std::vector<Time>& rateTimes);
+    class MarketModelDiscounter {
+      public:
+        MarketModelDiscounter(Time paymentTime,
+                              const std::vector<Time>& rateTimes);
         Real numeraireBonds(const CurveState&,
                             Size numeraire) const;
-    private:
+      private:
         Size before_;
         Real beforeWeight_;
     };

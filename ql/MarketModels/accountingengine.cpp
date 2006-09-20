@@ -44,7 +44,8 @@ namespace QuantLib {
         const std::vector<Time>& cashFlowTimes = product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = evolution_.rateTimes();
         for (Size j = 0; j < cashFlowTimes.size(); ++j)
-            discounters_.push_back(Discounter(cashFlowTimes[j], rateTimes));
+            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
+                                                         rateTimes));
 
     }
 
@@ -74,7 +75,7 @@ namespace QuantLib {
                     // ...convert the cash flow to numeraires.
                     // This is done by calculating the number of
                     // numeraire bonds corresponding to such cash flow...
-                    const Discounter& discounter =
+                    const MarketModelDiscounter& discounter =
                         discounters_[cashflows[j].timeIndex];
 
                     Real bonds = 
@@ -126,10 +127,11 @@ namespace QuantLib {
 
 
 
-    AccountingEngine::Discounter::Discounter(Time paymentTime,
-                                             const std::vector<Time>& rateTimes)
-	{
-		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),paymentTime)-
+    MarketModelDiscounter::MarketModelDiscounter(
+                                         Time paymentTime,
+                                         const std::vector<Time>& rateTimes) {
+		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),
+                                   paymentTime)-
 			rateTimes.begin();
 
         // handle the case where the payment is in the last
@@ -141,7 +143,7 @@ namespace QuantLib {
             (rateTimes[before_+1]-rateTimes[before_]);
     }
 
-    Real AccountingEngine::Discounter::numeraireBonds(
+    Real MarketModelDiscounter::numeraireBonds(
                                           const CurveState& curveState,
                                           Size numeraire) const {
         double preDF = curveState.discountRatio(before_,numeraire);

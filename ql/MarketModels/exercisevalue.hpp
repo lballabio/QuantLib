@@ -18,26 +18,30 @@
 */
 
 
-#ifndef quantlib_market_model_evolver_hpp
-#define quantlib_market_model_evolver_hpp
+#ifndef quantlib_market_model_exercise_value_hpp
+#define quantlib_market_model_exercise_value_hpp
 
 #include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 
-    class EvolutionDescription;
-    
-    class MarketModelEvolver {
+    class MarketModelExerciseValue {
       public:
-        virtual ~MarketModelEvolver() {}
-        
+        virtual ~MarketModelExerciseValue() {}
+        virtual Size numberOfExercises() const = 0;
+        // including any time at which state should be updated
         virtual EvolutionDescription evolution() const = 0;
-        virtual Real startNewPath() = 0;
-        virtual Real advanceStep() = 0;
-        virtual Size currentStep() const = 0;
-        virtual const CurveState& currentState() const = 0;
+        virtual std::vector<Time> possibleCashFlowTimes() const = 0;
+        virtual void nextStep(const CurveState&) = 0;
+        virtual void reset() = 0;
+        // whether or not evolution times are exercise times
+        virtual std::vector<bool> isExerciseTime() const = 0;
+        virtual MarketModelMultiProduct::CashFlow value(
+                                               const CurveState&) const = 0;
     };
 
 }
+
 
 #endif

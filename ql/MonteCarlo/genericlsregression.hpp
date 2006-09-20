@@ -31,6 +31,7 @@ namespace QuantLib {
         Real cumulatedCashFlows;
         std::vector<Real> basisFunctionValues;
         Real controlValue;
+        bool isValid;
     };
 
     //! returns the biased estimate obtained while regressing

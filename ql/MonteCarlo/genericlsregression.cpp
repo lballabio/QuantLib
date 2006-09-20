@@ -42,13 +42,15 @@ namespace QuantLib {
             
             Size j;
             for (j=0; j<exerciseData.size(); ++j) {
-                std::copy(exerciseData[j].basisFunctionValues.begin(),
-                          exerciseData[j].basisFunctionValues.end(),
-                          temp.begin());
-                temp.back() = exerciseData[j].cumulatedCashFlows
-                            - exerciseData[j].controlValue;
+                if (exerciseData[j].isValid) {
+                    std::copy(exerciseData[j].basisFunctionValues.begin(),
+                              exerciseData[j].basisFunctionValues.end(),
+                              temp.begin());
+                    temp.back() = exerciseData[j].cumulatedCashFlows
+                                - exerciseData[j].controlValue;
 
-                stats.add(temp);
+                    stats.add(temp);
+                }
             }
 
             Matrix covariance = stats.covariance();
@@ -71,25 +73,27 @@ namespace QuantLib {
             // 3) use exercise strategy to divide paths into exercise and
             //    non-exercise domains
             for (j=0; j<exerciseData.size(); ++j) {
-
-                Real exerciseValue = exerciseData[j].exerciseValue;
-                Real continuationValue = exerciseData[j].cumulatedCashFlows;
-                Real estimatedContinuationValue =
-                    std::inner_product(
+                if (exerciseData[j].isValid) {
+                    Real exerciseValue = exerciseData[j].exerciseValue;
+                    Real continuationValue =
+                        exerciseData[j].cumulatedCashFlows;
+                    Real estimatedContinuationValue =
+                        std::inner_product(
                                  exerciseData[j].basisFunctionValues.begin(),
                                  exerciseData[j].basisFunctionValues.end(),
                                  alphas.begin(),
                                  exerciseData[j].controlValue);
 
-                // for exercise paths, add deflated rebate to
-                // deflated cash-flows at previous time frame;
-                // for non-exercise paths, add deflated cash-flows to
-                // deflated cash-flows at previous time frame
-                Real value = estimatedContinuationValue <= exerciseValue ?
-                             exerciseValue :
-                             continuationValue;
+                    // for exercise paths, add deflated rebate to
+                    // deflated cash-flows at previous time frame;
+                    // for non-exercise paths, add deflated cash-flows to
+                    // deflated cash-flows at previous time frame
+                    Real value = estimatedContinuationValue <= exerciseValue ?
+                                 exerciseValue :
+                                 continuationValue;
 
-                simulationData[i-1][j].cumulatedCashFlows += value;
+                    simulationData[i-1][j].cumulatedCashFlows += value;
+                }
             }
         }
 

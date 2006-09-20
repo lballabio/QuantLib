@@ -157,10 +157,14 @@ namespace QuantLib {
             wasCalled_ = strategy_->nextExercise(currentState);
 
         if (wasCalled_) {
-            if (isRebateTime)
+            if (isRebateTime) {
                 done = rebate_->nextTimeStep(currentState,
                                              numberCashFlowsThisStep,
                                              cashFlowsGenerated);
+                for (Size i=0; i<numberCashFlowsThisStep.size(); ++i)
+                    for (Size j=0; j<numberCashFlowsThisStep[i]; ++j)
+                        cashFlowsGenerated[i][j].timeIndex += rebateOffset_;
+            }
         } else {
             if (isRebateTime)
                 rebate_->nextTimeStep(currentState,

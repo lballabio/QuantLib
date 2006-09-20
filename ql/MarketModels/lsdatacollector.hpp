@@ -24,11 +24,20 @@
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/lsutilities.hpp>
+#include <ql/MarketModels/accountingengine.hpp>
+#include <ql/MarketModels/lsbasisfunctions.hpp>
+#include <ql/MarketModels/exercisevalue.hpp>
 
 namespace QuantLib {
 
-
+    void collectLongstaffSchwartzData(
+                      MarketModelEvolver& evolver,
+                      MarketModelMultiProduct& product,
+                      MarketModelBasisSystem& basisSystem,
+                      MarketModelExerciseValue& rebate,
+                      MarketModelExerciseValue& control,
+                      Size numberOfPaths,
+                      std::vector<std::vector<LSNodeData> >& collectedData);
 
 }
 
