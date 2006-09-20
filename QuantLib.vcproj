@@ -2901,6 +2901,18 @@
 				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\exercisevalue.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\lsbasisfunctions.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\lsdatacollector.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\lsdatacollector.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodel.hpp">
 			</File>
 			<File
