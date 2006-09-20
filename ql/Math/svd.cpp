@@ -526,17 +526,12 @@ namespace QuantLib {
     }
 
     Disposable<Array> SVD::solveFor(const Array& b) const{
-        Array result;
-        Matrix inverse;
-        Matrix W(n_,n_);
-        for (Size i = 0; i < Size(n_); i++) {
-            for (Size j = 0; j < Size(n_); j++) {
-                W[i][j] = 0.0;
-            }
+        Matrix W(n_, n_, 0.0);
+        for (Size i=0; i<Size(n_); i++)
             W[i][i] = 1./s_[i];
-        }
-        inverse = V()* W * transpose(U());
-        result = inverse * b;
+
+        Matrix inverse = V()* W * transpose(U());
+        Array result = inverse * b;
         return result;
     }
 
