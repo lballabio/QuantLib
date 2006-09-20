@@ -536,8 +536,9 @@ namespace QuantLib {
             W[i][i] = 1./s_[i];
         }
         inverse = V()* W * transpose(U());
-        result = inverse * b; 
-        return result;    
-    };
+        result = inverse * b;
+        return result;
+    }
+
 }
 
