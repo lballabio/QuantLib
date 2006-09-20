@@ -61,11 +61,13 @@ namespace QuantLib {
         const std::vector<Rate>& forwardRates() const;
         const std::vector<DiscountFactor>& discountRatios() const;
         const std::vector<Rate>& coterminalSwapRates() const;
+        const std::vector<Real>& coterminalSwapRatesAnnuities() const;
 
         Rate forwardRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
         Rate coterminalSwapRate(Size i) const;
     
+        const std::vector<Time>& rateTaus() const;
     private:
         
         std::vector<Time> rateTimes_, taus_;
@@ -104,6 +106,14 @@ namespace QuantLib {
         return coterminalSwaps_;
     }
 
+    inline const std::vector<Rate>&
+    CurveState::coterminalSwapRatesAnnuities() const {
+        if (firstSwapComputed_>first_)
+            computeSwapRate();
+
+        return annuities_;
+    }
+
     inline Rate CurveState::forwardRate(Size i) const {
         return forwardRates_[i];
     }
@@ -115,6 +125,12 @@ namespace QuantLib {
     inline Real CurveState::discountRatio(Size i, Size j) const {
         return discountRatios_[i]/discountRatios_[j];
     }
+
+    inline const std::vector<Time>& CurveState::rateTaus() const {
+        return taus_;
+    }
+
+
 
 }
 

@@ -6754,6 +6754,14 @@
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp"
+				>
+			</File>
 			<Filter
 				Name="Products"
 				>
