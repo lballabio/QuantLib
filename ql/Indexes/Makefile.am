@@ -14,6 +14,7 @@ include_HEADERS = \
     euriborswapfixa.hpp \
     eurlibor.hpp \
     eurliborswapfixa.hpp \
+    eurliborswapfixb.hpp \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
