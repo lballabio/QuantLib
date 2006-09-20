@@ -2909,6 +2909,12 @@
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
 			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp">
+			</File>
 			<Filter
 				Name="Products"
 				Filter="">
@@ -2970,6 +2976,18 @@
 				<Filter
 					Name="MultiStep"
 					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.hpp">
+					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp">
 					</File>
