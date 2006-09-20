@@ -30,9 +30,11 @@
 #include <ql/Indexes/dkklibor.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/euriborswapfixa.hpp>
+#include <ql/Indexes/euriborswapfixifr.hpp>
 #include <ql/Indexes/eurlibor.hpp>
 #include <ql/Indexes/eurliborswapfixa.hpp>
 #include <ql/Indexes/eurliborswapfixb.hpp>
+#include <ql/Indexes/eurliborswapfixifr.hpp>
 #include <ql/Indexes/gbplibor.hpp>
 #include <ql/Indexes/jibar.hpp>
 #include <ql/Indexes/jpylibor.hpp>

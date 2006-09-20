@@ -18,14 +18,16 @@ include_HEADERS = \
     lsdatacollector.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
-    marketmodel.hpp
+    marketmodel.hpp \
+    swapforwardconversionmatrix.hpp
 
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
     curvestate.cpp \
     driftcalculator.cpp \
     evolutiondescription.cpp \
-    lsdatacollector.cpp
+    lsdatacollector.cpp \
+    swapforwardconversionmatrix.cpp
 
 
 noinst_LTLIBRARIES = libMarketModels.la

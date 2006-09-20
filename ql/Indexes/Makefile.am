@@ -12,9 +12,11 @@ include_HEADERS = \
     dkklibor.hpp \
     euribor.hpp \
     euriborswapfixa.hpp \
+    euriborswapfixifr.hpp \
     eurlibor.hpp \
     eurliborswapfixa.hpp \
     eurliborswapfixb.hpp \
+    eurliborswapfixifr.hpp \
     gbplibor.hpp \
     jibar.hpp \
     jpylibor.hpp \
