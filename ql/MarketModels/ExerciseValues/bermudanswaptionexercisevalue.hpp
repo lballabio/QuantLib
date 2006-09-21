@@ -18,18 +18,20 @@
 */
 
 
-#ifndef quantlib_market_model_exercise_value_hpp
-#define quantlib_market_model_exercise_value_hpp
+#ifndef quantlib_bermudan_swaption_exercise_value_hpp
+#define quantlib_bermudan_swaption_exercise_value_hpp
 
-#include <ql/MarketModels/curvestate.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
-    class MarketModelExerciseValue {
+    class BermudanSwaptionExerciseValue : public MarketModelExerciseValue {
       public:
-        virtual ~MarketModelExerciseValue() {}
+        //! \todo use Payoff
+        BermudanSwaptionExerciseValue(const std::vector<Time>& rateTimes,
+                                      const std::vector<Rate>& strikes,
+                                      Option::Type optionType);
         virtual Size numberOfExercises() const = 0;
         // including any time at which state should be updated
         virtual EvolutionDescription evolution() const = 0;
@@ -40,6 +42,15 @@ namespace QuantLib {
         virtual std::vector<bool> isExerciseTime() const = 0;
         virtual MarketModelMultiProduct::CashFlow value(
                                                const CurveState&) const = 0;
+      private:
+          Size numberOfExercises_;
+          std::vector<Time> rateTimes_;
+          std::vector<Rate> strikes_;
+          Option::Type optionType_;
+
+          // evolving
+          Size currentIndex_;
+          MarketModelMultiProduct::CashFlow cf_;
     };
 
 }

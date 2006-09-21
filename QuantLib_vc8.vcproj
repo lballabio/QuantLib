@@ -3877,6 +3877,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\exercisestrategy.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\genericlsregression.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\genericlsregression.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MonteCarlo\getcovariance.cpp"
 				>
 			</File>
@@ -6755,6 +6767,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\lsstrategy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\lsstrategy.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodel.hpp"
 				>
 			</File>
@@ -6764,6 +6784,30 @@
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapratetrigger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapratetrigger.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\utilities.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\utilities.hpp"
 				>
 			</File>
 			<Filter
@@ -6853,6 +6897,30 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp"
 						>
 					</File>
@@ -6882,6 +6950,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp"
 						>
 					</File>
 				</Filter>
@@ -7023,6 +7099,26 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ExerciseValue"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.hpp"
 					>
 				</File>
 			</Filter>

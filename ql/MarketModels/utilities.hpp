@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,18 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_market_models_products_multistep_all_hpp
-#define quantlib_market_models_products_multistep_all_hpp
 
-#include <ql/qldefines.hpp>
+#ifndef quantlib_market_model_utilities_hpp
+#define quantlib_market_model_utilities_hpp
 
-#include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
-#include <ql/MarketModels/Products/MultiStep/cashrebate.hpp>
-#include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepcaplets.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepcoinitialswaps.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepcoterminalswaps.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepforwards.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepnothing.hpp>
+#include <ql/types.hpp>
+#include <vector>
+
+namespace QuantLib {
+
+    void mergeTimes(const std::vector<std::vector<Time> >& times,
+                    std::vector<Time>& mergedTimes,
+                    std::vector<std::vector<bool> >& isPresent);
+
+    /*! Look for a subset in a set, BOTH STRICTLY INCREASING VECTORS.
+        Returns a vector of booleans such that:
+        element set[i] present/not present in subset. */
+    std::vector<bool> isInSubset(const std::vector<Time>& set,
+                                 const std::vector<Time>& subset);
+
+}
+
 
 #endif

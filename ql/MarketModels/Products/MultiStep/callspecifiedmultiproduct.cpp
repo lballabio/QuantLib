@@ -19,45 +19,9 @@
 
 #include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
 #include <ql/MarketModels/Products/MultiStep/cashrebate.hpp>
+#include <ql/MarketModels/utilities.hpp>
 
 namespace QuantLib {
-
-    namespace {
-
-        void mergeTimes(const std::vector<std::vector<Time> >& times,
-                        std::vector<Time>& mergedTimes,
-                        std::vector<std::vector<bool> >& isPresent){
-            
-            QL_REQUIRE(times.size() == isPresent.size(),
-                "mergeTimes: times.size() != isPresent.size()");
-            QL_REQUIRE(times[0].size() == isPresent[0].size(),
-                "mergeTimes: times[0].size() != isPresent[0].size()");
-
-            std::vector<Time> allTimes;
-            for(Size i=0; i<times.size(); i++){
-                allTimes.insert(allTimes.end(),
-                                times[i].begin(),
-                                times[i].end());
-            }
-
-            // ...sort and compact the vector mergedTimes...
-            std::sort(allTimes.begin(), allTimes.end());
-            std::vector<Time>::iterator end = std::unique(allTimes.begin(),
-                                                          allTimes.end());
-            std::copy(allTimes.begin(), end,
-                    std::back_inserter(mergedTimes));
-
-            for(Size i=0; i<times.size(); i++){
-                for(Size j=0; j<times[i].size(); j++){
-                    isPresent[i][j] = std::binary_search(mergedTimes.begin(),
-                                                         mergedTimes.end(),
-                                                         times[i][j]);
-                }
-            }
-                        
-        }
-
-    }
 
     CallSpecifiedMultiProduct::CallSpecifiedMultiProduct(
               const boost::shared_ptr<MarketModelMultiProduct>& underlying,
@@ -88,11 +52,12 @@ namespace QuantLib {
         }
 
         std::vector<Time> mergedEvolutionTimes;
-        std::vector<std::vector<Time> > allEvolutionTimes(3);
+        std::vector<std::vector<Time> > allEvolutionTimes(4);
         allEvolutionTimes[0] = evolutionTimes1;
         allEvolutionTimes[1] = exerciseTimes;
         allEvolutionTimes[2] = rebate_->suggestedEvolution().evolutionTimes();
-
+        allEvolutionTimes[3] = strategy->relevantTimes();
+       
         mergeTimes(allEvolutionTimes,
                    mergedEvolutionTimes,
                    isPresent_);
@@ -150,11 +115,16 @@ namespace QuantLib {
         bool isUnderlyingTime = isPresent_[0][currentIndex_];
         bool isExerciseTime = isPresent_[1][currentIndex_];
         bool isRebateTime = isPresent_[2][currentIndex_];
+        bool isStrategyRelevantTime = isPresent_[3][currentIndex_];
 
         bool done = false;
 
+        if (!wasCalled_ && isStrategyRelevantTime)
+            strategy_->nextStep(currentState);
+
+
         if (!wasCalled_ && isExerciseTime)
-            wasCalled_ = strategy_->nextExercise(currentState);
+            wasCalled_ = strategy_->exercise(currentState);
 
         if (wasCalled_) {
             if (isRebateTime) {

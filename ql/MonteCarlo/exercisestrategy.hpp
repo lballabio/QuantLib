@@ -31,10 +31,10 @@ namespace QuantLib {
       public:
         virtual ~ExerciseStrategy() {}
         virtual std::vector<Time> exerciseTimes() const = 0;
-        // ? virtual std::vector<Time> relevantTimes() const = 0;
+        virtual std::vector<Time> relevantTimes() const = 0;
         virtual void reset() = 0;
-        virtual bool nextExercise(const State& currentState) = 0;
-        // ? virtual void nextRelevantTime(const State& currentState) = 0;
+        virtual bool exercise(const State& currentState) const = 0;
+        virtual void nextStep(const State& currentState) = 0;
     };
 
 }

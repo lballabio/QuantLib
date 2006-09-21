@@ -16,10 +16,13 @@ include_HEADERS = \
     exercisevalue.hpp \
     lsbasisfunctions.hpp \
     lsdatacollector.hpp \
+    lsstrategy.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp \
-    swapforwardconversionmatrix.hpp
+    swapforwardconversionmatrix.hpp \
+    swapratetrigger.hpp \
+    utilities.hpp
 
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
@@ -27,7 +30,10 @@ libMarketModels_la_SOURCES = \
     driftcalculator.cpp \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
-    swapforwardconversionmatrix.cpp
+    lsstrategy.cpp \
+    swapforwardconversionmatrix.cpp \
+    swapratetrigger.cpp \
+    utilities.cpp
 
 
 noinst_LTLIBRARIES = libMarketModels.la
