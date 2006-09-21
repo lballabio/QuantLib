@@ -23,10 +23,40 @@ namespace QuantLib {
 
     namespace {
 
+        // Look for a subset in a set, BOTH STRICTLY INCREASING VECTORS.
+        // Returns a vector of booleans such that:
+        // element set[i] present/not present in subset.
         std::vector<bool> isInSubset(const std::vector<Time>& set,
                                      const std::vector<Time>& subset) {
+
             std::vector<bool> result(set.size(), false);
-            
+            Size dimSet = set.size();
+            Size dimsubSet = subset.size();
+            Time setElement, subsetElement;
+
+            QL_REQUIRE(dimSet >= dimsubSet,
+                   "set is required to be larger or equal than subset");
+
+            for (Size i=0; i<dimSet; ++i) {  // cycle within set
+                Size j=0;
+                setElement = set[i];
+                while (true) {              // cycle within subset
+                    subsetElement = subset[j];
+                    result[i] = false;
+                    // if match, change result to true and go to next i
+                    if (setElement == subsetElement) {
+                        result[i] = true;
+                        break;
+                    } 
+                    // if smaller no hope, leave false and go to next i
+                    if (setElement < subsetElement) break;
+                    // if larger, go to next j or leave false if at the end
+                    if (setElement > subsetElement) { 
+                        if (j > dimsubSet-1) break;
+                        ++j;
+                    }
+                }
+            }
             return result;
         }
 
