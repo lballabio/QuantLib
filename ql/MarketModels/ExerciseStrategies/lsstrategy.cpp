@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/lsstrategy.hpp>
+#include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>
 #include <ql/MarketModels/utilities.hpp>
 
 namespace QuantLib {

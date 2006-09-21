@@ -4420,6 +4420,15 @@
 				RelativePath=".\ql\MonteCarlo\earlyexercisepathpricer.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\exercisestrategy.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\genericlsregression.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\genericlsregression.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MonteCarlo\getcovariance.cpp">
 			</File>
 			<File
