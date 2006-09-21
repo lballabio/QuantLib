@@ -2927,6 +2927,12 @@
 			<File
 				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp">
 			</File>
+			<File
+				RelativePath=".\ql\MarketModels\utilities.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\utilities.hpp">
+			</File>
 			<Filter
 				Name="Products"
 				Filter="">
@@ -3222,6 +3228,38 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="ExerciseValues"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="ExerciseStrategies"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp">
 				</File>
 			</Filter>
 		</Filter>
