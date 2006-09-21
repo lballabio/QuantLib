@@ -6767,14 +6767,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\lsstrategy.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\lsstrategy.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\marketmodel.hpp"
 				>
 			</File>
@@ -6792,14 +6784,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\swapratetrigger.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\swapratetrigger.hpp"
 				>
 			</File>
 			<File
@@ -7103,7 +7087,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="ExerciseValue"
+				Name="ExerciseValues"
 				>
 				<File
 					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.cpp"
@@ -7119,6 +7103,98 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ExerciseStrategies"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp"
 					>
 				</File>
 			</Filter>
