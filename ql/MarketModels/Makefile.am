@@ -2,7 +2,8 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels
 
-SUBDIRS = Products Models BrownianGenerators Evolvers ExerciseValues
+SUBDIRS = BrownianGenerators Evolvers ExerciseStrategies \
+    ExerciseValues Models Products
 
 include_HEADERS = \
     all.hpp \
@@ -16,12 +17,10 @@ include_HEADERS = \
     exercisevalue.hpp \
     lsbasisfunctions.hpp \
     lsdatacollector.hpp \
-    lsstrategy.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp \
     swapforwardconversionmatrix.hpp \
-    swapratetrigger.hpp \
     utilities.hpp
 
 libMarketModels_la_SOURCES = \
@@ -30,9 +29,7 @@ libMarketModels_la_SOURCES = \
     driftcalculator.cpp \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
-    lsstrategy.cpp \
     swapforwardconversionmatrix.cpp \
-    swapratetrigger.cpp \
     utilities.cpp
 
 
@@ -42,8 +39,9 @@ libMarketModels_la_LIBADD = \
     BrownianGenerators/libMarketModelsBrownianGenerators.la \
     Evolvers/libMarketModelsEvolvers.la \
     ExerciseValues/libMarketModelsExerciseValues.la \
-    Products/libMarketModelsProducts.la \
-    Models/libMarketModelsModels.la
+    ExerciseStrategies/libMarketModelsExerciseStrategies.la \
+    Models/libMarketModelsModels.la \
+    Products/libMarketModelsProducts.la
 
 #EXTRA_DIST = makefile.mak
 

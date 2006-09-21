@@ -476,14 +476,13 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
     std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelMultiProduct> forwards(
-                new OneStepForwards(rateTimes, accruals,
-                                               paymentTimes, forwardStrikes));
-    boost::shared_ptr<MarketModelMultiProduct> caplets(
-                 new OneStepCaplets(rateTimes, accruals,
-                                               paymentTimes, capletStrikes));
+    boost::shared_ptr<MarketModelMultiProduct> forwards(new
+        OneStepForwards(rateTimes, accruals, paymentTimes, forwardStrikes));
+    boost::shared_ptr<MarketModelMultiProduct> caplets(new
+        OneStepCaplets(rateTimes, accruals, paymentTimes, capletStrikes));
 
-    boost::shared_ptr<MultiProductComposite> product(new MultiProductComposite);
+    boost::shared_ptr<MultiProductComposite> product(new
+                                                    MultiProductComposite);
     product->add(forwards);
     product->add(caplets);
     product->finalize();

@@ -26,13 +26,13 @@
 #include <ql/MarketModels/exercisevalue.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
-#include <ql/MarketModels/lsstrategy.hpp>
 #include <ql/MarketModels/swapforwardconversionmatrix.hpp>
-#include <ql/MarketModels/swapratetrigger.hpp>
 #include <ql/MarketModels/utilities.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>
+#include <ql/MarketModels/ExerciseStrategies/swapratetrigger.hpp>
 #include <ql/MarketModels/ExerciseValues/bermudanswaptionexercisevalue.hpp>
 #include <ql/MarketModels/ExerciseValues/nothingexercisevalue.hpp>
 #include <ql/MarketModels/Models/abcdvolatility.hpp>
