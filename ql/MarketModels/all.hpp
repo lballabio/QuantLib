@@ -33,6 +33,8 @@
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/ExerciseValues/bermudanswaptionexercisevalue.hpp>
+#include <ql/MarketModels/ExerciseValues/nothingexercisevalue.hpp>
 #include <ql/MarketModels/Models/abcdvolatility.hpp>
 #include <ql/MarketModels/Models/exponentialcorrelation.hpp>
 #include <ql/MarketModels/Products/all.hpp>

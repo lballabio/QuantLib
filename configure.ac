@@ -325,6 +325,7 @@ AC_CONFIG_FILES([
     ql/MarketModels/Makefile
     ql/MarketModels/BrownianGenerators/Makefile
     ql/MarketModels/Evolvers/Makefile
+    ql/MarketModels/ExerciseValues/Makefile
     ql/MarketModels/Models/Makefile
     ql/MarketModels/Products/Makefile
     ql/MarketModels/Products/OneStep/Makefile

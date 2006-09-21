@@ -2,7 +2,7 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels
 
-SUBDIRS = Products Models BrownianGenerators Evolvers
+SUBDIRS = Products Models BrownianGenerators Evolvers ExerciseValues
 
 include_HEADERS = \
     all.hpp \
@@ -41,6 +41,7 @@ noinst_LTLIBRARIES = libMarketModels.la
 libMarketModels_la_LIBADD = \
     BrownianGenerators/libMarketModelsBrownianGenerators.la \
     Evolvers/libMarketModelsEvolvers.la \
+    ExerciseValues/libMarketModelsExerciseValues.la \
     Products/libMarketModelsProducts.la \
     Models/libMarketModelsModels.la
 
