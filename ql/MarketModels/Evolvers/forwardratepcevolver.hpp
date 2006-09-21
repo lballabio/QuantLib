@@ -29,9 +29,7 @@
 
 namespace QuantLib {
 
-    /*! This class does the actual gritty work of evolving the forward
-        rates from one time to the next.
-    */
+    //! Predictor-Corrector
     class ForwardRatePcEvolver : public MarketModelEvolver {
     public:
         ForwardRatePcEvolver(const boost::shared_ptr<MarketModel>&,
