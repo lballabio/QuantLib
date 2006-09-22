@@ -22,13 +22,20 @@
 namespace QuantLib {
 
 
-    SwapRateTrigger::SwapRateTrigger(const std::vector<Rate>& swapTriggers,
+    SwapRateTrigger::SwapRateTrigger(const std::vector<Time>& rateTimes,
+                                     const std::vector<Rate>& swapTriggers,
                                      const std::vector<Time>& exerciseTimes)
-    : swapTriggers_(swapTriggers), exerciseTimes_(exerciseTimes),
-      currentIndex_(0) {
+    : rateTimes_(rateTimes), swapTriggers_(swapTriggers),
+      exerciseTimes_(exerciseTimes), rateIndex_(exerciseTimes.size()) {
 
         QL_REQUIRE(swapTriggers_.size()==exerciseTimes_.size(),
                    "swapTriggers/exerciseTimes mismatch");
+        Size j = 0;
+        for (Size i=0; i<exerciseTimes.size(); ++i) {
+            while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
+                ++j;
+            rateIndex_[i] = j;
+        }
     }
 
     std::vector<Time> SwapRateTrigger::exerciseTimes() const {
@@ -43,9 +50,10 @@ namespace QuantLib {
         currentIndex_=0;
     }
 
-    bool SwapRateTrigger::exercise(const CurveState& currentState) const{
+    bool SwapRateTrigger::exercise(const CurveState& currentState) const {
+        Size rateIndex = rateIndex_[currentIndex_-1];
         Rate currentSwapRate = 
-            currentState.coterminalSwapRate(currentIndex_-1);
+            currentState.coterminalSwapRate(rateIndex);
         return swapTriggers_[currentIndex_-1]<currentSwapRate;
     }
 

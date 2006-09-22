@@ -25,7 +25,7 @@ namespace QuantLib {
                  const boost::shared_ptr<MarketModelExerciseValue>& exercise,
                  Size numberOfProducts)
     : MultiProductMultiStep(exercise->evolution().rateTimes()),
-      numberOfProducts_(numberOfProducts),
+      exercise_(exercise), numberOfProducts_(numberOfProducts),
       isExerciseTime_(exercise->isExerciseTime()) {}
 
     bool ExerciseAdapter::nextTimeStep(

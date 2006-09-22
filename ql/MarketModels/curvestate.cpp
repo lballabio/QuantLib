@@ -45,11 +45,48 @@ namespace QuantLib {
         }
     }
 
+    CurveState::CurveState(const std::vector<Time>::const_iterator begin,
+                           const std::vector<Time>::const_iterator end)
+    : rateTimes_(begin, end), taus_(rateTimes_.size()-1), 
+      forwardRates_(rateTimes_.size()-1), discountRatios_(rateTimes_.size()),
+      coterminalSwaps_(rateTimes_.size()-1), annuities_(rateTimes_.size()-1),
+      firstSwapComputed_(last_), first_(0), last_(rateTimes_.size()-1) {
+
+        /* There will n+1 rate times expressing payment and reset times
+           of forward rates.
+
+                    |-----|-----|-----|-----|-----|      (size = 6)
+                    t0    t1    t2    t3    t4    t5     rateTimes
+                    f0    f1    f2    f3    f4           forwardRates
+                    d0    d1    d2    d3    d4    d5     discountBonds
+                    d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+                    sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+        */
+        for (Size i=first_; i<last_; i++) {
+            taus_[i] = rateTimes_[i+1] - rateTimes_[i];
+        }
+    }
+
     void CurveState::setOnForwardRates(const std::vector<Rate>& rates)
     {
         // Note: already fixed forwards are left in the vector rates
         QL_REQUIRE(rates.size()==last_, "too many forward rates");
         std::copy(rates.begin(),rates.end(),forwardRates_.begin());
+        // Computation of discount ratios
+        discountRatios_[first_]=1.0;
+        for (Size i=first_+1; i<=last_; i++) {
+            discountRatios_[i] = discountRatios_[i-1]/(1.+taus_[i-1]*forwardRates_[i-1]);
+        }
+        // Reset coterminal swap rates to be calculated
+        firstSwapComputed_ = last_;
+    }
+
+    void CurveState::setOnForwardRates(const std::vector<Rate>::const_iterator begin,
+                                       const std::vector<Rate>::const_iterator end)
+    {
+        // Note: already fixed forwards are left in the vector rates
+        QL_REQUIRE(end-begin==last_, "too many forward rates");
+        std::copy(begin, end, forwardRates_.begin());
         // Computation of discount ratios
         discountRatios_[first_]=1.0;
         for (Size i=first_+1; i<=last_; i++) {

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,30 +18,41 @@
 */
 
 
-#ifndef quantlib_multistep_nothing_hpp
-#define quantlib_multistep_nothing_hpp
+#ifndef quantlib_market_model_swap_hpp
+#define quantlib_market_model_swap_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
 
-    class MultiStepNothing : public MultiProductMultiStep {
+    // TODO: add payer/receiver choice
+
+    class MultiStepSwap : public MultiProductMultiStep {
       public:
-        MultiStepNothing(const EvolutionDescription& evolution,
-                         Size numberOfProducts = 1,
-                         Size doneIndex = 0);
+        MultiStepSwap(const std::vector<Time>& rateTimes,
+                      const std::vector<Real>& fixedAccruals,
+                      const std::vector<Real>& floatingAccruals,
+                      const std::vector<Time>& paymentTimes,
+                      Rate fixedRate,
+                      bool payer = true);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
         void reset(); 
-        bool nextTimeStep(const CurveState&, 
-                          std::vector<Size>&,
-                          std::vector<std::vector<CashFlow> >&);
+        bool nextTimeStep(const CurveState& currentState, 
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >&
+                                                       cashFlowsGenerated);
         //@}
       private:
-        Size numberOfProducts_, doneIndex_;
+        std::vector<Real> fixedAccruals_, floatingAccruals_;
+        std::vector<Time> paymentTimes_;
+        Rate fixedRate_;
+        bool payer_;
+        Real multiplier_;
+        Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;
     };
@@ -49,23 +60,23 @@ namespace QuantLib {
     // inline 
 
     inline std::vector<Time>
-    MultiStepNothing::possibleCashFlowTimes() const {
-        return std::vector<Time>();
+    MultiStepSwap::possibleCashFlowTimes() const {
+        return paymentTimes_;
     }
 
-    inline Size MultiStepNothing::numberOfProducts() const {
-        return numberOfProducts_;
+    inline Size MultiStepSwap::numberOfProducts() const {
+        return 1;
     }
 
     inline Size
-    MultiStepNothing::maxNumberOfCashFlowsPerProductPerStep() const {
-        return 0;
+    MultiStepSwap::maxNumberOfCashFlowsPerProductPerStep() const {
+        return 2;
     }
 
-    inline void MultiStepNothing::reset() {
+    inline void MultiStepSwap::reset() {
        currentIndex_=0;
     }
-
+       
 }
 
 #endif

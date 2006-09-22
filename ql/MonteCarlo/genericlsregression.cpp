@@ -53,19 +53,19 @@ namespace QuantLib {
                 }
             }
 
+            std::vector<Real> means = stats.mean();
             Matrix covariance = stats.covariance();
             
-            Matrix basisCovariance(N,N);
-            for (Size k=0; k<N; ++k)
-                std::copy(covariance.row_begin(k),covariance.row_begin(k)+N,
-                          basisCovariance.row_begin(k));
-
+            Matrix C(N,N);
             Array target(N);
-            std::copy(covariance.row_begin(N),covariance.row_begin(N)+N,
-                      target.begin());
+            for (Size k=0; k<N; ++k) {
+                target[k] = covariance[k][N] + means[k]*means[N];
+                for (Size l=0; l<=k; ++l)
+                    C[k][l] = C[l][k] = covariance[k][l] + means[k]*means[l];
+            }
 
             // 2) solve for least squares regression
-            Array alphas = SVD(basisCovariance).solveFor(target);
+            Array alphas = SVD(C).solveFor(target);
             basisCoefficients[i-1].resize(N);
             std::copy(alphas.begin(), alphas.end(),
                       basisCoefficients[i-1].begin());

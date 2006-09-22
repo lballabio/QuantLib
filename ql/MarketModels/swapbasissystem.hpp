@@ -18,29 +18,27 @@
 */
 
 
-#ifndef quantlib_swap_rate_trigger_hpp
-#define quantlib_swap_rate_trigger_hpp
+#ifndef quantlib_market_model_swap_basis_system_hpp
+#define quantlib_market_model_swap_basis_system_hpp
 
-#include <ql/MonteCarlo/exercisestrategy.hpp>
-#include <ql/MarketModels/curvestate.hpp>
-#include <vector>
+#include <ql/MarketModels/lsbasisfunctions.hpp>
 
 namespace QuantLib {
 
-    class SwapRateTrigger : public ExerciseStrategy<CurveState> {
+    class SwapBasisSystem : public MarketModelBasisSystem {
       public:
-        SwapRateTrigger(const std::vector<Time>& rateTimes,
-                        const std::vector<Rate>& swapTriggers,
+        SwapBasisSystem(const std::vector<Time>& rateTimes,
                         const std::vector<Time>& exerciseTimes);
-        std::vector<Time> exerciseTimes() const;
-        std::vector<Time> relevantTimes() const;
+        Size numberOfExercises() const;
+        std::vector<Size> numberOfFunctions() const;
+        EvolutionDescription evolution() const;
+        void nextStep(const CurveState&);
         void reset();
-        bool exercise(const CurveState& currentState) const;
-        void nextStep(const CurveState& currentState);
+        std::vector<bool> isExerciseTime() const;
+        void values(const CurveState&,
+                    std::vector<Real>& results) const;
       private:
-        std::vector<Time> rateTimes_;
-        std::vector<Rate> swapTriggers_;
-        std::vector<Time> exerciseTimes_;
+        std::vector<Time> rateTimes_, exerciseTimes_;
         Size currentIndex_;
         std::vector<Size> rateIndex_;
     };

@@ -31,6 +31,16 @@ namespace QuantLib {
                                Rate displacement);
     Disposable<Matrix> coefficientsCsi(const CurveState& cs, Size N, Size M);
 
+    class SwaptionVarianceApproximator {
+      public:
+        SwaptionVarianceApproximator(const CurveState& initialState,
+                                     Real displacement,
+                                     Size optionExpiry,
+                                     Size swapTenor);
+        Real swaptionVariance(const Matrix& covariance);
+
+    };
+
 }
 
 #endif

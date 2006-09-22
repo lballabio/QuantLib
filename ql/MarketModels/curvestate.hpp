@@ -43,10 +43,14 @@ namespace QuantLib {
     {
     public:
         CurveState(const std::vector<Time>& rateTimes);
+        CurveState(const std::vector<Time>::const_iterator begin,
+                   const std::vector<Time>::const_iterator end);
      
         const std::vector<Time>& rateTimes() const;
 
         void setOnForwardRates(const std::vector<Rate>& rates);
+        void setOnForwardRates(const std::vector<Rate>::const_iterator begin,
+                               const std::vector<Rate>::const_iterator end);
         void setOnDiscountRatios(const std::vector<DiscountFactor>& discountRatios);
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates);
 

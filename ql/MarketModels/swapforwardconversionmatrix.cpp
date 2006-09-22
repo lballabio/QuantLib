@@ -62,29 +62,16 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> coefficientsCsi(const CurveState& cs, 
-                                       Size N,               // N is index of expiry                   
-                                       Size M){              // N+M is index of maturity (M swap tenor)
-       
+                                       Size N, // N is index of expiry                   
+                                       Size M, // N+M is index of maturity (M swap tenor)
+                                       Rate displacement)
+    {
         Size L = M+N; //L is index of maturity
-        std::vector<Real> b = cs.coterminalAnnuities(L);
-        std::vector<Real> a = std::vector<Real>(b.size());
-        Size n = b.size();
-        const std::vector<Real> p = cs.discountRatios();
-        const std::vector<Rate> f = cs.forwardRates();
-        const std::vector<Time> t = cs.rateTaus();
-
-        for (Size k=0; k<M; ++k)
-            a[k] = p[N+k]-p[L];
-
-        Matrix result = Matrix(M, M, 0.0);
-        for (Size j=0; j<M; ++j) {    
-            for (Size i=0; i<M; ++i) { 
-                result[j][i] =
-                    (p[i+1]*f[i]*t[i]/a[0] + f[i]*t[i]*(a[0]*b[i]-a[i]*b[0])/(a[0]*b[0]*(1.0+f[i]*t[i])))*
-                    (p[j+1]*f[j]*t[j]/a[0] + f[j]*t[j]*(a[0]*b[j]-a[j]*b[0])/(a[0]*b[0]*(1.0+f[j]*t[j])));
-            }
-        }
-        return result;
+        CurveState newCS(cs.rateTimes().begin()+N,
+                         cs.rateTimes().begin()+L);
+        newCS.setOnForwardRates(cs.forwardRates().begin()+N,
+                                cs.forwardRates().begin()+L);
+        return zMatrix(newCS, displacement);
     }
 
 }

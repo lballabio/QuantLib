@@ -6779,6 +6779,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\swapbasissystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapbasissystem.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp"
 				>
 			</File>
@@ -6942,6 +6950,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.hpp"
 						>
 					</File>
 				</Filter>

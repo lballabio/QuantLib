@@ -25,15 +25,10 @@ namespace QuantLib {
 
     void mergeTimes(const std::vector<std::vector<Time> >& times,
                     std::vector<Time>& mergedTimes,
-                    std::vector<std::vector<bool> >& isPresent){
-            
-        QL_REQUIRE(times.size() == isPresent.size(),
-                   "mergeTimes: times.size() != isPresent.size()");
-        QL_REQUIRE(times[0].size() == isPresent[0].size(),
-                   "mergeTimes: times[0].size() != isPresent[0].size()");
+                    std::vector<std::vector<bool> >& isPresent) {
 
         std::vector<Time> allTimes;
-        for(Size i=0; i<times.size(); i++){
+        for(Size i=0; i<times.size(); i++) {
             allTimes.insert(allTimes.end(),
                             times[i].begin(),
                             times[i].end());
@@ -46,11 +41,13 @@ namespace QuantLib {
         std::copy(allTimes.begin(), end,
                   std::back_inserter(mergedTimes));
 
-        for(Size i=0; i<times.size(); i++){
-            for(Size j=0; j<times[i].size(); j++){
-                isPresent[i][j] = std::binary_search(mergedTimes.begin(),
-                                                     mergedTimes.end(),
-                                                     times[i][j]);
+        isPresent.resize(times.size());
+        for (Size i=0; i<times.size(); i++) {
+            isPresent[i].resize(allTimes.size());
+            for (Size j=0; j<allTimes.size(); j++) {
+                isPresent[i][j] = std::binary_search(times[i].begin(),
+                                                     times[i].end(),
+                                                     allTimes[j]);
             }
         }
     }
