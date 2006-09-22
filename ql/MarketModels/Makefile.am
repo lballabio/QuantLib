@@ -20,6 +20,7 @@ include_HEADERS = \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp \
+    swapbasissystem.hpp \
     swapforwardconversionmatrix.hpp \
     utilities.hpp
 
@@ -29,6 +30,7 @@ libMarketModels_la_SOURCES = \
     driftcalculator.cpp \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
+    swapbasissystem.cpp \
     swapforwardconversionmatrix.cpp \
     utilities.cpp
 

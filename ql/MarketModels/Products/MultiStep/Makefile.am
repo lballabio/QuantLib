@@ -11,7 +11,8 @@ include_HEADERS = \
     multistepcoinitialswaps.hpp \
     multistepcoterminalswaps.hpp \
     multistepforwards.hpp \
-    multistepnothing.hpp
+    multistepnothing.hpp \
+    multistepswap.hpp
 
 libMarketModelsProductsMultiStep_la_SOURCES = \
     callspecifiedmultiproduct.cpp \
@@ -21,7 +22,8 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepcoinitialswaps.cpp \
     multistepcoterminalswaps.cpp \
     multistepforwards.cpp \
-    multistepnothing.cpp
+    multistepnothing.cpp \
+    multistepswap.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsMultiStep.la
 
