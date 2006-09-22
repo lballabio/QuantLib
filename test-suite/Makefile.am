@@ -24,6 +24,8 @@ QL_TESTS = \
 	europeanoption.hpp europeanoption.cpp \
 	exchangerate.hpp exchangerate.cpp \
 	factorial.hpp factorial.cpp \
+	fastfouriertransform.hpp \
+	fastfouriertransform.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	gaussianquadratures.hpp gaussianquadratures.cpp \
 	hestonmodel.hpp hestonmodel.cpp \

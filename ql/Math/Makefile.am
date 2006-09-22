@@ -21,6 +21,7 @@ include_HEADERS = \
 	errorfunction.hpp \
 	extrapolation.hpp \
 	factorial.hpp \
+	fastfouriertransform.hpp \
 	forwardflatinterpolation.hpp \
 	functional.hpp \
 	gammadistribution.hpp \
