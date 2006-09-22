@@ -29,6 +29,7 @@ namespace QuantLib {
     Disposable<Matrix> swapForwardJacobian(const CurveState& cs);
     Disposable<Matrix> zMatrix(const CurveState&,
                                Rate displacement);
+    Disposable<Matrix> coefficientsCsi(const CurveState& cs, Size N, Size M);
 
 }
 
