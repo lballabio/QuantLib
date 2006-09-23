@@ -92,6 +92,12 @@ unsigned long seed;
 
 Size paths;
 
+template <class T, class U>
+boost::shared_ptr<T> clone(const boost::shared_ptr<U>& ptr) {
+    boost::shared_ptr<T> p = boost::dynamic_pointer_cast<T>(ptr);
+    return boost::shared_ptr<T>(new T(*p));
+}
+
 void setup() {
 
     // times
@@ -955,40 +961,35 @@ void MarketModelTest::testCallableSwap1() {
 
     Real fixedRate = 0.04;
 
-    boost::shared_ptr<MultiStepSwap> payerSwap(new
+    boost::shared_ptr<MarketModelMultiProduct> payerSwap(new
         MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
                       fixedRate, true));
-
-    boost::shared_ptr<MultiStepSwap> receiverSwap(new
+    boost::shared_ptr<MarketModelMultiProduct> receiverSwap(new
         MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
                       fixedRate, false));
+    boost::shared_ptr<MarketModelMultiProduct> nothing(new
+        MultiStepNothing(payerSwap->suggestedEvolution()));
 
     //std::vector<Rate> exerciseTimes(rateTimes);
     //exerciseTimes.pop_back();
     std::vector<Rate> exerciseTimes;
     for (Size i=2; i<rateTimes.size()-1; i+=2)
         exerciseTimes.push_back(rateTimes[i]);
-    std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
 
-    boost::shared_ptr<ExerciseStrategy<CurveState> > trigger1(new
+    std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
+    boost::shared_ptr<ExerciseStrategy<CurveState> > trigger(new
         SwapRateTrigger(rateTimes, swapTriggers, exerciseTimes));
 
-    boost::shared_ptr<MarketModelMultiProduct> underlying(new
-        MultiStepSwap(*receiverSwap));
     boost::shared_ptr<MarketModelMultiProduct> callableProduct(new
-        CallSpecifiedMultiProduct(underlying, trigger1));
+                 CallSpecifiedMultiProduct(clone<MultiStepSwap>(receiverSwap),
+                                           clone<SwapRateTrigger>(trigger)));
     EvolutionDescription evolution = callableProduct->suggestedEvolution();
 
 
-    boost::shared_ptr<MarketModelMultiProduct> nothing(new
-        MultiStepNothing(payerSwap->suggestedEvolution()));
-    boost::shared_ptr<ExerciseStrategy<CurveState> > trigger2(new
-        SwapRateTrigger(rateTimes, swapTriggers, exerciseTimes));
-    boost::shared_ptr<MarketModelMultiProduct> rebate(new
-        MultiStepSwap(*payerSwap));
     boost::shared_ptr<MarketModelMultiProduct> bermudanProduct(new
-        CallSpecifiedMultiProduct(nothing, trigger2, rebate));
-
+                  CallSpecifiedMultiProduct(nothing,
+                                            clone<SwapRateTrigger>(trigger),
+                                            clone<MultiStepSwap>(payerSwap)));
 
     boost::shared_ptr<MultiProductComposite> allProducts(new
         MultiProductComposite);
@@ -1054,11 +1055,10 @@ void MarketModelTest::testCallableSwap2() {
 
     Real fixedRate = 0.04;
 
-    boost::shared_ptr<MultiStepSwap> payerSwap(new
+    boost::shared_ptr<MarketModelMultiProduct> payerSwap(new
         MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
                       fixedRate, true));
-
-    boost::shared_ptr<MultiStepSwap> receiverSwap(new
+    boost::shared_ptr<MarketModelMultiProduct> receiverSwap(new
         MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
                       fixedRate, false));
 
@@ -1073,11 +1073,7 @@ void MarketModelTest::testCallableSwap2() {
     boost::shared_ptr<MarketModelBasisSystem> basisSystem(
         new SwapBasisSystem(rateTimes,exerciseTimes));
 
-    boost::shared_ptr<MarketModelMultiProduct> underlying(new
-        MultiStepSwap(*receiverSwap));
     boost::shared_ptr<MarketModelExerciseValue> nullRebate(new
-        NothingExerciseValue(rateTimes));
-    boost::shared_ptr<MarketModelExerciseValue> nullRebate2(new
         NothingExerciseValue(rateTimes));
 
     std::vector<std::vector<LSNodeData> > collectedData;
@@ -1124,12 +1120,13 @@ void MarketModelTest::testCallableSwap2() {
                             evolver  = makeMarketModelEvolver(marketModel, evolution, generatorFactory, evolvers[i]);
 
                             Size trainingPaths = 1000;
-                            collectLongstaffSchwartzData(*evolver, *underlying, *basisSystem,
-                                *nullRebate, *control, trainingPaths,
-                                collectedData);
+                            collectLongstaffSchwartzData(
+                                        *evolver, *receiverSwap, *basisSystem,
+                                        *nullRebate, *control, trainingPaths,
+                                        collectedData);
 
-                            genericLongstaffSchwartzRegression(collectedData,
-                                basisCoefficients);
+                            genericLongstaffSchwartzRegression(
+                                            collectedData, basisCoefficients);
 
                             boost::shared_ptr<LongstaffSchwartzExerciseStrategy> theStrategy(new
                                 LongstaffSchwartzExerciseStrategy(
@@ -1142,10 +1139,13 @@ void MarketModelTest::testCallableSwap2() {
                             
 
                             boost::shared_ptr<ExerciseAdapter> 
-                                adaptedExercise(new ExerciseAdapter(nullRebate2));
+                                adaptedExercise(new ExerciseAdapter(
+                                    clone<NothingExerciseValue>(nullRebate)));
 
                             boost::shared_ptr<MarketModelMultiProduct> callableProduct(new
-                                CallSpecifiedMultiProduct(underlying, theStrategy,adaptedExercise));
+                                CallSpecifiedMultiProduct(
+                                           clone<MultiStepSwap>(receiverSwap),
+                                           theStrategy,adaptedExercise));
 
 
 
