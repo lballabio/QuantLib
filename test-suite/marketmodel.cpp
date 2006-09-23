@@ -479,7 +479,7 @@ void testCoterminalSwaps(const SequenceStatistics& stats,
 
 void MarketModelTest::testOneStepForwardsAndCaplets() {
 
-    BOOST_MESSAGE("Repricing (one step) forwards and caplets "
+    BOOST_MESSAGE("Repricing one-step forwards and caplets "
                   "in a LIBOR market model...");
 
     QL_TEST_SETUP
@@ -511,9 +511,9 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
     for (Size k=0; k<LENGTH(measures); k++) {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
-        std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
+        std::copy(evolution.numeraires().begin(),
+                  evolution.numeraires().end(), num.begin());
         BOOST_MESSAGE("    " << num);
-
         for (Size m=0; m<1; m++) { // one step always full factors
             Size factors = (m==0 ? todaysForwards.size() : m);
 
@@ -535,11 +535,12 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                      ", " << factors <<
-                                      "f, " << marketModelTypeToString(marketModels[j]) <<
-                                      ", MT BGF" <<
-                                      ", " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE(
+                          "    " << measureTypeToString(measures[k]) <<
+                          ", " << factors <<
+                          "f, " << marketModelTypeToString(marketModels[j]) <<
+                          ", MT BGF" <<
+                          ", " << evolverTypeToString(evolvers[i]));
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product, evolution, paths);
                         testForwardsAndCaplets(*stats,
@@ -555,7 +556,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
 
 void MarketModelTest::testMultiStepForwardsAndCaplets() {
 
-    BOOST_MESSAGE("Repricing (multi step) forwards and caplets "
+    BOOST_MESSAGE("Repricing multi-step forwards and caplets "
                   "in a LIBOR market model...");
 
     QL_TEST_SETUP
@@ -587,7 +588,8 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
     for (Size k=0; k<LENGTH(measures); k++) {
         setMeasure(evolution, measures[k]);
         Array num(evolution.numeraires().size());
-        std::copy(evolution.numeraires().begin(), evolution.numeraires().end(), num.begin());
+        std::copy(evolution.numeraires().begin(),
+                  evolution.numeraires().end(), num.begin());
         BOOST_MESSAGE("    " << num);
 
         //for (Size m=0; m<todaysForwards.size(); m++) {
@@ -612,11 +614,12 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
                                                          evolution,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                      ", " << factors <<
-                                      "f, " << marketModelTypeToString(marketModels[j]) <<
-                                      ", MT BGF" <<
-                                      ", " << evolverTypeToString(evolvers[i]));
+                        BOOST_MESSAGE(
+                          "    " << measureTypeToString(measures[k]) <<
+                          ", " << factors <<
+                          "f, " << marketModelTypeToString(marketModels[j]) <<
+                          ", MT BGF" <<
+                          ", " << evolverTypeToString(evolvers[i]));
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product, evolution, paths);
                         testForwardsAndCaplets(*stats,
@@ -631,14 +634,16 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
 
 void MarketModelTest::testMultiStepCoinitialSwaps() {
 
-    BOOST_MESSAGE("Repricing (multi step) coinitial swaps in a LIBOR market model...");
+    BOOST_MESSAGE("Repricing multi-step coinitial swaps "
+                  "in a LIBOR market model...");
 
     QL_TEST_SETUP
 
     Real fixedRate = 0.04;
 
     boost::shared_ptr<MarketModelMultiProduct> product(new
-        MultiStepCoinitialSwaps(rateTimes, accruals, accruals, paymentTimes, fixedRate));
+        MultiStepCoinitialSwaps(rateTimes, accruals, accruals,
+                                paymentTimes, fixedRate));
     EvolutionDescription evolution = product->suggestedEvolution();
 
     // ProductSuggested measure must be the first one: the Evolution
@@ -688,7 +693,8 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
 
 void MarketModelTest::testMultiStepCoterminalSwaps() {
 
-    BOOST_MESSAGE("Repricing (multi step) coterminal swaps in a LIBOR market model...");
+    BOOST_MESSAGE("Repricing multi-step coterminal swaps "
+                  "in a LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -745,7 +751,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
 
 void MarketModelTest::testAbcdVolatilityIntegration() {
 
-    BOOST_MESSAGE("Testing AbcdVolatilityIntegration ... ");
+    BOOST_MESSAGE("Testing Abcd-volatility integration... ");
 
     QL_TEST_SETUP
 
@@ -800,7 +806,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
 void MarketModelTest::testAbcdVolatilityCompare() {
 
-    BOOST_MESSAGE("Testing AbcdVolatility different implementations ...");
+    BOOST_MESSAGE("Testing different implementations of Abcd volatility...");
 
     QL_TEST_SETUP
 
@@ -847,7 +853,7 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
 void MarketModelTest::testAbcdVolatilityFit() {
 
-    BOOST_MESSAGE("Testing AbcdVolatility fit ...");
+    BOOST_MESSAGE("Testing Abcd-volatility fit ...");
 
     QL_TEST_SETUP
 
@@ -957,11 +963,11 @@ void MarketModelTest::testCallableSwap1() {
         MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
                       fixedRate, false));
 
-    std::vector<Rate> exerciseTimes(rateTimes);
-    exerciseTimes.pop_back();
-    //std::vector<Rate> exerciseTimes;
-    //for (Size i=2; i<rateTimes.size()-1; i+=2)
-    //    exerciseTimes.push_back(rateTimes[i]);
+    //std::vector<Rate> exerciseTimes(rateTimes);
+    //exerciseTimes.pop_back();
+    std::vector<Rate> exerciseTimes;
+    for (Size i=2; i<rateTimes.size()-1; i+=2)
+        exerciseTimes.push_back(rateTimes[i]);
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
 
     boost::shared_ptr<ExerciseStrategy<CurveState> > trigger1(new
@@ -1202,3 +1208,4 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
     return suite;
 }
+

@@ -17,20 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_multi_product_composite_hpp
-#define quantlib_multi_product_composite_hpp
+#ifndef quantlib_single_product_composite_hpp
+#define quantlib_single_product_composite_hpp
 
 #include <ql/MarketModels/Products/compositeproduct.hpp>
 
 namespace QuantLib {
 
     //! Composition of one or more market-model products
-    /*! Instances of this class build a multiple market-model product by
+    /*! Instances of this class build a single market-model product by
         composing two or more subproducts.
 
         \pre All subproducts must have the same rate times.
     */
-    class MultiProductComposite : public MarketModelComposite {
+    class SingleProductComposite : public MarketModelComposite {
       public:
         //! \name MarketModelMultiProduct interface
         //@{
