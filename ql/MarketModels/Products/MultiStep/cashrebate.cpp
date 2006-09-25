@@ -57,7 +57,13 @@ namespace QuantLib {
        currentIndex_=0;
     }
 
-    EvolutionDescription MarketModelCashRebate::suggestedEvolution() const {
+    std::vector<Size>
+    MarketModelCashRebate::suggestedNumeraires() const {
+        QL_REQUIRE(false, "not impleented (yet?)");
+        return std::vector<Size>();
+    }
+
+    const EvolutionDescription& MarketModelCashRebate::evolution() const {
         return evolution_;
     }
 

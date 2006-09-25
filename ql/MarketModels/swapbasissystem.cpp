@@ -31,6 +31,7 @@ namespace QuantLib {
                 ++j;
             rateIndex_[i] = j;
         }
+        evolution_ = EvolutionDescription(rateTimes_, exerciseTimes_);
     }
 
     Size SwapBasisSystem::numberOfExercises() const {
@@ -44,8 +45,8 @@ namespace QuantLib {
         return sizes;
     }
 
-    EvolutionDescription SwapBasisSystem::evolution() const {
-        return EvolutionDescription(rateTimes_, exerciseTimes_);
+    const EvolutionDescription& SwapBasisSystem::evolution() const {
+        return evolution_;
     }
 
     void SwapBasisSystem::nextStep(const CurveState& currentState) {

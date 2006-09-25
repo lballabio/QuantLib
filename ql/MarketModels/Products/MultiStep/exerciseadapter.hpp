@@ -35,7 +35,7 @@ namespace QuantLib {
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
-        EvolutionDescription suggestedEvolution() const;
+        const EvolutionDescription& evolution() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
         void reset(); 
         bool nextTimeStep(const CurveState&, 
@@ -60,7 +60,7 @@ namespace QuantLib {
         return numberOfProducts_;
     }
 
-    inline EvolutionDescription ExerciseAdapter::suggestedEvolution() const {
+    inline const EvolutionDescription& ExerciseAdapter::evolution() const {
         return exercise_->evolution();
     }
 

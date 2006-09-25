@@ -25,16 +25,14 @@
 
 namespace QuantLib {
 
-    class EvolutionDescription;
-
     /*! Abstact base class. The evolver does the actual gritty work of
         evolving the forward rates from one time to the next.
     */
     class MarketModelEvolver {
       public:
         virtual ~MarketModelEvolver() {}
-        
-        virtual EvolutionDescription evolution() const = 0;
+
+        virtual const std::vector<Size>& numeraires() const = 0;
         virtual Real startNewPath() = 0;
         virtual Real advanceStep() = 0;
         virtual Size currentStep() const = 0;

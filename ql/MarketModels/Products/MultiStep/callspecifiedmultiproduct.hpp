@@ -35,19 +35,19 @@ namespace QuantLib {
                   const boost::shared_ptr<ExerciseStrategy<CurveState> >&,
                   const boost::shared_ptr<MarketModelMultiProduct>& rebate
                       = boost::shared_ptr<MarketModelMultiProduct>());
-
-        EvolutionDescription suggestedEvolution() const;
+        //! \name MarketModelMultiProduct interface
+        //@{
+        std::vector<Size> suggestedNumeraires() const;
+        const EvolutionDescription& evolution() const;
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-
         void reset(); 
-
         bool nextTimeStep(
-            const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-
+                    const CurveState& currentState, 
+                    std::vector<Size>& numberCashFlowsThisStep,
+                    std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        //@}
       private:
         boost::shared_ptr<MarketModelMultiProduct> underlying_;
         boost::shared_ptr<ExerciseStrategy<CurveState> > strategy_;

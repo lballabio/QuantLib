@@ -70,7 +70,6 @@ namespace QuantLib {
         EvolutionDescription(
             const std::vector<Time>& rateTimes,
             const std::vector<Time>& evolutionTimes,
-            const std::vector<Size>& numeraires = std::vector<Size>(),
             const std::vector<std::pair<Size,Size> >& relevanceRates =
                                                         std::vector<range>());
         const std::vector<Time>& rateTimes() const;
@@ -78,26 +77,26 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes() const;
         const Matrix& effectiveStopTime() const;
         const std::vector<Size>& firstAliveRate() const;
-        const std::vector<Size>& numeraires() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
         Size numberOfRates() const;     // returns rateTimes().size() - 1
         Size numberOfSteps() const;     // returns evolutionTimes().size()
 
-        void setNumeraires(const std::vector<Size>&);
+        //const std::vector<Size>& numeraires() const;
+        //void setNumeraires(const std::vector<Size>&);
 
-        void setTerminalMeasure();
-        bool isInTerminalMeasure() const;
+        //void setTerminalMeasure();
+        //bool isInTerminalMeasure() const;
 
-        void setMoneyMarketMeasure();
-        bool isInMoneyMarketMeasure() const;
+        //void setMoneyMarketMeasure();
+        //bool isInMoneyMarketMeasure() const;
 
-        void setMoneyMarketPlusMeasure(Size offset = 1);
-        bool isInMoneyMarketPlusMeasure(Size offset = 1) const;
+        //void setMoneyMarketPlusMeasure(Size offset = 1);
+        //bool isInMoneyMarketPlusMeasure(Size offset = 1) const;
 
       private:
         std::vector<Time> rateTimes_, evolutionTimes_;
         Size steps_;
-        std::vector<Size> numeraires_;
+        //std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
         std::vector<Time> rateTaus_;
         Matrix effStopTime_;
@@ -105,51 +104,22 @@ namespace QuantLib {
     };
 
 
-    // inline
+    // Numeraire functions
 
-    inline const std::vector<Time>& EvolutionDescription::rateTimes() const {
-        return rateTimes_;
-    }
+    void checkCompatibility(const EvolutionDescription& evolution,
+                            const std::vector<Size>& numeraires);
+    bool isInTerminalMeasure(const EvolutionDescription& evolution,
+                             const std::vector<Size>& numeraires);
+    bool isInMoneyMarketPlusMeasure(const EvolutionDescription& evolution,
+                                    const std::vector<Size>& numeraires,
+                                    Size offset = 1);
+    bool isInMoneyMarketMeasure(const EvolutionDescription& evolution,
+                                const std::vector<Size>& numeraires);
 
-    inline const std::vector<Time>& EvolutionDescription::rateTaus() const {
-        return rateTaus_;
-    }
-
-    inline const std::vector<Time>& EvolutionDescription::evolutionTimes() const {
-        return evolutionTimes_;
-    }
-
-    inline const Matrix& EvolutionDescription::effectiveStopTime() const {
-        return effStopTime_;
-    }
-
-    inline const std::vector<Size>& EvolutionDescription::firstAliveRate() const {
-        return firstAliveRate_;
-    }
-
-    inline const std::vector<Size>& EvolutionDescription::numeraires() const {
-        return numeraires_;
-    }
-
-    inline const std::vector<std::pair<Size,Size> >& EvolutionDescription::relevanceRates() const {
-        return relevanceRates_;
-    }
-
-    inline Size EvolutionDescription::numberOfRates() const {
-        return rateTimes_.size() - 1; 
-    }
-
-    inline Size EvolutionDescription::numberOfSteps() const {
-        return evolutionTimes_.size(); 
-    }
-
-    inline void EvolutionDescription::setMoneyMarketMeasure() {
-        setMoneyMarketPlusMeasure(0);
-    }
-
-    inline bool EvolutionDescription::isInMoneyMarketMeasure() const {
-        return isInMoneyMarketPlusMeasure(0);
-    }
+    std::vector<Size> terminalMeasure(const EvolutionDescription& evolution);
+    std::vector<Size> moneyMarketPlusMeasure(const EvolutionDescription&,
+                                             Size offset = 1);
+    std::vector<Size> moneyMarketMeasure(const EvolutionDescription&);
 
 }
 

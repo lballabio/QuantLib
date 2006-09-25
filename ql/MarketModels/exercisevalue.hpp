@@ -32,7 +32,7 @@ namespace QuantLib {
         virtual ~MarketModelExerciseValue() {}
         virtual Size numberOfExercises() const = 0;
         // including any time at which state should be updated
-        virtual EvolutionDescription evolution() const = 0;
+        virtual const EvolutionDescription& evolution() const = 0;
         virtual std::vector<Time> possibleCashFlowTimes() const = 0;
         virtual void nextStep(const CurveState&) = 0;
         virtual void reset() = 0;

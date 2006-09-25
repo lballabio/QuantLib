@@ -23,17 +23,22 @@ namespace QuantLib {
 
     MultiProductOneStep::MultiProductOneStep(
             const std::vector<Time>& rateTimes)
-    : rateTimes_(rateTimes) {}
-
-    EvolutionDescription MultiProductOneStep::suggestedEvolution() const {
+    : rateTimes_(rateTimes) {
         std::vector<Time> evolutionTimes(1, rateTimes_[rateTimes_.size()-2]);
-        // Terminal measure
-        std::vector<Size> numeraires(1, rateTimes_.size()-1);
-
         std::vector<std::pair<Size,Size> > relevanceRates(1);
         relevanceRates[0] = std::make_pair(0, rateTimes_.size()-1);
 
-        return EvolutionDescription(rateTimes_, evolutionTimes,
-                                    numeraires, relevanceRates);
+        evolution_ = EvolutionDescription(rateTimes_, evolutionTimes,
+                                          relevanceRates);
     }
+
+    const EvolutionDescription& MultiProductOneStep::evolution() const {
+        return evolution_;
+    }
+
+    std::vector<Size> MultiProductOneStep::suggestedNumeraires() const {
+        // Terminal measure
+        return std::vector<Size>(1, rateTimes_.size()-1);
+    }
+
 }

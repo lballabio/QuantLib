@@ -33,7 +33,7 @@ namespace QuantLib {
         // possibly different for each exercise
         virtual std::vector<Size> numberOfFunctions() const = 0;
         // including any time at which state should be updated
-        virtual EvolutionDescription evolution() const = 0;
+        virtual const EvolutionDescription& evolution() const = 0;
         virtual void nextStep(const CurveState&) = 0;
         virtual void reset() = 0;
         // whether or not evolution times are exercise times

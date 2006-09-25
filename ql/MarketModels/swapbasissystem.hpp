@@ -31,7 +31,7 @@ namespace QuantLib {
                         const std::vector<Time>& exerciseTimes);
         Size numberOfExercises() const;
         std::vector<Size> numberOfFunctions() const;
-        EvolutionDescription evolution() const;
+        const EvolutionDescription& evolution() const;
         void nextStep(const CurveState&);
         void reset();
         std::vector<bool> isExerciseTime() const;
@@ -41,6 +41,7 @@ namespace QuantLib {
         std::vector<Time> rateTimes_, exerciseTimes_;
         Size currentIndex_;
         std::vector<Size> rateIndex_;
+        EvolutionDescription evolution_;
     };
 
 }

@@ -25,24 +25,20 @@ namespace QuantLib {
     AccountingEngine::AccountingEngine(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const boost::shared_ptr<MarketModelMultiProduct>& product,
-        const EvolutionDescription& evolution,
         double initialNumeraireValue)
-        :
-        evolver_(evolver),
-        product_(product),
-        evolution_(evolution),
-        initialNumeraireValue_(initialNumeraireValue),
-        numberProducts_(product->numberOfProducts()),      
-        numerairesHeld_(product->numberOfProducts()),
-        numberCashFlowsThisStep_(product->numberOfProducts()),
-        cashFlowsGenerated_(product->numberOfProducts())
+    : evolver_(evolver), product_(product),
+      initialNumeraireValue_(initialNumeraireValue),
+      numberProducts_(product->numberOfProducts()),      
+      numerairesHeld_(product->numberOfProducts()),
+      numberCashFlowsThisStep_(product->numberOfProducts()),
+      cashFlowsGenerated_(product->numberOfProducts())
     {
         for (Size i = 0; i <numberProducts_; ++i )
             cashFlowsGenerated_[i].resize(
                        product_->maxNumberOfCashFlowsPerProductPerStep());
         
         const std::vector<Time>& cashFlowTimes = product_->possibleCashFlowTimes();
-        const std::vector<Rate>& rateTimes = evolution_.rateTimes();
+        const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         for (Size j = 0; j < cashFlowTimes.size(); ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
                                                          rateTimes));
@@ -64,7 +60,7 @@ namespace QuantLib {
                                           numberCashFlowsThisStep_, 
                                           cashFlowsGenerated_);
             Size numeraire =
-                evolution_.numeraires()[thisStep];
+                evolver_->numeraires()[thisStep];
 
             // for each product...
             for (Size i=0; i<numberProducts_; ++i) {
@@ -99,7 +95,7 @@ namespace QuantLib {
                 // of bonds in the numeraire portfolio accordingly.
 
                 Size nextNumeraire =
-                    evolution_.numeraires()[thisStep+1];
+                    evolver_->numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
                     evolver_->currentState().discountRatio(numeraire, nextNumeraire);

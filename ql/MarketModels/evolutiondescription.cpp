@@ -23,6 +23,7 @@
 
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/Math/matrix.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -32,11 +33,12 @@ namespace QuantLib {
     EvolutionDescription::EvolutionDescription(
                      const std::vector<Time>& rateTimes,
                      const std::vector<Time>& evolutionTimes,
-                     const std::vector<Size>& numeraires,
+                     //const std::vector<Size>& numeraires,
                      const std::vector<std::pair<Size,Size> >& relevanceRates)
     : rateTimes_(rateTimes), evolutionTimes_(evolutionTimes),
       steps_(evolutionTimes.size()),
-      numeraires_(numeraires), relevanceRates_(relevanceRates),
+      //numeraires_(numeraires),
+      relevanceRates_(relevanceRates),
       rateTaus_(rateTimes.size()-1),
       effStopTime_(evolutionTimes.size(), rateTimes.size()-1),
       firstAliveRate_(evolutionTimes.size())
@@ -72,15 +74,15 @@ namespace QuantLib {
         // - if numeraires is empty, put the last ZCbond as default numeraire;
         // - numeraires are as many as evolutionTimes (n_num = steps_);
         // - the numeraire[i] must not have expired before the end of the step evolutionTimes[i].
-        if (numeraires.empty()) {
-            numeraires_ = std::vector<Size>(steps_, rateTimes_.size()-1);
-        } else {
-            QL_REQUIRE(numeraires.size() == steps_,
-                       "Numeraires / evolutionTimes mismatch");
-            for (Size i=0; i<numeraires.size()-1; i++)
-                QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
-                           "Numeraire " << i << " expired");
-        }
+        //if (numeraires.empty()) {
+        //    numeraires_ = std::vector<Size>(steps_, rateTimes_.size()-1);
+        //} else {
+        //    QL_REQUIRE(numeraires.size() == steps_,
+        //               "Numeraires / evolutionTimes mismatch");
+        //    for (Size i=0; i<numeraires.size()-1; i++)
+        //        QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
+        //                   "Numeraire " << i << " expired");
+        //}
 
         // Set up and check relevance rates (n_rr = relevanceRates.size()):
         // - if relevanceRates is empty, put as default 0 and n;
@@ -116,51 +118,175 @@ namespace QuantLib {
         }
     }
 
-    void EvolutionDescription::setNumeraires(const std::vector<Size>& numeraires) {
-        QL_REQUIRE(numeraires.size() == evolutionTimes_.size(),
-                   "Numeraires / evolutionTimes mismatch");
-        for (Size i=0; i<numeraires.size()-1; i++) {
-            QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i],
-                       "Numeraire " << i << " expired");
-        }
-        std::copy(numeraires.begin(), numeraires.end(), numeraires_.begin());
+    const std::vector<Time>& EvolutionDescription::rateTimes() const {
+        return rateTimes_;
     }
 
-    void EvolutionDescription::setTerminalMeasure() {
-        std::fill(numeraires_.begin(), numeraires_.end(), rateTimes_.size()-1);
+    const std::vector<Time>& EvolutionDescription::rateTaus() const {
+        return rateTaus_;
     }
 
-    bool EvolutionDescription::isInTerminalMeasure() const {
-        return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
-            rateTimes_.size()-1;
+    const std::vector<Time>& EvolutionDescription::evolutionTimes() const {
+        return evolutionTimes_;
     }
 
-    void EvolutionDescription::setMoneyMarketPlusMeasure(Size offset) {
-        Size j=0, maxNumeraire=rateTimes_.size()-1;
+    const Matrix& EvolutionDescription::effectiveStopTime() const {
+        return effStopTime_;
+    }
+
+    const std::vector<Size>& EvolutionDescription::firstAliveRate() const {
+        return firstAliveRate_;
+    }
+
+    const std::vector<std::pair<Size,Size> >& EvolutionDescription::relevanceRates() const {
+        return relevanceRates_;
+    }
+
+    Size EvolutionDescription::numberOfRates() const {
+        return rateTimes_.size() - 1; 
+    }
+
+    Size EvolutionDescription::numberOfSteps() const {
+        return evolutionTimes_.size(); 
+    }
+
+    //const std::vector<Size>& EvolutionDescription::numeraires() const {
+    //    return numeraires_;
+    //}
+
+    //void EvolutionDescription::setMoneyMarketMeasure() {
+    //    setMoneyMarketPlusMeasure(0);
+    //}
+
+    //bool EvolutionDescription::isInMoneyMarketMeasure() const {
+    //    return isInMoneyMarketPlusMeasure(0);
+    //}
+
+
+    //void EvolutionDescription::setNumeraires(const std::vector<Size>& numeraires) {
+    //    QL_REQUIRE(numeraires.size() == evolutionTimes_.size(),
+    //               "Numeraires / evolutionTimes mismatch");
+    //    for (Size i=0; i<numeraires.size()-1; i++) {
+    //        QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i],
+    //                   "Numeraire " << i << " expired");
+    //    }
+    //    std::copy(numeraires.begin(), numeraires.end(), numeraires_.begin());
+    //}
+
+    //void EvolutionDescription::setTerminalMeasure() {
+    //    std::fill(numeraires_.begin(), numeraires_.end(), rateTimes_.size()-1);
+    //}
+
+    //bool EvolutionDescription::isInTerminalMeasure() const {
+    //    return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
+    //        rateTimes_.size()-1;
+    //}
+
+    //void EvolutionDescription::setMoneyMarketPlusMeasure(Size offset) {
+    //    Size j=0, maxNumeraire=rateTimes_.size()-1;
+    //    QL_REQUIRE(offset<=maxNumeraire,
+    //               "offset (" << offset <<
+    //               ") is greater than the max allowed value for numeraire ("
+    //               << maxNumeraire << ")");
+    //    for (Size i=0; i<evolutionTimes_.size(); ++i) {
+    //        while (rateTimes_[j] < evolutionTimes_[i])
+    //            j++;
+    //        numeraires_[i] = std::min(j+offset, maxNumeraire);
+    //    }
+    //}
+
+    //bool EvolutionDescription::isInMoneyMarketPlusMeasure(Size offset) const {
+    //    bool result = true;
+    //    Size j=0, maxNumeraire=rateTimes_.size()-1;
+    //    QL_REQUIRE(offset<=maxNumeraire,
+    //               "offset (" << offset <<
+    //               ") is greater than the max allowed value for numeraire ("
+    //               << maxNumeraire << ")");
+    //    for (Size i=0; i<evolutionTimes_.size(); ++i) {
+    //        while (rateTimes_[j] < evolutionTimes_[i])
+    //            j++;
+    //        result = (numeraires_[i] == std::min(j+offset, maxNumeraire)) && result;
+    //    }
+    //    return result;
+    //}
+
+    void checkCompatibility(const EvolutionDescription& evolution,
+                            const std::vector<Size>& numeraires)
+    {
+        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
+        Size n = evolutionTimes.size();
+        QL_REQUIRE(numeraires.size() == n,
+                   "Size mismatch between numeraires (" << numeraires.size()
+                   << ") and evolution times (" << n << ")");
+
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        for (Size i=0; i<n-1; i++)
+            QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
+                       io::ordinal(i) << " step, evolution time " <<
+                       evolutionTimes[i] << ": the numeraire (" << numeraires[i] <<
+                       "), corresponding to rate time " <<
+                       rateTimes[numeraires[i]] << ", is expired");
+    }
+
+    bool isInTerminalMeasure(const EvolutionDescription& evolution,
+                             const std::vector<Size>& numeraires) {
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        return *std::min_element(numeraires.begin(), numeraires.end()) ==
+                                                          rateTimes.size()-1;
+    }
+
+    bool isInMoneyMarketPlusMeasure(const EvolutionDescription& evolution,
+                                    const std::vector<Size>& numeraires,
+                                    Size offset) {
+        bool res = true;
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        Size maxNumeraire=rateTimes.size()-1;
         QL_REQUIRE(offset<=maxNumeraire,
                    "offset (" << offset <<
                    ") is greater than the max allowed value for numeraire ("
                    << maxNumeraire << ")");
-        for (Size i=0; i<evolutionTimes_.size(); ++i) {
-            while (rateTimes_[j] < evolutionTimes_[i])
+        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
+        for (Size i=0, j=0; i<evolutionTimes.size(); ++i) {
+            while (rateTimes[j] < evolutionTimes[i])
                 j++;
-            numeraires_[i] = std::min(j+offset, maxNumeraire);
+            res = (numeraires[i] == std::min(j+offset, maxNumeraire)) && res;
         }
+        return res;
     }
 
-    bool EvolutionDescription::isInMoneyMarketPlusMeasure(Size offset) const {
-        bool result = true;
-        Size j=0, maxNumeraire=rateTimes_.size()-1;
+    bool isInMoneyMarketMeasure(const EvolutionDescription& evolution,
+                                const std::vector<Size>& numeraires) {
+        return isInMoneyMarketPlusMeasure(evolution, numeraires, 0);
+    }
+
+    std::vector<Size> terminalMeasure(const EvolutionDescription& evolution)
+    {
+        return std::vector<Size>(evolution.evolutionTimes().size(),
+                                 evolution.rateTimes().size()-1);
+    }
+
+    std::vector<Size> moneyMarketPlusMeasure(const EvolutionDescription& ev,
+                                             Size offset) {
+        const std::vector<Time>& rateTimes = ev.rateTimes();
+        Size maxNumeraire = rateTimes.size()-1;
         QL_REQUIRE(offset<=maxNumeraire,
                    "offset (" << offset <<
                    ") is greater than the max allowed value for numeraire ("
                    << maxNumeraire << ")");
-        for (Size i=0; i<evolutionTimes_.size(); ++i) {
-            while (rateTimes_[j] < evolutionTimes_[i])
+
+        const std::vector<Time>& evolutionTimes = ev.evolutionTimes();
+        Size n = evolutionTimes.size();
+        std::vector<Size> numeraires(n);
+        for (Size i=0, j=0; i<n; ++i) {
+            while (rateTimes[j] < evolutionTimes[i])
                 j++;
-            result = (numeraires_[i] == std::min(j+offset, maxNumeraire)) && result;
+            numeraires[i] = std::min(j+offset, maxNumeraire);
         }
-        return result;
+        return numeraires;
+    }
+
+    std::vector<Size> moneyMarketMeasure(const EvolutionDescription& evol) {
+        return moneyMarketPlusMeasure(evol, 0);
     }
 
 }

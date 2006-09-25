@@ -50,19 +50,18 @@ namespace QuantLib {
         }; 
         virtual ~MarketModelMultiProduct() {}
        
-        // for initializing other objects
-        virtual EvolutionDescription suggestedEvolution() const=0;
-        virtual std::vector<Time> possibleCashFlowTimes() const=0;
-        virtual Size numberOfProducts() const=0;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const=0;
-
+        virtual std::vector<Size> suggestedNumeraires() const = 0;
+        virtual const EvolutionDescription& evolution() const = 0;
+        virtual std::vector<Time> possibleCashFlowTimes() const = 0;
+        virtual Size numberOfProducts() const = 0;
+        virtual Size maxNumberOfCashFlowsPerProductPerStep() const = 0;
         //! during simulation put product at start of path
-        virtual void reset()=0; 
+        virtual void reset() = 0; 
         //! return value indicates whether path is finished, TRUE means done
         virtual bool nextTimeStep(
             const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated)=0 ; //! the cash flows
+            std::vector<Size>& numberCashFlowsThisStep, 
+            std::vector<std::vector<CashFlow> >& cashFlowsGenerated) = 0;
     };
 
 }

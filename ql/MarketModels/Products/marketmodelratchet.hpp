@@ -34,7 +34,7 @@ namespace QuantLib {
                            double initialCoupon);
         //! \name MarketModelMultiProduct interface
         //@{
-        EvolutionDescription suggestedEvolution() const;
+        const EvolutionDescription& evolution() const;
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
@@ -50,6 +50,7 @@ namespace QuantLib {
         std::vector<Time> paymentTimes_;
         double initialCoupon_;
         Size lastIndex_;
+        EvolutionDescription evolution_;
         // things that vary in a path
         Size currentIndex_;
         double currentCoupon_;

@@ -33,10 +33,6 @@ namespace QuantLib {
       paymentTimes_(paymentTimes), initialCoupon_(initialCoupon) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
-    }
-
-    EvolutionDescription MarketModelRatchet::suggestedEvolution() const
-    {
         std::vector<Time> evolutionTimes(rateTimes_.size()-1);
         std::vector<Size> numeraires(evolutionTimes.size());
         for (Size i=0; i<evolutionTimes.size(); ++i) {
@@ -50,8 +46,13 @@ namespace QuantLib {
         for (Size i=0; i<evolutionTimes.size(); ++i)
             relevanceRates[i] = std::make_pair(i, i+1);
 
-        return EvolutionDescription(rateTimes_, evolutionTimes,
-                                    numeraires, relevanceRates);
+        evolution_ = EvolutionDescription(rateTimes_, evolutionTimes,
+                                          relevanceRates);
+    }
+
+    const EvolutionDescription& MarketModelRatchet::evolution() const
+    {
+        return evolution_;
     }
 
     bool MarketModelRatchet::nextTimeStep(

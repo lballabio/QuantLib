@@ -36,7 +36,8 @@ namespace QuantLib {
         MarketModelComposite();
         //! \name MarketModelMultiProduct interface
         //@{
-        EvolutionDescription suggestedEvolution() const;
+        const EvolutionDescription& evolution() const;
+        std::vector<Size> suggestedNumeraires() const;
         std::vector<Time> possibleCashFlowTimes() const;
         void reset();
         //@}
@@ -64,6 +65,7 @@ namespace QuantLib {
         // common evolution data
         std::vector<Time> rateTimes_;
         std::vector<Time> evolutionTimes_;
+        EvolutionDescription evolution_;
         // working variables
         bool finalized_;
         Size currentIndex_;

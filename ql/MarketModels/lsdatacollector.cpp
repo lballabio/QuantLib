@@ -51,7 +51,7 @@ namespace QuantLib {
 
 
         std::vector<Time> rateTimes =
-            product.suggestedEvolution().rateTimes();
+            product.evolution().rateTimes();
 
         std::vector<Time> cashFlowTimes = product.possibleCashFlowTimes();
         std::vector<Time> rebateTimes = rebate.possibleCashFlowTimes();
@@ -74,13 +74,14 @@ namespace QuantLib {
                                      MarketModelDiscounter(controlTimes[i],
                                                            rateTimes));
 
-        EvolutionDescription evolution = evolver.evolution();
+        EvolutionDescription evolution = product.evolution();
+        const std::vector<Size>& numeraires = evolver.numeraires();
 
         std::vector<Time> evolutionTimes = evolution.evolutionTimes();
 
         std::vector<bool> isProductTime =
             isInSubset(evolutionTimes,
-                       product.suggestedEvolution().evolutionTimes());
+                       product.evolution().evolutionTimes());
         std::vector<bool> isRebateTime =
             isInSubset(evolutionTimes,
                        rebate.evolution().evolutionTimes());
@@ -120,7 +121,7 @@ namespace QuantLib {
                 Size currentStep = evolver.currentStep();
                 evolver.advanceStep();
                 const CurveState& currentState = evolver.currentState();
-                Size numeraire = evolution.numeraires()[currentStep];
+                Size numeraire = numeraires[currentStep];
 
                 if (isRebateTime[currentStep])
                     rebate.nextStep(currentState);
@@ -172,8 +173,7 @@ namespace QuantLib {
                 }
 
                 if (!done) {
-                    Size nextNumeraire =
-                        evolution.numeraires()[currentStep+1];
+                    Size nextNumeraire = numeraires[currentStep+1];
                     principalInNumerairePortfolio *=
                         currentState.discountRatio(numeraire,
                                                    nextNumeraire);

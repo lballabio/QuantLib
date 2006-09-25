@@ -23,23 +23,31 @@ namespace QuantLib {
 
     MultiProductMultiStep::MultiProductMultiStep(
             const std::vector<Time>& rateTimes)
-    : rateTimes_(rateTimes) {}
-
-    EvolutionDescription MultiProductMultiStep::suggestedEvolution() const {
-        std::vector<Time> evolutionTimes(rateTimes_.size()-1);
-        std::vector<Size> numeraires(evolutionTimes.size());
-        for (Size i=0; i<evolutionTimes.size(); ++i) {
+    : rateTimes_(rateTimes) {
+        Size n = rateTimes_.size()-1;
+        std::vector<Time> evolutionTimes(n);
+        std::vector<std::pair<Size,Size> > relevanceRates(n);
+        for (Size i=0; i<n; ++i) {
             evolutionTimes[i]=rateTimes_[i];
-            // MoneyMarketPlus(1)
-            numeraires[i]=i+1;
+            relevanceRates[i] = std::make_pair(i, i+1);
         }
 
-        std::vector<std::pair<Size,Size> > relevanceRates(
-            evolutionTimes.size());
-        for (Size i=0; i<evolutionTimes.size(); ++i)
-            relevanceRates[i] = std::make_pair(i, i+1);
-
-        return EvolutionDescription(rateTimes_, evolutionTimes,
-                                    numeraires, relevanceRates);
+        evolution_ = EvolutionDescription(rateTimes_, evolutionTimes,
+                                          relevanceRates);
     }
+
+    const EvolutionDescription& MultiProductMultiStep::evolution() const {
+        return evolution_;
+    }
+
+    std::vector<Size> MultiProductMultiStep::suggestedNumeraires() const
+    {
+        Size n = rateTimes_.size()-1;
+        std::vector<Size> numeraires(n);
+        // MoneyMarketPlus(1)
+        for (Size i=0; i<n; ++i)
+            numeraires[i]=i+1;
+        return numeraires;
+    }
+
 }

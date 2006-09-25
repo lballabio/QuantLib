@@ -28,6 +28,8 @@
 
 namespace QuantLib {
 
+    class EvolutionDescription;
+
     /* For each time step, generates the pseudo-square root of the covariance
        matrix for that time step.
     */
@@ -36,6 +38,7 @@ namespace QuantLib {
         virtual ~MarketModel() {}
         virtual const std::vector<Rate>& initialRates() const = 0;
         virtual const std::vector<Rate>& displacements() const = 0;
+        virtual const EvolutionDescription& evolution() const = 0;
         virtual Size numberOfRates() const = 0;
         virtual Size numberOfFactors() const = 0; 
         virtual Size numberOfSteps() const = 0; 

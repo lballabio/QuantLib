@@ -25,18 +25,20 @@ namespace QuantLib {
     MarketModelComposite::MarketModelComposite()
     : finalized_(false) {}
 
-
-    EvolutionDescription MarketModelComposite::suggestedEvolution() const {
+    const EvolutionDescription& MarketModelComposite::evolution() const {
         QL_REQUIRE(finalized_, "composite not finalized");
-        return EvolutionDescription(rateTimes_, evolutionTimes_);
+        return evolution_;
     }
 
+    std::vector<Size> MarketModelComposite::suggestedNumeraires() const {
+        QL_REQUIRE(finalized_, "composite not finalized");
+        return components_.front().product->suggestedNumeraires();
+    }
 
     std::vector<Time> MarketModelComposite::possibleCashFlowTimes() const {
         QL_REQUIRE(finalized_, "composite not finalized");
         return cashflowTimes_;
     }
-
 
     void MarketModelComposite::reset() {
         for (iterator i=components_.begin(); i!=components_.end(); ++i) {
@@ -52,11 +54,11 @@ namespace QuantLib {
                     const boost::shared_ptr<MarketModelMultiProduct>& product,
                     Real multiplier) {
 		QL_REQUIRE(!finalized_, "product already finalized");
-        EvolutionDescription d = product->suggestedEvolution();
+        EvolutionDescription d = product->evolution();
         if (!components_.empty()) {
             // enforce preconditions
             EvolutionDescription d1 =
-                components_.front().product->suggestedEvolution();
+                components_.front().product->evolution();
             const std::vector<Time>& rateTimes1 = d1.rateTimes();
             const std::vector<Time>& rateTimes2 = d.rateTimes();
             QL_REQUIRE(rateTimes1.size() == rateTimes2.size() &&
@@ -85,7 +87,7 @@ namespace QuantLib {
         // fetch the rate times from the first subproduct (we checked
         // they're all the same)
         EvolutionDescription description =
-            components_.front().product->suggestedEvolution();
+            components_.front().product->evolution();
         rateTimes_ = description.rateTimes();
 
         mergeTimes(allEvolutionTimes_, evolutionTimes_, isInSubset_);
@@ -94,7 +96,7 @@ namespace QuantLib {
 
         // now, for each subproduct...
         for (iterator i=components_.begin(); i!=components_.end(); ++i) {
-            EvolutionDescription d = i->product->suggestedEvolution();
+            EvolutionDescription d = i->product->evolution();
             // ...collect all possible cash-flow times...
             const std::vector<Time>& cashflowTimes =
                 i->product->possibleCashFlowTimes();
@@ -129,6 +131,8 @@ namespace QuantLib {
                               productTimes[j]) - cashflowTimes_.begin();
             }
         }
+
+        evolution_ = EvolutionDescription(rateTimes_, evolutionTimes_);
 
         // all done.
         finalized_ = true;
