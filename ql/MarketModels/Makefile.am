@@ -17,6 +17,7 @@ include_HEADERS = \
     exercisevalue.hpp \
     lsbasisfunctions.hpp \
     lsdatacollector.hpp \
+    marketmodeldiscounter.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp \
@@ -30,6 +31,7 @@ libMarketModels_la_SOURCES = \
     driftcalculator.cpp \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
+    marketmodeldiscounter.cpp \
     swapbasissystem.cpp \
     swapforwardconversionmatrix.cpp \
     utilities.cpp
