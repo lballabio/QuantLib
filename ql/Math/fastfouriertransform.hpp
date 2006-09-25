@@ -28,41 +28,45 @@
 #include <ql/types.hpp>
 
 namespace QuantLib {
-
-  template<int N>
-  unsigned int bit_reverse(unsigned int x) {
-    int n = 0;
-    int mask = 0x1;
-    for (int i=0; i < N; i++) {
-      n <<= 1;
-      n |= (x & 1);
-      x >>= 1;
-    }
-    return n;
-  }
+    class FastFourierTransform {
+    public:
     
-  template<int Log2_N, class Iter_T>
-  void fft(Iter_T a, Iter_T A)
-  {
-    typedef std::iterator_traits<Iter_T>::value_type complex;
-    const int N = 1 << Log2_N;
-    for (unsigned int i=0; i<N; ++i) {
-      A[bit_reverse<Log2_N>(i)] = a[i];
-    }
-    for (int s = 1; s <= Log2_N; ++s) {
-    int m = 1 << s;
-    complex w(1, 0);
-    complex wm(cos(2 * M_PI / m), sin(2 * M_PI / m));
-    for (int j=0; j < m/2; ++j) {
-      for (int k=j; k < N; k += m) {
-	complex t = w * A[k + m/2];
-	complex u = A[k];
-	A[k] = u + t;
-	A[k + m/2] = u - t;
-      }
-      w *= wm;
-    }
-    }
-  }
+        template<int Log2_N, class Iter_T>
+        void fft(Iter_T a, Iter_T A)
+        {
+            typedef std::iterator_traits<Iter_T>::value_type complex;
+            const int N = 1 << Log2_N;
+            for (unsigned int i=0; i<N; ++i) {
+                A[bit_reverse<Log2_N>(i)] = a[i];
+            }
+            for (int s = 1; s <= Log2_N; ++s) {
+                int m = 1 << s;
+                complex w(1, 0);
+                complex wm(cos(2 * M_PI / m), sin(2 * M_PI / m));
+                for (int j=0; j < m/2; ++j) {
+                    for (int k=j; k < N; k += m) {
+                        complex t = w * A[k + m/2];
+                        complex u = A[k];
+                        A[k] = u + t;
+                        A[k + m/2] = u - t;
+                    }
+                    w *= wm;
+                }
+            }
+        }
+
+    private:
+        template<int N>
+        unsigned int bit_reverse(unsigned int x) {
+            int n = 0;
+            int mask = 0x1;
+            for (int i=0; i < N; i++) {
+                n <<= 1;
+                n |= (x & 1);
+                x >>= 1;
+            }
+            return n;
+        }
+    };
 }
 #endif
