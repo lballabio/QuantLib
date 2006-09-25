@@ -30,28 +30,36 @@
 
 namespace QuantLib {
 
-    inline Real blackFormula(Option::Type optionType,
-                             Real strike,
-                             Real forward,
-                             Real stdDev) {
-        if (stdDev==0.0)
-            return std::max((forward-strike)*optionType, Real(0.0));
-        if (strike==0.0)
-            return (optionType==Option::Call ? forward : 0.0);
-        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
-        Real d2 = d1 - stdDev;
-        CumulativeNormalDistribution phi;
-        Real result = optionType *
-            (forward*phi(optionType*d1) - strike*phi(optionType*d2));
-        // numerical inaccuracies can yield a negative answer
-        return std::max(Real(0.0), result);
-    }
+    /*! Black 1976 formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackFormula(Option::Type optionType,
+                      Real strike,
+                      Real forward,
+                      Real stdDev);
 
+    /*! Approximated Black 1976 implied standard deviation,
+        i.e. volatility*sqrt(timeToMaturity).
+        
+        It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
+        (1988) approximation for at-the-money forward option, with the
+        extended moneyness approximation by Corrado and Miller (1996)
+    */
+    Real blackImpliedStdDevApproximation(Option::Type optionType,
+                                         Real strike,
+                                         Real forward,
+                                         Real blackPrice);
+
+    /*! Black 1976 implied  standard deviation,
+        i.e. volatility*sqrt(timeToMaturity)
+    */
     Real blackImpliedStdDev(Option::Type optionType,
                             Real strike,
                             Real forward,
                             Real blackPrice,
-                            Real guess=Null<Real>());
+                            Real guess = Null<Real>(),
+                            Real accuracy = 1.0e-6);
 
     inline Real blackItmProbability(Option::Type optionType,
                                     Real strike,

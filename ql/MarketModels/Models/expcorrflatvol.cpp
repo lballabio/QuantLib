@@ -37,6 +37,7 @@ namespace QuantLib
         numberOfSteps_(evolution.evolutionTimes().size()),
         initialRates_(initialRates),
         displacements_(displacements),
+        evolution_(evolution),
         pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
         covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
         totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))

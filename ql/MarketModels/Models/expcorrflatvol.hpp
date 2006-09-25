@@ -47,6 +47,7 @@ namespace QuantLib
         //@{
         const std::vector<Rate>& initialRates() const;
         const std::vector<Rate>& displacements() const;
+        const EvolutionDescription& evolution() const;
         Size numberOfRates() const;
         Size numberOfFactors() const; 
         Size numberOfSteps() const; 
@@ -58,6 +59,7 @@ namespace QuantLib
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
         std::vector<Rate> displacements_;
+        EvolutionDescription evolution_;
         std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
     };
 
@@ -69,6 +71,10 @@ namespace QuantLib
 
     inline const std::vector<Rate>& ExpCorrFlatVol::displacements() const {
         return displacements_;
+    }
+
+    inline const EvolutionDescription& ExpCorrFlatVol::evolution() const {
+        return evolution_;
     }
 
     inline Size ExpCorrFlatVol::numberOfRates() const {
