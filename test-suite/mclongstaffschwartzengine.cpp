@@ -40,7 +40,7 @@ void teardown() {
 
 class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
   public:
-    AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff) 
+    AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
     : payoff_(payoff) {
     }
 
@@ -59,16 +59,16 @@ class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
     }
 
     std::vector<boost::function1<Real, StateType> > basisSystem() const {
-        return LsmBasisSystem::multiPathBasisSystem(2, 2, 
+        return LsmBasisSystem::multiPathBasisSystem(2, 2,
                                                     LsmBasisSystem::Monomial);
     }
-        
+
   protected:
     const boost::shared_ptr<Payoff> payoff_;
 };
 
 template <class RNG>
-class MCAmericanMaxEngine 
+class MCAmericanMaxEngine
    : public MCLongstaffSchwartzEngine<VanillaOption::engine,
                                       MultiVariate<RNG> >{
   public:
@@ -80,27 +80,27 @@ class MCAmericanMaxEngine
                         Size requiredSamples,
                         Real requiredTolerance,
                         Size maxSamples,
-                        BigNatural seed, 
+                        BigNatural seed,
                         Size nCalibrationSamples = Null<Size>())
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                MultiVariate<RNG> >(timeSteps, 
+                                MultiVariate<RNG> >(timeSteps,
                                                     timeStepsPerYear,
                                                     brownianbridge,
-                                                    antitheticVariate, 
-                                                    controlVariate, 
-                                                    requiredSamples, 
-                                                    requiredTolerance, 
-                                                    maxSamples, 
-                                                    seed, nCalibrationSamples) 
+                                                    antitheticVariate,
+                                                    controlVariate,
+                                                    requiredSamples,
+                                                    requiredTolerance,
+                                                    maxSamples,
+                                                    seed, nCalibrationSamples)
     { }
-    
+
   protected:
-    boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > 
+    boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
           lsmPathPricer() const {
        boost::shared_ptr<StochasticProcessArray> processArray =
            boost::dynamic_pointer_cast<StochasticProcessArray>(
                 this->arguments_.stochasticProcess);
-       QL_REQUIRE(processArray && processArray->size() > 0, 
+       QL_REQUIRE(processArray && processArray->size() > 0,
                   "Stochastic process array required");
 
        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
@@ -113,8 +113,8 @@ class MCAmericanMaxEngine
 
        return boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
            new LongstaffSchwartzPathPricer<MultiPath>(
-               this->timeGrid(), 
-               earlyExercisePathPricer, 
+               this->timeGrid(),
+               earlyExercisePathPricer,
                process->riskFreeRate()));
     }
 };
@@ -123,7 +123,7 @@ class MCAmericanMaxEngine
 QL_END_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
 
 void MCLongstaffSchwartzEngineTest::testAmericanOption() {
-    BOOST_MESSAGE("Testing Monte-Carlo pricing of american options");
+    BOOST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
     QL_TEST_BEGIN
 
@@ -133,11 +133,11 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     const Spread dividendYield = 0.00;
     const Rate riskFreeRate = 0.06;
     const Volatility volatility = 0.20;
-    
+
     const Date todaysDate(15, May, 1998);
     const Date settlementDate(17, May, 1998);
     Settings::instance().evaluationDate() = todaysDate;
-    
+
     const Date maturity(17, May, 1999);
     const DayCounter dayCounter = Actual365Fixed();
 
@@ -153,16 +153,16 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
                 new FlatForward(settlementDate, dividendYield, dayCounter)));
 
 
-    LsmBasisSystem::PolynomType polynomTypes[] 
-        = { LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre, 
+    LsmBasisSystem::PolynomType polynomTypes[]
+        = { LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre,
             LsmBasisSystem::Hermite, LsmBasisSystem::Hyperbolic,
             LsmBasisSystem::Chebyshev2th };
 
-    for (Integer i=0; i<2; ++i) { 
+    for (Integer i=0; i<2; ++i) {
         for (Integer j=0; j<3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
                 boost::shared_ptr<BlackVolTermStructure>(
-                    new BlackConstantVol(settlementDate, 
+                    new BlackConstantVol(settlementDate,
                                          volatility+0.1*j, dayCounter)));
 
             boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -171,15 +171,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             Handle<Quote> underlyingH(
                 boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
-            boost::shared_ptr<GeneralizedBlackScholesProcess> 
+            boost::shared_ptr<GeneralizedBlackScholesProcess>
                 stochasticProcess(new GeneralizedBlackScholesProcess(
-                                      underlyingH, flatDividendTS, 
+                                      underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
             VanillaOption americanOption(stochasticProcess, payoff,
                                          americanExercise);
-  
-            boost::shared_ptr<PricingEngine> mcengine = 
+
+            boost::shared_ptr<PricingEngine> mcengine =
                 MakeMCAmericanEngine<PseudoRandom>()
                   .withSteps(75)
                   .withAntitheticVariate()
@@ -211,11 +211,11 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
 
 void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
-    // reference values taken from 
+    // reference values taken from
     // "Monte Carlo Methods in Financial Engineering",
     // by Paul Glasserman, 2004 Springer Verlag, p. 462
 
-    BOOST_MESSAGE("Testing Monte-Carlo pricing of american max options");
+    BOOST_MESSAGE("Testing Monte-Carlo pricing of American max options...");
 
     QL_TEST_BEGIN
 
@@ -225,11 +225,11 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     const Spread dividendYield = 0.10;
     const Rate riskFreeRate = 0.05;
     const Volatility volatility = 0.20;
-    
+
     const Date todaysDate(15, May, 1998);
     const Date settlementDate(17, May, 1998);
     Settings::instance().evaluationDate() = todaysDate;
-    
+
     const Date maturity(16, May, 2001);
     const DayCounter dayCounter = Actual365Fixed();
 
@@ -269,11 +269,11 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     boost::shared_ptr<StochasticProcessArray> process(
         new StochasticProcessArray(v, corr));
     VanillaOption americanMaxOption(process, payoff, americanExercise);
-   
-    boost::shared_ptr<PricingEngine> mcengine( 
+
+    boost::shared_ptr<PricingEngine> mcengine(
         new MCAmericanMaxEngine<PseudoRandom>(25, Null<Size>(), false,
                                               true, false, 4096,
-                                              Null<Real>(), Null<Size>(), 
+                                              Null<Real>(), Null<Size>(),
                                               42, 1024));
     americanMaxOption.setPricingEngine(mcengine);
 
