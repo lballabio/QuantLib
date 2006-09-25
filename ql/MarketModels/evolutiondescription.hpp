@@ -31,21 +31,12 @@ namespace QuantLib {
     /*! This class stores:
 		1) evolutionTimes = the times defining the rates that are to be evolved,
 		2) rateTimes = the times at which the rates need to be known, 
-		3) numeraires = the numeraire to be used for each step. 
-		4) relevanceRates = which rates need to be known at each time.
-        This class is really just a 3-tuple of the evolutions times, the rate
-        times and the numeraires.
+		3) relevanceRates = which rates need to be known at each time.
+        This class is really just a tuple of evolution and rate times
         
         - There will be n+1 rate times expressing payment and reset times of
         forward rates.
 		- There will be any number of evolution times.
-		- There will be one numeraire index for each evolution time. The
-        numeraire is an index amongst the rate times so it ranges from 0 to n.
-        The numeraire must not have expired before the end of the step.
-        Note that in the terminal measure, one would take the index of the
-        last bond as numeraire. Whereas the discretely compounding money market
-        account would take the index of the first unexpired bond for each step.
-        Default values for numeraires will be the final bond.
 		- We also store which part of the rates are relevant for pricing via
         relevance rates. The important part for the i-th step will then range
         from relevanceRates[i].first to relevanceRates[i].second
@@ -106,8 +97,14 @@ namespace QuantLib {
 
     // Numeraire functions
 
+	/*! Check that there is one numeraire for each evolution time.
+        Each numeraire must be an index amongst the rate times so it ranges
+        from 0 to n. Each numeraire must not have expired before the end of
+        the step.
+    */
     void checkCompatibility(const EvolutionDescription& evolution,
                             const std::vector<Size>& numeraires);
+
     bool isInTerminalMeasure(const EvolutionDescription& evolution,
                              const std::vector<Size>& numeraires);
     bool isInMoneyMarketPlusMeasure(const EvolutionDescription& evolution,
@@ -116,9 +113,20 @@ namespace QuantLib {
     bool isInMoneyMarketMeasure(const EvolutionDescription& evolution,
                                 const std::vector<Size>& numeraires);
 
+    //! Terminal measure: the last bond is used as numeraire.
     std::vector<Size> terminalMeasure(const EvolutionDescription& evolution);
+
+    /*! Offsetted discretely compounded money market account measure:
+        for each step the offset-th unexpired bond is used as numeraire.
+        When offset=0 is the usual discretely compounded money market
+        account measure
+    */
     std::vector<Size> moneyMarketPlusMeasure(const EvolutionDescription&,
                                              Size offset = 1);
+
+    /*! Discretely compounded money market account measure:
+        for each step the first unexpired bond is used as numeraire.
+    */
     std::vector<Size> moneyMarketMeasure(const EvolutionDescription&);
 
 }

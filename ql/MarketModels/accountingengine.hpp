@@ -56,17 +56,6 @@ namespace QuantLib {
         
     };
 
-    class MarketModelDiscounter {
-      public:
-        MarketModelDiscounter(Time paymentTime,
-                              const std::vector<Time>& rateTimes);
-        Real numeraireBonds(const CurveState&,
-                            Size numeraire) const;
-      private:
-        Size before_;
-        Real beforeWeight_;
-    };
-
 }
 
 #endif

@@ -40,6 +40,7 @@
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/swapbasissystem.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
+#include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/utilities.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>

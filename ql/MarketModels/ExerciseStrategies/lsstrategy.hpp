@@ -24,9 +24,10 @@
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
-#include <ql/MarketModels/accountingengine.hpp>
 
 namespace QuantLib {
+
+    class MarketModelDiscounter;
 
     class LongstaffSchwartzExerciseStrategy
         : public ExerciseStrategy<CurveState> {
