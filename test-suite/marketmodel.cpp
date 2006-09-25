@@ -1054,7 +1054,7 @@ void MarketModelTest::testCallableSwap1() {
 
             MarketModelType marketModels[] = {
                 // CalibratedMM,
-                // ExponentialCorrelationFlatVolatility,
+                ExponentialCorrelationFlatVolatility,
                 ExponentialCorrelationAbcdVolatility };
             for (Size j=0; j<LENGTH(marketModels); j++) {
                 boost::shared_ptr<MarketModel> marketModel =
