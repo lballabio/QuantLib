@@ -2916,6 +2916,12 @@
 				RelativePath=".\ql\MarketModels\marketmodel.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\marketmodeldiscounter.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\marketmodeldiscounter.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
 			</File>
 			<File
