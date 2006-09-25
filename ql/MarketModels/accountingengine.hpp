@@ -22,12 +22,11 @@
 #define quantlib_accounting_engine_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 
 namespace QuantLib {
-
-    class MarketModelDiscounter;
 
     class AccountingEngine {
       public:
