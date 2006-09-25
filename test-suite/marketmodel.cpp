@@ -345,12 +345,12 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     switch (evolverType) {
         case Ipc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRateIpcEvolver(marketModel, numeraires,
-                                      generatorFactory));
+                ForwardRateIpcEvolver(marketModel, generatorFactory,
+                                      numeraires));
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRatePcEvolver(marketModel, numeraires,
-                                     generatorFactory));
+                ForwardRatePcEvolver(marketModel, generatorFactory,
+                                     numeraires));
         default:
             QL_FAIL("unknown MarketModelEvolver type");
     }

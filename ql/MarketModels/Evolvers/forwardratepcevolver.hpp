@@ -34,8 +34,8 @@ namespace QuantLib {
     class ForwardRatePcEvolver : public MarketModelEvolver {
       public:
         ForwardRatePcEvolver(const boost::shared_ptr<MarketModel>&,
-                             const std::vector<Size>& numeraires,
-                             const BrownianGeneratorFactory&);
+                             const BrownianGeneratorFactory&,
+                             const std::vector<Size>& numeraires);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;

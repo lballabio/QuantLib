@@ -25,8 +25,8 @@ namespace QuantLib {
 
     ForwardRateIpcEvolver::ForwardRateIpcEvolver(
                            const boost::shared_ptr<MarketModel>& marketModel,
-                           const std::vector<Size>& numeraires,
-                           const BrownianGeneratorFactory& factory)
+                           const BrownianGeneratorFactory& factory,
+                           const std::vector<Size>& numeraires)
     : marketModel_(marketModel),
       numeraires_(numeraires),
       n_(marketModel->numberOfRates()), F_(marketModel->numberOfFactors()),
