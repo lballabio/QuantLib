@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,20 +25,22 @@ namespace QuantLib {
 
     ForwardRatePcEvolver::ForwardRatePcEvolver(
                            const boost::shared_ptr<MarketModel>& marketModel,
-                           const EvolutionDescription& evolution,
+                           const std::vector<Size>& numeraires,
                            const BrownianGeneratorFactory& factory)
-    : marketModel_(marketModel), evolution_(evolution),
+    : marketModel_(marketModel),
+      numeraires_(numeraires),
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
-      curveState_(evolution.rateTimes()),
+      curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
-      alive_(evolution_.firstAliveRate())
+      alive_(marketModel->evolution().firstAliveRate())
     {
+        checkCompatibility(marketModel->evolution(), numeraires);
         const std::vector<Rate>& initialForwards = marketModel_->initialRates();
 
-        Size steps = evolution_.numberOfSteps();
+        Size steps = marketModel->evolution().numberOfSteps();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -51,8 +54,8 @@ namespace QuantLib {
             const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
-                                                   evolution_.rateTaus(),
-                                                   evolution_.numeraires()[j],
+                                                   marketModel->evolution().rateTaus(),
+                                                   numeraires[j],
                                                    alive_[j]));
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
@@ -66,6 +69,10 @@ namespace QuantLib {
 
         calculators_.front().compute(initialForwards, initialDrifts_);
         //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
+    }
+
+    const std::vector<Size>& ForwardRatePcEvolver::numeraires() const {
+        return numeraires_;
     }
 
     Real ForwardRatePcEvolver::startNewPath() {
@@ -118,6 +125,14 @@ namespace QuantLib {
         ++currentStep_;
 
         return weight;
+    }
+
+    Size ForwardRatePcEvolver::currentStep() const {
+        return currentStep_;
+    }
+
+    const CurveState& ForwardRatePcEvolver::currentState() const {
+        return curveState_;
     }
 
 }

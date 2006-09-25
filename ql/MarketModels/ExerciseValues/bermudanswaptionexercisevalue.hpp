@@ -34,7 +34,7 @@ namespace QuantLib {
                                       Option::Type optionType);
         virtual Size numberOfExercises() const = 0;
         // including any time at which state should be updated
-        virtual EvolutionDescription evolution() const = 0;
+        virtual const EvolutionDescription& evolution() const = 0;
         virtual std::vector<Time> possibleCashFlowTimes() const = 0;
         virtual void nextStep(const CurveState&) = 0;
         virtual void reset() = 0;
@@ -43,17 +43,16 @@ namespace QuantLib {
         virtual MarketModelMultiProduct::CashFlow value(
                                                const CurveState&) const = 0;
       private:
-          Size numberOfExercises_;
-          std::vector<Time> rateTimes_;
-          std::vector<Rate> strikes_;
-          Option::Type optionType_;
-
-          // evolving
-          Size currentIndex_;
-          MarketModelMultiProduct::CashFlow cf_;
+        Size numberOfExercises_;
+        std::vector<Time> rateTimes_;
+        std::vector<Rate> strikes_;
+        Option::Type optionType_;
+        EvolutionDescription evolution_;
+        // evolving
+        Size currentIndex_;
+        MarketModelMultiProduct::CashFlow cf_;
     };
 
 }
-
 
 #endif

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,21 +32,22 @@ namespace QuantLib {
 
     //! Iterative Predictor-Corrector
     class ForwardRateIpcEvolver : public MarketModelEvolver {
-    public:
+      public:
         ForwardRateIpcEvolver(const boost::shared_ptr<MarketModel>&,
-                              const EvolutionDescription&,
+                              const std::vector<Size>& numeraires,
                               const BrownianGeneratorFactory&);
-
-        EvolutionDescription evolution() const;
+        //! \name MarketModelEvolver interface
+        //@{
+        const std::vector<Size>& numeraires() const;
         Real startNewPath();
         Real advanceStep();
         Size currentStep() const;
         const CurveState& currentState() const;
-
-    private:
+        //@}
+      private:
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;
-        EvolutionDescription evolution_;
+        std::vector<Size> numeraires_;
         boost::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
@@ -56,25 +58,13 @@ namespace QuantLib {
         std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
         std::vector<Real> drifts1_, initialDrifts_, g_;
         Array brownians_, correlatedBrownians_;
+        std::vector<Time> rateTaus_;
         std::vector<Size> alive_;
         //std::vector<Matrix> C_;
         // helper classes
         std::vector<DriftCalculator> calculators_;
     };
 
-    // inline
-
-    inline EvolutionDescription ForwardRateIpcEvolver::evolution() const {
-        return evolution_;
-    }
-
-    inline Size ForwardRateIpcEvolver::currentStep() const {
-        return currentStep_;
-    }
-
-    inline const CurveState& ForwardRateIpcEvolver::currentState() const {
-        return curveState_;
-    }
 }
 
 #endif

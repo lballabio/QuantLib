@@ -28,16 +28,17 @@ namespace QuantLib {
       currentIndex_(0)
     {
         cf_.amount = 0.0;
+        std::vector<Time> evolutionTimes(rateTimes_);
+        evolutionTimes.pop_back();
+        evolution_= EvolutionDescription(rateTimes_, evolutionTimes);
     }
 
     Size NothingExerciseValue::numberOfExercises() const {
         return numberOfExercises_;
     }
 
-    EvolutionDescription NothingExerciseValue::evolution() const {
-        std::vector<Time> evolutionTimes(rateTimes_);
-        evolutionTimes.pop_back();
-        return EvolutionDescription(rateTimes_,evolutionTimes);
+    const EvolutionDescription& NothingExerciseValue::evolution() const {
+        return evolution_;
     }
 
     std::vector<Time> NothingExerciseValue::possibleCashFlowTimes() const {

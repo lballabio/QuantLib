@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,23 +25,26 @@ namespace QuantLib {
 
     ForwardRateIpcEvolver::ForwardRateIpcEvolver(
                            const boost::shared_ptr<MarketModel>& marketModel,
-                           const EvolutionDescription& evolution,
+                           const std::vector<Size>& numeraires,
                            const BrownianGeneratorFactory& factory)
-    : marketModel_(marketModel), evolution_(evolution),
+    : marketModel_(marketModel),
+      numeraires_(numeraires),
       n_(marketModel->numberOfRates()), F_(marketModel->numberOfFactors()),
-      curveState_(evolution.rateTimes()),
+      curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
       initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
-      alive_(evolution.evolutionTimes().size())
+      rateTaus_(marketModel->evolution().rateTaus()),
+      alive_(marketModel->evolution().firstAliveRate())
     {
-        QL_REQUIRE(evolution.isInTerminalMeasure(),
+        checkCompatibility(marketModel->evolution(), numeraires);
+        QL_REQUIRE(isInTerminalMeasure(marketModel->evolution(), numeraires),
                    "terminal measure required for ipc ");
 
         const std::vector<Rate>& initialForwards = marketModel->initialRates();
 
-        Size steps = evolution_.numberOfSteps();
+        Size steps = marketModel->evolution().numberOfSteps();
 
         generator_ = factory.create(F_, steps);
         currentStep_ = 0;
@@ -54,8 +58,8 @@ namespace QuantLib {
             const Matrix& A = marketModel->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
                                                    displacements_,
-                                                   evolution_.rateTaus(),
-                                                   evolution_.numeraires()[j],
+                                                   marketModel->evolution().rateTaus(),
+                                                   numeraires[j],
                                                    alive_[j]));
             const Matrix& C = marketModel->covariance(j);
             std::vector<Real> fixed(n_);
@@ -70,6 +74,10 @@ namespace QuantLib {
         //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
+    const std::vector<Size>& ForwardRateIpcEvolver::numeraires() const {
+        return numeraires_;
+    }
+
     Real ForwardRateIpcEvolver::startNewPath() {
         currentStep_ = 0;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
@@ -79,8 +87,6 @@ namespace QuantLib {
 
     Real ForwardRateIpcEvolver::advanceStep()
     {
-        const std::vector<Time>& rateTaus = evolution_.rateTaus();
-
         // we're going from T1 to T2:
 
         // a) compute drifts D1 at T1;
@@ -109,8 +115,8 @@ namespace QuantLib {
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
-            g_[i] = rateTaus[i]*(forwards_[i]+displacements_[i])/
-                (1.0+rateTaus[i]*forwards_[i]);
+            g_[i] = rateTaus_[i]*(forwards_[i]+displacements_[i])/
+                (1.0+rateTaus_[i]*forwards_[i]);
         }
 
         // update curve state
@@ -119,6 +125,14 @@ namespace QuantLib {
         ++currentStep_;
 
         return weight;
+    }
+
+    Size ForwardRateIpcEvolver::currentStep() const {
+        return currentStep_;
+    }
+
+    const CurveState& ForwardRateIpcEvolver::currentState() const {
+        return curveState_;
     }
 
 }

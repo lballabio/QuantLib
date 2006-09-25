@@ -27,16 +27,18 @@ namespace QuantLib {
                                           const std::vector<Rate>& strikes,
                                           Option::Type optionType)
     : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
-      strikes_(strikes), optionType_(optionType_), currentIndex_(0) {}
+      strikes_(strikes), optionType_(optionType_), currentIndex_(0) {
+        std::vector<Time> evolveTimes(rateTimes_);
+        evolveTimes.pop_back();
+        evolution_ = EvolutionDescription(rateTimes_,evolveTimes);
+    }
 
     Size BermudanSwaptionExerciseValue::numberOfExercises() const {
         return numberOfExercises_;
     }
 
-    EvolutionDescription BermudanSwaptionExerciseValue::evolution() const {
-        std::vector<Time> evolveTimes(rateTimes_);
-        evolveTimes.pop_back();
-        return EvolutionDescription(rateTimes_,evolveTimes);
+    const EvolutionDescription& BermudanSwaptionExerciseValue::evolution() const {
+        return evolution_;
     }
 
     std::vector<Time>

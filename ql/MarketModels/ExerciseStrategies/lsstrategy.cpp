@@ -28,12 +28,14 @@ namespace QuantLib {
                 const boost::shared_ptr<MarketModelBasisSystem>& basisSystem,
                 const std::vector<std::vector<Real> >& basisCoefficients,
                 const EvolutionDescription& evolution,
+                const std::vector<Size>& numeraires,
                 const boost::shared_ptr<MarketModelExerciseValue>& exercise,
                 const boost::shared_ptr<MarketModelExerciseValue>& control)
     : basisSystem_(basisSystem), basisCoefficients_(basisCoefficients),
       exercise_(exercise), control_(control),
-      numeraires_(evolution.numeraires()) {
+      numeraires_(numeraires) {
       
+        checkCompatibility(evolution, numeraires);
         relevantTimes_ = evolution.evolutionTimes();
 
         isBasisTime_ = isInSubset(relevantTimes_,

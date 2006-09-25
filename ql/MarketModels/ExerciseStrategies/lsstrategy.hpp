@@ -35,6 +35,7 @@ namespace QuantLib {
                 const boost::shared_ptr<MarketModelBasisSystem>& basisSystem,
                 const std::vector<std::vector<Real> >& basisCoefficients,
                 const EvolutionDescription& evolution,
+                const std::vector<Size>& numeraires,
                 const boost::shared_ptr<MarketModelExerciseValue>& exercise,
                 const boost::shared_ptr<MarketModelExerciseValue>& control);
         std::vector<Time> exerciseTimes() const;
