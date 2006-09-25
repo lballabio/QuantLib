@@ -71,23 +71,9 @@ namespace QuantLib {
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
         Size numberOfRates() const;     // returns rateTimes().size() - 1
         Size numberOfSteps() const;     // returns evolutionTimes().size()
-
-        //const std::vector<Size>& numeraires() const;
-        //void setNumeraires(const std::vector<Size>&);
-
-        //void setTerminalMeasure();
-        //bool isInTerminalMeasure() const;
-
-        //void setMoneyMarketMeasure();
-        //bool isInMoneyMarketMeasure() const;
-
-        //void setMoneyMarketPlusMeasure(Size offset = 1);
-        //bool isInMoneyMarketPlusMeasure(Size offset = 1) const;
-
       private:
         std::vector<Time> rateTimes_, evolutionTimes_;
         Size steps_;
-        //std::vector<Size> numeraires_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
         std::vector<Time> rateTaus_;
         Matrix effStopTime_;
@@ -118,8 +104,8 @@ namespace QuantLib {
 
     /*! Offsetted discretely compounded money market account measure:
         for each step the offset-th unexpired bond is used as numeraire.
-        When offset=0 is the usual discretely compounded money market
-        account measure
+        When offset=0 the result is the usual discretely compounded money
+        market account measure
     */
     std::vector<Size> moneyMarketPlusMeasure(const EvolutionDescription&,
                                              Size offset = 1);
