@@ -32,7 +32,8 @@ namespace QuantLib {
 
     std::vector<Size> MarketModelComposite::suggestedNumeraires() const {
         QL_REQUIRE(finalized_, "composite not finalized");
-        return components_.front().product->suggestedNumeraires();
+        return std::vector<Size>(evolutionTimes_.size(),
+                                 rateTimes_.size()-1);
     }
 
     std::vector<Time> MarketModelComposite::possibleCashFlowTimes() const {
@@ -53,7 +54,7 @@ namespace QuantLib {
     void MarketModelComposite::add(
                     const boost::shared_ptr<MarketModelMultiProduct>& product,
                     Real multiplier) {
-		QL_REQUIRE(!finalized_, "product already finalized");
+        QL_REQUIRE(!finalized_, "product already finalized");
         EvolutionDescription d = product->evolution();
         if (!components_.empty()) {
             // enforce preconditions
@@ -81,7 +82,7 @@ namespace QuantLib {
 
 
     void MarketModelComposite::finalize() {
-		QL_REQUIRE(!finalized_, "product already finalized");
+        QL_REQUIRE(!finalized_, "product already finalized");
         QL_REQUIRE(!components_.empty(), "no sub-product provided");
 
         // fetch the rate times from the first subproduct (we checked
