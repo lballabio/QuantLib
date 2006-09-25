@@ -335,17 +335,12 @@ void CapFloorTest::testImpliedVolatility() {
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {
-                            BOOST_FAIL(
-                                typeToString(types[i]) << ":\n"
-                                << "    strike:           "
-                                << strikes[j] << "\n"
-                                << "    risk-free rate:   "
-                                << io::rate(r) << "\n"
-                                << "    length:         "
-                                << lengths[k] << " years\n"
-                                << "    volatility:       "
-                                << io::volatility(v) << "\n\n"
-                                << e.what());
+                            BOOST_FAIL(typeToString(types[i]) <<
+                                "\n  strike:     " << io::rate(strikes[j]) <<
+                                "\n  risk-free:  " << io::rate(r) <<
+                                "\n  length:     " << lengths[k] << "Y" <<
+                                "\n  volatility: " << io::volatility(v) <<
+                                "\n" << e.what());
                         }
                         if (std::fabs(implVol-v) > tolerance) {
                             // the difference might not matter

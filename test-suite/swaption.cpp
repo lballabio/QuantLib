@@ -781,16 +781,12 @@ void SwaptionTest::testImpliedVolatility() {
                                                             tolerance,
                                                             maxEvaluations);
                             } catch (std::exception& e) {
-                                BOOST_FAIL(
-                                "    Swaption " <<
-                                exercises[i] << "y x " << lengths[j] << "y"
-                                << "      type:           "
-                                << types[h] << ":\n"
-                                << "    strike:           "
-                                << strikes[t] << "\n"
-                                << "    volatility:       "
-                                << vols[u] << "\n\n"
-                                << e.what());
+                                BOOST_FAIL("\n  Swaption:   " << exercises[i]
+                                        << "Yx" << lengths[j] << "Y"
+                                        << "\n  type:       " << types[h]
+                                        << "\n  strike:     " << strikes[t]
+                                        << "\n  volatility: " << vols[u]
+                                        << "\n" << e.what());
                             }
                             if (std::fabs(implVol-vols[u]) > tolerance) {
                                 // the difference might not matter
