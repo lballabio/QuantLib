@@ -69,6 +69,27 @@ QL_TESTS = \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp
 
+QL_BENCHMARK = \
+	quantlibbenchmark.cpp \
+	americanoption.hpp americanoption.cpp \
+	asianoptions.hpp asianoptions.cpp \
+	barrieroption.hpp barrieroption.cpp \
+	basketoption.hpp basketoption.cpp \
+	batesmodel.hpp batesmodel.cpp \
+	digitaloption.hpp digitaloption.cpp \
+	dividendoption.hpp dividendoption.cpp \
+	europeanoption.hpp europeanoption.cpp \
+	hestonmodel.hpp hestonmodel.cpp \
+	jumpdiffusion.hpp jumpdiffusion.cpp \
+	libormarketmodel.hpp libormarketmodel.cpp \
+	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
+	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
+	quantooption.hpp quantooption.cpp \
+	riskstats.hpp riskstats.cpp \
+	shortratemodels.hpp shortratemodels.cpp \
+	old_pricers.hpp old_pricers.cpp \
+	utilities.hpp utilities.cpp 
+
 dist-hook:
 	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/bin
@@ -80,13 +101,17 @@ AM_CPPFLAGS = \
 	-I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir} \
 	${BOOST_UNIT_TEST_DEFINE}
 
-bin_PROGRAMS = quantlib-test-suite
+bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
-TESTS = quantlib-test-suite
+quantlib_benchmark_SOURCES = ${QL_BENCHMARK}
+quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la
+quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
+
+TESTS = quantlib-test-suite quantlib-benchmark
 
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
 
