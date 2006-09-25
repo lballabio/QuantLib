@@ -32,8 +32,7 @@ namespace QuantLib {
 
     std::vector<Size> MarketModelComposite::suggestedNumeraires() const {
         QL_REQUIRE(finalized_, "composite not finalized");
-        return std::vector<Size>(evolutionTimes_.size(),
-                                 rateTimes_.size()-1);
+        return terminalMeasure(evolution_);
     }
 
     std::vector<Time> MarketModelComposite::possibleCashFlowTimes() const {
