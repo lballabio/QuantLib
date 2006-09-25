@@ -6810,6 +6810,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Products\compositeproduct.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\compositeproduct.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp"
 					>
 				</File>
@@ -6839,6 +6847,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\multiproductonestep.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.hpp"
 					>
 				</File>
 				<Filter

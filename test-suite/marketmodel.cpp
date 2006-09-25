@@ -1229,21 +1229,21 @@ void MarketModelTest::testCallableSwap2() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
-    //suite->add(BOOST_TEST_CASE(
-    //                       &MarketModelTest::testAbcdVolatilityIntegration));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+    suite->add(BOOST_TEST_CASE(
+                           &MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
 
-    //suite->add(BOOST_TEST_CASE(
-    //                  &MarketModelTest::testOneStepForwardsAndCaplets));
-    //suite->add(BOOST_TEST_CASE(
-    //                      &MarketModelTest::testMultiStepForwardsAndCaplets));
-    //suite->add(BOOST_TEST_CASE(
-    //                          &MarketModelTest::testMultiStepCoinitialSwaps));
-    //suite->add(BOOST_TEST_CASE(
-    //                          &MarketModelTest::testMultiStepCoterminalSwaps));
+    suite->add(BOOST_TEST_CASE(
+                      &MarketModelTest::testOneStepForwardsAndCaplets));
+    suite->add(BOOST_TEST_CASE(
+                          &MarketModelTest::testMultiStepForwardsAndCaplets));
+    suite->add(BOOST_TEST_CASE(
+                              &MarketModelTest::testMultiStepCoinitialSwaps));
+    suite->add(BOOST_TEST_CASE(
+                              &MarketModelTest::testMultiStepCoterminalSwaps));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));

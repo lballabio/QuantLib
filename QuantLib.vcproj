@@ -2922,6 +2922,12 @@
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\swapbasissystem.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapbasissystem.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp">
 			</File>
 			<File
@@ -2938,6 +2944,12 @@
 				Filter="">
 				<File
 					RelativePath=".\ql\MarketModels\Products\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\compositeproduct.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\compositeproduct.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp">
@@ -2963,9 +2975,18 @@
 				<File
 					RelativePath=".\ql\MarketModels\Products\multiproductonestep.hpp">
 				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.hpp">
+				</File>
 				<Filter
 					Name="OneStep"
 					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Products\OneStep\all.hpp">
+					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.cpp">
 					</File>
@@ -2995,6 +3016,9 @@
 					Name="MultiStep"
 					Filter="">
 					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\all.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp">
 					</File>
 					<File
@@ -3005,6 +3029,12 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp">
@@ -3029,6 +3059,18 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.hpp">
 					</File>
 				</Filter>
 			</Filter>
