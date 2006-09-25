@@ -23,22 +23,21 @@
 namespace QuantLib {
 
     Real CumulativeNormalDistribution::operator()(Real z) const {
-        /// ???
-        QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
-                   "not a real number. ");
+        //QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
+        //           "not a real number. ");
         z = (z - average_) / sigma_;
 
-        Real result = 0.5 * ( 1 + errorFunction_( z*M_SQRT_2 ) );
-        if (result<=QL_EPSILON) {
+        Real result = 0.5 * ( 1.0 + errorFunction_( z*M_SQRT_2 ) );
+        if (result<=1e-8) { //todo: investigate the threshold level
             // Asymptotic expansion for very negative z following (26.2.12)
             // on page 408 in M. Abramowitz and A. Stegun,
             // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
-            Real sum=1, zsqr=z*z, i=1, g=1, x, y,
+            Real sum=1.0, zsqr=z*z, i=1.0, g=1.0, x, y,
                  a=QL_MAX_REAL, lasta;
             do {
                 lasta=a;
-                x = (4*i-3)/zsqr;
-                y = x*((4*i-1)/zsqr);
+                x = (4.0*i-3.0)/zsqr;
+                y = x*((4.0*i-1)/zsqr);
                 a = g*(x-y);
                 sum -= a;
                 g *= y;
