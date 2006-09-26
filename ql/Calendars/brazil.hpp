@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Piter Dias
+ Copyright (C) 2005, 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,13 +53,16 @@ namespace QuantLib {
     */
     class Brazil : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class SettlementImpl : public Calendar::WesternImpl {
           public:
             std::string name() const { return "Brazil"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Brazil();
+        //! Brazilian calendars
+        enum Market { Settlement             //!< generic settlement calendar
+        };
+        Brazil(Market market = Settlement);
     };
 
 }

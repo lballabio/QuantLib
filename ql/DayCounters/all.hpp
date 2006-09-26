@@ -25,6 +25,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/actualactual.hpp>
+#include <ql/DayCounters/business252.hpp>
 #include <ql/DayCounters/one.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/thirty360.hpp>

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +23,8 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/one.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
+#include <ql/DayCounters/business252.hpp>
+#include <ql/Calendars/brazil.hpp>
 #include <iomanip>
 
 using namespace QuantLib;
@@ -216,11 +219,61 @@ void DayCounterTest::testOne() {
     }
 }
 
+void DayCounterTest::testBusiness252() {
+
+    BOOST_MESSAGE("Testing business/252 day counter...");
+
+    std::vector<Date> testDates;
+    testDates.push_back(Date(1,February,2002));
+    testDates.push_back(Date(4,February,2002));
+    testDates.push_back(Date(16,May,2003));
+    testDates.push_back(Date(17,December,2003));
+    testDates.push_back(Date(17,December,2004));
+    testDates.push_back(Date(19,December,2005));
+    testDates.push_back(Date(2,January,2006));
+    testDates.push_back(Date(13,March,2006));
+    testDates.push_back(Date(15,May,2006));
+    testDates.push_back(Date(17,March,2006));
+    testDates.push_back(Date(15,May,2006));
+    testDates.push_back(Date(26,July,2006));
+
+    Time expected[] = {
+        0.0039682539683,
+        1.2738095238095,
+        0.6031746031746,
+        0.9960317460317,
+        1.0000000000000,
+        0.0396825396825,
+        0.1904761904762,
+        0.1666666666667,
+        -0.1507936507937,
+        0.1507936507937,
+        0.2023809523810
+        };
+
+    DayCounter dayCounter = Business252(Brazil());
+
+    Time calculated;
+
+    for (Size i=1; i<testDates.size(); i++) {
+        calculated = dayCounter.yearFraction(testDates[i-1],testDates[i]);
+        if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
+                BOOST_ERROR("from " << testDates[i-1]
+                            << " to " << testDates[i] << ":\n"
+                            << std::setprecision(12)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected[i-1]);
+        }
+    }
+}
+
+
 test_suite* DayCounterTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(BOOST_TEST_CASE(&DayCounterTest::testActualActual));
     suite->add(BOOST_TEST_CASE(&DayCounterTest::testSimple));
     suite->add(BOOST_TEST_CASE(&DayCounterTest::testOne));
+    suite->add(BOOST_TEST_CASE(&DayCounterTest::testBusiness252));
     return suite;
 }
 

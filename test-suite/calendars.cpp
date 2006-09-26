@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2005 Ferdinando Ametrano
  Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -758,6 +759,53 @@ void CalendarTest::testEndOfMonth() {
     }
 }
 
+void CalendarTest::testBusinessDaysBetween() {
+
+    BOOST_MESSAGE("Testing calculation of business days between dates...");
+
+    std::vector<Date> testDates;
+    testDates.push_back(Date(1,February,2002));
+    testDates.push_back(Date(4,February,2002));
+    testDates.push_back(Date(16,May,2003));
+    testDates.push_back(Date(17,December,2003));
+    testDates.push_back(Date(17,December,2004));
+    testDates.push_back(Date(19,December,2005));
+    testDates.push_back(Date(2,January,2006));
+    testDates.push_back(Date(13,March,2006));
+    testDates.push_back(Date(15,May,2006));
+    testDates.push_back(Date(17,March,2006));
+    testDates.push_back(Date(15,May,2006));
+    testDates.push_back(Date(26,July,2006));
+
+    BigInteger expected[] = {
+        1,
+        321,
+        152,
+        251,
+        252,
+        10,
+        48,
+        42,
+        -38,
+        38,
+        51
+    };
+
+    Calendar calendar = Brazil();
+
+    for (Size i=1; i<testDates.size(); i++) {
+        Integer calculated = calendar.businessDaysBetween(testDates[i-1],
+                                                          testDates[i]);
+        if (calculated != expected[i-1]) {
+            BOOST_ERROR("from " << testDates[i-1]
+                        << " to " << testDates[i] << ":\n"
+                        << "    calculated: " << calculated << "\n"
+                        << "    expected:   " << expected[i-1]);
+        }
+    }
+}
+
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
@@ -785,6 +833,7 @@ test_suite* CalendarTest::suite() {
     suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
 
     suite->add(BOOST_TEST_CASE(&CalendarTest::testEndOfMonth));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testBusinessDaysBetween));
 
     return suite;
 }

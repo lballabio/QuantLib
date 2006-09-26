@@ -136,6 +136,45 @@ namespace QuantLib {
         return advance(d, p.length(), p.units(), c, endOfMonth);
     }
 
+    BigInteger Calendar::businessDaysBetween(const Date& from,
+                                             const Date& to,
+                                             bool includeFirst,
+                                             bool includeLast) const {
+        BigInteger wd = 0;
+        if (from == to) {
+            if (isBusinessDay(from) && (includeFirst || includeLast))
+                wd = 1;
+        } else {
+            if (from < to) {
+                Date d = from;
+                while (d <= to) {
+                    if (isBusinessDay(d))
+                        ++wd;
+                    ++d;
+                }
+            } else if (from > to) {
+                Date d = to;
+                while (d <= from) {
+                    if (isBusinessDay(d))
+                        ++wd;
+                    ++d;
+                }
+            }
+
+            if (isBusinessDay(from) && !includeFirst)
+                wd--;
+            if (isBusinessDay(to) && !includeLast)
+                wd--;
+
+            if (from > to)
+                wd = -wd;
+        }
+
+        return wd;
+    }
+
+
+
    // Western calendars
 
     bool Calendar::WesternImpl::isWeekend(Weekday w) const {

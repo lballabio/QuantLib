@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -171,6 +172,13 @@ namespace QuantLib {
                      const Period& period,
                      BusinessDayConvention convention = Following,
                      bool endOfMonth = false) const;
+        /*! Calculates the number of business days between two given
+            dates and returns the result.
+        */
+        BigInteger businessDaysBetween(const Date& from,
+                                       const Date& to,
+                                       bool includeFirst = true,
+                                       bool includeLast = false) const;
         //@}
 
         //! partial calendar implementation

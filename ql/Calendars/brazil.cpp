@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Piter Dias
+ Copyright (C) 2005, 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,13 +21,21 @@
 
 namespace QuantLib {
 
-    Brazil::Brazil() {
-        // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Brazil::Impl);
-        impl_ = impl;
+    Brazil::Brazil(Brazil::Market market) {
+        // all calendar instances on the same market share the same
+        // implementation instance
+        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+            new Brazil::SettlementImpl);
+        switch (market) {
+          case Settlement:
+            impl_ = settlementImpl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
-    bool Brazil::Impl::isBusinessDay(const Date& date) const {
+    bool Brazil::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();

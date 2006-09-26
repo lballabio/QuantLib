@@ -7,6 +7,7 @@ include_HEADERS = \
 	actual360.hpp \
 	actual365fixed.hpp \
 	actualactual.hpp \
+	business252.hpp \
 	one.hpp \
 	simpledaycounter.hpp \
 	thirty360.hpp
