@@ -59,6 +59,8 @@ namespace QuantLib {
       public:
         typedef typename T::value_type value_type;
         typedef std::vector<std::pair<Size,value_type> > table_type;
+        ConvergenceStatistics(const T& stats,
+                              const U& rule = U());
         ConvergenceStatistics(const U& rule = U());
         void add(const value_type& value, Real weight = 1.0);
         template <class DataIterator>
@@ -83,6 +85,13 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    template <class T, class U>
+    ConvergenceStatistics<T,U>::ConvergenceStatistics(const T& stats,
+                                                      const U& rule)
+    : T(stats), samplingRule_(rule) {
+        reset();
+    }
 
     template <class T, class U>
     ConvergenceStatistics<T,U>::ConvergenceStatistics(const U& rule)
