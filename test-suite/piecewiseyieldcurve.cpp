@@ -266,6 +266,8 @@ void testCurveConsistency(const T&, const I& interpolator) {
                          Actual360(),curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
+        Rate approximateRate = curveHandle->parRate(swapData[i].n,
+            settlement, fixedLegFrequency);
         #ifdef QL_PATCH_BORLAND
         Real tolerance = 1.0e-5;
         #else
@@ -276,6 +278,14 @@ void testCurveConsistency(const T&, const I& interpolator) {
                        << std::setprecision(8)
                        << "    estimated rate: "
                        << io::rate(estimatedRate) << "\n"
+                       << "    expected rate:  "
+                       << io::rate(expectedRate));
+        }
+        if (std::fabs(approximateRate-estimatedRate) > 0.0005) {
+            BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
+                       << std::setprecision(8)
+                       << "  approximate rate: "
+                       << io::rate(approximateRate) << "\n"
                        << "    expected rate:  "
                        << io::rate(expectedRate));
         }
