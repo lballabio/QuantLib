@@ -290,7 +290,7 @@ namespace QuantLib {
         QL_REQUIRE(times.size() >= 2, "at least two times are required");
         checkRange(times.back(), extrapolate);
         Real sum = 0.0;
-        for (Size i=1; i<=times.size(); i++)
+        for (Size i=1; i<times.size(); i++)
             sum += discountImpl(times[i]);
         Real result = discountImpl(times.front())-discountImpl(times.back());
         result *=  Real(freq)/sum;
