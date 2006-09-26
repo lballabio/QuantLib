@@ -7,6 +7,7 @@ Makefile.win
 *.dep
 *.plg
 quantlib-test-suite
+quantlib-benchmark
 build
 .deps
 .libs
