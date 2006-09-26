@@ -35,6 +35,10 @@ examples:
 check-examples:
 	$(MAKE) -C Examples check-examples
 
+.PHONY: benchmark
+benchmark:
+	$(MAKE) -C test-suite benchmark
+
 .PHONY: docs docs-man docs-online docs-dist docs-clean
 BASEPATH = @abs_top_srcdir@
 docs:

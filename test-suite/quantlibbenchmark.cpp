@@ -18,20 +18,20 @@
 */
 
 
-/*  
+/*
  QuantLib Benchmark Suite
 
- Measures the performance of a preselected set of numerically intensive 
- test cases. The overall QuantLib Benchmark Index is given by the average 
+ Measures the performance of a preselected set of numerically intensive
+ test cases. The overall QuantLib Benchmark Index is given by the average
  performance in mflops.
- 
- The number of floating point operations of a given test case was measured  
+
+ The number of floating point operations of a given test case was measured
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr.
- 
+
  Example results: 1. Pentium4@3.0Ghz  : 266.3 mflops
                   2. PentiumIII@1.1GHz: 146.2 mflops
                   3. Strong ARM@206Mhz:   1.4 mflops
- 
+
  Remarks: OS: Linux, static libs
   1. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
@@ -39,18 +39,17 @@
                 -mfpmath=sse,387 -msse -funroll-all-loops
   3. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
-  This benchmark is derived from quantlibtestsuite.cpp. Please see the 
+  This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
 */
-
-#include <iostream>
-#include <iomanip>
-#include <list>
-#include <string>
 
 #include <ql/types.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/timer.hpp>
+#include <iostream>
+#include <iomanip>
+#include <list>
+#include <string>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -113,8 +112,8 @@ namespace {
     std::list<double> runTimes;
     std::list<Benchmark> bm;
 
-    void startTimer() { 
-        t.restart(); 
+    void startTimer() {
+        t.restart();
     }
 
     void stopTimer() {
@@ -128,27 +127,27 @@ namespace {
         #else
         "QuantLib " QL_VERSION;
         #endif
-        
-        std::cout << std::endl 
+
+        std::cout << std::endl
                   << std::string(52,'-') << std::endl;
         std::cout << header << std::endl;
-        std::cout << std::string(52,'-') 
+        std::cout << std::string(52,'-')
                   << std::endl << std::endl;
-        
+
         double sum=0;
         std::list<double>::const_iterator iterT = runTimes.begin();
         std::list<Benchmark>::const_iterator iterBM = bm.begin();
 
         while (iterT != runTimes.end()) {
             const double mflopsPerSec = iterBM->getMflops()/(*iterT);
-            std::cout << iterBM->getName() 
+            std::cout << iterBM->getName()
                       << std::string(40-iterBM->getName().length(),' ') << ":"
                       << std::fixed << std::setw(6) << std::setprecision(1)
                       << mflopsPerSec
                       << " mflops" << std::endl;
 
             sum+=mflopsPerSec;
-            iterT++; 
+            iterT++;
             iterBM++;
         }
         std::cout << std::string(52,'-') << std::endl
@@ -177,9 +176,9 @@ test_suite* init_unit_test_suite(int, char* argv[]) {
         &BarrierOptionTest::testBabsiriValues, 944.5));
     bm.push_back(Benchmark("BasketOption::EuroTwoValues",
         &BasketOptionTest::testEuroTwoValues, 392.9));
-    bm.push_back(Benchmark("BasketOption::TavellaValues", 
+    bm.push_back(Benchmark("BasketOption::TavellaValues",
         &BasketOptionTest::testTavellaValues, 520.2));
-    bm.push_back(Benchmark("BasketOption::OddSamples", 
+    bm.push_back(Benchmark("BasketOption::OddSamples",
         &BasketOptionTest::testOddSamples, 749.1));
     bm.push_back(Benchmark("BatesModel::DAXCalibration",
         &BatesModelTest::testDAXCalibration, 2527.7));

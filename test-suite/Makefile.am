@@ -69,7 +69,7 @@ QL_TESTS = \
 	varianceswaps.hpp varianceswaps.cpp \
 	volatilitymodels.hpp volatilitymodels.cpp
 
-QL_BENCHMARK = \
+QL_BENCHMARKS = \
 	quantlibbenchmark.cpp \
 	americanoption.hpp americanoption.cpp \
 	asianoptions.hpp asianoptions.cpp \
@@ -88,7 +88,7 @@ QL_BENCHMARK = \
 	riskstats.hpp riskstats.cpp \
 	shortratemodels.hpp shortratemodels.cpp \
 	old_pricers.hpp old_pricers.cpp \
-	utilities.hpp utilities.cpp 
+	utilities.hpp utilities.cpp
 
 dist-hook:
 	mkdir -p $(distdir)/build
@@ -101,19 +101,22 @@ AM_CPPFLAGS = \
 	-I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir} \
 	${BOOST_UNIT_TEST_DEFINE}
 
-bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
-
+bin_PROGRAMS = quantlib-test-suite
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
-quantlib_benchmark_SOURCES = ${QL_BENCHMARK}
+EXTRA_PROGRAMS = quantlib-benchmark
+quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
-TESTS = quantlib-test-suite quantlib-benchmark
-
+TESTS = quantlib-test-suite
 TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
+
+.PHONY: benchmark
+benchmark: quantlib-benchmark
+	BOOST_TEST_LOG_LEVEL=message ./quantlib-benchmark$(EXEEXT)
 
 EXTRA_DIST = \
 	README.txt \
