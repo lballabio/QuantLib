@@ -273,21 +273,24 @@ void testCurveConsistency(const T&, const I& interpolator) {
         #else
         Real tolerance = 1.0e-9;
         #endif
-        if (std::fabs(expectedRate-estimatedRate) > tolerance) {
+        Spread error = std::fabs(expectedRate-estimatedRate);
+        if (error > tolerance) {
             BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
-                       << std::setprecision(8)
-                       << "    estimated rate: "
-                       << io::rate(estimatedRate) << "\n"
-                       << "    expected rate:  "
-                       << io::rate(expectedRate));
+                    << std::setprecision(8)
+                    << "\n approximate rate: " << io::rate(approximateRate)
+                    << "\n expected rate:    " << io::rate(expectedRate)
+                    << "\n error:            " << io::rate(error)
+                    << "\n tolerance:        " << io::rate(tolerance));
         }
-        if (std::fabs(approximateRate-estimatedRate) > 0.0005) {
-            BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
-                       << std::setprecision(8)
-                       << "  approximate rate: "
-                       << io::rate(approximateRate) << "\n"
-                       << "    expected rate:  "
-                       << io::rate(expectedRate));
+        Real tolerance2 = 0.00015;
+        error = std::fabs(approximateRate-estimatedRate);
+        if (error > tolerance2) {
+            BOOST_ERROR(swapData[i].n << " year(s) swap:"
+                    << std::setprecision(3)
+                    << "\n approximate rate: " << io::rate(approximateRate)
+                    << "\n expected rate:    " << io::rate(expectedRate)
+                    << "\n error:            " << io::rate(error)
+                    << "\n tolerance:        " << io::rate(tolerance2));
         }
     }
 
