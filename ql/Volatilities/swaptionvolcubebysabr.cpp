@@ -111,7 +111,7 @@ namespace QuantLib {
 
     }
 
-    SwaptionVolatilityCubeBySabr::Cube 
+    SwaptionVolatilityCubeBySabr::Cube
     SwaptionVolatilityCubeBySabr::sabrCalibration(const Cube& marketVolCube) const {
 
         const std::vector<Time>& exerciseTimes = marketVolCube.expiries();
@@ -418,11 +418,11 @@ namespace QuantLib {
                                     const std::vector<Date>& exerciseDates,
                                     const std::vector<Period>& swapTenors,
                                     const std::vector<Real>& expiries,
-                                    const std::vector<Real>& lengths, 
+                                    const std::vector<Real>& lengths,
                                     Size nLayers,
                                     bool extrapolation)
-    : exerciseDates_(exerciseDates), swapTenors_(swapTenors),
-      expiries_(expiries), lengths_(lengths),
+    : expiries_(expiries), lengths_(lengths),
+      exerciseDates_(exerciseDates), swapTenors_(swapTenors),
       nLayers_(nLayers), extrapolation_(extrapolation) {
 
         QL_REQUIRE(expiries.size()>1,"Cube::Cube(...): wrong input expiries");
