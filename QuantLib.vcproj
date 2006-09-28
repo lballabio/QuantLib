@@ -8396,6 +8396,9 @@
 				RelativePath=".\ql\Utilities\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Utilities\clone.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Utilities\dataformatters.cpp">
 			</File>
 			<File
