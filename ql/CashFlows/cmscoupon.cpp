@@ -341,4 +341,107 @@ namespace QuantLib {
         return leg;
     }
 
+    std::vector<boost::shared_ptr<CashFlow> >
+    CMSZeroCouponVector(const Schedule& schedule,
+                    BusinessDayConvention paymentAdjustment,
+                    const std::vector<Real>& nominals,
+                    const boost::shared_ptr<SwapIndex>& index,
+                    Integer fixingDays,
+                    const DayCounter& dayCounter,
+                    const std::vector<Real>& baseRates,
+                    const std::vector<Real>& fractions,
+                    const std::vector<Real>& caps,
+                    const std::vector<Real>& floors,
+                    const std::vector<Real>& meanReversions,
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
+                    const Handle<SwaptionVolatilityStructure>& vol) {
+
+        std::vector<boost::shared_ptr<CashFlow> > leg;
+        Calendar calendar = schedule.calendar();
+        Size N = schedule.size();
+
+        QL_REQUIRE(!nominals.empty(), "no nominal given");
+
+        // All payment dates at the end
+        Date paymentDate = calendar.adjust(schedule.date(N-1),paymentAdjustment);
+
+        // first period might be short or long
+        Date start = schedule.date(0), end = schedule.date(1);
+        if (schedule.isRegular(1)) {
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CMSCoupon(get(nominals,0), paymentDate, index,
+                              start, end, fixingDays, dayCounter, Pricer,
+                              get(fractions,0,1.0), get(baseRates,0,0.0),
+                              get(caps,0,Null<Rate>()),
+                              get(floors,0,Null<Rate>()),
+                              get(meanReversions,0,Null<Rate>()),
+                              start, end)));
+
+        } else {
+            Date reference = end - Period(schedule.frequency());
+            reference =
+                calendar.adjust(reference,paymentAdjustment);
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CMSCoupon(get(nominals,0), paymentDate, index,
+                              start, end, fixingDays, dayCounter, Pricer,
+                              get(fractions,0,1.0), get(baseRates,0,0.0),
+                              get(caps,0,Null<Rate>()),
+                              get(floors,0,Null<Rate>()),
+                              get(meanReversions,0,Null<Rate>()),
+                              reference, end)));
+        }
+        // regular periods
+        for (Size i=2; i<schedule.size()-1; i++) {
+            start = end; end = schedule.date(i);
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CMSCoupon(get(nominals,i-1), paymentDate, index,
+                              start, end, fixingDays, dayCounter, Pricer,
+                              get(fractions,i-1,1.0), get(baseRates,i-1,0.0),
+                              get(caps,i-1,Null<Rate>()),
+                              get(floors,i-1,Null<Rate>()),
+                              get(meanReversions,i-1,Null<Rate>()),
+                              start, end)));
+        }
+        if (schedule.size() > 2) {
+            // last period might be short or long
+            start = end; end = schedule.date(N-1);
+            if (schedule.isRegular(N-1)) {
+                leg.push_back(boost::shared_ptr<CashFlow>(
+                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
+                                  start, end, fixingDays, dayCounter, Pricer,
+                                  get(fractions,N-2,1.0),
+                                  get(baseRates,N-2,0.0),
+                                  get(caps,N-2,Null<Rate>()),
+                                  get(floors,N-2,Null<Rate>()),
+                                  get(meanReversions,N-2,Null<Rate>()),
+                                  start, end)));
+            } else {
+                Date reference = start + Period(schedule.frequency());
+                reference =
+                    calendar.adjust(reference,paymentAdjustment);
+                leg.push_back(boost::shared_ptr<CashFlow>(
+                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
+                                  start, end, fixingDays, dayCounter, Pricer,
+                                  get(fractions,N-2,1.0),
+                                  get(baseRates,N-2,0.0),
+                                  get(caps,N-2,Null<Rate>()),
+                                  get(floors,N-2,Null<Rate>()),
+                                  get(meanReversions,N-2,Null<Rate>()),
+                                  start, reference)));
+            }
+        }
+
+        for (Size i=0; i<leg.size(); i++) {
+            const boost::shared_ptr<CMSCoupon> cmsCoupon =
+               boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
+            if (cmsCoupon)
+                cmsCoupon->setSwaptionVolatility(vol);
+            else
+                QL_FAIL("unexpected error when casting to CMSCoupon");
+        }
+
+        return leg;
+    }
+
+
 }
