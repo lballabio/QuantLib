@@ -1093,6 +1093,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\DayCounters\business252.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\DayCounters\one.hpp"
 				>
 			</File>
