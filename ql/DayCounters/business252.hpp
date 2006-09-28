@@ -37,13 +37,20 @@ namespace QuantLib {
           private:
             Calendar calendar_;
           public:
-            std::string name() const { return std::string("Business/252"); }
-            BigInteger dayCount(const Date& d1, const Date& d2) const {
-                return calendar_.businessDaysBetween(d1,d2);
+            std::string name() const {
+                std::ostringstream out;
+                out << "Business/252(" << calendar_.name() << ")";
+                return out.str();
             }
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
-                return dayCount(d1,d2)/252.0;
+            BigInteger dayCount(const Date& d1,
+                                const Date& d2) const {
+                return calendar_.businessDaysBetween(d1, d2);
+            }
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const {
+                return dayCount(d1, d2)/252.0;
             }
             Impl(Calendar c) { calendar_ = c; }
         };
