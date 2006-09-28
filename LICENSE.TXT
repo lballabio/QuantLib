@@ -35,6 +35,7 @@ QuantLib is
     Copyright (C) 2006 Cristina Duminuco
     Copyright (C) 2006 Richard Gould
     Copyright (C) 2006 Allen Kuo
+    Copyright (C) 2006 Roland Lichters
     Copyright (C) 2006 Katiuscia Manzoni
     Copyright (C) 2006 Mario Pucci
 
