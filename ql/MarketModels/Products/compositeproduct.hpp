@@ -21,7 +21,7 @@
 #define quantlib_market_model_composite_product_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
-#include <list>
+#include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
@@ -43,25 +43,25 @@ namespace QuantLib {
         //@}
         //! \name Composite facilities
         //@{
-        void add(const boost::shared_ptr<MarketModelMultiProduct>&,
+        void add(const Clone<MarketModelMultiProduct>&,
                  Real multiplier = 1.0);
-        void subtract(const boost::shared_ptr<MarketModelMultiProduct>&,
+        void subtract(const Clone<MarketModelMultiProduct>&,
                       Real multiplier = 1.0);
         void finalize();
         //@}
       protected:
         // subproducts
         struct SubProduct {
-            boost::shared_ptr<MarketModelMultiProduct> product;
+            Clone<MarketModelMultiProduct> product;
             Real multiplier;
             std::vector<Size> numberOfCashflows;
             std::vector<std::vector<CashFlow> > cashflows;
             std::vector<Size> timeIndices;
             bool done;
         };
-        std::list<SubProduct> components_;
-        typedef std::list<SubProduct>::iterator iterator;
-        typedef std::list<SubProduct>::const_iterator const_iterator;
+        std::vector<SubProduct> components_;
+        typedef std::vector<SubProduct>::iterator iterator;
+        typedef std::vector<SubProduct>::const_iterator const_iterator;
         // common evolution data
         std::vector<Time> rateTimes_;
         std::vector<Time> evolutionTimes_;

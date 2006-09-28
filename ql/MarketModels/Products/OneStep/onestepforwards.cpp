@@ -21,8 +21,7 @@
 
 namespace QuantLib {
 
-    OneStepForwards::OneStepForwards(
-                                    const std::vector<Time>& rateTimes,
+    OneStepForwards::OneStepForwards(const std::vector<Time>& rateTimes,
                                     const std::vector<Real>& accruals,
                                     const std::vector<Time>& paymentTimes,
                                     const std::vector<Rate>& strikes)
@@ -30,12 +29,12 @@ namespace QuantLib {
       paymentTimes_(paymentTimes), strikes_(strikes) {}
 
     bool OneStepForwards::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
-    {
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
         for (Size i=0; i<strikes_.size(); ++i) {
-            double liborRate = currentState.forwardRate(i);
+            Rate liborRate = currentState.forwardRate(i);
             genCashFlows[i][0].timeIndex = i;
             genCashFlows[i][0].amount =
                 (liborRate-strikes_[i])*accruals_[i];
@@ -46,4 +45,10 @@ namespace QuantLib {
         return true;
     }
 
+    std::auto_ptr<MarketModelMultiProduct> OneStepForwards::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                  new OneStepForwards(*this));
+    }
+
 }
+

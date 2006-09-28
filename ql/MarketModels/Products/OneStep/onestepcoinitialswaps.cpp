@@ -28,43 +28,30 @@ namespace QuantLib {
         const std::vector<Time>& paymentTimes,
         double fixedRate)
     : MultiProductOneStep(rateTimes),
-      fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals), 
+      fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
       paymentTimes_(paymentTimes), fixedRate_(fixedRate) {
         // data checks
         lastIndex_ = rateTimes.size()-1;
     }
 
     bool OneStepCoinitialSwaps::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
-    //{
-    //    //double liborRate = currentState.forwardRate(currentIndex_);
-    //    //std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
-    //    //for(Size i=currentIndex_;i<lastIndex_;i++){
-    //    //    genCashFlows[i][0].timeIndex = currentIndex_;
-    //    //    genCashFlows[i][0].amount = -fixedRate_*fixedAccruals_[currentIndex_];
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
+        std::fill(numberCashFlowsThisStep.begin(),
+                  numberCashFlowsThisStep.end(),0);
 
-    //    //    genCashFlows[i][1].timeIndex = currentIndex_;
-    //    //    genCashFlows[i][1].amount = liborRate*floatingAccruals_[currentIndex_];
-
-    //    //    numberCashFlowsThisStep[i] = 2;
-    //    //}
-    //    //++currentIndex_;
-
-    //    return true;//(currentIndex_ == lastIndex_);
-    //}
-        {
-        std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
-
-        for(Size indexOfTime=0;indexOfTime<lastIndex_;indexOfTime++){
-            double liborRate = currentState.forwardRate(indexOfTime);
-            for(Size i=indexOfTime;i<lastIndex_;i++){
-                 genCashFlows[i][(indexOfTime)*2].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime)*2].amount = -fixedRate_*fixedAccruals_[indexOfTime];
+        for (Size indexOfTime=0;indexOfTime<lastIndex_;indexOfTime++) {
+            Rate liborRate = currentState.forwardRate(indexOfTime);
+            for (Size i=indexOfTime;i<lastIndex_;i++) {
+                genCashFlows[i][(indexOfTime)*2].timeIndex = indexOfTime;
+                genCashFlows[i][(indexOfTime)*2].amount =
+                    -fixedRate_*fixedAccruals_[indexOfTime];
 
                 genCashFlows[i][(indexOfTime)*2+1].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime)*2+1].amount = liborRate*floatingAccruals_[indexOfTime];  
+                genCashFlows[i][(indexOfTime)*2+1].amount =
+                    liborRate*floatingAccruals_[indexOfTime];
 
                 numberCashFlowsThisStep[i] += 2;
             }
@@ -72,4 +59,11 @@ namespace QuantLib {
         return true ;
     }
 
+    std::auto_ptr<MarketModelMultiProduct>
+    OneStepCoinitialSwaps::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                            new OneStepCoinitialSwaps(*this));
+    }
+
 }
+

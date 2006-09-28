@@ -23,33 +23,34 @@
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
     class ExerciseAdapter : public MultiProductMultiStep {
       public:
-        ExerciseAdapter(
-            const boost::shared_ptr<MarketModelExerciseValue>& exercise,
-            Size numberOfProducts = 1);
+        ExerciseAdapter(const Clone<MarketModelExerciseValue>& exercise,
+                        Size numberOfProducts = 1);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         const EvolutionDescription& evolution() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState&, 
+        void reset();
+        bool nextTimeStep(const CurveState&,
                           std::vector<Size>&,
                           std::vector<std::vector<CashFlow> >&);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
-        boost::shared_ptr<MarketModelExerciseValue> exercise_;
+        Clone<MarketModelExerciseValue> exercise_;
         Size numberOfProducts_;
         std::vector<bool> isExerciseTime_;
         Size currentIndex_;
     };
 
-    // inline 
+    // inline definition
 
     inline std::vector<Time>
     ExerciseAdapter::possibleCashFlowTimes() const {

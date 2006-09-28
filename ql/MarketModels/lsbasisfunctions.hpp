@@ -23,6 +23,7 @@
 
 #include <ql/MarketModels/curvestate.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -40,6 +41,7 @@ namespace QuantLib {
         virtual std::vector<bool> isExerciseTime() const = 0;
         virtual void values(const CurveState&,
                             std::vector<Real>& results) const = 0;
+        virtual std::auto_ptr<MarketModelBasisSystem> clone() const = 0;
     };
 
 }

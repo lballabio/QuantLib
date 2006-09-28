@@ -27,19 +27,21 @@ namespace QuantLib {
     class OneStepCoinitialSwaps : public MultiProductOneStep {
       public:
         OneStepCoinitialSwaps(const std::vector<Time>& rateTimes,
-                           const std::vector<Real>& fixedAccruals,
-                           const std::vector<Real>& floatingAccruals,
-                           const std::vector<Time>& paymentTimes,
-                           double fixedRate);
+                              const std::vector<Real>& fixedAccruals,
+                              const std::vector<Real>& floatingAccruals,
+                              const std::vector<Time>& paymentTimes,
+                              double fixedRate);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
         void reset();
-        bool nextTimeStep(const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
@@ -48,7 +50,8 @@ namespace QuantLib {
         Size lastIndex_;
     };
 
-    // inline
+
+    // inline definitions
 
     inline std::vector<Time>
     OneStepCoinitialSwaps::possibleCashFlowTimes() const {
@@ -70,4 +73,6 @@ namespace QuantLib {
 
 }
 
+
 #endif
+

@@ -23,6 +23,7 @@
 
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/curvestate.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -47,23 +48,26 @@ namespace QuantLib {
         struct CashFlow {
             Size timeIndex;
             Real amount;
-        }; 
+        };
         virtual ~MarketModelMultiProduct() {}
-       
+
         virtual std::vector<Size> suggestedNumeraires() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;
         virtual std::vector<Time> possibleCashFlowTimes() const = 0;
         virtual Size numberOfProducts() const = 0;
         virtual Size maxNumberOfCashFlowsPerProductPerStep() const = 0;
         //! during simulation put product at start of path
-        virtual void reset() = 0; 
+        virtual void reset() = 0;
         //! return value indicates whether path is finished, TRUE means done
         virtual bool nextTimeStep(
-            const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, 
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated) = 0;
+        //! returns a newly-allocated copy of itself
+        virtual std::auto_ptr<MarketModelMultiProduct> clone() const = 0;
     };
 
 }
+
 
 #endif

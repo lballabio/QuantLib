@@ -32,16 +32,16 @@ namespace QuantLib {
         BermudanSwaptionExerciseValue(const std::vector<Time>& rateTimes,
                                       const std::vector<Rate>& strikes,
                                       Option::Type optionType);
-        virtual Size numberOfExercises() const = 0;
+        Size numberOfExercises() const;
         // including any time at which state should be updated
-        virtual const EvolutionDescription& evolution() const = 0;
-        virtual std::vector<Time> possibleCashFlowTimes() const = 0;
-        virtual void nextStep(const CurveState&) = 0;
-        virtual void reset() = 0;
+        const EvolutionDescription& evolution() const;
+        std::vector<Time> possibleCashFlowTimes() const;
+        void nextStep(const CurveState&);
+        void reset();
         // whether or not evolution times are exercise times
-        virtual std::vector<bool> isExerciseTime() const = 0;
-        virtual MarketModelMultiProduct::CashFlow value(
-                                               const CurveState&) const = 0;
+        std::vector<bool> isExerciseTime() const;
+        MarketModelMultiProduct::CashFlow value(const CurveState&) const;
+        std::auto_ptr<MarketModelExerciseValue> clone() const;
       private:
         Size numberOfExercises_;
         std::vector<Time> rateTimes_;
@@ -54,5 +54,6 @@ namespace QuantLib {
     };
 
 }
+
 
 #endif

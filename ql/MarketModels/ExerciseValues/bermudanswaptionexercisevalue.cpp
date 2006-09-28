@@ -37,7 +37,8 @@ namespace QuantLib {
         return numberOfExercises_;
     }
 
-    const EvolutionDescription& BermudanSwaptionExerciseValue::evolution() const {
+    const EvolutionDescription&
+    BermudanSwaptionExerciseValue::evolution() const {
         return evolution_;
     }
 
@@ -51,9 +52,10 @@ namespace QuantLib {
     }
 
     void BermudanSwaptionExerciseValue::nextStep(const CurveState& state) {
-        Real value = (state.coterminalSwapRate(currentIndex_) - strikes_[currentIndex_])
-                        * state.coterminalSwapRatesAnnuities()[currentIndex_]*optionType_;
-    
+        Real value =
+            (state.coterminalSwapRate(currentIndex_) - strikes_[currentIndex_])
+            * state.coterminalSwapRatesAnnuities()[currentIndex_]*optionType_;
+
         value /= state.discountRatios()[currentIndex_];
         value =  std::max(value, 0.0);
         cf_.timeIndex = currentIndex_;
@@ -61,7 +63,7 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-   
+
     std::vector<bool> BermudanSwaptionExerciseValue::isExerciseTime() const {
         return std::vector<bool>(numberOfExercises_,true);
     }
@@ -69,6 +71,12 @@ namespace QuantLib {
     MarketModelMultiProduct::CashFlow
     BermudanSwaptionExerciseValue::value(const CurveState& ) const {
          return cf_;
+    }
+
+    std::auto_ptr<MarketModelExerciseValue>
+    BermudanSwaptionExerciseValue::clone() const {
+        return std::auto_ptr<MarketModelExerciseValue>(
+                                    new BermudanSwaptionExerciseValue(*this));
     }
 
 }

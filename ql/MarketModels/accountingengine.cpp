@@ -24,21 +24,21 @@
 namespace QuantLib {
 
     AccountingEngine::AccountingEngine(
-        const boost::shared_ptr<MarketModelEvolver>& evolver,
-        const boost::shared_ptr<MarketModelMultiProduct>& product,
-        double initialNumeraireValue)
+                         const boost::shared_ptr<MarketModelEvolver>& evolver,
+                         const Clone<MarketModelMultiProduct>& product,
+                         double initialNumeraireValue)
     : evolver_(evolver), product_(product),
       initialNumeraireValue_(initialNumeraireValue),
-      numberProducts_(product->numberOfProducts()),      
+      numberProducts_(product->numberOfProducts()),
       numerairesHeld_(product->numberOfProducts()),
       numberCashFlowsThisStep_(product->numberOfProducts()),
-      cashFlowsGenerated_(product->numberOfProducts())
-    {
+      cashFlowsGenerated_(product->numberOfProducts()) {
         for (Size i = 0; i <numberProducts_; ++i )
             cashFlowsGenerated_[i].resize(
                        product_->maxNumberOfCashFlowsPerProductPerStep());
-        
-        const std::vector<Time>& cashFlowTimes = product_->possibleCashFlowTimes();
+
+        const std::vector<Time>& cashFlowTimes =
+            product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         for (Size j = 0; j < cashFlowTimes.size(); ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
@@ -46,19 +46,18 @@ namespace QuantLib {
 
     }
 
-    Real AccountingEngine::singlePathValues(std::vector<Real>& values)
-    {
+    Real AccountingEngine::singlePathValues(std::vector<Real>& values) {
         std::fill(numerairesHeld_.begin(),numerairesHeld_.end(),0.);
         Real weight = evolver_->startNewPath();
-        product_->reset();     
+        product_->reset();
         Real principalInNumerairePortfolio = 1.0;
-    
+
         bool done = false;
         do {
             Size thisStep = evolver_->currentStep();
             weight *= evolver_->advanceStep();
-            done = product_->nextTimeStep(evolver_->currentState(), 
-                                          numberCashFlowsThisStep_, 
+            done = product_->nextTimeStep(evolver_->currentState(),
+                                          numberCashFlowsThisStep_,
                                           cashFlowsGenerated_);
             Size numeraire =
                 evolver_->numeraires()[thisStep];
@@ -75,7 +74,7 @@ namespace QuantLib {
                     const MarketModelDiscounter& discounter =
                         discounters_[cashflows[j].timeIndex];
 
-                    Real bonds = 
+                    Real bonds =
                         cashflows[j].amount *
                         discounter.numeraireBonds(evolver_->currentState(),
                                                   numeraire);
@@ -99,9 +98,10 @@ namespace QuantLib {
                     evolver_->numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
-                    evolver_->currentState().discountRatio(numeraire, nextNumeraire);
+                    evolver_->currentState().discountRatio(numeraire,
+                                                           nextNumeraire);
             }
-            
+
         }
         while (!done);
 

@@ -25,8 +25,7 @@ namespace QuantLib {
     NothingExerciseValue::NothingExerciseValue(
                                           const std::vector<Time>& rateTimes)
     : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
-      currentIndex_(0)
-    {
+      currentIndex_(0) {
         cf_.amount = 0.0;
         std::vector<Time> evolutionTimes(rateTimes_);
         evolutionTimes.pop_back();
@@ -54,7 +53,7 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-   
+
     std::vector<bool> NothingExerciseValue::isExerciseTime() const {
         return std::vector<bool>(numberOfExercises_, true);
     }
@@ -63,4 +62,11 @@ namespace QuantLib {
     NothingExerciseValue::value(const CurveState&) const {
          return cf_;
     }
+
+    std::auto_ptr<MarketModelExerciseValue>
+    NothingExerciseValue::clone() const {
+        return std::auto_ptr<MarketModelExerciseValue>(
+                                             new NothingExerciseValue(*this));
+    }
+
 }

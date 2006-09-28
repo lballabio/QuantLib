@@ -22,18 +22,17 @@
 namespace QuantLib {
 
     ExerciseAdapter::ExerciseAdapter(
-                 const boost::shared_ptr<MarketModelExerciseValue>& exercise,
-                 Size numberOfProducts)
+                              const Clone<MarketModelExerciseValue>& exercise,
+                              Size numberOfProducts)
     : MultiProductMultiStep(exercise->evolution().rateTimes()),
       exercise_(exercise), numberOfProducts_(numberOfProducts),
       isExerciseTime_(exercise->isExerciseTime()) {}
 
     bool ExerciseAdapter::nextTimeStep(
-        const CurveState& currentState,
-        std::vector<Size>& numberCashFlowsThisStep,
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
-                                                         generatedCashFlows)
-    {
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                         generatedCashFlows) {
         std::fill(numberCashFlowsThisStep.begin(),
                   numberCashFlowsThisStep.end(), 0);
         bool done = false;
@@ -48,6 +47,11 @@ namespace QuantLib {
         }
         ++currentIndex_;
         return done || currentIndex_ == isExerciseTime_.size();
+    }
+
+    std::auto_ptr<MarketModelMultiProduct> ExerciseAdapter::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                  new ExerciseAdapter(*this));
     }
 
 }

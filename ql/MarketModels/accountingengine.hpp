@@ -25,15 +25,15 @@
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/Math/sequencestatistics.hpp>
+#include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
     class AccountingEngine {
       public:
-        AccountingEngine(
-                   const boost::shared_ptr<MarketModelEvolver>& evolver,
-                   const boost::shared_ptr<MarketModelMultiProduct>& product,
-                   double initialNumeraireValue);
+        AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
+                         const Clone<MarketModelMultiProduct>& product,
+                         double initialNumeraireValue);
 
         Real singlePathValues(std::vector<Real>& values);
         void multiplePathValues(SequenceStatistics& stats,
@@ -41,18 +41,18 @@ namespace QuantLib {
       private:
 
         boost::shared_ptr<MarketModelEvolver> evolver_;
-        boost::shared_ptr<MarketModelMultiProduct> product_;
-        
+        Clone<MarketModelMultiProduct> product_;
+
         double initialNumeraireValue_;
         Size numberProducts_;
-        
+
         // workspace
         std::vector<Real> numerairesHeld_;
         std::vector<Size> numberCashFlowsThisStep_;
         std::vector<std::vector<MarketModelMultiProduct::CashFlow> >
                                                          cashFlowsGenerated_;
         std::vector<MarketModelDiscounter> discounters_;
-        
+
     };
 
 }

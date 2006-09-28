@@ -30,25 +30,26 @@ namespace QuantLib {
       public:
         //! \todo use Payoff
         NothingExerciseValue(const std::vector<Time>& rateTimes);
-        virtual Size numberOfExercises() const;
+        Size numberOfExercises() const;
         // including any time at which state should be updated
-        virtual const EvolutionDescription& evolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual void nextStep(const CurveState&);
-        virtual void reset();
+        const EvolutionDescription& evolution() const;
+        std::vector<Time> possibleCashFlowTimes() const;
+        void nextStep(const CurveState&);
+        void reset();
         // whether or not evolution times are exercise times
-        virtual std::vector<bool> isExerciseTime() const;
-        virtual MarketModelMultiProduct::CashFlow value(
-                                               const CurveState&) const;
+        std::vector<bool> isExerciseTime() const;
+        MarketModelMultiProduct::CashFlow value(const CurveState&) const;
+        std::auto_ptr<MarketModelExerciseValue> clone() const;
       private:
-          Size numberOfExercises_;
-          std::vector<Time> rateTimes_;
-          EvolutionDescription evolution_;
-          // evolving
-          Size currentIndex_;
-          MarketModelMultiProduct::CashFlow cf_;
+        Size numberOfExercises_;
+        std::vector<Time> rateTimes_;
+        EvolutionDescription evolution_;
+        // evolving
+        Size currentIndex_;
+        MarketModelMultiProduct::CashFlow cf_;
     };
 
 }
+
 
 #endif

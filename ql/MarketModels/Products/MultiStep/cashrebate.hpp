@@ -38,11 +38,12 @@ namespace QuantLib {
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
+        void reset();
         bool nextTimeStep(
-                    const CurveState& currentState, 
+                    const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         EvolutionDescription evolution_;

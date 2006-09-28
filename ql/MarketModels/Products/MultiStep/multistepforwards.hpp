@@ -18,27 +18,30 @@
 */
 
 
-#ifndef quantlib_MarketModelForwards_hpp
-#define quantlib_MarketModelForwards_hpp
+#ifndef quantlib_market_model_forwards_hpp
+#define quantlib_market_model_forwards_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
+
     class MultiStepForwards : public MultiProductMultiStep {
       public:
         MultiStepForwards(const std::vector<Time>& rateTimes,
-                            const std::vector<Real>& accruals,
-                            const std::vector<Time>& paymentTimes,
-                            const std::vector<Rate>& strikes);
+                          const std::vector<Real>& accruals,
+                          const std::vector<Time>& paymentTimes,
+                          const std::vector<Rate>& strikes);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        void reset();
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> accruals_;
@@ -48,7 +51,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline 
+    // inline
 
     inline std::vector<Time>
     MultiStepForwards::possibleCashFlowTimes() const {

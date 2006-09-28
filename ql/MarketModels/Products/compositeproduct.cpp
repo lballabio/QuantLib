@@ -51,8 +51,8 @@ namespace QuantLib {
 
 
     void MarketModelComposite::add(
-                    const boost::shared_ptr<MarketModelMultiProduct>& product,
-                    Real multiplier) {
+                                const Clone<MarketModelMultiProduct>& product,
+                                Real multiplier) {
         QL_REQUIRE(!finalized_, "product already finalized");
         EvolutionDescription d = product->evolution();
         if (!components_.empty()) {
@@ -74,8 +74,8 @@ namespace QuantLib {
     }
 
     void MarketModelComposite::subtract(
-                    const boost::shared_ptr<MarketModelMultiProduct>& product,
-                    Real multiplier) {
+                                const Clone<MarketModelMultiProduct>& product,
+                                Real multiplier) {
         add(product, -multiplier);
     }
 

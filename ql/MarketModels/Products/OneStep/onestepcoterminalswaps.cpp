@@ -35,26 +35,35 @@ namespace QuantLib {
     }
 
     bool OneStepCoterminalSwaps::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
-    {
-        std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
+        std::fill(numberCashFlowsThisStep.begin(),
+                  numberCashFlowsThisStep.end(),0);
 
-        for(Size indexOfTime=0;indexOfTime<lastIndex_;indexOfTime++){
-            double liborRate = currentState.forwardRate(indexOfTime);
-            
-            for(Size i=0;i<=indexOfTime;i++){
+        for (Size indexOfTime=0;indexOfTime<lastIndex_;indexOfTime++) {
+            Rate liborRate = currentState.forwardRate(indexOfTime);
+
+            for (Size i=0;i<=indexOfTime;i++) {
                 genCashFlows[i][(indexOfTime-i)*2].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime-i)*2].amount = -fixedRate_*fixedAccruals_[indexOfTime];
+                genCashFlows[i][(indexOfTime-i)*2].amount =
+                    -fixedRate_*fixedAccruals_[indexOfTime];
 
                 genCashFlows[i][(indexOfTime-i)*2+1].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime-i)*2+1].amount = liborRate*floatingAccruals_[indexOfTime];  
+                genCashFlows[i][(indexOfTime-i)*2+1].amount =
+                    liborRate*floatingAccruals_[indexOfTime];
 
                 numberCashFlowsThisStep[i] += 2;
             }
         }
         return true ;
+    }
+
+    std::auto_ptr<MarketModelMultiProduct>
+    OneStepCoterminalSwaps::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                           new OneStepCoterminalSwaps(*this));
     }
 
 }

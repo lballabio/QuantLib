@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Utilities
 
 include_HEADERS = \
     all.hpp \
+    clone.hpp \
     dataformatters.hpp \
     dataparsers.hpp \
     disposable.hpp \

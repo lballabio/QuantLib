@@ -37,6 +37,7 @@ namespace QuantLib {
         void reset();
         bool exercise(const CurveState& currentState) const;
         void nextStep(const CurveState& currentState);
+        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
       private:
         std::vector<Time> rateTimes_;
         std::vector<Rate> swapTriggers_;

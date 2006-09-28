@@ -23,18 +23,19 @@
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MonteCarlo/exercisestrategy.hpp>
+#include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
-    /*! 
+    /*!
     */
     class CallSpecifiedMultiProduct : public MarketModelMultiProduct {
      public:
         CallSpecifiedMultiProduct(
-                  const boost::shared_ptr<MarketModelMultiProduct>& underlying,
-                  const boost::shared_ptr<ExerciseStrategy<CurveState> >&,
-                  const boost::shared_ptr<MarketModelMultiProduct>& rebate
-                      = boost::shared_ptr<MarketModelMultiProduct>());
+                             const Clone<MarketModelMultiProduct>& underlying,
+                             const Clone<ExerciseStrategy<CurveState> >&,
+                             const Clone<MarketModelMultiProduct>& rebate
+                                          = Clone<MarketModelMultiProduct>());
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Size> suggestedNumeraires() const;
@@ -42,16 +43,17 @@ namespace QuantLib {
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
+        void reset();
         bool nextTimeStep(
-                    const CurveState& currentState, 
+                    const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
-        boost::shared_ptr<MarketModelMultiProduct> underlying_;
-        boost::shared_ptr<ExerciseStrategy<CurveState> > strategy_;
-        boost::shared_ptr<MarketModelMultiProduct> rebate_;
+        Clone<MarketModelMultiProduct> underlying_;
+        Clone<ExerciseStrategy<CurveState> > strategy_;
+        Clone<MarketModelMultiProduct> rebate_;
         EvolutionDescription evolution_;
         std::vector<std::vector<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;

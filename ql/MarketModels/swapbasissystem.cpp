@@ -73,5 +73,10 @@ namespace QuantLib {
             results.push_back(currentState.coterminalSwapRate(rateIndex+1));
     }
 
+    std::auto_ptr<MarketModelBasisSystem> SwapBasisSystem::clone() const {
+        return std::auto_ptr<MarketModelBasisSystem>(
+                                                  new SwapBasisSystem(*this));
+    }
+
 }
 

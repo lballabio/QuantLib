@@ -26,16 +26,16 @@ namespace QuantLib {
     typedef MarketModelMultiProduct::CashFlow CashFlow;
 
     LongstaffSchwartzExerciseStrategy::LongstaffSchwartzExerciseStrategy(
-                const boost::shared_ptr<MarketModelBasisSystem>& basisSystem,
-                const std::vector<std::vector<Real> >& basisCoefficients,
-                const EvolutionDescription& evolution,
-                const std::vector<Size>& numeraires,
-                const boost::shared_ptr<MarketModelExerciseValue>& exercise,
-                const boost::shared_ptr<MarketModelExerciseValue>& control)
+                     const Clone<MarketModelBasisSystem>& basisSystem,
+                     const std::vector<std::vector<Real> >& basisCoefficients,
+                     const EvolutionDescription& evolution,
+                     const std::vector<Size>& numeraires,
+                     const Clone<MarketModelExerciseValue>& exercise,
+                     const Clone<MarketModelExerciseValue>& control)
     : basisSystem_(basisSystem), basisCoefficients_(basisCoefficients),
       exercise_(exercise), control_(control),
       numeraires_(numeraires) {
-      
+
         checkCompatibility(evolution, numeraires);
         relevantTimes_ = evolution.evolutionTimes();
 
@@ -67,7 +67,7 @@ namespace QuantLib {
         for (i=0; i<rebateTimes.size(); ++i)
             rebateDiscounters_.push_back(
                          MarketModelDiscounter(rebateTimes[i], rateTimes));
-        
+
         std::vector<Time> controlTimes = control_->possibleCashFlowTimes();
         for (i=0; i<controlTimes.size(); ++i)
             controlDiscounters_.push_back(
@@ -147,6 +147,12 @@ namespace QuantLib {
         }
 
         ++currentIndex_;
+    }
+
+    std::auto_ptr<ExerciseStrategy<CurveState> >
+    LongstaffSchwartzExerciseStrategy::clone() const {
+        return std::auto_ptr<ExerciseStrategy<CurveState> >(
+                                new LongstaffSchwartzExerciseStrategy(*this));
     }
 
 }

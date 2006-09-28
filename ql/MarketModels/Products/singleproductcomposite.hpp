@@ -40,6 +40,7 @@ namespace QuantLib {
                      const CurveState& currentState,
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
     };
 

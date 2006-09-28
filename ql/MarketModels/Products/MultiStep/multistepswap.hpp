@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_market_model_swap_hpp
 #define quantlib_market_model_swap_hpp
 
@@ -40,11 +39,12 @@ namespace QuantLib {
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState& currentState, 
-                          std::vector<Size>& numberCashFlowsThisStep,
-                          std::vector<std::vector<CashFlow> >&
-                                                       cashFlowsGenerated);
+        void reset();
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
@@ -57,7 +57,8 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline 
+
+    // inline definitions
 
     inline std::vector<Time>
     MultiStepSwap::possibleCashFlowTimes() const {
@@ -76,7 +77,7 @@ namespace QuantLib {
     inline void MultiStepSwap::reset() {
        currentIndex_=0;
     }
-       
+
 }
 
 #endif

@@ -24,6 +24,7 @@
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
@@ -33,22 +34,23 @@ namespace QuantLib {
         : public ExerciseStrategy<CurveState> {
       public:
         LongstaffSchwartzExerciseStrategy(
-                const boost::shared_ptr<MarketModelBasisSystem>& basisSystem,
-                const std::vector<std::vector<Real> >& basisCoefficients,
-                const EvolutionDescription& evolution,
-                const std::vector<Size>& numeraires,
-                const boost::shared_ptr<MarketModelExerciseValue>& exercise,
-                const boost::shared_ptr<MarketModelExerciseValue>& control);
+                     const Clone<MarketModelBasisSystem>& basisSystem,
+                     const std::vector<std::vector<Real> >& basisCoefficients,
+                     const EvolutionDescription& evolution,
+                     const std::vector<Size>& numeraires,
+                     const Clone<MarketModelExerciseValue>& exercise,
+                     const Clone<MarketModelExerciseValue>& control);
         std::vector<Time> exerciseTimes() const;
         std::vector<Time> relevantTimes() const;
         void reset();
         bool exercise(const CurveState& currentState) const;
         void nextStep(const CurveState& currentState);
+        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
       private:
-        boost::shared_ptr<MarketModelBasisSystem> basisSystem_;
+        Clone<MarketModelBasisSystem> basisSystem_;
         std::vector<std::vector<Real> > basisCoefficients_;
-        boost::shared_ptr<MarketModelExerciseValue> exercise_;
-        boost::shared_ptr<MarketModelExerciseValue> control_;
+        Clone<MarketModelExerciseValue> exercise_;
+        Clone<MarketModelExerciseValue> control_;
         std::vector<Size> numeraires_;
         // work variable
         Size currentIndex_;

@@ -21,28 +21,33 @@
 
 namespace QuantLib {
 
-    MultiStepCaplets::MultiStepCaplets(
-                                    const std::vector<Time>& rateTimes,
-                                    const std::vector<Real>& accruals,
-                                    const std::vector<Time>& paymentTimes,
-                                    const std::vector<Rate>& strikes)
+    MultiStepCaplets::MultiStepCaplets(const std::vector<Time>& rateTimes,
+                                       const std::vector<Real>& accruals,
+                                       const std::vector<Time>& paymentTimes,
+                                       const std::vector<Rate>& strikes)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), strikes_(strikes) {}
 
     bool MultiStepCaplets::nextTimeStep(
-        const CurveState& currentState,
-        std::vector<Size>& numberCashFlowsThisStep,
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
-    {
-        double liborRate = currentState.forwardRate(currentIndex_);
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
+        Rate liborRate = currentState.forwardRate(currentIndex_);
         genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
         genCashFlows[currentIndex_][0].amount =
             std::max(liborRate-strikes_[currentIndex_], 0.0) *
-                                            accruals_[currentIndex_];
-        std::fill(numberCashFlowsThisStep.begin(),numberCashFlowsThisStep.end(),0);
+            accruals_[currentIndex_];
+        std::fill(numberCashFlowsThisStep.begin(),
+                  numberCashFlowsThisStep.end(),0);
         numberCashFlowsThisStep[currentIndex_] = 1;
-       ++currentIndex_;
-       return (currentIndex_ == strikes_.size());
+        ++currentIndex_;
+        return (currentIndex_ == strikes_.size());
+    }
+
+    std::auto_ptr<MarketModelMultiProduct> MultiStepCaplets::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                 new MultiStepCaplets(*this));
     }
 
 }

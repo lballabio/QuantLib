@@ -52,13 +52,19 @@ namespace QuantLib {
 
     bool SwapRateTrigger::exercise(const CurveState& currentState) const {
         Size rateIndex = rateIndex_[currentIndex_-1];
-        Rate currentSwapRate = 
+        Rate currentSwapRate =
             currentState.coterminalSwapRate(rateIndex);
         return swapTriggers_[currentIndex_-1]<currentSwapRate;
     }
 
     void SwapRateTrigger::nextStep(const CurveState& currentState){
         ++currentIndex_;
+    }
+
+    std::auto_ptr<ExerciseStrategy<CurveState> >
+    SwapRateTrigger::clone() const {
+        return std::auto_ptr<ExerciseStrategy<CurveState> >(
+                                                  new SwapRateTrigger(*this));
     }
 
 }

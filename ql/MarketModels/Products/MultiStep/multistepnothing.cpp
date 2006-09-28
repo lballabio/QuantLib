@@ -30,13 +30,17 @@ namespace QuantLib {
     bool MultiStepNothing::nextTimeStep(
         const CurveState&,
         std::vector<Size>& numberCashFlowsThisStep,
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&)
-    {
+        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&) {
         std::fill(numberCashFlowsThisStep.begin(),
                   numberCashFlowsThisStep.end(),
                   0);
         ++currentIndex_;
         return (currentIndex_ >= doneIndex_);
+    }
+
+    std::auto_ptr<MarketModelMultiProduct> MultiStepNothing::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                 new MultiStepNothing(*this));
     }
 
 }

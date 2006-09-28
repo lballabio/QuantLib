@@ -30,10 +30,10 @@ namespace QuantLib {
       paymentTimes_(paymentTimes), strikes_(strikes) {}
 
     bool OneStepCaplets::nextTimeStep(
-        const CurveState& currentState, 
-        std::vector<Size>& numberCashFlowsThisStep, 
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
-    {
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
         std::fill(numberCashFlowsThisStep.begin(),
                   numberCashFlowsThisStep.end(), 0);
         for (Size i=0; i<strikes_.size(); ++i) {
@@ -47,6 +47,11 @@ namespace QuantLib {
         }
 
         return true;
+    }
+
+    std::auto_ptr<MarketModelMultiProduct> OneStepCaplets::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                   new OneStepCaplets(*this));
     }
 
 }

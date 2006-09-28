@@ -24,6 +24,7 @@
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
 
 namespace QuantLib {
+
     class OneStepCoterminalSwaps : public MultiProductOneStep {
       public:
         OneStepCoterminalSwaps(const std::vector<Time>& rateTimes,
@@ -37,9 +38,11 @@ namespace QuantLib {
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
         void reset();
-        bool nextTimeStep(const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
@@ -51,7 +54,7 @@ namespace QuantLib {
 
     };
 
-    // inline
+    // inline definitions
 
     inline std::vector<Time>
     OneStepCoterminalSwaps::possibleCashFlowTimes() const {
@@ -72,5 +75,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

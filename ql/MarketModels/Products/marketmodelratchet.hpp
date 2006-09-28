@@ -18,12 +18,13 @@
 */
 
 
-#ifndef quantlib_marketmodelratchet_hpp
-#define quantlib_marketmodelratchet_hpp
+#ifndef quantlib_market_model_ratchet_hpp
+#define quantlib_market_model_ratchet_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 
 namespace QuantLib {
+
     class MarketModelRatchet : public MarketModelMultiProduct {
       public:
         MarketModelRatchet(const std::vector<Time>& rateTimes,
@@ -35,13 +36,16 @@ namespace QuantLib {
         //! \name MarketModelMultiProduct interface
         //@{
         const EvolutionDescription& evolution() const;
+        std::vector<Size> suggestedNumeraires() const;
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        void reset();
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Time> rateTimes_;
@@ -56,7 +60,7 @@ namespace QuantLib {
         double currentCoupon_;
     };
 
-    // inline 
+    // inline
 
     inline std::vector<Time>
     MarketModelRatchet::possibleCashFlowTimes() const {
@@ -64,7 +68,7 @@ namespace QuantLib {
     }
 
     inline Size MarketModelRatchet::numberOfProducts() const {
-        return 1;    
+        return 1;
     }
 
     inline Size
@@ -76,7 +80,7 @@ namespace QuantLib {
        currentIndex_=0;
        currentCoupon_=initialCoupon_;
     }
-       
+
 }
 
 #endif

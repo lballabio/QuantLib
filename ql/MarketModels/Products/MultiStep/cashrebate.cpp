@@ -69,11 +69,10 @@ namespace QuantLib {
 
 
     bool MarketModelCashRebate::nextTimeStep(
-        const CurveState&,
-        std::vector<Size>& numberCashFlowsThisStep,
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
-                                                                genCashFlows)
-    {
+            const CurveState&,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                               genCashFlows) {
         for (Size i=0; i<numberOfProducts_; ++i) {
             numberCashFlowsThisStep[i] = 1;
             genCashFlows[i][0].timeIndex = currentIndex_;
@@ -81,6 +80,12 @@ namespace QuantLib {
         }
         ++currentIndex_;
         return true;
+    }
+
+    std::auto_ptr<MarketModelMultiProduct>
+    MarketModelCashRebate::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                            new MarketModelCashRebate(*this));
     }
 
 }

@@ -18,28 +18,31 @@
 */
 
 
-#ifndef quantlib_MarketModelCoterminalSwaps_hpp
-#define quantlib_MarketModelCoterminalSwaps_hpp
+#ifndef quantlib_market_model_coterminal_swaps_hpp
+#define quantlib_market_model_coterminal_swaps_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
+
     class MultiStepCoterminalSwaps : public MultiProductMultiStep {
       public:
         MultiStepCoterminalSwaps(const std::vector<Time>& rateTimes,
-                           const std::vector<Real>& fixedAccruals,
-                           const std::vector<Real>& floatingAccruals,
-                           const std::vector<Time>& paymentTimes,
+                                 const std::vector<Real>& fixedAccruals,
+                                 const std::vector<Real>& floatingAccruals,
+                                 const std::vector<Time>& paymentTimes,
                            double fixedRate);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+        void reset();
+        bool nextTimeStep(
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
@@ -50,7 +53,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline 
+    // inline definitions
 
     inline std::vector<Time>
     MultiStepCoterminalSwaps::possibleCashFlowTimes() const {
@@ -58,7 +61,7 @@ namespace QuantLib {
     }
 
     inline Size MultiStepCoterminalSwaps::numberOfProducts() const {
-        return lastIndex_;    
+        return lastIndex_;
     }
 
     inline Size
@@ -69,7 +72,7 @@ namespace QuantLib {
     inline void MultiStepCoterminalSwaps::reset() {
        currentIndex_=0;
     }
-       
+
 }
 
 #endif

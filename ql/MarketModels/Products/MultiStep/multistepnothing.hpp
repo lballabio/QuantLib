@@ -35,10 +35,11 @@ namespace QuantLib {
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
-        bool nextTimeStep(const CurveState&, 
+        void reset();
+        bool nextTimeStep(const CurveState&,
                           std::vector<Size>&,
                           std::vector<std::vector<CashFlow> >&);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         Size numberOfProducts_, doneIndex_;
@@ -46,7 +47,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline 
+    // inline definitions
 
     inline std::vector<Time>
     MultiStepNothing::possibleCashFlowTimes() const {

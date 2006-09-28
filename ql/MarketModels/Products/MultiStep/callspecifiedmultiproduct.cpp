@@ -24,18 +24,18 @@
 namespace QuantLib {
 
     CallSpecifiedMultiProduct::CallSpecifiedMultiProduct(
-              const boost::shared_ptr<MarketModelMultiProduct>& underlying,
-              const boost::shared_ptr<ExerciseStrategy<CurveState> >& strategy,
-              const boost::shared_ptr<MarketModelMultiProduct>& rebate)
+                         const Clone<MarketModelMultiProduct>& underlying,
+                         const Clone<ExerciseStrategy<CurveState> >& strategy,
+                         const Clone<MarketModelMultiProduct>& rebate)
     : underlying_(underlying), strategy_(strategy), rebate_(rebate) {
-        
+
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();
         const std::vector<Time>& rateTimes1 = d1.rateTimes();
         const std::vector<Time>& evolutionTimes1 = d1.evolutionTimes();
         const std::vector<Time>& exerciseTimes = strategy->exerciseTimes();
 
-        if (rebate_) {
+        if (!rebate_.empty()) {
             EvolutionDescription d2 = rebate_->evolution();
             const std::vector<Time>& rateTimes2 = d2.rateTimes();
             QL_REQUIRE(rateTimes1.size() == rateTimes2.size() &&
@@ -46,9 +46,8 @@ namespace QuantLib {
             EvolutionDescription description(rateTimes1, exerciseTimes);
             Matrix amounts(products, exerciseTimes.size(), 0.0);
 
-            rebate_ = boost::shared_ptr<MarketModelMultiProduct>(new
-                MarketModelCashRebate(description, exerciseTimes,
-                                      amounts, products));
+            rebate_ = MarketModelCashRebate(description, exerciseTimes,
+                                            amounts, products);
         }
 
         std::vector<Time> mergedEvolutionTimes;
@@ -57,7 +56,7 @@ namespace QuantLib {
         allEvolutionTimes[1] = exerciseTimes;
         allEvolutionTimes[2] = rebate_->evolution().evolutionTimes();
         allEvolutionTimes[3] = strategy->relevantTimes();
-       
+
         mergeTimes(allEvolutionTimes,
                    mergedEvolutionTimes,
                    isPresent_);
@@ -112,7 +111,7 @@ namespace QuantLib {
 
 
     bool CallSpecifiedMultiProduct::nextTimeStep(
-            const CurveState& currentState, 
+            const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
 
@@ -152,6 +151,12 @@ namespace QuantLib {
 
         ++currentIndex_;
         return done || currentIndex_ == evolution_.evolutionTimes().size();
+    }
+
+    std::auto_ptr<MarketModelMultiProduct>
+    CallSpecifiedMultiProduct::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                        new CallSpecifiedMultiProduct(*this));
     }
 
 }

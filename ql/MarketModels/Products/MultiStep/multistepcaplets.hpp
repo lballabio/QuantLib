@@ -18,28 +18,30 @@
 */
 
 
-#ifndef quantlib_MarketModelCaplets_hpp
-#define quantlib_MarketModelCaplets_hpp
+#ifndef quantlib_market_model_caplets_hpp
+#define quantlib_market_model_caplets_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 
 namespace QuantLib {
+
     class MultiStepCaplets : public MultiProductMultiStep {
       public:
         MultiStepCaplets(const std::vector<Time>& rateTimes,
-                           const std::vector<Real>& accruals,
-                           const std::vector<Time>& paymentTimes,
-                           const std::vector<Rate>& strikes);
+                         const std::vector<Real>& accruals,
+                         const std::vector<Time>& paymentTimes,
+                         const std::vector<Rate>& strikes);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset(); 
+        void reset();
         bool nextTimeStep(
-            const CurveState& currentState, 
-            std::vector<Size>& numberCashFlowsThisStep, //! one int for each product 
-            std::vector<std::vector<CashFlow> >& cashFlowsGenerated); //! the cash flows
+                     const CurveState& currentState,
+                     std::vector<Size>& numberCashFlowsThisStep,
+                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
+        std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
       private:
         std::vector<Real> accruals_;
@@ -49,7 +51,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline 
+    // inline
 
     inline std::vector<Time>
     MultiStepCaplets::possibleCashFlowTimes() const {
@@ -64,7 +66,7 @@ namespace QuantLib {
     MultiStepCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
-    
+
     inline void MultiStepCaplets::reset() {
        currentIndex_=0;
     }

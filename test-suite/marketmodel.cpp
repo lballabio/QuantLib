@@ -186,14 +186,14 @@ void setup() {
 
 const boost::shared_ptr<SequenceStatistics> simulate(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
-        const boost::shared_ptr<MarketModelMultiProduct>& product)
+        const MarketModelMultiProduct& product)
 {
     Size initialNumeraire = evolver->numeraires().front();
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    boost::shared_ptr<SequenceStatistics> stats(new
-        SequenceStatistics(product->numberOfProducts()));
+    boost::shared_ptr<SequenceStatistics> stats(
+                          new SequenceStatistics(product.numberOfProducts()));
     engine.multiplePathValues(*stats, paths_);
     return stats;
 }
@@ -276,15 +276,14 @@ std::string measureTypeToString(MeasureType type) {
     }
 }
 
-std::vector<Size> makeMeasure(
-                   const boost::shared_ptr<MarketModelMultiProduct>& product,
-                   MeasureType measureType)
+std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
+                              MeasureType measureType)
 {
     std::vector<Size> result;
-    EvolutionDescription evolution(product->evolution());
+    EvolutionDescription evolution(product.evolution());
     switch (measureType) {
       case ProductSuggested:
-        result = product->suggestedNumeraires();
+        result = product.suggestedNumeraires();
         break;
       case Terminal:
         result = terminalMeasure(evolution);
@@ -356,8 +355,6 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     }
 }
 
-
-QL_END_TEST_LOCALS(MarketModelTest)
 
 void checkForwardsAndCaplets(const SequenceStatistics& stats,
                              const std::vector<Rate>& forwardStrikes,
@@ -538,6 +535,9 @@ void checkCallableSwap(const SequenceStatistics& stats)
 
 }
 
+QL_END_TEST_LOCALS(MarketModelTest)
+
+
 void MarketModelTest::testOneStepForwardsAndCaplets() {
 
     BOOST_MESSAGE("Repricing one-step forwards and caplets "
@@ -550,18 +550,17 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
     std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelMultiProduct> forwards(new
-        OneStepForwards(rateTimes, accruals, paymentTimes, forwardStrikes));
-    boost::shared_ptr<MarketModelMultiProduct> caplets(new
-        OneStepCaplets(rateTimes, accruals, paymentTimes, capletStrikes));
+    OneStepForwards forwards(rateTimes, accruals,
+                             paymentTimes, forwardStrikes);
+    OneStepCaplets caplets(rateTimes, accruals,
+                           paymentTimes, capletStrikes);
 
-    boost::shared_ptr<MultiProductComposite> product(new
-                                                    MultiProductComposite);
-    product->add(forwards);
-    product->add(caplets);
-    product->finalize();
+    MultiProductComposite product;
+    product.add(forwards);
+    product.add(caplets);
+    product.finalize();
 
-    EvolutionDescription evolution = product->evolution();
+    EvolutionDescription evolution = product.evolution();
 
     // for one step MoneyMarketPlus==ProductSuggested
     // for one step Terminal==ProductSuggested
@@ -623,18 +622,17 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
     std::vector<Rate> capletStrikes = todaysForwards;
 
-    boost::shared_ptr<MarketModelMultiProduct> forwards(new
-        MultiStepForwards(rateTimes, accruals, paymentTimes,forwardStrikes));
+    MultiStepForwards forwards(rateTimes, accruals,
+                               paymentTimes, forwardStrikes);
+    MultiStepCaplets caplets(rateTimes, accruals,
+                             paymentTimes, capletStrikes);
 
-    boost::shared_ptr<MarketModelMultiProduct> caplets(new
-        MultiStepCaplets(rateTimes, accruals, paymentTimes, capletStrikes));
+    MultiProductComposite product;
+    product.add(forwards);
+    product.add(caplets);
+    product.finalize();
 
-    boost::shared_ptr<MultiProductComposite> product(new MultiProductComposite);
-    product->add(forwards);
-    product->add(caplets);
-    product->finalize();
-
-    EvolutionDescription evolution = product->evolution();
+    EvolutionDescription evolution = product.evolution();
 
     MeasureType measures[] = { ProductSuggested,
                                MoneyMarketPlus,
@@ -693,15 +691,14 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
 
     Real fixedRate = 0.04;
 
-    boost::shared_ptr<MarketModelMultiProduct> product(new
-        MultiStepCoinitialSwaps(rateTimes, accruals, accruals,
-                                paymentTimes, fixedRate));
-    EvolutionDescription evolution = product->evolution();
+    MultiStepCoinitialSwaps product(rateTimes, accruals, accruals,
+                                    paymentTimes, fixedRate);
+    EvolutionDescription evolution = product.evolution();
 
     MeasureType measures[] = { ProductSuggested,
-                                MoneyMarketPlus,
-                                MoneyMarket,
-                                Terminal };
+                               MoneyMarketPlus,
+                               MoneyMarket,
+                               Terminal };
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
@@ -748,9 +745,9 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
 
     Real fixedRate = 0.04;
 
-    boost::shared_ptr<MarketModelMultiProduct> product(new
-        MultiStepCoterminalSwaps(rateTimes, accruals, accruals, paymentTimes, fixedRate));
-    EvolutionDescription evolution = product->evolution();
+    MultiStepCoterminalSwaps product(rateTimes, accruals, accruals,
+                                     paymentTimes, fixedRate);
+    EvolutionDescription evolution = product.evolution();
 
     MeasureType measures[] = { ProductSuggested,
                                MoneyMarketPlus,
@@ -813,8 +810,6 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
         Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
         for (Size k=0; k<N-i; k++) {
             Time T2 = 0.5*(1+k); // expiry of forward 2: after T2 AbcdVol = 0
-            Time tMin = std::min(T1,T2);
-            Time tMax = std::max(T1,T2);
             //Integration
             for(Size j=0; j<N; j++) {
                 Real xMin = 0.5*j;
@@ -954,12 +949,12 @@ void MarketModelTest::testDriftCalculator() {
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution, measureOffset_);
     std::vector<Size> alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
-    
+
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
-    
+
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                       ExponentialCorrelationAbcdVolatility};
-    
+
     for (Size k=0; k<LENGTH(marketModels); ++k) {   // cycle over market models
         boost::shared_ptr<MarketModel> marketModel =
             makeMarketModel(evolution, factors, marketModels[k]);
@@ -983,7 +978,7 @@ void MarketModelTest::testDriftCalculator() {
                                 << ", " << io::ordinal(j) << " step, "
                                 << ", " << io::ordinal(i) << " drift, "
                                 << "\ndrift        =" << drifts[i]
-                                << "\ndriftReduced =" << driftsReduced[i] 
+                                << "\ndriftReduced =" << driftsReduced[i]
                                 << "\n       error =" << error
                                 << "\n   tolerance =" << tolerance);
             }
@@ -1000,14 +995,12 @@ void MarketModelTest::testCallableSwap1() {
     Real fixedRate = 0.04;
 
     // 0. a payer swap
-    boost::shared_ptr<MarketModelMultiProduct> payerSwap(new
-        MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
-                      fixedRate, true));
+    MultiStepSwap payerSwap(rateTimes, accruals, accruals, paymentTimes,
+                            fixedRate, true);
 
     // 1. the equivalent receiver swap
-    boost::shared_ptr<MarketModelMultiProduct> receiverSwap(new
-        MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
-                      fixedRate, false));
+    MultiStepSwap receiverSwap(rateTimes, accruals, accruals, paymentTimes,
+                               fixedRate, false);
 
     //exercise schedule
     std::vector<Rate> exerciseTimes(rateTimes);
@@ -1018,32 +1011,25 @@ void MarketModelTest::testCallableSwap1() {
 
     // naif exercise strategy
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
-    boost::shared_ptr<ExerciseStrategy<CurveState> > exerciseStrategy(new
-        SwapRateTrigger(rateTimes, swapTriggers, exerciseTimes));
+    SwapRateTrigger exerciseStrategy(rateTimes, swapTriggers, exerciseTimes);
 
     // 2. bermudan swaption to enter into the payer swap
-    boost::shared_ptr<MarketModelMultiProduct> nothing(new
-        MultiStepNothing(payerSwap->evolution()));
-    boost::shared_ptr<MarketModelMultiProduct> bermudanProduct(new
-        CallSpecifiedMultiProduct(nothing,
-                                  clone<SwapRateTrigger>(exerciseStrategy),
-                                  clone<MultiStepSwap>(payerSwap)));
+    MultiStepNothing nothing(payerSwap.evolution());
+    CallSpecifiedMultiProduct bermudanProduct(nothing, exerciseStrategy,
+                                              payerSwap);
 
     // 3. callable receiver swap
-    boost::shared_ptr<MarketModelMultiProduct> callableProduct(new
-        CallSpecifiedMultiProduct(clone<MultiStepSwap>(receiverSwap),
-                                  clone<SwapRateTrigger>(exerciseStrategy)));
+    CallSpecifiedMultiProduct callableProduct(receiverSwap, exerciseStrategy);
 
     // evolve all 4 products togheter
-    boost::shared_ptr<MultiProductComposite> allProducts(new
-        MultiProductComposite);
-    allProducts->add(payerSwap);
-    allProducts->add(receiverSwap);
-    allProducts->add(bermudanProduct);
-    allProducts->add(callableProduct);
-    allProducts->finalize();
+    MultiProductComposite allProducts;
+    allProducts.add(payerSwap);
+    allProducts.add(receiverSwap);
+    allProducts.add(bermudanProduct);
+    allProducts.add(callableProduct);
+    allProducts.finalize();
 
-    EvolutionDescription evolution = callableProduct->evolution();
+    EvolutionDescription evolution = callableProduct.evolution();
 
     MeasureType measures[] = { ProductSuggested,
                                MoneyMarketPlus,
@@ -1097,14 +1083,12 @@ void MarketModelTest::testCallableSwap2() {
     Real fixedRate = 0.04;
 
     // 0. a payer swap
-    boost::shared_ptr<MultiStepSwap> payerSwap(new
-        MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
-                      fixedRate, true));
+    MultiStepSwap payerSwap(rateTimes, accruals, accruals, paymentTimes,
+                            fixedRate, true);
 
     // 1. the equivalent receiver swap
-    boost::shared_ptr<MultiStepSwap> receiverSwap(new
-        MultiStepSwap(rateTimes, accruals, accruals, paymentTimes,
-                      fixedRate, false));
+    MultiStepSwap receiverSwap(rateTimes, accruals, accruals, paymentTimes,
+                               fixedRate, false);
 
     // exercise schedule
     std::vector<Rate> exerciseTimes(rateTimes);
@@ -1127,29 +1111,16 @@ void MarketModelTest::testCallableSwap2() {
     // Longstaff-Schwartz exercise strategy
     std::vector<std::vector<LSNodeData> > collectedData;
     std::vector<std::vector<Real> > basisCoefficients;
-    boost::shared_ptr<MarketModelExerciseValue> control(new
-        NothingExerciseValue(rateTimes));
-    boost::shared_ptr<MarketModelExerciseValue> control2(new
-        NothingExerciseValue(rateTimes));
-    boost::shared_ptr<MarketModelBasisSystem> basisSystem(new
-        SwapBasisSystem(rateTimes,exerciseTimes));
-    boost::shared_ptr<MarketModelBasisSystem> basisSystem2(new
-        SwapBasisSystem(rateTimes,exerciseTimes));
-    boost::shared_ptr<MarketModelExerciseValue> nullRebate(new
-        NothingExerciseValue(rateTimes));
-    boost::shared_ptr<MarketModelExerciseValue> nullRebate2(new
-        NothingExerciseValue(rateTimes));
+    NothingExerciseValue control(rateTimes);
+    SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
+    NothingExerciseValue nullRebate(rateTimes);
 
 
     // 2. bermudan swaption to enter into the payer swap
-    boost::shared_ptr<MarketModelMultiProduct> nothing(new
-        MultiStepNothing(evolution));
+    MultiStepNothing nothing(evolution);
 
     // 3. callable receiver swap
-    boost::shared_ptr<MarketModelExerciseValue> nullRebate3(new
-        NothingExerciseValue(rateTimes));
-    boost::shared_ptr<ExerciseAdapter> adaptedExercise(new
-        ExerciseAdapter(nullRebate3));
+    ExerciseAdapter adaptedExercise(nullRebate);
 
     MeasureType measures[] = { ProductSuggested,
                                MoneyMarketPlus,
@@ -1182,44 +1153,30 @@ void MarketModelTest::testCallableSwap2() {
 
                         // calculate the exercise strategy
                         collectLongstaffSchwartzData(*evolver,
-                            *receiverSwap, *basisSystem, *nullRebate,
-                            *control, trainingPaths_, collectedData);
+                            receiverSwap, basisSystem, nullRebate,
+                            control, trainingPaths_, collectedData);
                         genericLongstaffSchwartzRegression(collectedData,
                             basisCoefficients);
-                        boost::shared_ptr<LongstaffSchwartzExerciseStrategy>
-                            exerciseStrategy(new
-                                LongstaffSchwartzExerciseStrategy(
-                                    basisSystem, basisCoefficients,
-                                    evolution, numeraires,
-                                    nullRebate, control));
-                        boost::shared_ptr<LongstaffSchwartzExerciseStrategy>
-                            exerciseStrategy2(new
-                                LongstaffSchwartzExerciseStrategy(
-                                    basisSystem2, basisCoefficients,
-                                    evolution, numeraires,
-                                    nullRebate2, control2));
+                        LongstaffSchwartzExerciseStrategy exerciseStrategy(
+                                               basisSystem, basisCoefficients,
+                                               evolution, numeraires,
+                                               nullRebate, control);
 
                         // 2. bermudan swaption to enter into the payer swap
-                        boost::shared_ptr<MarketModelMultiProduct> bermudanProduct(new
-                            CallSpecifiedMultiProduct(nothing,
-                                                      exerciseStrategy2,
-                                                      clone<MultiStepSwap>(payerSwap)));
+                        CallSpecifiedMultiProduct bermudanProduct(
+                                        nothing, exerciseStrategy, payerSwap);
 
                         // 3. callable receiver swap
-                        boost::shared_ptr<MarketModelMultiProduct> callableProduct(new
-                            CallSpecifiedMultiProduct(
-                                       clone<MultiStepSwap>(receiverSwap),
-                                       exerciseStrategy,
-                                       adaptedExercise));
+                        CallSpecifiedMultiProduct callableProduct(
+                             receiverSwap, exerciseStrategy, adaptedExercise);
 
                         // evolve all 4 products togheter
-                        boost::shared_ptr<MultiProductComposite> allProducts(new
-                            MultiProductComposite);
-                        allProducts->add(payerSwap);
-                        allProducts->add(receiverSwap);
-                        allProducts->add(bermudanProduct);
-                        allProducts->add(callableProduct);
-                        allProducts->finalize();
+                        MultiProductComposite allProducts;
+                        allProducts.add(payerSwap);
+                        allProducts.add(receiverSwap);
+                        allProducts.add(bermudanProduct);
+                        allProducts.add(callableProduct);
+                        allProducts.finalize();
 
                         BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
                                     ", " << factors <<

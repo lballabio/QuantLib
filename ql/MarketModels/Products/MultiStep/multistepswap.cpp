@@ -33,9 +33,10 @@ namespace QuantLib {
       multiplier_(payer ? 1.0 : -1.0), lastIndex_(rateTimes.size()-1) {}
 
     bool MultiStepSwap::nextTimeStep(
-        const CurveState& currentState,
-        std::vector<Size>& numberCashFlowsThisStep,
-        std::vector<std::vector<MarketModelMultiProduct::CashFlow> >& genCashFlows)
+            const CurveState& currentState,
+            std::vector<Size>& numberCashFlowsThisStep,
+            std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
+                                                                 genCashFlows)
     {
         Rate liborRate = currentState.forwardRate(currentIndex_);
 
@@ -52,6 +53,11 @@ namespace QuantLib {
         ++currentIndex_;
 
         return (currentIndex_ == lastIndex_);
+    }
+
+    std::auto_ptr<MarketModelMultiProduct> MultiStepSwap::clone() const {
+        return std::auto_ptr<MarketModelMultiProduct>(
+                                                 new MultiStepSwap(*this));
     }
 
 }
