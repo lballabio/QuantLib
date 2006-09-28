@@ -49,12 +49,12 @@ namespace QuantLib {
         return result;
     }
 
-    class BlackImpliedVolHelper {
+    class BlackImpliedStdDevHelper {
       public:
-        BlackImpliedVolHelper(Option::Type optionType,
-                              Real strike,
-                              Real forward,
-                              Real blackPrice)
+        BlackImpliedStdDevHelper(Option::Type optionType,
+                                 Real strike,
+                                 Real forward,
+                                 Real blackPrice)
         : halfOptionType_(0.5*optionType), signedStrike_(optionType*strike),
           signedForward_(optionType*forward), blackPrice_(blackPrice)
         {
@@ -151,7 +151,7 @@ namespace QuantLib {
         else
             QL_REQUIRE(guess>=0.0,
                        "stdDev guess (" << guess << ") must be non-negative");
-        BlackImpliedVolHelper f(optionType, strike, forward, blackPrice);
+        BlackImpliedStdDevHelper f(optionType, strike, forward, blackPrice);
         //Brent solver;
         //Newton solver;
         NewtonSafe solver;
