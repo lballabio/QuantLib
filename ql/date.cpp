@@ -311,14 +311,38 @@ namespace QuantLib {
         std::ostringstream IMMcode;
         unsigned int y = date.year() % 10;
         switch(date.month()) {
+            case January:
+                IMMcode << 'F' << y;
+                break;
+            case February:
+                IMMcode << 'G' << y;
+                break;
             case March:
                 IMMcode << 'H' << y;
+                break;
+            case April:
+                IMMcode << 'J' << y;
+                break;
+            case May:
+                IMMcode << 'K' << y;
                 break;
             case June:
                 IMMcode << 'M' << y;
                 break;
+            case July:
+                IMMcode << 'N' << y;
+                break;
+            case August:
+                IMMcode << 'Q' << y;
+                break;
             case September:
                 IMMcode << 'U' << y;
+                break;
+            case October:
+                IMMcode << 'V' << y;
+                break;
+            case November:
+                IMMcode << 'X' << y;
                 break;
             case December:
                 IMMcode << 'Z' << y;
@@ -345,9 +369,17 @@ namespace QuantLib {
         std::string code = QuantLib::uppercase(IMMcode);
         std::string ms = code.substr(0,1);
         Month m;
-        if (ms=="H")      m = March;
+        if (ms=="F")      m = January;
+        else if (ms=="G") m = February;
+        else if (ms=="H") m = March;
+        else if (ms=="J") m = April;
+        else if (ms=="K") m = May;
         else if (ms=="M") m = June;
+        else if (ms=="N") m = July;
+        else if (ms=="Q") m = August;
         else if (ms=="U") m = September;
+        else if (ms=="V") m = October;
+        else if (ms=="X") m = November;
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid IMM month letter");
 
