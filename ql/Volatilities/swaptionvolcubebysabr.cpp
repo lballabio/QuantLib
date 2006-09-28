@@ -400,9 +400,9 @@ namespace QuantLib {
 
         sparseParameters_ = sabrCalibration(marketVolCube_);
         sparseParameters_.updateInterpolators();
-        volCubeAtmCalibrated_= marketVolCube_;
-
+        
         if(isAtmCalibrated_){
+            volCubeAtmCalibrated_= marketVolCube_;
             fillVolatilityCube();
             denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
             denseParameters_.updateInterpolators();

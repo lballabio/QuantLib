@@ -224,13 +224,18 @@ namespace QuantLib {
 
         boost::shared_ptr<LineSearch> lineSearch(
             new ArmijoLineSearch(1e-12, 0.15, 0.55));
+        //boost::shared_ptr<OptimizationMethod> method =
+        //    boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
         boost::shared_ptr<OptimizationMethod> method =
-            boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
+            boost::shared_ptr<OptimizationMethod>(new Simplex(.0001,1e-3));
 
-        method->setEndCriteria(EndCriteria(100, 1e-4));
+        method->setEndCriteria(EndCriteria(1000, 1e-3));
 
         Array guess(1);
-        guess[0] = .7;
+
+        const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
+        guess[0] = volCubeBySabr->sparseSabrParameters()[0][3];
 
         guess = tranformation_->inverse(guess);
         method->setInitialValue(guess);
