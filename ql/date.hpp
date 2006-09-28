@@ -236,7 +236,8 @@ namespace QuantLib {
         */
         static Date nthWeekday(Size n, Weekday, Month m, Year y);
         //! whether or not the given date is an IMM date
-        static bool isIMMdate(const Date& d);
+        static bool isIMMdate(const Date& d,
+                              bool mainCycle = true);
         //! next IMM date following (or equal to) the given date
         /*! returns the 1st delivery date for next contract listed in the
             International Money Market section of the Chicago Mercantile
@@ -245,7 +246,8 @@ namespace QuantLib {
             \warning The result date is following or equal to the
                      original date.
         */
-        static Date nextIMMdate(const Date& d);
+        static Date nextIMMdate(const Date& d,
+                                bool mainCycle = true);
         /*! returns the IMM code for the given date
             (e.g. H6 for March 15th, 2006).
 
@@ -372,13 +374,6 @@ namespace QuantLib {
 
     inline bool Date::isEOM(const Date& d) {
        return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
-    }
-
-    inline bool Date::isIMMdate(const Date& date) {
-        Day d = date.dayOfMonth();
-        Month m = date.month();
-        return ((date.weekday() == Wednesday) && (d >= 15 && d <= 21) &&
-                (m == March || m == June || m == September || m == December));
     }
 
     inline BigInteger operator-(const Date& d1, const Date& d2) {

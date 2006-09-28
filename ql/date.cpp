@@ -273,12 +273,28 @@ namespace QuantLib {
         return YearIsLeap[y-1900];
     }
 
-    Date Date::nextIMMdate(const Date& date) {
+    bool Date::isIMMdate(const Date& date, bool mainCycle)
+    {
+        if (date.weekday()!=Wednesday)
+            return false;
+
+        Day d = date.dayOfMonth();
+        if (d<15 || d>21)
+            return false;
+
+        if (!mainCycle) return true;
+
+        Month m = date.month();
+        return (m == March || m == June || m == September || m == December);
+    }
+
+    Date Date::nextIMMdate(const Date& date, bool mainCycle) {
         Year y = date.year();
         Month m = date.month();
 
-        Size skipMonths = 3-(m%3);
-        if (skipMonths != 3 || date.dayOfMonth() > 21) {
+        Size offset = mainCycle ? 3 : 1;
+        Size skipMonths = offset-(m%offset);
+        if (skipMonths != offset || date.dayOfMonth() > 21) {
             skipMonths += Size(m);
             if (skipMonths<=12) {
                 m = Month(skipMonths);
@@ -292,10 +308,10 @@ namespace QuantLib {
             if (nextWednesday.dayOfMonth() <= 21)
                 return nextWednesday;
             else {
-                if (m <= 9) {
-                    m = Month(Size(m)+3);
+                if (Size(m)+offset <= 12) {
+                    m = Month(Size(m)+offset);
                 } else {
-                    m = Month(Size(m)-9);
+                    m = Month(Size(m)+offset-12);
                     y += 1;
                 }
             }
@@ -305,7 +321,7 @@ namespace QuantLib {
     }
 
     std::string Date::IMMcode(const Date& date) {
-        QL_REQUIRE(isIMMdate(date),
+        QL_REQUIRE(isIMMdate(date, false),
             date << " is not an IMM date");
 
         std::ostringstream IMMcode;
@@ -389,9 +405,9 @@ namespace QuantLib {
         if (y==0 && referenceDate.year()<=1909) y+=10;
         Year referenceYear = (referenceDate.year() % 10);
         y += referenceDate.year() - referenceYear;
-        Date result = Date::nextIMMdate(Date(1, m, y));
+        Date result = Date::nextIMMdate(Date(1, m, y), false);
         if (result<referenceDate)
-            return Date::nextIMMdate(Date(1, m, y+10));
+            return Date::nextIMMdate(Date(1, m, y+10), false);
 
         return result;
     }

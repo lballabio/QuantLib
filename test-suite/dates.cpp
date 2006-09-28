@@ -30,16 +30,16 @@ void DateTest::immDates() {
     BOOST_MESSAGE("Testing IMM dates...");
 
     const std::string IMMcodes[] = {
-        "H0", "M0", "U0", "Z0",
-        "H1", "M1", "U1", "Z1",
-        "H2", "M2", "U2", "Z2",
-        "H3", "M3", "U3", "Z3",
-        "H4", "M4", "U4", "Z4",
-        "H5", "M5", "U5", "Z5",
-        "H6", "M6", "U6", "Z6",
-        "H7", "M7", "U7", "Z7",
-        "H8", "M8", "U8", "Z8",
-        "H9", "M9", "U9", "Z9"
+        "F0", "G0", "H0", "J0", "K0", "M0", "N0", "Q0", "U0", "V0", "X0", "Z0",
+        "F1", "G1", "H1", "J1", "K1", "M1", "N1", "Q1", "U1", "V1", "X1", "Z1",
+        "F2", "G2", "H2", "J2", "K2", "M2", "N2", "Q2", "U2", "V2", "X2", "Z2",
+        "F3", "G3", "H3", "J3", "K3", "M3", "N3", "Q3", "U3", "V3", "X3", "Z3",
+        "F4", "G4", "H4", "J4", "K4", "M4", "N4", "Q4", "U4", "V4", "X4", "Z4",
+        "F5", "G5", "H5", "J5", "K5", "M5", "N5", "Q5", "U5", "V5", "X5", "Z5",
+        "F6", "G6", "H6", "J6", "K6", "M6", "N6", "Q6", "U6", "V6", "X6", "Z6",
+        "F7", "G7", "H7", "J7", "K7", "M7", "N7", "Q7", "U7", "V7", "X7", "Z7",
+        "F8", "G8", "H8", "J8", "K8", "M8", "N8", "Q8", "U8", "V8", "X8", "Z8",
+        "F9", "G9", "H9", "J9", "K9", "M9", "N9", "Q9", "U9", "V9", "X9", "Z9"        "H9", "M9", "U9", "Z9"
     };
 
     Date counter = Date::minDate();
@@ -48,7 +48,7 @@ void DateTest::immDates() {
     Date imm;
 
     while (counter<=last) {
-        imm = Date::nextIMMdate(counter);
+        imm = Date::nextIMMdate(counter, false);
         // check that imm is greater than or equal to counter
         if (imm<counter)
             BOOST_FAIL("\n  "
@@ -56,13 +56,19 @@ void DateTest::immDates() {
                        << " is not greater than or equal to "
                        << counter.weekday() << " " << counter);
         // check that imm is an IMM date
-        if (!Date::isIMMdate(imm))
+        if (!Date::isIMMdate(imm, false))
             BOOST_FAIL("\n  "
                        << imm.weekday() << " " << imm
                        << " is not an IMM date (calculated from "
                        << counter.weekday() << " " << counter << ")");
+        // check that imm is <= to the next IMM date in the main cycle
+        if (imm>Date::nextIMMdate(counter))
+            BOOST_FAIL("\n  "
+                       << imm.weekday() << " " << imm
+                       << " is not less than or equal to the next future in the main cycle "
+                       << Date::nextIMMdate(counter));
         // check that if counter is an IMM date, then imm==counter
-        if (Date::isIMMdate(counter) && (imm!=counter))
+        if (Date::isIMMdate(counter, false) && (imm!=counter))
             BOOST_FAIL("\n  "
                        << counter.weekday() << " " << counter
                        << " is already an IMM date, while nextIMM() returns "
@@ -73,7 +79,7 @@ void DateTest::immDates() {
                        << Date::IMMcode(imm)
                        << " at calendar day " << counter
                        << " is not the IMM code matching " << imm);
-        // check that for every date the 40 IMM codes refer to future dates
+        // check that for every date the 120 IMM codes refer to future dates
         for (int i=0; i<40; i++) {
             if (Date::IMMdate(IMMcodes[i], counter)<counter)
                 BOOST_FAIL("\n  "
