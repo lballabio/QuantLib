@@ -51,8 +51,14 @@ namespace QuantLib {
     }
 
     Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
-        return 0.5*volatility_*volatility_/speed_*
-            (1.0 - std::exp(-2.0*speed_*dt));
+        if (speed_ < QL_EPSILON) {
+             // algebraic limit for small speed
+            return volatility_*volatility_*dt;
+        } else {
+            return 0.5*volatility_*volatility_/speed_*
+                (1.0 - std::exp(-2.0*speed_*dt));
+        }
     }
 
 }
+
