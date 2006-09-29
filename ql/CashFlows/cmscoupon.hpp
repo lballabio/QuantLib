@@ -133,6 +133,21 @@ namespace QuantLib {
                     const Handle<SwaptionVolatilityStructure>& vol =
                                 Handle<SwaptionVolatilityStructure>());
 
+    std::vector<boost::shared_ptr<CashFlow> >
+    CMSInArrearsCouponVector(const Schedule& schedule,
+                    BusinessDayConvention paymentAdjustment,
+                    const std::vector<Real>& nominals,
+                    const boost::shared_ptr<SwapIndex>& index,
+                    Integer fixingDays,
+                    const DayCounter& dayCounter,
+                    const std::vector<Real>& baseRate,
+                    const std::vector<Real>& fractions,
+                    const std::vector<Real>& caps,
+                    const std::vector<Real>& floors,
+                    const std::vector<Real>& meanReversions,
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                    const Handle<SwaptionVolatilityStructure>& vol =
+                                Handle<SwaptionVolatilityStructure>());
 
 }
 
