@@ -68,7 +68,7 @@ namespace QuantLib {
         //! fixing days
         Integer fixingDays() const;
         //! fixing date
-        Date fixingDate() const;
+        virtual Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
         Real gearing() const;
         //! fixing of the underlying index

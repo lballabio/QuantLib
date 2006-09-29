@@ -62,7 +62,8 @@ namespace QuantLib {
                   Rate floor = Null<Rate>(),
                   Real meanReversion = 0.,
                   const Date& refPeriodStart = Date(),
-                  const Date& refPeriodEnd = Date());
+                  const Date& refPeriodEnd = Date(),
+                  bool isInArrears = false);
         //! \name Coupon interface
         //@{
 		Real price(const Handle<YieldTermStructure>& discountingCurve) const;
@@ -78,6 +79,8 @@ namespace QuantLib {
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
         Real meanReversion() const { return meanReversion_; }
+        //! fixing date
+        virtual Date fixingDate() const;
         //@}
         //! \name Modifiers
         //@{
@@ -95,6 +98,7 @@ namespace QuantLib {
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
+        bool isInArrears_;
         Real meanReversion_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
         boost::shared_ptr<VanillaCMSCouponPricer> Pricer_;

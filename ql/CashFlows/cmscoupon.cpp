@@ -33,11 +33,13 @@ namespace QuantLib {
                   Rate floor,
                   Real meanReversion,
                   const Date& refPeriodStart,
-                  const Date& refPeriodEnd)
+                  const Date& refPeriodEnd,
+                  bool isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter),
-      swapIndex_(index), cap_(cap), floor_(floor), meanReversion_(meanReversion), Pricer_(Pricer) {}
+      swapIndex_(index), cap_(cap), floor_(floor), 
+      meanReversion_(meanReversion), Pricer_(Pricer),isInArrears_(isInArrears) {}
 
     namespace {
 
@@ -221,6 +223,18 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
+    Date CMSCoupon::fixingDate() const{
+        if (isInArrears_){
+            return index_->calendar().advance(accrualEndDate_,
+                                          -fixingDays_, Days,
+                                          Preceding);
+        }
+        else{
+            return index_->calendar().advance(accrualStartDate_,
+                                          -fixingDays(), Days,
+                                          Preceding);
+        }
+    }
 
     namespace {
 
@@ -470,7 +484,7 @@ namespace QuantLib {
 
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.adjust(start,paymentAdjustment);
+        Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,0), paymentDate, index,
@@ -479,7 +493,7 @@ namespace QuantLib {
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               get(meanReversions,0,Null<Rate>()),
-                              start, end)));
+                              start, end, true)));
 
         } else {
             Date reference = end - Period(schedule.frequency());
@@ -492,12 +506,12 @@ namespace QuantLib {
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
                               get(meanReversions,0,Null<Rate>()),
-                              reference, end)));
+                              reference, end, true)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(start,paymentAdjustment);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
                               start, end, fixingDays, dayCounter, Pricer,
@@ -505,12 +519,12 @@ namespace QuantLib {
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
                               get(meanReversions,i-1,Null<Rate>()),
-                              start, end)));
+                              start, end, true)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(start,paymentAdjustment);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CMSCoupon(get(nominals,N-2), paymentDate, index,
@@ -520,7 +534,7 @@ namespace QuantLib {
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
                                   get(meanReversions,N-2,Null<Rate>()),
-                                  start, end)));
+                                  start, end, true)));
             } else {
                 Date reference = start + Period(schedule.frequency());
                 reference =
@@ -533,7 +547,7 @@ namespace QuantLib {
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
                                   get(meanReversions,N-2,Null<Rate>()),
-                                  start, reference)));
+                                  start, reference, true)));
             }
         }
 
