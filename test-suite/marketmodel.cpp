@@ -63,6 +63,7 @@
 #include <ql/Math/functional.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
+#include <sstream>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -94,12 +95,6 @@ unsigned long seed_;
 Size paths_, trainingPaths_;
 
 bool printReport_ = false;
-
-template <class T, class U>
-boost::shared_ptr<T> clone(const boost::shared_ptr<U>& ptr) {
-    boost::shared_ptr<T> p = boost::dynamic_pointer_cast<T>(ptr);
-    return boost::shared_ptr<T>(new T(*p));
-}
 
 void setup() {
 
@@ -358,7 +353,8 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 
 void checkForwardsAndCaplets(const SequenceStatistics& stats,
                              const std::vector<Rate>& forwardStrikes,
-                             const std::vector<Rate>& capletStrikes) {
+                             const std::vector<Rate>& capletStrikes,
+                             const std::string& config) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
@@ -394,6 +390,7 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
     Real errorThreshold = 2.50;
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
         for (Size i=0; i<N; ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
                           << io::rate(results[i])
@@ -404,13 +401,15 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
                           << " standard errors");
         }
         for (Size i=0; i<N; ++i) {
-            BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
-                          << io::rate(results[i+N])
-                          << " +- " << io::rate(errors[i+N])
-                          << "; expected: " << io::rate(expectedCaplets[i])
-                          << "; discrepancy = "
-                          << (results[i+N]-expectedCaplets[i])/(errors[i+N] == 0.0 ? 1.0 : errors[i+N])
-                          << " standard errors");
+            BOOST_MESSAGE(
+                    io::ordinal(i+1) << " caplet: "
+                    << io::rate(results[i+N])
+                    << " +- " << io::rate(errors[i+N])
+                    << "; expected: " << io::rate(expectedCaplets[i])
+                    << "; discrepancy = "
+                    << (results[i+N]-expectedCaplets[i])/(errors[i+N] == 0.0 ?
+                                                          1.0 : errors[i+N])
+                    << " standard errors");
         }
         BOOST_ERROR("test failed");
     }
@@ -418,8 +417,8 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
 
 
 void checkCoinitialSwaps(const SequenceStatistics& stats,
-                         const Real fixedRate)
-{
+                         const Real fixedRate,
+                         const std::string& config) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
@@ -441,6 +440,7 @@ void checkCoinitialSwaps(const SequenceStatistics& stats,
 
     Real errorThreshold = 2.32;
     if (minError <-errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
         for (Size i=0; i<results.size(); ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " coinitial swap: "
                           << io::rate(results[i])
@@ -455,8 +455,8 @@ void checkCoinitialSwaps(const SequenceStatistics& stats,
 }
 
 void checkCoterminalSwaps(const SequenceStatistics& stats,
-                          const Real fixedRate)
-{
+                          const Real fixedRate,
+                          const std::string& config) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
@@ -479,6 +479,7 @@ void checkCoterminalSwaps(const SequenceStatistics& stats,
 
     Real errorThreshold = 2.32;
     if (minError <-errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
         for (Size i=0; i<results.size(); ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap: "
                           << io::rate(results[i])
@@ -492,19 +493,25 @@ void checkCoterminalSwaps(const SequenceStatistics& stats,
     }
 }
 
-void checkCallableSwap(const SequenceStatistics& stats)
-{
+void checkCallableSwap(const SequenceStatistics& stats,
+                       const std::string& config) {
     Real payerNPV    = stats.mean()[0];
     Real receiverNPV = stats.mean()[1];
     Real bermudanNPV = stats.mean()[2];
     Real callableNPV = stats.mean()[3];
     Real tolerance = 6.0e-16;
-    Real error = std::fabs(receiverNPV+payerNPV);
-    if (error>tolerance)
+    Real swapError = std::fabs(receiverNPV+payerNPV);
+    Real callableError = std::fabs(receiverNPV+bermudanNPV-callableNPV);
+
+    if (swapError>tolerance || bermudanNPV<0.0 ||
+        callableNPV<receiverNPV || callableError>tolerance)
+        BOOST_MESSAGE(config);  // detailed error info below
+
+    if (swapError>tolerance)
         BOOST_ERROR("agreement between payer and receiver swap failed:"
                     "\n    payer swap:    " << payerNPV <<
                     "\n    receiver swap: " << receiverNPV <<
-                    "\n    error:         " << error <<
+                    "\n    error:         " << swapError <<
                     "\n    tolerance:     " << tolerance);
 
     if (bermudanNPV<0.0)
@@ -516,14 +523,13 @@ void checkCallableSwap(const SequenceStatistics& stats)
                     "\n    receiver swap:     " << receiverNPV <<
                     "\n    callable:          " << callableNPV);
 
-    error = std::fabs(receiverNPV+bermudanNPV-callableNPV);
-    if (error>tolerance)
+    if (callableError>tolerance)
         BOOST_ERROR("agreement between receiver+bermudan and callable failed:"
                     "\n    receiver swap:     " << receiverNPV <<
                     "\n    bermudan:          " << bermudanNPV <<
                     "\n    receiver+bermudan: " << receiverNPV+bermudanNPV <<
                     "\n    callable:          " << callableNPV <<
-                    "\n    error:             " << error <<
+                    "\n    error:             " << callableError <<
                     "\n    tolerance:         " << tolerance);
 
     if (printReport_)
@@ -562,9 +568,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
 
     EvolutionDescription evolution = product.evolution();
 
-    // for one step MoneyMarketPlus==ProductSuggested
-    // for one step Terminal==ProductSuggested
-    MeasureType measures[] = { ProductSuggested,
+    MeasureType measures[] = { Terminal,
                                MoneyMarket };
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
@@ -584,24 +588,26 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE(
-                          "    " << measureTypeToString(measures[k]) <<
-                          ", " << factors <<
-                          (factors>1 ? " factors, " : " factor,") <<
-                          marketModelTypeToString(marketModels[j]) <<
-                          ", MT BGF" <<
-                          ", " << evolverTypeToString(evolvers[i]));
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
                                                 forwardStrikes,
-                                                capletStrikes);
+                                                capletStrikes,
+                                                config.str());
                     }
                 }
             }
@@ -634,8 +640,7 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
 
     EvolutionDescription evolution = product.evolution();
 
-    MeasureType measures[] = { ProductSuggested,
-                               MoneyMarketPlus,
+    MeasureType measures[] = { MoneyMarketPlus,
                                MoneyMarket,
                                Terminal };
     for (Size k=0; k<LENGTH(measures); k++) {
@@ -657,24 +662,26 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          generatorFactory,
                                                          evolvers[i]);
-                        BOOST_MESSAGE(
-                          "    " << measureTypeToString(measures[k]) <<
-                          ", " << factors <<
-                          (factors>1 ? " factors, " : " factor,") <<
-                          marketModelTypeToString(marketModels[j]) <<
-                          ", MT BGF" <<
-                          ", " << evolverTypeToString(evolvers[i]));
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
                                                 forwardStrikes,
-                                                capletStrikes);
+                                                capletStrikes,
+                                                config.str());
                     }
                 }
             }
@@ -718,17 +725,23 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        evolver = makeMarketModelEvolver(marketModel, numeraires, generatorFactory, evolvers[i]);
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                      ", " << factors <<
-                                      (factors>1 ? " factors, " : " factor,") <<
-                                      marketModelTypeToString(marketModels[j]) <<
-                                      ", MT BGF" <<
-                                      ", " << evolverTypeToString(evolvers[i]));
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
-                        checkCoinitialSwaps(*stats, fixedRate);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, product);
+                        checkCoinitialSwaps(*stats, fixedRate, config.str());
                     }
                 }
             }
@@ -772,17 +785,23 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        evolver = makeMarketModelEvolver(marketModel, numeraires, generatorFactory, evolvers[i]);
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                      ", " << factors <<
-                                      (factors>1 ? " factors, " : " factor,") <<
-                                      marketModelTypeToString(marketModels[j]) <<
-                                      ", MT BGF" <<
-                                      ", " << evolverTypeToString(evolvers[i]));
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
-                        checkCoterminalSwaps(*stats, fixedRate);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, product);
+                        checkCoterminalSwaps(*stats, fixedRate, config.str());
                     }
                 }
             }
@@ -792,7 +811,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
 
 void MarketModelTest::testAbcdVolatilityIntegration() {
 
-    BOOST_MESSAGE("Testing Abcd-volatility integration... ");
+    BOOST_MESSAGE("Testing Abcd-volatility integration...");
 
     QL_TEST_SETUP
 
@@ -857,8 +876,8 @@ void MarketModelTest::testAbcdVolatilityCompare() {
         return the same result only if T < min(rateTimes[i1],rateTimes[i2]).
     */
 
-    // Parameters following Rebonato  --> Parameters following Brigo-Mercurio
-    // used in Abcd class                 used in LmExtLinearExponentialVolModel class
+    // Parameters following Rebonato / Parameters following Brigo-Mercurio
+    // used in Abcd class              used in LmExtLinearExponentialVolModel
     Real a = 0.0597;                      // --> d
     Real b = 0.1677;                      // --> a
     Real c = 0.5403;                      // --> b
@@ -875,7 +894,8 @@ void MarketModelTest::testAbcdVolatilityCompare() {
             Time T = 0.;
             do {
                 Real lmCovariance = lmAbcd->integratedVariance(i1,i2,T);
-                Real abcdCovariance = abcd->covariance(0,T,rateTimes[i1],rateTimes[i2]);
+                Real abcdCovariance =
+                    abcd->covariance(0,T,rateTimes[i1],rateTimes[i2]);
                 if(std::abs(lmCovariance-abcdCovariance)>1e-10) {
                     BOOST_FAIL(" T1="   << rateTimes[i1] << ","     <<
                                   "T2="   << rateTimes[i2] << ",\t\t" <<
@@ -892,7 +912,7 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
 void MarketModelTest::testAbcdVolatilityFit() {
 
-    BOOST_MESSAGE("Testing Abcd-volatility fit ...");
+    BOOST_MESSAGE("Testing Abcd-volatility fit...");
 
     QL_TEST_SETUP
 
@@ -922,7 +942,8 @@ void MarketModelTest::testAbcdVolatilityFit() {
     Real tol = 2.0e-4;
     for (Size i=0; i<blackVols.size(); i++) {
         if (std::abs(k[i]-1.0)>tol) {
-            Real modelVol = instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
+            Real modelVol =
+                instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
             BOOST_FAIL("\nFixing Time = " << rateTimes[i] <<
                        " MktVol = " << io::rate(blackVols[i]) <<
                        " ModVol = " << io::rate(modelVol) <<
@@ -935,7 +956,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
 void MarketModelTest::testDriftCalculator() {
 
-    BOOST_MESSAGE("Testing drift calculation ...");
+    BOOST_MESSAGE("Testing drift calculation...");
     QL_TEST_SETUP
 
     // full factor equivalence between compute() and computeReduced()
@@ -943,10 +964,11 @@ void MarketModelTest::testDriftCalculator() {
 
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
-    EvolutionDescription evolution(rateTimes,evolutionTimes);   // default numeraires
+    EvolutionDescription evolution(rateTimes,evolutionTimes);
 
     std::vector<Real> rateTaus = evolution.rateTaus();
-    std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution, measureOffset_);
+    std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
+                                                          measureOffset_);
     std::vector<Size> alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
 
@@ -968,8 +990,9 @@ void MarketModelTest::testDriftCalculator() {
             DriftCalculator driftcalculator(A, displacements, rateTaus,
                                             numeraires[j], alive[j]);
             driftcalculator.compute(todaysForwards, drifts);
-            driftcalculator.computeReduced(todaysForwards, factors, driftsReduced);
-            for (Size i=0; i<drifts.size(); ++i) {     // write resulting drifts
+            driftcalculator.computeReduced(todaysForwards, factors,
+                                           driftsReduced);
+            for (Size i=0; i<drifts.size(); ++i) {
                 Real tolerance = 1.0e-16;
                 Real error = std::abs(driftsReduced[i]-drifts[i]);
                 if (error>tolerance)
@@ -988,7 +1011,8 @@ void MarketModelTest::testDriftCalculator() {
 
 void MarketModelTest::testCallableSwap1() {
 
-    BOOST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
+    BOOST_MESSAGE("Pricing callable swap with naive exercise strategy "
+                  "in a LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -1055,17 +1079,23 @@ void MarketModelTest::testCallableSwap1() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        evolver  = makeMarketModelEvolver(marketModel, numeraires, generatorFactory, evolvers[i]);
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                      ", " << factors <<
-                                      (factors>1 ? " factors, " : " factor,") <<
-                                      marketModelTypeToString(marketModels[j]) <<
-                                      ", MT BGF" <<
-                                      ", " << evolverTypeToString(evolvers[i]));
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, allProducts);
-                        checkCallableSwap(*stats);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, allProducts);
+                        checkCallableSwap(*stats, config.str());
                     }
                 }
             }
@@ -1147,9 +1177,13 @@ void MarketModelTest::testCallableSwap2() {
 
                     EvolverType evolvers[] = { Pc, Ipc };
                     boost::shared_ptr<MarketModelEvolver> evolver;
-                    Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                     for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-                        evolver  = makeMarketModelEvolver(marketModel, numeraires, generatorFactory, evolvers[i]);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
 
                         // calculate the exercise strategy
                         collectLongstaffSchwartzData(*evolver,
@@ -1178,14 +1212,16 @@ void MarketModelTest::testCallableSwap2() {
                         allProducts.add(callableProduct);
                         allProducts.finalize();
 
-                        BOOST_MESSAGE("    " << measureTypeToString(measures[k]) <<
-                                    ", " << factors <<
-                                    (factors>1 ? " factors, " : " factor,") <<
-                                    marketModelTypeToString(marketModels[j]) <<
-                                    ", MT BGF" <<
-                                    ", " << evolverTypeToString(evolvers[i]));
-                        boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, allProducts);
-                        checkCallableSwap(*stats);
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, allProducts);
+                        checkCallableSwap(*stats, config.str());
                     }
                 }
             }
