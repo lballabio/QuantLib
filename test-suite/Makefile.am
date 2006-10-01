@@ -107,6 +107,7 @@ quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 EXTRA_PROGRAMS = quantlib-benchmark
+CLEANFILES = quantlib-benchmark
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
