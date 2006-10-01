@@ -104,6 +104,10 @@ namespace QuantLib {
         // 1st: the drift corresponding to the numeraire P_N is zero:
         if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
+		// temp fix - the code below calculates matrix indices based on
+		// numeraire_ - 1 resulting in memory corruption when numeraire_ < 1
+		QL_REQUIRE(numeraire_, "matrix index out of bounds");
+
         // 2nd: then, move backward from N-2 (included) back to alive (included):
         Integer alive = alive_;
         for (Size r=0; r<factors; ++r)           // enforce initialization
