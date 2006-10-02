@@ -38,8 +38,8 @@ namespace QuantLib {
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter),
-      swapIndex_(index), cap_(cap), floor_(floor), 
-      meanReversion_(meanReversion), Pricer_(Pricer),isInArrears_(isInArrears) {}
+      swapIndex_(index), cap_(cap), floor_(floor), isInArrears_(isInArrears),
+      meanReversion_(meanReversion), Pricer_(Pricer) {}
 
     namespace {
 
@@ -93,7 +93,7 @@ namespace QuantLib {
     }
 
     Rate CMSCoupon::rate() const
-    {  
+    {
         Date d = fixingDate();
         const Rate Rs = index_->fixing(d);
         Date today = Settings::instance().evaluationDate();
@@ -105,7 +105,7 @@ namespace QuantLib {
             if (floor_ != Null<Rate>())
                 r = std::max(r, floor_);
             return r;
-        } else {   
+        } else {
             Pricer_->initialize(*this);
             return Pricer_->rate();
         }
@@ -458,7 +458,7 @@ namespace QuantLib {
     }
 
 
-    
+
     std::vector<boost::shared_ptr<CashFlow> >
     CMSInArrearsCouponVector(const Schedule& schedule,
                     BusinessDayConvention paymentAdjustment,
