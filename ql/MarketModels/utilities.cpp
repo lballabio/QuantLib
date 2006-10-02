@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -63,24 +64,22 @@ namespace QuantLib {
         QL_REQUIRE(dimSet >= dimsubSet,
                    "set is required to be larger or equal than subset");
 
-        for (Size i=0; i<dimSet; ++i) {  // cycle within set
+        for (Size i=0; i<dimSet; ++i) {  // loop in set
             Size j=0;
             setElement = set[i];
-            while (true) {              // cycle within subset
+            while (true) {              // loop in subset
                 subsetElement = subset[j];
                 result[i] = false;
-                // if match, change result to true and go to next i
+                // if smaller no hope, leave false and go to next i
+                if (setElement < subsetElement) break;
+                // if match, set result[i] to true and go to next i
                 if (setElement == subsetElement) {
                     result[i] = true;
                     break;
                 } 
-                // if smaller no hope, leave false and go to next i
-                if (setElement < subsetElement) break;
-                // if larger, go to next j or leave false if at the end
-                if (setElement > subsetElement) { 
-                    if (j > dimsubSet-1) break;
-                    ++j;
-                }
+                // if larger, leave false if at the end or go to next j
+                if (j > dimsubSet-1) break;
+                ++j;
             }
         }
         return result;

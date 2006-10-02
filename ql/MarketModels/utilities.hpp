@@ -30,7 +30,7 @@ namespace QuantLib {
                     std::vector<Time>& mergedTimes,
                     std::vector<std::vector<bool> >& isPresent);
 
-    /*! Look for a subset in a set, BOTH STRICTLY INCREASING VECTORS.
+    /*! Look for elements of a set in a subset, both strictly increasing vectors.
         Returns a vector of booleans such that:
         element set[i] present/not present in subset. */
     std::vector<bool> isInSubset(const std::vector<Time>& set,
