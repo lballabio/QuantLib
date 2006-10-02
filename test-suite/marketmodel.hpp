@@ -36,6 +36,7 @@ class MarketModelTest {
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();
     static void testDriftCalculator();
+    static void testIsInSubset();
     static void testCallableSwap1();
     static void testCallableSwap2();
     static boost::unit_test_framework::test_suite* suite();

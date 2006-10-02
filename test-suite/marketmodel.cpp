@@ -961,19 +961,15 @@ void MarketModelTest::testDriftCalculator() {
 
     // full factor equivalence between compute() and computeReduced()
     Size factors = todaysForwards.size();
-
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
     EvolutionDescription evolution(rateTimes,evolutionTimes);
-
     std::vector<Real> rateTaus = evolution.rateTaus();
     std::vector<Size> numeraires = moneyMarketPlusMeasure(evolution,
                                                           measureOffset_);
     std::vector<Size> alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
-
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
-
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                       ExponentialCorrelationAbcdVolatility};
 
@@ -1007,6 +1003,27 @@ void MarketModelTest::testDriftCalculator() {
             }
         }
     }
+}
+
+
+void MarketModelTest::testIsInSubset() {
+
+    BOOST_MESSAGE("Testing isInSubset ...");
+    QL_TEST_SETUP
+
+    // performance test for isInSubset (temporary)
+    Size dim = 100;
+    std::vector<Time> set, subset;
+    for (Size i=0; i<dim; i++) set.push_back(i*1.0); 
+    for (Size i=0; i<dim; i++) subset.push_back(dim+i*1.0); 
+    std::vector<bool> result = isInSubset(set, subset);
+    // uncomment here to visually check results
+    //for (Size i=0; i<dim; i++) {
+    //    BOOST_MESSAGE("\n" << io::ordinal(i) << ":" <<
+    //                " set[" << i << "] =  " << set[i] << 
+    //                ", subset[" << i << "] =  " << subset[i] << 
+    //                ", result[" << i << "] =  " << result[i]);
+    //}
 }
 
 void MarketModelTest::testCallableSwap1() {
