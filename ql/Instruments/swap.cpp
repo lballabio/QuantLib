@@ -29,7 +29,7 @@ namespace QuantLib {
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
                const Swap::Leg& firstLeg,
                const Swap::Leg& secondLeg)
-    : termStructure_(termStructure), legs_(2), payer_(2), legBPS_(2, 0.0) {
+    : termStructure_(termStructure), legs_(2), payer_(2), legNPV_(2, 0.0), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
@@ -46,7 +46,7 @@ namespace QuantLib {
                const std::vector<Swap::Leg>& legs,
                const std::vector<bool>& payer)
     : termStructure_(termStructure), legs_(legs),
-      payer_(legs.size(), 1.0) , legBPS_(legs.size(), 0.0){
+      payer_(legs.size(), 1.0) , legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0){
         QL_REQUIRE(payer.size()==legs_.size(),
             "payer/leg mismatch");
         registerWith(termStructure_);
@@ -72,6 +72,7 @@ namespace QuantLib {
     void Swap::setupExpired() const {
         Instrument::setupExpired();
         legBPS_= std::vector<Real>(legs_.size(), 0.0);
+        legNPV_= std::vector<Real>(legs_.size(), 0.0);
     }
 
     void Swap::performCalculations() const {
@@ -81,7 +82,8 @@ namespace QuantLib {
         errorEstimate_ = Null<Real>();
         NPV_ = 0.0;
         for (Size j=0; j<legs_.size(); j++) {
-            NPV_      += payer_[j]*Cashflows::npv(legs_[j], termStructure_);
+            legNPV_[j]= payer_[j]*Cashflows::npv(legs_[j], termStructure_);
+            NPV_ += legNPV_[j] ;
             legBPS_[j] = payer_[j]*Cashflows::bps(legs_[j], termStructure_);
         }
     }

@@ -72,6 +72,9 @@ namespace QuantLib {
         prices_= Matrix(nExercise_, nLengths_, 0.);
         impliedCmsSpreads_ = Matrix(nExercise_, nLengths_, 0.);
         spreadErrors_ = Matrix(nExercise_, nLengths_, 0.);
+        midPrices_ = Matrix(nExercise_, nLengths_, 0.);
+        askPrices_ = Matrix(nExercise_, nLengths_, 0.);
+        bidPrices_ = Matrix(nExercise_, nLengths_, 0.);
 
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA2Y(yieldTermStructure_)));
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA5Y(yieldTermStructure_)));
@@ -122,8 +125,12 @@ namespace QuantLib {
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()))
                 );
                 prices_[i][j] = swapTmp.back()->NPV();
-                impliedCmsSpreads_[i][j] = -(prices_[i][j]/swapTmp.back()->legBPS(1))/10000;;
+                Real PV01 = swapTmp.back()->legBPS(1);
+                impliedCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
+                midPrices_[i][j] = prices_[i][j]+PV01*mids_[i][j]*10000;
+                askPrices_[i][j] = prices_[i][j]+PV01*asks_[i][j]*10000;
+                bidPrices_[i][j] = prices_[i][j]+PV01*bids_[i][j]*10000;
             }
             cmsLegs_.push_back(cmsTmp);
             floatingLegs_.push_back(floatingTmp);
@@ -170,7 +177,7 @@ namespace QuantLib {
         for(Size i=0;i<nExercise_;i++){
             for(Size j=0;j<nLengths_;j++){
                 count++;
-                error+=weights[i][j]*spreadErrors_[i][j]*spreadErrors_[i][j];
+                error+=10000.*weights[i][j]*spreadErrors_[i][j]*spreadErrors_[i][j];
             }
         }
         error=std::sqrt(error/count);
@@ -180,7 +187,7 @@ namespace QuantLib {
 
 
     Matrix CmsMarket::browse() const{
-        Matrix result(nExercise_*nLengths_,9,0.);
+        Matrix result(nExercise_*nLengths_,14,0.);
 	        for(Size j=0;j<nLengths_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nLengths_+i][0]= lengths_[j].length();
@@ -197,7 +204,13 @@ namespace QuantLib {
                     result[j*nLengths_+i][7]= (bids_[i][j]-impliedCmsSpreads_[i][j])*10000;
                 }
                 else{ result[j*nLengths_+i][7]= 0.; } 
-                result[j*nLengths_+i][8]= prices_[i][j];
+                result[j*nLengths_+i][8]= swaps_[i][j]->legNPV(0);
+                result[j*nLengths_+i][9]= swaps_[i][j]->legNPV(1);
+                result[j*nLengths_+i][10]= prices_[i][j];
+                result[j*nLengths_+i][11]= bidPrices_[i][j];
+                result[j*nLengths_+i][12]= askPrices_[i][j];
+                result[j*nLengths_+i][13]= midPrices_[i][j];
+
             }   
         }  
         return result;
@@ -224,12 +237,12 @@ namespace QuantLib {
 
         boost::shared_ptr<LineSearch> lineSearch(
             new ArmijoLineSearch(1e-12, 0.15, 0.55));
-        //boost::shared_ptr<OptimizationMethod> method =
-        //    boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
         boost::shared_ptr<OptimizationMethod> method =
-            boost::shared_ptr<OptimizationMethod>(new Simplex(.0001,1e-3));
+            boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
+        //boost::shared_ptr<OptimizationMethod> method =
+        //    boost::shared_ptr<OptimizationMethod>(new Simplex(.0001,1e-3));
 
-        method->setEndCriteria(EndCriteria(1000, 1e-3));
+        method->setEndCriteria(EndCriteria(1000, 1e-1));
 
         Array guess(1);
 
@@ -246,7 +259,7 @@ namespace QuantLib {
 
         Array y = tranformation_->direct(result);
 
-        error_ = y[0];
+        error_ = method->functionValue();
         endCriteria_ = method->endCriteria().criteria();
 
         return y[0];

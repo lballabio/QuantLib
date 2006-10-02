@@ -64,6 +64,12 @@ namespace QuantLib {
             calculate();
             return legBPS_[j];
         }
+        Real legNPV(Size j) const {
+            QL_REQUIRE(j<legs_.size(),
+                "legNPV: leg# " << j << " doesn't exist!");
+            calculate();
+            return legNPV_[j];
+        }
         const Leg& leg(Size j) const {
             QL_REQUIRE(j<legs_.size(),
                 "leg: leg# " << j << " doesn't exist!");
@@ -79,6 +85,7 @@ namespace QuantLib {
         std::vector<Leg> legs_;
         std::vector<Real> payer_;
         mutable std::vector<Real> legBPS_;
+        mutable std::vector<Real> legNPV_;
     };
 
 }

@@ -68,6 +68,10 @@ namespace QuantLib {
         Matrix mids_;
         Matrix impliedCmsSpreads_;
         Matrix spreadErrors_;
+        
+        Matrix midPrices_;
+        Matrix askPrices_;
+        Matrix bidPrices_;
         Matrix prices_;
 
         Date referenceDate_; 
@@ -120,6 +124,8 @@ namespace QuantLib {
         boost::shared_ptr<Transformation> tranformation_;
 
         Real calibration();
+        Real error(){return error_;};
+        EndCriteria::Type endCriteria(){ return endCriteria_; };
 
       private:
 
