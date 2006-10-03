@@ -986,7 +986,7 @@ void MarketModelTest::testDriftCalculator() {
             DriftCalculator driftcalculator(A, displacements, rateTaus,
                                             numeraires[j], alive[j]);
             driftcalculator.compute(todaysForwards, drifts);
-            driftcalculator.computeReduced(todaysForwards, factors,
+            driftcalculator.computeReduced(todaysForwards,
                                            driftsReduced);
             for (Size i=0; i<drifts.size(); ++i) {
                 Real tolerance = 1.0e-16;

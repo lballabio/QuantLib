@@ -33,9 +33,7 @@ namespace QuantLib {
     /*! \ingroup Market Models */
 
     class DriftCalculator {
-
-    public:
-
+      public:
 	    /*! Returns the drift \f$ \mu \Delta t \f$.
 			See [1] "Rapid Computation of Drifts in a Reduced Factor Libor Market Model"
 			Mark Joshi, Wilmott Magazine, May 2003.
@@ -56,23 +54,18 @@ namespace QuantLib {
 			(uses pseudo square root of the covariance matrix).
 		*/
 		void computeReduced(const std::vector<Rate>& forwards,
-                            Size factors, 
                             std::vector<Real>& drifts) const;
-
-    private:
-
-        Size dim_, numeraire_, alive_;
+      private:
+        Size dim_, factors_, numeraire_, alive_;
         std::vector<Rate> displacements_;
-        std::vector<Real> oneOverTaus_; 
+        std::vector<Real> oneOverTaus_;
 		Matrix C_, pseudo_;
-
-		// temporary variables to be added later
-         mutable std::vector<Real> tmp_;
-		 mutable Matrix e_;
+        // temporary variables to be added later
+        mutable std::vector<Real> tmp_;
+        mutable Matrix e_;
         std::vector<Size> downs_, ups_;
     };
 
 }
-
 
 #endif
