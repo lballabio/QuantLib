@@ -51,7 +51,7 @@ namespace QuantLib {
         //@}
         //! \name Modifiers
         //@{
-        //! returns the difference between the old value and the new value
+        //! returns the difference between the new value and the old value
         Real setValue(Real value);
         //@}
       private:
@@ -120,12 +120,12 @@ namespace QuantLib {
     }
 
     inline Real SimpleQuote::setValue(Real value) {
-        if (value_ == value)
-            return 0.0;
-        Real result = value_-value;
-        value_ = value;
-        notifyObservers();
-        return result;
+        Real diff = value-value_;
+        if (diff != 0.0) {
+            value_ = value;
+            notifyObservers();
+        }
+        return diff;
     }
 
     // derived quote
