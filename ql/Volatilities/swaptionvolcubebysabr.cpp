@@ -305,14 +305,13 @@ namespace QuantLib {
         swapTenorNodes[1] = swapTenors[lengthsPreviousIndex+1];
 
         const Rate atmForward = atmStrike(atmExerciseDate, atmSwapTenor);
-        const Volatility atmVol = atmVolStructure_->volatility(
-            atmExerciseDate, atmSwapTenor, atmForward);
 
-        Matrix atmForwards(2,2,0.);
-        Matrix atmVols(2,2,0.);
-        for (Size i=0; i<2; i++){
-            for (Size j=0; j<2; j++){
-                atmForwards[i][j] = atmStrike(exercisesDateNodes[i], swapTenorNodes[j]);
+        Matrix atmForwards(2, 2, 0.0);
+        Matrix atmVols(2, 2, 0.0);
+        for (Size i=0; i<2; i++) {
+            for (Size j=0; j<2; j++) {
+                atmForwards[i][j] = atmStrike(exercisesDateNodes[i],
+                                              swapTenorNodes[j]);
                 atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
             }
         }
@@ -326,7 +325,8 @@ namespace QuantLib {
             for (Size i=0; i<2; i++){
                 for (Size j=0; j<2; j++){
                     strikes[i][j] = atmForwards[i][j]/moneyness;
-                    spreadVols[i][j] = smiles[i][j]->volatility(strikes[i][j])- atmVols[i][j];
+                    spreadVols[i][j] =
+                        smiles[i][j]->volatility(strikes[i][j])-atmVols[i][j];
                 }
             }
            Cube localInterpolator(exercisesDateNodes, swapTenorNodes,
@@ -334,7 +334,8 @@ namespace QuantLib {
            localInterpolator.setLayer(0, spreadVols);
            localInterpolator.updateInterpolators();
 
-           result.push_back(localInterpolator.operator ()(atmExerciseTime, atmTimeLength)[0]);
+           result.push_back(
+                        localInterpolator(atmExerciseTime, atmTimeLength)[0]);
         }
         return result;
     }
@@ -346,7 +347,8 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionVolatilityCubeBySabr::smileSection(Time expiry, Time length) const {
+    SwaptionVolatilityCubeBySabr::smileSection(Time expiry,
+                                               Time length) const {
         if (isAtmCalibrated_)
             return smileSection(expiry, length, denseParameters_);
         else
@@ -357,7 +359,8 @@ namespace QuantLib {
     SwaptionVolatilityCubeBySabr::smileSection(
                                     Time expiry, Time length,
                                     const Cube& sabrParametersCube) const {
-        const std::vector<Real> sabrParameters = sabrParametersCube.operator()(expiry, length);
+        const std::vector<Real> sabrParameters =
+            sabrParametersCube(expiry, length);
         return boost::shared_ptr<SmileSection>(
             new SmileSection(sabrParameters, expiry));
     }
@@ -400,7 +403,7 @@ namespace QuantLib {
 
         sparseParameters_ = sabrCalibration(marketVolCube_);
         sparseParameters_.updateInterpolators();
-        
+
         if(isAtmCalibrated_){
             volCubeAtmCalibrated_= marketVolCube_;
             fillVolatilityCube();
@@ -409,9 +412,9 @@ namespace QuantLib {
         }
     }
 
-    //===========================================================================//
-    //                      SwaptionVolatilityCubeBySabr::Cube                   //
-    //===========================================================================//
+    //======================================================================//
+    //                      SwaptionVolatilityCubeBySabr::Cube              //
+    //======================================================================//
 
 
     SwaptionVolatilityCubeBySabr::Cube::Cube(
@@ -433,9 +436,10 @@ namespace QuantLib {
         QL_REQUIRE(swapTenors.size()==lengths.size(),
                    "Cube::Cube(...): swapTenors/lengths mismatch");
 
-        std::vector<Matrix> points(nLayers_, Matrix(expiries_.size(), lengths_.size(), 0.0));
+        std::vector<Matrix> points(nLayers_, Matrix(expiries_.size(),
+                                                    lengths_.size(), 0.0));
 
-        for(Size k=0;k<nLayers_;k++){
+        for (Size k=0;k<nLayers_;k++) {
             transposedPoints_.push_back(transpose(points[k]));
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
@@ -457,14 +461,15 @@ namespace QuantLib {
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),transposedPoints_[k])));
+                                          lengths_.begin(), lengths_.end(),
+                                          transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
     }
 
     SwaptionVolatilityCubeBySabr::Cube&
-        SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o){
+    SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o) {
         expiries_ = o.expiries_;
         lengths_ = o.lengths_;
         exerciseDates_ = o.exerciseDates_;
@@ -475,54 +480,77 @@ namespace QuantLib {
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(), lengths_.end(),transposedPoints_[k])));
+                                          lengths_.begin(), lengths_.end(),
+                                          transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
         return *this;
     }
-    void SwaptionVolatilityCubeBySabr::Cube::setElement(Size IndexOfLayer, Size IndexOfRow,
-                                                  Size IndexOfColumn, Real x) {
-        QL_REQUIRE(IndexOfLayer<nLayers_,"Cube::setElement: incompatible IndexOfLayer ");
-        QL_REQUIRE(IndexOfRow<expiries_.size(),"Cube::setElement: incompatible IndexOfRow");
-        QL_REQUIRE(IndexOfColumn<lengths_.size(),"Cube::setElement: incompatible IndexOfColumn");
+
+    void SwaptionVolatilityCubeBySabr::Cube::setElement(Size IndexOfLayer,
+                                                        Size IndexOfRow,
+                                                        Size IndexOfColumn,
+                                                        Real x) {
+        QL_REQUIRE(IndexOfLayer<nLayers_,
+                   "incompatible IndexOfLayer ");
+        QL_REQUIRE(IndexOfRow<expiries_.size(),
+                   "incompatible IndexOfRow");
+        QL_REQUIRE(IndexOfColumn<lengths_.size(),
+                   "incompatible IndexOfColumn");
         points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
     }
-    void SwaptionVolatilityCubeBySabr::Cube::setPoints(const std::vector<Matrix>& x) {
-        QL_REQUIRE(x.size()==nLayers_,"Cube::setPoints: incompatible number of layers ");
-        QL_REQUIRE(x[0].rows()==expiries_.size(),"Cube::setPoints: incompatible size 1");
-        QL_REQUIRE(x[0].columns()==lengths_.size(),"Cube::setPoints: incompatible size 2");
+
+    void SwaptionVolatilityCubeBySabr::Cube::setPoints(
+                                               const std::vector<Matrix>& x) {
+        QL_REQUIRE(x.size()==nLayers_,
+                   "incompatible number of layers ");
+        QL_REQUIRE(x[0].rows()==expiries_.size(),
+                   "incompatible size 1");
+        QL_REQUIRE(x[0].columns()==lengths_.size(),
+                   "incompatible size 2");
 
         points_ = x;
     }
-    void SwaptionVolatilityCubeBySabr::Cube::setLayer(Size i, const Matrix& x) {
-        QL_REQUIRE(i<nLayers_,"Cube::setLayer: incompatible number of layer ");
-        QL_REQUIRE(x.rows()==expiries_.size(),"Cube::setLayer: incompatible size 1");
-        QL_REQUIRE(x.columns()==lengths_.size(),"Cube::setLayer: incompatible size 2");
+
+    void SwaptionVolatilityCubeBySabr::Cube::setLayer(Size i,
+                                                      const Matrix& x) {
+        QL_REQUIRE(i<nLayers_,
+                   "incompatible number of layer ");
+        QL_REQUIRE(x.rows()==expiries_.size(),
+                   "incompatible size 1");
+        QL_REQUIRE(x.columns()==lengths_.size(),
+                   "incompatible size 2");
 
         points_[i] = x;
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::setPoint(
-        const Date& exerciseDate, const Period& swapTenor,
-        const Real expiry, const Real length,
-        const std::vector<Real>& point) {
+                            const Date& exerciseDate, const Period& swapTenor,
+                            const Real expiry, const Real length,
+                            const std::vector<Real>& point) {
 
-        const bool expandExpiries = !(std::binary_search(expiries_.begin(),expiries_.end(),expiry));
-        const bool expandLengths = !(std::binary_search(lengths_.begin(),lengths_.end(),length));
+        const bool expandExpiries =
+            !(std::binary_search(expiries_.begin(),expiries_.end(),expiry));
+        const bool expandLengths =
+            !(std::binary_search(lengths_.begin(),lengths_.end(),length));
 
-        std::vector<Real>::const_iterator expiriesPreviousNode, lengthsPreviousNode;
+        std::vector<Real>::const_iterator expiriesPreviousNode,
+                                          lengthsPreviousNode;
 
-        expiriesPreviousNode = std::lower_bound(expiries_.begin(),expiries_.end(),expiry);
+        expiriesPreviousNode =
+            std::lower_bound(expiries_.begin(),expiries_.end(),expiry);
         std::vector<Real>::iterator::difference_type
             expiriesIndex = expiriesPreviousNode - expiries_.begin();
 
-        lengthsPreviousNode = std::lower_bound(lengths_.begin(),lengths_.end(),length);
+        lengthsPreviousNode =
+            std::lower_bound(lengths_.begin(),lengths_.end(),length);
         std::vector<Real>::iterator::difference_type
             lengthsIndex = lengthsPreviousNode - lengths_.begin();
 
         if (expandExpiries || expandLengths)
-            expandLayers(expiriesIndex, expandExpiries, lengthsIndex, expandLengths);
+            expandLayers(expiriesIndex, expandExpiries,
+                         lengthsIndex, expandLengths);
 
         for(Size k=0;k<nLayers_;k++)
             points_[k][expiriesIndex][lengthsIndex]= point[k];
@@ -533,27 +561,29 @@ namespace QuantLib {
         swapTenors_[lengthsIndex] = swapTenor;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::expandLayers(Size i, bool expandExpiries,
-                                                          Size j, bool expandLengths){
-        QL_REQUIRE(i<=expiries_.size(),"Cube::expandLayers: incompatible size 1");
-        QL_REQUIRE(j<=lengths_.size(),"Cube::expandLayers: incompatible size 2");
+    void SwaptionVolatilityCubeBySabr::Cube::expandLayers(
+                                                 Size i, bool expandExpiries,
+                                                 Size j, bool expandLengths) {
+        QL_REQUIRE(i<=expiries_.size(),"incompatible size 1");
+        QL_REQUIRE(j<=lengths_.size(),"incompatible size 2");
 
-        if(expandExpiries) {
+        if (expandExpiries) {
             expiries_.insert(expiries_.begin()+i,0.);
             exerciseDates_.insert(exerciseDates_.begin()+i, Date());
         }
-        if(expandLengths) {
+        if (expandLengths) {
             lengths_.insert(lengths_.begin()+j,0.);
             swapTenors_.insert(swapTenors_.begin()+j, Period());
         }
 
-        std::vector<Matrix> newPoints(nLayers_,Matrix(expiries_.size(), lengths_.size(), 0.));
+        std::vector<Matrix> newPoints(nLayers_,Matrix(expiries_.size(),
+                                                      lengths_.size(), 0.));
 
-        for(Size k=0;k<nLayers_;k++){
-            for(Size u=0;u<points_[k].rows();u++){
+        for (Size k=0;k<nLayers_;k++) {
+            for (Size u=0;u<points_[k].rows();u++) {
                  Size indexOfRow = u;
-                 if(u>=i && expandExpiries) indexOfRow = u+1;
-                 for(Size v=0;v<points_[k].columns();v++){
+                 if (u>=i && expandExpiries) indexOfRow = u+1;
+                 for (Size v=0;v<points_[k].columns();v++) {
                       Size indexOfCol = v;
                       if(v>=j && expandLengths) indexOfCol = v+1;
                       newPoints[k][indexOfRow][indexOfCol]=points_[k][u][v];
@@ -563,7 +593,8 @@ namespace QuantLib {
         setPoints(newPoints);
     }
 
-    const std::vector<Matrix>& SwaptionVolatilityCubeBySabr::Cube::points() const {
+    const std::vector<Matrix>&
+    SwaptionVolatilityCubeBySabr::Cube::points() const {
         return points_;
     }
 
@@ -576,29 +607,36 @@ namespace QuantLib {
         return result;
     }
 
-    const std::vector<Real>& SwaptionVolatilityCubeBySabr::Cube::expiries() const {
+    const std::vector<Real>&
+    SwaptionVolatilityCubeBySabr::Cube::expiries() const {
         return expiries_;
     }
 
-    const std::vector<Real>& SwaptionVolatilityCubeBySabr::Cube::lengths() const {
+    const std::vector<Real>&
+    SwaptionVolatilityCubeBySabr::Cube::lengths() const {
         return lengths_;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::updateInterpolators() const{
-        for(Size k=0;k<nLayers_;k++){
+    void SwaptionVolatilityCubeBySabr::Cube::updateInterpolators() const {
+        for (Size k=0;k<nLayers_;k++) {
             transposedPoints_[k]=transpose(points_[k]);
-            interpolators_[k] = boost::shared_ptr<BilinearInterpolation>( new BilinearInterpolation                       (expiries_.begin(), expiries_.end(),lengths_.begin(), lengths_.end(),transposedPoints_[k]));
+            interpolators_[k] =
+                boost::shared_ptr<BilinearInterpolation>(
+                 new BilinearInterpolation(expiries_.begin(), expiries_.end(),
+                                           lengths_.begin(), lengths_.end(),
+                                           transposedPoints_[k]));
 
             interpolators_[k]->enableExtrapolation();
         }
     }
+
     Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const{
         Matrix result(lengths_.size()*expiries_.size(),nLayers_+2,0.);
-        for(Size i=0;i<lengths_.size();i++){
-            for(Size j=0;j<expiries_.size();j++){
+        for (Size i=0;i<lengths_.size();i++) {
+            for (Size j=0;j<expiries_.size();j++) {
                 result[i*expiries_.size()+j][0]= lengths_[i];
                 result[i*expiries_.size()+j][1]= expiries_[j];
-                for(Size k=0;k<nLayers_;k++){
+                for (Size k=0;k<nLayers_;k++) {
                     result[i*expiries_.size()+j][2+k]= points_[k][j][i];
                 }
             }

@@ -84,8 +84,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure_;
         std::vector<Leg> legs_;
         std::vector<Real> payer_;
-        mutable std::vector<Real> legBPS_;
         mutable std::vector<Real> legNPV_;
+        mutable std::vector<Real> legBPS_;
     };
 
 }

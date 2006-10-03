@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    
+
     /*! This class stores the state of the yield curve associated to the
         fixed calendar times within the simulation.
 
@@ -34,32 +34,70 @@ namespace QuantLib {
         of the simulation. It's important to pass the rates via an object like
         this to the product rather than directly to make it easier to switch
         to other engines such as a coterminal-swap-rate engine.
-    
+
         Many products will not need expired rates and others will only require
-        the first rate. 
+        the first rate.
 
     */
-    class CurveState
-    {
-    public:
+    class CurveState {
+        /* There will n+1 rate times expressing payment and reset times
+           of forward rates.
+
+                    |-----|-----|-----|-----|-----|      (size = 6)
+                    t0    t1    t2    t3    t4    t5     rateTimes
+                    f0    f1    f2    f3    f4           forwardRates
+                    d0    d1    d2    d3    d4    d5     discountBonds
+                    d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+                    sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+        */
+      public:
         CurveState(const std::vector<Time>& rateTimes);
-        CurveState(const std::vector<Time>::const_iterator begin,
-                   const std::vector<Time>::const_iterator end);
-     
+
+        template <class ForwardIterator>
+        CurveState(ForwardIterator begin, ForwardIterator end)
+        : rateTimes_(begin, end), taus_(rateTimes_.size()-1),
+          forwardRates_(rateTimes_.size()-1),
+          discountRatios_(rateTimes_.size()),
+          coterminalSwaps_(rateTimes_.size()-1),
+          annuities_(rateTimes_.size()-1),
+          firstSwapComputed_(last_), first_(0), last_(rateTimes_.size()-1) {
+
+            for (Size i=first_; i<last_; i++) {
+                taus_[i] = rateTimes_[i+1] - rateTimes_[i];
+            }
+        }
+
         const std::vector<Time>& rateTimes() const;
 
         void setOnForwardRates(const std::vector<Rate>& rates);
-        void setOnForwardRates(const std::vector<Rate>::const_iterator begin,
-                               const std::vector<Rate>::const_iterator end);
-        void setOnDiscountRatios(const std::vector<DiscountFactor>& discountRatios);
+
+        template <class ForwardIterator>
+        void setOnForwardRates(ForwardIterator begin,
+                               ForwardIterator end) {
+            std::copy(begin, end, forwardRates_.begin());
+            // Computation of discount ratios
+            discountRatios_[first_]=1.0;
+            for (Size i=first_+1; i<=last_; i++) {
+                discountRatios_[i] =
+                    discountRatios_[i-1]/(1.+taus_[i-1]*forwardRates_[i-1]);
+            }
+            // Reset coterminal swap rates to be calculated
+            firstSwapComputed_ = last_;
+        }
+
+        void setOnDiscountRatios(
+                           const std::vector<DiscountFactor>& discountRatios);
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates);
 
         // You should get an error if you look outside [first, last) range.
         /*
-        void setOnForwardRates(const std::vector<Rate>& rates, Size first, Size last);
-        void setOnDiscountRatios(const std::vector<DiscountFactor>& discountRatios,
-                                 Size first, Size last);
-        void setOnCoterminalSwaps(const std::vector<Rate>&swapRates, Size first);
+        void setOnForwardRates(const std::vector<Rate>& rates,
+                               Size first, Size last);
+        void setOnDiscountRatios(
+                            const std::vector<DiscountFactor>& discountRatios,
+                            Size first, Size last);
+        void setOnCoterminalSwaps(const std::vector<Rate>& swapRates,
+                                  Size first);
         */
 
         const std::vector<Rate>& forwardRates() const;
@@ -70,10 +108,10 @@ namespace QuantLib {
         Rate forwardRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
         Rate coterminalSwapRate(Size i) const;
-    
+
         const std::vector<Time>& rateTaus() const;
-    private:
-        
+
+      private:
         std::vector<Time> rateTimes_, taus_;
         std::vector<Rate> forwardRates_;
         std::vector<DiscountFactor> discountRatios_;
@@ -82,14 +120,15 @@ namespace QuantLib {
         mutable Size firstSwapComputed_;
         Size first_, last_;
 
-        // suggest lazy evaluation on the coterminal swaps 
+        // suggest lazy evaluation on the coterminal swaps
         // e.g store index of how many swaps from the end have been computed
-        // note: only makes sense if last_ is final time 
+        // note: only makes sense if last_ is final time
         void computeSwapRate() const;
 
     };
 
-    // inline
+
+    // inline definitions
 
     inline const std::vector<Time>& CurveState::rateTimes() const {
         return rateTimes_;
@@ -99,14 +138,14 @@ namespace QuantLib {
         return forwardRates_;
     }
 
-    inline const std::vector<DiscountFactor>& CurveState::discountRatios() const {
+    inline const std::vector<DiscountFactor>&
+    CurveState::discountRatios() const {
         return discountRatios_;
     }
 
     inline const std::vector<Rate>& CurveState::coterminalSwapRates() const {
         if (firstSwapComputed_>first_)
             computeSwapRate();
-
         return coterminalSwaps_;
     }
 
@@ -114,7 +153,6 @@ namespace QuantLib {
     CurveState::coterminalSwapRatesAnnuities() const {
         if (firstSwapComputed_>first_)
             computeSwapRate();
-
         return annuities_;
     }
 
@@ -134,8 +172,8 @@ namespace QuantLib {
         return taus_;
     }
 
-
-
 }
 
+
 #endif
+

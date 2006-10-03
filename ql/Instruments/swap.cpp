@@ -29,7 +29,8 @@ namespace QuantLib {
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
                const Swap::Leg& firstLeg,
                const Swap::Leg& secondLeg)
-    : termStructure_(termStructure), legs_(2), payer_(2), legNPV_(2, 0.0), legBPS_(2, 0.0) {
+    : termStructure_(termStructure), legs_(2), payer_(2),
+      legNPV_(2, 0.0), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
         legs_[1] = secondLeg;
         payer_[0] = -1.0;
@@ -45,10 +46,10 @@ namespace QuantLib {
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
                const std::vector<Swap::Leg>& legs,
                const std::vector<bool>& payer)
-    : termStructure_(termStructure), legs_(legs),
-      payer_(legs.size(), 1.0) , legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0){
+    : termStructure_(termStructure), legs_(legs), payer_(legs.size(), 1.0),
+      legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0) {
         QL_REQUIRE(payer.size()==legs_.size(),
-            "payer/leg mismatch");
+                   "payer/leg mismatch");
         registerWith(termStructure_);
         Swap::Leg::iterator i;
         for (Size j=0; j<legs_.size(); j++) {
