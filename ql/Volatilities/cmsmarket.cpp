@@ -42,11 +42,8 @@ namespace QuantLib {
     expiries_(expiries),
     lengths_(lengths),
     calendar_(TARGET()),
-    frequency_(Quarterly),
+    tenor_(Period(Quarterly)),
     bdc_(Unadjusted),
-    stubDate_(Date()),
-    startFromEnd_(true),
-    longFinal_(false),
     dayCounter_(Actual360()),
     meanReversions_(meanReversions),
     pricer_(pricer),
@@ -85,8 +82,8 @@ namespace QuantLib {
         for (Size i=0; i<nExercise_; i++) {
             exerciseDates_.push_back(calendar_.advance(effectiveDate_,expiries[i],bdc_));//FIXME
             schedules_.push_back( boost::shared_ptr<Schedule>(
-                new Schedule(calendar_, effectiveDate_, exerciseDates_[i], frequency_,
-                            bdc_,stubDate_, startFromEnd_, longFinal_))
+                new Schedule(effectiveDate_, exerciseDates_[i], tenor_,
+                             calendar_, bdc_, bdc_, true, false)) // FIXME
             );
             std::vector<Leg> cmsTmp;
             std::vector<Leg> floatingTmp;

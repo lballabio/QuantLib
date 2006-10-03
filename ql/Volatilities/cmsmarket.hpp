@@ -79,11 +79,8 @@ namespace QuantLib {
         std::vector<Date> exerciseDates_;
 
         Calendar calendar_;
-        Frequency frequency_;
+        Period tenor_;
         BusinessDayConvention bdc_;
-        Date stubDate_;
-        bool startFromEnd_; 
-        bool longFinal_;
         
         DayCounter dayCounter_;
         Matrix meanReversions_;

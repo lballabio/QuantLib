@@ -22,13 +22,15 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     Schedule::Schedule(const Calendar& calendar,
                        const Date& startDate, const Date& endDate,
                        Frequency frequency,
                        BusinessDayConvention convention,
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
-    : calendar_(calendar), frequency_(frequency),
+    : fullInterface_(true),
+      calendar_(calendar), frequency_(frequency),
       tenor_(Period()),
       convention_(convention),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
@@ -161,7 +163,8 @@ namespace QuantLib {
                        BusinessDayConvention convention,
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
-    : calendar_(calendar), frequency_(tenor.frequency()),
+    : fullInterface_(true),
+      calendar_(calendar), frequency_(tenor.frequency()),
       tenor_(tenor),
       convention_(convention),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
@@ -286,6 +289,7 @@ namespace QuantLib {
             }
         }
     }
+    #endif
 
     Schedule::Schedule(const Date& effectiveDate,
                        const Date& terminationDate,
@@ -297,7 +301,8 @@ namespace QuantLib {
                        bool endOfMonth,
                        const Date& firstDate,
                        const Date& nextToLastDate)
-    : calendar_(calendar),
+    : fullInterface_(true),
+      calendar_(calendar),
       frequency_(tenor.frequency()),
       tenor_(tenor),
       convention_(convention),
@@ -435,7 +440,9 @@ namespace QuantLib {
         }
     }
 
+
     bool Schedule::isRegular(Size i) const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
         if (isRegular_.size()==0) {
             if (frequency_ == 0) {
                 return true;
@@ -462,6 +469,77 @@ namespace QuantLib {
             return isRegular_[i-1];
         }
         QL_DUMMY_RETURN(true);
+    }
+
+
+    MakeSchedule::MakeSchedule(const Date& effectiveDate,
+                               const Date& terminationDate,
+                               const Period& tenor,
+                               const Calendar& calendar,
+                               BusinessDayConvention convention)
+    : calendar_(calendar), 
+      effectiveDate_(effectiveDate), terminationDate_(terminationDate),
+      tenor_(tenor),
+      convention_(convention), terminationDateConvention_(convention),
+      backward_(true), endOfMonth_(false),
+      stubDate_(Date()), firstDate_(Date()), nextToLastDate_(Date()) {}
+
+    #ifndef QL_DISABLE_DEPRECATED
+    MakeSchedule::MakeSchedule(const Calendar& calendar,
+                               const Date& startDate,
+                               const Date& endDate,
+                               Frequency frequency,
+                               BusinessDayConvention convention)
+    : calendar_(calendar), 
+      effectiveDate_(startDate), terminationDate_(endDate),
+      tenor_(Period(frequency)),
+      convention_(convention), terminationDateConvention_(convention),
+      backward_(true), endOfMonth_(false),
+      stubDate_(Date()), firstDate_(Date()), nextToLastDate_(Date()) {}
+
+    MakeSchedule& MakeSchedule::withStubDate(const Date& d) {
+        stubDate_ = d;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::longFinalPeriod(bool flag) {
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::shortFinalPeriod(bool flag) {
+        return *this;
+    }
+    #endif
+
+    MakeSchedule& MakeSchedule::terminationDateConvention(
+                                                BusinessDayConvention conv) {
+        terminationDateConvention_ = conv;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::backwards(bool flag) {
+        backward_ = flag;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::forwards(bool flag) {
+        backward_ = !flag;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::endOfMonth(bool flag) {
+        endOfMonth_ = flag;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withFirstDate(const Date& d) {
+        firstDate_ = d;
+        return *this;
+    }
+
+    MakeSchedule& MakeSchedule::withNextToLastDate(const Date& d) {
+        nextToLastDate_ = d;
+        return *this;
     }
 
 }

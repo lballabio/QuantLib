@@ -36,6 +36,8 @@ namespace QuantLib {
     //! Payment schedule
     class Schedule {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use other constructors instead
         Schedule(const Calendar& calendar,
                  const Date& startDate,
                  const Date& endDate,
@@ -44,6 +46,7 @@ namespace QuantLib {
                  const Date& stubDate = Date(),
                  bool startFromEnd = false,
                  bool longFinal = false);
+        //! \deprecated use other constructors instead
         Schedule(const Calendar& calendar,
                  const Date& startDate,
                  const Date& endDate,
@@ -52,6 +55,7 @@ namespace QuantLib {
                  const Date& stubDate = Date(),
                  bool startFromEnd = false,
                  bool longFinal = false);
+        #endif
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
@@ -80,7 +84,7 @@ namespace QuantLib {
         const Date& startDate() const;
         const Date& endDate() const;
         Frequency frequency() const;
-        const Period& tenor() const { return tenor_; }
+        const Period& tenor() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
         //! \name Iterators
@@ -90,6 +94,7 @@ namespace QuantLib {
         const_iterator end() const { return dates_.end(); }
         //@}
       private:
+        bool fullInterface_;
         Calendar calendar_;
         Frequency frequency_;
         Period tenor_;
@@ -109,45 +114,49 @@ namespace QuantLib {
     */
     class MakeSchedule {
       public:
+        MakeSchedule(const Date& effectiveDate,
+                     const Date& terminationDate,
+                     const Period& tenor,
+                     const Calendar& calendar,
+                     BusinessDayConvention convention);
+        #ifndef QL_DISABLE_DEPRECATED
         MakeSchedule(const Calendar& calendar,
-                     const Date& startDate, const Date& endDate,
+                     const Date& startDate,
+                     const Date& endDate,
                      Frequency frequency,
-                     BusinessDayConvention convention)
-        : calendar_(calendar), startDate_(startDate), endDate_(endDate),
-          frequency_(frequency), convention_(convention),
-          stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
-        MakeSchedule& withStubDate(const Date& d) {
-            stubDate_ = d;
-            return *this;
-        }
-        MakeSchedule& backwards(bool flag=true) {
-            startFromEnd_ = flag;
-            return *this;
-        }
-        MakeSchedule& forwards(bool flag=true) {
-            startFromEnd_ = !flag;
-            return *this;
-        }
-        MakeSchedule& longFinalPeriod(bool flag=true) {
-            longFinal_ = flag;
-            return *this;
-        }
-        MakeSchedule& shortFinalPeriod(bool flag=true) {
-            longFinal_ = !flag;
-            return *this;
-        }
+                     BusinessDayConvention convention);
+        MakeSchedule& withStubDate(const Date& d);
+        MakeSchedule& longFinalPeriod(bool flag=true);
+        MakeSchedule& shortFinalPeriod(bool flag=true);
+        #endif
+        MakeSchedule& terminationDateConvention(BusinessDayConvention conv);
+        MakeSchedule& backwards(bool flag=true);
+        MakeSchedule& forwards(bool flag=true);
+        MakeSchedule& endOfMonth(bool flag=true);
+        MakeSchedule& withFirstDate(const Date& d);
+        MakeSchedule& withNextToLastDate(const Date& d);
         operator Schedule() const {
-            return Schedule(calendar_,startDate_,endDate_,frequency_,
-                            convention_,stubDate_,startFromEnd_,longFinal_);
-        }
+            Date firstDate, nextToLastDate;
+            if (stubDate_!=Date()) {
+                if (backward_) {
+                    firstDate = firstDate_;
+                    nextToLastDate = stubDate_;
+                } else {
+                    firstDate = stubDate_;
+                    nextToLastDate = nextToLastDate_;
+                }
+            }
+            return Schedule(effectiveDate_, terminationDate_, tenor_,
+                calendar_, convention_, terminationDateConvention_,
+                backward_, endOfMonth_, firstDate, nextToLastDate);
+            }
       private:
         Calendar calendar_;
-        Date startDate_, endDate_;
-        Frequency frequency_;
-        BusinessDayConvention convention_;
-        Date stubDate_;
-        bool startFromEnd_;
-        bool longFinal_;
+        Date effectiveDate_, terminationDate_;
+        Period tenor_;
+        BusinessDayConvention convention_, terminationDateConvention_;
+        bool backward_, endOfMonth_;
+        Date stubDate_, firstDate_, nextToLastDate_;
     };
 
 
@@ -157,7 +166,8 @@ namespace QuantLib {
     inline Schedule::Schedule(const std::vector<Date>& dates,
                               const Calendar& calendar,
                               BusinessDayConvention convention)
-    : calendar_(calendar), frequency_(Frequency(-1)),
+    : fullInterface_(false),
+      calendar_(calendar), frequency_(Frequency(-1)),
       tenor_(Period()), convention_(convention),
       startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
@@ -194,7 +204,13 @@ namespace QuantLib {
         return dates_.back();
     }
 
+    inline const Period& Schedule::tenor() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
+        return tenor_;
+    }
+
     inline Frequency Schedule::frequency() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
         QL_REQUIRE(Integer(frequency_) != -1,
                    "frequency not available");
         return frequency_;
@@ -205,6 +221,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

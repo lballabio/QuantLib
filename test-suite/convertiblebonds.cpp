@@ -170,7 +170,7 @@ void ConvertibleBondTest::testBond() {
 
     schedule = MakeSchedule(calendar_,
                             issueDate_, maturityDate_,
-                            frequency_, Following).backwards();
+                            Period(frequency_), Following).backwards();
 
     ConvertibleFixedCouponBond euFixed(faceAmount_, process_, euExercise, engine,
                                        conversionRatio_, no_dividends,

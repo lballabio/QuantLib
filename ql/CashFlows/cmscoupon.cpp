@@ -133,10 +133,12 @@ namespace QuantLib {
                 swaptionVol_->volatility(d, index_->tenor(), Rs);
             QL_REQUIRE(sigma > 0.0, "internal error: corrupted volatility");
             Time tau = dc.yearFraction(today,d);
-            Schedule s(index_->calendar(),
-                       d, d+index_->tenor(),
-                       swapIndex_->fixedLegFrequency(),
-                       swapIndex_->fixedLegConvention());
+            Schedule s(d, d+index_->tenor(),
+                       swapIndex_->tenor(),
+                       index_->calendar(),
+                       swapIndex_->fixedLegConvention(),
+                       swapIndex_->fixedLegConvention(),
+                       true, true); //FIXME
             Date tp = date();
             DiscountFactor D_s0 =
                 index_->termStructure()->discount(d);
