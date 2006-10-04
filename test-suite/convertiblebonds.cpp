@@ -168,9 +168,9 @@ void ConvertibleBondTest::testBond() {
 
     std::vector<Rate> coupons(1, 0.05);
 
-    schedule = MakeSchedule(calendar_,
-                            issueDate_, maturityDate_,
-                            Period(frequency_), Following).backwards();
+    schedule = MakeSchedule(issueDate_, maturityDate_,
+                            Period(frequency_), calendar_,
+                            Following).backwards();
 
     ConvertibleFixedCouponBond euFixed(faceAmount_, process_, euExercise, engine,
                                        conversionRatio_, no_dividends,
