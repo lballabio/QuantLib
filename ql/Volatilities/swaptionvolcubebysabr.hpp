@@ -88,7 +88,7 @@ namespace QuantLib {
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const Matrix& volSpreads,
+            const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const Calendar& calendar,
 		    Integer swapSettlementDays,
             Frequency fixedLegFrequency,
@@ -135,7 +135,7 @@ namespace QuantLib {
         std::vector<Real> spreadVolInterpolation(const Date& atmExerciseDate,
                                                  const Period& atmSwapTenor);
       private:
-        Matrix volSpreads_;
+        std::vector<std::vector<Handle<Quote> > > volSpreads_;
         Cube marketVolCube_;
         Cube volCubeAtmCalibrated_;
         Cube sparseParameters_;

@@ -38,7 +38,7 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Matrix& volSpreads,
+        const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const Calendar& calendar,
         Integer swapSettlementDays,
         Frequency fixedLegFrequency,
@@ -66,11 +66,17 @@ namespace QuantLib {
         volSpreads_(volSpreads),
         isParameterFixed_(isParameterFixed),
         isAtmCalibrated_(isAtmCalibrated) {
+        
+        QL_REQUIRE(!volSpreads_.empty(), "empty vol spreads matrix");
 
-        QL_REQUIRE(nStrikes_==volSpreads_.columns(),
-                   "nStrikes_!=marketVolCube.columns()");
-        QL_REQUIRE(nExercise_*nlengths_==volSpreads_.rows(),
-                   "nExercise*nlengths!=marketVolCube.rows()");
+        QL_REQUIRE(nStrikes_== volSpreads_[0].size(), "mismatch between number of strikes ("
+                    << nStrikes_ << ") and number of columns ("
+                    << volSpreads_[0].size() << ").");
+
+        QL_REQUIRE(nExercise_*nlengths_==volSpreads_.size(),
+                 "mismatch between number of option expiries * swap tenors ("
+                 << nExercise_*nlengths_ << ") and number of rows ("
+                 << volSpreads_.size() <<")");
 
         parametersGuess_ = Cube(exerciseDates_, lengths_,
                                 exerciseTimes_, timeLengths_, 4);
@@ -92,7 +98,8 @@ namespace QuantLib {
                     const Rate atmForward = atmStrike(exerciseDates_[j], lengths_[k]);
                     const Volatility atmVol =
                         atmVolStructure_->volatility(exerciseDates_[j], lengths_[k], atmForward);
-                    const Volatility vol = atmVol + volSpreads_[j*nlengths_+k][i];
+                    const Volatility vol = atmVol + volSpreads_[j*nlengths_+k][i]->value();
+                    registerWith(volSpreads_[j*nlengths_+k][i]);
                     marketVolCube_.setElement(i, j, k, vol);
                 }
             }

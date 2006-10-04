@@ -440,7 +440,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                                          optionTenors_,
                                          swapTenors_,
                                          strikeSpreads_,
-                                         volSpreadsMatrix_,
+                                         volSpreads_,
                                          calendar_,
                                          swapSettlementDays_,
                                          fixedLegFrequency_,

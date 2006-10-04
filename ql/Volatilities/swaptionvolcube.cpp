@@ -174,6 +174,7 @@ namespace QuantLib {
                 for (Size k=0; k<nlengths_; k++) {
                     volSpreads_[i][j][k] =
                         volatilitySpreads[j*nlengths_+k][i]->value();
+                    registerWith(volatilitySpreads[j*nlengths_+k][i]);
                 }
             }
             volSpreadsInterpolator_[i] = BilinearInterpolation(
