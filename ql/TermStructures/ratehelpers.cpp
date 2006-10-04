@@ -274,11 +274,14 @@ namespace QuantLib {
             calendar_.advance(evaluationDate_,settlementDays_,Days);
         Date maturity = earliestDate_ + tenor_;
 
-        Schedule fixedSchedule(earliestDate_, maturity, Period(fixedFrequency_),
-                               calendar_, fixedConvention_, fixedConvention_,
+        Schedule fixedSchedule(earliestDate_, maturity,
+                               Period(fixedFrequency_), calendar_,
+                               fixedConvention_,
+                               fixedConvention_,
                                false, false); 
-        Schedule floatSchedule(earliestDate_, maturity, index_->tenor(),
-                               calendar_, index_->businessDayConvention(),
+        Schedule floatSchedule(earliestDate_, maturity,
+                               index_->tenor(), calendar_,
+                               index_->businessDayConvention(),
                                index_->businessDayConvention(),
                                false, false); 
         // dummy Libor index with curve/swap arguments

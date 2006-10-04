@@ -55,6 +55,7 @@ namespace QuantLib {
                  const Date& stubDate = Date(),
                  bool startFromEnd = false,
                  bool longFinal = false);
+        Frequency frequency() const;
         #endif
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
@@ -83,7 +84,6 @@ namespace QuantLib {
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
-        Frequency frequency() const;
         const Period& tenor() const;
         BusinessDayConvention businessDayConvention() const;
         //@}
@@ -96,7 +96,6 @@ namespace QuantLib {
       private:
         bool fullInterface_;
         Calendar calendar_;
-        Frequency frequency_;
         Period tenor_;
         BusinessDayConvention convention_;
         Date firstDate_, nextToLastDate_;
@@ -167,7 +166,7 @@ namespace QuantLib {
                               const Calendar& calendar,
                               BusinessDayConvention convention)
     : fullInterface_(false),
-      calendar_(calendar), frequency_(Frequency(-1)),
+      calendar_(calendar),
       tenor_(Period()), convention_(convention),
       startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
@@ -207,13 +206,6 @@ namespace QuantLib {
     inline const Period& Schedule::tenor() const {
         QL_REQUIRE(fullInterface_, "full interface not available");
         return tenor_;
-    }
-
-    inline Frequency Schedule::frequency() const {
-        QL_REQUIRE(fullInterface_, "full interface not available");
-        QL_REQUIRE(Integer(frequency_) != -1,
-                   "frequency not available");
-        return frequency_;
     }
 
     inline BusinessDayConvention Schedule::businessDayConvention() const {

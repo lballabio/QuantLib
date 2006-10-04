@@ -126,9 +126,9 @@ void ConvertibleBondTest::testBond() {
 
     // zero-coupon
 
-    Schedule schedule = MakeSchedule(calendar_,
-                                     issueDate_, maturityDate_,
-                                     Once, Following).backwards();
+    Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
+                                     Period(Once), calendar_,
+                                     Following).backwards();
 
     ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
                                      conversionRatio_, no_dividends,
@@ -285,9 +285,9 @@ void ConvertibleBondTest::testOption() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                       new PlainVanillaPayoff(Option::Call, conversionStrike));
 
-    Schedule schedule = MakeSchedule(calendar_,
-                                     issueDate_, maturityDate_,
-                                     Once, Following).backwards();
+    Schedule schedule = MakeSchedule(issueDate_, maturityDate_,
+                                     Period(Once), calendar_,
+                                     Following).backwards();
 
     ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
                                      conversionRatio_, no_dividends,

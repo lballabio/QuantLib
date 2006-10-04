@@ -106,7 +106,6 @@ Date today, settlement;
 BusinessDayConvention fixedLegConvention;
 Frequency fixedLegFrequency;
 DayCounter fixedLegDayCounter;
-Frequency floatingLegFrequency;
 Integer bondSettlementDays;
 DayCounter bondDayCounter;
 BusinessDayConvention bondConvention;
@@ -129,7 +128,6 @@ void setup() {
     fixedLegConvention = Unadjusted;
     fixedLegFrequency = Annual;
     fixedLegDayCounter = Thirty360();
-    floatingLegFrequency = Semiannual;
     bondSettlementDays = 3;
     bondDayCounter = ActualActual();
     bondConvention = Following;
@@ -254,12 +252,16 @@ void testCurveConsistency(const T&, const I& interpolator) {
     boost::shared_ptr<Xibor> euribor6m(new Euribor6M(curveHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
-        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
-                               fixedLegConvention,fixedLegConvention,false,false);
-        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+        Schedule fixedSchedule(settlement, maturity,
+                               Period(fixedLegFrequency), calendar,
+                               fixedLegConvention,
+                               fixedLegConvention,
+                               false, false);
+        Schedule floatSchedule(settlement, maturity,
+                               euribor6m->tenor(), calendar,
                                euribor6m->businessDayConvention(),
                                euribor6m->businessDayConvention(),
-                               false,false);        
+                               false, false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,euribor6m,0.0,
@@ -282,7 +284,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
                     << "\n error:            " << io::rate(error)
                     << "\n tolerance:        " << io::rate(tolerance));
         }
-        Real tolerance2 = 0.00015;
+        Real tolerance2 = 0.00025;
         error = std::fabs(approximateRate-estimatedRate);
         if (error > tolerance2) {
             BOOST_ERROR(swapData[i].n << " year(s) swap:"
@@ -578,12 +580,15 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
 
-        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
-                               fixedLegConvention,fixedLegConvention,false,false);
-        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+        Schedule fixedSchedule(settlement, maturity,
+                               Period(fixedLegFrequency), calendar,
+                               fixedLegConvention, fixedLegConvention,
+                               false, false);
+        Schedule floatSchedule(settlement, maturity,
+                               index->tenor(), calendar,
                                index->businessDayConvention(),
                                index->businessDayConvention(),
-                               false,false);        
+                               false, false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,0.0,
@@ -618,12 +623,15 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;
 
-        Schedule fixedSchedule(settlement,maturity,Period(fixedLegFrequency),calendar,
-                               fixedLegConvention,fixedLegConvention,false,false);
-        Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),calendar,
+        Schedule fixedSchedule(settlement, maturity,
+                               Period(fixedLegFrequency), calendar,
+                               fixedLegConvention, fixedLegConvention,
+                               false, false);
+        Schedule floatSchedule(settlement, maturity,
+                               index->tenor(), calendar,
                                index->businessDayConvention(),
                                index->businessDayConvention(),
-                               false,false);        
+                               false, false);        
         VanillaSwap swap(true,100.0,
                          fixedSchedule,0.0,fixedLegDayCounter,
                          floatSchedule,index,0.0,

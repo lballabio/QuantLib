@@ -27,7 +27,6 @@ namespace QuantLib {
     Period::Period(Frequency f) {
         switch (f) {
           case Once:
-            QL_FAIL("cannot instantiate a Period from frequency " << f);
           case NoFrequency:
             // same as Period()
             units_ = Days;

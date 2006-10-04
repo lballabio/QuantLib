@@ -54,8 +54,7 @@ namespace QuantLib {
                 new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
                                     start, end, start, end)));
         } else {
-            //Integer tenor = 12/schedule.frequency();
-            Date reference = end - Period(schedule.frequency());
+            Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,
                                         schedule.businessDayConvention());
             DayCounter dc = firstPeriodDayCount.empty() ?
@@ -100,8 +99,7 @@ namespace QuantLib {
                                         rate, dayCount,
                                         start, end, start, end)));
             } else {
-                //Integer tenor = 12/schedule.frequency();
-                Date reference = start + Period(schedule.frequency());
+                Date reference = start + schedule.tenor();
                 reference = calendar.adjust(reference,
                                             schedule.businessDayConvention());
                 leg.push_back(boost::shared_ptr<CashFlow>(

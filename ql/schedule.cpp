@@ -30,8 +30,8 @@ namespace QuantLib {
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
     : fullInterface_(true),
-      calendar_(calendar), frequency_(frequency),
-      tenor_(Period()),
+      calendar_(calendar),
+      tenor_(Period(frequency)),
       convention_(convention),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
       endOfMonth_(false), finalIsRegular_(true),
@@ -164,7 +164,7 @@ namespace QuantLib {
                        const Date& stubDate, bool startFromEnd,
                        bool longFinal)
     : fullInterface_(true),
-      calendar_(calendar), frequency_(tenor.frequency()),
+      calendar_(calendar),
       tenor_(tenor),
       convention_(convention),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
@@ -186,18 +186,13 @@ namespace QuantLib {
                        << ") out of range (start date (" << startDate
                        << "), end date (" << endDate << "))");
         }
-        QL_REQUIRE(frequency_ == 0 || 12 % frequency_ == 0,
-                   "frequency (" << Integer(frequency_)
-                   << " per year) does not correspond to "
-                   << "a whole number of months");
 
-        if (frequency_ == 0) {
+        if (tenor < Period(1, Days)) {
             QL_REQUIRE(stubDate == Date(),
                        "stub date incompatible with frequency_ 'once'");
             dates_.push_back(calendar.adjust(startDate, convention));
             dates_.push_back(calendar.adjust(endDate, convention));
         } else if (startFromEnd) {
-            tenor_=Period(frequency_);
             // calculations
             Date seed = endDate;
             Date first = calendar.adjust(startDate, convention);
@@ -212,9 +207,9 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            Integer periods = 1, months = 12/frequency_;
+            Integer periods = 1;
             while (true) {
-                Date temp = calendar.advance(seed, -periods*months, Months,
+                Date temp = calendar.advance(seed, -periods*tenor_,
                                              convention);
                 dates_.insert(dates_.begin(),temp);
                 // check exit condition
@@ -243,7 +238,6 @@ namespace QuantLib {
                 finalIsRegular_ = true;
             }
         } else {
-            tenor_=Period(frequency_);
             // calculations
             Date seed = startDate;
             Date last = calendar.adjust(endDate, convention);
@@ -257,9 +251,9 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            Integer periods = 1, months = 12/frequency_;
+            Integer periods = 1;
             while (true) {
-                Date temp = calendar.advance(seed, periods*months, Months,
+                Date temp = calendar.advance(seed, periods*tenor_,
                                              convention);
                 dates_.push_back(temp);
                 // check exit condition
@@ -289,6 +283,12 @@ namespace QuantLib {
             }
         }
     }
+
+    Frequency Schedule::frequency() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
+        return tenor_.frequency();
+    }
+
     #endif
 
     Schedule::Schedule(const Date& effectiveDate,
@@ -302,10 +302,7 @@ namespace QuantLib {
                        const Date& firstDate,
                        const Date& nextToLastDate)
     : fullInterface_(true),
-      calendar_(calendar),
-      frequency_(tenor.frequency()),
-      tenor_(tenor),
-      convention_(convention),
+      calendar_(calendar), tenor_(tenor), convention_(convention),
       firstDate_(firstDate), nextToLastDate_(nextToLastDate),
       startFromEnd_(backward), longFinal_(false),
       endOfMonth_(endOfMonth), finalIsRegular_(true)
@@ -332,9 +329,9 @@ namespace QuantLib {
 
         if (tenor_ < Period(1, Days)) {
             QL_REQUIRE(firstDate == Date(),
-                       "first date incompatible with zero coupon date");
+                       "first date incompatible with zero coupon schedule");
             QL_REQUIRE(nextToLastDate == Date(),
-                       "next to last date incompatible with zero coupon date");
+                "next to last date incompatible with zero coupon schedule");
             dates_.push_back(effectiveDate);
             dates_.push_back(terminationDate);
             isRegular_.push_back(true);
@@ -444,7 +441,7 @@ namespace QuantLib {
     bool Schedule::isRegular(Size i) const {
         QL_REQUIRE(fullInterface_, "full interface not available");
         if (isRegular_.size()==0) {
-            if (frequency_ == 0) {
+            if (tenor_ < Period(1,Days)) {
                 return true;
             } else if (startFromEnd_) {
                 if (i == 1)
