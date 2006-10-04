@@ -956,10 +956,10 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
 void MarketModelTest::testDriftCalculator() {
 
+    // Test full factor drift equivalence between compute() and computeReduced()
     BOOST_MESSAGE("Testing drift calculation...");
     QL_TEST_SETUP
 
-    // full factor equivalence between compute() and computeReduced()
     Size factors = todaysForwards.size();
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
@@ -973,13 +973,11 @@ void MarketModelTest::testDriftCalculator() {
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                       ExponentialCorrelationAbcdVolatility};
 
-    for (Size k=0; k<LENGTH(marketModels); ++k) {   // cycle over market models
+    for (Size k=0; k<LENGTH(marketModels); ++k) {   // loop over market models
         boost::shared_ptr<MarketModel> marketModel =
             makeMarketModel(evolution, factors, marketModels[k]);
-
         std::vector<Rate> displacements = marketModel->displacements();
-
-        for (Size j=0; j<numberOfSteps; ++j) {              // cycle over steps
+        for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
             const Matrix& A = marketModel->pseudoRoot(j);
             //BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
             // add cycle over numeraires
@@ -1008,10 +1006,11 @@ void MarketModelTest::testDriftCalculator() {
 
 void MarketModelTest::testIsInSubset() {
 
+    // Performance test for isInSubset function (temporary)
+
     BOOST_MESSAGE("Testing isInSubset ...");
     QL_TEST_SETUP
 
-    // performance test for isInSubset (temporary)
     Size dim = 100;
     std::vector<Time> set, subset;
     for (Size i=0; i<dim; i++) set.push_back(i*1.0); 
@@ -1255,9 +1254,7 @@ test_suite* MarketModelTest::suite() {
                            &MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
-
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-
     suite->add(BOOST_TEST_CASE(
                       &MarketModelTest::testOneStepForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(
@@ -1266,7 +1263,6 @@ test_suite* MarketModelTest::suite() {
                               &MarketModelTest::testMultiStepCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(
                               &MarketModelTest::testMultiStepCoterminalSwaps));
-
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
     return suite;
