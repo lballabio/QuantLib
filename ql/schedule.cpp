@@ -78,9 +78,9 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            Integer periods = 1, months = 12/frequency;
+            Integer periods = 1;
             while (true) {
-                Date temp = calendar.advance(seed, -periods*months, Months,
+                Date temp = calendar.advance(seed, -periods*tenor_,
                                              convention);
                 dates_.insert(dates_.begin(),temp);
                 // check exit condition
@@ -123,9 +123,9 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            Integer periods = 1, months = 12/frequency;
+            Integer periods = 1;
             while (true) {
-                Date temp = calendar.advance(seed, periods*months, Months,
+                Date temp = calendar.advance(seed, periods*tenor_,
                                              convention);
                 dates_.push_back(temp);
                 // check exit condition

@@ -94,9 +94,7 @@ void setup() {
     priceTolerance_ = 2.0e-4;
 
     iborIndex_ = boost::shared_ptr<Xibor>(
-        new Euribor(Period(12/floatingFrequency_,
-        Months),
-        termStructure_));
+        new Euribor(Period(floatingFrequency_), termStructure_));
 
     calendar_ = iborIndex_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());

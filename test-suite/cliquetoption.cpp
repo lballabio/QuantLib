@@ -124,7 +124,7 @@ void testOptionGreeks() {
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Integer lengths[] = { 1, 2 };
-    Integer frequencies[] = { 2, 4 };
+    Frequency frequencies[] = { Semiannual, Quarterly };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
@@ -154,10 +154,9 @@ void testOptionGreeks() {
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
             std::vector<Date> reset;
-            Integer months = 12/frequencies[kk];
-            for (Date d = today + months*Months;
+            for (Date d = today + Period(frequencies[kk]);
                  d < maturity->lastDate();
-                 d += months*Months)
+                 d += Period(frequencies[kk]))
                 reset.push_back(d);
 
             boost::shared_ptr<PricingEngine> engine(new T);
