@@ -77,7 +77,7 @@ namespace QuantLib {
         const std::vector<Period>& lengths() const;
         const std::vector<Time>& timeLengths() const;
 
-        //! \name RateHelper interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         //@}
