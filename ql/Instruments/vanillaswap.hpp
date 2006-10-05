@@ -52,6 +52,8 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the other VanillaSwap constructor or Swap instead
         VanillaSwap(bool payFixedRate,
                     Real nominal,
                     const Schedule& fixedSchedule,
@@ -63,6 +65,7 @@ namespace QuantLib {
                     Spread spread,
                     const DayCounter& floatingDayCount,
                     const Handle<YieldTermStructure>& termStructure);
+        #endif
         VanillaSwap(bool payFixedRate,
                     Real nominal,
                     const Schedule& fixedSchedule,

@@ -64,7 +64,6 @@ namespace QuantLib {
                       new VanillaSwap(false, 1.0, fixedSchedule, fixedRate,
                                       fixedLegDayCounter, floatSchedule,
                                       index,
-                                      0, // fixing days
                                       0.0, floatingLegDayCounter,
                                       termStructure));
         Rate fairFixedRate = swap_->fairRate();
@@ -72,7 +71,6 @@ namespace QuantLib {
                       new VanillaSwap(false, 1.0, fixedSchedule, fairFixedRate,
                                       fixedLegDayCounter, floatSchedule,
                                       index,
-                                      0, // fixing days
                                       0.0, floatingLegDayCounter,
                                       termStructure));
 
@@ -125,7 +123,6 @@ namespace QuantLib {
                       new VanillaSwap(false, 1.0, fixedSchedule, fixedRate,
                                       fixedLegDayCounter, floatSchedule,
                                       index,
-                                      0, // fixing days
                                       0.0, floatingLegDayCounter,
                                       termStructure));
         Rate fairFixedRate = swap_->fairRate();
@@ -133,7 +130,6 @@ namespace QuantLib {
                       new VanillaSwap(false, 1.0, fixedSchedule, fairFixedRate,
                                       fixedLegDayCounter, floatSchedule,
                                       index,
-                                      0, // fixing days
                                       0.0, floatingLegDayCounter,
                                       termStructure));
 

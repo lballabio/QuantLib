@@ -26,6 +26,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     VanillaSwap::VanillaSwap(bool payFixedRate,
                              Real nominal,
                              const Schedule& fixedSchedule,
@@ -76,6 +77,7 @@ namespace QuantLib {
             payer_[1]=-1.0;
         }
     }
+    #endif
 
     VanillaSwap::VanillaSwap(bool payFixedRate,
                              Real nominal,
