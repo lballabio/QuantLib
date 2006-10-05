@@ -52,34 +52,12 @@ namespace QuantLib {
         const Date& fixingDate) const
     {
 	    Date start = calendar_.advance(fixingDate, settlementDays_, Days);
-        bool old = true;
-        if (old) {
-            Date end = NullCalendar().advance(start, years_, Years);
-            
-            Schedule fixedLegSchedule(start, end,
-                                      Period(fixedLegFrequency_), calendar_,
-                                      fixedLegConvention_,
-                                      fixedLegConvention_,
-                                      true, false);
-            Schedule floatingLegSchedule(start, end,
-                                         iborIndex_->tenor(), calendar_,
-                                         iborIndex_->businessDayConvention(),
-                                         iborIndex_->businessDayConvention(),
-                                         true, false);
-		    return boost::shared_ptr<VanillaSwap>(new
-                VanillaSwap(true, 1.0,
-                            fixedLegSchedule, 0.0, dayCounter_,
-                            floatingLegSchedule, iborIndex_, 0.0,dayCounter_,
-                            Handle<YieldTermStructure>(
-                                    iborIndex_->termStructure())));
-        } else {
-            return MakeVanillaSwap(start, Period(years_, Years), calendar_,
-                0.0, iborIndex_, iborIndex_->termStructure())
-                .withFixedLegDayCount(dayCounter_)
-                .withFixedLegTenor(Period(fixedLegFrequency_))
-                .withFixedLegConvention(fixedLegConvention_)
-                .withFixedLegTerminationDateConvention(fixedLegConvention_);
-        }
+        return MakeVanillaSwap(start, Period(years_, Years), calendar_, 0.0,
+            iborIndex_, iborIndex_->termStructure())
+            .withFixedLegDayCount(dayCounter_)
+            .withFixedLegTenor(Period(fixedLegFrequency_))
+            .withFixedLegConvention(fixedLegConvention_)
+            .withFixedLegTerminationDateConvention(fixedLegConvention_);
 	}
 
 	boost::shared_ptr<Schedule> SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
