@@ -44,17 +44,17 @@ namespace QuantLib {
     Rate SwapIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(iborIndex_, "no index set");
         QL_REQUIRE(iborIndex_->termStructure(), "no term structure set");
-		boost::shared_ptr<VanillaSwap> swap(underlyingSwap(fixingDate));
-         return swap->fairRate();
+        boost::shared_ptr<VanillaSwap> swap(underlyingSwap(fixingDate));
+        return swap->fairRate();
     }
 
 	boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
         const Date& fixingDate) const
     {
+	    Date start = calendar_.advance(fixingDate, settlementDays_, Days);
         bool old = true;
         if (old) {
-		    Date start = calendar_.advance(fixingDate, settlementDays_,Days);
-            Date end = NullCalendar().advance(start,years_,Years);
+            Date end = NullCalendar().advance(start, years_, Years);
             
             Schedule fixedLegSchedule(start, end,
                                       Period(fixedLegFrequency_), calendar_,
@@ -73,8 +73,12 @@ namespace QuantLib {
                             Handle<YieldTermStructure>(
                                     iborIndex_->termStructure())));
         } else {
-            return MakeVanillaSwap(fixingDate, Period(fixedLegFrequency_),
-                calendar_, 0.0, iborIndex_, iborIndex_->termStructure());
+            return MakeVanillaSwap(start, Period(years_, Years), calendar_,
+                0.0, iborIndex_, iborIndex_->termStructure())
+                .withFixedLegDayCount(dayCounter_)
+                .withFixedLegTenor(Period(fixedLegFrequency_))
+                .withFixedLegConvention(fixedLegConvention_)
+                .withFixedLegTerminationDateConvention(fixedLegConvention_);
         }
 	}
 
