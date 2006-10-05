@@ -68,7 +68,6 @@ namespace QuantLib {
         }
 
         calculators_.front().compute(initialForwards, initialDrifts_);
-        //calculators_.front().computeReduced(initialForwards, F_, initialDrifts_);
     }
 
     const std::vector<Size>& ForwardRatePcEvolver::numeraires() const {
@@ -89,7 +88,6 @@ namespace QuantLib {
         // a) compute drifts D1 at T1;
         if (currentStep_ > 0) {
             calculators_[currentStep_].compute(forwards_, drifts1_);
-            //calculators_[currentStep_].computeReduced(forwards_, F_, drifts1_);
         } else {
             std::copy(initialDrifts_.begin(), initialDrifts_.end(),
                       drifts1_.begin());
@@ -111,7 +109,6 @@ namespace QuantLib {
 
         // c) recompute drifts D2 using the predicted forwards;
         calculators_[currentStep_].compute(forwards_, drifts2_);
-        //calculators_[currentStep_].computeReduced(forwards_, F_, drifts2_);
 
         // d) correct forwards using both drifts
         for (Size i=alive; i<n_; ++i) {

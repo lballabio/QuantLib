@@ -983,7 +983,7 @@ void MarketModelTest::testDriftCalculator() {
             // add cycle over numeraires
             DriftCalculator driftcalculator(A, displacements, rateTaus,
                                             numeraires[j], alive[j]);
-            driftcalculator.compute(todaysForwards, drifts);
+            driftcalculator.computePlain(todaysForwards, drifts);
             driftcalculator.computeReduced(todaysForwards,
                                            driftsReduced);
             for (Size i=0; i<drifts.size(); ++i) {

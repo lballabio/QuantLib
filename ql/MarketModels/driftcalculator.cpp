@@ -30,6 +30,7 @@ namespace QuantLib {
                                      Size numeraire,
                                      Size alive)
     : dim_(taus.size()), factors_(pseudo.columns()),
+      isFullFactor_(factors_==dim_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0), 
@@ -38,7 +39,8 @@ namespace QuantLib {
     {
         // Check requirements
         QL_REQUIRE(dim_>0, "Dim out of range");
-        QL_REQUIRE(displacements.size() == dim_, "Displacements out of range");
+        QL_REQUIRE(displacements.size() == dim_,
+            "Displacements out of range");
         QL_REQUIRE(pseudo.rows()==dim_, 
             "pseudo.rows() not consistent with dim");
         QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=dim_, 
@@ -60,19 +62,28 @@ namespace QuantLib {
             downs_[i] = std::min(i+1, numeraire_);
             ups_[i]   = std::max(i+1, numeraire_);
         }
+
     }
 
     void DriftCalculator::compute(const std::vector<Rate>& forwards,
                                   std::vector<Real>& drifts) const {
-
-        // Compute drifts without factor reduction,
-        // using directly the covariance matrix.
-
-        // Check requirements
         #if defined _DEBUG
             QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
             QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
         #endif
+
+        if (isFullFactor_)
+            computePlain(forwards, drifts);
+        else
+            computeReduced(forwards, drifts);
+    }
+
+    void DriftCalculator::computePlain(const std::vector<Rate>& forwards,
+                                       std::vector<Real>& drifts) const {
+
+        // Compute drifts without factor reduction,
+        // using directly the covariance matrix.
+
         // Precompute forwards factor
         Size i;
         for(i=alive_; i<dim_; ++i)
@@ -93,22 +104,14 @@ namespace QuantLib {
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
 
-        // Check requirements
-        #if defined _DEBUG
-        QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
-        QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
-        #endif
-
         // Precompute forwards factor
         for(Size i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (oneOverTaus_[i]+forwards[i]);
 
         // Enforce initialization
-        Integer alive = alive_;
-        Integer numeraire = numeraire_;
         for (Size r=0; r<factors_; ++r)
-            e_[r][std::max(0,numeraire-1)] = 0.0; // if
+            e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
 
         // Now compute drifts: take the numeraire P_N (numeraire_=dim_=N) 
         // as the reference point, divide the summation into 3 steps, et impera:
@@ -119,7 +122,7 @@ namespace QuantLib {
 
         // 2nd step: then, move backward from N-2 (included) back to alive (included)
         // (if N=0 nothing happens, if N=dim_ the e_[r][N-1] have been correctly initialized):
-        for (Integer i=numeraire_-2; i>=alive; --i) {
+        for (Integer i=static_cast<Integer>(numeraire_)-2; i>=static_cast<Integer>(alive_); --i) {
             for (Size r=0; r<factors_; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
             }

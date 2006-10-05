@@ -43,20 +43,25 @@ namespace QuantLib {
                         const std::vector<Time>& taus,
                         Size numeraire,
                         Size alive);
-	    /*! Returns the drift 
+	    //! Computes the drifts 
+		void compute(const std::vector<Rate>& forwards,
+                     std::vector<Real>& drifts) const;
+	    /*! Computes the drifts
 			without factor reduction as in eqs. 2, 4 of ref. [1] 
 			(uses the covariance matrix directly).
 		*/
-		void compute(const std::vector<Rate>& forwards,
-                     std::vector<Real>& drifts) const;
-	    /*! Returns the drift 
+		void computePlain(const std::vector<Rate>& forwards,
+                          std::vector<Real>& drifts) const;
+	    /*! Computes the drifts
 			with factor reduction as in eq. 7 of ref. [1] 
 			(uses pseudo square root of the covariance matrix).
 		*/
 		void computeReduced(const std::vector<Rate>& forwards,
                             std::vector<Real>& drifts) const;
       private:
-        Size dim_, factors_, numeraire_, alive_;
+        Size dim_, factors_;
+        bool isFullFactor_;
+        Size numeraire_, alive_;
         std::vector<Rate> displacements_;
         std::vector<Real> oneOverTaus_;
 		Matrix C_, pseudo_;
