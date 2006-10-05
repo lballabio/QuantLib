@@ -154,7 +154,7 @@ namespace QuantLib {
                         const Calendar& cal,
                         Rate fixedRate,
                         const boost::shared_ptr<Xibor>& index,
-                        const boost::shared_ptr<YieldTermStructure>& termStructure);
+                        const Handle<YieldTermStructure>& termStructure);
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withNominal(Real n);

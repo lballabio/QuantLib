@@ -295,21 +295,20 @@ namespace QuantLib {
                                                index_->dayCounter(),
                                                termStructureHandle_));
 
-        swap_ = boost::shared_ptr<VanillaSwap>(
-                  new VanillaSwap(true, 100.0,
-                                  fixedSchedule, 0.0, fixedDayCount_,
-                                  floatSchedule, clonedIndex,
-                                  0.0,
-                                  clonedIndex->dayCounter(),
-                                  termStructureHandle_));
+        //swap_ = boost::shared_ptr<VanillaSwap>(
+        //          new VanillaSwap(true, 100.0,
+        //                          fixedSchedule, 0.0, fixedDayCount_,
+        //                          floatSchedule, clonedIndex,
+        //                          0.0,
+        //                          clonedIndex->dayCounter(),
+        //                          termStructureHandle_));
 
-        //swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
-        //    clonedIndex, clonedIndex->termStructure())
-        //    .withFixedLegDayCount(fixedDayCount_)
-        //    .withFixedLegTenor(Period(fixedFrequency_))
-        //    .withFixedLegConvention(fixedConvention_)
-        //    .withFixedLegTerminationDateConvention(fixedConvention_);
-
+        swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
+					            clonedIndex, termStructureHandle_)
+            .withFixedLegDayCount(fixedDayCount_)
+            .withFixedLegTenor(Period(fixedFrequency_))
+            .withFixedLegConvention(fixedConvention_)
+            .withFixedLegTerminationDateConvention(fixedConvention_);
 
         // Usually...
         latestDate_ = swap_->maturity();

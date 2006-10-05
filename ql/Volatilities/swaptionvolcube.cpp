@@ -264,9 +264,11 @@ namespace QuantLib {
         Date startDate = calendar().advance(exerciseDate,
             swapSettlementDays_, Days);
         Rate fixedRate= 0.0;
-        VanillaSwap swap = MakeVanillaSwap(startDate,
-            swapTenor, calendar(), fixedRate,
-            iborIndexEffective, iborIndexEffective->termStructure())
+        VanillaSwap swap =
+            MakeVanillaSwap(startDate, swapTenor, calendar(),
+                            fixedRate, iborIndexEffective,
+                            Handle<YieldTermStructure>(
+                                iborIndexEffective->termStructure()))
             .withFixedLegDayCount(fixedLegDayCounter_)
             .withFixedLegTenor(Period(fixedLegFrequency_))
             .withFixedLegConvention(fixedLegConvention_)

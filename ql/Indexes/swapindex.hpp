@@ -51,7 +51,11 @@ namespace QuantLib {
         }
         boost::shared_ptr<Xibor> iborIndex() const { return iborIndex_; }
 		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
+		/*! \warning Relinking the term structure underlying the index will
+                     not have effect on the returned swap.
+	    */
 		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
+        //@}
       protected:
         Integer years_;
         boost::shared_ptr<Xibor> iborIndex_;

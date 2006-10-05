@@ -276,7 +276,7 @@ namespace QuantLib {
                                      const Calendar& cal,
                                      Rate fixedRate,
                                      const boost::shared_ptr<Xibor>& index,
-                                     const boost::shared_ptr<YieldTermStructure>& termStructure)
+                                     const Handle<YieldTermStructure>& termStructure)
     : payFixed_(true), nominal_(1.0), 
       effectiveDate_(effectiveDate), swapTenor_(swapTenor),
       fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
