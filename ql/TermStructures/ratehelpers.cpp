@@ -303,6 +303,14 @@ namespace QuantLib {
                                   clonedIndex->dayCounter(),
                                   termStructureHandle_));
 
+        //swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
+        //    clonedIndex, clonedIndex->termStructure())
+        //    .withFixedLegDayCount(fixedDayCount_)
+        //    .withFixedLegTenor(Period(fixedFrequency_))
+        //    .withFixedLegConvention(fixedConvention_)
+        //    .withFixedLegTerminationDateConvention(fixedConvention_);
+
+
         // Usually...
         latestDate_ = swap_->maturity();
         // ...but due to adjustments, the last floating coupon might
