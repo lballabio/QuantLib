@@ -263,30 +263,7 @@ namespace QuantLib {
         // vanilla swap's parameters
         Date startDate = calendar().advance(exerciseDate,
             swapSettlementDays_, Days);
-
-        //Date endDate = NullCalendar().advance(startDate, swapTenor);
-        //Schedule fixedSchedule(startDate, endDate,
-        //    Period(fixedLegFrequency_), calendar(),
-        //    fixedLegConvention_, fixedLegConvention_,
-        //    true, true);
-        ////Frequency floatingLegFrequency_ = iborIndex_->frequency();
-        //BusinessDayConvention floatingLegBusinessDayConvention =
-        //    iborIndexEffective->businessDayConvention();
-        //Schedule floatSchedule(startDate, endDate,
-        //    iborIndexEffective->tenor(), calendar(),
-        //    floatingLegBusinessDayConvention, floatingLegBusinessDayConvention,
-        //    true, true);
-        //Real nominal= 1.0;
         Rate fixedRate= 0.0;
-        //Spread spread= 0.0;
-        //Handle<YieldTermStructure> termStructure;
-        //termStructure.linkTo(iborIndexEffective->termStructure());
-        //VanillaSwap swap(true, nominal,
-        //    fixedSchedule, fixedRate, fixedLegDayCounter_,
-        //    floatSchedule, iborIndexEffective,
-        //    iborIndexEffective->settlementDays(), spread,
-        //    iborIndexEffective->dayCounter(), termStructure);
-
         VanillaSwap swap = MakeVanillaSwap(startDate,
             swapTenor, calendar(), fixedRate,
             iborIndexEffective, iborIndexEffective->termStructure())
