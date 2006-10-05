@@ -20,6 +20,7 @@
 #include "array.hpp"
 #include "utilities.hpp"
 #include <ql/Math/array.hpp>
+#include <ql/Math/complexarray.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
