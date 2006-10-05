@@ -277,7 +277,7 @@ namespace QuantLib {
                                      const boost::shared_ptr<YieldTermStructure>& termStructure)
     : payFixed_(true), nominal_(1.0), 
       effectiveDate_(effectiveDate), swapTenor_(swapTenor),
-      fixedTenor_(Period(1, Years)), floatTenor_(index_->tenor()), 
+      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
       fixedCalendar_(cal), floatCalendar_(cal),
       fixedConvention_(ModifiedFollowing),
       fixedTerminationDateConvention_(ModifiedFollowing),
@@ -288,10 +288,10 @@ namespace QuantLib {
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       fixedRate_(fixedRate), floatSpread_(0.0), 
-      fixedDayCount_(Thirty360()), floatDayCount_(index_->dayCounter()),
+      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()),
       index_(index), termStructure_(termStructure)
     {
-        Date terminationDate_ = NullCalendar().advance(
+        terminationDate_ = NullCalendar().advance(
             effectiveDate, swapTenor_);
     }
 
