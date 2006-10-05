@@ -1,11 +1,17 @@
 Ferdinando Ametrano, Banca Caboto SpA, administrator
 Luigi Ballabio, StatPro Italia srl, administrator
+Marco Bianchetti, Banca Caboto SpA
 Mario Aleppo, StatPro Italia srl
 Nicolas Di Césaré
+Cristina Duminuco, Banca Caboto SpA
 Dirk Eddelbuettel
+Giorgio Facchinetti, Banca Caboto SpA
 Neil Firth, Mathematical Institute, University of Oxford
+Chiara Fornarola, Banca Caboto SpA
 Nicola Jean, StatPro Italia srl
+Katiuscia Manzoni, Banca Caboto SpA
 Marco Marchioro, StatPro Italia srl
+Mario Pucci, Banca Caboto SpA
 Sadruddin Rejeb
 Enrico Sirola, StatPro Italia srl
 Klaus Spanderen
