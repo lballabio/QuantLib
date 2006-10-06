@@ -1,7 +1,7 @@
 Ferdinando Ametrano, Banca Caboto SpA, administrator
 Luigi Ballabio, StatPro Italia srl, administrator
-Marco Bianchetti, Banca Caboto SpA
 Mario Aleppo, StatPro Italia srl
+Marco Bianchetti, Banca Caboto SpA
 Nicolas Di Césaré
 Cristina Duminuco, Banca Caboto SpA
 Dirk Eddelbuettel

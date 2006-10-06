@@ -25,8 +25,8 @@
 
     - Ferdinando Ametrano, Banca Caboto SpA, administrator
     - Luigi Ballabio, StatPro Italia srl, administrator
-    - Marco Bianchetti, Banca Caboto SpA
     - Mario Aleppo, StatPro Italia srl
+    - Marco Bianchetti, Banca Caboto SpA
     - Nicolas Di Césaré
     - Cristina Duminuco, Banca Caboto SpA
     - Dirk Eddelbuettel
@@ -49,12 +49,13 @@
     Akin, Sercan Atalik, James Battle, Christopher Baus, Thomas
     Becker, Adolfo Benin, Luca Berardi, David Binderman, Theo Boafo,
     Joe Byers, Antoine Cellerier, Aurelien Chanudet, Warren Chou, Jon
-    Davidson, Daniele De Francesco, Piter Dias, Matteo Gallivanoni,
-    Roman Gitlin, Richard Gould, Tomoya Kawanishi, Gary Kennedy, Allen
-    Kuo, Roland Lichters, André Louw, Enrico Michelotti, Gilbert
-    Peffer, Walter Penschke, Gianni Piolanti, Fabio Ramponi, Peter
-    Schmitteckert, David Schwartz, Eugene Shevkoplyas, Maxim Sokolov,
-    Marco Tarenghi, Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
+    Davidson, Daniele De Francesco, Piter Dias, Silvia Frasson, Matteo
+    Gallivanoni, Roman Gitlin, Richard Gould, Tomoya Kawanishi, Gary
+    Kennedy, Allen Kuo, Roland Lichters, André Louw, Enrico Michelotti,
+    Gilbert Peffer, Walter Penschke, Gianni Piolanti, Fabio Ramponi,
+    Peter Schmitteckert, David Schwartz, Eugene Shevkoplyas, Maxim
+    Sokolov, Marco Tarenghi, Charles Whitmore, Bernd Johannes Wuebben,
+    and Jeff Yu.
 
     %QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
     Methods in Finance".
