@@ -573,7 +573,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-        for (Size m=0; m<1; m++) { // one step always full factors
+        for (Size m=0; m<1; ++m) { // one step always full factors
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = { //CalibratedMM,
@@ -602,6 +602,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
@@ -646,8 +647,8 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-        //for (Size m=0; m<todaysForwards.size(); m++) {
-        for (Size m=0; m<1; m++) {
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = { //CalibratedMM,
@@ -676,6 +677,7 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
@@ -709,8 +711,8 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-        //for (Size m=0; m<todaysForwards.size(); m++) {
-        for (Size m=0; m<1; m++) {
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = { //CalibratedMM,
@@ -739,6 +741,7 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkCoinitialSwaps(*stats, fixedRate, config.str());
@@ -769,8 +772,8 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-        //for (Size m=0; m<todaysForwards.size(); m++) {
-        for (Size m=0; m<1; m++) {
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = { //CalibratedMM,
@@ -799,6 +802,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkCoterminalSwaps(*stats, fixedRate, config.str());
@@ -1078,8 +1082,8 @@ void MarketModelTest::testCallableSwap1() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(allProducts, measures[k]);
 
-        //for (Size m=0; m<todaysForwards.size(); m++) {
-        for (Size m=0; m<1; m++) {
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = {
@@ -1109,6 +1113,7 @@ void MarketModelTest::testCallableSwap1() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, allProducts);
                         checkCallableSwap(*stats, config.str());
@@ -1175,8 +1180,8 @@ void MarketModelTest::testCallableSwap2() {
     for (Size k=0; k<LENGTH(measures); k++) {
         std::vector<Size> numeraires = makeMeasure(receiverSwap, measures[k]);
 
-        //for (Size m=0; m<todaysForwards.size(); m++) {
-        for (Size m=0; m<1; m++) {
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
             Size factors = (m==0 ? todaysForwards.size() : m);
 
             MarketModelType marketModels[] = {
@@ -1235,6 +1240,7 @@ void MarketModelTest::testCallableSwap2() {
                                << marketModelTypeToString(marketModels[j])
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, allProducts);
                         checkCallableSwap(*stats, config.str());
@@ -1254,7 +1260,9 @@ test_suite* MarketModelTest::suite() {
                            &MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+
     suite->add(BOOST_TEST_CASE(
                       &MarketModelTest::testOneStepForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(
@@ -1263,8 +1271,9 @@ test_suite* MarketModelTest::suite() {
                               &MarketModelTest::testMultiStepCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(
                               &MarketModelTest::testMultiStepCoterminalSwaps));
+
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
+
     return suite;
 }
-
