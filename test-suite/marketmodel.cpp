@@ -969,6 +969,7 @@ void MarketModelTest::testDriftCalculator() {
     BOOST_MESSAGE("Testing drift calculation...");
     QL_TEST_SETUP
 
+    Real tolerance = 1.0e-16;
     Size factors = todaysForwards.size();
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
@@ -989,24 +990,26 @@ void MarketModelTest::testDriftCalculator() {
         for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
             const Matrix& A = marketModel->pseudoRoot(j);
             //BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
-            // add cycle over numeraires
-            DriftCalculator driftcalculator(A, displacements, rateTaus,
-                                            numeraires[j], alive[j]);
-            driftcalculator.computePlain(todaysForwards, drifts);
-            driftcalculator.computeReduced(todaysForwards,
-                                           driftsReduced);
-            for (Size i=0; i<drifts.size(); ++i) {
-                Real tolerance = 1.0e-16;
-                Real error = std::abs(driftsReduced[i]-drifts[i]);
-                if (error>tolerance)
-                    BOOST_ERROR("MarketModel: " <<
-                                marketModelTypeToString(marketModels[k])
-                                << ", " << io::ordinal(j) << " step, "
-                                << ", " << io::ordinal(i) << " drift, "
-                                << "\ndrift        =" << drifts[i]
-                                << "\ndriftReduced =" << driftsReduced[i]
-                                << "\n       error =" << error
-                                << "\n   tolerance =" << tolerance);
+            Size inf = std::max(0,static_cast<Integer>(alive[j]));
+            for (Size h=inf; h<numeraires.size(); ++h) {     // loop over numeraires
+                DriftCalculator driftcalculator(A, displacements, rateTaus,
+                                                numeraires[h], alive[j]);
+                driftcalculator.computePlain(todaysForwards, drifts);
+                driftcalculator.computeReduced(todaysForwards,
+                                               driftsReduced);
+                for (Size i=0; i<drifts.size(); ++i) {
+                    Real error = std::abs(driftsReduced[i]-drifts[i]);
+                    if (error>tolerance)
+                            BOOST_ERROR("MarketModel: " <<
+                                    marketModelTypeToString(marketModels[k])
+                                    << ", " << io::ordinal(j) << " step, "
+                                    << ", " << io::ordinal(h) << " numeraire, "
+                                    << ", " << io::ordinal(i) << " drift, "
+                                    << "\ndrift        =" << drifts[i]
+                                    << "\ndriftReduced =" << driftsReduced[i]
+                                    << "\n       error =" << error
+                                    << "\n   tolerance =" << tolerance);
+                }
             }
         }
     }
@@ -1260,14 +1263,11 @@ void MarketModelTest::testCallableSwap2() {
 
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-
     suite->add(BOOST_TEST_CASE(
                            &MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
-
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-
     suite->add(BOOST_TEST_CASE(
                       &MarketModelTest::testOneStepForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(
@@ -1276,9 +1276,7 @@ test_suite* MarketModelTest::suite() {
                               &MarketModelTest::testMultiStepCoinitialSwaps));
     suite->add(BOOST_TEST_CASE(
                               &MarketModelTest::testMultiStepCoterminalSwaps));
-
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
-
     return suite;
 }
