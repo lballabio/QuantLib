@@ -54,10 +54,10 @@ namespace QuantLib {
     }
 
     bool CapFloor::isExpired() const {
-        Date lastFixing = Date::minDate();
+        Date lastPaymentDate = Date::minDate();
         for (Size i=0; i<floatingLeg_.size(); i++)
-            lastFixing = std::max(lastFixing, floatingLeg_[i]->date());
-        return lastFixing < termStructure_->referenceDate();
+            lastPaymentDate = std::max(lastPaymentDate, floatingLeg_[i]->date());
+        return lastPaymentDate < termStructure_->referenceDate();
     }
 
     void CapFloor::setupArguments(Arguments* args) const {
