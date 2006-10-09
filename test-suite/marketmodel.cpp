@@ -60,6 +60,7 @@
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Math/segmentintegral.hpp>
+#include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
@@ -179,7 +180,7 @@ void setup() {
 }
 
 
-const boost::shared_ptr<SequenceStatistics> simulate(
+const boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > simulate(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const MarketModelMultiProduct& product)
 {
@@ -187,10 +188,12 @@ const boost::shared_ptr<SequenceStatistics> simulate(
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    boost::shared_ptr<SequenceStatistics> stats(
-                          new SequenceStatistics(product.numberOfProducts()));
-    engine.multiplePathValues(*stats, paths_);
-    return stats;
+    boost::shared_ptr<SequenceStatistics> stats(new
+        SequenceStatistics(product.numberOfProducts()));
+    boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats2(new
+        ConvergenceStatistics<SequenceStatistics>(*stats));
+    engine.multiplePathValues(*stats2, paths_);
+    return stats2;
 }
 
 
@@ -351,7 +354,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 }
 
 
-void checkForwardsAndCaplets(const SequenceStatistics& stats,
+void checkForwardsAndCaplets(const ConvergenceStatistics<SequenceStatistics> & stats,
                              const std::vector<Rate>& forwardStrikes,
                              const std::vector<Rate>& capletStrikes,
                              const std::string& config) {
@@ -416,7 +419,7 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
 }
 
 
-void checkCoinitialSwaps(const SequenceStatistics& stats,
+void checkCoinitialSwaps(const ConvergenceStatistics<SequenceStatistics> & stats,
                          const Real fixedRate,
                          const std::string& config) {
     std::vector<Real> results = stats.mean();
@@ -454,7 +457,7 @@ void checkCoinitialSwaps(const SequenceStatistics& stats,
     }
 }
 
-void checkCoterminalSwaps(const SequenceStatistics& stats,
+void checkCoterminalSwaps(const ConvergenceStatistics<SequenceStatistics> & stats,
                           const Real fixedRate,
                           const std::string& config) {
     std::vector<Real> results = stats.mean();
@@ -493,12 +496,13 @@ void checkCoterminalSwaps(const SequenceStatistics& stats,
     }
 }
 
-void checkCallableSwap(const SequenceStatistics& stats,
+void checkCallableSwap(const ConvergenceStatistics<SequenceStatistics> & stats,
                        const std::string& config) {
     Real payerNPV    = stats.mean()[0];
     Real receiverNPV = stats.mean()[1];
     Real bermudanNPV = stats.mean()[2];
     Real callableNPV = stats.mean()[3];
+    stats.convergenceTable();
     Real tolerance = 6.0e-16;
     Real swapError = std::fabs(receiverNPV+payerNPV);
     Real callableError = std::fabs(receiverNPV+bermudanNPV-callableNPV);
@@ -532,12 +536,13 @@ void checkCallableSwap(const SequenceStatistics& stats,
                     "\n    error:             " << callableError <<
                     "\n    tolerance:         " << tolerance);
 
-    if (printReport_)
+    if (printReport_) {
         BOOST_MESSAGE("    payer swap:        " << payerNPV <<
                     "\n    receiver swap:     " << receiverNPV <<
                     "\n    bermudan:          " << bermudanNPV <<
                     "\n    receiver+bermudan: " << receiverNPV+bermudanNPV <<
                     "\n    callable:          " << callableNPV);
+    }
 
 }
 
@@ -603,7 +608,7 @@ void MarketModelTest::testOneStepForwardsAndCaplets() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
                                                 forwardStrikes,
@@ -678,7 +683,7 @@ void MarketModelTest::testMultiStepForwardsAndCaplets() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, product);
                         checkForwardsAndCaplets(*stats,
                                                 forwardStrikes,
@@ -742,7 +747,7 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, product);
                         checkCoinitialSwaps(*stats, fixedRate, config.str());
                     }
@@ -803,7 +808,7 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, product);
                         checkCoterminalSwaps(*stats, fixedRate, config.str());
                     }
@@ -1114,7 +1119,7 @@ void MarketModelTest::testCallableSwap1() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, allProducts);
                         checkCallableSwap(*stats, config.str());
                     }
@@ -1241,7 +1246,7 @@ void MarketModelTest::testCallableSwap2() {
                                << ", MT BGF" << ", "
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
-                        boost::shared_ptr<SequenceStatistics> stats =
+                        boost::shared_ptr<ConvergenceStatistics<SequenceStatistics> > stats =
                             simulate(evolver, allProducts);
                         checkCallableSwap(*stats, config.str());
                     }
