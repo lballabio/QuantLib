@@ -113,7 +113,7 @@ namespace QuantLib {
         for (Size r=0; r<factors_; ++r)
             e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
 
-        // Now compute drifts: take the numeraire P_N (numeraire_=dim_=N) 
+        // Now compute drifts: take the numeraire P_N (numeraire_=N) 
         // as the reference point, divide the summation into 3 steps, et impera:
 
         // 1st step: the drift corresponding to the numeraire P_N is zero.
@@ -121,7 +121,7 @@ namespace QuantLib {
         if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
         // 2nd step: then, move backward from N-2 (included) back to alive (included)
-        // (if N=0 nothing happens, if N=dim_ the e_[r][N-1] have been correctly initialized):
+        // (if N=0 jumps to 3rd step, if N=dim_ the e_[r][N-1] are correctly initialized):
         for (Integer i=static_cast<Integer>(numeraire_)-2; i>=static_cast<Integer>(alive_); --i) {
             for (Size r=0; r<factors_; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
@@ -133,7 +133,7 @@ namespace QuantLib {
         }
 
         // 3rd step: now, move forward from N (included) up to n (excluded)
-        // (if numeraire_=0 this is the only relevant computation):
+        // (if N=0 this is the only relevant computation):
         for (Size i=numeraire_; i<dim_; ++i) {
             for (Size r=0; r<factors_; ++r) {
                 if (i==0) {
