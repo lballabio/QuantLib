@@ -24,7 +24,6 @@
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
 

@@ -1,37 +1,25 @@
-============   almost done (need a final touch)
-
-Drift: Computation with rapid algorithm for reduced factor models (MEDIUM)
-Statistics: convergence tables (EASY)
-Pseudo-roots\calibration: factor reduction
-
-
-============== TO DO before Sept 18th
-Path generation: Sobol with Brownian bridging (multiple methods of
-                 variate allocation) (MEDIUM)
-Curve state: Set on coterminal swaps.  (MEDIUM)
-Products: coterminal European swaptions (EASY)
-Products: coterminal European swaptions using Z matrix
-Products: ratchet
-Pseudo-roots\calibration: orthogonal combination of inst vol models and corr models
-
-============== MORE TO DO
 
 priority in first parenthesis, extimated complexity in the second one
 
+Path generation:
+- (1) Sobol with Brownian bridging (multiple methods of
+      variate allocation) (MEDIUM)
 - (4) antithetic sampling (EASY)
 - (4) moment matching (EASY)
 
+Statistics
+- (2) Reuse convergence tables for RQMC
+
 Drift
+- (1) verify efficiency of rapid algorithm for reduced factor models
 - (4) Glasserman Zhao spot measure approximation (MEDIUM)
 - (4) capc, cani, and PPR terminal measure approximations (MEDIUM TO HARD)
-
-Statistics
--
 
 Termination criteria
 - (3) ability to terminate on time passed and select termination criterion (EASY)
 
 Pseudo-roots\calibration
+- (1) orthogonal combination of inst vol models and corr models
 - (2) calibrator to produce abcd form from market data, with displacements
   (MEDIUM to HARD)
 - (2) swaption calibration using Z matrix with displacements (MEDIUM)
@@ -42,28 +30,28 @@ Curve state
 - (4) Set on coterminal swaps. (MEDIUM)
 
 Products
+- (1) coterminal European swaptions (EASY)
+- (1) coterminal European swaptions using Z matrix
+- (3) ratchet
 - (3) floorlets with one or many steps.  (EASY)
-- (1) Some real products! (MEDIUM)
+
+ExerciseStrategy:
+- (2) Jackel method for Bermudan swaptions (time consuming but not hard)
+
+Lower bounds
+- (4) Anderson method for Bermudan swaptions (time consuming but not hard)
+
+Upper bounds
+- (2) Rogers\anderson-Broadie\Joshi methods for upper bounds
+- (4) Jamshidian method for upper bounds (MEDIUM )
 
 Quantlib
 - (1) Get LMM code in the same use format as other code via instrument classes
   creating objects from new hierarchy as necessary (MEDIUM)
-- (3) check why Duff's device is ineffective
 - (?) relevantRates
 
 TEST
 - (1) payment date different from reset dates
-
-============ 4th & 5th weeks
-
-Early Callability
-- Lower bounds for early exercise
-- Longstaff-schwartz\Amin (time consuming but not hard)
-- Anderson method for Bermudan swaptions (time consuming but not hard)
-- Jackel method for Bermudan swaptions (time consuming but not hard)
-- Rogers\anderson-Broadie\Joshi methods for upper bounds  (time consuming )
-- Jamshidian method for upper bounds (MEDIUM )
-- Upper bounds for early exercise
 
 Evolvers
 - Coterminal Swap-rate market model (MEDIUM TO HARD)
@@ -77,7 +65,7 @@ Scripting
 
 Variance reduction
 - Control variates, importance sampling (MEDIUM)
-- Randomized QMC (HARD)
+- Randomized QMC
 
 Greeks
 - More sophisticated Greek methods (HARD)
