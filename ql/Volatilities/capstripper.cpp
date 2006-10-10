@@ -116,6 +116,21 @@ namespace QuantLib {
                     (marketDataCap.back().front()->floatingLeg().back())->fixingDate(); 
     };
 
+    void printFloatingLeg(const FloatingLeg& floatingLeg){
+        boost::shared_ptr<FloatingRateCoupon> floatingRateCoupon;
+        for (Size i = 0; i < floatingLeg.size(); i++){
+            floatingRateCoupon = 
+                boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg[i]);
+            std::cout   << i << "\t"
+                        << floatingRateCoupon->fixingDate() << "\t" 
+                        << floatingRateCoupon->accrualStartDate()<< "\t"
+                        << floatingRateCoupon->accrualEndDate()<< "\t"
+                        << floatingRateCoupon->date()<< "\t"
+                        << std::endl;
+        }
+        std::cout << "---------------------" << std::endl;
+    };
+
     void CapsStripper::performCalculations () const {
 
         Real accuracy = 1.0e-5;
@@ -136,8 +151,9 @@ namespace QuantLib {
                             volatilities_[k][j] = vol;
                     } else {
                         Real capletsPrice = capPrice-previousCaplets;
-                        volatilities_[i][j] = strippedCap[i][j]->impliedVolatility(
+                        Volatility test = strippedCap[i-1][j]->impliedVolatility(
                             capletsPrice, accuracy, 100);
+                        volatilities_[i][j] = test;
                     }
                     previousCaplets = capPrice;
                 }
