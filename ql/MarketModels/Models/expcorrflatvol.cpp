@@ -31,7 +31,7 @@ namespace QuantLib
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
-            const std::vector<Rate>& displacements)
+            const std::vector<Spread>& displacements)
     : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),

@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         virtual ~MarketModel() {}
         virtual const std::vector<Rate>& initialRates() const = 0;
-        virtual const std::vector<Rate>& displacements() const = 0;
+        virtual const std::vector<Spread>& displacements() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;
         virtual Size numberOfRates() const = 0;
         virtual Size numberOfFactors() const = 0; 

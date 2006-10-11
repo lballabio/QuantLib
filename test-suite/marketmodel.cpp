@@ -85,7 +85,8 @@ std::vector<Real> accruals;
 Calendar calendar;
 DayCounter dayCounter;
 
-std::vector<Rate> todaysForwards, displacements;
+std::vector<Rate> todaysForwards;
+std::vector<Spread> displacements;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities, blackVols;
 Real a, b, c, d;
@@ -121,7 +122,7 @@ void setup() {
 
     // rates
     todaysForwards = std::vector<Rate>(paymentTimes.size());
-    displacements = std::vector<Rate>(paymentTimes.size());
+    displacements = std::vector<Spread>(paymentTimes.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         todaysForwards[i] = 0.03 + 0.0010*i;
         displacements[i] = 0.02 + 0.0005*i;

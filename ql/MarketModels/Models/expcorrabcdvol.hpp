@@ -45,11 +45,11 @@ namespace QuantLib
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
-            const std::vector<Rate>& displacements);
+            const std::vector<Spread>& displacements);
         //! \name MarketModel interface
         //@{
         const std::vector<Rate>& initialRates() const;
-        const std::vector<Rate>& displacements() const;
+        const std::vector<Spread>& displacements() const;
         const EvolutionDescription& evolution() const;
         Size numberOfRates() const;
         Size numberOfFactors() const;
@@ -61,7 +61,7 @@ namespace QuantLib
       private:
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
-        std::vector<Rate> displacements_;
+        std::vector<Spread> displacements_;
         EvolutionDescription evolution_;
         std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
     };
@@ -72,7 +72,7 @@ namespace QuantLib
         return initialRates_;
     }
 
-    inline const std::vector<Rate>& ExpCorrAbcdVol::displacements() const {
+    inline const std::vector<Spread>& ExpCorrAbcdVol::displacements() const {
         return displacements_;
     }
 
