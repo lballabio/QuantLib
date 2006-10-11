@@ -123,7 +123,9 @@ namespace QuantLib {
 
     Real relativeError(Real x1, Real x2, Real reference);
 
-    bool checkAbsError(Real x1, Real x2, Real tolerance);
+    bool checkAbsError(Real x1, Real x2, Real tolerance){
+        return std::fabs(x1 - x2) < tolerance;
+    };
 
     class Flag : public QuantLib::Observer {
       private:
