@@ -108,8 +108,7 @@ namespace QuantLib {
             calculate();
             return bilinearInterpolation_->operator()(t, r, true);
           };
-      //private:
-        public:
+      private:
         std::vector<std::vector<boost::shared_ptr<CapFloor> > > marketDataCap;
         std::vector<std::vector<boost::shared_ptr<CapFloor> > > strippedCap;
         boost::shared_ptr<BilinearInterpolation> bilinearInterpolation_;

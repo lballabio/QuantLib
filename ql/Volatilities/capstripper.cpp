@@ -38,6 +38,7 @@
 #include <iostream>
 
 
+
 namespace QuantLib {
 
     FloatingLeg LegHelper::makeLeg(const Period & startPeriod,
@@ -46,7 +47,9 @@ namespace QuantLib {
         Date endDate = referenceDate_ + endPeriod;
         Schedule schedule(startDate, endDate, index_->tenor(), calendar_,
                           convention_, convention_, true, false);
-        return FloatingRateCouponVector(schedule, convention_, std::vector<Real>(1,1),
+        return FloatingRateCouponVector(schedule, 
+                                        convention_, 
+                                        std::vector<Real>(1,1),
                                         fixingDays_, index_,
                                         std::vector<Real>(),
                                         std::vector<Spread>(),
@@ -132,29 +135,25 @@ namespace QuantLib {
     };
 
     void CapsStripper::performCalculations () const {
-
+        Real vegaThreshold = 1e-7;
         Real accuracy = 1.0e-5;
         for (Size j = 0 ; j < strikes_.size(); j++) {
             Real previousCaplets = 0.0;
+            bool capVegaIsBigEnough = false;
             for (Size i = 0 ; i < tenorTimes_.size()-1; i++) {
                 Real capPrice = marketDataCap[i][j]->NPV();
-                // if the cap price is too low we don't use stripped cap values
-                if (capPrice<1.0e-4) {
-                    volatilities_[i][j] = Null<Real>();
-                    previousCaplets = 0.0;
-                } else {
-                    // we use a bigger cap instead and we set all stripped values equal to its implied volatilities
-                    if (previousCaplets==0.0) {
-                        Real vol = marketDataCap[i][j]->impliedVolatility(
+                if (!capVegaIsBigEnough){
+                    Real vol = marketDataCap[i][j]->impliedVolatility(
                             capPrice, accuracy, 100);
+                    Real vega = marketDataCap[i][j]->vega(vol);
+                    capVegaIsBigEnough = vega > vegaThreshold;
+                    if (capVegaIsBigEnough)
                         for (Size k = 0; k<=i; ++k)
                             volatilities_[k][j] = vol;
-                    } else {
-                        Real capletsPrice = capPrice-previousCaplets;
-                        Volatility test = strippedCap[i-1][j]->impliedVolatility(
+                }else{
+                   Real capletsPrice = capPrice-previousCaplets;
+                        volatilities_[i][j] = strippedCap[i-1][j]->impliedVolatility(
                             capletsPrice, accuracy, 100);
-                        volatilities_[i][j] = test;
-                    }
                     previousCaplets = capPrice;
                 }
             }
