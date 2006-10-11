@@ -28,12 +28,9 @@
 
 namespace QuantLib {
 
-    //! VanillaCMSCouponPricer
-    /*!
-
-    */
     class CMSCoupon;
 
+    //! pricer for vanilla CMS coupons
     class VanillaCMSCouponPricer {
       public:
         virtual ~VanillaCMSCouponPricer() {}
@@ -55,7 +52,7 @@ namespace QuantLib {
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
-                  const boost::shared_ptr<VanillaCMSCouponPricer>& Pricer,
+                  const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                   Real gearing,
                   Rate spread,
                   Rate cap = Null<Rate>(),
@@ -66,7 +63,7 @@ namespace QuantLib {
                   bool isInArrears = false);
         //! \name Coupon interface
         //@{
-		Real price(const Handle<YieldTermStructure>& discountingCurve) const;
+        Real price(const Handle<YieldTermStructure>& discountingCurve) const;
         Rate rate() const;
         // legacy code (analytical integration) to be removed later
         Rate rate1() const;
@@ -101,7 +98,7 @@ namespace QuantLib {
         bool isInArrears_;
         Real meanReversion_;
         Handle<SwaptionVolatilityStructure> swaptionVol_;
-        boost::shared_ptr<VanillaCMSCouponPricer> Pricer_;
+        boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
     };
 
 

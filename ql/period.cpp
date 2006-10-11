@@ -44,12 +44,10 @@ namespace QuantLib {
             units_ = Months;
             length_ = 12/f;
             break;
-          case EveryFourthWeek:
-          case EveryThirdWeek:
           case Biweekly:
           case Weekly:
             units_ = Weeks;
-            length_ = 52/f; // it does work for EveryThirdWeek too
+            length_ = 52/f;
             break;
           case Daily:
             units_ = Days;
@@ -60,8 +58,7 @@ namespace QuantLib {
         }
     }
 
-    Frequency Period::frequency() const
-    {
+    Frequency Period::frequency() const {
         // unsigned version
         Size length = std::abs(length_);
 
@@ -77,16 +74,12 @@ namespace QuantLib {
                        "cannot instantiate a Frequency from " << *this);
             return Frequency(12/length);
           case Weeks:
-              if (length==1)
-                  return Weekly;
-              else if (length==2)
-                  return Biweekly;
-              else if (length==3)
-                  return EveryThirdWeek;
-              else if (length==4)
-                  return EveryFourthWeek;
-              else
-                  QL_FAIL("cannot instantiate a Frequency from " << *this);
+            if (length==1)
+                return Weekly;
+            else if (length==2)
+                return Biweekly;
+            else
+                QL_FAIL("cannot instantiate a Frequency from " << *this);
           case Days:
             QL_REQUIRE(length==1,
                        "cannot instantiate a Frequency from " << *this);
@@ -97,42 +90,48 @@ namespace QuantLib {
     }
 
     bool operator<(const Period& p1, const Period& p2) {
-        if (p1.units() == p2.units())
-            return (p1.length() < p2.length());
-        if (p1.units() == Days) {
-            if (p2.units() == Weeks)
+        switch (p1.units()) {
+          case Days:
+            switch (p2.units()) {
+              case Days:
+                return (p1.length() < p2.length());
+              case Weeks:
                 return (p1.length() < p2.length() * 7);
-            else if (p2.units() == Years)
-                return (p1.length() < p2.length() * 365);
-            else if (p2.units() == Months)
+              case Months:
                 if (p1.length() < p2.length() * 28)
                     return true;
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else
+              case Years:
+                return (p1.length() < p2.length() * 365);
+              default:
                 QL_FAIL("unknown units");
-        } else if (p1.units() == Weeks) {
-            if (p2.units() == Days)
+            }
+          case Weeks:
+            switch (p2.units()) {
+              case Days:
                 return (p1.length() * 7 < p2.length());
-            else if (p2.units() == Years)
-                if (p1.length() * 7 < p2.length() * 365)
-                    return true;
-                else
-                    QL_FAIL("undecidable comparison between "
-                             << p1 << " and " << p2);
-            else if (p2.units() == Months)
+              case Weeks:
+                return (p1.length() < p2.length());
+              case Months:
                 if (p1.length() * 7 < p2.length() * 28)
                     return true;
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else
+              case Years:
+                if (p1.length() * 7 < p2.length() * 365)
+                    return true;
+                else
+                    QL_FAIL("undecidable comparison between "
+                             << p1 << " and " << p2);
+              default:
                 QL_FAIL("unknown units");
-        } else if (p1.units() == Months) {
-            if (p2.units() == Years)
-                return (p1.length() < p2.length() * 12);
-            else if (p2.units() == Days)
+            }
+          case Months:
+            switch (p2.units()) {
+              case Days:
                 // Sup[days in p1.length() months] < days in p2
                 if (p1.length() * 31 < p2.length())
                     return true;
@@ -142,16 +141,22 @@ namespace QuantLib {
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else if (p2.units() == Weeks)
+              case Weeks:
                 if (p1.length()* 31 < p2.length()  * 7)
                     return true;
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else
+              case Months:
+                return (p1.length() < p2.length());
+              case Years:
+                return (p1.length() < p2.length() * 12);
+              default:
                 QL_FAIL("unknown units");
-        } else if (p1.units() == Years) {
-            if (p2.units() == Days)
+            }
+          case Years:
+            switch (p2.units()) {
+              case Days:
                 if (p1.length() * 366 < p2.length())
                     return true;
                 // almost 365 days in p1 and less than 365 days in p2
@@ -160,17 +165,20 @@ namespace QuantLib {
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else if (p2.units() == Months)
-                return (p1.length() * 12 < p2.length());
-            else if (p2.units() == Weeks)
+              case Weeks:
                 if (p1.length() * 366 < p2.length() * 7)
                     return true;
                 else
                     QL_FAIL("undecidable comparison between "
                              << p1 << " and " << p2);
-            else
+              case Months:
+                return (p1.length() * 12 < p2.length());
+              case Years:
+                return (p1.length() < p2.length());
+              default:
                 QL_FAIL("unknown units");
-        } else {
+            }
+          default:
             QL_FAIL("unknown units");
         }
     }
@@ -254,10 +262,6 @@ namespace QuantLib {
             return out << "bimonthly";
           case Monthly:
             return out << "monthly";
-          case EveryFourthWeek:
-            return out << "every-fourth-week";
-          case EveryThirdWeek:
-            return out << "every-third-week";
           case Biweekly:
             return out << "biweekly";
           case Weekly:

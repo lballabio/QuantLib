@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +26,10 @@ namespace QuantLib {
     OrnsteinUhlenbeckProcess::OrnsteinUhlenbeckProcess(Real speed,
                                                        Volatility vol,
                                                        Real x0)
-    : x0_(x0), speed_(speed), volatility_(vol) {}
+    : x0_(x0), speed_(speed), volatility_(vol) {
+        QL_REQUIRE(speed_ >= 0.0, "negative speed given");
+        QL_REQUIRE(volatility_ >= 0.0, "negative volatility given");
+    }
 
     Real OrnsteinUhlenbeckProcess::x0() const {
         return x0_;

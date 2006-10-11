@@ -43,8 +43,6 @@ namespace QuantLib {
                      Quarterly = 4,        //!< every third month
                      Bimonthly = 6,        //!< every second month
                      Monthly = 12,         //!< once a month
-                     EveryFourthWeek = 13, //!< every fourth week
-                     EveryThirdWeek = 17,  //!< every third week
                      Biweekly = 26,        //!< every second week
                      Weekly = 52,          //!< once a week
                      Daily = 365           //!< once a day
@@ -170,5 +168,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

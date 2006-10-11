@@ -82,13 +82,14 @@ namespace QuantLib
         spread_ = coupon_->spread();
         const Size q = swapIndex->fixedLegFrequency();
 
-        const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(fixingDate_));
+        const Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
 
         const DayCounter dc(swapIndex->dayCounter());
         const Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
                                          swap->startDate());
-        const Time swapFirstPaymentTime = dc.yearFraction(rateCurve_->referenceDate(),
-                                                    schedule->date(1));
+        const Time swapFirstPaymentTime =
+            dc.yearFraction(rateCurve_->referenceDate(),
+                            schedule.date(1));
         const Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                            paymentDate_);
         const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
@@ -371,17 +372,23 @@ namespace QuantLib
     GFunctionFactory::GFunctionExactYield::GFunctionExactYield(const CMSCoupon& coupon){
 
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
-        const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
+        const boost::shared_ptr<VanillaSwap>& swap =
+            swapIndex->underlyingSwap(coupon.fixingDate());
 
         const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
-        const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
-        const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
-        const DayCounter dc(swapIndex->dayCounter());
+        const Schedule schedule =
+            swapIndex->fixedRateSchedule(coupon.fixingDate());
+        const boost::shared_ptr<YieldTermStructure> rateCurve =
+            swapIndex->termStructure();
+        const DayCounter dc = swapIndex->dayCounter();
 
-        Real swapStartTime = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
-        Real swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(),schedule->date(1));
+        Real swapStartTime = dc.yearFraction(rateCurve->referenceDate(),
+                                             schedule.startDate());
+        Real swapFirstPaymentTime = dc.yearFraction(rateCurve->referenceDate(),
+                                                    schedule.date(1));
 
-        const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon.date()));
+        const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
+                                                 coupon.date());
 
         delta_ = (paymentTime-swapStartTime) / (swapFirstPaymentTime-swapStartTime);
 
@@ -463,14 +470,18 @@ namespace QuantLib
         objectiveFunction_ = boost::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
 
         const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
-        const boost::shared_ptr<Schedule> schedule(swapIndex->fixedRateSchedule(coupon.fixingDate()));
-        const boost::shared_ptr<YieldTermStructure> rateCurve(swapIndex->termStructure());
+        const Schedule schedule =
+            swapIndex->fixedRateSchedule(coupon.fixingDate());
+        const boost::shared_ptr<YieldTermStructure> rateCurve =
+            swapIndex->termStructure();
         const DayCounter dc(swapIndex->dayCounter());
 
-        swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(), schedule->startDate());
-        discountAtStart_ = rateCurve->discount(schedule->startDate());
+        swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(),
+                                         schedule.startDate());
+        discountAtStart_ = rateCurve->discount(schedule.startDate());
 
-        const Real paymentTime(dc.yearFraction(rateCurve->referenceDate(), coupon.date()));
+        const Real paymentTime = dc.yearFraction(rateCurve->referenceDate(),
+                                                 coupon.date());
 
         shapedPaymentTime_ = shapeOfShift(paymentTime);
 
@@ -660,8 +671,8 @@ namespace QuantLib
             solver.setMaxEvaluations(1000);
 
             const Real lower = -20, upper = 20.;
-            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_, 
-                std::max( std::min(initialGuess, upper*.99), lower*.99), 
+            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_,
+                std::max( std::min(initialGuess, upper*.99), lower*.99),
                 lower, upper);
             tmpRs_=Rs;
         }

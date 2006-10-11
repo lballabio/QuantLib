@@ -33,17 +33,17 @@ namespace QuantLib {
       isFullFactor_(factors_==dim_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
-      pseudo_(pseudo), tmp_(taus.size(), 0.0), 
+      pseudo_(pseudo), tmp_(taus.size(), 0.0),
       e_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      downs_(taus.size()), ups_(taus.size())
-    {
+      downs_(taus.size()), ups_(taus.size()) {
+
         // Check requirements
         QL_REQUIRE(dim_>0, "Dim out of range");
         QL_REQUIRE(displacements.size() == dim_,
             "Displacements out of range");
-        QL_REQUIRE(pseudo.rows()==dim_, 
+        QL_REQUIRE(pseudo.rows()==dim_,
             "pseudo.rows() not consistent with dim");
-        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=dim_, 
+        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=dim_,
             "pseudo.rows() not consistent with pseudo.columns()");
         QL_REQUIRE(alive>=0 && alive<dim_, "Alive out of bounds");
         QL_REQUIRE(numeraire_<=dim_, "Numeraire larger than dim");
@@ -62,12 +62,11 @@ namespace QuantLib {
             downs_[i] = std::min(i+1, numeraire_);
             ups_[i]   = std::max(i+1, numeraire_);
         }
-
     }
 
     void DriftCalculator::compute(const std::vector<Rate>& forwards,
                                   std::vector<Real>& drifts) const {
-        #if defined _DEBUG
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
             QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
         #endif
@@ -94,35 +93,39 @@ namespace QuantLib {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
                                            C_.row_begin(i)+downs_[i], 0.0);
-            if (numeraire_>i+1) drifts[i] = -drifts[i];
+            if (numeraire_>i+1)
+                drifts[i] = -drifts[i];
         }
     }
 
-      void DriftCalculator::computeReduced(const std::vector<Rate>& forwards,
-                                           std::vector<Real>& drifts) const {
+    void DriftCalculator::computeReduced(const std::vector<Rate>& forwards,
+                                         std::vector<Real>& drifts) const {
 
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
 
         // Precompute forwards factor
-        for(Size i=alive_; i<dim_; ++i)
+        for (Size i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
-                      (oneOverTaus_[i]+forwards[i]);
+                (oneOverTaus_[i]+forwards[i]);
 
         // Enforce initialization
         for (Size r=0; r<factors_; ++r)
             e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
 
-        // Now compute drifts: take the numeraire P_N (numeraire_=N) 
-        // as the reference point, divide the summation into 3 steps, et impera:
+        // Now compute drifts: take the numeraire P_N (numeraire_=N)
+        // as the reference point, divide the summation into 3 steps,
+        // et impera:
 
         // 1st step: the drift corresponding to the numeraire P_N is zero.
         // (if N=0 no drift is null, if N=dim_ the last drift is null).
         if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
-        // 2nd step: then, move backward from N-2 (included) back to alive (included)
-        // (if N=0 jumps to 3rd step, if N=dim_ the e_[r][N-1] are correctly initialized):
-        for (Integer i=static_cast<Integer>(numeraire_)-2; i>=static_cast<Integer>(alive_); --i) {
+        // 2nd step: then, move backward from N-2 (included) back to
+        // alive (included) (if N=0 jumps to 3rd step, if N=dim_ the
+        // e_[r][N-1] are correctly initialized):
+        for (Integer i=static_cast<Integer>(numeraire_)-2;
+             i>=static_cast<Integer>(alive_); --i) {
             for (Size r=0; r<factors_; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
             }
@@ -131,7 +134,7 @@ namespace QuantLib {
                                              pseudo_.row_begin(i),
                                              0.0);
         }
-
+        
         // 3rd step: now, move forward from N (included) up to n (excluded)
         // (if N=0 this is the only relevant computation):
         for (Size i=numeraire_; i<dim_; ++i) {
@@ -147,5 +150,6 @@ namespace QuantLib {
                                            pseudo_.row_begin(i),
                                            0.0);
         }
-      }
+    }
+
 }

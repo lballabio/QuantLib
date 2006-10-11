@@ -45,16 +45,15 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Frequency fixedLegFrequency() const { return fixedLegFrequency_; }
-        BusinessDayConvention fixedLegConvention() const {
-            return fixedLegConvention_;
-        }
-        boost::shared_ptr<Xibor> iborIndex() const { return iborIndex_; }
-		boost::shared_ptr<Schedule> fixedRateSchedule(const Date& fixingDate) const;
-		/*! \warning Relinking the term structure underlying the index will
+        Frequency fixedLegFrequency() const;
+        BusinessDayConvention fixedLegConvention() const;
+        boost::shared_ptr<Xibor> iborIndex() const;
+        Schedule fixedRateSchedule(const Date& fixingDate) const;
+        /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
-	    */
-		boost::shared_ptr<VanillaSwap> underlyingSwap(const Date& fixingDate) const;
+        */
+        boost::shared_ptr<VanillaSwap> underlyingSwap(
+                                                const Date& fixingDate) const;
         //@}
       protected:
         Integer years_;
@@ -63,10 +62,27 @@ namespace QuantLib {
         BusinessDayConvention fixedLegConvention_;
     };
 
-   inline boost::shared_ptr<YieldTermStructure> SwapIndex::termStructure() const {
-       return iborIndex_->termStructure();
-   }
+
+    // inline definitions
+
+    inline boost::shared_ptr<YieldTermStructure>
+    SwapIndex::termStructure() const {
+        return iborIndex_->termStructure();
+    }
+
+    inline Frequency SwapIndex::fixedLegFrequency() const {
+        return fixedLegFrequency_;
+    }
+
+    inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
+        return fixedLegConvention_;
+    }
+
+    inline boost::shared_ptr<Xibor> SwapIndex::iborIndex() const {
+        return iborIndex_;
+    }
 
 }
+
 
 #endif

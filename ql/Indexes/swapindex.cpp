@@ -45,12 +45,11 @@ namespace QuantLib {
         return underlyingSwap(fixingDate)->fairRate();
     }
 
-	boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
-        const Date& fixingDate) const
-    {
+    boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
+                                               const Date& fixingDate) const {
         QL_REQUIRE(iborIndex_, "no index set");
         QL_REQUIRE(iborIndex_->termStructure(), "no term structure set");
-	    Date start = calendar_.advance(fixingDate, settlementDays_, Days);
+        Date start = calendar_.advance(fixingDate, settlementDays_, Days);
         return MakeVanillaSwap(start, Period(years_, Years), calendar_, 0.0,
                                iborIndex_,
                                Handle<YieldTermStructure>(
@@ -59,16 +58,17 @@ namespace QuantLib {
             .withFixedLegTenor(Period(fixedLegFrequency_))
             .withFixedLegConvention(fixedLegConvention_)
             .withFixedLegTerminationDateConvention(fixedLegConvention_);
-	}
+    }
 
-	boost::shared_ptr<Schedule> SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
-	
-		Date start = calendar_.advance(fixingDate, settlementDays_,Days);
+    Schedule SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
+
+        Date start = calendar_.advance(fixingDate, settlementDays_,Days);
         Date end = calendar_.advance(start,years_,Years);
 
-        return boost::shared_ptr<Schedule>(new Schedule(start, end, 
-                                  Period(fixedLegFrequency_),calendar_,
-                                  fixedLegConvention_, fixedLegConvention_,
-                                  false, false));
-	}
+        return Schedule(start, end, Period(fixedLegFrequency_), calendar_,
+                        fixedLegConvention_, fixedLegConvention_,
+                        false, false);
+    }
+
 }
+

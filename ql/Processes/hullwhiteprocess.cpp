@@ -1,3 +1,22 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2006 Banca Profilo S.p.A.
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+
 #include <ql/Processes/hullwhiteprocess.hpp>
 
 namespace QuantLib {
@@ -7,7 +26,10 @@ namespace QuantLib {
                                        Real sigma)
     : process_(new OrnsteinUhlenbeckProcess(
                    a, sigma, h->forwardRate(0.0,0.0,Continuous,NoFrequency))),
-      h_(h), a_(a), sigma_(sigma) {}
+      h_(h), a_(a), sigma_(sigma) {
+        QL_REQUIRE(a_ >= 0.0, "negative a given");
+        QL_REQUIRE(sigma_ >= 0.0, "negative sigma given");
+    }
 
     Real HullWhiteProcess::x0() const {
         return process_->x0();
@@ -35,7 +57,9 @@ namespace QuantLib {
     }
 
     Real HullWhiteProcess::alpha(Time t) const {
-        Real alfa = (sigma_/a_)*(1 - std::exp(-a_*t));
+        Real alfa = a_ > QL_EPSILON ?
+                    (sigma_/a_)*(1 - std::exp(-a_*t)) :
+                    sigma_*t;
         alfa *= 0.5*alfa;
         alfa += h_->forwardRate(0.0,0.0,Continuous,NoFrequency);
         return alfa;
@@ -79,7 +103,9 @@ namespace QuantLib {
     }
 
     Real HullWhiteForwardProcess::alpha(Time t) const {
-        Real alfa = (sigma_/a_)*(1 - std::exp(-a_*t));
+        Real alfa = a_ > QL_EPSILON ?
+                    (sigma_/a_)*(1 - std::exp(-a_*t)) :
+                    sigma_*t;
         alfa *= 0.5*alfa;
         alfa += h_->forwardRate(0.0, 0.0, Continuous, NoFrequency);
 
@@ -87,17 +113,23 @@ namespace QuantLib {
     }
 
     Real HullWhiteForwardProcess::M_T(Real s, Real t, Real T) const {
-        Real coeff = (sigma_*sigma_)/(a_*a_);
-        Real exp1 = std::exp(-a_*(t-s));
-        Real exp2 = std::exp(-a_*(T-t));
-        Real exp3 = std::exp(-a_*(T+t-2.0*s));
-        Real M = coeff*(1-exp1)-0.5*coeff*(exp2-exp3);
-        return M;
+        if (a_ > QL_EPSILON) {
+            Real coeff = (sigma_*sigma_)/(a_*a_);
+            Real exp1 = std::exp(-a_*(t-s));
+            Real exp2 = std::exp(-a_*(T-t));
+            Real exp3 = std::exp(-a_*(T+t-2.0*s));
+            return coeff*(1-exp1)-0.5*coeff*(exp2-exp3);
+        } else {
+            // low-a algebraic limit
+            Real coeff = (sigma_*sigma_)/2.0;
+            return coeff*(t-s)*(2.0*T-t-s);
+        }
     }
 
     Real HullWhiteForwardProcess::B(Time t, Time T) const {
-        Real B = 1/a_ * (1-std::exp(-a_*(T-t)));
-        return B;
+        return a_ > QL_EPSILON ?
+               1/a_ * (1-std::exp(-a_*(T-t))) :
+               T-t;
     }
 
 }

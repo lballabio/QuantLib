@@ -32,15 +32,15 @@ namespace QuantLib
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Rate>& displacements)
-     :  numberOfFactors_(numberOfFactors),
-        numberOfRates_(initialRates.size()),
-        numberOfSteps_(evolution.evolutionTimes().size()),
-        initialRates_(initialRates),
-        displacements_(displacements),
-        evolution_(evolution),
-        pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
-        covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
-        totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
+    : numberOfFactors_(numberOfFactors),
+      numberOfRates_(initialRates.size()),
+      numberOfSteps_(evolution.evolutionTimes().size()),
+      initialRates_(initialRates),
+      displacements_(displacements),
+      evolution_(evolution),
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
+      covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
+      totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
@@ -51,7 +51,7 @@ namespace QuantLib
                    "initialRates/volatilities mismatch");
 
         std::vector<Volatility> stdDev(numberOfRates_);
-      
+
         Time effStartTime;
         Real correlation;
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
@@ -64,33 +64,33 @@ namespace QuantLib
 
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                     correlation = longTermCorr + (1.0-longTermCorr) * 
+                     correlation = longTermCorr + (1.0-longTermCorr) *
                          std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
-                     covariance_[k][i][j] =  covariance_[k][j][i] = 
+                     covariance_[k][i][j] =  covariance_[k][j][i] =
                          stdDev[j] * correlation * stdDev[i];
                  }
             }
 
             pseudoRoots_[k] =
-                rankReducedSqrt(covariance_[k], numberOfFactors, 1.1,
+                rankReducedSqrt(covariance_[k], numberOfFactors, 1.0,
                                 SalvagingAlgorithm::None);
-                //pseudoSqrt(covariance, SalvagingAlgorithm::None);
 
             totalCovariance_[k] = covariance_[k];
             if (k>0)
                 totalCovariance_[k] += totalCovariance_[k-1];
 
             QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
-                      "step " << k <<
-                      " flat vol wrong number of rows: " << pseudoRoots_[k].rows() <<
-                      " instead of " << numberOfRates_);
+                      "step " << k
+                      << " flat vol wrong number of rows: "
+                      << pseudoRoots_[k].rows()
+                      << " instead of " << numberOfRates_);
             QL_ENSURE(pseudoRoots_[k].columns()==numberOfFactors,
-                      "step " << k <<
-                      " flat vol wrong number of columns: " << pseudoRoots_[k].columns() <<
-                      " instead of " << numberOfFactors_);
-
+                      "step " << k
+                      << " flat vol wrong number of columns: "
+                      << pseudoRoots_[k].columns()
+                      << " instead of " << numberOfFactors_);
         }
-       
     }
 
 }
+

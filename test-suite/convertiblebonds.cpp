@@ -130,19 +130,19 @@ void ConvertibleBondTest::testBond() {
                                      Period(Once), calendar_,
                                      Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
+    ConvertibleZeroCouponBond euZero(process_, euExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ConvertibleZeroCouponBond amZero(faceAmount_, process_, amExercise, engine,
+    ConvertibleZeroCouponBond amZero(process_, amExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ZeroCouponBond zero(faceAmount_, issueDate_, maturityDate_, settlementDays_,
+    ZeroCouponBond zero(issueDate_, maturityDate_, settlementDays_,
                         dayCounter_, calendar_, Following,
                         redemption_, discountCurve);
 
@@ -172,14 +172,14 @@ void ConvertibleBondTest::testBond() {
                             Period(frequency_), calendar_,
                             Following).backwards();
 
-    ConvertibleFixedCouponBond euFixed(faceAmount_, process_, euExercise, engine,
+    ConvertibleFixedCouponBond euFixed(process_, euExercise, engine,
                                        conversionRatio_, no_dividends,
                                        no_callability, creditSpread_,
                                        issueDate_, settlementDays_,
                                        coupons, dayCounter_,
                                        schedule, redemption_);
 
-    ConvertibleFixedCouponBond amFixed(faceAmount_, process_, amExercise, engine,
+    ConvertibleFixedCouponBond amFixed(process_, amExercise, engine,
                                        conversionRatio_, no_dividends,
                                        no_callability, creditSpread_,
                                        issueDate_, settlementDays_,
@@ -216,21 +216,21 @@ void ConvertibleBondTest::testBond() {
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
-    ConvertibleFloatingRateBond euFloating(faceAmount_, process_, euExercise, engine,
+    ConvertibleFloatingRateBond euFloating(process_, euExercise, engine,
                                            conversionRatio_, no_dividends,
                                            no_callability, creditSpread_,
                                            issueDate_, settlementDays_,
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    ConvertibleFloatingRateBond amFloating(faceAmount_, process_, amExercise, engine,
+    ConvertibleFloatingRateBond amFloating(process_, amExercise, engine,
                                            conversionRatio_, no_dividends,
                                            no_callability, creditSpread_,
                                            issueDate_, settlementDays_,
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    FloatingRateBond floating(faceAmount_, issueDate_, issueDate_, maturityDate_,
+    FloatingRateBond floating(faceAmount_,issueDate_,issueDate_,maturityDate_,
                               settlementDays_, index, fixingDays, gearings,
                               spreads, frequency_, calendar_, dayCounter_,
                               Following, Following, redemption_,
@@ -289,7 +289,7 @@ void ConvertibleBondTest::testOption() {
                                      Period(Once), calendar_,
                                      Following).backwards();
 
-    ConvertibleZeroCouponBond euZero(faceAmount_, process_, euExercise, engine,
+    ConvertibleZeroCouponBond euZero(process_, euExercise, engine,
                                      conversionRatio_, no_dividends,
                                      no_callability, creditSpread_,
                                      issueDate_, settlementDays_,
