@@ -17,10 +17,13 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-
+#include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Solvers1D/brent.hpp>
+#include <ql/Solvers1D/newtonsafe.hpp>
+#include <ql\CashFlows\analysis.hpp>
 
 namespace QuantLib {
 
@@ -52,6 +55,32 @@ namespace QuantLib {
         registerWith(termStructure);
         registerWith(Settings::instance().evaluationDate());
     }
+
+    Rate CapFloor::ATMRate() const {
+
+        Real bps = Cashflows::bps(floatingLeg_, termStructure_);
+        Real npv = Cashflows::npv(floatingLeg_, termStructure_);
+        return 1.0e-4*npv/bps;
+
+        //std::vector<boost::shared_ptr<CashFlow> > fixedLeg_(floatingLeg_.size());
+        //Rate fixedRate = 0.04;
+
+        //for (Size i = 0; i < fixedLeg_.size(); i++){
+        //    boost::shared_ptr<FloatingRateCoupon> floatingRateCoupon  
+        //        = boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg_[i]);
+        //    fixedLeg_[i] = boost::shared_ptr<CashFlow>
+        //        (new FixedRateCoupon(floatingRateCoupon->nominal(),
+        //                             floatingRateCoupon->date(),
+        //                             fixedRate,
+        //                             floatingRateCoupon->dayCounter(),
+        //                             floatingRateCoupon->accrualStartDate(),
+        //                             floatingRateCoupon->accrualEndDate()));
+        //}
+
+        //boost::shared_ptr<Swap> swap(
+        //    new Swap(termStructure_, floatingLeg_, fixedLeg_));
+        //return fixedRate - swap->NPV()/(swap->legBPS(1)/1.0e-4);
+    };
 
     bool CapFloor::isExpired() const {
         Date lastPaymentDate = Date::minDate();
@@ -161,10 +190,23 @@ namespace QuantLib {
 
         ImpliedVolHelper f(*this,termStructure_,targetValue);
         Brent solver;
+        //NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
+    Real CapFloor::vega(const Volatility& volatility) const {
+        calculate();
+        static const Real shift = 1e-4;
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility+shift));
+        Handle<Quote> h(vol);
+        boost::shared_ptr<PricingEngine> engine = 
+            boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
+        this->setupArguments(engine_->arguments());
+        const Value* value = dynamic_cast<const Value*>(engine_->results());
+        Real vega = (value->value - NPV_)/shift;
+        return vega;
+    }
 
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
@@ -184,6 +226,13 @@ namespace QuantLib {
         vol_->setValue(x);
         engine_->calculate();
         return results_->value-targetValue_;
+    }
+
+    Real CapFloor::ImpliedVolHelper::derivative(Volatility x) const {
+    //    vol_->setValue(x);
+    //    engine_->calculate();
+    //    return results_->vega;
+        return 0.0;
     }
 
     std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {

@@ -61,6 +61,7 @@ namespace QuantLib {
                  const std::vector<Rate>& floorRates,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
+
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -80,6 +81,8 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {
             return floatingLeg_;
         }
+        Rate ATMRate() const;
+        Real vega(const Volatility& volatility) const;
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
@@ -102,6 +105,7 @@ namespace QuantLib {
                              const Handle<YieldTermStructure>&,
                              Real targetValue);
             Real operator()(Volatility x) const;
+            Real derivative(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> termStructure_;
