@@ -742,6 +742,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\capstripper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\cliquetoption.cpp"
 				>
 			</File>
@@ -2254,6 +2258,10 @@
 			</File>
 			<File
 				RelativePath="capfloor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\capstripper.hpp"
 				>
 			</File>
 			<File
