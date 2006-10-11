@@ -123,6 +123,8 @@ namespace QuantLib {
 
     Real relativeError(Real x1, Real x2, Real reference);
 
+    bool checkAbsError(Real x1, Real x2, Real tolerance);
+
     class Flag : public QuantLib::Observer {
       private:
         bool up_;
