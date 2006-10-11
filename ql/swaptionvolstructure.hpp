@@ -31,7 +31,7 @@
 #include <ql/Volatilities/smilesection.hpp>
 
 namespace QuantLib {
-     
+
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
@@ -72,7 +72,6 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        #ifndef QL_DISABLE_DEPRECATED
         //! returns the volatility for a given starting time and length
         Volatility volatility(Time exerciseTime,
                               Time length,
@@ -83,7 +82,6 @@ namespace QuantLib {
                            Time length,
                            Rate strike,
                            bool extrapolate = false) const;
-        #endif
         //@}
         //! \name Limits
         //@{
@@ -100,34 +98,24 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
-        Date maxDate() const { 
-            return maxStartDate(); 
+        Date maxDate() const {
+            return maxStartDate();
         }
-        Time maxTime() const { 
-            return maxStartTime(); 
+        Time maxTime() const {
+            return maxStartTime();
         }
 
-        #ifndef QL_DISABLE_DEPRECATED
         virtual boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& start,
                                                  const Period& length) const {
             const std::pair<Time, Time> p = convertDates(start, length);
             return smileSection(p.first, p.second);
         }
-        #else
-        virtual boost::shared_ptr<SmileSection> smileSection(
-                                             const Date& start,
-                                             const Period& length) const = 0;
-        #endif
 
-      //#ifndef QL_DISABLE_DEPRECATED
-      //protected:
-      //#endif
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
       protected:
-        #ifndef QL_DISABLE_DEPRECATED
         //! return smile section
         virtual boost::shared_ptr<SmileSection> smileSection(
             Time start, Time length) const = 0;
@@ -142,12 +130,6 @@ namespace QuantLib {
             return volatilityImpl(p.first, p.second, strike);
         }
         void checkRange(Time, Time, Rate strike, bool extrapolate) const;
-        #else
-        //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(const Date& exerciseDate,
-                                          const Period& swapTenor,
-                                          Rate strike) const = 0;
-        #endif
         void checkRange(const Date& exerciseDate,
                         const Period& length,
                         Rate strike, bool extrapolate) const;
@@ -192,12 +174,12 @@ namespace QuantLib {
                                                      const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        Volatility vol = volatility(exerciseDate, swapTenor, strike, extrapolate);
+        Volatility vol =
+            volatility(exerciseDate, swapTenor, strike, extrapolate);
         const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);
         return vol*vol*p.first;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                      Time exerciseTime,
                                                      Time swapLength,
@@ -216,7 +198,6 @@ namespace QuantLib {
         Volatility vol = volatilityImpl(exerciseTime, swapLength, strike);
         return vol*vol*exerciseTime;
     }
-    #endif
 
     inline Time SwaptionVolatilityStructure::maxStartTime() const {
         return timeFromReference(maxStartDate());
@@ -235,7 +216,6 @@ namespace QuantLib {
         return std::make_pair(startTime,timeLength);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline void SwaptionVolatilityStructure::checkRange(
              Time exerciseTime, Time length, Rate k, bool extrapolate) const {
         TermStructure::checkRange(exerciseTime, extrapolate);
@@ -250,12 +230,12 @@ namespace QuantLib {
                    "strike (" << k << ") is outside the curve domain ["
                    << minStrike() << "," << maxStrike()<< "]");
     }
-    #endif
 
     inline void SwaptionVolatilityStructure::checkRange(
              const Date& exerciseDate, const Period& swapTenor,
              Rate k, bool extrapolate) const {
-        TermStructure::checkRange(timeFromReference(exerciseDate), extrapolate);
+        TermStructure::checkRange(timeFromReference(exerciseDate),
+                                  extrapolate);
         QL_REQUIRE(swapTenor.length() > 0,
                    "negative swap tenor (" << swapTenor << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
@@ -269,5 +249,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

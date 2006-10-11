@@ -37,7 +37,7 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
       lengths_(tenors), volatilities_(expiries.size(),tenors.size())
       {
-        QL_REQUIRE(!vols.empty(), "empty vol matrix"); 
+        QL_REQUIRE(!vols.empty(), "empty vol matrix");
         QL_REQUIRE(expiries.size()==vols.size(),
             "mismatch between number of exercise dates ("
             << expiries.size() << ") and number of rows ("
@@ -203,8 +203,7 @@ namespace QuantLib {
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
         return std::make_pair(exerciseTime,timeLength);
     }
-                              
-    #ifndef QL_DISABLE_DEPRECATED
+
     boost::shared_ptr<SmileSection> SwaptionVolatilityMatrix::smileSection(
                                              Time start, Time length) const {
 
@@ -212,13 +211,13 @@ namespace QuantLib {
         const Volatility atmVol = volatility(start, length, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
-        
+
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 
-        return boost::shared_ptr<SmileSection>(new SmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSection>(
+                              new SmileSection(start, strikes, volatilities));
     }
-    #endif
 
     boost::shared_ptr<SmileSection>
     SwaptionVolatilityMatrix::smileSection(const Date& exerciseDate,
@@ -228,7 +227,7 @@ namespace QuantLib {
         const Volatility atmVol = volatility(exerciseDate, length, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
-        
+
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 

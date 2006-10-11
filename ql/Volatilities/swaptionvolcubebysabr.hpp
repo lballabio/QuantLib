@@ -49,9 +49,9 @@ namespace QuantLib {
 
              Cube() {};
              Cube(const std::vector<Date>& exerciseDates,
-                  const std::vector<Period>& swapTenors, 
+                  const std::vector<Period>& swapTenors,
                   const std::vector<Real>& expiries,
-                  const std::vector<Real>& lengths, 
+                  const std::vector<Real>& lengths,
                   Size nLayers,
                   bool extrapolation = true);
              Cube& operator=(const Cube& o);
@@ -69,13 +69,13 @@ namespace QuantLib {
              void setLayer(Size i, const Matrix& x);
              void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
 
-             const std::vector<Date>& exerciseDates() const { return exerciseDates_; }		
-             const std::vector<Period>& swapTenors() const { return swapTenors_; }		
-	         const std::vector<Real>& expiries() const;		
-	         const std::vector<Real>& lengths() const;		
-	         const std::vector<Matrix>& points() const;
+             const std::vector<Date>& exerciseDates() const { return exerciseDates_; }
+             const std::vector<Period>& swapTenors() const { return swapTenors_; }
+             const std::vector<Real>& expiries() const;
+             const std::vector<Real>& lengths() const;
+             const std::vector<Matrix>& points() const;
 
-	         std::vector<Real> operator()(const Real expiry,
+             std::vector<Real> operator()(const Real expiry,
                                           const Real lengths) const;
              void updateInterpolators()const;
              Matrix browse() const;
@@ -90,19 +90,21 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const Calendar& calendar,
-		    Integer swapSettlementDays,
+            Integer swapSettlementDays,
             Frequency fixedLegFrequency,
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor,            
-            const Matrix& parametersGuess, 
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor,
+            const Matrix& parametersGuess,
             std::vector<bool> isParameterFixed,
             bool isAtmCalibrated);
 
-        const Matrix& marketVolCube(Size i) const { return marketVolCube_.points()[i]; }
-      
+        const Matrix& marketVolCube(Size i) const {
+            return marketVolCube_.points()[i];
+        }
+
         void recalibration(Real beta);
 
         Matrix sparseSabrParameters() const;
@@ -110,22 +112,19 @@ namespace QuantLib {
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
 
-        boost::shared_ptr<SmileSection> smileSection(const Date& exerciseDate,
-                                                     const Period& length) const;
-        #ifndef QL_DISABLE_DEPRECATED
+        boost::shared_ptr<SmileSection> smileSection(
+                                                 const Date& exerciseDate,
+                                                 const Period& length) const;
         boost::shared_ptr<SmileSection> smileSection(Time start,
                                                      Time length) const;
-        #endif
-     protected: 
+     protected:
         boost::shared_ptr<SmileSection> smileSection(
                                     Time start,
-                                    Time length, 
+                                    Time length,
                                     const Cube& sabrParametersCube) const;
-        #ifndef QL_DISABLE_DEPRECATED
         Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
-        #endif
         Volatility volatilityImpl(const Date& exerciseDate,
                                   const Period& length,
                                   Rate strike) const;
@@ -140,9 +139,9 @@ namespace QuantLib {
         Cube volCubeAtmCalibrated_;
         Cube sparseParameters_;
         Cube denseParameters_;
-        std::vector< std::vector<boost::shared_ptr<SmileSection> > > sparseSmiles_;
-
-        Cube parametersGuess_; 
+        std::vector< std::vector<boost::shared_ptr<SmileSection> > >
+                                                                sparseSmiles_;
+        Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
     };

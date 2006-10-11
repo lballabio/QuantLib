@@ -31,7 +31,6 @@
 
 namespace QuantLib {
 
-
     SwaptionVolatilityCube::SwaptionVolatilityCube(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& expiries,
@@ -99,9 +98,10 @@ namespace QuantLib {
                        "] = " << exerciseTimes_[i]);
         }
 
-        exerciseInterpolator_ = LinearInterpolation(exerciseTimes_.begin(),
-                                                    exerciseTimes_.end(),
-                                                    exerciseDatesAsReal_.begin());
+        exerciseInterpolator_ =
+            LinearInterpolation(exerciseTimes_.begin(),
+                                exerciseTimes_.end(),
+                                exerciseDatesAsReal_.begin());
         exerciseInterpolator_.enableExtrapolation();
 
         nlengths_ = lengths_.size();
@@ -186,24 +186,6 @@ namespace QuantLib {
 
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //boost::shared_ptr<Interpolation>
-    //SwaptionVolatilityCubeByLinear::smile(Time start, Time length) const
-    //{
-    //    const Rate atmForward = atmStrike(start, length);
-
-    //    const Volatility atmVol = atmVolStructure_->volatility(start, length, atmForward);
-    //    for (Size i=0; i<nStrikes_; i++) {
-    //        localStrikes_[i] = atmForward + strikeSpreads_[i];
-    //        localSmile_[i]   = atmVol + volSpreadsInterpolator_[i](length, start);
-    //    }
-    //    return boost::shared_ptr<Interpolation>(new
-    //        //SABRInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
-    //        LinearInterpolation(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
-    //        //NaturalCubicSpline(localStrikes_.begin(), localStrikes_.end(), localSmile_.begin())
-    //        );
-    //}
-
     boost::shared_ptr<SmileSection>
     SwaptionVolatilityCubeByLinear::smileSection(Time start,
                                                  Time length) const {
@@ -211,14 +193,15 @@ namespace QuantLib {
         Date exerciseDate = Date(static_cast<BigInteger>(
             exerciseInterpolator_(start)));
         Rounding rounder(0);
-        Period swaptenor = Period(static_cast<Integer>(rounder(length/12.0)), Months);
+        Period swaptenor(static_cast<Integer>(rounder(length/12.0)), Months);
         const Rate atmForward = atmStrike(exerciseDate, swaptenor);
         const Volatility atmVol =
             atmVolStructure_->volatility(start, length, atmForward);
         std::vector<Real> strikes, volatilities;
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
-            volatilities.push_back(atmVol + volSpreadsInterpolator_[i](length, start));
+            volatilities.push_back(
+                          atmVol + volSpreadsInterpolator_[i](length, start));
         }
         return boost::shared_ptr<SmileSection>(new
             SmileSection(start, strikes, volatilities));
@@ -228,7 +211,6 @@ namespace QuantLib {
                         Time start, Time length, Rate strike) const {
             return smileSection(start, length)->volatility(strike);
     }
-    #endif
 
     boost::shared_ptr<SmileSection>
     SwaptionVolatilityCubeByLinear::smileSection(const Date& exerciseDate,
@@ -241,7 +223,8 @@ namespace QuantLib {
         const std::pair<Time, Time> p = convertDates(exerciseDate, length);
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
-            volatilities.push_back(atmVol + volSpreadsInterpolator_[i](p.second, p.first));
+            volatilities.push_back(
+                      atmVol + volSpreadsInterpolator_[i](p.second, p.first));
         }
         return boost::shared_ptr<SmileSection>(new
             SmileSection(p.first, strikes, volatilities));

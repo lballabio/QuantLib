@@ -41,16 +41,17 @@ namespace QuantLib {
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
             const Calendar& calendar,
-			Integer swapSettlementDays,
+            Integer swapSettlementDays,
             Frequency fixedLegFrequency,
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor =
+                                                  boost::shared_ptr<Xibor>());
         //! \name TermStructure interface
         //@{
-        const Date& referenceDate() const { 
+        const Date& referenceDate() const {
             return atmVolStructure_->referenceDate();
         }
         DayCounter dayCounter() const {
@@ -104,7 +105,7 @@ namespace QuantLib {
         Time shortTenor_;
         boost::shared_ptr<Xibor> iborIndexShortTenor_;
     };
-  
+
     class SwaptionVolatilityCubeByLinear : public SwaptionVolatilityCube {
       public:
         SwaptionVolatilityCubeByLinear(
@@ -114,31 +115,27 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
             const Calendar& calendar,
-			Integer swapSettlementDays,
+            Integer swapSettlementDays,
             Frequency fixedLegFrequency,
             BusinessDayConvention fixedLegConvention,
             const DayCounter& fixedLegDayCounter,
             const boost::shared_ptr<Xibor>& iborIndex,
             Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor = boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<Xibor>& iborIndexShortTenor =
+                                                  boost::shared_ptr<Xibor>());
         //! \name Other inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
-        boost::shared_ptr<SmileSection> smileSection(const Date& exerciseDate,
-                                                     const Period& length) const;
-        #ifndef QL_DISABLE_DEPRECATED
+        boost::shared_ptr<SmileSection> smileSection(
+                                                 const Date& exerciseDate,
+                                                 const Period& length) const;
         boost::shared_ptr<SmileSection> smileSection(Time start,
                                                      Time length) const;
-        #endif
         //@}
-      protected: 
-        #ifndef QL_DISABLE_DEPRECATED
-        //boost::shared_ptr<Interpolation> smile(Time start,
-        //                                       Time length) const;
+      protected:
         Volatility volatilityImpl(Time start,
                                   Time length,
                                   Rate strike) const;
-        #endif
         Volatility volatilityImpl(const Date& exerciseDate,
                                   const Period& length,
                                   Rate strike) const;
@@ -148,5 +145,6 @@ namespace QuantLib {
     };
 
 }
+
 
 #endif
