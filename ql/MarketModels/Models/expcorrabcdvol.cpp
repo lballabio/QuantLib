@@ -54,8 +54,6 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==ks.size(),
                    "initialRates/ks mismatch");
 
-        std::vector<Time> stdDev(numberOfRates_);
-
         Time effStartTime;
         Real correlation, covar;
         Abcd abcd(a, b, c, d);
