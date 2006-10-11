@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! algorithm used for matricial pseudo square root
     struct SalvagingAlgorithm {
-        enum Type {None, Spectral};
+        enum Type { None, Spectral, Hypersphere };
     };
 
     //! Returns the pseudo square root of a real symmetric matrix
@@ -54,11 +54,6 @@ namespace QuantLib {
         \relates Matrix
 
         \todo
-        - implement Hypersphere decomposition:
-              -# Jäckel "Monte Carlo Methods in Finance", Chapter 6
-              -# Brigo "A Note on Correlation and Rank Reduction"
-              -# Rapisarda, Brigo, Mercurio "Parameterizing correlations:
-                 a geometric interpretation"
         - implement Higham algorithm:
           Higham "Computing the nearest correlation matrix"
 
