@@ -41,7 +41,7 @@ namespace QuantLib {
             2003.
         */
         DriftCalculator(const Matrix& pseudo,
-                        const std::vector<Rate>& displacements,
+                        const std::vector<Spread>& displacements,
                         const std::vector<Time>& taus,
                         Size numeraire,
                         Size alive);
@@ -64,7 +64,7 @@ namespace QuantLib {
         Size dim_, factors_;
         bool isFullFactor_;
         Size numeraire_, alive_;
-        std::vector<Rate> displacements_;
+        std::vector<Spread> displacements_;
         std::vector<Real> oneOverTaus_;
         Matrix C_, pseudo_;
         // temporary variables to be added later

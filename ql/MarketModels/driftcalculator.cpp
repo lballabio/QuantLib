@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     DriftCalculator::DriftCalculator(const Matrix& pseudo,
-                                     const std::vector<Rate>& displacements,
+                                     const std::vector<Spread>& displacements,
                                      const std::vector<Time>& taus,
                                      Size numeraire,
                                      Size alive)
