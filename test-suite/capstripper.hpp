@@ -27,9 +27,8 @@
 
 class CapsStripperTest {
   public:
-    static void testConstruction();
-    static void testHandle();
-    static void testConsistency();
+    static void FlatVolatilityStripping();
+    static void constantVolatilityConsistency();
     static boost::unit_test_framework::test_suite* suite();
 };
 
