@@ -36,10 +36,11 @@ namespace QuantLib {
                         const Date& paymentDate,
                         Rate rate,
                         const DayCounter& dayCounter,
-                        const Date& startDate, const Date& endDate,
+                        const Date& accrualStartDate,
+                        const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date())
-        : Coupon(nominal, paymentDate, startDate, endDate,
+        : Coupon(nominal, paymentDate, accrualStartDate, accrualEndDate,
                  refPeriodStart, refPeriodEnd),
           rate_(rate), dayCounter_(dayCounter) {}
         //! \name CashFlow interface
