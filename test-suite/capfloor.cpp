@@ -52,6 +52,10 @@ Handle<YieldTermStructure> termStructure_;
 
 // utilities
 
+bool checkAbsError(Real x1, Real x2, Real tolerance){
+    return std::fabs(x1 - x2) < tolerance;
+};
+
 std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
                                                   Integer length) {
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
