@@ -30,6 +30,7 @@ class CapFloorTest {
     static void testStrikeDependency();
     static void testConsistency();
     static void testParity();
+    static void testATMRate();
     static void testImpliedVolatility();
     static void testCachedValue();
     static boost::unit_test_framework::test_suite* suite();

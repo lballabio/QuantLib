@@ -289,6 +289,66 @@ void CapFloorTest::testParity() {
     QL_TEST_TEARDOWN
 }
 
+void CapFloorTest::testATMRate() {
+
+    BOOST_MESSAGE("Testing ATM rate ...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Rate strikes[] = { 0., 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
+
+    Date startDate = termStructure_->referenceDate();
+
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        std::vector<boost::shared_ptr<CashFlow> > leg =
+            makeLeg(startDate,lengths[i]);
+        Date maturity = calendar_.advance(startDate,lengths[i],Years,
+                                  convention_);
+        Schedule schedule(startDate,maturity,Period(frequency_),calendar_,
+                              convention_,convention_,false,false);
+
+        for (Size j=0; j<LENGTH(strikes); j++) {
+            for (Size k=0; k<LENGTH(vols); k++) {
+                boost::shared_ptr<CapFloor> cap = makeCapFloor(CapFloor::Cap,leg,
+                                                        strikes[j],vols[k]);
+                boost::shared_ptr<CapFloor> floor = makeCapFloor(CapFloor::Floor,leg,
+                                                        strikes[j],vols[k]);
+                Rate capATMRate = cap->ATMRate();
+                Rate floorATMRate = floor->ATMRate();
+                if (!checkAbsError(floorATMRate, capATMRate, 1.0e-10))
+                    BOOST_FAIL("Cap ATM Rate and floor ATM Rate should be equal :"
+                        << "   length:        " << lengths[i] << " years\n"
+                        << "   volatility:    " << io::volatility(vols[k]) << "\n"
+                        << "   strike:        " << io::rate(strikes[j]) << "\n"
+                        << "   cap ATM rate:  " << capATMRate << "\n"
+                        << "   floor ATM rate:" << floorATMRate << "\n"
+                        << "   relative Error:" 
+                        << relativeError(capATMRate, floorATMRate, capATMRate)*100 << "%" );
+                VanillaSwap swap(true,nominals_[0],
+                    schedule,floorATMRate,index_->dayCounter(),
+                    schedule,index_,0.0,
+                    index_->dayCounter(), termStructure_);
+                Real swapNPV = swap.NPV();
+                if (!checkAbsError(swapNPV, 0, 1.0e-10))
+                    BOOST_FAIL("the NPV of a Swap struck at ATM rate should be equal to 0:"
+                        << "   length:        " << lengths[i] << " years\n"
+                        << "   volatility:    " << io::volatility(vols[k]) << "\n"
+                        << "   ATM rate:      " << io::rate(floorATMRate) << "\n"
+                        << "   swap NPV:      " << swapNPV);
+        }
+      }
+    }
+
+    QL_TEST_TEARDOWN
+}
+
+
+
+
+
 void CapFloorTest::testImpliedVolatility() {
 
     BOOST_MESSAGE("Testing implied term volatility for cap and floor...");
@@ -421,6 +481,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testConsistency));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
     return suite;
