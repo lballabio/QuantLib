@@ -34,7 +34,7 @@ namespace QuantLib {
     class Settings : public Singleton<Settings> {
         friend class Singleton<Settings>;
       private:
-        Settings() {}
+        Settings() : enforceTodaysHistoricFixings_(false) {}
         class DateProxy : public ObservableValue<Date> {
           public:
             DateProxy();
@@ -69,8 +69,15 @@ namespace QuantLib {
         */
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
+        bool enforceTodaysHistoricFixings() const {
+            return enforceTodaysHistoricFixings_;
+        }
+        void setEnforceTodaysHistoricFixings(bool b = true) {
+            enforceTodaysHistoricFixings_ = b;
+        }
       private:
         DateProxy evaluationDate_;
+        bool enforceTodaysHistoricFixings_;
     };
 
 

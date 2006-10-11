@@ -51,7 +51,10 @@ namespace QuantLib {
         QL_REQUIRE(calendar_.isBusinessDay(fixingDate),
                        "Fixing date " << fixingDate << " is not a business day");        
         Date today = Settings::instance().evaluationDate();
-        if (fixingDate < today) {
+        bool enforceTodaysHistoricFixings = 
+            Settings::instance().enforceTodaysHistoricFixings();
+        if (fixingDate < today ||
+            (fixingDate == today) && enforceTodaysHistoricFixings) {
             // must have been fixed
             Rate pastFixing =
                 IndexManager::instance().getHistory(name())[fixingDate];
