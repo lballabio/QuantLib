@@ -142,7 +142,7 @@ void ConvertibleBondTest::testBond() {
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ZeroCouponBond zero(issueDate_, maturityDate_, settlementDays_,
+    ZeroCouponBond zero(100.0, issueDate_, maturityDate_, settlementDays_,
                         dayCounter_, calendar_, Following,
                         redemption_, discountCurve);
 
