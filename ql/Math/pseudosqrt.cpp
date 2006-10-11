@@ -243,7 +243,6 @@ namespace QuantLib {
         }
 
         // factor reduction
-        Real components = 0.0;
         Real enough = componentRetainedPercentage *
                       std::accumulate(eigenValues.begin(),
                                       eigenValues.end(), 0.0);
@@ -251,9 +250,10 @@ namespace QuantLib {
             // numerical glitches might cause some factors to be discarded
             enough *= 1.1;
         }
-
-        Size retainedFactors = 0;
-        for (i=0; components<enough && i<size; i++) {
+        // retain at least one factor
+        Real components = eigenValues[0];
+        Size retainedFactors = 1;
+        for (i=1; components<enough && i<size; i++) {
             components += eigenValues[i];
             retainedFactors++;
         }
