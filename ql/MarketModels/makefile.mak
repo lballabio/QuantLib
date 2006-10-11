@@ -25,25 +25,26 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "americanpayoffatexpiry.obj$(_mt)$(_D)" \
-    "americanpayoffathit.obj$(_mt)$(_D)" \
-    "blackformula.obj$(_mt)$(_D)" \
-    "blackmodel.obj$(_mt)$(_D)" \
-    "greeks.obj$(_mt)$(_D)" \
-    "Asian\AsianEngines$(_mt)$(_D).lib" \
-    "Barrier\BarrierEngines$(_mt)$(_D).lib" \
-    "Basket\BasketEngines$(_mt)$(_D).lib" \
-    "CapFloor\CapFloorEngines$(_mt)$(_D).lib" \
-    "Cliquet\CliquetEngines$(_mt)$(_D).lib" \
-    "Hybrid\HybridEngines$(_mt)$(_D).lib" \
-    "Lookback\LookbackEngines$(_mt)$(_D).lib" \
-    "Swaption\SwaptionEngines$(_mt)$(_D).lib" \
-    "Vanilla\VanillaEngines$(_mt)$(_D).lib"
-
+    "accountingengine.obj$(_mt)$(_D)" \
+    "curvestate.obj$(_mt)$(_D)" \
+    "driftcalculator.obj$(_mt)$(_D)" \
+    "evolutiondescription.obj$(_mt)$(_D)" \
+    "lsdatacollector.obj$(_mt)$(_D)" \
+    "marketmodeldiscounter.obj$(_mt)$(_D)" \
+    "swapbasissystem.obj$(_mt)$(_D)" \
+    "swapforwardconversionmatrix.obj$(_mt)$(_D)" \
+    "utilities.obj$(_mt)$(_D)" \
+    "BrownianGenerators\BrownianGenerators$(_mt)$(_D).lib" \
+    "Evolvers\Evolvers$(_mt)$(_D).lib" \
+    "ExerciseStrategies\ExerciseStrategies$(_mt)$(_D).lib" \
+    "ExerciseValues\ExerciseValues$(_mt)$(_D).lib" \
+    "Models\Models$(_mt)$(_D).lib" \
+    "Products\Products$(_mt)$(_D).lib"
 
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
+
 
 # Options
 CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -w-8070
@@ -93,52 +94,40 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-PricingEngines$(_mt)$(_D).lib:: SubLibraries $(OBJS)
-    if exist PricingEngines$(_mt)$(_D).lib    del PricingEngines$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "PricingEngines$(_mt)$(_D).lib" /a $(OBJS)
+MarketModels$(_mt)$(_D).lib:: SubLibraries $(OBJS)
+    if exist MarketModels$(_mt)$(_D).lib     del MarketModels$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "MarketModels$(_mt)$(_D).lib" /a $(OBJS)
 
 SubLibraries:
-    cd Asian
+    cd BrownianGenerators
     $(MAKE)
-    cd ..\Barrier
+    cd ..\Evolvers
     $(MAKE)
-    cd ..\Basket
+    cd ..\ExerciseStrategies
     $(MAKE)
-    cd ..\CapFloor
+    cd ..\ExerciseValues
     $(MAKE)
-    cd ..\Cliquet
+    cd ..\Models
     $(MAKE)
-    cd ..\Hybrid
-    $(MAKE)
-    cd ..\Lookback
-    $(MAKE)
-    cd ..\Swaption
-    $(MAKE)
-    cd ..\Vanilla
+    cd ..\Products
     $(MAKE)
     cd ..
 
-
 # Clean up
 clean::
-    if exist *.obj* del /q *.obj*
-    if exist *.lib  del /q *.lib
-    cd Asian
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_mt)$(_D)""    del /q *.obj
+    if exist *.lib         del /q *.lib
+    cd BrownianGenerators
     $(MAKE) clean
-    cd ..\Barrier
+    cd ..\Evolvers
     $(MAKE) clean
-    cd ..\Basket
+    cd ..\ExerciseStrategies
     $(MAKE) clean
-    cd ..\CapFloor
+    cd ..\ExerciseValues
     $(MAKE) clean
-    cd ..\Cliquet
+    cd ..\Models
     $(MAKE) clean
-    cd ..\Hybrid
-    $(MAKE) clean
-    cd ..\Lookback
-    $(MAKE) clean
-    cd ..\Swaption
-    $(MAKE) clean
-    cd ..\Vanilla
+    cd ..\Products
     $(MAKE) clean
     cd ..

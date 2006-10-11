@@ -185,19 +185,7 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\calendars.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\daycounters.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\mathf.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\prices.cpp
 # End Source File
 # Begin Source File
 
@@ -217,15 +205,7 @@ SOURCE=.\calendars.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\daycounters.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\mathf.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\prices.hpp
 # End Source File
 # Begin Source File
 

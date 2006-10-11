@@ -65,7 +65,8 @@ QL_TESTS = \
     "lookbackoptions.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \
-    "marketmodels.obj$(_mt)$(_D)" \
+    "marketmodel.obj$(_mt)$(_D)" \
+    "mclongstaffschwartzengine.obj$(_mt)$(_D)" \
     "mersennetwister.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "old_pricers.obj$(_mt)$(_D)" \

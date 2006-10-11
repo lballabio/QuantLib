@@ -2,6 +2,8 @@
 .autodepend
 #.silent
 
+MAKE = $(MAKE) -fmakefile.mak
+
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -23,14 +25,13 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "blackvariancecurve.obj$(_mt)$(_D)" \
-    "blackvariancesurface.obj$(_mt)$(_D)" \
-    "cmsmarket.obj$(_mt)$(_D)" \
-    "localvolsurface.obj$(_mt)$(_D)" \
-    "smilesection.obj$(_mt)$(_D)" \
-    "swaptionvolcube.obj$(_mt)$(_D)" \
-    "swaptionvolcubebysabr.obj$(_mt)$(_D)" \
-    "swaptionvolmatrix.obj$(_mt)$(_D)"
+    "compositeproduct.obj$(_mt)$(_D)" \
+    "multiproductcomposite.obj$(_mt)$(_D)" \
+    "multiproductmultistep.obj$(_mt)$(_D)" \
+    "multiproductonestep.obj$(_mt)$(_D)" \
+    "singleproductcomposite.obj$(_mt)$(_D)" \
+    "MultiStep\MultiStep$(_mt)$(_D).lib" \
+    "OneStep\OneStep$(_mt)$(_D).lib"
 
 # Tools to be used
 CC        = bcc32
@@ -63,6 +64,20 @@ TLIB_OPTS    = /P128
 TLIB_OPTS    = /P128
 !endif
 
+# MAKE Options
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
+!endif
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
+
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
@@ -71,12 +86,24 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Volatilities$(_mt)$(_D).lib:: $(OBJS)
-    if exist Volatilities$(_mt)$(_D).lib     del Volatilities$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "Volatilities$(_mt)$(_D).lib" /a $(OBJS)
+Products$(_mt)$(_D).lib:: SubLibraries $(OBJS)
+    if exist Products$(_mt)$(_D).lib     del Products$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "Products$(_mt)$(_D).lib" /a $(OBJS)
+
+SubLibraries:
+    cd MultiStep
+    $(MAKE)
+    cd ..\OneStep
+    $(MAKE)
+    cd ..
 
 # Clean up
 clean::
     if exist *.obj         del /q *.obj
-    if exist *.obj$(_mt)$(_D)    del /q *.obj
+    if exist *.obj$(_mt)$(_D)""    del /q *.obj
     if exist *.lib         del /q *.lib
+    cd MultiStep
+    $(MAKE) clean
+    cd ..\OneStep
+    $(MAKE) clean
+    cd ..

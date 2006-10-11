@@ -7,7 +7,6 @@ SUBDIRS = OneStep MultiStep
 include_HEADERS = \
     all.hpp \
     compositeproduct.hpp \
-    marketmodelratchet.hpp \
     multiproductcomposite.hpp \
     multiproductmultistep.hpp \
     multiproductonestep.hpp \
@@ -15,7 +14,6 @@ include_HEADERS = \
 
 libMarketModelsProducts_la_SOURCES = \
     compositeproduct.cpp \
-    marketmodelratchet.cpp \
     multiproductcomposite.cpp \
     multiproductmultistep.cpp \
     multiproductonestep.cpp \

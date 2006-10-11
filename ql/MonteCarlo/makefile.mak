@@ -23,7 +23,9 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "getcovariance.obj$(_mt)$(_D)"
+    "getcovariance.obj$(_mt)$(_D)" \
+    "genericlsregression.obj$(_mt)$(_D)" \
+    "lsmbasissystem.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

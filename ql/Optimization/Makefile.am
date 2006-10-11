@@ -22,11 +22,11 @@ include_HEADERS = \
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
+    criteria.cpp \
     levenbergmarquardt.cpp \
     lmdif.cpp \
     simplex.cpp \
-    steepestdescent.cpp \
-    criteria.cpp
+    steepestdescent.cpp
 
 noinst_LTLIBRARIES = libOptimization.la
 

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLibFunctions.dev
 Name=QuantLibFunctions
-UnitCount=11
+UnitCount=6
 Type=2
 Ver=1
 ObjFiles=
@@ -40,7 +40,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=calendars.cpp
+FileName=mathf.cpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1
@@ -50,7 +50,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=daycounters.cpp
+FileName=vols.hpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1
@@ -60,7 +60,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=mathf.cpp
+FileName=mathf.hpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1
@@ -88,7 +88,7 @@ ProductVersion=
 AutoIncBuildNr=0
 
 [Unit5]
-FileName=vols.hpp
+FileName=calendars.hpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1
@@ -98,7 +98,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=daycounters.hpp
+FileName=auto_link.hpp
 CompileCpp=1
 Folder=QuantLibFunctions
 Compile=1

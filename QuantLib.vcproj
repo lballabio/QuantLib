@@ -1449,7 +1449,19 @@
 				RelativePath=".\ql\Indexes\euriborswapfixa.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\euriborswapfixifr.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\eurlibor.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixa.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixb.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixifr.hpp">
 			</File>
 			<File
 				RelativePath="ql\Indexes\gbplibor.hpp">
@@ -2961,12 +2973,6 @@
 					RelativePath=".\ql\MarketModels\Products\compositeproduct.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\MarketModels\Products\multiproductcomposite.cpp">
 				</File>
 				<File
@@ -3153,48 +3159,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\abcd.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.cpp">
@@ -4375,9 +4339,6 @@
 			</File>
 			<File
 				RelativePath="ql\Math\svd.hpp">
-			</File>
-			<File
-				RelativePath="ql\Math\symmetriceigenvalues.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\symmetricschurdecomposition.cpp">
@@ -8314,6 +8275,9 @@
 				RelativePath=".\ql\TermStructures\piecewiseyieldcurve.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\piecewisezerospreadedtermstructure.hpp">
+			</File>
+			<File
 				RelativePath="ql\TermStructures\quantotermstructure.hpp">
 			</File>
 			<File
@@ -9078,9 +9042,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\handle.hpp">
-		</File>
-		<File
-			RelativePath="ql\history.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\index.cpp">

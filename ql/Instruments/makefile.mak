@@ -25,6 +25,7 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "asianoption.obj$(_mt)$(_D)" \
+    "assetswap.obj$(_mt)$(_D)" \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
     "bond.obj$(_mt)$(_D)" \

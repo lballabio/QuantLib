@@ -49,7 +49,6 @@
 #include <ql/MarketModels/ExerciseValues/nothingexercisevalue.hpp>
 #include <ql/MarketModels/Models/expcorrflatvol.hpp>
 #include <ql/MarketModels/Models/expcorrabcdvol.hpp>
-#include <ql/MarketModels/Models/calibratedmarketmodel.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>

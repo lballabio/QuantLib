@@ -519,6 +519,22 @@ SOURCE=.\ql\CashFlows\cashflowvectors.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\cmscoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\cmscoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\conundrumpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\conundrumpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\core.hpp
 # End Source File
 # Begin Source File
@@ -616,6 +632,10 @@ SOURCE=.\ql\DayCounters\actualactual.hpp
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\business252.hpp
 # End Source File
 # Begin Source File
 
@@ -799,7 +819,27 @@ SOURCE=.\ql\Indexes\euribor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\euriborswapfixa.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\euriborswapfixifr.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\eurlibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\eurliborswapfixa.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\eurliborswapfixb.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\eurliborswapfixifr.hpp
 # End Source File
 # Begin Source File
 
@@ -812,6 +852,14 @@ SOURCE=.\ql\Indexes\indexmanager.cpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\indexmanager.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\interestrateindex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\interestrateindex.hpp
 # End Source File
 # Begin Source File
 
@@ -832,6 +880,14 @@ SOURCE=.\ql\Indexes\libor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\nzdlibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\swapindex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\swapindex.hpp
 # End Source File
 # Begin Source File
 
@@ -872,6 +928,14 @@ SOURCE=.\ql\Instruments\asianoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\asianoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\assetswap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\assetswap.hpp
 # End Source File
 # Begin Source File
 
@@ -1351,10 +1415,6 @@ SOURCE=.\ql\Math\linearinterpolation.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\linearleastsquaresregression.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\linearleastsquaresregression.hpp
 # End Source File
 # Begin Source File
@@ -1447,10 +1507,6 @@ SOURCE=.\ql\Math\svd.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\symmetriceigenvalues.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 # End Source File
 # Begin Source File
@@ -1491,11 +1547,39 @@ SOURCE=.\ql\MonteCarlo\core.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\earlyexercisepathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\exercisestrategy.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\genericlsregression.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\genericlsregression.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\getcovariance.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\getcovariance.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\longstaffschwartzpathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\lsmbasissystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\lsmbasissystem.hpp
 # End Source File
 # Begin Source File
 
@@ -1568,6 +1652,10 @@ SOURCE=.\ql\Optimization\core.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\costfunction.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\criteria.cpp
 # End Source File
 # Begin Source File
 
@@ -2054,6 +2142,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\juquadraticengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\mcamericanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\mcamericanengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.cpp
 # End Source File
 # Begin Source File
@@ -2271,6 +2367,10 @@ SOURCE=.\ql\PricingEngines\blackformula.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\blackmodel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\blackmodel.hpp
 # End Source File
 # Begin Source File
@@ -2292,6 +2392,10 @@ SOURCE=.\ql\PricingEngines\greeks.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mclongstaffschwartzengine.hpp
 # End Source File
 # Begin Source File
 
@@ -2767,6 +2871,10 @@ SOURCE=.\ql\TermStructures\piecewiseyieldcurve.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\piecewisezerospreadedtermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\quantotermstructure.hpp
 # End Source File
 # Begin Source File
@@ -2796,6 +2904,10 @@ SOURCE=.\ql\TermStructures\zeroyieldstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\Utilities\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\clone.hpp
 # End Source File
 # Begin Source File
 
@@ -2887,6 +2999,14 @@ SOURCE=.\ql\Volatilities\capletvariancecurve.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\cmsmarket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\cmsmarket.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\impliedvoltermstructure.hpp
 # End Source File
 # Begin Source File
@@ -2907,7 +3027,31 @@ SOURCE=.\ql\Volatilities\localvolsurface.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\smilesection.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\smilesection.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\swaptionconstantvol.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolcube.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolcube.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolcubebysabr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\swaptionvolcubebysabr.hpp
 # End Source File
 # Begin Source File
 
@@ -3106,6 +3250,394 @@ SOURCE=.\ql\VolatilityModels\garmanklass.hpp
 SOURCE=.\ql\VolatilityModels\simplelocalestimator.hpp
 # End Source File
 # End Group
+# Begin Group "MarketModels"
+
+# PROP Default_Filter ""
+# Begin Group "BrownianGenerators"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp
+# End Source File
+# End Group
+# Begin Group "Evolvers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Evolvers\forwardratepcevolver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Evolvers\forwardratepcevolver.hpp
+# End Source File
+# End Group
+# Begin Group "ExerciseStrategies"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseStrategies\lsstrategy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseStrategies\lsstrategy.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseStrategies\swapratetrigger.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp
+# End Source File
+# End Group
+# Begin Group "ExerciseValues"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseValues\nothingexercisevalue.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\ExerciseValues\nothingexercisevalue.hpp
+# End Source File
+# End Group
+# Begin Group "Models"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\abcd.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\abcd.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\calibratedmarketmodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\calibratedmarketmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\expcorrabcdvol.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\expcorrabcdvol.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\expcorrflatvol.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Models\expcorrflatvol.hpp
+# End Source File
+# End Group
+# Begin Group "Products"
+
+# PROP Default_Filter ""
+# Begin Group "MultiStep"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\cashrebate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\cashrebate.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\exerciseadapter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\exerciseadapter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcaplets.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcoterminalswaps.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepcoterminalswaps.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepforwards.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepforwards.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepnothing.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepnothing.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepswap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\MultiStep\multistepswap.hpp
+# End Source File
+# End Group
+# Begin Group "OneStep"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcaplets.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcaplets.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcoinitialswaps.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcoinitialswaps.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcoterminalswaps.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepcoterminalswaps.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepforwards.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\OneStep\onestepforwards.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\compositeproduct.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\compositeproduct.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductcomposite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductcomposite.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductmultistep.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductmultistep.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductonestep.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\multiproductonestep.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\singleproductcomposite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\Products\singleproductcomposite.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\accountingengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\accountingengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\browniangenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\core.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\curvestate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\curvestate.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\driftcalculator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\driftcalculator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\duffsdeviceinnerproduct.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\evolutiondescription.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\evolutiondescription.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\exercisevalue.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\lsbasisfunctions.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\lsdatacollector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\lsdatacollector.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\marketmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\marketmodeldiscounter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\marketmodeldiscounter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\marketmodelevolver.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\marketmodelproduct.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\swapbasissystem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\swapbasissystem.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\swapforwardconversionmatrix.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\swapforwardconversionmatrix.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\utilities.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MarketModels\utilities.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
@@ -3220,10 +3752,6 @@ SOURCE=.\ql\handle.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\history.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\index.cpp
 # End Source File
 # Begin Source File
@@ -3261,6 +3789,14 @@ SOURCE=.\ql\option.hpp
 # Begin Source File
 
 SOURCE=.\ql\payoff.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\period.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\period.hpp
 # End Source File
 # Begin Source File
 

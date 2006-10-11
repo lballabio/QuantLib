@@ -24,7 +24,6 @@
 #include <ql/MarketModels/Products/OneStep/all.hpp>
 #include <ql/MarketModels/Products/MultiStep/all.hpp>
 #include <ql/MarketModels/Products/compositeproduct.hpp>
-#include <ql/MarketModels/Products/marketmodelratchet.hpp>
 #include <ql/MarketModels/Products/multiproductcomposite.hpp>
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 #include <ql/MarketModels/Products/multiproductonestep.hpp>

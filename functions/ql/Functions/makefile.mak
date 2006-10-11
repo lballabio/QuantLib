@@ -25,8 +25,6 @@ OUTPUT_DIR     = ..\..\..\lib
 
 # Object files
 OBJS = \
-    "calendars.obj$(_mt)$(_D)" \
-    "daycounters.obj$(_mt)$(_D)" \
     "mathf.obj$(_mt)$(_D)" \
     "vols.obj$(_mt)$(_D)"
 

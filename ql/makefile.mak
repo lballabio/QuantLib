@@ -51,6 +51,7 @@ FDM_LIB              = "FiniteDifferences\FiniteDifferences$(_mt)$(_D).lib"
 INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
 INSTRUMENTS_LIB      = "Instruments\Instruments$(_mt)$(_D).lib"
 LATTICES_LIB         = "Lattices\Lattices$(_mt)$(_D).lib"
+MARKETMODELS_LIB     = "MarketModels\MarketModels$(_mt)$(_D).lib"
 MATH_LIB             = "Math\Math$(_mt)$(_D).lib"
 MONTECARLO_LIB       = "MonteCarlo\MonteCarlo$(_mt)$(_D).lib"
 OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
@@ -74,6 +75,7 @@ QUANTLIB_OBJS = \
     $(INDEXES_LIB) \
     $(INSTRUMENTS_LIB) \
     $(LATTICES_LIB) \
+    $(MARKETMODELS_LIB) \
     $(MATH_LIB) \
     $(MONTECARLO_LIB) \
     $(OPTIMIZATION_LIB) \
@@ -170,6 +172,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Lattices
     $(MAKE)
+    cd ..\MarketModels
+    $(MAKE)
     cd ..\Math
     $(MAKE)
     cd ..\MonteCarlo
@@ -214,6 +218,8 @@ clean::
     cd ..\Instruments
     $(MAKE) clean
     cd ..\Lattices
+    $(MAKE) clean
+    cd ..\MarketModels
     $(MAKE) clean
     cd ..\Math
     $(MAKE) clean

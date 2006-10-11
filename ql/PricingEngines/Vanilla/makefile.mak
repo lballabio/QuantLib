@@ -39,6 +39,7 @@ OBJS = \
     "integralengine.obj$(_mt)$(_D)" \
     "jumpdiffusionengine.obj$(_mt)$(_D)" \
     "juquadraticengine.obj$(_mt)$(_D)" \
+    "mcamericanengine.obj$(_mt)$(_D)" \
     "mcdigitalengine.obj$(_mt)$(_D)"
 
 

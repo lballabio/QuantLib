@@ -6147,6 +6147,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\TermStructures\piecewisezerospreadedtermstructure.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\TermStructures\quantotermstructure.hpp"
 				>
 			</File>
@@ -6834,14 +6838,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\MarketModels\Products\multiproductcomposite.cpp"
 					>
 				</File>
@@ -7107,14 +7103,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\abcd.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp"
 					>
 				</File>
 				<File

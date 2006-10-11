@@ -281,6 +281,10 @@ SOURCE=.\cliquetoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\cms.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\compoundforward.cpp
 # End Source File
 # Begin Source File
@@ -377,7 +381,15 @@ SOURCE=.\lowdiscrepancysequences.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\marketmodel.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\matrices.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mclongstaffschwartzengine.cpp
 # End Source File
 # Begin Source File
 
@@ -454,6 +466,10 @@ SOURCE=.\swap.cpp
 # Begin Source File
 
 SOURCE=.\swaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\swaptionvolatilitycube.cpp
 # End Source File
 # Begin Source File
 
@@ -534,6 +550,10 @@ SOURCE=.\capfloor.hpp
 # Begin Source File
 
 SOURCE=.\cliquetoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\cms.hpp
 # End Source File
 # Begin Source File
 
@@ -633,7 +653,15 @@ SOURCE=.\lowdiscrepancysequences.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\marketmodel.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\matrices.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mclongstaffschwartzengine.hpp
 # End Source File
 # Begin Source File
 
@@ -706,6 +734,10 @@ SOURCE=.\swap.hpp
 # Begin Source File
 
 SOURCE=.\swaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\swaptionvolatilitycube.hpp
 # End Source File
 # Begin Source File
 

@@ -16,13 +16,11 @@ include_HEADERS = \
 	choleskydecomposition.hpp \
 	comparison.hpp \
 	convergencestatistics.hpp \
-	complexarray.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \
 	extrapolation.hpp \
 	factorial.hpp \
-	fastfouriertransform.hpp \
 	forwardflatinterpolation.hpp \
 	functional.hpp \
 	gammadistribution.hpp \

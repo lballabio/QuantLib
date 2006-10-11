@@ -2,6 +2,7 @@
 .autodepend
 #.silent
 
+# Debug version
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -23,14 +24,7 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "blackvariancecurve.obj$(_mt)$(_D)" \
-    "blackvariancesurface.obj$(_mt)$(_D)" \
-    "cmsmarket.obj$(_mt)$(_D)" \
-    "localvolsurface.obj$(_mt)$(_D)" \
-    "smilesection.obj$(_mt)$(_D)" \
-    "swaptionvolcube.obj$(_mt)$(_D)" \
-    "swaptionvolcubebysabr.obj$(_mt)$(_D)" \
-    "swaptionvolmatrix.obj$(_mt)$(_D)"
+    "mtbrowniangenerator.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -71,12 +65,12 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Volatilities$(_mt)$(_D).lib:: $(OBJS)
-    if exist Volatilities$(_mt)$(_D).lib     del Volatilities$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "Volatilities$(_mt)$(_D).lib" /a $(OBJS)
+BrownianGenerators$(_mt)$(_D).lib:: $(OBJS)
+    if exist BrownianGenerators$(_mt)$(_D).lib     del BrownianGenerators$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "BrownianGenerators$(_mt)$(_D).lib" /a $(OBJS)
+
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_mt)$(_D)    del /q *.obj
-    if exist *.lib         del /q *.lib
+    if exist *.obj* del /q *.obj*
+    if exist *.lib  del /q *.lib

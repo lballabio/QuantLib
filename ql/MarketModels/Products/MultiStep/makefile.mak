@@ -2,6 +2,7 @@
 .autodepend
 #.silent
 
+# Debug version
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -23,14 +24,15 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "blackvariancecurve.obj$(_mt)$(_D)" \
-    "blackvariancesurface.obj$(_mt)$(_D)" \
-    "cmsmarket.obj$(_mt)$(_D)" \
-    "localvolsurface.obj$(_mt)$(_D)" \
-    "smilesection.obj$(_mt)$(_D)" \
-    "swaptionvolcube.obj$(_mt)$(_D)" \
-    "swaptionvolcubebysabr.obj$(_mt)$(_D)" \
-    "swaptionvolmatrix.obj$(_mt)$(_D)"
+    "callspecifiedmultiproduct.obj$(_mt)$(_D)" \
+    "cashrebate.obj$(_mt)$(_D)" \
+    "exerciseadapter.obj$(_mt)$(_D)" \
+    "multistepcaplets.obj$(_mt)$(_D)" \
+    "multistepcoinitialswaps.obj$(_mt)$(_D)" \
+    "multistepcoterminalswaps.obj$(_mt)$(_D)" \
+    "multistepforwards.obj$(_mt)$(_D)" \
+    "multistepnothing.obj$(_mt)$(_D)" \
+    "multistepswap.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -71,12 +73,12 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Volatilities$(_mt)$(_D).lib:: $(OBJS)
-    if exist Volatilities$(_mt)$(_D).lib     del Volatilities$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "Volatilities$(_mt)$(_D).lib" /a $(OBJS)
+MultiStep$(_mt)$(_D).lib:: $(OBJS)
+    if exist MultiStep$(_mt)$(_D).lib     del MultiStep$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "MultiStep$(_mt)$(_D).lib" /a $(OBJS)
+
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_mt)$(_D)    del /q *.obj
-    if exist *.lib         del /q *.lib
+    if exist *.obj* del /q *.obj*
+    if exist *.lib  del /q *.lib

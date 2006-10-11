@@ -24,7 +24,9 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "indexmanager.obj$(_mt)$(_D)" \
+    "interestrateindex.obj$(_mt)$(_D)" \
     "libor.obj$(_mt)$(_D)" \
+    "swapindex.obj$(_mt)$(_D)" \
     "xibor.obj$(_mt)$(_D)"
 
 # Tools to be used
