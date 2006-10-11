@@ -26,59 +26,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    VanillaSwap::VanillaSwap(bool payFixedRate,
-                             Real nominal,
-                             const Schedule& fixedSchedule,
-                             Rate fixedRate,
-                             const DayCounter& fixedDayCount,
-                             const Schedule& floatSchedule,
-                             const boost::shared_ptr<Xibor>& index,
-                             Integer indexFixingDays,
-                             Spread spread,
-                             const DayCounter& floatingDayCount,
-                             const Handle<YieldTermStructure>& termStructure)
-    : Swap(termStructure,
-           std::vector<boost::shared_ptr<CashFlow> >(),
-           std::vector<boost::shared_ptr<CashFlow> >()),
-      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
-      nominal_(nominal) {
-
-        BusinessDayConvention convention =
-            floatSchedule.businessDayConvention();
-
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-            FixedRateCouponVector(fixedSchedule,
-                                  convention,
-                                  std::vector<Real>(1,nominal),
-                                  std::vector<Rate>(1,fixedRate),
-                                  fixedDayCount);
-
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-            FloatingRateCouponVector(floatSchedule,
-                                     convention,
-                                     std::vector<Real>(1,nominal),
-                                     indexFixingDays, index,
-                                     std::vector<Real>(1,1.0),
-                                     std::vector<Spread>(1,spread),
-                                     floatingDayCount);
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
-
-        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
-            registerWith(*i);
-
-        legs_[0] = fixedLeg;
-        legs_[1] = floatingLeg;
-        if (payFixedRate_) {
-            payer_[0]=-1.0;
-            payer_[1]=+1.0;
-        } else {
-            payer_[0]=+1.0;
-            payer_[1]=-1.0;
-        }
-    }
-    #endif
-
     VanillaSwap::VanillaSwap(bool payFixedRate,
                              Real nominal,
                              const Schedule& fixedSchedule,

@@ -102,12 +102,6 @@ namespace QuantLib {
                   boost::shared_ptr<discretization>(new EulerDiscretization));
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to BlackScholesProcess */
-    typedef BlackScholesProcess BlackScholes73Process;
-    #endif
-
-
     //! Merton (1973) extension to the Black-Scholes stochastic process
     /*! This class describes the stochastic process for a stock or
         stock index paying a continuous dividend yield given by

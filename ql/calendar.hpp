@@ -58,7 +58,6 @@ namespace QuantLib {
                                  the holiday. */
         Unadjusted          /*!< Do not adjust. */
         ,
-        //! \deprecated use FloatingRateCoupon instead
         MonthEndReference,  /*!< Choose the first business day after
                                  the given holiday. If the original
                                  date falls on last business day of

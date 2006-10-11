@@ -49,10 +49,6 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use tenor() instead
-        Frequency frequency() const { return tenor_.frequency(); }
-        #endif
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
         //@}

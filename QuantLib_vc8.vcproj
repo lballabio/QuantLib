@@ -845,10 +845,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\CashFlows\indexedcoupon.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\CashFlows\parcoupon.cpp"
 				>
 				<FileConfiguration

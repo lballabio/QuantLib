@@ -36,27 +36,6 @@ namespace QuantLib {
     //! Payment schedule
     class Schedule {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use other constructors instead
-        Schedule(const Calendar& calendar,
-                 const Date& startDate,
-                 const Date& endDate,
-                 Frequency frequency,
-                 BusinessDayConvention convention,
-                 const Date& stubDate = Date(),
-                 bool startFromEnd = false,
-                 bool longFinal = false);
-        //! \deprecated use other constructors instead
-        Schedule(const Calendar& calendar,
-                 const Date& startDate,
-                 const Date& endDate,
-                 const Period& tenor,
-                 BusinessDayConvention convention,
-                 const Date& stubDate = Date(),
-                 bool startFromEnd = false,
-                 bool longFinal = false);
-        Frequency frequency() const;
-        #endif
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar = NullCalendar(),
                  BusinessDayConvention convention = Unadjusted);
@@ -118,16 +97,6 @@ namespace QuantLib {
                      const Period& tenor,
                      const Calendar& calendar,
                      BusinessDayConvention convention);
-        #ifndef QL_DISABLE_DEPRECATED
-        MakeSchedule(const Calendar& calendar,
-                     const Date& startDate,
-                     const Date& endDate,
-                     Frequency frequency,
-                     BusinessDayConvention convention);
-        MakeSchedule& withStubDate(const Date& d);
-        MakeSchedule& longFinalPeriod(bool flag=true);
-        MakeSchedule& shortFinalPeriod(bool flag=true);
-        #endif
         MakeSchedule& terminationDateConvention(BusinessDayConvention conv);
         MakeSchedule& backwards(bool flag=true);
         MakeSchedule& forwards(bool flag=true);

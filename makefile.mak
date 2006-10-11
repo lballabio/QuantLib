@@ -42,12 +42,6 @@ tests:: quantlib
     $(MAKE) -DQL_DIR=".."
     cd ..
 
-# functions
-functions::
-    cd functions\ql\Functions
-    $(MAKE) -DQL_DIR="..\..\.."
-    cd ..\..\..
-
 #all
 all:: examples functions tests
     cd test-suite
@@ -109,9 +103,7 @@ docs-ps:
 clean::
     cd ql
     $(MAKE) clean
-    cd ..\functions\ql\Functions
-    $(MAKE) clean
-    cd ..\..\..\test-suite
+    cd ..\test-suite
     $(MAKE) clean
     cd ..\Examples
     $(MAKE) clean

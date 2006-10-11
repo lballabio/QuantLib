@@ -46,18 +46,6 @@ namespace QuantLib {
                        Real redemption = 100.0,
                        const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use constructor with face amount instead
-        ZeroCouponBond(const Date& issueDate,
-                       const Date& maturityDate,
-                       Integer settlementDays,
-                       const DayCounter& dayCounter,
-                       const Calendar& calendar,
-                       BusinessDayConvention paymentConvention = Following,
-                       Real redemption = 100.0,
-                       const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>());
-        #endif
     };
 
 }

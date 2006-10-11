@@ -49,7 +49,7 @@ namespace QuantLib {
         issueDate_ = issueDate;
         datedDate_ = schedule.startDate();
         maturityDate_ = schedule.endDate();
-        frequency_ = schedule.frequency();
+        frequency_ = schedule.tenor().frequency();
 
         setPricingEngine(engine);
 

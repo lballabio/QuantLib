@@ -25,66 +25,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    SwaptionHelper::SwaptionHelper(
-                              const Period& maturity,
-                              const Period& length,
-                              const Handle<Quote>& volatility,
-                              const boost::shared_ptr<Xibor>& index,
-                              Frequency fixedLegFrequency,
-                              const DayCounter& fixedLegDayCounter,
-                              const DayCounter& floatingLegDayCounter,
-                              const Handle<YieldTermStructure>& termStructure,
-                              bool calibrateVolatility)
-    : CalibrationHelper(volatility,termStructure, calibrateVolatility) {
-
-        Calendar calendar = index->calendar();
-        Period indexTenor = index->tenor();
-        Integer fixingDays = index->settlementDays();
-        Date exerciseDate = calendar.advance(termStructure->referenceDate(),
-                                             maturity,
-                                             index->businessDayConvention());
-        Date startDate = calendar.advance(exerciseDate,
-                                          fixingDays, Days,
-                                          index->businessDayConvention());
-        Date endDate = calendar.advance(startDate, length,
-                                        index->businessDayConvention());
-        
-        Schedule fixedSchedule(startDate, endDate, Period(fixedLegFrequency), calendar,
-                               index->businessDayConvention(),
-                               index->businessDayConvention(),
-                               false, false);
-        Schedule floatSchedule(startDate, endDate, Period(index->frequency()), calendar,
-                               index->businessDayConvention(),
-                               index->businessDayConvention(),
-                               false, false);
-
-        Rate fixedRate = 0.0;  //dummy value
-        swap_ = boost::shared_ptr<VanillaSwap>(
-                      new VanillaSwap(false, 1.0, fixedSchedule, fixedRate,
-                                      fixedLegDayCounter, floatSchedule,
-                                      index,
-                                      0.0, floatingLegDayCounter,
-                                      termStructure));
-        Rate fairFixedRate = swap_->fairRate();
-        swap_ = boost::shared_ptr<VanillaSwap>(
-                      new VanillaSwap(false, 1.0, fixedSchedule, fairFixedRate,
-                                      fixedLegDayCounter, floatSchedule,
-                                      index,
-                                      0.0, floatingLegDayCounter,
-                                      termStructure));
-
-        exerciseRate_ = fairFixedRate;
-        engine_  = boost::shared_ptr<PricingEngine>();
-        swaption_ = boost::shared_ptr<Swaption>(new Swaption(
-            swap_,
-            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)),
-            termStructure,
-            engine_));
-        marketValue_ = blackPrice(volatility_->value());
-    }
-    #endif
-
     SwaptionHelper::SwaptionHelper(
                               const Period& maturity,
                               const Period& length,

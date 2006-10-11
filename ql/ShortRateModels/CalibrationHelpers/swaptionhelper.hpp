@@ -32,17 +32,6 @@ namespace QuantLib {
     //! calibration helper for ATM swaption
     class SwaptionHelper : public CalibrationHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        SwaptionHelper(const Period& maturity,
-                       const Period& length,
-                       const Handle<Quote>& volatility,
-                       const boost::shared_ptr<Xibor>& index,
-                       Frequency fixedLegFrequency,
-                       const DayCounter& fixedLegDayCounter,
-                       const DayCounter& floatingLegDayCounter,
-                       const Handle<YieldTermStructure>& termStructure,
-                       bool calibrateVolatility = false);
-        #endif
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,

@@ -28,7 +28,6 @@
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/indexedcoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/shortindexedcoupon.hpp>

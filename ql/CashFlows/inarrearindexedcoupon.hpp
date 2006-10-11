@@ -24,7 +24,7 @@
 #ifndef quantlib_in_arrear_indexed_coupon_hpp
 #define quantlib_in_arrear_indexed_coupon_hpp
 
-#include <ql/CashFlows/indexedcoupon.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/capvolstructures.hpp>
 

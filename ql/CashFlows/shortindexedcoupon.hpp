@@ -24,7 +24,7 @@
 #ifndef quantlib_short_indexed_coupon_hpp
 #define quantlib_short_indexed_coupon_hpp
 
-#include <ql/CashFlows/indexedcoupon.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 
 namespace QuantLib {
 

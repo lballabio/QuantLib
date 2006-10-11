@@ -75,45 +75,6 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
-    namespace detail {
-
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the same function in the QuantLib namespace
-        inline Real blackFormula(Real forward,
-                                 Real strike,
-                                 Real stdDev,
-                                 Option::Type optionType) {
-            if (stdDev==0.0)
-                return std::max((forward-strike)*optionType, Real(0.0));
-            if (strike==0.0)
-                return (optionType==Option::Call ? forward : 0.0);
-            Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
-            Real d2 = d1 - stdDev;
-            CumulativeNormalDistribution phi;
-            Real result = optionType *
-                (forward*phi(optionType*d1) - strike*phi(optionType*d2));
-            // numerical inaccuracies can yield a negative answer
-            return std::max(Real(0.0), result);
-        }
-
-        //! \deprecated use the same function in the QuantLib namespace
-        inline Real itmBlackProbability(Real forward,
-                                        Real strike,
-                                        Real stdDev,
-                                        Option::Type optionType) {
-            if (stdDev==0.0)
-                return (forward*optionType > strike*optionType ? 1.0 : 0.0);
-            if (strike==0.0)
-                return (optionType==Option::Call ? 1.0 : 0.0);
-            Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
-            Real d2 = d1 - stdDev;
-            CumulativeNormalDistribution phi;
-            return phi(optionType*d2);
-        }
-        #endif
-
-    }
-
 }
 
 #endif
