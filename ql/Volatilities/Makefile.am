@@ -10,6 +10,7 @@ include_HEADERS = \
     capflatvolvector.hpp \
     capletconstantvol.hpp \
     capletvariancecurve.hpp \
+    capstripper.hpp \
     cmsmarket.hpp \
     impliedvoltermstructure.hpp \
     localconstantvol.hpp \
@@ -24,6 +25,7 @@ include_HEADERS = \
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
+    capstripper.cpp \
     cmsmarket.cpp \
     localvolsurface.cpp \
     smilesection.cpp \
@@ -34,4 +36,3 @@ libVolatilities_la_SOURCES = \
 noinst_LTLIBRARIES = libVolatilities.la
 
 EXTRA_DIST = makefile.mak
-

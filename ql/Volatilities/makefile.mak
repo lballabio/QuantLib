@@ -25,6 +25,7 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "blackvariancecurve.obj$(_mt)$(_D)" \
     "blackvariancesurface.obj$(_mt)$(_D)" \
+    "capstripper.obj$(_mt)$(_D)" \
     "cmsmarket.obj$(_mt)$(_D)" \
     "localvolsurface.obj$(_mt)$(_D)" \
     "smilesection.obj$(_mt)$(_D)" \
