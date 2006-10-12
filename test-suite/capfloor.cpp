@@ -33,6 +33,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
+#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -126,6 +127,95 @@ void teardown() {
 
 QL_END_TEST_LOCALS(CapFloorTest)
 
+
+void CapFloorTest::testVega() {
+
+    BOOST_MESSAGE("Testing cap/floor dependency on strike...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    /*Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
+    Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09 };*/
+
+    //Integer lengths[] = { 1, 2, 3, 4, 5, 6, 7, 10, 15, 20, 30 };
+    Integer lengths[] = { 30 };
+    Volatility vols[] = { 0.15};
+    Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09 };
+
+    Date startDate = termStructure_->referenceDate();
+    static const Real shift = 1e-8;
+    std::cout << "Strike\t\tNPV\t\tFormulae\tNumerical\tnum/form\n";
+    for (Size i=0; i<LENGTH(lengths); i++) {
+        for (Size j=0; j<LENGTH(vols); j++) {
+            // store the results for different strikes...
+            std::vector<Real> cap_values, floor_values;
+            for (Size k=0; k<LENGTH(strikes); k++) {
+                std::vector<boost::shared_ptr<CashFlow> > leg =
+                    makeLeg(startDate, lengths[i]);
+                boost::shared_ptr<CapFloor> cap =
+                    makeCapFloor(CapFloor::Cap,leg,
+                                 strikes[k],vols[j]);
+                boost::shared_ptr<CapFloor> shiftedCap2 =
+                    makeCapFloor(CapFloor::Cap,leg,
+                                 strikes[k],vols[j]+shift);
+                 boost::shared_ptr<CapFloor> shiftedCap1 =
+                    makeCapFloor(CapFloor::Cap,leg,
+                                 strikes[k],vols[j]-shift);
+                Rate ATMRate = cap->atmRate();
+                Real formulaeVega = cap->vega();
+                Real numericalVega = (shiftedCap2->NPV() - shiftedCap1->NPV()) / (2*shift);
+                std::cout   << std::fixed
+                            << strikes[k] << "\t"
+                            << cap->NPV() <<"\t"
+                            << formulaeVega << "\t" 
+                            << numericalVega << "\t"
+                            << numericalVega/formulaeVega << std::endl;
+                //cap_values.push_back(cap->vega(vols[j]));
+                //if (std::fabs(numericalVega - formulaeVega) > .001)
+                //   BOOST_FAIL(" ");
+                /*boost::shared_ptr<Instrument> floor =
+                    makeCapFloor(CapFloor::Floor,leg,
+                                 strikes[k],vols[j]);
+                floor_values.push_back(floor->NPV());*/
+            }
+            //// and check that they go the right way
+            //std::vector<Real>::iterator it =
+            //    std::adjacent_find(cap_values.begin(),cap_values.end(),
+            //                       std::less<Real>());
+            //if (it != cap_values.end()) {
+            //    Size n = it - cap_values.begin();
+            //    BOOST_FAIL(
+            //        "NPV is increasing with the strike in a cap: \n"
+            //        << std::setprecision(2)
+            //        << "    length:     " << lengths[i] << " years\n"
+            //        << "    volatility: " << io::volatility(vols[j]) << "\n"
+            //        << "    value:      " << cap_values[n]
+            //        << " at strike: " << io::rate(strikes[n]) << "\n"
+            //        << "    value:      " << cap_values[n+1]
+            //        << " at strike: " << io::rate(strikes[n+1]));
+            //}
+            //// same for floors
+            //it = std::adjacent_find(floor_values.begin(),floor_values.end(),
+            //                        std::greater<Real>());
+            //if (it != floor_values.end()) {
+            //    Size n = it - floor_values.begin();
+            //    BOOST_FAIL(
+            //        "NPV is decreasing with the strike in a floor: \n"
+            //        << std::setprecision(2)
+            //        << "    length:     " << lengths[i] << " years\n"
+            //        << "    volatility: " << io::volatility(vols[j]) << "\n"
+            //        << "    value:      " << floor_values[n]
+            //        << " at strike: " << io::rate(strikes[n]) << "\n"
+            //        << "    value:      " << floor_values[n+1]
+            //        << " at strike: " << io::rate(strikes[n+1]));
+            //}
+        }
+    }
+
+    QL_TEST_TEARDOWN
+}
 
 void CapFloorTest::testStrikeDependency() {
 
@@ -482,12 +572,13 @@ void CapFloorTest::testCachedValue() {
 
 test_suite* CapFloorTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cap/floor tests");
-    suite->add(BOOST_TEST_CASE(&CapFloorTest::testStrikeDependency));
+    /*suite->add(BOOST_TEST_CASE(&CapFloorTest::testStrikeDependency));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testConsistency));
-    suite->add(BOOST_TEST_CASE(&CapFloorTest::testParity));
-    suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testParity));*/
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testVega));
+    /*suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
-    suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));*/
     return suite;
 }
 

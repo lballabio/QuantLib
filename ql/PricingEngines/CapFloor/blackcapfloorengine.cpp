@@ -45,8 +45,9 @@ namespace QuantLib {
     void BlackCapFloorEngine::calculate() const
     {
         Real value = 0.0;
+        Real vega_ = 0.0;
         CapFloor::Type type = arguments_.type;
-
+        DayCounter volatilityDayCounter = volatility_->dayCounter();
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
             Time end = arguments_.endTimes[i],
                  accrualTime = arguments_.accrualTimes[i];
@@ -63,6 +64,13 @@ namespace QuantLib {
                         arguments_.fixingDates[i], strike);
                     value += q * accrualTime * nominal * gearing *
                         capletValue(forward, strike, variance);
+                    Volatility volatility = volatility_->volatility(
+                        arguments_.fixingDates[i], strike);
+                    Time timeToMaturity = 
+                        volatilityDayCounter.yearFraction(Date::todaysDate(), arguments_.fixingDates[i]);
+                    vega_ += nominal * gearing * accrualTime * q 
+                            * optionletVega(forward, strike, volatility) 
+                            * std::sqrt(timeToMaturity);
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
@@ -80,7 +88,20 @@ namespace QuantLib {
             }
         }
         results_.value = value;
-    }
+        results_.vega = vega_;
+}
+    
+  Real BlackCapFloorEngine::optionletVega(Rate forward,
+                                 Rate strike,
+                                 Real variance) const{
+        Real optionType = 1;
+        Real stdDev = std::sqrt(variance);
+        Real halfOptionType = 0.5*optionType;
+        Real signedMoneyness = optionType*std::log(forward/strike);
+        Real signedForward = optionType*forward;
+        Real signedD1 = signedMoneyness/stdDev + halfOptionType*stdDev;
+        return signedForward * N_.derivative(signedD1);
+    };
 
     Real BlackCapFloorEngine::capletValue(Rate forward,
                                           Rate strike, Real variance) const {
@@ -106,5 +127,5 @@ namespace QuantLib {
                 std::sqrt(variance));
         }
     }
-
+    
 }

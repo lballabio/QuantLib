@@ -30,6 +30,7 @@ class CapFloorTest {
     static void testStrikeDependency();
     static void testConsistency();
     static void testParity();
+    static void testVega();
     static void testATMRate();
     static void testImpliedVolatility();
     static void testCachedValue();

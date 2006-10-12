@@ -56,6 +56,14 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+    void CapFloor::fetchResults (const Results* r) const{
+        Instrument::fetchResults(r);
+        const CapFloor::results* results =
+            dynamic_cast<const CapFloor::results*>(r);
+        vega_ = results->vega;
+        
+    };
+
     Rate CapFloor::atmRate() const {
 
         Real bps = Cashflows::bps(floatingLeg_, termStructure_);
@@ -194,6 +202,11 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
+    
+    Real CapFloor::vega() const {
+        calculate();
+        return vega_;
+    }
 
     Real CapFloor::vega(const Volatility& volatility) const {
         calculate();
@@ -203,6 +216,7 @@ namespace QuantLib {
         boost::shared_ptr<PricingEngine> engine = 
             boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
         this->setupArguments(engine_->arguments());
+        engine->calculate();
         const Value* value = dynamic_cast<const Value*>(engine_->results());
         Real vega = (value->value - NPV_)/shift;
         return vega;

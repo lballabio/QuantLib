@@ -65,6 +65,7 @@ namespace QuantLib {
         //! \name Instrument interface
         //@{
         bool isExpired() const;
+        void fetchResults (const Results*) const;
         //@}
         //! \name Inspectors
         //@{
@@ -83,6 +84,7 @@ namespace QuantLib {
         }
         Rate atmRate() const;
         Real vega(const Volatility& volatility) const;
+        Real vega() const;
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
@@ -98,6 +100,7 @@ namespace QuantLib {
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
         Handle<YieldTermStructure> termStructure_;
+        mutable Real vega_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
@@ -175,7 +178,10 @@ namespace QuantLib {
     };
 
     //! %Results from cap/floor calculation
-    class CapFloor::results : public Value {};
+    class CapFloor::results : public Value {
+        public:
+        Real vega;
+    };
 
     //! base class for cap/floor engines
     class CapFloor::engine
