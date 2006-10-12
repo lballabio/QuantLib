@@ -67,13 +67,13 @@ namespace QuantLib {
                                 const Handle< YieldTermStructure > yieldTermStructure)
         :CapletVolatilityStructure(0, calendar),
         dayCounter_(dayCounter),
-        strikes_(strikes),
+        evaluationDate_(Settings::instance().evaluationDate()),
         tenorTimes_(tenors.size()),
+        strikes_(strikes),
         volatilities_(tenors.size(), strikes.size(),.1),
-        marketDataPrices_(tenors.size(), strikes.size()),
-        evaluationDate_(Settings::instance().evaluationDate())
+        marketDataPrices_(tenors.size(), strikes.size())
         {
-            // we convert tenors periods into times
+            // we convert tenors periods into times 
             for (Size i = 0 ; i < tenors.size(); i++){
                 Date tenorDate = 
                     calendar.advance(evaluationDate_, tenors[i], convention);
