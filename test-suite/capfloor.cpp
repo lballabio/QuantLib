@@ -316,12 +316,12 @@ void CapFloorTest::testATMRate() {
 
         for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(vols); k++) {
-                boost::shared_ptr<CapFloor> cap = makeCapFloor(CapFloor::Cap,leg,
-                                                        strikes[j],vols[k]);
-                boost::shared_ptr<CapFloor> floor = makeCapFloor(CapFloor::Floor,leg,
-                                                        strikes[j],vols[k]);
-                Rate capATMRate = cap->ATMRate();
-                Rate floorATMRate = floor->ATMRate();
+                boost::shared_ptr<CapFloor> cap =
+                    makeCapFloor(CapFloor::Cap, leg, strikes[j],vols[k]);
+                boost::shared_ptr<CapFloor> floor =
+                    makeCapFloor(CapFloor::Floor, leg, strikes[j],vols[k]);
+                Rate capATMRate = cap->atmRate();
+                Rate floorATMRate = floor->atmRate();
                 if (!checkAbsError(floorATMRate, capATMRate, 1.0e-10))
                     BOOST_FAIL("Cap ATM Rate and floor ATM Rate should be equal :"
                         << "   length:        " << lengths[i] << " years\n"
