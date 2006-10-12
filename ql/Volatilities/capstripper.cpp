@@ -58,7 +58,7 @@ namespace QuantLib {
 
     CapsStripper::CapsStripper(const Calendar & calendar,
                                 BusinessDayConvention convention,
-                                int fixingDays,
+                                Integer fixingDays,
                                 const std::vector<Period>& tenors,
                                 const std::vector<Rate>& strikes,
                                 const std::vector<std::vector<Handle<Quote> > >& volatilities,
@@ -135,8 +135,8 @@ namespace QuantLib {
     };
 
     void CapsStripper::performCalculations () const {
-        Real vegaThreshold = 1e-7;
-        Real accuracy = 1.0e-5;
+        static const Real vegaThreshold = 1e-7;
+        static const Real accuracy = 1.0e-5;
         for (Size j = 0 ; j < strikes_.size(); j++) {
             Real previousCaplets = 0.0;
             bool capVegaIsBigEnough = false;

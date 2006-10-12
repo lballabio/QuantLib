@@ -70,8 +70,8 @@ namespace QuantLib {
     };
     
   
-    class CapsStripper :    public CapletVolatilityStructure, 
-                            public LazyObject{
+    class CapsStripper : public CapletVolatilityStructure, 
+                         public LazyObject{
       public:
         CapsStripper(const Calendar & calendar,
                     BusinessDayConvention convention,
