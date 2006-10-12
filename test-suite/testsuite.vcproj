@@ -818,6 +818,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\capstripper.cpp">
+			</File>
+			<File
 				RelativePath=".\cliquetoption.cpp">
 			</File>
 			<File
@@ -1311,6 +1314,9 @@
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.cpp">
 			</File>
 			<File
 				RelativePath=".\forwardoption.cpp">
@@ -2562,6 +2568,9 @@
 				RelativePath="capfloor.hpp">
 			</File>
 			<File
+				RelativePath=".\capstripper.hpp">
+			</File>
+			<File
 				RelativePath=".\cliquetoption.hpp">
 			</File>
 			<File
@@ -2599,6 +2608,9 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.hpp">
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp">
