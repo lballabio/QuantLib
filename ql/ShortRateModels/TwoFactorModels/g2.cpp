@@ -210,7 +210,7 @@ namespace QuantLib {
                       Real range, Size intervals) const {
 
         Time start = arguments.floatingResetTimes[0];
-        Real w = (arguments.payFixed ? 1 : -1 );
+        Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(),
                                          w, start,
                                          arguments.fixedPayTimes,

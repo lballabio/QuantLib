@@ -77,7 +77,8 @@ namespace QuantLib {
         s1d.setUpperBound(maxStrike);
         Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
-        Option::Type type = arguments_.payFixed?Option::Put:Option::Call;
+        Option::Type w = arguments_.type==VanillaSwap::Payer ?
+                                                Option::Call : Option::Put;
         Size size = arguments_.fixedCoupons.size();
         Real value = 0.0;
         for (Size i=0; i<size; i++) {
@@ -85,7 +86,7 @@ namespace QuantLib {
                                                arguments_.fixedPayTimes[i],
                                                rStar);
             Real dboValue = model_->discountBondOption(
-                                               type, strike, maturity,
+                                               w, strike, maturity,
                                                arguments_.fixedPayTimes[i]);
             value += amounts[i]*dboValue;
         }

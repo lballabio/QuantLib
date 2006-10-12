@@ -424,13 +424,12 @@ void LiborMarketModelTest::testSwaptionPricing() {
                                convention, convention, false, false);
 
             Rate swapRate  = 0.0404;
-            boost::shared_ptr<VanillaSwap> forwardSwap(
-                new VanillaSwap(false, 1.0, schedule, swapRate,
-                                dayCounter, schedule, index,
-                                0.0,
-                                index->dayCounter(),
-                                Handle<YieldTermStructure>(
-                                   index->termStructure())));
+            boost::shared_ptr<VanillaSwap> forwardSwap(new
+                VanillaSwap(VanillaSwap::Receiver, 1.0,
+                            schedule, swapRate, dayCounter,
+                            schedule, index, 0.0, index->dayCounter(),
+                            Handle<YieldTermStructure>(
+                                        index->termStructure())));
 
             // check forward pricing first
             const Real expected = forwardSwap->fairRate();
@@ -442,12 +441,11 @@ void LiborMarketModelTest::testSwaptionPricing() {
                             << "\n    expected:   " << expected);
 
             swapRate = forwardSwap->fairRate();
-            forwardSwap = boost::shared_ptr<VanillaSwap>(
-                new VanillaSwap(false, 1.0, schedule, swapRate,
-                                dayCounter, schedule, index,
-                                0.0,
-                                index->dayCounter(),
-                                Handle<YieldTermStructure>(
+            forwardSwap = boost::shared_ptr<VanillaSwap>(new
+                VanillaSwap(VanillaSwap::Receiver, 1.0,
+                            schedule, swapRate, dayCounter,
+                            schedule, index, 0.0, index->dayCounter(),
+                            Handle<YieldTermStructure>(
                                    index->termStructure())));
 
             if (i == j && i<=size/2) {

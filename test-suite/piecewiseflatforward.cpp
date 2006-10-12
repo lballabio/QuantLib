@@ -191,10 +191,10 @@ void PiecewiseFlatForwardTest::testConsistency() {
         Schedule floatSchedule(settlement,maturity,Period(floatingLegFrequency),
                                calendar,floatingLegConvention,floatingLegConvention,
                                false,false);
-        VanillaSwap swap(true,100.0,
-                         fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,0.0,
-                         Actual360(),euriborHandle);
+        VanillaSwap swap(VanillaSwap::Payer, 100.0,
+                         fixedSchedule, 0.0, fixedLegDayCounter,
+                         floatSchedule, index, 0.0, Actual360(),
+                         euriborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {

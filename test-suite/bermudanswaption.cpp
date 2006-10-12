@@ -37,7 +37,7 @@ Calendar calendar_;
 
 // underlying swap parameters
 Integer startYears_, length_;
-bool payFixed_;
+VanillaSwap::Type type_;
 Real nominal_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
@@ -57,7 +57,7 @@ boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
     Schedule floatSchedule(start, maturity, Period(floatingFrequency_), calendar_,
                            floatingConvention_, floatingConvention_, false, false);
     return boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(payFixed_,nominal_,
+            new VanillaSwap(type_,nominal_,
                             fixedSchedule,fixedRate,fixedDayCount_,
                             floatSchedule,index_,0.0,
                             index_->dayCounter(),termStructure_));
@@ -66,7 +66,7 @@ boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
 void setup() {
     startYears_ = 1;
     length_ = 5;
-    payFixed_ = true;
+    type_ = VanillaSwap::Payer;
     nominal_ = 1000.0;
     settlementDays_ = 2;
     fixedConvention_ = Unadjusted;

@@ -262,10 +262,10 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                euribor6m->businessDayConvention(),
                                euribor6m->businessDayConvention(),
                                false, false);        
-        VanillaSwap swap(true,100.0,
-                         fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,euribor6m,0.0,
-                         Actual360(),curveHandle);
+        VanillaSwap swap(VanillaSwap::Payer, 100.0,
+                         fixedSchedule, 0.0, fixedLegDayCounter,
+                         floatSchedule, euribor6m, 0.0, Actual360(),
+                         curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         Rate approximateRate = curveHandle->parRate(swapData[i].n,
@@ -589,10 +589,10 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                                index->businessDayConvention(),
                                index->businessDayConvention(),
                                false, false);        
-        VanillaSwap swap(true,100.0,
-                         fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,0.0,
-                         Actual360(),curveHandle);
+        VanillaSwap swap(VanillaSwap::Payer, 100.0,
+                         fixedSchedule, 0.0, fixedLegDayCounter,
+                         floatSchedule, index, 0.0, Actual360(),
+                         curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         #ifdef QL_PATCH_BORLAND
@@ -632,10 +632,10 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                                index->businessDayConvention(),
                                index->businessDayConvention(),
                                false, false);        
-        VanillaSwap swap(true,100.0,
-                         fixedSchedule,0.0,fixedLegDayCounter,
-                         floatSchedule,index,0.0,
-                         Actual360(),curveHandle);
+        VanillaSwap swap(VanillaSwap::Payer, 100.0,
+                         fixedSchedule, 0.0, fixedLegDayCounter,
+                         floatSchedule, index, 0.0, Actual360(),
+                         curveHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         #ifdef QL_PATCH_BORLAND

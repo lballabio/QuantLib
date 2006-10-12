@@ -40,7 +40,7 @@ QL_BEGIN_TEST_LOCALS(SwapTest)
 // global data
 
 Date today_, settlement_;
-bool payFixed_;
+VanillaSwap::Type type_;
 Real nominal_;
 Calendar calendar_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
@@ -62,15 +62,15 @@ boost::shared_ptr<VanillaSwap> makeSwap(Integer length, Rate fixedRate,
     Schedule floatSchedule(settlement_,maturity,Period(floatingFrequency_),
                            calendar_,floatingConvention_,floatingConvention_,
                            false,false);
-    return boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(payFixed_,nominal_,
-                            fixedSchedule,fixedRate,fixedDayCount_,
-                            floatSchedule,index_,floatingSpread,
-                            index_->dayCounter(),termStructure_));
+    return boost::shared_ptr<VanillaSwap>(new
+        VanillaSwap(type_, nominal_,
+                    fixedSchedule, fixedRate, fixedDayCount_,
+                    floatSchedule, index_, floatingSpread,
+                    index_->dayCounter(), termStructure_));
 }
 
 void setup() {
-    payFixed_ = true;
+    type_ = VanillaSwap::Payer;
     settlementDays_ = 2;
     nominal_ = 100.0;
     fixedConvention_ = Unadjusted;

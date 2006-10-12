@@ -38,7 +38,7 @@ QL_BEGIN_TEST_LOCALS(SwaptionTest)
 
 Integer exercises[] = { 1, 2, 3, 5, 7, 10 };
 Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-bool payFixed[] = { false, true };
+VanillaSwap::Type type[] = { VanillaSwap::Receiver, VanillaSwap::Payer };
 
 Date today_, settlement_;
 Real nominal_;
@@ -55,7 +55,7 @@ Handle<YieldTermStructure> termStructure_;
 boost::shared_ptr<VanillaSwap> makeSwap(const Date& start, Integer length,
                                         Rate fixedRate,
                                         Spread floatingSpread,
-                                        bool payFixed) {
+                                        VanillaSwap::Type type) {
     Date maturity = calendar_.advance(start,length,Years,
                                       floatingConvention_);
     Schedule fixedSchedule(start,maturity,Period(fixedFrequency_),
@@ -65,16 +65,17 @@ boost::shared_ptr<VanillaSwap> makeSwap(const Date& start, Integer length,
                            calendar_,floatingConvention_,floatingConvention_,
                            false, false);
     return boost::shared_ptr<VanillaSwap>(
-            new VanillaSwap(payFixed,nominal_,
-                            fixedSchedule,fixedRate,fixedDayCount_,
-                            floatSchedule,index_,floatingSpread,
-                            index_->dayCounter(),termStructure_));
+            new VanillaSwap(type, nominal_,
+                            fixedSchedule, fixedRate, fixedDayCount_,
+                            floatSchedule, index_, floatingSpread,
+                            index_->dayCounter(), termStructure_));
 }
 
 boost::shared_ptr<Swaption> makeSwaption(
                                const boost::shared_ptr<VanillaSwap>& swap,
                                const Date& exercise, Volatility volatility,
-                               Settlement::Type type = Settlement::Physical) {
+                               Settlement::Type settlementType =
+                                                    Settlement::Physical) {
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     boost::shared_ptr<PricingEngine> engine(new BlackSwaptionEngine(vol));
     return boost::shared_ptr<Swaption>(new Swaption(
@@ -82,7 +83,7 @@ boost::shared_ptr<Swaption> makeSwaption(
                   boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),
                   termStructure_,
                   engine,
-                  type));
+                  settlementType));
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
@@ -125,7 +126,7 @@ void SwaptionTest::testStrikeDependency() {
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
-            for (Size k=0; k<LENGTH(payFixed); k++) {
+            for (Size k=0; k<LENGTH(type); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
@@ -136,7 +137,7 @@ void SwaptionTest::testStrikeDependency() {
                 for (Size l=0; l<LENGTH(strikes); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
                         makeSwap(startDate,lengths[j],strikes[l],
-                                 0.0,payFixed[k]);
+                                 0.0,type[k]);
                     boost::shared_ptr<Swaption> swaption =
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
@@ -145,7 +146,7 @@ void SwaptionTest::testStrikeDependency() {
                     values_cash.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
-                if (payFixed[k]) {
+                if (type[k]==VanillaSwap::Payer) {
                     std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::less<Real>());
@@ -226,7 +227,7 @@ void SwaptionTest::testSpreadDependency() {
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
-            for (Size k=0; k<LENGTH(payFixed); k++) {
+            for (Size k=0; k<LENGTH(type); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
@@ -237,7 +238,7 @@ void SwaptionTest::testSpreadDependency() {
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
                         makeSwap(startDate,lengths[j],0.06,
-                                 spreads[l],payFixed[k]);
+                                 spreads[l],type[k]);
                     boost::shared_ptr<Swaption> swaption =
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
@@ -246,7 +247,7 @@ void SwaptionTest::testSpreadDependency() {
                     values_cash.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
-                if (payFixed[k]) {
+                if (type[k]==VanillaSwap::Payer) {
                     std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::greater<Real>());
@@ -327,7 +328,7 @@ void SwaptionTest::testSpreadTreatment() {
 
     for (Size i=0; i<LENGTH(exercises); i++) {
         for (Size j=0; j<LENGTH(lengths); j++) {
-            for (Size k=0; k<LENGTH(payFixed); k++) {
+            for (Size k=0; k<LENGTH(type); k++) {
                 Date exerciseDate = calendar_.advance(today_,
                                                       exercises[i],Years);
                 Date startDate = calendar_.advance(exerciseDate,
@@ -335,13 +336,13 @@ void SwaptionTest::testSpreadTreatment() {
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<VanillaSwap> swap =
                         makeSwap(startDate,lengths[j],0.06,
-                                 spreads[l],payFixed[k]);
+                                 spreads[l],type[k]);
                     Spread correction = spreads[l] *
                                         swap->floatingLegBPS() /
                                         swap->fixedLegBPS();
                     boost::shared_ptr<VanillaSwap> equivalentSwap =
                         makeSwap(startDate,lengths[j],0.06+correction,
-                                 0.0,payFixed[k]);
+                                 0.0,type[k]);
                     boost::shared_ptr<Swaption> swaption1 =
                         makeSwaption(swap,exerciseDate,0.20);
                     boost::shared_ptr<Swaption> swaption2 =
@@ -357,7 +358,7 @@ void SwaptionTest::testSpreadTreatment() {
                             "wrong spread treatment: \n"
                             << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
-                            << "    pay " << (payFixed[k] ? "fixed\n"
+                            << "    pay " << (type[k] ? "fixed\n"
                                                           : "floating\n")
                             << "    spread: " << io::rate(spreads[l]) << "\n"
                             << "    value of original swaption:   "
@@ -370,7 +371,7 @@ void SwaptionTest::testSpreadTreatment() {
                             "wrong spread treatment: \n"
                             << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
-                            << "    pay " << (payFixed[k] ? "fixed\n"
+                            << "    pay " << (type[k] ? "fixed\n"
                                                           : "floating\n")
                             << "    spread: " << io::rate(spreads[l]) << "\n"
                             << "    value of original swaption:   "
@@ -399,7 +400,8 @@ void SwaptionTest::testCachedValue() {
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
-    boost::shared_ptr<VanillaSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
+    boost::shared_ptr<VanillaSwap> swap = makeSwap(startDate, 10, 0.06, 0.0,
+                                                         VanillaSwap::Payer);
     boost::shared_ptr<Swaption> swaption =
         makeSwaption(swap,exerciseDate,0.20);
     #ifndef QL_USE_INDEXED_COUPON
@@ -442,14 +444,14 @@ void SwaptionTest::testCashSettledSwaptions() {
             Schedule fixedSchedule_u(startDate,maturity,Period(fixedFrequency_),
                                      calendar_,Unadjusted,Unadjusted,false,true);
             boost::shared_ptr<VanillaSwap> swap_u360(
-                                    new VanillaSwap(payFixed[0], nominal_,
+                                    new VanillaSwap(type[0], nominal_,
                                     fixedSchedule_u,strike,Thirty360(),
                                     floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             // Swap with fixed leg conventions: Business Days = Unadjusted, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_u365(
-                                    new VanillaSwap(payFixed[0],nominal_,
+                                    new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_u,strike,Actual365Fixed(),
                                     floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
@@ -459,14 +461,14 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      calendar_,ModifiedFollowing,ModifiedFollowing,
                                      false,true);
             boost::shared_ptr<VanillaSwap> swap_a360(
-                                    new VanillaSwap(payFixed[0],nominal_,
+                                    new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_a,strike,Thirty360(),
                                     floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
             // Swap with fixed leg conventions: Business Days = Modified Following, DayCount = Act/365
             boost::shared_ptr<VanillaSwap> swap_a365(
-                                    new VanillaSwap(payFixed[0],nominal_,
+                                    new VanillaSwap(type[0],nominal_,
                                     fixedSchedule_a,strike,Actual365Fixed(),
                                     floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
@@ -502,20 +504,20 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Annuity calculated by swap method fixedLegBPS().
             // Fixed leg conventions: Unadjusted, 30/360
             Real annuity_u360 = swap_u360->fixedLegBPS() / 0.0001;
-            annuity_u360 = swap_u360->payFixedRate() ? -annuity_u360 :
-                                                        annuity_u360 ;
+            annuity_u360 = swap_u360->type()==VanillaSwap::Payer ?
+                -annuity_u360 : annuity_u360;
             // Fixed leg conventions: ModifiedFollowing, act/365
             Real annuity_a365 = swap_a365->fixedLegBPS() / 0.0001;
-            annuity_a365 = swap_a365->payFixedRate() ? -annuity_a365 :
-                                                        annuity_a365 ;
+            annuity_a365 = swap_a365->type()==VanillaSwap::Payer ?
+                -annuity_a365 : annuity_a365;
             // Fixed leg conventions: ModifiedFollowing, 30/360
             Real annuity_a360 = swap_a360->fixedLegBPS() / 0.0001;
-            annuity_a360 = swap_a360->payFixedRate() ? -annuity_a360 :
-                                                        annuity_a360 ;
+            annuity_a360 = swap_a360->type()==VanillaSwap::Payer ?
+                -annuity_a360 : annuity_a360;
             // Fixed leg conventions: Unadjusted, act/365
             Real annuity_u365 = swap_u365->fixedLegBPS() / 0.0001;
-            annuity_u365 = swap_u365->payFixedRate() ? -annuity_u365 :
-                                                        annuity_u365 ;
+            annuity_u365 = swap_u365->type()==VanillaSwap::Payer ?
+                -annuity_u365 : annuity_u365;
 
             // Calculation of Modified Annuity (cash settlement)
             // Fixed leg conventions of swap: unadjusted, 30/360
@@ -604,7 +606,7 @@ void SwaptionTest::testCashSettledSwaptions() {
             Real npv_ratio_u365 = value_c_u365 / value_p_u365;
             Real annuity_ratio_u365 =  cashannuity_u365 / annuity_u365;
 
-            if ( std::fabs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
+            if (std::fabs(annuity_ratio_u360-npv_ratio_u360)>1e-10 ) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -636,7 +638,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_u360-npv_ratio_u360) );
             }
-            if ( std::fabs(annuity_ratio_a365-npv_ratio_a365)>1e-10 ) {
+            if (std::fabs(annuity_ratio_a365-npv_ratio_a365)>1e-10) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -668,7 +670,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_a365-npv_ratio_a365) );
                 }
-            if ( std::fabs(annuity_ratio_a360-npv_ratio_a360)>1e-10 ) {
+            if (std::fabs(annuity_ratio_a360-npv_ratio_a360)>1e-10) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -700,7 +702,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                             "    difference : " <<
                             (annuity_ratio_a360-npv_ratio_a360) );
             }
-            if ( std::fabs(annuity_ratio_u365-npv_ratio_u365)>1e-10 ) {
+            if (std::fabs(annuity_ratio_u365-npv_ratio_u365)>1e-10) {
                 BOOST_ERROR("\n" <<
                             "    The npv's ratio must be equal to " <<
                             " annuities ratio" << "\n"
@@ -764,9 +766,9 @@ void SwaptionTest::testImpliedVolatility() {
             Date maturity = calendar_.advance(startDate,lengths[j],Years,
                                               floatingConvention_);
             for (Size t=0; t<LENGTH(strikes); t++) {
-                for (Size k=0; k<LENGTH(payFixed); k++) {
+                for (Size k=0; k<LENGTH(type); k++) {
                     boost::shared_ptr<VanillaSwap> swap =
-                      makeSwap(startDate,lengths[j],strikes[t],0.,payFixed[k]);
+                      makeSwap(startDate,lengths[j],strikes[t],0.,type[k]);
                     for (Size h=0; h<LENGTH(types); h++) {
                         for (Size u=0; u<LENGTH(vols); u++) {
                             boost::shared_ptr<Swaption> swaption =
@@ -792,7 +794,7 @@ void SwaptionTest::testImpliedVolatility() {
                                 swaption->setPricingEngine(makeEngine(implVol));
                                 Real value2 = swaption->NPV();
                                 if (std::fabs(value-value2) > tolerance) {
-                                    if (payFixed[k]) {
+                                    if (type[k]==VanillaSwap::Payer) {
                                         BOOST_ERROR(
                                             "    Payer swaption " <<
                                             exercises[i] << "y x " << lengths[j] << "y" << "\n"

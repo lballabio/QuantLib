@@ -30,7 +30,8 @@ namespace QuantLib {
         Time exercise = arguments_.stoppingTimes[0];
         Time length   = arguments_.fixedPayTimes.back()
                              - arguments_.fixedResetTimes[0];
-        Option::Type w = arguments_.payFixed ? Option::Call : Option::Put;
+        Option::Type w = arguments_.type==VanillaSwap::Payer ?
+                                                Option::Call : Option::Put;
         Volatility vol = model_->getSwaptionVolatilityMatrix()
                                            ->volatility(exercise, length,
                                                         arguments_.fairRate,

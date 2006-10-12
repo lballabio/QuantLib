@@ -70,7 +70,7 @@ namespace QuantLib {
                 Real nominal = arguments_.nominal;
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = nominal*(1.0 - bond.values()[j]);
-                    if (arguments_.payFixed)
+                    if (arguments_.type==VanillaSwap::Payer)
                         values_[j] += coupon;
                     else
                         values_[j] -= coupon;
@@ -88,7 +88,7 @@ namespace QuantLib {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = fixedCoupon*bond.values()[j];
-                    if (arguments_.payFixed)
+                    if (arguments_.type==VanillaSwap::Payer)
                         values_[j] -= coupon;
                     else
                         values_[j] += coupon;
@@ -105,7 +105,7 @@ namespace QuantLib {
             Time reset = arguments_.fixedResetTimes[i];
             if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
-                if (arguments_.payFixed)
+                if (arguments_.type==VanillaSwap::Payer)
                     values_ -= fixedCoupon;
                 else
                     values_ += fixedCoupon;
@@ -117,7 +117,7 @@ namespace QuantLib {
                 Time t = arguments_.floatingPayTimes[i];
                 Time reset = arguments_.floatingResetTimes[i];
                 if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
-                    if (arguments_.payFixed)
+                    if (arguments_.type==VanillaSwap::Payer)
                         values_ += arguments_.currentFloatingCoupon;
                     else
                         values_ -= arguments_.currentFloatingCoupon;

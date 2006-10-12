@@ -272,10 +272,10 @@ void CapFloorTest::testParity() {
                                               convention_);
             Schedule schedule(startDate,maturity,Period(frequency_),calendar_,
                               convention_,convention_,false,false);
-            VanillaSwap swap(true,nominals_[0],
-                             schedule,strikes[j],index_->dayCounter(),
-                             schedule,index_,0.0,
-                             index_->dayCounter(), termStructure_);
+            VanillaSwap swap(VanillaSwap::Payer, nominals_[0],
+                             schedule, strikes[j], index_->dayCounter(),
+                             schedule, index_, 0.0, index_->dayCounter(),
+                             termStructure_);
             if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "put/call parity violated:\n"
@@ -331,10 +331,10 @@ void CapFloorTest::testATMRate() {
                         << "   floor ATM rate:" << floorATMRate << "\n"
                         << "   relative Error:" 
                         << relativeError(capATMRate, floorATMRate, capATMRate)*100 << "%" );
-                VanillaSwap swap(true,nominals_[0],
-                    schedule,floorATMRate,index_->dayCounter(),
-                    schedule,index_,0.0,
-                    index_->dayCounter(), termStructure_);
+                VanillaSwap swap(VanillaSwap::Payer, nominals_[0],
+                                 schedule, floorATMRate, index_->dayCounter(),
+                                 schedule, index_, 0.0, index_->dayCounter(),
+                                 termStructure_);
                 Real swapNPV = swap.NPV();
                 if (!checkAbsError(swapNPV, 0, 1.0e-10))
                     BOOST_FAIL("the NPV of a Swap struck at ATM rate should be equal to 0:"

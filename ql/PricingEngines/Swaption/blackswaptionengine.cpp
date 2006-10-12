@@ -63,11 +63,11 @@ namespace QuantLib {
         Volatility vol = volatility_->volatility(exercise,
                                                  maturity-exercise,
                                                  arguments_.fixedRate);
-        Option::Type w = arguments_.payFixed ? Option::Call : Option::Put;
-        results_.value = annuity * blackFormula(w,
-            arguments_.fixedRate,
-            arguments_.fairRate,
-            vol*std::sqrt(exercise));
+        Option::Type w = arguments_.type==VanillaSwap::Payer ?
+                                                Option::Call : Option::Put;
+        results_.value = annuity * blackFormula(w, arguments_.fixedRate,
+                                                arguments_.fairRate,
+                                                vol*std::sqrt(exercise));
     }
 
 }

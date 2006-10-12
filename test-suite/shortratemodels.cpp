@@ -202,10 +202,10 @@ void ShortRateModelTest::testSwaps() {
                                    false,false);                     
             for (Size k=0; k<LENGTH(rates); k++) {
 
-                VanillaSwap swap(true, 1000000.0,
+                VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
                                  fixedSchedule, rates[k], Thirty360(),
-                                 floatSchedule, euribor, 0.0,
-                                 Actual360(), termStructure);
+                                 floatSchedule, euribor, 0.0, Actual360(),
+                                 termStructure);
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
                 Real calculated = swap.NPV();

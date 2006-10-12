@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -50,9 +51,23 @@ namespace QuantLib {
     */
     class VanillaSwap : public Swap {
       public:
+        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
+        #ifndef QL_DISABLE_DEPRECATED
         VanillaSwap(bool payFixedRate,
+                    Real nominal,
+                    const Schedule& fixedSchedule,
+                    Rate fixedRate,
+                    const DayCounter& fixedDayCount,
+                    const Schedule& floatSchedule,
+                    const boost::shared_ptr<Xibor>& index,
+                    Spread spread,
+                    const DayCounter& floatingDayCount,
+                    const Handle<YieldTermStructure>& termStructure);
+        bool payFixedRate() const { return type_==Payer ? true : false; }
+        #endif
+        VanillaSwap(Type type,
                     Real nominal,
                     const Schedule& fixedSchedule,
                     Rate fixedRate,
@@ -71,7 +86,7 @@ namespace QuantLib {
         Rate fixedRate() const;
         Spread spread() const;
         Real nominal() const;
-        bool payFixedRate() const;
+        Type type() const;
         const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const {
             return legs_[0];
         }
@@ -84,7 +99,7 @@ namespace QuantLib {
       private:
         void setupExpired() const;
         void performCalculations() const;
-        bool payFixedRate_;
+        Type type_;
         Rate fixedRate_;
         Spread spread_;
         Real nominal_;
@@ -97,10 +112,16 @@ namespace QuantLib {
     //! %Arguments for simple swap calculation
     class VanillaSwap::arguments : public virtual Arguments {
       public:
-        arguments() : payFixed(false),
+        arguments() : type(Receiver),
+                      #ifndef QL_DISABLE_DEPRECATED
+                      payFixed(false),
+                      #endif
                       nominal(Null<Real>()),
                       currentFloatingCoupon(Null<Real>()) {}
+        #ifndef QL_DISABLE_DEPRECATED
         bool payFixed;
+        #endif
+        Type type;
         Real nominal;
         std::vector<Time> fixedResetTimes;
         std::vector<Time> fixedPayTimes;
@@ -169,7 +190,7 @@ namespace QuantLib {
         operator boost::shared_ptr<VanillaSwap>() const ;
 
       private:
-        bool payFixed_;
+        VanillaSwap::Type type_;
         Real nominal_;
         Date effectiveDate_;
         Period swapTenor_, fixedTenor_, floatTenor_; 
@@ -202,16 +223,16 @@ namespace QuantLib {
         return nominal_;
     }
 
-    inline bool VanillaSwap::payFixedRate() const {
-        return payFixedRate_;
-    }
+    inline VanillaSwap::Type VanillaSwap::type() const {
+        return type_;
+    };
 
 
 
 
 
     inline MakeVanillaSwap& MakeVanillaSwap::receiveFixed(bool flag) {
-        payFixed_ = !flag;
+        type_ = flag ? VanillaSwap::Receiver : VanillaSwap::Payer ;
         return *this;
     }
 

@@ -26,6 +26,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     VanillaSwap::VanillaSwap(bool payFixedRate,
                              Real nominal,
                              const Schedule& fixedSchedule,
@@ -39,7 +40,58 @@ namespace QuantLib {
     : Swap(termStructure,
            std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >()),
-      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
+      type_(payFixedRate ? Payer : Receiver), fixedRate_(fixedRate),
+      spread_(spread), nominal_(nominal) {
+
+        BusinessDayConvention convention =
+            floatSchedule.businessDayConvention();
+
+        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+            FixedRateCouponVector(fixedSchedule,
+                                  convention,
+                                  std::vector<Real>(1,nominal),
+                                  std::vector<Rate>(1,fixedRate),
+                                  fixedDayCount);
+
+        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
+            FloatingRateCouponVector(floatSchedule,
+                                     convention,
+                                     std::vector<Real>(1,nominal),
+                                     index->settlementDays(), index,
+                                     std::vector<Real>(1,1.0),
+                                     std::vector<Spread>(1,spread),
+                                     floatingDayCount);
+        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+
+        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
+            registerWith(*i);
+
+        legs_[0] = fixedLeg;
+        legs_[1] = floatingLeg;
+        if (type_==Payer) {
+            payer_[0]=-1.0;
+            payer_[1]=+1.0;
+        } else {
+            payer_[0]=+1.0;
+            payer_[1]=-1.0;
+        }
+    }
+    #endif
+
+    VanillaSwap::VanillaSwap(Type type,
+                             Real nominal,
+                             const Schedule& fixedSchedule,
+                             Rate fixedRate,
+                             const DayCounter& fixedDayCount,
+                             const Schedule& floatSchedule,
+                             const boost::shared_ptr<Xibor>& index,
+                             Spread spread,
+                             const DayCounter& floatingDayCount,
+                             const Handle<YieldTermStructure>& termStructure)
+    : Swap(termStructure,
+           std::vector<boost::shared_ptr<CashFlow> >(),
+           std::vector<boost::shared_ptr<CashFlow> >()),
+      type_(type), fixedRate_(fixedRate), spread_(spread),
       nominal_(nominal) {
 
         BusinessDayConvention convention =
@@ -67,7 +119,7 @@ namespace QuantLib {
 
         legs_[0] = fixedLeg;
         legs_[1] = floatingLeg;
-        if (payFixedRate_) {
+        if (type_==Payer) {
             payer_[0]=-1.0;
             payer_[1]=+1.0;
         } else {
@@ -82,7 +134,10 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        arguments->payFixed = payFixedRate_;
+        arguments->type = type_;
+        #ifndef QL_DISABLE_DEPRECATED
+        arguments->payFixed = type_==Payer ? true : false;
+        #endif
         arguments->nominal = nominal_;
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();
@@ -224,7 +279,7 @@ namespace QuantLib {
                                      Rate fixedRate,
                                      const boost::shared_ptr<Xibor>& index,
                                      const Handle<YieldTermStructure>& termStructure)
-    : payFixed_(true), nominal_(1.0), 
+    : type_(VanillaSwap::Payer), nominal_(1.0), 
       effectiveDate_(effectiveDate), swapTenor_(swapTenor),
       fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
       fixedCalendar_(cal), floatCalendar_(cal),
@@ -260,7 +315,7 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        return VanillaSwap(payFixed_, nominal_,
+        return VanillaSwap(type_, nominal_,
                        fixedSchedule, fixedRate_, fixedDayCount_,
                        floatSchedule, index_, floatSpread_, floatDayCount_,
                        termStructure_);
@@ -283,7 +338,7 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         return boost::shared_ptr<VanillaSwap>(new
-            VanillaSwap(payFixed_, nominal_,
+            VanillaSwap(type_, nominal_,
                    fixedSchedule, fixedRate_, fixedDayCount_,
                    floatSchedule, index_, floatSpread_, floatDayCount_,
                    termStructure_));
