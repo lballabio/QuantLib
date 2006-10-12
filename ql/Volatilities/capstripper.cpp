@@ -56,67 +56,83 @@ namespace QuantLib {
                                         index_->dayCounter());
     };
 
-    CapsStripper::CapsStripper(const Calendar & calendar,
-                                BusinessDayConvention convention,
-                                Integer fixingDays,
-                                const std::vector<Period>& tenors,
-                                const std::vector<Rate>& strikes,
-                                const std::vector<std::vector<Handle<Quote> > >& volatilities,
-                                const DayCounter& dayCounter,
-                                const boost::shared_ptr<Xibor>& index,
-                                const Handle< YieldTermStructure > yieldTermStructure)
-        :CapletVolatilityStructure(0, calendar),
-        dayCounter_(dayCounter),
-        evaluationDate_(Settings::instance().evaluationDate()),
-        tenorTimes_(tenors.size()),
-        strikes_(strikes),
-        volatilities_(tenors.size(), strikes.size(),.1),
-        marketDataPrices_(tenors.size(), strikes.size())
-        {
-            // we convert tenors periods into times 
-            for (Size i = 0 ; i < tenors.size(); i++){
-                Date tenorDate = 
-                    calendar.advance(evaluationDate_, tenors[i], convention);
-                tenorTimes_[i] = dayCounter_.yearFraction(evaluationDate_,tenorDate);
-            }
-            bilinearInterpolation_ = boost::shared_ptr<BilinearInterpolation>(
-                   new BilinearInterpolation(tenorTimes_.begin(),tenorTimes_.end(),
-                               strikes_.begin(), strikes_.end(), volatilities_));
+    CapsStripper::CapsStripper(
+        const Calendar & calendar,
+        BusinessDayConvention convention,
+        Integer fixingDays,
+        const std::vector<Period>& tenors,
+        const std::vector<Rate>& strikes,
+        const std::vector<std::vector<Handle<Quote> > >& vols,
+        const DayCounter& dayCounter,
+        const boost::shared_ptr<Xibor>& index,
+        const Handle< YieldTermStructure > termStructure)
+    : CapletVolatilityStructure(0, calendar),
+      dayCounter_(dayCounter),
+      evaluationDate_(Settings::instance().evaluationDate()),
+      tenors_(tenors), tenorTimes_(tenors.size()),
+      strikes_(strikes),
+      volatilities_(tenors.size(), strikes.size(),.1),
+      marketDataPrices_(tenors.size(), strikes.size()) {
 
-           // we create the caps we will need later on
-            LegHelper legHelper(evaluationDate_, calendar, fixingDays, convention, index);
-            // market data
-            marketDataCap.resize(tenors.size());
-            for (Size i = 0 ; i < tenorTimes_.size(); i++){
-               FloatingLeg floatingLeg = legHelper.makeLeg(index->tenor(), tenors[i]);
-               marketDataCap[i].resize(strikes_.size());
-               for (Size j = 0 ; j < strikes_.size(); j++){
-                   boost::shared_ptr<PricingEngine> blackCapFloorEngine
-                                             (new BlackCapFloorEngine(volatilities[i][j]));
-                   marketDataCap[i][j] = boost::shared_ptr<CapFloor>(new Cap(floatingLeg,
-                                             std::vector<Real>(1,strikes_[j]),
-                                             yieldTermStructure, blackCapFloorEngine));
-                   registerWith(marketDataCap[i][j]);
-                   // we initialise the stripped volatilities with none stripped ones...
-                   volatilities_[i][j] = volatilities[i][j]->value();
-               }
+        QL_REQUIRE(vols.size()==tenors.size(),
+                   "mismatch between tenors(" << tenors.size() <<
+                   ") and vol rows(" << vols.size() << ")");
+        QL_REQUIRE(vols[0].size()==strikes.size(),
+                   "mismatch between strikes(" << strikes.size() <<
+                   ") and vol columns(" << vols[0].size() << ")");
+
+        // we convert tenors periods into times 
+        for (Size i = 0 ; i < tenors.size(); i++){
+            Date tenorDate = 
+                calendar.advance(evaluationDate_, tenors[i], convention);
+            tenorTimes_[i] = dayCounter_.yearFraction(evaluationDate_,tenorDate);
+        }
+        bilinearInterpolation_ = boost::shared_ptr<BilinearInterpolation>(new
+            BilinearInterpolation(tenorTimes_.begin(),tenorTimes_.end(),
+                                  strikes_.begin(), strikes_.end(),
+                                  volatilities_));
+
+        // we create the caps we will need later on
+        LegHelper legHelper(evaluationDate_, calendar, fixingDays,
+            convention, index);
+        // market data
+        marketDataCap_.resize(tenors.size());
+        for (Size i = 0 ; i < tenorTimes_.size(); i++) {
+           FloatingLeg floatingLeg = legHelper.makeLeg(index->tenor(),
+               tenors[i]);
+           marketDataCap_[i].resize(strikes_.size());
+           for (Size j = 0 ; j < strikes_.size(); j++) {
+               boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
+                   BlackCapFloorEngine(vols[i][j]));
+               marketDataCap_[i][j] = boost::shared_ptr<CapFloor>(new
+                   Cap(floatingLeg, std::vector<Real>(1,strikes_[j]),
+                       termStructure, blackCapFloorEngine));
+               registerWith(marketDataCap_[i][j]);
+               // we initialise stripped volatilities with non-stripped ones...
+               volatilities_[i][j] = vols[i][j]->value();
+           }
+        }
+        // stripped Caps
+        strippedCap_.resize(tenors.size()-1);
+        for (Size i = 0 ; i < strippedCap_.size(); i++) {
+           FloatingLeg floatingLeg = legHelper.makeLeg(tenors[i],tenors[i+1]);
+           strippedCap_[i].resize(strikes_.size());
+            for (Size j = 0 ; j < strikes_.size(); j++) {
+               boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
+                   BlackCapFloorEngine(vols[i][j]));
+               strippedCap_[i][j] = boost::shared_ptr<CapFloor>(new
+                   Cap(floatingLeg, std::vector<Real>(1,strikes_[j]),
+                       termStructure, blackCapFloorEngine));
             }
-            // stripped Caps
-            strippedCap.resize(tenors.size()-1);
-            for (Size i = 0 ; i < strippedCap.size(); i++){
-               FloatingLeg floatingLeg = legHelper.makeLeg(tenors[i],tenors[i+1]);
-               strippedCap[i].resize(strikes_.size());
-                for (Size j = 0 ; j < strikes_.size(); j++){
-                   boost::shared_ptr<PricingEngine> blackCapFloorEngine
-                                             (new BlackCapFloorEngine(volatilities[i][j]));
-                   strippedCap[i][j] = boost::shared_ptr<CapFloor>(new Cap(floatingLeg,
-                                             std::vector<Real>(1,strikes_[j]),
-                                             yieldTermStructure, blackCapFloorEngine));
-                }
-            }
-        // why is the return of floatingLeg() of CashFlow type ?
-        maxDate_ = boost::dynamic_pointer_cast<FloatingRateCoupon>
-                    (marketDataCap.back().front()->floatingLeg().back())->fixingDate(); 
+        }
+
+        const std::vector<boost::shared_ptr<CapFloor> >& lastCapFloorRow =
+            marketDataCap_.back();
+        boost::shared_ptr<CapFloor> lastCap = lastCapFloorRow.front();
+        boost::shared_ptr<CashFlow> lastCoupon(lastCap->floatingLeg().back());
+        boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
+        maxDate_ = lastFloatingCoupon->fixingDate(); 
     };
 
     void printFloatingLeg(const FloatingLeg& floatingLeg){
@@ -141,18 +157,18 @@ namespace QuantLib {
             Real previousCaplets = 0.0;
             bool capVegaIsBigEnough = false;
             for (Size i = 0 ; i < tenorTimes_.size()-1; i++) {
-                Real capPrice = marketDataCap[i][j]->NPV();
+                Real capPrice = marketDataCap_[i][j]->NPV();
                 if (!capVegaIsBigEnough){
-                    Real vol = marketDataCap[i][j]->impliedVolatility(
+                    Real vol = marketDataCap_[i][j]->impliedVolatility(
                             capPrice, accuracy, 100);
-                    Real vega = marketDataCap[i][j]->vega(vol);
+                    Real vega = marketDataCap_[i][j]->vega(vol);
                     capVegaIsBigEnough = vega > vegaThreshold;
                     if (capVegaIsBigEnough)
                         for (Size k = 0; k<=i; ++k)
                             volatilities_[k][j] = vol;
                 }else{
                    Real capletsPrice = capPrice-previousCaplets;
-                        volatilities_[i][j] = strippedCap[i-1][j]->impliedVolatility(
+                        volatilities_[i][j] = strippedCap_[i-1][j]->impliedVolatility(
                             capletsPrice, accuracy, 100);
                     previousCaplets = capPrice;
                 }

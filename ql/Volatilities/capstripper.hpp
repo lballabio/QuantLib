@@ -74,46 +74,44 @@ namespace QuantLib {
                          public LazyObject{
       public:
         CapsStripper(const Calendar & calendar,
-                    BusinessDayConvention convention,
-                    int fixingDays,
-                    const std::vector<Period>& tenors,
-                    const std::vector<Rate>& strikes,
-                    const std::vector<std::vector<Handle<Quote> > >& volatilities,
-                    const DayCounter& dayCounter,
-                    const boost::shared_ptr<Xibor>& index,
-                    const Handle< YieldTermStructure > yieldTermStructure);
-      //@}
-      //! \name LazyObject interface
-      //@{
-      void performCalculations () const;
-
-      void update(){
-          LazyObject::update();
-      };
-
-      //@}
-      //! \name TermStructure interface
-      //@{
-      virtual Date maxDate() const;
-      virtual DayCounter dayCounter() const;
-
-      //@}
-      //! \name CapletVolatilityStructure interface
-      //@{
-      virtual Real minStrike() const;
-      virtual Real maxStrike() const;
-
+                     BusinessDayConvention convention,
+                     Integer fixingDays,
+                     const std::vector<Period>& tenors,
+                     const std::vector<Rate>& strikes,
+                     const std::vector<std::vector<Handle<Quote> > >& vols,
+                     const DayCounter& dayCounter,
+                     const boost::shared_ptr<Xibor>& index,
+                     const Handle< YieldTermStructure > termStructure);
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations () const;
+        void update() { LazyObject::update(); };
+        //@}
+        //! \name TermStructure interface
+        //@{
+        Date maxDate() const;
+        DayCounter dayCounter() const;
+        //@}
+        //! \name CapletVolatilityStructure interface
+        //@{
+        Real minStrike() const;
+        Real maxStrike() const;
+        //@}
+        const std::vector<Period>& tenors() { return tenors_; }
+        const std::vector<Rate>& strikes() { return strikes_; }
       protected:
-          Volatility volatilityImpl(Time t, Rate r) const{
+          Volatility volatilityImpl(Time t, Rate r) const {
             calculate();
             return bilinearInterpolation_->operator()(t, r, true);
           };
       private:
-        std::vector<std::vector<boost::shared_ptr<CapFloor> > > marketDataCap;
-        std::vector<std::vector<boost::shared_ptr<CapFloor> > > strippedCap;
+        std::vector<std::vector<boost::shared_ptr<CapFloor> > >
+            marketDataCap_, strippedCap_;
         boost::shared_ptr<BilinearInterpolation> bilinearInterpolation_;
         DayCounter dayCounter_;
         Date evaluationDate_, maxDate_;
+        std::vector<Period> tenors_;
         std::vector<Time> tenorTimes_;
         std::vector<Rate> strikes_;
         mutable Matrix volatilities_, marketDataPrices_;

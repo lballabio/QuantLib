@@ -23,7 +23,7 @@
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/Solvers1D/newtonsafe.hpp>
-#include <ql\CashFlows\analysis.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
@@ -56,7 +56,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    Rate CapFloor::ATMRate() const {
+    Rate CapFloor::atmRate() const {
 
         Real bps = Cashflows::bps(floatingLeg_, termStructure_);
         Real npv = Cashflows::npv(floatingLeg_, termStructure_);
@@ -188,7 +188,7 @@ namespace QuantLib {
 
         Volatility guess = 0.10;   // no way we can get a more accurate one
 
-        ImpliedVolHelper f(*this,termStructure_,targetValue);
+        ImpliedVolHelper f(*this, termStructure_, targetValue);
         Brent solver;
         //NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
@@ -229,10 +229,10 @@ namespace QuantLib {
     }
 
     Real CapFloor::ImpliedVolHelper::derivative(Volatility x) const {
-    //    vol_->setValue(x);
-    //    engine_->calculate();
-    //    return results_->vega;
+        vol_->setValue(x);
+        engine_->calculate();
         return 0.0;
+        //return results_->vega;
     }
 
     std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {

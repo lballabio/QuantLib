@@ -81,7 +81,7 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {
             return floatingLeg_;
         }
-        Rate ATMRate() const;
+        Rate atmRate() const;
         Real vega(const Volatility& volatility) const;
         //@}
         void setupArguments(Arguments*) const;
