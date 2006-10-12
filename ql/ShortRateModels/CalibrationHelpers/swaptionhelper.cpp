@@ -58,28 +58,21 @@ namespace QuantLib {
                                index->businessDayConvention(),
                                false, false);
 
-        Rate fixedRate = 0.0;  //dummy value
-        swap_ = boost::shared_ptr<VanillaSwap>(
-                      new VanillaSwap(false, 1.0, fixedSchedule, fixedRate,
-                                      fixedLegDayCounter, floatSchedule,
-                                      index,
-                                      0.0, floatingLegDayCounter,
-                                      termStructure));
-        Rate fairFixedRate = swap_->fairRate();
-        swap_ = boost::shared_ptr<VanillaSwap>(
-                      new VanillaSwap(false, 1.0, fixedSchedule, fairFixedRate,
-                                      fixedLegDayCounter, floatSchedule,
-                                      index,
-                                      0.0, floatingLegDayCounter,
-                                      termStructure));
+        exerciseRate_ = VanillaSwap(VanillaSwap::Receiver, 1.0,
+                        fixedSchedule, 0.0, fixedLegDayCounter,
+                        floatSchedule, index, 0.0, floatingLegDayCounter,
+                        termStructure).fairRate();
+        swap_ = boost::shared_ptr<VanillaSwap>(new
+            VanillaSwap(VanillaSwap::Receiver, 1.0,
+                        fixedSchedule, exerciseRate_, fixedLegDayCounter,
+                        floatSchedule, index, 0.0, floatingLegDayCounter,
+                        termStructure));
 
-        exerciseRate_ = fairFixedRate;
         engine_  = boost::shared_ptr<PricingEngine>();
-        swaption_ = boost::shared_ptr<Swaption>(new Swaption(
-            swap_,
-            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)),
-            termStructure,
-            engine_));
+        boost::shared_ptr<Exercise> exercise(new
+            EuropeanExercise(exerciseDate));
+        swaption_ = boost::shared_ptr<Swaption>(new
+            Swaption(swap_, exercise, termStructure, engine_));
         marketValue_ = blackPrice(volatility_->value());
     }
 
