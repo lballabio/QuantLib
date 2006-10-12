@@ -29,40 +29,37 @@ namespace QuantLib {
 
         class HypersphereCostFunction : public CostFunction {
           private:
-            Matrix matrix_;
+            Matrix targetMatrix_;
             Size size_;
+            mutable Matrix currentRoot_, tempMatrix_, currentMatrix_;
           public:
-            void setMatrix(const Matrix& matrix){
-                matrix_=matrix;
-            }
-            void setSize(const Size& size){
-                size_=size;
-            }
-            Real value(const Array& x) const{
+            HypersphereCostFunction(const Matrix& targetMatrix)
+            : targetMatrix_(targetMatrix), size_(targetMatrix.rows()),
+              currentRoot_(size_, size_), tempMatrix_(size_, size_),
+              currentMatrix_(size_, size_) {}
+            Real value(const Array& x) const {
                 Size i,j,k;
-                Matrix result(size_,size_,1.0);
-                Matrix resultTranspose(size_,size_);
-                Matrix resultProduct(size_,size_);
+                std::fill(currentRoot_.begin(), currentRoot_.end(), 1.0);
                 for (i=0;i<size_;i++) {
                     for (k=0;k<size_;k++) {
                         for (j=0;j<=k;j++) {
                             if (j == k && k!=size_-1)
-                                result[i][k] *= std::cos(x[j*size_+i]);
-                            else
-                                if (j!=size_-1)
-                                    result[i][k] *= std::sin(x[j*size_+i]);
+                                currentRoot_[i][k] *= std::cos(x[j*size_+i]);
+                            else if (j!=size_-1)
+                                currentRoot_[i][k] *= std::sin(x[j*size_+i]);
                         }
                     }
                 }
-                Real value=0;
-                resultTranspose=transpose(result);
-                resultProduct=result * resultTranspose;
+                Real temp, error=0;
+                tempMatrix_ = transpose(currentRoot_);
+                currentMatrix_ = currentRoot_ * tempMatrix_;
                 for (i=0;i<size_;i++) {
                     for (j=0;j<size_;j++) {
-                        value+=pow(resultProduct[i][j]-matrix_[i][j],2.);
+                        temp = currentMatrix_[i][j]-targetMatrix_[i][j];
+                        error += temp*temp;
                     }
                 }
-                return value;
+                return error;
             }
         };
 
@@ -110,9 +107,11 @@ namespace QuantLib {
                 Real norm = 0.0;
                 for (j = 0; j < size; j++)
                     norm += result[i][j]*result[i][j];
-                norm = std::sqrt(matrix[i][i]/norm);
-                for (j = 0; j < size; j++)
-                    result[i][j] *= norm;
+                if (norm>0.0) {
+                    norm = std::sqrt(matrix[i][i]/norm);
+                    for (j = 0; j < size; j++)
+                        result[i][j] *= norm;
+                }
             }
             break;
           case SalvagingAlgorithm::Hypersphere:
@@ -124,14 +123,17 @@ namespace QuantLib {
                 if (jd.eigenvalues()[i]<0.0) negative=true;
             }
             result = jd.eigenvectors() * diagonal;
+
             // row normalization
             for (i = 0; i < size; i++) {
                 Real norm = 0.0;
                 for (j = 0; j < size; j++)
                     norm += result[i][j]*result[i][j];
-                norm = std::sqrt(matrix[i][i]/norm);
-                for (j = 0; j < size; j++)
-                    result[i][j] *= norm;
+                if (norm>0.0) {
+                    norm = std::sqrt(matrix[i][i]/norm);
+                    for (j = 0; j < size; j++)
+                        result[i][j] *= norm;
+                }
             }
 
             if (negative) {
@@ -165,9 +167,7 @@ namespace QuantLib {
                 ConjugateGradient optimize;
                 optimize.setInitialValue(theta);
                 optimize.setEndCriteria(endCriteria);
-                HypersphereCostFunction costFunction;
-                costFunction.setMatrix(matrix);
-                costFunction.setSize(size);
+                HypersphereCostFunction costFunction(matrix);
                 NoConstraint constraint;
                 Problem p(costFunction, constraint, optimize);
                 p.minimize();
@@ -239,7 +239,7 @@ namespace QuantLib {
                 eigenValues[i] = std::max<Real>(eigenValues[i], 0.0);
             break;
           default:
-            QL_FAIL("unknown salvaging algorithm");
+            QL_FAIL("unknown or invalid salvaging algorithm");
         }
 
         // factor reduction
@@ -281,4 +281,3 @@ namespace QuantLib {
     }
 
 }
-
