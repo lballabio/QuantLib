@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 François Du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
@@ -48,6 +50,35 @@ namespace QuantLib {
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         }
+        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+        for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
+            registerWith(*i);
+
+        registerWith(termStructure);
+        registerWith(Settings::instance().evaluationDate());
+    }
+
+    CapFloor::CapFloor(
+                 CapFloor::Type type,
+                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const std::vector<Rate>& strikes,
+                 const Handle<YieldTermStructure>& termStructure,
+                 const boost::shared_ptr<PricingEngine>& engine)
+    : type_(type), floatingLeg_(floatingLeg),
+      termStructure_(termStructure) {
+        setPricingEngine(engine);
+        QL_REQUIRE(!strikes.empty(), "no strikes given");
+        if (type_ == Cap) {
+            capRates_ = strikes;
+            while (capRates_.size() < floatingLeg_.size())
+                capRates_.push_back(capRates_.back());
+        } else if (type_ == Floor) {
+            floorRates_ = strikes;
+            while (floorRates_.size() < floatingLeg_.size())
+                floorRates_.push_back(floorRates_.back());
+        } else
+            QL_FAIL("only Cap/Floor types allowed in this constructor");
+
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);

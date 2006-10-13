@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 François Du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
@@ -61,7 +63,11 @@ namespace QuantLib {
                  const std::vector<Rate>& floorRates,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
-
+        CapFloor(Type type,
+                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const std::vector<Rate>& strikes,
+                 const Handle<YieldTermStructure>& termStructure,
+                 const boost::shared_ptr<PricingEngine>& engine);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
