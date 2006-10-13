@@ -180,7 +180,7 @@ namespace QuantLib {
     //! %Results from cap/floor calculation
     class CapFloor::results : public Value {
         public:
-        Real vega;
+        Real vega_;
     };
 
     //! base class for cap/floor engines

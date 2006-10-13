@@ -60,7 +60,7 @@ namespace QuantLib {
         Instrument::fetchResults(r);
         const CapFloor::results* results =
             dynamic_cast<const CapFloor::results*>(r);
-        vega_ = results->vega;
+        vega_ = results->vega_;
         
     };
 

@@ -88,7 +88,7 @@ namespace QuantLib {
             }
         }
         results_.value = value;
-        results_.vega = vega_;
+        results_.vega_ = vega_;
 }
     
   Real BlackCapFloorEngine::optionletVega(Rate forward,
