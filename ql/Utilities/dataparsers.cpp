@@ -33,7 +33,7 @@ namespace QuantLib {
         QL_REQUIRE(str.length()>1, "argument needs length of at least 2");
 
         Size iPos = str.find_first_of("DdWwMmYy");
-        QL_REQUIRE(iPos!=str.length(), "unknown '" << str << "' unit");
+        QL_REQUIRE(iPos==str.length()-1, "unknown '" << str << "' unit");
 
         Size nPos = str.find_first_of("0123456789");
         QL_REQUIRE(nPos<iPos, "no numbers of units provided");
