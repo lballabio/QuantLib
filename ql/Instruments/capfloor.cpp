@@ -65,29 +65,9 @@ namespace QuantLib {
     };
 
     Rate CapFloor::atmRate() const {
-
         Real bps = Cashflows::bps(floatingLeg_, termStructure_);
         Real npv = Cashflows::npv(floatingLeg_, termStructure_);
         return 1.0e-4*npv/bps;
-
-        //std::vector<boost::shared_ptr<CashFlow> > fixedLeg_(floatingLeg_.size());
-        //Rate fixedRate = 0.04;
-
-        //for (Size i = 0; i < fixedLeg_.size(); i++){
-        //    boost::shared_ptr<FloatingRateCoupon> floatingRateCoupon  
-        //        = boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg_[i]);
-        //    fixedLeg_[i] = boost::shared_ptr<CashFlow>
-        //        (new FixedRateCoupon(floatingRateCoupon->nominal(),
-        //                             floatingRateCoupon->date(),
-        //                             fixedRate,
-        //                             floatingRateCoupon->dayCounter(),
-        //                             floatingRateCoupon->accrualStartDate(),
-        //                             floatingRateCoupon->accrualEndDate()));
-        //}
-
-        //boost::shared_ptr<Swap> swap(
-        //    new Swap(termStructure_, floatingLeg_, fixedLeg_));
-        //return fixedRate - swap->NPV()/(swap->legBPS(1)/1.0e-4);
     };
 
     bool CapFloor::isExpired() const {

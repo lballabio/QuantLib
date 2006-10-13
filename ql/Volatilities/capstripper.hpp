@@ -101,10 +101,7 @@ namespace QuantLib {
         const std::vector<Period>& tenors() { return tenors_; }
         const std::vector<Rate>& strikes() { return strikes_; }
       protected:
-          Volatility volatilityImpl(Time t, Rate r) const {
-            calculate();
-            return bilinearInterpolation_->operator()(t, r, true);
-          };
+          Volatility volatilityImpl(Time t, Rate r) const;
       private:
         std::vector<std::vector<boost::shared_ptr<CapFloor> > >
             marketDataCap_, strippedCap_;
@@ -131,6 +128,11 @@ namespace QuantLib {
 
     inline Rate CapsStripper::maxStrike() const {
         return QL_MAX_REAL;
+    }
+
+    inline Volatility CapsStripper::volatilityImpl(Time t, Rate r) const {
+            calculate();
+            return bilinearInterpolation_->operator()(t, r, true);
     }
 }
 
