@@ -57,17 +57,17 @@ namespace QuantLib {
         virtual ~SwaptionVolatilityStructure() {}
         //! \name Volatility and Variance
         //@{
-        //! returns the volatility for a given starting date and length
+        //! returns the volatility for a given option tenor and swap tenor
         Volatility volatility(const Period& optionTenor,
                               const Period& swapTenor,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the volatility for a given starting date and length
+        //! returns the volatility for a given exercise date and swap tenor
         Volatility volatility(const Date& exerciseDate,
                               const Period& swapTenor,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the Black variance for a given starting date and length
+        //! returns the Black variance for a given exercise date and swap tenor
         Real blackVariance(const Date& exerciseDate,
                            const Period& swapTenor,
                            Rate strike,
@@ -77,7 +77,7 @@ namespace QuantLib {
                               Time length,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the Black variance for a given starting time and length
+        //! returns the Black variance for a given exercise time and length
         Real blackVariance(Time exerciseTime,
                            Time length,
                            Rate strike,
