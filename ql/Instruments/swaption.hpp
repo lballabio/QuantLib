@@ -90,7 +90,10 @@ namespace QuantLib {
                                      Volatility minVol = QL_MIN_VOLATILITY,
                                      Volatility maxVol = QL_MAX_VOLATILITY)
                                                                         const;
-      private:
+       void fetchResults (const Results* r) const;
+       Rate atmRate() const;
+       Real vega() const;
+    private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
@@ -109,7 +112,7 @@ namespace QuantLib {
             boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
         };
-
+        mutable Real vega_;
     };
 
     //! %Arguments for swaption calculation
@@ -131,12 +134,14 @@ namespace QuantLib {
     };
 
     //! %Results from swaption calculation
-    class Swaption::results : public Value {};
+    class Swaption::results : public Value {
+        public:
+        Real vega_;
+    };
 
     //! base class for swaption engines
     class Swaption::engine
         : public GenericEngine<Swaption::arguments, Swaption::results> {};
-
-}
+    }
 
 #endif

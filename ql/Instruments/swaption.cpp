@@ -143,5 +143,17 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
+    Real Swaption::vega() const {
+        calculate();
+        return vega_;
+    }
+
+    void Swaption::fetchResults (const Results* r) const{
+        Instrument::fetchResults(r);
+        const Swaption::results* results =
+            dynamic_cast<const Swaption::results*>(r);
+        vega_ = results->vega_;
+        
+    }
 
 }
