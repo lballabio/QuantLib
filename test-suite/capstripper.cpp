@@ -43,7 +43,7 @@ boost::shared_ptr<Quote> forwardRate;
 Handle<Quote> forwardRateQuote;
 Handle<YieldTermStructure> rhTermStructure;
 Date settlementDate;
-boost::shared_ptr<Xibor> index;
+boost::shared_ptr<Xibor> xiborIndex;
 int fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
@@ -85,7 +85,7 @@ void setup() {
                   new FlatForward(settlementDate, forwardRateQuote,
                                   Actual365Fixed()));
     rhTermStructure.linkTo(myTermStructure);
-    index = boost::shared_ptr<Xibor>(new Euribor6M(rhTermStructure));
+    xiborIndex = boost::shared_ptr<Xibor>(new Euribor6M(rhTermStructure));
     capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(  calendar, 
                                         businessDayConvention,
                                         fixingDays,
@@ -93,7 +93,7 @@ void setup() {
                                         strikes,
                                         flatVolatilities, 
                                         dayCounter,
-                                        index,
+                                        xiborIndex,
                                         rhTermStructure));
 }
 
@@ -136,8 +136,10 @@ void CapsStripperTest::constantVolatilityConsistency() {
     Real tolerance = 1e-4;
     // for every tenor we create a schedule and the corresponding floating leg
     for (Size tenorTestedIndex = 0; tenorTestedIndex < tenorsNb ; tenorTestedIndex++){
-        LegHelper legHelper(settlementDate, calendar, fixingDays, businessDayConvention, index);
-        FloatingLeg floatingLeg = legHelper.makeLeg(index->tenor(), tenors[tenorTestedIndex]);
+        LegHelper legHelper(settlementDate, calendar, fixingDays, businessDayConvention, 
+                            xiborIndex);
+        FloatingLeg floatingLeg = legHelper.makeLeg(xiborIndex->tenor(), 
+                                                    tenors[tenorTestedIndex]);
        
         // for every strike we compute the price using different pricing engines    
         for (Size strikeTestedIndex = 0; strikeTestedIndex < strikesNb ; strikeTestedIndex ++){

@@ -11,6 +11,7 @@ QL_TESTS = \
 	bonds.hpp bonds.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
+	capstripper.hpp capstripper.cpp \
 	cliquetoption.hpp cliquetoption.cpp \
 	cms.hpp cms.cpp \
 	compoundforward.hpp compoundforward.cpp \
