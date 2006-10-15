@@ -15,7 +15,6 @@ include_HEADERS = \
         floatingratecoupon.hpp \
         inarrearindexedcoupon.hpp \
         indexedcashflowvectors.hpp \
-        indexedcoupon.hpp \
         parcoupon.hpp \
         shortfloatingcoupon.hpp \
         shortindexedcoupon.hpp \
