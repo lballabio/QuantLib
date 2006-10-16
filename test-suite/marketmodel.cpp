@@ -85,9 +85,10 @@ Calendar calendar;
 DayCounter dayCounter;
 
 std::vector<Rate> todaysForwards;
+std::vector<Rate> todaysCoterminalSwapRates;
 std::vector<Spread> displacements;
 std::vector<DiscountFactor> todaysDiscounts;
-std::vector<Volatility> volatilities, blackVols;
+std::vector<Volatility> volatilities, blackVols, swaptionsVolatilities;
 Real a, b, c, d;
 Real longTermCorrelation, beta;
 Size measureOffset_;
@@ -542,6 +543,53 @@ void checkCallableSwap(const SequenceStatistics& stats,
     }
 
 }
+
+void checkCoterminalSwaptions(const SequenceStatistics& stats,
+                             const std::vector<Rate>& strikes,
+                             const std::string& config) {
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+
+    Size N = todaysForwards.size();
+    std::vector<Rate> expected(N);
+    std::vector<Real> stdDev(N);
+    Real minError = QL_MAX_REAL;
+    Real maxError = QL_MIN_REAL;
+    for (Size i=0; i<N; ++i) {
+        //ancora da inizializzare todaysCoterminalSwapRates e swaptionsVolatilities  
+        Time expiry = rateTimes[i];
+        expected[i] =
+            blackFormula(Option::Call,
+                         strikes[i]+displacements[i],
+                         todaysCoterminalSwapRates[i]+displacements[i],
+                         swaptionsVolatilities[i]*std::sqrt(expiry)) *
+            accruals[i]*todaysDiscounts[i+1];
+        stdDev[i] = (results[i+N]-expected[i])/errors[i+N];
+        if (stdDev[i]>maxError)
+            maxError = stdDev[i];
+        else if (stdDev[i]<minError)
+            minError = stdDev[i];
+    }
+
+    Real errorThreshold = 2.50;
+    if (minError > 0.0 || maxError < 0.0 ||
+        minError <-errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
+        for (Size i=0; i<N; ++i) {
+            BOOST_MESSAGE(
+                    io::ordinal(i+1) << " caplet: "
+                    << io::rate(results[i+N])
+                    << " +- " << io::rate(errors[i+N])
+                    << "; expected: " << io::rate(expected[i])
+                    << "; discrepancy = "
+                    << (results[i+N]-expected[i])/(errors[i+N] == 0.0 ?
+                                                          1.0 : errors[i+N])
+                    << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+}
+
 
 QL_END_TEST_LOCALS(MarketModelTest)
 
