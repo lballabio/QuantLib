@@ -391,7 +391,7 @@ int main(int, char* [])
         Spread spread = 0.0;
 
         Integer lenghtInYears = 5;
-        bool payFixedRate = true;
+        VanillaSwap::Type swapType = VanillaSwap::Payer;
 
         Date maturity = settlementDate + lenghtInYears*Years;
         Schedule fixedSchedule(settlementDate, maturity, Period(fixedLegFrequency),
@@ -400,11 +400,10 @@ int main(int, char* [])
         Schedule floatSchedule(settlementDate, maturity, Period(floatingLegFrequency),
                                calendar, floatingLegConvention, floatingLegConvention,
                                false, false);
-        VanillaSwap spot5YearSwap(
-            payFixedRate, nominal,
+        VanillaSwap spot5YearSwap(swapType, nominal,
             fixedSchedule, fixedRate, fixedLegDayCounter,
-            floatSchedule, euriborIndex, fixingDays, spread,
-            floatingLegDayCounter, discountingTermStructure);
+            floatSchedule, euriborIndex, spread, floatingLegDayCounter,
+            discountingTermStructure);
 
         Date fwdStart = calendar.advance(settlementDate, 1, Years);
         Date fwdMaturity = fwdStart + lenghtInYears*Years;
@@ -414,11 +413,10 @@ int main(int, char* [])
         Schedule fwdFloatSchedule(fwdStart, fwdMaturity, Period(floatingLegFrequency),
                                   calendar, floatingLegConvention, floatingLegConvention,
                                   false, false);
-        VanillaSwap oneYearForward5YearSwap(
-            payFixedRate, nominal,
+        VanillaSwap oneYearForward5YearSwap(swapType, nominal,
             fwdFixedSchedule, fixedRate, fixedLegDayCounter,
-            fwdFloatSchedule, euriborIndex, fixingDays, spread,
-            floatingLegDayCounter, discountingTermStructure);
+            fwdFloatSchedule, euriborIndex, spread, floatingLegDayCounter,
+            discountingTermStructure);
 
 
         /***************
