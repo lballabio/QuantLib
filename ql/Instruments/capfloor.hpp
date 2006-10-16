@@ -89,7 +89,6 @@ namespace QuantLib {
             return floatingLeg_;
         }
         Rate atmRate() const;
-        Real vega(const Volatility& volatility) const;
         Real vega() const;
         //@}
         void setupArguments(Arguments*) const;

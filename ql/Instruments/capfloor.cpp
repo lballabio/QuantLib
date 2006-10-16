@@ -219,19 +219,6 @@ namespace QuantLib {
         return vega_;
     }
 
-    Real CapFloor::vega(const Volatility& volatility) const {
-        calculate();
-        static const Real shift = 1e-4;
-        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(volatility+shift));
-        Handle<Quote> h(vol);
-        boost::shared_ptr<PricingEngine> engine = 
-            boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
-        this->setupArguments(engine_->arguments());
-        engine->calculate();
-        const Value* value = dynamic_cast<const Value*>(engine_->results());
-        Real vega = (value->value - NPV_)/shift;
-        return vega;
-    }
 
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
