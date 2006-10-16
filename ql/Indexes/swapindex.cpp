@@ -70,9 +70,11 @@ namespace QuantLib {
                         false, false);
     }
 
+    #ifdef QL_DISABLE_DEPRECATED
     Date SwapIndex::maturityDate(const Date& valueDate) const {
         return calendar_.advance(valueDate, tenor_, Unadjusted, false);
     }
+    #endif
 
 
 }
