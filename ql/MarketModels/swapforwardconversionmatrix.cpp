@@ -23,55 +23,60 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> swapForwardJacobian(const CurveState& cs) {
-
-        std::vector<Real> b = cs.coterminalSwapRatesAnnuities();
-        std::vector<Real> a = std::vector<Real>(b.size());
-        Size n = b.size();
-        const std::vector<Real> p = cs.discountRatios();
-        const std::vector<Rate> f = cs.forwardRates();
-        const std::vector<Time> t = cs.rateTaus();
-
-        for (Size k=0; k<n; ++k)
-            a[k] = p[k]-p[n];
-
-        Matrix result = Matrix(n, n, 0.0);
-        for (Size j=0; j<n; ++j) {     // j swap rate index
-            for (Size i=j; i<n; ++i) { // i forward rate index
-                Real temp = t[i]/1.0+f[i]*t[i];
-                result[j][i] =
-                    p[i+1]*t[i]/b[j]-temp*a[i]/b[j]+temp*a[j]*b[i]/(b[j]*b[j]);
-            }
-        }
-        return result;
-    }
-
-    Disposable<Matrix> zMatrix(const CurveState& cs,
-                               Rate displacement) {
-
-        Matrix result = swapForwardJacobian(cs);
-        const std::vector<Rate> f = cs.forwardRates();
-        const std::vector<Rate> sr = cs.coterminalSwapRates();
-        for (Size j=0; j<f.size(); ++j) {     // j swap rate index
-            for (Size i=j; i<f.size(); ++i) { // i forward rate index
-                result[j][i] *= (f[i]+displacement)/
-                                (sr[j]+displacement);
-            }
-        }
+    Disposable<Matrix> swapCovarianceMatrix(const Matrix& zMatrix, 
+                                            const Matrix& forwardCovarianceMatrix)
+    {
+        Matrix result = zMatrix * forwardCovarianceMatrix * transpose(zMatrix);
         return result;
     }
 
     Disposable<Matrix> coefficientsCsi(const CurveState& cs, 
-                                       Size N, // N is index of expiry                   
-                                       Size M, // N+M is index of maturity (M swap tenor)
+                                       Size E,  // E = index of expiry                   
+                                       Size ST, // ST = swap tenor
                                        Rate displacement)
     {
-        Size L = M+N; //L is index of maturity
-        CurveState newCS(cs.rateTimes().begin()+N,
-                         cs.rateTimes().begin()+L);
-        newCS.setOnForwardRates(cs.forwardRates().begin()+N,
-                                cs.forwardRates().begin()+L);
+        Size M = ST+E; //M = index of maturity
+        CurveState newCS(cs.rateTimes().begin()+E,cs.rateTimes().begin()+M);
+        newCS.setOnForwardRates(cs.forwardRates().begin()+E,
+                                cs.forwardRates().begin()+M);
         return zMatrix(newCS, displacement);
     }
 
+    Disposable<Matrix> zMatrix(const CurveState& cs, Rate displacement) {
+
+        Matrix result = swapForwardJacobian(cs);    // derivative dsr[i]/df[j]
+        const std::vector<Rate> f = cs.forwardRates();  // forward rates
+        const std::vector<Rate> sr = cs.coterminalSwapRates();  // coterminal swap rates
+        for (Size i=0; i<sr.size(); ++i) {      // i swap rate index
+            for (Size j=i; j<f.size(); ++j) {   // j forward rate index
+                result[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+            }
+        }
+        return result;
+    }
+
+    Disposable<Matrix> swapForwardJacobian(const CurveState& cs) {
+
+        std::vector<Real> b = cs.coterminalSwapRatesAnnuities();    // coterminal annuities
+        std::vector<Real> a = std::vector<Real>(b.size());          // coterminal floating leg values
+        Size n = b.size();                                          // n° of coterminal swaps
+        const std::vector<Real> p = cs.discountRatios();            // discount factors
+        const std::vector<Rate> f = cs.forwardRates();              // forward rates
+        const std::vector<Time> t = cs.rateTaus();                  // accrual factors
+
+        for (Size k=0; k<n; ++k)    // compute coterminal floating leg values
+            a[k] = p[k]-p[n];
+
+        Matrix jacobian = Matrix(n, n, 0.0);
+        for (Size i=0; i<n; ++i) {     // i swap rate index
+            for (Size j=i; j<n; ++j) { // j forward rate index
+                //Real temp = t[j]/1.0+f[j]*t[j];   ERROR!!
+                //jacobian[i][j] =
+                //    p[j+1]*t[j]/b[i]-temp*a[j]/b[i]+temp*a[i]*b[j]/(b[i]*b[i]);
+                jacobian[i][j] =    // derivative dsr[i]/df[j]
+                    p[j+1]*t[j]/b[i] + t[j]/(1.0+f[j]*t[j])*(-a[j]*b[i] + a[i]*b[j])/(b[i]*b[i]);
+            }
+        }
+        return jacobian;
+    }
 }
