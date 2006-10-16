@@ -102,7 +102,8 @@ namespace QuantLib {
         const std::vector<Rate>& strikes() { return strikes_; }
       protected:
           Volatility volatilityImpl(Time t, Rate r) const;
-      private:
+      //private:
+    public:
         std::vector<std::vector<boost::shared_ptr<CapFloor> > >
             marketDataCap_, strippedCap_;
         boost::shared_ptr<BilinearInterpolation> bilinearInterpolation_;
@@ -111,7 +112,8 @@ namespace QuantLib {
         std::vector<Period> tenors_;
         std::vector<Time> tenorTimes_;
         std::vector<Rate> strikes_;
-        mutable Matrix volatilities_, marketDataPrices_;
+        mutable Matrix volatilities_;
+        Rate minStrike_, maxStrike_; 
     };
 
     inline DayCounter CapsStripper::dayCounter() const {
@@ -123,16 +125,16 @@ namespace QuantLib {
     }
 
     inline Rate CapsStripper::minStrike() const {
-        return QL_MIN_REAL;
+        return minStrike_;
     }
 
     inline Rate CapsStripper::maxStrike() const {
-        return QL_MAX_REAL;
+        return maxStrike_;
     }
 
     inline Volatility CapsStripper::volatilityImpl(Time t, Rate r) const {
             calculate();
-            return bilinearInterpolation_->operator()(t, r, true);
+            return bilinearInterpolation_->operator()(r, t, true);
     }
 }
 

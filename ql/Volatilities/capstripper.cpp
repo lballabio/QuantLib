@@ -71,8 +71,7 @@ namespace QuantLib {
       evaluationDate_(Settings::instance().evaluationDate()),
       tenors_(tenors), tenorTimes_(tenors.size()),
       strikes_(strikes),
-      volatilities_(tenors.size(), strikes.size(),.1),
-      marketDataPrices_(tenors.size(), strikes.size()) {
+      volatilities_(tenors.size(), strikes.size(),.1) {
 
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
@@ -88,8 +87,8 @@ namespace QuantLib {
             tenorTimes_[i] = dayCounter_.yearFraction(evaluationDate_,tenorDate);
         }
         bilinearInterpolation_ = boost::shared_ptr<BilinearInterpolation>(new
-            BilinearInterpolation(tenorTimes_.begin(),tenorTimes_.end(),
-                                  strikes_.begin(), strikes_.end(),
+            BilinearInterpolation(strikes_.begin(), strikes_.end(),
+                                  tenorTimes_.begin(),tenorTimes_.end(),
                                   volatilities_));
 
         // we create the caps we will need later on
@@ -132,7 +131,9 @@ namespace QuantLib {
         boost::shared_ptr<CashFlow> lastCoupon(lastCap->floatingLeg().back());
         boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
             boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
-        maxDate_ = lastFloatingCoupon->fixingDate(); 
+        maxDate_ = lastFloatingCoupon->fixingDate();
+        minStrike_ = strikes_.front();
+        maxStrike_ = strikes_.back();
     };
 
     void printFloatingLeg(const FloatingLeg& floatingLeg){
@@ -151,27 +152,30 @@ namespace QuantLib {
     };
 
     void CapsStripper::performCalculations () const {
-        static const Real vegaThreshold = 1e-7;
-        static const Real accuracy = 1.0e-5;
+        static const Real vegaThreshold = 1e-4;
+        static const Real impliedVolatilityAccuracy = 1.0e-6;
         for (Size j = 0 ; j < strikes_.size(); j++) {
             Real previousCaplets = 0.0;
             bool capVegaIsBigEnough = false;
             for (Size i = 0 ; i < tenorTimes_.size()-1; i++) {
-                Real capPrice = marketDataCap_[i][j]->NPV();
+                CapFloor & mktCap = *marketDataCap_[i][j];
+                Real capPrice = mktCap.NPV();
                 if (!capVegaIsBigEnough){
-                    Real vol = marketDataCap_[i][j]->impliedVolatility(
-                            capPrice, accuracy, 100);
-                    Real vega = marketDataCap_[i][j]->vega(vol);
+                    Real vega = mktCap.vega();
                     capVegaIsBigEnough = vega > vegaThreshold;
-                    if (capVegaIsBigEnough)
+                    if (capVegaIsBigEnough){
+                        Real vol = mktCap.impliedVolatility(
+                            capPrice, impliedVolatilityAccuracy, 100);
                         for (Size k = 0; k<=i; ++k)
                             volatilities_[k][j] = vol;
+                    }
                 }else{
                    Real capletsPrice = capPrice-previousCaplets;
-                        volatilities_[i][j] = strippedCap_[i-1][j]->impliedVolatility(
-                            capletsPrice, accuracy, 100);
-                    previousCaplets = capPrice;
+                        CapFloor & strippedCap = *strippedCap_[i-1][j]; 
+                        volatilities_[i][j] = strippedCap.impliedVolatility(
+                            capletsPrice, impliedVolatilityAccuracy, 100);
                 }
+                previousCaplets = capPrice;
             }
         }
     };
