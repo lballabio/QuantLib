@@ -88,13 +88,14 @@ namespace QuantLib {
         results_.value       = 0.0;
         results_.delta       = 0.0;
         results_.gamma       = 0.0;
-//        results_.theta       = 0.0;
+        results_.theta       = 0.0;
         results_.vega        = 0.0;
         results_.rho         = 0.0;
         results_.dividendRho = 0.0;
 
         Real r, v, weight, lastContribution = 1.0;
         Size i;
+		Real theta_correction;
         // Haug arbitrary criterium is:
         //for (i=0; i<11; i++) {
         for (i=0;
@@ -113,13 +114,22 @@ namespace QuantLib {
             baseArguments->validate();
             baseEngine_->calculate();
 
-
             weight = p(Size(i));
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
-//            results_.theta       += weight * baseResults->theta;
-            results_.vega        += weight * (std::sqrt(variance/t)/v)* baseResults->vega;
+			results_.vega        += weight * (std::sqrt(variance/t)/v)*
+                                                           baseResults->vega;
+            // theta modified
+            theta_correction = baseResults->vega*((i*jumpSquareVol)/
+                                                  (2.0*v*t*t)) +
+                baseResults->rho*i*muPlusHalfSquareVol/(t*t);
+            results_.theta += weight *(baseResults->theta + theta_correction +
+                                  lambda*baseResults->value);
+            if(i != 0){
+                 results_.theta -= (p(Size(i-1))*lambda* baseResults->value);
+            }
+            //end theta calculation
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
 
@@ -133,11 +143,11 @@ namespace QuantLib {
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->gamma /
                (std::fabs(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
-/*
+
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->theta /
                (std::fabs(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
-*/
+
             lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->vega /
                (std::fabs(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));

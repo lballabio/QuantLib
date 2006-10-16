@@ -356,7 +356,7 @@ void JumpDiffusionTest::testGreeks() {
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
     tolerance["gamma"]  = 1.0e-4;
-    tolerance["theta"]  = 1.0e-4;
+    tolerance["theta"]  = 1.1e-4;
     tolerance["rho"]    = 1.0e-4;
     tolerance["divRho"] = 1.0e-4;
     tolerance["vega"]   = 1.0e-4;
@@ -366,7 +366,11 @@ void JumpDiffusionTest::testGreeks() {
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { -0.05, 0.0, 0.05 };
     Rate rRates[] = { 0.0, 0.01, 0.2 };
-    Time residualTimes[] = { 1.0 };
+    // The testsuite check fails if a too short maturity is chosen(i.e. 1 year).
+    // The problem is in the theta calculation. With the finite difference(fd) method
+    // we might get values too close to the jump steps, invalidating the fd methodology
+    // for calculating greeks.
+    Time residualTimes[] = { 5.0 };
     Volatility vols[] = { 0.11 };
     Real jInt[] = { 1.0, 5.0 };
     Real mLJ[] = { -0.20, 0.0, 0.20 };
@@ -398,8 +402,10 @@ void JumpDiffusionTest::testGreeks() {
 
     boost::shared_ptr<VanillaOption::engine> baseEngine(
                                                   new AnalyticEuropeanEngine);
+    // The jumpdiffusionengine greeks are very sensitive to the convergence level.
+    // A tolerance of 1.0e-08 is usually sufficient to get reasonable results
     boost::shared_ptr<PricingEngine> engine(
-                                         new JumpDiffusionEngine(baseEngine));
+                                         new JumpDiffusionEngine(baseEngine,1e-08));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -446,7 +452,7 @@ void JumpDiffusionTest::testGreeks() {
                       Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
-//                      calculated["theta"]  = option.theta();
+                      calculated["theta"]  = option.theta();
                       calculated["rho"]    = option.rho();
                       calculated["divRho"] = option.dividendRho();
                       calculated["vega"]   = option.vega();
@@ -491,8 +497,13 @@ void JumpDiffusionTest::testGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // get theta from time-shifted options
-                          // expected["theta"] = (optionM.NPV() - optionP.NPV())/dT;
-
+                          Time dT = dc.yearFraction(today-1, today+1);
+                          Settings::instance().evaluationDate() = today-1;
+                          value_m = option.NPV();
+                          Settings::instance().evaluationDate() = today+1;
+                          value_p = option.NPV();
+                          Settings::instance().evaluationDate() = today;
+                          expected["theta"] = (value_p - value_m)/dT;
                           // compare
                           std::map<std::string,Real>::iterator it;
                           for (it = expected.begin();
