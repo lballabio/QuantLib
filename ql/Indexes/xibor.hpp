@@ -33,12 +33,24 @@ namespace QuantLib {
     /*! \todo add methods returning InterestRate */
     class Xibor : public InterestRateIndex {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         Xibor(const std::string& familyName,
               const Period& tenor,
               Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
               BusinessDayConvention convention,
+              const DayCounter& dayCounter,
+              const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+        #endif
+        Xibor(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& calendar,
+              BusinessDayConvention convention,
+              bool endOfMonth,
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
@@ -51,6 +63,7 @@ namespace QuantLib {
         //@{
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
+        bool endOfMonth() const { return endOfMonth_; }
         //@}
         //! \name Date calculations
         //@{
@@ -59,6 +72,7 @@ namespace QuantLib {
       protected:
         BusinessDayConvention convention_;
         Handle<YieldTermStructure> termStructure_;
+        bool endOfMonth_;
     };
 
     //#ifndef QL_DISABLE_DEPRECATED

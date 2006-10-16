@@ -42,6 +42,9 @@ namespace QuantLib {
         //@{
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         Rate forecastFixing(const Date& fixingDate) const;
+        #ifdef QL_DISABLE_DEPRECATED
+        Date maturityDate(const Date& valueDate) const;
+        #endif
         //@}
         //! \name Inspectors
         //@{

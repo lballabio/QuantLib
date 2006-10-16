@@ -43,7 +43,8 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Xibor("Jibar", tenor, 0, ZARCurrency(),
-                SouthAfrica(), ModifiedFollowing, Actual365Fixed(), h) {}
+                SouthAfrica(), ModifiedFollowing, false,
+                Actual365Fixed(), h) {}
     };
 
 }

@@ -24,6 +24,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     Xibor::Xibor(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,
@@ -34,7 +35,20 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& h)
     : InterestRateIndex(familyName, tenor, settlementDays, currency,
                         calendar, dayCounter),
-      convention_(convention), termStructure_(h) {}
+      convention_(convention), termStructure_(h), endOfMonth_(true) {}
+    #endif
+    Xibor::Xibor(const std::string& familyName,
+                 const Period& tenor,
+                 Integer settlementDays,
+                 const Currency& currency,
+                 const Calendar& calendar,
+                 BusinessDayConvention convention,
+                 bool endOfMonth,
+                 const DayCounter& dayCounter,
+                 const Handle<YieldTermStructure>& h)
+    : InterestRateIndex(familyName, tenor, settlementDays, currency,
+                        calendar, dayCounter),
+      convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {}
 
     Rate Xibor::forecastFixing(const Date& fixingDate) const
     {
@@ -51,7 +65,7 @@ namespace QuantLib {
     }
 
     Date Xibor::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, tenor_, convention_);
+        return calendar_.advance(valueDate, tenor_, convention_,endOfMonth_);
     }
 
 }

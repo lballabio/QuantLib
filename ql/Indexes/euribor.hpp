@@ -46,10 +46,12 @@ namespace QuantLib {
         Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                BusinessDayConvention convention = MonthEndReference)
+                BusinessDayConvention convention = ModifiedFollowing,
+                bool endOfMonth = true)
         : Xibor("Euribor", tenor,
                 2, // settlementDays
-                EURCurrency(), TARGET(), convention, Actual360(), h) {}
+                EURCurrency(), TARGET(),
+                convention, endOfMonth, Actual360(), h) {}
     };
 
 
@@ -63,10 +65,12 @@ namespace QuantLib {
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                   BusinessDayConvention convention = MonthEndReference)
+                   BusinessDayConvention convention = ModifiedFollowing,
+                   bool endOfMonth = true)
         : Xibor("Euribor", tenor,
                 2, // settlementDays
-                EURCurrency(), TARGET(), convention, Actual365Fixed(), h) {}
+                EURCurrency(), TARGET(),
+                convention, endOfMonth, Actual365Fixed(), h) {}
     };
 
 
@@ -75,7 +79,7 @@ namespace QuantLib {
         WeeklyTenorEuribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(tenor, h, Following) {}
+        : Euribor(tenor, h, Following, false) {}
     };
 
     class MonthlyTenorEuribor : public Euribor {
@@ -83,7 +87,7 @@ namespace QuantLib {
         MonthlyTenorEuribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor(tenor, h, MonthEndReference) {}
+        : Euribor(tenor, h, ModifiedFollowing, true) {}
     };
 
     //! 1-week %Euribor index
@@ -212,7 +216,7 @@ namespace QuantLib {
         WeeklyTenorEuribor365(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor365(tenor, h, Following) {}
+        : Euribor365(tenor, h, Following, false) {}
     };
 
     class MonthlyTenorEuribor365 : public Euribor365 {
@@ -220,7 +224,7 @@ namespace QuantLib {
         MonthlyTenorEuribor365(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Euribor365(tenor, h, MonthEndReference) {}
+        : Euribor365(tenor, h, ModifiedFollowing, true) {}
     };
 
     //! 1-week %Euribor365 index

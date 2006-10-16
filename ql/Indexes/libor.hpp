@@ -31,6 +31,7 @@ namespace QuantLib {
     //! base class for BBA LIBOR indexes
     class Libor : public Xibor {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         Libor(const std::string& familyName,
               Integer n, TimeUnit units,
               Integer settlementDays,
@@ -47,6 +48,17 @@ namespace QuantLib {
               const Calendar& localCalendar,
               const Calendar& currencyCalendar,
               BusinessDayConvention convention,
+              const DayCounter& dayCounter,
+              const Handle<YieldTermStructure>& h);
+        #endif
+        Libor(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& localCalendar,
+              const Calendar& currencyCalendar,
+              BusinessDayConvention convention,
+              bool endOfMonth,
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h);
         /*! \name Date calculations

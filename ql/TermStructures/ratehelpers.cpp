@@ -292,6 +292,7 @@ namespace QuantLib {
                                                index_->currency(),
                                                index_->calendar(),
                                                index_->businessDayConvention(),
+                                               index_->endOfMonth(),
                                                index_->dayCounter(),
                                                termStructureHandle_));
 

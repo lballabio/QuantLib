@@ -130,6 +130,7 @@ void setup() {
                                              Currency(),
                                              calendar,
                                              floatingLegConvention,
+                                             false,
                                              Actual360()));
     for (i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);

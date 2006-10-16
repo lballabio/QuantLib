@@ -46,18 +46,19 @@ namespace QuantLib {
         EURLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = MonthEndReference,
+                 BusinessDayConvention convention = ModifiedFollowing,
+                 bool endOfMonth = true,
                  Integer settlementDays = 2)
         : Libor("EURLibor", tenor, settlementDays, EURCurrency(),
                 TARGET(), TARGET(),
-                convention, Actual360(), h) {}
+                convention, endOfMonth, Actual360(), h) {}
     };
     class WeeklyTenorEURLibor : public EURLibor {
       public:
         WeeklyTenorEURLibor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : EURLibor(tenor, h, Following) {}
+        : EURLibor(tenor, h, Following, false) {}
     };
 
     class MonthlyTenorEURLibor : public EURLibor {
@@ -65,7 +66,7 @@ namespace QuantLib {
         MonthlyTenorEURLibor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : EURLibor(tenor, h, MonthEndReference) {}
+        : EURLibor(tenor, h, ModifiedFollowing, true) {}
     };
 
     //! 1-week %EURLibor index

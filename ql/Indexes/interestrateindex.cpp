@@ -83,9 +83,11 @@ namespace QuantLib {
         return calendar_.advance(fixingDate, settlementDays_, Days);
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Date InterestRateIndex::maturityDate(const Date& valueDate) const {
         return calendar_.advance(valueDate, tenor_, Unadjusted);
     }
+    #endif
 
 }
 

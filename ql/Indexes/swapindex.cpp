@@ -70,5 +70,10 @@ namespace QuantLib {
                         false, false);
     }
 
+    Date SwapIndex::maturityDate(const Date& valueDate) const {
+        return calendar_.advance(valueDate, tenor_, Unadjusted, false);
+    }
+
+
 }
 

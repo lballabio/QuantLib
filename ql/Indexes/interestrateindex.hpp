@@ -71,7 +71,11 @@ namespace QuantLib {
             @{
         */
         virtual Date valueDate(const Date& fixingDate) const;
+        #ifndef QL_DISABLE_DEPRECATED
         virtual Date maturityDate(const Date& valueDate) const;
+        #else
+        virtual Date maturityDate(const Date& valueDate) const = 0;
+        #endif
         // @}
       protected:
         std::string familyName_;

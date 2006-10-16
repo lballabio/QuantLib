@@ -43,11 +43,12 @@ namespace QuantLib {
         NZDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = MonthEndReference,
+                 BusinessDayConvention convention = ModifiedFollowing,
+                 bool endOfMonth = true,
                  Integer settlementDays = 2)
         : Libor("NZDLibor", tenor, settlementDays, NZDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), NewZealand(),
-                convention, Actual360(), h) {}
+                convention, endOfMonth, Actual360(), h) {}
     };
 
 }

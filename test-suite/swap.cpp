@@ -254,7 +254,7 @@ void SwapTest::testInArrears() {
     std::vector<Real> nominals(1, 100000000.0);
     boost::shared_ptr<Xibor> index(new Xibor("dummy", 1*Years, 0,
                                              EURCurrency(), calendar,
-                                             Following, dayCounter,
+                                             Following, false, dayCounter,
                                              termStructure_));
     Rate oneYear = 0.05;
     Rate r = std::log(1.0+oneYear);

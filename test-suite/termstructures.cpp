@@ -89,6 +89,7 @@ void setup() {
                                              Currency(),
                                              calendar_,
                                              ModifiedFollowing,
+                                             false,
                                              Actual360()));
     for (i=0; i<swaps; i++) {
         instruments[i+deposits] = boost::shared_ptr<RateHelper>(
