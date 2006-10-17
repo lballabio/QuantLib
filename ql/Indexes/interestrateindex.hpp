@@ -45,6 +45,7 @@ namespace QuantLib {
         //! \name Index interface
         //@{
         std::string name() const;
+        bool isValidFixingDate(const Date& fixingDate) const;
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
         //@}

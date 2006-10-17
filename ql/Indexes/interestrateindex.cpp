@@ -45,11 +45,14 @@ namespace QuantLib {
         return out.str();
     }
 
+    bool InterestRateIndex::isValidFixingDate(const Date& fixingDate) const {
+        return calendar_.isBusinessDay(fixingDate);
+    }
+
     Rate InterestRateIndex::fixing(const Date& fixingDate,
                                    bool forecastTodaysFixing) const {
-        // check fixing date is not a holiday
-        QL_REQUIRE(calendar_.isBusinessDay(fixingDate),
-                       "Fixing date " << fixingDate << " is not a business day");        
+        QL_REQUIRE(isValidFixingDate(fixingDate),
+                   "Fixing date " << fixingDate << " is not valid");
         Date today = Settings::instance().evaluationDate();
         bool enforceTodaysHistoricFixings = 
             Settings::instance().enforceTodaysHistoricFixings();
@@ -80,6 +83,8 @@ namespace QuantLib {
     }
 
     Date InterestRateIndex::valueDate(const Date& fixingDate) const {
+        QL_REQUIRE(isValidFixingDate(fixingDate),
+                   "Fixing date " << fixingDate << " is not valid");
         return calendar_.advance(fixingDate, settlementDays_, Days);
     }
 

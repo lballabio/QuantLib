@@ -22,6 +22,9 @@
 namespace QuantLib {
 
     void Index::addFixing(const Date& fixingDate, Rate fixing) {
+        QL_REQUIRE(isValidFixingDate(fixingDate),
+                   "Fixing date " << fixingDate.weekday() << ", " <<
+                   fixingDate << " is not valid");
         std::string tag = name();
         TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
         h[fixingDate] = fixing;

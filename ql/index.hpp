@@ -44,6 +44,8 @@ namespace QuantLib {
             \todo add methods returning InterestRate
         */
         virtual std::string name() const = 0;
+        //! returns TRUE if the fixing date is a valid one
+        virtual bool isValidFixingDate(const Date& fixingDate) const = 0;
         //! returns the fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
@@ -64,8 +66,12 @@ namespace QuantLib {
                         ValueIterator vBegin) {
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
-            while (dBegin != dEnd)
+            while (dBegin != dEnd) {
+                QL_REQUIRE(isValidFixingDate(*dBegin),
+                           "Fixing date " << fixingDate.weekday() << ", " <<
+                           fixingDate << " is not valid");
                 h[*(dBegin++)] = *(vBegin++);
+            }
             IndexManager::instance().setHistory(tag,h);
         }
     };
