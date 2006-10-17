@@ -110,7 +110,9 @@ namespace QuantLib {
             }
         }
         marketVolCube_.updateInterpolators();
+    }
 
+    void SwaptionVolatilityCubeBySabr::performCalculations() const{
         sparseParameters_ = sabrCalibration(marketVolCube_);
         sparseParameters_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
@@ -120,7 +122,6 @@ namespace QuantLib {
             denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
             denseParameters_.updateInterpolators();
         }
-
     }
 
     SwaptionVolatilityCubeBySabr::Cube
@@ -191,7 +192,7 @@ namespace QuantLib {
 
     }
 
-    void SwaptionVolatilityCubeBySabr::fillVolatilityCube() {
+    void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
 
         const boost::shared_ptr<SwaptionVolatilityMatrix> atmVolStructure =
             boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
@@ -259,7 +260,7 @@ namespace QuantLib {
     }
 
 
-    void SwaptionVolatilityCubeBySabr::createSparseSmiles() {
+    void SwaptionVolatilityCubeBySabr::createSparseSmiles() const {
 
         std::vector<Time> exerciseTimes(sparseParameters_.expiries());
         std::vector<Time> timeLengths(sparseParameters_.lengths());
@@ -276,7 +277,7 @@ namespace QuantLib {
 
 
     std::vector<Real> SwaptionVolatilityCubeBySabr::spreadVolInterpolation(
-        const Date& atmExerciseDate, const Period& atmSwapTenor) {
+        const Date& atmExerciseDate, const Period& atmSwapTenor) const {
 
         const std::pair<Time, Time> p =
             convertDates(atmExerciseDate, atmSwapTenor);

@@ -32,7 +32,8 @@
 
 namespace QuantLib {
 
-     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube {
+     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube, 
+                                          public LazyObject {
 
          class Cube {
              std::vector<Real> expiries_, lengths_;
@@ -101,12 +102,20 @@ namespace QuantLib {
             std::vector<bool> isParameterFixed,
             bool isAtmCalibrated);
 
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const;
+        void update() { LazyObject::update(); };
+        //@}
+
+
+        void performCalibration() const {calculate(); };
+        void recalibration(Real beta);
+        
         const Matrix& marketVolCube(Size i) const {
             return marketVolCube_.points()[i];
         }
-
-        void recalibration(Real beta);
-
         Matrix sparseSabrParameters() const;
         Matrix denseSabrParameters() const;
         Matrix marketVolCube() const;
@@ -129,17 +138,17 @@ namespace QuantLib {
                                   const Period& length,
                                   Rate strike) const;
         Cube sabrCalibration(const Cube& marketVolCube) const;
-        void fillVolatilityCube();
-        void createSparseSmiles();
+        void fillVolatilityCube() const;
+        void createSparseSmiles() const;
         std::vector<Real> spreadVolInterpolation(const Date& atmExerciseDate,
-                                                 const Period& atmSwapTenor);
+                                                 const Period& atmSwapTenor) const;
       private:
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
-        Cube marketVolCube_;
-        Cube volCubeAtmCalibrated_;
-        Cube sparseParameters_;
-        Cube denseParameters_;
-        std::vector< std::vector<boost::shared_ptr<SmileSection> > >
+        mutable Cube marketVolCube_;
+        mutable Cube volCubeAtmCalibrated_;
+        mutable Cube sparseParameters_;
+        mutable Cube denseParameters_;
+        mutable std::vector< std::vector<boost::shared_ptr<SmileSection> > >
                                                                 sparseSmiles_;
         Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
