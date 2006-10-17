@@ -24,7 +24,7 @@
 #include <ql/Volatilities/capstripper.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/TermStructures/flatforward.hpp>
-#include <ql/utilities/dataparsers.hpp>
+#include <ql/Utilities/dataparsers.hpp>
 #include <iostream>
 
 using namespace QuantLib;

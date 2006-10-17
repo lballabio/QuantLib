@@ -26,7 +26,7 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/math/matrix.hpp>
+#include <ql/Math/matrix.hpp>
 #ifdef QL_USE_INDEXED_COUPON
 #include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
