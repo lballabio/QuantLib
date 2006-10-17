@@ -31,7 +31,7 @@ namespace QuantLib {
                                  const std::vector<Real>& fixedAccruals,
                                  const std::vector<Real>& floatingAccruals,
                                  const std::vector<Time>& paymentTimes,
-                           double fixedRate);
+                                 double fixedRate);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;

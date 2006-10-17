@@ -32,7 +32,8 @@ namespace QuantLib {
                 const std::vector<Real>& accruals,
                 const std::vector<Time>& paymentTimes,
                 const std::vector<Rate>& strikes);
-
+        //! \name MarketModelMultiProduct interface
+        //@{
         std::vector<Time> possibleCashFlowTimes() const;
         Size numberOfProducts() const;
         Size maxNumberOfCashFlowsPerProductPerStep() const;
@@ -42,7 +43,8 @@ namespace QuantLib {
                      std::vector<Size>& numberCashFlowsThisStep,
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
         std::auto_ptr<MarketModelMultiProduct> clone() const;
- 
+         //@}
+
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
