@@ -68,8 +68,8 @@ namespace QuantLib {
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
             while (dBegin != dEnd) {
                 QL_REQUIRE(isValidFixingDate(*dBegin),
-                           "Fixing date " << fixingDate.weekday() << ", " <<
-                           fixingDate << " is not valid");
+                           "Fixing date " << (*dBegin).weekday() << ", " <<
+                           *dBegin << " is not valid");
                 h[*(dBegin++)] = *(vBegin++);
             }
             IndexManager::instance().setHistory(tag,h);
