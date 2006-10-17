@@ -30,7 +30,6 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/quote.hpp>
-#include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
@@ -41,11 +40,9 @@
 namespace QuantLib {
     
     typedef std::vector<boost::shared_ptr<CashFlow> > FloatingLeg;
+    typedef  std::vector<std::vector<boost::shared_ptr<Cap> > > CapMatrix;
 
-    //debugging routine
-    void printFloatingLeg(const FloatingLeg& floatingLeg);
-    
-    //! this class simplifies Cap instanciations
+     //! this class simplifies Cap instanciations
     class LegHelper{
     public:
         LegHelper(  const Date & startDate,
@@ -68,8 +65,8 @@ namespace QuantLib {
         BusinessDayConvention convention_;
         const boost::shared_ptr<Xibor> index_;
     };
-    
-  
+
+
     class CapsStripper : public CapletVolatilityStructure, 
                          public LazyObject{
       public:
@@ -79,7 +76,7 @@ namespace QuantLib {
                      const std::vector<Period>& tenors,
                      const std::vector<Rate>& strikes,
                      const std::vector<std::vector<Handle<Quote> > >& vols,
-                     const DayCounter& dayCounter,
+                     const DayCounter& volatilityDayCounter,
                      const boost::shared_ptr<Xibor>& index,
                      const Handle< YieldTermStructure > termStructure);
         //@}
@@ -98,16 +95,17 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
+        //! \ Inspectors
+        //@{
         const std::vector<Period>& tenors() { return tenors_; }
         const std::vector<Rate>& strikes() { return strikes_; }
+        const CapMatrix& marketDataCap() { return marketDataCap_; }
+        const CapMatrix& strippedCap() { return strippedCap_; }
       protected:
           Volatility volatilityImpl(Time t, Rate r) const;
-      //private:
-    public:
-        std::vector<std::vector<boost::shared_ptr<CapFloor> > >
-            marketDataCap_, strippedCap_;
-        boost::shared_ptr<BilinearInterpolation> bilinearInterpolation_;
-        DayCounter dayCounter_;
+      private:
+        CapMatrix marketDataCap_, strippedCap_;
+        DayCounter volatilityDayCounter_;
         Date evaluationDate_, maxDate_;
         std::vector<Period> tenors_;
         std::vector<Time> tenorTimes_;
@@ -117,7 +115,7 @@ namespace QuantLib {
     };
 
     inline DayCounter CapsStripper::dayCounter() const {
-        return dayCounter_;
+        return volatilityDayCounter_;
     }
 
     inline Date CapsStripper::maxDate() const {
@@ -130,11 +128,6 @@ namespace QuantLib {
 
     inline Rate CapsStripper::maxStrike() const {
         return maxStrike_;
-    }
-
-    inline Volatility CapsStripper::volatilityImpl(Time t, Rate r) const {
-            calculate();
-            return bilinearInterpolation_->operator()(r, t, true);
     }
 }
 

@@ -26,6 +26,7 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Utilities/dataparsers.hpp>
 #include <iostream>
+#include <ql/CashFlows/floatingratecoupon.hpp> 
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -48,12 +49,20 @@ boost::shared_ptr<Xibor> xiborIndex;
 int fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
-Volatility flatVolatility;
 Rate flatForwardRate;
+Matrix v;
 QL_END_TEST_LOCALS(CapsStripperTest)
 
 
-void setFlatVolatilityTermStructure(){
+void printMatrix(const Matrix& m) {
+        for (Size i=0; i<m.rows(); i++) {
+            for (Size j=0; j<m.columns(); j++)
+                std::cout << m[i][j] << " ";
+            std::cout << "\n";
+        }
+}
+
+void setFlatVolatilityTermStructure(Volatility flatVolatility){
     strikesNb = 10;
     tenorsNb = 10;
     tenors.resize(tenorsNb);
@@ -63,7 +72,6 @@ void setFlatVolatilityTermStructure(){
     for (Size j = 0 ; j < strikesNb; j++)
         strikes[j] = double(j+1)/100;
 
-    flatVolatility = .13;
     volatilityQuoteHandle.resize(tenorsNb);
     boost::shared_ptr<SimpleQuote> 
         volatilityQuote(new SimpleQuote(flatVolatility));
@@ -79,7 +87,7 @@ void setFlatVolatilityTermStructure(){
 void setMarketVolatilityTermStructure(){
     strikesNb = 13;
     tenorsNb = 16;
-    Matrix v(tenorsNb, strikesNb);
+    v = Matrix(tenorsNb, strikesNb);
     v[0][0]=0.287;	v[0][1]=0.274;	v[0][2]=0.256;	v[0][3]=0.245;	v[0][4]=0.227;	v[0][5]=0.148;	v[0][6]=0.096;	v[0][7]=0.09;	v[0][8]=0.11;	v[0][9]=0.139;	v[0][10]=0.166;	v[0][11]=0.19;	v[0][12]=0.214;
     v[1][0]=0.303;	v[1][1]=0.258;	v[1][2]=0.22;	v[1][3]=0.203;	v[1][4]=0.19;	v[1][5]=0.153;	v[1][6]=0.126;	v[1][7]=0.118;	v[1][8]=0.147;	v[1][9]=0.165;	v[1][10]=0.18;	v[1][11]=0.192;	v[1][12]=0.212;
     v[2][0]=0.303;	v[2][1]=0.257;	v[2][2]=0.216;	v[2][3]=0.196;	v[2][4]=0.182;	v[2][5]=0.154;	v[2][6]=0.134;	v[2][7]=0.127;	v[2][8]=0.149;	v[2][9]=0.166;	v[2][10]=0.18;	v[2][11]=0.192;	v[2][12]=0.212;
@@ -157,7 +165,7 @@ void setup() {
     forwardRateQuote.linkTo(forwardRate);
     myTermStructure = boost::shared_ptr<FlatForward>(
                   new FlatForward(settlementDate, forwardRateQuote,
-                                  Actual365Fixed()));
+                                  dayCounter));
     rhTermStructure.linkTo(myTermStructure);
     xiborIndex = boost::shared_ptr<Xibor>(new Euribor6M(rhTermStructure));
     capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(  calendar, 
@@ -171,110 +179,112 @@ void setup() {
                                         rhTermStructure));
 }
 
-
+/* We strip a flat volatility surface and we check if 
+    the result is equal to the initial surface
+*/
 void CapsStripperTest::FlatVolatilityStripping() {
 
     BOOST_MESSAGE("Testing Flat Volatility Stripping...");
     QL_TEST_BEGIN
+    Volatility flatVolatility = .15;
+    setFlatVolatilityTermStructure(flatVolatility);
     setup();
-    for (Size tenorTestedIndex = 0; tenorTestedIndex < tenorsNb ; tenorTestedIndex++){
-        Date tenorDate = settlementDate + tenors[tenorTestedIndex];
+    Matrix strippedVolatilities(tenorsNb,strikesNb);
+    for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
+        Date tenorDate = settlementDate + tenors[tenorIndex];
         Time tenorTime =  dayCounter.yearFraction(settlementDate, tenorDate);
-        for (Size strikeTestedIndex = 0; strikeTestedIndex < strikesNb ; strikeTestedIndex ++){
+        for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
             Real blackVariance = 
-                capsStripper->blackVariance(tenorDate, strikes[strikeTestedIndex],true);
+                capsStripper->blackVariance(tenorDate, strikes[strikeIndex],true);
             Volatility volatility = std::sqrt(blackVariance/tenorTime);
             Real relativeError = (volatility - flatVolatility)/flatVolatility *100;
-            if (std::fabs(relativeError)>1e-2)
-                BOOST_ERROR(tenors[tenorTestedIndex] << "\t" <<
-                            strikes[strikeTestedIndex]*100 << "%\t" << 
-                            volatility << "\t" <<
-                            relativeError);
+            strippedVolatilities[tenorIndex][strikeIndex] = volatility;
+            if (std::fabs(relativeError)>1e-3)
+                BOOST_ERROR(   "tenor:\t" << tenors[tenorIndex]
+                            << "\nstrike:\t" << strikes[strikeIndex]*100 << "%"
+                            << "\nvolatility=:\t" << volatility
+                            << "\nrelativeError=:\t" << relativeError
+                            << "\n-------------\n");
         }
     }
     QL_TEST_END
 }
 
+  
 
-void CapsStripperTest::constantVolatilityConsistency() {
+void printFloatingLeg(const FloatingLeg& floatingLeg){
+    boost::shared_ptr<FloatingRateCoupon> floatingRateCoupon;
+    for (Size i = 0; i < floatingLeg.size(); i++){
+        floatingRateCoupon = 
+            boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg[i]);
+        std::cout   //<< i << "\t"
+                    << floatingRateCoupon->fixingDate() << "\t" 
+                    << floatingRateCoupon->accrualStartDate()<< "\t"
+                    //<< floatingRateCoupon->accrualEndDate()<< "\t"
+                    << floatingRateCoupon->date()<< "\t"
+                    << std::endl;
+    }
+    std::cout << "---------------------" << std::endl;
+}
 
-    BOOST_MESSAGE("Testing bootstrap consistency...");
-    
+
+/* Compute caps prices using the stripped volatilty
+ then using the original constant volatility structure*/
+
+void CapsStripperTest::strippedVolCapStrippingConsistency(){
+    BOOST_MESSAGE("Testing stripping of cap volatilities consistency ...");
     QL_TEST_BEGIN
-    setup();
-
-    // we test cap prices using the resulting CapletVolatilityStructure
-    Handle<CapletVolatilityStructure> capsStripperHandle(capsStripper); 
-    boost::shared_ptr<PricingEngine> blackCapFloorEngineCapStripper
-            (new BlackCapFloorEngine(capsStripperHandle));
-    
-    Real tolerance = 1e-4;
-    // for every tenor we create a schedule and the corresponding floating leg
-    for (Size tenorTestedIndex = 0; tenorTestedIndex < tenorsNb ; tenorTestedIndex++){
-        LegHelper legHelper(settlementDate, calendar, fixingDays, businessDayConvention, 
-                            xiborIndex);
-        FloatingLeg floatingLeg = legHelper.makeLeg(xiborIndex->tenor(), 
-                                                    tenors[tenorTestedIndex]);
-       
-        // for every strike we compute the price using different pricing engines    
-        for (Size strikeTestedIndex = 0; strikeTestedIndex < strikesNb ; strikeTestedIndex ++){
-            
-            // we compute the price using the StrippedVolatilty
-            boost::shared_ptr<CapFloor> cap(new Cap(floatingLeg,
-                                            std::vector<Real>(1,strikes[strikeTestedIndex]),
-                                            rhTermStructure, blackCapFloorEngineCapStripper));
-            Real priceFromStrippedVolatilty = cap->NPV();
-            
-            // then using the original constant volatility structure
-            boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility
-                    (new BlackCapFloorEngine(volatilityQuoteHandle[tenorTestedIndex][strikeTestedIndex]));
-            cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
-            Real priceFromConstantVolatilty = cap->NPV();
-            
-            // we compute empirically the cap vega ... 
-            Real relativeError = (priceFromStrippedVolatilty - priceFromConstantVolatilty)
-                /priceFromConstantVolatilty * 100;
-            if(std::fabs(relativeError) > tolerance)
-                BOOST_ERROR( tenors[tenorTestedIndex] << "\t" 
-                            << strikes[strikeTestedIndex]*100 << "%\t" 
-                            << "stripped :" << priceFromStrippedVolatilty *1000 << "\t"
-                            << "constant :" << priceFromConstantVolatilty *1000 << "\t"
-                            << "rel error:" << relativeError << "%");
-        }
-    }
-    QL_TEST_END
-}
-
-void CapsStripperTest::cachedValues(){
     setMarketVolatilityTermStructure();
     setup();
+    static const Real tolerance = 1e-4;
+    static const Real priceThreshold = 1e-4;
+    Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
+    boost::shared_ptr<BlackCapFloorEngine> strippedVolatilityBlackCapFloorEngine
+        (new BlackCapFloorEngine(strippedVolatilityStructureHandle));
+    for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
+        LegHelper legHelper(settlementDate, calendar, 
+            fixingDays, businessDayConvention, xiborIndex);
+        FloatingLeg floatingLeg = legHelper.makeLeg(xiborIndex->tenor(),
+            tenors[tenorIndex]);
+        for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
+            boost::shared_ptr<CapFloor> cap(new Cap(floatingLeg, 
+                std::vector<Real>(1,strikes[strikeIndex]), 
+                rhTermStructure, strippedVolatilityBlackCapFloorEngine));
+            Real priceFromStrippedVolatilty = cap->NPV();
+            boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
+                new BlackCapFloorEngine(
+                    volatilityQuoteHandle[tenorIndex][strikeIndex], dayCounter));
+            cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
+            Real priceFromConstantVolatilty = cap->NPV();
+            Real relativeError = (priceFromStrippedVolatilty - priceFromConstantVolatilty)
+                /priceFromConstantVolatilty;
+            bool strippedPriceIsAccurate;
+            // if we test a short maturity the tolerance is increased because the 
+            // vega might be too low so that we haven't stripped the volatility
+            if (tenorIndex <=1)
+                strippedPriceIsAccurate = std::fabs(relativeError) < tolerance *10;
+            else
+                strippedPriceIsAccurate = std::fabs(relativeError) < tolerance;
+            // if prices are too low the relative discrepancy is not relevant
+            bool priceIsBigEnough = priceFromConstantVolatilty > priceThreshold;
 
-    Matrix strippedVolatilities(tenorsNb,strikesNb);
-    Matrix marketDataPrices(tenorsNb,strikesNb);
-    Matrix vega(tenorsNb,strikesNb);
-    for (Size tenorTestedIndex = 0; tenorTestedIndex < tenorsNb ; tenorTestedIndex++){
-         Date tenorDate = calendar.advance(settlementDate, tenors[tenorTestedIndex]);
-         Time tenorTime = dayCounter.yearFraction(settlementDate, tenorDate);
-         for (Size strikeTestedIndex = 0; strikeTestedIndex < strikesNb ; strikeTestedIndex ++){
-            CapFloor& mktCap = *capsStripper->marketDataCap_[tenorTestedIndex][strikeTestedIndex];
-            marketDataPrices[tenorTestedIndex][strikeTestedIndex] = mktCap.NPV()*1e4;
-             vega[tenorTestedIndex][strikeTestedIndex] =  mktCap.vega()*1e4;
-            Real blackVariance = capsStripper->blackVariance(
-                tenorDate, strikes[strikeTestedIndex],true);
-            strippedVolatilities[tenorTestedIndex][strikeTestedIndex] 
-                = std::sqrt(blackVariance/tenorTime)*100;
-                
+            if(!strippedPriceIsAccurate && priceIsBigEnough)
+            BOOST_ERROR( "tenor: " << tenors[tenorIndex] << "\n"
+                        << "strike: " << strikes[strikeIndex]*100 << "%\n"
+                        << "stripped: " << priceFromStrippedVolatilty * 1e4 << "\n"
+                        << "constant: " << priceFromConstantVolatilty * 1e4 << "\n"
+                        << "rel error: " << relativeError << "%\n");
          }
     }
-
-    std::cout << strippedVolatilities << std::endl;
+    QL_TEST_END
 }
+
+
 
 
 test_suite* CapsStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CapsStripper tests");
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
-    suite->add(BOOST_TEST_CASE(&CapsStripperTest::constantVolatilityConsistency));
-    suite->add(BOOST_TEST_CASE(&CapsStripperTest::cachedValues));
+    suite->add(BOOST_TEST_CASE(&CapsStripperTest::strippedVolCapStrippingConsistency));
     return suite;
 }
