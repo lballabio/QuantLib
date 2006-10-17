@@ -6969,6 +6969,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaptions.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaptions.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.cpp"
 						>
 					</File>
