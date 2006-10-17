@@ -25,6 +25,7 @@
 #ifndef quantlib_pricers_black_capfloor_hpp
 #define quantlib_pricers_black_capfloor_hpp
 
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/capvolstructures.hpp>
@@ -36,7 +37,8 @@ namespace QuantLib {
     class BlackCapFloorEngine : public CapFloor::engine,
                                 public Observer {
       public:
-        BlackCapFloorEngine(const Handle<Quote>& volatility);
+        BlackCapFloorEngine(const Handle<Quote>& volatility,
+                            const DayCounter& dc = Actual365Fixed());
         BlackCapFloorEngine(const Handle<CapletVolatilityStructure>&);
         void calculate() const;
         void update();

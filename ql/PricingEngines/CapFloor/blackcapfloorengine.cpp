@@ -20,14 +20,14 @@
 
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 
-    BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility) {
-        volatility_.linkTo(boost::shared_ptr<CapletVolatilityStructure>(
-                 new CapletConstantVolatility(volatility, Actual365Fixed())));
+    BlackCapFloorEngine::BlackCapFloorEngine(const Handle<Quote>& volatility,
+                                             const DayCounter& dc) {
+        volatility_.linkTo(boost::shared_ptr<CapletVolatilityStructure>(new
+            CapletConstantVolatility(volatility, dc)));
         registerWith(volatility_);
     }
 
