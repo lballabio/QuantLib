@@ -1,4 +1,30 @@
 
+
+- (1) Sobol with Brownian bridging (multiple methods of
+      variate allocation) (MEDIUM) statpro
+- (1) Get LMM code in the same use format as other code via instrument classes
+  creating objects from new hierarchy as necessary (MEDIUM) statpro
+- (1) orthogonal combination of inst vol models and corr models statpro
+
+- (1) verify efficiency of rapid algorithm for reduced factor models caboto
+- (1) coterminal European swaptions (EASY) caboto
+- (1) coterminal European swaptions using Z matrix caboto
+
+- (2) Rogers\anderson-Broadie\Joshi methods for upper bounds assieme
+
+- (2) Reuse convergence tables for RQMC caboto
+- (2) calibrator to produce abcd form from market data, with displacements caboto
+- (2) swaption calibration using Z matrix with displacements (MEDIUM) caboto
+- (2) different correlation structures (Schoenmakers and Coffey, etc) (VARIABLE)
+- (2) alignment with covariance structures in legacy code (?) caboto
+
+- (3) ratchet caboto
+- (3) Jackel method for Bermudan swaptions (time consuming but not hard) statpro
+
+
+=======================================
+
+
 priority in first parenthesis, extimated complexity in the second one
 
 Path generation:
@@ -33,10 +59,10 @@ Products
 - (1) coterminal European swaptions (EASY)
 - (1) coterminal European swaptions using Z matrix
 - (3) ratchet
-- (3) floorlets with one or many steps.  (EASY)
+- (4) floorlets with one or many steps.  (EASY)
 
 ExerciseStrategy:
-- (2) Jackel method for Bermudan swaptions (time consuming but not hard)
+- (3) Jackel method for Bermudan swaptions (time consuming but not hard)
 
 Lower bounds
 - (4) Anderson method for Bermudan swaptions (time consuming but not hard)
