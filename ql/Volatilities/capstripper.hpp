@@ -83,7 +83,10 @@ namespace QuantLib {
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
-        void update() { LazyObject::update(); };
+        void update() { 
+            TermStructure::update();
+            LazyObject::update();
+        };
         //@}
         //! \name TermStructure interface
         //@{
