@@ -4,6 +4,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Silvia Frasson
  Copyright (C) 2006 Mario Pucci
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -124,31 +125,42 @@ namespace QuantLib {
         // 2nd step: then, move backward from N-2 (included) back to
         // alive (included) (if N=0 jumps to 3rd step, if N=dim_ the
         // e_[r][N-1] are correctly initialized):
+
         for (Integer i=static_cast<Integer>(numeraire_)-2;
              i>=static_cast<Integer>(alive_); --i) {
+            drifts[i] = 0.0;
             for (Size r=0; r<factors_; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
+                drifts[i] -= e_[r][i]*pseudo_[i][r];
             }
-            drifts[i] = - std::inner_product(e_.column_begin(i),
-                                             e_.column_end(i),
-                                             pseudo_.row_begin(i),
-                                             0.0);
+
+            /*
+            Matrix::column_iterator p1 = e_.column_begin(i);
+            Matrix::column_iterator end = e_.column_end(i);
+            Matrix::const_column_iterator p2 = e_.column_begin(i+1);
+            Matrix::const_row_iterator q1 = pseudo_.row_begin(i);
+            Matrix::const_row_iterator q2 = pseudo_.row_begin(i+1);
+            Real x = tmp_[i+1];
+            while (p1 != end) {
+                *p1 = *p2 + x*(*q2);
+                drifts[i] -= *p1*(*q1);
+                ++p1; ++p2; ++q1; ++q2;
+            }
+            */
         }
         
         // 3rd step: now, move forward from N (included) up to n (excluded)
         // (if N=0 this is the only relevant computation):
         for (Size i=numeraire_; i<dim_; ++i) {
+            drifts[i] = 0.0;
             for (Size r=0; r<factors_; ++r) {
                 if (i==0) {
                     e_[r][i] = tmp_[i] * pseudo_[i][r];
                 } else {
                     e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
                 }
+                drifts[i] += e_[r][i]*pseudo_[i][r];
             }
-            drifts[i] = std::inner_product(e_.column_begin(i),
-                                           e_.column_end(i),
-                                           pseudo_.row_begin(i),
-                                           0.0);
         }
     }
 
