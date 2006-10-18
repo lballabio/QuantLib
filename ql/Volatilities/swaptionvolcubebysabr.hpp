@@ -109,8 +109,6 @@ namespace QuantLib {
         void update() { LazyObject::update(); };
         //@}
 
-
-        void performCalibration() const {calculate(); };
         void recalibration(Real beta);
         
         const Matrix& marketVolCube(Size i) const {

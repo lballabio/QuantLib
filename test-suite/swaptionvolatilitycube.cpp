@@ -452,8 +452,6 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                                          parametersGuess,
                                          isParameterFixed,
                                          true);
-    volCube.performCalibration();
-
     Real tolerance = 3.0e-4;
     makeAtmVolTest(volCube, tolerance);
 

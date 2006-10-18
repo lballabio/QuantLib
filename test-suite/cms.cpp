@@ -220,7 +220,6 @@ void setup() {
             isParameterFixed,
             false
             ));
-    flatSwaptionVolatilityCubeBySabr->performCalibration();
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCubeBySabr));
     
@@ -264,7 +263,6 @@ void setup() {
             isParameterFixed,
             false
             ));
-    swaptionVolatilityCubeBySabr->performCalibration();
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
 

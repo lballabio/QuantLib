@@ -176,6 +176,10 @@ namespace QuantLib {
                 errors[j][k]= interpolationError;
                 maxErrors[j][k]= sabrInterpolation->interpolationMaxError();
 
+/*                QL_REQUIRE(sabrInterpolation->endCriteria() != EndCriteria::maxIter,
+                    "SwaptionVolatilityCubeBySabr::sabrCalibration: end criteria is max iteration"); */   /*                QL_REQUIRE(sabrInterpolation->endCriteria != EndCriteria::maxIter,
+                    "SwaptionVolatilityCubeBySabr::sabrCalibration: end criteria is max iteration");*/
+
             }
         }
         Cube sabrParametersCube(exerciseDates, swapTenors,
@@ -398,6 +402,8 @@ namespace QuantLib {
     SwaptionVolatilityCubeBySabr::smileSection(
                                     Time expiry, Time length,
                                     const Cube& sabrParametersCube) const {
+        
+        calculate();        
         const std::vector<Real> sabrParameters =
             sabrParametersCube(expiry, length);
         return boost::shared_ptr<SmileSection>(
@@ -420,17 +426,21 @@ namespace QuantLib {
     }
 
     Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
+        calculate();
         return sparseParameters_.browse();
     }
 
     Matrix SwaptionVolatilityCubeBySabr::denseSabrParameters() const {
+        calculate();
         return denseParameters_.browse();
     }
 
     Matrix SwaptionVolatilityCubeBySabr::marketVolCube() const {
+        calculate();
         return marketVolCube_.browse();
     }
     Matrix SwaptionVolatilityCubeBySabr::volCubeAtmCalibrated() const {
+        calculate();
         return volCubeAtmCalibrated_.browse();
     }
 
