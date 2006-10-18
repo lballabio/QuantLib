@@ -99,14 +99,16 @@ namespace QuantLib {
            }
         }
         // stripped Caps
+        boost::shared_ptr<SimpleQuote> dummyQuote(new SimpleQuote(0.0));
+        Handle<Quote> dummyQuoteHandle(dummyQuote);
+        boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
+                   BlackCapFloorEngine(dummyQuoteHandle, volatilityDayCounter));
         strippedCap_.resize(tenors.size()-1);
         for (Size i = 0 ; i < strippedCap_.size(); i++) {
            FloatingLeg floatingLeg = legHelper.makeLeg(tenors[i],tenors[i+1]);
            strippedCap_[i].resize(strikes_.size());
             for (Size j = 0 ; j < strikes_.size(); j++) {
-               boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                   BlackCapFloorEngine(vols[i][j]));
-               strippedCap_[i][j] = boost::shared_ptr<Cap>(new
+                strippedCap_[i][j] = boost::shared_ptr<Cap>(new
                    Cap(floatingLeg, std::vector<Real>(1,strikes_[j]),
                        termStructure, blackCapFloorEngine));
             }
