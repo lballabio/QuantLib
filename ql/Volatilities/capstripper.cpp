@@ -117,9 +117,9 @@ namespace QuantLib {
         // we store the times for which the volatility will be known
         for (Size i = 0 ; i < tenors.size(); i++){
             boost::shared_ptr<CashFlow> lastCoupon(marketDataCap_[i][0]->floatingLeg().back());
-            boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+            boost::shared_ptr<FloatingRateCoupon> floatingCoupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
-            Date tenorDate = lastFloatingCoupon->fixingDate();
+            Date tenorDate = floatingCoupon->fixingDate();
             tenorTimes_[i] = volatilityDayCounter_.yearFraction(evaluationDate_,tenorDate);
         }
         
