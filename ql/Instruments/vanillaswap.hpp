@@ -78,10 +78,13 @@ namespace QuantLib {
                     const DayCounter& floatingDayCount,
                     const Handle<YieldTermStructure>& termStructure);
         // results
-        Rate fairRate() const;
-        Spread fairSpread() const;
         Real fixedLegBPS() const;
+        Real fixedLegNPV() const;
+        Rate fairRate() const;
+
         Real floatingLegBPS() const;
+        Real floatingLegNPV() const;
+        Spread fairSpread() const;
         // inspectors
         Rate fixedRate() const;
         Spread spread() const;

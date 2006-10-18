@@ -219,6 +219,18 @@ namespace QuantLib {
         return legBPS_[1];
     }
 
+    Real VanillaSwap::fixedLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
+        return legNPV_[0];
+    }
+
+    Real VanillaSwap::floatingLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
+        return legNPV_[1];
+    }
+
     void VanillaSwap::setupExpired() const {
         Swap::setupExpired();
         legBPS_[0] = legBPS_[1] = 0.0;
