@@ -143,11 +143,6 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
-    Real Swaption::vega() const {
-        calculate();
-        return vega_;
-    }
-
     void Swaption::fetchResults (const Results* r) const{
         Instrument::fetchResults(r);
         const Swaption::results* results =
@@ -156,4 +151,12 @@ namespace QuantLib {
         
     }
 
+    Real Swaption::vega() const {
+        calculate();
+        return vega_;
+    }
+
+    Rate Swaption::atmRate() const{
+        return swap_->fairRate();    
+    }
 }
