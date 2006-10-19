@@ -98,8 +98,7 @@ namespace QuantLib {
             fxMax_ = f(root_);
 
             // monotonically crescent bias, as in optionValue(volatility)
-            //if (fxMax_ == 0.0)
-            if (std::fabs(fxMax_) <= accuracy)
+            if (fxMax_ == 0.0)
                 return root_;
             else if (fxMax_ > 0.0) {
                 xMin_ = enforceBounds_(root_ - step);
@@ -184,13 +183,11 @@ namespace QuantLib {
                        << ") > enforced hi bound (" << upperBound_ << ")");
 
             fxMin_ = f(xMin_);
-            //if (fxMin_ == 0.0)
-            if (std::fabs(fxMin_) < accuracy)
+            if (fxMin_ == 0.0)
                 return xMin_;
 
             fxMax_ = f(xMax_);
-            //if (fxMax_ == 0.0)
-            if (std::fabs(fxMax_) < accuracy)
+            if (fxMax_ == 0.0)
                 return xMax_;
 
             evaluationNumber_ = 2;
@@ -262,6 +259,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
