@@ -23,7 +23,7 @@
 #include <ql/Volatilities/swaptionconstantvol.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
-
+ 
 namespace QuantLib {
 
     BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility) {
@@ -44,6 +44,11 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    Real optionVega(Real stdDev, Rate forward, Rate strike, Time exercise){
+        CumulativeNormalDistribution N_;
+        Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
+        return forward * N_.derivative(d1) * std::sqrt(exercise);
+    };
     void BlackSwaptionEngine::calculate() const
 	{
         static const Spread basisPoint = 1.0e-4;
@@ -68,6 +73,12 @@ namespace QuantLib {
         results_.value = annuity * blackFormula(w, arguments_.fixedRate,
                                                 arguments_.fairRate,
                                                 vol*std::sqrt(exercise));
+        Real variance = volatility_->blackVariance(exercise,
+                                                 maturity-exercise,
+                                                 arguments_.fixedRate);
+        Real stdDev = std::sqrt(variance);
+        Rate forward = arguments_.fairRate;
+        Rate strike = arguments_.fixedRate;
+        results_.vega_ = annuity * optionVega(stdDev, forward, strike, exercise);
     }
-
 }
