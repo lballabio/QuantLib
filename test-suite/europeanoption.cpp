@@ -736,11 +736,11 @@ void EuropeanOptionTest::testImpliedVol() {
 
     // test options
     Option::Type types[] = { Option::Call, Option::Put };
-    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real strikes[] = { 90.0, 99.5, 100.0, 100.5, 110.0 };
     Integer lengths[] = { 36, 180, 360, 1080 };
 
     // test data
-    Real underlyings[] = { 80.0, 95.0, 99.9, 100.0, 100.1, 105.0, 120.0 };
+    Real underlyings[] = { 90.0, 95.0, 99.9, 100.0, 100.1, 105.0, 110.0 };
     Rate qRates[] = { 0.01, 0.05, 0.10 };
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
