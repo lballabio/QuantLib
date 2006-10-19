@@ -33,6 +33,7 @@ class SwaptionTest {
     static void testCachedValue();
 	static void testCashSettledSwaptions();
     static void testImpliedVolatility();
+    static void testVega();
     static boost::unit_test_framework::test_suite* suite();
 };
 

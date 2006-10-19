@@ -29,6 +29,7 @@
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -418,6 +419,63 @@ void SwaptionTest::testCachedValue() {
 
     QL_TEST_TEARDOWN
 }
+
+void SwaptionTest::testVega() {
+
+    BOOST_MESSAGE("Testing swaption vega ...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Real tolerance = 1.0e-06;
+
+    Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
+    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    Volatility shift = 1e-8;
+    for (Size i=0; i<LENGTH(exercises); i++) {
+        Date exerciseDate = calendar_.advance(today_,exercises[i],Years);
+        Date startDate = calendar_.advance(exerciseDate,settlementDays_,
+                                               Days);
+        for (Size j=0; j<LENGTH(lengths); j++) {
+            Date maturity = calendar_.advance(startDate,lengths[j],Years,
+                                              floatingConvention_);
+            for (Size t=0; t<LENGTH(strikes); t++) {
+                for (Size h=0; h<LENGTH(type); h++) {
+                    boost::shared_ptr<VanillaSwap> swap =
+                    makeSwap(startDate, lengths[j], strikes[t],0.,type[h]);
+                    for (Size u=0; u<LENGTH(vols); u++) {
+                        boost::shared_ptr<Swaption> swaption =
+                            makeSwaption(swap, maturity, vols[u], types[h]);
+                        boost::shared_ptr<Swaption> swaption1 =
+                            makeSwaption(swap, maturity, vols[u]-shift, types[h]);
+                        boost::shared_ptr<Swaption> swaption2 =
+                            makeSwaption(swap, maturity, vols[u]+shift, types[h]);
+
+                        Real numericalVega = (swaption2->NPV() - swaption1->NPV())/(2*shift);
+                        Real analyticalVega = swaption->vega();
+                        Real absoluteDiscrepancy = std::fabs(analyticalVega - numericalVega);
+                        Real relativeDiscrepancy = absoluteDiscrepancy /numericalVega;
+                        if (absoluteDiscrepancy > tolerance && relativeDiscrepancy > tolerance)
+                            BOOST_ERROR(
+                                "failed to compute swaption vega:\n"
+                                << " lengths " << lengths[j] << "\n"
+                                << " exercise " << exercises[i]<< "\n"
+                                << "types " << types[h] << "\n"
+                                << QL_FIXED << std::setprecision(12)
+                                << "    calculated: " << analyticalVega << "\n"
+                                << "    expected:   " << numericalVega << "\n"
+                                << "    discrepancy: " << QL_SCIENTIFIC 
+                                << analyticalVega - numericalVega);
+                    }
+                }
+            }
+        }
+    }
+
+    QL_TEST_TEARDOWN
+}
+
 
 
 void SwaptionTest::testCashSettledSwaptions() {
@@ -837,6 +895,7 @@ void SwaptionTest::testImpliedVolatility() {
     QL_TEST_TEARDOWN
 }
 
+
 test_suite* SwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption tests");
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testCashSettledSwaptions));
@@ -845,6 +904,8 @@ test_suite* SwaptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadTreatment));
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testCachedValue));
     suite->add(BOOST_TEST_CASE(&SwaptionTest::testImpliedVolatility));
+
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testVega));
 
     return suite;
 }
