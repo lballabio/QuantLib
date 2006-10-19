@@ -174,6 +174,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BondTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
+    test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
     test->add(CompoundForwardTest::suite());
@@ -228,7 +229,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TransformedGridTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
-    test->add(CapsStripperTest::suite());
     //tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 
