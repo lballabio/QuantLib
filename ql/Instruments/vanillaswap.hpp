@@ -121,10 +121,10 @@ namespace QuantLib {
                       #endif
                       nominal(Null<Real>()),
                       currentFloatingCoupon(Null<Real>()) {}
+        Type type;
         #ifndef QL_DISABLE_DEPRECATED
         bool payFixed;
         #endif
-        Type type;
         Real nominal;
         std::vector<Time> fixedResetTimes;
         std::vector<Time> fixedPayTimes;
