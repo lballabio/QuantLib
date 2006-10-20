@@ -22,7 +22,6 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/DayCounters/thirty360.hpp>
 
 namespace QuantLib {
 
@@ -284,77 +283,4 @@ namespace QuantLib {
                    "current floating coupon null or not set");
     } 
 
-
-    MakeVanillaSwap::MakeVanillaSwap(const Date& effectiveDate,
-                                     const Period& swapTenor, 
-                                     const Calendar& cal,
-                                     Rate fixedRate,
-                                     const boost::shared_ptr<Xibor>& index,
-                                     const Handle<YieldTermStructure>& termStructure)
-    : type_(VanillaSwap::Payer), nominal_(1.0), 
-      effectiveDate_(effectiveDate), swapTenor_(swapTenor),
-      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
-      fixedCalendar_(cal), floatCalendar_(cal),
-      fixedConvention_(ModifiedFollowing),
-      fixedTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(ModifiedFollowing),
-      floatTerminationDateConvention_(ModifiedFollowing),
-      fixedBackward_(true), floatBackward_(true), 
-      fixedEndOfMonth_(true), floatEndOfMonth_(true),
-      fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      fixedRate_(fixedRate), floatSpread_(0.0), 
-      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()),
-      index_(index), termStructure_(termStructure)
-    {
-        terminationDate_ = NullCalendar().advance(
-            effectiveDate, swapTenor_);
-    }
-
-    MakeVanillaSwap::operator VanillaSwap() const {
-
-        Schedule fixedSchedule(effectiveDate_, terminationDate_,
-                               fixedTenor_, fixedCalendar_,
-                               fixedConvention_,
-                               fixedTerminationDateConvention_,
-                               fixedBackward_, fixedEndOfMonth_,
-                               fixedFirstDate_, fixedNextToLastDate_);
-
-        Schedule floatSchedule(effectiveDate_, terminationDate_,
-                               floatTenor_, floatCalendar_,
-                               floatConvention_,
-                               floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
-                               floatFirstDate_, floatNextToLastDate_);
-
-        return VanillaSwap(type_, nominal_,
-                       fixedSchedule, fixedRate_, fixedDayCount_,
-                       floatSchedule, index_, floatSpread_, floatDayCount_,
-                       termStructure_);
-    }
-
-    MakeVanillaSwap::operator boost::shared_ptr<VanillaSwap>() const {
-
-        Schedule fixedSchedule(effectiveDate_, terminationDate_,
-                               fixedTenor_, fixedCalendar_,
-                               fixedConvention_,
-                               fixedTerminationDateConvention_,
-                               fixedBackward_, fixedEndOfMonth_,
-                               fixedFirstDate_, fixedNextToLastDate_);
-
-        Schedule floatSchedule(effectiveDate_, terminationDate_,
-                               floatTenor_, floatCalendar_,
-                               floatConvention_,
-                               floatTerminationDateConvention_,
-                               floatBackward_, floatEndOfMonth_,
-                               floatFirstDate_, floatNextToLastDate_);
-
-        return boost::shared_ptr<VanillaSwap>(new
-            VanillaSwap(type_, nominal_,
-                   fixedSchedule, fixedRate_, fixedDayCount_,
-                   floatSchedule, index_, floatSpread_, floatDayCount_,
-                   termStructure_));
-    }
-
 }
-

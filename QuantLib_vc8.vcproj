@@ -2163,6 +2163,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\makecapfloor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\makecapfloor.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\makevanillaswap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\makevanillaswap.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Instruments\multiassetoption.cpp"
 				>
 				<FileConfiguration
