@@ -227,7 +227,8 @@ namespace QuantLib {
 
     void Bond::performCalculations() const {
 
-        QL_REQUIRE(!discountCurve_.empty(), "no term structure set");
+        QL_REQUIRE(!discountCurve_.empty(),
+                   "no discounting term structure set to Bond");
 
         Date settlement = settlementDate();
 		NPV_ = 0.0;

@@ -77,7 +77,8 @@ namespace QuantLib {
     }
 
     void Swap::performCalculations() const {
-        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
+        QL_REQUIRE(!termStructure_.empty(),
+                   "no discounting term structure set to Swap");
         Date settlement = termStructure_->referenceDate();
 
         errorEstimate_ = Null<Real>();

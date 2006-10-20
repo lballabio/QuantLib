@@ -52,7 +52,8 @@ namespace QuantLib {
 
     Rate Xibor::forecastFixing(const Date& fixingDate) const
     {
-        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
+        QL_REQUIRE(!termStructure_.empty(),
+                   "no forecasting term structure set to " << name());
         Date fixingValueDate = valueDate(fixingDate);
         Date endValueDate = maturityDate(fixingValueDate);
         DiscountFactor fixingDiscount =
