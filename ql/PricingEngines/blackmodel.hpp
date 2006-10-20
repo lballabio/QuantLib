@@ -75,6 +75,11 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
+    inline Real blackVega(Real stdDev, Rate forward, Rate strike){
+        CumulativeNormalDistribution N_;
+        Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
+        return forward * N_.derivative(d1);
+    }
 }
 
 #endif

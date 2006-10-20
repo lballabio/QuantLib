@@ -48,11 +48,7 @@ namespace QuantLib {
                          Rate strike,
                          Real variance) const;
 
-        Real optionletVega(Rate forward,
-                        Rate strike, 
-                        Real variance) const;
-
-          Real floorletValue(Rate forward,
+        Real floorletValue(Rate forward,
                            Rate strike,
                            Real variance) const;
         CumulativeNormalDistribution N_;

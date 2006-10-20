@@ -66,11 +66,11 @@ namespace QuantLib {
                         capletValue(forward, strike, variance);
                     Volatility volatility = volatility_->volatility(
                         arguments_.fixingDates[i], strike);
-                    // not really elegant ask Luigi to have access to timeToMaturity() ...
+                    // not really elegant: ask Luigi to have access to timeToMaturity() ...
                     Time timeToMaturity = 
                         volatilityDayCounter.yearFraction(Date::todaysDate(), arguments_.fixingDates[i]);
                     vega_ += nominal * gearing * accrualTime * q 
-                            * optionletVega(forward, strike, variance) 
+                            * blackVega(std::sqrt(variance), forward, strike) 
                             * std::sqrt(timeToMaturity);
                 }
                 if ((type == CapFloor::Floor) ||
@@ -92,14 +92,6 @@ namespace QuantLib {
         results_.vega_ = vega_;
 }
     
-    Real BlackCapFloorEngine::optionletVega(Rate forward,
-                                            Rate strike,
-                                            Real variance) const{
-        Real stdDev = std::sqrt(variance);
-        Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
-        return forward * N_.derivative(d1);
-    };
-
     Real BlackCapFloorEngine::capletValue(Rate forward,
                                           Rate strike, Real variance) const {
         if (variance == 0.0) {

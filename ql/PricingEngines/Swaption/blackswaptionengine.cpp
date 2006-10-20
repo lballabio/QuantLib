@@ -44,11 +44,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    Real optionVega(Real stdDev, Rate forward, Rate strike, Time exercise){
-        CumulativeNormalDistribution N_;
-        Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
-        return forward * N_.derivative(d1) * std::sqrt(exercise);
-    };
+    
     void BlackSwaptionEngine::calculate() const
 	{
         static const Spread basisPoint = 1.0e-4;
@@ -79,6 +75,6 @@ namespace QuantLib {
         Real stdDev = std::sqrt(variance);
         Rate forward = arguments_.fairRate;
         Rate strike = arguments_.fixedRate;
-        results_.vega_ = annuity * optionVega(stdDev, forward, strike, exercise);
+        results_.vega_ = annuity * blackVega(stdDev, forward, strike) * std::sqrt(exercise);
     }
 }
