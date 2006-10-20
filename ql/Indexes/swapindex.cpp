@@ -16,7 +16,7 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 #include <ql/Indexes/swapindex.hpp>
-#include <ql/Instruments/all.hpp>
+#include <ql/Instruments/makevanillaswap.hpp>
 
 #include <sstream>
 

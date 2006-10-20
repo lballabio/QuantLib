@@ -19,6 +19,7 @@
 */
 
 
+#include <ql/Instruments/makevanillaswap.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Volatilities/smilesection.hpp>
 #include <ql/Math/sabrinterpolation.hpp>

@@ -54,12 +54,15 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter());
         virtual ~FloatingRateCoupon() {}
+        //! \name CashFlow interface
+        //@{
+        Real amount() const;
+        //@}
         //! \name Coupon interface
         //@{
-        virtual Rate rate() const;
-        Real amount() const;
-        Real accruedAmount(const Date&) const;
+        Rate rate() const;
         DayCounter dayCounter() const;
+        Real accruedAmount(const Date&) const;
         //@}
         //! \name Inspectors
         //@{

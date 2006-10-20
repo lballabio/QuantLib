@@ -38,7 +38,7 @@ namespace QuantLib {
         MakeCapFloor(CapFloor::Type capFloorType,
                      const Period& capFloorTenor, 
                      const boost::shared_ptr<Xibor>& index,
-                     Rate strike);
+                     Rate strike = Null<Rate>());
 
         operator CapFloor() const;
         operator boost::shared_ptr<CapFloor>() const ;
@@ -62,7 +62,7 @@ namespace QuantLib {
         CapFloor::Type capFloorType_;
         Period capFloorTenor_;
         boost::shared_ptr<Xibor> index_;
-        std::vector<Rate> strike_;
+        Rate strike_;
 
         boost::shared_ptr<PricingEngine> engine_;
         MakeVanillaSwap makeVanillaSwap_;

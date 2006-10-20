@@ -71,6 +71,17 @@ namespace QuantLib {
       floatSpread_(0.0), 
       fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
 
+    MakeVanillaSwap& MakeVanillaSwap::withFixedLegNotEndOfMonth(bool flag) {
+        fixedEndOfMonth_ = !flag;
+        return *this;
+    }
+
+    MakeVanillaSwap&
+    MakeVanillaSwap::withFloatingLegNotEndOfMonth(bool flag) {
+        floatEndOfMonth_ = !flag;
+        return *this;
+    }
+
     MakeVanillaSwap::operator VanillaSwap() const {
 
         Date terminationDate = NullCalendar().advance(effectiveDate_, swapTenor_);
@@ -89,8 +100,15 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
+        Rate usedFixedRate = fixedRate_;
+        if (fixedRate_ == Null<Rate>())
+            usedFixedRate = VanillaSwap(type_, nominal_,
+                       fixedSchedule, 0.0, fixedDayCount_,
+                       floatSchedule, index_, floatSpread_, floatDayCount_,
+                       discountingTermStructure_).fairRate();
+
         return VanillaSwap(type_, nominal_,
-                       fixedSchedule, fixedRate_, fixedDayCount_,
+                       fixedSchedule, usedFixedRate, fixedDayCount_,
                        floatSchedule, index_, floatSpread_, floatDayCount_,
                        discountingTermStructure_);
     }
@@ -113,9 +131,16 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
+        Rate usedFixedRate = fixedRate_;
+        if (fixedRate_ == Null<Rate>())
+            usedFixedRate = VanillaSwap(type_, nominal_,
+                       fixedSchedule, 0.0, fixedDayCount_,
+                       floatSchedule, index_, floatSpread_, floatDayCount_,
+                       discountingTermStructure_).fairRate();
+
         return boost::shared_ptr<VanillaSwap>(new
             VanillaSwap(type_, nominal_,
-                   fixedSchedule, fixedRate_, fixedDayCount_,
+                   fixedSchedule, usedFixedRate, fixedDayCount_,
                    floatSchedule, index_, floatSpread_, floatDayCount_,
                    discountingTermStructure_));
     }
@@ -170,11 +195,6 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withFixedLegNotEndOfMonth(bool flag) {
-        fixedEndOfMonth_ = !flag;
-        return *this;
-    }
-
     MakeVanillaSwap& MakeVanillaSwap::withFixedLegEndOfMonth(bool flag) {
         fixedEndOfMonth_ = flag;
         return *this;
@@ -222,12 +242,6 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withFloatingLegForward(bool flag) {
         floatBackward_ = !flag;
-        return *this;
-    }
-
-    MakeVanillaSwap&
-    MakeVanillaSwap::withFloatingLegNotEndOfMonth(bool flag) {
-        floatEndOfMonth_ = !flag;
         return *this;
     }
 

@@ -27,7 +27,7 @@ namespace QuantLib {
                                const boost::shared_ptr<Xibor>& index,
                                Rate strike)
     : capFloorType_(capFloorType), capFloorTenor_(capFloorTenor),
-      index_(index), strike_(std::vector<Rate>(1, strike)),
+      index_(index), strike_(strike),
       engine_(),
       makeVanillaSwap_(MakeVanillaSwap(capFloorTenor_, index_, 0.0)) {}
 
@@ -38,8 +38,15 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
         leg.erase(leg.begin());
 
-        return CapFloor(capFloorType_, leg, strike_, swap.termStructure(),
-            engine_);
+        std::vector<Rate> strikeVector(1, strike_);
+        if (strike_ == Null<Rate>())
+            strikeVector[0] = CapFloor(capFloorType_, leg,
+                                       std::vector<Rate>(1, 0.03),
+                                       swap.termStructure(),
+                                       engine_).atmRate();
+
+        return CapFloor(capFloorType_, leg, strikeVector,
+                        swap.termStructure(), engine_);
     }
 
     MakeCapFloor::operator boost::shared_ptr<CapFloor>() const {
@@ -49,9 +56,16 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
         leg.erase(leg.begin());
 
+        std::vector<Rate> strikeVector(1, strike_);
+        if (strike_ == Null<Rate>())
+            strikeVector[0] = CapFloor(capFloorType_, leg,
+                                       std::vector<Rate>(1, 0.03),
+                                       swap.termStructure(),
+                                       engine_).atmRate();
+
         return boost::shared_ptr<CapFloor>(new
-            CapFloor(capFloorType_, leg, strike_, swap.termStructure(),
-                                                                engine_));
+            CapFloor(capFloorType_, leg, strikeVector, swap.termStructure(),
+                                                                   engine_));
     }
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {

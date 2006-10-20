@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         MakeVanillaSwap(const Period& swapTenor, 
                         const boost::shared_ptr<Xibor>& index,
-                        Rate fixedRate);
+                        Rate fixedRate = Null<Rate>());
         MakeVanillaSwap(
                 const Date& effectiveDate,
                 const Period& swapTenor, 
@@ -46,6 +46,8 @@ namespace QuantLib {
                 Rate fixedRate,
                 const boost::shared_ptr<Xibor>& index,
                 const Handle<YieldTermStructure>& discountingTermStructure);
+        MakeVanillaSwap& withFixedLegNotEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withFloatingLegNotEndOfMonth(bool flag = true);
 
         operator VanillaSwap() const;
         operator boost::shared_ptr<VanillaSwap>() const ;
@@ -61,7 +63,6 @@ namespace QuantLib {
         MakeVanillaSwap& withFixedLegConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFixedLegForward(bool flag = true);
-        MakeVanillaSwap& withFixedLegNotEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFixedLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFixedLegFirstDate(const Date& d);
         MakeVanillaSwap& withFixedLegNextToLastDate(const Date& d);
@@ -72,7 +73,6 @@ namespace QuantLib {
         MakeVanillaSwap& withFloatingLegConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeVanillaSwap& withFloatingLegForward(bool flag = true);
-        MakeVanillaSwap& withFloatingLegNotEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
         MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);

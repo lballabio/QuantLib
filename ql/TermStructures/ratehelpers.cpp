@@ -21,6 +21,7 @@
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Instruments/makevanillaswap.hpp>
 
 namespace QuantLib {
 
