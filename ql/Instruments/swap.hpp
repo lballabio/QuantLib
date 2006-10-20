@@ -75,6 +75,9 @@ namespace QuantLib {
                 "leg: leg# " << j << " doesn't exist!");
             return legs_[j];
         }
+        const Handle<YieldTermStructure>& termStructure() const {
+            return termStructure_;
+        }
         //@}
       protected:
         // methods
