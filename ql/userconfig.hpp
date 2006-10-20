@@ -73,7 +73,7 @@
 /* Define this to use indexed coupons instead of par coupons in floating
    legs. */
 #ifndef QL_USE_INDEXED_COUPON
-//#   define QL_USE_INDEXED_COUPON
+#   define QL_USE_INDEXED_COUPON
 #endif
 
 /* Define this to have singletons return different instances for
