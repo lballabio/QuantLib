@@ -285,6 +285,14 @@ namespace QuantLib {
                                                index_->dayCounter(),
                                                termStructureHandle_));
 
+        //swap_ = MakeVanillaSwap(tenor_, clonedIndex, 0.0)
+        //    .withEffectiveDate(earliestDate_)
+        //    .withFixedLegCalendar(calendar_)
+        //    .withFixedLegDayCount(fixedDayCount_)
+        //    .withFixedLegTenor(Period(fixedFrequency_))
+        //    .withFixedLegConvention(fixedConvention_)
+        //    .withFixedLegTerminationDateConvention(fixedConvention_);
+
         swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
 					            clonedIndex, termStructureHandle_)
             .withFixedLegDayCount(fixedDayCount_)
