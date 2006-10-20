@@ -239,7 +239,9 @@ namespace QuantLib {
     Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,
                                            const Period& swapTenor) const {
 
-        boost::shared_ptr<Xibor> iborIndexEffective(iborIndex_);
+        // FIXME: delegate to SwapIndex
+
+        //boost::shared_ptr<Xibor> iborIndexEffective(iborIndex_);
         //if (length<=shortTenor_) {
         //    iborIndexEffective = iborIndexShortTenor_;
         //}
@@ -247,12 +249,9 @@ namespace QuantLib {
         // vanilla swap's parameters
         Date startDate = calendar().advance(exerciseDate,
             swapSettlementDays_, Days);
-        Rate fixedRate= 0.0;
-        VanillaSwap swap =
-            MakeVanillaSwap(startDate, swapTenor, calendar(),
-                            fixedRate, iborIndexEffective,
-                            Handle<YieldTermStructure>(
-                                iborIndexEffective->termStructure()))
+        VanillaSwap swap = MakeVanillaSwap(swapTenor, iborIndex_, 0.0)
+            .withEffectiveDate(startDate)
+            .withFixedLegCalendar(calendar())
             .withFixedLegDayCount(fixedLegDayCounter_)
             .withFixedLegTenor(Period(fixedLegFrequency_))
             .withFixedLegConvention(fixedLegConvention_)
