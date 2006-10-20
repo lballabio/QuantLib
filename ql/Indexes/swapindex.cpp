@@ -32,7 +32,7 @@ namespace QuantLib {
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
                          const boost::shared_ptr<Xibor>& iborIndex)
-    : InterestRateIndex(familyName, Period(years, Years), settlementDays,
+    : InterestRateIndex(familyName, years*Years, settlementDays,
                         currency, calendar, fixedLegDayCounter),
       years_(years), iborIndex_(iborIndex),
       fixedLegFrequency_(fixedLegFrequency),
@@ -47,13 +47,12 @@ namespace QuantLib {
 
     boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
                                                const Date& fixingDate) const {
-        QL_REQUIRE(iborIndex_, "no index set");
-        QL_REQUIRE(iborIndex_->termStructure(), "no term structure set");
-        Date start = calendar_.advance(fixingDate, settlementDays_, Days);
-        return MakeVanillaSwap(start, Period(years_, Years), calendar_, 0.0,
-                               iborIndex_,
-                               Handle<YieldTermStructure>(
-                                   iborIndex_->termStructure()))
+        QL_REQUIRE(iborIndex_->termStructure(),
+                   "no forecasting term structure set to " <<
+                   iborIndex_->name());
+        return MakeVanillaSwap(years_*Years, iborIndex_, 0.0)
+            .withEffectiveDate(valueDate(fixingDate))
+            .withFixedLegCalendar(calendar_)
             .withFixedLegDayCount(dayCounter_)
             .withFixedLegTenor(Period(fixedLegFrequency_))
             .withFixedLegConvention(fixedLegConvention_)

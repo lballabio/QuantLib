@@ -273,18 +273,6 @@ namespace QuantLib {
     void SwapRateHelper::initializeDates() {
         earliestDate_ =
             calendar_.advance(evaluationDate_,settlementDays_,Days);
-        Date maturity = earliestDate_ + tenor_;
-
-        Schedule fixedSchedule(earliestDate_, maturity,
-                               Period(fixedFrequency_), calendar_,
-                               fixedConvention_,
-                               fixedConvention_,
-                               false, false); 
-        Schedule floatSchedule(earliestDate_, maturity,
-                               index_->tenor(), calendar_,
-                               index_->businessDayConvention(),
-                               index_->businessDayConvention(),
-                               false, false); 
         // dummy Libor index with curve/swap arguments
         boost::shared_ptr<Xibor> clonedIndex(
                                      new Xibor(index_->familyName(),
@@ -296,14 +284,6 @@ namespace QuantLib {
                                                index_->endOfMonth(),
                                                index_->dayCounter(),
                                                termStructureHandle_));
-
-        //swap_ = boost::shared_ptr<VanillaSwap>(
-        //          new VanillaSwap(true, 100.0,
-        //                          fixedSchedule, 0.0, fixedDayCount_,
-        //                          floatSchedule, clonedIndex,
-        //                          0.0,
-        //                          clonedIndex->dayCounter(),
-        //                          termStructureHandle_));
 
         swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
 					            clonedIndex, termStructureHandle_)
