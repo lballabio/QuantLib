@@ -45,9 +45,10 @@ namespace QuantLib {
     {
       Integer fixingDays = index_->settlementDays();
       Date referenceDate = Settings::instance().evaluationDate();
-      effectiveDate_ = floatCalendar_.advance(referenceDate, 2*Days);
+      effectiveDate_ = floatCalendar_.advance(referenceDate, fixingDays*Days);
     }
 
+#ifndef QL_DISABLE_DEPRECATED
     MakeVanillaSwap::MakeVanillaSwap(const Date& effectiveDate,
                                      const Period& swapTenor, 
                                      const Calendar& cal,
@@ -81,6 +82,7 @@ namespace QuantLib {
         floatEndOfMonth_ = !flag;
         return *this;
     }
+#endif
 
     MakeVanillaSwap::operator VanillaSwap() const {
 
@@ -158,6 +160,14 @@ namespace QuantLib {
     MakeVanillaSwap&
     MakeVanillaSwap::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withForwardStart(const Period& p) {
+        Integer fixingDays = index_->settlementDays();
+        Date referenceDate = Settings::instance().evaluationDate();
+        Date valueDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
+        effectiveDate_ = floatCalendar_.advance(valueDate, p);
         return *this;
     }
 

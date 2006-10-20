@@ -28,6 +28,7 @@ namespace QuantLib {
                                Rate strike)
     : capFloorType_(capFloorType), capFloorTenor_(capFloorTenor),
       index_(index), strike_(strike),
+      firstCapletExcluded_(true),
       engine_(),
       makeVanillaSwap_(MakeVanillaSwap(capFloorTenor_, index_, 0.0)) {}
 
@@ -36,7 +37,8 @@ namespace QuantLib {
         VanillaSwap swap = makeVanillaSwap_;
 
         std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
-        leg.erase(leg.begin());
+        if (firstCapletExcluded_)
+            leg.erase(leg.begin());
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
@@ -54,7 +56,8 @@ namespace QuantLib {
         VanillaSwap swap = makeVanillaSwap_;
 
         std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
-        leg.erase(leg.begin());
+        if (firstCapletExcluded_)
+            leg.erase(leg.begin());
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
@@ -73,8 +76,17 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCapFloor& MakeCapFloor::withEffectiveDate(const Date& effectiveDate) {
+    MakeCapFloor& MakeCapFloor::withEffectiveDate(const Date& effectiveDate,
+                                                  bool firstCapletExcluded) {
         makeVanillaSwap_.withEffectiveDate(effectiveDate);
+        firstCapletExcluded_ = firstCapletExcluded;
+        return *this;
+    }
+
+    MakeCapFloor& MakeCapFloor::withForwardStart(const Period& forwardPeriod,
+                                                 bool firstCapletExcluded) {
+        makeVanillaSwap_.withForwardStart(forwardPeriod);
+        firstCapletExcluded_ = firstCapletExcluded;
         return *this;
     }
 
@@ -121,7 +133,7 @@ namespace QuantLib {
 
     MakeCapFloor& MakeCapFloor::withEndOfMonth(bool flag) {
         makeVanillaSwap_.withFixedLegEndOfMonth(flag);
-        makeVanillaSwap_.withFloatingLegNotEndOfMonth(flag);
+        makeVanillaSwap_.withFloatingLegEndOfMonth(flag);
         return *this;
     }
 
