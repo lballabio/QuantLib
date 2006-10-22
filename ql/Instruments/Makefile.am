@@ -25,6 +25,8 @@ include_HEADERS = \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
     lookbackoption.hpp \
+    makecapfloor.hpp \
+    makevanillaswap.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
     oneassetstrikedoption.hpp \
@@ -58,6 +60,8 @@ libInstruments_la_SOURCES = \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
     lookbackoption.cpp \
+    makecapfloor.cpp \
+    makevanillaswap.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
     oneassetstrikedoption.cpp \
