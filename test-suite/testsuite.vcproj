@@ -698,6 +698,9 @@
 				RelativePath=".\bonds.cpp">
 			</File>
 			<File
+				RelativePath=".\brownianbridge.cpp">
+			</File>
+			<File
 				RelativePath="calendars.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2560,6 +2563,9 @@
 			</File>
 			<File
 				RelativePath=".\bonds.hpp">
+			</File>
+			<File
+				RelativePath=".\brownianbridge.hpp">
 			</File>
 			<File
 				RelativePath="calendars.hpp">
