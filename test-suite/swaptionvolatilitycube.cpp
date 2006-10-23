@@ -455,7 +455,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     Real tolerance = 3.0e-4;
     makeAtmVolTest(volCube, tolerance);
 
-    tolerance = 8.0e-4;
+    tolerance = 10.0e-4;
     makeVolSpreadsTest(volCube, tolerance);
 
     QL_TEST_TEARDOWN
