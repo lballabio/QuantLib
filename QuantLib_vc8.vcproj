@@ -7341,14 +7341,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\blackmodel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\PricingEngines\blackmodel.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\PricingEngines\core.hpp"
 				>
 			</File>

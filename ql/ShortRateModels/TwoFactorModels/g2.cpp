@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/segmentintegral.hpp>
+#include <ql/PricingEngines/blackFormula.hpp>
+#include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {

@@ -24,7 +24,7 @@
 #define quantlib_conundrum_pricer_hpp
 
 #include <ql/CashFlows/cmscoupon.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/option.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 
 namespace QuantLib

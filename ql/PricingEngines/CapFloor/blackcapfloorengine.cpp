@@ -19,6 +19,7 @@
 */
 
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
+#include <ql/PricingEngines/blackFormula.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 
@@ -70,7 +71,7 @@ namespace QuantLib {
                     Time timeToMaturity = 
                         volatilityDayCounter.yearFraction(Date::todaysDate(), arguments_.fixingDates[i]);
                     vega_ += nominal * gearing * accrualTime * q 
-                            * blackVega(std::sqrt(variance), forward, strike) 
+                            * blackVega(strike, forward, std::sqrt(variance)) 
                             * std::sqrt(timeToMaturity);
                 }
                 if ((type == CapFloor::Floor) ||

@@ -30,56 +30,8 @@
 
 namespace QuantLib {
 
-    /*! Black 1976 formula
-        \warning instead of volatility it uses standard deviation,
-                 i.e. volatility*sqrt(timeToMaturity)
-    */
-    Real blackFormula(Option::Type optionType,
-                      Real strike,
-                      Real forward,
-                      Real stdDev);
+#pragma message("blackmodel.hpp is an empty file: no need to include it")
 
-    /*! Approximated Black 1976 implied standard deviation,
-        i.e. volatility*sqrt(timeToMaturity).
-        
-        It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
-        (1988) approximation for at-the-money forward option, with the
-        extended moneyness approximation by Corrado and Miller (1996)
-    */
-    Real blackImpliedStdDevApproximation(Option::Type optionType,
-                                         Real strike,
-                                         Real forward,
-                                         Real blackPrice);
-
-    /*! Black 1976 implied  standard deviation,
-        i.e. volatility*sqrt(timeToMaturity)
-    */
-    Real blackImpliedStdDev(Option::Type optionType,
-                            Real strike,
-                            Real forward,
-                            Real blackPrice,
-                            Real guess = Null<Real>(),
-                            Real accuracy = 1.0e-6);
-
-    inline Real blackItmProbability(Option::Type optionType,
-                                    Real strike,
-                                    Real forward,
-                                    Real stdDev) {
-        if (stdDev==0.0)
-            return (forward*optionType > strike*optionType ? 1.0 : 0.0);
-        if (strike==0.0)
-            return (optionType==Option::Call ? 1.0 : 0.0);
-        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
-        Real d2 = d1 - stdDev;
-        CumulativeNormalDistribution phi;
-        return phi(optionType*d2);
-    }
-
-    inline Real blackVega(Real stdDev, Rate forward, Rate strike){
-        CumulativeNormalDistribution N_;
-        Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
-        return forward * N_.derivative(d1);
-    }
 }
 
 #endif

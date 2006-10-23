@@ -56,7 +56,7 @@
 #include <ql/schedule.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/convergencestatistics.hpp>

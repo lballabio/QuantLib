@@ -16,7 +16,9 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 #include <ql/CashFlows/cmscoupon.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/Math/normaldistribution.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 

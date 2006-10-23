@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -29,7 +30,56 @@
 
 namespace QuantLib {
 
-    //! Black-formula calculator
+    /*! Black 1976 formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackFormula(Option::Type optionType,
+                      Real strike,
+                      Real forward,
+                      Real stdDev);
+
+    /*! Approximated Black 1976 implied standard deviation,
+        i.e. volatility*sqrt(timeToMaturity).
+        
+        It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
+        (1988) approximation for at-the-money forward option, with the
+        extended moneyness approximation by Corrado and Miller (1996)
+    */
+    Real blackImpliedStdDevApproximation(Option::Type optionType,
+                                         Real strike,
+                                         Real forward,
+                                         Real blackPrice);
+
+    /*! Black 1976 implied  standard deviation,
+        i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackImpliedStdDev(Option::Type optionType,
+                            Real strike,
+                            Real forward,
+                            Real blackPrice,
+                            Real guess = Null<Real>(),
+                            Real accuracy = 1.0e-6);
+
+    /*! Black 1976 "int the money probability" formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackItmProbability(Option::Type optionType,
+                             Real strike,
+                             Real forward,
+                             Real stdDev);
+
+    /*! Black 1976 vega formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackVega(Rate strike,
+                   Rate forward,
+                   Real stdDev);
+
+
+    //! Black-formula calculator class
     /*! \bug When the variance is null, division by zero occur during
              the calculation of delta, delta forward, gamma, gamma
              forward, rho, dividend rho, vega, and strike sensitivity.

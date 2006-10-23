@@ -22,7 +22,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/PricingEngines/blackFormula.hpp>
 
 namespace QuantLib {
 

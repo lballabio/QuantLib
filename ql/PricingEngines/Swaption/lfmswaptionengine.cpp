@@ -18,6 +18,7 @@
 */
 
 #include <ql/PricingEngines/Swaption/lfmswaptionengine.hpp>
+#include <ql/PricingEngines/blackFormula.hpp>
 
 namespace QuantLib {
 

@@ -26,7 +26,7 @@
 #define quantlib_pricers_black_swaption_hpp
 
 #include <ql/Instruments/swaption.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+//#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {

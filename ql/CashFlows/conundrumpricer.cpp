@@ -22,10 +22,12 @@
 */
 
 #include <ql/CashFlows/conundrumpricer.hpp>
-#include <ql/Volatilities/smilesection.hpp>
 #include <ql/Math/gaussianquadratures.hpp>
 #include <ql/Math/kronrodintegral.hpp>
+#include <ql/Math/normaldistribution.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Solvers1D/brent.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 
 
 namespace QuantLib

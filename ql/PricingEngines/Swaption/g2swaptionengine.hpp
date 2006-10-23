@@ -24,7 +24,7 @@
 #ifndef quantlib_pricers_G2_swaption_hpp
 #define quantlib_pricers_G2_swaption_hpp
 
-#include <ql/PricingEngines/blackmodel.hpp>
+//#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
 

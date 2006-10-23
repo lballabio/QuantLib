@@ -27,7 +27,8 @@
 
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
+#include <ql/Math/normaldistribution.hpp>
+//#include <ql/PricingEngines/blackmodel.hpp>
 #include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
