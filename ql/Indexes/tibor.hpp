@@ -37,7 +37,7 @@ namespace QuantLib {
         \warning This is the rate fixed in Tokio by JBA. Use JPYLibor
                  if you're interested in the London fixing by BBA.
 
-        \todo check settlement days.
+        \todo check settlement days and end-of-month adjustment.
     */
     class Tibor : public Xibor {
       public:
@@ -45,7 +45,8 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Xibor("Tibor", tenor, 2, JPYCurrency(),
-                Japan(), ModifiedFollowing, Actual365Fixed(), h) {}
+                Japan(), ModifiedFollowing,
+                false, Actual365Fixed(), h) {}
     };
 
 }

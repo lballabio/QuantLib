@@ -37,7 +37,8 @@ namespace QuantLib {
         \warning This is the rate fixed in Zurich by BBA. Use CHFLibor if
                  you're interested in the London fixing by BBA.
 
-        \todo check settlement days and day-count.
+        \todo check settlement days, end-of-month adjustment,
+              and day-count convention.
     */
     class Zibor : public Xibor {
       public:
@@ -45,7 +46,8 @@ namespace QuantLib {
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Xibor("Zibor", tenor, 2, CHFCurrency(),
-                Switzerland(), ModifiedFollowing, Actual360(), h) {}
+                Switzerland(), ModifiedFollowing, false,
+                Actual360(), h) {}
     };
 
 }

@@ -35,6 +35,8 @@ namespace QuantLib {
     /*! TRY LIBOR fixed by TBA.
 
         See <http://www.trlibor.org/trlibor/english/default.asp>
+
+        \todo check end-of-month adjustment.
     */
     class TRLibor : public Xibor {
       public:
@@ -42,7 +44,8 @@ namespace QuantLib {
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : Xibor("TRLibor", tenor, 0, TRYCurrency(),
-                Turkey(), ModifiedFollowing, Actual360(), h) {}
+                Turkey(), ModifiedFollowing, false,
+                Actual360(), h) {}
     };
 
 }
