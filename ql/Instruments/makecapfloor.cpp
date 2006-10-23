@@ -23,14 +23,19 @@
 namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
-                               const Period& capFloorTenor, 
+                               const Period& tenor, 
                                const boost::shared_ptr<Xibor>& index,
-                               Rate strike)
-    : capFloorType_(capFloorType), capFloorTenor_(capFloorTenor),
-      index_(index), strike_(strike),
-      firstCapletExcluded_(true),
+                               Rate strike,
+                               const Period& forwardStart)
+    : capFloorType_(capFloorType),
+      strike_(strike),
       engine_(),
-      makeVanillaSwap_(MakeVanillaSwap(capFloorTenor_, index_, 0.0)) {}
+      makeVanillaSwap_(MakeVanillaSwap(tenor, index, 0.0, forwardStart)) {
+          if (forwardStart==0*Days)
+              firstCapletExcluded_=true;
+          else
+              firstCapletExcluded_=false;
+    }
 
     MakeCapFloor::operator CapFloor() const {
 
@@ -79,13 +84,6 @@ namespace QuantLib {
     MakeCapFloor& MakeCapFloor::withEffectiveDate(const Date& effectiveDate,
                                                   bool firstCapletExcluded) {
         makeVanillaSwap_.withEffectiveDate(effectiveDate);
-        firstCapletExcluded_ = firstCapletExcluded;
-        return *this;
-    }
-
-    MakeCapFloor& MakeCapFloor::withForwardStart(const Period& forwardPeriod,
-                                                 bool firstCapletExcluded) {
-        makeVanillaSwap_.withForwardStart(forwardPeriod);
         firstCapletExcluded_ = firstCapletExcluded;
         return *this;
     }

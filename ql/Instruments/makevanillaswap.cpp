@@ -26,8 +26,11 @@ namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor, 
                                      const boost::shared_ptr<Xibor>& index,
-                                     Rate fixedRate)
-    : swapTenor_(swapTenor), index_(index), fixedRate_(fixedRate), 
+                                     Rate fixedRate,
+                                     const Period& forwardStart)
+    : forwardStart_(forwardStart), swapTenor_(swapTenor),
+      index_(index), fixedRate_(fixedRate), 
+      effectiveDate_(Date()),
       fixedCalendar_(index->calendar()), floatCalendar_(index->calendar()),
       discountingTermStructure_(index->termStructure()), 
       type_(VanillaSwap::Payer), nominal_(1.0), 
@@ -41,12 +44,7 @@ namespace QuantLib {
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
       floatSpread_(0.0), 
-      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter())
-    {
-      Integer fixingDays = index_->settlementDays();
-      Date referenceDate = Settings::instance().evaluationDate();
-      effectiveDate_ = floatCalendar_.advance(referenceDate, fixingDays*Days);
-    }
+      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
 
 #ifndef QL_DISABLE_DEPRECATED
     MakeVanillaSwap::MakeVanillaSwap(const Date& effectiveDate,
@@ -55,7 +53,8 @@ namespace QuantLib {
                                      Rate fixedRate,
                                      const boost::shared_ptr<Xibor>& index,
                                      const Handle<YieldTermStructure>& termStructure)
-    : swapTenor_(swapTenor), index_(index), fixedRate_(fixedRate),
+    : forwardStart_(0*Days), swapTenor_(swapTenor),
+      index_(index), fixedRate_(fixedRate),
       effectiveDate_(effectiveDate),
       fixedCalendar_(cal), floatCalendar_(cal), 
       discountingTermStructure_(termStructure), 
@@ -86,16 +85,26 @@ namespace QuantLib {
 
     MakeVanillaSwap::operator VanillaSwap() const {
 
-        Date terminationDate = NullCalendar().advance(effectiveDate_, swapTenor_);
+        Date startDate;
+        if (effectiveDate_ != Date())
+            startDate=effectiveDate_;
+        else {
+          Integer fixingDays = index_->settlementDays();
+          Date referenceDate = Settings::instance().evaluationDate();
+          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
+          startDate = floatCalendar_.advance(spotDate, forwardStart_);
+        }
 
-        Schedule fixedSchedule(effectiveDate_, terminationDate,
+        Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
+
+        Schedule fixedSchedule(startDate, terminationDate,
                                fixedTenor_, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
                                fixedBackward_, fixedEndOfMonth_,
                                fixedFirstDate_, fixedNextToLastDate_);
 
-        Schedule floatSchedule(effectiveDate_, terminationDate,
+        Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
@@ -117,16 +126,26 @@ namespace QuantLib {
 
     MakeVanillaSwap::operator boost::shared_ptr<VanillaSwap>() const {
 
-        Date terminationDate = NullCalendar().advance(effectiveDate_, swapTenor_);
+        Date startDate;
+        if (effectiveDate_ != Date())
+            startDate=effectiveDate_;
+        else {
+          Integer fixingDays = index_->settlementDays();
+          Date referenceDate = Settings::instance().evaluationDate();
+          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
+          startDate = floatCalendar_.advance(spotDate, forwardStart_);
+        }
 
-        Schedule fixedSchedule(effectiveDate_, terminationDate,
+        Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
+
+        Schedule fixedSchedule(startDate, terminationDate,
                                fixedTenor_, fixedCalendar_,
                                fixedConvention_,
                                fixedTerminationDateConvention_,
                                fixedBackward_, fixedEndOfMonth_,
                                fixedFirstDate_, fixedNextToLastDate_);
 
-        Schedule floatSchedule(effectiveDate_, terminationDate,
+        Schedule floatSchedule(startDate, terminationDate,
                                floatTenor_, floatCalendar_,
                                floatConvention_,
                                floatTerminationDateConvention_,
@@ -160,14 +179,6 @@ namespace QuantLib {
     MakeVanillaSwap&
     MakeVanillaSwap::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
-        return *this;
-    }
-
-    MakeVanillaSwap& MakeVanillaSwap::withForwardStart(const Period& p) {
-        Integer fixingDays = index_->settlementDays();
-        Date referenceDate = Settings::instance().evaluationDate();
-        Date valueDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-        effectiveDate_ = floatCalendar_.advance(valueDate, p);
         return *this;
     }
 
