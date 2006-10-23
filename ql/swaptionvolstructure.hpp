@@ -105,7 +105,7 @@ namespace QuantLib {
             return maxStartTime();
         }
 
-        virtual boost::shared_ptr<SmileSection> smileSection(
+        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& start,
                                                  const Period& length) const {
             const std::pair<Time, Time> p = convertDates(start, length);
@@ -117,7 +117,7 @@ namespace QuantLib {
                                                   const Period& length) const;
       protected:
         //! return smile section
-        virtual boost::shared_ptr<SmileSection> smileSection(
+        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
             Time start, Time length) const = 0;
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time exerciseTime,

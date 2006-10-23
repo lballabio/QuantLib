@@ -126,10 +126,10 @@ namespace QuantLib {
         //! \name Other inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
-        boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& exerciseDate,
                                                  const Period& length) const;
-        boost::shared_ptr<SmileSection> smileSection(Time start,
+        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
                                                      Time length) const;
         //@}
       protected:

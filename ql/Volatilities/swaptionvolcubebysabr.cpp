@@ -278,7 +278,7 @@ namespace QuantLib {
         std::vector<Time> timeLengths(sparseParameters_.lengths());
 
         for (Size j=0; j<exerciseTimes.size(); j++) {
-            std::vector<boost::shared_ptr<SmileSection> > tmp;
+            std::vector<boost::shared_ptr<SmileSectionInterface> > tmp;
             for (Size k=0; k<timeLengths.size(); k++) {
                 tmp.push_back(smileSection(exerciseTimes[j], timeLengths[k],
                                            sparseParameters_));
@@ -320,9 +320,9 @@ namespace QuantLib {
         if (lengthsPreviousIndex >= timeLengths.size()-1)
             lengthsPreviousIndex = timeLengths.size()-2;
 
-        std::vector< std::vector<boost::shared_ptr<SmileSection> > > smiles;
-        std::vector<boost::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
-        std::vector<boost::shared_ptr<SmileSection> >  smilesOnNextExpiry;
+        std::vector< std::vector<boost::shared_ptr<SmileSectionInterface> > > smiles;
+        std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnPreviousExpiry;
+        std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnNextExpiry;
 
         QL_REQUIRE(expiriesPreviousIndex+1 < sparseSmiles_.size(),
                    "expiriesPreviousIndex+1 >= sparseSmiles_.size()");
@@ -397,7 +397,7 @@ namespace QuantLib {
             return smileSection(expiry, length)->volatility(strike);
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(Time expiry,
                                                Time length) const {
         if (isAtmCalibrated_)
@@ -406,7 +406,7 @@ namespace QuantLib {
             return smileSection(expiry, length, sparseParameters_);
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
                                     Time expiry, Time length,
                                     const Cube& sabrParametersCube) const {
@@ -414,8 +414,8 @@ namespace QuantLib {
         calculate();        
         const std::vector<Real> sabrParameters =
             sabrParametersCube(expiry, length);
-        return boost::shared_ptr<SmileSection>(
-            new SmileSection(sabrParameters, expiry));
+        return boost::shared_ptr<SmileSectionInterface>(
+            new SabrSmileSection(sabrParameters, expiry));
     }
 
     Volatility SwaptionVolatilityCubeBySabr::volatilityImpl(
@@ -423,7 +423,7 @@ namespace QuantLib {
             return smileSection(exerciseDate, length)->volatility(strike);
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
         const Date& exerciseDate, const Period& swapTenor) const {
         const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);

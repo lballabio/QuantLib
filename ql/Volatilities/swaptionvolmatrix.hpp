@@ -90,11 +90,11 @@ namespace QuantLib {
         Rate minStrike() const;
         Rate maxStrike() const;
         //! return trivial smile section
-        boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& exerciseDate,
                                                  const Period& length) const;
         //! return trivial smile section
-        virtual boost::shared_ptr<SmileSection> smileSection(
+        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
                                                         Time start,
                                                         Time length) const;
         //! implements the conversion between dates and times

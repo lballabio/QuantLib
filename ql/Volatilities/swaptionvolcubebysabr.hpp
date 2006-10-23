@@ -119,13 +119,13 @@ namespace QuantLib {
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
 
-        boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& exerciseDate,
                                                  const Period& length) const;
-        boost::shared_ptr<SmileSection> smileSection(Time start,
+        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
                                                      Time length) const;
      protected:
-        boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSectionInterface> smileSection(
                                     Time start,
                                     Time length,
                                     const Cube& sabrParametersCube) const;
@@ -146,7 +146,7 @@ namespace QuantLib {
         mutable Cube volCubeAtmCalibrated_;
         mutable Cube sparseParameters_;
         mutable Cube denseParameters_;
-        mutable std::vector< std::vector<boost::shared_ptr<SmileSection> > >
+        mutable std::vector< std::vector<boost::shared_ptr<SmileSectionInterface> > >
                                                                 sparseSmiles_;
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;

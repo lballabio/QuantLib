@@ -187,7 +187,7 @@ namespace QuantLib {
 
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeByLinear::smileSection(Time start,
                                                  Time length) const {
 
@@ -204,8 +204,8 @@ namespace QuantLib {
             volatilities.push_back(
                           atmVol + volSpreadsInterpolator_[i](length, start));
         }
-        return boost::shared_ptr<SmileSection>(new
-            SmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(new
+            InterpolatedSmileSection(start, strikes, volatilities));
     }
 
     Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(
@@ -213,7 +213,7 @@ namespace QuantLib {
             return smileSection(start, length)->volatility(strike);
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeByLinear::smileSection(const Date& exerciseDate,
                                                  const Period& length) const {
 
@@ -227,8 +227,8 @@ namespace QuantLib {
             volatilities.push_back(
                       atmVol + volSpreadsInterpolator_[i](p.second, p.first));
         }
-        return boost::shared_ptr<SmileSection>(new
-            SmileSection(p.first, strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(new
+            InterpolatedSmileSection(p.first, strikes, volatilities));
     }
 
     Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(

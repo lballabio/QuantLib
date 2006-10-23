@@ -204,7 +204,7 @@ namespace QuantLib {
         return std::make_pair(exerciseTime,timeLength);
     }
 
-    boost::shared_ptr<SmileSection> SwaptionVolatilityMatrix::smileSection(
+    boost::shared_ptr<SmileSectionInterface> SwaptionVolatilityMatrix::smileSection(
                                              Time start, Time length) const {
 
         // dummy strike
@@ -215,11 +215,11 @@ namespace QuantLib {
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 
-        return boost::shared_ptr<SmileSection>(
-                              new SmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(
+                              new InterpolatedSmileSection(start, strikes, volatilities));
     }
 
-    boost::shared_ptr<SmileSection>
+    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityMatrix::smileSection(const Date& exerciseDate,
                                            const Period& length) const {
 
@@ -231,8 +231,8 @@ namespace QuantLib {
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 
-        return boost::shared_ptr<SmileSection>(new
-            SmileSection(timeFromReference(exerciseDate),
+        return boost::shared_ptr<SmileSectionInterface>(new
+            InterpolatedSmileSection(timeFromReference(exerciseDate),
                          strikes, volatilities));
     }
 
