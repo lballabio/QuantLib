@@ -19,7 +19,7 @@
 */
 
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/PricingEngines/blackFormula.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 
