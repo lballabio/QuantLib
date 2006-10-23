@@ -148,7 +148,7 @@ namespace QuantLib {
         mutable Cube denseParameters_;
         mutable std::vector< std::vector<boost::shared_ptr<SmileSection> > >
                                                                 sparseSmiles_;
-        Cube parametersGuess_;
+        mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
     };
