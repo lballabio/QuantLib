@@ -444,7 +444,10 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
                                         exercise, engine);
 
     Real calculated = option.NPV();
-    Real expected = 5.3425606635;
+    boost::shared_ptr<PricingEngine> engine2(new
+        AnalyticDiscreteGeometricAveragePriceAsianEngine);
+    option.setPricingEngine(engine2);
+    Real expected = option.NPV(); //5.3425606635;
     if (std::fabs(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),

@@ -23,6 +23,7 @@ include_HEADERS = \
 	sample.hpp
 
 libMonteCarlo_la_SOURCES = \
+	brownianbridge.cpp \
 	genericlsregression.cpp \
 	getcovariance.cpp \
 	lsmbasissystem.cpp

@@ -48,6 +48,7 @@
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
 #include "bonds.hpp"
+#include "brownianbridge.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "cliquetoption.hpp"
@@ -172,6 +173,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
+    test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
     test->add(CapsStripperTest::suite());

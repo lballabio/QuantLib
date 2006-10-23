@@ -642,6 +642,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\brownianbridge.cpp"
+				>
+			</File>
+			<File
 				RelativePath="calendars.cpp"
 				>
 				<FileConfiguration
@@ -2250,6 +2254,10 @@
 			</File>
 			<File
 				RelativePath=".\bonds.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\brownianbridge.hpp"
 				>
 			</File>
 			<File

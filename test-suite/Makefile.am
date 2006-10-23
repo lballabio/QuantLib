@@ -9,6 +9,7 @@ QL_TESTS = \
 	batesmodel.hpp batesmodel.cpp \
 	bermudanswaption.hpp bermudanswaption.cpp \
 	bonds.hpp bonds.cpp \
+	brownianbridge.hpp brownianbridge.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
 	capstripper.hpp capstripper.cpp \

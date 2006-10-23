@@ -3881,6 +3881,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\brownianbridge.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\MonteCarlo\brownianbridge.hpp"
 				>
 			</File>
