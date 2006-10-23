@@ -40,10 +40,9 @@ namespace QuantLib {
      }
 
 
-     SmileSection::SmileSection(
-          const std::vector<Real>& sabrParameters,
-          const Time timeToExpiry) :
-     timeToExpiry_(timeToExpiry) {
+     SmileSection::SmileSection(const std::vector<Real>& sabrParameters,
+                                const Time timeToExpiry)
+     : timeToExpiry_(timeToExpiry) {
 
              //fictitious data due to SABRInterpolation redundant input needs
              for (Size i=0; i<2; i++) {
@@ -66,12 +65,12 @@ namespace QuantLib {
                   boost::shared_ptr<OptimizationMethod>()));
       }
 
-    Real SmileSection::variance(const Real& strike) const {
+    Real SmileSection::variance(Real strike) const {
         const Real v = interpolation_->operator()(strike, true);
         return v*v*timeToExpiry_;
     }
 
-    Volatility SmileSection::volatility(const Rate& strike) const {
+    Volatility SmileSection::volatility(Rate strike) const {
         const Real v = interpolation_->operator()(strike, true);
         return v;
     }

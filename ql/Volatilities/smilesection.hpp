@@ -29,22 +29,30 @@
 
 namespace QuantLib {
 
-     //! swaption volatility smile section
+    class SmileSectionInterface {
+      public:
+        virtual Real variance(Rate strike) const = 0;
+        //virtual Date exerciseDate() const = 0;
+        virtual Time exerciseTime() const = 0;
+    };
+
+
+    //! interest rate volatility smile section
     /*! This class provides the volatility smile section
     */
-    class SmileSection {
+    class SmileSection : public SmileSectionInterface {
       public:
         SmileSection(Time expiryTime,
-              const std::vector<Rate>& strikes,
-              const std::vector<Rate>& volatilities);
+                     const std::vector<Rate>& strikes,
+                     const std::vector<Volatility>& volatilities);
 
-        SmileSection(
-          const std::vector<Real>& sabrParameters,
-          const Time timeToExpiry);
+        SmileSection(const std::vector<Real>& sabrParameters,
+                     Time timeToExpiry);
 
-        Real variance(const Rate& strike) const;
+        Real variance(Rate strike) const;
 
-        Volatility volatility(const Rate& strike) const;
+        Volatility volatility(Rate strike) const;
+        Time exerciseTime() const { return timeToExpiry_; }
 
     private:
           
