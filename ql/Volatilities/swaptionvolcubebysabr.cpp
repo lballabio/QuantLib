@@ -139,6 +139,7 @@ namespace QuantLib {
         Matrix forwards(alphas);
         Matrix errors(alphas);
         Matrix maxErrors(alphas);
+        Matrix endCriteria(alphas);
 
         const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
 
@@ -175,6 +176,7 @@ namespace QuantLib {
                 forwards[j][k]= atmForward;
                 errors[j][k]= interpolationError;
                 maxErrors[j][k]= sabrInterpolation->interpolationMaxError();
+                endCriteria[j][k]= sabrInterpolation->endCriteria();
 
 /*                QL_REQUIRE(sabrInterpolation->endCriteria() != EndCriteria::maxIter,
                     "SwaptionVolatilityCubeBySabr::sabrCalibration: end criteria is max iteration"); */   /*                QL_REQUIRE(sabrInterpolation->endCriteria != EndCriteria::maxIter,
@@ -183,7 +185,7 @@ namespace QuantLib {
             }
         }
         Cube sabrParametersCube(exerciseDates, swapTenors,
-                                exerciseTimes, timeLengths, 7);
+                                exerciseTimes, timeLengths, 8);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);
@@ -191,6 +193,7 @@ namespace QuantLib {
         sabrParametersCube.setLayer(4, forwards);
         sabrParametersCube.setLayer(5, errors);
         sabrParametersCube.setLayer(6, maxErrors);
+        sabrParametersCube.setLayer(7, endCriteria);
 
         return sabrParametersCube;
 
