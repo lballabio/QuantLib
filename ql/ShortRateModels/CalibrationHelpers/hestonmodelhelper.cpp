@@ -18,7 +18,7 @@
 */
 
 #include <ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp>
-#include <ql/PricingEngines/blackFormula.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Processes/hestonprocess.hpp>
 #include <ql/Instruments/payoffs.hpp>
 

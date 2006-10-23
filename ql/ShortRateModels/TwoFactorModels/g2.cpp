@@ -20,7 +20,7 @@
 
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/segmentintegral.hpp>
-#include <ql/PricingEngines/blackFormula.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

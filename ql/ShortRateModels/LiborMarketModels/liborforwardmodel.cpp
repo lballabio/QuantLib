@@ -18,7 +18,7 @@
 */
 
 #include <ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp>
-#include <ql/PricingEngines/blackFormula.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <limits>
 
 namespace QuantLib {
