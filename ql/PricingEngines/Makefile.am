@@ -22,7 +22,6 @@ libPricingEngines_la_SOURCES = \
 	americanpayoffatexpiry.cpp \
 	americanpayoffathit.cpp \
 	blackformula.cpp \
-	blackmodel.cpp \
 	greeks.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la
