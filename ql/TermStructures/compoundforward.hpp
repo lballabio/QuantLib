@@ -26,7 +26,6 @@
 
 #include <ql/TermStructures/forwardstructure.hpp>
 #include <ql/TermStructures/extendeddiscountcurve.hpp>
-#include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {
 
