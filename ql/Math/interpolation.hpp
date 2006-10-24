@@ -31,6 +31,7 @@
 #include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -64,13 +65,20 @@ namespace QuantLib {
         class templateImpl : public InterpolationImpl {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
-            : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
+            : x_(xEnd-xBegin), xBegin_(x_.begin()), xEnd_(x_.end()),
+              y_(xEnd-xBegin), yBegin_(y_.begin()) {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                            "not enough points to interpolate");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
+                I1 xx = xBegin;
+                I2 yy = yBegin;
+                for (Size i=0; xx!=xEnd; ++i, ++xx, ++yy) {
+                    x_[i]=*xx;
+                    y_[i]=*yy;
+                }
             }
             Real xMin() const {
                 return *xBegin_;
@@ -91,8 +99,8 @@ namespace QuantLib {
                 else
                     return std::upper_bound(xBegin_,xEnd_-1,x)-xBegin_-1;
             }
-            I1 xBegin_, xEnd_;
-            I2 yBegin_;
+            std::vector<Real> x_, y_;
+            std::vector<Real>::const_iterator xBegin_, xEnd_, yBegin_;
         };
       public:
         Interpolation() {}
