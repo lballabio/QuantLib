@@ -24,11 +24,11 @@
 #ifndef quantlib_swaption_volatility_cube_by_sabr_h
 #define quantlib_swaption_volatility_cube_by_sabr_h
 
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Calendars/target.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Patterns/lazyobject.hpp>
+#include <ql/Math/matrix.hpp>
+#include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

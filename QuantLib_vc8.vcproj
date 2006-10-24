@@ -6531,6 +6531,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\swaptionvolcubebylinear.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionvolcubebylinear.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\swaptionvolcubebysabr.cpp"
 				>
 			</File>

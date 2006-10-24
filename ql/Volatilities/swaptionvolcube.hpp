@@ -24,12 +24,8 @@
 #ifndef quantlib_swaption_volatility_cube_h
 #define quantlib_swaption_volatility_cube_h
 
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Calendars/target.hpp>
 #include <ql/swaptionvolstructure.hpp>
-#include <ql/Math/matrix.hpp>
+#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 
@@ -106,45 +102,6 @@ namespace QuantLib {
         boost::shared_ptr<Xibor> iborIndexShortTenor_;
     };
 
-    class SwaptionVolatilityCubeByLinear : public SwaptionVolatilityCube {
-      public:
-        SwaptionVolatilityCubeByLinear(
-            const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& expiries,
-            const std::vector<Period>& lengths,
-            const std::vector<Spread>& strikeSpreads,
-            const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
-            const Calendar& calendar,
-            Integer swapSettlementDays,
-            Frequency fixedLegFrequency,
-            BusinessDayConvention fixedLegConvention,
-            const DayCounter& fixedLegDayCounter,
-            const boost::shared_ptr<Xibor>& iborIndex,
-            Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor =
-                                                  boost::shared_ptr<Xibor>());
-        //! \name Other inspectors
-        //@{
-        const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
-        boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                 const Date& exerciseDate,
-                                                 const Period& length) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
-                                                     Time length) const;
-        //@}
-      protected:
-        Volatility volatilityImpl(Time start,
-                                  Time length,
-                                  Rate strike) const;
-        Volatility volatilityImpl(const Date& exerciseDate,
-                                  const Period& length,
-                                  Rate strike) const;
-      private:
-        std::vector<Matrix> volSpreads_;
-        std::vector<Interpolation2D> volSpreadsInterpolator_;
-    };
-
 }
-
 
 #endif

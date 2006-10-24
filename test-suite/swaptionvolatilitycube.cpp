@@ -24,7 +24,8 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Volatilities/swaptionvolmatrix.hpp>
+#include <ql/Volatilities/swaptionvolcubebylinear.hpp>
 #include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 

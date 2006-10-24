@@ -25,7 +25,7 @@
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/TermStructures/all.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Volatilities/swaptionvolcubebylinear.hpp>
 #include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 
 using namespace QuantLib;
