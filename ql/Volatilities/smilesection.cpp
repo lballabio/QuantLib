@@ -52,11 +52,11 @@ namespace QuantLib {
                             const Time timeToExpiry)
     : timeToExpiry_(timeToExpiry) {
 
-        Real alpha_ = sabrParameters[0];
-        Real beta_ = sabrParameters[1];
-        Real nu_ = sabrParameters[2];
-        Real rho_ = sabrParameters[3];
-        Real forward_ = sabrParameters[4];
+        alpha_ = sabrParameters[0];
+        beta_ = sabrParameters[1];
+        nu_ = sabrParameters[2];
+        rho_ = sabrParameters[3];
+        forward_ = sabrParameters[4];
 
     }
 
