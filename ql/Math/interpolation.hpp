@@ -71,7 +71,7 @@ namespace QuantLib {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                            "not enough points to interpolate");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
-                for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)
+                for (I1 i=xBegin, j=xBegin+1; j!=xEnd; i++, j++)
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
                 I1 xx = xBegin;
