@@ -65,8 +65,9 @@ namespace QuantLib {
         class templateImpl : public InterpolationImpl {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
-            : x_(xEnd-xBegin), xBegin_(x_.begin()), xEnd_(x_.end()),
-              y_(xEnd-xBegin), yBegin_(y_.begin()) {
+                : x_(xEnd-xBegin), y_(xEnd-xBegin),
+                  xBegin_(x_.begin()), xEnd_(x_.end()),
+                  yBegin_(y_.begin()) {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                            "not enough points to interpolate");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
