@@ -33,6 +33,7 @@ namespace QuantLib {
       public:
         virtual Real variance(Rate strike) const = 0;
         virtual Real volatility(Rate strike) const = 0;
+        virtual ~SmileSectionInterface() {};
         //virtual Date exerciseDate() const = 0;
         //virtual Time exerciseTime() const = 0;
     };
