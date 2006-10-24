@@ -24,7 +24,8 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "mtbrowniangenerator.obj$(_mt)$(_D)"
+    "mtbrowniangenerator.obj$(_mt)$(_D)" \
+    "sobolbrowniangenerator.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

@@ -38,7 +38,7 @@ namespace QuantLib {
           bridgeIndex_(size_), leftIndex_(size_), rightIndex_(size_),
           leftWeight_(size_), rightWeight_(size_), stdDev_(size_) {
             for (Size i=0; i<size_; ++i)
-                t_[i] = static_cast<Time>(i);
+                t_[i] = static_cast<Time>(i+1);
             initialize();
         }
 

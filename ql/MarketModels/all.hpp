@@ -30,6 +30,7 @@
 #include <ql/MarketModels/swapforwardconversionmatrix.hpp>
 #include <ql/MarketModels/utilities.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
+#include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
 #include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>

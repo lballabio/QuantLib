@@ -7133,6 +7133,14 @@
 					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp"
 					>
 				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.hpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Models"
