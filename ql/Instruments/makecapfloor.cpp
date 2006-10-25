@@ -26,10 +26,11 @@ namespace QuantLib {
                                const Period& tenor, 
                                const boost::shared_ptr<Xibor>& index,
                                Rate strike,
-                               const Period& forwardStart)
+                               const Period& forwardStart,
+                               const boost::shared_ptr<PricingEngine>& engine)
     : capFloorType_(capFloorType),
       strike_(strike),
-      engine_(),
+      engine_(engine),
       makeVanillaSwap_(MakeVanillaSwap(tenor, index, 0.0, forwardStart)) {
           if (forwardStart==0*Days)
               firstCapletExcluded_=true;

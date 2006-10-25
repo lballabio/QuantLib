@@ -39,7 +39,9 @@ namespace QuantLib {
                      const Period& capFloorTenor, 
                      const boost::shared_ptr<Xibor>& index,
                      Rate strike = Null<Rate>(),
-                     const Period& forwardStart = 0*Days);
+                     const Period& forwardStart = 0*Days,
+                     const boost::shared_ptr<PricingEngine>& engine =
+                         boost::shared_ptr<PricingEngine>());
 
         operator CapFloor() const;
         operator boost::shared_ptr<CapFloor>() const ;
