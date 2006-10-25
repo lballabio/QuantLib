@@ -427,8 +427,6 @@ void SwaptionTest::testVega() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Real tolerance = 1.0e-06;
-
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
@@ -452,21 +450,23 @@ void SwaptionTest::testVega() {
                         boost::shared_ptr<Swaption> swaption2 =
                             makeSwaption(swap, maturity, vols[u]+shift, types[h]);
 
-                        Real numericalVega = (swaption2->NPV() - swaption1->NPV())/(2*shift);
-                        Real analyticalVega = swaption->vega();
-                        Real absoluteDiscrepancy = std::fabs(analyticalVega - numericalVega);
-                        Real relativeDiscrepancy = absoluteDiscrepancy /numericalVega;
-                        if (absoluteDiscrepancy > tolerance && relativeDiscrepancy > tolerance)
-                            BOOST_ERROR(
-                                "failed to compute swaption vega:\n"
-                                << " lengths " << lengths[j] << "\n"
-                                << " exercise " << exercises[i]<< "\n"
-                                << "types " << types[h] << "\n"
-                                << QL_FIXED << std::setprecision(12)
-                                << "    calculated: " << analyticalVega << "\n"
-                                << "    expected:   " << numericalVega << "\n"
-                                << "    discrepancy: " << QL_SCIENTIFIC 
-                                << analyticalVega - numericalVega);
+                        Real numericalVega = (swaption2->NPV()-swaption1->NPV())/(2*shift);
+                        if (numericalVega>1.0e-4) {
+                            Real analyticalVega = swaption->vega();
+                            Real discrepancy = std::fabs(analyticalVega - numericalVega);
+                            discrepancy /= numericalVega;
+                            Real tolerance = 0.002;
+                            if (discrepancy > tolerance)
+                                BOOST_FAIL("failed to compute swaption vega:" <<
+                                    "\n    lengths:     " << lengths[j] <<
+                                    "\n    exercise:    " << exercises[i] <<
+                                    "\n    types:       " << types[h] <<
+                                    QL_FIXED << std::setprecision(12) <<
+                                    "\n    calculated:  " << analyticalVega <<
+                                    "\n    expected:    " << numericalVega <<
+                                    "\n    discrepancy: " << discrepancy <<
+                                    "\n    error:       " << tolerance);
+                        }
                     }
                 }
             }
