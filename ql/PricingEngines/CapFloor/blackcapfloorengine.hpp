@@ -45,13 +45,6 @@ namespace QuantLib {
         void update();
       private:
         Handle<CapletVolatilityStructure> volatility_;
-        Real capletValue(Rate forward,
-                         Rate strike,
-                         Real variance) const;
-
-        Real floorletValue(Rate forward,
-                           Rate strike,
-                           Real variance) const;
         CumulativeNormalDistribution N_;
     };
 

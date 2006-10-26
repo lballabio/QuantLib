@@ -70,13 +70,16 @@ namespace QuantLib {
                              Real forward,
                              Real stdDev);
 
-    /*! Black 1976 vega formula
-        \warning instead of volatility it uses standard deviation,
-                 i.e. volatility*sqrt(timeToMaturity)
+    /*! Black 1976 formula for standard deviation derivative
+        \warning instead of volatility it uses standard deviation, i.e.
+                 volatility*sqrt(timeToMaturity), and it returns the
+                 derivative with respect to the standard deviation.
+                 If T is the time to maturity Black vega would be
+                 blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
     */
-    Real blackVega(Rate strike,
-                   Rate forward,
-                   Real stdDev);
+    Real blackStdDevDerivative(Rate strike,
+                               Rate forward,
+                               Real stdDev);
 
 
     //! Black-formula calculator class

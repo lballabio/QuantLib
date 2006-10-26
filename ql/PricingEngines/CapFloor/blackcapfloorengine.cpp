@@ -51,7 +51,8 @@ namespace QuantLib {
         DayCounter volatilityDayCounter = volatility_->dayCounter();
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
             Time end = arguments_.endTimes[i],
-                 accrualTime = arguments_.accrualTimes[i];
+                 accrualTime = arguments_.accrualTimes[i],
+                 timeToMaturity = arguments_.fixingTimes[i];
             if (end > 0.0) {    // discard expired caplets
                 Real nominal = arguments_.nominals[i];
                 Real gearing = arguments_.gearings[i];
@@ -61,61 +62,38 @@ namespace QuantLib {
                 if ((type == CapFloor::Cap) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.capRates[i];
-                    Real variance = volatility_->blackVariance(
-                        arguments_.fixingDates[i], strike);
+                    Real stdDev = std::sqrt(volatility_->blackVariance(
+                        arguments_.fixingDates[i], strike));
                     value += q * accrualTime * nominal * gearing *
-                        capletValue(forward, strike, variance);
-                    Volatility volatility = volatility_->volatility(
-                        arguments_.fixingDates[i], strike);
-                    // not really elegant: ask Luigi to have access to timeToMaturity() ...
-                    Time timeToMaturity = 
-                        volatilityDayCounter.yearFraction(Date::todaysDate(), arguments_.fixingDates[i]);
+                        blackFormula(Option::Call, strike, forward, stdDev);
                     vega_ += nominal * gearing * accrualTime * q 
-                            * blackVega(strike, forward, std::sqrt(variance)) 
+                            * blackStdDevDerivative(strike, forward, stdDev)
                             * std::sqrt(timeToMaturity);
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.floorRates[i];
-                    Real variance = volatility_->blackVariance(
-                        arguments_.fixingDates[i], strike);
+                    Real stdDev = std::sqrt(volatility_->blackVariance(
+                        arguments_.fixingDates[i], strike));
                     Real temp = q * accrualTime * nominal * gearing *
-                        floorletValue(forward, strike, variance);
-                    if (type == CapFloor::Floor)
+                        blackFormula(Option::Put, strike, forward, stdDev);
+                    if (type == CapFloor::Floor) {
                         value += temp;
-                    else
+                        vega_ += nominal * gearing * accrualTime * q 
+                                * blackStdDevDerivative(strike, forward, stdDev)
+                                * std::sqrt(timeToMaturity);
+                    } else {
                         // a collar is long a cap and short a floor
                         value -= temp;
+                        vega_ -= nominal * gearing * accrualTime * q 
+                                * blackStdDevDerivative(strike, forward, stdDev)
+                                * std::sqrt(timeToMaturity);
+                    }
                 }
             }
         }
         results_.value = value;
         results_.vega_ = vega_;
-}
-    
-    Real BlackCapFloorEngine::capletValue(Rate forward,
-                                          Rate strike, Real variance) const {
-        if (variance == 0.0) {
-            // the rate was fixed
-            return std::max<Rate>(forward-strike,0.0);
-        } else {
-            // forecast
-            return blackFormula(Option::Call, strike, forward,
-                std::sqrt(variance));
-        }
-    }
-
-    Real BlackCapFloorEngine::floorletValue(Rate forward,
-                                            Rate strike, Real variance)
-                                                                       const {
-        if (variance == 0.0) {
-            // the rate was fixed
-            return std::max<Rate>(strike-forward,0.0);
-        } else {
-            // forecast
-            return blackFormula(Option::Put, strike, forward,
-                std::sqrt(variance));
-        }
     }
     
 }
