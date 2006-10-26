@@ -32,13 +32,14 @@ class MarketModelTest {
     static void testOneStepForwardsAndCaplets();
     static void testMultiStepCoinitialSwaps();
     static void testMultiStepCoterminalSwaps();
+    static void testMultiStepCoterminalSwaptions();
+    static void testCallableSwap1();
+    static void testCallableSwap2();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();
     static void testDriftCalculator();
     static void testIsInSubset();
-    static void testCallableSwap1();
-    static void testCallableSwap2();
     static boost::unit_test_framework::test_suite* suite();
 };
 
