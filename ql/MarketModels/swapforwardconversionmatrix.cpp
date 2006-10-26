@@ -25,8 +25,9 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> swapCovarianceMatrix(const Matrix& zMatrix, 
-                                            const Matrix& forwardCovarianceMatrix)
+    Disposable<Matrix> swaptionsCovarianceMatrix(
+                                    const Matrix& zMatrix, 
+                                    const Matrix& forwardCovarianceMatrix)
     {
         Matrix result = zMatrix * forwardCovarianceMatrix * transpose(zMatrix);
         return result;
@@ -44,8 +45,8 @@ namespace QuantLib {
         return zMatrix(newCS, displacement);
     }
 
-    Disposable<Matrix> zMatrix(const CurveState& cs, Rate displacement) {
-
+    Disposable<Matrix> zMatrix(const CurveState& cs, Rate displacement) 
+    {
         Matrix result = swapForwardJacobian(cs);    // derivative dsr[i]/df[j]
         const std::vector<Rate> f = cs.forwardRates();  // forward rates
         const std::vector<Rate> sr = cs.coterminalSwapRates();  // coterminal swap rates
@@ -57,8 +58,8 @@ namespace QuantLib {
         return result;
     }
 
-    Disposable<Matrix> swapForwardJacobian(const CurveState& cs) {
-
+    Disposable<Matrix> swapForwardJacobian(const CurveState& cs) 
+    {
         std::vector<Real> b = cs.coterminalSwapRatesAnnuities();    // coterminal annuities
         std::vector<Real> a = std::vector<Real>(b.size());          // coterminal floating leg values
         Size n = b.size();                                          // n° of coterminal swaps

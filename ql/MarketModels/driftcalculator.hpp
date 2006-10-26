@@ -35,10 +35,9 @@ namespace QuantLib {
     class DriftCalculator {
       public:
         /*! Returns the drift \f$ \mu \Delta t \f$.
-
-            See [1] "Rapid Computation of Drifts in a Reduced Factor
-            Libor Market Model" Mark Joshi, Wilmott Magazine, May
-            2003.
+            See Mark Joshi, "\it {Rapid Computation of Drifts in a 
+            Reduced Factor Libor Market Model}", Wilmott Magazine, 
+            May 2003.
         */
         DriftCalculator(const Matrix& pseudo,
                         const std::vector<Spread>& displacements,

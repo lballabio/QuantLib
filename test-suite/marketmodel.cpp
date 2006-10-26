@@ -187,8 +187,6 @@ void setup() {
     trainingPaths_ = 1023; // 2^10-1
 }
 
-
-
 const boost::shared_ptr<SequenceStatistics> simulate(
         const boost::shared_ptr<MarketModelEvolver>& evolver,
         const MarketModelMultiProduct& product)
@@ -1304,7 +1302,6 @@ void MarketModelTest::testDriftCalculator() {
     std::vector<Real> drifts(numberOfSteps), driftsReduced(numberOfSteps);
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                       ExponentialCorrelationAbcdVolatility};
-
     for (Size k=0; k<LENGTH(marketModels); ++k) {   // loop over market models
         boost::shared_ptr<MarketModel> marketModel =
             makeMarketModel(evolution, factors, marketModels[k]);
