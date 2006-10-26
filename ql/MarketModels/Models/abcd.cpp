@@ -86,17 +86,29 @@ namespace QuantLib {
         return std::sqrt(error/n);
     }
 
+    Real Abcd::maxError(const std::vector<Real>& blackVols,
+                        const std::vector<Real>::const_iterator& t) const {
+        Real maxError = QL_MIN_REAL;
+        Size n = blackVols.size();
+        for (Size i=0; i<n ; i++) {
+            Real temp = blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+            maxError = std::max(maxError, std::fabs(temp));
+        }
+        return maxError;
+    }
+
     EndCriteria::Type Abcd::capletCalibration(
                 const std::vector<Real>& blackVols,
                 const std::vector<Real>::const_iterator& t,
                 const boost::shared_ptr<OptimizationMethod>& meth) {
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
-            boost::shared_ptr<LineSearch> lineSearch(
-                new ArmijoLineSearch(1e-12, 0.15, 0.55));
-            method = boost::shared_ptr<OptimizationMethod>(
-                new ConjugateGradient(lineSearch));
-            method->setEndCriteria(EndCriteria(100000, 1e-6));
+            boost::shared_ptr<LineSearch> lineSearch(new
+                ArmijoLineSearch(1e-12, 0.15, 0.55));
+            method = boost::shared_ptr<OptimizationMethod>(new
+                ConjugateGradient(lineSearch));
+            Real tolerance = 0.3e-4;
+            method->setEndCriteria(EndCriteria(100000, tolerance));
             Array guess(4);
             guess[0] = a_;
             guess[1] = b_;

@@ -93,9 +93,12 @@ namespace QuantLib
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& blackVols,
                             const std::vector<Real>::const_iterator& t) const;
-        //! vol error
+        //! volatility error
         Real error(const std::vector<Real>& blackVols,
                    const std::vector<Real>::const_iterator& t) const;
+        //! volatility max error
+        Real maxError(const std::vector<Real>& blackVols,
+                      const std::vector<Real>::const_iterator& t) const;
 
         //! calibration
         EndCriteria::Type capletCalibration(
