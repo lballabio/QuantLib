@@ -33,7 +33,7 @@ namespace QuantLib {
         return result;
     }
 
-    Disposable<Matrix> coefficientsCsi(const CurveState& cs, 
+    Disposable<Matrix> zMatrix(const CurveState& cs, 
                                        Size E,  // E = index of expiry                   
                                        Size ST, // ST = swap tenor
                                        Rate displacement)
@@ -42,10 +42,10 @@ namespace QuantLib {
         CurveState newCS(cs.rateTimes().begin()+E,cs.rateTimes().begin()+M);
         newCS.setOnForwardRates(cs.forwardRates().begin()+E,
                                 cs.forwardRates().begin()+M);
-        return zMatrix(newCS, displacement);
+        return zMatrixFull(newCS, displacement);
     }
 
-    Disposable<Matrix> zMatrix(const CurveState& cs, Rate displacement) 
+    Disposable<Matrix> zMatrixFull(const CurveState& cs, Rate displacement) 
     {
         Matrix result = swapForwardJacobian(cs);    // derivative dsr[i]/df[j]
         const std::vector<Rate> f = cs.forwardRates();  // forward rates
