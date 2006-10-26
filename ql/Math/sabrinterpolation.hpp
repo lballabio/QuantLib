@@ -31,6 +31,7 @@
 #include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Optimization/simplex.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Utilities/null.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <vector>
@@ -147,7 +148,13 @@ namespace QuantLib {
                 } else rho_ = 0.0;
             }
             virtual ~SABRCoefficientHolder() {}
-            Real t_, forward_, alpha_, beta_, nu_, rho_;
+
+            /*! Option expiry */
+            Real t_;
+            /*! */
+            Real forward_;
+            /*! Sabr parameters */ 
+            Real alpha_, beta_, nu_, rho_;
             bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
             Real error_, maxError_;
 			EndCriteria::Type SABREndCriteria_;
@@ -161,10 +168,10 @@ namespace QuantLib {
     public:
         /*! */
         template <class I1, class I2>
-        SABRInterpolation(const I1& xBegin,
+        SABRInterpolation(const I1& xBegin,     /* x = strikes */
                           const I1& xEnd,
-                          const I2& yBegin,
-                          Time t,
+                          const I2& yBegin,     /* y = market volatilities */
+                          Time t,               /* option expiry */
                           Real forward,
                           Real alpha,
                           Real beta,
@@ -174,6 +181,7 @@ namespace QuantLib {
                           bool isBetaFixed,
                           bool isNuFixed,
                           bool isRhoFixed,
+                          bool vegaWeighted = false,
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
 
@@ -186,6 +194,7 @@ namespace QuantLib {
                             isBetaFixed,
                             isNuFixed,
                             isRhoFixed,
+                            vegaWeighted,
                             method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
@@ -201,6 +210,8 @@ namespace QuantLib {
 
         Real interpolationError() const { return coeffs_->error_; }
         Real interpolationMaxError() const { return coeffs_->maxError_; }
+        //const std::vector<Real>& interpolationWeights() const {
+        //    return impl_->weights_; }
 		EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
 
 	private:
@@ -299,11 +310,11 @@ namespace QuantLib {
                     const Array y = sabr_->tranformation_->direct(x);
 
                     sabr_->alpha_ = y[0];
-                    sabr_->beta_ = y[1];
-                    sabr_->nu_   = y[2];
+                    sabr_->beta_  = y[1];
+                    sabr_->nu_    = y[2];
                     sabr_->rho_   = y[3];
 
-                    return sabr_->interpolationSquaredNonNormalizedError();
+                    return sabr_->interpolationSquaredError();
                 }
               private:
                 SABRInterpolationImpl* sabr_;
@@ -320,7 +331,7 @@ namespace QuantLib {
                     sabr_->alpha_ = y[0];
                     sabr_->nu_    = y[1];
                     sabr_->rho_   = y[2];
-                    return sabr_->interpolationSquaredNonNormalizedError();
+                    return sabr_->interpolationSquaredError();
                 }
               private:
                 SABRInterpolationImpl* sabr_;
@@ -329,6 +340,9 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
             boost::shared_ptr<Transformation> tranformation_;
+
+            std::vector<Real> weights_;
+            Real weightsSum_;
 
           public:  
             SABRInterpolationImpl(
@@ -340,12 +354,27 @@ namespace QuantLib {
                 bool isBetaFixed,
                 bool isNuFixed,
                 bool isRhoFixed,
+                bool vegaWeighted,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, 
               isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
-			  method_(method)
+			  method_(method), weights_(xEnd-xBegin, 1.0), weightsSum_(xEnd-xBegin)
             {
+                if (vegaWeighted) {
+                    std::vector<Real>::const_iterator i = this->xBegin_;
+                    std::vector<Real>::const_iterator j = this->yBegin_;
+                    std::vector<Real>::iterator k = weights_.begin();
+                    weightsSum_ = 0.0;
+                    for ( ; i!=this->xEnd_; ++i, ++j, ++k) {
+                        Real stdDev = std::sqrt((*j)*(*j)*t);
+                        *k = blackStdDevDerivative(*i, forward, stdDev);
+                        weightsSum_ += *k;
+                    }
+                    k = weights_.begin();
+                    for ( ; k!=weights_.end(); ++k)
+                        *k /= weightsSum_;
+                }
                 calculate();
             }
 
@@ -354,21 +383,20 @@ namespace QuantLib {
                 // there is nothing to optimize
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {
                     error_ = interpolationError();
-                    maxError_ = interpolationMaxError(); 
+                    maxError_ = interpolationMaxError();
 				    SABREndCriteria_ = EndCriteria::none;
                     return;
-                } 
-                else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
-                    tranformation_ = boost::shared_ptr<Transformation>
-                        (new SabrParametersTransformationWithFixedBeta);
-                        NoConstraint constraint;
-                        SABRErrorWithFixedBeta costFunction(this);
+                } else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
+                    tranformation_ = boost::shared_ptr<Transformation>(new
+                        SabrParametersTransformationWithFixedBeta);
+                    NoConstraint constraint;
+                    SABRErrorWithFixedBeta costFunction(this);
 
                     if (!method_) {
-                        boost::shared_ptr<LineSearch> lineSearch(
-                            new ArmijoLineSearch(1e-12, 0.15, 0.55));
-                        method_ = boost::shared_ptr<OptimizationMethod>(
-                            new ConjugateGradient(lineSearch));
+                        boost::shared_ptr<LineSearch> lineSearch(new
+                            ArmijoLineSearch(1e-12, 0.15, 0.55));
+                        method_ = boost::shared_ptr<OptimizationMethod>(new
+                            ConjugateGradient(lineSearch));
                         //method_ = boost::shared_ptr<OptimizationMethod>(
                         //    new Simplex(10, .00000001));
 
@@ -392,19 +420,18 @@ namespace QuantLib {
                     nu_    = y[1];
                     rho_   = y[2]; 
 
-                }
-                else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
+                } else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
-                    tranformation_ = boost::shared_ptr<Transformation>
-                        (new SabrParametersTransformation);
+                    tranformation_ = boost::shared_ptr<Transformation>(new
+                        SabrParametersTransformation);
                     NoConstraint constraint;
                     SABRError costFunction(this);
 
                     if (!method_) {
-                        boost::shared_ptr<LineSearch> lineSearch(
-                            new ArmijoLineSearch(1e-12, 0.15, 0.55));
-                        method_ = boost::shared_ptr<OptimizationMethod>(
-                            new ConjugateGradient(lineSearch));
+                        boost::shared_ptr<LineSearch> lineSearch(new
+                            ArmijoLineSearch(1e-12, 0.15, 0.55));
+                        method_ = boost::shared_ptr<OptimizationMethod>(new
+                            ConjugateGradient(lineSearch));
                         //method_ = boost::shared_ptr<OptimizationMethod>(
                         //    new Simplex(10, .00000001));
 
@@ -426,17 +453,16 @@ namespace QuantLib {
 
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
-                    beta_ = y[1];
+                    beta_  = y[1];
                     nu_    = y[2];
                     rho_   = y[3]; 
-                }
-                else {
-                        QL_REQUIRE(false, "Selected Sabr calibration not implemented");
+                } else {
+                    QL_REQUIRE(false, "Selected Sabr calibration not implemented");
                 }
      
                 SABREndCriteria_ = endCriteria();
                 error_ = interpolationError();
-                maxError_ = interpolationMaxError(); 
+                maxError_ = interpolationMaxError();
             }
 
             Real value(Real x) const {
@@ -455,21 +481,21 @@ namespace QuantLib {
                 QL_FAIL("SABR secondDerivative not implemented");
             }
 
-            Real interpolationSquaredNonNormalizedError() const {
+            Real interpolationSquaredError() const {
                 Real error, totalError = 0.0;
                 std::vector<Real>::const_iterator i = this->xBegin_;
                 std::vector<Real>::const_iterator j = this->yBegin_;
-                for (; i != this->xEnd_; ++i, ++j) {
-                    error = value(*i) - *j;
+                std::vector<Real>::const_iterator k = weights_.begin();
+                for (; i != this->xEnd_; ++i, ++j, ++k) {
+                    error = (value(*i) - *j) * (*k);
                     totalError += error*error;
                 }
                 return totalError;
             }
 
             Real interpolationError() const {
-                Real normalizedError = interpolationSquaredNonNormalizedError()
-                    /(this->xEnd_-this->xBegin_);
-                return std::sqrt(normalizedError);
+                Real squaredError = interpolationSquaredError();
+                return std::sqrt(squaredError);
             }
 
             Real interpolationMaxError() const {
