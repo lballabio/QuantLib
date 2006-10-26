@@ -53,7 +53,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline definitions
+    // Inline definitions
 
     inline std::vector<Time>
     MultiStepCoterminalSwaps::possibleCashFlowTimes() const {

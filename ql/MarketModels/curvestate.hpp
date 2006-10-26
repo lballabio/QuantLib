@@ -26,30 +26,26 @@
 
 namespace QuantLib {
 
-
     /*! This class stores the state of the yield curve associated to the
         fixed calendar times within the simulation.
-
         This is the workhorse discounting object associated to the rate times
         of the simulation. It's important to pass the rates via an object like
         this to the product rather than directly to make it easier to switch
         to other engines such as a coterminal-swap-rate engine.
-
         Many products will not need expired rates and others will only require
         the first rate.
-
     */
     class CurveState {
-        /* There will n+1 rate times expressing payment and reset times
-           of forward rates.
+    /* There will n+1 rate times expressing payment and reset times
+        of forward rates.
 
-                    |-----|-----|-----|-----|-----|      (size = 6)
-                    t0    t1    t2    t3    t4    t5     rateTimes
-                    f0    f1    f2    f3    f4           forwardRates
-                    d0    d1    d2    d3    d4    d5     discountBonds
-                    d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
-                    sr0   sr1   sr2   sr3   sr4          coterminalSwaps
-        */
+                |-----|-----|-----|-----|-----|      (size = 6)
+                t0    t1    t2    t3    t4    t5     rateTimes
+                f0    f1    f2    f3    f4           forwardRates
+                d0    d1    d2    d3    d4    d5     discountBonds
+                d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+                sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+    */
       public:
         CurveState(const std::vector<Time>& rateTimes);
 
@@ -68,7 +64,6 @@ namespace QuantLib {
         }
 
         const std::vector<Time>& rateTimes() const;
-
         void setOnForwardRates(const std::vector<Rate>& rates);
 
         template <class ForwardIterator>
@@ -108,7 +103,6 @@ namespace QuantLib {
         Rate forwardRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
         Rate coterminalSwapRate(Size i) const;
-
         const std::vector<Time>& rateTaus() const;
 
       private:
@@ -126,7 +120,6 @@ namespace QuantLib {
         void computeSwapRate() const;
 
     };
-
 
     // inline definitions
 

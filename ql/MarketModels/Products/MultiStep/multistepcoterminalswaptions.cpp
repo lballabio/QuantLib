@@ -22,10 +22,10 @@
 namespace QuantLib {
 
     MultiStepCoterminalSwaptions::MultiStepCoterminalSwaptions(
-        const std::vector<Time>& rateTimes,
-        const std::vector<Real>& accruals,
-        const std::vector<Time>& paymentTimes,
-        const std::vector<Rate>& strikes)
+                                        const std::vector<Time>& rateTimes,
+                                        const std::vector<Real>& accruals,
+                                        const std::vector<Time>& paymentTimes,
+                                        const std::vector<Rate>& strikes)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), strikes_(strikes) {  
         // data checks
@@ -36,9 +36,9 @@ namespace QuantLib {
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
-                                                               genCashFlows) {
+                                                               genCashFlows) 
+    {
         Rate swapRate = currentState.coterminalSwapRate(currentIndex_);
-
         genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
         genCashFlows[currentIndex_][0].amount =
             std::max(swapRate-strikes_[currentIndex_], 0.0) *

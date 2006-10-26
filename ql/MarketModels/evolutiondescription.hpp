@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_evolution_description_hpp
 #define quantlib_evolution_description_hpp
 
@@ -79,7 +78,6 @@ namespace QuantLib {
         Matrix effStopTime_;
         std::vector<Size> firstAliveRate_;
     };
-
 
     // Numeraire functions
 

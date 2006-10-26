@@ -43,6 +43,7 @@ namespace QuantLib {
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
+
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
@@ -51,7 +52,7 @@ namespace QuantLib {
         Size currentIndex_;
     };
 
-    // inline
+    // inline definitions
 
     inline std::vector<Time>
     MultiStepCaplets::possibleCashFlowTimes() const {
