@@ -993,16 +993,16 @@ void MarketModelTest::testAbcdVolatilityFit() {
             "\nerror: " << error0 << " ---> " << error1);
 
     std::vector<Real> k = instVol.k(blackVols, rateTimes.begin());
-    Real tol = 2.0e-4;
+    Real tol = 3.0e-4;
     for (Size i=0; i<blackVols.size(); i++) {
         if (std::abs(k[i]-1.0)>tol) {
             Real modelVol =
                 instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
-            BOOST_FAIL("\nFixing Time = " << rateTimes[i] <<
-                       " MktVol = " << io::rate(blackVols[i]) <<
-                       " ModVol = " << io::rate(modelVol) <<
-                       " k=" << k[i] << " error=" << std::abs(k[i]-1.0) <<
-                       " tol=" << tol);
+            BOOST_FAIL("\n   Fixing Time = " << rateTimes[i] <<
+                       "\n   MktVol = " << io::rate(blackVols[i]) <<
+                       "\n   ModVol = " << io::rate(modelVol) <<
+                       "\n   k=" << k[i] << " error=" << std::abs(k[i]-1.0) <<
+                       "\n   tol=" << tol);
         }
     }
 
