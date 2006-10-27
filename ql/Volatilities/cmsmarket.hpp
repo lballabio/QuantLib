@@ -54,6 +54,7 @@ namespace QuantLib {
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure);
         Matrix spreadErrors(){return spreadErrors_;};
         Real weightedError(const Matrix& weights);
+        Real weightedPriceError(const Matrix& weights);
         Matrix browse() const;
  
       private:
@@ -113,12 +114,14 @@ namespace QuantLib {
         SmileAndCmsCalibrationBySabr(
             Handle<SwaptionVolatilityStructure>& volCube,
             boost::shared_ptr<CmsMarket>& cmsMarket,
-            const Matrix& weights);
+            const Matrix& weights,
+            bool isSpreadCalibrated);
         
         Handle<SwaptionVolatilityStructure> volCube_;
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         boost::shared_ptr<Transformation> tranformation_;
+        bool isSpreadCalibrated_;
 
         Real calibration();
         Real error(){return error_;};
@@ -148,7 +151,8 @@ namespace QuantLib {
                 :smileAndCms_(smileAndCms),
                 volCube_(smileAndCms->volCube_),
                 cmsMarket_(smileAndCms->cmsMarket_),
-                weights_(smileAndCms->weights_){};
+                weights_(smileAndCms->weights_),
+                isSpreadCalibrated_(smileAndCms->isSpreadCalibrated_){};
 
                 Real value(const Array& x) const;
           private:
@@ -156,6 +160,7 @@ namespace QuantLib {
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
+            bool isSpreadCalibrated_;
         };
         Real error_; 
 		EndCriteria::Type endCriteria_;

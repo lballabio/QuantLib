@@ -181,6 +181,19 @@ namespace QuantLib {
         return error;
     }
 
+    Real CmsMarket::weightedPriceError(const Matrix& weights){
+        Real error=0.;
+        Size count=0;
+        Real fictitiousNominal = 1.;
+        for(Size i=0;i<nExercise_;i++){
+            for(Size j=0;j<nLengths_;j++){
+                count++;
+                error+=fictitiousNominal*weights[i][j]*midPrices_[i][j]*midPrices_[i][j];
+            }
+        }
+        error=std::sqrt(error/count);
+        return error;
+    }
 
 
     Matrix CmsMarket::browse() const{
@@ -220,10 +233,12 @@ namespace QuantLib {
     SmileAndCmsCalibrationBySabr::SmileAndCmsCalibrationBySabr(
         Handle<SwaptionVolatilityStructure>& volCube,
         boost::shared_ptr<CmsMarket>& cmsMarket,
-        const Matrix& weights):
+        const Matrix& weights,
+        bool isSpreadCalibrated):
     volCube_(volCube),
     cmsMarket_(cmsMarket),
-    weights_(weights){
+    weights_(weights),
+    isSpreadCalibrated_(isSpreadCalibrated){
         tranformation_ = boost::shared_ptr<Transformation>(new transformationBeta);
     }
 
@@ -238,8 +253,13 @@ namespace QuantLib {
             boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));
         //boost::shared_ptr<OptimizationMethod> method =
         //    boost::shared_ptr<OptimizationMethod>(new Simplex(.0001,1e-3));
-
-        method->setEndCriteria(EndCriteria(1000, 1e-1));
+        
+        if(isSpreadCalibrated_){ 
+            method->setEndCriteria(EndCriteria(1000, 1e-1));
+        }
+        else{
+            method->setEndCriteria(EndCriteria(1000, 1e-6));
+        }        
 
         Array guess(1);
 
@@ -273,7 +293,12 @@ namespace QuantLib {
                boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
         volCubeBySabr->recalibration(beta);
         cmsMarket_->reprice(volCube_);
-        return cmsMarket_->weightedError(weights_);
+        if(isSpreadCalibrated_){ 
+            return cmsMarket_->weightedError(weights_);
+        }
+        else{
+            return cmsMarket_->weightedPriceError(weights_);
+        }
     }
 
 
