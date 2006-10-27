@@ -38,8 +38,7 @@ namespace QuantLib {
         registerWith(volatility_);
     }
 
-    void BlackCapFloorEngine::update()
-    {
+    void BlackCapFloorEngine::update() {
         notifyObservers();
     }
 
