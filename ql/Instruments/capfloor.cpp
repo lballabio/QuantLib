@@ -108,6 +108,13 @@ namespace QuantLib {
         return lastPaymentDate < termStructure_->referenceDate();
     }
 
+    Date CapFloor::lastFixingDate() const {
+        boost::shared_ptr<CashFlow> lastCoupon(floatingLeg_.back());
+        boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
+        return lastFloatingCoupon->fixingDate();
+    }
+
     void CapFloor::setupArguments(Arguments* args) const {
         CapFloor::arguments* arguments =
             dynamic_cast<CapFloor::arguments*>(args);

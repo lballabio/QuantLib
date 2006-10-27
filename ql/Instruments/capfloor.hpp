@@ -90,6 +90,7 @@ namespace QuantLib {
         }
         Rate atmRate() const;
         Real vega() const;
+        Date lastFixingDate()const;
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
