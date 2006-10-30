@@ -100,6 +100,7 @@ namespace QuantLib {
             const boost::shared_ptr<Xibor>& iborIndexShortTenor,
             const Matrix& parametersGuess,
             std::vector<bool> isParameterFixed,
+            bool isVegaWeighted,
             bool isAtmCalibrated);
 
         //@}
@@ -150,6 +151,7 @@ namespace QuantLib {
                                                                 sparseSmiles_;
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
+        bool isVegaWeighted_;
         bool isAtmCalibrated_;
     };
 

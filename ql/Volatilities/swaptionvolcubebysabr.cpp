@@ -44,6 +44,7 @@ namespace QuantLib {
         const boost::shared_ptr<Xibor>& iborIndexShortTenor,
         const Matrix& parametersGuess,
         std::vector<bool> isParameterFixed,
+        bool isVegaWeighted,
         bool isAtmCalibrated):
         SwaptionVolatilityCube(
             atmVolStructure,
@@ -60,6 +61,7 @@ namespace QuantLib {
             iborIndexShortTenor),
         volSpreads_(volSpreads),
         isParameterFixed_(isParameterFixed),
+        isVegaWeighted_(isVegaWeighted),
         isAtmCalibrated_(isAtmCalibrated) {
 
         QL_REQUIRE(!volSpreads_.empty(), "empty vol spreads matrix");
@@ -162,6 +164,7 @@ namespace QuantLib {
                                    guess[0], guess[1], guess[2], guess[3],
                                    isParameterFixed_[0], isParameterFixed_[1],
                                    isParameterFixed_[2], isParameterFixed_[3],
+                                   isVegaWeighted_,
                                    boost::shared_ptr<OptimizationMethod>()));
 
                 const Real interpolationError =
