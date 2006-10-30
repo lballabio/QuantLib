@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_swap_forward_conversion_matrix_hpp
 #define quantlib_swap_forward_conversion_matrix_hpp
 
 #include <ql/Math/matrix.hpp>
+#include <vector>
 #include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
@@ -29,21 +29,11 @@ namespace QuantLib {
     //! Swaption covariance matrix approximation for Market Models
     /*! \ingroup Market Models */
 
-    Disposable<Matrix> swaptionsCovarianceMatrix(
-                                    const Matrix& zMatrix, 
-                                    const Matrix& forwardCovarianceMatrix);
-    Disposable<Matrix> zMatrix(const CurveState& cs, 
-                               Size N, 
-                               Size M, 
-                               Rate displacement);
-    Disposable<Matrix> zMatrixFull(const CurveState&, Rate displacement);
-    Disposable<Matrix> swapForwardJacobian(const CurveState& cs);
-
-    class SwaptionVarianceApproximator {
+    class SwapCovarianceApproximator {
       public:
-    /*! Given the covariance matrix of caplets, it returns 
+    /*! Given the forward covariance matrix, it returns 
         an approximation for the corresponding covariance matrix 
-        for coterminal swaptions. See e.g.:
+        for coterminal swaps. See e.g.:
         [1] P. Jackel, R. Rebonato, "\it {Linking Caplet and Swaption
             Volatilities in a BGM/J Framework: Approximate Solutions}", 
             QUARCH preprint, 2000 (http://www.quarchome.org).
@@ -52,11 +42,34 @@ namespace QuantLib {
         [3] M. Joshi, "\it {The Concepts and Practice of Mathematical 
             Finance}", Cambridge University Press (2003).
     */
-          SwaptionVarianceApproximator(const CurveState& initialState,
-                                       Real displacement,
-                                       Size optionExpiry,
-                                       Size swapTenor);
-          Real swaptionVariance(const Matrix& covariance);
+        SwapCovarianceApproximator(const CurveState& initialCurveState,
+                                   Size expiry,
+                                   Size maturity,
+                                   const std::vector<Spread>& displacements,
+                                   const Matrix& forwardCovarianceMatrix);
+
+        /*! Given the forward covariance matrix, it returns the approximated
+            swap covariance matrix corresponding to the (sub)set of coterminal 
+            swaps between expiry and maturity.    */
+        Disposable<Matrix> swapCovarianceMatrix();
+
+        /*! Returns the subportion of Z matrix corresponding to the segment 
+            of curve between expiry and maturity.    */
+        Disposable<Matrix> zzMatrix();
+
+        /*! Returns the Z matrix    */
+        Disposable<Matrix> zMatrix(const CurveState& cs);
+
+        /*! Returns the swap rate / forward rate jacobian dsr[i]/df[j]  */
+        Disposable<Matrix> swapForwardJacobian(const CurveState& cs);
+
+        //Real swapVariance(const Matrix& covariance);
+
+      private:
+        CurveState initialCurveState_;
+        Size expiry_, maturity_;
+        std::vector<Spread> displacements_;
+        Matrix forwardCovarianceMatrix_, swapCovarianceMatrix_;
     };
 
 }

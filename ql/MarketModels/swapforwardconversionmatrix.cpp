@@ -25,59 +25,81 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> swaptionsCovarianceMatrix(
-                                    const Matrix& zMatrix, 
-                                    const Matrix& forwardCovarianceMatrix)
+    SwapCovarianceApproximator::SwapCovarianceApproximator(
+                                const CurveState& initialCurveState,
+                                Size expiry,
+                                Size maturity,
+                                const std::vector<Spread>& displacements,
+                                const Matrix& forwardCovarianceMatrix)
+    : initialCurveState_(initialCurveState), 
+      expiry_(expiry), maturity_(maturity), displacements_(displacements), 
+      forwardCovarianceMatrix_(forwardCovarianceMatrix) {
+
+        // Check requirements
+        QL_REQUIRE(maturity_ <= forwardCovarianceMatrix_.columns(), 
+            "maturity out of range");
+        QL_REQUIRE(expiry_ < maturity_, "expiry larger than maturity");
+        // QL_REQUIRE(alive???, "xxx");
+        swapCovarianceMatrix_ = Matrix(forwardCovarianceMatrix_.rows(),
+                                       forwardCovarianceMatrix_.columns(),
+                                       0.0);
+     }
+
+    Disposable<Matrix> SwapCovarianceApproximator::swapCovarianceMatrix()
     {
-        Matrix result = zMatrix * forwardCovarianceMatrix * transpose(zMatrix);
-        return result;
+        Disposable<Matrix> zzzMatrix = zzMatrix();
+        swapCovarianceMatrix_ = 
+            zzzMatrix * forwardCovarianceMatrix_ * transpose(zzzMatrix);
+        return swapCovarianceMatrix_;
     }
 
-    Disposable<Matrix> zMatrix(const CurveState& cs, 
-                                       Size E,  // E = index of expiry                   
-                                       Size ST, // ST = swap tenor
-                                       Rate displacement)
+    Disposable<Matrix> SwapCovarianceApproximator::zzMatrix()
     {
-        Size M = ST+E; //M = index of maturity
-        CurveState newCS(cs.rateTimes().begin()+E,cs.rateTimes().begin()+M);
-        newCS.setOnForwardRates(cs.forwardRates().begin()+E,
-                                cs.forwardRates().begin()+M);
-        return zMatrixFull(newCS, displacement);
+        CurveState newCurveState(
+                        initialCurveState_.rateTimes().begin()+expiry_,
+                        initialCurveState_.rateTimes().begin()+maturity_);
+        newCurveState.setOnForwardRates(
+                        initialCurveState_.forwardRates().begin()+expiry_,
+                        initialCurveState_.forwardRates().begin()+maturity_);
+        return zMatrix(newCurveState);
     }
 
-    Disposable<Matrix> zMatrixFull(const CurveState& cs, Rate displacement) 
+    Disposable<Matrix> SwapCovarianceApproximator::zMatrix(const CurveState& cs) 
     {
         Matrix result = swapForwardJacobian(cs);    // derivative dsr[i]/df[j]
         const std::vector<Rate> f = cs.forwardRates();  // forward rates
         const std::vector<Rate> sr = cs.coterminalSwapRates();  // coterminal swap rates
-        for (Size i=0; i<sr.size(); ++i) {      // i swap rate index
-            for (Size j=i; j<f.size(); ++j) {   // j forward rate index
-                result[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+        for (Size i=0; i<sr.size(); ++i) {          // i = swap rate index
+            for (Size j=i; j<f.size(); ++j) {       // j = forward rate index
+                result[i][j] *= (f[j]+displacements_[j])
+                                /(sr[i]+displacements_[i]);
             }
         }
-        return result;
+        return result;  // zMatrix = f[j]/sr[j] * dsr[i]/df[j]
     }
 
-    Disposable<Matrix> swapForwardJacobian(const CurveState& cs) 
+    Disposable<Matrix> SwapCovarianceApproximator::swapForwardJacobian(
+        const CurveState& cs) 
     {
         std::vector<Real> b = cs.coterminalSwapRatesAnnuities();    // coterminal annuities
         std::vector<Real> a = std::vector<Real>(b.size());          // coterminal floating leg values
         Size n = b.size();                                          // n° of coterminal swaps
         const std::vector<Real> p = cs.discountRatios();            // discount factors
         const std::vector<Rate> f = cs.forwardRates();              // forward rates
-        const std::vector<Time> t = cs.rateTaus();                  // accrual factors
+        const std::vector<Time> tau = cs.rateTaus();                // accrual factors
 
-        for (Size k=0; k<n; ++k)    // compute coterminal floating leg values
-            a[k] = p[k]-p[n];
-
+        for (Size k=0; k<n; ++k)
+            a[k] = p[k]-p[n];          // coterminal floating leg values
         Matrix jacobian = Matrix(n, n, 0.0);
-        for (Size i=0; i<n; ++i) {     // i swap rate index
-            for (Size j=i; j<n; ++j) { // j forward rate index
-                //Real temp = t[j]/1.0+f[j]*t[j];   ERROR!!
+        for (Size i=0; i<n; ++i) {     // i = swap rate index
+            for (Size j=i; j<n; ++j) { // j = forward rate index
+                //Real temp = tau[j]/1.0+f[j]*t[j];   ERROR: it's temp = tau[j]/(1.0+f[j]*t[j])
                 //jacobian[i][j] =
-                //    p[j+1]*t[j]/b[i]-temp*a[j]/b[i]+temp*a[i]*b[j]/(b[i]*b[i]);
+                //    p[j+1]*tau[j]/b[i]-temp*a[j]/b[i]+temp*a[i]*b[j]/(b[i]*b[i]);
+                // QUESTION: no displacements here, right ?
                 jacobian[i][j] =    // derivative dsr[i]/df[j]
-                    p[j+1]*t[j]/b[i] + t[j]/(1.0+f[j]*t[j])*(-a[j]*b[i] + a[i]*b[j])/(b[i]*b[i]);
+                    p[j+1]*tau[j]/b[i] + tau[j]/(1.0+f[j]*tau[j])*
+                    (-a[j]*b[i]+a[i]*b[j])/(b[i]*b[i]);
             }
         }
         return jacobian;
