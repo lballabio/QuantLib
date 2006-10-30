@@ -452,6 +452,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                                          iborIndexShortTenor_,
                                          parametersGuess,
                                          isParameterFixed,
+                                         false,
                                          true);
     Real tolerance = 3.0e-4;
     makeAtmVolTest(volCube, tolerance);

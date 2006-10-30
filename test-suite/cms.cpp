@@ -218,6 +218,7 @@ void setup() {
             iborIndex_,
             parametersGuess,
             isParameterFixed,
+            false,
             false
             ));
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
@@ -261,6 +262,7 @@ void setup() {
             iborIndex_,
             parametersGuess,
             isParameterFixed,
+            false,
             false
             ));
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
