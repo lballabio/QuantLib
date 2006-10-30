@@ -50,11 +50,14 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& yieldTermStructure,
             const Handle<SwaptionVolatilityStructure>& volStructure);
 
-        Matrix impliedCmsSpreads(){return impliedCmsSpreads_;};
+        void createForwardStartingCms();
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure);
-        Matrix spreadErrors(){return spreadErrors_;};
         Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
+        Real weightedForwardPriceError(const Matrix& weights);
+
+        Matrix impliedCmsSpreads(){return impliedCmsSpreads_;};
+        Matrix spreadErrors(){return spreadErrors_;};
         Matrix browse() const;
  
       private:
@@ -70,9 +73,9 @@ namespace QuantLib {
         Matrix impliedCmsSpreads_;
         Matrix spreadErrors_;
         
-        Matrix midPrices_;
-        Matrix askPrices_;
         Matrix bidPrices_;
+        Matrix askPrices_;
+        Matrix midPrices_, forwardMidPrices_;
         Matrix prices_;
 
         Date referenceDate_; 
@@ -110,18 +113,20 @@ namespace QuantLib {
         };
 
       public:
+        
+        enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
 
         SmileAndCmsCalibrationBySabr(
             Handle<SwaptionVolatilityStructure>& volCube,
             boost::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights,
-            bool isSpreadCalibrated);
+            CalibrationType calibrationType);
         
         Handle<SwaptionVolatilityStructure> volCube_;
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         boost::shared_ptr<Transformation> tranformation_;
-        bool isSpreadCalibrated_;
+        CalibrationType calibrationType_;
 
         Real calibration();
         Real error(){return error_;};
@@ -152,7 +157,7 @@ namespace QuantLib {
                 volCube_(smileAndCms->volCube_),
                 cmsMarket_(smileAndCms->cmsMarket_),
                 weights_(smileAndCms->weights_),
-                isSpreadCalibrated_(smileAndCms->isSpreadCalibrated_){};
+                calibrationType_(smileAndCms->calibrationType_){};
 
                 Real value(const Array& x) const;
           private:
@@ -160,7 +165,7 @@ namespace QuantLib {
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
-            bool isSpreadCalibrated_;
+            CalibrationType calibrationType_;
         };
         Real error_; 
 		EndCriteria::Type endCriteria_;

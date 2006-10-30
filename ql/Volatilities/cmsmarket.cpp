@@ -72,6 +72,7 @@ namespace QuantLib {
         midPrices_ = Matrix(nExercise_, nLengths_, 0.);
         askPrices_ = Matrix(nExercise_, nLengths_, 0.);
         bidPrices_ = Matrix(nExercise_, nLengths_, 0.);
+        forwardMidPrices_ = Matrix(nExercise_, nLengths_, 0.);
 
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA2Y(yieldTermStructure_)));
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA5Y(yieldTermStructure_)));
@@ -87,7 +88,7 @@ namespace QuantLib {
             );
             std::vector<Leg> cmsTmp;
             std::vector<Leg> floatingTmp;
-            std::vector< boost::shared_ptr<Swap> > swapTmp;
+            std::vector< boost::shared_ptr<Swap> > swapTmp; 
             for (Size j=0; j<nLengths_ ; j++) {
                 bids_[i][j] = bidsAsks[i][j*2];
                 asks_[i][j] = bidsAsks[i][j*2+1];
@@ -133,8 +134,66 @@ namespace QuantLib {
             floatingLegs_.push_back(floatingTmp);
             swaps_.push_back(swapTmp);
         }
+        createForwardStartingCms();        
+
      }
-    void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure){
+     void CmsMarket::createForwardStartingCms(){
+        for (Size i=0; i<nExercise_; i++) {
+            Date startingDate; 
+            if(i=0){
+                startingDate = effectiveDate_;
+            }
+            else{
+                startingDate = exerciseDates_[i-1];
+            }
+            boost::shared_ptr<const Schedule> forwardSchedule = boost::shared_ptr<Schedule>(
+                new Schedule(startingDate, exerciseDates_[i], tenor_,
+                             calendar_, bdc_, bdc_, true, false));
+
+            Size nCoupons = forwardSchedule->size();
+            for (Size j=0; j<nLengths_ ; j++) {
+                Leg forwardCms;
+                Leg forwardFloating;
+                boost::shared_ptr<Swap> forwardSwap; 
+    
+                forwardCms =
+                    CMSCouponVector(*(forwardSchedule.get()),
+                                    bdc_,
+                                    std::vector<double>(nCoupons,1.),
+                                    swapIndices_[j],
+                                    2,
+                                    dayCounter_,
+                                    std::vector<double>(nCoupons, 0.),
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 0.),
+                                    std::vector<double>(nCoupons, meanReversions_[i][j]),
+                                    pricer_,
+                                    volStructure_ );
+                forwardFloating =
+                    FloatingRateCouponVector(*(forwardSchedule.get()),
+                                    floatingIndex_->businessDayConvention(),
+                                    std::vector<double>(nCoupons, 1.),
+                                    floatingIndex_->settlementDays(),
+                                    floatingIndex_,
+                                    std::vector<double>(nCoupons, 1.),
+                                    std::vector<double>(nCoupons, 0.),
+                                    floatingIndex_->dayCounter());
+                forwardSwap =
+                    boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, forwardCms, forwardFloating));
+
+                Real valueOfCmsLeg = forwardSwap->legNPV(0);
+                if(i=0){
+                    forwardMidPrices_[i][j] = valueOfCmsLeg-swaps_[i][j]->legNPV(1);
+                }
+                else{
+                    forwardMidPrices_[i][j] = valueOfCmsLeg-(swaps_[i][j]->legNPV(1)-swaps_[i-1][j]->legNPV(1));
+                }
+            }
+        }
+     }
+
+     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure){
         volStructure_ = volStructure;
         for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nLengths_ ; j++) {
@@ -163,10 +222,15 @@ namespace QuantLib {
                 swaps_[i][j] = boost::shared_ptr<Swap>(
                     new Swap(yieldTermStructure_, cmsLegs_[i][j], floatingLegs_[i][j]));
                 prices_[i][j] = swaps_[i][j]->NPV();
-                impliedCmsSpreads_[i][j] = -(prices_[i][j]/swaps_[i][j]->legBPS(1))/10000;
+                Real PV01 = swaps_[i][j]->legBPS(1);
+                impliedCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;;
                 spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
+                midPrices_[i][j] = prices_[i][j]+PV01*mids_[i][j]*10000;
+                askPrices_[i][j] = prices_[i][j]+PV01*asks_[i][j]*10000;
+                bidPrices_[i][j] = prices_[i][j]+PV01*bids_[i][j]*10000;
             }
         }
+        createForwardStartingCms();
     }
     Real CmsMarket::weightedError(const Matrix& weights){
         Real error=0.;
@@ -195,6 +259,19 @@ namespace QuantLib {
         return error;
     }
 
+    Real CmsMarket::weightedForwardPriceError(const Matrix& weights){
+        Real error=0.;
+        Size count=0;
+        Real fictitiousNominal = 1.;
+        for(Size i=0;i<nExercise_;i++){
+            for(Size j=0;j<nLengths_;j++){
+                count++;
+                error+=fictitiousNominal*weights[i][j]*forwardMidPrices_[i][j]*forwardMidPrices_[i][j];
+            }
+        }
+        error=std::sqrt(error/count);
+        return error;
+    }
 
     Matrix CmsMarket::browse() const{
         Matrix result(nExercise_*nLengths_,14,0.);
@@ -234,11 +311,11 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure>& volCube,
         boost::shared_ptr<CmsMarket>& cmsMarket,
         const Matrix& weights,
-        bool isSpreadCalibrated):
+        CalibrationType calibrationType):
     volCube_(volCube),
     cmsMarket_(cmsMarket),
     weights_(weights),
-    isSpreadCalibrated_(isSpreadCalibrated){
+    calibrationType_(calibrationType){
         tranformation_ = boost::shared_ptr<Transformation>(new transformationBeta);
     }
 
@@ -254,12 +331,19 @@ namespace QuantLib {
         //boost::shared_ptr<OptimizationMethod> method =
         //    boost::shared_ptr<OptimizationMethod>(new Simplex(.0001,1e-3));
         
-        if(isSpreadCalibrated_){ 
-            method->setEndCriteria(EndCriteria(1000, 1e-1));
+        switch (calibrationType_) {
+            case OnSpread:
+                method->setEndCriteria(EndCriteria(1000, 1e-1));
+                break;
+            case OnPrice:
+                method->setEndCriteria(EndCriteria(1000, 1e-6));
+                break;
+            case OnForwardCmsPrice:
+                method->setEndCriteria(EndCriteria(1000, 1e-6));
+                break;
+            default:
+                QL_FAIL("unknown/illegal calibration type");
         }
-        else{
-            method->setEndCriteria(EndCriteria(1000, 1e-6));
-        }        
 
         Array guess(1);
 
@@ -293,11 +377,15 @@ namespace QuantLib {
                boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
         volCubeBySabr->recalibration(beta);
         cmsMarket_->reprice(volCube_);
-        if(isSpreadCalibrated_){ 
-            return cmsMarket_->weightedError(weights_);
-        }
-        else{
-            return cmsMarket_->weightedPriceError(weights_);
+        switch (calibrationType_) {
+            case OnSpread:
+                return cmsMarket_->weightedError(weights_);
+            case OnPrice:
+                return cmsMarket_->weightedPriceError(weights_);
+            case OnForwardCmsPrice:
+                return cmsMarket_->weightedForwardPriceError(weights_);
+            default:
+                QL_FAIL("unknown/illegal calibration type");
         }
     }
 
