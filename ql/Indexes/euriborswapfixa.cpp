@@ -25,8 +25,7 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     EuriborSwapFixA::EuriborSwapFixA(Integer years,
-                                     const Handle<YieldTermStructure>& h =
-                                     Handle<YieldTermStructure>())
+                                     const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapFixA", // familyName
                 years,
                 2, // settlementDays
