@@ -1,4 +1,5 @@
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -29,6 +30,7 @@ namespace QuantLib {
     //! base class for swap-rate indexes
     class SwapIndex : public InterestRateIndex {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         SwapIndex(const std::string& familyName,
                   Integer years,
                   Integer settlementDays,
@@ -38,8 +40,19 @@ namespace QuantLib {
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
                   const boost::shared_ptr<Xibor>& iborIndex);
+        #endif
+        SwapIndex(const std::string& familyName,
+                  const Period& tenor,
+                  Integer settlementDays,
+                  Currency currency,
+                  const Calendar& calendar,
+                  Frequency fixedLegFrequency,
+                  BusinessDayConvention fixedLegConvention,
+                  const DayCounter& fixedLegDayCounter,
+                  const boost::shared_ptr<Xibor>& iborIndex);
         //! \name InterestRateIndex interface
         //@{
+        Handle<YieldTermStructure> termStructureHandle() const;
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         Rate forecastFixing(const Date& fixingDate) const;
         #ifdef QL_DISABLE_DEPRECATED
@@ -59,7 +72,7 @@ namespace QuantLib {
                                                 const Date& fixingDate) const;
         //@}
       protected:
-        Integer years_;
+        Period tenor_;
         boost::shared_ptr<Xibor> iborIndex_;
         Frequency fixedLegFrequency_;
         BusinessDayConvention fixedLegConvention_;
@@ -67,6 +80,11 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline Handle<YieldTermStructure>
+    SwapIndex::termStructureHandle() const {
+        return iborIndex_->termStructureHandle();
+    }
 
     inline boost::shared_ptr<YieldTermStructure>
     SwapIndex::termStructure() const {

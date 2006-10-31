@@ -57,6 +57,7 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Rate forecastFixing(const Date& fixingDate) const;
+        Handle<YieldTermStructure> termStructureHandle() const;
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
         //! \name Inspectors
@@ -88,6 +89,10 @@ namespace QuantLib {
     inline BusinessDayConvention Xibor::businessDayConvention() const {
         return convention_;
     }
+
+   inline Handle<YieldTermStructure> Xibor::termStructureHandle() const {
+       return termStructure_;
+   }
 
    inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
        return termStructure_.currentLink();
