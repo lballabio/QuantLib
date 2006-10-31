@@ -62,6 +62,7 @@ namespace QuantLib {
         Calendar calendar() const;
         const DayCounter& dayCounter() const;
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;
+        virtual Handle<YieldTermStructure> termStructureHandle() const = 0;
         virtual boost::shared_ptr<YieldTermStructure> termStructure() const = 0;
         //@}
         /*! \name Date calculations

@@ -50,7 +50,7 @@ Date endDate_;
 Real gearing_;
 Spread spread_;
 Rate infiniteCap_, infiniteFloor_;
-Integer years_;
+Period tenor_;
 boost::shared_ptr<SwapIndex> index_;
 boost::shared_ptr<SwapIndex> swapIndexBase_;
 std::string familyName_;
@@ -82,7 +82,7 @@ void setup() {
     fixedDayCount_ = Thirty360();
     gearing_ = 1.0;
     spread_ = 0.0;
-    years_ = 30;
+    tenor_ = 30*Years;
 
     familyName_ = "";
 
@@ -106,30 +106,27 @@ void setup() {
     startDate_ = (referenceDate_+2*3600);
     paymentDate_ = (startDate_+365);
     endDate_ = (paymentDate_);
-    index_ = boost::shared_ptr<SwapIndex>(
-        new SwapIndex(
-        familyName_,
-        years_,
-        settlementDays_,
-        iborIndex_->currency(),
-        calendar_,
-        fixedFrequency_,
-        fixedConvention_,
-        iborIndex_->dayCounter(),
-        iborIndex_)
+    index_ = boost::shared_ptr<SwapIndex>(new
+        SwapIndex(familyName_,
+                  tenor_,
+                  settlementDays_,
+                  iborIndex_->currency(),
+                  calendar_,
+                  fixedFrequency_,
+                  fixedConvention_,
+                  iborIndex_->dayCounter(),
+                  iborIndex_)
         );
-     swapIndexBase_ = boost::shared_ptr<SwapIndex>(
-        new SwapIndex(
-        "EurliborSwapFixA",
-        10,
-        settlementDays_,
-        iborIndex_->currency(),
-        calendar_,
-        fixedFrequency_,
-        fixedConvention_,
-        iborIndex_->dayCounter(),
-        iborIndex_)
-        );
+     swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
+         SwapIndex("EurliborSwapFixA",
+                   10*Years,
+                   settlementDays_,
+                   iborIndex_->currency(),
+                   calendar_,
+                   fixedFrequency_,
+                   fixedConvention_,
+                   iborIndex_->dayCounter(),
+                   iborIndex_));
 
 
     // Volatility

@@ -258,18 +258,16 @@ void setup() {
     shortTenor_ = 2;
     iborIndexShortTenor_ = boost::shared_ptr<Xibor>(
         new Euribor3M(termStructure_));;
-    swapIndexBase_ = boost::shared_ptr<SwapIndex>(
-        new SwapIndex(
-        "EurliborSwapFixA",
-        10,
-        swapSettlementDays_,
-        iborIndex_->currency(),
-        calendar_,
-        fixedLegFrequency_,
-        fixedLegConvention_,
-        iborIndex_->dayCounter(),
-        iborIndex_)
-        );
+    swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
+        SwapIndex("EurliborSwapFixA",
+                  10*Years,
+                  swapSettlementDays_,
+                  iborIndex_->currency(),
+                  calendar_,
+                  fixedLegFrequency_,
+                  fixedLegConvention_,
+                  iborIndex_->dayCounter(),
+                  iborIndex_));
 
 }
 

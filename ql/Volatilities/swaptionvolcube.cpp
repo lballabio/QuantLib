@@ -109,10 +109,9 @@ namespace QuantLib {
     Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,
                                            const Period& swapTenor) const {
 
-        // FIXME use a familyName-based index factory and
-        // use a Period-based SwapIndex constructor
+        // FIXME use a familyName-based index factory
         return SwapIndex(swapIndexBase_->familyName(),
-                         swapTenor.units(),
+                         swapTenor,
                          swapIndexBase_->settlementDays(),
                          swapIndexBase_->currency(),
                          swapIndexBase_->calendar(), 

@@ -1,4 +1,5 @@
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,6 +24,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     SwapIndex::SwapIndex(const std::string& familyName,
                          Integer years,
                          Integer settlementDays,
@@ -34,7 +36,26 @@ namespace QuantLib {
                          const boost::shared_ptr<Xibor>& iborIndex)
     : InterestRateIndex(familyName, years*Years, settlementDays,
                         currency, calendar, fixedLegDayCounter),
-      years_(years), iborIndex_(iborIndex),
+      tenor_(years*Years), iborIndex_(iborIndex),
+      fixedLegFrequency_(fixedLegFrequency),
+      fixedLegConvention_(fixedLegConvention)
+    {
+        registerWith(iborIndex_);
+    }
+    #endif
+
+    SwapIndex::SwapIndex(const std::string& familyName,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         Currency currency,
+                         const Calendar& calendar,
+                         Frequency fixedLegFrequency,
+                         BusinessDayConvention fixedLegConvention,
+                         const DayCounter& fixedLegDayCounter,
+                         const boost::shared_ptr<Xibor>& iborIndex)
+    : InterestRateIndex(familyName, tenor, settlementDays,
+                        currency, calendar, fixedLegDayCounter),
+      tenor_(tenor), iborIndex_(iborIndex),
       fixedLegFrequency_(fixedLegFrequency),
       fixedLegConvention_(fixedLegConvention)
     {
@@ -50,7 +71,7 @@ namespace QuantLib {
         QL_REQUIRE(iborIndex_->termStructure(),
                    "no forecasting term structure set to " <<
                    iborIndex_->name());
-        return MakeVanillaSwap(years_*Years, iborIndex_, 0.0)
+        return MakeVanillaSwap(tenor_, iborIndex_, 0.0)
             .withEffectiveDate(valueDate(fixingDate))
             .withFixedLegCalendar(calendar_)
             .withFixedLegDayCount(dayCounter_)
@@ -61,8 +82,8 @@ namespace QuantLib {
 
     Schedule SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
 
-        Date start = calendar_.advance(fixingDate, settlementDays_,Days);
-        Date end = calendar_.advance(start,years_,Years);
+        Date start = calendar_.advance(fixingDate, settlementDays_, Days);
+        Date end = calendar_.advance(start, tenor_);
 
         return Schedule(start, end, Period(fixedLegFrequency_), calendar_,
                         fixedLegConvention_, fixedLegConvention_,

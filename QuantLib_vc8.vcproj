@@ -1503,7 +1503,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\euriborswapfixa.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\euriborswapfixa.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\euriborswapfixifr.cpp"
 				>
 			</File>
 			<File
@@ -1515,11 +1523,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixa.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\eurliborswapfixa.hpp"
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixb.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\eurliborswapfixb.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\eurliborswapfixifr.cpp"
 				>
 			</File>
 			<File
