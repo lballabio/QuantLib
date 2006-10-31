@@ -27,6 +27,7 @@
 #include <ql/Utilities/dataparsers.hpp>
 #include <iostream>
 #include <ql/CashFlows/floatingratecoupon.hpp> 
+#include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -269,11 +270,11 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
             bool priceIsBigEnough = priceFromConstantVolatilty > priceThreshold;
 
             if(!strippedPriceIsAccurate && priceIsBigEnough)
-            BOOST_ERROR( "tenor: " << tenors[tenorIndex] << "\n"
-                        << "strike: " << strikes[strikeIndex]*100 << "%\n"
-                        << "stripped: " << priceFromStrippedVolatilty * 1e4 << "\n"
-                        << "constant: " << priceFromConstantVolatilty * 1e4 << "\n"
-                        << "rel error: " << relativeError << "%\n");
+            BOOST_FAIL("tenor: " << tenors[tenorIndex] <<
+                       "\nstrike: " << io::rate(strikes[strikeIndex]) <<
+                       "\nstripped: " << priceFromStrippedVolatilty * 1e4 <<
+                       "\nconstant: " << priceFromConstantVolatilty * 1e4 <<
+                       "\nrel error: " << relativeError << "%\n");
          }
     }
     QL_TEST_END
