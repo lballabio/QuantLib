@@ -140,7 +140,7 @@ namespace QuantLib {
      void CmsMarket::createForwardStartingCms(){
         for (Size i=0; i<nExercise_; i++) {
             Date startingDate; 
-            if(i=0){
+            if(i==0){
                 startingDate = effectiveDate_;
             }
             else{
@@ -183,11 +183,14 @@ namespace QuantLib {
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, forwardCms, forwardFloating));
 
                 Real valueOfCmsLeg = forwardSwap->legNPV(0);
-                if(i=0){
-                    forwardMidPrices_[i][j] = valueOfCmsLeg-swaps_[i][j]->legNPV(1);
+                if(i==0){
+                    forwardMidPrices_[i][j] = valueOfCmsLeg + 
+                        swaps_[i][j]->legNPV(1)+swaps_[i][j]->legBPS(1)*mids_[i][j]*10000;
                 }
                 else{
-                    forwardMidPrices_[i][j] = valueOfCmsLeg-(swaps_[i][j]->legNPV(1)-swaps_[i-1][j]->legNPV(1));
+                    forwardMidPrices_[i][j] = valueOfCmsLeg + 
+                        (swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000)-
+                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*mids_[i-1][j]*10000);
                 }
             }
         }
@@ -274,7 +277,7 @@ namespace QuantLib {
     }
 
     Matrix CmsMarket::browse() const{
-        Matrix result(nExercise_*nLengths_,14,0.);
+        Matrix result(nExercise_*nLengths_,15,0.);
 	        for(Size j=0;j<nLengths_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nLengths_+i][0]= lengths_[j].length();
@@ -297,6 +300,7 @@ namespace QuantLib {
                 result[j*nLengths_+i][11]= bidPrices_[i][j];
                 result[j*nLengths_+i][12]= askPrices_[i][j];
                 result[j*nLengths_+i][13]= midPrices_[i][j];
+               result[j*nLengths_+i][14]= forwardMidPrices_[i][j];
 
             }   
         }  
