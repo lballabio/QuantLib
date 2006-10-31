@@ -10,6 +10,7 @@ include_HEADERS = \
     multistepcaplets.hpp \
     multistepcoinitialswaps.hpp \
     multistepcoterminalswaps.hpp \
+    multistepcoterminalswaptions.hpp \
     multistepforwards.hpp \
     multistepnothing.hpp \
     multistepswap.hpp
@@ -21,6 +22,7 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepcaplets.cpp \
     multistepcoinitialswaps.cpp \
     multistepcoterminalswaps.cpp \
+    multistepcoterminalswaptions.cpp \
     multistepforwards.cpp \
     multistepnothing.cpp \
     multistepswap.cpp
