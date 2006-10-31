@@ -29,10 +29,10 @@ namespace QuantLib {
                                 const CurveState& initialCurveState,
                                 Size expiry,
                                 Size maturity,
-                                const std::vector<Spread>& displacements,
+                                Spread displacement,
                                 const Matrix& forwardCovarianceMatrix)
     : initialCurveState_(initialCurveState), 
-      expiry_(expiry), maturity_(maturity), displacements_(displacements), 
+      expiry_(expiry), maturity_(maturity), displacement_(displacement), 
       forwardCovarianceMatrix_(forwardCovarianceMatrix) {
 
         // Check requirements
@@ -41,8 +41,8 @@ namespace QuantLib {
         QL_REQUIRE(expiry_ < maturity_, "expiry larger than maturity");
         // QL_REQUIRE(alive???, "xxx");
         swapCovarianceMatrix_ = Matrix(forwardCovarianceMatrix_.rows(),
-                                       forwardCovarianceMatrix_.columns(),
-                                       0.0);
+                                   forwardCovarianceMatrix_.columns(),
+                                   0.0);
      }
 
     Disposable<Matrix> SwapCovarianceApproximator::swapCovarianceMatrix()
@@ -71,8 +71,7 @@ namespace QuantLib {
         const std::vector<Rate> sr = cs.coterminalSwapRates();  // coterminal swap rates
         for (Size i=0; i<sr.size(); ++i) {          // i = swap rate index
             for (Size j=i; j<f.size(); ++j) {       // j = forward rate index
-                result[i][j] *= (f[j]+displacements_[j])
-                                /(sr[i]+displacements_[i]);
+                result[i][j] *= (f[j]+displacement_)/(sr[i]+displacement_);
             }
         }
         return result;  // zMatrix = f[j]/sr[j] * dsr[i]/df[j]

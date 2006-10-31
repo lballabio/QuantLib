@@ -17,6 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file swapforwardconversionmatrix.hpp
+    \brief Swaption covariance matrix approximation for Market Models
+*/
+
 #ifndef quantlib_swap_forward_conversion_matrix_hpp
 #define quantlib_swap_forward_conversion_matrix_hpp
 
@@ -45,7 +49,7 @@ namespace QuantLib {
         SwapCovarianceApproximator(const CurveState& initialCurveState,
                                    Size expiry,
                                    Size maturity,
-                                   const std::vector<Spread>& displacements,
+                                   Spread displacement,
                                    const Matrix& forwardCovarianceMatrix);
 
         /*! Given the forward covariance matrix, it returns the approximated
@@ -57,7 +61,7 @@ namespace QuantLib {
             of curve between expiry and maturity.    */
         Disposable<Matrix> zzMatrix();
 
-        /*! Returns the Z matrix    */
+        /*! Returns the Z matrix to switch base from forward to swap rates   */
         Disposable<Matrix> zMatrix(const CurveState& cs);
 
         /*! Returns the swap rate / forward rate jacobian dsr[i]/df[j]  */
@@ -68,7 +72,7 @@ namespace QuantLib {
       private:
         CurveState initialCurveState_;
         Size expiry_, maturity_;
-        std::vector<Spread> displacements_;
+        Spread displacement_;
         Matrix forwardCovarianceMatrix_, swapCovarianceMatrix_;
     };
 
