@@ -270,6 +270,7 @@ namespace QuantLib {
         static BigInteger yearOffset(Year y);
         static BigInteger minimumSerialNumber();
         static BigInteger maximumSerialNumber();
+        static void checkSerialNumber(BigInteger serialNumber);
     };
 
     /*! \relates Date

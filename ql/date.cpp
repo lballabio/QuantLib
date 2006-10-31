@@ -41,10 +41,7 @@ namespace QuantLib {
 
     Date::Date(BigInteger serialNumber)
     : serialNumber_(serialNumber) {
-        QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
-                   serialNumber <= maximumSerialNumber(),
-                   "Date " << serialNumber << " outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serialNumber);
     }
 
     Date::Date(Day d, Month m, Year y) {
@@ -84,10 +81,7 @@ namespace QuantLib {
 
     Date& Date::operator+=(BigInteger days) {
         BigInteger serial = serialNumber_ + days;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
@@ -99,10 +93,7 @@ namespace QuantLib {
 
     Date& Date::operator-=(BigInteger days) {
         BigInteger serial = serialNumber_ - days;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
@@ -114,10 +105,7 @@ namespace QuantLib {
 
     Date& Date::operator++() {
         BigInteger serial = serialNumber_ + 1;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
@@ -125,20 +113,14 @@ namespace QuantLib {
     Date Date::operator++(int ) {
         Date temp = *this;
         BigInteger serial = serialNumber_ + 1;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return temp;
     }
 
     Date& Date::operator--() {
         BigInteger serial = serialNumber_ - 1;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return *this;
     }
@@ -146,10 +128,7 @@ namespace QuantLib {
     Date Date::operator--(int ) {
         Date temp = *this;
         BigInteger serial = serialNumber_ - 1;
-        QL_REQUIRE(serial >= minimumSerialNumber() &&
-                   serial <= maximumSerialNumber(),
-                   "Date " << serial << "outside allowed range ["
-                   << minDate() << "-" << maxDate() << "]");
+        checkSerialNumber(serial);
         serialNumber_ = serial;
         return temp;
     }
@@ -510,6 +489,14 @@ namespace QuantLib {
         return 73050;    // Dec 31st, 2099
     }
 
+    void Date::checkSerialNumber(BigInteger serialNumber) {
+        QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
+                   serialNumber <= maximumSerialNumber(),
+                   "Date's serial number (" << serialNumber << ") outside "
+                   "allowed range [" << minimumSerialNumber() <<
+                   "-" << maximumSerialNumber() << "], i.e. [" <<
+                   minDate() << "-" << maxDate() << "]");
+    }
 
     // weekday formatting
 
