@@ -40,14 +40,7 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
             const Calendar& calendar,
-            Integer swapSettlementDays,
-            Frequency fixedLegFrequency,
-            BusinessDayConvention fixedLegConvention,
-            const DayCounter& fixedLegDayCounter,
-            const boost::shared_ptr<Xibor>& iborIndex,
-            Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor =
-                                                  boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<SwapIndex>& swapIndexBase);
         //! \name Other inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }

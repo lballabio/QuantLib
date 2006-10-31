@@ -25,7 +25,7 @@
 #define quantlib_swaption_volatility_cube_h
 
 #include <ql/swaptionvolstructure.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/swapindex.hpp>
 
 namespace QuantLib {
 
@@ -37,14 +37,7 @@ namespace QuantLib {
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
             const Calendar& calendar,
-            Integer swapSettlementDays,
-            Frequency fixedLegFrequency,
-            BusinessDayConvention fixedLegConvention,
-            const DayCounter& fixedLegDayCounter,
-            const boost::shared_ptr<Xibor>& iborIndex,
-            Time shortTenor = 2,
-            const boost::shared_ptr<Xibor>& iborIndexShortTenor =
-                                                  boost::shared_ptr<Xibor>());
+            const boost::shared_ptr<SwapIndex>& swapIndexBase);
         //! \name TermStructure interface
         //@{
         const Date& referenceDate() const {
@@ -93,13 +86,7 @@ namespace QuantLib {
         std::vector<Spread> strikeSpreads_;
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
-        Integer swapSettlementDays_;
-        Frequency fixedLegFrequency_;
-        BusinessDayConvention fixedLegConvention_;
-        DayCounter fixedLegDayCounter_;
-        boost::shared_ptr<Xibor> iborIndex_;
-        Time shortTenor_;
-        boost::shared_ptr<Xibor> iborIndexShortTenor_;
+        boost::shared_ptr<SwapIndex> swapIndexBase_;
     };
 
 }

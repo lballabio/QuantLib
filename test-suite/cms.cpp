@@ -52,6 +52,7 @@ Spread spread_;
 Rate infiniteCap_, infiniteFloor_;
 Integer years_;
 boost::shared_ptr<SwapIndex> index_;
+boost::shared_ptr<SwapIndex> swapIndexBase_;
 std::string familyName_;
 
 Handle<SwaptionVolatilityStructure> swaptionVolatilityMatrix_;
@@ -117,6 +118,18 @@ void setup() {
         iborIndex_->dayCounter(),
         iborIndex_)
         );
+     swapIndexBase_ = boost::shared_ptr<SwapIndex>(
+        new SwapIndex(
+        "EurliborSwapFixA",
+        10,
+        settlementDays_,
+        iborIndex_->currency(),
+        calendar_,
+        fixedFrequency_,
+        fixedConvention_,
+        iborIndex_->dayCounter(),
+        iborIndex_)
+        );
 
 
     // Volatility
@@ -168,13 +181,7 @@ void setup() {
             strikeSpreads,
             nullVolSpreads,
             calendar_,
-            2,
-            fixedFrequency_,
-            fixedConvention_,
-            iborIndex_->dayCounter(),
-            iborIndex_,
-            1,
-            iborIndex_
+            swapIndexBase_
            )));
     Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
 
@@ -209,13 +216,7 @@ void setup() {
             strikeSpreads,
             nullVolSpreadsQuotes,
             calendar_,
-            2,
-            fixedFrequency_,
-            fixedConvention_,
-            iborIndex_->dayCounter(),
-            iborIndex_,
-            1,
-            iborIndex_,
+            swapIndexBase_,
             parametersGuess,
             isParameterFixed,
             false,
@@ -253,13 +254,7 @@ void setup() {
             strikeSpreads,
             volSpreadsQuotes,
             calendar_,
-            2,
-            fixedFrequency_,
-            fixedConvention_,
-            iborIndex_->dayCounter(),
-            iborIndex_,
-            1,
-            iborIndex_,
+            swapIndexBase_,
             parametersGuess,
             isParameterFixed,
             false,

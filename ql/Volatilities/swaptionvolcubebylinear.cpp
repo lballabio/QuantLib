@@ -30,26 +30,14 @@ namespace QuantLib {
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
         const Calendar& calendar,
-        Integer swapSettlementDays,
-        Frequency fixedLegFrequency,
-        BusinessDayConvention fixedLegConvention,
-        const DayCounter& fixedLegDayCounter,
-        const boost::shared_ptr<Xibor>& iborIndex,
-        Time shortTenor,
-        const boost::shared_ptr<Xibor>& iborIndexShortTenor) :
+        const boost::shared_ptr<SwapIndex>& swapIndexBase) :
      SwaptionVolatilityCube(
         atmVolStructure,
         expiries,
         lengths,
         strikeSpreads,
         calendar,
-        swapSettlementDays,
-        fixedLegFrequency,
-        fixedLegConvention,
-        fixedLegDayCounter,
-        iborIndex,
-        shortTenor,
-        iborIndexShortTenor),
+        swapIndexBase),
      volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
      volSpreadsInterpolator_(nStrikes_) {
 

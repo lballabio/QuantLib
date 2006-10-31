@@ -20,7 +20,6 @@
 
 
 #include <ql/Volatilities/swaptionvolcube.hpp>
-#include <ql/Instruments/makevanillaswap.hpp>
 
 namespace QuantLib {
 
@@ -30,13 +29,7 @@ namespace QuantLib {
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
         const Calendar& calendar,
-        Integer swapSettlementDays,
-        Frequency fixedLegFrequency,
-        BusinessDayConvention fixedLegConvention,
-        const DayCounter& fixedLegDayCounter,
-        const boost::shared_ptr<Xibor>& iborIndex,
-        Time shortTenor,
-        const boost::shared_ptr<Xibor>& iborIndexShortTenor)
+        const boost::shared_ptr<SwapIndex>& swapIndexBase)
     : SwaptionVolatilityStructure(0, calendar),
       atmVolStructure_(atmVolStructure),
       exerciseDates_(expiries.size()),
@@ -48,13 +41,8 @@ namespace QuantLib {
       strikeSpreads_(strikeSpreads),
       localStrikes_(nStrikes_),
       localSmile_(nStrikes_),
-      swapSettlementDays_(swapSettlementDays),
-      fixedLegFrequency_(fixedLegFrequency),
-      fixedLegConvention_(fixedLegConvention),
-      fixedLegDayCounter_(fixedLegDayCounter),
-      iborIndex_(iborIndex),
-      shortTenor_(shortTenor),
-      iborIndexShortTenor_(iborIndexShortTenor) {
+      swapIndexBase_(swapIndexBase)
+    {
 
         if (!atmVolStructure_.empty())
             unregisterWith(atmVolStructure_);
@@ -63,10 +51,11 @@ namespace QuantLib {
             registerWith(atmVolStructure_);
         notifyObservers();
 
-        if (!iborIndex_)
-            registerWith(iborIndex_);
-        if (!iborIndexShortTenor_)
-            registerWith(iborIndexShortTenor_);
+
+       // register with SwapIndexBase
+        if (!swapIndexBase_)
+            registerWith(swapIndexBase_);
+
 
         nExercise_ = expiries.size();
         exerciseDates_[0] = calendar.advance(referenceDate(),
@@ -120,25 +109,17 @@ namespace QuantLib {
     Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,
                                            const Period& swapTenor) const {
 
-        // FIXME: delegate to SwapIndex
-
-        //boost::shared_ptr<Xibor> iborIndexEffective(iborIndex_);
-        //if (length<=shortTenor_) {
-        //    iborIndexEffective = iborIndexShortTenor_;
-        //}
-
-        // vanilla swap's parameters
-        Date startDate = calendar().advance(exerciseDate,
-            swapSettlementDays_, Days);
-        VanillaSwap swap = MakeVanillaSwap(swapTenor, iborIndex_, 0.0)
-            .withEffectiveDate(startDate)
-            .withFixedLegCalendar(calendar())
-            .withFixedLegDayCount(fixedLegDayCounter_)
-            .withFixedLegTenor(Period(fixedLegFrequency_))
-            .withFixedLegConvention(fixedLegConvention_)
-            .withFixedLegTerminationDateConvention(fixedLegConvention_);
-
-        return swap.fairRate();
+        // FIXME use a familyName-based index factory and
+        // use a Period-based SwapIndex constructor
+        return SwapIndex(swapIndexBase_->familyName(),
+                         swapTenor.units(),
+                         swapIndexBase_->settlementDays(),
+                         swapIndexBase_->currency(),
+                         swapIndexBase_->calendar(), 
+                         swapIndexBase_->fixedLegFrequency(),
+                         swapIndexBase_->fixedLegConvention(),
+                         swapIndexBase_->dayCounter(), 
+                         swapIndexBase_->iborIndex()).fixing(exerciseDate);
     }
 
 }

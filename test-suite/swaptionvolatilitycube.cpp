@@ -57,6 +57,7 @@ BusinessDayConvention fixedLegConvention_;
 DayCounter fixedLegDayCounter_;
 Handle<YieldTermStructure> termStructure_;
 boost::shared_ptr<Xibor> iborIndex_;
+boost::shared_ptr<SwapIndex> swapIndexBase_;
 Time shortTenor_;
 boost::shared_ptr<Xibor> iborIndexShortTenor_;
 
@@ -257,6 +258,18 @@ void setup() {
     shortTenor_ = 2;
     iborIndexShortTenor_ = boost::shared_ptr<Xibor>(
         new Euribor3M(termStructure_));;
+    swapIndexBase_ = boost::shared_ptr<SwapIndex>(
+        new SwapIndex(
+        "EurliborSwapFixA",
+        10,
+        swapSettlementDays_,
+        iborIndex_->currency(),
+        calendar_,
+        fixedLegFrequency_,
+        fixedLegConvention_,
+        iborIndex_->dayCounter(),
+        iborIndex_)
+        );
 
 }
 
@@ -380,13 +393,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                                            strikeSpreads_,
                                            volSpreads_,
                                            calendar_,
-                                           swapSettlementDays_,
-                                           fixedLegFrequency_,
-                                           fixedLegConvention_,
-                                           fixedLegDayCounter_,
-                                           iborIndex_,
-                                           shortTenor_,
-                                           iborIndexShortTenor_);
+                                           swapIndexBase_);
 
     Real tolerance = 1.0e-16;
     makeAtmVolTest(volCube, tolerance);
@@ -407,13 +414,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
                                            strikeSpreads_,
                                            volSpreads_,
                                            calendar_,
-                                           swapSettlementDays_,
-                                           fixedLegFrequency_,
-                                           fixedLegConvention_,
-                                           fixedLegDayCounter_,
-                                           iborIndex_,
-                                           shortTenor_,
-                                           iborIndexShortTenor_);
+                                           swapIndexBase_);
 
     Real tolerance = 1.0e-16;
     makeVolSpreadsTest(volCube, tolerance);
@@ -443,13 +444,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                                          strikeSpreads_,
                                          volSpreads_,
                                          calendar_,
-                                         swapSettlementDays_,
-                                         fixedLegFrequency_,
-                                         fixedLegConvention_,
-                                         fixedLegDayCounter_,
-                                         iborIndex_,
-                                         shortTenor_,
-                                         iborIndexShortTenor_,
+                                         swapIndexBase_,
                                          parametersGuess,
                                          isParameterFixed,
                                          false,
