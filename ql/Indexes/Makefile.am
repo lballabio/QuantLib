@@ -32,6 +32,11 @@ include_HEADERS = \
     swapindex.hpp
 
 libIndexes_la_SOURCES = \
+    euriborswapfixa.cpp \
+    euriborswapfixifr.cpp \
+    eurliborswapfixa.cpp \
+    eurliborswapfixb.cpp \
+    eurliborswapfixifr.cpp \
     xibor.cpp \
     libor.cpp \
     indexmanager.cpp \
