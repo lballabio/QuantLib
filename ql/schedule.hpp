@@ -141,23 +141,19 @@ namespace QuantLib {
       dates_(dates) {}
 
     inline const Date& Schedule::date(Size i) const {
-        QL_REQUIRE(i <= dates_.size(),
-                   "date index out of bounds");
-        return dates_[i];
+        return dates_.at(i);
     }
 
     inline const Date& Schedule::operator[](Size i) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        QL_REQUIRE(i <= dates_.size(),
-                   "date index out of bounds");
-        #endif
+        return dates_.at(i);
+        #else
         return dates_[i];
+        #endif
     }
 
     inline const Date& Schedule::at(Size i) const {
-        QL_REQUIRE(i <= dates_.size(),
-                   "date index out of bounds");
-        return dates_[i];
+        return dates_.at(i);
     }
 
     inline const Calendar& Schedule::calendar() const {
