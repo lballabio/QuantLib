@@ -17,7 +17,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-#include <ql/MarketModels/Evolvers/ForwardRateEulerEvolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateeulerevolver.hpp>
 #include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
