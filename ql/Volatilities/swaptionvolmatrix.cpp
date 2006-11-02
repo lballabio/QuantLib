@@ -27,6 +27,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const std::vector<Period>& expiries,
                     const Calendar& calendar,
@@ -35,7 +36,7 @@ namespace QuantLib {
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
-      lengths_(tenors), volatilities_(expiries.size(),tenors.size())
+      swapTenors_(tenors), volatilities_(expiries.size(),tenors.size())
       {
         QL_REQUIRE(!vols.empty(), "empty vol matrix");
         QL_REQUIRE(expiries.size()==vols.size(),
@@ -55,100 +56,26 @@ namespace QuantLib {
             }
         }
 
-        exerciseTimes_.resize(expiries.size());
-        exerciseDates_.resize(expiries.size());
-        timeLengths_.resize(lengths_.size());
+        optionTimes_.resize(expiries.size());
+        optionDates_.resize(expiries.size());
+        swapLengths_.resize(swapTenors_.size());
         for (i=0; i<expiries.size(); i++) {
-            exerciseDates_[i] = calendar.advance(referenceDate(),
+            optionDates_[i] = calendar.advance(referenceDate(),
                                                  expiries[i],
                                                  bdc); // FIXME
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
-        Date startDate = exerciseDates_[0]; // as good as any
-        for (i=0; i<lengths_.size(); i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        Date startDate = optionDates_[0]; // as good as any
+        for (i=0; i<swapTenors_.size(); i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
         interpolation_ =
-            BilinearInterpolation(timeLengths_.begin(),
-                                  timeLengths_.end(),
-                                  exerciseTimes_.begin(),
-                                  exerciseTimes_.end(),
-                                  volatilities_);
-    }
-
-    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                    const Date& today,
-                    const std::vector<Date>& dates,
-                    const std::vector<Period>& lengths,
-                    const Matrix& vols,
-                    const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
-      exerciseDates_(dates), lengths_(lengths), volatilities_(vols)
-      {
-        QL_REQUIRE(dates.size()==vols.rows(),
-            "mismatch between number of exercise dates ("
-            << dates.size() << ") and number of rows ("
-            << vols.rows() << ") in the vol matrix");
-        QL_REQUIRE(lengths.size()==vols.columns(),
-            "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
-            << vols.columns() << ") in the vol matrix");
-        exerciseTimes_.resize(exerciseDates_.size());
-        timeLengths_.resize(lengths_.size());
-        Size i;
-        for (i=0; i<exerciseDates_.size(); i++) {
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-        }
-
-        Date startDate = exerciseDates_[0]; // as good as any
-        for (i=0; i<lengths_.size(); i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
-        }
-        interpolation_ =
-            BilinearInterpolation(timeLengths_.begin(),
-                                  timeLengths_.end(),
-                                  exerciseTimes_.begin(),
-                                  exerciseTimes_.end(),
-                                  volatilities_);
-    }
-
-    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                       const std::vector<Date>& dates,
-                       const std::vector<Period>& lengths,
-                       const Matrix& vols,
-                       const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, NullCalendar()), // FIXME
-      dayCounter_(dayCounter),
-      exerciseDates_(dates), lengths_(lengths), volatilities_(vols)
-    {
-        QL_REQUIRE(dates.size()==vols.rows(),
-            "mismatch between number of exercise dates ("
-            << dates.size() << ") and number of rows ("
-            << vols.rows() << ") in the vol matrix");
-        QL_REQUIRE(lengths.size()==vols.columns(),
-            "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
-            << vols.columns() << ") in the vol matrix");
-        exerciseTimes_.resize(exerciseDates_.size());
-        timeLengths_.resize(lengths_.size());
-        Size i;
-        for (i=0; i<exerciseDates_.size(); i++) {
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-        }
-
-        Date startDate = exerciseDates_[0]; // as good as any
-        for (i=0; i<lengths_.size(); i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
-        }
-        interpolation_ =
-            BilinearInterpolation(timeLengths_.begin(),
-                                  timeLengths_.end(),
-                                  exerciseTimes_.begin(),
-                                  exerciseTimes_.end(),
+            BilinearInterpolation(swapLengths_.begin(),
+                                  swapLengths_.end(),
+                                  optionTimes_.begin(),
+                                  optionTimes_.end(),
                                   volatilities_);
     }
 
@@ -160,7 +87,7 @@ namespace QuantLib {
                         const Matrix& vols,
                         const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
-      lengths_(lengths), volatilities_(vols)
+      swapTenors_(lengths), volatilities_(vols)
     {
         QL_REQUIRE(expiries.size()==vols.rows(),
             "mismatch between number of expiries ("
@@ -171,34 +98,284 @@ namespace QuantLib {
             << lengths.size() << ") and number of rows ("
             << vols.columns() << ") in the vol matrix");
 
-        exerciseTimes_.resize(expiries.size());
-        exerciseDates_.resize(expiries.size());
-        timeLengths_.resize(lengths_.size());
+        optionTimes_.resize(expiries.size());
+        optionDates_.resize(expiries.size());
+        swapLengths_.resize(swapTenors_.size());
         Size i;
         for (i=0; i<expiries.size(); i++) {
-            exerciseDates_[i] = calendar.advance(referenceDate(),
+            optionDates_[i] = calendar.advance(referenceDate(),
                                                  expiries[i],
                                                  bdc); // FIXME
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
-        Date startDate = exerciseDates_[0]; // as good as any
-        for (i=0; i<lengths_.size(); i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        Date startDate = optionDates_[0]; // as good as any
+        for (i=0; i<swapTenors_.size(); i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
         interpolation_ =
-            BilinearInterpolation(timeLengths_.begin(),
-                                  timeLengths_.end(),
-                                  exerciseTimes_.begin(),
-                                  exerciseTimes_.end(),
+            BilinearInterpolation(swapLengths_.begin(),
+                                  swapLengths_.end(),
+                                  optionTimes_.begin(),
+                                  optionTimes_.end(),
                                   volatilities_);
+    }
+
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                    const Date& today,
+                    const std::vector<Date>& dates,
+                    const std::vector<Period>& lengths,
+                    const Matrix& vols,
+                    const DayCounter& dayCounter)
+    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
+      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
+      {
+        QL_REQUIRE(dates.size()==vols.rows(),
+            "mismatch between number of exercise dates ("
+            << dates.size() << ") and number of rows ("
+            << vols.rows() << ") in the vol matrix");
+        QL_REQUIRE(lengths.size()==vols.columns(),
+            "mismatch between number of tenors ("
+            << lengths.size() << ") and number of rows ("
+            << vols.columns() << ") in the vol matrix");
+        optionTimes_.resize(optionDates_.size());
+        swapLengths_.resize(swapTenors_.size());
+        Size i;
+        for (i=0; i<optionDates_.size(); i++) {
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+
+        Date startDate = optionDates_[0]; // as good as any
+        for (i=0; i<swapTenors_.size(); i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        }
+        interpolation_ =
+            BilinearInterpolation(swapLengths_.begin(),
+                                  swapLengths_.end(),
+                                  optionTimes_.begin(),
+                                  optionTimes_.end(),
+                                  volatilities_);
+    }
+
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                       const std::vector<Date>& dates,
+                       const std::vector<Period>& lengths,
+                       const Matrix& vols,
+                       const DayCounter& dayCounter)
+    : SwaptionVolatilityStructure(0, NullCalendar()), // FIXME
+      dayCounter_(dayCounter),
+      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
+    {
+        QL_REQUIRE(dates.size()==vols.rows(),
+            "mismatch between number of exercise dates ("
+            << dates.size() << ") and number of rows ("
+            << vols.rows() << ") in the vol matrix");
+        QL_REQUIRE(lengths.size()==vols.columns(),
+            "mismatch between number of tenors ("
+            << lengths.size() << ") and number of rows ("
+            << vols.columns() << ") in the vol matrix");
+        optionTimes_.resize(optionDates_.size());
+        swapLengths_.resize(swapTenors_.size());
+        Size i;
+        for (i=0; i<optionDates_.size(); i++) {
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+
+        Date startDate = optionDates_[0]; // as good as any
+        for (i=0; i<swapTenors_.size(); i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        }
+        interpolation_ =
+            BilinearInterpolation(swapLengths_.begin(),
+                                  swapLengths_.end(),
+                                  optionTimes_.begin(),
+                                  optionTimes_.end(),
+                                  volatilities_);
+    }
+    #endif
+
+
+
+    //! floating reference date, floating market data
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                    const Calendar& calendar,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const std::vector<std::vector<Handle<Quote> > >& vols,
+                    const DayCounter& dayCounter,
+                    const BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(0, calendar),
+      nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
+      optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
+      nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),
+      swapLengths_(nSwapTenors_),
+      volHandles_(vols),
+      volatilities_(nOptionTenors_, nSwapTenors_),
+      dayCounter_(dayCounter), bdc_(bdc)
+    {
+        initializeDatesAndTimes();
+
+        // check vols dimension and registerWith
+        QL_REQUIRE(!volHandles_.empty(), "empty vol matrix");
+        QL_REQUIRE(nOptionTenors_==volHandles_.size(),
+            "mismatch between number of exercise dates ("
+            << nOptionTenors_ << ") and number of rows ("
+            << volHandles_.size() << ") in the vol matrix");
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            QL_REQUIRE(nSwapTenors_==volHandles_[i].size(),
+                "mismatch between number of tenors ("
+                << nSwapTenors_ << ") and number of columns ("
+                << volHandles_[i].size() << ") in the "
+                << io::ordinal(i) << " row of the vol matrix");
+            for (Size j=0; j<nSwapTenors_; ++j)
+                registerWith(volHandles_[i][j]);
+        }
+
+        initializeMarketData();
+    }
+
+
+    //! fixed reference date, floating market data
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                    const Date& referenceDate,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const std::vector<std::vector<Handle<Quote> > >& vols,
+                    const DayCounter& dayCounter,
+                    const BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate),
+      nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
+      optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
+      nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),
+      swapLengths_(nSwapTenors_),
+      volHandles_(vols),
+      volatilities_(nOptionTenors_, nSwapTenors_),
+      dayCounter_(dayCounter), bdc_(bdc)
+    {
+        initializeDatesAndTimes();
+
+        // check vols dimension and registerWith
+        QL_REQUIRE(!vols.empty(), "empty vol matrix");
+        QL_REQUIRE(nOptionTenors_==vols.size(),
+            "mismatch between number of exercise dates ("
+            << nOptionTenors_ << ") and number of rows ("
+            << vols.size() << ") in the vol matrix");
+        for (Size i=0; i<nOptionTenors_; ++i) {
+            QL_REQUIRE(nSwapTenors_==vols[i].size(),
+                "mismatch between number of tenors ("
+                << nSwapTenors_ << ") and number of columns ("
+                << vols[i].size() << ") in the "
+                << io::ordinal(i) << " row of the vol matrix");
+            for (Size j=0; j<nSwapTenors_; ++j)
+                registerWith(vols[i][j]);
+        }
+
+        initializeMarketData();
+    }
+
+
+    //! floating reference date, fixed market data
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                        const Calendar& calendar,
+                        const std::vector<Period>& optionTenors,
+                        const std::vector<Period>& swapTenors,
+                        const Matrix& vols,
+                        const DayCounter& dayCounter,
+                        const BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(0, calendar),
+      nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
+      optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
+      nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),
+      swapLengths_(nSwapTenors_),
+      volatilities_(vols),
+      dayCounter_(dayCounter), bdc_(bdc)
+    {
+        initializeDatesAndTimes();
+
+        // check vols dimension
+        QL_REQUIRE(optionTenors.size()==volatilities_.rows(),
+            "mismatch between number of expiries ("
+            << optionTenors.size() << ") and number of rows ("
+            << volatilities_.rows() << ") in the vol matrix");
+        QL_REQUIRE(swapTenors_.size()==volatilities_.columns(),
+            "mismatch between number of tenors ("
+            << swapTenors_.size() << ") and number of rows ("
+            << volatilities_.columns() << ") in the vol matrix");
+
+        interpolation_ = BilinearInterpolation(
+            swapLengths_.begin(), swapLengths_.end(),
+            optionTimes_.begin(), optionTimes_.end(),
+            volatilities_);
+    }
+
+    //! fixed reference date, fixed market data
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                        const Date& referenceDate,
+                        const std::vector<Period>& optionTenors,
+                        const std::vector<Period>& swapTenors,
+                        const Matrix& vols,
+                        const DayCounter& dayCounter,
+                        const BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate),
+      nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
+      optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
+      nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),
+      swapLengths_(nSwapTenors_),
+      volatilities_(vols),
+      dayCounter_(dayCounter), bdc_(bdc)
+    {
+        initializeDatesAndTimes();
+
+        // check vols dimension
+        QL_REQUIRE(optionTenors.size()==vols.rows(),
+            "mismatch between number of expiries ("
+            << optionTenors.size() << ") and number of rows ("
+            << vols.rows() << ") in the vol matrix");
+        QL_REQUIRE(swapTenors_.size()==vols.columns(),
+            "mismatch between number of tenors ("
+            << swapTenors_.size() << ") and number of rows ("
+            << vols.columns() << ") in the vol matrix");
+
+        interpolation_ = BilinearInterpolation(
+            swapLengths_.begin(), swapLengths_.end(),
+            optionTimes_.begin(), optionTimes_.end(),
+            volatilities_);
+    }
+
+    void SwaptionVolatilityMatrix::initializeDatesAndTimes()
+    {
+        for (Size i=0; i<nOptionTenors_; i++) {
+            optionDates_[i] = calendar().advance(referenceDate(),
+                                                 optionTenors_[i],
+                                                 bdc_); // FIXME
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
+        Date startDate = optionDates_[0]; // as good as any
+        for (Size i=0; i<nSwapTenors_; i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate, endDate);
+        }
+    }
+
+    void SwaptionVolatilityMatrix::initializeMarketData()
+    {
+        for (Size i=0; i<volHandles_.size(); i++) {
+            for (Size j=0; j<nSwapTenors_; j++)
+                volatilities_[i][j]=volHandles_[i][j]->value();
+        }
+        interpolation_ = BilinearInterpolation(
+            swapLengths_.begin(), swapLengths_.end(),
+            optionTimes_.begin(), optionTimes_.end(),
+            volatilities_);
     }
 
     std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
                       const Date& exerciseDate, const Period& length) const {
         Time exerciseTime = timeFromReference(exerciseDate);
-        Date startDate = exerciseDates_[0]; // for consistency
+        Date startDate = optionDates_[0]; // for consistency
         Date endDate = startDate + length;
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
         return std::make_pair(exerciseTime,timeLength);

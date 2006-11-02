@@ -26,11 +26,13 @@
 #define quantlib_swaption_volatility_matrix_h
 
 #include <ql/swaptionvolstructure.hpp>
+
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/quote.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -49,11 +51,50 @@ namespace QuantLib {
     class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure,
                                      private boost::noncopyable {
       public:
+        //! floating reference date, floating market data
+        SwaptionVolatilityMatrix(
+                    const Calendar& calendar,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const std::vector<std::vector<Handle<Quote> > >& vols,
+                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const BusinessDayConvention bdc = Following);
+        //! fixed reference date, floating market data
+        SwaptionVolatilityMatrix(
+                    const Date& referenceDate,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const std::vector<std::vector<Handle<Quote> > >& vols,
+                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const BusinessDayConvention bdc = Following);
+        //! floating reference date, fixed market data
+        SwaptionVolatilityMatrix(
+                    const Calendar& calendar,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const Matrix& volatilities,
+                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const BusinessDayConvention bdc = Following);
+        //! fixed reference date, fixed market data
+        SwaptionVolatilityMatrix(
+                    const Date& referenceDate,
+                    const std::vector<Period>& optionTenors,
+                    const std::vector<Period>& swapTenors,
+                    const Matrix& volatilities,
+                    const DayCounter& dayCounter = Actual365Fixed(),
+                    const BusinessDayConvention bdc = Following);
+        #ifndef QL_DISABLE_DEPRECATED
         SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
                                  const Calendar& calendar,
                                  const BusinessDayConvention bdc,
                                  const std::vector<Period>& tenors,
                                  const std::vector<std::vector<Handle<Quote> > >& vols,
+                                 const DayCounter& dayCounter);
+        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
+                                 const Calendar& calendar,
+                                 const BusinessDayConvention bdc,
+                                 const std::vector<Period>& tenors,
+                                 const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
@@ -64,23 +105,12 @@ namespace QuantLib {
                                  const std::vector<Period>& tenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
-        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
-                                 const Calendar& calendar,
-                                 const BusinessDayConvention bdc,
-                                 const std::vector<Period>& tenors,
-                                 const Matrix& volatilities,
-                                 const DayCounter& dayCounter);
-
-        // inspectors
-        const std::vector<Date>& exerciseDates() const;
-        const std::vector<Time>& exerciseTimes() const;
-        const std::vector<Period>& lengths() const;
-        const std::vector<Time>& timeLengths() const;
+        #endif
 
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return exerciseDates_.back(); }
+        Date maxDate() const { return optionDates_.back(); }
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
@@ -102,6 +132,10 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
+        const std::vector<Date>& exerciseDates() const;
+        const std::vector<Time>& exerciseTimes() const;
+        const std::vector<Period>& lengths() const;
+        const std::vector<Time>& timeLengths() const;
         //! returns the lower indexes of surrounding volatility matrix corners
         std::pair<Size,Size> locate(const Date& exerciseDate,
                                     const Period& length) const {
@@ -116,19 +150,26 @@ namespace QuantLib {
         }
         //@}
     private:
-        DayCounter dayCounter_;
-        std::vector<Date> exerciseDates_;
-        std::vector<Time> exerciseTimes_;
-        std::vector<Period> lengths_;
-        std::vector<Time> timeLengths_;
-        Matrix volatilities_;
-        Interpolation2D interpolation_;
+        void initializeDatesAndTimes();
+        void initializeMarketData();
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
                                   Rate strike) const;
         Volatility volatilityImpl(const Date& exerciseDate,
                                   const Period& length,
                                   Rate strike) const;
+        Size nOptionTenors_;
+        std::vector<Period> optionTenors_;
+        std::vector<Date> optionDates_;
+        std::vector<Time> optionTimes_;
+        Size nSwapTenors_;
+        std::vector<Period> swapTenors_;
+        std::vector<Time> swapLengths_;
+        std::vector<std::vector<Handle<Quote> > > volHandles_;
+        Matrix volatilities_;
+        DayCounter dayCounter_;
+        BusinessDayConvention bdc_;
+        Interpolation2D interpolation_;
     };
 
 
@@ -136,30 +177,30 @@ namespace QuantLib {
 
     inline const std::vector<Date>&
     SwaptionVolatilityMatrix::exerciseDates() const {
-        return exerciseDates_;
+        return optionDates_;
     }
 
     inline const std::vector<Time>&
     SwaptionVolatilityMatrix::exerciseTimes() const {
-        return exerciseTimes_;
+        return optionTimes_;
     }
 
      inline const std::vector<Period>&
      SwaptionVolatilityMatrix::lengths() const {
-         return lengths_;
+         return swapTenors_;
      }
 
     inline const std::vector<Time>&
     SwaptionVolatilityMatrix::timeLengths() const {
-        return timeLengths_;
+        return swapLengths_;
     }
 
     inline Period SwaptionVolatilityMatrix::maxLength() const {
-        return lengths_.back();
+        return swapTenors_.back();
     }
 
     inline Time SwaptionVolatilityMatrix::maxTimeLength() const {
-        return timeLengths_.back();
+        return swapLengths_.back();
     }
 
     inline Rate SwaptionVolatilityMatrix::minStrike() const {
