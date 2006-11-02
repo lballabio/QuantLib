@@ -50,7 +50,8 @@ namespace QuantLib {
         */
         SwaptionVolatilityStructure();
         //! initialize with a fixed reference date
-        SwaptionVolatilityStructure(const Date& referenceDate);
+        SwaptionVolatilityStructure(const Date& referenceDate,
+                                    const Calendar& calendar = Calendar());
         //! calculate the reference date based on the global evaluation date
         SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
@@ -135,8 +136,9 @@ namespace QuantLib {
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure() {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                                   const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+                                                const Date& referenceDate,
+                                                const Calendar& calendar)
+    : TermStructure(referenceDate, calendar) {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)

@@ -241,12 +241,13 @@ namespace QuantLib {
     //! fixed reference date, floating market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Date& referenceDate,
+                    const Calendar& calendar,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter,
                     const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate),
+    : SwaptionVolatilityStructure(referenceDate, calendar),
       nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
       optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
       nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),
@@ -314,12 +315,13 @@ namespace QuantLib {
     //! fixed reference date, fixed market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Date& referenceDate,
+                        const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Period>& swapTenors,
                         const Matrix& vols,
                         const DayCounter& dayCounter,
                         const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate),
+    : SwaptionVolatilityStructure(referenceDate, calendar),
       nOptionTenors_(optionTenors.size()), optionTenors_(optionTenors),
       optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
       nSwapTenors_(swapTenors.size()), swapTenors_(swapTenors),

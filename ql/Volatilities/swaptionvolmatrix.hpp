@@ -62,6 +62,7 @@ namespace QuantLib {
         //! fixed reference date, floating market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
+                    const Calendar& calendar,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
@@ -78,6 +79,7 @@ namespace QuantLib {
         //! fixed reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
+                    const Calendar& calendar,
                     const std::vector<Period>& optionTenors,
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,

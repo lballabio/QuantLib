@@ -66,9 +66,11 @@ namespace QuantLib {
         */
         TermStructure();
         //! initialize with a fixed reference date
-        TermStructure(const Date& referenceDate);
+        TermStructure(const Date& referenceDate,
+                      const Calendar& calendar = Calendar());
         //! calculate the reference date based on the global evaluation date
-        TermStructure(Integer settlementDays, const Calendar&);
+        TermStructure(Integer settlementDays,
+                      const Calendar&);
         //@}
         virtual ~TermStructure() {}
         //! \name Dates
@@ -110,9 +112,10 @@ namespace QuantLib {
     inline TermStructure::TermStructure()
     : moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
 
-    inline TermStructure::TermStructure(const Date& referenceDate)
+    inline TermStructure::TermStructure(const Date& referenceDate,
+                                        const Calendar& calendar)
     : referenceDate_(referenceDate), moving_(false), updated_(true),
-      settlementDays_(Null<Integer>()) {}
+      settlementDays_(Null<Integer>()), calendar_(calendar) {}
 
     inline TermStructure::TermStructure(Integer settlementDays,
                                         const Calendar& calendar)
