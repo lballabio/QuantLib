@@ -50,6 +50,9 @@ namespace QuantLib {
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
+        const MarketModelMultiProduct& underlying() const;
+        const ExerciseStrategy<CurveState>& strategy() const;
+        const MarketModelMultiProduct& rebate() const;
       private:
         Clone<MarketModelMultiProduct> underlying_;
         Clone<ExerciseStrategy<CurveState> > strategy_;

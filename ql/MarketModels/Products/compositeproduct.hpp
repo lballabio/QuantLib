@@ -48,6 +48,9 @@ namespace QuantLib {
         void subtract(const Clone<MarketModelMultiProduct>&,
                       Real multiplier = 1.0);
         void finalize();
+        Size size() const;
+        const MarketModelMultiProduct& item(Size i) const;
+        Real multiplier(Size i) const;
         //@}
       protected:
         // subproducts

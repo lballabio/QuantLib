@@ -159,5 +159,20 @@ namespace QuantLib {
                                         new CallSpecifiedMultiProduct(*this));
     }
 
+    const MarketModelMultiProduct&
+    CallSpecifiedMultiProduct::underlying() const {
+        return *underlying_;
+    }
+
+    const ExerciseStrategy<CurveState>&
+    CallSpecifiedMultiProduct::strategy() const {
+        return *strategy_;
+    }
+
+    const MarketModelMultiProduct&
+    CallSpecifiedMultiProduct::rebate() const {
+        return *rebate_;
+    }
+
 }
 
