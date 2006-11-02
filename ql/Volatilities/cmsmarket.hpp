@@ -38,13 +38,12 @@ namespace QuantLib {
      typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
 
      class CmsMarket{
-
       public:
 
         CmsMarket(
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
-            const Matrix& bidsAsks,
+            const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
             const Matrix& meanReversions,
             const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
             const Handle<YieldTermStructure>& yieldTermStructure,
@@ -61,7 +60,7 @@ namespace QuantLib {
         Matrix browse() const;
  
       private:
-        
+
         std::vector<Period> expiries_;
         std::vector<Period> lengths_;
         Size nExercise_;

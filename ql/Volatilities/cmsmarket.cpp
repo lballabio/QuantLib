@@ -34,7 +34,7 @@ namespace QuantLib {
     CmsMarket::CmsMarket(
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
-        const Matrix& bidsAsks,
+        const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
         const Matrix& meanReversions,
         const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
         const Handle<YieldTermStructure>& yieldTermStructure,
@@ -58,10 +58,10 @@ namespace QuantLib {
         nExercise_ = expiries_.size();
         nLengths_ = lengths_.size();
 
-        QL_REQUIRE(2*nLengths_==bidsAsks.columns(),
-                   "2*nLengths_!=bidsAsks.columns()");
-        QL_REQUIRE(nExercise_==bidsAsks.rows(),
-                   "nExercise_==bidsAsks.rows()");
+        QL_REQUIRE(2*nLengths_==bidAskSpreads[0].size(),
+                   "2*nLengths_!=bidAskSpreads columns()");
+        QL_REQUIRE(nExercise_==bidAskSpreads.size(),
+                   "nExercise_==bidAskSpreads rows()");
 
         bids_ = Matrix(nExercise_, nLengths_, 0.);
         asks_ = Matrix(nExercise_, nLengths_, 0.);
@@ -90,8 +90,8 @@ namespace QuantLib {
             std::vector<Leg> floatingTmp;
             std::vector< boost::shared_ptr<Swap> > swapTmp; 
             for (Size j=0; j<nLengths_ ; j++) {
-                bids_[i][j] = bidsAsks[i][j*2];
-                asks_[i][j] = bidsAsks[i][j*2+1];
+                bids_[i][j] = bidAskSpreads[i][j*2]->value();
+                asks_[i][j] = bidAskSpreads[i][j*2+1]->value();
                 mids_[i][j] = (bids_[i][j]+asks_[i][j])/2;
                 Size nCoupons = schedules_[i]->size();
                 cmsTmp.push_back(
