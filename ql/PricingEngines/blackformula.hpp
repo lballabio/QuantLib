@@ -42,7 +42,7 @@ namespace QuantLib {
 
     /*! Approximated Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity).
-        
+
         It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
         (1988) approximation for at-the-money forward option, with the
         extended moneyness approximation by Corrado and Miller (1996)
@@ -84,18 +84,18 @@ namespace QuantLib {
 
 
     /*! Black style formulas when forward is normal rather than log-normal,
-        this is essentially the model of Bachelier 
+        this is essentially the model of Bachelier
     */
-    Real bachelierBlackPut(Real strike, 
-                           Real forward,  
+    Real bachelierBlackPut(Real strike,
+                           Real forward,
                            Real absoluteVolatility,
-                           Real maturity, 
+                           Real maturity,
                            Real annuity);
 
-    Real bachelierBlackCall(Real strike, 
-                            Real forward,  
+    Real bachelierBlackCall(Real strike,
+                            Real forward,
                             Real absoluteVolatility,
-                            Real maturity, 
+                            Real maturity,
                             Real annuity);
 
 

@@ -186,10 +186,10 @@ namespace QuantLib {
     }
 
     /* Bachelier model */
-    Real bachelierBlackCall(Real strike, 
-                            Real forward,  
+    Real bachelierBlackCall(Real strike,
+                            Real forward,
                             Real absoluteVolatility,
-                            Real maturity, 
+                            Real maturity,
                             Real annuity) {
         Real s = absoluteVolatility*sqrt(maturity);
         if (s<=1e-8)
@@ -200,10 +200,10 @@ namespace QuantLib {
         return annuity*(s*phi.derivative(h) + d*phi(h));
     }
 
-    Real bachelierBlackPut(Real strike, 
-                           Real forward,  
+    Real bachelierBlackPut(Real strike,
+                           Real forward,
                            Real absoluteVolatility,
-                           Real maturity, 
+                           Real maturity,
                            Real annuity) {
         Real s = absoluteVolatility*sqrt(maturity);
         if (s<=1e-8)

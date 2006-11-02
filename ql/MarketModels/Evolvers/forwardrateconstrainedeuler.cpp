@@ -82,7 +82,7 @@ namespace QuantLib {
         const std::vector<Size>& startIndexOfSwapRate,
         const std::vector<Size>& endIndexOfSwapRate)
     {
-        QL_REQUIRE(startIndexOfSwapRate.size() == numeraires_.size(), 
+        QL_REQUIRE(startIndexOfSwapRate.size() == numeraires_.size(),
             "Size mismatch in constraint specification.");
         QL_REQUIRE(endIndexOfSwapRate.size() == numeraires_.size(), "Size mismatch in constraint specification.");
 
@@ -91,10 +91,10 @@ namespace QuantLib {
 
         covariances_.clear();
         std::vector<Real> covariances(n_);
-    
+
         for (unsigned long i=0; i < startIndexOfSwapRate_.size(); i++)
         {
-                QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i], 
+                QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],
                                         "constrained euler currently only implemented for forward rates");
 
                 const Matrix& A = marketModel_->pseudoRoot(currentStep_);
@@ -170,7 +170,7 @@ namespace QuantLib {
             Real requiredShift =  rateConstraints_[index] - logForwards_[index];
 
             Real multiplier = requiredShift/variances_[currentStep_][index];
-            
+
             // now shift each rate by multiplier * weighting of index rate
             // across the step
             for (Size i=alive; i<n_; i++) {
@@ -185,9 +185,9 @@ namespace QuantLib {
             CumulativeNormalDistribution phi;
             for (Size k=0; k < F_; k++) {
                 Real shift = multiplier * A[index][k];
-                Real originalDensity = phi.derivative(brownians_[k]+shift); 
+                Real originalDensity = phi.derivative(brownians_[k]+shift);
                 // the density of the draw after changes in original measure
-                Real newDensity = phi.derivative(brownians_[k]); 
+                Real newDensity = phi.derivative(brownians_[k]);
                 // the density of the draw after changes in new measure, shifts cancel
                 weightsEffect*= originalDensity/newDensity;
             }

@@ -17,6 +17,7 @@ include_HEADERS = \
     exercisevalue.hpp \
     lsbasisfunctions.hpp \
     lsdatacollector.hpp \
+    marketmodelconstrainedevolver.hpp \
     marketmodeldiscounter.hpp \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \

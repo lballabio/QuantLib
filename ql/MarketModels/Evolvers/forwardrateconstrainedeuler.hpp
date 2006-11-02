@@ -1,4 +1,4 @@
-//* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
@@ -70,7 +70,7 @@ namespace QuantLib {
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
         std::vector<std::vector<Real> > variances_;
-   
+
         // working variables
         std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
                                                                                           // step first index

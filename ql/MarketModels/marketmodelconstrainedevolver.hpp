@@ -27,7 +27,7 @@ namespace QuantLib {
 
     /*! Abstract base class. Requires extra methods above that of
         marketmodelevolver to let you fix rates via importance sampling.
-    
+
         The evolver does the actual gritty work of evolving the forward rates
         from one time to the next.
 
