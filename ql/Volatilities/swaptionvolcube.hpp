@@ -48,6 +48,7 @@ namespace QuantLib {
         Time maxTime() const { return atmVol_->maxTime(); }
         const Date& referenceDate() const { return atmVol_->referenceDate();}
         Calendar calendar() const { return atmVol_->calendar(); }
+        //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
         Date maxStartDate() const { return atmVol_->maxStartDate(); }
