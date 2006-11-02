@@ -106,7 +106,7 @@ namespace QuantLib {
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 
-     // same as PC evolver with two steps dropped
+        // same as PC evolver with two steps dropped
 
         // c) update curve state
         curveState_.setOnForwardRates(forwards_);

@@ -25,27 +25,26 @@
 
 namespace QuantLib {
 
-    /*! Abstact base class.  Requires extra methods above that of marketmodelevolver
-	to let you fix rates via importance sampling.
-	
-	The evolver does the actual gritty work of
-    evolving the forward rates from one time to the next.
+    /*! Abstract base class. Requires extra methods above that of
+        marketmodelevolver to let you fix rates via importance sampling.
+    
+        The evolver does the actual gritty work of evolving the forward rates
+        from one time to the next.
 
-	This is intended to be used for the Fries-Joshi proxy simulation approach to Greeks
+        This is intended to be used for the Fries-Joshi proxy simulation
+        approach to Greeks
     */
     class MarketModelConstrainedEvolver {
       public:
         virtual ~MarketModelConstrainedEvolver() {}
-
-		//! call once
-		virtual void SetConstraintType(const std::vector<Size>& startIndexOfSwapRate,
-															const std::vector<Size>& EndIndexOfSwapRate)=0;
-
-		//! call before each path
-		virtual void SetThisConstraint(const std::vector<Rate>& rateConstraints,
-			const std::vector<bool>& isConstraintActive)=0;
-
-
+        //! call once
+        virtual void SetConstraintType(
+            const std::vector<Size>& startIndexOfSwapRate,
+            const std::vector<Size>& EndIndexOfSwapRate) = 0;
+        //! call before each path
+        virtual void SetThisConstraint(
+            const std::vector<Rate>& rateConstraints,
+            const std::vector<bool>& isConstraintActive) = 0;
     };
 
 }

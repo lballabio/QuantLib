@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 StatPro Italia srl
 
@@ -82,6 +83,22 @@ namespace QuantLib {
                                Real stdDev);
 
 
+    /*! Black style formulas when forward is normal rather than log-normal,
+        this is essentially the model of Bachelier 
+    */
+    Real bachelierBlackPut(Real strike, 
+                           Real forward,  
+                           Real absoluteVolatility,
+                           Real maturity, 
+                           Real annuity);
+
+    Real bachelierBlackCall(Real strike, 
+                            Real forward,  
+                            Real absoluteVolatility,
+                            Real maturity, 
+                            Real annuity);
+
+
     //! Black-formula calculator class
     /*! \bug When the variance is null, division by zero occur during
              the calculation of delta, delta forward, gamma, gamma
@@ -129,23 +146,6 @@ namespace QuantLib {
         Real X_, DXDs_, DXDstrike_;
     };
 
-    /*! Black style formulas when forward is normal rather than log-normal, 
-	this is essentially the model of Bachelier 
-    */
-	
-Real bachelierBlackPut( Real strike, 
-					  Real forward,  
-					  Real absoluteVolatility,
-					  Real maturity, 
-					  Real annuity);
-
-Real bachelierBlackCall(Real strike, 
-					  Real forward,  
-					  Real absoluteVolatility,
-					  Real maturity, 
-					  Real annuity);
-
 }
-
 
 #endif

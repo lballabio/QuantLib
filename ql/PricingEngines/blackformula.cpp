@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -182,6 +183,35 @@ namespace QuantLib {
     Real blackStdDevDerivative(Rate strike, Rate forward, Real stdDev) {
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         return forward * CumulativeNormalDistribution().derivative(d1);
+    }
+
+    /* Bachelier model */
+    Real bachelierBlackCall(Real strike, 
+                            Real forward,  
+                            Real absoluteVolatility,
+                            Real maturity, 
+                            Real annuity) {
+        Real s = absoluteVolatility*sqrt(maturity);
+        if (s<=1e-8)
+            return std::max(forward - strike, 0.0);
+        CumulativeNormalDistribution phi;
+        Real d = forward - strike,
+             h = d/s;
+        return annuity*(s*phi.derivative(h) + d*phi(h));
+    }
+
+    Real bachelierBlackPut(Real strike, 
+                           Real forward,  
+                           Real absoluteVolatility,
+                           Real maturity, 
+                           Real annuity) {
+        Real s = absoluteVolatility*sqrt(maturity);
+        if (s<=1e-8)
+            return std::max(strike - forward, 0.0);
+        Real d = forward-strike,
+             h = d/s;
+        CumulativeNormalDistribution phi;
+        return annuity*(s*phi.derivative(-h) - d*phi(-h));
     }
 
     class BlackFormula::Calculator : public AcyclicVisitor,
@@ -521,44 +551,6 @@ namespace QuantLib {
     Real BlackFormula::beta() const {
         return beta_;
     }
-
-
-/* Bachelier model */
-
-Real bachelierBlackCall(Real strike, 
-					  Real forward,  
-					  Real absoluteVolatility,
-					  Real maturity, 
-					  Real annuity)
-{
-	Real s = absoluteVolatility*sqrt(maturity);
-	if (s<=1e-8)
-		return std::max(forward - strike,0.0);
-	CumulativeNormalDistribution phi;
-	Real d = ( forward - strike ), h = d / s;
-	return annuity*(s*phi.derivative(h) + d*phi(h));
-}
-
-
-
-Real bachelierBlackPut( Real strike, 
-					  Real forward,  
-					  Real absoluteVolatility,
-					  Real maturity, 
-					  Real annuity)
-{
-	
-	Real s = absoluteVolatility*sqrt(maturity);
-	if (s<=1e-8)
-	{
-		return std::max(strike - forward,0.0);
-	}
-	Real d = ( forward - strike ), h = d / s;
-
-	CumulativeNormalDistribution phi;
-	
-	return annuity*(s*phi.derivative(-h) - d*phi(-h));
-}
 
 }
 

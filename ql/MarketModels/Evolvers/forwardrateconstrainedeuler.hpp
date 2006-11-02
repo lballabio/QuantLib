@@ -34,8 +34,8 @@ namespace QuantLib {
     class ForwardRateConstrainedEuler : public MarketModelEvolver {
       public:
         ForwardRateConstrainedEuler(const boost::shared_ptr<MarketModel>&,
-                             const BrownianGeneratorFactory&,
-                             const std::vector<Size>& numeraires);
+                                    const BrownianGeneratorFactory&,
+                                    const std::vector<Size>& numeraires);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -45,36 +45,35 @@ namespace QuantLib {
         const CurveState& currentState() const;
         //@}
 
-	   //! \name MarketModelConstrainedEvolver interface
+        //! \name MarketModelConstrainedEvolver interface
         //@{
-		virtual void SetConstraintType(const std::vector<Size>& startIndexOfSwapRate,
-															const std::vector<Size>& endIndexOfSwapRate);
-		virtual void SetThisConstraint(const std::vector<Rate>& rateConstraints,
-			const std::vector<bool>& isConstraintActive);
-   //@}
-
+        virtual void SetConstraintType(
+            const std::vector<Size>& startIndexOfSwapRate,
+            const std::vector<Size>& endIndexOfSwapRate);
+        virtual void SetThisConstraint(
+            const std::vector<Rate>& rateConstraints,
+            const std::vector<bool>& isConstraintActive);
+        //@}
       private:
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         boost::shared_ptr<BrownianGenerator> generator_;
 
-		std::vector<Size> startIndexOfSwapRate_;
-		std::vector<Size> endIndexOfSwapRate_;
+        std::vector<Size> startIndexOfSwapRate_;
+        std::vector<Size> endIndexOfSwapRate_;
 
-		//often changing inputs
-
-		std::vector<Rate> rateConstraints_;
-		std::vector<bool> isConstraintActive_;
+        //often changing inputs
+        std::vector<Rate> rateConstraints_;
+        std::vector<bool> isConstraintActive_;
 
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
-		std::vector<std::vector<Real> > variances_;
+        std::vector<std::vector<Real> > variances_;
    
-         // working variables
-
-		std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
-																						  // step first index
+        // working variables
+        std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
+                                                                                          // step first index
         Size n_, F_;
         CurveState curveState_;
         Size currentStep_;
@@ -82,7 +81,7 @@ namespace QuantLib {
         std::vector<Real> drifts1_, initialDrifts_;
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
-	     // helper classes
+         // helper classes
         std::vector<DriftCalculator> calculators_;
     };
 

@@ -2958,6 +2958,9 @@
 				RelativePath=".\ql\MarketModels\marketmodel.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\marketmodelconstrainedevolver.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\marketmodeldiscounter.cpp">
 			</File>
 			<File
@@ -3125,6 +3128,18 @@
 			<Filter
 				Name="Evolvers"
 				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp">
 				</File>
