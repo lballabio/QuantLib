@@ -130,21 +130,27 @@ void setup() {
 
 
     // Volatility
-    std::vector<Date> exerciseDates(2);
-    exerciseDates[0] = referenceDate_+30;
-    exerciseDates[1] = endDate_;
+    //std::vector<Date> exerciseDates(2);
+    //exerciseDates[0] = referenceDate_+30;
+    //exerciseDates[1] = endDate_;
+    
+    std::vector<Period> exercisePeriod(2);
+    exercisePeriod[0] = Period(1, Months);
+    exercisePeriod[1] = Period(1, Years);
 
     std::vector<Period> lengths(2);
     lengths[0] = Period(1, Years);
-    lengths[1] = Period(30, Years);
+    lengths[1] = Period(30, Years); 
 
     const Matrix volatilities(2, 2, volatility_);
 
     swaptionVolatilityMatrix_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(referenceDate_, exerciseDates, lengths,
+            SwaptionVolatilityMatrix(exercisePeriod, calendar_,Unadjusted, lengths,
                                      volatilities,
                                      iborIndex_->dayCounter())));
+
+    swaptionVolatilityMatrix_.currentLink()->enableExtrapolation();
 
     std::vector<Rate> strikeSpreads;
 
@@ -178,6 +184,7 @@ void setup() {
                                            nullVolSpreads,
                                            swapIndexBase_,
                                            false)));
+    flatSwaptionVolatilityCube_.currentLink()->enableExtrapolation();
     Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
 
     for(Size i=0; i<lengths.size()*lengths.size(); i++) {
@@ -216,7 +223,7 @@ void setup() {
         false));
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCubeBySabr));
-    
+    flatSwaptionVolatilityCubeBySabr_.currentLink()->enableExtrapolation();
 
     Matrix volSpreads(lengths.size()*lengths.size(),
         strikeSpreads.size(), 0.0);
@@ -251,6 +258,7 @@ void setup() {
         false));
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
+    swaptionVolatilityCubeBySabr_.currentLink()->enableExtrapolation();
 
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
