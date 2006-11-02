@@ -171,15 +171,13 @@ void setup() {
 
     flatSwaptionVolatilityCube_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-        SwaptionVolatilityCubeByLinear(
-            swaptionVolatilityMatrix_,
-            lengths,
-            lengths,
-            strikeSpreads,
-            nullVolSpreads,
-            calendar_,
-            swapIndexBase_
-           )));
+            SwaptionVolatilityCubeByLinear(swaptionVolatilityMatrix_,
+                                           lengths,
+                                           lengths,
+                                           strikeSpreads,
+                                           nullVolSpreads,
+                                           swapIndexBase_,
+                                           false)));
     Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
 
     for(Size i=0; i<lengths.size()*lengths.size(); i++) {
@@ -204,21 +202,18 @@ void setup() {
         }
     }
 
-    boost::shared_ptr<SwaptionVolatilityCubeBySabr> flatSwaptionVolatilityCubeBySabr = 
-        boost::shared_ptr<SwaptionVolatilityCubeBySabr> (new
-        SwaptionVolatilityCubeBySabr(
-            swaptionVolatilityMatrix_,
-            lengths,
-            lengths,
-            strikeSpreads,
-            nullVolSpreadsQuotes,
-            calendar_,
-            swapIndexBase_,
-            parametersGuess,
-            isParameterFixed,
-            false,
-            false
-            ));
+    boost::shared_ptr<SwaptionVolatilityCubeBySabr>
+    flatSwaptionVolatilityCubeBySabr(new SwaptionVolatilityCubeBySabr(
+        swaptionVolatilityMatrix_,
+        lengths,
+        lengths,
+        strikeSpreads,
+        nullVolSpreadsQuotes,
+        swapIndexBase_,
+        false,
+        parametersGuess,
+        isParameterFixed,
+        false));
     flatSwaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCubeBySabr));
     
@@ -242,24 +237,20 @@ void setup() {
                 boost::shared_ptr<Quote>(new SimpleQuote(volSpreads[i][j])));
         }
     }
-    boost::shared_ptr<SwaptionVolatilityCubeBySabr> swaptionVolatilityCubeBySabr = 
-        boost::shared_ptr<SwaptionVolatilityCubeBySabr> (new 
-        SwaptionVolatilityCubeBySabr(
-            swaptionVolatilityMatrix_,
-            lengths,
-            lengths,
-            strikeSpreads,
-            volSpreadsQuotes,
-            calendar_,
-            swapIndexBase_,
-            parametersGuess,
-            isParameterFixed,
-            false,
-            false
-            ));
+    boost::shared_ptr<SwaptionVolatilityCubeBySabr>
+    swaptionVolatilityCubeBySabr(new SwaptionVolatilityCubeBySabr(
+        swaptionVolatilityMatrix_,
+        lengths,
+        lengths,
+        strikeSpreads,
+        volSpreadsQuotes,
+        swapIndexBase_,
+        false,
+        parametersGuess,
+        isParameterFixed,
+        false));
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
-
 
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);

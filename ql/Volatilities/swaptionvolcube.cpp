@@ -20,6 +20,7 @@
 
 
 #include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -28,10 +29,11 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const Calendar& calendar,
-        const boost::shared_ptr<SwapIndex>& swapIndexBase)
-    : SwaptionVolatilityStructure(0, calendar),
-      atmVolStructure_(atmVolStructure),
+        const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+        const boost::shared_ptr<SwapIndex>& swapIndexBase,
+        bool vegaWeightedSmileFit)
+    : SwaptionVolatilityStructure(0, atmVolStructure->calendar()),
+      atmVol_(atmVolStructure),
       exerciseDates_(expiries.size()),
       exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -41,26 +43,29 @@ namespace QuantLib {
       strikeSpreads_(strikeSpreads),
       localStrikes_(nStrikes_),
       localSmile_(nStrikes_),
-      swapIndexBase_(swapIndexBase)
+      volSpreads_(volSpreads),
+      volSpreadsMatrix_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
+      swapIndexBase_(swapIndexBase),
+      vegaWeightedSmileFit_(vegaWeightedSmileFit)
     {
-
-        if (!atmVolStructure_.empty())
-            unregisterWith(atmVolStructure_);
-        atmVolStructure_ = atmVolStructure;
-        if (!atmVolStructure_.empty())
-            registerWith(atmVolStructure_);
+        // ????????
+        if (!atmVol_.empty())
+            unregisterWith(atmVol_);
+        atmVol_ = atmVolStructure;
+        if (!atmVol_.empty())
+            registerWith(atmVol_);
         notifyObservers();
 
 
-       // register with SwapIndexBase
+        // register with SwapIndexBase
         if (!swapIndexBase_)
             registerWith(swapIndexBase_);
 
 
         nExercise_ = expiries.size();
-        exerciseDates_[0] = calendar.advance(referenceDate(),
-                                             expiries[0],
-                                             Following); //FIXME
+        exerciseDates_[0] = calendar().advance(referenceDate(),
+                                               expiries[0],
+                                               Following); //FIXME
         exerciseDatesAsReal_[0] =
             static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
@@ -68,9 +73,9 @@ namespace QuantLib {
                    "first exercise time is negative ("
                    << exerciseTimes_[0] << ")");
         for (Size i=1; i<nExercise_; i++) {
-            exerciseDates_[i] = calendar.advance(referenceDate(),
-                                                 expiries[i],
-                                                 Following); //FIXME
+            exerciseDates_[i] = calendar().advance(referenceDate(),
+                                                   expiries[i],
+                                                   Following); //FIXME
             exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
@@ -104,6 +109,28 @@ namespace QuantLib {
             QL_REQUIRE(strikeSpreads_[i-1]<strikeSpreads_[i],
                 "non increasing strike spreads");
         }
+
+        QL_REQUIRE(!volSpreads_.empty(), "empty vol spreads matrix");
+
+        for (Size i=0; i<volSpreads_.size(); i++)
+            QL_REQUIRE(nStrikes_==volSpreads_[i].size(),
+                       "mismatch between number of strikes (" << nStrikes_ <<
+                       ") and number of columns (" << volSpreads_[i].size() <<
+                       ") in the " << io::ordinal(i) << " row");
+
+        QL_REQUIRE(nExercise_*nlengths_==volSpreads_.size(),
+            "mismatch between number of option expiries * swap tenors (" <<
+            nExercise_*nlengths_ << ") and number of rows (" <<
+            volSpreads_.size() << ")");
+
+        for (Size i=0; i<nStrikes_; i++)
+            for (Size j=0; j<nExercise_; j++)
+                for (Size k=0; k<nlengths_; k++) {
+                    volSpreadsMatrix_[i][j][k] =
+                        volSpreads_[j*nlengths_+k][i]->value();
+                    registerWith(volSpreads_[j*nlengths_+k][i]);
+                }
+
     }
 
     Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,

@@ -18,94 +18,99 @@
 */
 
 /*! \file swaptionvolcubebysabr.hpp
-    \brief Swaption volatility cube by Sabr
+    \brief Swaption volatility cube, fit-early-interpolate-later approach
 */
 
-#ifndef quantlib_swaption_volatility_cube_by_sabr_h
-#define quantlib_swaption_volatility_cube_by_sabr_h
+#ifndef quantlib_swaption_volcube_fit_early_interpolate_later_h
+#define quantlib_swaption_volcube_fit_early_interpolate_later_h
 
 #include <ql/Volatilities/swaptionvolcube.hpp>
-#include <ql/Patterns/lazyobject.hpp>
-#include <ql/Math/matrix.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/quote.hpp>
+#include <ql/Patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
-     class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube, 
-                                          public LazyObject {
-
-         class Cube {
-             std::vector<Real> expiries_, lengths_;
-             std::vector<Date> exerciseDates_;
-             std::vector<Period> swapTenors_;
-             Size nLayers_;
-             std::vector<Matrix> points_;
-             mutable std::vector<Disposable<Matrix> > transposedPoints_;
-
-             bool extrapolation_;
-             mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
-
-         public:
-
-             Cube() {};
-             Cube(const std::vector<Date>& exerciseDates,
-                  const std::vector<Period>& swapTenors,
-                  const std::vector<Real>& expiries,
-                  const std::vector<Real>& lengths,
-                  Size nLayers,
-                  bool extrapolation = true);
-             Cube& operator=(const Cube& o);
-             Cube(const Cube&);
-             virtual ~Cube(){};
-
-             void setElement(Size IndexOfLayer, Size IndexOfRow,
-                                                  Size IndexOfColumn, Real x);
-             void setPoints(const std::vector<Matrix>& x);
-             void setPoint(const Date& exerciseDate,
-                                   const Period& swapTenor,
-                                   const Real expiry,
-                                   const Real lengths,
-                                   const std::vector<Real>& point);
-             void setLayer(Size i, const Matrix& x);
-             void expandLayers(Size i, bool expandExpiries, Size j, bool expandLengths);
-
-             const std::vector<Date>& exerciseDates() const { return exerciseDates_; }
-             const std::vector<Period>& swapTenors() const { return swapTenors_; }
-             const std::vector<Real>& expiries() const;
-             const std::vector<Real>& lengths() const;
-             const std::vector<Matrix>& points() const;
-
-             std::vector<Real> operator()(const Real expiry,
-                                          const Real lengths) const;
-             void updateInterpolators()const;
-             Matrix browse() const;
+    class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube, 
+                                         public LazyObject {
+        class Cube {
+          public:
+            Cube() {};
+            Cube(const std::vector<Date>& optionDates,
+                 const std::vector<Period>& swapTenors,
+                 const std::vector<Time>& expiries,
+                 const std::vector<Time>& lengths,
+                 Size nLayers,
+                 bool extrapolation = true);
+            Cube& operator=(const Cube& o);
+            Cube(const Cube&);
+            virtual ~Cube() {};
+            void setElement(Size IndexOfLayer,
+                            Size IndexOfRow,
+                            Size IndexOfColumn,
+                            Real x);
+            void setPoints(const std::vector<Matrix>& x);
+            void setPoint(const Date& exerciseDate,
+                          const Period& swapTenor,
+                          const Time expiry,
+                          const Time lengths,
+                          const std::vector<Real>& point);
+            void setLayer(Size i,
+                          const Matrix& x);
+            void expandLayers(Size i,
+                              bool expandExpiries,
+                              Size j,
+                              bool expandLengths);
+            const std::vector<Date>& exerciseDates() const {
+                return exerciseDates_;
+            }
+            const std::vector<Period>& swapTenors() const {
+                return swapTenors_;
+            }
+            const std::vector<Time>& expiries() const;
+            const std::vector<Time>& lengths() const;
+            const std::vector<Matrix>& points() const;
+            std::vector<Real> operator()(const Time expiry,
+                                         const Time lengths) const;
+            void updateInterpolators()const;
+            Matrix browse() const;
+          private:
+            std::vector<Time> expiries_, lengths_;
+            std::vector<Date> exerciseDates_;
+            std::vector<Period> swapTenors_;
+            Size nLayers_;
+            std::vector<Matrix> points_;
+            mutable std::vector<Disposable<Matrix> > transposedPoints_;
+            bool extrapolation_;
+            mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
          };
-
-     public:
-
+      public:
         SwaptionVolatilityCubeBySabr(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& expiries,
-            const std::vector<Period>& lengths,
+            const std::vector<Period>& optionTenors,
+            const std::vector<Period>& swapTenors,
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-            const Calendar& calendar,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
+            bool vegaWeightedSmileFit,
             const Matrix& parametersGuess,
             std::vector<bool> isParameterFixed,
-            bool isVegaWeighted,
             bool isAtmCalibrated);
-
-        //@}
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
         void update() { LazyObject::update(); };
         //@}
-
-        void recalibration(Real beta);
-        
+        //! \name SwaptionVolatilityCube interface
+        //@{
+        boost::shared_ptr<SmileSectionInterface> smileSection(
+                                              const Date& optionDate,
+                                              const Period& swapTenor) const;
+        boost::shared_ptr<SmileSectionInterface> smileSection(
+                                                      Time optionTime,
+                                                      Time swapLength) const;
+        //@}
+        //! \name Other inspectors
+        //@{
         const Matrix& marketVolCube(Size i) const {
             return marketVolCube_.points()[i];
         }
@@ -113,30 +118,19 @@ namespace QuantLib {
         Matrix denseSabrParameters() const;
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
-
-        boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                 const Date& exerciseDate,
-                                                 const Period& length) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
-                                                     Time length) const;
+        //@}
+        void recalibration(Real beta);
      protected:
         boost::shared_ptr<SmileSectionInterface> smileSection(
-                                    Time start,
-                                    Time length,
+                                    Time optionTime,
+                                    Time swapLength,
                                     const Cube& sabrParametersCube) const;
-        Volatility volatilityImpl(Time start,
-                                  Time length,
-                                  Rate strike) const;
-        Volatility volatilityImpl(const Date& exerciseDate,
-                                  const Period& length,
-                                  Rate strike) const;
         Cube sabrCalibration(const Cube& marketVolCube) const;
         void fillVolatilityCube() const;
         void createSparseSmiles() const;
-        std::vector<Real> spreadVolInterpolation(const Date& atmExerciseDate,
+        std::vector<Real> spreadVolInterpolation(const Date& atmOptionDate,
                                                  const Period& atmSwapTenor) const;
       private:
-        std::vector<std::vector<Handle<Quote> > > volSpreads_;
         mutable Cube marketVolCube_;
         mutable Cube volCubeAtmCalibrated_;
         mutable Cube sparseParameters_;
@@ -145,7 +139,6 @@ namespace QuantLib {
                                                                 sparseSmiles_;
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
-        bool isVegaWeighted_;
         bool isAtmCalibrated_;
     };
 

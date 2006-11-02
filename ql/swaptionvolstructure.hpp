@@ -86,11 +86,11 @@ namespace QuantLib {
         //! \name Limits
         //@{
         //! the latest start date for which the term structure can return vols
-        virtual Date maxStartDate() const = 0;
+        virtual Date maxStartDate() const { return maxDate(); }
+        //! the latest start time for which the term structure can return vols
+        virtual Time maxStartTime() const { return maxTime(); }
         //! the largest length for which the term structure can return vols
         virtual Period maxLength() const = 0;
-        //! the latest start time for which the term structure can return vols
-        virtual Time maxStartTime() const;
         //! the largest length for which the term structure can return vols
         virtual Time maxTimeLength() const;
         //! the minimum strike for which the term structure can return vols
@@ -98,13 +98,6 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
-        Date maxDate() const {
-            return maxStartDate();
-        }
-        Time maxTime() const {
-            return maxStartTime();
-        }
-
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& start,
                                                  const Period& length) const {
@@ -199,10 +192,6 @@ namespace QuantLib {
         return vol*vol*exerciseTime;
     }
 
-    inline Time SwaptionVolatilityStructure::maxStartTime() const {
-        return timeFromReference(maxStartDate());
-    }
-
     inline Time SwaptionVolatilityStructure::maxTimeLength() const {
         return timeFromReference(referenceDate()+maxLength());
     }
@@ -249,6 +238,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

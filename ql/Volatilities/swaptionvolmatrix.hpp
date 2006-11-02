@@ -80,11 +80,10 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
+        Date maxDate() const { return exerciseDates_.back(); }
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        Date maxStartDate() const;
-        Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;
         Rate minStrike() const;
@@ -153,14 +152,6 @@ namespace QuantLib {
     inline const std::vector<Time>&
     SwaptionVolatilityMatrix::timeLengths() const {
         return timeLengths_;
-    }
-
-    inline Date SwaptionVolatilityMatrix::maxStartDate() const {
-        return exerciseDates_.back();
-    }
-
-    inline Time SwaptionVolatilityMatrix::maxStartTime() const {
-        return exerciseTimes_.back();
     }
 
     inline Period SwaptionVolatilityMatrix::maxLength() const {

@@ -18,16 +18,14 @@
 */
 
 /*! \file swaptionvolcube.hpp
-    \brief Swaption volatility cube
+    \brief Swaption volatility cube, fit-later-interpolate-early approach
 */
 
-#ifndef quantlib_swaption_volatility_cube_bylinear_h
-#define quantlib_swaption_volatility_cube_bylinear_h
+#ifndef quantlib_swaption_volcube_fit_later_interpolate_early_h
+#define quantlib_swaption_volcube_fit_later_interpolate_early_h
 
 #include <ql/Volatilities/swaptionvolcube.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/quote.hpp>
+#include <ql/Math/interpolation2d.hpp>
 
 namespace QuantLib {
 
@@ -38,27 +36,19 @@ namespace QuantLib {
             const std::vector<Period>& expiries,
             const std::vector<Period>& lengths,
             const std::vector<Spread>& strikeSpreads,
-            const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
-            const Calendar& calendar,
-            const boost::shared_ptr<SwapIndex>& swapIndexBase);
-        //! \name Other inspectors
+            const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+            const boost::shared_ptr<SwapIndex>& swapIndexBase,
+            bool vegaWeightedSmileFit);
+        //! \name SwaptionVolatilityCube inspectors
         //@{
-        const Matrix& volSpreads(Size i) const { return volSpreads_[i]; }
         boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                 const Date& exerciseDate,
-                                                 const Period& length) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
-                                                     Time length) const;
+                                              const Date& optionDate,
+                                              const Period& swapTenor) const;
+        boost::shared_ptr<SmileSectionInterface> smileSection(
+                                                      Time optionTime,
+                                                      Time swapLength) const;
         //@}
-      protected:
-        Volatility volatilityImpl(Time start,
-                                  Time length,
-                                  Rate strike) const;
-        Volatility volatilityImpl(const Date& exerciseDate,
-                                  const Period& length,
-                                  Rate strike) const;
       private:
-        std::vector<Matrix> volSpreads_;
         std::vector<Interpolation2D> volSpreadsInterpolator_;
     };
 

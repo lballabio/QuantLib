@@ -61,6 +61,8 @@ boost::shared_ptr<SwapIndex> swapIndexBase_;
 Time shortTenor_;
 boost::shared_ptr<Xibor> iborIndexShortTenor_;
 
+bool vegaWeightedSmileFit_;
+
 // utilities
 
 
@@ -256,8 +258,8 @@ void setup() {
     termStructure_.linkTo(flatRate(referenceDate_, 0.05, Actual365Fixed()));
     iborIndex_ = boost::shared_ptr<Xibor>(new Euribor6M(termStructure_));
     shortTenor_ = 2;
-    iborIndexShortTenor_ = boost::shared_ptr<Xibor>(
-        new Euribor3M(termStructure_));;
+    iborIndexShortTenor_ = boost::shared_ptr<Xibor>(new
+        Euribor3M(termStructure_));
     swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
         SwapIndex("EurliborSwapFixA",
                   10*Years,
@@ -269,6 +271,7 @@ void setup() {
                   iborIndex_->dayCounter(),
                   iborIndex_));
 
+    vegaWeightedSmileFit_=false;
 }
 
 void teardown() {
@@ -390,8 +393,8 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
                                            swapTenors_,
                                            strikeSpreads_,
                                            volSpreads_,
-                                           calendar_,
-                                           swapIndexBase_);
+                                           swapIndexBase_,
+                                           vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
     makeAtmVolTest(volCube, tolerance);
@@ -411,8 +414,8 @@ void SwaptionVolatilityCubeTest::testSmile() {
                                            swapTenors_,
                                            strikeSpreads_,
                                            volSpreads_,
-                                           calendar_,
-                                           swapIndexBase_);
+                                           swapIndexBase_,
+                                           vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
     makeVolSpreadsTest(volCube, tolerance);
@@ -441,11 +444,10 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
                                          swapTenors_,
                                          strikeSpreads_,
                                          volSpreads_,
-                                         calendar_,
                                          swapIndexBase_,
+                                         vegaWeightedSmileFit_,
                                          parametersGuess,
                                          isParameterFixed,
-                                         false,
                                          true);
     Real tolerance = 3.0e-4;
     makeAtmVolTest(volCube, tolerance);

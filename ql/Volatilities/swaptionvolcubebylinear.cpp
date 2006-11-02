@@ -20,6 +20,7 @@
 
 
 #include <ql/Volatilities/swaptionvolcubebylinear.hpp>
+#include <ql/Math/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -28,46 +29,20 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
-        const std::vector<std::vector<Handle<Quote> > >& volatilitySpreads,
-        const Calendar& calendar,
-        const boost::shared_ptr<SwapIndex>& swapIndexBase) :
-     SwaptionVolatilityCube(
-        atmVolStructure,
-        expiries,
-        lengths,
-        strikeSpreads,
-        calendar,
-        swapIndexBase),
-     volSpreads_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
-     volSpreadsInterpolator_(nStrikes_) {
+        const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+        const boost::shared_ptr<SwapIndex>& swapIndexBase,
+        bool vegaWeightedSmileFit)
+    : SwaptionVolatilityCube(atmVolStructure, expiries, lengths,
+                             strikeSpreads, volSpreads, swapIndexBase,
+                             vegaWeightedSmileFit),
+      volSpreadsInterpolator_(nStrikes_) {
 
-        QL_REQUIRE(!volatilitySpreads.empty(), "empty vol spreads matrix");
-        for (Size j=0; j<nExercise_; j++) {
-             for (Size k=0; k<nlengths_; k++) {
-                 QL_REQUIRE(nStrikes_==volatilitySpreads[j*k].size(),
-                     "mismatch between number of strikes ("
-                     << nStrikes_ << ") and number of columns ("
-                     << volatilitySpreads[j*k].size() << ") in row ("
-                     << j*nlengths_+k << ")");
-             }
-        }
-        QL_REQUIRE(nExercise_*nlengths_==volatilitySpreads.size(),
-                 "mismatch between number of option expiries * swap tenors ("
-                 << nExercise_*nlengths_ << ") and number of rows ("
-                 << volatilitySpreads.size() <<")");
-
-        for (Size i=0; i<nStrikes_; i++){
-            for (Size j=0; j<nExercise_; j++) {
-                for (Size k=0; k<nlengths_; k++) {
-                    volSpreads_[i][j][k] =
-                        volatilitySpreads[j*nlengths_+k][i]->value();
-                    registerWith(volatilitySpreads[j*nlengths_+k][i]);
-                }
-            }
+        for (Size i=0; i<nStrikes_; i++) {
             volSpreadsInterpolator_[i] = BilinearInterpolation(
                 timeLengths_.begin(), timeLengths_.end(),
                 exerciseTimes_.begin(), exerciseTimes_.end(),
-                volSpreads_[i]);
+                volSpreadsMatrix_[i]);
+            // ????
             volSpreadsInterpolator_[i].enableExtrapolation();
         }
 
@@ -80,23 +55,8 @@ namespace QuantLib {
         Date exerciseDate = Date(static_cast<BigInteger>(
             exerciseInterpolator_(start)));
         Rounding rounder(0);
-        Period swaptenor(static_cast<Integer>(rounder(length/12.0)), Months);
-        const Rate atmForward = atmStrike(exerciseDate, swaptenor);
-        const Volatility atmVol =
-            atmVolStructure_->volatility(start, length, atmForward);
-        std::vector<Real> strikes, volatilities;
-        for (Size i=0; i<nStrikes_; i++) {
-            strikes.push_back(atmForward + strikeSpreads_[i]);
-            volatilities.push_back(
-                          atmVol + volSpreadsInterpolator_[i](length, start));
-        }
-        return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(start, strikes, volatilities));
-    }
-
-    Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(
-                        Time start, Time length, Rate strike) const {
-            return smileSection(start, length)->volatility(strike);
+        Period swapTenor(static_cast<Integer>(rounder(length/12.0)), Months);
+        return smileSection(exerciseDate, swapTenor);
     }
 
     boost::shared_ptr<SmileSectionInterface>
@@ -104,8 +64,8 @@ namespace QuantLib {
                                                  const Period& length) const {
 
         const Rate atmForward = atmStrike(exerciseDate, length);
-        const Volatility atmVol =
-            atmVolStructure_->volatility(exerciseDate, length, atmForward);
+        const Volatility atmVol = atmVol_->volatility(exerciseDate, length,
+                                                      atmForward);
         std::vector<Real> strikes, volatilities;
         const std::pair<Time, Time> p = convertDates(exerciseDate, length);
         for (Size i=0; i<nStrikes_; i++) {
@@ -115,11 +75,6 @@ namespace QuantLib {
         }
         return boost::shared_ptr<SmileSectionInterface>(new
             InterpolatedSmileSection(p.first, strikes, volatilities));
-    }
-
-    Volatility SwaptionVolatilityCubeByLinear::volatilityImpl(
-        const Date& exerciseDate, const Period& length, Rate strike) const {
-            return smileSection(exerciseDate, length)->volatility(strike);
     }
 
 }

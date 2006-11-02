@@ -50,11 +50,10 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
+        Date maxDate() const { return Date::maxDate(); }
         //@}
         //! \name SwaptionConstantVolatility interface
         //@{
-        Date maxStartDate() const;
-        Time maxStartTime() const;
         Period maxLength() const;
         Time maxTimeLength() const;
         Real minStrike() const;
@@ -118,14 +117,6 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(settlementDays,calendar),
       volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
-    }
-
-    inline Date SwaptionConstantVolatility::maxStartDate() const {
-        return Date::maxDate();
-    }
-
-    inline Time SwaptionConstantVolatility::maxStartTime() const {
-        return QL_MAX_REAL;
     }
 
     inline Period SwaptionConstantVolatility::maxLength() const {

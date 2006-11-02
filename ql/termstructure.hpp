@@ -73,16 +73,16 @@ namespace QuantLib {
         virtual ~TermStructure() {}
         //! \name Dates
         //@{
-        //! the date at which discount = 1.0 and/or variance = 0.0
-        virtual const Date& referenceDate() const;
-        //! the calendar used for reference date calculation
-        virtual Calendar calendar() const;
+        //! the day counter used for date/time conversion
+        virtual DayCounter dayCounter() const = 0;
         //! the latest date for which the curve can return values
         virtual Date maxDate() const = 0;
         //! the latest time for which the curve can return values
         virtual Time maxTime() const { return timeFromReference(maxDate()); }
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
+        //! the date at which discount = 1.0 and/or variance = 0.0
+        virtual const Date& referenceDate() const;
+        //! the calendar used for reference date calculation
+        virtual Calendar calendar() const;
         //@}
 
         //! \name Observer interface
