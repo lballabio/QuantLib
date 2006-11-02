@@ -33,21 +33,21 @@ namespace QuantLib {
       numerairesHeld_(product->numberOfProducts()),
       numberCashFlowsThisStep_(product->numberOfProducts()),
       cashFlowsGenerated_(product->numberOfProducts()) {
-        for (Size i = 0; i <numberProducts_; ++i )
+        for (Size i=0; i<numberProducts_; ++i)
             cashFlowsGenerated_[i].resize(
                        product_->maxNumberOfCashFlowsPerProductPerStep());
 
         const std::vector<Time>& cashFlowTimes =
             product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
-        for (Size j = 0; j < cashFlowTimes.size(); ++j)
+        for (Size j=0; j<cashFlowTimes.size(); ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
                                                          rateTimes));
 
     }
 
     Real AccountingEngine::singlePathValues(std::vector<Real>& values) {
-        std::fill(numerairesHeld_.begin(),numerairesHeld_.end(),0.);
+        std::fill(numerairesHeld_.begin(), numerairesHeld_.end(), 0.0);
         Real weight = evolver_->startNewPath();
         product_->reset();
         Real principalInNumerairePortfolio = 1.0;
@@ -74,8 +74,7 @@ namespace QuantLib {
                     const MarketModelDiscounter& discounter =
                         discounters_[cashflows[j].timeIndex];
 
-                    Real bonds =
-                        cashflows[j].amount *
+                    Real bonds = cashflows[j].amount *
                         discounter.numeraireBonds(evolver_->currentState(),
                                                   numeraire);
 
@@ -94,18 +93,16 @@ namespace QuantLib {
                 // the principal of the numeraire and updating the number
                 // of bonds in the numeraire portfolio accordingly.
 
-                Size nextNumeraire =
-                    evolver_->numeraires()[thisStep+1];
+                Size nextNumeraire = evolver_->numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
                     evolver_->currentState().discountRatio(numeraire,
                                                            nextNumeraire);
             }
 
-        }
-        while (!done);
+        } while (!done);
 
-        for (Size i=0; i < numerairesHeld_.size(); ++i)
+        for (Size i=0; i<numerairesHeld_.size(); ++i)
             values[i] = numerairesHeld_[i] * initialNumeraireValue_;
 
         return weight;

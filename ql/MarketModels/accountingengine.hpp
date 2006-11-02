@@ -34,16 +34,15 @@ namespace QuantLib {
         AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const Clone<MarketModelMultiProduct>& product,
                          double initialNumeraireValue);
-
-        Real singlePathValues(std::vector<Real>& values);
         void multiplePathValues(SequenceStatistics& stats,
                                 Size numberOfPaths);
       private:
+        Real singlePathValues(std::vector<Real>& values);
 
         boost::shared_ptr<MarketModelEvolver> evolver_;
         Clone<MarketModelMultiProduct> product_;
 
-        double initialNumeraireValue_;
+        Real initialNumeraireValue_;
         Size numberProducts_;
 
         // workspace

@@ -38,15 +38,15 @@ namespace QuantLib {
                          const CallSpecifiedMultiProduct& product,
                          const MarketModelMultiProduct& hedge,
                          double initialNumeraireValue);
-
-        std::pair<Real,Real> singlePathValue();
         void multiplePathValues(Statistics& stats,
                                 Size numberOfPaths);
       private:
+        std::pair<Real,Real> singlePathValue();
+
         boost::shared_ptr<MarketModelEvolver> evolver_;
         MultiProductComposite composite_;
 
-        double initialNumeraireValue_;
+        Real initialNumeraireValue_;
         Size underlyingSize_, rebateSize_;
         Size numberOfProducts_;
         Size numberOfSteps_;

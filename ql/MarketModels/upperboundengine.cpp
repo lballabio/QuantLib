@@ -42,7 +42,7 @@ namespace QuantLib {
 
         numberCashFlowsThisStep_.resize(numberOfProducts_);
         cashFlowsGenerated_.resize(numberOfProducts_);
-        for (Size i = 0; i <numberProducts_; ++i )
+        for (Size i=0; i<numberProducts_; ++i)
             cashFlowsGenerated_[i].resize(
                           composite_.maxNumberOfCashFlowsPerProductPerStep());
 
@@ -50,7 +50,7 @@ namespace QuantLib {
             composite_.possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes =
             composite_.evolution().rateTimes();
-        for (Size j = 0; j < cashFlowTimes.size(); ++j)
+        for (Size j=0; j<cashFlowTimes.size(); ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
                                                          rateTimes));
     }
@@ -75,14 +75,13 @@ namespace QuantLib {
             composite_.nextTimeStep(evolver_->currentState(),
                                     numberCashFlowsThisStep_,
                                     cashFlowsGenerated_);
-            Size numeraire =
-                evolver_->numeraires()[thisStep];
+            Size numeraire = evolver_->numeraires()[thisStep];
 
             // First, we accumulate cash flows from both the
             // unexercised product and the hedge
             for (Size i=0; i<numberProducts_; ++i) {
                 // we discard cash flows coming from the rebate
-                if (i >= underlyingSize_ && i < underlyingSize_+rebateSize_)
+                if (i>=underlyingSize_ && i<underlyingSize_+rebateSize_)
                     continue;
 
                 // for each cash flow...
@@ -95,8 +94,7 @@ namespace QuantLib {
                     const MarketModelDiscounter& discounter =
                         discounters_[cashflows[j].timeIndex];
 
-                    Real bonds =
-                        cashflows[j].amount *
+                    Real bonds = cashflows[j].amount *
                         discounter.numeraireBonds(evolver_->currentState(),
                                                   numeraire);
 
@@ -108,6 +106,8 @@ namespace QuantLib {
 
             // Second, we do the upper-bound thing
 
+            // ... hic sunt leones ...
+
 
 
 
@@ -115,7 +115,7 @@ namespace QuantLib {
 
 
             // Lastly, we do the homework for next step
-            if (k < numberOfSteps_-1) {
+            if (k<numberOfSteps_-1) {
 
                 // The numeraire might change between steps. This implies
                 // that we might have to convert the numeraire bonds for
