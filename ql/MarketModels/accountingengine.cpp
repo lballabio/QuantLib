@@ -18,7 +18,6 @@
 */
 
 #include <ql/MarketModels/accountingengine.hpp>
-#include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <algorithm>
 
 namespace QuantLib {
