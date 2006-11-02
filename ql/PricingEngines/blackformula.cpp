@@ -186,12 +186,31 @@ namespace QuantLib {
     }
 
     /* Bachelier model */
+    Real bachelierBlackFormula(Option::Type optionType,
+                               Real strike,
+                               Real forward,
+                               Real stdDev) {
+        QL_REQUIRE(stdDev>=0.0,
+                   "stdDev (" << stdDev << ") must be non-negative");
+        Real d = (forward-strike)*optionType, h = d/stdDev;
+        if (stdDev==0.0)
+            return std::max(d, 0.0);
+        CumulativeNormalDistribution phi;
+        Real result = stdDev*phi.derivative(h) + d*phi(h);
+        QL_ENSURE(result>=0.0,
+                  "negative value (" << result << ") for a " << stdDev <<
+                  " stdDev " << optionType << " option struck at " <<
+                  strike << " on a " << forward << " forward "
+                  "(Bachelier model)");
+        return result;
+    }
+
     Real bachelierBlackCall(Real strike,
                             Real forward,
-                            Real absoluteVolatility,
-                            Real maturity,
+                            Volatility absoluteVolatility,
+                            Time timeToMaturity,
                             Real annuity) {
-        Real s = absoluteVolatility*sqrt(maturity);
+        Real s = absoluteVolatility*sqrt(timeToMaturity);
         if (s<=1e-8)
             return std::max(forward - strike, 0.0);
         CumulativeNormalDistribution phi;
@@ -202,10 +221,10 @@ namespace QuantLib {
 
     Real bachelierBlackPut(Real strike,
                            Real forward,
-                           Real absoluteVolatility,
-                           Real maturity,
+                           Volatility absoluteVolatility,
+                           Time timeToMaturity,
                            Real annuity) {
-        Real s = absoluteVolatility*sqrt(maturity);
+        Real s = absoluteVolatility*sqrt(timeToMaturity);
         if (s<=1e-8)
             return std::max(strike - forward, 0.0);
         Real d = forward-strike,

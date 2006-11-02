@@ -31,9 +31,10 @@
 
 namespace QuantLib {
 
-    /*! Black 1976 formula
-        \warning instead of volatility it uses standard deviation,
+    /*! Undiscounted Black 1976 formula
+        \warning - instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
+                 - the returned price is undiscounted
     */
     Real blackFormula(Option::Type optionType,
                       Real strike,
@@ -46,14 +47,18 @@ namespace QuantLib {
         It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
         (1988) approximation for at-the-money forward option, with the
         extended moneyness approximation by Corrado and Miller (1996)
+
+        \warning the input price must be undiscounted
     */
     Real blackImpliedStdDevApproximation(Option::Type optionType,
                                          Real strike,
                                          Real forward,
-                                         Real blackPrice);
+                                         Real undiscountedBlackPrice);
 
-    /*! Black 1976 implied  standard deviation,
+    /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
+
+        \warning the input price must be undiscounted
     */
     Real blackImpliedStdDev(Option::Type optionType,
                             Real strike,
@@ -62,7 +67,7 @@ namespace QuantLib {
                             Real guess = Null<Real>(),
                             Real accuracy = 1.0e-6);
 
-    /*! Black 1976 "int the money probability" formula
+    /*! Black 1976 "in the money probability" formula
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
@@ -83,19 +88,32 @@ namespace QuantLib {
                                Real stdDev);
 
 
+    /*! Undiscounted Black style formula when forward is normal rather than
+        log-normal, this is essentially the model of Bachelier.
+
+        \warning Bachelier model needs absolute volatility. In this case
+                 standard deviation is absoluteVolatility*sqrt(timeToMaturity)
+    */
+    Real bachelierBlackFormula(Option::Type optionType,
+                               Real strike,
+                               Real forward,
+                               Real stdDev);
+
     /*! Black style formulas when forward is normal rather than log-normal,
-        this is essentially the model of Bachelier
+        this is essentially the model of Bachelier.
+
+        \warning Bachelier model needs absolute volatility. In this case
+                 standard deviation is absoluteVolatility*sqrt(timeToMaturity)
     */
     Real bachelierBlackPut(Real strike,
                            Real forward,
-                           Real absoluteVolatility,
-                           Real maturity,
+                           Volatility absoluteVolatility,
+                           Time timeToMaturity,
                            Real annuity);
-
     Real bachelierBlackCall(Real strike,
                             Real forward,
-                            Real absoluteVolatility,
-                            Real maturity,
+                            Volatility absoluteVolatility,
+                            Time timeToMaturity,
                             Real annuity);
 
 
