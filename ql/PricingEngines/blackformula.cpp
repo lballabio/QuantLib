@@ -522,5 +522,43 @@ namespace QuantLib {
         return beta_;
     }
 
+
+/* Bachelier model */
+
+Real bachelierBlackCall(Real strike, 
+					  Real forward,  
+					  Real absoluteVolatility,
+					  Real maturity, 
+					  Real annuity)
+{
+	Real s = absoluteVolatility*sqrt(maturity);
+	if (s<=1e-8)
+		return std::max(forward - strike,0.0);
+	CumulativeNormalDistribution phi;
+	Real d = ( forward - strike ), h = d / s;
+	return annuity*(s*phi.derivative(h) + d*phi(h));
+}
+
+
+
+Real bachelierBlackPut( Real strike, 
+					  Real forward,  
+					  Real absoluteVolatility,
+					  Real maturity, 
+					  Real annuity)
+{
+	
+	Real s = absoluteVolatility*sqrt(maturity);
+	if (s<=1e-8)
+	{
+		return std::max(strike - forward,0.0);
+	}
+	Real d = ( forward - strike ), h = d / s;
+
+	CumulativeNormalDistribution phi;
+	
+	return annuity*(s*phi.derivative(-h) - d*phi(-h));
+}
+
 }
 

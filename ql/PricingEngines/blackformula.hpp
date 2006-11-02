@@ -129,6 +129,22 @@ namespace QuantLib {
         Real X_, DXDs_, DXDstrike_;
     };
 
+    /*! Black style formulas when forward is normal rather than log-normal, 
+	this is essentially the model of Bachelier 
+    */
+	
+Real bachelierBlackPut( Real strike, 
+					  Real forward,  
+					  Real absoluteVolatility,
+					  Real maturity, 
+					  Real annuity);
+
+Real bachelierBlackCall(Real strike, 
+					  Real forward,  
+					  Real absoluteVolatility,
+					  Real maturity, 
+					  Real annuity);
+
 }
 
 
