@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_interpolated_caplet_variance_curve_hpp
-#define quantlib_test_interpolated_caplet_variance_curve_hpp
+#ifndef quantlib_test_capsstripper_hpp
+#define quantlib_test_capsstripper_hpp
 
 #include <boost/test/unit_test.hpp>
 

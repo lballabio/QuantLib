@@ -253,9 +253,6 @@ void setup() {
                                         impliedVolatilityPrecision));
 }
 
-/* We strip a flat volatility surface and we check if 
-    the result is equal to the initial surface
-*/
 
 void debug(){
     setMarketVolatilityTermStructure();
@@ -265,7 +262,9 @@ void debug(){
     printCapsStripper(*capsStripper);    
 }
 
-
+/* We strip a flat volatility surface and we check if 
+    the result is equal to the initial surface
+*/
 void CapsStripperTest::FlatVolatilityStripping() {
 
     BOOST_MESSAGE("Testing Flat Volatility Stripping...");
@@ -356,8 +355,8 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
 
 test_suite* CapsStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CapsStripper tests");
-   /* suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
-    suite->add(BOOST_TEST_CASE(&CapsStripperTest::strippedVolCapStrippingConsistency));*/
-    suite->add(BOOST_TEST_CASE(&debug));
+    suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
+    suite->add(BOOST_TEST_CASE(&CapsStripperTest::strippedVolCapStrippingConsistency));
+    //suite->add(BOOST_TEST_CASE(&debug));
     return suite;
 }
