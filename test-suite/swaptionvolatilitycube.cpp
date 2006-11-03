@@ -460,9 +460,16 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
+
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSwaptionVolMatrix));
+
+    // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
+    // SwaptionVolCubeByLinear reproduces smile spreads with machine precision
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSmile));
+
+    // SwaptionVolCubeBySabr reproduces ATM vol with given tolerance
+    // SwaptionVolCubeBySabr reproduces smile spreads with given tolerance
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
 
     return suite;
