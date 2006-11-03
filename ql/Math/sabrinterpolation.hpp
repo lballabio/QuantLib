@@ -482,15 +482,17 @@ namespace QuantLib {
             }
 
             Real interpolationSquaredError() const {
-                Real error, totalError = 0.0;
+                Real error, totalError = 0.0, sumWeights = 0.0;
                 std::vector<Real>::const_iterator i = this->xBegin_;
                 std::vector<Real>::const_iterator j = this->yBegin_;
                 std::vector<Real>::const_iterator k = weights_.begin();
                 for (; i != this->xEnd_; ++i, ++j, ++k) {
                     error = (value(*i) - *j) * (*k);
                     totalError += error*error;
+                    sumWeights += (*k);
                 }
-                return totalError;
+                return totalError/sumWeights;
+;
             }
 
             Real interpolationError() const {
