@@ -397,7 +397,7 @@ namespace QuantLib {
                         //method_ = boost::shared_ptr<OptimizationMethod>(
                         //    new Simplex(10, .00000001));
 
-                        method_->setEndCriteria(EndCriteria(30000, 1e-8));
+                        method_->setEndCriteria(EndCriteria(200000, 1e-8));
 
                         Array guess(3);
                         guess[0] = alpha_;  
