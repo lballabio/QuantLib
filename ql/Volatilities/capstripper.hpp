@@ -78,7 +78,9 @@ namespace QuantLib {
                      const std::vector<std::vector<Handle<Quote> > >& vols,
                      const DayCounter& volatilityDayCounter,
                      const boost::shared_ptr<Xibor>& index,
-                     const Handle< YieldTermStructure > termStructure);
+                     const Handle< YieldTermStructure > termStructure,
+                     Real impliedVolatilityAccuracy = 1.0e-6
+                     );
         //@}
         //! \name LazyObject interface
         //@{
@@ -104,6 +106,8 @@ namespace QuantLib {
         const std::vector<Rate>& strikes() { return strikes_; }
         const CapMatrix& marketDataCap() { return marketDataCap_; }
         const CapMatrix& strippedCap() { return strippedCap_; }
+        const Matrix& volatilities() { return volatilities_; }
+        Real impliedVolatilityAccuracy() {return impliedVolatilityAccuracy_; }
       protected:
           Volatility volatilityImpl(Time t, Rate r) const;
       private:
@@ -114,7 +118,8 @@ namespace QuantLib {
         std::vector<Time> tenorTimes_;
         std::vector<Rate> strikes_;
         mutable Matrix volatilities_;
-        Rate minStrike_, maxStrike_; 
+        Rate minStrike_, maxStrike_;
+        Real impliedVolatilityAccuracy_;
     };
 
     inline DayCounter CapsStripper::dayCounter() const {

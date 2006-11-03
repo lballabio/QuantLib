@@ -40,7 +40,7 @@
 
 
 namespace QuantLib {
-       
+    
     FloatingLeg LegHelper::makeLeg(const Period & startPeriod,
                                     const Period & endPeriod){
         Date startDate = referenceDate_ + startPeriod;
@@ -65,13 +65,15 @@ namespace QuantLib {
         const std::vector<std::vector<Handle<Quote> > >& vols,
         const DayCounter& volatilityDayCounter,
         const boost::shared_ptr<Xibor>& index,
-        const Handle< YieldTermStructure > termStructure)
+        const Handle< YieldTermStructure > termStructure,
+        Real impliedVolatilityAccuracy)
     : CapletVolatilityStructure(0, calendar),
       volatilityDayCounter_(volatilityDayCounter),
       evaluationDate_(Settings::instance().evaluationDate()),
       tenors_(tenors), tenorTimes_(tenors.size()),
       strikes_(strikes),
-      volatilities_(tenors.size(), strikes.size()) {
+      volatilities_(tenors.size(), strikes.size()),
+      impliedVolatilityAccuracy_(impliedVolatilityAccuracy){
 
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
@@ -116,10 +118,7 @@ namespace QuantLib {
         
         // we store the times for which the volatility will be known
         for (Size i = 0 ; i < tenors.size(); i++){
-            boost::shared_ptr<CashFlow> lastCoupon(marketDataCap_[i][0]->floatingLeg().back());
-            boost::shared_ptr<FloatingRateCoupon> floatingCoupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
-            Date tenorDate = floatingCoupon->fixingDate();
+            Date tenorDate = marketDataCap_[i][0]->lastFixingDate();
             tenorTimes_[i] = volatilityDayCounter_.yearFraction(evaluationDate_,tenorDate);
         }
         
@@ -137,7 +136,6 @@ namespace QuantLib {
     
     void CapsStripper::performCalculations () const {
         static const Real vegaThreshold = 1e-4;
-        static const Real impliedVolatilityAccuracy = 1.0e-6;
         for (Size j = 0 ; j < strikes_.size(); j++){
             Real previousCaplets = 0.0;
             bool capVegaIsBigEnough = false;
@@ -149,7 +147,7 @@ namespace QuantLib {
                     capVegaIsBigEnough = vega > vegaThreshold;
                     if (capVegaIsBigEnough){
                         Real vol = mktCap.impliedVolatility(
-                            capPrice, impliedVolatilityAccuracy, 100);
+                            capPrice, impliedVolatilityAccuracy_, 10000);
                         for (Size k = 0; k<=i; ++k)
                             volatilities_[k][j] = vol;
                         previousCaplets = capPrice;
@@ -157,9 +155,10 @@ namespace QuantLib {
                 } else {
                    Real capletsPrice = capPrice - previousCaplets;
                         volatilities_[i][j] = strippedCap_[i-1][j]->impliedVolatility(
-                            capletsPrice, impliedVolatilityAccuracy, 100);
+                            capletsPrice, impliedVolatilityAccuracy_, 1000);
                    previousCaplets = capPrice;
                 }
+
             }
              QL_REQUIRE(capVegaIsBigEnough,
                         "Unable to bootstrap Caps volatilities ! For each "
