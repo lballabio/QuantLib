@@ -185,17 +185,14 @@ namespace QuantLib {
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>()) {
 
-            impl_ = boost::shared_ptr<Interpolation::Impl>(
-                        new detail::SABRInterpolationImpl<I1,I2>(
-                            xBegin, xEnd, yBegin,
-                            t, forward,
-                            alpha, beta, nu, rho, 
-                            isAlphaFixed,
-                            isBetaFixed,
-                            isNuFixed,
-                            isRhoFixed,
-                            vegaWeighted,
-                            method));
+            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+                detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
+                                                     t, forward,
+                                                     alpha, beta, nu, rho, 
+                                                     isAlphaFixed, isBetaFixed,
+                                                     isNuFixed, isRhoFixed,
+                                                     vegaWeighted,
+                                                     method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
@@ -340,10 +337,7 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
             boost::shared_ptr<Transformation> tranformation_;
-
             std::vector<Real> weights_;
-            Real weightsSum_;
-
           public:  
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
@@ -359,22 +353,25 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, 
               isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
-			  method_(method), weights_(xEnd-xBegin, 1.0), weightsSum_(xEnd-xBegin)
+			  method_(method), weights_(xEnd-xBegin, 1.0)
             {
+                Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
-                    std::vector<Real>::const_iterator i = this->xBegin_;
-                    std::vector<Real>::const_iterator j = this->yBegin_;
-                    std::vector<Real>::iterator k = weights_.begin();
-                    weightsSum_ = 0.0;
-                    for ( ; i!=this->xEnd_; ++i, ++j, ++k) {
-                        Real stdDev = std::sqrt((*j)*(*j)*t);
-                        *k = blackStdDevDerivative(*i, forward, stdDev);
-                        weightsSum_ += *k;
+                    std::vector<Real>::const_iterator x = this->xBegin_;
+                    std::vector<Real>::const_iterator y = this->yBegin_;
+                    std::vector<Real>::iterator w = weights_.begin();
+                    weightsSum = 0.0;
+                    for ( ; x!=this->xEnd_; ++x, ++y, ++w) {
+                        Real stdDev = std::sqrt((*y)*(*y)*t);
+                        *w = blackStdDevDerivative(*x, forward, stdDev);
+                        weightsSum += *w;
                     }
-                    k = weights_.begin();
-                    for ( ; k!=weights_.end(); ++k)
-                        *k /= weightsSum_;
                 }
+                // weight normalization
+                std::vector<Real>::iterator w = weights_.begin();
+                for ( ; w!=weights_.end(); ++w)
+                    *w /= weightsSum;
+
                 calculate();
             }
 
@@ -482,30 +479,29 @@ namespace QuantLib {
             }
 
             Real interpolationSquaredError() const {
-                Real error, totalError = 0.0, sumWeights = 0.0;
-                std::vector<Real>::const_iterator i = this->xBegin_;
-                std::vector<Real>::const_iterator j = this->yBegin_;
-                std::vector<Real>::const_iterator k = weights_.begin();
-                for (; i != this->xEnd_; ++i, ++j, ++k) {
-                    error = (value(*i) - *j) * (*k);
-                    totalError += error*error;
-                    sumWeights += (*k);
+                Real error, totalError = 0.0;
+                std::vector<Real>::const_iterator x = this->xBegin_;
+                std::vector<Real>::const_iterator y = this->yBegin_;
+                std::vector<Real>::const_iterator w = weights_.begin();
+                for (; x != this->xEnd_; ++x, ++y, ++w) {
+                    error = (value(*x) - *y);
+                    totalError += error*error * (*w);
                 }
-                return totalError/sumWeights;
-;
+                return totalError;
             }
 
             Real interpolationError() const {
+                Size n = this->xEnd_-this->xBegin_;
                 Real squaredError = interpolationSquaredError();
-                return std::sqrt(squaredError);
+                return std::sqrt(n*squaredError/(n-1));
             }
 
             Real interpolationMaxError() const {
                 Real error, maxError = QL_MIN_REAL;
-                std::vector<Real>::const_iterator i = this->xBegin_;
-                std::vector<Real>::const_iterator j = this->yBegin_;
-                for (; i != this->xEnd_; ++i, ++j) {                    
-                    error = std::fabs(value(*i) - *j);
+                std::vector<Real>::const_iterator x = this->xBegin_;
+                std::vector<Real>::const_iterator y = this->yBegin_;
+                for (; x != this->xEnd_; ++x, ++y) {                    
+                    error = std::fabs(value(*x) - *y);
                     maxError = std::max(maxError, error);
                 }
                 return maxError;
