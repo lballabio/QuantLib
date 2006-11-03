@@ -148,10 +148,10 @@ namespace QuantLib {
                 errors     [j][k]=interpolationError;
                 maxErrors  [j][k]=sabrInterpolation->interpolationMaxError();
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
-                //QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
-                //          "option tenor " << exerciseDates[j] <<
-                //          ", swap tenor " << swapTenors[k] <<
-                //          ": max iteration");
+                QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
+                          "option tenor " << exerciseDates[j] <<
+                          ", swap tenor " << swapTenors[k] <<
+                          ": max iteration");
                 //QL_ENSURE(maxErrors[j][k]<15e-4,
                 //          "option tenor " << exerciseDates[j] <<
                 //          ", swap tenor " << swapTenors[k] <<
