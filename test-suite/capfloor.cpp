@@ -33,8 +33,8 @@
 #endif
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <iomanip>
-#include <iostream>
+
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -136,46 +136,48 @@ void CapFloorTest::testVega() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    /*Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
-    Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09 };*/
-
     Integer lengths[] = { 1, 2, 3, 4, 5, 6, 7, 10, 15, 20, 30 };
-    //Integer lengths[] = { 30 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
-    //Volatility vols[] = { 0.15};
     Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09 };
+    CapFloor::Type types[] = { CapFloor::Cap, CapFloor::Floor};
 
     Date startDate = termStructure_->referenceDate();
-    static const Real shift = 1e-5;
-  
+    static const Real shift = 1e-8;
+    static const Real tolerance = 0.002;
+
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(vols); j++) {
-            // store the results for different strikes...
-            std::vector<Real> cap_values, floor_values;
             for (Size k=0; k<LENGTH(strikes); k++) {
-                std::vector<boost::shared_ptr<CashFlow> > leg =
-                    makeLeg(startDate, lengths[i]);
-                boost::shared_ptr<CapFloor> cap =
-                    makeCapFloor(CapFloor::Cap,leg,
-                                 strikes[k],vols[j]);
-                boost::shared_ptr<CapFloor> shiftedCap2 =
-                    makeCapFloor(CapFloor::Cap,leg,
-                                 strikes[k],vols[j]+shift);
-                 boost::shared_ptr<CapFloor> shiftedCap1 =
-                    makeCapFloor(CapFloor::Cap,leg,
-                                 strikes[k],vols[j]-shift);
-                Real formulaeVega = cap->vega();
-                Real value1 = shiftedCap1->NPV();
-                Real value2 = shiftedCap2->NPV();
-                Real numericalVega = (value2 - value1) / (2*shift);
-                Real discrepancy = std::fabs(numericalVega - formulaeVega);
-                if (discrepancy > 1e-6){
-                    std::cout   << std::fixed
-                                << strikes[k] << "\t"
-                                << cap->NPV() <<"\t"
-                                << formulaeVega << "\t" 
-                                << numericalVega << "\t";
+                for (Size h=0; h<LENGTH(types); h++) {
+                    std::vector<boost::shared_ptr<CashFlow> > leg =
+                        makeLeg(startDate, lengths[i]);
+                    boost::shared_ptr<CapFloor> capFloor =
+                        makeCapFloor(types[h],leg,
+                                     strikes[k],vols[j]);
+                    boost::shared_ptr<CapFloor> shiftedCapFloor2 =
+                        makeCapFloor(types[h],leg,
+                                     strikes[k],vols[j]+shift);
+                     boost::shared_ptr<CapFloor> shiftedCapFloor1 =
+                        makeCapFloor(types[h],leg,
+                                     strikes[k],vols[j]-shift);
+                    Real value1 = shiftedCapFloor1->NPV();
+                    Real value2 = shiftedCapFloor2->NPV();
+                    Real numericalVega = (value2 - value1) / (2*shift);
+                    if (numericalVega>1.0e-4) {
+                        Real analyticalVega = capFloor->vega();
+                        Real discrepancy = std::fabs(numericalVega - analyticalVega);
+                        discrepancy /= numericalVega;
+                        if (discrepancy > tolerance)
+                            BOOST_FAIL("failed to compute CapFloor vega:" <<
+                                "\n    lengths:     " << lengths[j] <<
+                                "\n    exercise:    " << strikes[k] <<
+                                //"\n    types:       " << types[h] <<
+                                QL_FIXED << std::setprecision(12) <<
+                                "\n    calculated:  " << analyticalVega <<
+                                "\n    expected:    " << numericalVega <<
+                                "\n    discrepancy: " << discrepancy <<
+                                "\n    error:       " << tolerance);
+                     }
                 }
             }
         }
