@@ -169,7 +169,7 @@ namespace QuantLib {
 
     inline VanillaSwap::Type VanillaSwap::type() const {
         return type_;
-    };
+    }
 
 
 }

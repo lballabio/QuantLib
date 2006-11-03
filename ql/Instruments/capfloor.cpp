@@ -87,19 +87,19 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    void CapFloor::fetchResults (const Results* r) const{
+    void CapFloor::fetchResults(const Results* r) const{
         Instrument::fetchResults(r);
         const CapFloor::results* results =
             dynamic_cast<const CapFloor::results*>(r);
         vega_ = results->vega_;
-        
-    };
+
+    }
 
     Rate CapFloor::atmRate() const {
         Real bps = Cashflows::bps(floatingLeg_, termStructure_);
         Real npv = Cashflows::npv(floatingLeg_, termStructure_);
         return 1.0e-4*npv/bps;
-    };
+    }
 
     bool CapFloor::isExpired() const {
         Date lastPaymentDate = Date::minDate();
@@ -220,7 +220,7 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
-    
+
     Real CapFloor::vega() const {
         calculate();
         return vega_;

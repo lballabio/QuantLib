@@ -34,27 +34,25 @@
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/schedule.hpp>
-#include <ql/Math/linearinterpolation.hpp> 
-#include <iostream>
+#include <ql/Math/linearinterpolation.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
-
 namespace QuantLib {
-    
+
     FloatingLeg LegHelper::makeLeg(const Period & startPeriod,
                                     const Period & endPeriod){
         Date startDate = referenceDate_ + startPeriod;
         Date endDate = referenceDate_ + endPeriod;
         Schedule schedule(startDate, endDate, index_->tenor(), calendar_,
                           convention_, convention_, true, false);
-        return FloatingRateCouponVector(schedule, 
-                                        convention_, 
+        return FloatingRateCouponVector(schedule,
+                                        convention_,
                                         std::vector<Real>(1,1),
                                         fixingDays_, index_,
                                         std::vector<Real>(),
                                         std::vector<Spread>(),
                                         index_->dayCounter());
-    };
+    }
 
     CapsStripper::CapsStripper(
         const Calendar & calendar,
@@ -115,13 +113,13 @@ namespace QuantLib {
                        termStructure, blackCapFloorEngine));
             }
         }
-        
+
         // we store the times for which the volatility will be known
         for (Size i = 0 ; i < tenors.size(); i++){
             Date tenorDate = marketDataCap_[i][0]->lastFixingDate();
             tenorTimes_[i] = volatilityDayCounter_.yearFraction(evaluationDate_,tenorDate);
         }
-        
+
         const std::vector<boost::shared_ptr<Cap> >& lastCapFloorRow =
             marketDataCap_.back();
         boost::shared_ptr<CapFloor> lastCap = lastCapFloorRow.front();
@@ -131,9 +129,9 @@ namespace QuantLib {
         maxDate_ = lastFloatingCoupon->fixingDate();
         minStrike_ = strikes_.front();
         maxStrike_ = strikes_.back();
-    };
+    }
 
-    
+
     void CapsStripper::performCalculations () const {
         static const Real vegaThreshold = 1e-4;
         for (Size j = 0 ; j < strikes_.size(); j++){
@@ -164,12 +162,12 @@ namespace QuantLib {
                         "Unable to bootstrap Caps volatilities ! For each "
                         "strike there must be at least one cap for which the "
                         "vega is  superior to " << vegaThreshold <<
-                        ", this is not the case for the strike: " << 
+                        ", this is not the case for the strike: " <<
                         io::rate(strikes_[j]));
         }
     }
-    
-    Size locateTime(Time x, 
+
+    Size locateTime(Time x,
                      const std::vector<Time>& values){
         if (x <= values[0])
             return 0;

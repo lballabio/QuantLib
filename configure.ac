@@ -360,9 +360,6 @@ AC_CONFIG_FILES([
     ql/Utilities/Makefile
     ql/Volatilities/Makefile
     ql/VolatilityModels/Makefile
-    functions/Makefile
-    functions/ql/Makefile
-    functions/ql/Functions/Makefile
     man/Makefile
     Docs/Makefile
     Examples/Makefile

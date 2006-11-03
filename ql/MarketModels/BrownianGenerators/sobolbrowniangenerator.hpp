@@ -40,7 +40,7 @@ namespace QuantLib {
                            used for the evolution of the first factor. */
             Steps,    /*!< The variates with the best quality will be
                            used for the largest steps of all factors. */
-            Diagonal,  /*!< A diagonal schema will be used to assign
+            Diagonal  /*!< A diagonal schema will be used to assign
                            the variates with the best quality to the
                            most important factors and the largest
                            steps. */

@@ -56,7 +56,7 @@ Handle<YieldTermStructure> termStructure_;
 
 bool checkAbsError(Real x1, Real x2, Real tolerance){
     return std::fabs(x1 - x2) < tolerance;
-};
+}
 
 std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
                                                   Integer length) {
@@ -388,7 +388,7 @@ void CapFloorTest::testATMRate() {
                         << "   strike:        " << io::rate(strikes[j]) << "\n"
                         << "   cap ATM rate:  " << capATMRate << "\n"
                         << "   floor ATM rate:" << floorATMRate << "\n"
-                        << "   relative Error:" 
+                        << "   relative Error:"
                         << relativeError(capATMRate, floorATMRate, capATMRate)*100 << "%" );
                 VanillaSwap swap(VanillaSwap::Payer, nominals_[0],
                                  schedule, floorATMRate, index_->dayCounter(),
