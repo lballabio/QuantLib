@@ -39,9 +39,13 @@ namespace QuantLib {
                          const MarketModelMultiProduct& hedge,
                          double initialNumeraireValue);
         void multiplePathValues(Statistics& stats,
-                                Size numberOfPaths);
+                                Size outerPaths,
+                                Size innerPaths);
       private:
-        std::pair<Real,Real> singlePathValue();
+        std::pair<Real,Real> singlePathValue(Size innerPaths);
+        Real collectCashFlows(Size currentStep,
+                              Size beginProduct,
+                              Size endProduct) const;
 
         boost::shared_ptr<MarketModelEvolver> evolver_;
         MultiProductComposite composite_;
@@ -56,7 +60,6 @@ namespace QuantLib {
         std::vector<std::vector<MarketModelMultiProduct::CashFlow> >
                                                          cashFlowsGenerated_;
         std::vector<MarketModelDiscounter> discounters_;
-
     };
 
 }

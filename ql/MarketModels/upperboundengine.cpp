@@ -56,10 +56,21 @@ namespace QuantLib {
     }
 
 
-    Real UpperBoundEngine::singlePathValue() {
+    void UpperBoundEngine::multiplePathValues(Statistics& stats,
+                                              Size outerPaths,
+                                              Size innerPaths) {
+        for (Size i=0; i<outerPaths; ++i) {
+            std::pair<Real,Real> result = singlePathValue(innerPaths);
+            stats.add(result.first, result.second);
+        }
+    }
+
+
+    Real UpperBoundEngine::singlePathValue(Size innerPaths) {
 
         const CallSpecifiedMultiProduct& product =
             dynamic_cast<const CallSpecifiedMultiProduct&>(composite_.item(0));
+        const ExerciseStrategy<CurveState>& strategy = product.strategy();
         const MarketModelMultiProduct& hedge = composite_.item(1);
 
         Real maximumValue = QL_MIN_REAL;
@@ -75,43 +86,62 @@ namespace QuantLib {
             composite_.nextTimeStep(evolver_->currentState(),
                                     numberCashFlowsThisStep_,
                                     cashFlowsGenerated_);
-            Size numeraire = evolver_->numeraires()[thisStep];
 
             // First, we accumulate cash flows from both the
-            // unexercised product and the hedge
-            for (Size i=0; i<numberProducts_; ++i) {
-                // we discard cash flows coming from the rebate
-                if (i>=underlyingSize_ && i<underlyingSize_+rebateSize_)
-                    continue;
+            // product...
+            Real productCashFlows =
+                collectCashFlows(thisStep, 0, underlyingSize_);
+            Real exerciseValue =
+                collectCashFlows(thisStep,
+                                 underlyingSize_,
+                                 underlyingSize_+rebateSize_);
+            // ...and the hedge
+            Real hedgeCashFlows =
+                collectCashFlows(thisStep,
+                                 underlyingSize_+rebateSize_,
+                                 numberOfProducts_)
 
-                // for each cash flow...
-                const std::vector<MarketModelMultiProduct::CashFlow>& cashflows =
-                    cashFlowsGenerated_[i];
-                for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) {
-                    // ...convert the cash flow to numeraires.
-                    // This is done by calculating the number of
-                    // numeraire bonds corresponding to such cash flow...
-                    const MarketModelDiscounter& discounter =
-                        discounters_[cashflows[j].timeIndex];
-
-                    Real bonds = cashflows[j].amount *
-                        discounter.numeraireBonds(evolver_->currentState(),
-                                                  numeraire);
-
-                    // ...and adding the newly bought bonds to the number
-                    // of numeraires held.
-                    numerairesHeld += bonds/principalInNumerairePortfolio;
-                }
-            }
 
             // Second, we do the upper-bound thing
 
-            // ... hic sunt leones ...
+            // Here, we'll have to define a decorated evolver and a
+            // decorated composite such that their reset() method brings
+            // them to the current point rather than the beginning of
+            // the path.
+
+            // This allows us to write:
+            AccountingEngine engine(decoratedEvolver, decoratedComposite,
+                                    1.0); // This causes the result to
+                                          // be in units of numeraire
+            SequenceStatistics innerStats(decoratedHedge.numberOfProducts());
+            engine.multiplePathValues(innerStats, innerPaths);
+
+            const std::vector<Real>& values = innerStats.mean();
+            Real continuationValue =
+                std::accumulate(values.begin(),
+                                values.begin()+underlyingSize_+rebateSize_,
+                                0.0);
+            Real unexercisedHedgeValue =
+                std::accumulate(values.begin()+underlyingSize_+rebateSize_,
+                                values.end(),
+                                0.0);
 
 
+            // Now, we can calculate the total value of our hedged portfolio
+            Real portfolioValue;
+            if (strategy.exercise(currentState)) {
+
+                numerairesHeld += .../principalInNumerairePortfolio;
+                portfolioValue = numerairesHeld;
+            } else {
 
 
-            // maximumValue = std::max(maximumValue, ...);
+                numerairesHeld += .../principalInNumerairePortfolio;
+                portfolioValue = ...;
+            }
+
+
+            maximumValue = std::max(maximumValue, portfolioValue);
 
 
             // Lastly, we do the homework for next step
@@ -124,8 +154,8 @@ namespace QuantLib {
                 // the principal of the numeraire and updating the number
                 // of bonds in the numeraire portfolio accordingly.
 
-                Size nextNumeraire =
-                    evolver_->numeraires()[thisStep+1];
+                Size numeraire = evolver_->numeraires()[thisStep];
+                Size nextNumeraire = evolver_->numeraires()[thisStep+1];
 
                 principalInNumerairePortfolio *=
                     evolver_->currentState().discountRatio(numeraire,
@@ -139,12 +169,32 @@ namespace QuantLib {
         return make_pair(maximumValue, weight);
     }
 
-    void UpperBoundEngine::multiplePathValues(Statistics& stats,
-                                              Size numberOfPaths) {
-        for (Size i=0; i<numberOfPaths; ++i) {
-            std::pair<Real,Real> result = singlePathValue();
-            stats.add(result.first, result.second);
+
+    Real UpperBoundEngine::collectCashFlows(Size currentStep,
+                                            Size beginProduct,
+                                            Size endProduct) const {
+        Size numeraire = evolver_->numeraires()[currentStep];
+
+        Real numeraireUnits = 0.0;
+        // For each product in range...
+        for (Size i=beginProduct; i<endProduct; ++i) {
+            // ...and for each cash flow...
+            const std::vector<MarketModelMultiProduct::CashFlow>& cashflows =
+                cashFlowsGenerated_[i];
+            for (Size j=0; j<numberCashFlowsThisStep_[i]; ++j) {
+                // ...convert the cash flow to numeraires.  This is
+                // done by calculating the number of numeraire bonds
+                // corresponding to such cash flow...
+                const MarketModelDiscounter& discounter =
+                    discounters_[cashflows[j].timeIndex];
+                // ...and adding the newly bought bonds to the total
+                numeraireUnits += cashflows[j].amount *
+                    discounter.numeraireBonds(evolver_->currentState(),
+                                              numeraire);
+            }
         }
+        return numeraireUnits;
     }
 
 }
+
