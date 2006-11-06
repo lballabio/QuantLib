@@ -184,7 +184,7 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        discountingTermStructure_=discountingTermStructure;
+        discountingTermStructure_ = discountingTermStructure;
         return *this;
     }
 

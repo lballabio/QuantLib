@@ -39,7 +39,7 @@ namespace QuantLib {
               Integer settlementDays,
               const Currency& currency,
               const Calendar& calendar,
-              BusinessDayConvention convention,
+              BusinessDayConvention businessDayConvention,
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());

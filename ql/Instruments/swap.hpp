@@ -71,8 +71,7 @@ namespace QuantLib {
             return legNPV_[j];
         }
         const Leg& leg(Size j) const {
-            QL_REQUIRE(j<legs_.size(),
-                "leg: leg# " << j << " doesn't exist!");
+            QL_REQUIRE(j<legs_.size(), "leg# " << j << " doesn't exist!");
             return legs_[j];
         }
         const Handle<YieldTermStructure>& termStructure() const {
