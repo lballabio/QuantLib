@@ -146,9 +146,12 @@ void setup() {
 
     swaptionVolatilityMatrix_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(exercisePeriod, calendar_,Unadjusted, lengths,
+            SwaptionVolatilityMatrix(calendar_,
+                                     exercisePeriod,
+                                     lengths,
                                      volatilities,
-                                     iborIndex_->dayCounter())));
+                                     iborIndex_->dayCounter(),
+                                     Unadjusted)));
 
     swaptionVolatilityMatrix_.currentLink()->enableExtrapolation();
 

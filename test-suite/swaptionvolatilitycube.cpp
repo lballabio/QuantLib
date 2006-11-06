@@ -175,12 +175,12 @@ void setup() {
 
     atmVolMatrix_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(atmOptionTenors_,
-                                     calendar_,
-                                     optionBDC_,
+            SwaptionVolatilityMatrix(calendar_,
+                                     atmOptionTenors_,
                                      atmSwapTenors_,
                                      atmVolsHandle_,
-                                     dayCounter_)));
+                                     dayCounter_,
+                                     optionBDC_)));
 
     //swaptionvolcube
 
