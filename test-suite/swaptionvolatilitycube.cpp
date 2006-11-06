@@ -107,8 +107,8 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
                   BOOST_ERROR("\nrecovery of smile vol spreads failed:"
-                              "\n     expiry time = " << optionTenors_[i] <<
-                              "\n     swap length = " << swapTenors_[j] <<
+                              "\n    option tenor = " << optionTenors_[i] <<
+                              "\n      swap tenor = " << swapTenors_[j] <<
                               "\n      atm strike = " << io::rate(atmStrike) <<
                               "\n   strike spread = " << io::rate(strikeSpreads_[k]) <<
                               "\n         atm vol = " << io::volatility(atmVol) <<
