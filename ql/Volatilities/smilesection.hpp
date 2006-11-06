@@ -31,11 +31,17 @@ namespace QuantLib {
 
     class SmileSectionInterface {
       public:
+        //SmileSectionInterface(const Date&,
+        //                      const DayCounter&) {};
         virtual Real variance(Rate strike) const = 0;
         virtual Real volatility(Rate strike) const = 0;
         virtual ~SmileSectionInterface() {};
-        //virtual Date exerciseDate() const = 0;
+        //virtual const Date& exerciseDate() const { return exerciseDate_; }
         //virtual Time exerciseTime() const = 0;
+        //virtual const DayCounter& dayCounter() const { return dc_; }
+      //private:
+      //  Date exerciseDate_;
+      //  DayCounter dc_;
     };
 
 
@@ -45,8 +51,12 @@ namespace QuantLib {
     class InterpolatedSmileSection : public SmileSectionInterface {
       public:
         InterpolatedSmileSection(Time expiryTime,
-                     const std::vector<Rate>& strikes,
-                     const std::vector<Volatility>& volatilities);
+                                 const std::vector<Rate>& strikes,
+                                 const std::vector<Volatility>& volatilities);
+        //InterpolatedSmileSection(const Date&,
+        //                         const DayCounter&,
+        //                         const std::vector<Rate>& strikes,
+        //                         const std::vector<Volatility>& volatilities);
         Real variance(Rate strike) const;
         Real volatility(Rate strike) const;
     private:
@@ -61,6 +71,9 @@ namespace QuantLib {
       public:
         SabrSmileSection(const std::vector<Real>& sabrParameters,
                          Time timeToExpiry);
+        //SabrSmileSection(const std::vector<Real>& sabrParameters,
+        //                 const Date&,
+        //                 const DayCounter&);
         Real variance(Rate strike) const;
         Real volatility(Rate strike) const;
     private:
