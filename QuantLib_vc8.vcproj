@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 	>
@@ -6454,6 +6454,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\capletvariancecurve.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.hpp"
 				>
 			</File>
 			<File
