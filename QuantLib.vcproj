@@ -2155,6 +2155,12 @@
 				RelativePath=".\ql\Instruments\makecapfloor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\makecms.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\makecms.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Instruments\makevanillaswap.cpp">
 			</File>
 			<File
