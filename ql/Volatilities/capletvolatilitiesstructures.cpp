@@ -139,6 +139,9 @@ using namespace QuantLib;
         bilinearInterpolation_ = boost::shared_ptr<BilinearInterpolation>(
             new BilinearInterpolation(strikes_.begin(), strikes_.end(),
             tenorTimes_.begin(),tenorTimes_.end(), volatilities_));
+        maxStrike_ = strikes_.back();
+        minStrike_ = strikes_.front();
+        maxDate_ = referenceCaps.back().front()->lastFixingDate();
     }
 
 
@@ -158,16 +161,16 @@ using namespace QuantLib;
 
         // to be changed !
     Date BilinInterpCapletVolStructure::maxDate() const{
-        return Date(57264); };
+        return maxDate_; };
 
     DayCounter BilinInterpCapletVolStructure::
         dayCounter() const{ return dayCounter_;};
 
     Real BilinInterpCapletVolStructure::minStrike()
-        const {return 0;};
+        const {return minStrike_;};
 
     Real BilinInterpCapletVolStructure::maxStrike() 
-        const {return 10;};
+        const {return maxStrike_;};
 
     HybridCapletVolatilityStructure::HybridCapletVolatilityStructure(
         const Date& referenceDate, const DayCounter& dayCounter,

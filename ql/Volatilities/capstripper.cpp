@@ -30,12 +30,14 @@
 #include <ql/quote.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/analysis.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/schedule.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/Volatilities/hybridcapstripper.hpp>
 
 namespace QuantLib {
 
@@ -52,7 +54,7 @@ namespace QuantLib {
                                         std::vector<Real>(),
                                         std::vector<Spread>(),
                                         index_->dayCounter());
-    }
+        }
 
     CapsStripper::CapsStripper(
         const Calendar & calendar,
@@ -64,14 +66,13 @@ namespace QuantLib {
         const DayCounter& volatilityDayCounter,
         const boost::shared_ptr<Xibor>& index,
         const Handle< YieldTermStructure > termStructure,
-        Real impliedVolatilityAccuracy)
+        Real impliedVolatilityAccuracy,
+        Size maxEvaluations)
     : CapletVolatilityStructure(0, calendar),
       volatilityDayCounter_(volatilityDayCounter),
-      evaluationDate_(Settings::instance().evaluationDate()),
-      tenors_(tenors), tenorTimes_(tenors.size()),
-      strikes_(strikes),
-      volatilities_(tenors.size(), strikes.size()),
-      impliedVolatilityAccuracy_(impliedVolatilityAccuracy){
+      tenors_(tenors), strikes_(strikes),
+      impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
+      maxEvaluations_(maxEvaluations){
 
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
@@ -80,90 +81,65 @@ namespace QuantLib {
                    "mismatch between strikes(" << strikes.size() <<
                    ") and vol columns(" << vols[0].size() << ")");
 
-        // we create the caps we will need later on
-        LegHelper legHelper(evaluationDate_, calendar, fixingDays,
+        LegHelper legHelper(referenceDate(), calendar, fixingDays,
             convention, index);
-        // market data
         marketDataCap_.resize(tenors.size());
-        for (Size i = 0 ; i < tenorTimes_.size(); i++) {
-           FloatingLeg floatingLeg = legHelper.makeLeg(index->tenor(),
+        std::vector<FloatingLeg> floatingLegs(tenors_.size());
+        for (Size i = 0 ; i < tenors_.size(); i++) {
+            floatingLegs[i] = legHelper.makeLeg(index->tenor(),
                tenors[i]);
-           marketDataCap_[i].resize(strikes_.size());
+            Rate atmRate = Cashflows::atmRate(floatingLegs[i], termStructure);
+            marketDataCap_[i].resize(strikes_.size());
+
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
                    BlackCapFloorEngine(vols[i][j], volatilityDayCounter));
-               marketDataCap_[i][j] = boost::shared_ptr<Cap>(new
-                   Cap(floatingLeg, std::vector<Real>(1,strikes_[j]),
-                       termStructure, blackCapFloorEngine));
+               if (strikes_[j] < atmRate)
+                   marketDataCap_[i][j] = boost::shared_ptr<CapFloor>(new
+                       Floor(floatingLegs[i], std::vector<Real>(1,strikes_[j]),
+                           termStructure, blackCapFloorEngine));
+               else
+                    marketDataCap_[i][j] = boost::shared_ptr<CapFloor>(new
+                       Cap(floatingLegs[i], std::vector<Real>(1,strikes_[j]),
+                           termStructure, blackCapFloorEngine));
                registerWith(marketDataCap_[i][j]);
            }
         }
-        // stripped Caps
-        boost::shared_ptr<SimpleQuote> dummyQuote(new SimpleQuote(0.0));
-        Handle<Quote> dummyQuoteHandle(dummyQuote);
-        boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                   BlackCapFloorEngine(dummyQuoteHandle, volatilityDayCounter));
-        strippedCap_.resize(tenors.size()-1);
-        for (Size i = 0 ; i < strippedCap_.size(); i++) {
-           FloatingLeg floatingLeg = legHelper.makeLeg(tenors[i],tenors[i+1]);
-           strippedCap_[i].resize(strikes_.size());
+
+        parametrizedCapletVolStructure_ 
+           = boost::shared_ptr<BilinInterpCapletVolStructure>(
+            new BilinInterpCapletVolStructure(referenceDate(),
+                                              volatilityDayCounter,
+                                              marketDataCap_,
+                                              strikes));
+       Handle<CapletVolatilityStructure> bilinInterpCapletVolStructureHandle(
+           parametrizedCapletVolStructure_);
+        boost::shared_ptr<PricingEngine> calibBlackCapFloorEngine(new
+            BlackCapFloorEngine(bilinInterpCapletVolStructureHandle));
+        calibCap_.resize(tenors_.size());
+        for (Size i = 0 ; i < tenors_.size(); i++) {
+            calibCap_[i].resize(strikes_.size());
             for (Size j = 0 ; j < strikes_.size(); j++) {
-                strippedCap_[i][j] = boost::shared_ptr<Cap>(new
-                   Cap(floatingLeg, std::vector<Real>(1,strikes_[j]),
-                       termStructure, blackCapFloorEngine));
+                calibCap_[i][j] = boost::shared_ptr<CapFloor>(new
+                       CapFloor(*marketDataCap_[i][j]));
+                calibCap_[i][j]->setPricingEngine(calibBlackCapFloorEngine);
             }
-        }
-
-        // we store the times for which the volatility will be known
-        for (Size i = 0 ; i < tenors.size(); i++){
-            Date tenorDate = marketDataCap_[i][0]->lastFixingDate();
-            tenorTimes_[i] = volatilityDayCounter_.yearFraction(evaluationDate_,tenorDate);
-        }
-
-        const std::vector<boost::shared_ptr<Cap> >& lastCapFloorRow =
-            marketDataCap_.back();
-        boost::shared_ptr<CapFloor> lastCap = lastCapFloorRow.front();
-        boost::shared_ptr<CashFlow> lastCoupon(lastCap->floatingLeg().back());
-        boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCoupon);
-        maxDate_ = lastFloatingCoupon->fixingDate();
-        minStrike_ = strikes_.front();
-        maxStrike_ = strikes_.back();
+        } 
     }
 
 
     void CapsStripper::performCalculations () const {
-        static const Real vegaThreshold = 1e-4;
+        Matrix& volatilityParameters = 
+            parametrizedCapletVolStructure_->volatilityParameters();
+
         for (Size j = 0 ; j < strikes_.size(); j++){
-            Real previousCaplets = 0.0;
-            bool capVegaIsBigEnough = false;
-            for (Size i = 0 ; i < tenorTimes_.size(); i++) {
+            for (Size i = 0 ; i < tenors_.size(); i++) {
                 CapFloor & mktCap = *marketDataCap_[i][j];
                 Real capPrice = mktCap.NPV();
-                if (!capVegaIsBigEnough){
-                    Real vega = mktCap.vega();
-                    capVegaIsBigEnough = vega > vegaThreshold;
-                    if (capVegaIsBigEnough){
-                        Real vol = mktCap.impliedVolatility(
-                            capPrice, impliedVolatilityAccuracy_, 10000);
-                        for (Size k = 0; k<=i; ++k)
-                            volatilities_[k][j] = vol;
-                        previousCaplets = capPrice;
-                    }
-                } else {
-                   Real capletsPrice = capPrice - previousCaplets;
-                        volatilities_[i][j] = strippedCap_[i-1][j]->impliedVolatility(
-                            capletsPrice, impliedVolatilityAccuracy_, 1000);
-                   previousCaplets = capPrice;
-                }
-
+                fitVolatilityParameter(calibCap_[i][j], 
+                    volatilityParameters[i][j],
+                    capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
             }
-             QL_REQUIRE(capVegaIsBigEnough,
-                        "Unable to bootstrap Caps volatilities ! For each "
-                        "strike there must be at least one cap for which the "
-                        "vega is  superior to " << vegaThreshold <<
-                        ", this is not the case for the strike: " <<
-                        io::rate(strikes_[j]));
         }
     }
 
@@ -181,9 +157,6 @@ namespace QuantLib {
 
     Volatility CapsStripper::volatilityImpl(Time t, Rate r) const {
             calculate();
-            Size timeIndex = locateTime(t, tenorTimes_);
-            LinearInterpolation interpolator(strikes_.begin(), strikes_.end(),
-                                    volatilities_[timeIndex]);
-            return interpolator(r);
+            return parametrizedCapletVolStructure_->volatility(t, r, true);
     }
 }

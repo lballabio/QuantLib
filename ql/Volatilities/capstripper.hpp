@@ -35,12 +35,12 @@
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/schedule.hpp>
-
+#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 
 namespace QuantLib {
     
     typedef std::vector<boost::shared_ptr<CashFlow> > FloatingLeg;
-    typedef  std::vector<std::vector<boost::shared_ptr<Cap> > > CapMatrix;
+    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
      //! this class simplifies Cap instanciations
     class LegHelper{
@@ -79,7 +79,8 @@ namespace QuantLib {
                      const DayCounter& volatilityDayCounter,
                      const boost::shared_ptr<Xibor>& index,
                      const Handle< YieldTermStructure > termStructure,
-                     Real impliedVolatilityAccuracy = 1.0e-6
+                     Real impliedVolatilityAccuracy = 1.0e-6,
+                     Size maxEvaluations = 100
                      );
         //@}
         //! \name LazyObject interface
@@ -105,21 +106,21 @@ namespace QuantLib {
         const std::vector<Period>& tenors() { return tenors_; }
         const std::vector<Rate>& strikes() { return strikes_; }
         const CapMatrix& marketDataCap() { return marketDataCap_; }
-        const CapMatrix& strippedCap() { return strippedCap_; }
-        const Matrix& volatilities() { return volatilities_; }
-        Real impliedVolatilityAccuracy() {return impliedVolatilityAccuracy_; }
+        Real impliedVolatilityAccuracy() { return impliedVolatilityAccuracy_; }
+        boost::shared_ptr<ParametrizedCapletVolStructure>
+            parametrizedCapletVolStructure() {return parametrizedCapletVolStructure_;}
+
       protected:
           Volatility volatilityImpl(Time t, Rate r) const;
       private:
-        CapMatrix marketDataCap_, strippedCap_;
+        CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
-        Date evaluationDate_, maxDate_;
         std::vector<Period> tenors_;
-        std::vector<Time> tenorTimes_;
         std::vector<Rate> strikes_;
-        mutable Matrix volatilities_;
-        Rate minStrike_, maxStrike_;
         Real impliedVolatilityAccuracy_;
+        Size maxEvaluations_;
+        boost::shared_ptr<ParametrizedCapletVolStructure> 
+            parametrizedCapletVolStructure_;
     };
 
     inline DayCounter CapsStripper::dayCounter() const {
@@ -127,15 +128,15 @@ namespace QuantLib {
     }
 
     inline Date CapsStripper::maxDate() const {
-        return maxDate_;
+        return parametrizedCapletVolStructure_->maxDate();
     }
 
     inline Rate CapsStripper::minStrike() const {
-        return minStrike_;
+        return parametrizedCapletVolStructure_->minStrike();
     }
 
     inline Rate CapsStripper::maxStrike() const {
-        return maxStrike_;
+        return parametrizedCapletVolStructure_->maxStrike();
     }
 }
 

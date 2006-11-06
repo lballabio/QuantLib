@@ -87,51 +87,83 @@ void printFloatingLeg(const FloatingLeg& floatingLeg){
     std::cout << "---------------------" << std::endl;
 }
 
-void printCapsStripper(CapsStripper& capsStripper){
-    
-    const CapMatrix& marketDataCap = capsStripper.marketDataCap();
-    const CapMatrix& strippedCap = capsStripper.strippedCap();
-    const Matrix& volatilities = capsStripper.volatilities();
-    Size tenorsNb = marketDataCap.size();
-    Size strikesNb = marketDataCap.front().size();
-    Matrix mktCapPrices(tenorsNb, strikesNb);
-    Matrix strippedCapPrices(tenorsNb, strikesNb);
-    Matrix MktStrippeddiff(tenorsNb, strikesNb);
- 
-    for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
-        Real strippedPricesSum = 0;
-        for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
-            Real mktCapPrice = marketDataCap[tenorIndex][strikeIndex]->NPV();
-            mktCapPrices[tenorIndex][strikeIndex] = mktCapPrice;
-            Real strippedPrice; 
-            if (tenorIndex>0){
-                Cap& mktCap = *strippedCap[tenorIndex-1][strikeIndex];
-                boost::shared_ptr<SimpleQuote> 
-                    quote(new SimpleQuote(volatilities[tenorIndex][strikeIndex]));
-                boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
-                new BlackCapFloorEngine(Handle<Quote>(quote,true), dayCounter));
-                mktCap.setPricingEngine(blackCapFloorEngineConstantVolatility);
-                strippedPrice = mktCap.NPV();
-            }else{
-                strippedPrice = mktCapPrice;
-            }
-            strippedCapPrices[tenorIndex][strikeIndex] = strippedPrice;
-            strippedPricesSum += strippedPrice;
-            MktStrippeddiff[tenorIndex][strikeIndex]
-                = mktCapPrice - strippedPricesSum;
-        }
-    }
-    std::cout << "evaluationDate\t"
-              << Settings::instance().evaluationDate()<< std::endl;
-    std::cout << "Market Caps Prices: " << std::endl 
-              << mktCapPrices << std::endl;
-    std::cout << "Stripped Caps Prices: " << std::endl 
-              << strippedCapPrices << std::endl;
-    std::cout << "Market Stripped Caps diffs: " << std::endl 
-              << MktStrippeddiff << std::endl;
-    std::cout << "Max Market Stripped Caps diffs: " << std::endl 
-              << maxAbs(MktStrippeddiff) << std::endl;
-}
+//CapMatrix makeMarketDataCap(const std::vector<Period>& tenors,
+//                            const std::vector<Rate>& strikes,
+//                            const std::vector<std::vector<Handle<Quote> > >& vols,
+//                            const Handle< YieldTermStructure > termStructure,
+//                            const Xibor& index,
+//                            BusinessDayConvention convention){
+//    CapMatrix marketDataCap(tenors.size());
+//    FloatingLeg currentMarketCapLeg, previousMarketCapLeg, strippedCapLeg;
+//    Date startDate = referenceDate + index->tenor();
+//    Date endDate = referenceDate + tenors.front();
+//    for (Size i = 0 ; i < tenors.size(); i++) {
+//       Schedule schedule(startDate, endDate, index_->tenor(), calendar,
+//                  convention, convention, true, false);
+//       
+//       currentMarketCapLeg = ;
+//        strippedCapLeg.resize(
+//            currentMarketCapLeg.size() - previousMarketCapLeg.size());
+//
+//        previousMarketCapLeg = currentMarketCapLeg;
+//        if (i< tenors_.size()-1)
+//            FloatingLeg strippedCapLeg 
+//                = legHelper.makeLeg(tenors[i],tenors[i+1]);
+//        for (Size j = 0 ; j < strikes.size(); j++) {
+//           boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
+//           BlackCapFloorEngine(vols[i][j], volatilityDayCounter_));
+//           marketDataCap[i][j] = boost::shared_ptr<Cap>(new
+//               Cap(marketDataCapLeg, std::vector<Real>(1,strikes_[j]),
+//                   termStructure, blackCapFloorEngine));
+//        }
+//    }
+//    return marketDataCap;
+//};
+
+//void printCapsStripper(CapsStripper& capsStripper){
+//    
+//    const CapMatrix& marketDataCap = capsStripper.marketDataCap();
+//    Size tenorsNb = marketDataCap.size();
+//    Size strikesNb = marketDataCap.front().size();
+//    Matrix mktCapPrices(tenorsNb, strikesNb);
+//    Matrix strippedCapPrices(tenorsNb, strikesNb);
+//    Matrix MktStrippeddiff(tenorsNb, strikesNb);
+// 
+//    for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
+//        Real strippedPricesSum = 0;
+//        for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
+//            Real mktCapPrice = marketDataCap[tenorIndex][strikeIndex]->NPV();
+//            mktCapPrices[tenorIndex][strikeIndex] = mktCapPrice;
+//            Real strippedPrice; 
+//            if (tenorIndex>0){
+//                CapFloor& mktCap = *strippedCap[tenorIndex-1][strikeIndex];
+//                boost::shared_ptr<SimpleQuote> 
+//                    quote(new SimpleQuote(volatilities[tenorIndex][strikeIndex]));
+//                boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
+//                new BlackCapFloorEngine(Handle<Quote>(quote,true), dayCounter));
+//                mktCap.setPricingEngine(blackCapFloorEngineConstantVolatility);
+//                strippedPrice = mktCap.NPV();
+//            }else{
+//                strippedPrice = mktCapPrice;
+//            }
+//            strippedCapPrices[tenorIndex][strikeIndex] = strippedPrice;
+//            strippedPricesSum += strippedPrice;
+//            MktStrippeddiff[tenorIndex][strikeIndex]
+//                = mktCapPrice - strippedPricesSum;
+//        }
+//    }
+//    std::cout << "evaluationDate\t"
+//              << Settings::instance().evaluationDate()<< std::endl;
+//    std::cout << "Market Caps Prices: " << std::endl 
+//              << mktCapPrices << std::endl;
+//    std::cout << "Stripped Caps Prices: " << std::endl 
+//              << strippedCapPrices << std::endl;
+//    std::cout << "Market Stripped Caps diffs: " << std::endl 
+//              << MktStrippeddiff << std::endl;
+//    std::cout << "Max Market Stripped Caps diffs: " << std::endl 
+//              << maxAbs(MktStrippeddiff) << std::endl
+//              << "-----------------------" << std::endl;
+//}
 
 // set a Flat Volatility Term Structure at a given level
 void setFlatVolatilityTermStructure(Volatility flatVolatility){
@@ -224,15 +256,14 @@ void setMarketVolatilityTermStructure(){
 }
 
 
-void setup() {
+void setup(Real impliedVolatilityPrecision = 1e-5) {
 
     calendar = TARGET();
-    dayCounter = Actual365Fixed();
+    dayCounter = Actual360();
     fixingDays = 2;
     businessDayConvention = Unadjusted;
     Integer settlementDays = 2;
-    flatForwardRate = 0.03875825;
-    Real impliedVolatilityPrecision = 1e-6;
+    flatForwardRate = 0.04;
     forwardRate = boost::shared_ptr<Quote>(new SimpleQuote(flatForwardRate));
     forwardRateQuote.linkTo(forwardRate);
     myTermStructure = boost::shared_ptr<FlatForward>(
@@ -256,10 +287,14 @@ void setup() {
 
 void debug(){
     setMarketVolatilityTermStructure();
+    Volatility flatVolatility = .18;
+    //setFlatVolatilityTermStructure(flatVolatility);
     setup();
-    Settings::instance().evaluationDate() = Date(39023);
+    //Settings::instance().evaluationDate() = Date(39023);
     capsStripper->recalculate();
-    printCapsStripper(*capsStripper);    
+    //printCapsStripper(*capsStripper);
+    std::cout << capsStripper->parametrizedCapletVolStructure()
+        ->volatilityParameters();
 }
 
 /* We strip a flat volatility surface and we check if 
@@ -269,7 +304,7 @@ void CapsStripperTest::FlatVolatilityStripping() {
 
     BOOST_MESSAGE("Testing Flat Volatility Stripping...");
     QL_TEST_BEGIN
-    Volatility flatVolatility = .15;
+    Volatility flatVolatility = .18;
     setFlatVolatilityTermStructure(flatVolatility);
     setup();
     const CapMatrix& marketDataCap = capsStripper->marketDataCap();
@@ -283,7 +318,7 @@ void CapsStripperTest::FlatVolatilityStripping() {
             Volatility volatility = std::sqrt(blackVariance/tenorTime);
             Real relativeError = (volatility - flatVolatility)/flatVolatility *100;
 
-            if (std::fabs(relativeError)>1e-3)
+            if (std::fabs(relativeError)>1e-2)
                 BOOST_ERROR(   "tenor:\t" << tenors[tenorIndex]
                             << "\nstrike:\t" << strikes[strikeIndex]*100 << "%"
                             << "\nvolatility=:\t" << volatility
@@ -306,9 +341,10 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
     QL_TEST_BEGIN
 
     setMarketVolatilityTermStructure();
-    setup();
-    static const Real tolerance = 1e-4;
-    static const Real priceThreshold = 1e-4;
+    Real impliedVolatilityPrecision = 1e-20;
+    setup(impliedVolatilityPrecision);
+    static const Real tolerance = 1e-10;
+    static const Real priceThreshold = 1e-6;
     
     Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<BlackCapFloorEngine> strippedVolatilityBlackCapFloorEngine
@@ -328,23 +364,24 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
                     volatilityQuoteHandle[tenorIndex][strikeIndex], dayCounter));
             cap->setPricingEngine(blackCapFloorEngineConstantVolatility);
             Real priceFromConstantVolatilty = cap->NPV();
-            Real relativeError = (priceFromStrippedVolatilty - priceFromConstantVolatilty)
-                /priceFromConstantVolatilty;
+            Real absError = std::fabs(priceFromStrippedVolatilty - priceFromConstantVolatilty);
+            Real relativeError = absError/priceFromConstantVolatilty;
             bool strippedPriceIsAccurate;
             // if we test a short maturity the tolerance is increased because the 
             // vega might be too low so that we haven't stripped the volatility
             if (tenorIndex <=1)
-                strippedPriceIsAccurate = std::fabs(relativeError) < tolerance *1e2;
+                strippedPriceIsAccurate = relativeError < tolerance *1e2;
             else
-                strippedPriceIsAccurate = std::fabs(relativeError) < tolerance;
+                strippedPriceIsAccurate = relativeError < tolerance;
             // if prices are too low the relative discrepancy is not relevant
             bool priceIsBigEnough = priceFromConstantVolatilty > priceThreshold;
 
             if(!strippedPriceIsAccurate && priceIsBigEnough)
-                BOOST_FAIL("tenor: " << tenors[tenorIndex] <<
+                BOOST_FAIL("\ntenor: " << tenors[tenorIndex] <<
                            "\nstrike: " << io::rate(strikes[strikeIndex]) <<
                            "\nstripped: " << priceFromStrippedVolatilty * 1e4 <<
                            "\nconstant: " << priceFromConstantVolatilty * 1e4 <<
+                           "\nabs error: " << QL_SCIENTIFIC << absError << "\n"
                            "\nrel error: " << io::percent(relativeError) << "\n");
          }
     }

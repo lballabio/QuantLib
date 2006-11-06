@@ -118,6 +118,8 @@ namespace QuantLib {
         std::vector<Rate> strikes_;
         mutable Matrix volatilities_;
         boost::shared_ptr<BilinearInterpolation> bilinearInterpolation_;
+        Date maxDate_;
+        Rate maxStrike_, minStrike_;
     };
 
 
