@@ -123,43 +123,6 @@ namespace QuantLib {
     }
 
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                    const Date& today,
-                    const std::vector<Date>& dates,
-                    const std::vector<Period>& lengths,
-                    const Matrix& vols,
-                    const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
-      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
-      {
-        QL_REQUIRE(dates.size()==vols.rows(),
-            "mismatch between number of exercise dates ("
-            << dates.size() << ") and number of rows ("
-            << vols.rows() << ") in the vol matrix");
-        QL_REQUIRE(lengths.size()==vols.columns(),
-            "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
-            << vols.columns() << ") in the vol matrix");
-        optionTimes_.resize(optionDates_.size());
-        swapLengths_.resize(swapTenors_.size());
-        Size i;
-        for (i=0; i<optionDates_.size(); i++) {
-            optionTimes_[i] = timeFromReference(optionDates_[i]);
-        }
-
-        Date startDate = optionDates_[0]; // as good as any
-        for (i=0; i<swapTenors_.size(); i++) {
-            Date endDate = startDate + swapTenors_[i];
-            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
-        }
-        interpolation_ =
-            BilinearInterpolation(swapLengths_.begin(),
-                                  swapLengths_.end(),
-                                  optionTimes_.begin(),
-                                  optionTimes_.end(),
-                                  volatilities_);
-    }
-
-    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                        const std::vector<Date>& dates,
                        const std::vector<Period>& lengths,
                        const Matrix& vols,
@@ -197,9 +160,44 @@ namespace QuantLib {
     }
     #endif
 
+    SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
+                    const Date& today,
+                    const std::vector<Date>& dates,
+                    const std::vector<Period>& lengths,
+                    const Matrix& vols,
+                    const DayCounter& dayCounter)
+    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
+      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
+      {
+        QL_REQUIRE(dates.size()==vols.rows(),
+            "mismatch between number of exercise dates ("
+            << dates.size() << ") and number of rows ("
+            << vols.rows() << ") in the vol matrix");
+        QL_REQUIRE(lengths.size()==vols.columns(),
+            "mismatch between number of tenors ("
+            << lengths.size() << ") and number of rows ("
+            << vols.columns() << ") in the vol matrix");
+        optionTimes_.resize(optionDates_.size());
+        swapLengths_.resize(swapTenors_.size());
+        Size i;
+        for (i=0; i<optionDates_.size(); i++) {
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+        }
 
+        Date startDate = optionDates_[0]; // as good as any
+        for (i=0; i<swapTenors_.size(); i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
+        }
+        interpolation_ =
+            BilinearInterpolation(swapLengths_.begin(),
+                                  swapLengths_.end(),
+                                  optionTimes_.begin(),
+                                  optionTimes_.end(),
+                                  volatilities_);
+    }
 
-    //! floating reference date, floating market data
+    // floating reference date, floating market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Calendar& calendar,
                     const std::vector<Period>& optionTenors,
@@ -238,7 +236,7 @@ namespace QuantLib {
     }
 
 
-    //! fixed reference date, floating market data
+    // fixed reference date, floating market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Date& referenceDate,
                     const Calendar& calendar,
@@ -278,7 +276,7 @@ namespace QuantLib {
     }
 
 
-    //! floating reference date, fixed market data
+    // floating reference date, fixed market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Calendar& calendar,
                         const std::vector<Period>& optionTenors,
@@ -312,7 +310,7 @@ namespace QuantLib {
             volatilities_);
     }
 
-    //! fixed reference date, fixed market data
+    // fixed reference date, fixed market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Date& referenceDate,
                         const Calendar& calendar,

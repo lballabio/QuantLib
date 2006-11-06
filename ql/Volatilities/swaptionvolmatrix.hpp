@@ -85,24 +85,29 @@ namespace QuantLib {
                     const Matrix& volatilities,
                     const DayCounter& dayCounter = Actual365Fixed(),
                     const BusinessDayConvention bdc = Following);
+        //! \deprecated alternative constructors instead
+        SwaptionVolatilityMatrix(const Date& referenceDate,
+                                 const std::vector<Date>& exerciseDates,
+                                 const std::vector<Period>& lengths,
+                                 const Matrix& volatilities,
+                                 const DayCounter& dayCounter);
+
         #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated alternative constructors instead
         SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
                                  const Calendar& calendar,
                                  const BusinessDayConvention bdc,
                                  const std::vector<Period>& tenors,
                                  const std::vector<std::vector<Handle<Quote> > >& vols,
                                  const DayCounter& dayCounter);
+        //! \deprecated alternative constructors instead
         SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
                                  const Calendar& calendar,
                                  const BusinessDayConvention bdc,
                                  const std::vector<Period>& tenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& exerciseDates,
-                                 const std::vector<Period>& lengths,
-                                 const Matrix& volatilities,
-                                 const DayCounter& dayCounter);
+        //! \deprecated alternative constructors instead
         SwaptionVolatilityMatrix(const std::vector<Date>& exerciseDates,
                                  const std::vector<Period>& tenors,
                                  const Matrix& volatilities,
