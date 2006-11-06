@@ -29,6 +29,8 @@
 
 namespace QuantLib {
 
+    //! interest rate volatility smile section
+    /*! This abstract class provides volatility smile section interface */
     class SmileSectionInterface {
       public:
         //SmileSectionInterface(const Date&,
@@ -45,9 +47,6 @@ namespace QuantLib {
     };
 
 
-    //! interest rate volatility smile section
-    /*! This class provides the volatility smile section
-    */
     class InterpolatedSmileSection : public SmileSectionInterface {
       public:
         InterpolatedSmileSection(Time expiryTime,
@@ -80,7 +79,6 @@ namespace QuantLib {
         Time timeToExpiry_;
         Real alpha_, beta_, nu_, rho_, forward_;
     };
-
 
 }
 
