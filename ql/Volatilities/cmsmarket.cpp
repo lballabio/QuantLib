@@ -18,6 +18,7 @@
 */
 
 
+#include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Volatilities/cmsmarket.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Indexes/euriborswapfixa.hpp>
