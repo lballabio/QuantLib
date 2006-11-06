@@ -67,13 +67,21 @@ namespace QuantLib {
         bids_ = Matrix(nExercise_, nLengths_, 0.);
         asks_ = Matrix(nExercise_, nLengths_, 0.);
         mids_ = Matrix(nExercise_, nLengths_, 0.);
-        prices_= Matrix(nExercise_, nLengths_, 0.);
-        impliedCmsSpreads_ = Matrix(nExercise_, nLengths_, 0.);
+        modelCmsSpreads_ = Matrix(nExercise_, nLengths_, 0.);
         spreadErrors_ = Matrix(nExercise_, nLengths_, 0.);
-        midPrices_ = Matrix(nExercise_, nLengths_, 0.);
-        askPrices_ = Matrix(nExercise_, nLengths_, 0.);
-        bidPrices_ = Matrix(nExercise_, nLengths_, 0.);
-        forwardMidPrices_ = Matrix(nExercise_, nLengths_, 0.);
+       
+        prices_= Matrix(nExercise_, nLengths_, 0.);        
+        marketBidCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        marketAskCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        marketMidCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);        
+        modelCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        priceErrors_ = Matrix(nExercise_, nLengths_, 0.);
+
+        marketBidForwardCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        marketAskForwardCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        marketMidForwardCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        modelForwardCmsLegValues_ = Matrix(nExercise_, nLengths_, 0.);
+        forwardPriceErrors_ = Matrix(nExercise_, nLengths_, 0.);
 
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA2Y(yieldTermStructure_)));
         swapIndices_.push_back(boost::shared_ptr<SwapIndex>(new EuriborSwapFixA5Y(yieldTermStructure_)));
@@ -123,13 +131,24 @@ namespace QuantLib {
                 swapTmp.push_back(
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, cmsTmp.back(), floatingTmp.back()))
                 );
-                prices_[i][j] = swapTmp.back()->NPV();
+                
+                // Spread errors valuation 
+                prices_[i][j] = swapTmp.back()->NPV();     
                 Real PV01 = swapTmp.back()->legBPS(1);
-                impliedCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;;
-                spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
-                midPrices_[i][j] = prices_[i][j]+PV01*mids_[i][j]*10000;
-                askPrices_[i][j] = prices_[i][j]+PV01*asks_[i][j]*10000;
-                bidPrices_[i][j] = prices_[i][j]+PV01*bids_[i][j]*10000;
+                modelCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;
+
+                spreadErrors_[i][j] = modelCmsSpreads_[i][j]-mids_[i][j];
+                
+                // Price errors valuation
+                 Real floatingLegValueWithoutSpread = swapTmp.back()->legNPV(1);
+                marketBidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*bids_[i][j]*10000);
+                marketAskCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*asks_[i][j]*10000);
+                marketMidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*mids_[i][j]*10000);
+
+                modelCmsLegValues_[i][j] = swapTmp.back()->legNPV(0);                
+
+                priceErrors_[i][j] = modelCmsLegValues_[i][j]-marketMidCmsLegValues_[i][j];
+
             }
             cmsLegs_.push_back(cmsTmp);
             floatingLegs_.push_back(floatingTmp);
@@ -182,17 +201,31 @@ namespace QuantLib {
                                     floatingIndex_->dayCounter());
                 forwardSwap =
                     boost::shared_ptr<Swap>(new Swap(yieldTermStructure_, forwardCms, forwardFloating));
-
-                Real valueOfCmsLeg = forwardSwap->legNPV(0);
+                
+                // ForwardPrice errors valuation
                 if(i==0){
-                    forwardMidPrices_[i][j] = valueOfCmsLeg + 
-                        swaps_[i][j]->legNPV(1)+swaps_[i][j]->legBPS(1)*mids_[i][j]*10000;
+                    marketBidForwardCmsLegValues_[i][j] = 
+                        -(swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*bids_[i][j]*10000);
+                    marketAskForwardCmsLegValues_[i][j] = 
+                        -(swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*asks_[i][j]*10000);
+                    marketMidForwardCmsLegValues_[i][j] = 
+                        -(swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000);
                 }
                 else{
-                    forwardMidPrices_[i][j] = valueOfCmsLeg + 
-                        (swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000)-
-                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*mids_[i-1][j]*10000);
+                    marketBidForwardCmsLegValues_[i][j] = 
+                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*bids_[i][j]*10000)-
+                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*bids_[i-1][j]*10000));
+                    marketAskForwardCmsLegValues_[i][j] = 
+                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*asks_[i][j]*10000)-
+                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*asks_[i-1][j]*10000));
+                    marketMidForwardCmsLegValues_[i][j] = 
+                        -((swaps_[i][j]->legNPV(1) + swaps_[i][j]->legBPS(1)*mids_[i][j]*10000)-
+                        (swaps_[i-1][j]->legNPV(1) + swaps_[i-1][j]->legBPS(1)*mids_[i-1][j]*10000));
+
                 }
+                modelForwardCmsLegValues_[i][j] = forwardSwap->legNPV(0);
+
+                forwardPriceErrors_[i][j]= modelForwardCmsLegValues_[i][j]-marketMidForwardCmsLegValues_[i][j];
             }
         }
      }
@@ -223,15 +256,26 @@ namespace QuantLib {
                                     std::vector<double>(nCoupons, 1.),
                                     std::vector<double>(nCoupons, 0.),
                                     floatingIndex_->dayCounter());
+                
                 swaps_[i][j] = boost::shared_ptr<Swap>(
                     new Swap(yieldTermStructure_, cmsLegs_[i][j], floatingLegs_[i][j]));
+                
+                // Spread errors valuation
                 prices_[i][j] = swaps_[i][j]->NPV();
                 Real PV01 = swaps_[i][j]->legBPS(1);
-                impliedCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;;
-                spreadErrors_[i][j] = impliedCmsSpreads_[i][j]-mids_[i][j];
-                midPrices_[i][j] = prices_[i][j]+PV01*mids_[i][j]*10000;
-                askPrices_[i][j] = prices_[i][j]+PV01*asks_[i][j]*10000;
-                bidPrices_[i][j] = prices_[i][j]+PV01*bids_[i][j]*10000;
+                modelCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;
+
+                spreadErrors_[i][j] = modelCmsSpreads_[i][j]-mids_[i][j];
+                
+                // Price errors valuation
+                Real floatingLegValueWithoutSpread = swaps_[i][j]->legNPV(1);
+                marketBidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*bids_[i][j]*10000);
+                marketAskCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*asks_[i][j]*10000);
+                marketMidCmsLegValues_[i][j] = -(floatingLegValueWithoutSpread + PV01*mids_[i][j]*10000);
+                
+                modelCmsLegValues_[i][j] = swaps_[i][j]->legNPV(0);  
+                
+                priceErrors_[i][j] = modelCmsLegValues_[i][j]-marketMidCmsLegValues_[i][j];
             }
         }
         createForwardStartingCms();
@@ -256,7 +300,7 @@ namespace QuantLib {
         for(Size i=0;i<nExercise_;i++){
             for(Size j=0;j<nLengths_;j++){
                 count++;
-                error+=fictitiousNominal*weights[i][j]*midPrices_[i][j]*midPrices_[i][j];
+                error+=fictitiousNominal*weights[i][j]*priceErrors_[i][j]*priceErrors_[i][j];
             }
         }
         error=std::sqrt(error/count);
@@ -270,7 +314,7 @@ namespace QuantLib {
         for(Size i=0;i<nExercise_;i++){
             for(Size j=0;j<nLengths_;j++){
                 count++;
-                error+=fictitiousNominal*weights[i][j]*forwardMidPrices_[i][j]*forwardMidPrices_[i][j];
+                error+=fictitiousNominal*weights[i][j]*forwardPriceErrors_[i][j]*forwardPriceErrors_[i][j];
             }
         }
         error=std::sqrt(error/count);
@@ -278,30 +322,39 @@ namespace QuantLib {
     }
 
     Matrix CmsMarket::browse() const{
-        Matrix result(nExercise_*nLengths_,15,0.);
+        Matrix result(nExercise_*nLengths_,18,0.);
 	        for(Size j=0;j<nLengths_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nLengths_+i][0]= lengths_[j].length();
                 result[j*nLengths_+i][1]= expiries_[i].length();
+               
+                // Spreads
                 result[j*nLengths_+i][2]= bids_[i][j]*10000;
                 result[j*nLengths_+i][3]= asks_[i][j]*10000;
                 result[j*nLengths_+i][4]= mids_[i][j]*10000;
-                result[j*nLengths_+i][5]= impliedCmsSpreads_[i][j]*10000;
+                result[j*nLengths_+i][5]= modelCmsSpreads_[i][j]*10000;
                 result[j*nLengths_+i][6]= spreadErrors_[i][j]*10000;
-                if(impliedCmsSpreads_[i][j]>asks_[i][j]){ 
-                    result[j*nLengths_+i][7]= (impliedCmsSpreads_[i][j]-asks_[i][j])*10000;
+                if(modelCmsSpreads_[i][j]>asks_[i][j]){ 
+                    result[j*nLengths_+i][7]= (modelCmsSpreads_[i][j]-asks_[i][j])*10000;
                 }
-                else if(impliedCmsSpreads_[i][j]<bids_[i][j]){
-                    result[j*nLengths_+i][7]= (bids_[i][j]-impliedCmsSpreads_[i][j])*10000;
+                else if(modelCmsSpreads_[i][j]<bids_[i][j]){
+                    result[j*nLengths_+i][7]= (bids_[i][j]-modelCmsSpreads_[i][j])*10000;
                 }
                 else{ result[j*nLengths_+i][7]= 0.; } 
-                result[j*nLengths_+i][8]= swaps_[i][j]->legNPV(0);
-                result[j*nLengths_+i][9]= swaps_[i][j]->legNPV(1);
-                result[j*nLengths_+i][10]= prices_[i][j];
-                result[j*nLengths_+i][11]= bidPrices_[i][j];
-                result[j*nLengths_+i][12]= askPrices_[i][j];
-                result[j*nLengths_+i][13]= midPrices_[i][j];
-               result[j*nLengths_+i][14]= forwardMidPrices_[i][j];
+                
+                // Prices of cms
+                result[j*nLengths_+i][8]= marketBidCmsLegValues_[i][j];
+                result[j*nLengths_+i][9]= marketAskCmsLegValues_[i][j];
+                result[j*nLengths_+i][10]= marketMidCmsLegValues_[i][j];
+                result[j*nLengths_+i][11]= modelCmsLegValues_[i][j];
+                result[j*nLengths_+i][12]= priceErrors_[i][j];
+                
+                // Prices of forward cms
+                result[j*nLengths_+i][13]= marketBidForwardCmsLegValues_[i][j];
+                result[j*nLengths_+i][14]= marketAskForwardCmsLegValues_[i][j];
+                result[j*nLengths_+i][15]= marketMidForwardCmsLegValues_[i][j];
+                result[j*nLengths_+i][16]= modelForwardCmsLegValues_[i][j];
+                result[j*nLengths_+i][17]= forwardPriceErrors_[i][j];
 
             }   
         }  

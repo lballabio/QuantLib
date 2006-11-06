@@ -98,7 +98,10 @@ namespace QuantLib {
         //! \name LazyObject interface
         //@{
         void performCalculations() const;
-        void update() { LazyObject::update(); };
+        void update() { 
+            TermStructure::update();
+            LazyObject::update();
+        };
         //@}
         //! \name SwaptionVolatilityCube interface
         //@{
@@ -141,7 +144,7 @@ namespace QuantLib {
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
     };
-
+    
 }
 
 #endif

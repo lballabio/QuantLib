@@ -112,13 +112,15 @@ namespace QuantLib {
 
         const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
 
+        std::vector<Real> strikes(strikeSpreads_.size());
+        std::vector<Real> volatilities(strikeSpreads_.size());
+
         for (Size j=0; j<exerciseTimes.size(); j++) {
             for (Size k=0; k<timeLengths.size(); k++) {
                 Rate atmForward = atmStrike(exerciseDates[j], swapTenors[k]);
-                std::vector<Real> strikes, volatilities;
                 for (Size i=0; i<nStrikes_; i++){
-                    strikes.push_back(atmForward+strikeSpreads_[i]);
-                    volatilities.push_back(tmpMarketVolCube[i][j][k]);
+                    strikes[i] = atmForward+strikeSpreads_[i];
+                    volatilities[i] = tmpMarketVolCube[i][j][k];
                 }
 
                 const std::vector<Real>& guess = parametersGuess_.operator()(
@@ -172,7 +174,8 @@ namespace QuantLib {
         return sabrParametersCube;
 
     }
-
+    
+    
     void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
 
         // NO!!!!!!
@@ -264,9 +267,9 @@ namespace QuantLib {
         Time atmExerciseTime = p.first, atmTimeLength = p.second;
 
         std::vector<Real> result;
-        std::vector<Time> exerciseTimes(sparseParameters_.expiries());
-        std::vector<Time> timeLengths(sparseParameters_.lengths());
-        const std::vector<Date>& exerciseDates =
+        const std::vector<Time>& exerciseTimes(sparseParameters_.expiries());
+        const std::vector<Time>& timeLengths(sparseParameters_.lengths());
+        const std::vector<Date>& exerciseDates = 
             sparseParameters_.exerciseDates();
         const std::vector<Period>& swapTenors = sparseParameters_.swapTenors();
 

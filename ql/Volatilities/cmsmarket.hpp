@@ -55,7 +55,7 @@ namespace QuantLib {
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
 
-        Matrix impliedCmsSpreads(){return impliedCmsSpreads_;};
+        Matrix impliedCmsSpreads(){return modelCmsSpreads_;};
         Matrix spreadErrors(){return spreadErrors_;};
         Matrix browse() const;
  
@@ -66,16 +66,42 @@ namespace QuantLib {
         Size nExercise_;
         Size nLengths_;
 
+        // market bid spreads
         Matrix bids_;
+        // market ask spreads
         Matrix asks_;
+        // market mid spreads
         Matrix mids_;
-        Matrix impliedCmsSpreads_;
+        // Implied spreads to model prices
+        Matrix modelCmsSpreads_;
+        // Differences between implied and mid spreads 
         Matrix spreadErrors_;
         
-        Matrix bidPrices_;
-        Matrix askPrices_;
-        Matrix midPrices_, forwardMidPrices_;
-        Matrix prices_;
+        // prices of constant maturity swaps with spread = 0
+        Matrix prices_;           
+        // market prices of Cms Leg corrisponding to bid spreads
+        Matrix marketBidCmsLegValues_;
+        // market prices of Cms Leg corrisponding to ask spreads
+        Matrix marketAskCmsLegValues_;
+        // market prices of Cms Leg corrisponding to mid spreads
+        Matrix marketMidCmsLegValues_;
+        // model prices of Cms Leg corrisponding to mid spreads
+        Matrix modelCmsLegValues_;
+        // Differences between modelCmsLegValue and marketMidCmsLegValue_ 
+        Matrix priceErrors_;
+
+
+        // market prices of Forward Cms Leg corrisponding to bid spreads
+        Matrix marketBidForwardCmsLegValues_; 
+        // market prices of Forward Cms Leg corrisponding to ask spreads
+        Matrix marketAskForwardCmsLegValues_;
+        // market prices of Forward Cms Leg corrisponding to mid spreads
+        Matrix marketMidForwardCmsLegValues_;
+        // model prices of Forward Cms Leg corrisponding to mid spreads
+        Matrix modelForwardCmsLegValues_;
+        // Differences between modelForwardCmsLegValues and marketMidCmsLegValues 
+        Matrix forwardPriceErrors_;
+
 
         Date referenceDate_; 
         Date effectiveDate_;
