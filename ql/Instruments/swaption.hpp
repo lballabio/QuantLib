@@ -38,6 +38,17 @@ namespace QuantLib {
         enum Type { Physical, Cash };
     };
 
+    inline std::ostream& operator<<(std::ostream& out, Settlement::Type type) {
+        switch (type) {
+          case Settlement::Physical:
+            return out << "delivery";
+          case Settlement::Cash:
+            return out << "cash";
+          default:
+            QL_FAIL("unknown settlement type");
+        }
+    }
+
     //! %Swaption class
     /*! \ingroup instruments
 
@@ -78,6 +89,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Settlement::Type settlementType() const { return settlementType_; }
+        VanillaSwap::Type type() const { return swap_->type(); }
         const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {
             return swap_;
         }
