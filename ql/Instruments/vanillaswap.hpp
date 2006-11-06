@@ -171,6 +171,16 @@ namespace QuantLib {
         return type_;
     }
 
+    inline std::ostream& operator<<(std::ostream& out, VanillaSwap::Type type) {
+        switch (type) {
+          case VanillaSwap::Payer:
+            return out << "payer";
+          case VanillaSwap::Receiver:
+            return out << "receiver";
+          default:
+            QL_FAIL("unknown option type");
+        }
+    }
 
 }
 
