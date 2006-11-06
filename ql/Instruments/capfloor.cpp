@@ -96,9 +96,7 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate() const {
-        Real bps = Cashflows::bps(floatingLeg_, termStructure_);
-        Real npv = Cashflows::npv(floatingLeg_, termStructure_);
-        return 1.0e-4*npv/bps;
+        return Cashflows::atmRate(floatingLeg_, termStructure_);
     }
 
     bool CapFloor::isExpired() const {

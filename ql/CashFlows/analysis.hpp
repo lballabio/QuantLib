@@ -136,9 +136,19 @@ namespace QuantLib {
         */
         static Real convexity(const std::vector<boost::shared_ptr<CashFlow> >&,
                               const InterestRate& y,
-                              Date settlementDate = Date());
+                              Date settlementDate = Date()); 
+        //! At The Money Rate of the cash flows.
+        /*! The result is the fixed rate for which an equivalent vector 
+            of fixed cash flows has the same NPV according
+            to the given term structure.
+        */
+        static Rate atmRate(
+            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+            const Handle<YieldTermStructure>& termStructure);
     };
 
+   
+    
 }
 
 
