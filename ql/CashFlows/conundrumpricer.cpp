@@ -96,16 +96,16 @@ namespace QuantLib {
         const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
         switch (modelOfYieldCurve_) {
-            case GFunctionFactory::standard:
+            case GFunctionFactory::Standard:
                 gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
                 break;
-            case GFunctionFactory::exactYield:
+            case GFunctionFactory::ExactYield:
                 gFunction_ = GFunctionFactory::newGFunctionExactYield(coupon);
                 break;
-            case GFunctionFactory::parallelShifts:
+            case GFunctionFactory::ParallelShifts:
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.0);
                 break;
-            case GFunctionFactory::nonParallelShifts:
+            case GFunctionFactory::NonParallelShifts:
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, coupon.meanReversion());
                 break;
             default:

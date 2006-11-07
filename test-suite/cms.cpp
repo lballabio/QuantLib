@@ -272,12 +272,10 @@ void setup() {
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
     //swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
-    {
-        modelOfYieldCurves_.push_back(GFunctionFactory::standard);
-        modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
-        modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
-        modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
-    }
+    modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
+    modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
+    modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
+    modelOfYieldCurves_.push_back(GFunctionFactory::NonParallelShifts);
 }
 
 
@@ -431,10 +429,10 @@ void CmsTest::testCmsSwap() {
     QL_TEST_SETUP
 
     modelOfYieldCurves_.clear();
-    //  modelOfYieldCurves_.push_back(GFunctionFactory::standard);
-    //  modelOfYieldCurves_.push_back(GFunctionFactory::exactYield);
-    modelOfYieldCurves_.push_back(GFunctionFactory::parallelShifts);
-    modelOfYieldCurves_.push_back(GFunctionFactory::nonParallelShifts);
+    //  modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
+    //  modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
+    modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
+    modelOfYieldCurves_.push_back(GFunctionFactory::NonParallelShifts);
 
     std::vector<Size> swapLengths;
     swapLengths.push_back(1);

@@ -67,11 +67,11 @@ namespace QuantLib {
 
     class GFunctionFactory {
       public:
-        enum ModelOfYieldCurve { standard,
-                                 exactYield,
-                                 parallelShifts,
-                                 nonParallelShifts };
-
+        enum ModelOfYieldCurve { Standard,
+                                 ExactYield,
+                                 ParallelShifts,
+                                 NonParallelShifts
+        };
         static boost::shared_ptr<GFunction>
         newGFunctionStandard(Size q,
                              Real delta,
@@ -213,8 +213,7 @@ namespace QuantLib {
     class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
       public:
         ConundrumPricerByNumericalIntegration(
-            const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve =
-                                                  GFunctionFactory::standard,
+            const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
             Real lowerLimit = 0.0,
             Real upperLimit = 1.0);
       private:
@@ -271,8 +270,7 @@ namespace QuantLib {
     class ConundrumPricerByBlack : public ConundrumPricer {
       public:
         ConundrumPricerByBlack(
-                    GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve =
-                                                 GFunctionFactory::standard);
+            GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
       protected:
         Real optionLetPrice(Option::Type optionType,
                             Real strike) const;
