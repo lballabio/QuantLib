@@ -1,6 +1,6 @@
 /*
- Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2006 Mario Pucci
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,8 +30,8 @@
 #include <ql/Volatilities/smilesection.hpp>
 
 
-namespace QuantLib
-{
+namespace QuantLib {
+
 //===========================================================================//
 //                          BlackVanillaOptionPricer                         //
 //===========================================================================//
@@ -82,16 +82,15 @@ namespace QuantLib
         max_ = coupon_->cap();
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
+
         const Size q = swapIndex->fixedLegFrequency();
-
         const Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
-
-        const DayCounter dc(swapIndex->dayCounter());
+        const DayCounter dc = swapIndex->dayCounter();
+        //const DayCounter dc = coupon.dayCounter();
         const Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
-                                         swap->startDate());
+                                               swap->startDate());
         const Time swapFirstPaymentTime =
-            dc.yearFraction(rateCurve_->referenceDate(),
-                            schedule.date(1));
+            dc.yearFraction(rateCurve_->referenceDate(), schedule.date(1));
         const Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                            paymentDate_);
         const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
@@ -104,7 +103,7 @@ namespace QuantLib
                 gFunction_ = GFunctionFactory::newGFunctionExactYield(coupon);
                 break;
             case GFunctionFactory::parallelShifts:
-                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.);
+                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.0);
                 break;
             case GFunctionFactory::nonParallelShifts:
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, coupon.meanReversion());
@@ -382,7 +381,9 @@ namespace QuantLib
             swapIndex->fixedRateSchedule(coupon.fixingDate());
         const boost::shared_ptr<YieldTermStructure> rateCurve =
             swapIndex->termStructure();
+
         const DayCounter dc = swapIndex->dayCounter();
+        //const DayCounter dc = coupon.dayCounter();
 
         Real swapStartTime = dc.yearFraction(rateCurve->referenceDate(),
                                              schedule.startDate());
@@ -461,9 +462,11 @@ namespace QuantLib
 //                            GFunctionWithShifts                            //
 //===========================================================================//
 
-    GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CMSCoupon& coupon,
-        Real meanReversion) : meanReversion_(meanReversion), calibratedShift_(.03),
-        tmpRs_(10000000.), accuracy_( 1.e-14) {
+    GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(
+                    const CMSCoupon& coupon,
+                    Real meanReversion)
+    : meanReversion_(meanReversion), calibratedShift_(0.03),
+      tmpRs_(10000000.0), accuracy_( 1.0e-14) {
 
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const boost::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
@@ -477,7 +480,8 @@ namespace QuantLib
             swapIndex->fixedRateSchedule(coupon.fixingDate());
         const boost::shared_ptr<YieldTermStructure> rateCurve =
             swapIndex->termStructure();
-        const DayCounter dc(swapIndex->dayCounter());
+        const DayCounter dc = swapIndex->dayCounter();
+        //const DayCounter dc = coupon.dayCounter();
 
         swapStartTime_ = dc.yearFraction(rateCurve->referenceDate(),
                                          schedule.startDate());
