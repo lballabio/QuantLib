@@ -21,6 +21,7 @@
 #define quantlib_indexes_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Indexes/core.hpp>
 
 #include <ql/Indexes/audlibor.hpp>

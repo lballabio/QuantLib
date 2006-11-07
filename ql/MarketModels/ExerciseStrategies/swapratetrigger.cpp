@@ -57,7 +57,7 @@ namespace QuantLib {
         return swapTriggers_[currentIndex_-1]<currentSwapRate;
     }
 
-    void SwapRateTrigger::nextStep(const CurveState& currentState){
+    void SwapRateTrigger::nextStep(const CurveState&) {
         ++currentIndex_;
     }
 

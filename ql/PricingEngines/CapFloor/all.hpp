@@ -20,6 +20,8 @@
 #ifndef quantlib_pricing_engines_capfloor_all_hpp
 #define quantlib_pricing_engines_capfloor_all_hpp
 
+#include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>

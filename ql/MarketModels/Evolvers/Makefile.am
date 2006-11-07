@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels/Evolvers
 
 include_HEADERS = \
+	all.hpp \
 	forwardrateconstrainedeuler.hpp \
 	forwardrateeulerevolver.hpp \
 	forwardrateipcevolver.hpp \
@@ -16,5 +17,5 @@ libMarketModelsEvolvers_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsEvolvers.la
 
-#EXTRA_DIST = makefile.mak
+EXTRA_DIST = makefile.mak
 

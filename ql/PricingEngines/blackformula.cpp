@@ -379,7 +379,7 @@ namespace QuantLib {
         black_.DXDstrike_ = 0.0;
     }
 
-    void BlackFormula::Calculator::visit(SuperSharePayoff& payoff) {
+    void BlackFormula::Calculator::visit(SuperSharePayoff&) {
         QL_FAIL("binary super-share payoff not handled yet");
     }
 

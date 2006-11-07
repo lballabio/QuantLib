@@ -21,11 +21,12 @@
 #define quantlib_indexes_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
+#include <ql/Indexes/libor.hpp>
 #include <ql/Indexes/swapindex.hpp>
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Indexes/libor.hpp>
 
 
 #endif

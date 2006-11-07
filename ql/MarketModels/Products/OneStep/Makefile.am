@@ -17,4 +17,5 @@ libMarketModelsProductsOneStep_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsProductsOneStep.la
 
-#EXTRA_DIST = makefile.mak
+EXTRA_DIST = makefile.mak
+

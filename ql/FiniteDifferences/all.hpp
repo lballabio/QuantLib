@@ -21,6 +21,7 @@
 #define quantlib_finite_differences_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/FiniteDifferences/core.hpp>
 
 #include <ql/FiniteDifferences/americancondition.hpp>

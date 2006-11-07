@@ -39,9 +39,9 @@ namespace QuantLib {
                     BusinessDayConvention paymentConvention,
                     Real redemption,
                     const Handle<YieldTermStructure>& discountCurve,
-                    const Date& stub, bool fromEnd, bool longFinal)
-    : Bond(faceAmount, dayCounter, calendar, accrualConvention, paymentConvention,
-           settlementDays, discountCurve) {
+                    const Date& stub, bool fromEnd, bool)
+    : Bond(faceAmount, dayCounter, calendar, accrualConvention,
+           paymentConvention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;
@@ -50,9 +50,9 @@ namespace QuantLib {
 
         Date firstDate = (fromEnd ? Date() : stub);
         Date nextToLastDate = (fromEnd ? stub : Date());
-        Schedule schedule(datedDate, maturityDate, Period(couponFrequency), calendar,
-                          accrualConvention, accrualConvention, fromEnd, false, 
-                          firstDate, nextToLastDate);
+        Schedule schedule(datedDate, maturityDate, Period(couponFrequency),
+                          calendar, accrualConvention, accrualConvention,
+                          fromEnd, false, firstDate, nextToLastDate);
 
         cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
             std::vector<Real>(1, faceAmount_), coupons, dayCounter);

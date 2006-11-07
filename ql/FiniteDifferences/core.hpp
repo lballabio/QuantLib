@@ -21,6 +21,7 @@
 #define quantlib_finite_differences_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/finitedifferencemodel.hpp>

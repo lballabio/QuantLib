@@ -21,6 +21,7 @@
 #define quantlib_lattices_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Lattices/lattice.hpp>
 #include <ql/Lattices/tree.hpp>
 

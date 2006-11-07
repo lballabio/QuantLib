@@ -141,10 +141,10 @@ namespace QuantLib {
                          swapTenor,
                          swapIndexBase_->settlementDays(),
                          swapIndexBase_->currency(),
-                         swapIndexBase_->calendar(), 
+                         swapIndexBase_->calendar(),
                          swapIndexBase_->fixedLegFrequency(),
                          swapIndexBase_->fixedLegConvention(),
-                         swapIndexBase_->dayCounter(), 
+                         swapIndexBase_->dayCounter(),
                          swapIndexBase_->iborIndex()).fixing(exerciseDate);
     }
 

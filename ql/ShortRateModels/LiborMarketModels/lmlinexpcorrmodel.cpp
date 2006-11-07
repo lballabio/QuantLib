@@ -33,13 +33,13 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> LmLinearExponentialCorrelationModel::correlation(
-                                               Time t, const Array& x) const {
+                                                   Time, const Array&) const {
         Matrix tmp(corrMatrix_);
         return tmp;
     }
 
     Real LmLinearExponentialCorrelationModel::correlation(
-                               Size i, Size j, Time t, const Array& x) const {
+                                   Size i, Size j, Time, const Array&) const {
         return corrMatrix_[i][j];
     }
 
@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> LmLinearExponentialCorrelationModel::pseudoSqrt(
-                                               Time t, const Array& x) const {
+                                                   Time, const Array&) const {
         Matrix tmp(pseudoSqrt_);
         return tmp;
     }

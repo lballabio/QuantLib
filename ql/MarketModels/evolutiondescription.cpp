@@ -54,7 +54,8 @@ namespace QuantLib {
                    "Rate times must have 2 elements at least");
         QL_REQUIRE(rateTimes_[0]>=0.0,
                    "first rate time must be non negative");
-        for (Size i = 1; i<rateTimes.size(); ++i)
+        Size i;
+        for (i = 1; i<rateTimes.size(); ++i)
             QL_REQUIRE(rateTimes[i]>rateTimes[i-1],
                        "rate times must be strictly increasing");
 
@@ -64,7 +65,7 @@ namespace QuantLib {
         // - the last evolutionTimes is <= the last rateTimes.
         QL_REQUIRE(steps_>0,
                    "Evolution times must have 1 elements at least");
-        for (Size i = 1; i<steps_; ++i)
+        for (i = 1; i<steps_; ++i)
             QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1],
                        "Evolution times must be strictly increasing");
         QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
@@ -99,10 +100,11 @@ namespace QuantLib {
         // - set up rateTaus_
         // - set up the effective stop time for step j and rate time i as MIN{evolutionTimes[j],rateTimes[i]}
         // - set up firstAliveRate_ as the first alive rate for each step
-        for (Size i=0; i<rateTaus_.size(); i++)
+        for (i=0; i<rateTaus_.size(); i++)
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
 
-        for (Size j=0; j<steps_; ++j) {
+        Size j;
+        for (j=0; j<steps_; ++j) {
             for (Size i=0; i<rateTimes_.size()-1; ++i)
                 effStopTime_[j][i] =
                     std::min(evolutionTimes_[j], rateTimes_[i]);
@@ -110,7 +112,7 @@ namespace QuantLib {
 
         Time currentEvolutionTime = 0.0;
         Size firstAliveRate = 0;
-        for (Size j=0; j<steps_; ++j) {
+        for (j=0; j<steps_; ++j) {
             while (rateTimes_[firstAliveRate] <= currentEvolutionTime)
                 ++firstAliveRate;
             firstAliveRate_[j] = firstAliveRate;

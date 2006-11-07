@@ -21,8 +21,10 @@
 #define quantlib_cash_flows_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/CashFlows/analysis.hpp>
 #include <ql/CashFlows/coupon.hpp>
+#include <ql/CashFlows/dividend.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 
 

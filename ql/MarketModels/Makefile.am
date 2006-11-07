@@ -48,5 +48,5 @@ libMarketModels_la_LIBADD = \
     Models/libMarketModelsModels.la \
     Products/libMarketModelsProducts.la
 
-#EXTRA_DIST = makefile.mak
+EXTRA_DIST = makefile.mak
 

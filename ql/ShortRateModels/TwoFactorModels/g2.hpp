@@ -164,7 +164,7 @@ namespace QuantLib {
             : termStructure_(termStructure),
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
 
-            Real value(const Array& params, Time t) const {
+            Real value(const Array&, Time t) const {
                 Rate forward = termStructure_->forwardRate(t, t,
                                                            Continuous,
                                                            NoFrequency);

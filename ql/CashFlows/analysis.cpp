@@ -350,12 +350,13 @@ namespace QuantLib {
 
         return d2Pdy2/P;
     }
-    
+
     Rate Cashflows::atmRate(
         const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
-        const Handle<YieldTermStructure>& termStructure){
+        const Handle<YieldTermStructure>& termStructure) {
         Real bps = Cashflows::bps(cashFlows, termStructure);
         Real npv = Cashflows::npv(cashFlows, termStructure);
         return 1.0e-4*npv/bps;
-    };
+    }
+
 }

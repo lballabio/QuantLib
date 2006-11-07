@@ -28,7 +28,7 @@ namespace QuantLib {
     SwapIndex::SwapIndex(const std::string& familyName,
                          Integer years,
                          Integer settlementDays,
-                         Currency currency,
+                         const Currency& currency,
                          const Calendar& calendar,
                          Frequency fixedLegFrequency,
                          BusinessDayConvention fixedLegConvention,
@@ -68,6 +68,7 @@ namespace QuantLib {
 
     boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
                                                const Date& fixingDate) const {
+        QL_REQUIRE(iborIndex_, "no index set");
         QL_REQUIRE(iborIndex_->termStructure(),
                    "no forecasting term structure set to " <<
                    iborIndex_->name());

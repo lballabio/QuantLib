@@ -21,6 +21,7 @@
 #define quantlib_random_numbers_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/RandomNumbers/rngtraits.hpp>
 
 

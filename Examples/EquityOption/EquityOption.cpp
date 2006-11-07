@@ -328,6 +328,7 @@ int main(int, char* [])
                   << std::setw(widths[3]) << std::left << "N/A"
                   << std::endl;
 
+        #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
         method = "MC (Longstaff Schwartz)";
         boost::shared_ptr<PricingEngine> mcengine3;
         mcengine3 =
@@ -343,6 +344,7 @@ int main(int, char* [])
                   << std::setw(widths[2]) << std::left << "N/A"
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
+        #endif
 
         Real seconds = timer.elapsed();
         Integer hours = int(seconds/3600);

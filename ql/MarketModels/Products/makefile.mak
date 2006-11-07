@@ -21,7 +21,7 @@ MAKE = $(MAKE) -fmakefile.mak
 !endif
 
 # Directories
-INCLUDE_DIR    = ..\..
+INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \

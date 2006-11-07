@@ -27,13 +27,10 @@
 #include <ql/option.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 
-namespace QuantLib
-{
+namespace QuantLib {
+
     class VanillaOptionPricer {
-
-
       public:
-
         virtual ~VanillaOptionPricer() {};
         virtual Real operator()(Real strike,
                                 Option::Type optionType,
@@ -43,20 +40,21 @@ namespace QuantLib
     class BlackVanillaOptionPricer : public VanillaOptionPricer {
       public:
         BlackVanillaOptionPricer(
-            Rate forwardValue,
-            Date expiryDate,
-            const Period& swapTenor,
-            const boost::shared_ptr<SwaptionVolatilityStructure>& volatilityStructure);
+                Rate forwardValue,
+                Date expiryDate,
+                const Period& swapTenor,
+                const boost::shared_ptr<SwaptionVolatilityStructure>&
+                                                         volatilityStructure);
 
         Real operator()(Real strike,
                         Option::Type optionType,
                         Real deflator) const;
       private:
-        const Rate forwardValue_;
+        Rate forwardValue_;
         Date expiryDate_;
-        const Period swapTenor_;
-        const boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
-        const boost::shared_ptr<SmileSectionInterface> smile_;
+        Period swapTenor_;
+        boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
+        boost::shared_ptr<SmileSectionInterface> smile_;
     };
 
     class GFunction {
@@ -67,21 +65,23 @@ namespace QuantLib
         virtual Real secondDerivative(Real x) = 0;
     };
 
-    class GFunctionFactory
-    {
+    class GFunctionFactory {
       public:
         enum ModelOfYieldCurve { standard,
                                  exactYield,
                                  parallelShifts,
                                  nonParallelShifts };
 
-        static boost::shared_ptr<GFunction> newGFunctionStandard(Size q,
-                                                                 Real delta,
-                                                                 Size swapLength);
-        static boost::shared_ptr<GFunction> newGFunctionExactYield(const CMSCoupon& coupon);
-        static boost::shared_ptr<GFunction> newGFunctionWithShifts(const CMSCoupon& coupon,
-                                                                   Real meanReversion);
-        private:
+        static boost::shared_ptr<GFunction>
+        newGFunctionStandard(Size q,
+                             Real delta,
+                             Size swapLength);
+        static boost::shared_ptr<GFunction>
+        newGFunctionExactYield(const CMSCoupon& coupon);
+        static boost::shared_ptr<GFunction>
+        newGFunctionWithShifts(const CMSCoupon& coupon,
+                               Real meanReversion);
+      private:
         GFunctionFactory();
 
         /*! Corresponds to Standard Model in Hagan's paper */
@@ -95,11 +95,12 @@ namespace QuantLib
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
           protected:
-            /** number of period per year */
+            /* number of period per year */
             const int q_;
-            /** fraction of a period between the swap start date and the pay date  */
+            /* fraction of a period between the swap start date and
+               the pay date  */
             Real delta_;
-            /** length of swap*/
+            /* length of swap*/
             Size swapLength_;
         };
 
@@ -110,12 +111,11 @@ namespace QuantLib
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
           protected:
-
-            /** fraction of a period between the swap start date and the pay date  */
+            /* fraction of a period between the swap start date and
+               the pay date  */
             Real delta_;
-            /** accruals fraction*/
+            /* accruals fraction*/
             std::vector<Time> accruals_;
-
         };
 
         class GFunctionWithShifts : public GFunction {
@@ -145,6 +145,8 @@ namespace QuantLib
             Real der2Rs_derX2(Real x);
             Real der2Z_derX2(Real x);
 
+            class ObjectiveFunction;
+            friend class ObjectiveFunction;
             class ObjectiveFunction : public std::unary_function<Real, Real> {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
@@ -164,7 +166,6 @@ namespace QuantLib
             Real operator()(Real x) ;
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
-        protected:
         };
 
     };
@@ -178,15 +179,13 @@ namespace QuantLib
     */
 
     class ConundrumPricer: public VanillaCMSCouponPricer {
-
-    public:
-
+      public:
         Real price() const;
         Real rate() const;
 
-    protected:
-
-        ConundrumPricer(const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
+      protected:
+        ConundrumPricer(
+                 const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve);
         void initialize(const CMSCoupon& coupon);
 
         virtual Real optionLetPrice(Option::Type optionType,
@@ -207,8 +206,9 @@ namespace QuantLib
 
 
     //! ConundrumPricerByNumericalIntegration
-    /*! Prices a CMS coupon via static replication as in Hagan's "Conundrums..." article
-        via numerical Integration based on prices of vanilla swaptions
+    /*! Prices a CMS coupon via static replication as in Hagan's
+        "Conundrums..." article via numerical integration based on
+        prices of vanilla swaptions
     */
     class ConundrumPricerByNumericalIntegration : public ConundrumPricer {
       public:
@@ -224,20 +224,21 @@ namespace QuantLib
             virtual Real operator()(Real x) const = 0;
         };
         //! ConundrumIntegrand
-        /*! Base class for the definition of the Integrand for Hagan's Integral */
-        class ConundrumIntegrand : public Function
-        {
-          friend class ConundrumPricerByNumericalIntegration;
+        /*! Base class for the definition of the integrand for Hagan's
+            integral */
+        class ConundrumIntegrand : public Function {
+            friend class ConundrumPricerByNumericalIntegration;
           public:
-            ConundrumIntegrand(const boost::shared_ptr<VanillaOptionPricer>& o,
-                               const boost::shared_ptr<YieldTermStructure>& rateCurve,
-                               const boost::shared_ptr<GFunction>& gFunction,
-                               Date fixingDate,
-                               Date paymentDate,
-                               Real annuity,
-                               Real forwardValue,
-                               Real strike,
-                               Option::Type optionType);
+            ConundrumIntegrand(
+                       const boost::shared_ptr<VanillaOptionPricer>& o,
+                       const boost::shared_ptr<YieldTermStructure>& rateCurve,
+                       const boost::shared_ptr<GFunction>& gFunction,
+                       Date fixingDate,
+                       Date paymentDate,
+                       Real annuity,
+                       Real forwardValue,
+                       Real strike,
+                       Option::Type optionType);
             Real operator()(Real x) const;
           protected:
             Real functionF(const Real x) const;
@@ -279,5 +280,6 @@ namespace QuantLib
     };
 
 }
+
 
 #endif

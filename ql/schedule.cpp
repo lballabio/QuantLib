@@ -80,7 +80,7 @@ namespace QuantLib {
                     -periods*tenor_, convention, endOfMonth);
                 if (temp!=nextToLastDate)
                     isRegular_.insert(isRegular_.begin(), false);
-                else 
+                else
                     isRegular_.insert(isRegular_.begin(), true);
                 seed = nextToLastDate;
             }
@@ -125,7 +125,7 @@ namespace QuantLib {
                     periods*tenor_, convention, endOfMonth);
                 if (temp!=firstDate)
                     isRegular_.push_back(false);
-                else 
+                else
                     isRegular_.push_back(true);
                 seed = firstDate;
             }
@@ -161,8 +161,8 @@ namespace QuantLib {
             dates_[i]=calendar.adjust(dates_[i], convention);
 
         // termination date is NOT adjusted as per ISDA specifications,
-        // unless otherwise specified in the confirmation of the deal 
-        if (terminationDateConvention!=Unadjusted) {                
+        // unless otherwise specified in the confirmation of the deal
+        if (terminationDateConvention!=Unadjusted) {
             dates_[dates_.size()-1]=calendar.adjust(dates_[dates_.size()-1],
                                                     terminationDateConvention);
         }
@@ -205,7 +205,7 @@ namespace QuantLib {
                                const Period& tenor,
                                const Calendar& calendar,
                                BusinessDayConvention convention)
-    : calendar_(calendar), 
+    : calendar_(calendar),
       effectiveDate_(effectiveDate), terminationDate_(terminationDate),
       tenor_(tenor),
       convention_(convention), terminationDateConvention_(convention),

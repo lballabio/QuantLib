@@ -62,6 +62,19 @@ namespace QuantLib {
                                 Time maturity,
                                 Time bondMaturity) const;
 
+        /*! Futures convexity bias (i.e., the difference between
+            futures implied rate and forward rate) calculated as in
+            G. Kirikos, D. Novak, "Convexity Conundrums", Risk
+            Magazine, March 1997.
+
+            \note t and T should be expressed in yearfraction using
+                  deposit day counter, F_quoted is futures' market price.
+        */
+        static Rate convexityBias(Real futurePrice,
+                                  Time t,
+                                  Time T,
+                                  Real sigma,
+                                  Real a);
       protected:
         void generateArguments();
 
@@ -118,7 +131,7 @@ namespace QuantLib {
                  Real a, Real sigma)
             : termStructure_(termStructure), a_(a), sigma_(sigma) {}
 
-            Real value(const Array& params, Time t) const {
+            Real value(const Array&, Time t) const {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real temp = sigma_*(1.0 - std::exp(-a_*t))/a_;
@@ -135,22 +148,6 @@ namespace QuantLib {
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
-
-    /*! Futures convexity bias
-        \f[
-            ForwardRate = FuturesImpliedRate - ConvexityBias
-        \f]
-        calculated as in G. Kirikos, D. Novak, "Convexity Conundrums",
-        Risk Magazine, March 1997
-        
-        \note t and T should be expressed in yearfraction using
-              deposit day counter, F_quoted is futures' market price
-    */
-    Rate convexityBias(Real futurePrice,
-                       Time t,
-                       Time T,
-                       Real sigma,
-                       Real a = 0.03);
 
     // inline definitions
 

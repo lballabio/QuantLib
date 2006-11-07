@@ -51,7 +51,7 @@ namespace QuantLib {
 #endif
 
 
-int main(int argc, char* argv[])
+int main()
 {
     try {
 
@@ -71,7 +71,6 @@ int main(int argc, char* argv[])
         Integer settlementDays = 3;
         Integer length = 5;
         Real redemption = 100.0;
-        Real faceAmount = 100.0;
         Real conversionRatio = redemption/underlying; // at the money
 
         // set up dates/schedules
@@ -206,13 +205,13 @@ int main(int argc, char* argv[])
         boost::shared_ptr<PricingEngine> engine(
                  new BinomialConvertibleEngine<JarrowRudd>(timeSteps));
 
-        ConvertibleFixedCouponBond europeanBond(faceAmount,
+        ConvertibleFixedCouponBond europeanBond(
                                 stochasticProcess, exercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,
                                 coupons, bondDayCount, schedule, redemption);
 
-        ConvertibleFixedCouponBond americanBond(faceAmount,
+        ConvertibleFixedCouponBond americanBond(
                                 stochasticProcess, amExercise, engine,
                                 conversionRatio, dividends, callability,
                                 creditSpread, issueDate, settlementDays,

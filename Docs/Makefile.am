@@ -1,7 +1,8 @@
 
 EXTRA_DIST = \
-             quantlib.css \
              quantlib.doxy \
+             quantlib.css \
+             print.css \
              quantlibfooter.html \
              quantlibfooteronline.html \
              quantlibheader.html \
@@ -13,7 +14,8 @@ EXTRA_DIST = \
 
 DOXYGEN_CONFIG := quantlib.doxy
 DOXYGEN_CUSTOM := qlintro.tex quantlibheader.tex \
-                  quantlib.css quantlibheader.html quantlibfooter.html
+                  quantlib.css print.css \
+                  quantlibheader.html quantlibfooter.html
 DOXYGEN_INPUT := $(shell find ${top_srcdir} -name *.hpp) \
                  $(wildcard pages/*.docs)
 
@@ -40,6 +42,7 @@ docs-dist: docs-pdf-dist docs-html-dist docs-man-dist
 
 docs-html: .time-stamp-html
 .time-stamp-html: .time-stamp
+	cp print.css html
 	cp images/*.jpg html
 	cp images/*.png html
 	cp images/*.ico html

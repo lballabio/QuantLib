@@ -27,10 +27,11 @@
 #include <ql/Processes/forwardmeasureprocess.hpp>
 #include <ql/Processes/g2process.hpp>
 #include <ql/Processes/geometricbrownianprocess.hpp>
+#include <ql/Processes/hestonprocess.hpp>
 #include <ql/Processes/hullwhiteprocess.hpp>
-#include <ql/Processes/lfmprocess.hpp>
 #include <ql/Processes/lfmcovarparam.hpp>
 #include <ql/Processes/lfmhullwhiteparam.hpp>
+#include <ql/Processes/lfmprocess.hpp>
 #include <ql/Processes/merton76process.hpp>
 #include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/Processes/squarerootprocess.hpp>

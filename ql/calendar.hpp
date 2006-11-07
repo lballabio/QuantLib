@@ -63,10 +63,7 @@ namespace QuantLib {
                                  the given holiday. If the original
                                  date falls on last business day of
                                  the month, choose the last business
-                                 day of the month
-
-                                 \deprecated use the endOfMonth boolean in
-                                             Calendar::advance instead */
+                                 day of the month */
         UnadjustedMonthEnd  /*!< Do not adjust, unless the original
                                  date falls on the last business day
                                  of month. In this case, choose the

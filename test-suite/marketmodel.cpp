@@ -136,7 +136,7 @@ void setup() {
         if (i==1) {
             coterminalAnnuity[N-1] = accruals[N-1]*todaysDiscounts[N];
         } else {
-            coterminalAnnuity[N-i] = coterminalAnnuity[N-i+1] + 
+            coterminalAnnuity[N-i] = coterminalAnnuity[N-i+1] +
                                      accruals[N-i]*todaysDiscounts[N-i+1];
         }
         floatingLeg = todaysDiscounts[N-i]-todaysDiscounts[N];
@@ -398,7 +398,8 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
     if (minError > 0.0 || maxError < 0.0 ||
         minError <-errorThreshold || maxError > errorThreshold) {
         BOOST_MESSAGE(config);
-        for (Size i=0; i<N; ++i) {
+        Size i;
+        for (i=0; i<N; ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " forward: "
                           << io::rate(results[i])
                           << " +- " << io::rate(errors[i])
@@ -407,7 +408,7 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
                           << forwardStdDevs[i]
                           << " standard errors");
         }
-        for (Size i=0; i<N; ++i) {
+        for (i=0; i<N; ++i) {
             BOOST_MESSAGE(
                     io::ordinal(i+1) << " caplet: "
                     << io::rate(results[i+N])
@@ -545,7 +546,7 @@ void checkCallableSwap(const SequenceStatistics& stats,
     Real receiverNPV = stats.mean()[1];
     Real bermudanNPV = stats.mean()[2];
     Real callableNPV = stats.mean()[3];
-    Real tolerance = 6.0e-16;
+    Real tolerance = 1.0e-15;
     Real swapError = std::fabs(receiverNPV+payerNPV);
     Real callableError = std::fabs(receiverNPV+bermudanNPV-callableNPV);
 
@@ -908,7 +909,6 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
         }
     }
 }
-
 
 void MarketModelTest::testCallableSwap1() {
 

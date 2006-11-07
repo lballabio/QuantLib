@@ -30,5 +30,7 @@
 #include <ql/MarketModels/Products/MultiStep/multistepcoterminalswaps.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepforwards.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepnothing.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepswap.hpp>
+
 
 #endif

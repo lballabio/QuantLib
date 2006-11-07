@@ -161,7 +161,8 @@ void setup() {
     Size nColsAtmVols = atmVols_.columns();
     std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
     atmVolsHandle_ = std::vector<std::vector<Handle<Quote> > >(nRowsAtmVols);
-    for (Size i=0; i<nRowsAtmVols; i++){
+    Size i;
+    for (i=0; i<nRowsAtmVols; i++){
         atmVolsHandle_[i] = std::vector<Handle<Quote> >(nColsAtmVols);
         for (Size j=0; j<nColsAtmVols; j++) {
             // every handle must be reassigned, as the ones created by
@@ -241,7 +242,7 @@ void setup() {
     volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
 
     volSpreads_ = std::vector<std::vector<Handle<Quote> > >(nRows);
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
+    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
         volSpreads_[i] = std::vector<Handle<Quote> >(nCols);
         for (Size j=0; j<strikeSpreads_.size(); j++) {
             // every handle must be reassigned, as the ones created by
@@ -425,7 +426,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
 void SwaptionVolatilityCubeTest::testSabrVols() {
 
-    BOOST_MESSAGE("Testing swaption volatility cube sabr...");
+    BOOST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP

@@ -21,6 +21,7 @@
 #define quantlib_optimization_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Optimization/core.hpp>
 
 #include <ql/Optimization/armijo.hpp>

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Chiara Fornarola
- Copyright (C) 2006 Nicola Jean
+ Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2006 Katiuscia Manzoni
 
 
@@ -49,8 +49,8 @@ namespace QuantLib
         const std::vector<Spread>& displacements() const;
         const EvolutionDescription& evolution() const;
         Size numberOfRates() const;
-        Size numberOfFactors() const; 
-        Size numberOfSteps() const; 
+        Size numberOfFactors() const;
+        Size numberOfSteps() const;
         const Matrix& pseudoRoot(Size i) const;
         const Matrix& covariance(Size i) const;
         const Matrix& totalCovariance(Size endIndex) const;

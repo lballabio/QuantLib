@@ -21,10 +21,11 @@
     \brief Monte Carlo engine for vanilla american options
 */
 
+#include <ql/PricingEngines/Vanilla/mcamericanengine.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/errors.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Instruments/payoffs.hpp>
-#include <ql/PricingEngines/Vanilla/mcamericanengine.hpp>
 #include <boost/bind.hpp>
 
 using boost::bind;
@@ -78,4 +79,6 @@ namespace QuantLib {
     }
 
 }
+
+#endif
 

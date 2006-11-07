@@ -31,5 +31,9 @@ namespace QuantLib {
         IndexManager::instance().setHistory(tag,h);
     }
 
+    void Index::clearFixings() {
+        IndexManager::instance().clearHistory(name());
+    }
+
 }
 

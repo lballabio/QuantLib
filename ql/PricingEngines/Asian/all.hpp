@@ -25,6 +25,7 @@
 #include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
+#include <ql/PricingEngines/Asian/mcdiscreteasianengine.hpp>
 #include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
 
 

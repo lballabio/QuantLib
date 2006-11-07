@@ -21,6 +21,7 @@
 #define quantlib_pricing_engines_vanilla_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
@@ -32,6 +33,7 @@
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdbermudanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdconditions.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>

@@ -48,7 +48,7 @@ namespace QuantLib {
         currentIndex_=0;
     }
 
-    void NothingExerciseValue::nextStep(const CurveState& state) {
+    void NothingExerciseValue::nextStep(const CurveState&) {
         cf_.timeIndex = currentIndex_;
         ++currentIndex_;
     }

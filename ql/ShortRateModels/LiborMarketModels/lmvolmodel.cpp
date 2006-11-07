@@ -36,8 +36,8 @@ namespace QuantLib {
         return volatility(t, x)[i];
     }
 
-    Real LmVolatilityModel::integratedVariance(Size i, Size j, Time u,
-                                               const Array& x) const {
+    Real LmVolatilityModel::integratedVariance(Size, Size, Time,
+                                               const Array&) const {
         QL_FAIL("integratedVariance() method is not supported");
     }
 

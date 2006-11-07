@@ -148,7 +148,7 @@ namespace QuantLib {
 
 
     std::complex<Real>
-    AnalyticHestonEngine::jumpDiffusionTerm(Real phi, Time t, Size j) const {
+    AnalyticHestonEngine::jumpDiffusionTerm(Real, Time, Size) const {
         return std::complex<Real>(0,0);
     }
 

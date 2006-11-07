@@ -21,8 +21,8 @@
 #define quantlib_short_rate_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/ShortRateModels/core.hpp>
-#include <ql/ShortRateModels/parameter.hpp>
 
 #include <ql/ShortRateModels/CalibrationHelpers/all.hpp>
 #include <ql/ShortRateModels/OneFactorModels/all.hpp>

@@ -99,12 +99,11 @@ namespace QuantLib {
         return blackFormula(type, k, f, v);
     }
 
-    Rate convexityBias(Real futuresPrice,
-                       Time t,
-                       Time T,
-                       Real sigma,
-                       Real a)
-    {
+    Rate HullWhite::convexityBias(Real futuresPrice,
+                                  Time t,
+                                  Time T,
+                                  Real sigma,
+                                  Real a) {
         QL_REQUIRE(futuresPrice>=0.0,
             "negative futures price (" << futuresPrice << ") not allowed");
         QL_REQUIRE(t>=0.0,
@@ -119,7 +118,7 @@ namespace QuantLib {
         Time deltaT = (T-t);
         Real tempDeltaT = (1.-std::exp(-a*deltaT)) / a;
         Real halfSigmaSquare = sigma*sigma/2.0;
-        
+
         // lambda adjusts for the fact that the underlying is an interest rate
         Real lambda = halfSigmaSquare * (1.-std::exp(-2.0*a*t)) / a *
             tempDeltaT * tempDeltaT;

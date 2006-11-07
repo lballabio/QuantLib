@@ -202,7 +202,7 @@ namespace QuantLib
 
     ConundrumPricerByNumericalIntegration::ConundrumIntegrand::ConundrumIntegrand(
         const boost::shared_ptr<VanillaOptionPricer>& o,
-        const boost::shared_ptr<YieldTermStructure>& rateCurve,
+        const boost::shared_ptr<YieldTermStructure>&,
         const boost::shared_ptr<GFunction>& gFunction,
         Date fixingDate,
         Date paymentDate,
@@ -395,7 +395,8 @@ namespace QuantLib
         delta_ = (paymentTime-swapStartTime) / (swapFirstPaymentTime-swapStartTime);
 
         for(Size i=0; i<fixedLeg.size(); i++) {
-            const Coupon* coupon(static_cast<const Coupon*>(fixedLeg[i].get()));
+            boost::shared_ptr<Coupon> coupon =
+                boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
         }
     }
@@ -488,7 +489,8 @@ namespace QuantLib
         shapedPaymentTime_ = shapeOfShift(paymentTime);
 
         for(Size i=0; i<fixedLeg.size(); i++) {
-            const Coupon* coupon(static_cast<const Coupon*>(fixedLeg[i].get()));
+            boost::shared_ptr<Coupon> coupon =
+                boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(coupon->accrualPeriod());
             const Date paymentDate(coupon->date());
             const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));

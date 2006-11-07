@@ -21,8 +21,11 @@
 #define quantlib_instruments_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Instruments/core.hpp>
 
+#include <ql/Instruments/asianoption.hpp>
+#include <ql/Instruments/assetswap.hpp>
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/Instruments/bond.hpp>
@@ -44,11 +47,11 @@
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/vanillaswap.hpp>
 #include <ql/Instruments/varianceswap.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 

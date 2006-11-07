@@ -21,9 +21,12 @@
 #define quantlib_cash_flows_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/CashFlows/core.hpp>
 
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/cmscoupon.hpp>
+#include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>

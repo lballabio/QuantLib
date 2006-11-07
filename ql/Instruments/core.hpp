@@ -21,9 +21,10 @@
 #define quantlib_instruments_core_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/Instruments/payoffs.hpp>
+
 #include <ql/Instruments/callabilityschedule.hpp>
 #include <ql/Instruments/dividendschedule.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 
 #endif

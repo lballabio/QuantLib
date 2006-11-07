@@ -274,7 +274,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > leg;
         //std::vector<boost::shared_ptr<CashFlow> > legCashFlow;
         Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
+        Size i, N = schedule.size();
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -305,7 +305,7 @@ namespace QuantLib {
                               reference, end)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
@@ -347,7 +347,7 @@ namespace QuantLib {
             }
         }
 
-        for (Size i=0; i<leg.size(); i++) {
+        for (i=0; i<leg.size(); i++) {
             const boost::shared_ptr<CMSCoupon> cmsCoupon =
                boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
             if (cmsCoupon)
@@ -376,7 +376,7 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
+        Size i, N = schedule.size();
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -409,7 +409,7 @@ namespace QuantLib {
                               reference, end)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
@@ -449,7 +449,7 @@ namespace QuantLib {
             }
         }
 
-        for (Size i=0; i<leg.size(); i++) {
+        for (i=0; i<leg.size(); i++) {
             const boost::shared_ptr<CMSCoupon> cmsCoupon =
                boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
             if (cmsCoupon)
@@ -482,7 +482,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > leg;
         //std::vector<boost::shared_ptr<CashFlow> > legCashFlow;
         Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
+        Size i, N = schedule.size();
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -513,7 +513,7 @@ namespace QuantLib {
                               reference, end, true)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
@@ -555,7 +555,7 @@ namespace QuantLib {
             }
         }
 
-        for (Size i=0; i<leg.size(); i++) {
+        for (i=0; i<leg.size(); i++) {
             const boost::shared_ptr<CMSCoupon> cmsCoupon =
                boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
             if (cmsCoupon)
@@ -566,4 +566,5 @@ namespace QuantLib {
 
         return leg;
     }
+
 }

@@ -56,16 +56,17 @@ namespace QuantLib
         Real correlation;
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         for (Size k=0; k<numberOfSteps_; ++k) {
-            for (Size i=0; i<numberOfRates_; ++i) {
+            Size i;
+            for (i=0; i<numberOfRates_; ++i) {
                 effStartTime = (k>0 ? effectiveStopTime[k-1][i] : 0.0);
                 stdDev[i] = volatilities[i] *
                     std::sqrt(effectiveStopTime[k][i]-effStartTime);
             }
 
-            for (Size i=0; i<numberOfRates_; ++i) {
+            for (i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                      correlation = longTermCorr + (1.0-longTermCorr) *
-                         std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
+                         std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
                      covariance_[k][i][j] =  covariance_[k][j][i] =
                          stdDev[j] * correlation * stdDev[i];
                  }

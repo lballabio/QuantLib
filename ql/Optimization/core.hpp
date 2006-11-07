@@ -21,6 +21,7 @@
 #define quantlib_optimization_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/criteria.hpp>

@@ -48,6 +48,8 @@ namespace QuantLib {
         boost::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
         std::vector<std::string> histories() const;
+        //! clears the historical fixings of the index
+        void clearHistory(const std::string& name);
         //! clears all stored fixings
         void clearHistories();
       private:

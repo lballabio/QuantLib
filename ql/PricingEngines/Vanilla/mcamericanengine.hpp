@@ -17,13 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mclongstaffschwartzengine.hpp
-    \brief Longstaff Schwartz Monte Carlo engine for early exercise options
+/*! \file mcamericanengine.hpp
+    \brief American Monte Carlo engine
 */
 
 #ifndef quantlib_mc_american_engine_hpp
 #define quantlib_mc_american_engine_hpp
 
+#include <ql/qldefines.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/payoff.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
@@ -334,5 +336,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

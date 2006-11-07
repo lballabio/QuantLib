@@ -203,8 +203,7 @@ namespace QuantLib {
         return process_->index()->termStructure()->discount(t);
     }
 
-    Real LiborForwardModel::discountBond(Time now,
-                                         Time maturity, Array factors) const {
+    Real LiborForwardModel::discountBond(Time, Time maturity, Array) const {
         return discount(maturity);
     }
 

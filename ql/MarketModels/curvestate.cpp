@@ -67,9 +67,9 @@ namespace QuantLib {
 
     void CurveState::setOnCoterminalSwapRates(
                                          const std::vector<Rate>& swapRates) {
+        QL_REQUIRE(swapRates.size()==last_, "too many swap rates");
         QL_FAIL("not yet implemented");
         // todo fwd and discount ratios
-        //QL_REQUIRE(swapRates.size()==last_, "too many swap rates");
         //std::copy(swapRates.begin(),swapRates.end(),
         //          coterminalSwaps_.begin());
         // etc.

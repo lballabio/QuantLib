@@ -62,7 +62,7 @@ namespace QuantLib {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                     correlation = longTermCorr + (1.0-longTermCorr) *
-                        std::exp(-beta*std::abs(rateTimes[i]-rateTimes[j]));
+                        std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
                     effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
                     covar = abcd.covariance(effStartTime,
                                             effectiveStopTime[k][i],

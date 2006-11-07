@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) Ferdinando Ametrano 2006
- Copyright (C) Mark Joshi 2006
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,8 +40,8 @@ namespace QuantLib {
         virtual const std::vector<Spread>& displacements() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;
         virtual Size numberOfRates() const = 0;
-        virtual Size numberOfFactors() const = 0; 
-        virtual Size numberOfSteps() const = 0; 
+        virtual Size numberOfFactors() const = 0;
+        virtual Size numberOfSteps() const = 0;
         virtual const Matrix& pseudoRoot(Size i) const = 0;
         virtual const Matrix& covariance(Size i) const = 0;
         virtual const Matrix& totalCovariance(Size endIndex) const = 0;

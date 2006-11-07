@@ -21,6 +21,7 @@
 #define quantlib_pricing_engines_barrier_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
 #include <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
 

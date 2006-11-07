@@ -21,9 +21,11 @@
 #define quantlib_short_rate_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/ShortRateModels/parameter.hpp>
 #include <ql/ShortRateModels/twofactormodel.hpp>
 
 

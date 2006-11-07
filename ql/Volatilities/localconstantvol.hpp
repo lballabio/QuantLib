@@ -112,7 +112,7 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    inline Volatility LocalConstantVol::localVolImpl(Time t, Real) const {
+    inline Volatility LocalConstantVol::localVolImpl(Time, Real) const {
         return volatility_->value();
     }
 

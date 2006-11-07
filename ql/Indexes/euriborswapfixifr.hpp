@@ -34,10 +34,10 @@
 namespace QuantLib {
 
     //! %EuriborSwapFixIFR index
-    /*! EuriborSwapFixIFR rate fixed by IFR Markets and distributed by
-        Reuters page TGM42281 and by Telerate.
-        For more info see http://www.ifrmarkets.com
-    */  
+    /*! EuriborSwapFixIFR index published by IFR Markets and
+        distributed by Reuters page TGM42281 and by Telerate.
+        For more info see <http://www.ifrmarkets.com>.
+    */
     class EuriborSwapFixIFR : public SwapIndex {
       public:
         #ifndef QL_DISABLE_DEPRECATED
@@ -91,7 +91,7 @@ namespace QuantLib {
         EuriborSwapFixIFR6Y(const Handle<YieldTermStructure>& h)
         : EuriborSwapFixIFR(6*Years, h) {}
     };
-    
+
     //! 7-year %EuriborSwapFixIFR index
     class EuriborSwapFixIFR7Y : public EuriborSwapFixIFR {
       public:
@@ -105,7 +105,7 @@ namespace QuantLib {
         EuriborSwapFixIFR8Y(const Handle<YieldTermStructure>& h)
         : EuriborSwapFixIFR(8*Years, h) {}
     };
-    
+
     //! 9-year %EuriborSwapFixIFR index
     class EuriborSwapFixIFR9Y : public EuriborSwapFixIFR {
       public:
@@ -154,7 +154,7 @@ namespace QuantLib {
         EuriborSwapFixIFR30Y(const Handle<YieldTermStructure>& h)
         : EuriborSwapFixIFR(30*Years, h) {}
     };
-   
+
 }
 
 #endif

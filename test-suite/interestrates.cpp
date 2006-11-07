@@ -46,7 +46,7 @@ QL_END_TEST_LOCALS(InterestRateTest)
 
 
 void InterestRateTest::testConversions() {
-    BOOST_MESSAGE("Testing interest rate conversions...");
+    BOOST_MESSAGE("Testing interest-rate conversions...");
 
     InterestRateData cases[] = {
         // data from "Option Pricing Formulas", Haug, pag.181-182

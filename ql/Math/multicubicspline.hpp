@@ -288,10 +288,10 @@ namespace QuantLib {
             base_cubic_splint(const return_type &a, const return_type &b,
                               const return_type &a2, const return_type &b2,
                               const dimensions &i,
-                              const data &d, const data &d2,
+                              const data&, const data&,
                               const data_table &y, data_table &y2,
-                              output_data &v,
-                              output_data &v1, output_data &v2_,
+                              output_data&,
+                              output_data&, output_data&,
                               result_type &res) {
                 res = a * y[i] + b * y[i + 1] + a2 * y2[i] + b2 * y2[i + 1];
             }

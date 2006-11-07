@@ -60,7 +60,7 @@ namespace QuantLib {
         //! \name Dividend interface
         //@{
         virtual Real amount() const { return amount_; }
-        virtual Real amount(Real underlying) const { return amount_; }
+        virtual Real amount(Real) const { return amount_; }
         //@}
       protected:
         Real amount_;

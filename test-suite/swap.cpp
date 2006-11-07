@@ -96,7 +96,7 @@ QL_END_TEST_LOCALS(SwapTest)
 
 void SwapTest::testFairRate() {
 
-    BOOST_MESSAGE("Testing simple swap calculation of fair fixed rate...");
+    BOOST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -126,7 +126,7 @@ void SwapTest::testFairRate() {
 
 void SwapTest::testFairSpread() {
 
-    BOOST_MESSAGE("Testing simple swap calculation of "
+    BOOST_MESSAGE("Testing vanilla-swap calculation of "
                   "fair floating spread...");
 
     QL_TEST_BEGIN
@@ -156,7 +156,7 @@ void SwapTest::testFairSpread() {
 
 void SwapTest::testRateDependency() {
 
-    BOOST_MESSAGE("Testing simple swap dependency on fixed rate...");
+    BOOST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -196,7 +196,7 @@ void SwapTest::testRateDependency() {
 
 void SwapTest::testSpreadDependency() {
 
-    BOOST_MESSAGE("Testing simple swap dependency on floating spread...");
+    BOOST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -273,7 +273,7 @@ void SwapTest::testInArrears() {
     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
         IndexedCouponVector<InArrearIndexedCoupon>(schedule, Following,
                                                    nominals,
-                                                   fixingDays, index, 
+                                                   fixingDays, index,
                                                    gearings, spreads,
                                                    dayCounter);
 
@@ -307,7 +307,7 @@ void SwapTest::testInArrears() {
 
 void SwapTest::testCachedValue() {
 
-    BOOST_MESSAGE("Testing simple swap calculation against cached value...");
+    BOOST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP

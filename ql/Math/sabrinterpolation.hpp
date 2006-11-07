@@ -106,11 +106,11 @@ namespace QuantLib {
                                   bool isRhoFixed)
             : t_(t), forward_(forward),
               alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-              alphaIsFixed_(false), 
+              alphaIsFixed_(false),
               betaIsFixed_(false),
-              nuIsFixed_(false), 
+              nuIsFixed_(false),
               rhoIsFixed_(false),
-              error_(Null<Real>()), 
+              error_(Null<Real>()),
               maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::none)
             {
@@ -153,11 +153,11 @@ namespace QuantLib {
             Real t_;
             /*! */
             Real forward_;
-            /*! Sabr parameters */ 
+            /*! Sabr parameters */
             Real alpha_, beta_, nu_, rho_;
             bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
             Real error_, maxError_;
-			EndCriteria::Type SABREndCriteria_;
+            EndCriteria::Type SABREndCriteria_;
         };
 
     }
@@ -188,7 +188,7 @@ namespace QuantLib {
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                      t, forward,
-                                                     alpha, beta, nu, rho, 
+                                                     alpha, beta, nu, rho,
                                                      isAlphaFixed, isBetaFixed,
                                                      isNuFixed, isRhoFixed,
                                                      vegaWeighted,
@@ -209,11 +209,11 @@ namespace QuantLib {
         Real interpolationMaxError() const { return coeffs_->maxError_; }
         //const std::vector<Real>& interpolationWeights() const {
         //    return impl_->weights_; }
-		EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
+        EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
 
-	private:
+    private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
-	};
+    };
 
 
     namespace detail {
@@ -221,7 +221,7 @@ namespace QuantLib {
         template <class I1, class I2>
         class SABRInterpolationImpl
             : public Interpolation::templateImpl<I1,I2>,
-              public SABRCoefficientHolder 
+              public SABRCoefficientHolder
         {
           private:
 
@@ -232,7 +232,7 @@ namespace QuantLib {
                   virtual Array inverse(const Array& x) const = 0;
               };
 
-              class SabrParametersTransformation : 
+              class SabrParametersTransformation :
                   public Transformation {
                      mutable Array y_;
                      const Real eps1_, eps2_;
@@ -265,8 +265,8 @@ namespace QuantLib {
                      return y_;
                     }
              };
-             
-             class SabrParametersTransformationWithFixedBeta : 
+
+             class SabrParametersTransformationWithFixedBeta :
                  public Transformation {
                     mutable Array y_;
                     const Real eps1_, eps2_;
@@ -295,9 +295,11 @@ namespace QuantLib {
                     return y_;
                 }
             };
-             
+
             // function to minimize
-              
+
+            class SABRError;
+            friend class SABRError;
             class SABRError : public CostFunction {
               public:
                 SABRError(SABRInterpolationImpl* sabr)
@@ -317,6 +319,8 @@ namespace QuantLib {
                 SABRInterpolationImpl* sabr_;
             };
 
+            class SABRErrorWithFixedBeta;
+            friend class SABRErrorWithFixedBeta;
             class SABRErrorWithFixedBeta : public CostFunction {
               public:
                 SABRErrorWithFixedBeta(SABRInterpolationImpl* sabr)
@@ -333,12 +337,12 @@ namespace QuantLib {
               private:
                 SABRInterpolationImpl* sabr_;
             };
-          
+
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
             boost::shared_ptr<Transformation> tranformation_;
             std::vector<Real> weights_;
-          public:  
+          public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
@@ -351,10 +355,9 @@ namespace QuantLib {
                 bool vegaWeighted,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho, 
+              SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
               isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
-			  method_(method), weights_(xEnd-xBegin, 1.0)
-            {
+              method_(method), weights_(xEnd-xBegin, 1.0) {
                 Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
                     std::vector<Real>::const_iterator x = this->xBegin_;
@@ -381,7 +384,7 @@ namespace QuantLib {
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError();
-				    SABREndCriteria_ = EndCriteria::none;
+                    SABREndCriteria_ = EndCriteria::none;
                     return;
                 } else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
                     tranformation_ = boost::shared_ptr<Transformation>(new
@@ -400,22 +403,22 @@ namespace QuantLib {
                         method_->setEndCriteria(EndCriteria(200000, 1e-8));
 
                         Array guess(3);
-                        guess[0] = alpha_;  
-                        guess[1] = nu_; 
+                        guess[0] = alpha_;
+                        guess[1] = nu_;
                         guess[2] = rho_;
-                      
+
                         guess = tranformation_->inverse(guess);
                         method_->setInitialValue(guess);
                     }
 
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
-				    Array result = problem.minimumValue();
+                    Array result = problem.minimumValue();
 
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     nu_    = y[1];
-                    rho_   = y[2]; 
+                    rho_   = y[2];
 
                 } else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
 
@@ -435,8 +438,8 @@ namespace QuantLib {
                         method_->setEndCriteria(EndCriteria(30000, 1e-8));
 
                         Array guess(4);
-                        guess[0] = alpha_;  
-                        guess[1] = beta_; 
+                        guess[0] = alpha_;
+                        guess[1] = beta_;
                         guess[2] = nu_;
                         guess[3] = rho_;
 
@@ -446,17 +449,18 @@ namespace QuantLib {
 
                     Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
-				    Array result = problem.minimumValue();
+                    Array result = problem.minimumValue();
 
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     beta_  = y[1];
                     nu_    = y[2];
-                    rho_   = y[3]; 
-                } else {
-                    QL_REQUIRE(false, "Selected Sabr calibration not implemented");
+                    rho_   = y[3];
                 }
-     
+                else {
+                    QL_FAIL("selected Sabr calibration not implemented");
+                }
+
                 SABREndCriteria_ = endCriteria();
                 error_ = interpolationError();
                 maxError_ = interpolationMaxError();
@@ -468,13 +472,13 @@ namespace QuantLib {
                 return sabrVolatility(x, forward_, t_,
                                       alpha_, beta_, nu_, rho_);
             }
-            Real primitive(Real x) const {
+            Real primitive(Real) const {
                 QL_FAIL("SABR primitive not implemented");
             }
-            Real derivative(Real x) const {
+            Real derivative(Real) const {
                 QL_FAIL("SABR derivative not implemented");
             }
-            Real secondDerivative(Real x) const {
+            Real secondDerivative(Real) const {
                 QL_FAIL("SABR secondDerivative not implemented");
             }
 
@@ -498,18 +502,18 @@ namespace QuantLib {
 
             Real interpolationMaxError() const {
                 Real error, maxError = QL_MIN_REAL;
-                std::vector<Real>::const_iterator x = this->xBegin_;
-                std::vector<Real>::const_iterator y = this->yBegin_;
-                for (; x != this->xEnd_; ++x, ++y) {                    
-                    error = std::fabs(value(*x) - *y);
+                I1 i = this->xBegin_;
+                I2 j = this->yBegin_;
+                for (; i != this->xEnd_; ++i, ++j) {
+                    error = std::fabs(value(*i) - *j);
                     maxError = std::max(maxError, error);
                 }
                 return maxError;
             }
 
-			EndCriteria::Type endCriteria() {
-				return method_->endCriteria().criteria(); 
-			}
+            EndCriteria::Type endCriteria() {
+                return method_->endCriteria().criteria();
+            }
         };
 
     }

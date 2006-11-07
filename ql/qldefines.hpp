@@ -147,10 +147,13 @@
 
 #include <cmath>
 #if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std { using ::sqrt;  using ::fabs; using ::exp;  using ::log;
-                    using ::sin;   using ::cos;  using ::asin; using ::acos;
-                    using ::pow;   using ::modf; using ::sinh; using ::cosh;
-                    using ::floor; using ::fmod; }
+    namespace std {
+        using ::sqrt; using ::abs; using ::fabs;
+        using ::exp; using ::log; using ::pow;
+        using ::sin; using ::cos; using ::asin; using ::acos;
+        using ::sinh; using ::cosh;
+        using ::floor; using ::fmod; using ::modf;
+    }
 #endif
 
 

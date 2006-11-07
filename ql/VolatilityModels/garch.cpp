@@ -43,9 +43,8 @@ namespace QuantLib {
     return retval;
   }
 
-  void
-  Garch11::calibrate(const TimeSeries<Volatility>& qs) {
-  }
+  void Garch11::calibrate(const TimeSeries<Volatility>&) {}
+
   Real Garch11::costFunction(const TimeSeries<Volatility>& qs,
                              Real alpha, Real beta, Real omega) {
       Real retval(0.0);

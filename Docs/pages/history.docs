@@ -18,7 +18,52 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.13 - July 2006</strong>
+    <strong>Release 0.3.14 - November 2006</strong>
+
+    PORTABILITY
+    - Version 0.3.14 is the last QuantLib release to support the Borland
+      free compiler 5.5 and Microsoft Visual C++ 6.0. If you use one
+      of these compilers and want support to continue, you can volunteer
+      for maintaining the necessary patches: contact the QuantLib
+      developers for information.
+
+    LIBOR MARKET MODEL
+    - This release includes an experimental implementation of a Libor
+      market model developed with Mark Joshi.  The interface and its
+      integration with the bulk of the library are still in development.
+
+    CURRENCIES
+    - Added Romanian new lev.
+
+    DATES, CALENDARS, AND DAY COUNTERS
+    - Added all serial 3M IMM futures (thanks to Toyin Akin.)
+    - Reworked the Schedule class so that it follows market
+      conventions more closely.
+    - Added business/252 day-count convention (thanks to Piter Dias.)
+
+    INTEREST RATES
+    - Added base swap-rate class and a number of actual swap rates.
+    - Added constant-maturity swap coupons (including convexity
+      adjustment.)
+
+    INSTRUMENTS
+    - Added asset swaps.
+    - Added face amount to bonds (defaulting to 100.)
+
+    MATH
+    - Added hypersphere and lower-diagonal salvaging algorithms
+      (thanks to Yiping Chen.)
+
+    PRICING ENGINES
+    - Added Longstaff-Schwartz Monte-Carlo algorithm for
+      American/Bermudan equity options with deterministic interest
+      rates.
+
+    TERM STRUCTURE
+    - Added piecewise-spreaded yield curve (thanks to Roland Lichters.)
+
+
+    <strong>Release 0.3.13 - July 31st, 2006</strong>
 
     CALENDARS
     - Added NERC calendar (thanks to Joe Byers.)

@@ -73,7 +73,8 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
 [AC_MSG_CHECKING([for Boost unit-test framework])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
- for boost_lib in boost_unit_test_framework-$CC boost_unit_test_framework ; do
+ for boost_lib in boost_unit_test_framework-$CC boost_unit_test_framework \
+           boost_unit_test_framework-mt-$CC boost_unit_test_framework-mt ; do
      LIBS="$ql_original_LIBS -l$boost_lib"
      boost_unit_found=no
      AC_LINK_IFELSE(

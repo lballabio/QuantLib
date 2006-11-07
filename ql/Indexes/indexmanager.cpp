@@ -52,6 +52,10 @@ namespace QuantLib {
         return temp;
     }
 
+    void IndexManager::clearHistory(const std::string& name) {
+        data_[uppercase(name)] = TimeSeries<Real>();
+    }
+
     void IndexManager::clearHistories() {
         for (history_map::iterator i=data_.begin(); i!=data_.end(); i++)
             i->second = TimeSeries<Real>();

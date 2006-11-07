@@ -28,8 +28,8 @@
 #include <ql/Utilities/disposable.hpp>
 #include <ql/Utilities/null.hpp>
 #include <ql/Utilities/observablevalue.hpp>
-#include <ql/Utilities/tracing.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 #include <ql/Utilities/strings.hpp>
+#include <ql/Utilities/tracing.hpp>
 
 #endif

@@ -49,7 +49,7 @@ namespace QuantLib {
         return evolution_;
     }
 
-    void SwapBasisSystem::nextStep(const CurveState& currentState) {
+    void SwapBasisSystem::nextStep(const CurveState&) {
         ++currentIndex_;
     }
 

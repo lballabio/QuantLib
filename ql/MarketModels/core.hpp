@@ -21,13 +21,14 @@
 #define quantlib_market_models_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/MarketModels/curvestate.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
 
 
 #endif

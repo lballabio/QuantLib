@@ -35,9 +35,9 @@ namespace QuantLib {
                     const std::vector<Period>& tenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
-      swapTenors_(tenors), volatilities_(expiries.size(),tenors.size())
-      {
+    : SwaptionVolatilityStructure(0, calendar),
+      swapTenors_(tenors), volatilities_(expiries.size(),tenors.size()),
+      dayCounter_(dayCounter) {
         QL_REQUIRE(!vols.empty(), "empty vol matrix");
         QL_REQUIRE(expiries.size()==vols.size(),
             "mismatch between number of exercise dates ("
@@ -86,9 +86,8 @@ namespace QuantLib {
                         const std::vector<Period>& lengths,
                         const Matrix& vols,
                         const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, calendar), dayCounter_(dayCounter),
-      swapTenors_(lengths), volatilities_(vols)
-    {
+    : SwaptionVolatilityStructure(0, calendar),
+      swapTenors_(lengths), volatilities_(vols),  dayCounter_(dayCounter) {
         QL_REQUIRE(expiries.size()==vols.rows(),
             "mismatch between number of expiries ("
             << expiries.size() << ") and number of rows ("
@@ -128,9 +127,8 @@ namespace QuantLib {
                        const Matrix& vols,
                        const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, NullCalendar()), // FIXME
-      dayCounter_(dayCounter),
-      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
-    {
+      optionDates_(dates), swapTenors_(lengths), volatilities_(vols),
+      dayCounter_(dayCounter) {
         QL_REQUIRE(dates.size()==vols.rows(),
             "mismatch between number of exercise dates ("
             << dates.size() << ") and number of rows ("
@@ -166,9 +164,9 @@ namespace QuantLib {
                     const std::vector<Period>& lengths,
                     const Matrix& vols,
                     const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today), dayCounter_(dayCounter),
-      optionDates_(dates), swapTenors_(lengths), volatilities_(vols)
-      {
+    : SwaptionVolatilityStructure(today),
+      optionDates_(dates), swapTenors_(lengths), volatilities_(vols),
+      dayCounter_(dayCounter) {
         QL_REQUIRE(dates.size()==vols.rows(),
             "mismatch between number of exercise dates ("
             << dates.size() << ") and number of rows ("

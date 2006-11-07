@@ -21,6 +21,7 @@
 #define quantlib_pricers_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Pricers/mcpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

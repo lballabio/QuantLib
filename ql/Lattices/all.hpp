@@ -21,13 +21,15 @@
 #define quantlib_lattices_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Lattices/core.hpp>
 
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/Lattices/bsmlattice.hpp>
+#include <ql/Lattices/lattice1d.hpp>
 #include <ql/Lattices/lattice2d.hpp>
-#include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Lattices/tflattice.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
 
 
 

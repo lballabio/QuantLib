@@ -39,7 +39,7 @@ namespace QuantLib {
             Integer settlementDays,
             const DayCounter& dayCounter,
             const Schedule& schedule,
-            Real redemption)
+            Real)
     : Bond(100.0, dayCounter, schedule.calendar(),
            schedule.businessDayConvention(),
            schedule.businessDayConvention(), settlementDays),

@@ -69,7 +69,7 @@ namespace QuantLib
         Real instantaneousCovariance(Time u, Time T, Time S) const;
 
         /*! volatility in [tMin,tMax] of T-fixing rate:
-            \f[ \sqrt_{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
+            \f[ \sqrt{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
         */
         Real volatility(Time tMin, Time tMax, Time T) const;
         /*! variance in [tMin,tMax] of T-fixing rate:

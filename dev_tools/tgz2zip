@@ -8,6 +8,6 @@
 
 tar xfz $1.tar.gz
 find $1 | grep -v '\.\(\(bmp\)\|\(jpg\)\|\(ico\)\|\(pdf\)\|\(png\)\|\(gif\)\)$' | xargs todos -o -p
-zip -q -r $1.zip $1
+zip -q -9 -r $1.zip $1
 rm -r $1
 

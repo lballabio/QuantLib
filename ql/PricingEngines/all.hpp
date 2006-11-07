@@ -21,6 +21,7 @@
 #define quantlib_pricing_engines_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/core.hpp>
 
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>

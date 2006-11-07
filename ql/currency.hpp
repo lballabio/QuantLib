@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Decillion Pty(Ltd)
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,8 +95,9 @@ namespace QuantLib {
              const std::string& formatString,
              const Currency& triangulationCurrency = Currency())
         : name(name), code(code), numeric(numericCode),
-          symbol(symbol), fractionsPerUnit(fractionsPerUnit),
-          rounding(rounding), triangulated(triangulationCurrency),
+          symbol(symbol), fractionSymbol(fractionSymbol),
+          fractionsPerUnit(fractionsPerUnit), rounding(rounding),
+          triangulated(triangulationCurrency),
           formatString(formatString) {}
     };
 

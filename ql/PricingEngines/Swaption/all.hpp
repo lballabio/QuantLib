@@ -20,11 +20,14 @@
 #ifndef quantlib_pricing_engines_swaption_all_hpp
 #define quantlib_pricing_engines_swaption_all_hpp
 
+#include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
+#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
 #include <ql/PricingEngines/Swaption/g2swaptionengine.hpp>
 #include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
 #include <ql/PricingEngines/Swaption/lfmswaptionengine.hpp>
 #include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
+
 
 #endif

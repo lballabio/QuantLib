@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/Math/functional.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>
-#include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <boost/bind.hpp>
 
 using boost::bind;
@@ -104,3 +105,4 @@ namespace QuantLib {
 
 }
 
+#endif

@@ -31,6 +31,9 @@
 
 namespace QuantLib {
 
+    /*! \warning this class is not finalized and its interface might
+                 change in subsequent releases.
+    */
     class SwaptionVolatilityCube : public SwaptionVolatilityStructure {
       public:
         SwaptionVolatilityCube(

@@ -95,7 +95,8 @@ namespace QuantLib {
         std::vector<Time> allCashflowTimes;
 
         // now, for each subproduct...
-        for (iterator i=components_.begin(); i!=components_.end(); ++i) {
+        iterator i;
+        for (i=components_.begin(); i!=components_.end(); ++i) {
             EvolutionDescription d = i->product->evolution();
             // ...collect all possible cash-flow times...
             const std::vector<Time>& cashflowTimes =
@@ -121,7 +122,7 @@ namespace QuantLib {
         std::copy(allCashflowTimes.begin(), end,
                   std::back_inserter(cashflowTimes_));
         // ...and map each product's cash-flow time into the total vector.
-        for (iterator i=components_.begin(); i!=components_.end(); ++i) {
+        for (i=components_.begin(); i!=components_.end(); ++i) {
             const std::vector<Time>& productTimes =
                 i->product->possibleCashFlowTimes();
             i->timeIndices = std::vector<Size>(productTimes.size());

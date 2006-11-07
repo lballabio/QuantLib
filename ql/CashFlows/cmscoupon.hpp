@@ -22,8 +22,8 @@
 #ifndef quantlib_cms_coupon_hpp
 #define quantlib_cms_coupon_hpp
 
+#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Indexes/swapindex.hpp>
-#include <ql/CashFlows/all.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {

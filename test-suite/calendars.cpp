@@ -733,7 +733,7 @@ void CalendarTest::testBrazil() {
 }
 
 void CalendarTest::testEndOfMonth() {
-    BOOST_MESSAGE("Testing end of month...");
+    BOOST_MESSAGE("Testing end-of-month calculation...");
 
     Calendar c = TARGET(); // any calendar would be OK
 

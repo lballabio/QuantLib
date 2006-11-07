@@ -27,7 +27,7 @@ namespace QuantLib {
                                           const std::vector<Rate>& strikes,
                                           Option::Type optionType)
     : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
-      strikes_(strikes), optionType_(optionType_), currentIndex_(0) {
+      strikes_(strikes), optionType_(optionType), currentIndex_(0) {
         std::vector<Time> evolveTimes(rateTimes_);
         evolveTimes.pop_back();
         evolution_ = EvolutionDescription(rateTimes_,evolveTimes);

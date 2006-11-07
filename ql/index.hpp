@@ -74,6 +74,8 @@ namespace QuantLib {
             }
             IndexManager::instance().setHistory(tag,h);
         }
+        //! clears all stored historical fixings
+        void clearFixings();
     };
 
 }

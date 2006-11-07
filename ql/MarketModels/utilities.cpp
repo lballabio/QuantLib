@@ -29,7 +29,8 @@ namespace QuantLib {
                     std::vector<std::vector<bool> >& isPresent) {
 
         std::vector<Time> allTimes;
-        for(Size i=0; i<times.size(); i++) {
+        Size i;
+        for (i=0; i<times.size(); i++) {
             allTimes.insert(allTimes.end(),
                             times[i].begin(),
                             times[i].end());
@@ -43,7 +44,7 @@ namespace QuantLib {
                   std::back_inserter(mergedTimes));
 
         isPresent.resize(times.size());
-        for (Size i=0; i<times.size(); i++) {
+        for (i=0; i<times.size(); i++) {
             isPresent[i].resize(allTimes.size());
             for (Size j=0; j<allTimes.size(); j++) {
                 isPresent[i][j] = std::binary_search(times[i].begin(),

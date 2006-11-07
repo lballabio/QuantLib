@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mclongstaffschwartzengine.hpp
-    \brief Longstaff Schwartz Monte Carlo engine for early exercise options
+/*! \file longstaffschwartzpathpricer.hpp
+    \brief Longstaff-Schwarz path pricer for early exercise options
 */
 
 #ifndef quantlib_longstaff_schwartz_path_pricer_hpp
@@ -34,7 +34,7 @@
 
 namespace QuantLib {
 
-    //! Longstaff Schwarz Path Pricer for early exercise options
+    //! Longstaff-Schwarz path pricer for early exercise options
     /*! References:
 
         Francis Longstaff, Eduardo Schwartz, 2001. Valuing American Options

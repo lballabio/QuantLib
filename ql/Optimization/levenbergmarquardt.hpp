@@ -40,7 +40,7 @@ namespace QuantLib {
         */
         LevenbergMarquardt(Real epsfcn = 1e-8, Real ftol = 1e-8,
                            Real xtol = 1e-8, Real gtol = 1e-8,
-                           Size maxfev = 200);
+                           Size maxfev = 400);
 
         void minimize(const Problem& P) const;
         virtual Integer getInfo() const;

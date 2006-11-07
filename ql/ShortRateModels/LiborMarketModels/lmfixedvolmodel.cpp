@@ -39,7 +39,7 @@ namespace QuantLib {
     }
 
     Disposable<Array> LmFixedVolatilityModel::volatility(
-        Time t, const Array& x) const {
+                                                 Time t, const Array&) const {
         QL_REQUIRE(t >= startTimes_.front() && t <= startTimes_.back(),
                    "invalid time given for volatility model");
 
@@ -57,7 +57,7 @@ namespace QuantLib {
     }
 
     Volatility LmFixedVolatilityModel::volatility(
-        Size i, Time t, const Array& x) const {
+                                         Size i, Time t, const Array&) const {
         QL_REQUIRE(t >= startTimes_.front() && t <= startTimes_.back(),
                    "invalid time given for volatility model");
 

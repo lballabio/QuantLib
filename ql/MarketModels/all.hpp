@@ -21,24 +21,23 @@
 #define quantlib_market_models_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/MarketModels/core.hpp>
+
 #include <ql/MarketModels/driftcalculator.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
+#include <ql/MarketModels/swapbasissystem.hpp>
 #include <ql/MarketModels/swapforwardconversionmatrix.hpp>
 #include <ql/MarketModels/utilities.hpp>
-#include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
-#include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp>
-#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
-#include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
-#include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>
-#include <ql/MarketModels/ExerciseStrategies/swapratetrigger.hpp>
-#include <ql/MarketModels/ExerciseValues/bermudanswaptionexercisevalue.hpp>
-#include <ql/MarketModels/ExerciseValues/nothingexercisevalue.hpp>
-#include <ql/MarketModels/Models/abcdvolatility.hpp>
-#include <ql/MarketModels/Models/exponentialcorrelation.hpp>
+
+#include <ql/MarketModels/BrownianGenerators/all.hpp>
+#include <ql/MarketModels/Evolvers/all.hpp>
+#include <ql/MarketModels/ExerciseStrategies/all.hpp>
+#include <ql/MarketModels/ExerciseValues/all.hpp>
+#include <ql/MarketModels/Models/all.hpp>
 #include <ql/MarketModels/Products/all.hpp>
 
 

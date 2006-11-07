@@ -488,6 +488,7 @@ HR { height: 1px;
 .paramname {
   color: #602020;
   font-style: italic;
+  white-space: nowrap;
 }
 /* End Styling for detailed member documentation */
 

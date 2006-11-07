@@ -99,6 +99,7 @@ namespace QuantLib {
         reset();
     }
 
+    #ifndef __DOXYGEN__
     template <class T, class U>
     void ConvergenceStatistics<T,U>::add(
                  const typename ConvergenceStatistics<T,U>::value_type& value,
@@ -109,6 +110,7 @@ namespace QuantLib {
             nextSampleSize_ = samplingRule_.nextSamples(nextSampleSize_);
         }
     }
+    #endif
 
     template <class T, class U>
     void ConvergenceStatistics<T,U>::reset() {

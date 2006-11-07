@@ -21,8 +21,9 @@
 #define quantlib_monte_carlo_core_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
+
 #include <ql/MonteCarlo/mctraits.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>

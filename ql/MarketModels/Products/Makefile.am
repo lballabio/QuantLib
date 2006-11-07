@@ -25,4 +25,5 @@ libMarketModelsProducts_la_LIBADD = \
     MultiStep/libMarketModelsProductsMultiStep.la \
     OneStep/libMarketModelsProductsOneStep.la
 
-#EXTRA_DIST = makefile.mak
+EXTRA_DIST = makefile.mak
+

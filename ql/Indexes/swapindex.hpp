@@ -15,7 +15,8 @@
  This program is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
-/*! \file swaprate.hpp
+
+/*! \file swapindex.hpp
     \brief swap-rate indexes
 */
 
@@ -34,7 +35,7 @@ namespace QuantLib {
         SwapIndex(const std::string& familyName,
                   Integer years,
                   Integer settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const Calendar& calendar,
                   Frequency fixedLegFrequency,
                   BusinessDayConvention fixedLegConvention,

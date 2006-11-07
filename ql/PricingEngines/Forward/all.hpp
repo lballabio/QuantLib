@@ -21,6 +21,7 @@
 #define quantlib_pricing_engines_forward_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/Forward/forwardengine.hpp>
 #include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
 #include <ql/PricingEngines/Forward/mcvarianceswapengine.hpp>

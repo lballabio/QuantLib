@@ -21,6 +21,7 @@
 #define quantlib_pricing_engines_quanto_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/PricingEngines/Quanto/quantoengine.hpp>
 
 

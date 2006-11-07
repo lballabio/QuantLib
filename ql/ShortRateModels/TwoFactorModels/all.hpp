@@ -21,6 +21,7 @@
 #define quantlib_two_factor_models_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>

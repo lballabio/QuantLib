@@ -55,7 +55,7 @@ namespace QuantLib {
 
     /*! \relates Clone */
     template <class T>
-    void swap(T&, T&);
+    void swap(Clone<T>&, Clone<T>&);
 
 
     // inline definitions

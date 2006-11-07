@@ -40,17 +40,23 @@ namespace QuantLib {
       public:
         //! default constructor
         ConjugateGradient(const boost::shared_ptr<LineSearch>& lineSearch =
-                              boost::shared_ptr<LineSearch>(
-                                new ArmijoLineSearch()))
-        : lineSearch_(lineSearch) {}
+                              boost::shared_ptr<LineSearch>())
+        : lineSearch_(lineSearch) {
+            if (!lineSearch_)
+                lineSearch_ = boost::shared_ptr<LineSearch>(
+                                                     new ArmijoLineSearch);
+        }
 
         ConjugateGradient(const EndCriteria& endCriteria,
                           const Array& initialValue,
                           const boost::shared_ptr<LineSearch>& lineSearch =
-                              boost::shared_ptr<LineSearch>(
-                                new ArmijoLineSearch()))
+                              boost::shared_ptr<LineSearch>())
         : OptimizationMethod(endCriteria, initialValue),
-          lineSearch_(lineSearch) {}
+          lineSearch_(lineSearch) {
+            if (!lineSearch_)
+                lineSearch_ = boost::shared_ptr<LineSearch>(
+                                                     new ArmijoLineSearch);
+        }
 
         //! minimize the optimization problem P
         void minimize(const Problem& P) const;

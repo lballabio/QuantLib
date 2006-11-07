@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Auto run test"
+				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -311,7 +311,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Auto run test"
+				Description=""
 				CommandLine=""
 			/>
 		</Configuration>

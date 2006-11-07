@@ -102,13 +102,18 @@ AM_CPPFLAGS = \
 	-I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir} \
 	${BOOST_UNIT_TEST_DEFINE}
 
+if AUTO_BENCHMARK
+bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
+else
 bin_PROGRAMS = quantlib-test-suite
+EXTRA_PROGRAMS = quantlib-benchmark
+CLEANFILES = quantlib-benchmark
+endif
+
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
-EXTRA_PROGRAMS = quantlib-benchmark
-CLEANFILES = quantlib-benchmark
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
 quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la
 quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
@@ -132,6 +137,7 @@ else
 
 EXTRA_DIST = \
 	${QL_TESTS} \
+	quantlibbenchmark.cpp \
 	README.txt \
 	testsuite.dsp \
 	testsuite.vcproj \

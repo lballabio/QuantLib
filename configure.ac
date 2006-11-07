@@ -295,6 +295,19 @@ AC_ARG_ENABLE([examples],
 AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
 AC_MSG_RESULT([$ql_install_examples])
 
+AC_MSG_CHECKING([whether to install the benchmark])
+AC_ARG_ENABLE([benchmark],
+              AC_HELP_STRING([--enable-benchmark],
+                             [If enabled, the benchmark is built and
+                              installed when "make" and "make install"
+                              are invoked. If disabled (the default)
+                              it is built with "make benchmark" and
+                              not installed.]),
+              [ql_install_benchmark=$enableval],
+              [ql_install_benchmark=no])
+AM_CONDITIONAL(AUTO_BENCHMARK, test "$ql_install_benchmark" != "no")
+AC_MSG_RESULT([$ql_install_benchmark])
+
 
 # manual configurations for specific hosts
 case $host in

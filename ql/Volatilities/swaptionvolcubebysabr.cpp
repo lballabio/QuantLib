@@ -48,7 +48,8 @@ namespace QuantLib {
 
         parametersGuess_ = Cube(exerciseDates_, lengths_,
                                 exerciseTimes_, timeLengths_, 4);
-        for (Size i=0; i<4; i++) {
+        Size i;
+        for (i=0; i<4; i++) {
             for (Size j=0; j<nExercise_ ; j++) {
                 for (Size k=0; k<nlengths_; k++) {
                     parametersGuess_.setElement(
@@ -69,7 +70,7 @@ namespace QuantLib {
             for (Size j=0; j<nExercise_; j++) {
                 for (Size k=0; k<nlengths_; k++) {
                     atmForward = atmStrike(exerciseDates_[j], lengths_[k]);
-                    vol = volSpreads_[j*nlengths_+k][i]->value() + 
+                    vol = volSpreads_[j*nlengths_+k][i]->value() +
                         atmVol_->volatility(exerciseDates_[j], lengths_[k],
                                                                atmForward);
                     marketVolCube_.setElement(i, j, k, vol);
@@ -140,7 +141,7 @@ namespace QuantLib {
                                           vegaWeightedSmileFit_,
                                           boost::shared_ptr<OptimizationMethod>()));
 
-                Real interpolationError = 
+                Real interpolationError =
                     sabrInterpolation->interpolationError();
                 alphas     [j][k]=sabrInterpolation->alpha();
                 betas      [j][k]=sabrInterpolation->beta();
@@ -376,8 +377,8 @@ namespace QuantLib {
     SwaptionVolatilityCubeBySabr::smileSection(
                                     Time expiry, Time length,
                                     const Cube& sabrParametersCube) const {
-        
-        calculate();        
+
+        calculate();
         const std::vector<Real> sabrParameters =
             sabrParametersCube(expiry, length);
         return boost::shared_ptr<SmileSectionInterface>(
@@ -557,13 +558,11 @@ namespace QuantLib {
 
         expiriesPreviousNode =
             std::lower_bound(expiries_.begin(),expiries_.end(),expiry);
-        std::vector<Real>::iterator::difference_type
-            expiriesIndex = expiriesPreviousNode - expiries_.begin();
+        Size expiriesIndex = expiriesPreviousNode - expiries_.begin();
 
         lengthsPreviousNode =
             std::lower_bound(lengths_.begin(),lengths_.end(),length);
-        std::vector<Real>::iterator::difference_type
-            lengthsIndex = lengthsPreviousNode - lengths_.begin();
+        Size lengthsIndex = lengthsPreviousNode - lengths_.begin();
 
         if (expandExpiries || expandLengths)
             expandLayers(expiriesIndex, expandExpiries,

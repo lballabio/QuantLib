@@ -24,16 +24,21 @@ QuantLib is
     Copyright (C) 2005 Toyin Akin
     Copyright (C) 2005 Sercan Atalik
     Copyright (C) 2005, 2006 Theo Boafo
-    Copyright (C) 2005 Piter Dias
+    Copyright (C) 2005, 2006 Piter Dias
     Copyright (C) 2005 Gary Kennedy
     Copyright (C) 2005, 2006 Joseph Wang
     Copyright (C) 2005 Charles Whitmore
 
     Copyright (C) 2006 Banca Profilo S.p.A.
     Copyright (C) 2006 Marco Bianchetti
+    Copyright (C) 2006 Yiping Chen
     Copyright (C) 2006 Warren Chou
     Copyright (C) 2006 Cristina Duminuco
+    Copyright (C) 2006 Giorgio Facchinetti
+    Copyright (C) 2006 Chiara Fornarola
+    Copyright (C) 2006 Silvia Frasson
     Copyright (C) 2006 Richard Gould
+    Copyright (C) 2006 Mark Joshi
     Copyright (C) 2006 Allen Kuo
     Copyright (C) 2006 Roland Lichters
     Copyright (C) 2006 Katiuscia Manzoni

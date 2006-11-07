@@ -124,7 +124,8 @@ namespace QuantLib {
         dates_ = std::vector<Date>(1, referenceDate());
         times_ = std::vector<Time>(1, 0.0);
         discounts_ = std::vector<DiscountFactor>(1, 1.0);
-        forwards_ = zeroYields_ = std::vector<Rate>();
+        forwards_ = std::vector<Rate>(1, 0.0);
+        zeroYields_ = std::vector<Rate>(1, 0.0);
 
         // the choice of the solver determines whether the
         // accuracy is on the discount or the instrument rate
@@ -226,11 +227,6 @@ namespace QuantLib {
         curve_->dates_.push_back(rateHelper_->latestDate());
         curve_->times_.push_back(
                             curve_->timeFromReference(curve_->dates_.back()));
-        if (segment_ == 1) {
-            // add dummy values at reference
-            curve_->forwards_.push_back(0.0);
-            curve_->zeroYields_.push_back(0.0);
-        }
         // add dummy values for next point - will be reset by operator()
         curve_->discounts_.push_back(0.0);
         curve_->forwards_.push_back(0.0);

@@ -24,6 +24,8 @@
 #ifndef quantlib_lsm_basis_system_hpp
 #define quantlib_lsm_basis_system_hpp
 
+#include <ql/qldefines.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/Math/array.hpp>
 #include <boost/function.hpp>
 #include <vector>
@@ -50,5 +52,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

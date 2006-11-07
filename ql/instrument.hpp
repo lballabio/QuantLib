@@ -160,6 +160,7 @@ namespace QuantLib {
 
     inline Real Instrument::NPV() const {
         calculate();
+        QL_REQUIRE(NPV_ != Null<Real>(), "NPV not provided");
         return NPV_;
     }
 

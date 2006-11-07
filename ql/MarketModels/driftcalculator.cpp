@@ -46,7 +46,7 @@ namespace QuantLib {
             "pseudo.rows() not consistent with dim");
         QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=dim_,
             "pseudo.rows() not consistent with pseudo.columns()");
-        QL_REQUIRE(alive>=0 && alive<dim_, "Alive out of bounds");
+        QL_REQUIRE(alive<dim_, "Alive out of bounds");
         QL_REQUIRE(numeraire_<=dim_, "Numeraire larger than dim");
         QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
 
@@ -148,7 +148,7 @@ namespace QuantLib {
             }
             */
         }
-        
+
         // 3rd step: now, move forward from N (included) up to n (excluded)
         // (if N=0 this is the only relevant computation):
         for (Size i=numeraire_; i<dim_; ++i) {

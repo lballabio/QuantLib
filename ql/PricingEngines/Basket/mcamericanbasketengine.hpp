@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Neil Firth,
+ Copyright (C) 2004 Neil Firth
  Copyright (C) 2006 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,6 +25,8 @@
 #ifndef quantlib_american_basket_montecarlo_engine_hpp
 #define quantlib_american_basket_montecarlo_engine_hpp
 
+#include <ql/qldefines.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
@@ -177,5 +179,6 @@ namespace QuantLib {
 
 }
 
+#endif
 
 #endif

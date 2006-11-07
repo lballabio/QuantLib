@@ -21,6 +21,7 @@
 #define quantlib_math_core_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Math/array.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/sequencestatistics.hpp>

@@ -27,26 +27,53 @@ namespace QuantLib {
 
     namespace {
 
+        //cost function for hypersphere and lower-diagonal algorithm
         class HypersphereCostFunction : public CostFunction {
           private:
-            Matrix targetMatrix_;
             Size size_;
+            bool lowerDiagonal_;
+            Matrix targetMatrix_;
+            Array targetVariance_;
             mutable Matrix currentRoot_, tempMatrix_, currentMatrix_;
           public:
-            HypersphereCostFunction(const Matrix& targetMatrix)
-            : targetMatrix_(targetMatrix), size_(targetMatrix.rows()),
+            HypersphereCostFunction(const Matrix& targetMatrix,
+                                    const Array& targetVariance,
+                                    bool lowerDiagonal)
+            : size_(targetMatrix.rows()), lowerDiagonal_(lowerDiagonal),
+              targetMatrix_(targetMatrix), targetVariance_(targetVariance),
               currentRoot_(size_, size_), tempMatrix_(size_, size_),
               currentMatrix_(size_, size_) {}
             Real value(const Array& x) const {
                 Size i,j,k;
                 std::fill(currentRoot_.begin(), currentRoot_.end(), 1.0);
-                for (i=0;i<size_;i++) {
-                    for (k=0;k<size_;k++) {
-                        for (j=0;j<=k;j++) {
-                            if (j == k && k!=size_-1)
-                                currentRoot_[i][k] *= std::cos(x[j*size_+i]);
-                            else if (j!=size_-1)
-                                currentRoot_[i][k] *= std::sin(x[j*size_+i]);
+                if (lowerDiagonal_) {
+                    for (i=0; i<size_; i++) {
+                        for (k=0; k<size_; k++) {
+                            if (k>i) {
+                                currentRoot_[i][k]=0;
+                            } else {
+                                for (j=0; j<=k; j++) {
+                                    if (j == k && k!=i)
+                                        currentRoot_[i][k] *=
+                                            std::cos(x[i*(i-1)/2+j]);
+                                    else if (j!=i)
+                                        currentRoot_[i][k] *=
+                                            std::sin(x[i*(i-1)/2+j]);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (i=0; i<size_; i++) {
+                        for (k=0; k<size_; k++) {
+                            for (j=0; j<=k; j++) {
+                                if (j == k && k!=size_-1)
+                                    currentRoot_[i][k] *=
+                                        std::cos(x[j*size_+i]);
+                                else if (j!=size_-1)
+                                    currentRoot_[i][k] *=
+                                        std::sin(x[j*size_+i]);
+                            }
                         }
                     }
                 }
@@ -55,13 +82,142 @@ namespace QuantLib {
                 currentMatrix_ = currentRoot_ * tempMatrix_;
                 for (i=0;i<size_;i++) {
                     for (j=0;j<size_;j++) {
-                        temp = currentMatrix_[i][j]-targetMatrix_[i][j];
+                        temp = currentMatrix_[i][j]*targetVariance_[i]
+                          *targetVariance_[j]-targetMatrix_[i][j];
                         error += temp*temp;
                     }
                 }
                 return error;
             }
         };
+
+        // Optimization function for hypersphere and lower-diagonal algorithm
+        const Disposable <Matrix> hypersphereOptimize(
+                        const Matrix& targetMatrix, const Matrix& currentRoot,
+                        const bool lowerDiagonal) {
+            Size i,j,k,size = targetMatrix.rows();
+            Matrix result(currentRoot);
+            Array variance(size, 0);
+            for (i=0; i<size; i++){
+                variance[i]=std::sqrt(targetMatrix[i][i]);
+            }
+            if (lowerDiagonal) {
+                Matrix approxMatrix(result*transpose(result));
+                result = CholeskyDecomposition(approxMatrix, true);
+                for (i=0; i<size; i++) {
+                    for (j=0; j<size; j++) {
+                        result[i][j]/=std::sqrt(approxMatrix[i][i]);
+                    }
+                }
+            } else {
+                for (i=0; i<size; i++) {
+                    for (j=0; j<size; j++) {
+                        result[i][j]/=variance[i];
+                    }
+                }
+            }
+            ConjugateGradient optimize;
+            EndCriteria endCriteria(100, 1e-8);
+            optimize.setEndCriteria(endCriteria);
+            HypersphereCostFunction costFunction(targetMatrix,variance,
+                                                 lowerDiagonal);
+            NoConstraint constraint;
+
+            // hypersphere vector optimization
+
+            if (lowerDiagonal) {
+                Array theta(size * (size-1)/2);
+                const Real eps=1e-16;
+                for (i=1; i<size; i++) {
+                    for (j=0; j<i; j++) {
+                        theta[i*(i-1)/2+j]=result[i][j];
+                        if (theta[i*(i-1)/2+j]>1-eps)
+                            theta[i*(i-1)/2+j]=1-eps;
+                        if (theta[i*(i-1)/2+j]<-1+eps)
+                            theta[i*(i-1)/2+j]=-1+eps;
+                        for (k=0; k<j; k++) {
+                            theta[i*(i-1)/2+j] /= std::sin(theta[i*(i-1)/2+k]);
+                            if (theta[i*(i-1)/2+j]>1-eps)
+                                theta[i*(i-1)/2+j]=1-eps;
+                            if (theta[i*(i-1)/2+j]<-1+eps)
+                                theta[i*(i-1)/2+j]=-1+eps;
+                        }
+                        theta[i*(i-1)/2+j] = std::acos(theta[i*(i-1)/2+j]);
+                        if (j==i-1) {
+                            if (result[i][i]<0)
+                                theta[i*(i-1)/2+j]=-theta[i*(i-1)/2+j];
+                        }
+                    }
+                }
+                optimize.setInitialValue(theta);
+                Problem p(costFunction, constraint, optimize);
+                p.minimize();
+                theta = p.minimumValue();
+                std::fill(result.begin(),result.end(),1.0);
+                for (i=0; i<size; i++) {
+                    for (k=0; k<size; k++) {
+                        if (k>i) {
+                            result[i][k]=0;
+                        } else {
+                            for (j=0; j<=k; j++) {
+                                if (j == k && k!=i)
+                                    result[i][k] *=
+                                        std::cos(theta[i*(i-1)/2+j]);
+                                else if (j!=i)
+                                    result[i][k] *=
+                                        std::sin(theta[i*(i-1)/2+j]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                Array theta(size * (size-1));
+                const Real eps=1e-16;
+                for (i=0; i<size; i++) {
+                    for (j=0; j<size-1; j++) {
+                        theta[j*size+i]=result[i][j];
+                        if (theta[j*size+i]>1-eps)
+                            theta[j*size+i]=1-eps;
+                        if (theta[j*size+i]<-1+eps)
+                            theta[j*size+i]=-1+eps;
+                        for (k=0;k<j;k++) {
+                            theta[j*size+i] /= std::sin(theta[k*size+i]);
+                            if (theta[j*size+i]>1-eps)
+                                theta[j*size+i]=1-eps;
+                            if (theta[j*size+i]<-1+eps)
+                                theta[j*size+i]=-1+eps;
+                        }
+                        theta[j*size+i] = std::acos(theta[j*size+i]);
+                        if (j==size-2) {
+                            if (result[i][j+1]<0)
+                                theta[j*size+i]=-theta[j*size+i];
+                        }
+                    }
+                }
+                optimize.setInitialValue(theta);
+                Problem p(costFunction, constraint, optimize);
+                p.minimize();
+                theta=p.minimumValue();
+                std::fill(result.begin(),result.end(),1.0);
+                for (i=0; i<size; i++) {
+                    for (k=0; k<size; k++) {
+                        for (j=0; j<=k; j++) {
+                            if (j == k && k!=size-1)
+                                result[i][k] *= std::cos(theta[j*size+i]);
+                            else if (j!=size-1)
+                                result[i][k] *= std::sin(theta[j*size+i]);
+                        }
+                    }
+                }
+            }
+
+            for (i=0; i<size; i++) {
+                for (j=0; j<size; j++) {
+                    result[i][j]*=variance[i];
+                }
+            }
+            return result;
+        }
 
     }
 
@@ -71,7 +227,7 @@ namespace QuantLib {
         Size size = matrix.rows();
         QL_REQUIRE(size == matrix.columns(),
                    "matrix not square");
-        Size i, j, k;
+        Size i, j;
         bool negative;
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         for (i=0; i<size; i++)
@@ -123,6 +279,31 @@ namespace QuantLib {
                 if (jd.eigenvalues()[i]<0.0) negative=true;
             }
             result = jd.eigenvectors() * diagonal;
+            // row normalization
+            for (i = 0; i < size; i++) {
+                Real norm = 0.0;
+                for (j = 0; j < size; j++)
+                    norm += result[i][j]*result[i][j];
+                if (norm>0.0) {
+                    norm = std::sqrt(matrix[i][i]/norm);
+                    for (j = 0; j < size; j++)
+                        result[i][j] *= norm;
+                }
+            }
+
+            if (negative) {
+                result=hypersphereOptimize(matrix, result, false);
+            }
+            break;
+          case SalvagingAlgorithm::LowerDiagonal:
+            // negative eigenvalues set to zero
+            negative=false;
+            for (i=0; i<size; i++){
+                diagonal[i][i] =
+                    std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
+                if (jd.eigenvalues()[i]<0.0) negative=true;
+            }
+            result = jd.eigenvectors() * diagonal;
 
             // row normalization
             for (i = 0; i < size; i++) {
@@ -137,55 +318,7 @@ namespace QuantLib {
             }
 
             if (negative) {
-                // hypersphere vector initialization
-                Array theta(size * (size-1), 1., 1.);
-                const Real eps=1e-16;
-                for (i=0;i<size;i++) {
-                    for (j=0;j<size-1;j++) {
-                        theta[j*size+i]=result[i][j];
-                        if (theta[j*size+i]>1-eps)
-                            theta[j*size+i]=1-eps;
-                        if (theta[j*size+i]<-1+eps)
-                            theta[j*size+i]=-1+eps;
-                        for (k=0;k<j;k++) {
-                            theta[j*size+i] /= std::sin(theta[k*size+i]);
-                            if (theta[j*size+i]>1-eps)
-                                theta[j*size+i]=1-eps;
-                            if (theta[j*size+i]<-1+eps)
-                                theta[j*size+i]=-1+eps;
-                        }
-                        theta[j*size+i] = std::acos(theta[j*size+i]);
-                        if (j==size-2) {
-                            if (result[i][j+1]<0)
-                                theta[j*size+i]=-theta[j*size+i];
-                        }
-                    }
-                }
-
-                // Optimization
-                EndCriteria endCriteria(100, 1e-8);
-                ConjugateGradient optimize;
-                optimize.setInitialValue(theta);
-                optimize.setEndCriteria(endCriteria);
-                HypersphereCostFunction costFunction(matrix);
-                NoConstraint constraint;
-                Problem p(costFunction, constraint, optimize);
-                p.minimize();
-                theta=p.minimumValue();
-
-                // Conversion from hypersphere vector to matrix
-                std::fill(result.begin(),result.end(),1.0);
-                for (i=0;i<size;i++) {
-                    for (k=0;k<size;k++) {
-                        for (j=0;j<=k;j++) {
-                            if (j == k && k!=size-1)
-                                result[i][k] *= std::cos(theta[j*size+i]);
-                            else
-                                if (j!=size-1)
-                                    result[i][k] *= std::sin(theta[j*size+i]);
-                        }
-                    }
-                }
+                result=hypersphereOptimize(matrix, result, true);
             }
             break;
           default:
@@ -281,3 +414,4 @@ namespace QuantLib {
     }
 
 }
+

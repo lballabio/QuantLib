@@ -45,7 +45,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> G2Process::diffusion(Time t, const Array& x) const {
+    Disposable<Matrix> G2Process::diffusion(Time, const Array&) const {
         /* the correlation matrix is
            |  1   rho |
            | rho   1  |
@@ -153,8 +153,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> G2ForwardProcess::diffusion(Time t,
-                                                   const Array& x) const {
+    Disposable<Matrix> G2ForwardProcess::diffusion(Time, const Array&) const {
         Matrix tmp(2,2);
         Real sigma1 = sigma_;
         Real sigma2 = eta_;

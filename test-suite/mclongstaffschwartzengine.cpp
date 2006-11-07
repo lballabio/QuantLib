@@ -32,6 +32,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
+
 QL_BEGIN_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
 
 void teardown() {
@@ -297,13 +299,16 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     QL_TEST_TEARDOWN
 }
 
+#endif
 
 test_suite* MCLongstaffSchwartzEngineTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
+    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(
          &MCLongstaffSchwartzEngineTest::testAmericanOption));
     suite->add(BOOST_TEST_CASE(
          &MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
+    #endif
     return suite;
 }
 

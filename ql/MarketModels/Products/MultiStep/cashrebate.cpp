@@ -59,8 +59,7 @@ namespace QuantLib {
 
     std::vector<Size>
     MarketModelCashRebate::suggestedNumeraires() const {
-        QL_REQUIRE(false, "not impleented (yet?)");
-        return std::vector<Size>();
+        QL_FAIL("not implemented (yet?)");
     }
 
     const EvolutionDescription& MarketModelCashRebate::evolution() const {

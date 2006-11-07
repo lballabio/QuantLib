@@ -84,6 +84,8 @@ namespace QuantLib {
     Period operator-(const Period&);
     /*! \relates Period */
     Period operator*(Integer n, const Period&);
+    /*! \relates Period */
+    Period operator*(const Period&, Integer n);
 
     /*! \relates Period */
     bool operator<(const Period&, const Period&);
@@ -144,6 +146,10 @@ namespace QuantLib {
     }
 
     inline Period operator*(Integer n, const Period& p) {
+        return Period(n*p.length(),p.units());
+    }
+
+    inline Period operator*(const Period& p, Integer n) {
         return Period(n*p.length(),p.units());
     }
 

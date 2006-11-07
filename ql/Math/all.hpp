@@ -21,6 +21,7 @@
 #define quantlib_math_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Math/core.hpp>
 
 #include <ql/Math/backwardflatinterpolation.hpp>
@@ -28,8 +29,11 @@
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/binomialdistribution.hpp>
+#include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/choleskydecomposition.hpp>
+#include <ql/Math/comparison.hpp>
+#include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
@@ -38,6 +42,8 @@
 #include <ql/Math/forwardflatinterpolation.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Math/gammadistribution.hpp>
+#include <ql/Math/gaussianorthogonalpolynomial.hpp>
+#include <ql/Math/gaussianquadratures.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/incompletegamma.hpp>
@@ -62,6 +68,7 @@
 #include <ql/Math/simpsonintegral.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/Math/tqreigendecomposition.hpp>
 #include <ql/Math/transformedgrid.hpp>
 #include <ql/Math/trapezoidintegral.hpp>
 

@@ -274,20 +274,18 @@ namespace QuantLib {
         earliestDate_ =
             calendar_.advance(evaluationDate_,settlementDays_,Days);
         // dummy Libor index with curve/swap arguments
-        boost::shared_ptr<Xibor> clonedIndex(new
-            Xibor(index_->familyName(),
-                  index_->tenor(),
-                  index_->settlementDays(),
-                  index_->currency(),
-                  index_->calendar(),
-                  index_->businessDayConvention(),
-                  index_->endOfMonth(),
-                  index_->dayCounter(),
-                  termStructureHandle_));
+        boost::shared_ptr<Xibor> clonedIndex(
+                                     new Xibor(index_->familyName(),
+                                               index_->tenor(),
+                                               index_->settlementDays(),
+                                               index_->currency(),
+                                               index_->calendar(),
+                                               index_->businessDayConvention(),
+                                               index_->dayCounter(),
+                                               termStructureHandle_));
 
-        swap_ = MakeVanillaSwap(tenor_, clonedIndex, 0.0)
-            .withEffectiveDate(earliestDate_)
-            .withFixedLegCalendar(calendar_)
+        swap_ = MakeVanillaSwap(earliestDate_, tenor_, calendar_, 0.0,
+                                clonedIndex, termStructureHandle_)
             .withFixedLegDayCount(fixedDayCount_)
             .withFixedLegTenor(Period(fixedFrequency_))
             .withFixedLegConvention(fixedConvention_)

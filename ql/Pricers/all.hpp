@@ -21,6 +21,7 @@
 #define quantlib_pricers_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/Pricers/core.hpp>
 
 #include <ql/Pricers/discretegeometricaso.hpp>

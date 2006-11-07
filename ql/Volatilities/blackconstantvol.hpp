@@ -136,7 +136,7 @@ namespace QuantLib {
             BlackVolatilityTermStructure::accept(v);
     }
 
-    inline Volatility BlackConstantVol::blackVolImpl(Time t, Real) const {
+    inline Volatility BlackConstantVol::blackVolImpl(Time, Real) const {
         return volatility_->value();
     }
 

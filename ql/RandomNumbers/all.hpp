@@ -21,6 +21,7 @@
 #define quantlib_random_numbers_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/RandomNumbers/core.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>

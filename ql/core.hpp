@@ -31,16 +31,19 @@
 #include <ql/daycounter.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>
+#include <ql/event.hpp>
 #include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/money.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/payoff.hpp>
+#include <ql/period.hpp>
 #include <ql/position.hpp>
 #include <ql/prices.hpp>
 #include <ql/pricingengine.hpp>
@@ -54,6 +57,7 @@
 #include <ql/timegrid.hpp>
 #include <ql/timeseries.hpp>
 #include <ql/types.hpp>
+#include <ql/volatilitymodel.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/yieldtermstructure.hpp>
 

@@ -34,7 +34,7 @@ namespace QuantLib {
 
 
     Disposable<Array> LmLinearExponentialVolatilityModel::volatility(
-                                               Time t, const Array& x) const {
+                                                 Time t, const Array&) const {
         const Real a = arguments_[0](0.0);
         const Real b = arguments_[1](0.0);
         const Real c = arguments_[2](0.0);
@@ -53,7 +53,7 @@ namespace QuantLib {
     }
 
     Volatility LmLinearExponentialVolatilityModel::volatility(
-                                       Size i, Time t, const Array& x) const {
+                                         Size i, Time t, const Array&) const {
         const Real a = arguments_[0](0.0);
         const Real b = arguments_[1](0.0);
         const Real c = arguments_[2](0.0);
@@ -65,7 +65,7 @@ namespace QuantLib {
     }
 
     Real LmLinearExponentialVolatilityModel::integratedVariance(
-                               Size i, Size j, Time u, const Array& x) const {
+                                 Size i, Size j, Time u, const Array&) const {
         const Real a = arguments_[0](0.0);
         const Real b = arguments_[1](0.0);
         const Real c = arguments_[2](0.0);

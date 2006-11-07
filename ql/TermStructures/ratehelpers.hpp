@@ -163,7 +163,7 @@ namespace QuantLib {
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         void setTermStructure(YieldTermStructure*);
-      private:
+      protected:
         void initializeDates();
         Period tenor_;
         Integer settlementDays_;

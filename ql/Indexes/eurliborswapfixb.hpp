@@ -35,10 +35,11 @@
 namespace QuantLib {
 
     //! %EurliborSwapFixB index
-    /*! EurliborSwapFixB rate fixed by ISDA in cooperation with Reuters and
-        Intercapital Brokers. The swap index is based on the EuroLibor 6M and
-        is fixed at 11:00AM London. Reuters page ISDAFIX2 or EURSFIXLB=
-        Further info can be found at: http://www.isda.org/fix/isdafix.html
+    /*! EurliborSwapFixB rate fixed by ISDA in cooperation with
+        Reuters and Intercapital Brokers.  The swap index is based on
+        the EuroLibor 6M and is fixed at 11:00AM London.  Reuters page
+        ISDAFIX2 or EURSFIXLB= Further info can be found at:
+        <http://www.isda.org/fix/isdafix.html>.
     */
     class EurliborSwapFixB : public SwapIndex {
       public:
@@ -93,7 +94,7 @@ namespace QuantLib {
         EurliborSwapFixB6Y(const Handle<YieldTermStructure>& h)
         : EurliborSwapFixB(6*Years, h) {}
     };
-    
+
     //! 7-year %EurliborSwapFixB index
     class EurliborSwapFixB7Y : public EurliborSwapFixB {
       public:
@@ -107,7 +108,7 @@ namespace QuantLib {
         EurliborSwapFixB8Y(const Handle<YieldTermStructure>& h)
         : EurliborSwapFixB(8*Years, h) {}
     };
-    
+
     //! 9-year %EurliborSwapFixB index
     class EurliborSwapFixB9Y : public EurliborSwapFixB {
       public:
@@ -156,7 +157,7 @@ namespace QuantLib {
         EurliborSwapFixB30Y(const Handle<YieldTermStructure>& h)
         : EurliborSwapFixB(30*Years, h) {}
     };
-   
+
 }
 
 #endif

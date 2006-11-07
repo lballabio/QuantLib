@@ -164,7 +164,7 @@ namespace QuantLib {
 }
 #endif
 
-test_suite* init_unit_test_suite(int, char* argv[]) {
+test_suite* init_unit_test_suite(int, char*[]) {
 
     bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
         &AmericanOptionTest::testFdAmericanGreeks, 518.4));

@@ -63,10 +63,9 @@ Volatility swaptionVols[] = {
   0.1047, 0.1021, 0.0980, 0.0951, 0.1270,
   0.1000, 0.0950, 0.0900, 0.1230, 0.1160};
 
-void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
-                    const std::vector<boost::shared_ptr<CalibrationHelper> >&
-                                                                      helpers,
-                    Real lambda) {
+void calibrateModel(
+          const boost::shared_ptr<ShortRateModel>& model,
+          const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers) {
 
     LevenbergMarquardt om;
     model->calibrate(helpers, om);
@@ -118,7 +117,6 @@ int main(int, char* [])
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
         bool payFixedRate = true;
-        Integer fixingDays = 2;
         Rate dummyFixedRate = 0.03;
         boost::shared_ptr<Xibor> indexSixMonths(
                                               new Euribor6M(rhTermStructure));
@@ -137,7 +135,7 @@ int main(int, char* [])
         boost::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
-            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
         Rate fixedATMRate = swap->fairRate();
         Rate fixedOTMRate = fixedATMRate * 1.2;
@@ -146,17 +144,17 @@ int main(int, char* [])
         boost::shared_ptr<VanillaSwap> atmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedATMRate, fixedLegDayCounter,
-            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
         boost::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedOTMRate, fixedLegDayCounter,
-            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
         boost::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
             payFixedRate, 1000.0,
             fixedSchedule, fixedITMRate, fixedLegDayCounter,
-            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
 
         // defining the swaptions to be used in model calibration
@@ -208,7 +206,7 @@ int main(int, char* [])
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new G2SwaptionEngine(modelG2, 6.0, 16)));
 
-        calibrateModel(modelG2, swaptions, 0.05);
+        calibrateModel(modelG2, swaptions);
         std::cout << "calibrated to:\n"
                   << "a     = " << modelG2->params()[0] << ", "
                   << "sigma = " << modelG2->params()[1] << "\n"
@@ -224,7 +222,7 @@ int main(int, char* [])
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new JamshidianSwaptionEngine(modelHW)));
 
-        calibrateModel(modelHW, swaptions, 0.05);
+        calibrateModel(modelHW, swaptions);
         std::cout << "calibrated to:\n"
                   << "a = " << modelHW->params()[0] << ", "
                   << "sigma = " << modelHW->params()[1]
@@ -235,7 +233,7 @@ int main(int, char* [])
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new TreeSwaptionEngine(modelHW2,grid)));
 
-        calibrateModel(modelHW2, swaptions, 0.05);
+        calibrateModel(modelHW2, swaptions);
         std::cout << "calibrated to:\n"
                   << "a = " << modelHW2->params()[0] << ", "
                   << "sigma = " << modelHW2->params()[1]
@@ -246,7 +244,7 @@ int main(int, char* [])
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
                 new TreeSwaptionEngine(modelBK,grid)));
 
-        calibrateModel(modelBK, swaptions, 0.05);
+        calibrateModel(modelBK, swaptions);
         std::cout << "calibrated to:\n"
                   << "a = " << modelBK->params()[0] << ", "
                   << "sigma = " << modelBK->params()[1]

@@ -282,7 +282,7 @@ namespace QuantLib {
                     stdDev_[i] = std::sqrt(v[l]*(v[k]-v[l])/v[k]);
                 }
                 j=k+1;
-                if (j>=dimension_) j=0;	//	Wrap around.
+                if (j>=dimension_) j=0; //  Wrap around.
             }
         }
 
@@ -357,6 +357,9 @@ namespace QuantLib {
             void transform(RandomAccessIterator1 begin,
                            RandomAccessIterator1 end,
                            RandomAccessIterator2 output) const {
+                QL_REQUIRE(end >= begin, "invalid sequence");
+                QL_REQUIRE(Size(end-begin) == size_,
+                           "incompatible sequence size");
                 // We use output to store the path...
                 output[size_-1] = stdDev_[0] * begin[0];
                 for (Size i=1; i<size_; ++i) {

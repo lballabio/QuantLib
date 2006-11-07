@@ -32,11 +32,7 @@
 namespace QuantLib {
 
     //! Asset swap
-    /*! \ingroup instruments
-
-        \test
-        - later
-    */
+    /*! \ingroup instruments */
     class AssetSwap : public Swap {
       public:
         class arguments;

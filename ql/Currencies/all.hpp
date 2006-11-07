@@ -27,9 +27,8 @@
 #include <ql/Currencies/america.hpp>
 #include <ql/Currencies/asia.hpp>
 #include <ql/Currencies/europe.hpp>
-#include <ql/Currencies/oceania.hpp>
-
 #include <ql/Currencies/exchangeratemanager.hpp>
+#include <ql/Currencies/oceania.hpp>
 
 
 #endif

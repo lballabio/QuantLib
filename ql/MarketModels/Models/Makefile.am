@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels/Models
 
 include_HEADERS = \
+	all.hpp \
 	abcd.hpp \
 	expcorrabcdvol.hpp \
 	expcorrflatvol.hpp
@@ -14,5 +15,5 @@ libMarketModelsModels_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
 
-#EXTRA_DIST = makefile.mak
+EXTRA_DIST = makefile.mak
 

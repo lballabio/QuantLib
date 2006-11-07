@@ -21,6 +21,7 @@
 #define quantlib_one_factor_models_all_hpp
 
 #include <ql/qldefines.hpp>
+
 #include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
 #include <ql/ShortRateModels/OneFactorModels/coxingersollross.hpp>
 #include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>

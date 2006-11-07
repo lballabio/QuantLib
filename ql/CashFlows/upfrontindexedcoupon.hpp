@@ -40,15 +40,15 @@ namespace QuantLib {
                              const Date& startDate,
                              const Date& endDate,
                              const Integer fixingDays,
-                             const boost::shared_ptr<Xibor>& index,
+                             const boost::shared_ptr<InterestRateIndex>& index,
                              const Real gearing = 1.0,
                              const Spread spread = 0.0,
                              const Date& refPeriodStart = Date(),
                              const Date& refPeriodEnd = Date(),
                              const DayCounter& dayCounter = DayCounter())
-        : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
-                             index, gearing, spread, refPeriodStart, refPeriodEnd,
-                             dayCounter) {}
+        : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
+                             fixingDays, index, gearing, spread,
+                             refPeriodStart, refPeriodEnd, dayCounter) {}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

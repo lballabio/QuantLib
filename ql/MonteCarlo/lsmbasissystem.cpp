@@ -21,9 +21,10 @@
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
 
+#include <ql/MonteCarlo/lsmbasissystem.hpp>
+#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/Math/functional.hpp>
 #include <ql/Math/gaussianorthogonalpolynomial.hpp>
-#include <ql/MonteCarlo/lsmbasissystem.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/bind.hpp>
@@ -39,7 +40,7 @@ namespace QuantLib {
         class MonomialFct : public std::unary_function<Real, Real> {
           public:
             MonomialFct(Size order) : order_(order) {}
-            
+
             inline Real operator()(const Real x) const {
                 Real ret = 1.0;
                 for (Size i=0; i<order_; ++i) {
@@ -212,3 +213,4 @@ namespace QuantLib {
 
 }
 
+#endif

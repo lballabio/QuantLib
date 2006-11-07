@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -62,7 +62,7 @@ namespace QuantLib {
       public:
         typedef Array array_type;
         // constructors
-        TridiagonalOperator(Size size = 0);
+        explicit TridiagonalOperator(Size size = 0);
         TridiagonalOperator(const Array& low, const Array& mid,
                             const Array& high);
         #if defined(QL_PATCH_MSVC6)

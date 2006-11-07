@@ -171,6 +171,8 @@
 // also, sending a size_t to an output stream causes a warning.
 // we disable it and rely on other computers to catch genuine problems.
 #  pragma warning(disable: 4267)
+// same for Boost.Function using a supposedly non-standard extension
+#  pragma warning(disable: 4224)
 #elif (_MSC_VER == 1400)
 // move inside here configs specific to VC++ 8 (2005)
 #  ifndef _SCL_SECURE_NO_DEPRECATE

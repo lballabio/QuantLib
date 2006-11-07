@@ -3338,14 +3338,6 @@ SOURCE=.\ql\MarketModels\Models\abcd.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MarketModels\Models\calibratedmarketmodel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MarketModels\Models\calibratedmarketmodel.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MarketModels\Models\expcorrabcdvol.cpp
 # End Source File
 # Begin Source File

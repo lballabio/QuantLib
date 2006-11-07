@@ -175,7 +175,7 @@ void ShortRateModelTest::testSwaps() {
                                         new TreeVanillaSwapEngine(model,120));
 
     #if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance = 3.0e-3;
+    Real tolerance = 4.0e-3;
     #else
     Real tolerance = 1.0e-8;
     #endif
@@ -199,7 +199,7 @@ void ShortRateModelTest::testSwaps() {
                                    false,false);
             Schedule floatSchedule(startDate,maturity,Period(Semiannual),
                                    calendar,Following,Following,
-                                   false,false);                     
+                                   false,false);
             for (Size k=0; k<LENGTH(rates); k++) {
 
                 VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
@@ -228,9 +228,10 @@ void ShortRateModelTest::testSwaps() {
 }
 
 void ShortRateModelTest::testFuturesConvexityBias() {
+    #if !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing Hull-White futures convexity bias...");
-    
+
     // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
     Real futureQuote = 94.0;
     Real a = 0.03;
@@ -242,8 +243,8 @@ void ShortRateModelTest::testFuturesConvexityBias() {
     Real tolerance       = 0.0000001;
 
     Rate futureImpliedRate = (100.0-futureQuote)/100.0;
-    Rate calculatedForward = futureImpliedRate -
-        convexityBias(futureQuote, t, T, sigma, a);
+    Rate calculatedForward =
+        futureImpliedRate - HullWhite::convexityBias(futureQuote,t,T,sigma,a);
 
     Real error = std::fabs(calculatedForward-expectedForward);
 
@@ -255,7 +256,7 @@ void ShortRateModelTest::testFuturesConvexityBias() {
                     << "\n     error: " << error
                     << "\n tolerance: " << tolerance);
     }
-
+    #endif
 }
 
 test_suite* ShortRateModelTest::suite() {

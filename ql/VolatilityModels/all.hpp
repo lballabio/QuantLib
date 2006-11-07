@@ -23,7 +23,8 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/VolatilityModels/constantestimator.hpp>
-#include <ql/VolatilityModels/simplelocalestimator.hpp>
+#include <ql/VolatilityModels/garch.hpp>
 #include <ql/VolatilityModels/garmanklass.hpp>
+#include <ql/VolatilityModels/simplelocalestimator.hpp>
 
 #endif

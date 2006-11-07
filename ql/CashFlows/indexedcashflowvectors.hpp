@@ -42,13 +42,13 @@ namespace QuantLib {
                  passed is <tt>(const Type*) 0</tt> where
                  <tt>Type</tt> is the desired coupon type.
     */
-    template <class IndexedCouponType>
+    template <class IndexedCouponType, class IndexType>
     std::vector<boost::shared_ptr<CashFlow> >
     IndexedCouponVector(const Schedule& schedule,
                         const BusinessDayConvention paymentAdjustment,
                         const std::vector<Real>& nominals,
                         const Integer fixingDays,
-                        const boost::shared_ptr<Xibor>& index,
+                        const boost::shared_ptr<IndexType>& index,
                         const std::vector<Real>& gearings,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter()
