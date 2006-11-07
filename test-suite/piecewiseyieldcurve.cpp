@@ -254,8 +254,8 @@ void testCurveConsistency(const T&, const I& interpolator) {
     for (i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(settlement, tenor, calendar,
-                                           0.0, euribor6m, curveHandle)
+        VanillaSwap swap = MakeVanillaSwap(tenor, euribor6m, 0.0)
+            .withEffectiveDate(settlement)
             .withFixedLegDayCount(fixedLegDayCounter)
             .withFixedLegTenor(Period(fixedLegFrequency))
             .withFixedLegConvention(fixedLegConvention)
@@ -575,8 +575,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     for (i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(settlement, tenor, calendar,
-                                           0.0, index, curveHandle)
+        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+            .withEffectiveDate(settlement)
             .withFixedLegDayCount(fixedLegDayCounter)
             .withFixedLegTenor(Period(fixedLegFrequency))
             .withFixedLegConvention(fixedLegConvention)
@@ -612,8 +612,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     for (i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
-        VanillaSwap swap = MakeVanillaSwap(settlement, tenor, calendar,
-                                           0.0, index, curveHandle)
+        VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
+            .withEffectiveDate(settlement)
             .withFixedLegDayCount(fixedLegDayCounter)
             .withFixedLegTenor(Period(fixedLegFrequency))
             .withFixedLegConvention(fixedLegConvention)
