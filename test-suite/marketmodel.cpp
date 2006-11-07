@@ -511,8 +511,8 @@ void checkCoterminalSwaptions(const SequenceStatistics& stats,
     Real maxError = QL_MIN_REAL;
     for (Size i=1; i<=N; ++i) {
         Time expiry = rateTimes[N-i];
-        expectedSwaptions[N-i] =
-            blackFormula(Option::Call,
+        expectedSwaptions[N-i] = blackFormula(
+                         Option::Call,
                          strikes[N-i]+displacements[N-i],
                          todaysCoterminalSwapRates[N-i]+displacements[N-i],
                          swaptionsVolatilities[N-i]*std::sqrt(expiry)) *
@@ -900,7 +900,7 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
                                << evolverTypeToString(evolvers[i]);
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats =
-                            simulate(evolver, product);
+                                            simulate(evolver, product);
                         checkCoterminalSwaptions(*stats, swaptionsStrikes,
                                                  config.str());
                     }
