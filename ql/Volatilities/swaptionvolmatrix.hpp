@@ -211,11 +211,11 @@ namespace QuantLib {
     }
 
     inline Rate SwaptionVolatilityMatrix::minStrike() const {
-        return QL_MIN_REAL;
+        return -5.0;
     }
 
     inline Rate SwaptionVolatilityMatrix::maxStrike() const {
-        return QL_MAX_REAL;
+        return 5.0;
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
