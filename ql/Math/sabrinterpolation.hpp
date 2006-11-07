@@ -74,7 +74,7 @@ namespace QuantLib {
                                << io::rate(strike) << " not allowed");
         QL_REQUIRE(forward>0.0, "forward must be positive: "
                                 << io::rate(forward) << " not allowed");
-        QL_REQUIRE(expiryTime>0.0, "expiry time must be positive: "
+        QL_REQUIRE(expiryTime>=0.0, "expiry time must be non-negative: "
                                    << expiryTime << " not allowed");
         QL_REQUIRE(alpha>0.0, "alpha must be positive: "
                               << alpha << " not allowed");
