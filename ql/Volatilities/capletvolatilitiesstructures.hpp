@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    typedef std::vector<boost::shared_ptr<InterpolatedSmileSection> > \
+    typedef std::vector<Handle<InterpolatedSmileSection> > \
         SmileSectionInterfaceVector;
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
@@ -95,9 +95,11 @@ namespace QuantLib {
         Real maxStrike() const;
         //@}
     private:
+        SmileSectionInterfaceVector smileSections_;
         DayCounter dayCounter_;
         std::vector<Time> tenorTimes_;
-        SmileSectionInterfaceVector smileSections_;
+        Rate minStrike_, maxStrike_;
+        Date maxDate_;
     };
 
     class ParametrizedCapletVolStructure:
@@ -156,18 +158,23 @@ namespace QuantLib {
     };
 
 
-    class HybridCapletVolatilityStructure: public CapletVolatilityStructure{
-        public:
-        HybridCapletVolatilityStructure(const Date& referenceDate, const DayCounter& dayCounter,
-            boost::shared_ptr<SmileSectionsVolStructure> volatilitiesFromFutureOptions,
-            boost::shared_ptr<BilinInterpCapletVolStructure> volatilitiesFromCaps);
+    class HybridCapletVolatilityStructure: 
+        public ParametrizedCapletVolStructure{
+    public:
+        HybridCapletVolatilityStructure(
+            const Date& referenceDate,
+            const DayCounter dayCounter,
+            const CapMatrix& referenceCaps, 
+            const std::vector<Rate>& strikes,
+            const SmileSectionInterfaceVector& smileSections);
 
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
-
-        boost::shared_ptr<BilinInterpCapletVolStructure> capVolStructure(){
-            return volatilitiesFromCaps_;
+        
+        Matrix& volatilityParameters() const {
+            return volatilitiesFromCaps_->volatilityParameters();
         }
+
         //! \name TermStructure interface
         //@{
         Date maxDate() const;
@@ -186,6 +193,8 @@ namespace QuantLib {
             volatilitiesFromCaps_;
         boost::shared_ptr<SmileSectionsVolStructure>
             volatilitiesFromFutureOptions_;
+        Date maxDate_;
+        Rate minStrike_, maxStrike_;
     };
 
 }

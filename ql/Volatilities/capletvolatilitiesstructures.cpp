@@ -73,14 +73,19 @@ using namespace QuantLib;
                            const Date& referenceDate,
                            const DayCounter& dayCounter,
                            const SmileSectionInterfaceVector& smileSections):
-            CapletVolatilityStructure(referenceDate),
-            dayCounter_(dayCounter),
-            smileSections_(smileSections),
-            tenorTimes_(smileSections.size()){
-            /*for (Size i = 0; i < smileSections_.size(); i++)
-                tenorTimes_[i] = dayCounter.yearFraction(referenceDate, 
-                    smileSections[i]->exerciseDate());*/
-        };
+        CapletVolatilityStructure(referenceDate),
+        dayCounter_(dayCounter),
+        smileSections_(smileSections),
+        tenorTimes_(smileSections.size()){
+        for (Size i = 0; i < smileSections_.size(); i++){
+            registerWith(smileSections[i]); 
+            tenorTimes_[i] = dayCounter.yearFraction(referenceDate, 
+                smileSections[i]->exerciseDate());
+        }
+        maxDate_ = smileSections.back()->exerciseDate();
+        minStrike_ = 0;
+        maxStrike_ = 1;
+    };
     
      Volatility SmileSectionsVolStructure::volatilityImpl(Time length,
             Rate strike) const {
@@ -159,7 +164,6 @@ using namespace QuantLib;
         findClosestBounds(time, tenorTimes_, nextLowerTenor, nextHigherTenor);
     }
 
-        // to be changed !
     Date BilinInterpCapletVolStructure::maxDate() const{
         return maxDate_; };
 
@@ -173,15 +177,25 @@ using namespace QuantLib;
         const {return maxStrike_;};
 
     HybridCapletVolatilityStructure::HybridCapletVolatilityStructure(
-        const Date& referenceDate, const DayCounter& dayCounter,
-        boost::shared_ptr<SmileSectionsVolStructure> 
-            volatilitiesFromFutureOptions,
-        boost::shared_ptr<BilinInterpCapletVolStructure> 
-            volatilitiesFromCaps):
-        CapletVolatilityStructure(referenceDate), dayCounter_(dayCounter),
-        volatilitiesFromFutureOptions_(volatilitiesFromFutureOptions),
-        volatilitiesFromCaps_(volatilitiesFromCaps){
-            Time maxFutureMaturity = volatilitiesFromFutureOptions_->
+            const Date& referenceDate,
+            const DayCounter dayCounter,
+            const CapMatrix& referenceCaps, 
+            const std::vector<Rate>& strikes,
+            const SmileSectionInterfaceVector& smileSections):
+        ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter){
+
+        volatilitiesFromCaps_ = 
+            boost::shared_ptr<BilinInterpCapletVolStructure>(
+                new BilinInterpCapletVolStructure(referenceDate, dayCounter,
+                    referenceCaps, strikes));
+        
+        volatilitiesFromFutureOptions_ =
+            boost::shared_ptr<SmileSectionsVolStructure>(new 
+            SmileSectionsVolStructure(referenceDate, dayCounter, smileSections));
+        
+        registerWith(volatilitiesFromFutureOptions_);
+        
+        Time maxFutureMaturity = volatilitiesFromFutureOptions_->
                                         maxTime();
             Time minCapMaturity = volatilitiesFromCaps_->minTime();
             overlapStart = std::min(maxFutureMaturity, minCapMaturity);
