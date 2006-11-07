@@ -40,7 +40,7 @@ namespace QuantLib {
                         const boost::shared_ptr<Xibor>& index,
                         Rate fixedRate = Null<Rate>(),
                         const Period& forwardStart = 0*Days);
-#ifndef QL_DISABLE_DEPRECATED
+        #ifndef QL_DISABLE_DEPRECATED
         MakeVanillaSwap(
                 const Date& effectiveDate,
                 const Period& swapTenor, 
@@ -50,7 +50,7 @@ namespace QuantLib {
                 const Handle<YieldTermStructure>& discountingTermStructure);
         MakeVanillaSwap& withFixedLegNotEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegNotEndOfMonth(bool flag = true);
-#endif
+        #endif
 
         operator VanillaSwap() const;
         operator boost::shared_ptr<VanillaSwap>() const ;
