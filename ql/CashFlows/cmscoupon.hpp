@@ -1,5 +1,8 @@
 /*
+ Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,10 +57,10 @@ namespace QuantLib {
                   const DayCounter& dayCounter,
                   const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                   Real gearing,
-                  Rate spread,
+                  Spread spread,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>(),
-                  Real meanReversion = 0.,
+                  Real meanReversion = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   bool isInArrears = false);
@@ -100,55 +103,6 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> swaptionVol_;
         boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
     };
-
-
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSCouponVector(const Schedule& schedule,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    Integer fixingDays,
-                    const DayCounter& dayCounter,
-                    const std::vector<Real>& baseRate,
-                    const std::vector<Real>& fractions,
-                    const std::vector<Real>& caps,
-                    const std::vector<Real>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
-
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSZeroCouponVector(const Schedule& schedule,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    Integer fixingDays,
-                    const DayCounter& dayCounter,
-                    const std::vector<Real>& baseRate,
-                    const std::vector<Real>& fractions,
-                    const std::vector<Real>& caps,
-                    const std::vector<Real>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
-
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSInArrearsCouponVector(const Schedule& schedule,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    Integer fixingDays,
-                    const DayCounter& dayCounter,
-                    const std::vector<Real>& baseRate,
-                    const std::vector<Real>& fractions,
-                    const std::vector<Real>& caps,
-                    const std::vector<Real>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
 
 }
 
