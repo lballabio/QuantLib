@@ -33,17 +33,35 @@ namespace QuantLib {
     /*! This abstract class provides volatility smile section interface */
     class SmileSectionInterface {
       public:
-        //SmileSectionInterface(const Date&,
-        //                      const DayCounter&) {};
+        SmileSectionInterface(const Date& d,
+                              const DayCounter& dc,
+                              const Date& referenceDate = Date())
+        : exerciseDate_(d), dc_(dc) {
+            Date refDate = referenceDate!=Date() ? referenceDate :
+                           Settings::instance().evaluationDate();
+            QL_REQUIRE(d>=refDate,
+                       "expiry date (" << d << 
+                       ") must be greater than reference date (" <<
+                       refDate << ")");
+            exerciseTime_ = dc_.yearFraction(refDate, d);
+        };
+        SmileSectionInterface(Time exerciseTime,
+                              const DayCounter& dc = DayCounter())
+        : dc_(dc), exerciseTime_(exerciseTime) {
+            QL_REQUIRE(exerciseTime_>=0.0,
+                       "expiry time must be positive: " <<
+                       exerciseTime_ << " not allowed");
+        };
         virtual Real variance(Rate strike) const = 0;
         virtual Real volatility(Rate strike) const = 0;
         virtual ~SmileSectionInterface() {};
-        //virtual const Date& exerciseDate() const { return exerciseDate_; }
-        //virtual Time exerciseTime() const = 0;
-        //virtual const DayCounter& dayCounter() const { return dc_; }
-      //private:
-      //  Date exerciseDate_;
-      //  DayCounter dc_;
+        virtual const Date& exerciseDate() const { return exerciseDate_; }
+        virtual Time exerciseTime() const { return exerciseTime_; };
+        virtual const DayCounter& dayCounter() const { return dc_; }
+      protected:
+        Date exerciseDate_;
+        DayCounter dc_;
+        Time exerciseTime_;
     };
 
 
@@ -52,14 +70,13 @@ namespace QuantLib {
         InterpolatedSmileSection(Time expiryTime,
                                  const std::vector<Rate>& strikes,
                                  const std::vector<Volatility>& volatilities);
-        //InterpolatedSmileSection(const Date&,
-        //                         const DayCounter&,
-        //                         const std::vector<Rate>& strikes,
-        //                         const std::vector<Volatility>& volatilities);
+        InterpolatedSmileSection(const Date&,
+                                 const DayCounter&,
+                                 const std::vector<Rate>& strikes,
+                                 const std::vector<Volatility>& volatilities);
         Real variance(Rate strike) const;
         Real volatility(Rate strike) const;
     private:
-        Time timeToExpiry_;
         std::vector<Rate> strikes_;
         std::vector<Volatility> volatilities_;
         boost::shared_ptr<Interpolation> interpolation_;
@@ -68,15 +85,14 @@ namespace QuantLib {
 
     class SabrSmileSection : public SmileSectionInterface {
       public:
-        SabrSmileSection(const std::vector<Real>& sabrParameters,
-                         Time timeToExpiry);
-        //SabrSmileSection(const std::vector<Real>& sabrParameters,
-        //                 const Date&,
-        //                 const DayCounter&);
+        SabrSmileSection(Time timeToExpiry,
+                         const std::vector<Real>& sabrParameters);
+        SabrSmileSection(const Date&,
+                         const DayCounter&,
+                         const std::vector<Real>& sabrParameters);
         Real variance(Rate strike) const;
         Real volatility(Rate strike) const;
     private:
-        Time timeToExpiry_;
         Real alpha_, beta_, nu_, rho_, forward_;
     };
 

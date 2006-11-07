@@ -381,8 +381,8 @@ namespace QuantLib {
         calculate();
         const std::vector<Real> sabrParameters =
             sabrParametersCube(expiry, length);
-        return boost::shared_ptr<SmileSectionInterface>(
-            new SabrSmileSection(sabrParameters, expiry));
+        return boost::shared_ptr<SmileSectionInterface>(new
+            SabrSmileSection(expiry, sabrParameters));
     }
 
     boost::shared_ptr<SmileSectionInterface>
