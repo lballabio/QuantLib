@@ -10,6 +10,7 @@ include_HEADERS = \
     capflatvolvector.hpp \
     capletconstantvol.hpp \
     capletvariancecurve.hpp \
+    capletvolatilitiesstructures.hpp \
     capstripper.hpp \
     cmsmarket.hpp \
     impliedvoltermstructure.hpp \
@@ -26,6 +27,7 @@ include_HEADERS = \
 libVolatilities_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
+    capletvolatilitiesstructures.cpp \
     capstripper.cpp \
     cmsmarket.cpp \
     localvolsurface.cpp \

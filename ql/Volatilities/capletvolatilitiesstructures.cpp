@@ -19,28 +19,27 @@
 
 /*! \file CapletVolatilitiesStructures.hpp
     \brief Caplet Volatilities Structures used during bootstrapping procedure
-*/        
+*/
 
-#include <ql/volatilities/capletvolatilitiesstructures.hpp>
-#include <ql/types.hpp>
+#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 
 using namespace QuantLib;
 
-     // we should used std::lower_bound but how do we retrieve the index 
-     // from an iterator ?    
+     // we should used std::lower_bound but how do we retrieve the index
+     // from an iterator ?
     Size lowerIndex(const std::vector<Time>& times, Time time){
         if (time <= times.front())
             return 0;
         if (time >= times.back())
             return times.size();
         Size i = 1;
-        while(time > times[i]) 
+        while(time > times[i])
             i++;
         return i-1;
-    };
-    
+    }
+
     void findClosestBounds(Time time, const std::vector<Time>& times,
                                   Time& lowerBound, Time& higherBound){
         if (time <= times.front()){
@@ -54,18 +53,18 @@ using namespace QuantLib;
             return;
         }
         Size i = 1;
-        while(time < times[i]) 
+        while(time < times[i])
             i++;
         lowerBound = times[i-1];
         higherBound = times[i];
-    };
+    }
 
     Real linearInterpolation(Real x, Real x1, Real x2,
                                             Real y1, Real y2){
         if (x == x1)
             return y1;
         return y1 + (x-x1)*(y2-y1)/(x2-x1);
-    };
+    }
 
 
 
@@ -74,19 +73,19 @@ using namespace QuantLib;
                            const DayCounter& dayCounter,
                            const SmileSectionInterfaceVector& smileSections):
         CapletVolatilityStructure(referenceDate),
-        dayCounter_(dayCounter),
         smileSections_(smileSections),
-        tenorTimes_(smileSections.size()){
+        dayCounter_(dayCounter),
+        tenorTimes_(smileSections.size()) {
         for (Size i = 0; i < smileSections_.size(); i++){
-            registerWith(smileSections[i]); 
-            tenorTimes_[i] = dayCounter.yearFraction(referenceDate, 
+            registerWith(smileSections[i]);
+            tenorTimes_[i] = dayCounter.yearFraction(referenceDate,
                 smileSections[i]->exerciseDate());
         }
         maxDate_ = smileSections.back()->exerciseDate();
         minStrike_ = 0;
         maxStrike_ = 1;
-    };
-    
+    }
+
      Volatility SmileSectionsVolStructure::volatilityImpl(Time length,
             Rate strike) const {
             if (length <= tenorTimes_.front())
@@ -95,43 +94,43 @@ using namespace QuantLib;
                 return smileSections_.back()->volatility(strike);
 
             Size i = lowerIndex(tenorTimes_, length);
-            Volatility lowerVolatility = 
+            Volatility lowerVolatility =
                 smileSections_[i]->volatility(strike);
-            Volatility upperVolatility = 
+            Volatility upperVolatility =
                 smileSections_[i+1]->volatility(strike);
-            
-            return linearInterpolation(length, tenorTimes_[i], 
-                tenorTimes_[i+1], lowerVolatility, upperVolatility);
-        };
 
-     void SmileSectionsVolStructure::setClosestTenors(Time time, 
+            return linearInterpolation(length, tenorTimes_[i],
+                tenorTimes_[i+1], lowerVolatility, upperVolatility);
+        }
+
+     void SmileSectionsVolStructure::setClosestTenors(Time time,
          Time& nextLowerTenor, Time& nextHigherTenor) const {
-            findClosestBounds(time, tenorTimes_, 
+            findClosestBounds(time, tenorTimes_,
                 nextLowerTenor, nextHigherTenor);
         }
 
      // to be changed ...
     Date SmileSectionsVolStructure::maxDate() const {
-        return Date(39744); };
+        return Date(39744); }
     DayCounter SmileSectionsVolStructure::dayCounter() const {
-        return dayCounter_;};
+        return dayCounter_;}
     Real SmileSectionsVolStructure::minStrike() const {
-        return 0;};
+        return 0;}
     Real SmileSectionsVolStructure::maxStrike() const {
-        return 10;};
+        return 10;}
 
     BilinInterpCapletVolStructure::
         BilinInterpCapletVolStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
-            const CapMatrix& referenceCaps, 
+            const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes):
             ParametrizedCapletVolStructure(referenceDate),
             dayCounter_(dayCounter),
-            volatilities_(referenceCaps.size(), strikes.size(), .2), 
-            tenorTimes_(referenceCaps.size()), strikes_(strikes){
+            tenorTimes_(referenceCaps.size()), strikes_(strikes),
+            volatilities_(referenceCaps.size(), strikes.size(), .2) {
 
-        /* we compute the times for which the volatilities points will 
+        /* we compute the times for which the volatilities points will
            be known*/
         for (Size i = 0; i < tenorTimes_.size(); i++){
             Date tenorDate = referenceCaps[i].front()->lastFixingDate();
@@ -159,71 +158,71 @@ using namespace QuantLib;
     }
 
     void BilinInterpCapletVolStructure::setClosestTenors(
-                                            Time time, Time& nextLowerTenor, 
+                                            Time time, Time& nextLowerTenor,
                                             Time& nextHigherTenor){
         findClosestBounds(time, tenorTimes_, nextLowerTenor, nextHigherTenor);
     }
 
     Date BilinInterpCapletVolStructure::maxDate() const{
-        return maxDate_; };
+        return maxDate_; }
 
     DayCounter BilinInterpCapletVolStructure::
-        dayCounter() const{ return dayCounter_;};
+        dayCounter() const{ return dayCounter_;}
 
     Real BilinInterpCapletVolStructure::minStrike()
-        const {return minStrike_;};
+        const {return minStrike_;}
 
-    Real BilinInterpCapletVolStructure::maxStrike() 
-        const {return maxStrike_;};
+    Real BilinInterpCapletVolStructure::maxStrike()
+        const {return maxStrike_;}
 
     HybridCapletVolatilityStructure::HybridCapletVolatilityStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
-            const CapMatrix& referenceCaps, 
+            const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes,
             const SmileSectionInterfaceVector& smileSections):
         ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter){
 
-        volatilitiesFromCaps_ = 
+        volatilitiesFromCaps_ =
             boost::shared_ptr<BilinInterpCapletVolStructure>(
                 new BilinInterpCapletVolStructure(referenceDate, dayCounter,
                     referenceCaps, strikes));
-        
+
         volatilitiesFromFutureOptions_ =
-            boost::shared_ptr<SmileSectionsVolStructure>(new 
+            boost::shared_ptr<SmileSectionsVolStructure>(new
             SmileSectionsVolStructure(referenceDate, dayCounter, smileSections));
-        
+
         registerWith(volatilitiesFromFutureOptions_);
-        
+
         Time maxFutureMaturity = volatilitiesFromFutureOptions_->
                                         maxTime();
             Time minCapMaturity = volatilitiesFromCaps_->minTime();
             overlapStart = std::min(maxFutureMaturity, minCapMaturity);
             overlapEnd = std::max(maxFutureMaturity, minCapMaturity);
-        };
+        }
 
     Volatility HybridCapletVolatilityStructure::volatilityImpl(
                               Time length,
                               Rate strike) const {
             if (length < overlapStart)
-                return volatilitiesFromFutureOptions_->volatility(length, 
+                return volatilitiesFromFutureOptions_->volatility(length,
                 strike, true);
             if (length > overlapEnd)
                 return volatilitiesFromCaps_->volatility(length, strike,
                                                         true);
-            
+
             Time nextLowerFutureTenor, nextHigherFutureTenor,
                 nextLowerCapTenor, nextHigherCapTenor,
                 nextLowerTenor, nextHigherTenor;
             Volatility volAtNextLowerTenor, volAtNextHigherTenor;
 
-            volatilitiesFromCaps_->setClosestTenors(length, 
+            volatilitiesFromCaps_->setClosestTenors(length,
                 nextLowerCapTenor, nextHigherCapTenor);
 
-            volatilitiesFromFutureOptions_->setClosestTenors(length, 
+            volatilitiesFromFutureOptions_->setClosestTenors(length,
                 nextLowerFutureTenor, nextHigherFutureTenor);
 
-            /* we determine which volatility surface should be used for the 
+            /* we determine which volatility surface should be used for the
                lower value*/
             if (nextLowerCapTenor < nextLowerFutureTenor){
                 nextLowerTenor = nextLowerFutureTenor;
@@ -234,8 +233,8 @@ using namespace QuantLib;
                 volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
                     nextLowerTenor, strike, true);
             }
-            
-            /* we determine which volatility surface should be used for 
+
+            /* we determine which volatility surface should be used for
                the higher value*/
             if (nextHigherCapTenor < nextHigherFutureTenor){
                 nextHigherTenor = nextHigherCapTenor;
@@ -246,15 +245,15 @@ using namespace QuantLib;
                 volAtNextHigherTenor = volatilitiesFromFutureOptions_->
                     volatility(nextHigherTenor, strike, true);
             }
-           
+
             return linearInterpolation(length, nextLowerTenor,
                 nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
-    };
+    }
 
 
-    Date HybridCapletVolatilityStructure::maxDate() const{ 
-        return volatilitiesFromCaps_->maxDate();};
-    DayCounter HybridCapletVolatilityStructure::dayCounter() const{ 
-        return dayCounter_;};
-    Real HybridCapletVolatilityStructure::minStrike() const {return 0;};
-    Real HybridCapletVolatilityStructure::maxStrike() const {return 10;};
+    Date HybridCapletVolatilityStructure::maxDate() const{
+        return volatilitiesFromCaps_->maxDate();}
+    DayCounter HybridCapletVolatilityStructure::dayCounter() const{
+        return dayCounter_;}
+    Real HybridCapletVolatilityStructure::minStrike() const {return 0;}
+    Real HybridCapletVolatilityStructure::maxStrike() const {return 10;}

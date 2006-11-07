@@ -28,6 +28,7 @@
 #include <ql/Volatilities/capflatvolvector.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Volatilities/capletvariancecurve.hpp>
+#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/Volatilities/capstripper.hpp>
 #include <ql/Volatilities/cmsmarket.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
