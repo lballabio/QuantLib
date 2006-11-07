@@ -70,9 +70,9 @@ namespace QuantLib {
     class CapsStripper : public CapletVolatilityStructure, 
                          public LazyObject{
       public:
-        CapsStripper(const Calendar & calendar,
-                     BusinessDayConvention convention,
-                     Integer fixingDays,
+        CapsStripper(const Calendar& capScheduleConventioncalendar,
+                     BusinessDayConvention capScheduleConvention,
+                     Integer capScheduleFixingDays,
                      const std::vector<Period>& tenors,
                      const std::vector<Rate>& strikes,
                      const std::vector<std::vector<Handle<Quote> > >& vols,
@@ -80,8 +80,9 @@ namespace QuantLib {
                      const boost::shared_ptr<Xibor>& index,
                      const Handle< YieldTermStructure > termStructure,
                      Real impliedVolatilityAccuracy = 1.0e-6,
-                     Size maxEvaluations = 100
-                     );
+                     Size maxEvaluations = 100,
+                     const SmileSectionInterfaceVector& smileSections 
+                        = Null<SmileSectionInterfaceVector>());
         //@}
         //! \name LazyObject interface
         //@{
@@ -106,13 +107,16 @@ namespace QuantLib {
         const std::vector<Period>& tenors() { return tenors_; }
         const std::vector<Rate>& strikes() { return strikes_; }
         const CapMatrix& marketDataCap() { return marketDataCap_; }
-        Real impliedVolatilityAccuracy() { return impliedVolatilityAccuracy_; }
+        Real impliedVolatilityAccuracy() { 
+            return impliedVolatilityAccuracy_; }
         boost::shared_ptr<ParametrizedCapletVolStructure>
-            parametrizedCapletVolStructure() {return parametrizedCapletVolStructure_;}
+            parametrizedCapletVolStructure() {
+                return parametrizedCapletVolStructure_;}
 
       protected:
           Volatility volatilityImpl(Time t, Rate r) const;
       private:
+        void createMarketData();
         CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
         std::vector<Period> tenors_;

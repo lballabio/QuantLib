@@ -56,6 +56,7 @@ namespace QuantLib {
                                         index_->dayCounter());
         }
 
+
     CapsStripper::CapsStripper(
         const Calendar & calendar,
         BusinessDayConvention convention,
@@ -67,7 +68,8 @@ namespace QuantLib {
         const boost::shared_ptr<Xibor>& index,
         const Handle< YieldTermStructure > termStructure,
         Real impliedVolatilityAccuracy,
-        Size maxEvaluations)
+        Size maxEvaluations,
+        const SmileSectionInterfaceVector& smileSections)
     : CapletVolatilityStructure(0, calendar),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
@@ -105,13 +107,25 @@ namespace QuantLib {
                registerWith(marketDataCap_[i][j]);
            }
         }
+        
+        if (smileSections.size()==0)
+            parametrizedCapletVolStructure_ 
+               = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                new BilinInterpCapletVolStructure(referenceDate(),
+                                                  volatilityDayCounter,
+                                                  marketDataCap_,
+                                                  strikes));
+        else{
+             parametrizedCapletVolStructure_ 
+               = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                new HybridCapletVolatilityStructure(referenceDate(),
+                                                  volatilityDayCounter,
+                                                  marketDataCap_,
+                                                  strikes,
+                                                  smileSections));
+             registerWith(parametrizedCapletVolStructure_);
+            }
 
-        parametrizedCapletVolStructure_ 
-           = boost::shared_ptr<BilinInterpCapletVolStructure>(
-            new BilinInterpCapletVolStructure(referenceDate(),
-                                              volatilityDayCounter,
-                                              marketDataCap_,
-                                              strikes));
        Handle<CapletVolatilityStructure> bilinInterpCapletVolStructureHandle(
            parametrizedCapletVolStructure_);
         boost::shared_ptr<PricingEngine> calibBlackCapFloorEngine(new
