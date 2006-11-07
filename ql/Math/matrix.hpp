@@ -221,7 +221,10 @@ namespace QuantLib {
 
     inline const Matrix& Matrix::operator+=(const Matrix& m) {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
-                   "matrices with different sizes cannot be added");
+                   "matrices with different sizes (" <<
+                   m.rows_ << "x" << m.columns_ << ", " <<
+                   rows_ << "x" << columns_ << ") cannot be "
+                   "added");
         std::transform(begin(),end(),m.begin(),
                        begin(),std::plus<Real>());
         return *this;
@@ -229,7 +232,10 @@ namespace QuantLib {
 
     inline const Matrix& Matrix::operator-=(const Matrix& m) {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
-                   "matrices with different sizes cannot be subtracted");
+                   "matrices with different sizes (" <<
+                   m.rows_ << "x" << m.columns_ << ", " <<
+                   rows_ << "x" << columns_ << ") cannot be "
+                   "subtracted");
         std::transform(begin(),end(),m.begin(),begin(),
                        std::minus<Real>());
         return *this;
@@ -436,7 +442,10 @@ namespace QuantLib {
                                               const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
-                   "matrices with different sizes cannot be added");
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "added");
         Matrix temp(m1.rows(),m1.columns());
         std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
                        std::plus<Real>());
@@ -447,7 +456,10 @@ namespace QuantLib {
                                               const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
-                   "matrices with different sizes cannot be subtracted");
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "subtracted");
         Matrix temp(m1.rows(),m1.columns());
         std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
                        std::minus<Real>());
@@ -477,8 +489,9 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator*(const Array& v, const Matrix& m) {
         QL_REQUIRE(v.size() == m.rows(),
-                   "vectors and matrices with different sizes "
-                   "cannot be multiplied");
+                   "vectors and matrices with different sizes ("
+                   << v.size() << ", " << m.rows() << "x" << m.columns() <<
+                   ") cannot be multiplied");
         Array result(m.columns());
         for (Size i=0; i<result.size(); i++)
             result[i] =
@@ -489,8 +502,9 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator*(const Matrix& m, const Array& v) {
         QL_REQUIRE(v.size() == m.columns(),
-                   "vectors and matrices with different sizes "
-                   "cannot be multiplied");
+                   "vectors and matrices with different sizes ("
+                   << v.size() << ", " << m.rows() << "x" << m.columns() <<
+                   ") cannot be multiplied");
         Array result(m.rows());
         for (Size i=0; i<result.size(); i++)
             result[i] =
@@ -501,7 +515,10 @@ namespace QuantLib {
     inline const Disposable<Matrix> operator*(const Matrix& m1,
                                               const Matrix& m2) {
         QL_REQUIRE(m1.columns() == m2.rows(),
-                   "matrices with different sizes cannot be multiplied");
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "multiplied");
         Matrix result(m1.rows(),m2.columns());
         for (Size i=0; i<result.rows(); i++)
             for (Size j=0; j<result.columns(); j++)
