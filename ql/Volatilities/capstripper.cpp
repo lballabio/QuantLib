@@ -37,7 +37,7 @@
 #include <ql/schedule.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <ql/Volatilities/hybridcapstripper.hpp>
+#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 
 namespace QuantLib {
 

@@ -29,12 +29,45 @@
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/Matrix.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     typedef std::vector<boost::shared_ptr<InterpolatedSmileSection> > \
         SmileSectionInterfaceVector;
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
+
+    class ImpliedVolHelper{
+    public:
+        ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
+                         Real targetValue,
+                         Real& volatilityParameter):
+                         targetValue_(targetValue), cap_(cap),
+                         volatilityParameter_(volatilityParameter){};
+
+        Real ImpliedVolHelper::operator()(Real x) const {
+            volatilityParameter_ = x;
+            cap_->update();
+            return cap_->NPV() - targetValue_;
+        };
+    private:
+        Real targetValue_;
+        boost::shared_ptr<CapFloor> cap_;
+        Real& volatilityParameter_;
+    };
+
+    inline void fitVolatilityParameter(boost::shared_ptr<CapFloor> mkData,
+                                    Real& volatilityParameter,                    
+                                    Real targetValue,
+                                    Real accuracy = 1e-5,
+                                    Size maxEvaluations = 1000,
+                                    Volatility minVol = 1e-4,
+                                    Volatility maxVol = 4){
+        ImpliedVolHelper f(mkData, targetValue, volatilityParameter);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
+    };
 
    class SmileSectionsVolStructure: public CapletVolatilityStructure{
     public:
