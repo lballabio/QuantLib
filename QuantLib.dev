@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=867
+UnitCount=869
 Type=2
 Ver=1
 ObjFiles=
@@ -8708,9 +8708,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit868]
-FileName=ql\period.cpp
+FileName=ql\Volatilities\capletvolatilitiesstructures.cpp
 CompileCpp=1
-Folder=QuantLib
+Folder=Volatilities
 Compile=1
 Link=1
 Priority=1000
@@ -8721,6 +8721,16 @@ BuildCmd=
 FileName=ql\MarketModels\Models\expcorrabcdvol.hpp
 CompileCpp=1
 Folder=MarketModels/Models
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit869]
+FileName=ql\Volatilities\capletvolatilitiesstructures.hpp
+CompileCpp=1
+Folder=Volatilities
 Compile=1
 Link=1
 Priority=1000

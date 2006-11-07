@@ -8595,6 +8595,12 @@
 				RelativePath=".\ql\Volatilities\capletvariancecurve.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\capstripper.cpp">
 			</File>
 			<File
