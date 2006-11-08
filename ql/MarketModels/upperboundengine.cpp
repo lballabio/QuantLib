@@ -23,22 +23,142 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        class DecoratedHedge : public MarketModelMultiProduct {
+          public:
+            DecoratedHedge(const CallSpecifiedMultiProduct& product)
+            : product_(product) {
+                savedStates_.reserve(product.evolution().numberOfSteps());
+
+                Size N = product.numberOfProducts();
+                numberCashFlowsThisStep_.resize(N);
+                cashFlowsGenerated_.resize(N);
+                for (Size i=0; i<N; ++i)
+                    cashFlowsGenerated_[i].resize(
+                            product.maxNumberOfCashFlowsPerProductPerStep());
+
+                clear();
+            }
+
+            std::vector<Size> suggestedNumeraires() const {
+                return product_.suggestedNumeraires();
+            }
+
+            const EvolutionDescription& evolution() const {
+                return product_.evolution();
+            }
+
+            std::vector<Time> possibleCashFlowTimes() const {
+                return product_.possibleCashFlowTimes();
+            }
+
+            Size numberOfProducts() const {
+                return product_.numberOfProducts();
+            }
+
+            Size maxNumberOfCashFlowsPerProductPerStep() const {
+                return product_.maxNumberOfCashFlowsPerProductPerStep();
+            }
+
+            void reset() {
+                product_.reset();
+                product_.disableCallability();
+                for (Size i=0; i<lastSavedStep_; ++i)
+                    product_.nextTimeStep(savedStates_[i],
+                                          numberCashFlowsThisStep_,
+                                          cashFlowsGenerated_);
+                product_.enableCallability();
+            }
+
+            bool nextTimeStep(
+                    const CurveState& currentState,
+                    std::vector<Size>& numberCashFlowsThisStep,
+                    std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
+                if (recording_)
+                    savedStates_.push_back(currentState);
+                return product_.nextTimeStep(currentState,
+                                             numberCashFlowsThisStep,
+                                             cashFlowsGenerated);
+            }
+
+            const ExerciseStrategy<CurveState>& strategy() const {
+                return product_.strategy();
+            }
+
+            std::auto_ptr<MarketModelMultiProduct> clone() const {
+                return std::auto_ptr<MarketModelMultiProduct>(
+                                                   new DecoratedHedge(*this));
+            }
+
+            void save() {
+                lastSavedStep_ = savedStates_.size();
+            }
+
+            void clear() {
+                lastSavedStep_ = 0;
+                savedStates_.clear();
+                recording_ = true;
+            }
+
+            void startRecording() {
+                recording_ = true;
+            }
+
+            void stopRecording() {
+                recording_ = false;
+            }
+          private:
+            CallSpecifiedMultiProduct product_;
+            std::vector<CurveState> savedStates_;
+            Size lastSavedStep_;
+            bool recording_;
+            std::vector<Size> numberCashFlowsThisStep_;
+            std::vector<std::vector<CashFlow> > cashFlowsGenerated_;
+        };
+
+    }
+
+
+
     UpperBoundEngine::UpperBoundEngine(
                          const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const CallSpecifiedMultiProduct& product,
+                         const MarketModelMultiProduct& underlying,
+                         const ExerciseValue& rebate,
                          const MarketModelMultiProduct& hedge,
+                         const ExerciseValue& hedgeRebate,
+                         const ExerciseStrategy<CurveState>& hedgeStrategy,
                          double initialNumeraireValue)
     : evolver_(evolver), composite_(MultiProductComposite()),
       initialNumeraireValue_(initialNumeraireValue) {
 
-        composite_.add(product);
-        composite_.subtract(hedge);
+        composite_.add(underlying);
+        composite_.add(ExerciseAdapter(rebate));
+        composite_.add(hedge);
+        composite_.add(ExerciseAdapter(hedgeRebate));
+        composite_.add(DecoratedHedge(CallSpecifiedMultiProduct(
+                           hedge,hedgeStrategy,ExerciseAdapter(hedgeRebate))));
         composite_.finalize();
 
-        underlyingSize_ = product.underlying().numberOfProducts();
-        rebateSize_ = product.rebate().numberOfProducts();
+        underlyingOffset_ = 0;
+        underlyingSize_ = underlying.numberOfProducts();
+        rebateOffset_ = underlyingSize_;
+        rebateSize_ = 1;
+        hedgeOffset_ = underlyingSize_+rebateSize_;
+        hedgeSize_ = hedge.numberOfProducts();
+        hedgeRebateOffset_ = underlyingSize_+rebateSize_+hedgeSize_;
+        hedgeRebateSize_ = 1;
+        
+
         numberOfProducts_ = composite_.numberOfProducts();
-        numberOfSteps_ = composite_.evolution().evolutionTimes().size();
+
+        const std::vector<Time>& evolutionTimes =
+            composite_.evolution().evolutionTimes();
+        numberOfSteps_ = evolutionTimes.size();
+        states_.resize(numberOfSteps_);
+
+        isExerciseTime_ = isInSubset(evolutionTimes,
+                                     hedgeStrategy.exerciseTimes());
 
         numberCashFlowsThisStep_.resize(numberOfProducts_);
         cashFlowsGenerated_.resize(numberOfProducts_);
@@ -66,21 +186,30 @@ namespace QuantLib {
     }
 
 
-    Real UpperBoundEngine::singlePathValue(Size innerPaths) {
+    std::pair<Real,Real> UpperBoundEngine::singlePathValue(Size innerPaths) {
 
-        const CallSpecifiedMultiProduct& product =
-            dynamic_cast<const CallSpecifiedMultiProduct&>(composite_.item(0));
-        const ExerciseStrategy<CurveState>& strategy = product.strategy();
-        const MarketModelMultiProduct& hedge = composite_.item(1);
+        const MarketModelMultiProduct& underlying = composite_.item(0);
+        const ExerciseValue& rebate =
+            dynamic_cast<const ExerciseAdapter&>(composite_.item(1))
+            .exerciseValue();
+        const MarketModelMultiProduct& hedge = composite_.item(2);
+        const ExerciseValue& hedgeRebate =
+            dynamic_cast<const ExerciseAdapter&>(composite_.item(3))
+            .exerciseValue();
+        DecoratedHedge& callable =
+            dynamic_cast<DecoratedHedge&>(composite_.item(4));
+        const ExerciseStrategy<CurveState>& strategy = callable.strategy();
+
 
         Real maximumValue = QL_MIN_REAL;
         Real numerairesHeld = 0.0;
         Real weight = evolver_->startNewPath();
+        callable.clear();
         composite_.reset();
+        callable.disableCallability();
         Real principalInNumerairePortfolio = 1.0;
 
         for (Size k=0; k<numberOfSteps_; ++k) {
-            Size thisStep = evolver_->currentStep();
             weight *= evolver_->advanceStep();
 
             composite_.nextTimeStep(evolver_->currentState(),
@@ -88,63 +217,89 @@ namespace QuantLib {
                                     cashFlowsGenerated_);
 
             // First, we accumulate cash flows from both the
-            // product...
-            Real productCashFlows =
-                collectCashFlows(thisStep, 0, underlyingSize_);
-            Real exerciseValue =
-                collectCashFlows(thisStep,
-                                 underlyingSize_,
-                                 underlyingSize_+rebateSize_);
+            // underlying...
+            Real underlyingCashFlows =
+                collectCashFlows(k,
+                                 principalInNumerairePortfolio,
+                                 underlyingOffset_,
+                                 underlyingOffset_+underlyingSize_);
+            
             // ...and the hedge
             Real hedgeCashFlows =
-                collectCashFlows(thisStep,
-                                 underlyingSize_+rebateSize_,
-                                 numberOfProducts_)
+                collectCashFlows(k,
+                                 principalInNumerairePortfolio,
+                                 hedgeOffset_,
+                                 hedgeOffset_+hedgeSize_);
 
+            // we do the same for the rebates. Warning: this relies on
+            // the fact that on each exercise date an ExerciseAdapter
+            // generates a cash-flow equal to the exercise value
+            Real rebateCashFlow =
+                collectCashFlows(k,
+                                 principalInNumerairePortfolio,
+                                 rebateOffset_,
+                                 rebateOffset_+rebateSize_);
+
+            Real hedgeRebateCashFlow =
+                collectCashFlows(k,
+                                 principalInNumerairePortfolio,
+                                  hedgeRebateOffset_,
+                                 hedgeRebateOffset_+hedgeRebateSize_);
+
+
+            numerairesHeld += underlyingCashFlows - hedgeCashFlows;
 
             // Second, we do the upper-bound thing
+            if (isExerciseTime_[k]) {
 
-            // Here, we'll have to define a decorated evolver and a
-            // decorated composite such that their reset() method brings
-            // them to the current point rather than the beginning of
-            // the path.
+                // Here, we setup a decorated evolver and
+                // the decorated callable hedge such that their reset()
+                // method brings them to the current point rather than
+                // the beginning of the path.
 
-            // This allows us to write:
-            AccountingEngine engine(decoratedEvolver, decoratedComposite,
-                                    1.0); // This causes the result to
-                                          // be in units of numeraire
-            SequenceStatistics innerStats(decoratedHedge.numberOfProducts());
-            engine.multiplePathValues(innerStats, innerPaths);
+                callable.stopRecording();
+                callable.enableCallability();
+                callable.save();
 
-            const std::vector<Real>& values = innerStats.mean();
-            Real continuationValue =
-                std::accumulate(values.begin(),
-                                values.begin()+underlyingSize_+rebateSize_,
-                                0.0);
-            Real unexercisedHedgeValue =
-                std::accumulate(values.begin()+underlyingSize_+rebateSize_,
-                                values.end(),
-                                0.0);
+                // This allows us to write:
+                Size numeraire = evolver_->numeraires()[currentStep];
+                AccountingEngine engine(decoratedEvolver, callable,
+                                        numeraire);
+                SequenceStatistics innerStats(callable.numberOfProducts());
+                engine.multiplePathValues(innerStats, innerPaths);
 
+                const std::vector<Real>& values = innerStats.mean();
+                Real unexercisedHedgeValue = // as in _cash_ value
+                    std::accumulate(values.begin(), values.end(), 0.0);
+                // the above will need to be adjusted so that it is in
+                // numeraire units
 
-            // Now, we can calculate the total value of our hedged portfolio
-            Real portfolioValue;
-            if (strategy.exercise(currentState)) {
+                callable.disableCallability();
+                callable.startRecording();
 
-                numerairesHeld += .../principalInNumerairePortfolio;
-                portfolioValue = numerairesHeld;
-            } else {
+                // Now, we can calculate the total value of our hedged
+                // portfolio...
+                Real portfolioValue = numerairesHeld;
+                if (strategy.exercise(currentState)) {
+                    // get the rebates...
+                    portfolioValue +=
+                        rebateCashFlow - hedgeRebateCashFlow;
+                    // ...and reinvest to rehedge
+                    numerairesHeld +=
+                        hedgeRebateCashFlow - unexercisedHedgeValue;
+                } else {
+                    portfolioValue +=
+                        rebateCashFlow - unexercisedHedgeValue;
+                }
 
-
-                numerairesHeld += .../principalInNumerairePortfolio;
-                portfolioValue = ...;
+                // ...and use it to update the maximum value
+                maximumValue = std::max(maximumValue, portfolioValue);
             }
 
 
-            maximumValue = std::max(maximumValue, portfolioValue);
 
 
-            // Lastly, we do the homework for next step
+            // Lastly, we do the homework for next step (if any)
             if (k<numberOfSteps_-1) {
 
                 // The numeraire might change between steps. This implies
@@ -154,8 +309,8 @@ namespace QuantLib {
                 // the principal of the numeraire and updating the number
                 // of bonds in the numeraire portfolio accordingly.
 
-                Size numeraire = evolver_->numeraires()[thisStep];
-                Size nextNumeraire = evolver_->numeraires()[thisStep+1];
+                Size numeraire = evolver_->numeraires()[k];
+                Size nextNumeraire = evolver_->numeraires()[k+1];
 
                 principalInNumerairePortfolio *=
                     evolver_->currentState().discountRatio(numeraire,
@@ -164,6 +319,12 @@ namespace QuantLib {
 
         }
 
+        // finally, we update the maximum with the total accumulated
+        // cash flows (in case we never exercised)
+        maximumValue = std::max(maximumValue, numerairesHeld);
+
+
+        // all done; we just convert the result back to cash
         maximumValue *= initialNumeraireValue_;
 
         return make_pair(maximumValue, weight);
@@ -171,6 +332,7 @@ namespace QuantLib {
 
 
     Real UpperBoundEngine::collectCashFlows(Size currentStep,
+                                            Real principalInNumerairePortfolio,
                                             Size beginProduct,
                                             Size endProduct) const {
         Size numeraire = evolver_->numeraires()[currentStep];
@@ -193,7 +355,7 @@ namespace QuantLib {
                                               numeraire);
             }
         }
-        return numeraireUnits;
+        return numeraireUnits/principalInNumerairePortfolio;
     }
 
 }

@@ -32,18 +32,25 @@
 
 namespace QuantLib {
 
+    /*! \pre product and hedge must have the same rate times
+             and exercise times
+    */
     class UpperBoundEngine {
       public:
         UpperBoundEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const CallSpecifiedMultiProduct& product,
+                         const MarketModelMultiProduct& underlying,
+                         const ExerciseValue& rebate,
                          const MarketModelMultiProduct& hedge,
+                         const ExerciseValue& hedgeRebate,
+                         const ExerciseStrategy<CurveState>& hedgeStrategy,
                          double initialNumeraireValue);
         void multiplePathValues(Statistics& stats,
                                 Size outerPaths,
                                 Size innerPaths);
-      private:
         std::pair<Real,Real> singlePathValue(Size innerPaths);
+      private:
         Real collectCashFlows(Size currentStep,
+                              Real principalInNumerairePortfolio,
                               Size beginProduct,
                               Size endProduct) const;
 
@@ -51,9 +58,11 @@ namespace QuantLib {
         MultiProductComposite composite_;
 
         Real initialNumeraireValue_;
-        Size underlyingSize_, rebateSize_;
+        Size underlyingSize_, rebateSize_, hedgeSize_, hedgeRebateSize_;
+        Size underlyingOffset_, rebateOffset_, hedgeOffset_, hedgeRebateOffset_;
         Size numberOfProducts_;
         Size numberOfSteps_;
+        std::vector<bool> isExerciseTime_;
 
         // workspace
         std::vector<Size> numberCashFlowsThisStep_;
