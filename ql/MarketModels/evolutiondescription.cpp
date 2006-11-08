@@ -152,66 +152,6 @@ namespace QuantLib {
         return evolutionTimes_.size(); 
     }
 
-    //const std::vector<Size>& EvolutionDescription::numeraires() const {
-    //    return numeraires_;
-    //}
-
-    //void EvolutionDescription::setMoneyMarketMeasure() {
-    //    setMoneyMarketPlusMeasure(0);
-    //}
-
-    //bool EvolutionDescription::isInMoneyMarketMeasure() const {
-    //    return isInMoneyMarketPlusMeasure(0);
-    //}
-
-
-    //void EvolutionDescription::setNumeraires(const std::vector<Size>& numeraires) {
-    //    QL_REQUIRE(numeraires.size() == evolutionTimes_.size(),
-    //               "Numeraires / evolutionTimes mismatch");
-    //    for (Size i=0; i<numeraires.size()-1; i++) {
-    //        QL_REQUIRE(rateTimes_[numeraires[i]] >= evolutionTimes_[i],
-    //                   "Numeraire " << i << " expired");
-    //    }
-    //    std::copy(numeraires.begin(), numeraires.end(), numeraires_.begin());
-    //}
-
-    //void EvolutionDescription::setTerminalMeasure() {
-    //    std::fill(numeraires_.begin(), numeraires_.end(), rateTimes_.size()-1);
-    //}
-
-    //bool EvolutionDescription::isInTerminalMeasure() const {
-    //    return *std::min_element(numeraires_.begin(), numeraires_.end()) ==
-    //        rateTimes_.size()-1;
-    //}
-
-    //void EvolutionDescription::setMoneyMarketPlusMeasure(Size offset) {
-    //    Size j=0, maxNumeraire=rateTimes_.size()-1;
-    //    QL_REQUIRE(offset<=maxNumeraire,
-    //               "offset (" << offset <<
-    //               ") is greater than the max allowed value for numeraire ("
-    //               << maxNumeraire << ")");
-    //    for (Size i=0; i<evolutionTimes_.size(); ++i) {
-    //        while (rateTimes_[j] < evolutionTimes_[i])
-    //            j++;
-    //        numeraires_[i] = std::min(j+offset, maxNumeraire);
-    //    }
-    //}
-
-    //bool EvolutionDescription::isInMoneyMarketPlusMeasure(Size offset) const {
-    //    bool result = true;
-    //    Size j=0, maxNumeraire=rateTimes_.size()-1;
-    //    QL_REQUIRE(offset<=maxNumeraire,
-    //               "offset (" << offset <<
-    //               ") is greater than the max allowed value for numeraire ("
-    //               << maxNumeraire << ")");
-    //    for (Size i=0; i<evolutionTimes_.size(); ++i) {
-    //        while (rateTimes_[j] < evolutionTimes_[i])
-    //            j++;
-    //        result = (numeraires_[i] == std::min(j+offset, maxNumeraire)) && result;
-    //    }
-    //    return result;
-    //}
-
     void checkCompatibility(const EvolutionDescription& evolution,
                             const std::vector<Size>& numeraires)
     {
