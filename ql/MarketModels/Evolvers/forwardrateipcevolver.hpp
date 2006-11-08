@@ -35,7 +35,8 @@ namespace QuantLib {
       public:
         ForwardRateIpcEvolver(const boost::shared_ptr<MarketModel>&,
                               const BrownianGeneratorFactory&,
-                              const std::vector<Size>& numeraires);
+                              const std::vector<Size>& numeraires,
+                              Size initialStep = 0);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -43,11 +44,14 @@ namespace QuantLib {
         Real advanceStep();
         Size currentStep() const;
         const CurveState& currentState() const;
+        void setInitialState(const CurveState&);
         //@}
       private:
+        void setForwards(const std::vector<Real>& forwards);
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
+        Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;

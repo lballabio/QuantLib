@@ -35,16 +35,8 @@ namespace QuantLib {
       public:
         ForwardRateConstrainedEuler(const boost::shared_ptr<MarketModel>&,
                                     const BrownianGeneratorFactory&,
-                                    const std::vector<Size>& numeraires);
-        //! \name MarketModelEvolver interface
-        //@{
-        const std::vector<Size>& numeraires() const;
-        Real startNewPath();
-        Real advanceStep();
-        Size currentStep() const;
-        const CurveState& currentState() const;
-        //@}
-
+                                    const std::vector<Size>& numeraires,
+                                    Size initialStep = 0);
         //! \name MarketModelConstrainedEvolver interface
         //@{
         virtual void SetConstraintType(
@@ -54,10 +46,21 @@ namespace QuantLib {
             const std::vector<Rate>& rateConstraints,
             const std::vector<bool>& isConstraintActive);
         //@}
+        //! \name MarketModelEvolver interface
+        //@{
+        const std::vector<Size>& numeraires() const;
+        Real startNewPath();
+        Real advanceStep();
+        Size currentStep() const;
+        const CurveState& currentState() const;
+        void setInitialState(const CurveState&);
+        //@}
       private:
+        void setForwards(const std::vector<Real>& forwards);
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
+        Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
 
         std::vector<Size> startIndexOfSwapRate_;

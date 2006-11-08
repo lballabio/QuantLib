@@ -37,6 +37,7 @@ namespace QuantLib {
         virtual Real advanceStep() = 0;
         virtual Size currentStep() const = 0;
         virtual const CurveState& currentState() const = 0;
+        virtual void setInitialState(const CurveState&) = 0;
     };
 
 }
