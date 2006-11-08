@@ -19,6 +19,7 @@
 
 
 #include <ql/Instruments/makecapfloor.hpp>
+#include <ql/Cashflows/analysis.hpp>
 
 namespace QuantLib {
 
@@ -48,10 +49,7 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CapFloor(capFloorType_, leg,
-                                       std::vector<Rate>(1, 0.03),
-                                       swap.termStructure(),
-                                       engine_).atmRate();
+            strikeVector[0] = Cashflows::atmRate(leg, swap.termStructure());
 
         return CapFloor(capFloorType_, leg, strikeVector,
                         swap.termStructure(), engine_);
@@ -67,10 +65,7 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CapFloor(capFloorType_, leg,
-                                       std::vector<Rate>(1, 0.03),
-                                       swap.termStructure(),
-                                       engine_).atmRate();
+            strikeVector[0] = Cashflows::atmRate(leg, swap.termStructure());
 
         return boost::shared_ptr<CapFloor>(new
             CapFloor(capFloorType_, leg, strikeVector, swap.termStructure(),
