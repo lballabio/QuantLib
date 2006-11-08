@@ -50,6 +50,23 @@ namespace QuantLib {
         */
         static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
                         const Handle<YieldTermStructure>&);
+        //! Basis-point sensitivity of the cash flows.
+        /*! The result is the change in NPV due to a uniform
+            1-basis-point change in the rate paid by the cash
+            flows. The change for each coupon is discounted according
+            to the given term structure.
+        */
+        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
+                        const Handle<YieldTermStructure>&);
+        //! At The Money Rate of the cash flows.
+        /*! The result is the fixed rate for which an equivalent vector 
+            of fixed cash flows has the same NPV according
+            to the given term structure.
+        */
+        static Rate atmRate(
+            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+            const Handle<YieldTermStructure>& termStructure);
+
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given constant interest rate.  The result
@@ -59,15 +76,6 @@ namespace QuantLib {
         static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
                         const InterestRate&,
                         Date settlementDate = Date());
-
-        //! Basis-point sensitivity of the cash flows.
-        /*! The result is the change in NPV due to a uniform
-            1-basis-point change in the rate paid by the cash
-            flows. The change for each coupon is discounted according
-            to the given term structure.
-        */
-        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
-                        const Handle<YieldTermStructure>&);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -125,7 +133,6 @@ namespace QuantLib {
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date());
 
-
         //! Cash-flow convexity
         /*! The convexity of a string of cash flows is defined as
             \f[
@@ -137,14 +144,6 @@ namespace QuantLib {
         static Real convexity(const std::vector<boost::shared_ptr<CashFlow> >&,
                               const InterestRate& y,
                               Date settlementDate = Date()); 
-        //! At The Money Rate of the cash flows.
-        /*! The result is the fixed rate for which an equivalent vector 
-            of fixed cash flows has the same NPV according
-            to the given term structure.
-        */
-        static Rate atmRate(
-            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
-            const Handle<YieldTermStructure>& termStructure);
     };
 
    
