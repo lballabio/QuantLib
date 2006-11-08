@@ -43,6 +43,10 @@ namespace QuantLib {
                           std::vector<std::vector<CashFlow> >&);
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
+        //! \name inspectors
+        //@{
+        const MarketModelExerciseValue& exerciseValue() const;
+        //@}
       private:
         Clone<MarketModelExerciseValue> exercise_;
         Size numberOfProducts_;
@@ -73,6 +77,11 @@ namespace QuantLib {
     inline void ExerciseAdapter::reset() {
         exercise_->reset();
         currentIndex_ = 0;
+    }
+
+    inline const MarketModelExerciseValue&
+    ExerciseAdapter::exerciseValue() const {
+        return *exercise_;
     }
 
 }
