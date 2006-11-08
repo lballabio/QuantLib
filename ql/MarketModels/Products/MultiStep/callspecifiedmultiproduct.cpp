@@ -27,7 +27,8 @@ namespace QuantLib {
                          const Clone<MarketModelMultiProduct>& underlying,
                          const Clone<ExerciseStrategy<CurveState> >& strategy,
                          const Clone<MarketModelMultiProduct>& rebate)
-    : underlying_(underlying), strategy_(strategy), rebate_(rebate) {
+    : underlying_(underlying), strategy_(strategy), rebate_(rebate),
+      callable_(true) {
 
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();
@@ -126,7 +127,7 @@ namespace QuantLib {
             strategy_->nextStep(currentState);
 
 
-        if (!wasCalled_ && isExerciseTime)
+        if (!wasCalled_ && isExerciseTime && callable_)
             wasCalled_ = strategy_->exercise(currentState);
 
         if (wasCalled_) {
@@ -172,6 +173,14 @@ namespace QuantLib {
     const MarketModelMultiProduct&
     CallSpecifiedMultiProduct::rebate() const {
         return *rebate_;
+    }
+
+    void CallSpecifiedMultiProduct::enableCallability() {
+        callable_ = true;
+    }
+
+    void CallSpecifiedMultiProduct::disableCallability() {
+        callable_ = false;
     }
 
 }

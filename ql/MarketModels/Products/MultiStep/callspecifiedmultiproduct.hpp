@@ -53,6 +53,8 @@ namespace QuantLib {
         const MarketModelMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;
         const MarketModelMultiProduct& rebate() const;
+        void enableCallability();
+        void disableCallability();
       private:
         Clone<MarketModelMultiProduct> underlying_;
         Clone<ExerciseStrategy<CurveState> > strategy_;
@@ -65,6 +67,7 @@ namespace QuantLib {
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
         Size currentIndex_;
+        bool callable_;
     };
 
 }
