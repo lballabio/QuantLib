@@ -228,33 +228,40 @@ namespace QuantLib {
             // Second, we do the upper-bound thing
             if (isExerciseTime_[k]) {
 
-                // Here, we setup the relevant inner evolver and
-                // the decorated callable hedge such that their reset()
-                // method brings them to the current point rather than
-                // the beginning of the path.
+                Real unexercisedHedgeValue = 0.0;
 
-                boost::shared_ptr<MarketModelEvolver> currentEvolver =
-                    innerEvolvers_[exercise++];
-                currentEvolver->setInitialState(evolver_->currentState());
+                if (k != numberOfSteps_-1) {
 
-                callable.stopRecording();
-                callable.enableCallability();
-                callable.save();
+                    // Here, we setup the relevant inner evolver and
+                    // the decorated callable hedge such that their
+                    // reset() method brings them to the current point
+                    // rather than the beginning of the path.
 
-                // This allows us to write:
-                AccountingEngine engine(currentEvolver, callable,
-                                        1.0);   // this causes the result
-                                                // to be in numeraire units
-                SequenceStatistics innerStats(callable.numberOfProducts());
-                engine.multiplePathValues(innerStats, innerPaths);
+                    boost::shared_ptr<MarketModelEvolver> currentEvolver =
+                        innerEvolvers_[exercise++];
+                    currentEvolver->setInitialState(evolver_->currentState());
 
-                const std::vector<Real>& values = innerStats.mean();
-                Real unexercisedHedgeValue =
-                    std::accumulate(values.begin(), values.end(), 0.0)
-                    / principalInNumerairePortfolio;
+                    callable.stopRecording();
+                    callable.enableCallability();
+                    callable.save();
 
-                callable.disableCallability();
-                callable.startRecording();
+                    // This allows us to write:
+                    Size numeraire = evolver_->numeraires()[k];
+                    AccountingEngine engine(currentEvolver, callable,
+                                            1.0); // this causes the result
+                                                  // to be in numeraire units
+                    SequenceStatistics innerStats(callable.numberOfProducts());
+                    engine.multiplePathValues(innerStats, innerPaths);
+
+                    const std::vector<Real>& values = innerStats.mean();
+                    unexercisedHedgeValue =
+                        std::accumulate(values.begin(), values.end(), 0.0)
+                        / principalInNumerairePortfolio;
+
+                    callable.disableCallability();
+                    callable.startRecording();
+
+                }
 
                 // Now, we can calculate the total value of our hedged
                 // portfolio...
@@ -265,7 +272,7 @@ namespace QuantLib {
                         rebateCashFlow - hedgeRebateCashFlow;
                     // ...and reinvest to rehedge
                     numerairesHeld +=
-                        hedgeRebateCashFlow - unexercisedHedgeValue;
+                        unexercisedHedgeValue - hedgeRebateCashFlow;
                 } else {
                     portfolioValue +=
                         rebateCashFlow - unexercisedHedgeValue;
@@ -274,8 +281,6 @@ namespace QuantLib {
                 // ...and use it to update the maximum value
                 maximumValue = std::max(maximumValue, portfolioValue);
             }
-
-
 
 
             // Lastly, we do the homework for next step (if any)
