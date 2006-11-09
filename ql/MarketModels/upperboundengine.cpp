@@ -171,14 +171,6 @@ namespace QuantLib {
 
     std::pair<Real,Real> UpperBoundEngine::singlePathValue(Size innerPaths) {
 
-        const MarketModelMultiProduct& underlying = composite_.item(0);
-        const MarketModelExerciseValue& rebate =
-            dynamic_cast<const ExerciseAdapter&>(composite_.item(1))
-            .exerciseValue();
-        const MarketModelMultiProduct& hedge = composite_.item(2);
-        const MarketModelExerciseValue& hedgeRebate =
-            dynamic_cast<const ExerciseAdapter&>(composite_.item(3))
-            .exerciseValue();
         DecoratedHedge& callable =
             dynamic_cast<DecoratedHedge&>(composite_.item(4));
         const ExerciseStrategy<CurveState>& strategy = callable.strategy();
@@ -250,7 +242,6 @@ namespace QuantLib {
                 callable.save();
 
                 // This allows us to write:
-                Size numeraire = evolver_->numeraires()[k];
                 AccountingEngine engine(currentEvolver, callable,
                                         1.0);   // this causes the result
                                                 // to be in numeraire units
