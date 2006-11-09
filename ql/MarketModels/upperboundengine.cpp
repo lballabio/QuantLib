@@ -19,16 +19,20 @@
 */
 
 #include <ql/MarketModels/upperboundengine.hpp>
+#include <ql/MarketModels/accountingengine.hpp>
+#include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
+#include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
+#include <ql/MarketModels/utilities.hpp>
 #include <algorithm>
 
 namespace QuantLib {
 
     namespace {
 
-        class DecoratedHedge : public MarketModelMultiProduct {
+        class DecoratedHedge : public CallSpecifiedMultiProduct {
           public:
             DecoratedHedge(const CallSpecifiedMultiProduct& product)
-            : product_(product) {
+            : CallSpecifiedMultiProduct(product) {
                 savedStates_.reserve(product.evolution().numberOfSteps());
 
                 Size N = product.numberOfProducts();
@@ -41,34 +45,15 @@ namespace QuantLib {
                 clear();
             }
 
-            std::vector<Size> suggestedNumeraires() const {
-                return product_.suggestedNumeraires();
-            }
-
-            const EvolutionDescription& evolution() const {
-                return product_.evolution();
-            }
-
-            std::vector<Time> possibleCashFlowTimes() const {
-                return product_.possibleCashFlowTimes();
-            }
-
-            Size numberOfProducts() const {
-                return product_.numberOfProducts();
-            }
-
-            Size maxNumberOfCashFlowsPerProductPerStep() const {
-                return product_.maxNumberOfCashFlowsPerProductPerStep();
-            }
-
             void reset() {
-                product_.reset();
-                product_.disableCallability();
+                CallSpecifiedMultiProduct::reset();
+                disableCallability();
                 for (Size i=0; i<lastSavedStep_; ++i)
-                    product_.nextTimeStep(savedStates_[i],
-                                          numberCashFlowsThisStep_,
-                                          cashFlowsGenerated_);
-                product_.enableCallability();
+                    CallSpecifiedMultiProduct::nextTimeStep(
+                                                     savedStates_[i],
+                                                     numberCashFlowsThisStep_,
+                                                     cashFlowsGenerated_);
+                enableCallability();
             }
 
             bool nextTimeStep(
@@ -77,13 +62,10 @@ namespace QuantLib {
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
                 if (recording_)
                     savedStates_.push_back(currentState);
-                return product_.nextTimeStep(currentState,
-                                             numberCashFlowsThisStep,
-                                             cashFlowsGenerated);
-            }
-
-            const ExerciseStrategy<CurveState>& strategy() const {
-                return product_.strategy();
+                return CallSpecifiedMultiProduct::nextTimeStep(
+                                                     currentState,
+                                                     numberCashFlowsThisStep,
+                                                     cashFlowsGenerated);
             }
 
             std::auto_ptr<MarketModelMultiProduct> clone() const {
@@ -109,7 +91,6 @@ namespace QuantLib {
                 recording_ = false;
             }
           private:
-            CallSpecifiedMultiProduct product_;
             std::vector<CurveState> savedStates_;
             Size lastSavedStep_;
             bool recording_;
@@ -122,14 +103,17 @@ namespace QuantLib {
 
 
     UpperBoundEngine::UpperBoundEngine(
-                         const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const MarketModelMultiProduct& underlying,
-                         const ExerciseValue& rebate,
-                         const MarketModelMultiProduct& hedge,
-                         const ExerciseValue& hedgeRebate,
-                         const ExerciseStrategy<CurveState>& hedgeStrategy,
-                         double initialNumeraireValue)
-    : evolver_(evolver), composite_(MultiProductComposite()),
+                   const boost::shared_ptr<MarketModelEvolver>& evolver,
+                   const std::vector<boost::shared_ptr<MarketModelEvolver> >&
+                                                                 innerEvolvers,
+                   const MarketModelMultiProduct& underlying,
+                   const MarketModelExerciseValue& rebate,
+                   const MarketModelMultiProduct& hedge,
+                   const MarketModelExerciseValue& hedgeRebate,
+                   const ExerciseStrategy<CurveState>& hedgeStrategy,
+                   Real initialNumeraireValue)
+    : evolver_(evolver), innerEvolvers_(innerEvolvers),
+      composite_(MultiProductComposite()),
       initialNumeraireValue_(initialNumeraireValue) {
 
         composite_.add(underlying);
@@ -155,14 +139,13 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes =
             composite_.evolution().evolutionTimes();
         numberOfSteps_ = evolutionTimes.size();
-        states_.resize(numberOfSteps_);
 
         isExerciseTime_ = isInSubset(evolutionTimes,
                                      hedgeStrategy.exerciseTimes());
 
         numberCashFlowsThisStep_.resize(numberOfProducts_);
         cashFlowsGenerated_.resize(numberOfProducts_);
-        for (Size i=0; i<numberProducts_; ++i)
+        for (Size i=0; i<numberOfProducts_; ++i)
             cashFlowsGenerated_[i].resize(
                           composite_.maxNumberOfCashFlowsPerProductPerStep());
 
@@ -189,11 +172,11 @@ namespace QuantLib {
     std::pair<Real,Real> UpperBoundEngine::singlePathValue(Size innerPaths) {
 
         const MarketModelMultiProduct& underlying = composite_.item(0);
-        const ExerciseValue& rebate =
+        const MarketModelExerciseValue& rebate =
             dynamic_cast<const ExerciseAdapter&>(composite_.item(1))
             .exerciseValue();
         const MarketModelMultiProduct& hedge = composite_.item(2);
-        const ExerciseValue& hedgeRebate =
+        const MarketModelExerciseValue& hedgeRebate =
             dynamic_cast<const ExerciseAdapter&>(composite_.item(3))
             .exerciseValue();
         DecoratedHedge& callable =
@@ -208,6 +191,7 @@ namespace QuantLib {
         composite_.reset();
         callable.disableCallability();
         Real principalInNumerairePortfolio = 1.0;
+        Size exercise = 0;
 
         for (Size k=0; k<numberOfSteps_; ++k) {
             weight *= evolver_->advanceStep();
@@ -252,27 +236,31 @@ namespace QuantLib {
             // Second, we do the upper-bound thing
             if (isExerciseTime_[k]) {
 
-                // Here, we setup a decorated evolver and
+                // Here, we setup the relevant inner evolver and
                 // the decorated callable hedge such that their reset()
                 // method brings them to the current point rather than
                 // the beginning of the path.
+
+                boost::shared_ptr<MarketModelEvolver> currentEvolver =
+                    innerEvolvers_[exercise++];
+                currentEvolver->setInitialState(evolver_->currentState());
 
                 callable.stopRecording();
                 callable.enableCallability();
                 callable.save();
 
                 // This allows us to write:
-                Size numeraire = evolver_->numeraires()[currentStep];
-                AccountingEngine engine(decoratedEvolver, callable,
-                                        numeraire);
+                Size numeraire = evolver_->numeraires()[k];
+                AccountingEngine engine(currentEvolver, callable,
+                                        1.0);   // this causes the result
+                                                // to be in numeraire units
                 SequenceStatistics innerStats(callable.numberOfProducts());
                 engine.multiplePathValues(innerStats, innerPaths);
 
                 const std::vector<Real>& values = innerStats.mean();
-                Real unexercisedHedgeValue = // as in _cash_ value
-                    std::accumulate(values.begin(), values.end(), 0.0);
-                // the above will need to be adjusted so that it is in
-                // numeraire units
+                Real unexercisedHedgeValue =
+                    std::accumulate(values.begin(), values.end(), 0.0)
+                    / principalInNumerairePortfolio;
 
                 callable.disableCallability();
                 callable.startRecording();
@@ -280,7 +268,7 @@ namespace QuantLib {
                 // Now, we can calculate the total value of our hedged
                 // portfolio...
                 Real portfolioValue = numerairesHeld;
-                if (strategy.exercise(currentState)) {
+                if (strategy.exercise(evolver_->currentState())) {
                     // get the rebates...
                     portfolioValue +=
                         rebateCashFlow - hedgeRebateCashFlow;
@@ -327,7 +315,7 @@ namespace QuantLib {
         // all done; we just convert the result back to cash
         maximumValue *= initialNumeraireValue_;
 
-        return make_pair(maximumValue, weight);
+        return std::make_pair(maximumValue, weight);
     }
 
 

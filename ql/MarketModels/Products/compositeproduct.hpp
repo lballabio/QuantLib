@@ -50,6 +50,7 @@ namespace QuantLib {
         void finalize();
         Size size() const;
         const MarketModelMultiProduct& item(Size i) const;
+        MarketModelMultiProduct& item(Size i);
         Real multiplier(Size i) const;
         //@}
       protected:

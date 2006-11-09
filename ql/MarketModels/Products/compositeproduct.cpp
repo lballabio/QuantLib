@@ -147,6 +147,10 @@ namespace QuantLib {
         return *(components_.at(i).product);
     }
 
+    MarketModelMultiProduct& MarketModelComposite::item(Size i) {
+        return *(components_.at(i).product);
+    }
+
     Real MarketModelComposite::multiplier(Size i) const {
         return components_.at(i).multiplier;
     }
