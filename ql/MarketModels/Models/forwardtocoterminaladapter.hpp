@@ -29,7 +29,7 @@ namespace QuantLib {
 
     class ForwardToCoterminalAdapter : public MarketModel {
       public:
-          ForwardToCoterminalAdapter(const boost::shared_ptr<MarketModel>& fwdModel);
+        ForwardToCoterminalAdapter(const boost::shared_ptr<MarketModel>& fwdModel);
         //! \name MarketModel interface
         //@{
         const std::vector<Rate>& initialRates() const;

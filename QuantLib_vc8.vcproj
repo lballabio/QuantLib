@@ -6887,6 +6887,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\swapforwardmappings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardmappings.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\upperboundengine.cpp"
 				>
 			</File>
@@ -7218,6 +7226,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.cpp"
 					>
 				</File>
@@ -7231,6 +7247,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\forwardtocoterminaladapter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\forwardtocoterminaladapter.hpp"
 					>
 				</File>
 			</Filter>

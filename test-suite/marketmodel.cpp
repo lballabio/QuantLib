@@ -35,6 +35,7 @@
 #include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
 #include <ql/MarketModels/Products/multiproductcomposite.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
+#include <ql/MarketModels/upperboundengine.hpp>
 #include <ql/MarketModels/swapbasissystem.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
@@ -47,6 +48,7 @@
 #include <ql/MarketModels/Models/expcorrflatvol.hpp>
 #include <ql/MarketModels/Models/expcorrabcdvol.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
+#include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp>
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
@@ -184,7 +186,7 @@ void setup() {
     // Monte Carlo
     seed_ = 42;
     paths_ = 32767; // 2^15-1
-    trainingPaths_ = 1023; // 2^10-1
+    trainingPaths_ = 8191; // 2^13-1
 }
 
 const boost::shared_ptr<SequenceStatistics> simulate(
@@ -342,17 +344,18 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     const boost::shared_ptr<MarketModel>& marketModel,
     const std::vector<Size>& numeraires,
     const BrownianGeneratorFactory& generatorFactory,
-    EvolverType evolverType)
+    EvolverType evolverType,
+    Size initialStep = 0)
 {
     switch (evolverType) {
         case Ipc:
             return boost::shared_ptr<MarketModelEvolver>(new
                 ForwardRateIpcEvolver(marketModel, generatorFactory,
-                                      numeraires));
+                                      numeraires, initialStep));
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
                 ForwardRatePcEvolver(marketModel, generatorFactory,
-                                     numeraires));
+                                     numeraires, initialStep));
         default:
             QL_FAIL("unknown MarketModelEvolver type");
     }
@@ -1132,6 +1135,175 @@ void MarketModelTest::testCallableSwap2() {
     }
 }
 
+
+void MarketModelTest::testUpperBound() {
+
+    BOOST_MESSAGE("Estimating upper bound for callable swap price...");
+
+    QL_TEST_SETUP
+
+    Real fixedRate = 0.04;
+
+    // 0. a payer swap
+    MultiStepSwap payerSwap(rateTimes, accruals, accruals, paymentTimes,
+                            fixedRate, true);
+
+    // 1. the equivalent receiver swap
+    MultiStepSwap receiverSwap(rateTimes, accruals, accruals, paymentTimes,
+                               fixedRate, false);
+
+    //exercise schedule
+    std::vector<Rate> exerciseTimes(rateTimes);
+    exerciseTimes.pop_back();
+    //std::vector<Rate> exerciseTimes;
+    //for (Size i=2; i<rateTimes.size()-1; i+=2)
+    //    exerciseTimes.push_back(rateTimes[i]);
+
+    // naif exercise strategy
+    std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
+    SwapRateTrigger dummyStrategy(rateTimes, swapTriggers, exerciseTimes);
+
+    // 2. bermudan swaption to enter into the payer swap
+    //MultiStepNothing nothing(payerSwap.evolution());
+    //CallSpecifiedMultiProduct bermudanProduct(nothing, exerciseStrategy,
+    //                                          payerSwap);
+
+    // 3. callable receiver swap
+
+    std::vector<std::vector<LSNodeData> > collectedData;
+    std::vector<std::vector<Real> > basisCoefficients;
+    NothingExerciseValue control(rateTimes);
+    SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
+    NothingExerciseValue nullRebate(rateTimes);
+
+    CallSpecifiedMultiProduct dummyProduct(receiverSwap, dummyStrategy,
+                                           ExerciseAdapter(nullRebate));
+
+    EvolutionDescription evolution = dummyProduct.evolution();
+
+    MeasureType measures[] = { /*ProductSuggested,
+                               MoneyMarketPlus,
+                               MoneyMarket,*/
+                               Terminal };
+    for (Size k=0; k<LENGTH(measures); k++) {
+        std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+
+        //for (Size m=0; m<todaysForwards.size(); m+=4) {
+        for (Size m=0; m<1; ++m) {
+            Size factors = (m==0 ? todaysForwards.size() : m);
+
+            MarketModelType marketModels[] = {
+                // CalibratedMM,
+                // ExponentialCorrelationFlatVolatility,
+                ExponentialCorrelationAbcdVolatility };
+            for (Size j=0; j<LENGTH(marketModels); j++) {
+                boost::shared_ptr<MarketModel> marketModel =
+                    makeMarketModel(evolution, factors, marketModels[j]);
+
+                for (Size n=0; n<1; n++) {
+                    //MTBrownianGeneratorFactory generatorFactory(seed_);
+                    SobolBrownianGeneratorFactory generatorFactory(
+                        SobolBrownianGenerator::Diagonal);
+
+                    EvolverType evolvers[] = { Pc /*, Ipc */ };
+                    boost::shared_ptr<MarketModelEvolver> evolver;
+                    Size stop =
+                        isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                    for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config << measureTypeToString(measures[k]) << ", "
+                               << factors
+                               << (factors>1 ? " factors, " : " factor,")
+                               << marketModelTypeToString(marketModels[j])
+                               << ", MT BGF" << ", "
+                               << evolverTypeToString(evolvers[i]);
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        Size initialNumeraire = evolver->numeraires().front();
+                        Real initialNumeraireValue =
+                            todaysDiscounts[initialNumeraire];
+
+                        collectLongstaffSchwartzData(*evolver,
+                            receiverSwap, basisSystem, nullRebate,
+                            control, trainingPaths_, collectedData);
+                        genericLongstaffSchwartzRegression(collectedData,
+                            basisCoefficients);
+                        LongstaffSchwartzExerciseStrategy exerciseStrategy(
+                                               basisSystem, basisCoefficients,
+                                               evolution, numeraires,
+                                               nullRebate, control);
+
+                        CallSpecifiedMultiProduct callableProduct(
+                                               receiverSwap, exerciseStrategy,
+                                               ExerciseAdapter(nullRebate));
+
+                        // lower bound
+
+                        AccountingEngine engine(evolver, callableProduct,
+                                                initialNumeraireValue);
+                        SequenceStatistics stats(callableProduct.numberOfProducts());
+                        engine.multiplePathValues(stats, paths_);
+
+                        QL_ENSURE(stats.size() == 1, "programmer error");
+                        Real lowerBound = stats.mean()[0];
+                        Real lowerBoundError = stats.errorEstimate()[0];
+
+                        // upper bound
+
+                        //MTBrownianGeneratorFactory uFactory(seed_+142);
+                        SobolBrownianGeneratorFactory uFactory(
+                            SobolBrownianGenerator::Diagonal);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         uFactory,
+                                                         evolvers[i]);
+                        
+                        std::vector<boost::shared_ptr<MarketModelEvolver> >
+                            innerEvolvers;
+
+                        std::vector<bool> isExerciseTime =
+                            isInSubset(evolution.evolutionTimes(),
+                                       exerciseStrategy.exerciseTimes());
+                        for (Size s=0; s < isExerciseTime.size(); ++s) {
+                            if (isExerciseTime[s]) {
+                                MTBrownianGeneratorFactory iFactory(seed_+s);
+                                boost::shared_ptr<MarketModelEvolver> e =
+                                    makeMarketModelEvolver(marketModel,
+                                                           numeraires,
+                                                           iFactory,
+                                                           evolvers[i],
+                                                           s);
+                                innerEvolvers.push_back(e);
+                            }
+                        }
+
+                        UpperBoundEngine uEngine(evolver, innerEvolvers,
+                                                 receiverSwap, nullRebate,
+                                                 receiverSwap, nullRebate,
+                                                 exerciseStrategy,
+                                                 initialNumeraireValue);
+                        Statistics uStats;
+                        uEngine.multiplePathValues(uStats,255,256);
+                        Real delta = uStats.mean();
+                        Real deltaError = uStats.errorEstimate();
+
+                        BOOST_MESSAGE("lower bound: " << lowerBound);
+                        BOOST_MESSAGE("error:       " << lowerBoundError);
+                        BOOST_MESSAGE("delta:       " << delta);
+                        BOOST_MESSAGE("error:       " << deltaError);
+                        
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
 //--------------------- Volatility tests ---------------------
 
 void MarketModelTest::testAbcdVolatilityIntegration() {
@@ -1358,7 +1530,7 @@ void MarketModelTest::testIsInSubset() {
 // --- Call the desired tests
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-    suite->add(BOOST_TEST_CASE(
+    /*suite->add(BOOST_TEST_CASE(
         &MarketModelTest::testOneStepForwardsAndCaplets));
     suite->add(BOOST_TEST_CASE(
         &MarketModelTest::testMultiStepForwardsAndCaplets));
@@ -1369,12 +1541,13 @@ test_suite* MarketModelTest::suite() {
     //suite->add(BOOST_TEST_CASE(
     //    &MarketModelTest::testMultiStepCoterminalSwaptions));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
-    suite->add(BOOST_TEST_CASE(
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));*/
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testUpperBound));
+    /*suite->add(BOOST_TEST_CASE(
         &MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));*/
     return suite;
 }

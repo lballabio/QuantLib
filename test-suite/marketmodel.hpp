@@ -35,6 +35,7 @@ class MarketModelTest {
     static void testMultiStepCoterminalSwaptions();
     static void testCallableSwap1();
     static void testCallableSwap2();
+    static void testUpperBound();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();
     static void testAbcdVolatilityFit();
