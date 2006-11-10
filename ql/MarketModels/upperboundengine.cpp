@@ -246,7 +246,6 @@ namespace QuantLib {
                     callable.save();
 
                     // This allows us to write:
-                    Size numeraire = evolver_->numeraires()[k];
                     AccountingEngine engine(currentEvolver, callable,
                                             1.0); // this causes the result
                                                   // to be in numeraire units
