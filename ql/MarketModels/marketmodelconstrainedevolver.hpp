@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_market_model_evolver_hpp
-#define quantlib_market_model_evolver_hpp
+#ifndef quantlib_market_model_constrained_evolver_hpp
+#define quantlib_market_model_constrained_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
 
@@ -34,15 +34,15 @@ namespace QuantLib {
         This is intended to be used for the Fries-Joshi proxy simulation
         approach to Greeks
     */
-    class MarketModelConstrainedEvolver {
+    class ConstrainedEvolver : public MarketModelEvolver {
       public:
-        virtual ~MarketModelConstrainedEvolver() {}
+        virtual ~ConstrainedEvolver() {}
         //! call once
-        virtual void SetConstraintType(
+        virtual void setConstraintType(
             const std::vector<Size>& startIndexOfSwapRate,
             const std::vector<Size>& EndIndexOfSwapRate) = 0;
         //! call before each path
-        virtual void SetThisConstraint(
+        virtual void setThisConstraint(
             const std::vector<Rate>& rateConstraints,
             const std::vector<bool>& isConstraintActive) = 0;
     };

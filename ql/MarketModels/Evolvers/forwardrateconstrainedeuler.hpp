@@ -22,7 +22,7 @@
 #ifndef quantlib_forward_rate_euler_constrained_evolver_hpp
 #define quantlib_forward_rate_euler_constrained_evolver_hpp
 
-#include <ql/MarketModels/marketmodelevolver.hpp>
+#include <ql/MarketModels/marketmodelconstrainedevolver.hpp>
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
@@ -31,7 +31,8 @@
 namespace QuantLib {
 
   //! euler stepping
-    class ForwardRateConstrainedEuler : public MarketModelEvolver {
+    class ForwardRateConstrainedEuler : public ConstrainedEvolver
+        {
       public:
         ForwardRateConstrainedEuler(const boost::shared_ptr<MarketModel>&,
                                     const BrownianGeneratorFactory&,
@@ -39,10 +40,10 @@ namespace QuantLib {
                                     Size initialStep = 0);
         //! \name MarketModelConstrainedEvolver interface
         //@{
-        virtual void SetConstraintType(
+        virtual void setConstraintType(
             const std::vector<Size>& startIndexOfSwapRate,
             const std::vector<Size>& endIndexOfSwapRate);
-        virtual void SetThisConstraint(
+        virtual void setThisConstraint(
             const std::vector<Rate>& rateConstraints,
             const std::vector<bool>& isConstraintActive);
         //@}

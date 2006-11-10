@@ -88,7 +88,7 @@ namespace QuantLib {
         setForwards(cs.forwardRates());
     }
 
-    void ForwardRateConstrainedEuler::SetConstraintType(
+    void ForwardRateConstrainedEuler::setConstraintType(
         const std::vector<Size>& startIndexOfSwapRate,
         const std::vector<Size>& endIndexOfSwapRate)
     {
@@ -122,7 +122,7 @@ namespace QuantLib {
 
     }
 
-    void ForwardRateConstrainedEuler::SetThisConstraint(
+    void ForwardRateConstrainedEuler::setThisConstraint(
                                 const std::vector<Rate>& rateConstraints,
                                 const std::vector<bool>& isConstraintActive)
     {

@@ -455,7 +455,7 @@ void checkForwardsAndExoticCaplets(const SequenceStatistics& stats,
             BlackFormula(todaysForwards[i]+displacements[i],
                          todaysDiscounts[i+1] * accruals[i],
                          volatilities[i]*volatilities[i]*expiry,
-                         payoffs[i]).value();
+                         boost::dynamic_pointer_cast<StrikedTypePayoff>(payoffs[i])).value();
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
             maxError = capletStdDev[i];
@@ -812,12 +812,12 @@ void MarketModelTest::testMultiStepForwardsAndExoticCaplets() {
     QL_TEST_SETUP
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > capletPayoffs(todaysForwards.size());
+    std::vector<boost::shared_ptr<Payoff> > capletPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
-        capletPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            //PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-            CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
+        capletPayoffs[i] = boost::shared_ptr<Payoff>(new
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
     }
 
     MultiStepForwards forwards(rateTimes, accruals,

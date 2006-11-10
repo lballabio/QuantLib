@@ -38,7 +38,7 @@ namespace QuantLib {
         Rate liborRate = currentState.forwardRate(currentIndex_);
         genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
         genCashFlows[currentIndex_][0].amount =
-            payoffs_[currentIndex_]->operator()(liborRate) *
+            (*payoffs_[currentIndex_])(liborRate) *
             accruals_[currentIndex_];
         std::fill(numberCashFlowsThisStep.begin(),
                   numberCashFlowsThisStep.end(), 0);
