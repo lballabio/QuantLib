@@ -453,10 +453,9 @@ void checkForwardsAndExoticCaplets(const SequenceStatistics& stats,
         Time expiry = rateTimes[i];
         expectedCaplets[i] =
             BlackFormula(todaysForwards[i]+displacements[i],
-                         todaysDiscounts[i+1],
+                         todaysDiscounts[i+1]* accruals[i],
                          volatilities[i]*volatilities[i]*expiry,
-                         displacedPayoffs[i]).value()
-                          * accruals[i];
+                         displacedPayoffs[i]).value();
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
             maxError = capletStdDev[i];
