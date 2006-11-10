@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,37 +18,41 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/MultiStep/multistepcaplets.hpp>
+#include <ql/MarketModels/Products/OneStep/onestepoptionlets.hpp>
 
 namespace QuantLib {
 
-    MultiStepCaplets::MultiStepCaplets(const std::vector<Time>& rateTimes,
-                                       const std::vector<Real>& accruals,
-                                       const std::vector<Time>& paymentTimes,
-                                       const std::vector<Rate>& strikes)
-    : MultiProductMultiStep(rateTimes), accruals_(accruals),
-      paymentTimes_(paymentTimes), strikes_(strikes) {}
+    OneStepOptionlets::OneStepOptionlets(
+                    const std::vector<Time>& rateTimes,
+                    const std::vector<Real>& accruals,
+                    const std::vector<Time>& paymentTimes,
+                    const std::vector<boost::shared_ptr<Payoff> >& payoffs)
+    : MultiProductOneStep(rateTimes), accruals_(accruals),
+      paymentTimes_(paymentTimes), payoffs_(payoffs) {}
 
-    bool MultiStepCaplets::nextTimeStep(
+    bool OneStepOptionlets::nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
                                                                genCashFlows) {
-        Rate liborRate = currentState.forwardRate(currentIndex_);
-        genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
-        genCashFlows[currentIndex_][0].amount =
-            std::max(liborRate-strikes_[currentIndex_], 0.0) *
-            accruals_[currentIndex_];
         std::fill(numberCashFlowsThisStep.begin(),
-                  numberCashFlowsThisStep.end(),0);
-        numberCashFlowsThisStep[currentIndex_] = 1;
-        ++currentIndex_;
-        return (currentIndex_ == strikes_.size());
+                  numberCashFlowsThisStep.end(), 0);
+        for (Size i=0; i<payoffs_.size(); ++i) {
+            Rate liborRate = currentState.forwardRate(i);
+            Real payoff = (*payoffs_[i])(liborRate);
+            if (payoff>0.0) {
+                numberCashFlowsThisStep[i] = 1;
+                genCashFlows[i][0].timeIndex = i;
+                genCashFlows[i][0].amount = payoff*accruals_[i];
+            }
+        }
+
+        return true;
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepCaplets::clone() const {
+    std::auto_ptr<MarketModelMultiProduct> OneStepOptionlets::clone() const {
         return std::auto_ptr<MarketModelMultiProduct>(
-                                                 new MultiStepCaplets(*this));
+                                                   new OneStepOptionlets(*this));
     }
 
 }

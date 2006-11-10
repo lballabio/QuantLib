@@ -18,19 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Products/MultiStep/multistepexoticcaplets.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepoptionlets.hpp>
 
 namespace QuantLib {
 
-    MultiStepExoticCaplets::MultiStepExoticCaplets(
-          const std::vector<Time>& rateTimes,
-          const std::vector<Real>& accruals,
-          const std::vector<Time>& paymentTimes,
-          const std::vector<boost::shared_ptr<Payoff> >& payoffs)
+    MultiStepOptionlets::MultiStepOptionlets(
+                      const std::vector<Time>& rateTimes,
+                      const std::vector<Real>& accruals,
+                      const std::vector<Time>& paymentTimes,
+                      const std::vector<boost::shared_ptr<Payoff> >& payoffs)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {}
 
-    bool MultiStepExoticCaplets::nextTimeStep(
+    bool MultiStepOptionlets::nextTimeStep(
             const CurveState& currentState,
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
@@ -47,9 +47,9 @@ namespace QuantLib {
         return (currentIndex_ == payoffs_.size());
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepExoticCaplets::clone() const {
+    std::auto_ptr<MarketModelMultiProduct> MultiStepOptionlets::clone() const {
         return std::auto_ptr<MarketModelMultiProduct>(
-                                                 new MultiStepExoticCaplets(*this));
+                                                 new MultiStepOptionlets(*this));
     }
 
 }

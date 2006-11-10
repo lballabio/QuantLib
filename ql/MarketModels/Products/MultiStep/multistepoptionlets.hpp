@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,19 +19,20 @@
 */
 
 
-#ifndef quantlib_multistep_caplets_hpp
-#define quantlib_multistep_caplets_hpp
+#ifndef quantlib_multistep_optionlets_hpp
+#define quantlib_multistep_optionlets_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
-    class MultiStepCaplets : public MultiProductMultiStep {
+    class MultiStepOptionlets : public MultiProductMultiStep {
       public:
-        MultiStepCaplets(const std::vector<Time>& rateTimes,
-                         const std::vector<Real>& accruals,
-                         const std::vector<Time>& paymentTimes,
-                         const std::vector<Rate>& strikes);
+        MultiStepOptionlets(const std::vector<Time>& rateTimes,
+                            const std::vector<Real>& accruals,
+                            const std::vector<Time>& paymentTimes,
+                            const std::vector<boost::shared_ptr<Payoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -43,11 +45,10 @@ namespace QuantLib {
                      std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         //@}
-
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<Rate> strikes_;
+        std::vector<boost::shared_ptr<Payoff> > payoffs_;
         // things that vary in a path
         Size currentIndex_;
     };
@@ -55,20 +56,20 @@ namespace QuantLib {
     // inline definitions
 
     inline std::vector<Time>
-    MultiStepCaplets::possibleCashFlowTimes() const {
+    MultiStepOptionlets::possibleCashFlowTimes() const {
       return paymentTimes_;
     }
 
-    inline Size MultiStepCaplets::numberOfProducts() const {
-        return strikes_.size();
+    inline Size MultiStepOptionlets::numberOfProducts() const {
+        return payoffs_.size();
     }
 
     inline Size
-    MultiStepCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
+    MultiStepOptionlets::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
 
-    inline void MultiStepCaplets::reset() {
+    inline void MultiStepOptionlets::reset() {
        currentIndex_=0;
     }
 

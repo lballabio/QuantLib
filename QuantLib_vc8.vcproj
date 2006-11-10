@@ -6974,14 +6974,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcoinitialswaps.cpp"
 						>
 					</File>
@@ -7003,6 +6995,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\OneStep\onestepforwards.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.hpp"
 						>
 					</File>
 				</Filter>
@@ -7038,14 +7038,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.cpp"
 						>
 					</File>
@@ -7070,14 +7062,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepexoticcaplets.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepexoticcaplets.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.cpp"
 						>
 					</File>
@@ -7091,6 +7075,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.hpp"
 						>
 					</File>
 					<File

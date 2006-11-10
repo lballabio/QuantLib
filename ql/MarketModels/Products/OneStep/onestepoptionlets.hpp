@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,19 +19,20 @@
 */
 
 
-#ifndef quantlib_onestep_caplets_hpp
-#define quantlib_onestep_caplets_hpp
+#ifndef quantlib_onestep_optionlets_hpp
+#define quantlib_onestep_optionlets_hpp
 
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
-    class OneStepCaplets : public MultiProductOneStep {
+    class OneStepOptionlets : public MultiProductOneStep {
       public:
-        OneStepCaplets(const std::vector<Time>& rateTimes,
-                                  const std::vector<Real>& accruals,
-                                  const std::vector<Time>& paymentTimes,
-                                  const std::vector<Rate>& strikes);
+        OneStepOptionlets(const std::vector<Time>& rateTimes,
+                          const std::vector<Real>& accruals,
+                          const std::vector<Time>& paymentTimes,
+                          const std::vector<boost::shared_ptr<Payoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -46,26 +48,26 @@ namespace QuantLib {
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<Rate> strikes_;
+        std::vector<boost::shared_ptr<Payoff> > payoffs_;
     };
 
     // inline definitions
 
     inline std::vector<Time>
-    OneStepCaplets::possibleCashFlowTimes() const {
+    OneStepOptionlets::possibleCashFlowTimes() const {
       return paymentTimes_;
     }
 
-    inline Size OneStepCaplets::numberOfProducts() const {
-        return strikes_.size();
+    inline Size OneStepOptionlets::numberOfProducts() const {
+        return payoffs_.size();
     }
 
     inline Size
-    OneStepCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
+    OneStepOptionlets::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
 
-    inline void OneStepCaplets::reset() {
+    inline void OneStepOptionlets::reset() {
         // nothing to do
     }
 
