@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-
-
     Real blackFormula(Option::Type optionType,
                       Real strike,
                       Real forward,
@@ -203,34 +201,6 @@ namespace QuantLib {
                   strike << " on a " << forward << " forward "
                   "(Bachelier model)");
         return result;
-    }
-
-    Real bachelierBlackCall(Real strike,
-                            Real forward,
-                            Volatility absoluteVolatility,
-                            Time timeToMaturity,
-                            Real annuity) {
-        Real s = absoluteVolatility*sqrt(timeToMaturity);
-        if (s<=1e-8)
-            return std::max(forward - strike, 0.0);
-        CumulativeNormalDistribution phi;
-        Real d = forward - strike,
-             h = d/s;
-        return annuity*(s*phi.derivative(h) + d*phi(h));
-    }
-
-    Real bachelierBlackPut(Real strike,
-                           Real forward,
-                           Volatility absoluteVolatility,
-                           Time timeToMaturity,
-                           Real annuity) {
-        Real s = absoluteVolatility*sqrt(timeToMaturity);
-        if (s<=1e-8)
-            return std::max(strike - forward, 0.0);
-        Real d = forward-strike,
-             h = d/s;
-        CumulativeNormalDistribution phi;
-        return annuity*(s*phi.derivative(-h) - d*phi(-h));
     }
 
     class BlackFormula::Calculator : public AcyclicVisitor,

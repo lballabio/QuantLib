@@ -99,24 +99,6 @@ namespace QuantLib {
                                Real forward,
                                Real stdDev);
 
-    /*! Black style formulas when forward is normal rather than log-normal,
-        this is essentially the model of Bachelier.
-
-        \warning Bachelier model needs absolute volatility. In this case
-                 standard deviation is absoluteVolatility*sqrt(timeToMaturity)
-    */
-    Real bachelierBlackPut(Real strike,
-                           Real forward,
-                           Volatility absoluteVolatility,
-                           Time timeToMaturity,
-                           Real annuity);
-    Real bachelierBlackCall(Real strike,
-                            Real forward,
-                            Volatility absoluteVolatility,
-                            Time timeToMaturity,
-                            Real annuity);
-
-
     //! Black-formula calculator class
     /*! \bug When the variance is null, division by zero occur during
              the calculation of delta, delta forward, gamma, gamma
