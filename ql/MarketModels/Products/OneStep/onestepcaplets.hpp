@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_vlj_caplets_hpp
-#define quantlib_vlj_caplets_hpp
+#ifndef quantlib_onestep_caplets_hpp
+#define quantlib_onestep_caplets_hpp
 
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
 

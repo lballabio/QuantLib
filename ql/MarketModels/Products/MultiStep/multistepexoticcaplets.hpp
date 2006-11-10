@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,19 +19,21 @@
 */
 
 
-#ifndef quantlib_multistep_forwards_hpp
-#define quantlib_multistep_forwards_hpp
+#ifndef quantlib_multistep_exotic_caplets_hpp
+#define quantlib_multistep_exotic_caplets_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
-    class MultiStepForwards : public MultiProductMultiStep {
+    class MultiStepExoticCaplets : public MultiProductMultiStep {
       public:
-        MultiStepForwards(const std::vector<Time>& rateTimes,
-                          const std::vector<Real>& accruals,
-                          const std::vector<Time>& paymentTimes,
-                          const std::vector<Rate>& strikes);
+        MultiStepExoticCaplets(
+                  const std::vector<Time>& rateTimes,
+                  const std::vector<Real>& accruals,
+                  const std::vector<Time>& paymentTimes,
+                  const std::vector<boost::shared_ptr<Payoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -46,28 +49,28 @@ namespace QuantLib {
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<Rate> strikes_;
+        std::vector<boost::shared_ptr<Payoff> > payoffs_;
         // things that vary in a path
         Size currentIndex_;
     };
 
-    // inline
+    // inline definitions
 
     inline std::vector<Time>
-    MultiStepForwards::possibleCashFlowTimes() const {
-        return paymentTimes_;
+    MultiStepExoticCaplets::possibleCashFlowTimes() const {
+      return paymentTimes_;
     }
 
-    inline Size MultiStepForwards::numberOfProducts() const {
-        return strikes_.size();
+    inline Size MultiStepExoticCaplets::numberOfProducts() const {
+        return payoffs_.size();
     }
 
     inline Size
-    MultiStepForwards::maxNumberOfCashFlowsPerProductPerStep() const {
+    MultiStepExoticCaplets::maxNumberOfCashFlowsPerProductPerStep() const {
         return 1;
     }
 
-    inline void MultiStepForwards::reset() {
+    inline void MultiStepExoticCaplets::reset() {
        currentIndex_=0;
     }
 

@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_market_model_swap_hpp
-#define quantlib_market_model_swap_hpp
+#ifndef quantlib_multistep_swap_hpp
+#define quantlib_multistep_swap_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
 

@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_MarketModelCoinitialSwapsOneStep_hpp
-#define quantlib_MarketModelCoinitialSwapsOneStep_hpp
+#ifndef quantlib_onestep_coinitialswaps_hpp
+#define quantlib_onestep_coinitialswaps_hpp
 
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
 

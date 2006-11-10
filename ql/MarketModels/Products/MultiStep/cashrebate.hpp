@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_marketmodel_rebate_hpp
-#define quantlib_marketmodel_rebate_hpp
+#ifndef quantlib_market_model_cash_rebate_hpp
+#define quantlib_market_model_cash_rebate_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
 

@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_MarketModelCoterminalSwapsOneStep_hpp
-#define quantlib_MarketModelCoterminalSwapsOneStep_hpp
+#ifndef quantlib_onestep_coterminalswaps_hpp
+#define quantlib_onestep_coterminalswaps_hpp
 
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
 

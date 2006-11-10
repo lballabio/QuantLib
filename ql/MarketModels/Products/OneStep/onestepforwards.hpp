@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_MarketModelForwards_one_step_hpp
-#define quantlib_MarketModelForwards_one_step_hpp
+#ifndef quantlib_onestep_forwards_hpp
+#define quantlib_onestep_forwards_hpp
 
 #include <ql/MarketModels/Products/multiproductonestep.hpp>
 
