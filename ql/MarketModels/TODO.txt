@@ -1,16 +1,21 @@
 
 
-- (1) Sobol with Brownian bridging (multiple methods of
-      variate allocation) (MEDIUM) statpro
-- (1) Get LMM code in the same use format as other code via instrument classes
-  creating objects from new hierarchy as necessary (MEDIUM) statpro
+greeks
+
+Lower bounds
+- (3) Jackel method for Bermudan swaptions (time consuming but not hard)
+- (4) Anderson method for Bermudan swaptions (time consuming but not hard)
+
 - (1) orthogonal combination of inst vol models and corr models statpro
 
-- (1) verify efficiency of rapid algorithm for reduced factor models caboto
 - (1) coterminal European swaptions (EASY) caboto
 - (1) coterminal European swaptions using Z matrix caboto
 
-- (2) Rogers\anderson-Broadie\Joshi methods for upper bounds assieme
+
+- (1) Get LMM code in the same use format as other code via instrument classes
+  creating objects from new hierarchy as necessary (MEDIUM) statpro
+
+- (1) verify efficiency of rapid algorithm for reduced factor models caboto
 
 - (2) Reuse convergence tables for RQMC caboto
 - (2) calibrator to produce abcd form from market data, with displacements caboto
@@ -19,7 +24,6 @@
 - (2) alignment with covariance structures in legacy code (?) caboto
 
 - (3) ratchet caboto
-- (3) Jackel method for Bermudan swaptions (time consuming but not hard) statpro
 
 
 =======================================
@@ -28,8 +32,6 @@
 priority in first parenthesis, extimated complexity in the second one
 
 Path generation:
-- (1) Sobol with Brownian bridging (multiple methods of
-      variate allocation) (MEDIUM)
 - (4) antithetic sampling (EASY)
 - (4) moment matching (EASY)
 
@@ -61,11 +63,8 @@ Products
 - (3) ratchet
 - (4) floorlets with one or many steps.  (EASY)
 
-ExerciseStrategy:
-- (3) Jackel method for Bermudan swaptions (time consuming but not hard)
-
-Lower bounds
-- (4) Anderson method for Bermudan swaptions (time consuming but not hard)
+Lower Bound
+- Fries bias removal
 
 Upper bounds
 - (2) Rogers\anderson-Broadie\Joshi methods for upper bounds

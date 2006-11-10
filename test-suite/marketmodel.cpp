@@ -431,7 +431,7 @@ void checkForwardsAndCaplets(const SequenceStatistics& stats,
 
 void checkForwardsAndExoticCaplets(const SequenceStatistics& stats,
                                    const std::vector<Rate>& forwardStrikes,
-                                   const std::vector<boost::shared_ptr<Payoff> >& payoffs,
+                                   const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoffs,
                                    const std::string& config) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
@@ -453,9 +453,10 @@ void checkForwardsAndExoticCaplets(const SequenceStatistics& stats,
         Time expiry = rateTimes[i];
         expectedCaplets[i] =
             BlackFormula(todaysForwards[i]+displacements[i],
-                         todaysDiscounts[i+1] * accruals[i],
+                         todaysDiscounts[i+1],
                          volatilities[i]*volatilities[i]*expiry,
-                         boost::dynamic_pointer_cast<StrikedTypePayoff>(payoffs[i])).value();
+                         displacedPayoffs[i]).value()
+                          * accruals[i];
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
             maxError = capletStdDev[i];
@@ -813,11 +814,16 @@ void MarketModelTest::testMultiStepForwardsAndExoticCaplets() {
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
     std::vector<boost::shared_ptr<Payoff> > capletPayoffs(todaysForwards.size());
+    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+        displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         capletPayoffs[i] = boost::shared_ptr<Payoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
+            //PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+            CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
+        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+            //PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
+            CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
     }
 
     MultiStepForwards forwards(rateTimes, accruals,
@@ -873,7 +879,7 @@ void MarketModelTest::testMultiStepForwardsAndExoticCaplets() {
                             simulate(evolver, product);
                         checkForwardsAndExoticCaplets(*stats,
                                                       forwardStrikes,
-                                                      capletPayoffs,
+                                                      displacedPayoffs,
                                                       config.str());
                     }
                 }
