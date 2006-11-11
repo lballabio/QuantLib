@@ -4,16 +4,16 @@ includedir = $(prefix)/include/ql/MarketModels/Products/OneStep
 
 include_HEADERS = \
     all.hpp \
-    onestepcaplets.hpp \
     onestepcoinitialswaps.hpp \
     onestepcoterminalswaps.hpp \
-    onestepforwards.hpp
+    onestepforwards.hpp \
+    onestepoptionlets.hpp
 
 libMarketModelsProductsOneStep_la_SOURCES = \
-    onestepcaplets.cpp \
     onestepcoinitialswaps.cpp \
     onestepcoterminalswaps.cpp \
-    onestepforwards.cpp
+    onestepforwards.cpp \
+    onestepoptionlets.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsOneStep.la
 

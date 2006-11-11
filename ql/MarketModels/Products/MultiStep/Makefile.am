@@ -7,24 +7,24 @@ include_HEADERS = \
     callspecifiedmultiproduct.hpp \
     cashrebate.hpp \
     exerciseadapter.hpp \
-    multistepcaplets.hpp \
     multistepcoinitialswaps.hpp \
     multistepcoterminalswaps.hpp \
     multistepcoterminalswaptions.hpp \
     multistepforwards.hpp \
     multistepnothing.hpp \
+    multistepoptionlets.hpp \
     multistepswap.hpp
 
 libMarketModelsProductsMultiStep_la_SOURCES = \
     callspecifiedmultiproduct.cpp \
     cashrebate.cpp \
     exerciseadapter.cpp \
-    multistepcaplets.cpp \
     multistepcoinitialswaps.cpp \
     multistepcoterminalswaps.cpp \
     multistepcoterminalswaptions.cpp \
     multistepforwards.cpp \
     multistepnothing.cpp \
+    multistepoptionlets.cpp \
     multistepswap.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsMultiStep.la
