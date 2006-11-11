@@ -19,7 +19,7 @@
 
 
 #include <ql/Instruments/makecapfloor.hpp>
-#include <ql/Cashflows/analysis.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
