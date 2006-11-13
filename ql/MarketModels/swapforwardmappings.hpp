@@ -26,7 +26,6 @@
 #define quantlib_swap_forward_mappings_hpp
 
 #include <ql/Math/matrix.hpp>
-#include <vector>
 #include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
@@ -36,23 +35,15 @@ namespace QuantLib {
 
         /*! Returns the dsr[i]/df[j] jacobian between coterminal swap rates
             and forward rates */
-        static Disposable<Matrix> coterminalSwapForwardJacobian(const CurveState& cs);
+        static Disposable<Matrix>
+        coterminalSwapForwardJacobian(const CurveState& cs);
 
         /*! Returns the Z matrix to switch base from forward to
             coterminal swap rates */
-        static Disposable<Matrix> coterminalSwapZedMatrix(const CurveState& cs,
-                                                          Spread displacement);
-
-        /*! Returns the dsr[i]/df[j] jacobian between coinitial swap rates
-            and forward rates */
-        static Disposable<Matrix> coinitialSwapForwardJacobian(const CurveState& cs);
-
-        /*! Returns the Z matrix to switch base from forward to
-            coinitial swap rates */
-        static Disposable<Matrix> coinitialSwapZedMatrix(const CurveState& cs,
-                                                         Spread displacement);
+        static Disposable<Matrix>
+        coterminalSwapZedMatrix(const CurveState& cs,
+                                const Spread displacement);
     };
-
 }
 
 #endif

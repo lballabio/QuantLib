@@ -40,13 +40,18 @@ namespace QuantLib
             coterminalModel_->displacements();
         for (Size i = 1; i<displacements.size(); ++i) {
             QL_REQUIRE(displacements[i]==displacements[0],
-                       io::ordinal(i) << " displacement not equal to the previous ones");
+                       io::ordinal(i) << " displacement (" <<
+                       displacements[i] << ") not equal to the previous ones"
+                       " (" << displacements[0] << ")");
         }
 
         const std::vector<Time>& rateTimes =
             coterminalModel_->evolution().rateTimes();
-        CurveState cs(rateTimes);
-        cs.setOnCoterminalSwapRates(coterminalModel_->initialRates());
+        CurveState cs(rateTimes.begin(), rateTimes.end());
+        const std::vector<Rate>& initialCoterminalSwapRates =
+            coterminalModel_->initialRates();
+        cs.setOnCoterminalSwapRates(initialCoterminalSwapRates.begin(),
+                                    initialCoterminalSwapRates.end());
         initialRates_ = cs.forwardRates();
 
         Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(

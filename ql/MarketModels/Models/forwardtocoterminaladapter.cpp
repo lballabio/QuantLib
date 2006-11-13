@@ -40,7 +40,9 @@ namespace QuantLib
             fwdModel_->displacements();
         for (Size i = 1; i<displacements.size(); ++i) {
             QL_REQUIRE(displacements[i]==displacements[0],
-                       io::ordinal(i) << " displacement not equal to the previous ones");
+                       io::ordinal(i) << " displacement (" <<
+                       displacements[i] << ") not equal to the previous ones"
+                       " (" << displacements[0] << ")");
         }
 
         const std::vector<Time>& rateTimes =
@@ -53,8 +55,9 @@ namespace QuantLib
                                  "skipping " << io::ordinal(i) << " rate time");
         }
 
-        CurveState cs(rateTimes);
-        cs.setOnForwardRates(fwdModel_->initialRates());
+        CurveState cs(rateTimes.begin(), rateTimes.end());
+        const std::vector<Rate>& initialFwdRates = fwdModel_->initialRates();
+        cs.setOnForwardRates(initialFwdRates.begin(), initialFwdRates.end());
         initialRates_ = cs.coterminalSwapRates();
 
         Matrix zMatrix = SwapForwardMappings::coterminalSwapZedMatrix(

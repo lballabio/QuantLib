@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,7 +32,7 @@ namespace QuantLib {
         This is the workhorse discounting object associated to the rate times
         of the simulation. It's important to pass the rates via an object like
         this to the product rather than directly to make it easier to switch
-        to other engines such as a coterminal-swap-rate engine.
+        to other engines such as a coterminal swap rate engine.
         Many products will not need expired rates and others will only require
         the first rate.
     */
@@ -44,81 +45,133 @@ namespace QuantLib {
                 f0    f1    f2    f3    f4           forwardRates
                 d0    d1    d2    d3    d4    d5     discountBonds
                 d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
-                sr0   sr1   sr2   sr3   sr4          coterminalSwaps
+                sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        CurveState(const std::vector<Time>& rateTimes);
-
         template <class ForwardIterator>
         CurveState(ForwardIterator begin, ForwardIterator end)
-        : rateTimes_(begin, end), taus_(rateTimes_.size()-1),
-          forwardRates_(rateTimes_.size()-1),
-          discountRatios_(rateTimes_.size()),
-          coterminalSwaps_(rateTimes_.size()-1),
-          annuities_(rateTimes_.size()-1),
-          firstSwapComputed_(last_), first_(0), last_(rateTimes_.size()-1) {
-
-            for (Size i=first_; i<last_; i++) {
+        : rateTimes_(begin, end), nRates_(rateTimes_.size()-1),
+          first_(nRates_), firstCotSwap_(nRates_),
+          taus_(nRates_),
+          forwardRates_(nRates_), discRatios_(nRates_+1, 1.0),
+          cotSwaps_(nRates_), cotAnnuities_(nRates_)
+        {
+            for (Size i=0; i<nRates_; i++)
                 taus_[i] = rateTimes_[i+1] - rateTimes_[i];
-            }
         }
 
-        const std::vector<Time>& rateTimes() const;
-        void setOnForwardRates(const std::vector<Rate>& rates);
-
+        //! \name Modifiers
+        //@{
         template <class ForwardIterator>
         void setOnForwardRates(ForwardIterator begin,
-                               ForwardIterator end) {
-            std::copy(begin, end, forwardRates_.begin());
-            // Computation of discount ratios
-            discountRatios_[first_]=1.0;
-            for (Size i=first_+1; i<=last_; i++) {
-                discountRatios_[i] =
-                    discountRatios_[i-1]/(1.+taus_[i-1]*forwardRates_[i-1]);
-            }
-            // Reset coterminal swap rates to be calculated
-            firstSwapComputed_ = last_;
+                               ForwardIterator end,
+                               Size firstValidIndex = 0) {
+            QL_REQUIRE(end-begin==nRates_,
+                       "too many forward rates: " <<
+                       nRates_ << " required, " <<
+                       end-begin << " provided");
+            QL_REQUIRE(firstValidIndex<nRates_,
+                       "first valid index must be less than " <<
+                       nRates_ << ": " <<
+                       firstValidIndex << " not allowed");
+
+            // forwards
+            first_ = firstValidIndex;
+            std::copy(begin+first_, end, forwardRates_.begin()+first_);
+
+            // discount ratios
+            for (Size i=first_; i<nRates_; ++i)
+                discRatios_[i+1] = discRatios_[i] /
+                                    (1.0+forwardRates_[i]*taus_[i]);
+    
+            // lazy evaluation of coterminal swap rates and annuities
+            firstCotSwap_ = nRates_;
         }
 
-        void setOnDiscountRatios(
-                           const std::vector<DiscountFactor>& discountRatios);
-        void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates);
+        template <class ForwardIterator>
+        void setOnDiscountRatios(ForwardIterator begin,
+                                 ForwardIterator end,
+                                 Size firstValidIndex = 0) {
+            QL_REQUIRE(end-begin==nRates_+1,
+                       "too many discount ratios: " <<
+                       nRates_+1 << " required, " <<
+                       end-begin << " provided");
+            QL_REQUIRE(firstValidIndex<nRates_,
+                       "first valid index must be less than " <<
+                       nRates_+1 << ": " <<
+                       firstValidIndex << " not allowed");
 
-        // You should get an error if you look outside [first, last) range.
-        /*
-        void setOnForwardRates(const std::vector<Rate>& rates,
-                               Size first, Size last);
-        void setOnDiscountRatios(
-                            const std::vector<DiscountFactor>& discountRatios,
-                            Size first, Size last);
-        void setOnCoterminalSwaps(const std::vector<Rate>& swapRates,
-                                  Size first);
-        */
+            // discount ratios
+            first_ = firstValidIndex;
+            std::copy(begin+first_, end, discRatios_.begin()+first_);
+
+            // fwd rates
+            for (Size i=first_; i<nRates_; ++i)
+                forwardRates_[i] = (discRatios_[i]/discRatios_[i+1]-1.0) /
+                                                                    taus_[i];
+
+            // lazy evaluation of coterminal swap rates and annuities
+            firstCotSwap_ = nRates_;
+        }
+
+        template <class ForwardIterator>
+        void setOnCoterminalSwapRates(ForwardIterator begin,
+                                      ForwardIterator end,
+                                      Size firstValidIndex = 0) {
+            QL_REQUIRE(end-begin==nRates_,
+                       "too many coterminal swap rates: " <<
+                       nRates_ << " required, " <<
+                       end-begin << " provided");
+            QL_REQUIRE(firstValidIndex<nRates_,
+                       "first valid index must be less than " <<
+                       nRates_ << ": " <<
+                       firstValidIndex << " not allowed");
+
+            // coterminal swap rates
+            first_ = firstCotSwap_ = firstValidIndex;
+            std::copy(begin+first_, end, cotSwaps_.begin()+first_);
+
+            // discount ratios, annuities, and fwd
+            Real accumulatedAnnuities = 0.0;
+            for (Size i=nRates_; i>first_; --i) {
+                accumulatedAnnuities += taus_[i-1]*discRatios_[i];
+                cotAnnuities_[i-1] = accumulatedAnnuities;
+                discRatios_[i-1] = discRatios_[nRates_] +
+                    cotSwaps_[i-1]*cotAnnuities_[i-1];
+                forwardRates_[i-1]=(discRatios_[i-1]/discRatios_[i]-1.0) /
+                    taus_[i-1];
+            }
+        }
+        //@}
+
+        //! \name Inspectors
+        //@{
+        Size numberOfRates() const { return nRates_; }
+
+        const std::vector<Time>& rateTimes() const;
+        const std::vector<Time>& rateTaus() const;
 
         const std::vector<Rate>& forwardRates() const;
         const std::vector<DiscountFactor>& discountRatios() const;
+        const std::vector<Real>& coterminalSwapAnnuities() const;
         const std::vector<Rate>& coterminalSwapRates() const;
-        const std::vector<Real>& coterminalSwapRatesAnnuities() const;
 
         Rate forwardRate(Size i) const;
         Real discountRatio(Size i, Size j) const;
+        Rate coterminalSwapAnnuity(Size i) const;
         Rate coterminalSwapRate(Size i) const;
-        const std::vector<Time>& rateTaus() const;
-
+        //@}
       private:
-        std::vector<Time> rateTimes_, taus_;
+        void computeCoterminalSwap(Size firstIndex) const;
+        std::vector<Time> rateTimes_;
+        Size nRates_;
+        Size first_;
+        mutable Size firstCotSwap_;
+        std::vector<Time> taus_;
         std::vector<Rate> forwardRates_;
-        std::vector<DiscountFactor> discountRatios_;
-        mutable std::vector<Rate> coterminalSwaps_;
-        mutable std::vector<Real> annuities_;
-        mutable Size firstSwapComputed_;
-        Size first_, last_;
-
-        // suggest lazy evaluation on the coterminal swaps
-        // e.g store index of how many swaps from the end have been computed
-        // note: only makes sense if last_ is final time
-        void computeSwapRate() const;
-
+        std::vector<DiscountFactor> discRatios_;
+        mutable std::vector<Rate> cotSwaps_;
+        mutable std::vector<Real> cotAnnuities_;
     };
 
     // inline definitions
@@ -127,46 +180,65 @@ namespace QuantLib {
         return rateTimes_;
     }
 
+    inline const std::vector<Time>& CurveState::rateTaus() const {
+        return taus_;
+    }
+
     inline const std::vector<Rate>& CurveState::forwardRates() const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         return forwardRates_;
     }
 
     inline const std::vector<DiscountFactor>&
     CurveState::discountRatios() const {
-        return discountRatios_;
-    }
-
-    inline const std::vector<Rate>& CurveState::coterminalSwapRates() const {
-        if (firstSwapComputed_>first_)
-            computeSwapRate();
-        return coterminalSwaps_;
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        return discRatios_;
     }
 
     inline const std::vector<Rate>&
-    CurveState::coterminalSwapRatesAnnuities() const {
-        if (firstSwapComputed_>first_)
-            computeSwapRate();
-        return annuities_;
+    CurveState::coterminalSwapAnnuities() const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        if (firstCotSwap_>first_)
+            computeCoterminalSwap(first_);
+        return cotAnnuities_;
+    }
+
+    inline const std::vector<Rate>& CurveState::coterminalSwapRates() const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        if (firstCotSwap_>first_)
+            computeCoterminalSwap(first_);
+        return cotSwaps_;
     }
 
     inline Rate CurveState::forwardRate(Size i) const {
+        QL_REQUIRE(i>=first_, "index too low");
+        QL_REQUIRE(i<nRates_, "index too high");
         return forwardRates_[i];
     }
 
-    inline Rate CurveState::coterminalSwapRate(Size i) const {
-        return coterminalSwapRates()[i];
-    }
-
     inline Real CurveState::discountRatio(Size i, Size j) const {
-        return discountRatios_[i]/discountRatios_[j];
+        Size iMin = std::min(i, j);
+        QL_REQUIRE(iMin>=first_, "index too low");
+        QL_REQUIRE(std::max(i, j)<=nRates_, "index too high");
+        return discRatios_[i]/discRatios_[j];
     }
 
-    inline const std::vector<Time>& CurveState::rateTaus() const {
-        return taus_;
+    inline Rate CurveState::coterminalSwapAnnuity(Size i) const {
+        QL_REQUIRE(i>=first_, "index too low");
+        QL_REQUIRE(i<nRates_, "index too high");
+        if (firstCotSwap_>i)
+            computeCoterminalSwap(i);
+        return cotAnnuities_[i];
+    }
+
+    inline Rate CurveState::coterminalSwapRate(Size i) const {
+        QL_REQUIRE(i>=first_, "index too low");
+        QL_REQUIRE(i<nRates_, "index too high");
+        if (firstCotSwap_>i)
+            computeCoterminalSwap(i);
+        return cotSwaps_[i];
     }
 
 }
 
-
 #endif
-
