@@ -2370,6 +2370,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\payoffs.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Instruments\payoffs.hpp"
 				>
 			</File>
@@ -7404,6 +7408,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\blackcalculator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackcalculator.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\blackformula.cpp"
 				>
 				<FileConfiguration
@@ -7455,6 +7467,14 @@
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\blackformula.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackscholescalculator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackscholescalculator.hpp"
 				>
 			</File>
 			<File
