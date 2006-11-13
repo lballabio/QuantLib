@@ -48,11 +48,18 @@ namespace QuantLib {
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
-                   "initialRates/rateTimes mismatch");
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and rate times");
         QL_REQUIRE(numberOfRates_==displacements.size(),
-                   "initialRates/displacements mismatch");
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and displacements (" << displacements.size() << ")");
         QL_REQUIRE(numberOfRates_==ks.size(),
-                   "initialRates/ks mismatch");
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and ks (" << ks.size() << ")");
+        QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
+                   "number of rates (" << numberOfRates_ <<
+                   ") greater than number of factors (" << numberOfFactors_ 
+                   << ") times number of steps (" << numberOfSteps_ << ")");
 
         Time effStartTime;
         Real correlation, covar;
