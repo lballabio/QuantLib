@@ -36,12 +36,15 @@
 #include <ql/MarketModels/Products/multiproductcomposite.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/upperboundengine.hpp>
+#include <ql/MarketModels/proxygreekengine.hpp>
 #include <ql/MarketModels/swapbasissystem.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/utilities.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateeulerevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateconstrainedeuler.hpp>
 #include <ql/MarketModels/ExerciseStrategies/swapratetrigger.hpp>
 #include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>
 #include <ql/MarketModels/ExerciseValues/nothingexercisevalue.hpp>
@@ -224,7 +227,9 @@ std::string marketModelTypeToString(MarketModelType type) {
 boost::shared_ptr<MarketModel> makeMarketModel(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors,
-                                        MarketModelType marketModelType) {
+                                        MarketModelType marketModelType,
+                                        Spread forwardBump = 0.0,
+                                        Volatility volBump = 0.0) {
 
     std::vector<Time> fixingTimes(evolution.rateTimes());
     fixingTimes.pop_back();
@@ -233,30 +238,42 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     boost::shared_ptr<LmCorrelationModel> corrModel(
           new LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
                                                   longTermCorrelation, beta));
+
+    std::vector<Rate> bumpedForwards(todaysForwards.size());
+    std::transform(todaysForwards.begin(), todaysForwards.end(),
+                   bumpedForwards.begin(),
+                   std::bind1st(std::plus<Rate>(), forwardBump));
+
+    std::vector<Volatility> bumpedVols(volatilities.size());
+    std::transform(volatilities.begin(), volatilities.end(),
+                   bumpedVols.begin(),
+                   std::bind1st(std::plus<Rate>(), volBump));
+
+
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrFlatVol(longTermCorrelation, beta,
-                               volatilities,
+                               bumpedVols,
                                evolution,
                                numberOfFactors,
-                               todaysForwards,
+                               bumpedForwards,
                                displacements));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
-                               volatilities,
+                               bumpedVols,
                                longTermCorrelation, beta,
                                evolution,
                                numberOfFactors,
-                               todaysForwards,
+                               bumpedForwards,
                                displacements));
         //case CalibratedMM:
         //    return boost::shared_ptr<MarketModel>(new
         //        CalibratedMarketModel(volModel, corrModel,
         //                              evolution,
         //                              numberOfFactors,
-        //                              todaysForwards,
+        //                              bumpedForwards,
         //                              displacements));
         default:
             QL_FAIL("unknown MarketModel type");
@@ -1322,6 +1339,206 @@ void MarketModelTest::testCallableSwap2() {
 
 
 
+void MarketModelTest::testGreeks() {
+
+    BOOST_MESSAGE("Repricing caplets in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+        displacedPayoffs(todaysForwards.size());
+    for (Size i=0; i<todaysForwards.size(); ++i) {
+        payoffs[i] = boost::shared_ptr<Payoff>(new
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
+        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
+            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
+    }
+
+    MultiStepOptionlets product(rateTimes, accruals,
+                                paymentTimes, payoffs);
+
+    EvolutionDescription evolution = product.evolution();
+
+    MarketModelType marketModels[] = {
+        // CalibratedMM,
+        // ExponentialCorrelationFlatVolatility,
+        ExponentialCorrelationAbcdVolatility };
+    for (Size j=0; j<LENGTH(marketModels); j++) {
+
+        MeasureType measures[] = { //MoneyMarketPlus,
+                                   MoneyMarket//,
+                                   //Terminal
+        };
+        for (Size k=0; k<LENGTH(measures); k++) {
+            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+
+            Size testedFactors[] = { 4, 8//,
+                                     //todaysForwards.size()
+            };
+            for (Size m=0; m<LENGTH(testedFactors); ++m) {
+                Size factors = testedFactors[m];
+
+                for (Size n=0; n<1; n++) {
+                    //MTBrownianGeneratorFactory generatorFactory(seed_);
+                    SobolBrownianGeneratorFactory generatorFactory(
+                                           SobolBrownianGenerator::Diagonal);
+
+                    boost::shared_ptr<MarketModel> marketModel =
+                        makeMarketModel(evolution, factors,
+                                        marketModels[j]);
+
+                    boost::shared_ptr<MarketModelEvolver> evolver(new
+                                 ForwardRateEulerEvolver(marketModel,
+                                                         generatorFactory,
+                                                         numeraires));
+                    SequenceStatistics stats(product.numberOfProducts());
+
+
+                    std::vector<Size> startIndexOfConstraint;
+                    std::vector<Size> endIndexOfConstraint;
+
+                    for (Size i=0; i<evolution.evolutionTimes().size(); ++i) {
+                        startIndexOfConstraint.push_back(i);
+                        endIndexOfConstraint.push_back(i+1);
+                    }
+
+
+                    std::vector<
+                        std::vector<boost::shared_ptr<ConstrainedEvolver> > >
+                        constrainedEvolvers;
+                    std::vector<std::vector<std::vector<Real> > > diffWeights;
+                    std::vector<std::vector<SequenceStatistics> > greekStats;
+
+                    std::vector<boost::shared_ptr<ConstrainedEvolver> >
+                        deltaGammaEvolvers;
+                    std::vector<std::vector<Real> > deltaGammaWeights(
+                                                     2, std::vector<Real>(3));
+                    std::vector<SequenceStatistics> deltaGammaStats(2,stats);
+
+
+                    Spread forwardBump = 1.0e-4;
+                    marketModel =
+                        makeMarketModel(evolution, factors,
+                                        marketModels[j], -forwardBump);
+                    deltaGammaEvolvers.push_back(
+                        boost::shared_ptr<ConstrainedEvolver>(new
+                            ForwardRateConstrainedEuler(marketModel,
+                                                        generatorFactory,
+                                                        numeraires)));
+                    deltaGammaEvolvers.back()->setConstraintType(
+                        startIndexOfConstraint, endIndexOfConstraint);
+                    marketModel =
+                        makeMarketModel(evolution, factors,
+                                        marketModels[j], forwardBump);
+                    deltaGammaEvolvers.push_back(
+                        boost::shared_ptr<ConstrainedEvolver>(new
+                            ForwardRateConstrainedEuler(marketModel,
+                                                        generatorFactory,
+                                                        numeraires)));
+                    deltaGammaEvolvers.back()->setConstraintType(
+                        startIndexOfConstraint, endIndexOfConstraint);
+                    
+                    deltaGammaWeights[0][0] = 0.0;
+                    deltaGammaWeights[0][1] = -1.0/(2.0*forwardBump);
+                    deltaGammaWeights[0][2] = 1.0/(2.0*forwardBump);
+
+                    deltaGammaWeights[1][0] = -2.0/(forwardBump*forwardBump);
+                    deltaGammaWeights[1][1] = 1.0/(forwardBump*forwardBump);
+                    deltaGammaWeights[1][2] = 1.0/(forwardBump*forwardBump);
+
+
+                    std::vector<boost::shared_ptr<ConstrainedEvolver> >
+                        vegaEvolvers;
+                    std::vector<std::vector<Real> > vegaWeights(
+                                                     1, std::vector<Real>(3));
+                    std::vector<SequenceStatistics> vegaStats(1,stats);
+
+                    Volatility volBump = 1.0e-4;
+                    marketModel =
+                        makeMarketModel(evolution, factors,
+                                        marketModels[j], 0.0, -volBump);
+                    vegaEvolvers.push_back(
+                        boost::shared_ptr<ConstrainedEvolver>(new
+                            ForwardRateConstrainedEuler(marketModel,
+                                                        generatorFactory,
+                                                        numeraires)));
+                    vegaEvolvers.back()->setConstraintType(
+                        startIndexOfConstraint, endIndexOfConstraint);
+                    marketModel =
+                        makeMarketModel(evolution, factors,
+                                        marketModels[j], 0.0, volBump);
+                    vegaEvolvers.push_back(
+                        boost::shared_ptr<ConstrainedEvolver>(new
+                            ForwardRateConstrainedEuler(marketModel,
+                                                        generatorFactory,
+                                                        numeraires)));
+                    vegaEvolvers.back()->setConstraintType(
+                        startIndexOfConstraint, endIndexOfConstraint);
+                    
+                    vegaWeights[0][0] = 0.0;
+                    vegaWeights[0][1] = -1.0/(2.0*volBump);
+                    vegaWeights[0][2] = 1.0/(2.0*volBump);
+
+
+
+                    constrainedEvolvers.push_back(deltaGammaEvolvers);
+                    diffWeights.push_back(deltaGammaWeights);
+                    greekStats.push_back(deltaGammaStats);
+
+                    constrainedEvolvers.push_back(vegaEvolvers);
+                    diffWeights.push_back(vegaWeights);
+                    greekStats.push_back(vegaStats);
+
+
+                    std::ostringstream config;
+                    config <<
+                        marketModelTypeToString(marketModels[j]) << ", " << 
+                        measureTypeToString(measures[k]) << ", " <<
+                        factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                        "MT BGF";
+                    if (printReport_) BOOST_MESSAGE("    " << config.str());
+
+                    Size initialNumeraire = evolver->numeraires().front();
+                    Real initialNumeraireValue =
+                        todaysDiscounts[initialNumeraire];
+
+                    ProxyGreekEngine engine(evolver,
+                                            constrainedEvolvers, diffWeights,
+                                            startIndexOfConstraint,
+                                            endIndexOfConstraint,
+                                            product,
+                                            initialNumeraireValue);
+
+                    engine.multiplePathValues(stats, greekStats, 8191);
+                                              //paths_);
+
+                    std::vector<Real> values = stats.mean();
+                    std::vector<Real> deltas = greekStats[0][0].mean();
+                    std::vector<Real> gammas = greekStats[0][1].mean();
+                    std::vector<Real> vegas = greekStats[1][0].mean();
+                    
+
+                    for (Size i=0; i<product.numberOfProducts(); ++i) {
+                        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                      << "value = " << values[i] << ", "
+                                      << "delta = " << deltas[i] << ", "
+                                      << "gamma = " << gammas[i] << ", "
+                                      << "vega = " << vegas[i]);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
 //--------------------- Volatility tests ---------------------
 
 void MarketModelTest::testAbcdVolatilityIntegration() {
@@ -1549,17 +1766,18 @@ void MarketModelTest::testIsInSubset() {
 // --- Call the desired tests
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap1));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwap2));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+    /*suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));*/
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
     return suite;
 }

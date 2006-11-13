@@ -175,10 +175,10 @@ namespace QuantLib {
 
         // check constraint active
         if (isConstraintActive_[currentStep_]) {
-            Size index =startIndexOfSwapRate_[currentStep_];
+            Size index = startIndexOfSwapRate_[currentStep_];
 
             // compute error
-            Real requiredShift =  rateConstraints_[index] - logForwards_[index];
+            Real requiredShift =  rateConstraints_[currentStep_] - logForwards_[index];
 
             Real multiplier = requiredShift/variances_[currentStep_][index];
 
