@@ -1,29 +1,29 @@
 
 
-greeks
+Greeks
+- (1)
+- (1) greeks for one-step pure-libor non-callable product
 
 Lower bounds
-- (3) Jackel method for Bermudan swaptions (time consuming but not hard)
-- (4) Anderson method for Bermudan swaptions (time consuming but not hard)
+- (1) Jackel method for Bermudan swaptions (time consuming but not hard)
+- (1) Anderson method for Bermudan swaptions (time consuming but not hard)
 
-- (1) orthogonal combination of inst vol models and corr models statpro
+Calibration
+- (2) orthogonal combination of inst vol models and corr models statpro
+- (2) test coterminal European swaption pricing, Z matrix vs simulation
+- (3) calibrator to produce abcd form from market data, with displacements caboto
 
-- (1) coterminal European swaptions (EASY) caboto
-- (1) coterminal European swaptions using Z matrix caboto
-
-
-- (1) Get LMM code in the same use format as other code via instrument classes
+Framework
+- (2) Get LMM code in the same use format as other code via instrument classes
   creating objects from new hierarchy as necessary (MEDIUM) statpro
 
-- (1) verify efficiency of rapid algorithm for reduced factor models caboto
-
-- (2) Reuse convergence tables for RQMC caboto
-- (2) calibrator to produce abcd form from market data, with displacements caboto
+Improvement
+- (2) RQMC
 - (2) swaption calibration using Z matrix with displacements (MEDIUM) caboto
 - (2) different correlation structures (Schoenmakers and Coffey, etc) (VARIABLE)
 - (2) alignment with covariance structures in legacy code (?) caboto
-
-- (3) ratchet caboto
+- (2) ratchet caboto
+- (3) verify efficiency of rapid algorithm for reduced factor models caboto
 
 
 =======================================
@@ -55,12 +55,11 @@ Pseudo-roots\calibration
 - (2) alignment with covariance structures in legacy code (?)
 
 Curve state
-- (4) Set on coterminal swaps. (MEDIUM)
+- (4) Set on costant maturity swaps. (MEDIUM)
 
 Products
 - (1) coterminal European swaptions (EASY)
 - (1) coterminal European swaptions using Z matrix
-- (3) ratchet
 - (4) floorlets with one or many steps.  (EASY)
 
 Lower Bound
