@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2006 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +38,12 @@ namespace QuantLib {
         virtual ~Payoff() {}
         //! \name Payoff interface
         //@{
+        /*! \warning This method is used for output and comparison between
+                payoffs. It is <b>not</b> meant to be used for writing
+                switch-on-type code.
+        */
+        virtual std::string type() const = 0;
+        virtual std::string description() const = 0;
         virtual Real operator()(Real price) const = 0;
         //@}
         //! \name Visitability

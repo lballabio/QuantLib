@@ -146,11 +146,14 @@ namespace QuantLib {
         : type_(type),strike_(strike) {
             QL_REQUIRE(strike >= 0.0,"negative strike given");
         }
-
         Position::Type forwardType() const { return type_; };
         Real strike() const { return strike_; };
+        //! \name Payoff interface
+        //@{
+        std::string type() const { return "Forward";}
+        std::string description() const;
         Real operator()(Real price) const;
-
+        //@}
       protected:
         Position::Type type_;
         Real strike_;
@@ -182,6 +185,12 @@ namespace QuantLib {
         return incomeDiscountCurve_.currentLink();
     }
 
+
+    inline std::string ForwardTypePayoff::description() const {
+        std::ostringstream result;
+        result << type() << ", " << strike() << " strike";
+        return result.str();
+    }
 
     inline Real ForwardTypePayoff::operator()(Real price) const {
         switch (type_) {
