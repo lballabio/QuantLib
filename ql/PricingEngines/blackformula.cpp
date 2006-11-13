@@ -40,7 +40,7 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
         if (stdDev==0.0)
-            return std::max(forward-strike, Real(0.0))*optionType*discount;
+            return std::max((forward-strike)*optionType, Real(0.0))*discount;
         if (strike==0.0)
             return (optionType==Option::Call ? forward*discount : 0.0);
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
