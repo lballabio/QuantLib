@@ -80,12 +80,12 @@ namespace QuantLib {
     Disposable<Matrix> SwapCovarianceApproximator::swapForwardJacobian(
         const CurveState& cs) 
     {
-        std::vector<Real> b = cs.coterminalSwapRatesAnnuities();    // coterminal annuities
-        std::vector<Real> a = std::vector<Real>(b.size());          // coterminal floating leg values
-        Size n = b.size();                                          // n° of coterminal swaps
-        const std::vector<Real> p = cs.discountRatios();            // discount factors
-        const std::vector<Rate> f = cs.forwardRates();              // forward rates
-        const std::vector<Time> tau = cs.rateTaus();                // accrual factors
+        std::vector<Real> b = cs.coterminalSwapAnnuities(); // coterminal annuities
+        std::vector<Real> a = std::vector<Real>(b.size());  // coterminal floating leg values
+        Size n = b.size();                                  // n° of coterminal swaps
+        const std::vector<Real> p = cs.discountRatios();    // discount factors
+        const std::vector<Rate> f = cs.forwardRates();      // forward rates
+        const std::vector<Time> tau = cs.rateTaus();        // accrual factors
 
         for (Size k=0; k<n; ++k)
             a[k] = p[k]-p[n];          // coterminal floating leg values
