@@ -19,6 +19,7 @@
 
 #include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/normaldistribution.hpp>
@@ -58,7 +59,7 @@ namespace QuantLib {
             ex->lastDate());
         Real spot = process->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance), riskFreeDiscount);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
@@ -120,9 +121,9 @@ namespace QuantLib {
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
             Real lambda_prime = - phi * alpha / (h*h * temp_root);
 
-            BlackFormula
-                    black_Sk(forwardSk, riskFreeDiscount, variance, payoff);
-            Real hA = phi * (Sk - payoff->strike()) - black_Sk.value();
+            Real black_Sk = blackFormula(payoff->optionType(), payoff->strike(),
+                                         forwardSk, std::sqrt(variance)) * riskFreeDiscount;
+            Real hA = phi * (Sk - payoff->strike()) - black_Sk;
 
             Real d1_Sk = (std::log(forwardSk/payoff->strike()) + 0.5*variance)
                 /std::sqrt(variance);
@@ -154,7 +155,7 @@ namespace QuantLib {
                                     - c / (spot*spot);
             results_.delta = phi * dividendDiscount * cumNormalDist (phi * d1_Sk)
                 + (lambda / (spot * (1 - chi)) + chi_prime / ((1 - chi)*(1 - chi))) *
-                (phi * (Sk - payoff->strike()) - black_Sk.value()) * std::pow((spot/Sk), lambda);
+                (phi * (Sk - payoff->strike()) - black_Sk) * std::pow((spot/Sk), lambda);
 
             results_.gamma = phi * dividendDiscount * normalDist (phi*d1_Sk) /
                                         (spot * std::sqrt(variance))
@@ -162,7 +163,7 @@ namespace QuantLib {
                               + 2 * chi_prime * chi_prime / ((1 - chi) * (1 - chi) * (1 - chi))
                               + chi_double_prime / ((1 - chi) * (1 - chi))
                               + lambda * (1 - lambda) / (spot * spot * (1 - chi)))
-                            * (phi * (Sk - payoff->strike()) - black_Sk.value())
+                            * (phi * (Sk - payoff->strike()) - black_Sk)
                                  * std::pow((spot/Sk), lambda);
 
         } // end of "early exercise can be optimal"

@@ -19,6 +19,7 @@
 */
 
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
@@ -85,12 +86,13 @@ namespace QuantLib {
             boost::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
-            BlackFormula black1(forward1, riskFreeDiscount,
-                                variance1, payoff);
-            BlackFormula black2(forward2, riskFreeDiscount,
-                                variance2, payoff);
+            Real black1 = blackFormula(payoff->optionType(), payoff->strike(),
+                forward1, std::sqrt(variance1)) * riskFreeDiscount;
 
-            return black1.value() + black2.value() -
+            Real black2 = blackFormula(payoff->optionType(), payoff->strike(),
+                forward2, std::sqrt(variance2)) * riskFreeDiscount;
+
+            return black1 + black2 -
                 euroTwoAssetMinBasketCall(forward1, forward2, strike,
                                           riskFreeDiscount,
                                           variance1, variance2, rho);

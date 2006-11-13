@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
@@ -77,7 +77,7 @@ namespace QuantLib {
                                         resetDates[i-1],resetDates[i],
                                         underlying * moneyness->strike());
 
-            BlackFormula black(forward, rDiscount, variance, payoff);
+            BlackCalculator black(payoff, forward, std::sqrt(variance), rDiscount);
 
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();

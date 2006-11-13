@@ -19,7 +19,7 @@
 */
 
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/PricingEngines/greeks.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/normaldistribution.hpp>
@@ -111,7 +111,8 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
 
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
+                              riskFreeDiscount);
 
         results_.value = black.value();
         results_.delta = black.delta(process->stateVariable()->value());

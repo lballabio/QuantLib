@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
@@ -60,7 +60,8 @@ namespace QuantLib {
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
 
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
+                              riskFreeDiscount);
 
         results_.value = black.value();
         results_.delta = black.delta(spot);

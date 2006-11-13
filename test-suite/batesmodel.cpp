@@ -76,9 +76,9 @@ void BatesModelTest::testAnalyticVsBlack() {
 
     Real yearFraction = dayCounter.yearFraction(settlementDate, exerciseDate);
     Real forwardPrice = s0->value()*std::exp((0.1-0.04)*yearFraction);
-    Real expected = BlackFormula(forwardPrice, std::exp(-0.1*yearFraction),
-                                 0.05*yearFraction, payoff).value();
-
+    Real expected = blackFormula(payoff->optionType(), payoff->strike(),
+        forwardPrice, std::sqrt(0.05*yearFraction)) *
+                                            std::exp(-0.1*yearFraction);
     Real v0 = 0.05;
     Real kappa = 5.0;
     Real theta = 0.05;

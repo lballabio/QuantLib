@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
@@ -117,8 +117,8 @@ namespace QuantLib {
         if (dividendDiscount>=1.0) {
             // early exercise is never optimal - use Black formula
             Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-            BlackFormula black(forwardPrice, riskFreeDiscount,
-                               variance, payoff);
+            BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
+                                  riskFreeDiscount);
 
             results_.value        = black.value();
             results_.delta        = black.delta(spot);

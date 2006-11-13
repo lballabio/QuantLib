@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
@@ -69,7 +69,8 @@ namespace QuantLib {
         Real spot = process->stateVariable()->value();
         Real forward = spot * dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(forward, riskFreeDiscount, variance/3.0, payoff);
+        BlackCalculator black(payoff, forward, std::sqrt(variance/3.0),
+                              riskFreeDiscount);
 
         results_.value = black.value();
         results_.delta = black.delta(spot);

@@ -18,7 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
@@ -49,7 +49,8 @@ namespace QuantLib {
         Real spot = process->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
+                              riskFreeDiscount);
 
 
         results_.value = black.value();

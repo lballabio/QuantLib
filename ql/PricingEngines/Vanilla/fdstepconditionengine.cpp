@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/Instruments/oneassetoption.hpp>
@@ -83,8 +83,8 @@ namespace QuantLib {
         Real spot = process_->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        BlackFormula black(forwardPrice, riskFreeDiscount,
-                           variance, striked_payoff);
+        BlackCalculator black(striked_payoff, forwardPrice,
+                              std::sqrt(variance), riskFreeDiscount);
 
         results->value = prices_.valueAtCenter()
             - controlPrices_.valueAtCenter()

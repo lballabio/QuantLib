@@ -286,8 +286,9 @@ void HestonModelTest::testAnalyticVsBlack() {
 
     Real yearFraction = dayCounter.yearFraction(settlementDate, exerciseDate);
     Real forwardPrice = 32*std::exp((0.1-0.04)*yearFraction);
-    Real expected = BlackFormula(forwardPrice, std::exp(-0.1*yearFraction),
-                                 0.05*yearFraction, payoff).value();
+    Real expected = blackFormula(payoff->optionType(), payoff->strike(),
+        forwardPrice, std::sqrt(0.05*yearFraction)) *
+                                            std::exp(-0.1*yearFraction);
     Real error = std::fabs(calculated - expected);
     Real tolerance = 2.0e-7;
     if (error > tolerance) {

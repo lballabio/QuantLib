@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2006 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +18,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/normaldistribution.hpp>
@@ -66,13 +67,13 @@ namespace QuantLib {
         CumulativeNormalDistribution cumNormalDist;
         Real K = (riskFreeDiscount!=1.0 ? -2.0*std::log(riskFreeDiscount)/
             (variance*(1.0-riskFreeDiscount)) : 0.0);
+        Real temp = blackFormula(payoff->optionType(), payoff->strike(),
+                forwardSi, std::sqrt(variance))*riskFreeDiscount;
         switch (payoff->optionType()) {
           case Option::Call:
             Q = (-(n-1.0) + std::sqrt(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
             LHS = Si - payoff->strike();
-            RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
-                               payoff).value() + (1 - dividendDiscount *
-                                                  cumNormalDist(d1)) * Si / Q;
+            RHS = temp + (1 - dividendDiscount * cumNormalDist(d1)) * Si / Q;
             bi =  dividendDiscount * cumNormalDist(d1) * (1 - 1/Q) +
                 (1 - dividendDiscount *
                  cumNormalDist.derivative(d1) / std::sqrt(variance)) / Q;
@@ -82,9 +83,9 @@ namespace QuantLib {
                 d1 = (std::log(forwardSi/payoff->strike())+0.5*variance)
                     /std::sqrt(variance);
                 LHS = Si - payoff->strike();
-                RHS = BlackFormula(forwardSi, riskFreeDiscount,
-                                   variance, payoff).value() + (1 - dividendDiscount
-                                                                * cumNormalDist(d1)) * Si / Q;
+                Real temp2 = blackFormula(payoff->optionType(), payoff->strike(),
+                    forwardSi, std::sqrt(variance))*riskFreeDiscount;
+                RHS = temp2 + (1 - dividendDiscount * cumNormalDist(d1)) * Si / Q;
                 bi = dividendDiscount * cumNormalDist(d1) * (1 - 1 / Q)
                     + (1 - dividendDiscount *
                        cumNormalDist.derivative(d1) / std::sqrt(variance))
@@ -94,9 +95,7 @@ namespace QuantLib {
           case Option::Put:
             Q = (-(n-1.0) - std::sqrt(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
             LHS = payoff->strike() - Si;
-            RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
-                               payoff).value() - (1 - dividendDiscount *
-                                                  cumNormalDist(-d1)) * Si / Q;
+            RHS = temp - (1 - dividendDiscount * cumNormalDist(-d1)) * Si / Q;
             bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1/Q)
                 - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
                    / std::sqrt(variance)) / Q;
@@ -106,9 +105,9 @@ namespace QuantLib {
                 d1 = (std::log(forwardSi/payoff->strike())+0.5*variance)
                     /std::sqrt(variance);
                 LHS = payoff->strike() - Si;
-                RHS = BlackFormula(forwardSi, riskFreeDiscount,
-                                   variance, payoff).value() -
-                    (1 - dividendDiscount * cumNormalDist(-d1)) * Si / Q;
+                Real temp2 = blackFormula(payoff->optionType(), payoff->strike(),
+                    forwardSi, std::sqrt(variance))*riskFreeDiscount;
+                RHS = temp2 - (1 - dividendDiscount * cumNormalDist(-d1)) * Si / Q;
                 bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1 / Q)
                     - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
                        / std::sqrt(variance)) / Q;
@@ -149,7 +148,8 @@ namespace QuantLib {
             ex->lastDate());
         Real spot = process->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
-        BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
+        BlackCalculator black(payoff, forwardPrice, std::sqrt(variance),
+                              riskFreeDiscount);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
             // early exercise never optimal
