@@ -53,18 +53,15 @@ namespace QuantLib {
 
     Disposable<Matrix>
     SwapForwardMappings::coterminalSwapZedMatrix(const CurveState& cs,
-                                                 const Spread displacement)
-    {
+                                                 const Spread displacement) {
         Size n = cs.numberOfRates();
-        Matrix result = coterminalSwapForwardJacobian(cs);
+        Matrix zMatrix = coterminalSwapForwardJacobian(cs);
         const std::vector<Rate>& f = cs.forwardRates();
         const std::vector<Rate>& sr = cs.coterminalSwapRates();
-        for (Size i=0; i<n; ++i) {
-            for (Size j=i; j<n; ++j) {
-                result[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
-            }
-        }
-        return result;  // zMatrix = f[j]/sr[j] * dsr[i]/df[j]
+        for (Size i=0; i<n; ++i)
+            for (Size j=i; j<n; ++j)
+                zMatrix[i][j] *= (f[j]+displacement)/(sr[i]+displacement);
+        return zMatrix;  
     }
 
 }
