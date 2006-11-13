@@ -118,9 +118,9 @@ namespace QuantLib {
     inline std::ostream& operator<<(std::ostream& out, Option::Type type) {
         switch (type) {
           case Option::Call:
-            return out << "call";
+            return out << "Call";
           case Option::Put:
-            return out << "put";
+            return out << "Put";
           default:
             QL_FAIL("unknown option type");
         }
