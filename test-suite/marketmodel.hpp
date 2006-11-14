@@ -33,8 +33,9 @@ class MarketModelTest {
     static void testMultiStepCoinitialSwaps();
     static void testMultiStepCoterminalSwaps();
     static void testMultiStepCoterminalSwaptions();
-    static void testCallableSwap1();
-    static void testCallableSwap2();
+    static void testCallableSwapNaif();
+    static void testCallableSwapLS();
+    static void testCallableSwapAnderson();
     static void testGreeks();
     static void testAbcdVolatilityIntegration();
     static void testAbcdVolatilityCompare();

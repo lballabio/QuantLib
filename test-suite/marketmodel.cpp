@@ -1006,9 +1006,9 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
 }
 
 
-void MarketModelTest::testCallableSwap1() {
+void MarketModelTest::testCallableSwapNaif() {
 
-    BOOST_MESSAGE("Pricing callable swap with dummy exercise strategy in a LIBOR market model...");
+    BOOST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -1031,7 +1031,168 @@ void MarketModelTest::testCallableSwap1() {
 
     // naif exercise strategy
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
-    SwapRateTrigger dummyStrategy(rateTimes, swapTriggers, exerciseTimes);
+    SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
+
+    // Longstaff-Schwartz exercise strategy
+    std::vector<std::vector<LSNodeData> > collectedData;
+    std::vector<std::vector<Real> > basisCoefficients;
+    NothingExerciseValue control(rateTimes);
+    SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
+    NothingExerciseValue nullRebate(rateTimes);
+    
+    CallSpecifiedMultiProduct dummyProduct(receiverSwap, naifStrategy,
+                                          ExerciseAdapter(nullRebate));
+
+    EvolutionDescription evolution = dummyProduct.evolution();
+
+    MarketModelType marketModels[] = {
+        // CalibratedMM,
+        ExponentialCorrelationFlatVolatility,
+        ExponentialCorrelationAbcdVolatility };
+    for (Size j=0; j<LENGTH(marketModels); j++) {
+
+        // Composite's ProductSuggested is the Terminal one
+        MeasureType measures[] = { // ProductSuggested,
+                                   MoneyMarketPlus,
+                                   MoneyMarket,
+                                   Terminal };
+        for (Size k=0; k<LENGTH(measures); k++) {
+            std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+
+            Size testedFactors[] = { 4, 8,
+                                     todaysForwards.size()};
+            for (Size m=0; m<LENGTH(testedFactors); ++m) {
+                Size factors = testedFactors[m];
+
+                boost::shared_ptr<MarketModel> marketModel =
+                    makeMarketModel(evolution, factors, marketModels[j]);
+
+
+                EvolverType evolvers[] = { Pc, Ipc };
+                boost::shared_ptr<MarketModelEvolver> evolver;
+                Size stop =
+                    isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+
+                    for (Size n=0; n<1; n++) {
+                        //MTBrownianGeneratorFactory generatorFactory(seed_);
+                        SobolBrownianGeneratorFactory generatorFactory(
+                            SobolBrownianGenerator::Diagonal);
+
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config <<
+                            marketModelTypeToString(marketModels[j]) << ", " << 
+                            measureTypeToString(measures[k]) << ", " <<
+                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            evolverTypeToString(evolvers[i]) << ", " <<
+                            "MT BGF";
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+
+                        // use the naif strategy
+
+                        // 2. bermudan swaption to enter into the payer swap
+                        CallSpecifiedMultiProduct bermudanProduct(
+                            MultiStepNothing(evolution), naifStrategy, payerSwap);
+
+                        // 3. callable receiver swap
+                        CallSpecifiedMultiProduct callableProduct(
+                            receiverSwap, naifStrategy, ExerciseAdapter(nullRebate));
+
+                        // lower bound: evolve all 4 products togheter
+                        MultiProductComposite allProducts;
+                        allProducts.add(payerSwap);
+                        allProducts.add(receiverSwap);
+                        allProducts.add(bermudanProduct);
+                        allProducts.add(callableProduct);
+                        allProducts.finalize();
+
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, allProducts);
+                        checkCallableSwap(*stats, config.str());
+
+
+                        // upper bound
+
+                        //MTBrownianGeneratorFactory uFactory(seed_+142);
+                        SobolBrownianGeneratorFactory uFactory(
+                            SobolBrownianGenerator::Diagonal);
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         uFactory,
+                                                         evolvers[i]);
+                        
+                        std::vector<boost::shared_ptr<MarketModelEvolver> >
+                            innerEvolvers;
+
+                        std::vector<bool> isExerciseTime =
+                            isInSubset(evolution.evolutionTimes(),
+                                       naifStrategy.exerciseTimes());
+                        for (Size s=0; s < isExerciseTime.size(); ++s) {
+                            if (isExerciseTime[s]) {
+                                MTBrownianGeneratorFactory iFactory(seed_+s);
+                                boost::shared_ptr<MarketModelEvolver> e =
+                                    makeMarketModelEvolver(marketModel,
+                                                           numeraires,
+                                                           iFactory,
+                                                           evolvers[i],
+                                                           s);
+                                innerEvolvers.push_back(e);
+                            }
+                        }
+
+                        Size initialNumeraire = evolver->numeraires().front();
+                        Real initialNumeraireValue =
+                            todaysDiscounts[initialNumeraire];
+
+                        UpperBoundEngine uEngine(evolver, innerEvolvers,
+                                                 receiverSwap, nullRebate,
+                                                 receiverSwap, nullRebate,
+                                                 naifStrategy,
+                                                 initialNumeraireValue);
+                        Statistics uStats;
+                        uEngine.multiplePathValues(uStats,255,256);
+                        Real delta = uStats.mean();
+                        Real deltaError = uStats.errorEstimate();
+                        if (printReport_)
+                            BOOST_MESSAGE("    upper bound delta: " << io::rate(delta) << " +- " << io::rate(deltaError));
+                        
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MarketModelTest::testCallableSwapLS() {
+
+    BOOST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
+
+    QL_TEST_SETUP
+
+    Real fixedRate = 0.04;
+
+    // 0. a payer swap
+    MultiStepSwap payerSwap(rateTimes, accruals, accruals, paymentTimes,
+                            fixedRate, true);
+
+    // 1. the equivalent receiver swap
+    MultiStepSwap receiverSwap(rateTimes, accruals, accruals, paymentTimes,
+                               fixedRate, false);
+
+    //exercise schedule
+    std::vector<Rate> exerciseTimes(rateTimes);
+    exerciseTimes.pop_back();
+    //std::vector<Rate> exerciseTimes;
+    //for (Size i=2; i<rateTimes.size()-1; i+=2)
+    //    exerciseTimes.push_back(rateTimes[i]);
+
+    // naif exercise strategy
+    std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
+    SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
     // Longstaff-Schwartz exercise strategy
     std::vector<std::vector<LSNodeData> > collectedData;
@@ -1040,7 +1201,7 @@ void MarketModelTest::testCallableSwap1() {
     SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
     NothingExerciseValue nullRebate(rateTimes);
 
-    CallSpecifiedMultiProduct dummyProduct(receiverSwap, dummyStrategy,
+    CallSpecifiedMultiProduct dummyProduct(receiverSwap, naifStrategy,
                                            ExerciseAdapter(nullRebate));
 
     EvolutionDescription evolution = dummyProduct.evolution();
@@ -1092,15 +1253,24 @@ void MarketModelTest::testCallableSwap1() {
                             "MT BGF";
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
 
-                        // use the dummy strategy
+                        // calculate the exercise strategy
+                        collectLongstaffSchwartzData(*evolver,
+                            receiverSwap, basisSystem, nullRebate,
+                            control, trainingPaths_, collectedData);
+                        genericLongstaffSchwartzRegression(collectedData,
+                            basisCoefficients);
+                        LongstaffSchwartzExerciseStrategy exerciseStrategy(
+                                               basisSystem, basisCoefficients,
+                                               evolution, numeraires,
+                                               nullRebate, control);
 
                         // 2. bermudan swaption to enter into the payer swap
                         CallSpecifiedMultiProduct bermudanProduct(
-                            MultiStepNothing(evolution), dummyStrategy, payerSwap);
+                            MultiStepNothing(evolution), exerciseStrategy, payerSwap);
 
                         // 3. callable receiver swap
                         CallSpecifiedMultiProduct callableProduct(
-                            receiverSwap, dummyStrategy, ExerciseAdapter(nullRebate));
+                            receiverSwap, exerciseStrategy, ExerciseAdapter(nullRebate));
 
                         // lower bound: evolve all 4 products togheter
                         MultiProductComposite allProducts;
@@ -1130,7 +1300,7 @@ void MarketModelTest::testCallableSwap1() {
 
                         std::vector<bool> isExerciseTime =
                             isInSubset(evolution.evolutionTimes(),
-                                       dummyStrategy.exerciseTimes());
+                                       exerciseStrategy.exerciseTimes());
                         for (Size s=0; s < isExerciseTime.size(); ++s) {
                             if (isExerciseTime[s]) {
                                 MTBrownianGeneratorFactory iFactory(seed_+s);
@@ -1151,7 +1321,7 @@ void MarketModelTest::testCallableSwap1() {
                         UpperBoundEngine uEngine(evolver, innerEvolvers,
                                                  receiverSwap, nullRebate,
                                                  receiverSwap, nullRebate,
-                                                 dummyStrategy,
+                                                 exerciseStrategy,
                                                  initialNumeraireValue);
                         Statistics uStats;
                         uEngine.multiplePathValues(uStats,255,256);
@@ -1167,9 +1337,9 @@ void MarketModelTest::testCallableSwap1() {
     }
 }
 
-void MarketModelTest::testCallableSwap2() {
+void MarketModelTest::testCallableSwapAnderson() {
 
-    BOOST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
+    BOOST_MESSAGE("Pricing callable swap with Anderson exercise strategy in a LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -1192,7 +1362,7 @@ void MarketModelTest::testCallableSwap2() {
 
     // naif exercise strategy
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
-    SwapRateTrigger dummyStrategy(rateTimes, swapTriggers, exerciseTimes);
+    SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
     // Longstaff-Schwartz exercise strategy
     std::vector<std::vector<LSNodeData> > collectedData;
@@ -1201,7 +1371,7 @@ void MarketModelTest::testCallableSwap2() {
     SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
     NothingExerciseValue nullRebate(rateTimes);
 
-    CallSpecifiedMultiProduct dummyProduct(receiverSwap, dummyStrategy,
+    CallSpecifiedMultiProduct dummyProduct(receiverSwap, naifStrategy,
                                            ExerciseAdapter(nullRebate));
 
     EvolutionDescription evolution = dummyProduct.evolution();
