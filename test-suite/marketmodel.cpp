@@ -34,6 +34,7 @@
 #include <ql/MarketModels/Products/MultiStep/multistepnothing.hpp>
 #include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
 #include <ql/MarketModels/Products/multiproductcomposite.hpp>
+#include <ql/MarketModels/parametricswapexercise.hpp>
 #include <ql/MarketModels/accountingengine.hpp>
 #include <ql/MarketModels/upperboundengine.hpp>
 #include <ql/MarketModels/proxygreekengine.hpp>
@@ -41,6 +42,7 @@
 #include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/utilities.hpp>
+#include <ql/MarketModels/parametricexerciseadapter.hpp>
 #include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateeulerevolver.hpp>
@@ -64,8 +66,9 @@
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/functional.hpp>
-#include <ql/Optimization/levenbergmarquardt.hpp>
-#include <ql/Optimization/steepestdescent.hpp>
+//#include <ql/Optimization/levenbergmarquardt.hpp>
+//#include <ql/Optimization/steepestdescent.hpp>
+#include <ql/Optimization/simplex.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -120,7 +123,7 @@ void setup() {
 
     // Rates & displacements
     todaysForwards = std::vector<Rate>(paymentTimes.size());
-    displacements = std::vector<Spread>(paymentTimes.size(), 0.02);
+    displacements = std::vector<Spread>(paymentTimes.size(), 0.0);
     for (Size i=0; i<todaysForwards.size(); ++i)
         todaysForwards[i] = 0.03 + 0.0010*i;
 
@@ -187,8 +190,9 @@ void setup() {
 
     // Monte Carlo
     seed_ = 42;
-    paths_ = 32767; // 2^15-1
-    trainingPaths_ = 8191; // 2^13-1
+    paths_ = 1023; //32767; // 2^15-1
+    trainingPaths_ = 1023; //8191; // 2^13-1
+
 }
 
 const boost::shared_ptr<SequenceStatistics> simulate(
@@ -1034,7 +1038,7 @@ void MarketModelTest::testCallableSwapNaif() {
     SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
     // Longstaff-Schwartz exercise strategy
-    std::vector<std::vector<LSNodeData> > collectedData;
+    std::vector<std::vector<NodeData> > collectedData;
     std::vector<std::vector<Real> > basisCoefficients;
     NothingExerciseValue control(rateTimes);
     SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
@@ -1195,7 +1199,7 @@ void MarketModelTest::testCallableSwapLS() {
     SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
     // Longstaff-Schwartz exercise strategy
-    std::vector<std::vector<LSNodeData> > collectedData;
+    std::vector<std::vector<NodeData> > collectedData;
     std::vector<std::vector<Real> > basisCoefficients;
     NothingExerciseValue control(rateTimes);
     SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
@@ -1254,7 +1258,7 @@ void MarketModelTest::testCallableSwapLS() {
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
 
                         // calculate the exercise strategy
-                        collectLongstaffSchwartzData(*evolver,
+                        collectNodeData(*evolver,
                             receiverSwap, basisSystem, nullRebate,
                             control, trainingPaths_, collectedData);
                         genericLongstaffSchwartzRegression(collectedData,
@@ -1364,12 +1368,13 @@ void MarketModelTest::testCallableSwapAnderson() {
     std::vector<Rate> swapTriggers(exerciseTimes.size(), fixedRate);
     SwapRateTrigger naifStrategy(rateTimes, swapTriggers, exerciseTimes);
 
-    // Longstaff-Schwartz exercise strategy
-    std::vector<std::vector<LSNodeData> > collectedData;
-    std::vector<std::vector<Real> > basisCoefficients;
+    // Anderson exercise strategy
+    std::vector<std::vector<NodeData> > collectedData;
+    std::vector<std::vector<Real> > parameters;
     NothingExerciseValue control(rateTimes);
-    SwapBasisSystem basisSystem(rateTimes,exerciseTimes);
     NothingExerciseValue nullRebate(rateTimes);
+    TriggeredSwapExercise parametricForm(rateTimes, exerciseTimes,
+        std::vector<Time>(exerciseTimes.size(),fixedRate));
 
     CallSpecifiedMultiProduct dummyProduct(receiverSwap, naifStrategy,
                                            ExerciseAdapter(nullRebate));
@@ -1424,15 +1429,23 @@ void MarketModelTest::testCallableSwapAnderson() {
                         if (printReport_) BOOST_MESSAGE("    " << config.str());
 
                         // calculate the exercise strategy
-                        collectLongstaffSchwartzData(*evolver,
-                            receiverSwap, basisSystem, nullRebate,
+                        collectNodeData(*evolver,
+                            receiverSwap, parametricForm, nullRebate,
                             control, trainingPaths_, collectedData);
-                        genericLongstaffSchwartzRegression(collectedData,
-                            basisCoefficients);
-                        LongstaffSchwartzExerciseStrategy exerciseStrategy(
-                                               basisSystem, basisCoefficients,
-                                               evolution, numeraires,
-                                               nullRebate, control);
+
+                        Simplex om(0.01, 1e-6);
+
+                        Size initialNumeraire = evolver->numeraires().front();
+                        Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
+                        Real firstPassValue = genericEarlyExerciseOptimization(
+                            collectedData, parametricForm, parameters, om) * 
+                            initialNumeraireValue;
+
+                        BOOST_MESSAGE("initial estimate: " << firstPassValue);
+                        for (Size l = 0; l<parameters.size(); ++l)
+                            BOOST_MESSAGE(io::ordinal(l+1) << " trigger: " << parameters[l][0]);
+
+                        ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
                         // 2. bermudan swaption to enter into the payer swap
                         CallSpecifiedMultiProduct bermudanProduct(
@@ -1484,10 +1497,6 @@ void MarketModelTest::testCallableSwapAnderson() {
                             }
                         }
 
-                        Size initialNumeraire = evolver->numeraires().front();
-                        Real initialNumeraireValue =
-                            todaysDiscounts[initialNumeraire];
-
                         UpperBoundEngine uEngine(evolver, innerEvolvers,
                                                  receiverSwap, nullRebate,
                                                  receiverSwap, nullRebate,
@@ -1520,11 +1529,11 @@ void MarketModelTest::testGreeks() {
         displacedPayoffs(todaysForwards.size());
     for (Size i=0; i<todaysForwards.size(); ++i) {
         payoffs[i] = boost::shared_ptr<Payoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
+            //PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+            CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
         displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
+            //PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
+            CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
     }
 
     MultiStepOptionlets product(rateTimes, accruals,
@@ -1545,16 +1554,15 @@ void MarketModelTest::testGreeks() {
         for (Size k=0; k<LENGTH(measures); k++) {
             std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-            Size testedFactors[] = { 4, 8//,
-                                     //todaysForwards.size()
-            };
+            Size testedFactors[] = { 4, 8, todaysForwards.size() };
             for (Size m=0; m<LENGTH(testedFactors); ++m) {
                 Size factors = testedFactors[m];
 
                 for (Size n=0; n<1; n++) {
                     //MTBrownianGeneratorFactory generatorFactory(seed_);
                     SobolBrownianGeneratorFactory generatorFactory(
-                                           SobolBrownianGenerator::Diagonal);
+                                           SobolBrownianGenerator::Diagonal,
+                                           seed_);
 
                     boost::shared_ptr<MarketModel> marketModel =
                         makeMarketModel(evolution, factors,
@@ -1589,7 +1597,7 @@ void MarketModelTest::testGreeks() {
                     std::vector<SequenceStatistics> deltaGammaStats(2,stats);
 
 
-                    Spread forwardBump = 1.0e-4;
+                    Spread forwardBump = 1.0e-6;
                     marketModel =
                         makeMarketModel(evolution, factors,
                                         marketModels[j], -forwardBump);
@@ -1682,21 +1690,60 @@ void MarketModelTest::testGreeks() {
                                             product,
                                             initialNumeraireValue);
 
-                    engine.multiplePathValues(stats, greekStats, 8191);
-                                              //paths_);
+                    engine.multiplePathValues(stats, greekStats, paths_);
 
                     std::vector<Real> values = stats.mean();
+                    std::vector<Real> errors = stats.errorEstimate();
                     std::vector<Real> deltas = greekStats[0][0].mean();
+                    std::vector<Real> deltaErrors = greekStats[0][0].errorEstimate();
                     std::vector<Real> gammas = greekStats[0][1].mean();
+                    std::vector<Real> gammaErrors = greekStats[0][1].errorEstimate();
                     std::vector<Real> vegas = greekStats[1][0].mean();
-                    
+                    std::vector<Real> vegaErrors = greekStats[1][0].errorEstimate();
+
+                    std::vector<DiscountFactor> discPlus(todaysForwards.size()+1, todaysDiscounts[0]);
+                    std::vector<DiscountFactor> discMinus(todaysForwards.size()+1, todaysDiscounts[0]);
+                    std::vector<Rate> fwdPlus(todaysForwards.size());
+                    std::vector<Rate> fwdMinus(todaysForwards.size());
+                    std::vector<Rate> pricePlus(todaysForwards.size());
+                    std::vector<Rate> price0(todaysForwards.size());
+                    std::vector<Rate> priceMinus(todaysForwards.size());
+                    for (Size i=0; i<todaysForwards.size(); ++i) {
+                        Time tau = rateTimes[i+1]-rateTimes[i];
+                        fwdPlus[i]=todaysForwards[i]+forwardBump;
+                        fwdMinus[i]=todaysForwards[i]-forwardBump;
+                        discPlus[i+1]=discPlus[i]/(1.0+fwdPlus[i]*tau);
+                        discMinus[i+1]=discMinus[i]/(1.0+fwdMinus[i]*tau);
+                        pricePlus[i]=BlackCalculator(displacedPayoffs[i], fwdPlus[i],
+                                                     volatilities[i]*sqrt(rateTimes[i]),
+                                                     discPlus[i+1]*tau).value();
+                        price0[i]=BlackCalculator(displacedPayoffs[i], todaysForwards[i],
+                                                  volatilities[i]*sqrt(rateTimes[i]),
+                                                  todaysDiscounts[i+1]*tau).value();
+                        priceMinus[i]=BlackCalculator(displacedPayoffs[i], fwdMinus[i],
+                                                      volatilities[i]*sqrt(rateTimes[i]),
+                                                      discMinus[i+1]*tau).value();
+                    }
 
                     for (Size i=0; i<product.numberOfProducts(); ++i) {
+                        Real numDelta = (pricePlus[i]-priceMinus[i])/(2.0*forwardBump);
+                        Real numGamma = (pricePlus[i]-2*price0[i]+priceMinus[i])/(forwardBump*forwardBump);
                         BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
-                                      << "value = " << values[i] << ", "
-                                      << "delta = " << deltas[i] << ", "
-                                      << "gamma = " << gammas[i] << ", "
-                                      << "vega = " << vegas[i]);
+                                      << "value = " << price0[i] << ", "
+                                      << "delta = " << numDelta << ", "
+                                      << "gamma = " << numGamma);
+                        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                      << "value = " << values[i]
+                                      << " +- " << errors[i]
+                                      << " (" << (values[i]-price0[i])/errors[i] << " s.e.), "
+                                      << "delta = " << deltas[i]
+                                      << " +- " << deltaErrors[i]
+                                      << " (" << (deltas[i]-numDelta)/deltaErrors[i] << " s.e.), "
+                                      << "gamma = " << gammas[i]
+                                      << " +- " << gammaErrors[i]
+                                      << " (" << (gammas[i]-numGamma)/gammaErrors[i] << " s.e.), "
+                                      << "vega = " << vegas[i]
+                                      << " +- " << vegaErrors[i]);
                     }
                 }
             }
@@ -1941,8 +1988,8 @@ test_suite* MarketModelTest::suite() {
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));

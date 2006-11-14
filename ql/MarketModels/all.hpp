@@ -29,6 +29,7 @@
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
+#include <ql/MarketModels/nodedataprovider.hpp>
 #include <ql/MarketModels/swapbasissystem.hpp>
 #include <ql/MarketModels/swapforwardconversionmatrix.hpp>
 #include <ql/MarketModels/utilities.hpp>

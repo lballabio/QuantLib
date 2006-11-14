@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,14 +18,29 @@
 */
 
 
-#ifndef quantlib_generic_longstaff_schwartz_hpp
-#define quantlib_generic_longstaff_schwartz_hpp
+#ifndef quantlib_generic_parametric_early_exercise_hpp
+#define quantlib_generic_parametric_early_exercise_hpp
 
 #include <ql/MonteCarlo/nodedata.hpp>
+#include <ql/Optimization/method.hpp>
 
 namespace QuantLib {
 
-    //! returns the biased estimate obtained while regressing
+    class ParametricExercise {
+      public:
+        virtual ~ParametricExercise() {}
+        // possibly different for each exercise
+        virtual std::vector<Size> numberOfVariables() const = 0;
+        virtual std::vector<Size> numberOfParameters() const = 0;
+        virtual bool exercise(Size exerciseNumber,
+                              const std::vector<Real>& parameters,
+                              const std::vector<Real>& variables) const = 0;
+        virtual void guess(Size exerciseNumber,
+                           std::vector<Real>& parameters) const = 0;
+    };
+    
+
+    //! returns the biased estimate obtained while optimizing
     /* TODO document:
        n exercises, n+1 elements in simulationData
        simulationData[0][j] -> cashflows up to first exercise, j-th path
@@ -33,11 +48,13 @@ namespace QuantLib {
 
        simulationData[0][j].foo unused (unusable?) if foo != cumulatedCashFlows
 
-       basisCoefficients.size() = n
+       parameters.size() = n
     */
-    Real genericLongstaffSchwartzRegression(
+    Real genericEarlyExerciseOptimization(
         std::vector<std::vector<NodeData> >& simulationData,
-        std::vector<std::vector<Real> >& basisCoefficients);
+        const ParametricExercise& exercise,
+        std::vector<std::vector<Real> >& parameters,
+        OptimizationMethod& method);
 
 }
 

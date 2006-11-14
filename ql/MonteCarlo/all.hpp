@@ -31,6 +31,7 @@
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/MonteCarlo/longstaffschwartzpathpricer.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>
+#include <ql/MonteCarlo/nodedata.hpp>
 
 
 #endif

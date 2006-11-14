@@ -17,6 +17,7 @@ include_HEADERS = \
 	montecarlomodel.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \
+	nodedata.hpp \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \

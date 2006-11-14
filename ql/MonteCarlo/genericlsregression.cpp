@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     Real genericLongstaffSchwartzRegression(
-                std::vector<std::vector<LSNodeData> >& simulationData,
+                std::vector<std::vector<NodeData> >& simulationData,
                 std::vector<std::vector<Real> >& basisCoefficients) {
 
         Size steps = simulationData.size();
@@ -32,19 +32,19 @@ namespace QuantLib {
 
         for (Size i=steps-1; i!=0; --i) {
 
-            std::vector<LSNodeData>& exerciseData = simulationData[i];
+            std::vector<NodeData>& exerciseData = simulationData[i];
 
             // 1) find the covariance matrix of basis function values and
             //    deflated cash-flows
-            Size N = exerciseData.front().basisFunctionValues.size();
+            Size N = exerciseData.front().values.size();
             std::vector<Real> temp(N+1);
             SequenceStatistics stats(N+1);
             
             Size j;
             for (j=0; j<exerciseData.size(); ++j) {
                 if (exerciseData[j].isValid) {
-                    std::copy(exerciseData[j].basisFunctionValues.begin(),
-                              exerciseData[j].basisFunctionValues.end(),
+                    std::copy(exerciseData[j].values.begin(),
+                              exerciseData[j].values.end(),
                               temp.begin());
                     temp.back() = exerciseData[j].cumulatedCashFlows
                                 - exerciseData[j].controlValue;
@@ -79,8 +79,8 @@ namespace QuantLib {
                         exerciseData[j].cumulatedCashFlows;
                     Real estimatedContinuationValue =
                         std::inner_product(
-                                 exerciseData[j].basisFunctionValues.begin(),
-                                 exerciseData[j].basisFunctionValues.end(),
+                                 exerciseData[j].values.begin(),
+                                 exerciseData[j].values.end(),
                                  alphas.begin(),
                                  exerciseData[j].controlValue);
 
@@ -100,7 +100,7 @@ namespace QuantLib {
         // the value of the product can now be estimated by averaging
         // over all paths
         Statistics estimate;
-        std::vector<LSNodeData>& estimatedData = simulationData[0];
+        std::vector<NodeData>& estimatedData = simulationData[0];
         for (Size j=0; j<estimatedData.size(); ++j)
             estimate.add(estimatedData[j].cumulatedCashFlows);
 

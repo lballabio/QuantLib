@@ -25,14 +25,13 @@ namespace QuantLib {
 
     typedef MarketModelMultiProduct::CashFlow CashFlow;
 
-    void collectLongstaffSchwartzData(
-                      MarketModelEvolver& evolver,
-                      MarketModelMultiProduct& product,
-                      MarketModelBasisSystem& basisSystem,
-                      MarketModelExerciseValue& rebate,
-                      MarketModelExerciseValue& control,
-                      Size numberOfPaths,
-                      std::vector<std::vector<LSNodeData> >& collectedData) {
+    void collectNodeData(MarketModelEvolver& evolver,
+                         MarketModelMultiProduct& product,
+                         MarketModelNodeDataProvider& dataProvider,
+                         MarketModelExerciseValue& rebate,
+                         MarketModelExerciseValue& control,
+                         Size numberOfPaths,
+                         std::vector<std::vector<NodeData> >& collectedData) {
 
         std::vector<Real> numerairesHeld;
 
@@ -91,7 +90,7 @@ namespace QuantLib {
                        control.evolution().evolutionTimes());
         std::vector<bool> isBasisTime =
             isInSubset(evolutionTimes,
-                       basisSystem.evolution().evolutionTimes());
+                       dataProvider.evolution().evolutionTimes());
         std::vector<bool> isExerciseTime(evolutionTimes.size(),false);
         std::vector<bool> v = rebate.isExerciseTime();
         Size exercises = 0;
@@ -112,7 +111,7 @@ namespace QuantLib {
             product.reset();
             rebate.reset();
             control.reset();
-            basisSystem.reset();
+            dataProvider.reset();
             Real principalInNumerairePortfolio = 1.0;
 
             bool done = false;
@@ -129,10 +128,10 @@ namespace QuantLib {
                 if (isControlTime[currentStep])
                     control.nextStep(currentState);
                 if (isBasisTime[currentStep])
-                    basisSystem.nextStep(currentState);
+                    dataProvider.nextStep(currentState);
 
                 if (isExerciseTime[currentStep]) {
-                    LSNodeData& data = collectedData[nextExercise+1][i];
+                    NodeData& data = collectedData[nextExercise+1][i];
 
                     CashFlow exerciseValue = rebate.value(currentState);
                     data.exerciseValue =
@@ -141,8 +140,8 @@ namespace QuantLib {
                            .numeraireBonds(currentState, numeraire) /
                         principalInNumerairePortfolio;
 
-                    basisSystem.values(currentState,
-                                       data.basisFunctionValues);
+                    dataProvider.values(currentState,
+                                        data.values);
 
                     CashFlow controlValue = control.value(currentState);
                     data.controlValue =
@@ -184,7 +183,7 @@ namespace QuantLib {
 
             // fill the remaining (un)collected data with nulls
             for (Size j = nextExercise; j < exercises; ++j) {
-                LSNodeData& data = collectedData[j+1][i];
+                NodeData& data = collectedData[j+1][i];
                 data.exerciseValue = data.controlValue = 0.0;
                 data.cumulatedCashFlows = 0.0;
                 data.isValid = false;

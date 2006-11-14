@@ -18,25 +18,24 @@
 */
 
 
-#ifndef quantlib_longstaff_schwartz_data_collector_hpp
-#define quantlib_longstaff_schwartz_data_collector_hpp
+#ifndef quantlib_monte_carlo_node_data_hpp
+#define quantlib_monte_carlo_node_data_hpp
 
-#include <ql/MonteCarlo/nodedata.hpp>
-#include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/nodedataprovider.hpp>
-#include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
-    void collectNodeData(MarketModelEvolver& evolver,
-                         MarketModelMultiProduct& product,
-                         MarketModelNodeDataProvider& dataProvider,
-                         MarketModelExerciseValue& rebate,
-                         MarketModelExerciseValue& control,
-                         Size numberOfPaths,
-                         std::vector<std::vector<NodeData> >& collectedData);
+    struct NodeData {
+        Real exerciseValue;
+        Real cumulatedCashFlows;
+        std::vector<Real> values;
+        Real controlValue;
+        bool isValid;
+    };
 
 }
 
+
 #endif
+

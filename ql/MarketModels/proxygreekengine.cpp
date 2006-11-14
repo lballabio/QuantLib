@@ -177,7 +177,8 @@ namespace QuantLib {
 
                     // ...and adding the newly bought bonds to the number
                     // of numeraires held.
-                    numerairesHeld_[i] += bonds/principalInNumerairePortfolio;
+                    numerairesHeld_[i] +=
+                        weight*bonds/principalInNumerairePortfolio;
                 }
             }
 
@@ -200,7 +201,7 @@ namespace QuantLib {
         } while (!done);
 
         for (Size i=0; i<numerairesHeld_.size(); ++i)
-            values[i] = weight * numerairesHeld_[i] * initialNumeraireValue_;
+            values[i] = numerairesHeld_[i] * initialNumeraireValue_;
 
     }
 

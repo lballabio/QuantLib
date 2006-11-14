@@ -18,25 +18,25 @@
 */
 
 
-#ifndef quantlib_longstaff_schwartz_data_collector_hpp
-#define quantlib_longstaff_schwartz_data_collector_hpp
+#ifndef quantlib_market_model_parametric_exercise_hpp
+#define quantlib_market_model_parametric_exercise_hpp
 
-#include <ql/MonteCarlo/nodedata.hpp>
-#include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/MarketModels/nodedataprovider.hpp>
-#include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/MonteCarlo/genericparametricearlyexercise.hpp>
+#include <memory>
 
 namespace QuantLib {
 
-    void collectNodeData(MarketModelEvolver& evolver,
-                         MarketModelMultiProduct& product,
-                         MarketModelNodeDataProvider& dataProvider,
-                         MarketModelExerciseValue& rebate,
-                         MarketModelExerciseValue& control,
-                         Size numberOfPaths,
-                         std::vector<std::vector<NodeData> >& collectedData);
+    class MarketModelParametricExercise : public MarketModelNodeDataProvider,
+                                          public ParametricExercise {
+      public:
+        std::vector<Size> numberOfData() const {
+            return numberOfVariables();
+        }
+        virtual std::auto_ptr<MarketModelParametricExercise> clone() const = 0;
+    };
 
 }
+
 
 #endif

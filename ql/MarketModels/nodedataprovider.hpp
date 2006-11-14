@@ -18,22 +18,28 @@
 */
 
 
-#ifndef quantlib_market_model_basis_functions_hpp
-#define quantlib_market_model_basis_functions_hpp
+#ifndef quantlib_market_model_node_data_provider_hpp
+#define quantlib_market_model_node_data_provider_hpp
 
-#include <ql/MarketModels/nodedataprovider.hpp>
-#include <memory>
+#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 
-    class MarketModelBasisSystem : public MarketModelNodeDataProvider {
+    class MarketModelNodeDataProvider {
       public:
+        virtual ~MarketModelNodeDataProvider() {}
+        virtual Size numberOfExercises() const = 0;
         // possibly different for each exercise
-        virtual std::vector<Size> numberOfFunctions() const = 0;
-        std::vector<Size> numberOfData() const {
-            return numberOfFunctions();
-        }
-        virtual std::auto_ptr<MarketModelBasisSystem> clone() const = 0;
+        virtual std::vector<Size> numberOfData() const = 0;
+        // including any time at which state should be updated
+        virtual const EvolutionDescription& evolution() const = 0;
+        virtual void nextStep(const CurveState&) = 0;
+        virtual void reset() = 0;
+        // whether or not evolution times are exercise times
+        virtual std::vector<bool> isExerciseTime() const = 0;
+        virtual void values(const CurveState&,
+                            std::vector<Real>& results) const = 0;
     };
 
 }
