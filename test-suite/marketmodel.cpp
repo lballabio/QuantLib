@@ -190,8 +190,8 @@ void setup() {
 
     // Monte Carlo
     seed_ = 42;
-    paths_ = 1023; //32767; // 2^15-1
-    trainingPaths_ = 1023; //8191; // 2^13-1
+    paths_ = 32767; // 2^15-1
+    trainingPaths_ = 8191; // 2^13-1
 
 }
 
@@ -1441,9 +1441,8 @@ void MarketModelTest::testCallableSwapAnderson() {
                             collectedData, parametricForm, parameters, om) * 
                             initialNumeraireValue;
 
-                        BOOST_MESSAGE("initial estimate: " << firstPassValue);
-                        for (Size l = 0; l<parameters.size(); ++l)
-                            BOOST_MESSAGE(io::ordinal(l+1) << " trigger: " << parameters[l][0]);
+                        if (printReport_)
+                            BOOST_MESSAGE("    initial estimate: " << firstPassValue);
 
                         ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
