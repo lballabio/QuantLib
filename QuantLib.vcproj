@@ -2356,6 +2356,9 @@
 				RelativePath="ql\Instruments\oneassetstrikedoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\payoffs.cpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\payoffs.hpp">
 			</File>
 			<File
@@ -2979,6 +2982,12 @@
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\proxygreekengine.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\proxygreekengine.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\swapbasissystem.cpp">
 			</File>
 			<File
@@ -2989,6 +2998,18 @@
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardmappings.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\swapforwardmappings.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\upperboundengine.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\upperboundengine.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\MarketModels\utilities.cpp">
@@ -3039,9 +3060,6 @@
 						RelativePath=".\ql\MarketModels\Products\OneStep\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.cpp">
-					</File>
-					<File
 						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.hpp">
 					</File>
 					<File
@@ -3061,6 +3079,12 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\OneStep\onestepforwards.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.hpp">
 					</File>
 				</Filter>
 				<Filter
@@ -3086,12 +3110,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcaplets.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.cpp">
@@ -3122,6 +3140,12 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.cpp">
@@ -3163,10 +3187,19 @@
 				Name="BrownianGenerators"
 				Filter="">
 				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -5465,6 +5498,12 @@
 				RelativePath="ql\PricingEngines\americanpayoffathit.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\blackcalculator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackcalculator.hpp">
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\blackformula.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
@@ -5526,6 +5565,18 @@
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\blackformula.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackmodel.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackmodel.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackscholescalculator.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\blackscholescalculator.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\PricingEngines\core.hpp">
