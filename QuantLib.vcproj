@@ -2982,6 +2982,24 @@
 				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\nodedataprovider.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\parametricexercise.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\parametricexerciseadapter.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\parametricexerciseadapter.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\parametricswapexercise.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MarketModels\parametricswapexercise.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\proxygreekengine.cpp">
 			</File>
 			<File
@@ -4531,6 +4549,12 @@
 				RelativePath=".\ql\MonteCarlo\genericlsregression.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\genericparametricearlyexercise.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\genericparametricearlyexercise.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\MonteCarlo\getcovariance.cpp">
 			</File>
 			<File
@@ -4559,6 +4583,9 @@
 			</File>
 			<File
 				RelativePath="ql\MonteCarlo\multipathgenerator.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\MonteCarlo\nodedata.hpp">
 			</File>
 			<File
 				RelativePath="ql\MonteCarlo\path.hpp">
