@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 François du Vignaud
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -31,6 +32,7 @@
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/quote.hpp>
+#include <ql/Patterns/lazyobject.hpp> 
 #include <boost/noncopyable.hpp>
 #include <vector>
 
@@ -48,7 +50,8 @@ namespace QuantLib {
         - <tt>M[i][j]</tt> contains the volatility corresponding
           to the <tt>i</tt>-th exercise and <tt>j</tt>-th tenor.
     */
-    class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure,
+    class SwaptionVolatilityMatrix : public LazyObject, 
+                                     public SwaptionVolatilityStructure,
                                      private boost::noncopyable {
       public:
         //! floating reference date, floating market data
@@ -86,9 +89,10 @@ namespace QuantLib {
                     const DayCounter& dayCounter = Actual365Fixed(),
                     const BusinessDayConvention bdc = Following);
         //! \deprecated alternative constructors instead
+        // fixed reference date and fixed market data, option dates 
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
-                                 const std::vector<Period>& lengths,
+                                 const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
 
@@ -116,8 +120,8 @@ namespace QuantLib {
 
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return optionDates_.back(); }
+        DayCounter dayCounter() const;
+        Date maxDate() const;
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
@@ -155,32 +159,45 @@ namespace QuantLib {
             return std::make_pair(interpolation_.locateY(exerciseTime),
                                   interpolation_.locateX(length));
         }
+        void update();
+        void performCalculations() const;
         //@}
     private:
-        void initializeDatesAndTimes();
-        void initializeMarketData();
+        void checkInputs(Size optionsNb, Size SwapNb, 
+                         Size volRows, Size volsColumns) const;
+        void initializeTimes() const;
+        void initializeOptionDatesAndTimes() const;
+        void registerWithMarketData(
+            const std::vector<std::vector<Handle<Quote> > >& volHandles);
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
                                   Rate strike) const;
         Volatility volatilityImpl(const Date& exerciseDate,
                                   const Period& length,
                                   Rate strike) const;
-        Size nOptionTenors_;
         std::vector<Period> optionTenors_;
-        std::vector<Date> optionDates_;
-        std::vector<Time> optionTimes_;
-        Size nSwapTenors_;
+        mutable std::vector<Date> optionDates_;
+        mutable std::vector<Time> optionTimes_;
         std::vector<Period> swapTenors_;
-        std::vector<Time> swapLengths_;
+        mutable std::vector<Time> swapLengths_;
         std::vector<std::vector<Handle<Quote> > > volHandles_;
-        Matrix volatilities_;
+        mutable Matrix volatilities_;
         DayCounter dayCounter_;
         BusinessDayConvention bdc_;
         Interpolation2D interpolation_;
+        bool referenceDateisFloating_;
     };
 
 
     // inline definitions
+    
+    inline Date SwaptionVolatilityMatrix::maxDate() const {
+        return optionDates_.back();
+    }
+
+    inline DayCounter SwaptionVolatilityMatrix::dayCounter() const { 
+        return dayCounter_; 
+    }
 
     inline const std::vector<Date>&
     SwaptionVolatilityMatrix::exerciseDates() const {
@@ -211,25 +228,30 @@ namespace QuantLib {
     }
 
     inline Rate SwaptionVolatilityMatrix::minStrike() const {
-        return -5.0;
+        return -5.0; //FIXME
     }
 
     inline Rate SwaptionVolatilityMatrix::maxStrike() const {
-        return 5.0;
+        return 5.0; //FIXME
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                Time exerciseTime, Time length, Rate) const {
-        return interpolation_(length,exerciseTime,true);
+                                Time exerciseTime, Time length, Rate) const { 
+        calculate();
+        return interpolation_(length, exerciseTime, true);
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
                                           const Date& exerciseDate,
                                           const Period& length, Rate) const {
         const std::pair<Time, Time> p = convertDates(exerciseDate, length);
-        return interpolation_(p.second,p.first,true);
+        return volatilityImpl(p.first, p.second,true);
     }
 
+    inline void SwaptionVolatilityMatrix::update(){
+        TermStructure::update();
+        LazyObject::update();
+    }
 }
 
 
