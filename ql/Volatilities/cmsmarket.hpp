@@ -42,7 +42,7 @@ namespace QuantLib {
 
         CmsMarket(
             const std::vector<Period>& expiries,
-            const std::vector<Period>& lengths,
+            const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
             const Matrix& meanReversions,
             const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
@@ -50,11 +50,16 @@ namespace QuantLib {
             const Handle<SwaptionVolatilityStructure>& volStructure);
 
         void createForwardStartingCms();
-        void reprice(const Handle<SwaptionVolatilityStructure>& volStructure);
+        void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
+                     Real meanReversion);
         Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
-
+        
+        const std::vector<Period>& swapTenors() const {
+                return swapTenors_;
+            }
+        Matrix meanReversions(){return meanReversions_;};
         Matrix impliedCmsSpreads(){return modelCmsSpreads_;};
         Matrix spreadErrors(){return spreadErrors_;};
         Matrix browse() const;
@@ -62,9 +67,9 @@ namespace QuantLib {
       private:
 
         std::vector<Period> expiries_;
-        std::vector<Period> lengths_;
+        std::vector<Period> swapTenors_;
         Size nExercise_;
-        Size nLengths_;
+        Size nSwapTenors_;
 
         // market bid spreads
         Matrix bids_;
@@ -103,24 +108,11 @@ namespace QuantLib {
         Matrix forwardPriceErrors_;
 
 
-        Date referenceDate_; 
-        Date effectiveDate_;
-        std::vector<Date> exerciseDates_;
 
-        Calendar calendar_;
-        Period tenor_;
-        BusinessDayConvention bdc_;
-        
-        DayCounter dayCounter_;
         Matrix meanReversions_;
         boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
-
-        std::vector< boost::shared_ptr<const Schedule> > schedules_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
-        boost::shared_ptr<Xibor> floatingIndex_;
 
-        std::vector< std::vector< Leg > > cmsLegs_;
-        std::vector< std::vector< Leg > > floatingLegs_;
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
 
         Handle<YieldTermStructure> yieldTermStructure_;
@@ -130,13 +122,6 @@ namespace QuantLib {
 
      class SmileAndCmsCalibrationBySabr{
         
-        class Transformation {
-          public:
-            virtual ~Transformation() {}
-            virtual Array direct(const Array& x) const = 0;
-            virtual Array inverse(const Array& x) const = 0;
-        };
-
       public:
         
         enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
@@ -150,34 +135,31 @@ namespace QuantLib {
         Handle<SwaptionVolatilityStructure> volCube_;
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
-        boost::shared_ptr<Transformation> tranformation_;
         CalibrationType calibrationType_;
 
-        Real calibration();
+        Array calibration();
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 
       private:
 
-        class transformationBeta : public Transformation {
-             mutable Array y_;
+        class ParametersConstraint : public Constraint {
+              private:
+                class Impl : public Constraint::Impl {
+                  public:
+                    bool test(const Array& params) const {
+                        return params[0]>=0.0 && params[0]<=1.0 // beta
+                            && params[1]>0.0 && params[1]<2.0;   // mean reversion
+                    }
+                };
+              public:
+                ParametersConstraint()
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
+            };
+  
+        class ObjectiveFunction : public CostFunction {
           public:
-
-             transformationBeta() : y_(Array(1)){ }
-
-             Array direct(const Array& x) const {
-                    y_[0] = std::exp(-(x[0]*x[0]));
-                    return y_;
-                }
-             Array inverse(const Array& x) const {
-                    y_[0] = std::sqrt(-std::log(x[0]));
-                       return y_;
-                }
-        };
-          
-        class ObjectiveFunctionJustBeta : public CostFunction {
-          public:
-            ObjectiveFunctionJustBeta(SmileAndCmsCalibrationBySabr* smileAndCms)
+            ObjectiveFunction(SmileAndCmsCalibrationBySabr* smileAndCms)
                 :smileAndCms_(smileAndCms),
                 volCube_(smileAndCms->volCube_),
                 cmsMarket_(smileAndCms->cmsMarket_),

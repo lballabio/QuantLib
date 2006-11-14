@@ -122,7 +122,10 @@ namespace QuantLib {
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
         //@}
-        void recalibration(Real beta);
+        void sabrCalibrationSection(const Cube& marketVolCube,
+                                    const Period& swapTenor) const;
+        void recalibration(Real beta,
+                           const Period& swapTenor);
      protected:
         boost::shared_ptr<SmileSectionInterface> smileSection(
                                     Time optionTime,

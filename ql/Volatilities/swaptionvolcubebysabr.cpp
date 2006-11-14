@@ -175,7 +175,85 @@ namespace QuantLib {
         return sabrParametersCube;
 
     }
-    
+    void SwaptionVolatilityCubeBySabr::sabrCalibrationSection(
+                                            const Cube& marketVolCube,
+                                            const Period& swapTenor) const {
+
+        const std::vector<Time>& exerciseTimes = marketVolCube.expiries();
+        const std::vector<Time>& timeLengths = marketVolCube.lengths();
+        const std::vector<Date>& exerciseDates = marketVolCube.exerciseDates();
+        const std::vector<Period>& swapTenors = marketVolCube.swapTenors();
+        
+        QL_REQUIRE(std::binary_search(swapTenors.begin(), swapTenors.end(), swapTenor),
+            "sabrCalibrationSection: swapTenor");
+        Size k;
+        for (Size u=0; u<swapTenors.size(); u++){ 
+            if(swapTenors[u]== swapTenor) k=u;
+        }
+
+        std::vector<Real> calibrationResult(8,0.);
+        const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
+
+        std::vector<Real> strikes(strikeSpreads_.size());
+        std::vector<Real> volatilities(strikeSpreads_.size());
+
+        for (Size j=0; j<exerciseTimes.size(); j++) {
+            Rate atmForward = atmStrike(exerciseDates[j], swapTenors[k]);
+            for (Size i=0; i<nStrikes_; i++){
+                strikes[i] = atmForward+strikeSpreads_[i];
+                volatilities[i] = tmpMarketVolCube[i][j][k];
+            }
+
+            const std::vector<Real>& guess = parametersGuess_.operator()(
+                exerciseTimes[j], timeLengths[k]);
+
+            const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
+                boost::shared_ptr<SABRInterpolation>(new
+                    SABRInterpolation(strikes.begin(), strikes.end(),
+                                        volatilities.begin(),
+                                        exerciseTimes[j], atmForward,
+                                        guess[0], guess[1],
+                                        guess[2], guess[3],
+                                        isParameterFixed_[0],
+                                        isParameterFixed_[1],
+                                        isParameterFixed_[2],
+                                        isParameterFixed_[3],
+                                        vegaWeightedSmileFit_,
+                                        boost::shared_ptr<OptimizationMethod>()));
+
+            Real interpolationError =
+                sabrInterpolation->interpolationError();
+            calibrationResult[0]=sabrInterpolation->alpha();
+            calibrationResult[1]=sabrInterpolation->beta();
+            calibrationResult[2]=sabrInterpolation->nu();
+            calibrationResult[3]=sabrInterpolation->rho();
+            calibrationResult[4]=atmForward;
+            calibrationResult[5]=interpolationError;
+            calibrationResult[6]=sabrInterpolation->interpolationMaxError();
+            calibrationResult[7]=sabrInterpolation->endCriteria();
+            //QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
+            //          "option tenor " << exerciseDates[j] <<
+            //          ", swap tenor " << swapTenors[k] <<
+            //          ": max iteration");
+            //QL_ENSURE(maxErrors[j][k]<15e-4,
+            //          "option tenor " << exerciseDates[j] <<
+            //          ", swap tenor " << swapTenors[k] <<
+            //          ": max error " << maxErrors[j][k]);
+            
+            sparseParameters_.setPoint(exerciseDates[j], swapTenors[k],
+                                    exerciseTimes[j], timeLengths[k],
+                                    calibrationResult);
+            sparseParameters_.updateInterpolators();
+            if(isAtmCalibrated_){ 
+                denseParameters_.setPoint(exerciseDates[j], swapTenors[k],
+                                        exerciseTimes[j], timeLengths[k],
+                                        calibrationResult);
+                denseParameters_.updateInterpolators();
+            }
+            
+        }
+
+    } 
     
     void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
 
@@ -414,19 +492,17 @@ namespace QuantLib {
         return volCubeAtmCalibrated_.browse();
     }
 
-    void SwaptionVolatilityCubeBySabr::recalibration(Real beta){
+    void SwaptionVolatilityCubeBySabr::recalibration(Real beta,
+                                                     const Period& swapTenor){
         Matrix newBetaGuess(nExercise_, nlengths_, beta);
         parametersGuess_.setLayer(1, newBetaGuess);
         parametersGuess_.updateInterpolators();
 
-        sparseParameters_ = sabrCalibration(marketVolCube_);
-        sparseParameters_.updateInterpolators();
+        sabrCalibrationSection(marketVolCube_,swapTenor);
 
         if(isAtmCalibrated_){
-            volCubeAtmCalibrated_= marketVolCube_;
             fillVolatilityCube();
-            denseParameters_ = sabrCalibration(volCubeAtmCalibrated_);
-            denseParameters_.updateInterpolators();
+            sabrCalibrationSection(volCubeAtmCalibrated_,swapTenor);
         }
     }
 
@@ -446,8 +522,8 @@ namespace QuantLib {
       exerciseDates_(exerciseDates), swapTenors_(swapTenors),
       nLayers_(nLayers), extrapolation_(extrapolation) {
 
-        QL_REQUIRE(expiries.size()>1,"Cube::Cube(...): wrong input expiries");
-        QL_REQUIRE(lengths.size()>1,"Cube::Cube(...): wrong input lengths");
+        QL_REQUIRE(expiries.size()>1,"Cube::Cube(...): expiries.size()<2");
+        QL_REQUIRE(lengths.size()>1,"Cube::Cube(...): lengths.size()<2");
 
         QL_REQUIRE(expiries.size()==exerciseDates.size(),
                    "Cube::Cube(...): expiries/exerciseDates mismatch");
