@@ -161,10 +161,6 @@ namespace QuantLib {
 
     }
 
-
-
-
-
     std::vector<boost::shared_ptr<CashFlow> >
     CMSCouponVector(const Schedule& schedule,
                     BusinessDayConvention paymentAdjustment,
@@ -172,8 +168,8 @@ namespace QuantLib {
                     const boost::shared_ptr<SwapIndex>& index,
                     Integer settlementDays,
                     const DayCounter& dayCounter,
-                    const std::vector<Spread>& spreads,
                     const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
                     const std::vector<Real>& meanReversions,
@@ -279,8 +275,8 @@ namespace QuantLib {
                     const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
-                    const std::vector<Spread>& spreads,
                     const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
                     const std::vector<Real>& meanReversions,
@@ -386,8 +382,8 @@ namespace QuantLib {
                     const boost::shared_ptr<SwapIndex>& index,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
-                    const std::vector<Spread>& spreads,
                     const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
                     const std::vector<Real>& meanReversions,
