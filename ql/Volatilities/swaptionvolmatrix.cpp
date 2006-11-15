@@ -217,7 +217,7 @@ namespace QuantLib {
                         const BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(0, calendar),
       optionTenors_(optionTenors), swapTenors_(swapTenors),
-      volHandles_(vols.rows(), vols.columns()),
+      volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
       dayCounter_(dayCounter), bdc_(bdc) {
 
@@ -228,6 +228,7 @@ namespace QuantLib {
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<vols.rows(); i++){
+            volHandles_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
                     new SimpleQuote(vols[i][j])));
@@ -251,7 +252,7 @@ namespace QuantLib {
                         const BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, calendar),
       optionTenors_(optionTenors), swapTenors_(swapTenors),
-      volHandles_(vols.rows(), vols.columns()),
+      volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
       dayCounter_(dayCounter), bdc_(bdc) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
@@ -261,6 +262,7 @@ namespace QuantLib {
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<vols.rows(); i++){
+            volHandles_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
                     new SimpleQuote(vols[i][j])));
@@ -282,7 +284,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(today),
       optionDates_(optionDates), swapTenors_(swapTenors),
-      volHandles_(vols.rows(), vols.columns()),
+      volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
       dayCounter_(dayCounter) {
         checkInputs(optionDates.size(), swapTenors.size(),
@@ -293,6 +295,7 @@ namespace QuantLib {
         // fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<vols.rows(); i++){
+            volHandles_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
                     new SimpleQuote(vols[i][j])));
