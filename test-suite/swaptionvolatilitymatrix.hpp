@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,8 +29,8 @@
 class SwaptionVolatilityMatrixTest {
   public:
     static void testSwaptionVolMatrix();
+    static void testSwaptionVolMatrixObservability();
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 #endif

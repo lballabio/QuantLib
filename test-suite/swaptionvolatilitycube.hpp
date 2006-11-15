@@ -28,12 +28,10 @@
 
 class SwaptionVolatilityCubeTest {
   public:
-    static void testSwaptionVolMatrix();
     static void testAtmVols();
     static void testSmile();
     static void testSabrVols();
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 #endif
