@@ -169,21 +169,20 @@ namespace QuantLib {
                     const BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(0, calendar),
       optionTenors_(optionTenors), swapTenors_(swapTenors), 
+      volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()),
-      dayCounter_(dayCounter), bdc_(bdc), referenceDateisFloating_(true){
+      dayCounter_(dayCounter), bdc_(bdc) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     volatilities_.rows(), volatilities_.columns());
         initializeOptionDatesAndTimes();
-        registerWithMarketData(vols);
-        interpolation_ =
-                BilinearInterpolation(swapLengths_.begin(),
-                          swapLengths_.end(),
-                          optionTimes_.begin(),
-                          optionTimes_.end(),
-                          volatilities_);
-    }
+        registerWithMarketData();
+        interpolation_ = BilinearInterpolation(
+                                    swapLengths_.begin(), swapLengths_.end(),
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    volatilities_);
+   }
 
-     // fixed reference date, floating market data
+    // fixed reference date, floating market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Date& referenceDate,
                     const Calendar& calendar,
@@ -194,19 +193,18 @@ namespace QuantLib {
                     const BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, calendar), 
       optionTenors_(optionTenors), swapTenors_(swapTenors), 
+      volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()),
-      dayCounter_(dayCounter), bdc_(bdc), referenceDateisFloating_(false){
+      dayCounter_(dayCounter), bdc_(bdc) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     volatilities_.rows(), volatilities_.columns());
         initializeOptionDatesAndTimes();
-        registerWithMarketData(vols);
-        interpolation_ =
-                BilinearInterpolation(swapLengths_.begin(),
-                          swapLengths_.end(),
-                          optionTimes_.begin(),
-                          optionTimes_.end(),
-                          volatilities_);
-        }
+        registerWithMarketData();
+        interpolation_ = BilinearInterpolation(
+                                    swapLengths_.begin(), swapLengths_.end(),
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    volatilities_);
+    }
 
 
     // floating reference date, fixed market data
@@ -217,29 +215,31 @@ namespace QuantLib {
                         const Matrix& vols,
                         const DayCounter& dayCounter,
                         const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(0, calendar), optionTenors_(optionTenors), 
-      swapTenors_(swapTenors), volatilities_(vols), dayCounter_(dayCounter), 
-      bdc_(bdc), referenceDateisFloating_(true){
+    : SwaptionVolatilityStructure(0, calendar),
+      optionTenors_(optionTenors), swapTenors_(swapTenors),
+      volHandles_(vols.rows(), vols.columns()),
+      volatilities_(vols.rows(), vols.columns()),
+      dayCounter_(dayCounter), bdc_(bdc) {
 
         checkInputs(optionTenors.size(), swapTenors.size(), 
-                        vols.rows(), vols.columns());
+                    vols.rows(), vols.columns());
         initializeOptionDatesAndTimes();
 
-        std::vector<std::vector<Handle<Quote> > > volsHandles;
-        volsHandles.resize(vols.rows());
+        // fill dummy handles to allow generic handle-based
+        // computations later on
         for (Size i=0; i<vols.rows(); i++){
-            volsHandles[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
-                volsHandles[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
+                    new SimpleQuote(vols[i][j])));
             }
         }   
-        registerWithMarketData(volsHandles);
+        registerWithMarketData();
         interpolation_ = BilinearInterpolation(
-            swapLengths_.begin(), swapLengths_.end(),
-            optionTimes_.begin(), optionTimes_.end(),
-            volatilities_);
-}
+                                    swapLengths_.begin(), swapLengths_.end(),
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    volatilities_);
+    }
+
     // fixed reference date, fixed market data
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                         const Date& referenceDate,
@@ -251,25 +251,26 @@ namespace QuantLib {
                         const BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(referenceDate, calendar),
       optionTenors_(optionTenors), swapTenors_(swapTenors),
-      volatilities_(vols), dayCounter_(dayCounter), 
-      bdc_(bdc), referenceDateisFloating_(false){
+      volHandles_(vols.rows(), vols.columns()),
+      volatilities_(vols.rows(), vols.columns()),
+      dayCounter_(dayCounter), bdc_(bdc) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     vols.rows(), vols.columns());
         initializeOptionDatesAndTimes();
-        std::vector<std::vector<Handle<Quote> > > volsHandles;
-        volsHandles.resize(vols.rows());
+
+        // fill dummy handles to allow generic handle-based
+        // computations later on
         for (Size i=0; i<vols.rows(); i++){
-            volsHandles[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
-                volsHandles[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
+                    new SimpleQuote(vols[i][j])));
             }
         }   
-        registerWithMarketData(volsHandles);
+        registerWithMarketData();
         interpolation_ = BilinearInterpolation(
-            swapLengths_.begin(), swapLengths_.end(),
-            optionTimes_.begin(), optionTimes_.end(),
-            volatilities_);
+                                    swapLengths_.begin(), swapLengths_.end(),
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    volatilities_);
     }
 
     // fixed reference date and fixed market data, option dates 
@@ -279,52 +280,47 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const Matrix& vols,
                     const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today), optionDates_(optionDates),
-      swapTenors_(swapTenors), volatilities_(vols), dayCounter_(dayCounter),
-      referenceDateisFloating_(true){
+    : SwaptionVolatilityStructure(today),
+      optionDates_(optionDates), swapTenors_(swapTenors),
+      volHandles_(vols.rows(), vols.columns()),
+      volatilities_(vols.rows(), vols.columns()),
+      dayCounter_(dayCounter) {
         checkInputs(optionDates.size(), swapTenors.size(),
                     vols.rows(), vols.columns());
-
+        // initialize times only (no date)
         initializeTimes();
-        std::vector<std::vector<Handle<Quote> > > volsHandles;
-        volsHandles.resize(vols.rows());
+
+        // fill dummy handles to allow generic handle-based
+        // computations later on
         for (Size i=0; i<vols.rows(); i++){
-            volsHandles[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); j++){
-                volsHandles[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                    SimpleQuote(vols[i][j])));
+                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
+                    new SimpleQuote(vols[i][j])));
             }
         }   
-        registerWithMarketData(volsHandles);
-        interpolation_ =
-            BilinearInterpolation(swapLengths_.begin(),
-                                  swapLengths_.end(),
-                                  optionTimes_.begin(),
-                                  optionTimes_.end(),
-                                  volatilities_);
+        registerWithMarketData();
+        interpolation_ = BilinearInterpolation(
+                                    swapLengths_.begin(), swapLengths_.end(),
+                                    optionTimes_.begin(), optionTimes_.end(),
+                                    volatilities_);
     }
 
     void SwaptionVolatilityMatrix::performCalculations() const {
         
-        if (referenceDateisFloating_)
+        if (moving_) // check if date recalculation could be avoided
             initializeOptionDatesAndTimes(); 
-        // not really efficient because we use resize in this procedure...
 
-        for (Size i=0; i<volatilities_.rows(); i++)
-            for (Size j=0; j<volatilities_.columns(); j++)
+        // we might use iterators here...
+        for (Size i=0; i<volatilities_.rows(); ++i)
+            for (Size j=0; j<volatilities_.columns(); ++j)
                 volatilities_[i][j] = volHandles_[i][j]->value();
     }
   
-    void SwaptionVolatilityMatrix::registerWithMarketData(
-        const std::vector<std::vector<Handle<Quote> > >& volHandles) {
-        volHandles_.resize(volatilities_.rows());
-        for (Size i=0; i<volHandles_.size(); i++){
-            volHandles_[i].resize(volatilities_.columns());
-            for (Size j=0; j<volatilities_.columns(); j++){
-                volHandles_[i][j] = volHandles[i][j];
+    void SwaptionVolatilityMatrix::registerWithMarketData()
+    {
+        for (Size i=0; i<volHandles_.size(); ++i)
+            for (Size j=0; j<volHandles_.front().size(); ++j)
                 registerWith(volHandles_[i][j]);
-            }
-        }
     }
 
     boost::shared_ptr<SmileSectionInterface> SwaptionVolatilityMatrix::smileSection(

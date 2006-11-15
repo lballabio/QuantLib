@@ -167,8 +167,7 @@ namespace QuantLib {
                          Size volRows, Size volsColumns) const;
         void initializeTimes() const;
         void initializeOptionDatesAndTimes() const;
-        void registerWithMarketData(
-            const std::vector<std::vector<Handle<Quote> > >& volHandles);
+        void registerWithMarketData();
         Volatility volatilityImpl(Time exerciseTime,
                                   Time length,
                                   Rate strike) const;
@@ -185,7 +184,6 @@ namespace QuantLib {
         DayCounter dayCounter_;
         BusinessDayConvention bdc_;
         Interpolation2D interpolation_;
-        bool referenceDateisFloating_;
     };
 
 
