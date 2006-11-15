@@ -294,7 +294,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
 void SwaptionVolatilityMatrixTest::testSwaptionVolMatrix() {
 
-    BOOST_MESSAGE("Testing swaption volatility ATM matrix...");
+    BOOST_MESSAGE("Testing swaption volatility matrix...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
