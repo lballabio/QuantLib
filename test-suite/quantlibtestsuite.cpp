@@ -106,6 +106,7 @@
 #include "varianceswaps.hpp"
 #include "volatilitymodels.hpp"
 #include "capstripper.hpp"
+#include "swaptionvolatilitymatrix.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
 
@@ -165,6 +166,7 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
+    test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());

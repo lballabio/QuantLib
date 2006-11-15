@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="testsuite"
 	ProjectGUID="{A613045C-34AF-4706-AA3C-730C92524F74}"
 	RootNamespace="testsuite"
@@ -110,7 +110,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -311,7 +310,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -2096,6 +2094,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\swaptionvolatilitymatrix.cpp"
+				>
+			</File>
+			<File
 				RelativePath="termstructures.cpp"
 				>
 				<FileConfiguration
@@ -2462,6 +2464,10 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitycube.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\swaptionVolatilityMatrix.hpp"
 				>
 			</File>
 			<File
