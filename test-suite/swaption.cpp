@@ -450,7 +450,7 @@ void SwaptionTest::testVega() {
                             Real discrepancy = std::fabs(analyticalVegaPerPoint
                                 - numericalVegaPerPoint);
                             discrepancy /= numericalVegaPerPoint;
-                            Real tolerance = 0.01;
+                            Real tolerance = 0.015;
                             if (discrepancy > tolerance)
                                 BOOST_FAIL("failed to compute swaption vega:" <<
                                     "\n  option tenor:    " << exercises[i] <<
