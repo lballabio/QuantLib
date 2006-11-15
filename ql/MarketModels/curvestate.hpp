@@ -66,7 +66,7 @@ namespace QuantLib {
         void setOnForwardRates(ForwardIterator begin,
                                ForwardIterator end,
                                Size firstValidIndex = 0) {
-            QL_REQUIRE(end-begin==nRates_,
+            QL_REQUIRE(Size(end-begin)==nRates_,
                        "too many forward rates: " <<
                        nRates_ << " required, " <<
                        end-begin << " provided");
@@ -83,7 +83,7 @@ namespace QuantLib {
             for (Size i=first_; i<nRates_; ++i)
                 discRatios_[i+1] = discRatios_[i] /
                                     (1.0+forwardRates_[i]*taus_[i]);
-    
+
             // lazy evaluation of coterminal swap rates and annuities
             firstCotSwap_ = nRates_;
         }

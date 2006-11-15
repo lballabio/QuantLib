@@ -26,6 +26,8 @@
 
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
+#include <ql/PricingEngines/blackscholescalculator.hpp>
 #include <ql/PricingEngines/greeks.hpp>
 #include <ql/PricingEngines/mclongstaffschwartzengine.hpp>
 

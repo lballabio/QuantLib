@@ -183,13 +183,10 @@ namespace QuantLib {
         const std::vector<Time>& timeLengths = marketVolCube.lengths();
         const std::vector<Date>& exerciseDates = marketVolCube.exerciseDates();
         const std::vector<Period>& swapTenors = marketVolCube.swapTenors();
-        
-        QL_REQUIRE(std::binary_search(swapTenors.begin(), swapTenors.end(), swapTenor),
-            "sabrCalibrationSection: swapTenor");
-        Size k;
-        for (Size u=0; u<swapTenors.size(); u++){ 
-            if(swapTenors[u]== swapTenor) k=u;
-        }
+
+        Size k = std::find(swapTenors.begin(), swapTenors.end(),
+                           swapTenor) - swapTenors.begin();
+        QL_REQUIRE(k != swapTenors.size(), "swap tenor not found");
 
         std::vector<Real> calibrationResult(8,0.);
         const std::vector<Matrix>& tmpMarketVolCube = marketVolCube.points();
@@ -239,22 +236,22 @@ namespace QuantLib {
             //          "option tenor " << exerciseDates[j] <<
             //          ", swap tenor " << swapTenors[k] <<
             //          ": max error " << maxErrors[j][k]);
-            
+
             sparseParameters_.setPoint(exerciseDates[j], swapTenors[k],
                                     exerciseTimes[j], timeLengths[k],
                                     calibrationResult);
             sparseParameters_.updateInterpolators();
-            if(isAtmCalibrated_){ 
+            if(isAtmCalibrated_){
                 denseParameters_.setPoint(exerciseDates[j], swapTenors[k],
                                         exerciseTimes[j], timeLengths[k],
                                         calibrationResult);
                 denseParameters_.updateInterpolators();
             }
-            
+
         }
 
-    } 
-    
+    }
+
     void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
 
         // NO!!!!!!
@@ -348,7 +345,7 @@ namespace QuantLib {
         std::vector<Real> result;
         const std::vector<Time>& exerciseTimes(sparseParameters_.expiries());
         const std::vector<Time>& timeLengths(sparseParameters_.lengths());
-        const std::vector<Date>& exerciseDates = 
+        const std::vector<Date>& exerciseDates =
             sparseParameters_.exerciseDates();
         const std::vector<Period>& swapTenors = sparseParameters_.swapTenors();
 

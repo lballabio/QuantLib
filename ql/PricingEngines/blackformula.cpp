@@ -55,6 +55,15 @@ namespace QuantLib {
         return result;
     }
 
+    Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                      Real forward,
+                      Real stdDev,
+                      Real discount) {
+        return blackFormula(payoff->optionType(),
+            payoff->strike(), forward, stdDev, discount);
+    }
+
+
     Real blackImpliedStdDevApproximation(Option::Type optionType,
                                          Real strike,
                                          Real forward,
@@ -93,6 +102,16 @@ namespace QuantLib {
                   "stdDev (" << stdDev << ") must be non-negative");
         return stdDev;
     }
+
+    Real blackImpliedStdDevApproximation(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real blackPrice,
+                        Real) {
+        return blackImpliedStdDevApproximation(payoff->optionType(),
+            payoff->strike(), forward, blackPrice);
+    }
+
 
     class BlackImpliedStdDevHelper {
       public:
@@ -166,7 +185,8 @@ namespace QuantLib {
         else
             QL_REQUIRE(guess>=0.0,
                        "stdDev guess (" << guess << ") must be non-negative");
-        BlackImpliedStdDevHelper f(optionType, strike, forward, blackPrice/discount);
+        BlackImpliedStdDevHelper f(optionType, strike, forward,
+                                   blackPrice/discount);
         //Brent solver;
         NewtonSafe solver;
         solver.setMaxEvaluations(100);
@@ -176,6 +196,18 @@ namespace QuantLib {
                   "stdDev (" << stdDev << ") must be non-negative");
         return stdDev;
     }
+
+    Real blackImpliedStdDev(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real blackPrice,
+                        Real discount,
+                        Real guess,
+                        Real accuracy) {
+        return blackImpliedStdDev(payoff->optionType(), payoff->strike(),
+            forward, blackPrice, discount, guess, accuracy);
+    }
+
 
     Real blackItmProbability(Option::Type optionType,
                              Real strike,
@@ -191,6 +223,15 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
+    Real blackItmProbability(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev) {
+        return blackItmProbability(payoff->optionType(),
+            payoff->strike(), forward, stdDev);
+    }
+
+
     Real blackStdDevDerivative(Rate strike, Rate forward, Real stdDev,
                                Real discount) {
         QL_REQUIRE(strike>=0.0,
@@ -202,7 +243,17 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
-        return discount * forward * CumulativeNormalDistribution().derivative(d1);
+        return discount * forward *
+            CumulativeNormalDistribution().derivative(d1);
+    }
+
+    Real blackStdDevDerivative(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real discount) {
+        return blackStdDevDerivative(payoff->strike(), forward,
+                                     stdDev, discount);
     }
 
     /* Bachelier model */
@@ -226,6 +277,15 @@ namespace QuantLib {
                   strike << " on a " << forward << " forward "
                   "(Bachelier model)");
         return result;
+    }
+
+    Real bachelierBlackFormula(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real discount) {
+        return bachelierBlackFormula(payoff->optionType(),
+            payoff->strike(), forward, stdDev, discount);
     }
 
 }

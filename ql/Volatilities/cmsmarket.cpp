@@ -40,9 +40,9 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& yieldTermStructure,
         const Handle<SwaptionVolatilityStructure>& volStructure):
     expiries_(expiries),
-    swapIndices_(swapIndices),
     meanReversions_(meanReversions),
     pricer_(pricer),
+    swapIndices_(swapIndices),
     yieldTermStructure_(yieldTermStructure),
     volStructure_(volStructure) {
 
@@ -84,7 +84,7 @@ namespace QuantLib {
                 mids_[i][j] = (bids_[i][j]+asks_[i][j])/2;
 
                 swapTmp.push_back(
-                    MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_, 
+                    MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_,
                         meanReversions_[i][j], pricer_,Period()).operator boost::shared_ptr<Swap>()
                );
 
@@ -122,10 +122,10 @@ namespace QuantLib {
             for (Size j=0; j<nSwapTenors_ ; j++) {
                 QL_REQUIRE(expiries_[i].units()==startingCmsTenor.units(),
                     "CmsMarket::createForwardStartingCms: Attenzione");
-                Period tenorOfForwardCms =  
+                Period tenorOfForwardCms =
                     Period(expiries_[i].length()-startingCmsTenor.length(),expiries_[i].units());
                 boost::shared_ptr<Swap> forwardSwap =
-                     MakeCMS(tenorOfForwardCms, swapIndices_[j], 0., volStructure_, 
+                     MakeCMS(tenorOfForwardCms, swapIndices_[j], 0., volStructure_,
                         meanReversions_[i][j], pricer_,startingCmsTenor).operator boost::shared_ptr<Swap>();
 
                 // ForwardPrice errors valuation
@@ -156,7 +156,7 @@ namespace QuantLib {
         }
      }
 
-     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure, 
+     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                              Real meanReversion){
         // set new volatility structure
         volStructure_ = volStructure;
@@ -164,7 +164,7 @@ namespace QuantLib {
             for (Size j=0; j<nSwapTenors_ ; j++) {
                 // set new mean reversion
                 meanReversions_[i][j] = meanReversion;
-                swaps_[i][j] = MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_, 
+                swaps_[i][j] = MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_,
                     meanReversions_[i][j], pricer_,Period()).operator boost::shared_ptr<Swap>();
 
                 // Spread errors valuation
@@ -331,10 +331,10 @@ namespace QuantLib {
     Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::value(const Array& x) const {
         const Array y = x;
         Real beta = y[0];
-        Real meanReversion = y[1];        
+        Real meanReversion = y[1];
         const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
-        
+
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
         for (Size i=0; i<swapTenors.size(); i++){
             volCubeBySabr->recalibration(beta, swapTenors[i]);

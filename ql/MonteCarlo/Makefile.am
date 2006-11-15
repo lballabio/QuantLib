@@ -10,6 +10,7 @@ include_HEADERS = \
 	exercisestrategy.hpp \
 	getcovariance.hpp \
 	genericlsregression.hpp \
+	genericparametricearlyexercise.hpp \
 	longstaffschwartzpathpricer.hpp \
 	lsmbasissystem.hpp \
 	mctypedefs.hpp \
@@ -26,6 +27,7 @@ include_HEADERS = \
 libMonteCarlo_la_SOURCES = \
 	brownianbridge.cpp \
 	genericlsregression.cpp \
+	genericparametricearlyexercise.cpp \
 	getcovariance.cpp \
 	lsmbasissystem.cpp
 

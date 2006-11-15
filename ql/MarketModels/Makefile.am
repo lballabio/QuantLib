@@ -22,8 +22,14 @@ include_HEADERS = \
     marketmodelevolver.hpp \
     marketmodelproduct.hpp \
     marketmodel.hpp \
+    nodedataprovider.hpp \
+    parametricexercise.hpp \
+    parametricexerciseadapter.hpp \
+    parametricswapexercise.hpp \
+    proxygreekengine.hpp \
     swapbasissystem.hpp \
     swapforwardconversionmatrix.hpp \
+    upperboundengine.hpp \
     utilities.hpp
 
 libMarketModels_la_SOURCES = \
@@ -33,8 +39,12 @@ libMarketModels_la_SOURCES = \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
     marketmodeldiscounter.cpp \
+    parametricexerciseadapter.cpp \
+    parametricswapexercise.cpp \
+    proxygreekengine.cpp \
     swapbasissystem.cpp \
     swapforwardconversionmatrix.cpp \
+    upperboundengine.cpp \
     utilities.cpp
 
 

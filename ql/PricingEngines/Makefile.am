@@ -9,8 +9,10 @@ include_HEADERS = \
     all.hpp \
     americanpayoffatexpiry.hpp \
     americanpayoffathit.hpp \
+    blackcalculator.hpp \
     blackformula.hpp \
     blackmodel.hpp \
+    blackscholescalculator.hpp \
     core.hpp \
     genericmodelengine.hpp \
     greeks.hpp \
@@ -21,7 +23,9 @@ include_HEADERS = \
 libPricingEngines_la_SOURCES = \
 	americanpayoffatexpiry.cpp \
 	americanpayoffathit.cpp \
+	blackcalculator.cpp \
 	blackformula.cpp \
+	blackscholescalculator.cpp \
 	greeks.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la

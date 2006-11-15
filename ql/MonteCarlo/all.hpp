@@ -28,6 +28,7 @@
 #include <ql/MonteCarlo/earlyexercisepathpricer.hpp>
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/MonteCarlo/genericlsregression.hpp>
+#include <ql/MonteCarlo/genericparametricearlyexercise.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/MonteCarlo/longstaffschwartzpathpricer.hpp>
 #include <ql/MonteCarlo/lsmbasissystem.hpp>

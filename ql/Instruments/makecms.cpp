@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    MakeCMS::MakeCMS(const Period& swapTenor, 
+    MakeCMS::MakeCMS(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
                      const Handle<SwaptionVolatilityStructure>& vol,
@@ -33,12 +33,16 @@ namespace QuantLib {
                      const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
-      iborSpread_(iborSpread), swaptionVol_(vol),
+      iborSpread_(iborSpread),
       //modelOfYieldCurve_(modelOfYieldCurve),
       //cmsVanillapricer_(boost::shared_ptr<VanillaCMSCouponPricer>(new
       //    ConundrumPricerByNumericalIntegration(modelOfYieldCurve)));
-      cmsVanillapricer_(pricer),
+      cmsVanillapricer_(pricer), swaptionVol_(vol),
       forwardStart_(forwardStart),
+
+      cmsSpread_(0.0), cmsGearing_(1.0),
+      cmsCap_(2.0), cmsFloor_(0.0),
+      cmsMeanReversion_(meanReversion),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->calendar()),
@@ -46,17 +50,13 @@ namespace QuantLib {
 
       discountingTermStructure_(swapIndex->termStructureHandle()),
 
-      cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(2.0), cmsFloor_(0.0),
-      cmsMeanReversion_(meanReversion),
-
-      payCMS_(true), nominal_(1000000.0), 
-      cmsTenor_(3*Months), floatTenor_(3*Months), 
+      payCMS_(true), nominal_(1000000.0),
+      cmsTenor_(3*Months), floatTenor_(3*Months),
       cmsConvention_(ModifiedFollowing),
       cmsTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(ModifiedFollowing),
       floatTerminationDateConvention_(ModifiedFollowing),
-      cmsBackward_(true), floatBackward_(true), 
+      cmsBackward_(true), floatBackward_(true),
       cmsEndOfMonth_(false), floatEndOfMonth_(false),
       cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
@@ -222,7 +222,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCMS& 
+    MakeCMS&
     MakeCMS::withCMSLegCalendar(const Calendar& cal) {
         cmsCalendar_ = cal;
         return *this;
@@ -261,7 +261,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCMS& 
+    MakeCMS&
     MakeCMS::withCMSLegDayCount(const DayCounter& dc) {
         cmsDayCount_ = dc;
         return *this;
@@ -272,7 +272,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeCMS& 
+    MakeCMS&
     MakeCMS::withFloatingLegCalendar(const Calendar& cal) {
         floatCalendar_ = cal;
         return *this;
@@ -282,7 +282,7 @@ namespace QuantLib {
     MakeCMS::withFloatingLegConvention(BusinessDayConvention bdc) {
         floatConvention_ = bdc;
         return *this;
-    }    
+    }
 
     MakeCMS&
     MakeCMS::withFloatingLegTerminationDateConvention(BusinessDayConvention bdc) {

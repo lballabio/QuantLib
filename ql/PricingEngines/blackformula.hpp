@@ -39,7 +39,7 @@ namespace QuantLib {
     #endif
 
     /*! Black 1976 formula
-        \warning - instead of volatility it uses standard deviation,
+        \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
     Real blackFormula(Option::Type optionType,
@@ -47,14 +47,16 @@ namespace QuantLib {
                       Real forward,
                       Real stdDev,
                       Real discount = 1.0);
-    inline Real blackFormula(
-                      const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+
+    /*! Black 1976 formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
-                      Real discount = 1.0) {
-        return blackFormula(payoff->optionType(),
-            payoff->strike(), forward, stdDev, discount);
-    }
+                      Real discount = 1.0);
+
 
     /*! Approximated Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity).
@@ -68,14 +70,20 @@ namespace QuantLib {
                                          Real forward,
                                          Real blackPrice,
                                          Real discount = 1.0);
-    inline Real blackImpliedStdDevApproximation(
+
+    /*! Approximated Black 1976 implied standard deviation,
+        i.e. volatility*sqrt(timeToMaturity).
+
+        It is calculated using Brenner and Subrahmanyan (1988) and Feinstein
+        (1988) approximation for at-the-money forward option, with the
+        extended moneyness approximation by Corrado and Miller (1996)
+    */
+    Real blackImpliedStdDevApproximation(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
-                        Real discount = 1.0) {
-        return blackImpliedStdDevApproximation(payoff->optionType(),
-            payoff->strike(), forward, blackPrice);
-    }
+                        Real discount = 1.0);
+
 
     /*! Black 1976 implied standard deviation,
         i.e. volatility*sqrt(timeToMaturity)
@@ -87,16 +95,18 @@ namespace QuantLib {
                             Real discount = 1.0,
                             Real guess = Null<Real>(),
                             Real accuracy = 1.0e-6);
-    inline Real blackImpliedStdDev(
+
+    /*! Black 1976 implied standard deviation,
+        i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackImpliedStdDev(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
                         Real discount = 1.0,
                         Real guess = Null<Real>(),
-                        Real accuracy = 1.0e-6) {
-        return blackImpliedStdDev(payoff->optionType(), payoff->strike(),
-            forward, blackPrice, discount, guess, accuracy);
-    }
+                        Real accuracy = 1.0e-6);
+
 
     /*! Black 1976 "in the money probability" formula
         \warning instead of volatility it uses standard deviation,
@@ -106,13 +116,16 @@ namespace QuantLib {
                              Real strike,
                              Real forward,
                              Real stdDev);
-    inline Real blackItmProbability(
+
+    /*! Black 1976 "in the money probability" formula
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
-                        Real stdDev) {
-        return blackItmProbability(payoff->optionType(),
-            payoff->strike(), forward, stdDev);
-    }
+                        Real stdDev);
+
 
     /*! Black 1976 formula for standard deviation derivative
         \warning instead of volatility it uses standard deviation, i.e.
@@ -125,14 +138,20 @@ namespace QuantLib {
                                Rate forward,
                                Real stdDev,
                                Real discount = 1.0);
-    inline Real blackStdDevDerivative(
+
+    /*! Black 1976 formula for standard deviation derivative
+        \warning instead of volatility it uses standard deviation, i.e.
+                 volatility*sqrt(timeToMaturity), and it returns the
+                 derivative with respect to the standard deviation.
+                 If T is the time to maturity Black vega would be
+                 blackStdDevDerivative(strike, forward, stdDev)*sqrt(T)
+    */
+    Real blackStdDevDerivative(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
-                        Real discount = 1.0) {
-        return blackStdDevDerivative(payoff->strike(), forward,
-                                     stdDev, discount);
-    }
+                        Real discount = 1.0);
+
 
     /*! Black style formula when forward is normal rather than
         log-normal. This is essentially the model of Bachelier.
@@ -146,14 +165,19 @@ namespace QuantLib {
                                Real forward,
                                Real stdDev,
                                Real discount = 1.0);
-    inline Real bachelierBlackFormula(
+
+    /*! Black style formula when forward is normal rather than
+        log-normal. This is essentially the model of Bachelier.
+
+        \warning Bachelier model needs absolute volatility, not percentage
+                 volatility. Standard deviation is
+                 absoluteVolatility*sqrt(timeToMaturity)
+    */
+    Real bachelierBlackFormula(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
-                        Real discount = 1.0) {
-        return bachelierBlackFormula(payoff->optionType(),
-            payoff->strike(), forward, stdDev, discount);
-    }
+                        Real discount = 1.0);
 
 }
 
