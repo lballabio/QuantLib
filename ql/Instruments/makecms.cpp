@@ -86,7 +86,8 @@ namespace QuantLib {
           Integer fixingDays = swapIndex_->settlementDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          startDate = cmsCalendar_.advance(spotDate, forwardStart_);
+          //startDate = cmsCalendar_.advance(spotDate, forwardStart_);
+          startDate = spotDate+forwardStart_;
         }
 
         Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
@@ -144,7 +145,8 @@ namespace QuantLib {
           Integer fixingDays = swapIndex_->settlementDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          startDate = cmsCalendar_.advance(spotDate, forwardStart_);
+          //startDate = cmsCalendar_.advance(spotDate, forwardStart_);
+          startDate = spotDate+forwardStart_;
         }
 
         Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
