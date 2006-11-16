@@ -86,11 +86,10 @@ namespace QuantLib {
           Integer fixingDays = swapIndex_->settlementDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          //startDate = cmsCalendar_.advance(spotDate, forwardStart_);
           startDate = spotDate+forwardStart_;
         }
 
-        Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
+        Date terminationDate = startDate+swapTenor_;
 
         Schedule cmsSchedule(startDate, terminationDate,
                              cmsTenor_, cmsCalendar_,
@@ -145,11 +144,10 @@ namespace QuantLib {
           Integer fixingDays = swapIndex_->settlementDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
-          //startDate = cmsCalendar_.advance(spotDate, forwardStart_);
           startDate = spotDate+forwardStart_;
         }
 
-        Date terminationDate = NullCalendar().advance(startDate, swapTenor_);
+        Date terminationDate = startDate+swapTenor_;
 
         Schedule cmsSchedule(startDate, terminationDate,
                              cmsTenor_, cmsCalendar_,
