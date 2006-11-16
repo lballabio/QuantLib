@@ -51,17 +51,19 @@ void setup() {
     bdc_ = Following;
     dayCounter_ = Actual365Fixed();
 
-    optionTenors_.push_back(Period(1, Months));
-    optionTenors_.push_back(Period(6, Months));
-    optionTenors_.push_back(Period(1, Years));
-    optionTenors_.push_back(Period(5, Years));
-    optionTenors_.push_back(Period(10, Years));
-    optionTenors_.push_back(Period(30, Years));
-
-    swapTenors_.push_back(Period(1, Years));
-    swapTenors_.push_back(Period(5, Years));
-    swapTenors_.push_back(Period(10, Years));
-    swapTenors_.push_back(Period(30, Years));
+    optionTenors_.resize(6);
+    optionTenors_[0] = Period(1, Months);
+    optionTenors_[1] = Period(6, Months);
+    optionTenors_[2] = Period(1, Years);
+    optionTenors_[3] = Period(5, Years);
+    optionTenors_[4] = Period(10, Years);
+    optionTenors_[5] = Period(30, Years);
+    
+    swapTenors_.resize(4);
+    swapTenors_[0] = Period(1, Years);
+    swapTenors_[1] = Period(5, Years);
+    swapTenors_[2] = Period(10, Years);
+    swapTenors_[3] = Period(30, Years);
 
     vols_ = Matrix(optionTenors_.size(), swapTenors_.size());
     vols_[0][0]=0.1300; vols_[0][1]=0.1560; vols_[0][2]=0.1390; vols_[0][3]=0.1220;
