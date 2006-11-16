@@ -60,7 +60,7 @@ bool checkAbsError(Real x1, Real x2, Real tolerance){
 
 std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
                                                   Integer length) {
-    Date endDate = calendar_.advance(startDate,length,Years,convention_);
+    Date endDate = calendar_.advance(startDate,length*Years,convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     return FloatingRateCouponVector(schedule, convention_, nominals_,
@@ -169,8 +169,8 @@ void CapFloorTest::testVega() {
                         discrepancy /= numericalVega;
                         if (discrepancy > tolerance)
                             BOOST_FAIL("failed to compute CapFloor vega:" <<
-                                "\n    lengths:     " << lengths[j] <<
-                                "\n    exercise:    " << strikes[k] <<
+                                "\n    lengths:     " << lengths[j]*Years <<
+                                "\n    strike:      " << io::rate(strikes[k]) <<
                                 //"\n    types:       " << types[h] <<
                                 QL_FIXED << std::setprecision(12) <<
                                 "\n    calculated:  " << analyticalVega <<
