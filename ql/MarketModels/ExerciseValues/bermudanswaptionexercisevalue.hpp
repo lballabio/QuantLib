@@ -30,8 +30,7 @@ namespace QuantLib {
       public:
         //! \todo use Payoff
         BermudanSwaptionExerciseValue(const std::vector<Time>& rateTimes,
-                                      const std::vector<Rate>& strikes,
-                                      Option::Type optionType);
+                            const std::vector<boost::shared_ptr<Payoff> >&);
         Size numberOfExercises() const;
         // including any time at which state should be updated
         const EvolutionDescription& evolution() const;
@@ -45,8 +44,7 @@ namespace QuantLib {
       private:
         Size numberOfExercises_;
         std::vector<Time> rateTimes_;
-        std::vector<Rate> strikes_;
-        Option::Type optionType_;
+        std::vector<boost::shared_ptr<Payoff> > payoffs_;
         EvolutionDescription evolution_;
         // evolving
         Size currentIndex_;

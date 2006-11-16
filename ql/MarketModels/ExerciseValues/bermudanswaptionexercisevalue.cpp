@@ -23,11 +23,10 @@
 namespace QuantLib {
 
     BermudanSwaptionExerciseValue::BermudanSwaptionExerciseValue(
-                                          const std::vector<Time>& rateTimes,
-                                          const std::vector<Rate>& strikes,
-                                          Option::Type optionType)
+              const std::vector<Time>& rateTimes,
+              const std::vector<boost::shared_ptr<Payoff> >&payoffs)
     : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
-      strikes_(strikes), optionType_(optionType), currentIndex_(0) {
+        currentIndex_(0), payoffs_(payoffs) {
         std::vector<Time> evolveTimes(rateTimes_);
         evolveTimes.pop_back();
         evolution_ = EvolutionDescription(rateTimes_,evolveTimes);
@@ -52,9 +51,9 @@ namespace QuantLib {
     }
 
     void BermudanSwaptionExerciseValue::nextStep(const CurveState& state) {
-        Real value = optionType_ *
-            state.coterminalSwapAnnuities()[currentIndex_] *
-            (state.coterminalSwapRate(currentIndex_) - strikes_[currentIndex_]);
+        const Payoff& p = (*payoffs_[currentIndex_]);
+        Real value = state.coterminalSwapAnnuities()[currentIndex_] *
+            p(state.coterminalSwapRate(currentIndex_));
 
         value /= state.discountRatios()[currentIndex_];
         value =  std::max(value, 0.0);

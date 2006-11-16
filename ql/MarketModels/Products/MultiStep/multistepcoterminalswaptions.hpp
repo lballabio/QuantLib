@@ -22,6 +22,7 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 
@@ -30,7 +31,7 @@ namespace QuantLib {
         MultiStepCoterminalSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Real>& accruals,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<Rate>& strikes);
+                                     const std::vector<boost::shared_ptr<Payoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -47,7 +48,7 @@ namespace QuantLib {
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<Rate> strikes_;
+        std::vector<boost::shared_ptr<Payoff> > payoffs_;
         Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;

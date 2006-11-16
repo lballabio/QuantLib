@@ -944,8 +944,14 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
     QL_TEST_SETUP
 
     std::vector<Rate> swaptionsStrikes = todaysForwards;
+    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    
+    for (Size i = 0; i < payoffs.size(); ++i)
+        payoffs[i] = boost::shared_ptr<Payoff> (new 
+        AssetOrNothingPayoff(Option::Call, todaysForwards[i]));
+    
     MultiStepCoterminalSwaptions swaptions(rateTimes, accruals,
-                                           paymentTimes, swaptionsStrikes);
+                                           paymentTimes, payoffs);
     MultiProductComposite product;
     product.add(swaptions);
     product.finalize();
@@ -1983,7 +1989,7 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
