@@ -108,20 +108,40 @@ namespace QuantLib {
                         Real accuracy = 1.0e-6);
 
 
-    /*! Black 1976 "in the money probability" formula
+    /*! Black 1976 probability of being in the money (in the bond martingale
+        measure), i.e. N(d2).
+        It is a risk-neutral probability, not the real world one.
+        \warning instead of volatility it uses standard deviation,
+                 i.e. volatility*sqrt(timeToMaturity)
+    */
+    Real blackCashItmProbability(Option::Type optionType,
+                                 Real strike,
+                                 Real forward,
+                                 Real stdDev);
+
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! Black 1976 probability of being in the money (in the bond martingale
+        measure), i.e. N(d2).
+        It is a risk-neutral probability, not the real world one.
+        \deprecated use blackCashItmProbability instead
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
     Real blackItmProbability(Option::Type optionType,
                              Real strike,
                              Real forward,
-                             Real stdDev);
+                             Real stdDev) {
+         return blackCashItmProbability(optionType, strike, forward, stdDev);
+    }
+    #endif
 
-    /*! Black 1976 "in the money probability" formula
+    /*! Black 1976 probability of being in the money (in the bond martingale
+        measure), i.e. N(d2).
+        It is a risk-neutral probability, not the real world one.
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackItmProbability(
+    Real blackCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev);

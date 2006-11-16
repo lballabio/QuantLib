@@ -209,10 +209,10 @@ namespace QuantLib {
     }
 
 
-    Real blackItmProbability(Option::Type optionType,
-                             Real strike,
-                             Real forward,
-                             Real stdDev) {
+    Real blackCashItmProbability(Option::Type optionType,
+                                 Real strike,
+                                 Real forward,
+                                 Real stdDev) {
         if (stdDev==0.0)
             return (forward*optionType > strike*optionType ? 1.0 : 0.0);
         if (strike==0.0)
@@ -223,14 +223,13 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
-    Real blackItmProbability(
+    Real blackCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev) {
-        return blackItmProbability(payoff->optionType(),
+        return blackCashItmProbability(payoff->optionType(),
             payoff->strike(), forward, stdDev);
     }
-
 
     Real blackStdDevDerivative(Rate strike, Rate forward, Real stdDev,
                                Real discount) {

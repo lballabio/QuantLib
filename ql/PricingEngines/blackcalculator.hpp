@@ -87,12 +87,15 @@ namespace QuantLib {
         /*! Sensitivity to dividend/growth rate. */
         Real dividendRho(Time maturity) const;
 
-        /*! Probability of being in the money in the bond martingale measure.
-            It is a risk-neutral probability, not the real world probability.
+        /*! Probability of being in the money in the bond martingale
+            measure, i.e. N(d2).
+            It is a risk-neutral probability, not the real world one.
         */
         Real itmCashProbability() const;
-        /*! Probability of being in the money in the asset martingale measure.
-            It is a risk-neutral probability, not the real world probability.
+
+        /*! Probability of being in the money in the asset martingale
+            measure, i.e. N(d1).
+            It is a risk-neutral probability, not the real world one.
         */
         Real itmAssetProbability() const;
 
