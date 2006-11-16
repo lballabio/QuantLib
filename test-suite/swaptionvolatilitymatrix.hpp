@@ -28,7 +28,7 @@
 
 class SwaptionVolatilityMatrixTest {
   public:
-    static void testSwaptionVolMatrix();
+    static void testSwaptionVolMatrixCoherence();
     static void testSwaptionVolMatrixObservability();
     static boost::unit_test_framework::test_suite* suite();
 };

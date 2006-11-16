@@ -35,7 +35,6 @@ QL_BEGIN_TEST_LOCALS(SwaptionVolatilityMatrixTest)
 
 // global data
 
-Date referenceDate_;
 Calendar calendar_;
 BusinessDayConvention bdc_;
 Matrix vols_;
@@ -48,8 +47,6 @@ Real tolerance_;
 // utilities
 void setup() {
 
-    referenceDate_ = Date(6, September, 2006);
-    Settings::instance().evaluationDate() = referenceDate_;
     calendar_ = TARGET();
     bdc_ = Following;
     dayCounter_ = Actual365Fixed();
@@ -93,16 +90,16 @@ void makeObservabiltyTest(
                       bool mktDataFloating,
                       bool referenceDateFloating) {
     Rate dummyStrike = .02;
+    Date referenceDate = Settings::instance().evaluationDate();
     Volatility initialVol = vol->volatility(
-                    referenceDate_ + optionTenors_[0],
+                    referenceDate + optionTenors_[0],
                     swapTenors_[0], dummyStrike, false);
     // testing evaluation date change ...
-    Date evaluationDate = Settings::instance().evaluationDate();
-    Settings::instance().evaluationDate() = evaluationDate - Period(1, Years);
+    Settings::instance().evaluationDate() = referenceDate - Period(1, Years);
     Volatility newVol =  vol->volatility(
-                        referenceDate_ + optionTenors_[0],
+                        referenceDate + optionTenors_[0],
                         swapTenors_[0], dummyStrike, false);
-    Settings::instance().evaluationDate() = evaluationDate;
+    Settings::instance().evaluationDate() = referenceDate;
     if (referenceDateFloating && (initialVol == newVol))
         BOOST_ERROR(description <<
         " the volatility should change when the reference date is changed !");
@@ -116,7 +113,7 @@ void makeObservabiltyTest(
         Volatility volatility = initialVolatility*100;
         dynamic_cast<SimpleQuote*>(&*volsHandles_[0][0].currentLink())->setValue(10);
         newVol = vol->volatility(
-                referenceDate_ + optionTenors_[0],
+                referenceDate + optionTenors_[0],
                 swapTenors_[0], .02, false);
         dynamic_cast<SimpleQuote*>(&*volsHandles_[0][0].currentLink())->setValue(initialVolatility);
         if (initialVol == newVol)
@@ -248,7 +245,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
     vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(referenceDate_,
+        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  calendar_,
                                  optionTenors_, 
                                  swapTenors_,
@@ -271,7 +268,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
     vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(referenceDate_,
+        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  calendar_,
                                  optionTenors_, 
                                  swapTenors_,
@@ -292,7 +289,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 }
 
 
-void SwaptionVolatilityMatrixTest::testSwaptionVolMatrix() {
+void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     BOOST_MESSAGE("Testing swaption volatility matrix...");
 
@@ -314,7 +311,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrix() {
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
     vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(referenceDate_,
+        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  calendar_,
                                  optionTenors_, 
                                  swapTenors_,
@@ -337,7 +334,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrix() {
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
     vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(referenceDate_,
+        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
                                  calendar_,
                                  optionTenors_, 
                                  swapTenors_,
@@ -355,7 +352,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrix() {
 test_suite* SwaptionVolatilityMatrixTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
 
-    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrix));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));
 
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability));
 
