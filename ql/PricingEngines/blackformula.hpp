@@ -127,7 +127,7 @@ namespace QuantLib {
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
     */
-    Real blackItmProbability(Option::Type optionType,
+    inline Real blackItmProbability(Option::Type optionType,
                              Real strike,
                              Real forward,
                              Real stdDev) {
