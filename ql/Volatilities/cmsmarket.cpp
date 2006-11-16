@@ -289,7 +289,8 @@ namespace QuantLib {
         boost::shared_ptr<LineSearch> lineSearch(
             new ArmijoLineSearch(1e-12, 0.05, 0.65));
         boost::shared_ptr<OptimizationMethod> method(new ConjugateGradient(lineSearch));
-
+        //boost::shared_ptr<OptimizationMethod> method(new Simplex(0.005, 1e-3));
+        
         switch (calibrationType_) {
             case OnSpread:
                 method->setEndCriteria(EndCriteria(30, 1e-1));

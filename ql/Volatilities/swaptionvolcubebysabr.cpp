@@ -82,9 +82,9 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::performCalculations() const{
         sparseParameters_ = sabrCalibration(marketVolCube_);
-        parametersGuess_ = sparseParameters_;
+        //parametersGuess_ = sparseParameters_;
         sparseParameters_.updateInterpolators();
-        parametersGuess_.updateInterpolators();
+        //parametersGuess_.updateInterpolators();
         volCubeAtmCalibrated_= marketVolCube_;
 
         if(isAtmCalibrated_){
@@ -228,10 +228,11 @@ namespace QuantLib {
             calibrationResult[5]=interpolationError;
             calibrationResult[6]=sabrInterpolation->interpolationMaxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
-            //QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
-            //          "option tenor " << exerciseDates[j] <<
-            //          ", swap tenor " << swapTenors[k] <<
-            //          ": max iteration");
+            
+            QL_ENSURE(calibrationResult[7]!=EndCriteria::maxIter,
+                      "option tenor " << exerciseDates[j] <<
+                      ", swap tenor " << swapTenors[k] <<
+                      ": max iteration");
             //QL_ENSURE(maxErrors[j][k]<15e-4,
             //          "option tenor " << exerciseDates[j] <<
             //          ", swap tenor " << swapTenors[k] <<
