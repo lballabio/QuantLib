@@ -164,8 +164,8 @@ void makeCoherenceTest(
     }
 
     Real tolerance = 1.0e-16;
-    for (i=0; i<optionTenors_.size(); i++) {
-      for (j=0; j<swapTenors_.size(); j++) {
+    for (Size i=0; i<optionTenors_.size(); i++) {
+      for (Size j=0; j<swapTenors_.size(); j++) {
 
           Period thisOptionTenor=  optionTenors_[i];
           Date thisOptionDate = vol->exerciseDates()[i];
