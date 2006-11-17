@@ -70,19 +70,19 @@ namespace QuantLib {
     class CapsStripper : public CapletVolatilityStructure, 
                          public LazyObject{
       public:
-        CapsStripper(const Calendar& capScheduleConventioncalendar,
-                     BusinessDayConvention capScheduleConvention,
-                     Integer capScheduleFixingDays,
-                     const std::vector<Period>& tenors,
-                     const std::vector<Rate>& strikes,
-                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                     const DayCounter& volatilityDayCounter,
-                     const boost::shared_ptr<Xibor>& index,
-                     const Handle< YieldTermStructure > termStructure,
-                     Real impliedVolatilityAccuracy = 1.0e-6,
-                     Size maxEvaluations = 100,
-                     const SmileSectionInterfaceVector& smileSections 
-                        = Null<SmileSectionInterfaceVector>());
+        CapsStripper(const Calendar& capScheduleConventioncalendar, // remove
+                     BusinessDayConvention capScheduleConvention, // remove
+                     Integer capScheduleFixingDays, // remove
+                     const std::vector<Period>& tenors, // 1
+                     const std::vector<Rate>& strikes, // 2
+                     const std::vector<std::vector<Handle<Quote> > >& vols, // 3
+                     const DayCounter& volatilityDayCounter, // 7 = Actual365Fidex()
+                     const boost::shared_ptr<Xibor>& index, // 4
+                     const Handle< YieldTermStructure > termStructure, // 5
+                     Real impliedVolatilityAccuracy = 1.0e-6, // 8
+                     Size maxEvaluations = 100, // 9
+                     const boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure // 6
+                        = Null <boost::shared_ptr<SmileSectionsVolStructure> >());
         //@}
         //! \name LazyObject interface
         //@{

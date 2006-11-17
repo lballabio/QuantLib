@@ -27,8 +27,10 @@
 
 using namespace QuantLib;
 
-     // we should used std::lower_bound but how do we retrieve the index
-     // from an iterator ?
+
+
+    // we should used std::lower_bound but how do we retrieve the index
+    // from an iterator ?
     Size lowerIndex(const std::vector<Time>& times, Time time){
         if (time <= times.front())
             return 0;
@@ -69,9 +71,9 @@ using namespace QuantLib;
 
 
     SmileSectionsVolStructure::SmileSectionsVolStructure(
-                           const Date& referenceDate,
-                           const DayCounter& dayCounter,
-                           const SmileSectionInterfaceVector& smileSections):
+               const Date& referenceDate,
+               const DayCounter& dayCounter,
+               const SmileSectionInterfaceVector& smileSections):
         CapletVolatilityStructure(referenceDate),
         smileSections_(smileSections),
         dayCounter_(dayCounter),
@@ -81,9 +83,9 @@ using namespace QuantLib;
             tenorTimes_[i] = dayCounter.yearFraction(referenceDate,
                 smileSections[i]->exerciseDate());
         }
-        maxDate_ = smileSections.back()->exerciseDate();
+        /*maxDate_ = smileSections.back()->exerciseDate();
         minStrike_ = 0;
-        maxStrike_ = 1;
+        maxStrike_ = 1;*/
     }
 
      Volatility SmileSectionsVolStructure::volatilityImpl(Time length,
@@ -180,32 +182,31 @@ using namespace QuantLib;
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes,
-            const SmileSectionInterfaceVector& smileSections):
-        ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter){
+            const boost::shared_ptr<CapletVolatilityStructure>
+                shortTermCapletVolatilityStructure):
+        ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter),
+            shortTermCapletVolatilityStructure_(
+                shortTermCapletVolatilityStructure){
 
         volatilitiesFromCaps_ =
             boost::shared_ptr<BilinInterpCapletVolStructure>(
                 new BilinInterpCapletVolStructure(referenceDate, dayCounter,
                     referenceCaps, strikes));
 
-        volatilitiesFromFutureOptions_ =
-            boost::shared_ptr<SmileSectionsVolStructure>(new
-            SmileSectionsVolStructure(referenceDate, dayCounter, smileSections));
+        registerWith(shortTermCapletVolatilityStructure);
 
-        registerWith(volatilitiesFromFutureOptions_);
-
-        Time maxFutureMaturity = volatilitiesFromFutureOptions_->
+        Time maxShortTermMaturity = shortTermCapletVolatilityStructure->
                                         maxTime();
             Time minCapMaturity = volatilitiesFromCaps_->minTime();
-            overlapStart = std::min(maxFutureMaturity, minCapMaturity);
-            overlapEnd = std::max(maxFutureMaturity, minCapMaturity);
+            overlapStart = std::min(maxShortTermMaturity, minCapMaturity);
+            overlapEnd = std::max(maxShortTermMaturity, minCapMaturity);
         }
 
     Volatility HybridCapletVolatilityStructure::volatilityImpl(
                               Time length,
                               Rate strike) const {
             if (length < overlapStart)
-                return volatilitiesFromFutureOptions_->volatility(length,
+                return shortTermCapletVolatilityStructure_->volatility(length,
                 strike, true);
             if (length > overlapEnd)
                 return volatilitiesFromCaps_->volatility(length, strike,
@@ -219,14 +220,14 @@ using namespace QuantLib;
             volatilitiesFromCaps_->setClosestTenors(length,
                 nextLowerCapTenor, nextHigherCapTenor);
 
-            volatilitiesFromFutureOptions_->setClosestTenors(length,
-                nextLowerFutureTenor, nextHigherFutureTenor);
+           /* shortTermCapletVolatilityStructure_->setClosestTenors(length,
+                nextLowerFutureTenor, nextHigherFutureTenor);*/
 
             /* we determine which volatility surface should be used for the
                lower value*/
             if (nextLowerCapTenor < nextLowerFutureTenor){
                 nextLowerTenor = nextLowerFutureTenor;
-                volAtNextLowerTenor = volatilitiesFromFutureOptions_->
+                volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
                     volatility(nextLowerTenor, strike, true);
             }else{
                 nextLowerTenor = nextLowerCapTenor;
@@ -242,7 +243,7 @@ using namespace QuantLib;
                     nextHigherTenor, strike, true);
             }else{
                 nextHigherTenor = nextHigherFutureTenor;
-                volAtNextHigherTenor = volatilitiesFromFutureOptions_->
+                volAtNextHigherTenor = shortTermCapletVolatilityStructure_->
                     volatility(nextHigherTenor, strike, true);
             }
 

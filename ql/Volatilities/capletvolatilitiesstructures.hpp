@@ -25,60 +25,41 @@
 #define caplet_volatilities_structures_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/Volatilities/smilesection.hpp>
+#include <ql/volatilities/smilesection.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Math/matrix.hpp>
+#include <ql/Math/Matrix.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
-
-    typedef std::vector<Handle<InterpolatedSmileSection> > \
-        SmileSectionInterfaceVector;
-    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
-
-    class ImpliedVolHelper{
-    public:
-        ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
-                         Real targetValue,
-                         Real& volatilityParameter):
-                         targetValue_(targetValue), cap_(cap),
-                         volatilityParameter_(volatilityParameter){};
-
-        Real operator()(Real x) const {
-            volatilityParameter_ = x;
-            cap_->update();
-            return cap_->NPV() - targetValue_;
-        };
-    private:
-        Real targetValue_;
-        boost::shared_ptr<CapFloor> cap_;
-        Real& volatilityParameter_;
+    
+    //  temporary fucntions for test purpose
+    inline double test (boost::shared_ptr<SmileSectionInterface> t){
+        return 0;
     };
 
-    inline void fitVolatilityParameter(boost::shared_ptr<CapFloor> mkData,
-                                    Real& volatilityParameter,
-                                    Real targetValue,
-                                    Real accuracy = 1e-5,
-                                    Size maxEvaluations = 1000,
-                                    Volatility minVol = 1e-4,
-                                    Volatility maxVol = 4){
-        ImpliedVolHelper f(mkData, targetValue, volatilityParameter);
-        Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
-    }
+    inline double test2 (std::vector<boost::shared_ptr<SmileSectionInterface> >& t){
+        return 0;
+    };
+
+    typedef std::vector<boost::shared_ptr<SmileSectionInterface> > \
+        SmileSectionInterfaceVector;
+    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
+   
+    typedef std::vector<Handle<SmileSectionInterface> > \
+        SmileSectionInterfaceHandlesVector;
 
    class SmileSectionsVolStructure: public CapletVolatilityStructure{
     public:
-        SmileSectionsVolStructure(const Date& referenceDate,
-                           const DayCounter& dayCounter,
-                           const SmileSectionInterfaceVector& smileSections);
-
+        SmileSectionsVolStructure(
+           const Date& referenceDate,
+           const DayCounter& dayCounter,
+           const SmileSectionInterfaceVector& smileSections);
+        
         Volatility volatilityImpl(Time length,
             Rate strike) const;
 
-        void setClosestTenors(Time time, Time& nextLowerTenor,
+        void setClosestTenors(Time time, Time& nextLowerTenor, 
             Time& nextHigherTenor) const;
 
         Time maxTime() const{ return tenorTimes_.back();}
@@ -95,13 +76,11 @@ namespace QuantLib {
         Real maxStrike() const;
         //@}
     private:
-        SmileSectionInterfaceVector smileSections_;
         DayCounter dayCounter_;
         std::vector<Time> tenorTimes_;
-        Rate minStrike_, maxStrike_;
-        Date maxDate_;
+        SmileSectionInterfaceVector smileSections_;
     };
-
+   
     class ParametrizedCapletVolStructure:
        public CapletVolatilityStructure{
     public:
@@ -117,12 +96,12 @@ namespace QuantLib {
         BilinInterpCapletVolStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
-            const CapMatrix& referenceCaps,
+            const CapMatrix& referenceCaps, 
             const std::vector<Rate>& strikes);
 
         Volatility volatilityImpl(Time length, Rate strike) const;
-
-        void setClosestTenors(Time time,
+        
+        void setClosestTenors(Time time, 
             Time& nextLowerTenor, Time& nextHigherTenor);
 
         Time minTime() const{ return tenorTimes_.front();}
@@ -166,7 +145,8 @@ namespace QuantLib {
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps, 
             const std::vector<Rate>& strikes,
-            const SmileSectionInterfaceVector& smileSections);
+            const boost::shared_ptr<CapletVolatilityStructure>
+                shortTermCapletVolatilityStructure);
 
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
@@ -189,10 +169,10 @@ namespace QuantLib {
     private:
         DayCounter dayCounter_;
         Time overlapStart, overlapEnd;
-        boost::shared_ptr<BilinInterpCapletVolStructure>
+        boost::shared_ptr<BilinInterpCapletVolStructure> 
             volatilitiesFromCaps_;
-        boost::shared_ptr<SmileSectionsVolStructure>
-            volatilitiesFromFutureOptions_;
+        boost::shared_ptr<CapletVolatilityStructure> 
+            shortTermCapletVolatilityStructure_;
         Date maxDate_;
         Rate minStrike_, maxStrike_;
     };

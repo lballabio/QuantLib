@@ -39,7 +39,40 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 
+
 namespace QuantLib {
+
+    class ImpliedVolHelper{
+    public:
+        ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
+                         Real targetValue,
+                         Real& volatilityParameter):
+                         targetValue_(targetValue), cap_(cap),
+                         volatilityParameter_(volatilityParameter){};
+
+        Real operator()(Real x) const {
+            volatilityParameter_ = x;
+            cap_->update();
+            return cap_->NPV() - targetValue_;
+        };
+    private:
+        Real targetValue_;
+        boost::shared_ptr<CapFloor> cap_;
+        Real& volatilityParameter_;
+    };
+    
+    void fitVolatilityParameter(boost::shared_ptr<CapFloor> mkData,
+                                    Real& volatilityParameter,
+                                    Real targetValue,
+                                    Real accuracy = 1e-5,
+                                    Size maxEvaluations = 1000,
+                                    Volatility minVol = 1e-4,
+                                    Volatility maxVol = 4) {
+        ImpliedVolHelper f(mkData, targetValue, volatilityParameter);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
+    };
 
     FloatingLeg LegHelper::makeLeg(const Period & startPeriod,
                                     const Period & endPeriod){
@@ -56,7 +89,7 @@ namespace QuantLib {
                                         index_->dayCounter());
         }
 
-
+   
     CapsStripper::CapsStripper(
         const Calendar & calendar,
         BusinessDayConvention convention,
@@ -69,7 +102,8 @@ namespace QuantLib {
         const Handle< YieldTermStructure > termStructure,
         Real impliedVolatilityAccuracy,
         Size maxEvaluations,
-        const SmileSectionInterfaceVector& smileSections)
+        const boost::shared_ptr<SmileSectionsVolStructure> 
+            smileSectionsVolStructure)
     : CapletVolatilityStructure(0, calendar),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
@@ -107,8 +141,8 @@ namespace QuantLib {
                registerWith(marketDataCap_[i][j]);
            }
         }
-        
-        if (smileSections.size()==0)
+        // to be changed ...
+        if (smileSectionsVolStructure.px== 0)
             parametrizedCapletVolStructure_ 
                = boost::shared_ptr<ParametrizedCapletVolStructure>(
                 new BilinInterpCapletVolStructure(referenceDate(),
@@ -122,7 +156,7 @@ namespace QuantLib {
                                                   volatilityDayCounter,
                                                   marketDataCap_,
                                                   strikes,
-                                                  smileSections));
+                                                  smileSectionsVolStructure));
              registerWith(parametrizedCapletVolStructure_);
             }
 
