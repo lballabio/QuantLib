@@ -225,11 +225,11 @@ using namespace QuantLib;
 
             /* we determine which volatility surface should be used for the
                lower value*/
-            if (nextLowerCapTenor < nextLowerFutureTenor){
+            if (nextLowerCapTenor < nextLowerFutureTenor) {
                 nextLowerTenor = nextLowerFutureTenor;
                 volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
                     volatility(nextLowerTenor, strike, true);
-            }else{
+            } else {
                 nextLowerTenor = nextLowerCapTenor;
                 volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
                     nextLowerTenor, strike, true);
