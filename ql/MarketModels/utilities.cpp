@@ -58,8 +58,10 @@ namespace QuantLib {
                                  const std::vector<Time>& subset) {
 
         std::vector<bool> result(set.size(), false);
-        Size dimSet = set.size();
         Size dimsubSet = subset.size();
+        if (dimsubSet==0)
+            return result;
+        Size dimSet = set.size();
         Time setElement, subsetElement;
 
         QL_REQUIRE(dimSet >= dimsubSet,
