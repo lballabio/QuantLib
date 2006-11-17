@@ -1961,9 +1961,6 @@
 				RelativePath=".\piecewiseyieldcurve.cpp">
 			</File>
 			<File
-				RelativePath=".\quantlibbenchmark.cpp">
-			</File>
-			<File
 				RelativePath="quantlibtestsuite.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
