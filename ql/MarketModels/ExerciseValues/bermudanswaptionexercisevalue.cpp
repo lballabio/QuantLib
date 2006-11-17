@@ -26,7 +26,7 @@ namespace QuantLib {
               const std::vector<Time>& rateTimes,
               const std::vector<boost::shared_ptr<Payoff> >&payoffs)
     : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
-        currentIndex_(0), payoffs_(payoffs) {
+      payoffs_(payoffs), currentIndex_(0) {
         std::vector<Time> evolveTimes(rateTimes_);
         evolveTimes.pop_back();
         evolution_ = EvolutionDescription(rateTimes_,evolveTimes);

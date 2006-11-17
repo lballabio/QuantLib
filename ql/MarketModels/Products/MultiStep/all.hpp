@@ -25,10 +25,10 @@
 #include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
 #include <ql/MarketModels/Products/MultiStep/cashrebate.hpp>
 #include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
-#include <ql/MarketModels/Products/MultiStep/multistepcaplets.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepcoinitialswaps.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepcoterminalswaps.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepforwards.hpp>
+#include <ql/MarketModels/Products/MultiStep/multistepoptionlets.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepnothing.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepswap.hpp>
 

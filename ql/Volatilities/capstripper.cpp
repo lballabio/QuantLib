@@ -46,7 +46,7 @@ namespace QuantLib {
         boost::shared_ptr<CapFloor> cap_;
         Real& volatilityParameter_;
     };
-    
+
     void fitVolatilityParameter(boost::shared_ptr<CapFloor> mkData,
                                     Real& volatilityParameter,
                                     Real targetValue,
@@ -58,9 +58,9 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
-    };
+    }
 
-   
+
     CapsStripper::CapsStripper(
          const std::vector<Period>& tenors,
          const std::vector<Rate>& strikes,
@@ -70,7 +70,7 @@ namespace QuantLib {
          const DayCounter& volatilityDayCounter,
          Real impliedVolatilityAccuracy,
          Size maxEvaluations,
-         const std::vector<boost::shared_ptr<SmileSectionInterface> >& 
+         const std::vector<boost::shared_ptr<SmileSectionInterface> >&
              smileSectionInterfaces)
     : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),
@@ -96,7 +96,7 @@ namespace QuantLib {
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
                    BlackCapFloorEngine(vols[i][j], volatilityDayCounter));
-               CapFloor::Type type = 
+               CapFloor::Type type =
                    (strikes_[j] < atmRate)? CapFloor::Floor : CapFloor::Cap;
                marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
                         index, strikes_[j], 0*Days, blackCapFloorEngine);
@@ -104,7 +104,7 @@ namespace QuantLib {
            }
         }
         if (smileSectionInterfaces.empty())
-            parametrizedCapletVolStructure_ 
+            parametrizedCapletVolStructure_
                = boost::shared_ptr<ParametrizedCapletVolStructure>(
                 new BilinInterpCapletVolStructure(referenceDate(),
                                                   volatilityDayCounter,
@@ -115,7 +115,7 @@ namespace QuantLib {
                  new SmileSectionsVolStructure(referenceDate(),
                                                volatilityDayCounter,
                                                smileSectionInterfaces));
-             parametrizedCapletVolStructure_ 
+             parametrizedCapletVolStructure_
                = boost::shared_ptr<ParametrizedCapletVolStructure>(
                 new HybridCapletVolatilityStructure(referenceDate(),
                                                   volatilityDayCounter,
@@ -137,19 +137,19 @@ namespace QuantLib {
                        CapFloor(*marketDataCap_[i][j]));
                 calibCap_[i][j]->setPricingEngine(calibBlackCapFloorEngine);
             }
-        } 
+        }
     }
 
 
     void CapsStripper::performCalculations () const {
-        Matrix& volatilityParameters = 
+        Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
 
         for (Size j = 0 ; j < strikes_.size(); j++){
             for (Size i = 0 ; i < tenors_.size(); i++) {
                 CapFloor & mktCap = *marketDataCap_[i][j];
                 Real capPrice = mktCap.NPV();
-                fitVolatilityParameter(calibCap_[i][j], 
+                fitVolatilityParameter(calibCap_[i][j],
                     volatilityParameters[i][j],
                     capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
             }

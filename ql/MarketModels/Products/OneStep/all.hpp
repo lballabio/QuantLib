@@ -22,9 +22,9 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/MarketModels/Products/OneStep/onestepcaplets.hpp>
 #include <ql/MarketModels/Products/OneStep/onestepcoinitialswaps.hpp>
 #include <ql/MarketModels/Products/OneStep/onestepcoterminalswaps.hpp>
 #include <ql/MarketModels/Products/OneStep/onestepforwards.hpp>
+#include <ql/MarketModels/Products/OneStep/onestepoptionlets.hpp>
 
 #endif

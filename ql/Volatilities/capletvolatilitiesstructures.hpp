@@ -25,27 +25,27 @@
 #define caplet_volatilities_structures_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/volatilities/smilesection.hpp>
+#include <ql/Volatilities/smilesection.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Math/Matrix.hpp>
+#include <ql/Math/matrix.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
-    
-    //  temporary fucntions for test purpose
-    inline double test (boost::shared_ptr<SmileSectionInterface> t){
-        return 0;
-    };
 
-    inline double test2 (std::vector<boost::shared_ptr<SmileSectionInterface> >& t){
+    //  temporary fucntions for test purpose
+    inline double test (boost::shared_ptr<SmileSectionInterface>){
         return 0;
-    };
+    }
+
+    inline double test2 (std::vector<boost::shared_ptr<SmileSectionInterface> >&){
+        return 0;
+    }
 
     typedef std::vector<boost::shared_ptr<SmileSectionInterface> > \
         SmileSectionInterfaceVector;
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
-   
+
     typedef std::vector<Handle<SmileSectionInterface> > \
         SmileSectionInterfaceHandlesVector;
 
@@ -55,11 +55,11 @@ namespace QuantLib {
            const Date& referenceDate,
            const DayCounter& dayCounter,
            const SmileSectionInterfaceVector& smileSections);
-        
+
         Volatility volatilityImpl(Time length,
             Rate strike) const;
 
-        void setClosestTenors(Time time, Time& nextLowerTenor, 
+        void setClosestTenors(Time time, Time& nextLowerTenor,
             Time& nextHigherTenor) const;
 
         Time maxTime() const{ return tenorTimes_.back();}
@@ -80,7 +80,7 @@ namespace QuantLib {
         std::vector<Time> tenorTimes_;
         SmileSectionInterfaceVector smileSections_;
     };
-   
+
     class ParametrizedCapletVolStructure:
        public CapletVolatilityStructure{
     public:
@@ -96,12 +96,12 @@ namespace QuantLib {
         BilinInterpCapletVolStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
-            const CapMatrix& referenceCaps, 
+            const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes);
 
         Volatility volatilityImpl(Time length, Rate strike) const;
-        
-        void setClosestTenors(Time time, 
+
+        void setClosestTenors(Time time,
             Time& nextLowerTenor, Time& nextHigherTenor);
 
         Time minTime() const{ return tenorTimes_.front();}
@@ -137,20 +137,20 @@ namespace QuantLib {
     };
 
 
-    class HybridCapletVolatilityStructure: 
+    class HybridCapletVolatilityStructure:
         public ParametrizedCapletVolStructure{
     public:
         HybridCapletVolatilityStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
-            const CapMatrix& referenceCaps, 
+            const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes,
             const boost::shared_ptr<CapletVolatilityStructure>
                 shortTermCapletVolatilityStructure);
 
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
-        
+
         Matrix& volatilityParameters() const {
             return volatilitiesFromCaps_->volatilityParameters();
         }
@@ -169,9 +169,9 @@ namespace QuantLib {
     private:
         DayCounter dayCounter_;
         Time overlapStart, overlapEnd;
-        boost::shared_ptr<BilinInterpCapletVolStructure> 
+        boost::shared_ptr<BilinInterpCapletVolStructure>
             volatilitiesFromCaps_;
-        boost::shared_ptr<CapletVolatilityStructure> 
+        boost::shared_ptr<CapletVolatilityStructure>
             shortTermCapletVolatilityStructure_;
         Date maxDate_;
         Rate minStrike_, maxStrike_;

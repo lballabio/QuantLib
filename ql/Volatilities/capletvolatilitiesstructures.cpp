@@ -75,9 +75,9 @@ using namespace QuantLib;
                const DayCounter& dayCounter,
                const SmileSectionInterfaceVector& smileSections):
         CapletVolatilityStructure(referenceDate),
-        smileSections_(smileSections),
         dayCounter_(dayCounter),
-        tenorTimes_(smileSections.size()) {
+        tenorTimes_(smileSections.size()),
+        smileSections_(smileSections) {
         for (Size i = 0; i < smileSections_.size(); i++){
             registerWith(smileSections[i]);
             tenorTimes_[i] = dayCounter.yearFraction(referenceDate,

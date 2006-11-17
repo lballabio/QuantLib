@@ -114,7 +114,7 @@ namespace QuantLib {
 
     inline TermStructure::TermStructure(const Date& referenceDate,
                                         const Calendar& calendar)
-    : referenceDate_(referenceDate), moving_(false), updated_(true),
+    : moving_(false), referenceDate_(referenceDate), updated_(true),
       settlementDays_(Null<Integer>()), calendar_(calendar) {}
 
     inline TermStructure::TermStructure(Integer settlementDays,
