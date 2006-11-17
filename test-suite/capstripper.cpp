@@ -28,6 +28,7 @@
 #include <iostream>
 #include <ql/CashFlows/floatingratecoupon.hpp> 
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/Instruments/makecapfloor.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -37,7 +38,6 @@ QL_BEGIN_TEST_LOCALS(CapsStripperTest)
 
 Calendar calendar;
 DayCounter dayCounter;
-Size strikesNb, tenorsNb;
 std::vector<Rate> strikes;
 std::vector<Period> tenors;
 std::vector<std::vector<Handle<Quote> > > volatilityQuoteHandle;
@@ -53,15 +53,6 @@ Rate flatForwardRate;
 Matrix v;
 QL_END_TEST_LOCALS(CapsStripperTest)
 
-
-void printMatrix(const Matrix& m) {
-    for (Size i=0; i<m.rows(); i++) {
-        for (Size j=0; j<m.columns(); j++)
-            std::cout << m[i][j] << " ";
-        std::cout << "\n";
-    }
-}
-
 Real maxAbs(const Matrix& m){
     Real max = QL_MIN_REAL; 
     for (Size i=0; i<m.rows(); i++) {
@@ -72,116 +63,23 @@ Real maxAbs(const Matrix& m){
 }
 
 
-void printFloatingLeg(const FloatingLeg& floatingLeg){
-    boost::shared_ptr<FloatingRateCoupon> floatingRateCoupon;
-    for (Size i = 0; i < floatingLeg.size(); i++){
-        floatingRateCoupon = 
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg[i]);
-        std::cout   //<< i << "\t"
-                    << floatingRateCoupon->fixingDate() << "\t" 
-                    << floatingRateCoupon->accrualStartDate()<< "\t"
-                    //<< floatingRateCoupon->accrualEndDate()<< "\t"
-                    << floatingRateCoupon->date()<< "\t"
-                    << std::endl;
-    }
-    std::cout << "---------------------" << std::endl;
-}
-
-//CapMatrix makeMarketDataCap(const std::vector<Period>& tenors,
-//                            const std::vector<Rate>& strikes,
-//                            const std::vector<std::vector<Handle<Quote> > >& vols,
-//                            const Handle< YieldTermStructure > termStructure,
-//                            const Xibor& index,
-//                            BusinessDayConvention convention){
-//    CapMatrix marketDataCap(tenors.size());
-//    FloatingLeg currentMarketCapLeg, previousMarketCapLeg, strippedCapLeg;
-//    Date startDate = referenceDate + index->tenor();
-//    Date endDate = referenceDate + tenors.front();
-//    for (Size i = 0 ; i < tenors.size(); i++) {
-//       Schedule schedule(startDate, endDate, index_->tenor(), calendar,
-//                  convention, convention, true, false);
-//       
-//       currentMarketCapLeg = ;
-//        strippedCapLeg.resize(
-//            currentMarketCapLeg.size() - previousMarketCapLeg.size());
-//
-//        previousMarketCapLeg = currentMarketCapLeg;
-//        if (i< tenors_.size()-1)
-//            FloatingLeg strippedCapLeg 
-//                = legHelper.makeLeg(tenors[i],tenors[i+1]);
-//        for (Size j = 0 ; j < strikes.size(); j++) {
-//           boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-//           BlackCapFloorEngine(vols[i][j], volatilityDayCounter_));
-//           marketDataCap[i][j] = boost::shared_ptr<Cap>(new
-//               Cap(marketDataCapLeg, std::vector<Real>(1,strikes_[j]),
-//                   termStructure, blackCapFloorEngine));
-//        }
-//    }
-//    return marketDataCap;
-//};
-
-//void printCapsStripper(CapsStripper& capsStripper){
-//    
-//    const CapMatrix& marketDataCap = capsStripper.marketDataCap();
-//    Size tenorsNb = marketDataCap.size();
-//    Size strikesNb = marketDataCap.front().size();
-//    Matrix mktCapPrices(tenorsNb, strikesNb);
-//    Matrix strippedCapPrices(tenorsNb, strikesNb);
-//    Matrix MktStrippeddiff(tenorsNb, strikesNb);
-// 
-//    for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
-//        Real strippedPricesSum = 0;
-//        for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
-//            Real mktCapPrice = marketDataCap[tenorIndex][strikeIndex]->NPV();
-//            mktCapPrices[tenorIndex][strikeIndex] = mktCapPrice;
-//            Real strippedPrice; 
-//            if (tenorIndex>0){
-//                CapFloor& mktCap = *strippedCap[tenorIndex-1][strikeIndex];
-//                boost::shared_ptr<SimpleQuote> 
-//                    quote(new SimpleQuote(volatilities[tenorIndex][strikeIndex]));
-//                boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
-//                new BlackCapFloorEngine(Handle<Quote>(quote,true), dayCounter));
-//                mktCap.setPricingEngine(blackCapFloorEngineConstantVolatility);
-//                strippedPrice = mktCap.NPV();
-//            }else{
-//                strippedPrice = mktCapPrice;
-//            }
-//            strippedCapPrices[tenorIndex][strikeIndex] = strippedPrice;
-//            strippedPricesSum += strippedPrice;
-//            MktStrippeddiff[tenorIndex][strikeIndex]
-//                = mktCapPrice - strippedPricesSum;
-//        }
-//    }
-//    std::cout << "evaluationDate\t"
-//              << Settings::instance().evaluationDate()<< std::endl;
-//    std::cout << "Market Caps Prices: " << std::endl 
-//              << mktCapPrices << std::endl;
-//    std::cout << "Stripped Caps Prices: " << std::endl 
-//              << strippedCapPrices << std::endl;
-//    std::cout << "Market Stripped Caps diffs: " << std::endl 
-//              << MktStrippeddiff << std::endl;
-//    std::cout << "Max Market Stripped Caps diffs: " << std::endl 
-//              << maxAbs(MktStrippeddiff) << std::endl
-//              << "-----------------------" << std::endl;
-//}
-
 // set a Flat Volatility Term Structure at a given level
 void setFlatVolatilityTermStructure(Volatility flatVolatility){
-    strikesNb = 10;
-    tenorsNb = 10;
-    tenors.resize(tenorsNb);
-    for (Size i = 0 ; i < tenorsNb; i++)
+    strikes.resize(10);
+    tenors.resize(10);
+    tenors.resize(tenors.size());
+    for (Size i = 0 ; i < tenors.size(); i++)
         tenors[i] = Period(i+1, Years);
-    strikes.resize(strikesNb);
-    for (Size j = 0 ; j < strikesNb; j++)
+    strikes.resize(strikes.size());
+    for (Size j = 0 ; j < strikes.size(); j++)
         strikes[j] = double(j+1)/100;
 
-    volatilityQuoteHandle.resize(tenorsNb);
+    volatilityQuoteHandle.resize(tenors.size());
     boost::shared_ptr<SimpleQuote> 
         volatilityQuote(new SimpleQuote(flatVolatility));
-    for (Size i = 0 ; i < tenorsNb; i++){
-        volatilityQuoteHandle[i].resize(strikesNb);
-        for (Size j = 0 ; j < strikesNb; j++){
+    for (Size i = 0 ; i < tenors.size(); i++){
+        volatilityQuoteHandle[i].resize(strikes.size());
+        for (Size j = 0 ; j < strikes.size(); j++){
             volatilityQuoteHandle[i][j] = Handle<Quote>(volatilityQuote,true);
         }
     }
@@ -189,9 +87,9 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
 }
 
 void setMarketVolatilityTermStructure(){
-    strikesNb = 13;
-    tenorsNb = 16;
-    v = Matrix(tenorsNb, strikesNb);
+    strikes.resize(13);
+    tenors.resize(16);
+    v = Matrix(tenors.size(), strikes.size());
     v[0][0]=0.287;	v[0][1]=0.274;	v[0][2]=0.256;	v[0][3]=0.245;	v[0][4]=0.227;	v[0][5]=0.148;	v[0][6]=0.096;	v[0][7]=0.09;	v[0][8]=0.11;	v[0][9]=0.139;	v[0][10]=0.166;	v[0][11]=0.19;	v[0][12]=0.214;
     v[1][0]=0.303;	v[1][1]=0.258;	v[1][2]=0.22;	v[1][3]=0.203;	v[1][4]=0.19;	v[1][5]=0.153;	v[1][6]=0.126;	v[1][7]=0.118;	v[1][8]=0.147;	v[1][9]=0.165;	v[1][10]=0.18;	v[1][11]=0.192;	v[1][12]=0.212;
     v[2][0]=0.303;	v[2][1]=0.257;	v[2][2]=0.216;	v[2][3]=0.196;	v[2][4]=0.182;	v[2][5]=0.154;	v[2][6]=0.134;	v[2][7]=0.127;	v[2][8]=0.149;	v[2][9]=0.166;	v[2][10]=0.18;	v[2][11]=0.192;	v[2][12]=0.212;
@@ -210,10 +108,10 @@ void setMarketVolatilityTermStructure(){
     v[15][0]=0.2;	v[15][1]=0.187;	v[15][2]=0.176;	v[15][3]=0.167;	v[15][4]=0.16;	v[15][5]=0.148;	v[15][6]=0.14;	v[15][7]=0.135;	v[15][8]=0.131;	v[15][9]=0.132;	v[15][10]=0.135;	v[15][11]=0.139;	v[15][12]=0.146;
 
   
-    volatilityQuoteHandle.resize(tenorsNb);
-    for (Size i = 0 ; i < tenorsNb; i++){
-        volatilityQuoteHandle[i].resize(strikesNb);
-        for (Size j = 0 ; j < strikesNb; j++){
+    volatilityQuoteHandle.resize(tenors.size());
+    for (Size i = 0 ; i < tenors.size(); i++){
+        volatilityQuoteHandle[i].resize(strikes.size());
+        for (Size j = 0 ; j < strikes.size(); j++){
             boost::shared_ptr<SimpleQuote> 
                 volatilityQuote(new SimpleQuote(v[i][j]));
             volatilityQuoteHandle[i][j] = Handle<Quote>(volatilityQuote,true);
@@ -221,7 +119,7 @@ void setMarketVolatilityTermStructure(){
         
     }
 
-    strikes.resize(strikesNb);
+    strikes.resize(strikes.size());
     strikes[0]=0.015;
     strikes[1]=0.0175;
     strikes[2]=0.02;
@@ -236,7 +134,7 @@ void setMarketVolatilityTermStructure(){
     strikes[11]=0.08;
     strikes[12]=0.1;
 
-    tenors.resize(tenorsNb);
+    tenors.resize(tenors.size());
     tenors[0]= PeriodParser::parse("1Y");
     tenors[1]= PeriodParser::parse("18M");
     tenors[2]= PeriodParser::parse("2Y");
@@ -272,16 +170,13 @@ void setup(Real impliedVolatilityPrecision = 1e-5) {
     rhTermStructure.linkTo(myTermStructure);
 
     xiborIndex = boost::shared_ptr<Xibor>(new Euribor6M(rhTermStructure));
-    capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(  calendar, 
-                                        businessDayConvention,
-                                        fixingDays,
-                                        tenors,
-                                        strikes,
-                                        volatilityQuoteHandle, 
-                                        dayCounter,
-                                        xiborIndex,
-                                        rhTermStructure,
-                                        impliedVolatilityPrecision));
+    capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(tenors,
+                                                strikes,
+                                                volatilityQuoteHandle, 
+                                                xiborIndex,
+                                                rhTermStructure,
+                                                dayCounter,
+                                                impliedVolatilityPrecision));
 }
 
 
@@ -308,11 +203,11 @@ void CapsStripperTest::FlatVolatilityStripping() {
     setFlatVolatilityTermStructure(flatVolatility);
     setup();
     const CapMatrix& marketDataCap = capsStripper->marketDataCap();
-    for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
+    for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
         Date tenorDate = marketDataCap[tenorIndex][0]->lastFixingDate();
         Time tenorTime =  dayCounter.yearFraction(
             Settings::instance().evaluationDate(), tenorDate);
-        for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
+        for (Size strikeIndex = 0; strikeIndex < strikes.size() ; strikeIndex ++){
             Real blackVariance = 
                 capsStripper->blackVariance(tenorDate, strikes[strikeIndex],true);
             Volatility volatility = std::sqrt(blackVariance/tenorTime);
@@ -349,15 +244,11 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
     Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<BlackCapFloorEngine> strippedVolatilityBlackCapFloorEngine
         (new BlackCapFloorEngine(strippedVolatilityStructureHandle));
-    for (Size tenorIndex = 0; tenorIndex < tenorsNb ; tenorIndex++){
-        LegHelper legHelper(Settings::instance().evaluationDate(), calendar, 
-            fixingDays, businessDayConvention, xiborIndex);
-        FloatingLeg floatingLeg = legHelper.makeLeg(xiborIndex->tenor(),
-            tenors[tenorIndex]);
-        for (Size strikeIndex = 0; strikeIndex < strikesNb ; strikeIndex ++){
-            boost::shared_ptr<CapFloor> cap(new Cap(floatingLeg, 
-                std::vector<Real>(1,strikes[strikeIndex]), 
-                rhTermStructure, strippedVolatilityBlackCapFloorEngine));
+    for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
+        for (Size strikeIndex = 0; strikeIndex < strikes.size() ; strikeIndex ++){
+            boost::shared_ptr<CapFloor> cap = MakeCapFloor(CapFloor::Cap,
+                tenors[tenorIndex], xiborIndex, strikes[strikeIndex], 
+                0*Days, strippedVolatilityBlackCapFloorEngine);
             Real priceFromStrippedVolatilty = cap->NPV();
             boost::shared_ptr<PricingEngine> blackCapFloorEngineConstantVolatility(
                 new BlackCapFloorEngine(

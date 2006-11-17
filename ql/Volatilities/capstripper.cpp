@@ -22,23 +22,9 @@
 */
 
 #include <ql/Volatilities/capstripper.hpp>
-#include <ql/Patterns/lazyobject.hpp>
-#include <ql/capvolstructures.hpp>
 #include <ql/types.hpp>
-#include <ql/calendar.hpp>
-#include <ql/daycounter.hpp>
-#include <ql/quote.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/CashFlows/analysis.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/Indexes/xibor.hpp>
-#include <ql/schedule.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Utilities/dataformatters.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
-
+#include <ql/Instruments/makecapfloor.hpp>
 
 namespace QuantLib {
 
@@ -74,37 +60,19 @@ namespace QuantLib {
         volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
     };
 
-    FloatingLeg LegHelper::makeLeg(const Period & startPeriod,
-                                    const Period & endPeriod){
-        Date startDate = referenceDate_ + startPeriod;
-        Date endDate = referenceDate_ + endPeriod;
-        Schedule schedule(startDate, endDate, index_->tenor(), calendar_,
-                          convention_, convention_, true, false);
-        return FloatingRateCouponVector(schedule,
-                                        convention_,
-                                        std::vector<Real>(1,1),
-                                        fixingDays_, index_,
-                                        std::vector<Real>(),
-                                        std::vector<Spread>(),
-                                        index_->dayCounter());
-        }
-
    
     CapsStripper::CapsStripper(
-        const Calendar & calendar,
-        BusinessDayConvention convention,
-        Integer fixingDays,
-        const std::vector<Period>& tenors,
-        const std::vector<Rate>& strikes,
-        const std::vector<std::vector<Handle<Quote> > >& vols,
-        const DayCounter& volatilityDayCounter,
-        const boost::shared_ptr<Xibor>& index,
-        const Handle< YieldTermStructure > termStructure,
-        Real impliedVolatilityAccuracy,
-        Size maxEvaluations,
-        const boost::shared_ptr<SmileSectionsVolStructure> 
-            smileSectionsVolStructure)
-    : CapletVolatilityStructure(0, calendar),
+         const std::vector<Period>& tenors,
+         const std::vector<Rate>& strikes,
+         const std::vector<std::vector<Handle<Quote> > >& vols,
+         const boost::shared_ptr<Xibor>& index,
+         const Handle< YieldTermStructure > termStructure,
+         const DayCounter& volatilityDayCounter,
+         Real impliedVolatilityAccuracy,
+         Size maxEvaluations,
+         const boost::shared_ptr<SmileSectionsVolStructure> 
+         smileSectionsVolStructure)
+    : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
@@ -117,31 +85,25 @@ namespace QuantLib {
                    "mismatch between strikes(" << strikes.size() <<
                    ") and vol columns(" << vols[0].size() << ")");
 
-        LegHelper legHelper(referenceDate(), calendar, fixingDays,
-            convention, index);
         marketDataCap_.resize(tenors.size());
-        std::vector<FloatingLeg> floatingLegs(tenors_.size());
         for (Size i = 0 ; i < tenors_.size(); i++) {
-            floatingLegs[i] = legHelper.makeLeg(index->tenor(),
-               tenors[i]);
-            Rate atmRate = Cashflows::atmRate(floatingLegs[i], termStructure);
+            // this caps is used to compute the atm rate only
+             boost::shared_ptr<CapFloor> dummyCap = MakeCapFloor(CapFloor::Cap,
+                 tenors_[i], index, strikes_.front(), 0*Days);
+            Rate atmRate = dummyCap->atmRate();
             marketDataCap_[i].resize(strikes_.size());
 
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
                    BlackCapFloorEngine(vols[i][j], volatilityDayCounter));
-               if (strikes_[j] < atmRate)
-                   marketDataCap_[i][j] = boost::shared_ptr<CapFloor>(new
-                       Floor(floatingLegs[i], std::vector<Real>(1,strikes_[j]),
-                           termStructure, blackCapFloorEngine));
-               else
-                    marketDataCap_[i][j] = boost::shared_ptr<CapFloor>(new
-                       Cap(floatingLegs[i], std::vector<Real>(1,strikes_[j]),
-                           termStructure, blackCapFloorEngine));
+               CapFloor::Type type = 
+                   (strikes_[j] < atmRate)? CapFloor::Floor : CapFloor::Cap;
+               marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
+                        index, strikes_[j], 0*Days, blackCapFloorEngine);
                registerWith(marketDataCap_[i][j]);
            }
         }
-        // to be changed ...
+        // to be improved ...
         if (smileSectionsVolStructure.px== 0)
             parametrizedCapletVolStructure_ 
                = boost::shared_ptr<ParametrizedCapletVolStructure>(

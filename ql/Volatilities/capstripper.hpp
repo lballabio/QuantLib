@@ -37,50 +37,22 @@
 #include <ql/schedule.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 
+
 namespace QuantLib {
     
-    typedef std::vector<boost::shared_ptr<CashFlow> > FloatingLeg;
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
-
-     //! this class simplifies Cap instanciations
-    class LegHelper{
-    public:
-        LegHelper(  const Date & startDate,
-                    const Calendar & calendar,
-                    int fixingDays,
-                    BusinessDayConvention convention,
-                    const boost::shared_ptr<Xibor>& index)
-                    :referenceDate_(startDate),
-                    calendar_(calendar),
-                    fixingDays_(fixingDays),
-                    convention_(convention),
-                    index_(index){};
-
-    FloatingLeg makeLeg(const Period & startPeriod,
-                        const Period & endPeriod);
-    private:
-        Date referenceDate_;
-        const Calendar& calendar_;
-        int fixingDays_;
-        BusinessDayConvention convention_;
-        const boost::shared_ptr<Xibor> index_;
-    };
-
 
     class CapsStripper : public CapletVolatilityStructure, 
                          public LazyObject{
       public:
-        CapsStripper(const Calendar& capScheduleConventioncalendar, // remove
-                     BusinessDayConvention capScheduleConvention, // remove
-                     Integer capScheduleFixingDays, // remove
-                     const std::vector<Period>& tenors, // 1
-                     const std::vector<Rate>& strikes, // 2
-                     const std::vector<std::vector<Handle<Quote> > >& vols, // 3
-                     const DayCounter& volatilityDayCounter, // 7 = Actual365Fidex()
-                     const boost::shared_ptr<Xibor>& index, // 4
-                     const Handle< YieldTermStructure > termStructure, // 5
-                     Real impliedVolatilityAccuracy = 1.0e-6, // 8
-                     Size maxEvaluations = 100, // 9
+        CapsStripper(const std::vector<Period>& tenors,
+                     const std::vector<Rate>& strikes,
+                     const std::vector<std::vector<Handle<Quote> > >& vols,
+                     const boost::shared_ptr<Xibor>& index,
+                     const Handle< YieldTermStructure > termStructure,
+                     const DayCounter& volatilityDayCounter = Actual365Fixed(),
+                     Real impliedVolatilityAccuracy = 1.0e-6,
+                     Size maxEvaluations = 100,
                      const boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure // 6
                         = Null <boost::shared_ptr<SmileSectionsVolStructure> >());
         //@}
