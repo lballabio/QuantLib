@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! Black-Scholes formula calculator class
+    //! Black-Scholes 1973 calculator class
     class BlackScholesCalculator : public BlackCalculator {
       public:
         BlackScholesCalculator(
