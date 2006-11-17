@@ -228,17 +228,16 @@ void CapsStripperTest::FlatVolatilityStripping() {
 
 
 
-/* Compute caps prices using the stripped volatilty
- then using the original constant volatility structure*/
+/* High precision consistency test*/
 
-void CapsStripperTest::strippedVolCapStrippingConsistency(){
-    BOOST_MESSAGE("Testing stripping of cap volatilities consistency ...");
+void CapsStripperTest::highPrecisionTest(){
+    BOOST_MESSAGE("Stripping of cap volatilities high precision consistency test ...");
     QL_TEST_BEGIN
 
     setMarketVolatilityTermStructure();
     Real impliedVolatilityPrecision = 1e-20;
     setup(impliedVolatilityPrecision);
-    static const Real tolerance = 1e-10;
+    static const Real tolerance = 1e-12;
     static const Real priceThreshold = 1e-6;
     
     Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
@@ -284,7 +283,7 @@ void CapsStripperTest::strippedVolCapStrippingConsistency(){
 test_suite* CapsStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CapsStripper tests");
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
-    suite->add(BOOST_TEST_CASE(&CapsStripperTest::strippedVolCapStrippingConsistency));
+    suite->add(BOOST_TEST_CASE(&CapsStripperTest::highPrecisionTest));
     //suite->add(BOOST_TEST_CASE(&debug));
     return suite;
 }

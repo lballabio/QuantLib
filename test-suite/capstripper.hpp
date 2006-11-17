@@ -30,7 +30,7 @@ class CapsStripperTest {
     static void FlatVolatilityStripping();
     static void constantVolatilityConsistency();
     static void cachedValues();
-    static void strippedVolCapStrippingConsistency();
+    static void highPrecisionTest();
     static boost::unit_test_framework::test_suite* suite();
 };
 
