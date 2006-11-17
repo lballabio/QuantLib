@@ -947,8 +947,8 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
     std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
     
     for (Size i = 0; i < payoffs.size(); ++i)
-        payoffs[i] = boost::shared_ptr<Payoff> (new 
-        AssetOrNothingPayoff(Option::Call, todaysForwards[i]));
+        payoffs[i] = boost::shared_ptr<Payoff>(new 
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
     
     MultiStepCoterminalSwaptions swaptions(rateTimes, accruals,
                                            paymentTimes, payoffs);
