@@ -70,8 +70,8 @@ namespace QuantLib {
          const DayCounter& volatilityDayCounter,
          Real impliedVolatilityAccuracy,
          Size maxEvaluations,
-         const boost::shared_ptr<SmileSectionsVolStructure> 
-         smileSectionsVolStructure)
+         const std::vector<boost::shared_ptr<SmileSectionInterface> >& 
+             smileSectionInterfaces)
     : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
@@ -103,8 +103,7 @@ namespace QuantLib {
                registerWith(marketDataCap_[i][j]);
            }
         }
-        // to be improved ...
-        if (smileSectionsVolStructure.px== 0)
+        if (smileSectionInterfaces.empty())
             parametrizedCapletVolStructure_ 
                = boost::shared_ptr<ParametrizedCapletVolStructure>(
                 new BilinInterpCapletVolStructure(referenceDate(),
@@ -112,6 +111,10 @@ namespace QuantLib {
                                                   marketDataCap_,
                                                   strikes));
         else{
+             boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure(
+                 new SmileSectionsVolStructure(referenceDate(),
+                                               volatilityDayCounter,
+                                               smileSectionInterfaces));
              parametrizedCapletVolStructure_ 
                = boost::shared_ptr<ParametrizedCapletVolStructure>(
                 new HybridCapletVolatilityStructure(referenceDate(),

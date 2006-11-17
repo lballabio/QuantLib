@@ -46,15 +46,16 @@ namespace QuantLib {
                          public LazyObject{
       public:
         CapsStripper(const std::vector<Period>& tenors,
-                     const std::vector<Rate>& strikes,
-                     const std::vector<std::vector<Handle<Quote> > >& vols,
-                     const boost::shared_ptr<Xibor>& index,
-                     const Handle< YieldTermStructure > termStructure,
-                     const DayCounter& volatilityDayCounter = Actual365Fixed(),
-                     Real impliedVolatilityAccuracy = 1.0e-6,
-                     Size maxEvaluations = 100,
-                     const boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure // 6
-                        = Null <boost::shared_ptr<SmileSectionsVolStructure> >());
+         const std::vector<Rate>& strikes,
+         const std::vector<std::vector<Handle<Quote> > >& vols,
+         const boost::shared_ptr<Xibor>& index,
+         const Handle< YieldTermStructure > termStructure,
+         const DayCounter& volatilityDayCounter = Actual365Fixed(),
+         Real impliedVolatilityAccuracy = 1.0e-6,
+         Size maxEvaluations = 100,
+         const std::vector<boost::shared_ptr<SmileSectionInterface> >& 
+             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSectionInterface> >()
+             );
         //@}
         //! \name LazyObject interface
         //@{
