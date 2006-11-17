@@ -57,7 +57,7 @@ namespace QuantLib {
         bool enforceTodaysHistoricFixings = 
             Settings::instance().enforceTodaysHistoricFixings();
         if (fixingDate < today ||
-            (fixingDate == today) && enforceTodaysHistoricFixings) {
+            (fixingDate == today) && enforceTodaysHistoricFixings &&  !forecastTodaysFixing) {
             // must have been fixed
             Rate pastFixing =
                 IndexManager::instance().getHistory(name())[fixingDate];
