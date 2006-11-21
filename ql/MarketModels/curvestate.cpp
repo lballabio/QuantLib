@@ -30,7 +30,7 @@ namespace QuantLib {
     void CurveState::computeCoterminalSwap(Size i) const {
         Real accumAnn = 0.0;
         if (firstCotSwap_!=nRates_)
-            accumAnn = cotAnnuities_[firstCotSwap_+1];
+            accumAnn = cotAnnuities_[firstCotSwap_];
         while (firstCotSwap_>i) {
             --firstCotSwap_;
             accumAnn += taus_[firstCotSwap_] * discRatios_[firstCotSwap_+1];
