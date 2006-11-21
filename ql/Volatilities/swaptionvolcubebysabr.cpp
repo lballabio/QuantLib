@@ -150,14 +150,18 @@ namespace QuantLib {
                 errors     [j][k]=interpolationError;
                 maxErrors  [j][k]=sabrInterpolation->interpolationMaxError();
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
-                //QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
-                //          "option tenor " << exerciseDates[j] <<
-                //          ", swap tenor " << swapTenors[k] <<
-                //          ": max iteration");
-                //QL_ENSURE(maxErrors[j][k]<15e-4,
-                //          "option tenor " << exerciseDates[j] <<
-                //          ", swap tenor " << swapTenors[k] <<
-                //          ": max error " << maxErrors[j][k]);
+				
+				Real maxErrorTolerance = 15.e-4;
+				if(vegaWeightedSmileFit_) maxErrorTolerance = 1e-2;
+
+                QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
+                          "option tenor " << exerciseDates[j] <<
+                          ", swap tenor " << swapTenors[k] <<
+                          ": max iteration");
+                QL_ENSURE(maxErrors[j][k]<maxErrorTolerance,
+                          "option tenor " << exerciseDates[j] <<
+                          ", swap tenor " << swapTenors[k] <<
+                          ": max error " << maxErrors[j][k]);
             }
         }
         Cube sabrParametersCube(exerciseDates, swapTenors,
@@ -228,14 +232,17 @@ namespace QuantLib {
             calibrationResult[6]=sabrInterpolation->interpolationMaxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
             
+			Real maxErrorTolerance = 15.e-4;
+			if(vegaWeightedSmileFit_) maxErrorTolerance = 1e-2;
+
             QL_ENSURE(calibrationResult[7]!=EndCriteria::maxIter,
                       "option tenor " << exerciseDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration");
-            //QL_ENSURE(maxErrors[j][k]<15e-4,
-            //          "option tenor " << exerciseDates[j] <<
-            //          ", swap tenor " << swapTenors[k] <<
-            //          ": max error " << maxErrors[j][k]);
+            QL_ENSURE(calibrationResult[6]< maxErrorTolerance,
+                      "option tenor " << exerciseDates[j] <<
+                      ", swap tenor " << swapTenors[k] <<
+                      ": max error " << calibrationResult[6]);
 
             sparseParameters_.setPoint(exerciseDates[j], swapTenors[k],
                                     exerciseTimes[j], timeLengths[k],

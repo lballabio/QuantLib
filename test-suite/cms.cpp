@@ -41,7 +41,7 @@ Calendar calendar_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
-boost::shared_ptr<Xibor> iborIndex_;
+boost::shared_ptr<Xibor> iborIndex_; 
 Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 Date referenceDate_;
@@ -130,20 +130,15 @@ void setup() {
                    iborIndex_)); 
 
 
-    // Volatility
-    //std::vector<Date> exerciseDates(2);
-    //exerciseDates[0] = referenceDate_+30;
-    //exerciseDates[1] = endDate_;
-    
     std::vector<Period> exercisePeriod(2);
-    exercisePeriod[0] = Period(1, Months);
+    exercisePeriod[0] = Period(3, Months);
     exercisePeriod[1] = Period(1, Years);
 
     std::vector<Period> lengths(2);
-    lengths[0] = Period(1, Years);
+    lengths[0] = Period(2, Years);
     lengths[1] = Period(30, Years); 
 
-    const Matrix volatilities(2, 2, volatility_);
+    Matrix volatilities(2, 2, volatility_);
 
     swaptionVolatilityMatrix_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
@@ -193,9 +188,9 @@ void setup() {
     Matrix parametersGuess(lengths.size()*lengths.size(),4, 0.0);
 
     for(i=0; i<lengths.size()*lengths.size(); i++) {
-        parametersGuess[i][0] = .002*i+0.001;
-        parametersGuess[i][1] = 1.;
-        parametersGuess[i][2] = .4;
+        parametersGuess[i][0] = .002+i*0.001;
+        parametersGuess[i][1] = .53;
+        parametersGuess[i][2] = .39;
         parametersGuess[i][3] = 0.;
     }
 
@@ -238,7 +233,7 @@ void setup() {
         const double x = strikeSpreads[i];
         const double vs = 10*x*x;
         for(Size j=0; j<lengths.size()*lengths.size(); j++) {
-            volSpreads[j][i] = vs;
+            volSpreads[j][i] = vs*(30-j*j);
         }
     }
 
@@ -269,7 +264,7 @@ void setup() {
 
     swaptionVolatilityStructures_.push_back(swaptionVolatilityMatrix_);
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCubeBySabr_);
     swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
     modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
