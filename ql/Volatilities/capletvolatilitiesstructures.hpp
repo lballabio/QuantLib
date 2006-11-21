@@ -145,7 +145,7 @@ namespace QuantLib {
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes,
-            const boost::shared_ptr<CapletVolatilityStructure>
+            const boost::shared_ptr<SmileSectionsVolStructure>
                 shortTermCapletVolatilityStructure);
 
         Volatility volatilityImpl(Time length,
@@ -171,7 +171,7 @@ namespace QuantLib {
         Time overlapStart, overlapEnd;
         boost::shared_ptr<BilinInterpCapletVolStructure>
             volatilitiesFromCaps_;
-        boost::shared_ptr<CapletVolatilityStructure>
+        boost::shared_ptr<SmileSectionsVolStructure>
             shortTermCapletVolatilityStructure_;
         Date maxDate_;
         Rate minStrike_, maxStrike_;

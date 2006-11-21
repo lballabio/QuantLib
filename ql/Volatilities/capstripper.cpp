@@ -144,15 +144,28 @@ namespace QuantLib {
     void CapsStripper::performCalculations () const {
         Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
-
-        for (Size j = 0 ; j < strikes_.size(); j++){
-            for (Size i = 0 ; i < tenors_.size(); i++) {
-                CapFloor & mktCap = *marketDataCap_[i][j];
-                Real capPrice = mktCap.NPV();
-                fitVolatilityParameter(calibCap_[i][j],
-                    volatilityParameters[i][j],
-                    capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
+        Size i,j;
+        Real capPrice;
+        try{
+            for (j = 0 ; j < strikes_.size(); j++){
+                for (i = 0 ; i < tenors_.size(); i++) {
+                    CapFloor & mktCap = *marketDataCap_[i][j];
+                    capPrice = mktCap.NPV();
+                    fitVolatilityParameter(calibCap_[i][j],
+                        volatilityParameters[i][j],
+                        capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
+                }
             }
+        }
+        catch(QuantLib::Error& e){
+            std::ostringstream _ql_msg_stream;
+            _ql_msg_stream << "CapsStripper::performCalculations:\nbooststrap failure at tenor " << tenors_[i]
+                           << " ,strike " << strikes_[j]
+                           << " the cap price is " << capPrice << "\n";
+            _ql_msg_stream << e.what();
+            throw QuantLib::Error(__FILE__,__LINE__,
+                                  BOOST_CURRENT_FUNCTION,_ql_msg_stream.str());
+
         }
     }
 

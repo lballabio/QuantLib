@@ -80,8 +80,7 @@ using namespace QuantLib;
         smileSections_(smileSections) {
         for (Size i = 0; i < smileSections_.size(); i++){
             registerWith(smileSections[i]);
-            tenorTimes_[i] = dayCounter.yearFraction(referenceDate,
-                smileSections[i]->exerciseDate());
+            tenorTimes_[i] = smileSections[i]->exerciseTime();
         }
         /*maxDate_ = smileSections.back()->exerciseDate();
         minStrike_ = 0;
@@ -182,7 +181,7 @@ using namespace QuantLib;
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps,
             const std::vector<Rate>& strikes,
-            const boost::shared_ptr<CapletVolatilityStructure>
+            const boost::shared_ptr<SmileSectionsVolStructure>
                 shortTermCapletVolatilityStructure):
         ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter),
             shortTermCapletVolatilityStructure_(
@@ -220,8 +219,8 @@ using namespace QuantLib;
             volatilitiesFromCaps_->setClosestTenors(length,
                 nextLowerCapTenor, nextHigherCapTenor);
 
-           /* shortTermCapletVolatilityStructure_->setClosestTenors(length,
-                nextLowerFutureTenor, nextHigherFutureTenor);*/
+            shortTermCapletVolatilityStructure_->setClosestTenors(length,
+                nextLowerFutureTenor, nextHigherFutureTenor);
 
             /* we determine which volatility surface should be used for the
                lower value*/
