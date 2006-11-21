@@ -589,22 +589,22 @@ namespace QuantLib {
                                                         Size IndexOfColumn,
                                                         Real x) {
         QL_REQUIRE(IndexOfLayer<nLayers_,
-                   "incompatible IndexOfLayer ");
+			"Cube::setElement: incompatible IndexOfLayer ");
         QL_REQUIRE(IndexOfRow<expiries_.size(),
-                   "incompatible IndexOfRow");
+            "Cube::setElement: incompatible IndexOfRow");
         QL_REQUIRE(IndexOfColumn<lengths_.size(),
-                   "incompatible IndexOfColumn");
+            "Cube::setElement: incompatible IndexOfColumn");
         points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::setPoints(
                                                const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,
-                   "incompatible number of layers ");
+			"Cube::setPoints: incompatible number of layers ");
         QL_REQUIRE(x[0].rows()==expiries_.size(),
-                   "incompatible size 1");
+            "Cube::setPoints: incompatible size 1");
         QL_REQUIRE(x[0].columns()==lengths_.size(),
-                   "incompatible size 2");
+            "Cube::setPoints: incompatible size 2");
 
         points_ = x;
     }
@@ -612,11 +612,11 @@ namespace QuantLib {
     void SwaptionVolatilityCubeBySabr::Cube::setLayer(Size i,
                                                       const Matrix& x) {
         QL_REQUIRE(i<nLayers_,
-                   "incompatible number of layer ");
+			"Cube::setLayer: incompatible number of layer ");
         QL_REQUIRE(x.rows()==expiries_.size(),
-                   "incompatible size 1");
+            "Cube::setLayer: incompatible size 1");
         QL_REQUIRE(x.columns()==lengths_.size(),
-                   "incompatible size 2");
+            "Cube::setLayer: incompatible size 2");
 
         points_[i] = x;
     }
@@ -658,8 +658,8 @@ namespace QuantLib {
     void SwaptionVolatilityCubeBySabr::Cube::expandLayers(
                                                  Size i, bool expandExpiries,
                                                  Size j, bool expandLengths) {
-        QL_REQUIRE(i<=expiries_.size(),"incompatible size 1");
-        QL_REQUIRE(j<=lengths_.size(),"incompatible size 2");
+		QL_REQUIRE(i<=expiries_.size(),"Cube::expandLayers: incompatible size 1");
+        QL_REQUIRE(j<=lengths_.size(),"Cube::expandLayers: incompatible size 2");
 
         if (expandExpiries) {
             expiries_.insert(expiries_.begin()+i,0.);
