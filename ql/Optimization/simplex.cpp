@@ -97,9 +97,13 @@ namespace QuantLib {
 
             Real rtol = 2.0*std::fabs(high - low)/
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
-            if (rtol < tol_
-                || endCriteria().checkIterationNumber(iterationNumber()++)) {
+            if (rtol < tol_ || endCriteria().checkIterationNumber(iterationNumber()++)) {
+				//in this case set endCriteria_ = statPt
+				endCriteria().checkAccuracyValue(QL_EPSILON); 
+				endCriteria().checkIterationNumber(iterationNumber());
                 X = vertices_[iLowest];
+				//and set the functionValue_
+				functionValue_ = low;
                 return;
             }
 

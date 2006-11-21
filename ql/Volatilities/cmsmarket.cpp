@@ -291,16 +291,25 @@ namespace QuantLib {
     calibrationType_(calibrationType){
     }
 
-    Array SmileAndCmsCalibrationBySabr::calibration(){
+	Array SmileAndCmsCalibrationBySabr::calibration(
+			SmileAndCmsCalibrationBySabr::OptimMethod optimizationMethod){
 
         ParametersConstraint constraint;
         ObjectiveFunction costFunction(this);
-
-        boost::shared_ptr<LineSearch> lineSearch(
-            new ArmijoLineSearch(1e-12, 0.05, 0.65));
-        boost::shared_ptr<OptimizationMethod> method(new ConjugateGradient(lineSearch));
-        //boost::shared_ptr<OptimizationMethod> method(new Simplex(0.005, 1e-3));
-        
+        boost::shared_ptr<OptimizationMethod> method;
+		switch (optimizationMethod) {
+            case DownHillSimplex:
+                method = boost::shared_ptr<OptimizationMethod>(new Simplex(0.01, 1e-3));
+                break;
+			case ConjugateGrad:{
+                boost::shared_ptr<LineSearch> lineSearch(
+					new ArmijoLineSearch(1e-12, 0.05, 0.65));
+				method = boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));}
+				break;
+            default:
+                QL_FAIL("unknown/illegal optimization method");
+		}
+       
         switch (calibrationType_) {
             case OnSpread:
                 method->setEndCriteria(EndCriteria(30, 1e-1));
