@@ -2192,7 +2192,7 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
