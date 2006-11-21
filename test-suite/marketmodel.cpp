@@ -54,6 +54,7 @@
 #include <ql/MarketModels/Models/expcorrabcdvol.hpp>
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp>
+#include <ql/MarketModels/swapforwardmappings.hpp>
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
@@ -91,7 +92,7 @@ Calendar calendar;
 DayCounter dayCounter;
 std::vector<Rate> todaysForwards, todaysCoterminalSwapRates;
 std::vector<Real> coterminalAnnuity;
-std::vector<Spread> displacements;
+Spread displacement;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities, blackVols;
 std::vector<Volatility> swaptionsVolatilities, swaptionsBlackVols;
@@ -121,9 +122,9 @@ void setup() {
     for (Size i=1; i<rateTimes.size(); ++i)
         accruals[i-1] = rateTimes[i] - rateTimes[i-1];
 
-    // Rates & displacements
+    // Rates & displacement
     todaysForwards = std::vector<Rate>(paymentTimes.size());
-    displacements = std::vector<Spread>(paymentTimes.size(), 0.0);
+    displacement = 0.0;
     for (Size i=0; i<todaysForwards.size(); ++i)
         todaysForwards[i] = 0.03 + 0.0010*i;
 
@@ -179,9 +180,12 @@ void setup() {
     blackVols = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<LENGTH(mktVols); i++) {
         volatilities[i] = todaysForwards[i]*mktVols[i]/
-                         (todaysForwards[i]+displacements[i]);
+                         (todaysForwards[i]+displacement);
         blackVols[i]= mktVols[i];
     }
+
+    // Swaption volatility quick fix
+    swaptionsVolatilities = volatilities;
 
     // Cap/Floor Correlation
     longTermCorrelation = 0.5;
@@ -190,8 +194,8 @@ void setup() {
 
     // Monte Carlo
     seed_ = 42;
-    paths_ = 32767; // 2^15-1
-    trainingPaths_ = 8191; // 2^13-1
+    paths_ = 32767; // 2^15-1  127; //
+    trainingPaths_ = 8191; // 2^13-1 31;//
 
 }
 
@@ -262,7 +266,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                evolution,
                                numberOfFactors,
                                bumpedForwards,
-                               displacements));
+                               std::vector<Spread>(bumpedForwards.size(), displacement)));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
@@ -271,14 +275,14 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                evolution,
                                numberOfFactors,
                                bumpedForwards,
-                               displacements));
+                               std::vector<Spread>(bumpedForwards.size(), displacement)));
         //case CalibratedMM:
         //    return boost::shared_ptr<MarketModel>(new
         //        CalibratedMarketModel(volModel, corrModel,
         //                              evolution,
         //                              numberOfFactors,
         //                              bumpedForwards,
-        //                              displacements));
+        //                              displacement));
         default:
             QL_FAIL("unknown MarketModel type");
     }
@@ -359,7 +363,6 @@ std::string evolverTypeToString(EvolverType type) {
         QL_FAIL("unknown MarketModelEvolver type");
     }
 }
-
 boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     const boost::shared_ptr<MarketModel>& marketModel,
     const std::vector<Size>& numeraires,
@@ -381,10 +384,100 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     }
 }
 
+
+void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
+                    const Rate fixedRate,
+                    const std::vector<Rate>& strikes,
+                    const std::vector<boost::shared_ptr<Payoff> >& payoffs,
+                    const boost::shared_ptr<MarketModel> marketModel,
+                    const std::string& config) {
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    std::vector<Real> stdDevs(todaysForwards.size());
+    
+    Size N = todaysForwards.size();
+    // check Swaps
+    Real maxError = QL_MIN_REAL;
+    CurveState curveState(rateTimes.begin(), rateTimes.end());
+    curveState.setOnForwardRates(todaysForwards.begin(), todaysForwards.end());
+    std::vector<Rate> atmRates = curveState.coterminalSwapRates();
+    std::vector<Real> annuities = curveState.coterminalSwapAnnuities();
+    std::vector<Real> expectedNPVs(atmRates.size());
+    for (Size i=0; i<N; ++i) {
+        Real expectedNPV = annuities[i] * (atmRates[i]-fixedRate) *
+            todaysDiscounts[0];
+        expectedNPVs[i] = expectedNPV;
+        stdDevs[i] = (results[i]-expectedNPVs[i])/errors[i];
+        maxError = std::max(std::fabs(stdDevs[i]), maxError);
+    }
+    Real errorThreshold = 0.232;
+    if (maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
+        for (Size i=0; i<N; ++i) {
+            BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap NPV: "
+                          << io::rate(results[i])
+                          << " +- " << io::rate(errors[i])
+                          << "; expected: " << io::rate(expectedNPVs[i])
+                          << "; discrepancy = "
+                          << stdDevs[i]
+                          << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+    
+    // check Swaptions
+   /* const Spread displacement = 0;
+    Matrix jacobian =
+        SwapForwardMappings::coterminalSwapZedMatrix(
+        curveState, displacement);
+    const Matrix& forwardsCovariance = marketModel->covariance(0);
+    Matrix coterminalSwapsCovariance
+        = transpose(jacobian) * forwardsCovariance * jacobian;
+
+    std::vector<Rate> expectedSwaptions(N);
+    std::vector<Real> stdDevSwaptions(N);
+    Real minError = QL_MAX_REAL;
+    maxError = QL_MIN_REAL;
+        for (Size i=1; i<=N; ++i) {
+        Time expiry = rateTimes[N-i];
+        boost::shared_ptr<PlainVanillaPayoff> payoff(
+            new PlainVanillaPayoff(Option::Call, strikes[N-i]+displacement));
+        Real expectedResult = blackFormula(payoff,
+                         todaysCoterminalSwapRates[N-i]+displacement,
+                         std::sqrt(coterminalSwapsCovariance[N-i][N-i])) *
+            coterminalAnnuity[N-i];
+        
+        expectedSwaptions[N-i] = expectedResult;
+        stdDevSwaptions[N-i] = (results[2*N-i]-expectedSwaptions[N-i])/errors[2*N-i];
+        if (stdDevSwaptions[N-i]>maxError) maxError = stdDevSwaptions[N-i];
+        else if (stdDevSwaptions[N-i]<minError) minError = stdDevSwaptions[N-i];
+    }
+    errorThreshold = 2.50;
+    if (minError > 0.0 || maxError < 0.0 ||
+        minError < -errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
+        for (Size i=1; i<=N; ++i) {
+            BOOST_MESSAGE(
+                    io::ordinal(i) << " Swaption: "
+                    << io::rate(results[2*N-i])
+                    << " +- " << io::rate(errors[2*N-i])
+                    << "; expected: " << io::rate(expectedSwaptions[N-i])
+                    << "; discrepancy = "
+                    << (results[2*N-i]-expectedSwaptions[N-i])/(errors[2*N-i] == 0.0 ?
+                                                          1.0 : errors[2*N-i])
+                    << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }*/
+
+}
+
+
 void checkForwardsAndOptionlets(const SequenceStatistics& stats,
                                 const std::vector<Rate>& forwardStrikes,
                                 const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoffs,
                                 const std::string& config) {
+
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> stdDevs(todaysForwards.size());
@@ -394,6 +487,7 @@ void checkForwardsAndOptionlets(const SequenceStatistics& stats,
     std::vector<Real> forwardStdDevs(N), capletStdDev(N);
     Real minError = QL_MAX_REAL;
     Real maxError = QL_MIN_REAL;
+    // forwards check
     for (Size i=0; i<N; ++i) {
         expectedForwards[i] = (todaysForwards[i]-forwardStrikes[i])
             *accruals[i]*todaysDiscounts[i+1];
@@ -405,9 +499,9 @@ void checkForwardsAndOptionlets(const SequenceStatistics& stats,
         Time expiry = rateTimes[i];
         expectedCaplets[i] =
             BlackCalculator(displacedPayoffs[i],
-                            todaysForwards[i]+displacements[i],
+                            todaysForwards[i]+displacement,
                             volatilities[i]*std::sqrt(expiry),
-                            todaysDiscounts[i+1]* accruals[i]).value();
+                            todaysDiscounts[i+1]*accruals[i]).value();
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
             maxError = capletStdDev[i];
@@ -496,15 +590,33 @@ void checkCoterminalSwaps(const SequenceStatistics& stats,
     Real maxError = QL_MIN_REAL;
     Real tmp = 0.;
     Size N = expected.size();
+    CurveState curveState(rateTimes.begin(), rateTimes.end());
+    curveState.setOnForwardRates(todaysForwards.begin(), todaysForwards.end()); 
     for (Size i=1; i<=N; ++i) {
-        tmp += (todaysForwards[N-i]-fixedRate)
-            *accruals[N-i]*todaysDiscounts[N-i+1];
+        Rate swapRate = curveState.coterminalSwapRate(N-i);
+        Real cotAnnuity = curveState.coterminalSwapAnnuity(N-i);
+        Real tmp = cotAnnuity *(swapRate-fixedRate);
+        /*tmp += (todaysForwards[N-i]-fixedRate)
+            *accruals[N-i]*todaysDiscounts[N-i+1];*/
         expected[N-i] = tmp;
         stdDevs[N-i] = (results[N-i]-expected[N-i])/errors[N-i];
-        if (stdDevs[N-i]>maxError)
-            maxError = stdDevs[N-i];
-        else if (stdDevs[N-i]<minError)
-            minError = stdDevs[N-i];
+        Real relError = (results[N-i]-expected[N-i])/expected[N-i];
+        /*if (stdDevs[N-i]>maxError)
+            maxError = stdDevs[N-i];*/
+        maxError = std::max(std::fabs(relError), maxError);
+       /* else if (stdDevs[N-i]<minError)
+            minError = stdDevs[N-i];*/
+        //if (printReport_)
+        std::cout <<
+            "N-i: " << N-i
+            << std::setprecision(2)
+            << " expected: " << tmp
+            << " obtained: " << results[N-i]
+            << " error: " << errors[N-i]
+            //<< " stdDev: " << (results[N-i]-expected[N-i])/errors[N-i]
+            << " maxError: " << io::percent(maxError)
+            << " rel error: " << io::percent((results[N-i]-expected[N-i])/expected[N-i])
+            << "\n";
     }
     Real errorThreshold = 2.32;
     if (minError <-errorThreshold || maxError > errorThreshold) {
@@ -536,13 +648,13 @@ void checkCoterminalSwaptions(const SequenceStatistics& stats,
         Time expiry = rateTimes[N-i];
         expectedSwaptions[N-i] = blackFormula(
                          Option::Call,
-                         strikes[N-i]+displacements[N-i],
-                         todaysCoterminalSwapRates[N-i]+displacements[N-i],
+                         strikes[N-i]+displacement,
+                         todaysCoterminalSwapRates[N-i]+displacement,
                          swaptionsVolatilities[N-i]*std::sqrt(expiry)) *
             coterminalAnnuity[N-i];
         stdDevSwaptions[N-i] = (results[N-i]-expectedSwaptions[N-i])/errors[N-i];
         if (stdDevSwaptions[N-i]>maxError) maxError = stdDevSwaptions[N-i];
-        else if (stdDevSwaptions[i]<minError) minError = stdDevSwaptions[N-i];
+        else if (stdDevSwaptions[N-i]<minError) minError = stdDevSwaptions[N-i];
     }
     Real errorThreshold = 2.50;
     if (minError > 0.0 || maxError < 0.0 ||
@@ -625,10 +737,8 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
         displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
     }
 
     OneStepForwards forwards(rateTimes, accruals,
@@ -714,14 +824,15 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
     std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
     std::vector<boost::shared_ptr<StrikedTypePayoff> >
         displacedPayoffs(todaysForwards.size());
+
     for (Size i=0; i<todaysForwards.size(); ++i) {
         forwardStrikes[i] = todaysForwards[i] + 0.01;
         optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
             //CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
         displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
-            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+            //CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
 
     MultiStepForwards forwards(rateTimes, accruals,
@@ -796,6 +907,9 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
     }
 }
 
+
+
+
 void MarketModelTest::testMultiStepCoinitialSwaps() {
 
     BOOST_MESSAGE("Repricing multi-step coinitial swaps "
@@ -865,6 +979,95 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
         }
     }
 }
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
+
+    BOOST_MESSAGE("Repricing multi-step coterminal swaps "
+                  " and swaptions in a LIBOR market model...");
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+    Real fixedRate = 0.04;
+
+    MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals,
+                                     paymentTimes, fixedRate);
+
+    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    for (Size i = 0; i < payoffs.size(); ++i)
+        payoffs[i] = boost::shared_ptr<Payoff>(new 
+            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+
+    MultiStepCoterminalSwaptions swaptions(rateTimes, accruals,
+                                           paymentTimes, payoffs);
+    MultiProductComposite product;
+    product.add(swaps);
+    product.add(swaptions);
+    product.finalize();
+
+    EvolutionDescription evolution = product.evolution();
+
+    MarketModelType marketModels[] = {// CalibratedMM,
+                                    ExponentialCorrelationFlatVolatility,
+                                    ExponentialCorrelationAbcdVolatility };
+
+    for (Size j=0; j<LENGTH(marketModels); j++) {
+
+        // Composite's ProductSuggested is the Terminal one
+        MeasureType measures[] = { // ProductSuggested,
+                                   MoneyMarketPlus,
+                                   MoneyMarket,
+                                   Terminal };
+        for (Size k=0; k<LENGTH(measures); k++) {
+            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+
+            Size testedFactors[] = { 4, 8,
+                                     todaysForwards.size()};
+            for (Size m=0; m<LENGTH(testedFactors); ++m) {
+                Size factors = testedFactors[m];
+
+                boost::shared_ptr<MarketModel> marketModel =
+                    makeMarketModel(evolution, factors, marketModels[j]);
+
+                EvolverType evolvers[] = { Pc, Ipc };
+                boost::shared_ptr<MarketModelEvolver> evolver;
+                Size stop =
+                    isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+                for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+
+                    for (Size n=0; n<1; n++) {
+                        //MTBrownianGeneratorFactory generatorFactory(seed_);
+                        SobolBrownianGeneratorFactory generatorFactory(
+                            SobolBrownianGenerator::Diagonal);
+
+                        evolver = makeMarketModelEvolver(marketModel,
+                                                         numeraires,
+                                                         generatorFactory,
+                                                         evolvers[i]);
+                        std::ostringstream config;
+                        config <<
+                            marketModelTypeToString(marketModels[j]) << ", " << 
+                            measureTypeToString(measures[k]) << ", " <<
+                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            evolverTypeToString(evolvers[i]) << ", " <<
+                            "MT BGF";
+                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+
+                        boost::shared_ptr<SequenceStatistics> stats =
+                            simulate(evolver, product);
+                        checkCoterminalSwapsAndSwaptions(*stats, fixedRate, todaysForwards, payoffs, marketModel,config.str());
+                    }
+                }
+            }
+        }
+    }
+    QL_TEST_END
+}
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 void MarketModelTest::testMultiStepCoterminalSwaps() {
 
@@ -1537,8 +1740,8 @@ void MarketModelTest::testGreeks() {
             //PlainVanillaPayoff(Option::Call, todaysForwards[i]));
             CashOrNothingPayoff(Option::Call, todaysForwards[i], 0.01));
         displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-            //PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacements[i]));
-            CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacements[i], 0.01));
+            //PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+            CashOrNothingPayoff(Option::Call, todaysForwards[i]+displacement, 0.01));
     }
 
     MultiStepOptionlets product(rateTimes, accruals,
@@ -1990,6 +2193,7 @@ test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));

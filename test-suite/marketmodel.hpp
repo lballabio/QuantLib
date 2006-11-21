@@ -30,6 +30,7 @@ class MarketModelTest {
   public:
     static void testMultiStepForwardsAndOptionlets();
     static void testOneStepForwardsAndOptionlets();
+    static void testMultiStepCoterminalSwapsAndSwaptions();
     static void testMultiStepCoinitialSwaps();
     static void testMultiStepCoterminalSwaps();
     static void testMultiStepCoterminalSwaptions();
