@@ -20,7 +20,6 @@
 
 #include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 #include <ql/Math/sabrinterpolation.hpp>
-// NO!!!!!!!!!
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 namespace QuantLib {
@@ -255,13 +254,11 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
 
-        // NO!!!!!!
         const boost::shared_ptr<SwaptionVolatilityMatrix> atmVolStructure =
             boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
                                                     atmVol_.currentLink());
-        //const boost::shared_ptr<SwaptionVolatilityStructure> atmVolStructure = atmVol_;
 
-        std::vector<Time> atmExerciseTimes(atmVolStructure->exerciseTimes());
+		std::vector<Time> atmExerciseTimes(atmVolStructure->exerciseTimes());
         std::vector<Time> exerciseTimes(volCubeAtmCalibrated_.expiries());
         atmExerciseTimes.insert(atmExerciseTimes.end(),
                                 exerciseTimes.begin(), exerciseTimes.end());

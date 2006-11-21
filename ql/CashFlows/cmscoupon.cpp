@@ -36,7 +36,6 @@ namespace QuantLib {
                     Spread spread,
                     Rate cap,
                     Rate floor,
-                    Real meanReversion,
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
                     bool isInArrears)
@@ -44,7 +43,7 @@ namespace QuantLib {
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter),
       swapIndex_(index), cap_(cap), floor_(floor), isInArrears_(isInArrears),
-      meanReversion_(meanReversion), pricer_(pricer) {}
+      pricer_(pricer) {}
 
     namespace {
 
@@ -116,111 +115,94 @@ namespace QuantLib {
         }
     }
 
-   Rate CMSCoupon::rate1() const {
-        Date d = fixingDate();
-        const Rate Rs = index_->fixing(d);
-        Date today = Settings::instance().evaluationDate();
-        if (d <= today || gearing_ == 0.0) {
-            // the fixing is determined
-            Rate r = gearing_*Rs + spread_;
-            if (cap_ != Null<Rate>())
-                r = std::min(r, cap_);
-            if (floor_ != Null<Rate>())
-                r = std::max(r, floor_);
-            return r;
-        } else {
-            // a convexity adjustment is required
-            QL_REQUIRE(!swaptionVol_.empty(), "missing swaption volatility");
+    //Rate CMSCoupon::rate1() const {
+    //    Date d = fixingDate();
+    //    const Rate Rs = index_->fixing(d);
+    //    Date today = Settings::instance().evaluationDate();
+    //    if (d <= today || gearing_ == 0.0) {
+    //        // the fixing is determined
+    //        Rate r = gearing_*Rs + spread_;
+    //        if (cap_ != Null<Rate>())
+    //            r = std::min(r, cap_);
+    //        if (floor_ != Null<Rate>())
+    //            r = std::max(r, floor_);
+    //        return r;
+    //    } else {
+    //        Rate rate = Rs;
+    //        const DayCounter& dc = dayCounter_;
+    //        Volatility sigma =
+    //            swaptionVol_->volatility(d, index_->tenor(), Rs);
+    //        QL_REQUIRE(sigma > 0.0, "internal error: corrupted volatility");
+    //        Time tau = dc.yearFraction(today,d);
+    //        Schedule s(d, d+index_->tenor(),
+    //                   swapIndex_->tenor(),
+    //                   index_->calendar(),
+    //                   swapIndex_->fixedLegConvention(),
+    //                   swapIndex_->fixedLegConvention(),
+    //                   true, true); //FIXME
+    //        Date tp = date();
+    //        DiscountFactor D_s0 =
+    //            index_->termStructure()->discount(d);
+    //        Real g = G(Rs,tp,D_s0,s,dc), g1 = Gprime(Rs,tp,D_s0,s,dc);
+    //        Spread adjustment = (g1/g)*Rs*Rs*(std::exp(sigma*sigma*tau)-1.0);
+    //        rate += adjustment;
 
-            Rate rate = Rs;
-            const DayCounter& dc = dayCounter_;
-            Volatility sigma =
-                swaptionVol_->volatility(d, index_->tenor(), Rs);
-            QL_REQUIRE(sigma > 0.0, "internal error: corrupted volatility");
-            Time tau = dc.yearFraction(today,d);
-            Schedule s(d, d+index_->tenor(),
-                       swapIndex_->tenor(),
-                       index_->calendar(),
-                       swapIndex_->fixedLegConvention(),
-                       swapIndex_->fixedLegConvention(),
-                       true, true); //FIXME
-            Date tp = date();
-            DiscountFactor D_s0 =
-                index_->termStructure()->discount(d);
-            Real g = G(Rs,tp,D_s0,s,dc), g1 = Gprime(Rs,tp,D_s0,s,dc);
-            Spread adjustment = (g1/g)*Rs*Rs*(std::exp(sigma*sigma*tau)-1.0);
-            rate += adjustment;
+    //        // translate cap and floor for the coupon to those for the rate.
+    //        // also ensure that both strikes are positive as we use BS.
+    //        Rate capStrike = Null<Rate>(), floorStrike = Null<Rate>();
+    //        if (cap_ != Null<Rate>()) {
+    //            if (gearing_ > 0.0)
+    //                capStrike = std::max((cap_-spread_)/gearing_,
+    //                                     QL_EPSILON);
+    //            else
+    //                floorStrike = std::max((cap_-spread_)/gearing_,
+    //                                       QL_EPSILON);
+    //        }
+    //        if (floor_ != Null<Rate>()) {
+    //            if (gearing_ > 0.0)
+    //                floorStrike = std::max((floor_-spread_)/gearing_,
+    //                                       QL_EPSILON);
+    //            else
+    //                capStrike = std::max((floor_-spread_)/gearing_,
+    //                                     QL_EPSILON);
+    //        }
 
-            // translate cap and floor for the coupon to those for the rate.
-            // also ensure that both strikes are positive as we use BS.
-            Rate capStrike = Null<Rate>(), floorStrike = Null<Rate>();
-            if (cap_ != Null<Rate>()) {
-                if (gearing_ > 0.0)
-                    capStrike = std::max((cap_-spread_)/gearing_,
-                                         QL_EPSILON);
-                else
-                    floorStrike = std::max((cap_-spread_)/gearing_,
-                                           QL_EPSILON);
-            }
-            if (floor_ != Null<Rate>()) {
-                if (gearing_ > 0.0)
-                    floorStrike = std::max((floor_-spread_)/gearing_,
-                                           QL_EPSILON);
-                else
-                    capStrike = std::max((floor_-spread_)/gearing_,
-                                         QL_EPSILON);
-            }
+    //        if (capStrike != Null<Rate>()) {
+    //            Rate caplet = blackFormula(Option::Call, capStrike, Rs,
+    //                sigma*std::sqrt(tau));
+    //            CumulativeNormalDistribution N;
+    //            Real N32 = N(d_lambda(1.5,Rs,capStrike,sigma,tau));
+    //            Real N12 = N(d_lambda(0.5,Rs,capStrike,sigma,tau));
+    //            Real Nm12 = N(d_lambda(-0.5,Rs,capStrike,sigma,tau));
 
-            if (capStrike != Null<Rate>()) {
-                Rate caplet = blackFormula(Option::Call, capStrike, Rs,
-                    sigma*std::sqrt(tau));
-                CumulativeNormalDistribution N;
-                Real N32 = N(d_lambda(1.5,Rs,capStrike,sigma,tau));
-                Real N12 = N(d_lambda(0.5,Rs,capStrike,sigma,tau));
-                Real Nm12 = N(d_lambda(-0.5,Rs,capStrike,sigma,tau));
+    //            Spread adjustment =
+    //                (g1/g)*(Rs*Rs*std::exp(sigma*sigma*tau)*N32
+    //                        - Rs*(Rs+capStrike)*N12
+    //                        + Rs*capStrike*Nm12);
 
-                Spread adjustment =
-                    (g1/g)*(Rs*Rs*std::exp(sigma*sigma*tau)*N32
-                            - Rs*(Rs+capStrike)*N12
-                            + Rs*capStrike*Nm12);
+    //            caplet += adjustment;
+    //            rate -= caplet;
+    //        }
 
-                caplet += adjustment;
-                rate -= caplet;
-            }
+    //        if (floorStrike != Null<Rate>()) {
+    //            Rate floorlet = blackFormula(Option::Put, floorStrike, Rs,
+    //                sigma*std::sqrt(tau));
+    //            CumulativeNormalDistribution N;
+    //            Real N32 = N(-d_lambda(1.5,Rs,floorStrike,sigma,tau));
+    //            Real N12 = N(-d_lambda(0.5,Rs,floorStrike,sigma,tau));
+    //            Real Nm12 = N(-d_lambda(-0.5,Rs,floorStrike,sigma,tau));
 
-            if (floorStrike != Null<Rate>()) {
-                Rate floorlet = blackFormula(Option::Put, floorStrike, Rs,
-                    sigma*std::sqrt(tau));
-                CumulativeNormalDistribution N;
-                Real N32 = N(-d_lambda(1.5,Rs,floorStrike,sigma,tau));
-                Real N12 = N(-d_lambda(0.5,Rs,floorStrike,sigma,tau));
-                Real Nm12 = N(-d_lambda(-0.5,Rs,floorStrike,sigma,tau));
+    //            Spread adjustment =
+    //                -(g1/g)*(Rs*Rs*std::exp(sigma*sigma*tau)*N32
+    //                         - Rs*(Rs+floorStrike)*N12
+    //                         + Rs*floorStrike*Nm12);
 
-                Spread adjustment =
-                    -(g1/g)*(Rs*Rs*std::exp(sigma*sigma*tau)*N32
-                             - Rs*(Rs+floorStrike)*N12
-                             + Rs*floorStrike*Nm12);
-
-                floorlet += adjustment;
-                rate += floorlet;
-            }
-            return gearing_*rate + spread_;
-        }
-    }
-
-    void CMSCoupon::setSwaptionVolatility(
-                   const Handle<SwaptionVolatilityStructure>& vol) {
-        if (!swaptionVol_.empty())
-            unregisterWith(swaptionVol_);
-        swaptionVol_ = vol;
-        if (!swaptionVol_.empty())
-            registerWith(swaptionVol_);
-        notifyObservers();
-    }
-
-   Handle<SwaptionVolatilityStructure> CMSCoupon::swaptionVolatility() const {
-        return swaptionVol_;
-   }
+    //            floorlet += adjustment;
+    //            rate += floorlet;
+    //        }
+    //        return gearing_*rate + spread_;
+    //    }
+    //}
 
     void CMSCoupon::accept(AcyclicVisitor& v) {
         Visitor<CMSCoupon>* v1 = dynamic_cast<Visitor<CMSCoupon>*>(&v);

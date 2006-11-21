@@ -27,22 +27,15 @@ namespace QuantLib {
     MakeCMS::MakeCMS(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
-                     const Handle<SwaptionVolatilityStructure>& vol,
-                     //GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                     const Real meanReversion,
                      const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
       iborSpread_(iborSpread),
-      //modelOfYieldCurve_(modelOfYieldCurve),
-      //cmsVanillapricer_(boost::shared_ptr<VanillaCMSCouponPricer>(new
-      //    ConundrumPricerByNumericalIntegration(modelOfYieldCurve)));
-      cmsVanillapricer_(pricer), swaptionVol_(vol),
+      cmsVanillapricer_(pricer), 
       forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
       cmsCap_(2.0), cmsFloor_(0.0),
-      cmsMeanReversion_(meanReversion),
 
       effectiveDate_(Date()),
       cmsCalendar_(swapIndex->calendar()),
@@ -116,9 +109,7 @@ namespace QuantLib {
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
                             std::vector<Rate>(1, cmsFloor_),
-                            std::vector<Real>(1, cmsMeanReversion_),
-                            cmsVanillapricer_,
-                            swaptionVol_);
+                            cmsVanillapricer_);
 
         std::vector<boost::shared_ptr<CashFlow> > floatLeg =
             FloatingRateCouponVector(floatSchedule,
@@ -174,9 +165,7 @@ namespace QuantLib {
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
                             std::vector<Rate>(1, cmsFloor_),
-                            std::vector<Real>(1, cmsMeanReversion_),
-                            cmsVanillapricer_,
-                            swaptionVol_);
+                            cmsVanillapricer_);
 
         std::vector<boost::shared_ptr<CashFlow> > floatLeg =
             FloatingRateCouponVector(floatSchedule,

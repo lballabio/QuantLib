@@ -44,10 +44,8 @@ namespace QuantLib {
             const std::vector<Period>& expiries,
             const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const Matrix& meanReversions,
-            const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-            const Handle<YieldTermStructure>& yieldTermStructure,
-            const Handle<SwaptionVolatilityStructure>& volStructure);
+            const std::vector< boost::shared_ptr<VanillaCMSCouponPricer> >& pricers,
+            const Handle<YieldTermStructure>& yieldTermStructure);
 
         void createForwardStartingCms();
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
@@ -110,14 +108,12 @@ namespace QuantLib {
 
 
         Matrix meanReversions_;
-        boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
+        std::vector< boost::shared_ptr<VanillaCMSCouponPricer> > pricers_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
 
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
 
         Handle<YieldTermStructure> yieldTermStructure_;
-        Handle<SwaptionVolatilityStructure> volStructure_;
- 
      };
 
      class SmileAndCmsCalibrationBySabr{

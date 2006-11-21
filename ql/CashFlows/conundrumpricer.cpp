@@ -59,8 +59,12 @@ namespace QuantLib {
 //                             ConundrumPricer                               //
 //===========================================================================//
     ConundrumPricer::ConundrumPricer(
-                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
-    : modelOfYieldCurve_(modelOfYieldCurve),
+				const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+				Real meanReversion)
+    : VanillaCMSCouponPricer(swaptionVol),
+	  modelOfYieldCurve_(modelOfYieldCurve),
+	  meanReversion_(meanReversion),
       cutoffForCaplet_(2), cutoffForFloorlet_(0){   }
 
     void ConundrumPricer::initialize(const CMSCoupon& coupon){
@@ -106,7 +110,7 @@ namespace QuantLib {
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, 0.0);
                 break;
             case GFunctionFactory::NonParallelShifts:
-                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, coupon.meanReversion());
+                gFunction_ = GFunctionFactory::newGFunctionWithShifts(coupon, meanReversion_);
                 break;
             default:
                 QL_FAIL("unknown/illegal gFunction type");
@@ -114,7 +118,7 @@ namespace QuantLib {
 
         vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(
             new BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
-                                         coupon_->swaptionVolatility().currentLink()));
+                                         swaptionVolatility().currentLink()));
     }
 
     Real ConundrumPricer::price() const {
@@ -145,10 +149,12 @@ namespace QuantLib {
 //===========================================================================//
 
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        const Handle<SwaptionVolatilityStructure>& swaptionVol,
+        const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+		Real meanReversion,
         Real lowerLimit,
         Real upperLimit)
-    : ConundrumPricer(modelOfYieldCurve),
+    : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit) {
     }
@@ -262,14 +268,16 @@ namespace QuantLib {
 //===========================================================================//
 
     ConundrumPricerByBlack::ConundrumPricerByBlack(
-        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve)
-    : ConundrumPricer(modelOfYieldCurve)
+        const Handle<SwaptionVolatilityStructure>& swaptionVol,
+        const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+		Real meanReversion)
+    : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion)
       { }
 
     //Hagan, 3.5b, 3.5c
       Real ConundrumPricerByBlack::optionLetPrice(Option::Type optionType,
                                                   Real strike) const {
-        Real variance = coupon_->swaptionVolatility()->blackVariance(fixingDate_,
+        Real variance = swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
                                                            swapRateValue_);
         Real firstDerivativeOfGAtForwardValue = gFunction_->firstDerivative(
@@ -299,7 +307,7 @@ namespace QuantLib {
     //Hagan 3.4c
     Real ConundrumPricerByBlack::swapLetPrice() const {
 
-        Real variance(coupon_->swaptionVolatility()->blackVariance(fixingDate_,
+        Real variance(swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
                                                            swapRateValue_));
         Real firstDerivativeOfGAtForwardValue(gFunction_->firstDerivative(

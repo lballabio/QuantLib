@@ -292,23 +292,23 @@ void CmsTest::testFairRate()  {
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
     boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new
-        ConundrumPricerByNumericalIntegration(modelOfYieldCurves_[h], 0, 1));
+        ConundrumPricerByNumericalIntegration(swaptionVolatilityMatrix_,
+											  modelOfYieldCurves_[h],0., 0., 1.));
     boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new
-        ConundrumPricerByBlack(modelOfYieldCurves_[h]));
+        ConundrumPricerByBlack(swaptionVolatilityMatrix_,
+							   modelOfYieldCurves_[h],0.));
 
     //Coupons
     CMSCoupon coupon1(1,
         paymentDate_, index_, startDate_, endDate_, settlementDays_,
         iborIndex_->dayCounter(),
         numericalPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
-    coupon1.setSwaptionVolatility(swaptionVolatilityMatrix_);
 
     CMSCoupon coupon2(1,
         paymentDate_, index_, startDate_, endDate_, settlementDays_,
         iborIndex_->dayCounter(),
         analyticPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
-    coupon2.setSwaptionVolatility(swaptionVolatilityMatrix_);
-
+ 
     //Computation
     const double rate1 = coupon1.rate();
     const double rate2 = coupon2.rate();
@@ -335,29 +335,28 @@ void CmsTest::testParity() {
     QL_TEST_SETUP
 
     int priceIndex = 1;
+    for (Size volStructureIndex = 0;
+         volStructureIndex < swaptionVolatilityStructures_.size();
+         volStructureIndex++) {
+		
+		for(Size modelOfYieldCurveIndex=0;
+			modelOfYieldCurveIndex<modelOfYieldCurves_.size();
+			modelOfYieldCurveIndex++) {
 
-    for(Size modelOfYieldCurveIndex=0;
-        modelOfYieldCurveIndex<modelOfYieldCurves_.size();
-        modelOfYieldCurveIndex++) {
+			std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
+			{
+				boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
+					new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
+											   modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
+				pricers.push_back(analyticPricer);
 
-        std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
-        {
-            boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
-                new ConundrumPricerByBlack(modelOfYieldCurves_[
-                    modelOfYieldCurveIndex]));
-            pricers.push_back(analyticPricer);
-
-            boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
-                new ConundrumPricerByNumericalIntegration(
-                modelOfYieldCurves_[modelOfYieldCurveIndex],
-                0, 1));
-            pricers.push_back(numericalPricer);
-        }
-
-
-        for (Size volStructureIndex = 0;
-             volStructureIndex < swaptionVolatilityStructures_.size();
-             volStructureIndex++) {
+				boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
+					new ConundrumPricerByNumericalIntegration(
+												swaptionVolatilityStructures_[volStructureIndex],
+												modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
+												0, 1));
+				pricers.push_back(numericalPricer);
+			}
 
             for (Size pricerIndex=0; pricerIndex < pricers.size();
                  pricerIndex++) {
@@ -367,9 +366,6 @@ void CmsTest::testParity() {
                                   iborIndex_->dayCounter(),
                                   pricers[pricerIndex], gearing_,
                                   spread_, infiniteCap_, infiniteFloor_);
-                swaplet.setSwaptionVolatility(
-                    swaptionVolatilityStructures_[volStructureIndex]
-                );
 
                 Real strike = .02;
 
@@ -381,16 +377,12 @@ void CmsTest::testParity() {
                                      iborIndex_->dayCounter(),
                                      pricers[pricerIndex], gearing_,
                                      spread_, strike, infiniteFloor_);
-                    caplet.setSwaptionVolatility(
-                        swaptionVolatilityStructures_[volStructureIndex]);
 
                     CMSCoupon floorlet(1, paymentDate_, index_,
                                        startDate_, endDate_, settlementDays_,
                                        iborIndex_->dayCounter(),
                                        pricers[pricerIndex], gearing_,
                                        spread_, infiniteCap_, strike);
-                    floorlet.setSwaptionVolatility(
-                        swaptionVolatilityStructures_[volStructureIndex]);
 
                     //Computation
                     const double price1 = swaplet.price(termStructure_)
@@ -469,12 +461,14 @@ void CmsTest::testCmsSwap() {
                 std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
                 boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
                     new ConundrumPricerByBlack(
-                                modelOfYieldCurves_[modelOfYieldCurveIndex]));
+									swaptionVolatilityStructures_[volStructureIndex],
+									modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
                 pricers.push_back(analyticPricer);
 
                 boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
                     new ConundrumPricerByNumericalIntegration(
-                                modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                swaptionVolatilityStructures_[volStructureIndex],
+								modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
                                 0, 1));
                 pricers.push_back(numericalPricer);
 
@@ -503,9 +497,8 @@ void CmsTest::testCmsSwap() {
                             fixedSchedule, fixedConvention_,
                             fixedNominals, index_, settlementDays_,
                             fixedDayCount_, baseRate, fractions,
-                            caps, floors, meanReversions,
-                            pricers[pricerIndex],
-                            swaptionVolatilityStructures_[volStructureIndex]);
+                            caps, floors,
+                            pricers[pricerIndex]);
 
                     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
                         FloatingRateCouponVector(floatingSchedule,

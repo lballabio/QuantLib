@@ -35,11 +35,20 @@ namespace QuantLib {
 
     //! pricer for vanilla CMS coupons
     class VanillaCMSCouponPricer {
+		Handle<SwaptionVolatilityStructure> swaptionVol_;
       public:
-        virtual ~VanillaCMSCouponPricer() {}
+		VanillaCMSCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
+		: swaptionVol_(swaptionVol){};
+        virtual ~VanillaCMSCouponPricer(){};
         virtual Real price() const = 0;
         virtual Real rate() const = 0;
         virtual void initialize(const CMSCoupon& coupon) = 0;
+		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
+			return swaptionVol_;
+	    };
+		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
+			swaptionVol_ = swaptionVol;
+		};
     };
 
     //! CMS coupon class
@@ -60,7 +69,6 @@ namespace QuantLib {
                   Spread spread,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>(),
-                  Real meanReversion = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   bool isInArrears = false);
@@ -78,15 +86,8 @@ namespace QuantLib {
         }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
-        Real meanReversion() const { return meanReversion_; }
         //! fixing date
         virtual Date fixingDate() const;
-        //@}
-        //! \name Modifiers
-        //@{
-        void setSwaptionVolatility(
-                const Handle<SwaptionVolatilityStructure>&);
-        Handle<SwaptionVolatilityStructure> swaptionVolatility() const;
         //@}
         //! \name Visitability
         //@{
@@ -99,8 +100,6 @@ namespace QuantLib {
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
         bool isInArrears_;
-        Real meanReversion_;
-        Handle<SwaptionVolatilityStructure> swaptionVol_;
         boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
     };
 

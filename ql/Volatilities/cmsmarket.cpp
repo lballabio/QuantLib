@@ -35,16 +35,12 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
         const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-        const Matrix& meanReversions,
-        const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-        const Handle<YieldTermStructure>& yieldTermStructure,
-        const Handle<SwaptionVolatilityStructure>& volStructure):
+        const std::vector< boost::shared_ptr<VanillaCMSCouponPricer> >& pricers,
+        const Handle<YieldTermStructure>& yieldTermStructure):
     expiries_(expiries),
-    meanReversions_(meanReversions),
-    pricer_(pricer),
+    pricers_(pricers),
     swapIndices_(swapIndices),
-    yieldTermStructure_(yieldTermStructure),
-    volStructure_(volStructure) {
+    yieldTermStructure_(yieldTermStructure){
 
         nExercise_ = expiries_.size();
         nSwapTenors_ = swapIndices_.size();
@@ -76,6 +72,8 @@ namespace QuantLib {
         modelForwardCmsLegValues_ = Matrix(nExercise_, nSwapTenors_, 0.);
         forwardPriceErrors_ = Matrix(nExercise_, nSwapTenors_, 0.);
 
+		meanReversions_ = Matrix(nExercise_, nSwapTenors_, 0.);
+
         for (Size i=0; i<nExercise_; i++) {
             std::vector< boost::shared_ptr<Swap> > swapTmp;
             for (Size j=0; j<nSwapTenors_ ; j++) {
@@ -83,9 +81,13 @@ namespace QuantLib {
                 asks_[i][j] = bidAskSpreads[i][j*2+1]->value();
                 mids_[i][j] = (bids_[i][j]+asks_[i][j])/2;
 
+				const boost::shared_ptr<ConundrumPricer> pricer =
+					boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
+				meanReversions_[i][j] = pricer->meanReversion();
+
                 swapTmp.push_back(
-                    MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_,
-                        meanReversions_[i][j], pricer_,Period()).operator boost::shared_ptr<Swap>()
+                    MakeCMS(expiries_[i], swapIndices_[j], 0.,
+						pricers_[j],Period()).operator boost::shared_ptr<Swap>()
                );
 
                 // Spread errors valuation
@@ -125,8 +127,8 @@ namespace QuantLib {
                 Period tenorOfForwardCms =
                     Period(expiries_[i].length()-startingCmsTenor.length(),expiries_[i].units());
                 boost::shared_ptr<Swap> forwardSwap =
-                     MakeCMS(tenorOfForwardCms, swapIndices_[j], 0., volStructure_,
-                        meanReversions_[i][j], pricer_,startingCmsTenor).operator boost::shared_ptr<Swap>();
+                     MakeCMS(tenorOfForwardCms, swapIndices_[j], 0., 
+                        pricers_[j],startingCmsTenor).operator boost::shared_ptr<Swap>();
 
                 // ForwardPrice errors valuation
                 if(i==0){
@@ -158,14 +160,19 @@ namespace QuantLib {
 
      void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                              Real meanReversion){
-        // set new volatility structure
-        volStructure_ = volStructure;
-        for (Size i=0; i<nExercise_; i++) {
+
+        for (Size j=0; j<nSwapTenors_ ; j++) {
+			// set new volatility structure and new mean reversion
+			pricers_[j]->setSwaptionVolatility(volStructure);
+			const boost::shared_ptr<ConundrumPricer> pricer =
+				boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
+			pricer->setMeanReversion(meanReversion);
+		}
+    
+		for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nSwapTenors_ ; j++) {
-                // set new mean reversion
-                meanReversions_[i][j] = meanReversion;
-                swaps_[i][j] = MakeCMS(expiries_[i], swapIndices_[j], 0., volStructure_,
-                    meanReversions_[i][j], pricer_,Period()).operator boost::shared_ptr<Swap>();
+	            swaps_[i][j] = MakeCMS(expiries_[i], swapIndices_[j], 0.,
+                    pricers_[j],Period()).operator boost::shared_ptr<Swap>();
 
                 // Spread errors valuation
                 prices_[i][j] = swaps_[i][j]->NPV();
@@ -227,7 +234,7 @@ namespace QuantLib {
     }
 
     Matrix CmsMarket::browse() const{
-        Matrix result(nExercise_*nSwapTenors_,18,0.);
+        Matrix result(nExercise_*nSwapTenors_,19,0.);
             for(Size j=0;j<nSwapTenors_;j++){
                 for(Size i=0;i<nExercise_;i++){
                 result[j*nSwapTenors_+i][0]= swapTenors_[j].length();
@@ -260,6 +267,9 @@ namespace QuantLib {
                 result[j*nSwapTenors_+i][15]= marketMidForwardCmsLegValues_[i][j];
                 result[j*nSwapTenors_+i][16]= modelForwardCmsLegValues_[i][j];
                 result[j*nSwapTenors_+i][17]= forwardPriceErrors_[i][j];
+
+				// mean reversions
+                result[j*nSwapTenors_+i][18]= meanReversions_[i][j];
 
             }
         }

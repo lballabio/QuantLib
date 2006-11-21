@@ -40,9 +40,6 @@ namespace QuantLib {
         MakeCMS(const Period& swapTenor,
                 const boost::shared_ptr<SwapIndex>& swapIndex,
                 Spread iborSpread,
-                const Handle<SwaptionVolatilityStructure>& vol,
-                //GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                const Real meanReversion,
                 const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                 const Period& forwardStart = 0*Days);
 
@@ -79,16 +76,13 @@ namespace QuantLib {
         Period swapTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
         Spread iborSpread_;
-        //GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
         boost::shared_ptr<VanillaCMSCouponPricer> cmsVanillapricer_;
-        Handle<SwaptionVolatilityStructure> swaptionVol_;
 
         Period forwardStart_;
 
         Spread cmsSpread_;
         Real cmsGearing_;
         Rate cmsCap_, cmsFloor_;
-        Real cmsMeanReversion_;
 
         Date effectiveDate_;
         Calendar cmsCalendar_, floatCalendar_;

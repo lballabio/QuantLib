@@ -81,10 +81,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer);
 
     std::vector<boost::shared_ptr<CashFlow> >
     CMSZeroCouponVector(const Schedule& schedule,
@@ -97,10 +94,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer);
 
     std::vector<boost::shared_ptr<CashFlow> >
     CMSInArrearsCouponVector(const Schedule& schedule,
@@ -113,10 +107,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol =
-                                Handle<SwaptionVolatilityStructure>());
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer);
 
 }
 

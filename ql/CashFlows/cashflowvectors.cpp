@@ -126,7 +126,7 @@ namespace QuantLib {
         #ifdef QL_USE_INDEXED_COUPON
         typedef UpFrontIndexedCoupon coupon_type;
         #else
-        typedef ParCoupon coupon_type;
+        typedef ParCoupon coupon_type; 
         #endif
 
         std::vector<boost::shared_ptr<CashFlow> > leg =
@@ -172,9 +172,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol) {
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer) {
 
         //std::vector<CMSCoupon> leg;
         std::vector<boost::shared_ptr<CashFlow> > leg;
@@ -195,7 +193,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               start, end)));
 
         } else {
@@ -209,7 +206,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               reference, end)));
         }
         // regular periods
@@ -223,7 +219,6 @@ namespace QuantLib {
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              get(meanReversions,i-1,Null<Rate>()),
                               start, end)));
         }
         if (schedule.size() > 2) {
@@ -238,7 +233,6 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, end)));
             } else {
                 Date reference = start + schedule.tenor();
@@ -251,20 +245,9 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, reference)));
             }
         }
-
-        for (Size i=0; i<leg.size(); i++) {
-            const boost::shared_ptr<CMSCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setSwaptionVolatility(vol);
-            else
-                QL_FAIL("unexpected error when casting to CMSCoupon");
-        }
-
         return leg;
     }
 
@@ -279,9 +262,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol) {
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer) {
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
@@ -302,7 +283,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               start, end)));
 
         } else {
@@ -316,7 +296,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               reference, end)));
         }
         // regular periods
@@ -329,7 +308,6 @@ namespace QuantLib {
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              get(meanReversions,i-1,Null<Rate>()),
                               start, end)));
         }
         if (schedule.size() > 2) {
@@ -343,7 +321,6 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, end)));
             } else {
                 Date reference = start + schedule.tenor();
@@ -356,21 +333,10 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, reference)));
             }
         }
-
-        for (Size i=0; i<leg.size(); i++) {
-            const boost::shared_ptr<CMSCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setSwaptionVolatility(vol);
-            else
-                QL_FAIL("unexpected error when casting to CMSCoupon");
-        }
-
-        return leg;
+	     return leg;
     }
 
 
@@ -386,9 +352,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
-                    const std::vector<Real>& meanReversions,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const Handle<SwaptionVolatilityStructure>& vol) {
+                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer) {
 
         //std::vector<CMSCoupon> leg;
         std::vector<boost::shared_ptr<CashFlow> > leg;
@@ -409,7 +373,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               start, end, true)));
 
         } else {
@@ -423,7 +386,6 @@ namespace QuantLib {
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              get(meanReversions,0,Null<Rate>()),
                               reference, end, true)));
         }
         // regular periods
@@ -437,7 +399,6 @@ namespace QuantLib {
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              get(meanReversions,i-1,Null<Rate>()),
                               start, end, true)));
         }
         if (schedule.size() > 2) {
@@ -452,7 +413,6 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, end, true)));
             } else {
                 Date reference = start + schedule.tenor();
@@ -465,21 +425,11 @@ namespace QuantLib {
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  get(meanReversions,N-2,Null<Rate>()),
                                   start, reference, true)));
             }
         }
-
-        for (Size i=0; i<leg.size(); i++) {
-            const boost::shared_ptr<CMSCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setSwaptionVolatility(vol);
-            else
-                QL_FAIL("unexpected error when casting to CMSCoupon");
-        }
-
-        return leg;
+	
+		return leg;
     }
 
 }
