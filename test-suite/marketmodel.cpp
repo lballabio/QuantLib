@@ -759,21 +759,20 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // for one step product ProductSuggested is equal to Terminal
-        // for one step product MoneyMarketPlus is equal to Terminal
-        MeasureType measures[] = { MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        // one step must be always full factors
+        Size testedFactors[] = { todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            // one step must be always full factors
-            Size testedFactors[] = { todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // for one step product ProductSuggested is equal to Terminal
+            // for one step product MoneyMarketPlus is equal to Terminal
+            MeasureType measures[] = { MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
-
 
                 EvolverType evolvers[] = { Pc, Ipc };
                 boost::shared_ptr<MarketModelEvolver> evolver;
@@ -793,11 +792,11 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
@@ -853,18 +852,18 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -888,11 +887,11 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
@@ -929,18 +928,18 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -964,11 +963,11 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
@@ -1014,18 +1013,18 @@ void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
 
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1048,11 +1047,11 @@ void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
@@ -1088,18 +1087,18 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1123,11 +1122,11 @@ void MarketModelTest::testMultiStepCoterminalSwaps() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
@@ -1166,18 +1165,18 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
-
             Size testedFactors[] = { 4, 8,
                                      todaysForwards.size()};
             for (Size m=0; m<LENGTH(testedFactors); ++m) {
                 Size factors = testedFactors[m];
+
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1201,11 +1200,11 @@ void MarketModelTest::testMultiStepCoterminalSwaptions() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats =
                                             simulate(evolver, product);
@@ -1264,18 +1263,18 @@ void MarketModelTest::testCallableSwapNaif() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1299,11 +1298,11 @@ void MarketModelTest::testCallableSwapNaif() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         // use the naif strategy
 
@@ -1425,18 +1424,18 @@ void MarketModelTest::testCallableSwapLS() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1460,11 +1459,11 @@ void MarketModelTest::testCallableSwapLS() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         // calculate the exercise strategy
                         collectNodeData(*evolver,
@@ -1596,18 +1595,18 @@ void MarketModelTest::testCallableSwapAnderson() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        // Composite's ProductSuggested is the Terminal one
-        MeasureType measures[] = { // ProductSuggested,
-                                   MoneyMarketPlus,
-                                   MoneyMarket,
-                                   Terminal };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
+        Size testedFactors[] = { 4, 8,
+                                 todaysForwards.size()};
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8,
-                                     todaysForwards.size()};
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            // Composite's ProductSuggested is the Terminal one
+            MeasureType measures[] = { // ProductSuggested,
+                                       MoneyMarketPlus,
+                                       MoneyMarket,
+                                       Terminal };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
@@ -1631,11 +1630,11 @@ void MarketModelTest::testCallableSwapAnderson() {
                         std::ostringstream config;
                         config <<
                             marketModelTypeToString(marketModels[j]) << ", " << 
-                            measureTypeToString(measures[k]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                            measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        if (printReport_) BOOST_MESSAGE("    " << config.str());
+                        BOOST_MESSAGE("    " << config.str());
 
                         // calculate the exercise strategy
                         collectNodeData(*evolver,
@@ -1728,7 +1727,7 @@ void MarketModelTest::testCallableSwapAnderson() {
 
 void MarketModelTest::testGreeks() {
 
-    BOOST_MESSAGE("Repricing caplets in a LIBOR market model...");
+    BOOST_MESSAGE("Testing caplets greeks in a LIBOR market model...");
 
     QL_TEST_SETUP
 
@@ -1755,16 +1754,16 @@ void MarketModelTest::testGreeks() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        MeasureType measures[] = { //MoneyMarketPlus,
-                                   MoneyMarket//,
-                                   //Terminal
-        };
-        for (Size k=0; k<LENGTH(measures); k++) {
-            std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+        Size testedFactors[] = { 4, 8, todaysForwards.size() };
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+            Size factors = testedFactors[m];
 
-            Size testedFactors[] = { 4, 8, todaysForwards.size() };
-            for (Size m=0; m<LENGTH(testedFactors); ++m) {
-                Size factors = testedFactors[m];
+            MeasureType measures[] = { //MoneyMarketPlus,
+                                       MoneyMarket//,
+                                       //Terminal
+            };
+            for (Size k=0; k<LENGTH(measures); k++) {
+                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
                 for (Size n=0; n<1; n++) {
                     //MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -1882,10 +1881,10 @@ void MarketModelTest::testGreeks() {
                     std::ostringstream config;
                     config <<
                         marketModelTypeToString(marketModels[j]) << ", " << 
-                        measureTypeToString(measures[k]) << ", " <<
                         factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+                        measureTypeToString(measures[k]) << ", " <<
                         "MT BGF";
-                    if (printReport_) BOOST_MESSAGE("    " << config.str());
+                    BOOST_MESSAGE("    " << config.str());
 
                     Size initialNumeraire = evolver->numeraires().front();
                     Real initialNumeraireValue =
@@ -1936,22 +1935,24 @@ void MarketModelTest::testGreeks() {
                     for (Size i=0; i<product.numberOfProducts(); ++i) {
                         Real numDelta = (pricePlus[i]-priceMinus[i])/(2.0*forwardBump);
                         Real numGamma = (pricePlus[i]-2*price0[i]+priceMinus[i])/(forwardBump*forwardBump);
-                        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
-                                      << "value = " << price0[i] << ", "
-                                      << "delta = " << numDelta << ", "
-                                      << "gamma = " << numGamma);
-                        BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
-                                      << "value = " << values[i]
-                                      << " +- " << errors[i]
-                                      << " (" << (values[i]-price0[i])/errors[i] << " s.e.), "
-                                      << "delta = " << deltas[i]
-                                      << " +- " << deltaErrors[i]
-                                      << " (" << (deltas[i]-numDelta)/deltaErrors[i] << " s.e.), "
-                                      << "gamma = " << gammas[i]
-                                      << " +- " << gammaErrors[i]
-                                      << " (" << (gammas[i]-numGamma)/gammaErrors[i] << " s.e.), "
-                                      << "vega = " << vegas[i]
-                                      << " +- " << vegaErrors[i]);
+                        if (printReport_) {
+                            BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                          << "value = " << price0[i] << ", "
+                                          << "delta = " << numDelta << ", "
+                                          << "gamma = " << numGamma);
+                            BOOST_MESSAGE(io::ordinal(i+1) << " caplet: "
+                                          << "value = " << values[i]
+                                          << " +- " << errors[i]
+                                          << " (" << (values[i]-price0[i])/errors[i] << " s.e.), "
+                                          << "delta = " << deltas[i]
+                                          << " +- " << deltaErrors[i]
+                                          << " (" << (deltas[i]-numDelta)/deltaErrors[i] << " s.e.), "
+                                          << "gamma = " << gammas[i]
+                                          << " +- " << gammaErrors[i]
+                                          << " (" << (gammas[i]-numGamma)/gammaErrors[i] << " s.e.), "
+                                          << "vega = " << vegas[i]
+                                          << " +- " << vegaErrors[i]);
+                        }
                     }
                 }
             }
@@ -2191,20 +2192,26 @@ void MarketModelTest::testIsInSubset() {
 // --- Call the desired tests
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
+
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+
     return suite;
 }
