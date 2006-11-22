@@ -123,6 +123,16 @@ namespace QuantLib {
                                  Compounding comp,
                                  Frequency freq = Annual,
                                  bool extrapolate = false) const;
+        /*! The resulting interest rate has the required day-counting
+            rule.
+            \warning dates are not adjusted for holidays
+        */
+        InterestRate forwardRate(const Date& d,
+                                 const Period& p,
+                                 const DayCounter& resultDayCounter,
+                                 Compounding comp,
+                                 Frequency freq = Annual,
+                                 bool extrapolate = false) const;
 
         /*! The resulting interest rate has the same day-counting rule
             used by the term structure. The same rule should be used
@@ -248,6 +258,16 @@ namespace QuantLib {
         return InterestRate::impliedRate(compound,
                                          d1, d2, dayCounter,
                                          comp, freq);
+    }
+
+    inline InterestRate YieldTermStructure::forwardRate(
+                                                const Date& d,
+                                                const Period& p,
+                                                const DayCounter& dayCounter,
+                                                Compounding comp,
+                                                Frequency freq,
+                                                bool extrapolate) const {
+        return forwardRate(d, d+p, dayCounter, comp, freq);
     }
 
     inline InterestRate YieldTermStructure::forwardRate(
