@@ -59,13 +59,13 @@ namespace QuantLib {
 //                             ConundrumPricer                               //
 //===========================================================================//
     ConundrumPricer::ConundrumPricer(
-				const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                const Handle<SwaptionVolatilityStructure>& swaptionVol,
                 const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-				Real meanReversion)
+                Real meanReversion)
     : VanillaCMSCouponPricer(swaptionVol),
-	  modelOfYieldCurve_(modelOfYieldCurve),
-	  meanReversion_(meanReversion),
-      cutoffForCaplet_(2), cutoffForFloorlet_(0){   }
+      modelOfYieldCurve_(modelOfYieldCurve),
+      cutoffForCaplet_(2), cutoffForFloorlet_(0),
+      meanReversion_(meanReversion) {}
 
     void ConundrumPricer::initialize(const CMSCoupon& coupon){
         coupon_ = &coupon;
@@ -151,7 +151,7 @@ namespace QuantLib {
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-		Real meanReversion,
+        Real meanReversion,
         Real lowerLimit,
         Real upperLimit)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
@@ -270,7 +270,7 @@ namespace QuantLib {
     ConundrumPricerByBlack::ConundrumPricerByBlack(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-		Real meanReversion)
+        Real meanReversion)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion)
       { }
 
