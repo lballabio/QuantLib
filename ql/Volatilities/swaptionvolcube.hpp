@@ -65,20 +65,25 @@ namespace QuantLib {
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
-                                            const Date& optionDate,
-                                            const Period& swapTenor) const = 0;
-        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
                                                   Time optionTime,
                                                   Time swapLength) const = 0;
-        Rate atmStrike(const Period& optionTenor,
-                       const Period& swapTenor) const {
-            Date optionDate = calendar().advance(referenceDate(),
-                                                 optionTenor,
-                                                 Following); //FIXME
-            return atmStrike(optionDate, swapTenor);
-        }
+		virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+                                            const Date& optionDate,
+                                            const Period& swapTenor) const = 0;
+		boost::shared_ptr<SmileSectionInterface>
+		smileSection(const Period& optionTenor, const Period& swapTenor) const {
+				Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+				return smileSection(exerciseDate, swapTenor);
+		};
+
         Rate atmStrike(const Date& optionDate,
                        const Period& swapTenor) const;
+        Rate atmStrike(const Period& optionTenor,
+                       const Period& swapTenor) const {
+            Date optionDate = exerciseDateFromOptionTenor(optionTenor);
+            return atmStrike(optionDate, swapTenor);
+        }
+
         //@}
       protected:
         //! \name SwaptionVolatilityStructure interface
@@ -93,6 +98,9 @@ namespace QuantLib {
         Volatility volatilityImpl(const Date& optionDate,
                                   const Period& swapTenor,
                                   Rate strike) const;
+        Volatility volatilityImpl(const Period& optionTenor,
+								  const Period& swapTenor,
+								  Rate strike) const;
         //@}
         Handle<SwaptionVolatilityStructure> atmVol_;
         std::vector<Date> exerciseDates_;
@@ -129,6 +137,12 @@ namespace QuantLib {
             return smileSection(optionDate, swapTenor)->volatility(strike);
     }
 
+    inline Volatility SwaptionVolatilityCube::volatilityImpl(
+                                                    const Period& optionTenor,
+                                                    const Period& swapTenor,
+                                                    Rate strike) const {
+            return smileSection(optionTenor, swapTenor)->volatility(strike);
+    }
 }
 
 #endif

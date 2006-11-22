@@ -326,7 +326,8 @@ namespace QuantLib {
                 registerWith(volHandles_[i][j]);
     }
 
-    boost::shared_ptr<SmileSectionInterface> SwaptionVolatilityMatrix::smileSection(
+
+	boost::shared_ptr<SmileSectionInterface> SwaptionVolatilityMatrix::smileSection(
                                              Time start, Time length) const {
 
         // dummy strike
@@ -341,7 +342,7 @@ namespace QuantLib {
                               new InterpolatedSmileSection(start, strikes, volatilities));
     }
 
-    boost::shared_ptr<SmileSectionInterface>
+	boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityMatrix::smileSection(const Date& exerciseDate,
                                            const Period& length) const {
 
@@ -357,7 +358,24 @@ namespace QuantLib {
             InterpolatedSmileSection(timeFromReference(exerciseDate),
                          strikes, volatilities));
     }
-    
+
+    boost::shared_ptr<SmileSectionInterface>
+    SwaptionVolatilityMatrix::smileSection(const Period& optionTenor,
+                                           const Period& length) const {
+	    Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+		// dummy strike
+        const Volatility atmVol = volatility(exerciseDate, length, 0.05);
+
+        std::vector<Real> strikes, volatilities(2, atmVol);
+
+        strikes.push_back(0.0);
+        strikes.push_back(1.0);
+
+        return boost::shared_ptr<SmileSectionInterface>(new
+            InterpolatedSmileSection(timeFromReference(exerciseDate),
+                         strikes, volatilities));
+    }
+
     void SwaptionVolatilityMatrix::checkInputs(
         Size optionsNb, Size SwapNb, Size volRows, Size volsColumns) const {
         QL_REQUIRE(optionsNb==volRows,

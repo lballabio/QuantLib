@@ -58,12 +58,18 @@ namespace QuantLib {
         virtual ~SwaptionVolatilityStructure() {}
         //! \name Volatility and Variance
         //@{
-        //! returns the volatility for a given option tenor and swap tenor
-        Volatility volatility(const Period& optionTenor,
-                              const Period& swapTenor,
+
+        //! returns the volatility for a given starting time and length
+        Volatility volatility(Time exerciseTime,
+                              Time length,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the volatility for a given exercise date and swap tenor
+        //! returns the Black variance for a given exercise time and length
+        Real blackVariance(Time exerciseTime,
+                           Time length,
+                           Rate strike,
+                           bool extrapolate = false) const;
+		//! returns the volatility for a given exercise date and swap tenor
         Volatility volatility(const Date& exerciseDate,
                               const Period& swapTenor,
                               Rate strike,
@@ -73,14 +79,14 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        //! returns the volatility for a given starting time and length
-        Volatility volatility(Time exerciseTime,
-                              Time length,
+		//! returns the volatility for a given option tenor and swap tenor
+        Volatility volatility(const Period& optionTenor,
+                              const Period& swapTenor,
                               Rate strike,
                               bool extrapolate = false) const;
-        //! returns the Black variance for a given exercise time and length
-        Real blackVariance(Time exerciseTime,
-                           Time length,
+		//! returns the Black variance for a given option tenor and swap tenor
+        Real blackVariance(const Period& optionTenor,
+                           const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
         //@}
@@ -109,6 +115,9 @@ namespace QuantLib {
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& exerciseDate,
                                                   const Period& length) const;
+		//! implements the conversion between optionTenors and exerciseDates
+		Date exerciseDateFromOptionTenor(const Period& optionTenor) const;
+
       protected:
         //! return smile section
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
@@ -144,18 +153,37 @@ namespace QuantLib {
                              Integer settlementDays, const Calendar& calendar)
     : TermStructure(settlementDays,calendar) {}
 
-    inline Volatility SwaptionVolatilityStructure::volatility(
-                                                    const Period& optionTenor,
-                                                    const Period& swapTenor,
-                                                    Rate strike,
-                                                    bool extrapolate) const {
-        Date exerciseDate = calendar().advance(referenceDate(),
-                                               optionTenor,
-                                               Following); //FIXME
-        return volatility(exerciseDate, swapTenor, strike, extrapolate);
-    }
+	inline Date SwaptionVolatilityStructure::exerciseDateFromOptionTenor(
+														 const Period& optionTenor) const {
+			return calendar().advance(referenceDate(),
+									  optionTenor,
+									  Following); //FIXME
+	}
+
+
 
     inline Volatility SwaptionVolatilityStructure::volatility(
+                                                     Time exerciseTime,
+                                                     Time swapLength,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
+        checkRange(exerciseTime, swapLength, strike, extrapolate);
+        return volatilityImpl(exerciseTime, swapLength, strike);
+    }
+
+
+    inline Real SwaptionVolatilityStructure::blackVariance(
+                                                     Time exerciseTime,
+                                                     Time swapLength,
+                                                     Rate strike,
+                                                     bool extrapolate) const {
+        checkRange(exerciseTime, swapLength, strike, extrapolate);
+        Volatility vol = volatilityImpl(exerciseTime, swapLength, strike);
+        return vol*vol*exerciseTime;
+    }
+
+	
+	inline Volatility SwaptionVolatilityStructure::volatility(
                                                      const Date& exerciseDate,
                                                      const Period& swapTenor,
                                                      Rate strike,
@@ -175,24 +203,27 @@ namespace QuantLib {
         return vol*vol*p.first;
     }
 
-    inline Volatility SwaptionVolatilityStructure::volatility(
-                                                     Time exerciseTime,
-                                                     Time swapLength,
-                                                     Rate strike,
-                                                     bool extrapolate) const {
-        checkRange(exerciseTime, swapLength, strike, extrapolate);
-        return volatilityImpl(exerciseTime, swapLength, strike);
+	inline Volatility SwaptionVolatilityStructure::volatility(
+                                                    const Period& optionTenor,
+                                                    const Period& swapTenor,
+                                                    Rate strike,
+                                                    bool extrapolate) const {
+        Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+        return volatility(exerciseDate, swapTenor, strike, extrapolate);
     }
 
-    inline Real SwaptionVolatilityStructure::blackVariance(
-                                                     Time exerciseTime,
-                                                     Time swapLength,
+	inline Real SwaptionVolatilityStructure::blackVariance(
+                                                     const Period& optionTenor,
+                                                     const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        checkRange(exerciseTime, swapLength, strike, extrapolate);
-        Volatility vol = volatilityImpl(exerciseTime, swapLength, strike);
-        return vol*vol*exerciseTime;
+        Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+        Volatility vol =
+            volatility(exerciseDate, swapTenor, strike, extrapolate);
+        const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);
+        return vol*vol*p.first;
     }
+
 
     inline Time SwaptionVolatilityStructure::maxTimeLength() const {
         return timeFromReference(referenceDate()+maxLength());

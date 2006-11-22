@@ -445,15 +445,6 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeBySabr::smileSection(Time expiry,
-                                               Time length) const {
-        if (isAtmCalibrated_)
-            return smileSection(expiry, length, denseParameters_);
-        else
-            return smileSection(expiry, length, sparseParameters_);
-    }
-
-    boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
                                     Time expiry, Time length,
                                     const Cube& sabrParametersCube) const {
@@ -464,17 +455,23 @@ namespace QuantLib {
         return boost::shared_ptr<SmileSectionInterface>(new
             SabrSmileSection(expiry, sabrParameters));
     }
+	
+	boost::shared_ptr<SmileSectionInterface>
+    SwaptionVolatilityCubeBySabr::smileSection(Time expiry,
+                                               Time length) const {
+        if (isAtmCalibrated_)
+            return smileSection(expiry, length, denseParameters_);
+        else
+            return smileSection(expiry, length, sparseParameters_);
+    }
 
     boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
         const Date& exerciseDate, const Period& swapTenor) const {
         const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);
-        if (isAtmCalibrated_)
-            return smileSection(p.first, p.second, denseParameters_);
-        else
-            return smileSection(p.first, p.second, sparseParameters_);
+        return smileSection(p.first, p.second);
     }
-
+    
     Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
         calculate();
         return sparseParameters_.browse();

@@ -41,12 +41,12 @@ namespace QuantLib {
             bool vegaWeightedSmileFit);
         //! \name SwaptionVolatilityCube inspectors
         //@{
+		boost::shared_ptr<SmileSectionInterface> smileSection(
+                                              Time optionTime,
+                                              Time swapLength) const;
         boost::shared_ptr<SmileSectionInterface> smileSection(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                      Time optionTime,
-                                                      Time swapLength) const;
         //@}
       private:
         std::vector<Interpolation2D> volSpreadsInterpolator_;

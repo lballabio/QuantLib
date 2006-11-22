@@ -106,11 +106,11 @@ namespace QuantLib {
         //! \name SwaptionVolatilityCube interface
         //@{
         boost::shared_ptr<SmileSectionInterface> smileSection(
+                                              Time optionTime,
+                                              Time swapLength) const;
+        boost::shared_ptr<SmileSectionInterface> smileSection(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                      Time optionTime,
-                                                      Time swapLength) const;
         //@}
         //! \name Other inspectors
         //@{

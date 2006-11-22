@@ -129,6 +129,11 @@ namespace QuantLib {
         Time maxTimeLength() const;
         Rate minStrike() const;
         Rate maxStrike() const;
+
+		//! return trivial smile section
+        boost::shared_ptr<SmileSectionInterface> smileSection(
+                                                 const Period& optionTenor,
+                                                 const Period& length) const;
         //! return trivial smile section
         boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Date& exerciseDate,
@@ -174,6 +179,9 @@ namespace QuantLib {
         Volatility volatilityImpl(const Date& exerciseDate,
                                   const Period& length,
                                   Rate strike) const;
+		Volatility volatilityImpl(const Period& optionTenor,
+                                  const Period& length, 
+								  Rate strike) const;
         std::vector<Period> optionTenors_;
         mutable std::vector<Date> optionDates_;
         mutable std::vector<Time> optionTimes_;
@@ -244,6 +252,13 @@ namespace QuantLib {
                                           const Period& length, Rate) const {
         const std::pair<Time, Time> p = convertDates(exerciseDate, length);
         return volatilityImpl(p.first, p.second,true);
+    }
+	
+	inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
+                                          const Period& optionTenor,
+                                          const Period& length, Rate) const {
+		Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+        return volatilityImpl(exerciseDate, length,true);
     }
 
     inline void SwaptionVolatilityMatrix::update(){

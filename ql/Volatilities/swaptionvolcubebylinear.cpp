@@ -76,5 +76,4 @@ namespace QuantLib {
         return boost::shared_ptr<SmileSectionInterface>(new
             InterpolatedSmileSection(p.first, strikes, volatilities));
     }
-
 }
