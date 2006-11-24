@@ -102,10 +102,10 @@ namespace QuantLib {
                                               const Calendar& calendar,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays,calendar),
+    : SwaptionVolatilityStructure(settlementDays, calendar),
       dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        volatility_.linkTo(boost::shared_ptr<Quote>(new
+            SimpleQuote(volatility)));
         registerWith(volatility_);
     }
 
@@ -114,7 +114,7 @@ namespace QuantLib {
                                               const Calendar& calendar,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays,calendar),
+    : SwaptionVolatilityStructure(settlementDays, calendar),
       volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
@@ -141,7 +141,9 @@ namespace QuantLib {
     }
 
     inline Volatility SwaptionConstantVolatility::volatilityImpl(
-                                     const Date&, const Period&, Rate) const {
+                                                            const Date&,
+                                                            const Period&,
+                                                            Rate) const {
         return volatility_->value();
     }
 
@@ -153,8 +155,8 @@ namespace QuantLib {
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 
-        return boost::shared_ptr<SmileSectionInterface>(
-                              new InterpolatedSmileSection(start, strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(new 
+            InterpolatedSmileSection(start, strikes, volatilities));
     }
 
     inline boost::shared_ptr<SmileSectionInterface>
@@ -166,8 +168,9 @@ namespace QuantLib {
         strikes.push_back(0.0);
         strikes.push_back(1.0);
 
-        return boost::shared_ptr<SmileSectionInterface>(
-            new InterpolatedSmileSection(timeFromReference(start), strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(new
+            InterpolatedSmileSection(timeFromReference(start),
+                                     strikes, volatilities));
     }
 
 }

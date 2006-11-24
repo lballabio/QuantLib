@@ -22,6 +22,13 @@
 #include <ql/Math/sabrinterpolation.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
+#ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
+	#define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4
+#endif
+#ifndef SWAPTIONVOLCUBE_TOL
+	#define SWAPTIONVOLCUBE_TOL 100.0e-4
+#endif
+
 namespace QuantLib {
 
     //=======================================================================//
@@ -37,7 +44,7 @@ namespace QuantLib {
                 const boost::shared_ptr<SwapIndex>& swapIndexBase,
                 bool vegaWeightedSmileFit,
                 const Matrix& parametersGuess,
-                std::vector<bool> isParameterFixed,
+                const std::vector<bool>& isParameterFixed,
                 bool isAtmCalibrated)
     : SwaptionVolatilityCube(atmVolStructure, expiries, lengths,
                              strikeSpreads, volSpreads, swapIndexBase,
@@ -48,25 +55,24 @@ namespace QuantLib {
         parametersGuess_ = Cube(exerciseDates_, lengths_,
                                 exerciseTimes_, timeLengths_, 4);
         Size i;
-        for (i=0; i<4; i++) {
-            for (Size j=0; j<nExercise_ ; j++) {
+        for (i=0; i<4; i++)
+            for (Size j=0; j<nExercise_ ; j++)
                 for (Size k=0; k<nlengths_; k++) {
                     parametersGuess_.setElement(
                                  i, j, k, parametersGuess[j+k*nExercise_][i]);
                 }
-            }
-        }
         parametersGuess_.updateInterpolators();
+        
+    }
 
-        // ???
-        atmVol_.currentLink()->enableExtrapolation();
-
+    void SwaptionVolatilityCubeBySabr::performCalculations() const{
+        //! set marketVolCube_ by volSpreads_ quotes
         marketVolCube_ = Cube(exerciseDates_, lengths_,
                               exerciseTimes_, timeLengths_, nStrikes_);
         Rate atmForward;
         Volatility vol;
-        for (Size i=0; i<nStrikes_; i++) {
-            for (Size j=0; j<nExercise_; j++) {
+        for (Size i=0; i<nStrikes_; i++)
+            for (Size j=0; j<nExercise_; j++)
                 for (Size k=0; k<nlengths_; k++) {
                     atmForward = atmStrike(exerciseDates_[j], lengths_[k]);
                     vol = volSpreads_[j*nlengths_+k][i]->value() +
@@ -74,12 +80,8 @@ namespace QuantLib {
                                                                atmForward);
                     marketVolCube_.setElement(i, j, k, vol);
                 }
-            }
-        }
         marketVolCube_.updateInterpolators();
-    }
 
-    void SwaptionVolatilityCubeBySabr::performCalculations() const{
         sparseParameters_ = sabrCalibration(marketVolCube_);
         //parametersGuess_ = sparseParameters_;
         sparseParameters_.updateInterpolators();
@@ -151,13 +153,13 @@ namespace QuantLib {
                 maxErrors  [j][k]=sabrInterpolation->interpolationMaxError();
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
 				
-				Real maxErrorTolerance = 15.e-4;
-				if(vegaWeightedSmileFit_) maxErrorTolerance = 1e-2;
-
                 QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
                           "option tenor " << exerciseDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max iteration");
+
+				Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+				if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance,
                           "option tenor " << exerciseDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
@@ -232,13 +234,13 @@ namespace QuantLib {
             calibrationResult[6]=sabrInterpolation->interpolationMaxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
             
-			Real maxErrorTolerance = 15.e-4;
-			if(vegaWeightedSmileFit_) maxErrorTolerance = 1e-2;
-
             QL_ENSURE(calibrationResult[7]!=EndCriteria::maxIter,
                       "option tenor " << exerciseDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration");
+
+			Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+			if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
             QL_ENSURE(calibrationResult[6]< maxErrorTolerance,
                       "option tenor " << exerciseDates[j] <<
                       ", swap tenor " << swapTenors[k] <<

@@ -60,7 +60,7 @@ namespace QuantLib {
 //===========================================================================//
     ConundrumPricer::ConundrumPricer(
                 const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
                 Real meanReversion)
     : VanillaCMSCouponPricer(swaptionVol),
       modelOfYieldCurve_(modelOfYieldCurve),
@@ -79,7 +79,7 @@ namespace QuantLib {
 
         swapRateValue_ = swap->fairRate();
 
-        const Spread bp = 1e-4;
+        static const Spread bp = 1.0e-4;
         annuity_ = (swap->floatingLegBPS()/bp);
 
         min_ = coupon_->floor();
@@ -87,17 +87,17 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
 
-        const Size q = swapIndex->fixedLegFrequency();
-        const Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
-        const DayCounter dc = swapIndex->dayCounter();
+        Size q = swapIndex->fixedLegFrequency();
+        Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
+        DayCounter dc = swapIndex->dayCounter();
         //const DayCounter dc = coupon.dayCounter();
-        const Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
-                                               swap->startDate());
-        const Time swapFirstPaymentTime =
+        Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                         swap->startDate());
+        Time swapFirstPaymentTime =
             dc.yearFraction(rateCurve_->referenceDate(), schedule.date(1));
-        const Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+        Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                            paymentDate_);
-        const Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
+        Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
 
         switch (modelOfYieldCurve_) {
             case GFunctionFactory::Standard:
@@ -116,22 +116,22 @@ namespace QuantLib {
                 QL_FAIL("unknown/illegal gFunction type");
         }
 
-        vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(
-            new BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
-                                         swaptionVolatility().currentLink()));
+        vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(new
+            BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
+                                     swaptionVolatility().currentLink()));
     }
 
     Real ConundrumPricer::price() const {
 
-        const Real swapLetPrice_ = swapLetPrice();
-        const Real spreadLegValue = spread_*coupon_->accrualPeriod()*discount_;
+        Real swapLetPrice_ = swapLetPrice();
+        Real spreadLegValue = spread_*coupon_->accrualPeriod()*discount_;
 
-        const Real effectiveStrikeForMax = std::max((max_-spread_)/gearing_,QL_EPSILON);
+        Rate effectiveStrikeForMax = std::max((max_-spread_)/gearing_,QL_EPSILON);
         Real capLetPrice = 0;
         if (max_ < cutoffForCaplet_)
             capLetPrice=optionLetPrice(Option::Call, effectiveStrikeForMax);
 
-        const Real effectiveStrikeForMin = std::max((min_-spread_)/gearing_,QL_EPSILON);;
+        Rate effectiveStrikeForMin = std::max((min_-spread_)/gearing_,QL_EPSILON);;
         Real floorLetPrice = 0;
         if (min_ > cutoffForFloorlet_)
             floorLetPrice=optionLetPrice(Option::Put, effectiveStrikeForMin);
@@ -140,7 +140,7 @@ namespace QuantLib {
                spreadLegValue;
     }
 
-    Real ConundrumPricer::rate() const {
+    Rate ConundrumPricer::rate() const {
         return price()/(coupon_->accrualPeriod()*discount_);
     }
 
@@ -150,7 +150,7 @@ namespace QuantLib {
 
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
         Real meanReversion,
         Real lowerLimit,
         Real upperLimit)
@@ -269,7 +269,7 @@ namespace QuantLib {
 
     ConundrumPricerByBlack::ConundrumPricerByBlack(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+        GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
         Real meanReversion)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion)
       { }
@@ -327,7 +327,7 @@ namespace QuantLib {
 //===========================================================================//
 
     Real GFunctionFactory::GFunctionStandard::operator()(Real x) {
-        const Real n = swapLength_ * q_;
+        Real n = swapLength_ * q_;
         return x / std::pow((1.0 + x/q_), delta_) * 1.0 /
             (1.0 - 1.0 / std::pow((1.0 + x/q_), n));
     }

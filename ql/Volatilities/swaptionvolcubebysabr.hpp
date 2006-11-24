@@ -93,7 +93,7 @@ namespace QuantLib {
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
             bool vegaWeightedSmileFit,
             const Matrix& parametersGuess,
-            std::vector<bool> isParameterFixed,
+            const std::vector<bool>& isParameterFixed,
             bool isAtmCalibrated);
         //! \name LazyObject interface
         //@{

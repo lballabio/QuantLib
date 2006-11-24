@@ -35,17 +35,26 @@ namespace QuantLib {
     : SwaptionVolatilityCube(atmVolStructure, expiries, lengths,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
-      volSpreadsInterpolator_(nStrikes_) {
+      volSpreadsInterpolator_(nStrikes_),
+      volSpreadsMatrix_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
+    }
 
+    void SwaptionVolatilityCubeByLinear::performCalculations() const{
+        //! set volSpreadsMatrix_ by volSpreads_ quotes
+        for (Size i=0; i<nStrikes_; i++) 
+            for (Size j=0; j<nExercise_; j++)
+                for (Size k=0; k<nlengths_; k++) {
+                    volSpreadsMatrix_[i][j][k] =
+                        volSpreads_[j*nlengths_+k][i]->value();
+                }
+        //! create volSpreadsInterpolator_ 
         for (Size i=0; i<nStrikes_; i++) {
             volSpreadsInterpolator_[i] = BilinearInterpolation(
                 timeLengths_.begin(), timeLengths_.end(),
                 exerciseTimes_.begin(), exerciseTimes_.end(),
                 volSpreadsMatrix_[i]);
-            // ????
             volSpreadsInterpolator_[i].enableExtrapolation();
         }
-
     }
 
     boost::shared_ptr<SmileSectionInterface>
@@ -62,7 +71,7 @@ namespace QuantLib {
     boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeByLinear::smileSection(const Date& exerciseDate,
                                                  const Period& length) const {
-
+        calculate();
         const Rate atmForward = atmStrike(exerciseDate, length);
         const Volatility atmVol = atmVol_->volatility(exerciseDate, length,
                                                       atmForward);

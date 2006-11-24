@@ -36,7 +36,7 @@ namespace QuantLib {
                     const std::vector<Period>& tenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, calendar),
+    : SwaptionVolatilityStructure(0, calendar, bdc),
       swapTenors_(tenors), volatilities_(expiries.size(),tenors.size()),
       dayCounter_(dayCounter) {
         QL_REQUIRE(!vols.empty(), "empty vol matrix");
@@ -61,9 +61,7 @@ namespace QuantLib {
         optionDates_.resize(expiries.size());
         swapLengths_.resize(swapTenors_.size());
         for (i=0; i<expiries.size(); i++) {
-            optionDates_[i] = calendar.advance(referenceDate(),
-                                                 expiries[i],
-                                                 bdc); // FIXME
+            optionDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
@@ -87,7 +85,7 @@ namespace QuantLib {
                         const std::vector<Period>& lengths,
                         const Matrix& vols,
                         const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(0, calendar),
+    : SwaptionVolatilityStructure(0, calendar, bdc),
       swapTenors_(lengths), volatilities_(vols),  dayCounter_(dayCounter) {
         QL_REQUIRE(expiries.size()==vols.rows(),
             "mismatch between number of expiries ("
@@ -103,9 +101,7 @@ namespace QuantLib {
         swapLengths_.resize(swapTenors_.size());
         Size i;
         for (i=0; i<expiries.size(); i++) {
-            optionDates_[i] = calendar.advance(referenceDate(),
-                                                 expiries[i],
-                                                 bdc); // FIXME
+            optionDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
@@ -166,12 +162,12 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter,
-                    const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(0, calendar),
+                    BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(0, calendar, bdc),
       optionTenors_(optionTenors), swapTenors_(swapTenors), 
       volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()),
-      dayCounter_(dayCounter), bdc_(bdc) {
+      dayCounter_(dayCounter) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     volatilities_.rows(), volatilities_.columns());
         initializeOptionDatesAndTimes();
@@ -190,12 +186,12 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter,
-                    const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, calendar), 
+                    BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate, calendar, bdc), 
       optionTenors_(optionTenors), swapTenors_(swapTenors), 
       volHandles_(vols),
       volatilities_(vols.size(), vols.front().size()),
-      dayCounter_(dayCounter), bdc_(bdc) {
+      dayCounter_(dayCounter) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     volatilities_.rows(), volatilities_.columns());
         initializeOptionDatesAndTimes();
@@ -214,12 +210,12 @@ namespace QuantLib {
                         const std::vector<Period>& swapTenors,
                         const Matrix& vols,
                         const DayCounter& dayCounter,
-                        const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(0, calendar),
+                        BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(0, calendar, bdc),
       optionTenors_(optionTenors), swapTenors_(swapTenors),
       volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
-      dayCounter_(dayCounter), bdc_(bdc) {
+      dayCounter_(dayCounter) {
 
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     vols.rows(), vols.columns());
@@ -227,9 +223,9 @@ namespace QuantLib {
 
         // fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<vols.rows(); i++){
+        for (Size i=0; i<vols.rows(); i++) {
             volHandles_[i].resize(vols.columns());
-            for (Size j=0; j<vols.columns(); j++){
+            for (Size j=0; j<vols.columns(); j++) {
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
                     new SimpleQuote(vols[i][j])));
             }
@@ -249,21 +245,21 @@ namespace QuantLib {
                         const std::vector<Period>& swapTenors,
                         const Matrix& vols,
                         const DayCounter& dayCounter,
-                        const BusinessDayConvention bdc)
-    : SwaptionVolatilityStructure(referenceDate, calendar),
+                        BusinessDayConvention bdc)
+    : SwaptionVolatilityStructure(referenceDate, calendar, bdc),
       optionTenors_(optionTenors), swapTenors_(swapTenors),
       volHandles_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
-      dayCounter_(dayCounter), bdc_(bdc) {
+      dayCounter_(dayCounter) {
         checkInputs(optionTenors.size(), swapTenors.size(), 
                     vols.rows(), vols.columns());
         initializeOptionDatesAndTimes();
 
         // fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<vols.rows(); i++){
+        for (Size i=0; i<vols.rows(); i++) {
             volHandles_[i].resize(vols.columns());
-            for (Size j=0; j<vols.columns(); j++){
+            for (Size j=0; j<vols.columns(); j++) {
                 volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(
                     new SimpleQuote(vols[i][j])));
             }
@@ -391,9 +387,7 @@ namespace QuantLib {
     void SwaptionVolatilityMatrix::initializeOptionDatesAndTimes() const {
         optionDates_.resize(optionTenors_.size());
         for (Size i=0; i<optionTenors_.size(); i++)
-            optionDates_[i] = calendar().advance(referenceDate(),
-                                                 optionTenors_[i],
-                                                 bdc_); // FIXME
+            optionDates_[i] = exerciseDateFromOptionTenor(optionTenors_[i]);
         initializeTimes();
     }
 

@@ -51,11 +51,16 @@ namespace QuantLib {
         SwaptionVolatilityStructure();
         //! initialize with a fixed reference date
         SwaptionVolatilityStructure(const Date& referenceDate,
-                                    const Calendar& calendar = Calendar());
+                                    const Calendar& calendar = Calendar(),
+                                    BusinessDayConvention bdc = Following);
         //! calculate the reference date based on the global evaluation date
-        SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
+        SwaptionVolatilityStructure(Integer settlementDays,
+                                    const Calendar&,
+                                    BusinessDayConvention bdc = Following);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
+        //! the business day convention used for option date calculation
+        virtual BusinessDayConvention businessDayConvention() const;
         //! \name Volatility and Variance
         //@{
 
@@ -136,6 +141,8 @@ namespace QuantLib {
         void checkRange(const Date& exerciseDate,
                         const Period& length,
                         Rate strike, bool extrapolate) const;
+      private:
+        BusinessDayConvention bdc_;
     };
 
 
@@ -146,18 +153,25 @@ namespace QuantLib {
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 const Date& referenceDate,
-                                                const Calendar& calendar)
-    : TermStructure(referenceDate, calendar) {}
+                                                const Calendar& calendar,
+                                                BusinessDayConvention bdc)
+    : TermStructure(referenceDate, calendar), bdc_(bdc) {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+                                                Integer settlementDays,
+                                                const Calendar& calendar,
+                                                BusinessDayConvention bdc)
+    : TermStructure(settlementDays,calendar), bdc_(bdc) {}
+
+    inline BusinessDayConvention SwaptionVolatilityStructure::businessDayConvention() const {
+        return bdc_;
+    }
 
 	inline Date SwaptionVolatilityStructure::exerciseDateFromOptionTenor(
-														 const Period& optionTenor) const {
+                                           const Period& optionTenor) const {
 			return calendar().advance(referenceDate(),
 									  optionTenor,
-									  Following); //FIXME
+									  bdc_);
 	}
 
 

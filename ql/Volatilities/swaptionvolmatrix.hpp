@@ -61,7 +61,7 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter = Actual365Fixed(),
-                    const BusinessDayConvention bdc = Following);
+                    BusinessDayConvention bdc = Following);
         //! fixed reference date, floating market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
@@ -70,7 +70,7 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter = Actual365Fixed(),
-                    const BusinessDayConvention bdc = Following);
+                    BusinessDayConvention bdc = Following);
         //! floating reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Calendar& calendar,
@@ -78,7 +78,7 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
                     const DayCounter& dayCounter = Actual365Fixed(),
-                    const BusinessDayConvention bdc = Following);
+                    BusinessDayConvention bdc = Following);
         //! fixed reference date, fixed market data
         SwaptionVolatilityMatrix(
                     const Date& referenceDate,
@@ -87,7 +87,7 @@ namespace QuantLib {
                     const std::vector<Period>& swapTenors,
                     const Matrix& volatilities,
                     const DayCounter& dayCounter = Actual365Fixed(),
-                    const BusinessDayConvention bdc = Following);
+                    BusinessDayConvention bdc = Following);
         //! \deprecated alternative constructors instead
         // fixed reference date and fixed market data, option dates 
         SwaptionVolatilityMatrix(const Date& referenceDate,
@@ -190,7 +190,6 @@ namespace QuantLib {
         std::vector<std::vector<Handle<Quote> > > volHandles_;
         mutable Matrix volatilities_;
         DayCounter dayCounter_;
-        BusinessDayConvention bdc_;
         Interpolation2D interpolation_;
     };
 

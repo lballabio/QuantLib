@@ -35,13 +35,12 @@ namespace QuantLib {
 
     //! pricer for vanilla CMS coupons
     class VanillaCMSCouponPricer {
-		Handle<SwaptionVolatilityStructure> swaptionVol_;
       public:
 		VanillaCMSCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-		: swaptionVol_(swaptionVol){};
-        virtual ~VanillaCMSCouponPricer(){};
+		: swaptionVol_(swaptionVol) {};
+        virtual ~VanillaCMSCouponPricer() {};
         virtual Real price() const = 0;
-        virtual Real rate() const = 0;
+        virtual Rate rate() const = 0;
         virtual void initialize(const CMSCoupon& coupon) = 0;
 		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
 			return swaptionVol_;
@@ -49,6 +48,8 @@ namespace QuantLib {
 		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
 			swaptionVol_ = swaptionVol;
 		};
+      private:
+		Handle<SwaptionVolatilityStructure> swaptionVol_;
     };
 
     //! CMS coupon class

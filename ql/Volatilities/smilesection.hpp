@@ -53,7 +53,7 @@ namespace QuantLib {
                        exerciseTime_ << " not allowed");
         };
         virtual Real variance(Rate strike) const = 0;
-        virtual Real volatility(Rate strike) const = 0;
+        virtual Volatility volatility(Rate strike) const = 0;
         virtual ~SmileSectionInterface() {};
         virtual const Date& exerciseDate() const { return exerciseDate_; }
         virtual Time exerciseTime() const { return exerciseTime_; };
@@ -75,7 +75,7 @@ namespace QuantLib {
                                  const std::vector<Rate>& strikes,
                                  const std::vector<Volatility>& volatilities);
         Real variance(Rate strike) const;
-        Real volatility(Rate strike) const;
+        Volatility volatility(Rate strike) const;
     private:
         std::vector<Rate> strikes_;
         std::vector<Volatility> volatilities_;
@@ -91,7 +91,7 @@ namespace QuantLib {
                          const DayCounter&,
                          const std::vector<Real>& sabrParameters);
         Real variance(Rate strike) const;
-        Real volatility(Rate strike) const;
+        Volatility volatility(Rate strike) const;
     private:
         Real alpha_, beta_, nu_, rho_, forward_;
     };

@@ -181,15 +181,15 @@ namespace QuantLib {
     class ConundrumPricer: public VanillaCMSCouponPricer {
       public:
         Real price() const;
-        Real rate() const;
+        Rate rate() const;
 		Real meanReversion() const { return meanReversion_; }
-		void setMeanReversion(Real meanReversion){
+		void setMeanReversion(Real meanReversion) {
 			meanReversion_ = meanReversion;
 		};
       protected:
         ConundrumPricer(
 				const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+                GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 				Real meanReversion);
         void initialize(const CMSCoupon& coupon);
 
@@ -202,9 +202,13 @@ namespace QuantLib {
         boost::shared_ptr<GFunction> gFunction_;
         const CMSCoupon* coupon_;
         Date paymentDate_, fixingDate_;
-        Real swapRateValue_;
-        Real discount_, annuity_, min_, max_, gearing_, spread_;
-        const Real cutoffForCaplet_, cutoffForFloorlet_;
+        Rate swapRateValue_;
+        DiscountFactor discount_;
+        Real annuity_;
+        Rate min_, max_;
+        Real gearing_;
+        Spread spread_;
+        Rate cutoffForCaplet_, cutoffForFloorlet_;
 		Real meanReversion_;
         Period swapTenor_;
         boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
@@ -220,10 +224,10 @@ namespace QuantLib {
       public:
         ConundrumPricerByNumericalIntegration(
 			const Handle<SwaptionVolatilityStructure>& swaptionVol,
-			const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 			Real meanReversion,
-            Real lowerLimit = 0.0,
-            Real upperLimit = 1.0);
+            Rate lowerLimit = 0.0,
+            Rate upperLimit = 1.0);
       private:
         class Function : public std::unary_function<Real, Real> {
           public:
@@ -269,7 +273,7 @@ namespace QuantLib {
                        Real b,
                        const ConundrumIntegrand& Integrand) const;
         virtual Real optionLetPrice(Option::Type optionType,
-                                    Real strike) const;
+                                    Rate strike) const;
         virtual Real swapLetPrice() const;
 
         const Real upperLimit_, lowerLimit_;
@@ -279,7 +283,7 @@ namespace QuantLib {
       public:
         ConundrumPricerByBlack(
             const Handle<SwaptionVolatilityStructure>& swaptionVol,
-			const GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
+			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 			Real meanReversion);
       protected:
         Real optionLetPrice(Option::Type optionType,

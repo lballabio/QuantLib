@@ -25,15 +25,16 @@
 namespace QuantLib {
 
     SwaptionVolatilityCube::SwaptionVolatilityCube(
-        const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+        const Handle<SwaptionVolatilityStructure>& atmVol,
         const std::vector<Period>& expiries,
         const std::vector<Period>& lengths,
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const boost::shared_ptr<SwapIndex>& swapIndexBase,
         bool vegaWeightedSmileFit)
-    : SwaptionVolatilityStructure(0, atmVolStructure->calendar()),
-      atmVol_(atmVolStructure),
+    : SwaptionVolatilityStructure(0, atmVol->calendar(),
+                                     atmVol->businessDayConvention()),
+      atmVol_(atmVol),
       exerciseDates_(expiries.size()),
       exerciseTimes_(expiries.size()),
       exerciseDatesAsReal_(expiries.size()),
@@ -44,18 +45,13 @@ namespace QuantLib {
       localStrikes_(nStrikes_),
       localSmile_(nStrikes_),
       volSpreads_(volSpreads),
-      volSpreadsMatrix_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)),
       swapIndexBase_(swapIndexBase),
       vegaWeightedSmileFit_(vegaWeightedSmileFit)
     {
-        // ????????
-        if (!atmVol_.empty())
-            unregisterWith(atmVol_);
-        atmVol_ = atmVolStructure;
-        if (!atmVol_.empty())
-            registerWith(atmVol_);
-        notifyObservers();
 
+        atmVol_ = atmVol;
+        registerWith(atmVol_);
+        atmVol_.currentLink()->enableExtrapolation();
 
         // register with SwapIndexBase
         if (!swapIndexBase_)
@@ -63,9 +59,7 @@ namespace QuantLib {
 
 
         nExercise_ = expiries.size();
-        exerciseDates_[0] = calendar().advance(referenceDate(),
-                                               expiries[0],
-                                               Following); //FIXME
+        exerciseDates_[0] = exerciseDateFromOptionTenor(expiries[0]);
         exerciseDatesAsReal_[0] =
             static_cast<Real>(exerciseDates_[0].serialNumber());
         exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
@@ -73,9 +67,7 @@ namespace QuantLib {
                    "first exercise time is negative ("
                    << exerciseTimes_[0] << ")");
         for (Size i=1; i<nExercise_; i++) {
-            exerciseDates_[i] = calendar().advance(referenceDate(),
-                                                   expiries[i],
-                                                   Following); //FIXME
+            exerciseDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
             exerciseDatesAsReal_[i] =
                 static_cast<Real>(exerciseDates_[i].serialNumber());
             exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
@@ -123,14 +115,16 @@ namespace QuantLib {
             nExercise_*nlengths_ << ") and number of rows (" <<
             volSpreads_.size() << ")");
 
+        registerWithVolatilitySpread();
+
+    }
+
+    void SwaptionVolatilityCube::registerWithVolatilitySpread()
+    {
         for (Size i=0; i<nStrikes_; i++)
             for (Size j=0; j<nExercise_; j++)
-                for (Size k=0; k<nlengths_; k++) {
-                    volSpreadsMatrix_[i][j][k] =
-                        volSpreads_[j*nlengths_+k][i]->value();
+                for (Size k=0; k<nlengths_; k++)
                     registerWith(volSpreads_[j*nlengths_+k][i]);
-                }
-
     }
 
     Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,

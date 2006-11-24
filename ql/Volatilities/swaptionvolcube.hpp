@@ -63,7 +63,6 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
-        const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
                                                   Time optionTime,
                                                   Time swapLength) const = 0;
@@ -92,6 +91,8 @@ namespace QuantLib {
                                           const Period& swapTenor) const {
             return atmVol_->convertDates(optionDate, swapTenor);
         }
+        void registerWithVolatilitySpread();
+
         Volatility volatilityImpl(Time optionTime,
                                   Time swapLength,
                                   Rate strike) const;
@@ -102,7 +103,7 @@ namespace QuantLib {
 								  const Period& swapTenor,
 								  Rate strike) const;
         //@}
-        Handle<SwaptionVolatilityStructure> atmVol_;
+        Handle<SwaptionVolatilityStructure> atmVol_; 
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
         std::vector<Real> exerciseDatesAsReal_;
@@ -116,7 +117,6 @@ namespace QuantLib {
         mutable std::vector<Rate> localStrikes_;
         mutable std::vector<Volatility> localSmile_;
         std::vector<std::vector<Handle<Quote> > > volSpreads_;
-        std::vector<Matrix> volSpreadsMatrix_;
         boost::shared_ptr<SwapIndex> swapIndexBase_;
         bool vegaWeightedSmileFit_;
     };
