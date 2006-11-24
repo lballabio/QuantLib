@@ -37,8 +37,8 @@ namespace QuantLib {
 
     SwaptionVolatilityCubeBySabr::SwaptionVolatilityCubeBySabr(
                 const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-                const std::vector<Period>& expiries,
-                const std::vector<Period>& lengths,
+                const std::vector<Period>& optionTenors,
+                const std::vector<Period>& swapTenors,
                 const std::vector<Spread>& strikeSpreads,
                 const std::vector<std::vector<Handle<Quote> > >& volSpreads,
                 const boost::shared_ptr<SwapIndex>& swapIndexBase,
@@ -46,20 +46,20 @@ namespace QuantLib {
                 const Matrix& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
                 bool isAtmCalibrated)
-    : SwaptionVolatilityCube(atmVolStructure, expiries, lengths,
+    : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated)
     {
 
-        parametersGuess_ = Cube(exerciseDates_, lengths_,
-                                exerciseTimes_, timeLengths_, 4);
+        parametersGuess_ = Cube(optionDates_, swapTenors_,
+                                optionTimes_, swapLengths_, 4);
         Size i;
         for (i=0; i<4; i++)
-            for (Size j=0; j<nExercise_ ; j++)
-                for (Size k=0; k<nlengths_; k++) {
+            for (Size j=0; j<nOptionTenors_ ; j++)
+                for (Size k=0; k<nSwapTenors_; k++) {
                     parametersGuess_.setElement(
-                                 i, j, k, parametersGuess[j+k*nExercise_][i]);
+                                 i, j, k, parametersGuess[j+k*nOptionTenors_][i]);
                 }
         parametersGuess_.updateInterpolators();
         
@@ -67,16 +67,16 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::performCalculations() const{
         //! set marketVolCube_ by volSpreads_ quotes
-        marketVolCube_ = Cube(exerciseDates_, lengths_,
-                              exerciseTimes_, timeLengths_, nStrikes_);
+        marketVolCube_ = Cube(optionDates_, swapTenors_,
+                              optionTimes_, swapLengths_, nStrikes_);
         Rate atmForward;
         Volatility vol;
         for (Size i=0; i<nStrikes_; i++)
-            for (Size j=0; j<nExercise_; j++)
-                for (Size k=0; k<nlengths_; k++) {
-                    atmForward = atmStrike(exerciseDates_[j], lengths_[k]);
-                    vol = volSpreads_[j*nlengths_+k][i]->value() +
-                        atmVol_->volatility(exerciseDates_[j], lengths_[k],
+            for (Size j=0; j<nOptionTenors_; j++)
+                for (Size k=0; k<nSwapTenors_; k++) {
+                    atmForward = atmStrike(optionDates_[j], swapTenors_[k]);
+                    vol = volSpreads_[j*nSwapTenors_+k][i]->value() +
+                        atmVol_->volatility(optionDates_[j], swapTenors_[k],
                                                                atmForward);
                     marketVolCube_.setElement(i, j, k, vol);
                 }
@@ -99,11 +99,11 @@ namespace QuantLib {
     SwaptionVolatilityCubeBySabr::sabrCalibration(
                                             const Cube& marketVolCube) const {
 
-        const std::vector<Time>& exerciseTimes = marketVolCube.expiries();
-        const std::vector<Time>& timeLengths = marketVolCube.lengths();
-        const std::vector<Date>& exerciseDates = marketVolCube.exerciseDates();
+        const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
+        const std::vector<Time>& swapLengths = marketVolCube.swapLengths();
+        const std::vector<Date>& optionDates = marketVolCube.optionDates();
         const std::vector<Period>& swapTenors = marketVolCube.swapTenors();
-        Matrix alphas(exerciseTimes.size(), timeLengths.size(),0.);
+        Matrix alphas(optionTimes.size(), swapLengths.size(),0.);
         Matrix betas(alphas);
         Matrix nus(alphas);
         Matrix rhos(alphas);
@@ -117,22 +117,22 @@ namespace QuantLib {
         std::vector<Real> strikes(strikeSpreads_.size());
         std::vector<Real> volatilities(strikeSpreads_.size());
 
-        for (Size j=0; j<exerciseTimes.size(); j++) {
-            for (Size k=0; k<timeLengths.size(); k++) {
-                Rate atmForward = atmStrike(exerciseDates[j], swapTenors[k]);
+        for (Size j=0; j<optionTimes.size(); j++) {
+            for (Size k=0; k<swapLengths.size(); k++) {
+                Rate atmForward = atmStrike(optionDates[j], swapTenors[k]);
                 for (Size i=0; i<nStrikes_; i++){
                     strikes[i] = atmForward+strikeSpreads_[i];
                     volatilities[i] = tmpMarketVolCube[i][j][k];
                 }
 
                 const std::vector<Real>& guess = parametersGuess_.operator()(
-                    exerciseTimes[j], timeLengths[k]);
+                    optionTimes[j], swapLengths[k]);
 
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                     boost::shared_ptr<SABRInterpolation>(new
                         SABRInterpolation(strikes.begin(), strikes.end(),
                                           volatilities.begin(),
-                                          exerciseTimes[j], atmForward,
+                                          optionTimes[j], atmForward,
                                           guess[0], guess[1],
                                           guess[2], guess[3],
                                           isParameterFixed_[0],
@@ -154,20 +154,20 @@ namespace QuantLib {
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
 				
                 QL_ENSURE(endCriteria[j][k]!=EndCriteria::maxIter,
-                          "option tenor " << exerciseDates[j] <<
+                          "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max iteration");
 
 				Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
 				if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance,
-                          "option tenor " << exerciseDates[j] <<
+                          "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max error " << maxErrors[j][k]);
             }
         }
-        Cube sabrParametersCube(exerciseDates, swapTenors,
-                                exerciseTimes, timeLengths, 8);
+        Cube sabrParametersCube(optionDates, swapTenors,
+                                optionTimes, swapLengths, 8);
         sabrParametersCube.setLayer(0, alphas);
         sabrParametersCube.setLayer(1, betas);
         sabrParametersCube.setLayer(2, nus);
@@ -184,9 +184,9 @@ namespace QuantLib {
                                             const Cube& marketVolCube,
                                             const Period& swapTenor) const {
 
-        const std::vector<Time>& exerciseTimes = marketVolCube.expiries();
-        const std::vector<Time>& timeLengths = marketVolCube.lengths();
-        const std::vector<Date>& exerciseDates = marketVolCube.exerciseDates();
+        const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
+        const std::vector<Time>& swapLengths = marketVolCube.swapLengths();
+        const std::vector<Date>& optionDates = marketVolCube.optionDates();
         const std::vector<Period>& swapTenors = marketVolCube.swapTenors();
 
         Size k = std::find(swapTenors.begin(), swapTenors.end(),
@@ -199,21 +199,21 @@ namespace QuantLib {
         std::vector<Real> strikes(strikeSpreads_.size());
         std::vector<Real> volatilities(strikeSpreads_.size());
 
-        for (Size j=0; j<exerciseTimes.size(); j++) {
-            Rate atmForward = atmStrike(exerciseDates[j], swapTenors[k]);
+        for (Size j=0; j<optionTimes.size(); j++) {
+            Rate atmForward = atmStrike(optionDates[j], swapTenors[k]);
             for (Size i=0; i<nStrikes_; i++){
                 strikes[i] = atmForward+strikeSpreads_[i];
                 volatilities[i] = tmpMarketVolCube[i][j][k];
             }
 
             const std::vector<Real>& guess = parametersGuess_.operator()(
-                exerciseTimes[j], timeLengths[k]);
+                optionTimes[j], swapLengths[k]);
 
             const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                 boost::shared_ptr<SABRInterpolation>(new
                     SABRInterpolation(strikes.begin(), strikes.end(),
                                         volatilities.begin(),
-                                        exerciseTimes[j], atmForward,
+                                        optionTimes[j], atmForward,
                                         guess[0], guess[1],
                                         guess[2], guess[3],
                                         isParameterFixed_[0],
@@ -235,24 +235,24 @@ namespace QuantLib {
             calibrationResult[7]=sabrInterpolation->endCriteria();
             
             QL_ENSURE(calibrationResult[7]!=EndCriteria::maxIter,
-                      "option tenor " << exerciseDates[j] <<
+                      "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration");
 
 			Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
 			if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
             QL_ENSURE(calibrationResult[6]< maxErrorTolerance,
-                      "option tenor " << exerciseDates[j] <<
+                      "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max error " << calibrationResult[6]);
 
-            sparseParameters_.setPoint(exerciseDates[j], swapTenors[k],
-                                    exerciseTimes[j], timeLengths[k],
+            sparseParameters_.setPoint(optionDates[j], swapTenors[k],
+                                    optionTimes[j], swapLengths[k],
                                     calibrationResult);
             sparseParameters_.updateInterpolators();
             if(isAtmCalibrated_){
-                denseParameters_.setPoint(exerciseDates[j], swapTenors[k],
-                                        exerciseTimes[j], timeLengths[k],
+                denseParameters_.setPoint(optionDates[j], swapTenors[k],
+                                        optionTimes[j], swapLengths[k],
                                         calibrationResult);
                 denseParameters_.updateInterpolators();
             }
@@ -267,25 +267,25 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
                                                     atmVol_.currentLink());
 
-		std::vector<Time> atmExerciseTimes(atmVolStructure->exerciseTimes());
-        std::vector<Time> exerciseTimes(volCubeAtmCalibrated_.expiries());
-        atmExerciseTimes.insert(atmExerciseTimes.end(),
-                                exerciseTimes.begin(), exerciseTimes.end());
-        std::sort(atmExerciseTimes.begin(),atmExerciseTimes.end());
+		std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
+        std::vector<Time> optionTimes(volCubeAtmCalibrated_.optionTimes());
+        atmOptionTimes.insert(atmOptionTimes.end(),
+                                optionTimes.begin(), optionTimes.end());
+        std::sort(atmOptionTimes.begin(),atmOptionTimes.end());
 
-        std::vector<Time> atmTimeLengths(atmVolStructure->timeLengths());
-        std::vector<Time> timeLengths(volCubeAtmCalibrated_.lengths());
-        atmTimeLengths.insert(atmTimeLengths.end(),
-                              timeLengths.begin(), timeLengths.end());
-        std::sort(atmTimeLengths.begin(),atmTimeLengths.end());
+        std::vector<Time> atmSwapLengths(atmVolStructure->swapLengths());
+        std::vector<Time> swapLengths(volCubeAtmCalibrated_.swapLengths());
+        atmSwapLengths.insert(atmSwapLengths.end(),
+                              swapLengths.begin(), swapLengths.end());
+        std::sort(atmSwapLengths.begin(),atmSwapLengths.end());
 
-        std::vector<Date> atmExerciseDates = atmVolStructure->exerciseDates();
-        std::vector<Date> exerciseDates(volCubeAtmCalibrated_.exerciseDates());
-        atmExerciseDates.insert(atmExerciseDates.end(),
-                                exerciseDates.begin(), exerciseDates.end());
-        std::sort(atmExerciseDates.begin(),atmExerciseDates.end());
+        std::vector<Date> atmOptionDates = atmVolStructure->optionDates();
+        std::vector<Date> optionDates(volCubeAtmCalibrated_.optionDates());
+        atmOptionDates.insert(atmOptionDates.end(),
+                                optionDates.begin(), optionDates.end());
+        std::sort(atmOptionDates.begin(),atmOptionDates.end());
 
-        std::vector<Period> atmSwapTenors = atmVolStructure->lengths();
+        std::vector<Period> atmSwapTenors = atmVolStructure->swapTenors();
         std::vector<Period> swapTenors(volCubeAtmCalibrated_.swapTenors());
         atmSwapTenors.insert(atmSwapTenors.end(),
                              swapTenors.begin(), swapTenors.end());
@@ -293,31 +293,31 @@ namespace QuantLib {
 
         createSparseSmiles();
 
-        for (Size j=0; j<atmExerciseTimes.size(); j++) {
+        for (Size j=0; j<atmOptionTimes.size(); j++) {
 
-            for (Size k=0; k<atmTimeLengths.size(); k++) {
-                bool expandExpiries =
-                    !(std::binary_search(exerciseTimes.begin(),
-                                         exerciseTimes.end(),
-                                         atmExerciseTimes[j]));
-                bool expandLengths =
-                    !(std::binary_search(timeLengths.begin(),
-                                         timeLengths.end(),
-                                         atmTimeLengths[k]));
-                if(expandExpiries || expandLengths){
-                    Rate atmForward = atmStrike(atmExerciseDates[j],
+            for (Size k=0; k<atmSwapLengths.size(); k++) {
+                bool expandOptionTimes =
+                    !(std::binary_search(optionTimes.begin(),
+                                         optionTimes.end(),
+                                         atmOptionTimes[j]));
+                bool expandSwapLengths =
+                    !(std::binary_search(swapLengths.begin(),
+                                         swapLengths.end(),
+                                         atmSwapLengths[k]));
+                if(expandOptionTimes || expandSwapLengths){
+                    Rate atmForward = atmStrike(atmOptionDates[j],
                                                 atmSwapTenors[k]);
                     Volatility atmVol = atmVol_->volatility(
-                        atmExerciseDates[j], atmSwapTenors[k], atmForward);
+                        atmOptionDates[j], atmSwapTenors[k], atmForward);
                     std::vector<Real> spreadVols =
-                        spreadVolInterpolation(atmExerciseDates[j],
+                        spreadVolInterpolation(atmOptionDates[j],
                                                atmSwapTenors[k]);
                     std::vector<Real> volAtmCalibrated;
                     for (Size i=0; i<nStrikes_; i++)
                         volAtmCalibrated.push_back(atmVol + spreadVols[i]);
                     volCubeAtmCalibrated_.setPoint(
-                                    atmExerciseDates[j], atmSwapTenors[k],
-                                    atmExerciseTimes[j], atmTimeLengths[k],
+                                    atmOptionDates[j], atmSwapTenors[k],
+                                    atmOptionTimes[j], atmSwapLengths[k],
                                     volAtmCalibrated);
                 }
             }
@@ -328,13 +328,13 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::createSparseSmiles() const {
 
-        std::vector<Time> exerciseTimes(sparseParameters_.expiries());
-        std::vector<Time> timeLengths(sparseParameters_.lengths());
+        std::vector<Time> optionTimes(sparseParameters_.optionTimes());
+        std::vector<Time> swapLengths(sparseParameters_.swapLengths());
 
-        for (Size j=0; j<exerciseTimes.size(); j++) {
+        for (Size j=0; j<optionTimes.size(); j++) {
             std::vector<boost::shared_ptr<SmileSectionInterface> > tmp;
-            for (Size k=0; k<timeLengths.size(); k++) {
-                tmp.push_back(smileSection(exerciseTimes[j], timeLengths[k],
+            for (Size k=0; k<swapLengths.size(); k++) {
+                tmp.push_back(smileSection(optionTimes[j], swapLengths[k],
                                            sparseParameters_));
             }
             sparseSmiles_.push_back(tmp);
@@ -343,80 +343,80 @@ namespace QuantLib {
 
 
     std::vector<Real> SwaptionVolatilityCubeBySabr::spreadVolInterpolation(
-        const Date& atmExerciseDate, const Period& atmSwapTenor) const {
+        const Date& atmOptionDate, const Period& atmSwapTenor) const {
 
         const std::pair<Time, Time> p =
-            convertDates(atmExerciseDate, atmSwapTenor);
-        Time atmExerciseTime = p.first, atmTimeLength = p.second;
+            convertDates(atmOptionDate, atmSwapTenor);
+        Time atmOptionTime = p.first, atmTimeLength = p.second;
 
         std::vector<Real> result;
-        const std::vector<Time>& exerciseTimes(sparseParameters_.expiries());
-        const std::vector<Time>& timeLengths(sparseParameters_.lengths());
-        const std::vector<Date>& exerciseDates =
-            sparseParameters_.exerciseDates();
+        const std::vector<Time>& optionTimes(sparseParameters_.optionTimes());
+        const std::vector<Time>& swapLengths(sparseParameters_.swapLengths());
+        const std::vector<Date>& optionDates =
+            sparseParameters_.optionDates();
         const std::vector<Period>& swapTenors = sparseParameters_.swapTenors();
 
-        std::vector<Real>::const_iterator expiriesPreviousNode,
-                                          lengthsPreviousNode;
+        std::vector<Real>::const_iterator optionTimesPreviousNode,
+                                          swapLengthsPreviousNode;
 
-        expiriesPreviousNode = std::lower_bound(exerciseTimes.begin(),
-                                                exerciseTimes.end(),
-                                                atmExerciseTime);
-        Size expiriesPreviousIndex
-            = expiriesPreviousNode - exerciseTimes.begin();
-        if (expiriesPreviousIndex >= exerciseTimes.size()-1)
-            expiriesPreviousIndex = exerciseTimes.size()-2;
+        optionTimesPreviousNode = std::lower_bound(optionTimes.begin(),
+                                                optionTimes.end(),
+                                                atmOptionTime);
+        Size optionTimesPreviousIndex
+            = optionTimesPreviousNode - optionTimes.begin();
+        if (optionTimesPreviousIndex >= optionTimes.size()-1)
+            optionTimesPreviousIndex = optionTimes.size()-2;
 
-        lengthsPreviousNode = std::lower_bound(timeLengths.begin(),
-                                               timeLengths.end(),
+        swapLengthsPreviousNode = std::lower_bound(swapLengths.begin(),
+                                               swapLengths.end(),
                                                atmTimeLength);
-        Size lengthsPreviousIndex = lengthsPreviousNode - timeLengths.begin();
-        if (lengthsPreviousIndex >= timeLengths.size()-1)
-            lengthsPreviousIndex = timeLengths.size()-2;
+        Size swapLengthsPreviousIndex = swapLengthsPreviousNode - swapLengths.begin();
+        if (swapLengthsPreviousIndex >= swapLengths.size()-1)
+            swapLengthsPreviousIndex = swapLengths.size()-2;
 
         std::vector< std::vector<boost::shared_ptr<SmileSectionInterface> > > smiles;
         std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnPreviousExpiry;
         std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnNextExpiry;
 
-        QL_REQUIRE(expiriesPreviousIndex+1 < sparseSmiles_.size(),
-                   "expiriesPreviousIndex+1 >= sparseSmiles_.size()");
-        QL_REQUIRE(lengthsPreviousIndex+1 < sparseSmiles_[0].size(),
-                   "lengthsPreviousIndex+1 >= sparseSmiles_[0].size()");
+        QL_REQUIRE(optionTimesPreviousIndex+1 < sparseSmiles_.size(),
+                   "optionTimesPreviousIndex+1 >= sparseSmiles_.size()");
+        QL_REQUIRE(swapLengthsPreviousIndex+1 < sparseSmiles_[0].size(),
+                   "swapLengthsPreviousIndex+1 >= sparseSmiles_[0].size()");
         smilesOnPreviousExpiry.push_back(
-              sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex]);
+              sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex]);
         smilesOnPreviousExpiry.push_back(
-              sparseSmiles_[expiriesPreviousIndex][lengthsPreviousIndex+1]);
+              sparseSmiles_[optionTimesPreviousIndex][swapLengthsPreviousIndex+1]);
         smilesOnNextExpiry.push_back(
-              sparseSmiles_[expiriesPreviousIndex+1][lengthsPreviousIndex]);
+              sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex]);
         smilesOnNextExpiry.push_back(
-              sparseSmiles_[expiriesPreviousIndex+1][lengthsPreviousIndex+1]);
+              sparseSmiles_[optionTimesPreviousIndex+1][swapLengthsPreviousIndex+1]);
 
         smiles.push_back(smilesOnPreviousExpiry);
         smiles.push_back(smilesOnNextExpiry);
 
-        std::vector<Real> exercisesNodes(2);
-        exercisesNodes[0] = exerciseTimes[expiriesPreviousIndex];
-        exercisesNodes[1] = exerciseTimes[expiriesPreviousIndex+1];
+        std::vector<Real> optionsNodes(2);
+        optionsNodes[0] = optionTimes[optionTimesPreviousIndex];
+        optionsNodes[1] = optionTimes[optionTimesPreviousIndex+1];
 
-        std::vector<Date> exercisesDateNodes(2);
-        exercisesDateNodes[0] = exerciseDates[expiriesPreviousIndex];
-        exercisesDateNodes[1] = exerciseDates[expiriesPreviousIndex+1];
+        std::vector<Date> optionsDateNodes(2);
+        optionsDateNodes[0] = optionDates[optionTimesPreviousIndex];
+        optionsDateNodes[1] = optionDates[optionTimesPreviousIndex+1];
 
-        std::vector<Real> lengthsNodes(2);
-        lengthsNodes[0] = timeLengths[lengthsPreviousIndex];
-        lengthsNodes[1] = timeLengths[lengthsPreviousIndex+1];
+        std::vector<Real> swapLengthsNodes(2);
+        swapLengthsNodes[0] = swapLengths[swapLengthsPreviousIndex];
+        swapLengthsNodes[1] = swapLengths[swapLengthsPreviousIndex+1];
 
         std::vector<Period> swapTenorNodes(2);
-        swapTenorNodes[0] = swapTenors[lengthsPreviousIndex];
-        swapTenorNodes[1] = swapTenors[lengthsPreviousIndex+1];
+        swapTenorNodes[0] = swapTenors[swapLengthsPreviousIndex];
+        swapTenorNodes[1] = swapTenors[swapLengthsPreviousIndex+1];
 
-        const Rate atmForward = atmStrike(atmExerciseDate, atmSwapTenor);
+        const Rate atmForward = atmStrike(atmOptionDate, atmSwapTenor);
 
         Matrix atmForwards(2, 2, 0.0);
         Matrix atmVols(2, 2, 0.0);
         for (Size i=0; i<2; i++) {
             for (Size j=0; j<2; j++) {
-                atmForwards[i][j] = atmStrike(exercisesDateNodes[i],
+                atmForwards[i][j] = atmStrike(optionsDateNodes[i],
                                               swapTenorNodes[j]);
                 atmVols[i][j] = smiles[i][j]->volatility(atmForwards[i][j]);
             }
@@ -435,42 +435,42 @@ namespace QuantLib {
                         smiles[i][j]->volatility(strikes[i][j])-atmVols[i][j];
                 }
             }
-           Cube localInterpolator(exercisesDateNodes, swapTenorNodes,
-                                  exercisesNodes, lengthsNodes, 1);
+           Cube localInterpolator(optionsDateNodes, swapTenorNodes,
+                                  optionsNodes, swapLengthsNodes, 1);
            localInterpolator.setLayer(0, spreadVols);
            localInterpolator.updateInterpolators();
 
            result.push_back(
-                        localInterpolator(atmExerciseTime, atmTimeLength)[0]);
+                        localInterpolator(atmOptionTime, atmTimeLength)[0]);
         }
         return result;
     }
 
     boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
-                                    Time expiry, Time length,
+                                    Time optionTime, Time swapLength,
                                     const Cube& sabrParametersCube) const {
 
         calculate();
         const std::vector<Real> sabrParameters =
-            sabrParametersCube(expiry, length);
+            sabrParametersCube(optionTime, swapLength);
         return boost::shared_ptr<SmileSectionInterface>(new
-            SabrSmileSection(expiry, sabrParameters));
+            SabrSmileSection(optionTime, sabrParameters));
     }
 	
 	boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeBySabr::smileSection(Time expiry,
-                                               Time length) const {
+    SwaptionVolatilityCubeBySabr::smileSection(Time optionTime,
+                                               Time swapLength) const {
         if (isAtmCalibrated_)
-            return smileSection(expiry, length, denseParameters_);
+            return smileSection(optionTime, swapLength, denseParameters_);
         else
-            return smileSection(expiry, length, sparseParameters_);
+            return smileSection(optionTime, swapLength, sparseParameters_);
     }
 
     boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityCubeBySabr::smileSection(
-        const Date& exerciseDate, const Period& swapTenor) const {
-        const std::pair<Time, Time> p = convertDates(exerciseDate, swapTenor);
+        const Date& optionDate, const Period& swapTenor) const {
+        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return smileSection(p.first, p.second);
     }
     
@@ -495,7 +495,7 @@ namespace QuantLib {
 
     void SwaptionVolatilityCubeBySabr::recalibration(Real beta,
                                                      const Period& swapTenor){
-        Matrix newBetaGuess(nExercise_, nlengths_, beta);
+        Matrix newBetaGuess(nOptionTenors_, nSwapTenors_, beta);
         parametersGuess_.setLayer(1, newBetaGuess);
         parametersGuess_.updateInterpolators();
 
@@ -513,50 +513,50 @@ namespace QuantLib {
 
 
     SwaptionVolatilityCubeBySabr::Cube::Cube(
-                                    const std::vector<Date>& exerciseDates,
+                                    const std::vector<Date>& optionDates,
                                     const std::vector<Period>& swapTenors,
-                                    const std::vector<Time>& expiries,
-                                    const std::vector<Time>& lengths,
+                                    const std::vector<Time>& optionTimes,
+                                    const std::vector<Time>& swapLengths,
                                     Size nLayers,
                                     bool extrapolation)
-    : expiries_(expiries), lengths_(lengths),
-      exerciseDates_(exerciseDates), swapTenors_(swapTenors),
+    : optionTimes_(optionTimes), swapLengths_(swapLengths),
+      optionDates_(optionDates), swapTenors_(swapTenors),
       nLayers_(nLayers), extrapolation_(extrapolation) {
 
-        QL_REQUIRE(expiries.size()>1,"Cube::Cube(...): expiries.size()<2");
-        QL_REQUIRE(lengths.size()>1,"Cube::Cube(...): lengths.size()<2");
+        QL_REQUIRE(optionTimes.size()>1,"Cube::Cube(...): optionTimes.size()<2");
+        QL_REQUIRE(swapLengths.size()>1,"Cube::Cube(...): swapLengths.size()<2");
 
-        QL_REQUIRE(expiries.size()==exerciseDates.size(),
-                   "Cube::Cube(...): expiries/exerciseDates mismatch");
-        QL_REQUIRE(swapTenors.size()==lengths.size(),
-                   "Cube::Cube(...): swapTenors/lengths mismatch");
+        QL_REQUIRE(optionTimes.size()==optionDates.size(),
+                   "Cube::Cube(...): optionTimes/optionDates mismatch");
+        QL_REQUIRE(swapTenors.size()==swapLengths.size(),
+                   "Cube::Cube(...): swapTenors/swapLengths mismatch");
 
-        std::vector<Matrix> points(nLayers_, Matrix(expiries_.size(),
-                                                    lengths_.size(), 0.0));
+        std::vector<Matrix> points(nLayers_, Matrix(optionTimes_.size(),
+                                                    swapLengths_.size(), 0.0));
 
         for (Size k=0;k<nLayers_;k++) {
             transposedPoints_.push_back(transpose(points[k]));
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                        lengths_.begin(),
-                                        lengths_.end(),transposedPoints_[k])));
+                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
+                                        swapLengths_.begin(),
+                                        swapLengths_.end(),transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(points);
      }
 
     SwaptionVolatilityCubeBySabr::Cube::Cube(const Cube& o) {
-        expiries_ = o.expiries_;
-        lengths_ = o.lengths_;
-        exerciseDates_ = o.exerciseDates_;
+        optionTimes_ = o.optionTimes_;
+        swapLengths_ = o.swapLengths_;
+        optionDates_ = o.optionDates_;
         swapTenors_ = o.swapTenors_;
         nLayers_ = o.nLayers_;
         extrapolation_ = o.extrapolation_;
         transposedPoints_ = o.transposedPoints_;
         for (Size k=0; k<nLayers_; ++k) {
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                          lengths_.begin(), lengths_.end(),
+                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
+                                          swapLengths_.begin(), swapLengths_.end(),
                                           transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }
@@ -565,17 +565,17 @@ namespace QuantLib {
 
     SwaptionVolatilityCubeBySabr::Cube&
     SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o) {
-        expiries_ = o.expiries_;
-        lengths_ = o.lengths_;
-        exerciseDates_ = o.exerciseDates_;
+        optionTimes_ = o.optionTimes_;
+        swapLengths_ = o.swapLengths_;
+        optionDates_ = o.optionDates_;
         swapTenors_ = o.swapTenors_;
         nLayers_ = o.nLayers_;
         extrapolation_ = o.extrapolation_;
         transposedPoints_ = o.transposedPoints_;
         for(Size k=0;k<nLayers_;k++){
             interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                          lengths_.begin(), lengths_.end(),
+                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
+                                          swapLengths_.begin(), swapLengths_.end(),
                                           transposedPoints_[k])));
             interpolators_[k]->enableExtrapolation();
         }
@@ -589,9 +589,9 @@ namespace QuantLib {
                                                         Real x) {
         QL_REQUIRE(IndexOfLayer<nLayers_,
 			"Cube::setElement: incompatible IndexOfLayer ");
-        QL_REQUIRE(IndexOfRow<expiries_.size(),
+        QL_REQUIRE(IndexOfRow<optionTimes_.size(),
             "Cube::setElement: incompatible IndexOfRow");
-        QL_REQUIRE(IndexOfColumn<lengths_.size(),
+        QL_REQUIRE(IndexOfColumn<swapLengths_.size(),
             "Cube::setElement: incompatible IndexOfColumn");
         points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
     }
@@ -600,9 +600,9 @@ namespace QuantLib {
                                                const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,
 			"Cube::setPoints: incompatible number of layers ");
-        QL_REQUIRE(x[0].rows()==expiries_.size(),
+        QL_REQUIRE(x[0].rows()==optionTimes_.size(),
             "Cube::setPoints: incompatible size 1");
-        QL_REQUIRE(x[0].columns()==lengths_.size(),
+        QL_REQUIRE(x[0].columns()==swapLengths_.size(),
             "Cube::setPoints: incompatible size 2");
 
         points_ = x;
@@ -612,73 +612,73 @@ namespace QuantLib {
                                                       const Matrix& x) {
         QL_REQUIRE(i<nLayers_,
 			"Cube::setLayer: incompatible number of layer ");
-        QL_REQUIRE(x.rows()==expiries_.size(),
+        QL_REQUIRE(x.rows()==optionTimes_.size(),
             "Cube::setLayer: incompatible size 1");
-        QL_REQUIRE(x.columns()==lengths_.size(),
+        QL_REQUIRE(x.columns()==swapLengths_.size(),
             "Cube::setLayer: incompatible size 2");
 
         points_[i] = x;
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::setPoint(
-                            const Date& exerciseDate, const Period& swapTenor,
-                            const Real expiry, const Time length,
+                            const Date& optionDate, const Period& swapTenor,
+                            const Real optionTime, const Time swapLength,
                             const std::vector<Real>& point)
     {
-        const bool expandExpiries =
-            !(std::binary_search(expiries_.begin(),expiries_.end(),expiry));
-        const bool expandLengths =
-            !(std::binary_search(lengths_.begin(),lengths_.end(),length));
+        const bool expandOptionTimes =
+            !(std::binary_search(optionTimes_.begin(),optionTimes_.end(),optionTime));
+        const bool expandSwapLengths =
+            !(std::binary_search(swapLengths_.begin(),swapLengths_.end(),swapLength));
 
-        std::vector<Real>::const_iterator expiriesPreviousNode,
-                                          lengthsPreviousNode;
+        std::vector<Real>::const_iterator optionTimesPreviousNode,
+                                          swapLengthsPreviousNode;
 
-        expiriesPreviousNode =
-            std::lower_bound(expiries_.begin(),expiries_.end(),expiry);
-        Size expiriesIndex = expiriesPreviousNode - expiries_.begin();
+        optionTimesPreviousNode =
+            std::lower_bound(optionTimes_.begin(),optionTimes_.end(),optionTime);
+        Size optionTimesIndex = optionTimesPreviousNode - optionTimes_.begin();
 
-        lengthsPreviousNode =
-            std::lower_bound(lengths_.begin(),lengths_.end(),length);
-        Size lengthsIndex = lengthsPreviousNode - lengths_.begin();
+        swapLengthsPreviousNode =
+            std::lower_bound(swapLengths_.begin(),swapLengths_.end(),swapLength);
+        Size swapLengthsIndex = swapLengthsPreviousNode - swapLengths_.begin();
 
-        if (expandExpiries || expandLengths)
-            expandLayers(expiriesIndex, expandExpiries,
-                         lengthsIndex, expandLengths);
+        if (expandOptionTimes || expandSwapLengths)
+            expandLayers(optionTimesIndex, expandOptionTimes,
+                         swapLengthsIndex, expandSwapLengths);
 
         for (Size k=0; k<nLayers_; ++k)
-            points_[k][expiriesIndex][lengthsIndex] = point[k];
+            points_[k][optionTimesIndex][swapLengthsIndex] = point[k];
 
-        expiries_[expiriesIndex] = expiry;
-        lengths_[lengthsIndex] = length;
-        exerciseDates_[expiriesIndex] = exerciseDate;
-        swapTenors_[lengthsIndex] = swapTenor;
+        optionTimes_[optionTimesIndex] = optionTime;
+        swapLengths_[swapLengthsIndex] = swapLength;
+        optionDates_[optionTimesIndex] = optionDate;
+        swapTenors_[swapLengthsIndex] = swapTenor;
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::expandLayers(
-                                                 Size i, bool expandExpiries,
-                                                 Size j, bool expandLengths) {
-		QL_REQUIRE(i<=expiries_.size(),"Cube::expandLayers: incompatible size 1");
-        QL_REQUIRE(j<=lengths_.size(),"Cube::expandLayers: incompatible size 2");
+                                                 Size i, bool expandOptionTimes,
+                                                 Size j, bool expandSwapLengths) {
+		QL_REQUIRE(i<=optionTimes_.size(),"Cube::expandLayers: incompatible size 1");
+        QL_REQUIRE(j<=swapLengths_.size(),"Cube::expandLayers: incompatible size 2");
 
-        if (expandExpiries) {
-            expiries_.insert(expiries_.begin()+i,0.);
-            exerciseDates_.insert(exerciseDates_.begin()+i, Date());
+        if (expandOptionTimes) {
+            optionTimes_.insert(optionTimes_.begin()+i,0.);
+            optionDates_.insert(optionDates_.begin()+i, Date());
         }
-        if (expandLengths) {
-            lengths_.insert(lengths_.begin()+j,0.);
+        if (expandSwapLengths) {
+            swapLengths_.insert(swapLengths_.begin()+j,0.);
             swapTenors_.insert(swapTenors_.begin()+j, Period());
         }
 
-        std::vector<Matrix> newPoints(nLayers_,Matrix(expiries_.size(),
-                                                      lengths_.size(), 0.));
+        std::vector<Matrix> newPoints(nLayers_,Matrix(optionTimes_.size(),
+                                                      swapLengths_.size(), 0.));
 
         for (Size k=0; k<nLayers_; ++k) {
             for (Size u=0; u<points_[k].rows(); ++u) {
                  Size indexOfRow = u;
-                 if (u>=i && expandExpiries) indexOfRow = u+1;
+                 if (u>=i && expandOptionTimes) indexOfRow = u+1;
                  for (Size v=0; v<points_[k].columns(); ++v) {
                       Size indexOfCol = v;
-                      if (v>=j && expandLengths) indexOfCol = v+1;
+                      if (v>=j && expandSwapLengths) indexOfCol = v+1;
                       newPoints[k][indexOfRow][indexOfCol]=points_[k][u][v];
                  }
             }
@@ -692,21 +692,21 @@ namespace QuantLib {
     }
 
     std::vector<Real> SwaptionVolatilityCubeBySabr::Cube::operator()(
-                            const Time expiry, const Time length) const {
+                            const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
         for (Size k=0; k<nLayers_; ++k)
-            result.push_back(interpolators_[k]->operator()(expiry, length));
+            result.push_back(interpolators_[k]->operator()(optionTime, swapLength));
         return result;
     }
 
     const std::vector<Time>&
-    SwaptionVolatilityCubeBySabr::Cube::expiries() const {
-        return expiries_;
+    SwaptionVolatilityCubeBySabr::Cube::optionTimes() const {
+        return optionTimes_;
     }
 
     const std::vector<Time>&
-    SwaptionVolatilityCubeBySabr::Cube::lengths() const {
-        return lengths_;
+    SwaptionVolatilityCubeBySabr::Cube::swapLengths() const {
+        return swapLengths_;
     }
 
     void SwaptionVolatilityCubeBySabr::Cube::updateInterpolators() const {
@@ -714,21 +714,21 @@ namespace QuantLib {
             transposedPoints_[k] = transpose(points_[k]);
             interpolators_[k] =
                 boost::shared_ptr<BilinearInterpolation>(new
-                    BilinearInterpolation(expiries_.begin(), expiries_.end(),
-                                          lengths_.begin(), lengths_.end(),
+                    BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
+                                          swapLengths_.begin(), swapLengths_.end(),
                                           transposedPoints_[k]));
             interpolators_[k]->enableExtrapolation();
         }
     }
 
     Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const {
-        Matrix result(lengths_.size()*expiries_.size(), nLayers_+2, 0.0);
-        for (Size i=0; i<lengths_.size(); ++i) {
-            for (Size j=0; j<expiries_.size(); ++j) {
-                result[i*expiries_.size()+j][0] = lengths_[i];
-                result[i*expiries_.size()+j][1] = expiries_[j];
+        Matrix result(swapLengths_.size()*optionTimes_.size(), nLayers_+2, 0.0);
+        for (Size i=0; i<swapLengths_.size(); ++i) {
+            for (Size j=0; j<optionTimes_.size(); ++j) {
+                result[i*optionTimes_.size()+j][0] = swapLengths_[i];
+                result[i*optionTimes_.size()+j][1] = optionTimes_[j];
                 for (Size k=0; k<nLayers_; ++k)
-                    result[i*expiries_.size()+j][2+k] = points_[k][j][i];
+                    result[i*optionTimes_.size()+j][2+k] = points_[k][j][i];
             }
         }
         return result;

@@ -26,8 +26,8 @@ namespace QuantLib {
 
     SwaptionVolatilityCube::SwaptionVolatilityCube(
         const Handle<SwaptionVolatilityStructure>& atmVol,
-        const std::vector<Period>& expiries,
-        const std::vector<Period>& lengths,
+        const std::vector<Period>& optionTenors,
+        const std::vector<Period>& swapTenors,
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const boost::shared_ptr<SwapIndex>& swapIndexBase,
@@ -35,11 +35,11 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(0, atmVol->calendar(),
                                      atmVol->businessDayConvention()),
       atmVol_(atmVol),
-      exerciseDates_(expiries.size()),
-      exerciseTimes_(expiries.size()),
-      exerciseDatesAsReal_(expiries.size()),
-      lengths_(lengths),
-      timeLengths_(lengths.size()),
+      optionDates_(optionTenors.size()),
+      optionTimes_(optionTenors.size()),
+      optionDatesAsReal_(optionTenors.size()),
+      swapTenors_(swapTenors),
+      swapLengths_(swapTenors.size()),
       nStrikes_(strikeSpreads.size()),
       strikeSpreads_(strikeSpreads),
       localStrikes_(nStrikes_),
@@ -58,42 +58,42 @@ namespace QuantLib {
             registerWith(swapIndexBase_);
 
 
-        nExercise_ = expiries.size();
-        exerciseDates_[0] = exerciseDateFromOptionTenor(expiries[0]);
-        exerciseDatesAsReal_[0] =
-            static_cast<Real>(exerciseDates_[0].serialNumber());
-        exerciseTimes_[0] = timeFromReference(exerciseDates_[0]);
-        QL_REQUIRE(0.0<exerciseTimes_[0],
-                   "first exercise time is negative ("
-                   << exerciseTimes_[0] << ")");
-        for (Size i=1; i<nExercise_; i++) {
-            exerciseDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
-            exerciseDatesAsReal_[i] =
-                static_cast<Real>(exerciseDates_[i].serialNumber());
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-            QL_REQUIRE(exerciseTimes_[i-1]<exerciseTimes_[i],
-                       "non increasing exercise times: time[" << i-1 <<
-                       "] = " << exerciseTimes_[i-1] << ", time[" << i <<
-                       "] = " << exerciseTimes_[i]);
+        nOptionTenors_ = optionTenors.size();
+        optionDates_[0] = optionDateFromOptionTenor(optionTenors[0]);
+        optionDatesAsReal_[0] =
+            static_cast<Real>(optionDates_[0].serialNumber());
+        optionTimes_[0] = timeFromReference(optionDates_[0]);
+        QL_REQUIRE(0.0<optionTimes_[0],
+                   "first option time is negative ("
+                   << optionTimes_[0] << ")");
+        for (Size i=1; i<nOptionTenors_; i++) {
+            optionDates_[i] = optionDateFromOptionTenor(optionTenors[i]);
+            optionDatesAsReal_[i] =
+                static_cast<Real>(optionDates_[i].serialNumber());
+            optionTimes_[i] = timeFromReference(optionDates_[i]);
+            QL_REQUIRE(optionTimes_[i-1]<optionTimes_[i],
+                       "non increasing option times: time[" << i-1 <<
+                       "] = " << optionTimes_[i-1] << ", time[" << i <<
+                       "] = " << optionTimes_[i]);
         }
 
-        exerciseInterpolator_ =
-            LinearInterpolation(exerciseTimes_.begin(),
-                                exerciseTimes_.end(),
-                                exerciseDatesAsReal_.begin());
-        exerciseInterpolator_.enableExtrapolation();
+        optionInterpolator_ =
+            LinearInterpolation(optionTimes_.begin(),
+                                optionTimes_.end(),
+                                optionDatesAsReal_.begin());
+        optionInterpolator_.enableExtrapolation();
 
-        nlengths_ = lengths_.size();
-        Date startDate = exerciseDates_[0]; // as good as any
-        Date endDate = startDate + lengths_[0];
-        timeLengths_[0] = dayCounter().yearFraction(startDate,endDate);
-        QL_REQUIRE(0.0<timeLengths_[0],
-                   "first time length is negative");
-        for (Size i=1; i<nlengths_; i++) {
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter().yearFraction(startDate,endDate);
-            QL_REQUIRE(timeLengths_[i-1]<timeLengths_[i],
-                       "non increasing time length");
+        nSwapTenors_ = swapTenors_.size();
+        Date startDate = optionDates_[0]; // as good as any
+        Date endDate = startDate + swapTenors_[0];
+        swapLengths_[0] = dayCounter().yearFraction(startDate,endDate);
+        QL_REQUIRE(0.0<swapLengths_[0],
+                   "first swap length is negative");
+        for (Size i=1; i<nSwapTenors_; i++) {
+            Date endDate = startDate + swapTenors_[i];
+            swapLengths_[i] = dayCounter().yearFraction(startDate,endDate);
+            QL_REQUIRE(swapLengths_[i-1]<swapLengths_[i],
+                       "non increasing swap length");
         }
 
         QL_REQUIRE(nStrikes_>1, "too few strikes (" << nStrikes_ << ")");
@@ -110,9 +110,9 @@ namespace QuantLib {
                        ") and number of columns (" << volSpreads_[i].size() <<
                        ") in the " << io::ordinal(i) << " row");
 
-        QL_REQUIRE(nExercise_*nlengths_==volSpreads_.size(),
-            "mismatch between number of option expiries * swap tenors (" <<
-            nExercise_*nlengths_ << ") and number of rows (" <<
+        QL_REQUIRE(nOptionTenors_*nSwapTenors_==volSpreads_.size(),
+            "mismatch between number of option tenors * swap tenors (" <<
+            nOptionTenors_*nSwapTenors_ << ") and number of rows (" <<
             volSpreads_.size() << ")");
 
         registerWithVolatilitySpread();
@@ -122,12 +122,12 @@ namespace QuantLib {
     void SwaptionVolatilityCube::registerWithVolatilitySpread()
     {
         for (Size i=0; i<nStrikes_; i++)
-            for (Size j=0; j<nExercise_; j++)
-                for (Size k=0; k<nlengths_; k++)
-                    registerWith(volSpreads_[j*nlengths_+k][i]);
+            for (Size j=0; j<nOptionTenors_; j++)
+                for (Size k=0; k<nSwapTenors_; k++)
+                    registerWith(volSpreads_[j*nSwapTenors_+k][i]);
     }
 
-    Rate SwaptionVolatilityCube::atmStrike(const Date& exerciseDate,
+    Rate SwaptionVolatilityCube::atmStrike(const Date& optionDate,
                                            const Period& swapTenor) const {
 
         // FIXME use a familyName-based index factory
@@ -139,7 +139,7 @@ namespace QuantLib {
                          swapIndexBase_->fixedLegFrequency(),
                          swapIndexBase_->fixedLegConvention(),
                          swapIndexBase_->dayCounter(),
-                         swapIndexBase_->iborIndex()).fixing(exerciseDate);
+                         swapIndexBase_->iborIndex()).fixing(optionDate);
     }
 
 }

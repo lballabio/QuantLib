@@ -54,20 +54,20 @@ namespace QuantLib {
         //@}
         //! \name SwaptionConstantVolatility interface
         //@{
-        Period maxLength() const;
-        Time maxTimeLength() const;
+        Period maxSwapTenor() const;
+        Time maxSwapLength() const;
         Real minStrike() const;
         Real maxStrike() const;
 
         //! return trivial smile section
         boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                 const Date& start,
-                                                 const Period& length) const;
+                                                 const Date& optioDate,
+                                                 const Period& swapTenor) const;
 
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(Time start,
-                                                     Time length) const;
+        boost::shared_ptr<SmileSectionInterface> smileSection(Time optionTime,
+                                                     Time swapLength) const;
         Volatility volatilityImpl(const Date&, const Period&, Rate) const;
         //@}
       private:
@@ -119,11 +119,11 @@ namespace QuantLib {
         registerWith(volatility_);
     }
 
-    inline Period SwaptionConstantVolatility::maxLength() const {
+    inline Period SwaptionConstantVolatility::maxSwapTenor() const {
         return 100*Years;
     }
 
-    inline Time SwaptionConstantVolatility::maxTimeLength() const {
+    inline Time SwaptionConstantVolatility::maxSwapLength() const {
         return QL_MAX_REAL;
     }
 
@@ -148,7 +148,7 @@ namespace QuantLib {
     }
 
     inline boost::shared_ptr<SmileSectionInterface>
-    SwaptionConstantVolatility::smileSection(Time start, Time) const {
+    SwaptionConstantVolatility::smileSection(Time optionTime, Time) const {
         const Volatility atmVol = volatility_->value();
 
         std::vector<Real> strikes, volatilities(2, atmVol);
@@ -156,11 +156,11 @@ namespace QuantLib {
         strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSectionInterface>(new 
-            InterpolatedSmileSection(start, strikes, volatilities));
+            InterpolatedSmileSection(optionTime, strikes, volatilities));
     }
 
     inline boost::shared_ptr<SmileSectionInterface>
-    SwaptionConstantVolatility::smileSection(const Date& start,
+    SwaptionConstantVolatility::smileSection(const Date& optionDate,
                                              const Period&) const {
         const Volatility atmVol = volatility_->value();
 
@@ -169,7 +169,7 @@ namespace QuantLib {
         strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(timeFromReference(start),
+            InterpolatedSmileSection(timeFromReference(optionDate),
                                      strikes, volatilities));
     }
 

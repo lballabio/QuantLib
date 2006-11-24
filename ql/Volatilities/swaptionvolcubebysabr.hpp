@@ -37,8 +37,8 @@ namespace QuantLib {
             Cube() {};
             Cube(const std::vector<Date>& optionDates,
                  const std::vector<Period>& swapTenors,
-                 const std::vector<Time>& expiries,
-                 const std::vector<Time>& lengths,
+                 const std::vector<Time>& optionTimes,
+                 const std::vector<Time>& swapLengths,
                  Size nLayers,
                  bool extrapolation = true);
             Cube& operator=(const Cube& o);
@@ -49,33 +49,33 @@ namespace QuantLib {
                             Size IndexOfColumn,
                             Real x);
             void setPoints(const std::vector<Matrix>& x);
-            void setPoint(const Date& exerciseDate,
+            void setPoint(const Date& optionDate,
                           const Period& swapTenor,
-                          const Time expiry,
-                          const Time lengths,
+                          const Time optionTime,
+                          const Time swapLengths,
                           const std::vector<Real>& point);
             void setLayer(Size i,
                           const Matrix& x);
             void expandLayers(Size i,
-                              bool expandExpiries,
+                              bool expandOptionTimes,
                               Size j,
-                              bool expandLengths);
-            const std::vector<Date>& exerciseDates() const {
-                return exerciseDates_;
+                              bool expandSwapLengths);
+            const std::vector<Date>& optionDates() const {
+                return optionDates_;
             }
             const std::vector<Period>& swapTenors() const {
                 return swapTenors_;
             }
-            const std::vector<Time>& expiries() const;
-            const std::vector<Time>& lengths() const;
+            const std::vector<Time>& optionTimes() const;
+            const std::vector<Time>& swapLengths() const;
             const std::vector<Matrix>& points() const;
-            std::vector<Real> operator()(const Time expiry,
-                                         const Time lengths) const;
+            std::vector<Real> operator()(const Time optionTime,
+                                         const Time swapLengths) const;
             void updateInterpolators()const;
             Matrix browse() const;
           private:
-            std::vector<Time> expiries_, lengths_;
-            std::vector<Date> exerciseDates_;
+            std::vector<Time> optionTimes_, swapLengths_;
+            std::vector<Date> optionDates_;
             std::vector<Period> swapTenors_;
             Size nLayers_;
             std::vector<Matrix> points_;

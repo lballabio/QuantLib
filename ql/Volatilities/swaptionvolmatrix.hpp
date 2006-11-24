@@ -42,13 +42,13 @@ namespace QuantLib {
     /*! This class provides the at-the-money volatility for a given
         swaption by interpolating a volatility matrix whose elements
         are the market volatilities of a set of swaption with given
-        exercise date and length.
+        option date and swapLength.
 
         The volatility matrix <tt>M</tt> must be defined so that:
-        - the number of rows equals the number of exercise dates;
+        - the number of rows equals the number of option dates;
         - the number of columns equals the number of swap tenors;
         - <tt>M[i][j]</tt> contains the volatility corresponding
-          to the <tt>i</tt>-th exercise and <tt>j</tt>-th tenor.
+          to the <tt>i</tt>-th option and <tt>j</tt>-th tenor.
     */
     class SwaptionVolatilityMatrix : public LazyObject, 
                                      public SwaptionVolatilityStructure,
@@ -91,29 +91,29 @@ namespace QuantLib {
         //! \deprecated alternative constructors instead
         // fixed reference date and fixed market data, option dates 
         SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& exerciseDates,
+                                 const std::vector<Date>& optionDates,
                                  const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
 
         #ifndef QL_DISABLE_DEPRECATED
         //! \deprecated alternative constructors instead
-        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
+        SwaptionVolatilityMatrix(const std::vector<Period>& optionTenors,
                                  const Calendar& calendar,
                                  const BusinessDayConvention bdc,
-                                 const std::vector<Period>& tenors,
+                                 const std::vector<Period>& swapTenors,
                                  const std::vector<std::vector<Handle<Quote> > >& vols,
                                  const DayCounter& dayCounter);
         //! \deprecated alternative constructors instead
-        SwaptionVolatilityMatrix(const std::vector<Period>& expiries,
+        SwaptionVolatilityMatrix(const std::vector<Period>& optionTenors,
                                  const Calendar& calendar,
                                  const BusinessDayConvention bdc,
-                                 const std::vector<Period>& tenors,
+                                 const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         //! \deprecated alternative constructors instead
-        SwaptionVolatilityMatrix(const std::vector<Date>& exerciseDates,
-                                 const std::vector<Period>& tenors,
+        SwaptionVolatilityMatrix(const std::vector<Date>& optionDates,
+                                 const std::vector<Period>& swapTenors,
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter);
         #endif
@@ -125,44 +125,44 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        Period maxLength() const;
-        Time maxTimeLength() const;
+        Period maxSwapTenor() const;
+        Time maxSwapLength() const;
         Rate minStrike() const;
         Rate maxStrike() const;
 
 		//! return trivial smile section
         boost::shared_ptr<SmileSectionInterface> smileSection(
                                                  const Period& optionTenor,
-                                                 const Period& length) const;
+                                                 const Period& swapTenor) const;
         //! return trivial smile section
         boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                 const Date& exerciseDate,
-                                                 const Period& length) const;
+                                                 const Date& optionDates,
+                                                 const Period& swapTenor) const;
         //! return trivial smile section
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
-                                                        Time start,
-                                                        Time length) const;
+                                                        Time optionTime,
+                                                        Time swapLength) const;
         //! implements the conversion between dates and times
-        std::pair<Time,Time> convertDates(const Date& exerciseDate,
-                                          const Period& length) const;
+        std::pair<Time,Time> convertDates(const Date& optionDates,
+                                          const Period& swapTenor) const;
         //@}
         //! \name Other inspectors
         //@{
-        const std::vector<Date>& exerciseDates() const;
-        const std::vector<Time>& exerciseTimes() const;
-        const std::vector<Period>& lengths() const;
-        const std::vector<Time>& timeLengths() const;
+        const std::vector<Date>& optionDates() const;
+        const std::vector<Time>& optionTimes() const;
+        const std::vector<Period>& swapTenors() const;
+        const std::vector<Time>& swapLengths() const;
         //! returns the lower indexes of surrounding volatility matrix corners
-        std::pair<Size,Size> locate(const Date& exerciseDate,
-                                    const Period& length) const {
-            std::pair<Time,Time> times = convertDates(exerciseDate,length);
+        std::pair<Size,Size> locate(const Date& optionDates,
+                                    const Period& swapTenor) const {
+            std::pair<Time,Time> times = convertDates(optionDates,swapTenor);
             return locate(times.first, times.second);
         }
         //! returns the lower indexes of surrounding volatility matrix corners
-        std::pair<Size,Size> locate(Time exerciseTime,
-                                    Time length) const {
-            return std::make_pair(interpolation_.locateY(exerciseTime),
-                                  interpolation_.locateX(length));
+        std::pair<Size,Size> locate(Time optionTime,
+                                    Time swapLength) const {
+            return std::make_pair(interpolation_.locateY(optionTime),
+                                  interpolation_.locateX(swapLength));
         }
         void update();
         void performCalculations() const;
@@ -173,14 +173,14 @@ namespace QuantLib {
         void initializeTimes() const;
         void initializeOptionDatesAndTimes() const;
         void registerWithMarketData();
-        Volatility volatilityImpl(Time exerciseTime,
-                                  Time length,
+        Volatility volatilityImpl(Time optionTime,
+                                  Time swapLength,
                                   Rate strike) const;
-        Volatility volatilityImpl(const Date& exerciseDate,
-                                  const Period& length,
+        Volatility volatilityImpl(const Date& optionDates,
+                                  const Period& swapTenor,
                                   Rate strike) const;
 		Volatility volatilityImpl(const Period& optionTenor,
-                                  const Period& length, 
+                                  const Period& swapTenor, 
 								  Rate strike) const;
         std::vector<Period> optionTenors_;
         mutable std::vector<Date> optionDates_;
@@ -205,30 +205,30 @@ namespace QuantLib {
     }
 
     inline const std::vector<Date>&
-    SwaptionVolatilityMatrix::exerciseDates() const {
+    SwaptionVolatilityMatrix::optionDates() const {
         return optionDates_;
     }
 
     inline const std::vector<Time>&
-    SwaptionVolatilityMatrix::exerciseTimes() const {
+    SwaptionVolatilityMatrix::optionTimes() const {
         return optionTimes_;
     }
 
      inline const std::vector<Period>&
-     SwaptionVolatilityMatrix::lengths() const {
+     SwaptionVolatilityMatrix::swapTenors() const {
          return swapTenors_;
      }
 
     inline const std::vector<Time>&
-    SwaptionVolatilityMatrix::timeLengths() const {
+    SwaptionVolatilityMatrix::swapLengths() const {
         return swapLengths_;
     }
 
-    inline Period SwaptionVolatilityMatrix::maxLength() const {
+    inline Period SwaptionVolatilityMatrix::maxSwapTenor() const {
         return swapTenors_.back();
     }
 
-    inline Time SwaptionVolatilityMatrix::maxTimeLength() const {
+    inline Time SwaptionVolatilityMatrix::maxSwapLength() const {
         return swapLengths_.back();
     }
 
@@ -241,23 +241,23 @@ namespace QuantLib {
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                Time exerciseTime, Time length, Rate) const { 
+                                Time optionTime, Time swapLength, Rate) const { 
         calculate();
-        return interpolation_(length, exerciseTime, true);
+        return interpolation_(swapLength, optionTime, true);
     }
 
     inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
-                                          const Date& exerciseDate,
-                                          const Period& length, Rate) const {
-        const std::pair<Time, Time> p = convertDates(exerciseDate, length);
+                                          const Date& optionDate,
+                                          const Period& swapTenor, Rate) const {
+        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return volatilityImpl(p.first, p.second,true);
     }
 	
 	inline Volatility SwaptionVolatilityMatrix::volatilityImpl(
                                           const Period& optionTenor,
-                                          const Period& length, Rate) const {
-		Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
-        return volatilityImpl(exerciseDate, length,true);
+                                          const Period& swapTenor, Rate) const {
+		Date optionDate = optionDateFromOptionTenor(optionTenor); 
+        return volatilityImpl(optionDate, swapTenor,true);
     }
 
     inline void SwaptionVolatilityMatrix::update(){

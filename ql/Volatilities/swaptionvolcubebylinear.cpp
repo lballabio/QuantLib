@@ -26,57 +26,57 @@ namespace QuantLib {
 
     SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-        const std::vector<Period>& expiries,
-        const std::vector<Period>& lengths,
+        const std::vector<Period>& optionTenors,
+        const std::vector<Period>& swapTenors,
         const std::vector<Spread>& strikeSpreads,
         const std::vector<std::vector<Handle<Quote> > >& volSpreads,
         const boost::shared_ptr<SwapIndex>& swapIndexBase,
         bool vegaWeightedSmileFit)
-    : SwaptionVolatilityCube(atmVolStructure, expiries, lengths,
+    : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
       volSpreadsInterpolator_(nStrikes_),
-      volSpreadsMatrix_(nStrikes_, Matrix(expiries.size(), lengths.size(), 0.0)) {
+      volSpreadsMatrix_(nStrikes_, Matrix(optionTenors.size(), swapTenors.size(), 0.0)) {
     }
 
     void SwaptionVolatilityCubeByLinear::performCalculations() const{
         //! set volSpreadsMatrix_ by volSpreads_ quotes
         for (Size i=0; i<nStrikes_; i++) 
-            for (Size j=0; j<nExercise_; j++)
-                for (Size k=0; k<nlengths_; k++) {
+            for (Size j=0; j<nOptionTenors_; j++)
+                for (Size k=0; k<nSwapTenors_; k++) {
                     volSpreadsMatrix_[i][j][k] =
-                        volSpreads_[j*nlengths_+k][i]->value();
+                        volSpreads_[j*nSwapTenors_+k][i]->value();
                 }
         //! create volSpreadsInterpolator_ 
         for (Size i=0; i<nStrikes_; i++) {
             volSpreadsInterpolator_[i] = BilinearInterpolation(
-                timeLengths_.begin(), timeLengths_.end(),
-                exerciseTimes_.begin(), exerciseTimes_.end(),
+                swapLengths_.begin(), swapLengths_.end(),
+                optionTimes_.begin(), optionTimes_.end(),
                 volSpreadsMatrix_[i]);
             volSpreadsInterpolator_[i].enableExtrapolation();
         }
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeByLinear::smileSection(Time start,
-                                                 Time length) const {
+    SwaptionVolatilityCubeByLinear::smileSection(Time optionTime,
+                                                 Time swapLength) const {
 
-        Date exerciseDate = Date(static_cast<BigInteger>(
-            exerciseInterpolator_(start)));
+        Date optionDate = Date(static_cast<BigInteger>(
+            optionInterpolator_(optionTime)));
         Rounding rounder(0);
-        Period swapTenor(static_cast<Integer>(rounder(length/12.0)), Months);
-        return smileSection(exerciseDate, swapTenor);
+        Period swapTenor(static_cast<Integer>(rounder(swapLength/12.0)), Months);
+        return smileSection(optionDate, swapTenor);
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeByLinear::smileSection(const Date& exerciseDate,
-                                                 const Period& length) const {
+    SwaptionVolatilityCubeByLinear::smileSection(const Date& optionDate,
+                                                 const Period& swapTenor) const {
         calculate();
-        const Rate atmForward = atmStrike(exerciseDate, length);
-        const Volatility atmVol = atmVol_->volatility(exerciseDate, length,
+        const Rate atmForward = atmStrike(optionDate, swapTenor);
+        const Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
                                                       atmForward);
         std::vector<Real> strikes, volatilities;
-        const std::pair<Time, Time> p = convertDates(exerciseDate, length);
+        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         for (Size i=0; i<nStrikes_; i++) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             volatilities.push_back(

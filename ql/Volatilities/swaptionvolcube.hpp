@@ -38,8 +38,8 @@ namespace QuantLib {
       public:
         SwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& expiries,
-            const std::vector<Period>& lengths,
+            const std::vector<Period>& optionTenors,
+            const std::vector<Period>& swapTenors,
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
@@ -54,10 +54,10 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        Date maxStartDate() const { return atmVol_->maxStartDate(); }
-        Time maxStartTime() const { return atmVol_->maxStartTime(); }
-        Period maxLength() const { return atmVol_->maxLength(); }
-        Time maxTimeLength() const { return atmVol_->maxTimeLength(); }
+        Date maxOptionDate() const { return atmVol_->maxOptionDate(); }
+        Time maxOptionTime() const { return atmVol_->maxOptionTime(); }
+        Period maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
+        Time maxSwapLength() const { return atmVol_->maxSwapLength(); }
         Rate minStrike() const { return 0.0; }
         Rate maxStrike() const { return 1.0; }
         //@}
@@ -71,15 +71,15 @@ namespace QuantLib {
                                             const Period& swapTenor) const = 0;
 		boost::shared_ptr<SmileSectionInterface>
 		smileSection(const Period& optionTenor, const Period& swapTenor) const {
-				Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
-				return smileSection(exerciseDate, swapTenor);
+				Date optionDate = optionDateFromOptionTenor(optionTenor); 
+				return smileSection(optionDate, swapTenor);
 		};
 
         Rate atmStrike(const Date& optionDate,
                        const Period& swapTenor) const;
         Rate atmStrike(const Period& optionTenor,
                        const Period& swapTenor) const {
-            Date optionDate = exerciseDateFromOptionTenor(optionTenor);
+            Date optionDate = optionDateFromOptionTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
 
@@ -104,14 +104,14 @@ namespace QuantLib {
 								  Rate strike) const;
         //@}
         Handle<SwaptionVolatilityStructure> atmVol_; 
-        std::vector<Date> exerciseDates_;
-        std::vector<Time> exerciseTimes_;
-        std::vector<Real> exerciseDatesAsReal_;
-        LinearInterpolation exerciseInterpolator_;
-        std::vector<Period> lengths_;
-        std::vector<Time> timeLengths_;
-        Size nExercise_;
-        Size nlengths_;
+        std::vector<Date> optionDates_;
+        std::vector<Time> optionTimes_;
+        std::vector<Real> optionDatesAsReal_;
+        LinearInterpolation optionInterpolator_;
+        std::vector<Period> swapTenors_;
+        std::vector<Time> swapLengths_;
+        Size nOptionTenors_;
+        Size nSwapTenors_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
         mutable std::vector<Rate> localStrikes_;

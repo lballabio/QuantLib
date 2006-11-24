@@ -30,22 +30,22 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                    const std::vector<Period>& expiries,
+                    const std::vector<Period>& optionTenors,
                     const Calendar& calendar,
                     const BusinessDayConvention bdc,
                     const std::vector<Period>& tenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, calendar, bdc),
-      swapTenors_(tenors), volatilities_(expiries.size(),tenors.size()),
+      swapTenors_(tenors), volatilities_(optionTenors.size(),tenors.size()),
       dayCounter_(dayCounter) {
         QL_REQUIRE(!vols.empty(), "empty vol matrix");
-        QL_REQUIRE(expiries.size()==vols.size(),
-            "mismatch between number of exercise dates ("
-            << expiries.size() << ") and number of rows ("
+        QL_REQUIRE(optionTenors.size()==vols.size(),
+            "mismatch between number of option dates ("
+            << optionTenors.size() << ") and number of rows ("
             << vols.size() << ") in the vol matrix");
         Size i;
-        for (i=0; i<expiries.size(); i++) {
+        for (i=0; i<optionTenors.size(); i++) {
             QL_REQUIRE(tenors.size()==vols[i].size(),
                 "mismatch between number of tenors ("
                 << tenors.size() << ") and number of columns ("
@@ -57,11 +57,11 @@ namespace QuantLib {
             }
         }
 
-        optionTimes_.resize(expiries.size());
-        optionDates_.resize(expiries.size());
+        optionTimes_.resize(optionTenors.size());
+        optionDates_.resize(optionTenors.size());
         swapLengths_.resize(swapTenors_.size());
-        for (i=0; i<expiries.size(); i++) {
-            optionDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
+        for (i=0; i<optionTenors.size(); i++) {
+            optionDates_[i] = optionDateFromOptionTenor(optionTenors[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
@@ -79,29 +79,29 @@ namespace QuantLib {
     }
 
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                        const std::vector<Period>& expiries,
+                        const std::vector<Period>& optionTenors,
                         const Calendar& calendar,
                         const BusinessDayConvention bdc,
-                        const std::vector<Period>& lengths,
+                        const std::vector<Period>& swapTenors,
                         const Matrix& vols,
                         const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, calendar, bdc),
-      swapTenors_(lengths), volatilities_(vols),  dayCounter_(dayCounter) {
-        QL_REQUIRE(expiries.size()==vols.rows(),
-            "mismatch between number of expiries ("
-            << expiries.size() << ") and number of rows ("
+      swapTenors_(swapTenors), volatilities_(vols),  dayCounter_(dayCounter) {
+        QL_REQUIRE(optionTenors.size()==vols.rows(),
+            "mismatch between number of optionTenors ("
+            << optionTenors.size() << ") and number of rows ("
             << vols.rows() << ") in the vol matrix");
-        QL_REQUIRE(lengths.size()==vols.columns(),
+        QL_REQUIRE(swapTenors.size()==vols.columns(),
             "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
+            << swapTenors.size() << ") and number of rows ("
             << vols.columns() << ") in the vol matrix");
 
-        optionTimes_.resize(expiries.size());
-        optionDates_.resize(expiries.size());
+        optionTimes_.resize(optionTenors.size());
+        optionDates_.resize(optionTenors.size());
         swapLengths_.resize(swapTenors_.size());
         Size i;
-        for (i=0; i<expiries.size(); i++) {
-            optionDates_[i] = exerciseDateFromOptionTenor(expiries[i]);
+        for (i=0; i<optionTenors.size(); i++) {
+            optionDates_[i] = optionDateFromOptionTenor(optionTenors[i]);
             optionTimes_[i] = timeFromReference(optionDates_[i]);
         }
 
@@ -119,20 +119,20 @@ namespace QuantLib {
     }
 
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                       const std::vector<Date>& dates,
-                       const std::vector<Period>& lengths,
+                       const std::vector<Date>& optionDates,
+                       const std::vector<Period>& swapTenors,
                        const Matrix& vols,
                        const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(0, NullCalendar()), // FIXME
-      optionDates_(dates), swapTenors_(lengths), volatilities_(vols),
+      optionDates_(optionDates), swapTenors_(swapTenors), volatilities_(vols),
       dayCounter_(dayCounter) {
-        QL_REQUIRE(dates.size()==vols.rows(),
-            "mismatch between number of exercise dates ("
-            << dates.size() << ") and number of rows ("
+        QL_REQUIRE(optionDates.size()==vols.rows(),
+            "mismatch between number of option dates ("
+            << optionDates.size() << ") and number of rows ("
             << vols.rows() << ") in the vol matrix");
-        QL_REQUIRE(lengths.size()==vols.columns(),
+        QL_REQUIRE(swapTenors.size()==vols.columns(),
             "mismatch between number of tenors ("
-            << lengths.size() << ") and number of rows ("
+            << swapTenors.size() << ") and number of rows ("
             << vols.columns() << ") in the vol matrix");
         optionTimes_.resize(optionDates_.size());
         swapLengths_.resize(swapTenors_.size());
@@ -324,10 +324,10 @@ namespace QuantLib {
 
 
 	boost::shared_ptr<SmileSectionInterface> SwaptionVolatilityMatrix::smileSection(
-                                             Time start, Time length) const {
+                                             Time optionTime, Time swapLength) const {
 
         // dummy strike
-        const Volatility atmVol = volatility(start, length, 0.05);
+        const Volatility atmVol = volatility(optionTime, swapLength, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
 
@@ -335,15 +335,15 @@ namespace QuantLib {
         strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSectionInterface>(
-                              new InterpolatedSmileSection(start, strikes, volatilities));
+                              new InterpolatedSmileSection(optionTime, strikes, volatilities));
     }
 
 	boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityMatrix::smileSection(const Date& exerciseDate,
-                                           const Period& length) const {
+    SwaptionVolatilityMatrix::smileSection(const Date& optionDate,
+                                           const Period& swapTenor) const {
 
         // dummy strike
-        const Volatility atmVol = volatility(exerciseDate, length, 0.05);
+        const Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
 
@@ -351,16 +351,16 @@ namespace QuantLib {
         strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(timeFromReference(exerciseDate),
+            InterpolatedSmileSection(timeFromReference(optionDate),
                          strikes, volatilities));
     }
 
     boost::shared_ptr<SmileSectionInterface>
     SwaptionVolatilityMatrix::smileSection(const Period& optionTenor,
-                                           const Period& length) const {
-	    Date exerciseDate = exerciseDateFromOptionTenor(optionTenor); 
+                                           const Period& swapTenor) const {
+	    Date optionDate = optionDateFromOptionTenor(optionTenor); 
 		// dummy strike
-        const Volatility atmVol = volatility(exerciseDate, length, 0.05);
+        const Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
 
         std::vector<Real> strikes, volatilities(2, atmVol);
 
@@ -368,14 +368,14 @@ namespace QuantLib {
         strikes.push_back(1.0);
 
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(timeFromReference(exerciseDate),
+            InterpolatedSmileSection(timeFromReference(optionDate),
                          strikes, volatilities));
     }
 
     void SwaptionVolatilityMatrix::checkInputs(
         Size optionsNb, Size SwapNb, Size volRows, Size volsColumns) const {
         QL_REQUIRE(optionsNb==volRows,
-            "mismatch between number of exercise dates ("
+            "mismatch between number of option dates ("
             << optionsNb << ") and number of rows ("
             << volRows << ") in the vol matrix");
         QL_REQUIRE(SwapNb==volsColumns,
@@ -387,7 +387,7 @@ namespace QuantLib {
     void SwaptionVolatilityMatrix::initializeOptionDatesAndTimes() const {
         optionDates_.resize(optionTenors_.size());
         for (Size i=0; i<optionTenors_.size(); i++)
-            optionDates_[i] = exerciseDateFromOptionTenor(optionTenors_[i]);
+            optionDates_[i] = optionDateFromOptionTenor(optionTenors_[i]);
         initializeTimes();
     }
 
@@ -406,12 +406,12 @@ namespace QuantLib {
     }
 
     std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
-                      const Date& exerciseDate, const Period& length) const {
-        Time exerciseTime = timeFromReference(exerciseDate);
+                      const Date& optionDate, const Period& swapTenor) const {
+        Time optionTime = timeFromReference(optionDate);
         Date startDate = optionDates_[0]; // for consistency
-        Date endDate = startDate + length;
-        Time timeLength = dayCounter_.yearFraction(startDate,endDate);
-        return std::make_pair(exerciseTime,timeLength);
+        Date endDate = startDate + swapTenor;
+        Time swapLength = dayCounter_.yearFraction(startDate,endDate);
+        return std::make_pair(optionTime,swapLength);
     }
 
 }

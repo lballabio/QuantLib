@@ -34,8 +34,8 @@ namespace QuantLib {
       public:
         SwaptionVolatilityCubeByLinear(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& expiries,
-            const std::vector<Period>& lengths,
+            const std::vector<Period>& optionTenors,
+            const std::vector<Period>& swapTenors,
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,

@@ -133,7 +133,7 @@ void makeCoherenceTest(
     Date refDate = vol->referenceDate();
     for (Size i=0; i<optionTenors_.size(); i++) {
         Date expOptDate = calendar_.advance(refDate, optionTenors_[i], bdc_);
-        Date actOptDate = vol->exerciseDates()[i];
+        Date actOptDate = vol->optionDates()[i];
         if (actOptDate!=expOptDate)
             BOOST_FAIL("\nrecovery of option dates failed for " <<
                        description << ":"
@@ -144,13 +144,13 @@ void makeCoherenceTest(
                        "\n  actual option date = " << actOptDate);
     }
 
-    Date lengthRef = vol->exerciseDates()[0];
+    Date lengthRef = vol->optionDates()[0];
     DayCounter volDC = vol->dayCounter();
     for (Size j=0; j<swapTenors_.size(); j++) {
-        Period actSwapTenor = vol->lengths()[j];
+        Period actSwapTenor = vol->swapTenors()[j];
         Date endDate = lengthRef + swapTenors_[j];
         Time expSwapLength = volDC.yearFraction(lengthRef, endDate);
-        Time actSwapLength = vol->timeLengths()[j];
+        Time actSwapLength = vol->swapLengths()[j];
         if ((swapTenors_[j]!=actSwapTenor) ||
             (expSwapLength!=actSwapLength))
             BOOST_FAIL("\nrecovery of " << io::ordinal(j) <<
@@ -167,22 +167,22 @@ void makeCoherenceTest(
       for (Size j=0; j<swapTenors_.size(); j++) {
 
           Period thisOptionTenor=  optionTenors_[i];
-          Date thisOptionDate = vol->exerciseDates()[i];
+          Date thisOptionDate = vol->optionDates()[i];
           Period thisSwapTenor = swapTenors_[j];
 
           std::pair<Time, Time> p = vol->convertDates(
               thisOptionDate, thisSwapTenor);
-          if ((p.first !=vol->exerciseTimes()[i]) ||
-              (p.second!=vol->timeLengths()[j]))
+          if ((p.first !=vol->optionTimes()[i]) ||
+              (p.second!=vol->swapLengths()[j]))
               BOOST_FAIL("\nconvertDates failure for " <<
                          description << ":"
                          "\n       option date  = " << thisOptionDate <<
                          "\n       option tenor = " << thisOptionTenor <<
                          "\nactual option time  = " << p.first <<
-                         "\n  exp. option time  = " << vol->exerciseTimes()[i] <<
+                         "\n  exp. option time  = " << vol->optionTimes()[i] <<
                          "\n        swap tenor  = " << thisSwapTenor <<
                          "\n actual swap length = " << p.second <<
-                         "\n   exp. swap length = " << vol->timeLengths()[j]);
+                         "\n   exp. swap length = " << vol->swapLengths()[j]);
 
 
 
