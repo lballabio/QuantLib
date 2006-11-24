@@ -163,7 +163,7 @@ namespace QuantLib {
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance,
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
-                          ": max error " << maxErrors[j][k]);
+                          ": max error " << io::rate(maxErrors[j][k]));
             }
         }
         Cube sabrParametersCube(optionDates, swapTenors,
