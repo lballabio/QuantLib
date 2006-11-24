@@ -171,7 +171,7 @@ namespace QuantLib {
                                            const Period& optionTenor) const {
 			return calendar().advance(referenceDate(),
 									  optionTenor,
-									  bdc_);
+									  businessDayConvention());
 	}
 
 
