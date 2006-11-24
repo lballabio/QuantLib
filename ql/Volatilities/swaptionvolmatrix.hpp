@@ -123,6 +123,11 @@ namespace QuantLib {
         DayCounter dayCounter() const;
         Date maxDate() const;
         //@}
+        //! \name LazyObject interface
+        //@{
+        void update();
+        void performCalculations() const;
+        //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
         Period maxSwapTenor() const;
@@ -148,6 +153,7 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
+        const std::vector<Period>& optionTenors() const;
         const std::vector<Date>& optionDates() const;
         const std::vector<Time>& optionTimes() const;
         const std::vector<Period>& swapTenors() const;
@@ -164,8 +170,6 @@ namespace QuantLib {
             return std::make_pair(interpolation_.locateY(optionTime),
                                   interpolation_.locateX(swapLength));
         }
-        void update();
-        void performCalculations() const;
         //@}
     private:
         void checkInputs(Size optionsNb, Size SwapNb, 
@@ -202,6 +206,11 @@ namespace QuantLib {
 
     inline DayCounter SwaptionVolatilityMatrix::dayCounter() const { 
         return dayCounter_; 
+    }
+
+    inline const std::vector<Period>&
+    SwaptionVolatilityMatrix::optionTenors() const {
+         return optionTenors_;
     }
 
     inline const std::vector<Date>&

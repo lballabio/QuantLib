@@ -82,7 +82,11 @@ namespace QuantLib {
             Date optionDate = optionDateFromOptionTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
-
+        const std::vector<Period>& optionTenors() const;
+        const std::vector<Date>& optionDates() const;
+        const std::vector<Time>& optionTimes() const;
+        const std::vector<Period>& swapTenors() const;
+        const std::vector<Time>& swapLengths() const;
         //@}
       protected:
         //! \name SwaptionVolatilityStructure interface
@@ -104,6 +108,7 @@ namespace QuantLib {
 								  Rate strike) const;
         //@}
         Handle<SwaptionVolatilityStructure> atmVol_; 
+        std::vector<Period> optionTenors_;
         std::vector<Date> optionDates_;
         std::vector<Time> optionTimes_;
         std::vector<Real> optionDatesAsReal_;

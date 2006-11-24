@@ -35,6 +35,7 @@ namespace QuantLib {
     : SwaptionVolatilityStructure(0, atmVol->calendar(),
                                      atmVol->businessDayConvention()),
       atmVol_(atmVol),
+      optionTenors_(optionTenors),
       optionDates_(optionTenors.size()),
       optionTimes_(optionTenors.size()),
       optionDatesAsReal_(optionTenors.size()),
@@ -140,6 +141,31 @@ namespace QuantLib {
                          swapIndexBase_->fixedLegConvention(),
                          swapIndexBase_->dayCounter(),
                          swapIndexBase_->iborIndex()).fixing(optionDate);
+    }
+
+    const std::vector<Period>&
+    SwaptionVolatilityCube::optionTenors() const {
+         return optionTenors_;
+    }
+
+    const std::vector<Date>&
+    SwaptionVolatilityCube::optionDates() const {
+        return optionDates_;
+    }
+
+    const std::vector<Time>&
+    SwaptionVolatilityCube::optionTimes() const {
+        return optionTimes_;
+    }
+
+    const std::vector<Period>&
+     SwaptionVolatilityCube::swapTenors() const {
+         return swapTenors_;
+     }
+
+    const std::vector<Time>&
+    SwaptionVolatilityCube::swapLengths() const {
+        return swapLengths_;
     }
 
 }
