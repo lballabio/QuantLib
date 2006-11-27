@@ -44,7 +44,6 @@ namespace QuantLib {
                               const Calendar& calendar,
                               const BusinessDayConvention conv,
                               const DayCounter& dayCounter);
-        Calendar calendar() const { return calendar_; };
         BusinessDayConvention businessDayConvention() const {
             return conv_;
         }
@@ -68,7 +67,6 @@ namespace QuantLib {
         boost::shared_ptr<CompoundForward> reversebootstrap(Integer) const;
         boost::shared_ptr<CompoundForward> forwardCurve(Integer) const;
       private:
-        Calendar calendar_;
         BusinessDayConvention conv_;
         mutable std::map<Integer,boost::shared_ptr<CompoundForward> >
                                                          forwardCurveMap_;

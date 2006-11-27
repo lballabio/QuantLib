@@ -49,11 +49,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure();
+        BlackVolTermStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        BlackVolTermStructure(const Date& referenceDate);
+        BlackVolTermStructure(const Date& referenceDate,
+                              const Calendar& cal = Calendar(),
+                              const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        BlackVolTermStructure(Integer settlementDays, const Calendar&);
+        BlackVolTermStructure(Integer settlementDays,
+                              const Calendar&,
+                              const DayCounter& dc = DayCounter());
         //@}
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
@@ -146,11 +151,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure();
+        BlackVolatilityTermStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        BlackVolatilityTermStructure(const Date& referenceDate);
+        BlackVolatilityTermStructure(const Date& referenceDate,
+                                     const Calendar& cal = Calendar(),
+                                     const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        BlackVolatilityTermStructure(Integer settlementDays, const Calendar&);
+        BlackVolatilityTermStructure(Integer settlementDays,
+                                     const Calendar&,
+                                     const DayCounter& dc = DayCounter());
         //@}
         //! \name Visitability
         //@{
@@ -184,11 +194,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure();
+        BlackVarianceTermStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        BlackVarianceTermStructure(const Date& referenceDate);
+        BlackVarianceTermStructure(const Date& referenceDate,
+                                   const Calendar& cal = Calendar(),
+                                   const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        BlackVarianceTermStructure(Integer settlementDays, const Calendar&);
+        BlackVarianceTermStructure(Integer settlementDays,
+                                   const Calendar&,
+                                   const DayCounter& dc = DayCounter());
         //@}
         //! \name Visitability
         //@{
@@ -198,7 +213,8 @@ namespace QuantLib {
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        Volatility blackVolImpl(Time maturity, Real strike) const;
+        Volatility blackVolImpl(Time maturity,
+                                Real strike) const;
     };
 
 
@@ -220,11 +236,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        LocalVolTermStructure();
+        LocalVolTermStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        LocalVolTermStructure(const Date& referenceDate);
+        LocalVolTermStructure(const Date& referenceDate,
+                              const Calendar& cal = Calendar(),
+                              const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        LocalVolTermStructure(Integer settlementDays, const Calendar&);
+        LocalVolTermStructure(Integer settlementDays,
+                              const Calendar&,
+                              const DayCounter& dc = DayCounter());
         //@}
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
@@ -267,15 +288,18 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline BlackVolTermStructure::BlackVolTermStructure() {}
+    inline BlackVolTermStructure::BlackVolTermStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
-    inline BlackVolTermStructure::BlackVolTermStructure(
-                                                   const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+    inline BlackVolTermStructure::BlackVolTermStructure(const Date& refDate,
+                                                        const Calendar& cal,
+                                                        const DayCounter& dc)
+    : TermStructure(refDate, cal, dc) {}
 
-    inline BlackVolTermStructure::BlackVolTermStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+    inline BlackVolTermStructure::BlackVolTermStructure(Integer settlDays,
+                                                        const Calendar& cal,
+                                                        const DayCounter& dc)
+    : TermStructure(settlDays, cal, dc) {}
 
     inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
                                                       Real strike,
@@ -328,15 +352,20 @@ namespace QuantLib {
 
 
 
-    inline BlackVolatilityTermStructure::BlackVolatilityTermStructure() {}
+    inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(const DayCounter& dc)
+    : BlackVolTermStructure(dc) {}
 
     inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                                                   const Date& referenceDate)
-    : BlackVolTermStructure(referenceDate) {}
+                                                        const Date& refDate,
+                                                        const Calendar& cal,
+                                                        const DayCounter& dc)
+    : BlackVolTermStructure(refDate, cal, dc) {}
 
     inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : BlackVolTermStructure(settlementDays,calendar) {}
+                             Integer settlementDays,
+                             const Calendar& cal,
+                             const DayCounter& dc)
+    : BlackVolTermStructure(settlementDays, cal, dc) {}
 
     inline Real BlackVolatilityTermStructure::blackVarianceImpl(
                                          Time maturity, Real strike) const {
@@ -355,15 +384,20 @@ namespace QuantLib {
 
 
 
-    inline BlackVarianceTermStructure::BlackVarianceTermStructure() {}
+    inline BlackVarianceTermStructure::BlackVarianceTermStructure(const DayCounter& dc)
+    : BlackVolTermStructure(dc) {}
 
     inline BlackVarianceTermStructure::BlackVarianceTermStructure(
-                                                   const Date& referenceDate)
-    : BlackVolTermStructure(referenceDate) {}
+                                                   const Date& referenceDate,
+                                                   const Calendar& cal,
+                                                   const DayCounter& dc)
+    : BlackVolTermStructure(referenceDate, cal, dc) {}
 
     inline BlackVarianceTermStructure::BlackVarianceTermStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : BlackVolTermStructure(settlementDays,calendar) {}
+                             Integer settlementDays,
+                             const Calendar& cal,
+                             const DayCounter& dc)
+    : BlackVolTermStructure(settlementDays, cal, dc) {}
 
     inline Volatility BlackVarianceTermStructure ::blackVolImpl(
                                          Time maturity, Real strike) const {
@@ -383,15 +417,20 @@ namespace QuantLib {
 
 
 
-    inline LocalVolTermStructure::LocalVolTermStructure() {}
+    inline LocalVolTermStructure::LocalVolTermStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
     inline LocalVolTermStructure::LocalVolTermStructure(
-                                                   const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+                                                   const Date& referenceDate,
+                                                   const Calendar& cal,
+                                                   const DayCounter& dc)
+    : TermStructure(referenceDate, cal, dc) {}
 
     inline LocalVolTermStructure::LocalVolTermStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+                             Integer settlementDays,
+                             const Calendar& cal,
+                             const DayCounter& dc)
+    : TermStructure(settlementDays, cal, dc) {}
 
     inline Volatility LocalVolTermStructure::localVol(const Date& d,
                                                       Real underlyingLevel,
@@ -427,6 +466,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

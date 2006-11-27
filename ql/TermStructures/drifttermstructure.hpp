@@ -66,7 +66,8 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& riskFreeTS,
                               const Handle<YieldTermStructure>& dividendTS,
                               const Handle<BlackVolTermStructure>& blackVolTS)
-    : riskFreeTS_(riskFreeTS),
+    : ZeroYieldStructure(riskFreeTS->dayCounter()),
+      riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS),
       blackVolTS_(blackVolTS) {
         registerWith(riskFreeTS_);

@@ -40,13 +40,12 @@ namespace QuantLib {
         InterpolatedDiscountCurve(const std::vector<Date>& dates,
                                   const std::vector<DiscountFactor>& dfs,
                                   const DayCounter& dayCounter,
+                                  const Calendar& cal = Calendar(),
                                   const Interpolator& interpolator
                                                             = Interpolator());
         //! \name Inspectors
         //@{
-        DayCounter dayCounter() const;
         Date maxDate() const;
-        Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<DiscountFactor>& discounts() const;
@@ -60,12 +59,12 @@ namespace QuantLib {
                                   const DayCounter&,
                                   const Interpolator& interpolator
                                                             = Interpolator());
-        InterpolatedDiscountCurve(Integer settlementDays, const Calendar&,
+        InterpolatedDiscountCurve(Integer settlementDays,
+                                  const Calendar&,
                                   const DayCounter&,
                                   const Interpolator& interpolator
                                                             = Interpolator());
         DiscountFactor discountImpl(Time) const;
-        DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
         mutable std::vector<Time> times_;
         mutable std::vector<DiscountFactor> data_;
@@ -85,18 +84,8 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline DayCounter InterpolatedDiscountCurve<T>::dayCounter() const {
-        return dayCounter_;
-    }
-
-    template <class T>
     inline Date InterpolatedDiscountCurve<T>::maxDate() const {
         return dates_.back();
-    }
-
-    template <class T>
-    inline Time InterpolatedDiscountCurve<T>::maxTime() const {
-        return times_.back();
     }
 
     template <class T>
@@ -130,14 +119,14 @@ namespace QuantLib {
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : dayCounter_(dayCounter), interpolator_(interpolator) {}
+    : YieldTermStructure(dayCounter), interpolator_(interpolator) {}
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                                  const Date& referenceDate,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       interpolator_(interpolator) {}
 
     template <class T>
@@ -146,7 +135,7 @@ namespace QuantLib {
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : YieldTermStructure(settlementDays, calendar, dayCounter),
       interpolator_(interpolator) {}
 
 
@@ -163,9 +152,10 @@ namespace QuantLib {
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
                                  const DayCounter& dayCounter,
+                                 const Calendar& cal,
                                  const T& interpolator)
-    : YieldTermStructure(dates[0]),
-      dayCounter_(dayCounter), dates_(dates), data_(discounts),
+    : YieldTermStructure(dates[0], cal, dayCounter),
+      dates_(dates), data_(discounts),
       interpolator_(interpolator) {
         QL_REQUIRE(dates_.size() > 0,
                    "no input dates given");
@@ -193,6 +183,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

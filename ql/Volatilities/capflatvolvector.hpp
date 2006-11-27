@@ -57,7 +57,6 @@ namespace QuantLib {
         // inspectors
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
-        Time maxTime() const;
         Real minStrike() const;
         Real maxStrike() const;
         // observability
@@ -110,10 +109,6 @@ namespace QuantLib {
 
     inline Date CapVolatilityVector::maxDate() const {
         return referenceDate()+lengths_.back();
-    }
-
-    inline Time CapVolatilityVector::maxTime() const {
-        return timeLengths_.back();
     }
 
     inline Real CapVolatilityVector::minStrike() const {

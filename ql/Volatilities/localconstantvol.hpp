@@ -53,7 +53,6 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
-        Time maxTime() const { return QL_MAX_REAL; }
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }
         //@}

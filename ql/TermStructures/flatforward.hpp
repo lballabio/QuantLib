@@ -45,27 +45,26 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
-        FlatForward(Integer settlementDays, const Calendar& calendar,
+        FlatForward(Integer settlementDays,
+                    const Calendar& calendar,
                     const Handle<Quote>& forward,
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
-        FlatForward(Integer settlementDays, const Calendar& calendar,
+        FlatForward(Integer settlementDays,
+                    const Calendar& calendar,
                     Rate forward,
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
         // inspectors
-        DayCounter dayCounter() const { return dayCounter_; }
         Compounding compounding() const { return compounding_; }
         Frequency compoundingFrequency() const { return frequency_; }
         Date maxDate() const;
-        Time maxTime() const;
         void update();
       private:
         DiscountFactor discountImpl(Time) const;
         void updateRate();
-        DayCounter dayCounter_;
         Handle<Quote> forward_;
         Compounding compounding_;
         Frequency frequency_;
@@ -79,7 +78,7 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
         updateRate();
@@ -90,7 +89,7 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       compounding_(compounding), frequency_(frequency) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
         updateRate();
@@ -102,7 +101,7 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency)
-    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : YieldTermStructure(settlementDays, calendar, dayCounter),
       forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
         updateRate();
@@ -114,7 +113,7 @@ namespace QuantLib {
                                     const DayCounter& dayCounter,
                                     Compounding compounding,
                                     Frequency frequency)
-    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : YieldTermStructure(settlementDays, calendar, dayCounter),
       compounding_(compounding), frequency_(frequency) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
         updateRate();
@@ -122,10 +121,6 @@ namespace QuantLib {
 
     inline Date FlatForward::maxDate() const {
         return Date::maxDate();
-    }
-
-    inline Time FlatForward::maxTime() const {
-        return QL_MAX_REAL;
     }
 
     inline void FlatForward::update() {
@@ -138,12 +133,10 @@ namespace QuantLib {
     }
 
     inline void FlatForward::updateRate() {
-        rate_ = InterestRate(forward_->value(), dayCounter_,
+        rate_ = InterestRate(forward_->value(), dayCounter(),
                              compounding_, frequency_);
     }
 
 }
 
-
 #endif
-

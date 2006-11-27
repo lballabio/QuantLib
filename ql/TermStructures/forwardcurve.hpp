@@ -44,9 +44,7 @@ namespace QuantLib {
                                                             = Interpolator());
         //! \name Inspectors
         //@{
-        DayCounter dayCounter() const;
         Date maxDate() const;
-        Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
@@ -65,7 +63,6 @@ namespace QuantLib {
                                                             = Interpolator());
         Rate forwardImpl(Time t) const;
         Rate zeroYieldImpl(Time t) const;
-        DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
         mutable std::vector<Time> times_;
         mutable std::vector<Rate> data_;
@@ -81,18 +78,8 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline DayCounter InterpolatedForwardCurve<T>::dayCounter() const {
-        return dayCounter_;
-    }
-
-    template <class T>
     inline Date InterpolatedForwardCurve<T>::maxDate() const {
         return dates_.back();
-    }
-
-    template <class T>
-    inline Time InterpolatedForwardCurve<T>::maxTime() const {
-        return times_.back();
     }
 
     template <class T>
@@ -126,14 +113,14 @@ namespace QuantLib {
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : dayCounter_(dayCounter), interpolator_(interpolator) {}
+    : interpolator_(interpolator) {}
 
     template <class T>
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
                                                  const Date& referenceDate,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : ForwardRateStructure(referenceDate), dayCounter_(dayCounter),
+    : ForwardRateStructure(referenceDate, Calendar(), dayCounter),
       interpolator_(interpolator) {}
 
     template <class T>
@@ -142,7 +129,7 @@ namespace QuantLib {
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : ForwardRateStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : ForwardRateStructure(settlementDays, calendar, dayCounter),
       interpolator_(interpolator) {}
 
     template <class T>
@@ -167,7 +154,7 @@ namespace QuantLib {
                                             const std::vector<Rate>& forwards,
                                             const DayCounter& dayCounter,
                                             const T& interpolator)
-    : ForwardRateStructure(dates[0]), dayCounter_(dayCounter),
+    : ForwardRateStructure(dates[0], Calendar(), dayCounter),
       dates_(dates), data_(forwards), interpolator_(interpolator) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");

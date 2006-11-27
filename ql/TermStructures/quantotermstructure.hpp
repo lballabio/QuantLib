@@ -81,7 +81,8 @@ namespace QuantLib {
                     const Handle<BlackVolTermStructure>& exchRateBlackVolTS,
                     Real exchRateATMlevel,
                     Real underlyingExchRateCorrelation)
-    : underlyingDividendTS_(underlyingDividendTS),
+    : ZeroYieldStructure(underlyingDividendTS->dayCounter()),
+      underlyingDividendTS_(underlyingDividendTS),
       riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
       underlyingBlackVolTS_(underlyingBlackVolTS),
       exchRateBlackVolTS_(exchRateBlackVolTS),

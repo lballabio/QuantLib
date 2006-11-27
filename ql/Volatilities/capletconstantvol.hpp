@@ -48,7 +48,6 @@ namespace QuantLib {
         DayCounter dayCounter() const { return dayCounter_; }
         //@}
         Date maxDate() const;
-        Time maxTime() const;
         Real minStrike() const;
         Real maxStrike() const;
       protected:
@@ -104,10 +103,6 @@ namespace QuantLib {
 
     inline Date CapletConstantVolatility::maxDate() const {
         return Date::maxDate();
-    }
-
-    inline Time CapletConstantVolatility::maxTime() const {
-        return QL_MAX_REAL;
     }
 
     inline Real CapletConstantVolatility::minStrike() const {

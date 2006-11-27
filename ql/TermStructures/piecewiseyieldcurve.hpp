@@ -154,7 +154,6 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
-        Time maxTime() const;
         //@}
         //! \name Observer interface
         //@{
@@ -210,12 +209,6 @@ namespace QuantLib {
     inline const std::vector<Time>& PiecewiseYieldCurve<C,I>::times() const {
         calculate();
         return this->times_;
-    }
-
-    template <class C, class I>
-    inline Time PiecewiseYieldCurve<C,I>::maxTime() const {
-        calculate();
-        return this->times_.back();
     }
 
     template <class C, class I>

@@ -37,7 +37,6 @@ namespace QuantLib {
                             const DayCounter& dayCounter);
         DayCounter dayCounter() const;
         Date maxDate() const;
-        Time maxTime() const;
         Real minStrike() const;
         Real maxStrike() const;
         template <class Interpolator>
@@ -69,10 +68,6 @@ namespace QuantLib {
 
     inline Date CapletVarianceCurve::maxDate() const {
         return blackCurve_.maxDate();
-    }
-
-    inline Time CapletVarianceCurve::maxTime() const {
-        return blackCurve_.maxTime();
     }
 
     inline Real CapletVarianceCurve::minStrike() const {

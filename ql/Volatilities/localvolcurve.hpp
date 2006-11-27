@@ -32,7 +32,8 @@ namespace QuantLib {
     class LocalVolCurve : public LocalVolTermStructure {
       public:
         LocalVolCurve(const Handle<BlackVarianceCurve>& curve)
-        : blackVarianceCurve_(curve) {
+        : LocalVolTermStructure(curve->dayCounter()),
+          blackVarianceCurve_(curve) {
             registerWith(blackVarianceCurve_);
         }
         //! \name LocalVolTermStructure interface

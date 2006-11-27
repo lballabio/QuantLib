@@ -166,12 +166,17 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
+
+    test->add(SwaptionVolatilityMatrixTest::suite());
+    test->add(SwaptionVolatilityCubeTest::suite());
+
+
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
-    test->add(BasketOptionTest::suite());
-    test->add(BatesModelTest::suite());
+    //test->add(BasketOptionTest::suite());
+    //test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
@@ -193,20 +198,20 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
     test->add(GaussianQuadraturesTest::suite());
-    test->add(HestonModelTest::suite());
+    //test->add(HestonModelTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
-    test->add(LiborMarketModelTest::suite());
-    test->add(LiborMarketModelProcessTest::suite());
-    test->add(LinearLeastSquaresRegressionTest::suite());
+    //test->add(LiborMarketModelTest::suite());
+    //test->add(LiborMarketModelProcessTest::suite());
+    //test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
-    test->add(LowDiscrepancyTest::suite());
-    test->add(MarketModelTest::suite());
+    //test->add(LowDiscrepancyTest::suite());
+    //test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
-    test->add(MCLongstaffSchwartzEngineTest::suite());
+    //test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());
@@ -233,8 +238,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TransformedGridTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
-    //tests for deprecated (or generally old-style) classes
-    test->add(OldPricerTest::suite());
+    ////tests for deprecated (or generally old-style) classes
+    //test->add(OldPricerTest::suite());
 
     test->add(BOOST_TEST_CASE(stopTimer));
 

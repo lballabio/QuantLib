@@ -51,12 +51,9 @@ namespace QuantLib {
                         const BusinessDayConvention conv,
                         const Integer compounding,
                         const DayCounter& dayCounter);
-        Calendar calendar() const { return calendar_; }
         BusinessDayConvention businessDayConvention() const { return conv_; }
-        DayCounter dayCounter() const { return dayCounter_; }
         Integer compounding() const { return compounding_; }
         Date maxDate() const;
-        Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
@@ -78,8 +75,6 @@ namespace QuantLib {
         Rate compoundForwardImpl(Time, Integer) const;
       private:
         // data members
-        DayCounter dayCounter_;
-        Calendar calendar_;
         BusinessDayConvention conv_;
         Integer compounding_;
         mutable bool needsBootstrap_;
@@ -94,10 +89,6 @@ namespace QuantLib {
 
     inline Date CompoundForward::maxDate() const {
         return dates_.back();
-    }
-
-    inline Time CompoundForward::maxTime() const {
-        return times_.back();
     }
 
     inline const std::vector<Time>& CompoundForward::times() const {
@@ -135,6 +126,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

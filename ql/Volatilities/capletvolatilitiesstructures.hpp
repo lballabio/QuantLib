@@ -62,8 +62,6 @@ namespace QuantLib {
         void setClosestTenors(Time time, Time& nextLowerTenor,
             Time& nextHigherTenor) const;
 
-        Time maxTime() const{ return tenorTimes_.back();}
-
         //! \name TermStructure interface
         //@{
         Date maxDate() const;

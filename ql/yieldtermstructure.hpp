@@ -57,12 +57,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        YieldTermStructure();
+        YieldTermStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        YieldTermStructure(const Date& referenceDate);
+        YieldTermStructure(const Date& referenceDate,
+                           const Calendar& cal = Calendar(),
+                           const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         YieldTermStructure(Integer settlementDays,
-                           const Calendar&);
+                           const Calendar&,
+                           const DayCounter& dc = DayCounter());
         //@}
         virtual ~YieldTermStructure() {}
         /*! \name zero-yield rates
@@ -198,15 +202,18 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline YieldTermStructure::YieldTermStructure() {}
+    inline YieldTermStructure::YieldTermStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
-    inline YieldTermStructure::YieldTermStructure(const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+    inline YieldTermStructure::YieldTermStructure(const Date& referenceDate,
+                                                  const Calendar& cal,
+                                                  const DayCounter& dc)
+    : TermStructure(referenceDate, cal, dc) {}
 
     inline YieldTermStructure::YieldTermStructure(Integer settlementDays,
-                                                  const Calendar& calendar)
-    : TermStructure(settlementDays, calendar) {}
-
+                                                  const Calendar& cal,
+                                                  const DayCounter& dc)
+    : TermStructure(settlementDays, cal, dc) {}
 
 
     inline InterestRate YieldTermStructure::zeroRate(

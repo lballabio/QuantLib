@@ -95,11 +95,9 @@ namespace QuantLib {
         //@}
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
-        Time maxTime() const;
         //@}
         //! \name Observer interface
         //@{
@@ -121,7 +119,6 @@ namespace QuantLib {
         void checkInstruments();
         void performCalculations() const;
         // data members
-        DayCounter dayCounter_;
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         mutable std::vector<Time> times_;
         mutable std::vector<Date> dates_;
@@ -146,11 +143,6 @@ namespace QuantLib {
     inline const std::vector<Time>& PiecewiseFlatForward::times() const {
         calculate();
         return times_;
-    }
-
-    inline Time PiecewiseFlatForward::maxTime() const {
-        calculate();
-        return times_.back();
     }
 
     inline void PiecewiseFlatForward::update() {

@@ -44,9 +44,7 @@ namespace QuantLib {
                                                             = Interpolator());
         //! \name Inspectors
         //@{
-        DayCounter dayCounter() const;
         Date maxDate() const;
-        Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& zeroRates() const;
@@ -64,7 +62,6 @@ namespace QuantLib {
                               const Interpolator& interpolator
                                                             = Interpolator());
         Rate zeroYieldImpl(Time t) const;
-        DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
         mutable std::vector<Time> times_;
         mutable std::vector<Rate> data_;
@@ -80,18 +77,8 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline DayCounter InterpolatedZeroCurve<T>::dayCounter() const {
-        return dayCounter_;
-    }
-
-    template <class T>
     inline Date InterpolatedZeroCurve<T>::maxDate() const {
         return dates_.back();
-    }
-
-    template <class T>
-    inline Time InterpolatedZeroCurve<T>::maxTime() const {
-        return times_.back();
     }
 
     template <class T>
@@ -123,14 +110,14 @@ namespace QuantLib {
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : dayCounter_(dayCounter), interpolator_(interpolator) {}
+    : interpolator_(interpolator) {}
 
     template <class T>
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
                                                  const Date& referenceDate,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : ZeroYieldStructure(referenceDate), dayCounter_(dayCounter),
+    : ZeroYieldStructure(referenceDate, Calendar(), dayCounter),
       interpolator_(interpolator) {}
 
     template <class T>
@@ -139,7 +126,7 @@ namespace QuantLib {
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)
-    : ZeroYieldStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : ZeroYieldStructure(settlementDays,calendar, dayCounter),
       interpolator_(interpolator) {}
 
     template <class T>
@@ -155,7 +142,7 @@ namespace QuantLib {
                                               const std::vector<Rate>& yields,
                                               const DayCounter& dayCounter,
                                               const T& interpolator)
-    : ZeroYieldStructure(dates[0]), dayCounter_(dayCounter),
+    : ZeroYieldStructure(dates[0], Calendar(), dayCounter),
       dates_(dates), data_(yields), interpolator_(interpolator) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
@@ -180,6 +167,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

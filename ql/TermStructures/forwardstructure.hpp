@@ -46,9 +46,14 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ForwardRateStructure();
-        ForwardRateStructure(const Date& referenceDate);
-        ForwardRateStructure(Integer settlementDays, const Calendar&);
+        ForwardRateStructure(const DayCounter& dayCounter// = DayCounter()
+            );
+        ForwardRateStructure(const Date& referenceDate,
+                             const Calendar& cal = Calendar(),
+                             const DayCounter& dayCounter = DayCounter());
+        ForwardRateStructure(Integer settlementDays,
+                             const Calendar&,
+                             const DayCounter& dayCounter = DayCounter());
         //@}
         virtual ~ForwardRateStructure() {}
       protected:
@@ -74,15 +79,18 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline ForwardRateStructure::ForwardRateStructure() {}
+    inline ForwardRateStructure::ForwardRateStructure(const DayCounter& dc)
+    : YieldTermStructure(dc) {}
 
-    inline ForwardRateStructure::ForwardRateStructure(
-                                                    const Date& referenceDate)
-    : YieldTermStructure(referenceDate) {}
+    inline ForwardRateStructure::ForwardRateStructure(const Date& refDate,
+                                                      const Calendar& cal,
+                                                      const DayCounter& dc)
+    : YieldTermStructure(refDate, cal, dc) {}
 
-    inline ForwardRateStructure::ForwardRateStructure(Integer settlementDays,
-                                                      const Calendar& calendar)
-    : YieldTermStructure(settlementDays,calendar) {}
+    inline ForwardRateStructure::ForwardRateStructure(Integer settlDays,
+                                                      const Calendar& cal,
+                                                      const DayCounter& dc)
+    : YieldTermStructure(settlDays, cal, dc) {}
 
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)

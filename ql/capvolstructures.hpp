@@ -45,11 +45,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapVolatilityStructure();
+        CapVolatilityStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        CapVolatilityStructure(const Date& referenceDate);
+        CapVolatilityStructure(const Date& referenceDate,
+                               const Calendar& cal = Calendar(),
+                               const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        CapVolatilityStructure(Integer settlementDays, const Calendar&);
+        CapVolatilityStructure(Integer settlementDays,
+                               const Calendar&,
+                               const DayCounter& dc = DayCounter());
         //@}
         virtual ~CapVolatilityStructure() {}
         //! \name Volatility
@@ -96,11 +101,16 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapletVolatilityStructure();
+        CapletVolatilityStructure(const DayCounter& dc// = DayCounter()
+            );
         //! initialize with a fixed reference date
-        CapletVolatilityStructure(const Date& referenceDate);
+        CapletVolatilityStructure(const Date& referenceDate,
+                                  const Calendar& cal = Calendar(),
+                                  const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        CapletVolatilityStructure(Integer settlementDays, const Calendar&);
+        CapletVolatilityStructure(Integer settlementDays,
+                                  const Calendar&,
+                                  const DayCounter& dc = DayCounter());
         //@}
         virtual ~CapletVolatilityStructure() {}
         //! \name Volatility and Variance
@@ -148,15 +158,20 @@ namespace QuantLib {
 
     // inline CapVolatilityStructure definitions
 
-    inline CapVolatilityStructure::CapVolatilityStructure() {}
+    inline CapVolatilityStructure::CapVolatilityStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
     inline CapVolatilityStructure::CapVolatilityStructure(
-                                                   const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+                                                        const Date& refDate,
+                                                        const Calendar& cal,
+                                                        const DayCounter& dc)
+    : TermStructure(refDate, cal, dc) {}
 
     inline CapVolatilityStructure::CapVolatilityStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+                                         Integer settlementDays,
+                                         const Calendar& cal,
+                                         const DayCounter& dc)
+    : TermStructure(settlementDays, cal, dc) {}
 
 
 	inline Volatility CapVolatilityStructure::volatility(const Date& end,
@@ -198,15 +213,20 @@ namespace QuantLib {
 
     // inline CapletVolatilityStructure definitions
 
-    inline CapletVolatilityStructure::CapletVolatilityStructure() {}
+    inline CapletVolatilityStructure::CapletVolatilityStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
-                                                   const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+                                                   const Date& referenceDate,
+                                                   const Calendar& cal,
+                                                   const DayCounter& dc)
+    : TermStructure(referenceDate, cal, dc) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
-                             Integer settlementDays, const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+                             Integer settlementDays,
+                             const Calendar& cal,
+                             const DayCounter& dc)
+    : TermStructure(settlementDays, cal, dc) {}
 
     inline Volatility CapletVolatilityStructure::volatility(
                                                         const Date& start,

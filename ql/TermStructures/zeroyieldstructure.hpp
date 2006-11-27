@@ -46,9 +46,14 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ZeroYieldStructure();
-        ZeroYieldStructure(const Date& referenceDate);
-        ZeroYieldStructure(Integer settlementDays, const Calendar&);
+        ZeroYieldStructure(const DayCounter& dc// = DayCounter()
+            );
+        ZeroYieldStructure(const Date& referenceDate,
+                           const Calendar& calendar = Calendar(),
+                           const DayCounter& dc = DayCounter());
+        ZeroYieldStructure(Integer settlementDays,
+                           const Calendar&,
+                           const DayCounter& dc = DayCounter());
         //@}
         virtual ~ZeroYieldStructure() {}
       protected:
@@ -65,14 +70,18 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline ZeroYieldStructure::ZeroYieldStructure() {}
+    inline ZeroYieldStructure::ZeroYieldStructure(const DayCounter& dc)
+    : YieldTermStructure(dc) {}
 
-    inline ZeroYieldStructure::ZeroYieldStructure(const Date& referenceDate)
-    : YieldTermStructure(referenceDate) {}
+    inline ZeroYieldStructure::ZeroYieldStructure(const Date& refDate,
+                                                  const Calendar& cal,
+                                                  const DayCounter& dc)
+    : YieldTermStructure(refDate, cal, dc) {}
 
     inline ZeroYieldStructure::ZeroYieldStructure(Integer settlementDays,
-                                                  const Calendar& calendar)
-    : YieldTermStructure(settlementDays,calendar) {}
+                                                  const Calendar& cal,
+                                                  const DayCounter& dc)
+    : YieldTermStructure(settlementDays, cal, dc) {}
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
         Rate r = zeroYieldImpl(t);
@@ -80,6 +89,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
