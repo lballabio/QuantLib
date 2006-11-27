@@ -48,22 +48,21 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        SwaptionVolatilityStructure();
+        SwaptionVolatilityStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         SwaptionVolatilityStructure(const Date& referenceDate,
                                     const Calendar& calendar = Calendar(),
+                                    const DayCounter& dc = DayCounter(),
                                     BusinessDayConvention bdc = Following);
         //! calculate the reference date based on the global evaluation date
         SwaptionVolatilityStructure(Integer settlementDays,
                                     const Calendar&,
+                                    const DayCounter& dc = DayCounter(),
                                     BusinessDayConvention bdc = Following);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
-        //! the business day convention used for option date calculation
-        virtual BusinessDayConvention businessDayConvention() const;
         //! \name Volatility and Variance
         //@{
-
         //! returns the volatility for a given option time and swapLength
         Volatility volatility(Time optionTime,
                               Time swapLength,
@@ -97,10 +96,16 @@ namespace QuantLib {
         //@}
         //! \name Limits
         //@{
-        //! the latest option date for which the term structure can return vols
+        #ifndef QL_DISABLE_DEPRECATED
+        /* the latest option date for which the term structure can return vols
+            \deprecated use maxDate instead
+        */
         virtual Date maxOptionDate() const { return maxDate(); }
-        //! the latest option time for which the term structure can return vols
+        /* the latest option time for which the term structure can return vols
+            \deprecated use maxTime instead
+        */
         virtual Time maxOptionTime() const { return maxTime(); }
+        #endif
         //! the largest length for which the term structure can return vols
         virtual Period maxSwapTenor() const = 0;
         //! the largest swapLength for which the term structure can return vols
@@ -116,13 +121,13 @@ namespace QuantLib {
             const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
             return smileSection(p.first, p.second);
         }
-
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& optionDate,
                                                   const Period& swapTenor) const;
+        //! the business day convention used for option date calculation
+        virtual BusinessDayConvention businessDayConvention() const;
 		//! implements the conversion between optionTenors and optionDates
-		Date optionDateFromOptionTenor(const Period& optionTenor) const;
-
+		Date optionDateFromTenor(const Period& optionTenor) const;
       protected:
         //! return smile section
         virtual boost::shared_ptr<SmileSectionInterface> smileSection(
@@ -149,25 +154,28 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure() {}
+    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(const DayCounter& dc)
+    : TermStructure(dc) {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 const Date& referenceDate,
                                                 const Calendar& calendar,
+                                                const DayCounter& dc,
                                                 BusinessDayConvention bdc)
-    : TermStructure(referenceDate, calendar), bdc_(bdc) {}
+    : TermStructure(referenceDate, calendar, dc), bdc_(bdc) {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                 Integer settlementDays,
                                                 const Calendar& calendar,
+                                                const DayCounter& dc,
                                                 BusinessDayConvention bdc)
-    : TermStructure(settlementDays,calendar), bdc_(bdc) {}
+    : TermStructure(settlementDays, calendar, dc), bdc_(bdc) {}
 
     inline BusinessDayConvention SwaptionVolatilityStructure::businessDayConvention() const {
         return bdc_;
     }
 
-	inline Date SwaptionVolatilityStructure::optionDateFromOptionTenor(
+	inline Date SwaptionVolatilityStructure::optionDateFromTenor(
                                            const Period& optionTenor) const {
 			return calendar().advance(referenceDate(),
 									  optionTenor,
@@ -222,7 +230,7 @@ namespace QuantLib {
                                                     const Period& swapTenor,
                                                     Rate strike,
                                                     bool extrapolate) const {
-        Date optionDate = optionDateFromOptionTenor(optionTenor); 
+        Date optionDate = optionDateFromTenor(optionTenor); 
         return volatility(optionDate, swapTenor, strike, extrapolate);
     }
 
@@ -231,7 +239,7 @@ namespace QuantLib {
                                                      const Period& swapTenor,
                                                      Rate strike,
                                                      bool extrapolate) const {
-        Date optionDate = optionDateFromOptionTenor(optionTenor); 
+        Date optionDate = optionDateFromTenor(optionTenor); 
         Volatility vol =
             volatility(optionDate, swapTenor, strike, extrapolate);
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);

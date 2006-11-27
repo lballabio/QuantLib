@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_volatility_cube_h
 #define quantlib_swaption_volatility_cube_h
 
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/Volatilities/swaptionvoldiscrete.hpp>
 #include <ql/Indexes/swapindex.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/quote.hpp>
@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! \warning this class is not finalized and its interface might
                  change in subsequent releases.
     */
-    class SwaptionVolatilityCube : public SwaptionVolatilityStructure {
+    class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
       public:
         SwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -54,8 +54,10 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
         Date maxOptionDate() const { return atmVol_->maxOptionDate(); }
         Time maxOptionTime() const { return atmVol_->maxOptionTime(); }
+        #endif
         Period maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
         Time maxSwapLength() const { return atmVol_->maxSwapLength(); }
         Rate minStrike() const { return 0.0; }
@@ -71,7 +73,7 @@ namespace QuantLib {
                                             const Period& swapTenor) const = 0;
 		boost::shared_ptr<SmileSectionInterface>
 		smileSection(const Period& optionTenor, const Period& swapTenor) const {
-				Date optionDate = optionDateFromOptionTenor(optionTenor); 
+				Date optionDate = optionDateFromTenor(optionTenor); 
 				return smileSection(optionDate, swapTenor);
 		};
 
@@ -79,14 +81,9 @@ namespace QuantLib {
                        const Period& swapTenor) const;
         Rate atmStrike(const Period& optionTenor,
                        const Period& swapTenor) const {
-            Date optionDate = optionDateFromOptionTenor(optionTenor);
+            Date optionDate = optionDateFromTenor(optionTenor);
             return atmStrike(optionDate, swapTenor);
         }
-        const std::vector<Period>& optionTenors() const;
-        const std::vector<Date>& optionDates() const;
-        const std::vector<Time>& optionTimes() const;
-        const std::vector<Period>& swapTenors() const;
-        const std::vector<Time>& swapLengths() const;
         //@}
       protected:
         //! \name SwaptionVolatilityStructure interface
@@ -108,15 +105,6 @@ namespace QuantLib {
 								  Rate strike) const;
         //@}
         Handle<SwaptionVolatilityStructure> atmVol_; 
-        std::vector<Period> optionTenors_;
-        std::vector<Date> optionDates_;
-        std::vector<Time> optionTimes_;
-        std::vector<Real> optionDatesAsReal_;
-        LinearInterpolation optionInterpolator_;
-        std::vector<Period> swapTenors_;
-        std::vector<Time> swapLengths_;
-        Size nOptionTenors_;
-        Size nSwapTenors_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;
         mutable std::vector<Rate> localStrikes_;
