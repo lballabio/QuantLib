@@ -32,10 +32,10 @@ namespace QuantLib {
     //! Forward rate agreement (FRA) class
     /*! 1. Unlike the forward contract conventions on carryable
            financial assets (stocks, bonds, commodities), the
-           valueDate for an FRA is taken to be the day the forward
+           valueDate for a FRA is taken to be the day when the forward
            loan or deposit begins and when full settlement takes place
            (based on the NPV of the contract on that date).
-           maturityDate is the date the forward loan or deposit
+           maturityDate is the date when the forward loan or deposit
            ends. In fact, the FRA settles and expires on the
            valueDate, not on the (later) maturityDate. It follows that
            (maturityDate - valueDate) is the tenor/term of the
