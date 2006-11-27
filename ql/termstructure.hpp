@@ -64,19 +64,21 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        TermStructure();
+        TermStructure(const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
         TermStructure(const Date& referenceDate,
-                      const Calendar& calendar = Calendar());
+                      const Calendar& calendar = Calendar(),
+                      const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         TermStructure(Integer settlementDays,
-                      const Calendar&);
+                      const Calendar&,
+                      const DayCounter& dc = DayCounter());
         //@}
         virtual ~TermStructure() {}
         //! \name Dates
         //@{
         //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
+        virtual DayCounter dayCounter() const;
         //! the latest date for which the curve can return values
         virtual Date maxDate() const = 0;
         //! the latest time for which the curve can return values
@@ -104,23 +106,27 @@ namespace QuantLib {
         mutable bool updated_;
         Integer settlementDays_;
         Calendar calendar_;
+        DayCounter dayCounter_;
     };
 
 
     // inline definitions
 
-    inline TermStructure::TermStructure()
-    : moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
+    inline TermStructure::TermStructure(const DayCounter& dc)
+    : moving_(false), updated_(true), settlementDays_(Null<Integer>()),
+      dayCounter_(dc) {}
 
     inline TermStructure::TermStructure(const Date& referenceDate,
-                                        const Calendar& calendar)
+                                        const Calendar& cal,
+                                        const DayCounter& dc)
     : moving_(false), referenceDate_(referenceDate), updated_(true),
-      settlementDays_(Null<Integer>()), calendar_(calendar) {}
+      settlementDays_(Null<Integer>()), calendar_(cal), dayCounter_(dc) {}
 
     inline TermStructure::TermStructure(Integer settlementDays,
-                                        const Calendar& calendar)
+                                        const Calendar& cal,
+                                        const DayCounter& dc)
     : moving_(true), updated_(false), settlementDays_(settlementDays),
-      calendar_(calendar) {
+      calendar_(cal), dayCounter_(dc) {
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -135,6 +141,10 @@ namespace QuantLib {
 
     inline Calendar TermStructure::calendar() const {
         return calendar_;
+    }
+
+    inline DayCounter TermStructure::dayCounter() const {
+        return dayCounter_;
     }
 
     inline void TermStructure::update() {
