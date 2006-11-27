@@ -41,29 +41,23 @@ namespace QuantLib {
 
         // do I adjust this ?
         // valueDate_ = calendar_.adjust(valueDate_,businessDayConvention_);
-
         Date fixingDate =
             calendar_.advance(valueDate_, -settlementDays_, Days);
         forwardRate_ = InterestRate(index->fixing(fixingDate),
                                     index->dayCounter(),
                                     Simple, Once);
-
         strikeForwardRate_ = InterestRate(strikeForwardRate,
                                           index->dayCounter(),
                                           Simple, Once);
-
         Real strike = notionalAmount_ *
                       strikeForwardRate_.compoundFactor(valueDate_,
                                                         maturityDate_);
         payoff_ = boost::shared_ptr<Payoff>(new ForwardTypePayoff(fraType_,
                                                                   strike));
-
         // incomeDiscountCurve_ is irrelevant to an FRA
         incomeDiscountCurve_ = discountCurve_;
-
         // income is irrelevant to FRA - set it to zero
         underlyingIncome_ = 0.0;
-
         registerWith(index_);
     }
 
@@ -86,8 +80,8 @@ namespace QuantLib {
         return 0.0;
     }
 
-    // in theory, no need to implement this for an FRA (could directly
-    // supply a forwardValue).  For the sake of keeping a consistent
+    // In theory, no need to implement this for a FRA (could directly
+    // supply a forwardValue). For the sake of keeping a consistent
     // framework, we adhere to the concept of the forward contract as
     // defined in the base class, with an underlying having a
     // spotPrice (in this case, a loan or deposit with an NPV). Thus,
@@ -97,7 +91,6 @@ namespace QuantLib {
         return notionalAmount_ *
                forwardRate().compoundFactor(valueDate_, maturityDate_) *
                discountCurve_->discount(maturityDate_);
-
     }
 
     InterestRate ForwardRateAgreement::forwardRate() const {
@@ -111,10 +104,8 @@ namespace QuantLib {
         forwardRate_ = InterestRate(index_->fixing(fixingDate),
                                     index_->dayCounter(),
                                     Simple, Once);
-
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = 0.0;
-
         Forward::performCalculations();
     }
 
