@@ -36,9 +36,8 @@ namespace QuantLib {
                     const std::vector<Period>& tenors,
                     const std::vector<std::vector<Handle<Quote> > >& vols,
                     const DayCounter& dayCounter)
-    : SwaptionVolatilityDiscrete(optionTenors, tenors, 0, calendar, bdc),
-      volatilities_(optionTenors.size(), tenors.size()),
-      dayCounter_(dayCounter) {
+    : SwaptionVolatilityDiscrete(optionTenors, tenors, 0, calendar, dayCounter, bdc),
+      volatilities_(optionTenors.size(), tenors.size()) {
         QL_REQUIRE(!vols.empty(), "empty vol matrix");
         QL_REQUIRE(optionTenors.size()==vols.size(),
             "mismatch between number of option dates ("
@@ -72,8 +71,8 @@ namespace QuantLib {
                         const std::vector<Period>& swapTenors,
                         const Matrix& vols,
                         const DayCounter& dayCounter)
-    : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0, calendar, bdc),
-      volatilities_(vols),  dayCounter_(dayCounter) {
+    : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0, calendar, dayCounter, bdc),
+      volatilities_(vols) {
         QL_REQUIRE(optionTenors.size()==vols.rows(),
             "mismatch between number of optionTenors ("
             << optionTenors.size() << ") and number of rows ("
@@ -96,9 +95,8 @@ namespace QuantLib {
                        const std::vector<Period>& swapTenors,
                        const Matrix& vols,
                        const DayCounter& dayCounter)
-    : SwaptionVolatilityDiscrete(optionTenors, swapTenors, 0, NullCalendar()), // FIXME
-      volatilities_(vols),
-      dayCounter_(dayCounter) {
+                       : SwaptionVolatilityDiscrete(optionDates, swapTenors, Date::todaysDate(), NullCalendar(), dayCounter), // FIXME
+      volatilities_(vols) {
         QL_REQUIRE(optionDates.size()==vols.rows(),
             "mismatch between number of option dates ("
             << optionDates.size() << ") and number of rows ("
