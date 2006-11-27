@@ -57,8 +57,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        YieldTermStructure(const DayCounter& dc// = DayCounter()
-            );
+        YieldTermStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         YieldTermStructure(const Date& referenceDate,
                            const Calendar& cal = Calendar(),

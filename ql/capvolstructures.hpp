@@ -45,8 +45,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapVolatilityStructure(const DayCounter& dc// = DayCounter()
-            );
+        CapVolatilityStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         CapVolatilityStructure(const Date& referenceDate,
                                const Calendar& cal = Calendar(),
@@ -101,8 +100,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapletVolatilityStructure(const DayCounter& dc// = DayCounter()
-            );
+        CapletVolatilityStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         CapletVolatilityStructure(const Date& referenceDate,
                                   const Calendar& cal = Calendar(),

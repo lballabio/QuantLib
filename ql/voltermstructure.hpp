@@ -49,8 +49,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure(const DayCounter& dc// = DayCounter()
-            );
+        BlackVolTermStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
@@ -151,8 +150,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure(const DayCounter& dc// = DayCounter()
-            );
+        BlackVolatilityTermStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate,
                                      const Calendar& cal = Calendar(),
@@ -194,8 +192,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure(const DayCounter& dc// = DayCounter()
-            );
+        BlackVarianceTermStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate,
                                    const Calendar& cal = Calendar(),
@@ -236,8 +233,7 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        LocalVolTermStructure(const DayCounter& dc// = DayCounter()
-            );
+        LocalVolTermStructure(const DayCounter& dc);
         //! initialize with a fixed reference date
         LocalVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),

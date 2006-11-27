@@ -46,8 +46,7 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ZeroYieldStructure(const DayCounter& dc// = DayCounter()
-            );
+        ZeroYieldStructure(const DayCounter& dc);
         ZeroYieldStructure(const Date& referenceDate,
                            const Calendar& calendar = Calendar(),
                            const DayCounter& dc = DayCounter());
