@@ -49,7 +49,7 @@ namespace QuantLib {
             according to the given term structure.
         */
         static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
-                        const Handle<YieldTermStructure>&);
+                        const Handle<YieldTermStructure>& discountCurve);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -57,15 +57,17 @@ namespace QuantLib {
             to the given term structure.
         */
         static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
-                        const Handle<YieldTermStructure>&);
+                        const Handle<YieldTermStructure>& discountCurve);
         //! At The Money Rate of the cash flows.
-        /*! The result is the fixed rate for which an equivalent vector 
-            of fixed cash flows has the same NPV according
-            to the given term structure.
+        /*! The result is the fixed rate for which a fixed rate cash flow
+            vector, equivalent to the input vector, has the required NPV
+            according to the given term structure. If the required NPV is
+            not given, the input cash flow vector's NPV is used instead.
         */
         static Rate atmRate(
             const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
-            const Handle<YieldTermStructure>& termStructure);
+            const Handle<YieldTermStructure>& discountCurve,
+            Real npv = Null<Real>());
 
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted

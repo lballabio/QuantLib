@@ -352,10 +352,12 @@ namespace QuantLib {
     }
 
     Rate Cashflows::atmRate(
-        const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
-        const Handle<YieldTermStructure>& termStructure) {
-        Real bps = Cashflows::bps(cashFlows, termStructure);
-        Real npv = Cashflows::npv(cashFlows, termStructure);
+                  const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+                  const Handle<YieldTermStructure>& discountCurve,
+                  Real npv) {
+        Real bps = Cashflows::bps(cashFlows, discountCurve);
+        if (npv==Null<Real>())
+            npv = Cashflows::npv(cashFlows, discountCurve);
         return 1.0e-4*npv/bps;
     }
 
