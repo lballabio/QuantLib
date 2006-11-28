@@ -57,7 +57,14 @@ namespace QuantLib {
         ImpliedVolHelper f(mkData, targetValue, volatilityParameter);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
-        volatilityParameter = solver.solve(f, accuracy, volatilityParameter, minVol, maxVol);
+        Real guess;
+        // we take the previous value of the volatilityParameter as guess 
+        // only if it is not equal to one of the bounds
+        if (volatilityParameter> minVol && volatilityParameter< maxVol)
+            guess = volatilityParameter;
+        else
+            guess = 0.1;
+        solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
 
