@@ -112,7 +112,7 @@ using namespace QuantLib;
 
      // to be changed ...
     Date SmileSectionsVolStructure::maxDate() const {
-        return Date(39744); }
+        return smileSections_.back()->exerciseDate(); }
     DayCounter SmileSectionsVolStructure::dayCounter() const {
         return dayCounter_;}
     Real SmileSectionsVolStructure::minStrike() const {
