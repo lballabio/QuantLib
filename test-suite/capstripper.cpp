@@ -66,6 +66,7 @@ Real maxAbs(const Matrix& m){
 
 // set a Flat Volatility Term Structure at a given level
 void setFlatVolatilityTermStructure(Volatility flatVolatility){
+    dayCounter = Actual360();
     strikes.resize(10);
     tenors.resize(10);
     tenors.resize(tenors.size());
@@ -88,6 +89,7 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
 }
 
 void setMarketVolatilityTermStructure(){
+    dayCounter = Actual360();
     strikes.resize(13);
     tenors.resize(16);
     v = Matrix(tenors.size(), strikes.size());
@@ -162,7 +164,7 @@ void setMarketVolatilityTermStructure(){
         (new InterpolatedSmileSection(Date(39069), dayCounter, futureOptionStrikes, volatilities));
     volatilities[0]=0.53;	volatilities[1]=0.48;	volatilities[2]=0.44;	volatilities[3]=0.41;	volatilities[4]=0.37;	volatilities[5]=0.34;	volatilities[6]=0.31;	volatilities[7]=0.28;	volatilities[8]=0.25;	volatilities[9]=0.22;	volatilities[10]=0.20;	volatilities[11]=0.17;	volatilities[12]=0.15;	volatilities[13]=0.12;	volatilities[14]=0.10;	volatilities[15]=0.10;	volatilities[16]=0.09;	volatilities[17]=0.08;	volatilities[18]=0.08;	volatilities[19]=0.08;	volatilities[20]=0.07;	volatilities[21]=0.07;	volatilities[22]=0.10;	volatilities[23]=0.12;	volatilities[24]=0.12;	volatilities[25]=0.13;	volatilities[26]=0.15;	volatilities[27]=0.16;	volatilities[28]=0.18;	volatilities[29]=0.19;	volatilities[30]=0.20;	volatilities[31]=0.21;	volatilities[32]=0.23;
     smileSections[1] = boost::shared_ptr<InterpolatedSmileSection> 
-        (new InterpolatedSmileSection(Date(39069), dayCounter, futureOptionStrikes, volatilities));
+        (new InterpolatedSmileSection(Date(39160), dayCounter, futureOptionStrikes, volatilities));
     volatilities[0]=0.42;	volatilities[1]=0.39;	volatilities[2]=0.36;	volatilities[3]=0.33;	volatilities[4]=0.30;	volatilities[5]=0.27;	volatilities[6]=0.25;	volatilities[7]=0.22;	volatilities[8]=0.20;	volatilities[9]=0.18;	volatilities[10]=0.16;	volatilities[11]=0.14;	volatilities[12]=0.12;	volatilities[13]=0.12;	volatilities[14]=0.13;	volatilities[15]=0.12;	volatilities[16]=0.12;	volatilities[17]=0.11;	volatilities[18]=0.11;	volatilities[19]=0.11;	volatilities[20]=0.11;	volatilities[21]=0.10;	volatilities[22]=0.10;	volatilities[23]=0.10;	volatilities[24]=0.10;	volatilities[25]=0.11;	volatilities[26]=0.14;	volatilities[27]=0.13;	volatilities[28]=0.14;	volatilities[29]=0.15;	volatilities[30]=0.16;	volatilities[31]=0.17;	volatilities[32]=0.18;
     smileSections[2] = boost::shared_ptr<InterpolatedSmileSection> 
         (new InterpolatedSmileSection(Date(39251), dayCounter,  futureOptionStrikes, volatilities));
@@ -176,7 +178,6 @@ void setMarketVolatilityTermStructure(){
 void setup(Real impliedVolatilityPrecision = 1e-5) {
 
     calendar = TARGET();
-    dayCounter = Actual360();
     fixingDays = 2;
     businessDayConvention = Unadjusted;
     Integer settlementDays = 2;
@@ -244,6 +245,7 @@ void CapsStripperTest::highPrecisionTest(){
     QL_TEST_BEGIN
 
     setMarketVolatilityTermStructure();
+    setup();
     Real impliedVolatilityPrecision = 1e-20;
     setup(impliedVolatilityPrecision);
     static const Real tolerance = 1e-12;
