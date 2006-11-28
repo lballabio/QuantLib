@@ -292,6 +292,7 @@ namespace QuantLib {
     }
 
 	Array SmileAndCmsCalibrationBySabr::calibration(
+            const Array& guess,
 			SmileAndCmsCalibrationBySabr::OptimMethod optimizationMethod){
 
         ParametersConstraint constraint;
@@ -323,12 +324,12 @@ namespace QuantLib {
             default:
                 QL_FAIL("unknown/illegal calibration type");
         }
-        Array guess(2);
+        //Array guess(2);
 
         const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
             boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
-        guess[0] = volCubeBySabr->sparseSabrParameters()[0][3];
-        guess[1] = cmsMarket_->meanReversions()[0][0];
+        //guess[0] = volCubeBySabr->sparseSabrParameters()[0][3];
+        //guess[1] = cmsMarket_->meanReversions()[0][0];
 
         method->setInitialValue(guess);
 

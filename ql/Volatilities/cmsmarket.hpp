@@ -135,6 +135,7 @@ namespace QuantLib {
         CalibrationType calibrationType_;
 
         Array calibration(
+            const Array& guess,
 			SmileAndCmsCalibrationBySabr::OptimMethod optimizationMethod);
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
