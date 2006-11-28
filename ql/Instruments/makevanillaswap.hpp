@@ -56,6 +56,7 @@ namespace QuantLib {
         operator boost::shared_ptr<VanillaSwap>() const ;
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
+        MakeVanillaSwap& withType(VanillaSwap::Type type);
         MakeVanillaSwap& withNominal(Real n);
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withDiscountingTermStructure(

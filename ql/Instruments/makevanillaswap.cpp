@@ -171,6 +171,11 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeVanillaSwap& MakeVanillaSwap::withType(VanillaSwap::Type type) {
+        type_ = type;
+        return *this;
+    }
+
     MakeVanillaSwap& MakeVanillaSwap::withNominal(Real n) {
         nominal_ = n;
         return *this;
