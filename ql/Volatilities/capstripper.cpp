@@ -22,9 +22,10 @@
 */
 
 #include <ql/Volatilities/capstripper.hpp>
-#include <ql/types.hpp>
-#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
+
 #include <ql/Instruments/makecapfloor.hpp>
+#include <ql/Volatilities/capletvolatilitiesstructures.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -153,7 +154,7 @@ namespace QuantLib {
             parametrizedCapletVolStructure_->volatilityParameters();
         Size i,j;
         Real capPrice;
-        try{
+        try {
             for (j = 0 ; j < strikes_.size(); j++){
                 for (i = 0 ; i < tenors_.size(); i++) {
                     CapFloor & mktCap = *marketDataCap_[i][j];
@@ -163,13 +164,13 @@ namespace QuantLib {
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
                 }
             }
-        }
-        catch(QuantLib::Error& e){
+        } catch(QuantLib::Error& e) {
             std::ostringstream _ql_msg_stream;
-            _ql_msg_stream << "CapsStripper::performCalculations:\nbooststrap failure at tenor " << tenors_[i]
-                           << " ,strike " << strikes_[j]
-                           << " the cap price is " << capPrice << "\n";
-            _ql_msg_stream << e.what();
+            _ql_msg_stream << "CapsStripper::performCalculations:"
+                              "\nbooststrap failure at option tenor " << tenors_[i] <<
+                              ", strike " << strikes_[j] <<
+                              ", cap price is " << capPrice;
+            _ql_msg_stream  << "\n" << e.what();
             throw QuantLib::Error(__FILE__,__LINE__,
                                   BOOST_CURRENT_FUNCTION,_ql_msg_stream.str());
 
