@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,6 +26,7 @@
 #define quantlib_optimization_criteria_hpp
 
 #include <ql/types.hpp>
+#include <ql/Utilities/null.hpp>
 #include <iostream>
 
 namespace QuantLib {
@@ -40,11 +42,10 @@ namespace QuantLib {
       public:
         enum Type { none, maxIter, statPt, statGd };
 
-		//! default constructor
-        EndCriteria();
         //! initialization constructor
-        EndCriteria(Size maxIteration,
-                    Real epsilon);
+        EndCriteria(Size maxIteration = 1000,
+                    Real functionEpsilon = 1e-8,
+                    Real gradientEpsilon = Null<Real>());
         void setPositiveOptimization(bool);
         /*! test if the number of iteration is not too big and if we don't
             raise a stationary point */
@@ -53,26 +54,33 @@ namespace QuantLib {
                         Real normgold,
                         Real fnew,
                         Real normgnew,
-                        Real);
+                        Real) const;
         //! return the end criteria type
         Type criteria() const;
+        //! return the end criteria type
+        Type type() const;
+        Size maxIteration() const;
+        Real functionEpsilon() const;
+        Real gradientEpsilon() const;
 
-        bool checkIterationNumber(Size iteration);
+        bool checkIterationNumber(Size iteration) const;
         bool checkStationaryValue(Real fold,
-                                  Real fnew);
-        bool checkAccuracyValue(Real f);
-        bool checkStationaryGradientNorm(Real normDiff);
-        bool checkAccuracyGradientNorm(Real norm);
+                                  Real fnew) const;
+        bool checkAccuracyValue(Real f) const;
+        bool checkStationaryGradientNorm(Real normDiff) const;
+        bool checkAccuracyGradientNorm(Real norm) const;
 
       protected:
         //! Maximum number of iterations
         Size maxIteration_;
         //! function and gradient epsilons
         Real functionEpsilon_, gradientEpsilon_;
-        //! Maximun number of iterations in stationary state
-        Size maxIterStatPt_, statState_;
-        Type endCriteria_;
+
         bool positiveOptimization_;
+
+        //! Maximun number of iterations in stationary state
+        mutable Size maxIterStatPt_, statState_;
+        mutable Type endCriteria_;
     };
 
 	std::ostream& operator<<(std::ostream& out,
@@ -83,7 +91,7 @@ namespace QuantLib {
         positiveOptimization_ = positiveOptimization;
     }
 
-    inline bool EndCriteria::checkIterationNumber(Size iteration) {
+    inline bool EndCriteria::checkIterationNumber(Size iteration) const{
         bool test = (iteration >= maxIteration_);
         if (test)
             endCriteria_ = maxIter;
@@ -91,7 +99,7 @@ namespace QuantLib {
     }
 
     inline bool EndCriteria::checkStationaryValue(Real fold,
-                                                  Real fnew) {
+                                                  Real fnew) const {
         bool test = (std::fabs(fold - fnew) < functionEpsilon_);
         if (test) {
             statState_++;
@@ -105,7 +113,7 @@ namespace QuantLib {
         return (test && (statState_ > maxIterStatPt_));
     }
 
-    inline bool EndCriteria::checkAccuracyValue(Real f) {
+    inline bool EndCriteria::checkAccuracyValue(Real f) const {
         bool test = (f < functionEpsilon_ && positiveOptimization_);
         if (test) {
             endCriteria_ = statPt;
@@ -113,14 +121,14 @@ namespace QuantLib {
         return test;
     }
 
-    inline bool EndCriteria::checkStationaryGradientNorm(Real normDiff) {
+    inline bool EndCriteria::checkStationaryGradientNorm(Real normDiff) const {
         bool test = (normDiff < gradientEpsilon_);
         if (test)
             endCriteria_ = statGd;
         return test;
     }
 
-    inline bool EndCriteria::checkAccuracyGradientNorm(Real norm) {
+    inline bool EndCriteria::checkAccuracyGradientNorm(Real norm) const {
         bool test = (norm < gradientEpsilon_);
         if (test)
             endCriteria_ = statGd;
@@ -132,8 +140,7 @@ namespace QuantLib {
                                         Real normgold,
                                         Real fnew,
                                         Real normgnew,
-                                        Real)
-    {
+                                        Real) const {
         return
             checkIterationNumber(iteration) ||
             checkStationaryValue(fold, fnew) ||
@@ -147,6 +154,21 @@ namespace QuantLib {
         return endCriteria_;
     }
 
+    inline EndCriteria::Type EndCriteria::type() const {
+        return endCriteria_;
+    }
+
+    inline Size EndCriteria::maxIteration() const {
+        return maxIteration_;
+    }
+
+    inline Real EndCriteria::functionEpsilon() const {
+        return functionEpsilon_;
+    }
+
+    inline Real EndCriteria::gradientEpsilon() const {
+        return gradientEpsilon_;
+    }
 }
 
 #endif

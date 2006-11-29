@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,7 +25,7 @@
 #ifndef quantlib_optimization_conjugate_gradient_h
 #define quantlib_optimization_conjugate_gradient_h
 
-#include <ql/Optimization/armijo.hpp>
+#include <ql/Optimization/linesearchbasedmethod.hpp>
 
 namespace QuantLib {
 
@@ -36,36 +37,17 @@ namespace QuantLib {
         where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
         and \f$ d_1 = - f'(x_1) \f$
     */
-    class ConjugateGradient: public OptimizationMethod {
+    class ConjugateGradient: public LineSearchBasedMethod {
       public:
-        //! default constructor
-        ConjugateGradient(const boost::shared_ptr<LineSearch>& lineSearch =
-                              boost::shared_ptr<LineSearch>())
-        : lineSearch_(lineSearch) {
-            if (!lineSearch_)
-                lineSearch_ = boost::shared_ptr<LineSearch>(
-                                                     new ArmijoLineSearch);
-        }
-
-        ConjugateGradient(const EndCriteria& endCriteria,
-                          const Array& initialValue,
+        ConjugateGradient(const Array& initialValue = Array(),
+                          const EndCriteria& endCriteria = EndCriteria(),
                           const boost::shared_ptr<LineSearch>& lineSearch =
-                              boost::shared_ptr<LineSearch>())
-        : OptimizationMethod(endCriteria, initialValue),
-          lineSearch_(lineSearch) {
-            if (!lineSearch_)
-                lineSearch_ = boost::shared_ptr<LineSearch>(
-                                                     new ArmijoLineSearch);
-        }
-
+                                            boost::shared_ptr<LineSearch>())
+        : LineSearchBasedMethod(initialValue, endCriteria, lineSearch) {}
         //! minimize the optimization problem P
-        void minimize(const Problem& P) const;
-      private:
-        //! line search
-        boost::shared_ptr<LineSearch> lineSearch_;
+        void minimize(const Problem& P);
     };
 
 }
-
 
 #endif

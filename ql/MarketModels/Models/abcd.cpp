@@ -22,6 +22,7 @@
 #include <ql/MarketModels/Models/abcd.hpp>
 #include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/armijo.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -103,18 +104,19 @@ namespace QuantLib {
                 const boost::shared_ptr<OptimizationMethod>& meth) {
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
-            boost::shared_ptr<LineSearch> lineSearch(new
-                ArmijoLineSearch(1e-12, 0.15, 0.55));
-            method = boost::shared_ptr<OptimizationMethod>(new
-                ConjugateGradient(lineSearch));
-            Real tolerance = 0.3e-4;
-            method->setEndCriteria(EndCriteria(100000, tolerance));
             Array guess(4);
             guess[0] = a_;
             guess[1] = b_;
             guess[2] = c_;
             guess[3] = d_;
-            method->setInitialValue(guess);
+
+            EndCriteria endCriteria(100000, 0.3e-4);
+
+            boost::shared_ptr<LineSearch> lineSearch(new
+                ArmijoLineSearch(1e-12, 0.15, 0.55));
+
+            method = boost::shared_ptr<OptimizationMethod>(new
+                ConjugateGradient(guess, endCriteria, lineSearch));
         }
 
         AbcdConstraint constraint;

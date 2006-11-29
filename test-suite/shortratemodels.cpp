@@ -89,8 +89,8 @@ void ShortRateModelTest::testCachedHullWhite() {
     }
 
     Real lambda = 0.5;
-    Simplex simplex(lambda, 1e-9);
-    simplex.setEndCriteria(EndCriteria(10000, 1e-7));
+    Simplex simplex(lambda);
+    simplex.setEndCriteria(EndCriteria(10000, 1e-9));
     model->calibrate(swaptions, simplex);
 
     #if defined(QL_USE_INDEXED_COUPON)

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,9 +25,12 @@
 #ifndef quantlib_optimization_line_search_h_
 #define quantlib_optimization_line_search_h_
 
-#include <ql/Optimization/problem.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
+
+    class Problem;
+    class Constraint;
 
     //! Base class for line search
     class LineSearch {
@@ -57,7 +61,12 @@ namespace QuantLib {
                     Real beta,
                     const Constraint& constraint);
 
+        //! current value of the search direction
+        const Array& searchDirection() const { return searchDirection_; }
+        Array& searchDirection() { return searchDirection_; }
       protected:
+        //! current values of the search direction
+        Array searchDirection_;
         //! new x and its gradient
         Array xtd_, gradient_;
         //! cost function value and gradient norm corresponding to xtd_
@@ -66,33 +75,6 @@ namespace QuantLib {
         bool succeed_;
 
     };
-
-
-    inline Real LineSearch::update(Array& params,
-                                   const Array& direction,
-                                   Real beta,
-                                   const Constraint& constraint) {
-
-        Real diff=beta;
-
-        Array newParams = params + diff*direction;
-        bool valid = constraint.test(newParams);
-        Integer icount = 0;
-        while (!valid) {
-            if (icount > 200)
-                QL_FAIL("can't update linesearch");
-            diff *= 0.5;
-            icount ++;
-
-            newParams = params + diff*direction;
-            valid = constraint.test(newParams);
-        }
-
-        params += diff*direction;
-        return diff;
-    }
-
 }
-
 
 #endif

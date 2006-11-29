@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -37,18 +38,18 @@ namespace QuantLib {
     //! Multi-dimensional simplex class
     class Simplex : public OptimizationMethod {
       public:
-        /*! Constructor taking as input the characteristic length and
-            tolerance
-        */
+        /*! Constructor taking as input the characteristic length */
         Simplex(Real lambda,
-                Real tol)
-        : lambda_(lambda), tol_(tol) {}
-        void minimize(const Problem& P) const;
+                const Array& initialValue = Array(),
+                const EndCriteria& endCriteria = EndCriteria())
+        : OptimizationMethod(initialValue, endCriteria),
+          lambda_(lambda) {}
+        void minimize(const Problem& P);
       private:
-        Real extrapolate(const Problem& P, Size iHighest,
+        Real extrapolate(const Problem& P,
+                         Size iHighest,
                          Real& factor) const;
         Real lambda_;
-        Real tol_;
         mutable std::vector<Array> vertices_;
         mutable Array values_, sum_;
     };

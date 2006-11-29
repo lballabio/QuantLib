@@ -24,7 +24,7 @@
 #ifndef quantlib_optimization_steepest_descent_h
 #define quantlib_optimization_steepest_descent_h
 
-#include <ql/Optimization/armijo.hpp>
+#include <ql/Optimization/linesearchbasedmethod.hpp>
 
 namespace QuantLib {
 
@@ -33,23 +33,17 @@ namespace QuantLib {
 
         search direction \f$ = - f'(x) \f$
     */
-    class SteepestDescent : public OptimizationMethod {
+    class SteepestDescent : public LineSearchBasedMethod {
       public:
-        //! default default constructor (msvc bug)
-        SteepestDescent()
-        : lineSearch_(boost::shared_ptr<LineSearch>(new ArmijoLineSearch())) {}
-
-        //! default constructor
-        SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch)
-        : lineSearch_(lineSearch) {}
+        SteepestDescent(const Array& initialValue = Array(),
+                        const EndCriteria& endCriteria = EndCriteria(),
+                        const boost::shared_ptr<LineSearch>& lineSearch =
+                                            boost::shared_ptr<LineSearch>())
+        : LineSearchBasedMethod(initialValue, endCriteria, lineSearch) {}
         //! minimize the optimization problem P
-        void minimize(const Problem& P) const;
-      private:
-        //! line search
-        boost::shared_ptr<LineSearch> lineSearch_;
+        void minimize(const Problem& P);
     };
 
 }
-
 
 #endif

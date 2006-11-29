@@ -1641,7 +1641,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                             receiverSwap, parametricForm, nullRebate,
                             control, trainingPaths_, collectedData);
 
-                        Simplex om(0.01, 1e-6);
+                        Simplex om(0.01);
 
                         Size initialNumeraire = evolver->numeraires().front();
                         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -49,13 +50,12 @@ namespace QuantLib {
 
     }
 
-    void Simplex::minimize(const Problem& P) const {
+    void Simplex::minimize(const Problem& P) {
         bool end = false;
 
-        Array& X = x();
-        Size n = X.size(), i;
+        Size n = x_.size(), i;
 
-        vertices_ = std::vector<Array>(n+1, X);
+        vertices_ = std::vector<Array>(n+1, x_);
         for (i=0; i<n; i++) {
             Array direction(n, 0.0);
             direction[i] = 1.0;
@@ -97,11 +97,12 @@ namespace QuantLib {
 
             Real rtol = 2.0*std::fabs(high - low)/
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
-            if (rtol < tol_ || endCriteria().checkIterationNumber(iterationNumber()++)) {
+            if (rtol < endCriteria().functionEpsilon() ||
+                endCriteria().checkIterationNumber(++iterationNumber_)) {
 				//in this case set endCriteria_ = statPt
 				endCriteria().checkAccuracyValue(QL_EPSILON); 
 				endCriteria().checkIterationNumber(iterationNumber());
-                X = vertices_[iLowest];
+                x_ = vertices_[iLowest];
 				//and set the functionValue_
 				functionValue_ = low;
                 return;

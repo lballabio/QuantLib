@@ -18,10 +18,12 @@
 */
 
 #include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/problem.hpp>
+#include <ql/Optimization/linesearch.hpp>
 
 namespace QuantLib {
 
-    void ConjugateGradient::minimize(const Problem &P) const {
+    void ConjugateGradient::minimize(const Problem &P) {
         bool done = false;
 
         // function and squared norm of gradient values;
@@ -31,15 +33,12 @@ namespace QuantLib {
         // classical initial value for line-search step
         Real t = 1.0;
 
-        // reference X as the optimization problem variable
-        Array& X = x();
-        Array& SearchDirection = searchDirection();
         // Set g at the size of the optimization problem search direction
-        Size sz = searchDirection().size();
+        Size sz = lineSearch_->searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
 
-        functionValue() = P.valueAndGradient(g, X);
-        SearchDirection = -g;
+        functionValue() = P.valueAndGradient(g, x_);
+        lineSearch_->searchDirection() = -g;
         gradientNormValue() = DotProduct(g, g);
 
         do {
@@ -50,9 +49,9 @@ namespace QuantLib {
             if (lineSearch_->succeed())
             {
                 // Updates
-                d = SearchDirection;
+                d = lineSearch_->searchDirection();
                 // New point
-                X = lineSearch_->lastX();
+                x_ = lineSearch_->lastX();
                 // New function value
                 fold = functionValue();
                 functionValue() = lineSearch_->lastFunctionValue();
@@ -63,16 +62,16 @@ namespace QuantLib {
                 gradientNormValue() = lineSearch_->lastGradientNorm2();
                 c = gradientNormValue() / gold2;
                 // conjugate gradient search direction
-                sddiff = (-g + c * d) - SearchDirection;
+                sddiff = (-g + c * d) - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));
-                SearchDirection = -g + c * d;
+                lineSearch_->searchDirection() = -g + c * d;
                 
                 // End criteria
                 done = endCriteria()(iterationNumber_,
                                      fold, std::sqrt(gold2), functionValue(),
                                      std::sqrt(gradientNormValue()), normdiff);
 			    // Increase interation number
-                iterationNumber()++;
+                ++iterationNumber_;
             } else {
                 done=true;
             }

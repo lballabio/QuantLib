@@ -54,14 +54,14 @@ namespace QuantLib {
                                 Real beta,
                                 Real nu,
                                 Real rho) {
-        QL_REQUIRE(alpha>QL_EPSILON, "alpha must be positive: "
-                                     << alpha << " not allowed");
-        QL_REQUIRE(beta>0.0 && beta<1.0, "beta must be in (0.0, 1.0): "
+        QL_REQUIRE(alpha>0.0, "alpha must be positive: "
+                              << alpha << " not allowed");
+        QL_REQUIRE(beta>=0.0 && beta<=1.0, "beta must be in (0.0, 1.0): "
                                          << beta << " not allowed");
-        QL_REQUIRE(nu>QL_EPSILON, "nu must be positive: "
-                                  << nu << " not allowed");
+        QL_REQUIRE(nu>=0.0, "nu must be non negative: "
+                            << nu << " not allowed");
         QL_REQUIRE(rho*rho<1.0, "rho square must be less than one: "
-                                 << rho << " not allowed");
+                                << rho << " not allowed");
     }
 
     Real sabrVolatility(Rate strike,

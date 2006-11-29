@@ -18,10 +18,12 @@
 */
 
 #include <ql/Optimization/steepestdescent.hpp>
+#include <ql/Optimization/problem.hpp>
+#include <ql/Optimization/linesearch.hpp>
 
 namespace QuantLib {
 
-    void SteepestDescent::minimize(const Problem& P) const {
+    void SteepestDescent::minimize(const Problem& P) {
         bool end;
 
         // function and squared norm of gradient values;
@@ -29,14 +31,12 @@ namespace QuantLib {
         // classical initial value for line-search step
         Real t = 1.0;
 
-        // reference X as the optimization problem variable
-        Array& X = x();
         // Set gold at the size of the optimization problem search direction
-        Array gold(searchDirection().size());
-        Array gdiff(searchDirection().size());
+        Array gold(lineSearch_->searchDirection().size());
+        Array gdiff(lineSearch_->searchDirection().size());
 
-        functionValue() = P.valueAndGradient(gold, X);
-        searchDirection() = -gold;
+        functionValue() = P.valueAndGradient(gold, x_);
+        lineSearch_->searchDirection() = -gold;
         gradientNormValue() = DotProduct(gold, gold);
         normdiff = std::sqrt(gradientNormValue());
 
@@ -54,19 +54,19 @@ namespace QuantLib {
 
             // Updates
             // New point
-            X = lineSearch_->lastX();
+            x_ = lineSearch_->lastX();
             // New function value
             functionValue() = lineSearch_->lastFunctionValue();
             // New gradient and search direction vectors
             gdiff = gold - lineSearch_->lastGradient();
             normdiff = std::sqrt(DotProduct (gdiff, gdiff));
             gold = lineSearch_->lastGradient();
-            searchDirection() = -gold;
+            lineSearch_->searchDirection() = -gold;
             // New gradient squared norm
             gradientNormValue() = lineSearch_->lastGradientNorm2();
 
             // Increase interation number
-            iterationNumber()++;
+            ++iterationNumber_;
         } while (end == false);
     }
 

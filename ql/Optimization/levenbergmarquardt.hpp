@@ -35,14 +35,14 @@ namespace QuantLib {
     */
     class LevenbergMarquardt : public OptimizationMethod {
       public:
-        /*! Constructor taking as input the characteristic length and
-            tolerance
-        */
-        LevenbergMarquardt(Real epsfcn = 1e-8, Real ftol = 1e-8,
-                           Real xtol = 1e-8, Real gtol = 1e-8,
-                           Size maxfev = 400);
-
-        void minimize(const Problem& P) const;
+        LevenbergMarquardt(Real epsfcn = 1.0e-8,
+                           Real ftol = 1.0e-8,
+                           Real xtol = 1.0e-8,
+                           Real gtol = 1.0e-8,
+                           Size maxfev = 400,
+                           const Array& initialValue = Array(),
+                           const EndCriteria& endCriteria = EndCriteria());
+        void minimize(const Problem& P);
         virtual Integer getInfo() const;
         static void fcn(int m, int n,
                         double* x, double* fvec, int* iflag);

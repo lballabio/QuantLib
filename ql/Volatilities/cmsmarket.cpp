@@ -24,6 +24,7 @@
 #include <ql/Indexes/euriborswapfixa.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/makecms.hpp>
+#include <ql/Optimization/armijo.hpp>
 
 namespace QuantLib {
 
@@ -300,12 +301,13 @@ namespace QuantLib {
         boost::shared_ptr<OptimizationMethod> method;
 		switch (optimizationMethod) {
             case DownHillSimplex:
-                method = boost::shared_ptr<OptimizationMethod>(new Simplex(0.01, 1e-3));
+                method = boost::shared_ptr<OptimizationMethod>(new Simplex(0.01));
                 break;
 			case ConjugateGrad:{
-                boost::shared_ptr<LineSearch> lineSearch(
-					new ArmijoLineSearch(1e-12, 0.05, 0.65));
-				method = boost::shared_ptr<OptimizationMethod>(new ConjugateGradient(lineSearch));}
+                boost::shared_ptr<LineSearch> lineSearch(new
+                    ArmijoLineSearch(1e-12, 0.05, 0.65));
+				method = boost::shared_ptr<OptimizationMethod>(new
+                    ConjugateGradient(Array(), EndCriteria(), lineSearch));}
 				break;
             default:
                 QL_FAIL("unknown/illegal optimization method");

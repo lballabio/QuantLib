@@ -18,6 +18,8 @@
 */
 
 #include <ql/Optimization/armijo.hpp>
+#include <ql/Optimization/method.hpp>
+#include <ql/Optimization/problem.hpp>
 
 namespace QuantLib {
 
@@ -31,19 +33,17 @@ namespace QuantLib {
         Real qtold, t = t_ini;
         Size loopNumber = 0;
 
-        Array& x = method.x();
-        Array& d = method.searchDirection();
         Real q0 = method.functionValue();
         Real qp0 = method.gradientNormValue();
 
         qt_ = q0;
-        qpt_ = (gradient_.empty()) ? qp0 : -DotProduct(gradient_,d);
+        qpt_ = (gradient_.empty()) ? qp0 : -DotProduct(gradient_,searchDirection_);
 
         // Initialize gradient
-        gradient_ = Array(x.size());
+        gradient_ = Array(method.x().size());
         // Compute new point
-        xtd_ = x;
-        t = update(xtd_, d, t, constraint);
+        xtd_ = method.x();
+        t = update(xtd_, searchDirection_, t, constraint);
         // Compute function value at the new point
         qt_ = P.value (xtd_);
 
@@ -56,8 +56,8 @@ namespace QuantLib {
                 // Store old value of the function
                 qtold = qt_;
                 // New point value
-                xtd_ = x;
-                t = update(xtd_, d, t, constraint);
+                xtd_ = method.x();
+                t = update(xtd_, searchDirection_, t, constraint);
 
                 // Compute function value at the new point
                 qt_ = P.value (xtd_);

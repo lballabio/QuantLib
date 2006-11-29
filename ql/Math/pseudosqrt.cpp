@@ -22,6 +22,7 @@
 #include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/problem.hpp>
 
 namespace QuantLib {
 
@@ -116,10 +117,11 @@ namespace QuantLib {
                     }
                 }
             }
+
             ConjugateGradient optimize;
             EndCriteria endCriteria(100, 1e-8);
             optimize.setEndCriteria(endCriteria);
-            HypersphereCostFunction costFunction(targetMatrix,variance,
+            HypersphereCostFunction costFunction(targetMatrix, variance,
                                                  lowerDiagonal);
             NoConstraint constraint;
 

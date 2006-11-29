@@ -26,16 +26,21 @@ namespace QuantLib {
     Array LevenbergMarquardt::_initCostValues(0);
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
-                                           Real ftol, Real xtol,
-                                           Real gtol, Size maxfev)
-    : info_(0), maxfev_(maxfev), epsfcn_(epsfcn),
+                                           Real ftol,
+                                           Real xtol,
+                                           Real gtol,
+                                           Size maxfev,
+                                           const Array& initialValue,
+                                           const EndCriteria& endCriteria)
+    : OptimizationMethod(initialValue, endCriteria),
+      info_(0), maxfev_(maxfev), epsfcn_(epsfcn),
       ftol_(ftol), xtol_(xtol), gtol_(gtol) {}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
     }
 
-    void LevenbergMarquardt::minimize(const Problem& P) const {
+    void LevenbergMarquardt::minimize(const Problem& P) {
         _thisP = &P;
         _initCostValues = P.costFunction().values(x());
 

@@ -2882,10 +2882,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\backwardflatinterpolation.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\beta.cpp"
 				>
 				<FileConfiguration
@@ -2940,247 +2936,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\bicubicsplineinterpolation.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\bilinearinterpolation.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\binomialdistribution.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\bivariatenormaldistribution.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\bivariatenormaldistribution.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\chisquaredistribution.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\chisquaredistribution.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\choleskydecomposition.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\choleskydecomposition.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\comparison.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\convergencestatistics.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Math\core.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\cubicspline.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\discrepancystatistics.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\discrepancystatistics.hpp"
 				>
 			</File>
 			<File
@@ -3238,10 +2998,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\extrapolation.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\factorial.cpp"
 				>
 				<FileConfiguration
@@ -3296,65 +3052,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\forwardflatinterpolation.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\functional.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\gammadistribution.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\gammadistribution.hpp"
 				>
 			</File>
 			<File
@@ -3363,72 +3061,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\gaussianquadratures.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\gaussianquadratures.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\gaussianstatistics.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\generalstatistics.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\generalstatistics.hpp"
 				>
 			</File>
 			<File
@@ -3486,60 +3118,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\incrementalstatistics.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\incrementalstatistics.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\interpolation.hpp"
 				>
 			</File>
@@ -3548,15 +3126,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\kronrodintegral.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\lexicographicalview.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\linearinterpolation.hpp"
 				>
 			</File>
 			<File
@@ -3564,73 +3134,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\loglinearinterpolation.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\matrix.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\multicubicspline.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\normaldistribution.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\normaldistribution.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\poissondistribution.hpp"
 				>
 			</File>
 			<File
@@ -3688,73 +3192,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\pseudosqrt.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\pseudosqrt.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\riskstatistics.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Math\rounding.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ql\Math\rounding.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\sabrinterpolation.hpp"
 				>
 			</File>
 			<File
@@ -3766,145 +3208,723 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\segmentintegral.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\sequencestatistics.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\simpsonintegral.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\statistics.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\svd.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\svd.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\symmetricschurdecomposition.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Math\symmetricschurdecomposition.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\tqreigendecomposition.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\tqreigendecomposition.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Math\transformedgrid.hpp"
 				>
 			</File>
-			<File
-				RelativePath="ql\Math\trapezoidintegral.hpp"
+			<Filter
+				Name="Interpolations"
 				>
-			</File>
+				<File
+					RelativePath=".\ql\Math\backwardflatinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\bicubicsplineinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\bilinearinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\cubicspline.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\extrapolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\forwardflatinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\linearinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\loglinearinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\multicubicspline.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\sabrinterpolation.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Statistics"
+				>
+				<File
+					RelativePath=".\ql\Math\convergencestatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\discrepancystatistics.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\discrepancystatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\gaussianstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\generalstatistics.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\generalstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\incrementalstatistics.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\incrementalstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\riskstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\statistics.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Distributions"
+				>
+				<File
+					RelativePath="ql\Math\binomialdistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\bivariatenormaldistribution.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\bivariatenormaldistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\chisquaredistribution.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\chisquaredistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\gammadistribution.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\gammadistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\normaldistribution.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\normaldistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\poissondistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\sequencestatistics.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Integrals"
+				>
+				<File
+					RelativePath=".\ql\Math\gaussianquadratures.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\gaussianquadratures.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\kronrodintegral.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\segmentintegral.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\simpsonintegral.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\trapezoidintegral.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MatrixUtilities"
+				>
+				<File
+					RelativePath="ql\Math\choleskydecomposition.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\choleskydecomposition.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\pseudosqrt.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\pseudosqrt.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\svd.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\svd.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\symmetricschurdecomposition.cpp"
+					>
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\Math\symmetricschurdecomposition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\tqreigendecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\tqreigendecomposition.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="MonteCarlo"
@@ -4158,7 +4178,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Optimization\linesearch.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Optimization\linesearch.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\linesearchbasedmethod.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\linesearchbasedmethod.hpp"
 				>
 			</File>
 			<File
@@ -4167,6 +4199,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\Optimization\lmdif.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\method.cpp"
 				>
 			</File>
 			<File
@@ -6564,6 +6600,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\sabr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\sabr.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\smilesection.cpp"
 				>
 			</File>
@@ -6980,6 +7024,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Products\compositeproduct.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Products\marketmodelratchet.hpp"
 					>
 				</File>
 				<File

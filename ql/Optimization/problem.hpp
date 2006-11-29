@@ -62,7 +62,7 @@ namespace QuantLib {
         //! Minimization
         void minimize() const { method_.minimize(*this); }
 
-        Array& minimumValue() const { return method_.x (); }
+        Array minimumValue() const { return method_.x (); }
 
       protected:
         //! Unconstrained cost function

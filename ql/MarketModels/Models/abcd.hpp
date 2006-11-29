@@ -22,13 +22,17 @@
 #define quantlib_abcd_hpp
 
 #include <ql/types.hpp>
-#include <ql/Optimization/method.hpp>
+#include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/costfunction.hpp>
+#include <ql/Optimization/constraint.hpp>
 #include <boost/shared_ptr.hpp>
 #include <functional>
 #include <vector>
 
-namespace QuantLib
-{
+namespace QuantLib {
+
+    class OptimizationMethod;
+
     //! Abcd functional form for instantaneous volatility
     /*!
         \f[
