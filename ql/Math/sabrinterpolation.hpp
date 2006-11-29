@@ -243,7 +243,7 @@ namespace QuantLib {
                         guess[2] = std::sqrt(nu_);
                         guess[3] = std::tan(M_PI/2.0*rho_);
 
-                        EndCriteria endCriteria(300000, 1e-10);
+                        EndCriteria endCriteria(60000, 1e-8);
 
                         //boost::shared_ptr<LineSearch> lineSearch(new
                         //    ArmijoLineSearch(1e-12, 0.15, 0.55));
