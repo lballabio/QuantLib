@@ -1650,7 +1650,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                             initialNumeraireValue;
 
                         if (printReport_)
-                            BOOST_MESSAGE("    initial estimate: " << firstPassValue);
+                            BOOST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
 
                         ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
