@@ -68,8 +68,7 @@ namespace QuantLib {
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
                                           const Handle<YieldTermStructure>& h,
                                           const Handle<Quote>& spread)
-    : ZeroYieldStructure(h->dayCounter()),
-      originalCurve_(h), spread_(spread) {
+    : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);
     }

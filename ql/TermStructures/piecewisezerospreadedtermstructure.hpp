@@ -74,8 +74,7 @@ namespace QuantLib {
                                    const Handle<YieldTermStructure>& h,
                                    const std::vector<Handle<Quote> >& spreads,
                                    const std::vector<Date>& dates)
-    : ZeroYieldStructure(h->dayCounter()),
-      originalCurve_(h), spreads_(spreads), dates_(dates),
+    : originalCurve_(h), spreads_(spreads), dates_(dates),
       times_(dates_.size()) {
         QL_REQUIRE(spreads_.size() > 0, "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),

@@ -69,7 +69,7 @@ namespace QuantLib {
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
                                           const Handle<YieldTermStructure>& h,
                                           const Handle<Quote>& spread)
-    : ForwardRateStructure(h->dayCounter()), originalCurve_(h), spread_(spread) {
+    : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);
     }
