@@ -49,15 +49,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolTermStructure(const DayCounter& dc);
+        BlackVolTermStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
-                              const DayCounter& dc = DayCounter());
+                              const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVolTermStructure(Integer settlementDays,
                               const Calendar&,
-                              const DayCounter& dc = DayCounter());
+                              const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
@@ -150,15 +150,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVolatilityTermStructure(const DayCounter& dc);
+        BlackVolatilityTermStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate,
                                      const Calendar& cal = Calendar(),
-                                     const DayCounter& dc = DayCounter());
+                                     const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVolatilityTermStructure(Integer settlementDays,
                                      const Calendar&,
-                                     const DayCounter& dc = DayCounter());
+                                     const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Visitability
         //@{
@@ -192,15 +192,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        BlackVarianceTermStructure(const DayCounter& dc);
+        BlackVarianceTermStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate,
                                    const Calendar& cal = Calendar(),
-                                   const DayCounter& dc = DayCounter());
+                                   const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         BlackVarianceTermStructure(Integer settlementDays,
                                    const Calendar&,
-                                   const DayCounter& dc = DayCounter());
+                                   const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name Visitability
         //@{
@@ -233,15 +233,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        LocalVolTermStructure(const DayCounter& dc);
+        LocalVolTermStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         LocalVolTermStructure(const Date& referenceDate,
                               const Calendar& cal = Calendar(),
-                              const DayCounter& dc = DayCounter());
+                              const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         LocalVolTermStructure(Integer settlementDays,
                               const Calendar&,
-                              const DayCounter& dc = DayCounter());
+                              const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility

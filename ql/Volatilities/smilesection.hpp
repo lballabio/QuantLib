@@ -46,7 +46,7 @@ namespace QuantLib {
             exerciseTime_ = dc_.yearFraction(refDate, d);
         };
         SmileSectionInterface(Time exerciseTime,
-                              const DayCounter& dc = DayCounter())
+                              const DayCounter& dc = Actual365Fixed())
         : dc_(dc), exerciseTime_(exerciseTime) {
             QL_REQUIRE(exerciseTime_>=0.0,
                        "expiry time must be positive: " <<

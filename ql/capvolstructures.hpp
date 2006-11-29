@@ -45,15 +45,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapVolatilityStructure(const DayCounter& dc);
+        CapVolatilityStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         CapVolatilityStructure(const Date& referenceDate,
                                const Calendar& cal = Calendar(),
-                               const DayCounter& dc = DayCounter());
+                               const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         CapVolatilityStructure(Integer settlementDays,
                                const Calendar&,
-                               const DayCounter& dc = DayCounter());
+                               const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~CapVolatilityStructure() {}
         //! \name Volatility
@@ -100,15 +100,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapletVolatilityStructure(const DayCounter& dc);
+        CapletVolatilityStructure(const DayCounter& dc = Actual365Fixed());
         //! initialize with a fixed reference date
         CapletVolatilityStructure(const Date& referenceDate,
                                   const Calendar& cal = Calendar(),
-                                  const DayCounter& dc = DayCounter());
+                                  const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
         CapletVolatilityStructure(Integer settlementDays,
                                   const Calendar&,
-                                  const DayCounter& dc = DayCounter());
+                                  const DayCounter& dc = Actual365Fixed());
         //@}
         virtual ~CapletVolatilityStructure() {}
         //! \name Volatility and Variance
