@@ -147,7 +147,7 @@ void setup() {
                                      lengths,
                                      volatilities,
                                      iborIndex_->dayCounter(),
-                                     Unadjusted)));
+                                     Following)));
 
     swaptionVolatilityMatrix_.currentLink()->enableExtrapolation();
 
