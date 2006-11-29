@@ -174,11 +174,13 @@ namespace QuantLib {
 
     template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::currentLink() const {
+        QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }
 
     template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::operator->() const {
+        QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }
 
