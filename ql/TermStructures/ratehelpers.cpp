@@ -87,6 +87,7 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(latestDate_)-1.0)/yearFraction_;
+        QL_ENSURE(convAdj_->value()>=0.0, "negative convexity adjustment");
         Rate futureRate = forwardRate + convAdj_->value();
         return 100 * (1.0 - futureRate);
     }
