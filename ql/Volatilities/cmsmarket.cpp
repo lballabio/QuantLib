@@ -316,12 +316,15 @@ namespace QuantLib {
         switch (calibrationType_) {
             case OnSpread:
                 method->setEndCriteria(EndCriteria(30, 1e-1));
+                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
                 break;
             case OnPrice:
                 method->setEndCriteria(EndCriteria(30, 300.));
+                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
                 break;
             case OnForwardCmsPrice:
                 method->setEndCriteria(EndCriteria(30, 300.));
+                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
                 break;
             default:
                 QL_FAIL("unknown/illegal calibration type");
