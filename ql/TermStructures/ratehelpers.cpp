@@ -87,7 +87,11 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(latestDate_)-1.0)/yearFraction_;
-        QL_ENSURE(convAdj_->value()>=0.0, "negative convexity adjustment");
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+        QL_ENSURE(convAdj_->value() >= 0.0,
+                  "Negative (" << convAdj_->value() <<
+                   ") futures convexity adjustment");
+        #endif
         Rate futureRate = forwardRate + convAdj_->value();
         return 100 * (1.0 - futureRate);
     }
@@ -95,6 +99,11 @@ namespace QuantLib {
     DiscountFactor FuturesRateHelper::discountGuess() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         Rate futureRate = (100.0-quote_->value())/100.0;
+        #ifdef QL_EXTRA_SAFETY_CHECKS
+        QL_ENSURE(convAdj_->value() >= 0.0,
+                  "Negative (" << convAdj_->value() <<
+                   ") futures convexity adjustment");
+        #endif
         Rate forwardRate = futureRate - convAdj_->value();
         // extrapolation shouldn't be needed if the input makes sense
         // but we'll play it safe
