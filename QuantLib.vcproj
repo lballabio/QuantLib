@@ -8706,6 +8706,9 @@
 				RelativePath="ql\Volatilities\impliedvoltermstructure.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\interpolatedsmilesection.hpp">
+			</File>
+			<File
 				RelativePath="ql\Volatilities\localconstantvol.hpp">
 			</File>
 			<File
