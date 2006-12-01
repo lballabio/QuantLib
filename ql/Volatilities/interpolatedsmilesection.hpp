@@ -62,7 +62,8 @@ namespace QuantLib {
         const Interpolator& interpolator = Interpolator())
     : SmileSectionInterface(timeToExpiry), strikes_(strikes),
         volatilitiesHandles_(volatilitiesHandles) {
-
+    for(Size i=0; i<volatilitiesHandles_.size(); ++i)
+        registerWith(volatilitiesHandles_[i]);
     // check strikes!!!!!!!!!!!!!!!!!!!!
     interpolation_ = interpolator.interpolate(strikes_.begin(),
                                               strikes_.end(),
@@ -78,7 +79,8 @@ namespace QuantLib {
         const Interpolator& interpolator = Interpolator())
     : SmileSectionInterface(d, dc), strikes_(strikes),
         volatilitiesHandles_(volatilitiesHandles) {
-
+    for(Size i=0; i<volatilitiesHandles_.size(); ++i)
+        registerWith(volatilitiesHandles_[i]);
        // check strikes!!!!!!!!!!!!!!!!!!!!
     interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                strikes_.end(),
