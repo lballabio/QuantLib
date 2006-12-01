@@ -156,6 +156,54 @@ namespace QuantLib {
     };
 
 
+    //! %SABR interpolation factory
+    class SABR {
+    public:
+        SABR(Time t, 
+             Real forward, 
+             Real alpha, 
+             Real beta,
+             Real nu,
+             Real rho,
+             bool isAlphaFixed,
+             bool isBetaFixed,
+             bool isNuFixed,
+             bool isRhoFixed,
+             bool vegaWeighted = false,
+             const boost::shared_ptr<OptimizationMethod> method
+                = boost::shared_ptr<OptimizationMethod>()): 
+                t_(t), forward_(forward), alpha_(alpha), beta_(beta),nu_(nu),
+                rho_(rho), isAlphaFixed_(isAlphaFixed),
+                isBetaFixed_(isBetaFixed), isNuFixed_(isNuFixed),
+                isRhoFixed_(isRhoFixed), vegaWeighted_(vegaWeighted),
+                method_(method){}
+                SABR(){};
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return SABRInterpolation(xBegin, xEnd, yBegin, t_,  forward_,
+                alpha_, beta_, nu_, rho_, isAlphaFixed_, isBetaFixed_,
+                isNuFixed_, isRhoFixed_, vegaWeighted_, 
+                method_);
+    }
+
+    private:
+        Time t_;
+        Real forward_;
+        Real alpha_;
+        Real beta_;
+        Real nu_;
+        Real rho_;
+        bool isAlphaFixed_;
+        bool isBetaFixed_;
+        bool isNuFixed_;
+        bool isRhoFixed_;
+        bool vegaWeighted_;
+        const boost::shared_ptr<OptimizationMethod> method_;
+    };
+
+
+
     namespace detail {
 
         template <class I1, class I2>
