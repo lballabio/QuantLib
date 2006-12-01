@@ -79,7 +79,7 @@ namespace QuantLib {
          const DayCounter& volatilityDayCounter,
          Real impliedVolatilityAccuracy,
          Size maxEvaluations,
-         const std::vector<boost::shared_ptr<SmileSectionInterface> >&
+         const std::vector<boost::shared_ptr<SmileSection> >&
              smileSectionInterfaces)
     : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),

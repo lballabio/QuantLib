@@ -53,8 +53,8 @@ namespace QuantLib {
          const DayCounter& volatilityDayCounter = Actual365Fixed(),
          Real impliedVolatilityAccuracy = 1.0e-6,
          Size maxEvaluations = 100,
-         const std::vector<boost::shared_ptr<SmileSectionInterface> >& 
-             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSectionInterface> >()
+         const std::vector<boost::shared_ptr<SmileSection> >& 
+             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >()
              );
         //@}
         //! \name LazyObject interface

@@ -135,15 +135,15 @@ namespace QuantLib {
         Rate maxStrike() const;
 
 		//! return trivial smile section
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                                  const Period& optionTenor,
                                                  const Period& swapTenor) const;
         //! return trivial smile section
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& optionDates,
                                                  const Period& swapTenor) const;
         //! return trivial smile section
-        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+        virtual boost::shared_ptr<SmileSection> smileSection(
                                                         Time optionTime,
                                                         Time swapLength) const;
         //@}

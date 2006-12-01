@@ -52,7 +52,7 @@ int fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
 Rate flatForwardRate;
-std::vector<boost::shared_ptr<SmileSectionInterface> > smileSections;
+std::vector<boost::shared_ptr<SmileSection> > smileSections;
 Matrix v;
 QL_END_TEST_LOCALS(CapsStripperTest)
 

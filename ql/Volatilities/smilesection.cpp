@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    SmileSectionInterface::SmileSectionInterface(const Date& d,
+    SmileSection::SmileSection(const Date& d,
                                                  const DayCounter& dc,
                                                  const Date& referenceDate)
     : exerciseDate_(d), dc_(dc) {
@@ -37,7 +37,7 @@ namespace QuantLib {
         exerciseTime_ = dc_.yearFraction(refDate, d);
     };
 
-    SmileSectionInterface::SmileSectionInterface(Time exerciseTime,
+    SmileSection::SmileSection(Time exerciseTime,
                                                  const DayCounter& dc)
     : dc_(dc), exerciseTime_(exerciseTime) {
         QL_REQUIRE(exerciseTime_>=0.0,
@@ -47,7 +47,7 @@ namespace QuantLib {
 
     SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
                                        const std::vector<Real>& sabrParams)
-    : SmileSectionInterface(timeToExpiry) {
+    : SmileSection(timeToExpiry) {
 
         alpha_ = sabrParams[0];
         beta_ = sabrParams[1];
@@ -69,9 +69,9 @@ namespace QuantLib {
     }
 
     SabrSmileSection::SabrSmileSection(const Date& d,
-                                       const DayCounter& dc,
-                                       const std::vector<Real>& sabrParams)
-    : SmileSectionInterface(d, dc) {
+                                       const std::vector<Real>& sabrParams,
+                                       const DayCounter& dc)
+    : SmileSection(d, dc) {
 
         alpha_ = sabrParams[0];
         beta_ = sabrParams[1];
@@ -81,15 +81,7 @@ namespace QuantLib {
 
         QL_REQUIRE(forward_>0.0, "forward must be positive: "
                                 << io::rate(forward_) << " not allowed");
-        QL_REQUIRE(alpha_>0.0, "alpha must be positive: "
-                              << alpha_ << " not allowed");
-        QL_REQUIRE(beta_>=0.0 && beta_<=1.0, "beta must be in [0.0, 1.0]: "
-                                           << beta_ << " not allowed");
-        QL_REQUIRE(nu_>=0.0, "nu must be non negative: "
-                            << nu_ << " not allowed");
-        QL_REQUIRE(rho_*rho_<=1.0, "rho square must be not greater than one: "
-                                 << rho_ << " not allowed");
-
+        validateSabrParameters(alpha_, beta_, nu_, rho_);
     }
 
      Real SabrSmileSection::variance(Rate strike) const {

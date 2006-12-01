@@ -105,10 +105,10 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityCube interface
         //@{
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                               Time optionTime,
                                               Time swapLength) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
         //@}
@@ -127,7 +127,7 @@ namespace QuantLib {
         void recalibration(Real beta,
                            const Period& swapTenor);
      protected:
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                     Time optionTime,
                                     Time swapLength,
                                     const Cube& sabrParametersCube) const;
@@ -141,7 +141,7 @@ namespace QuantLib {
         mutable Cube volCubeAtmCalibrated_;
         mutable Cube sparseParameters_;
         mutable Cube denseParameters_;
-        mutable std::vector< std::vector<boost::shared_ptr<SmileSectionInterface> > >
+        mutable std::vector< std::vector<boost::shared_ptr<SmileSection> > >
                                                                 sparseSmiles_;
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;

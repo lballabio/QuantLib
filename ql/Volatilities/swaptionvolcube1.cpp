@@ -332,7 +332,7 @@ namespace QuantLib {
         std::vector<Time> swapLengths(sparseParameters_.swapLengths());
 
         for (Size j=0; j<optionTimes.size(); j++) {
-            std::vector<boost::shared_ptr<SmileSectionInterface> > tmp;
+            std::vector<boost::shared_ptr<SmileSection> > tmp;
             for (Size k=0; k<swapLengths.size(); k++) {
                 tmp.push_back(smileSection(optionTimes[j], swapLengths[k],
                                            sparseParameters_));
@@ -374,9 +374,9 @@ namespace QuantLib {
         if (swapLengthsPreviousIndex >= swapLengths.size()-1)
             swapLengthsPreviousIndex = swapLengths.size()-2;
 
-        std::vector< std::vector<boost::shared_ptr<SmileSectionInterface> > > smiles;
-        std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnPreviousExpiry;
-        std::vector<boost::shared_ptr<SmileSectionInterface> >  smilesOnNextExpiry;
+        std::vector< std::vector<boost::shared_ptr<SmileSection> > > smiles;
+        std::vector<boost::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
+        std::vector<boost::shared_ptr<SmileSection> >  smilesOnNextExpiry;
 
         QL_REQUIRE(optionTimesPreviousIndex+1 < sparseSmiles_.size(),
                    "optionTimesPreviousIndex+1 >= sparseSmiles_.size()");
@@ -446,7 +446,7 @@ namespace QuantLib {
         return result;
     }
 
-    boost::shared_ptr<SmileSectionInterface>
+    boost::shared_ptr<SmileSection>
     SwaptionVolCube1::smileSection(
                                     Time optionTime, Time swapLength,
                                     const Cube& sabrParametersCube) const {
@@ -454,11 +454,11 @@ namespace QuantLib {
         calculate();
         const std::vector<Real> sabrParameters =
             sabrParametersCube(optionTime, swapLength);
-        return boost::shared_ptr<SmileSectionInterface>(new
+        return boost::shared_ptr<SmileSection>(new
             SabrSmileSection(optionTime, sabrParameters));
     }
 	
-	boost::shared_ptr<SmileSectionInterface>
+	boost::shared_ptr<SmileSection>
     SwaptionVolCube1::smileSection(Time optionTime,
                                                Time swapLength) const {
         if (isAtmCalibrated_)
@@ -467,7 +467,7 @@ namespace QuantLib {
             return smileSection(optionTime, swapLength, sparseParameters_);
     }
 
-    boost::shared_ptr<SmileSectionInterface>
+    boost::shared_ptr<SmileSection>
     SwaptionVolCube1::smileSection(
         const Date& optionDate, const Period& swapTenor) const {
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);

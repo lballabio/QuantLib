@@ -116,7 +116,7 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
-        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+        virtual boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& optionDate,
                                                  const Period& swapTenor) const {
             const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
@@ -131,7 +131,7 @@ namespace QuantLib {
 		Date optionDateFromTenor(const Period& optionTenor) const;
       protected:
         //! return smile section
-        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+        virtual boost::shared_ptr<SmileSection> smileSection(
             Time optionTime, Time swapLength) const = 0;
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time optionTime,

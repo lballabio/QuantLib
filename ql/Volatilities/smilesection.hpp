@@ -33,14 +33,14 @@ namespace QuantLib {
 
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
-    class SmileSectionInterface: public Observable {
+    class SmileSection: public Observable {
       public:
-        SmileSectionInterface(const Date& d,
-                              const DayCounter& dc = Actual365Fixed(),
-                              const Date& referenceDate = Date());
-        SmileSectionInterface(Time exerciseTime,
-                              const DayCounter& dc = Actual365Fixed());
-        virtual ~SmileSectionInterface() {};
+        SmileSection(const Date& d,
+                     const DayCounter& dc = Actual365Fixed(),
+                     const Date& referenceDate = Date());
+        SmileSection(Time exerciseTime,
+                     const DayCounter& dc = Actual365Fixed());
+        virtual ~SmileSection() {};
 
         virtual Real variance(Rate strike) const = 0;
         virtual Volatility volatility(Rate strike) const = 0;
@@ -54,18 +54,18 @@ namespace QuantLib {
         Time exerciseTime_;
     };
 
-    class FlatSmileSection : public SmileSectionInterface {
+    class FlatSmileSection : public SmileSection {
       public:
         FlatSmileSection(const Date& d,
-                         const DayCounter& dc,
                          Volatility vol,
+                         const DayCounter& dc,
                          const Date& referenceDate = Date())
-        : SmileSectionInterface(d, dc, referenceDate), vol_(vol) {};
+        : SmileSection(d, dc, referenceDate), vol_(vol) {};
 
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
                          const DayCounter& dc = Actual365Fixed())
-        : SmileSectionInterface(exerciseTime, dc), vol_(vol) {};
+        : SmileSection(exerciseTime, dc), vol_(vol) {};
 
         Real variance(Rate strike) const { return vol_*vol_*exerciseTime_; }
         Volatility volatility(Rate strike) const { return vol_; }
@@ -73,13 +73,13 @@ namespace QuantLib {
         Volatility vol_;
     };
 
-    class SabrSmileSection : public SmileSectionInterface {
+    class SabrSmileSection : public SmileSection {
       public:
         SabrSmileSection(Time timeToExpiry,
                          const std::vector<Real>& sabrParameters);
-        SabrSmileSection(const Date&,
-                         const DayCounter&,
-                         const std::vector<Real>& sabrParameters);
+        SabrSmileSection(const Date& d,
+                         const std::vector<Real>& sabrParameters,
+                         const DayCounter& dc = Actual365Fixed());
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
     private:

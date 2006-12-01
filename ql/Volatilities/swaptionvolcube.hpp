@@ -65,13 +65,13 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
-        virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+        virtual boost::shared_ptr<SmileSection> smileSection(
                                                   Time optionTime,
                                                   Time swapLength) const = 0;
-		virtual boost::shared_ptr<SmileSectionInterface> smileSection(
+		virtual boost::shared_ptr<SmileSection> smileSection(
                                             const Date& optionDate,
                                             const Period& swapTenor) const = 0;
-		boost::shared_ptr<SmileSectionInterface>
+		boost::shared_ptr<SmileSection>
 		smileSection(const Period& optionTenor, const Period& swapTenor) const {
 				Date optionDate = optionDateFromTenor(optionTenor); 
 				return smileSection(optionDate, swapTenor);

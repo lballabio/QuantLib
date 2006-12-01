@@ -34,19 +34,19 @@ namespace QuantLib {
     class CapFloor;
 
     //  temporary fucntions for test purpose
-    inline double test (boost::shared_ptr<SmileSectionInterface>){
+    inline double test (boost::shared_ptr<SmileSection>){
         return 0;
     }
 
-    inline double test2 (std::vector<boost::shared_ptr<SmileSectionInterface> >&){
+    inline double test2 (std::vector<boost::shared_ptr<SmileSection> >&){
         return 0;
     }
 
-    typedef std::vector<boost::shared_ptr<SmileSectionInterface> > \
+    typedef std::vector<boost::shared_ptr<SmileSection> > \
         SmileSectionInterfaceVector;
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
-    typedef std::vector<Handle<SmileSectionInterface> > \
+    typedef std::vector<Handle<SmileSection> > \
         SmileSectionInterfaceHandlesVector;
 
    class SmileSectionsVolStructure: public CapletVolatilityStructure{

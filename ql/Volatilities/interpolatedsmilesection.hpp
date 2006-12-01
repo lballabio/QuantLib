@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     template<class Interpolator = SABR>
-    class InterpolatedSmileSection : public SmileSectionInterface,
+    class InterpolatedSmileSection : public SmileSection,
                                      public LazyObject {
       public:
         InterpolatedSmileSection(
@@ -80,7 +80,7 @@ namespace QuantLib {
                                const std::vector<Handle<Quote> >& volHandles,
                                const Interpolator& interpolator,
                                const DayCounter& dc)
-    : SmileSectionInterface(timeToExpiry, dc), strikes_(strikes),
+    : SmileSection(timeToExpiry, dc), strikes_(strikes),
       volHandles_(volHandles), vols_(volHandles.size())
     {
         for (Size i=0; i<volHandles_.size(); ++i)
@@ -99,7 +99,7 @@ namespace QuantLib {
                                 const std::vector<Volatility>& vols,
                                 const Interpolator& interpolator,
                                 const DayCounter& dc)
-    : SmileSectionInterface(timeToExpiry, dc), strikes_(strikes),
+    : SmileSection(timeToExpiry, dc), strikes_(strikes),
       volHandles_(vols.size()), vols_(vols)
     {
         // fill dummy handles to allow generic handle-based
@@ -122,7 +122,7 @@ namespace QuantLib {
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
-    : SmileSectionInterface(d, dc, referenceDate), strikes_(strikes),
+    : SmileSection(d, dc, referenceDate), strikes_(strikes),
       volHandles_(volHandles), vols_(volHandles.size())
     {
         for (Size i=0; i<volHandles_.size(); ++i)
@@ -142,7 +142,7 @@ namespace QuantLib {
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
-    : SmileSectionInterface(d, dc, referenceDate), strikes_(strikes),
+    : SmileSection(d, dc, referenceDate), strikes_(strikes),
       volHandles_(vols.size()), vols_(vols)
     {
         // fill dummy handles to allow generic handle-based

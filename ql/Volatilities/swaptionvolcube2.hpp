@@ -52,10 +52,10 @@ namespace QuantLib {
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
 
-		boost::shared_ptr<SmileSectionInterface> smileSection(
+		boost::shared_ptr<SmileSection> smileSection(
                                               Time optionTime,
                                               Time swapLength) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
         //@}

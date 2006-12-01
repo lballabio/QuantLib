@@ -60,13 +60,13 @@ namespace QuantLib {
         Real maxStrike() const;
 
         //! return trivial smile section
-        boost::shared_ptr<SmileSectionInterface> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& optioDate,
                                                  const Period& swapTenor) const;
 
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
-        boost::shared_ptr<SmileSectionInterface> smileSection(Time optionTime,
+        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      Time swapLength) const;
         Volatility volatilityImpl(const Date&, const Period&, Rate) const;
         //@}
@@ -147,19 +147,19 @@ namespace QuantLib {
         return volatility_->value();
     }
 
-    inline boost::shared_ptr<SmileSectionInterface>
+    inline boost::shared_ptr<SmileSection>
     SwaptionConstantVolatility::smileSection(Time optionTime,
                                              Time) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSectionInterface>(new 
+        return boost::shared_ptr<SmileSection>(new 
             FlatSmileSection(optionTime, atmVol));
     }
 
-    inline boost::shared_ptr<SmileSectionInterface>
+    inline boost::shared_ptr<SmileSection>
     SwaptionConstantVolatility::smileSection(const Date& optionDate,
                                              const Period&) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSectionInterface>(new
+        return boost::shared_ptr<SmileSection>(new
             FlatSmileSection(timeFromReference(optionDate), atmVol));
     }
 
