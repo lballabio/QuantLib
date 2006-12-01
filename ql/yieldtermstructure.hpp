@@ -273,7 +273,7 @@ namespace QuantLib {
                                                 Compounding comp,
                                                 Frequency freq,
                                                 bool extrapolate) const {
-        return forwardRate(d, d+p, dayCounter, comp, freq);
+        return forwardRate(d, d+p, dayCounter, comp, freq, extrapolate);
     }
 
     inline InterestRate YieldTermStructure::forwardRate(

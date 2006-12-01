@@ -27,28 +27,27 @@ namespace QuantLib {
                              Real functionEpsilon,
                              Real gradientEpsilon)
     : maxIteration_(maxIteration),
-      functionEpsilon_(functionEpsilon),
-      gradientEpsilon_(gradientEpsilon),
+      functionEpsilon_(functionEpsilon), gradientEpsilon_(gradientEpsilon),
+      positiveOptimization_(true), 
       maxIterStatPt_(std::min(Size(maxIteration/10.0), Size(1000))),
-      statState_(0), endCriteria_(none),
-      positiveOptimization_(true) {
-          if (gradientEpsilon_==Null<Real>())
-              gradientEpsilon_ = functionEpsilon_;
+      statState_(0), endCriteria_(none) {
+        if (gradientEpsilon_==Null<Real>())
+            gradientEpsilon_ = functionEpsilon_;
     }
 
-	std::ostream& operator<<(std::ostream& out,  EndCriteria::Type ec) {
-		switch (ec) {
-		case QuantLib::EndCriteria::none:
-			return out << "None";
-		case QuantLib::EndCriteria::maxIter:
-			return out << "MaxIterations";
-		case QuantLib::EndCriteria::statPt:
-			return out << "StationaryPoint";
-		case QuantLib::EndCriteria::statGd:
-			return out << "StationaryGradient";
-		default:
+    std::ostream& operator<<(std::ostream& out,  EndCriteria::Type ec) {
+        switch (ec) {
+        case QuantLib::EndCriteria::none:
+            return out << "None";
+        case QuantLib::EndCriteria::maxIter:
+            return out << "MaxIterations";
+        case QuantLib::EndCriteria::statPt:
+            return out << "StationaryPoint";
+        case QuantLib::EndCriteria::statGd:
+            return out << "StationaryGradient";
+        default:
             QL_FAIL("unknown EndCriteria::Type (" << Integer(ec) << ")");
-		}
-	}
+        }
+    }
 
 }

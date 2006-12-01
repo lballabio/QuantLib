@@ -59,7 +59,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         Real guess;
-        // we take the previous value of the volatilityParameter as guess 
+        // we take the previous value of the volatilityParameter as guess
         // only if it is not equal to one of the bounds
         if (volatilityParameter> minVol && volatilityParameter< maxVol)
             guess = volatilityParameter;
@@ -153,27 +153,22 @@ namespace QuantLib {
         Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
         Size i,j;
-        Real capPrice;
+        Real capPrice = 0.0;
         try {
-            for (j = 0 ; j < strikes_.size(); j++){
+            for (j = 0 ; j < strikes_.size(); j++) {
                 for (i = 0 ; i < tenors_.size(); i++) {
                     CapFloor & mktCap = *marketDataCap_[i][j];
-                    capPrice = mktCap.NPV();
+                    Real capPrice = mktCap.NPV();
                     fitVolatilityParameter(calibCap_[i][j],
                         volatilityParameters[i][j],
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
                 }
             }
-        } catch(QuantLib::Error& e) {
-            std::ostringstream _ql_msg_stream;
-            _ql_msg_stream << "CapsStripper::performCalculations:"
-                              "\nbooststrap failure at option tenor " << tenors_[i] <<
-                              ", strike " << strikes_[j] <<
-                              ", cap price is " << capPrice;
-            _ql_msg_stream  << "\n" << e.what();
-            throw QuantLib::Error(__FILE__,__LINE__,
-                                  BOOST_CURRENT_FUNCTION,_ql_msg_stream.str());
-
+        } catch(QuantLib::Error&) {
+            QL_FAIL("CapsStripper::performCalculations:"
+                    "\nbooststrap failure at option tenor " << tenors_[i] <<
+                    ", strike " << strikes_[j] <<
+                    ", cap price is " << capPrice);
         }
     }
 
