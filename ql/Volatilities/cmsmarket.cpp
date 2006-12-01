@@ -331,8 +331,8 @@ namespace QuantLib {
         }
         //Array guess(2);
 
-        const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
         //guess[0] = volCubeBySabr->sparseSabrParameters()[0][3];
         //guess[1] = cmsMarket_->meanReversions()[0][0];
 
@@ -358,8 +358,8 @@ namespace QuantLib {
         const Array y = x;
         Real beta = y[0];
         Real meanReversion = y[1];
-        const boost::shared_ptr<SwaptionVolatilityCubeBySabr> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolatilityCubeBySabr>(volCube_.currentLink());
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
 
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
         for (Size i=0; i<swapTenors.size(); i++){

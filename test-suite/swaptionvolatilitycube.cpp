@@ -25,8 +25,8 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Volatilities/swaptionvolcubebylinear.hpp>
-#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
+#include <ql/Volatilities/swaptionvolcube2.hpp>
+#include <ql/Volatilities/swaptionvolcube1.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -342,7 +342,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     }
     std::vector<bool> isParameterFixed(4, false);
 
-    SwaptionVolatilityCubeBySabr volCube(atmVolMatrix_,
+    SwaptionVolCube1 volCube(atmVolMatrix_,
                                          optionTenors_,
                                          swapTenors_,
                                          strikeSpreads_,

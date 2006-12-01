@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    class SwaptionVolatilityCubeBySabr : public SwaptionVolatilityCube, 
+    class SwaptionVolCube1 : public SwaptionVolatilityCube, 
                                          public LazyObject {
         class Cube {
           public:
@@ -84,7 +84,7 @@ namespace QuantLib {
             mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
          };
       public:
-        SwaptionVolatilityCubeBySabr(
+        SwaptionVolCube1(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
             const std::vector<Period>& swapTenors,

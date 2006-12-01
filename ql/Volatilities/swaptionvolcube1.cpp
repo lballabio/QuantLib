@@ -18,7 +18,7 @@
 */
 
 
-#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
+#include <ql/Volatilities/swaptionvolcube1.hpp>
 #include <ql/Math/sabrinterpolation.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
@@ -32,10 +32,10 @@
 namespace QuantLib {
 
     //=======================================================================//
-    //                        SwaptionVolatilityCubeBySabr                   //
+    //                        SwaptionVolCube1                   //
     //=======================================================================//
 
-    SwaptionVolatilityCubeBySabr::SwaptionVolatilityCubeBySabr(
+    SwaptionVolCube1::SwaptionVolCube1(
                 const Handle<SwaptionVolatilityStructure>& atmVolStructure,
                 const std::vector<Period>& optionTenors,
                 const std::vector<Period>& swapTenors,
@@ -65,7 +65,7 @@ namespace QuantLib {
         
     }
 
-    void SwaptionVolatilityCubeBySabr::performCalculations() const{
+    void SwaptionVolCube1::performCalculations() const{
         //! set marketVolCube_ by volSpreads_ quotes
         marketVolCube_ = Cube(optionDates_, swapTenors_,
                               optionTimes_, swapLengths_, nStrikes_);
@@ -95,8 +95,8 @@ namespace QuantLib {
         }
     }
 
-    SwaptionVolatilityCubeBySabr::Cube
-    SwaptionVolatilityCubeBySabr::sabrCalibration(
+    SwaptionVolCube1::Cube
+    SwaptionVolCube1::sabrCalibration(
                                             const Cube& marketVolCube) const {
 
         const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
@@ -180,7 +180,7 @@ namespace QuantLib {
         return sabrParametersCube;
 
     }
-    void SwaptionVolatilityCubeBySabr::sabrCalibrationSection(
+    void SwaptionVolCube1::sabrCalibrationSection(
                                             const Cube& marketVolCube,
                                             const Period& swapTenor) const {
 
@@ -261,7 +261,7 @@ namespace QuantLib {
 
     }
 
-    void SwaptionVolatilityCubeBySabr::fillVolatilityCube() const{
+    void SwaptionVolCube1::fillVolatilityCube() const{
 
         const boost::shared_ptr<SwaptionVolatilityMatrix> atmVolStructure =
             boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
@@ -326,7 +326,7 @@ namespace QuantLib {
     }
 
 
-    void SwaptionVolatilityCubeBySabr::createSparseSmiles() const {
+    void SwaptionVolCube1::createSparseSmiles() const {
 
         std::vector<Time> optionTimes(sparseParameters_.optionTimes());
         std::vector<Time> swapLengths(sparseParameters_.swapLengths());
@@ -342,7 +342,7 @@ namespace QuantLib {
     }
 
 
-    std::vector<Real> SwaptionVolatilityCubeBySabr::spreadVolInterpolation(
+    std::vector<Real> SwaptionVolCube1::spreadVolInterpolation(
         const Date& atmOptionDate, const Period& atmSwapTenor) const {
 
         const std::pair<Time, Time> p =
@@ -447,7 +447,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeBySabr::smileSection(
+    SwaptionVolCube1::smileSection(
                                     Time optionTime, Time swapLength,
                                     const Cube& sabrParametersCube) const {
 
@@ -459,7 +459,7 @@ namespace QuantLib {
     }
 	
 	boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeBySabr::smileSection(Time optionTime,
+    SwaptionVolCube1::smileSection(Time optionTime,
                                                Time swapLength) const {
         if (isAtmCalibrated_)
             return smileSection(optionTime, swapLength, denseParameters_);
@@ -468,32 +468,32 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeBySabr::smileSection(
+    SwaptionVolCube1::smileSection(
         const Date& optionDate, const Period& swapTenor) const {
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return smileSection(p.first, p.second);
     }
     
-    Matrix SwaptionVolatilityCubeBySabr::sparseSabrParameters() const {
+    Matrix SwaptionVolCube1::sparseSabrParameters() const {
         calculate();
         return sparseParameters_.browse();
     }
 
-    Matrix SwaptionVolatilityCubeBySabr::denseSabrParameters() const {
+    Matrix SwaptionVolCube1::denseSabrParameters() const {
         calculate();
         return denseParameters_.browse();
     }
 
-    Matrix SwaptionVolatilityCubeBySabr::marketVolCube() const {
+    Matrix SwaptionVolCube1::marketVolCube() const {
         calculate();
         return marketVolCube_.browse();
     }
-    Matrix SwaptionVolatilityCubeBySabr::volCubeAtmCalibrated() const {
+    Matrix SwaptionVolCube1::volCubeAtmCalibrated() const {
         calculate();
         return volCubeAtmCalibrated_.browse();
     }
 
-    void SwaptionVolatilityCubeBySabr::recalibration(Real beta,
+    void SwaptionVolCube1::recalibration(Real beta,
                                                      const Period& swapTenor){
         Matrix newBetaGuess(nOptionTenors_, nSwapTenors_, beta);
         parametersGuess_.setLayer(1, newBetaGuess);
@@ -508,11 +508,11 @@ namespace QuantLib {
     }
 
     //======================================================================//
-    //                      SwaptionVolatilityCubeBySabr::Cube              //
+    //                      SwaptionVolCube1::Cube              //
     //======================================================================//
 
 
-    SwaptionVolatilityCubeBySabr::Cube::Cube(
+    SwaptionVolCube1::Cube::Cube(
                                     const std::vector<Date>& optionDates,
                                     const std::vector<Period>& swapTenors,
                                     const std::vector<Time>& optionTimes,
@@ -545,7 +545,7 @@ namespace QuantLib {
         setPoints(points);
      }
 
-    SwaptionVolatilityCubeBySabr::Cube::Cube(const Cube& o) {
+    SwaptionVolCube1::Cube::Cube(const Cube& o) {
         optionTimes_ = o.optionTimes_;
         swapLengths_ = o.swapLengths_;
         optionDates_ = o.optionDates_;
@@ -563,8 +563,8 @@ namespace QuantLib {
         setPoints(o.points_);
     }
 
-    SwaptionVolatilityCubeBySabr::Cube&
-    SwaptionVolatilityCubeBySabr::Cube::operator=(const Cube& o) {
+    SwaptionVolCube1::Cube&
+    SwaptionVolCube1::Cube::operator=(const Cube& o) {
         optionTimes_ = o.optionTimes_;
         swapLengths_ = o.swapLengths_;
         optionDates_ = o.optionDates_;
@@ -583,7 +583,7 @@ namespace QuantLib {
         return *this;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::setElement(Size IndexOfLayer,
+    void SwaptionVolCube1::Cube::setElement(Size IndexOfLayer,
                                                         Size IndexOfRow,
                                                         Size IndexOfColumn,
                                                         Real x) {
@@ -596,7 +596,7 @@ namespace QuantLib {
         points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::setPoints(
+    void SwaptionVolCube1::Cube::setPoints(
                                                const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,
 			"Cube::setPoints: incompatible number of layers ");
@@ -608,7 +608,7 @@ namespace QuantLib {
         points_ = x;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::setLayer(Size i,
+    void SwaptionVolCube1::Cube::setLayer(Size i,
                                                       const Matrix& x) {
         QL_REQUIRE(i<nLayers_,
 			"Cube::setLayer: incompatible number of layer ");
@@ -620,7 +620,7 @@ namespace QuantLib {
         points_[i] = x;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::setPoint(
+    void SwaptionVolCube1::Cube::setPoint(
                             const Date& optionDate, const Period& swapTenor,
                             const Real optionTime, const Time swapLength,
                             const std::vector<Real>& point)
@@ -654,7 +654,7 @@ namespace QuantLib {
         swapTenors_[swapLengthsIndex] = swapTenor;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::expandLayers(
+    void SwaptionVolCube1::Cube::expandLayers(
                                                  Size i, bool expandOptionTimes,
                                                  Size j, bool expandSwapLengths) {
 		QL_REQUIRE(i<=optionTimes_.size(),"Cube::expandLayers: incompatible size 1");
@@ -687,11 +687,11 @@ namespace QuantLib {
     }
 
     const std::vector<Matrix>&
-    SwaptionVolatilityCubeBySabr::Cube::points() const {
+    SwaptionVolCube1::Cube::points() const {
         return points_;
     }
 
-    std::vector<Real> SwaptionVolatilityCubeBySabr::Cube::operator()(
+    std::vector<Real> SwaptionVolCube1::Cube::operator()(
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
         for (Size k=0; k<nLayers_; ++k)
@@ -700,16 +700,16 @@ namespace QuantLib {
     }
 
     const std::vector<Time>&
-    SwaptionVolatilityCubeBySabr::Cube::optionTimes() const {
+    SwaptionVolCube1::Cube::optionTimes() const {
         return optionTimes_;
     }
 
     const std::vector<Time>&
-    SwaptionVolatilityCubeBySabr::Cube::swapLengths() const {
+    SwaptionVolCube1::Cube::swapLengths() const {
         return swapLengths_;
     }
 
-    void SwaptionVolatilityCubeBySabr::Cube::updateInterpolators() const {
+    void SwaptionVolCube1::Cube::updateInterpolators() const {
         for (Size k=0; k<nLayers_; ++k) {
             transposedPoints_[k] = transpose(points_[k]);
             interpolators_[k] =
@@ -721,7 +721,7 @@ namespace QuantLib {
         }
     }
 
-    Matrix SwaptionVolatilityCubeBySabr::Cube::browse() const {
+    Matrix SwaptionVolCube1::Cube::browse() const {
         Matrix result(swapLengths_.size()*optionTimes_.size(), nLayers_+2, 0.0);
         for (Size i=0; i<swapLengths_.size(); ++i) {
             for (Size j=0; j<optionTimes_.size(); ++j) {

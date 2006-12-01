@@ -8799,16 +8799,16 @@
 				RelativePath=".\ql\Volatilities\swaptionvolcube.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcubebylinear.cpp">
+				RelativePath=".\ql\Volatilities\swaptionvolcube1.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcubebylinear.hpp">
+				RelativePath=".\ql\Volatilities\swaptionvolcube1.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcubebysabr.cpp">
+				RelativePath=".\ql\Volatilities\swaptionvolcube2.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcubebysabr.hpp">
+				RelativePath=".\ql\Volatilities\swaptionvolcube2.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\swaptionvoldiscrete.cpp">

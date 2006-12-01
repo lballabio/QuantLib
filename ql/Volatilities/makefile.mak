@@ -30,7 +30,8 @@ OBJS = \
     "localvolsurface.obj$(_mt)$(_D)" \
     "smilesection.obj$(_mt)$(_D)" \
     "swaptionvolcube.obj$(_mt)$(_D)" \
-    "swaptionvolcubebysabr.obj$(_mt)$(_D)" \
+    "swaptionvolcube1.obj$(_mt)$(_D)" \
+    "swaptionvolcube2.obj$(_mt)$(_D)" \
     "swaptionvolmatrix.obj$(_mt)$(_D)"
 
 # Tools to be used

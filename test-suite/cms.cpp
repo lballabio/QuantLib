@@ -26,8 +26,8 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/all.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Volatilities/swaptionvolcubebylinear.hpp>
-#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
+#include <ql/Volatilities/swaptionvolcube2.hpp>
+#include <ql/Volatilities/swaptionvolcube1.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -210,8 +210,8 @@ void setup() {
         }
     }
 
-    boost::shared_ptr<SwaptionVolatilityCubeBySabr>
-    flatSwaptionVolatilityCubeBySabr(new SwaptionVolatilityCubeBySabr(
+    boost::shared_ptr<SwaptionVolCube1>
+    flatSwaptionVolatilityCubeBySabr(new SwaptionVolCube1(
         swaptionVolatilityMatrix_,
         lengths,
         lengths,
@@ -245,8 +245,8 @@ void setup() {
                 boost::shared_ptr<Quote>(new SimpleQuote(volSpreads[i][j])));
         }
     }
-    boost::shared_ptr<SwaptionVolatilityCubeBySabr>
-    swaptionVolatilityCubeBySabr(new SwaptionVolatilityCubeBySabr(
+    boost::shared_ptr<SwaptionVolCube1>
+    swaptionVolatilityCubeBySabr(new SwaptionVolCube1(
         swaptionVolatilityMatrix_,
         lengths,
         lengths,

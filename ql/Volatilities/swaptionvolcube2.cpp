@@ -19,7 +19,7 @@
 */
 
 
-#include <ql/Volatilities/swaptionvolcubebylinear.hpp>
+#include <ql/Volatilities/swaptionvolcube2.hpp>
 #include <ql/Volatilities/interpolatedsmilesection.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 

@@ -25,7 +25,7 @@
 
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
-#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
+#include <ql/Volatilities/swaptionvolcube1.hpp>
 #include <ql/CashFlows/cmscoupon.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Optimization/method.hpp>
