@@ -12,6 +12,7 @@ include_HEADERS = \
     criteria.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
+    linesearchbasedmethod.hpp \
     linesearch.hpp \
     lmdif.hpp \
     method.hpp \
@@ -23,8 +24,11 @@ libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
     criteria.cpp \
+    linesearchbasedmethod.cpp \
+    linesearch.cpp \
     levenbergmarquardt.cpp \
     lmdif.cpp \
+    method.cpp \
     simplex.cpp \
     steepestdescent.cpp
 

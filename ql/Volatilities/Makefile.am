@@ -17,11 +17,13 @@ include_HEADERS = \
     localconstantvol.hpp \
     localvolcurve.hpp \
     localvolsurface.hpp \
+    sabr.hpp \
     smilesection.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
     swaptionvolcubebylinear.hpp \
     swaptionvolcubebysabr.hpp \
+    swaptionvoldiscrete.hpp \
     swaptionvolmatrix.hpp
 
 libVolatilities_la_SOURCES = \
@@ -31,10 +33,12 @@ libVolatilities_la_SOURCES = \
     capstripper.cpp \
     cmsmarket.cpp \
     localvolsurface.cpp \
+    sabr.cpp \
     smilesection.cpp \
     swaptionvolcube.cpp \
     swaptionvolcubebylinear.cpp \
     swaptionvolcubebysabr.cpp \
+    swaptionvoldiscrete.cpp \
     swaptionvolmatrix.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la
