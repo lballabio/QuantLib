@@ -25,6 +25,7 @@
 
 #include <ql/Instruments/makecapfloor.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
+#include <ql/Solvers1D/brent.hpp>
 #include <ql/types.hpp>
 
 namespace QuantLib {

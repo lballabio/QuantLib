@@ -17,52 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-
 #include <ql/Volatilities/smilesection.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Math/sabrinterpolation.hpp>
+#include <ql/Volatilities/sabr.hpp>
+#include <ql/settings.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
+    SmileSectionInterface::SmileSectionInterface(const Date& d,
+                                                 const DayCounter& dc,
+                                                 const Date& referenceDate)
+    : exerciseDate_(d), dc_(dc) {
+        Date refDate = referenceDate!=Date() ? referenceDate :
+                       Settings::instance().evaluationDate();
+        QL_REQUIRE(d>=refDate,
+                   "expiry date (" << d << 
+                   ") must be greater than reference date (" <<
+                   refDate << ")");
+        exerciseTime_ = dc_.yearFraction(refDate, d);
+    };
 
-     InterpolatedSmileSection::InterpolatedSmileSection(
-            Time timeToExpiry,
-            const std::vector<Rate>& strikes,
-            const std::vector<Rate>& volatilities)
-     : SmileSectionInterface(timeToExpiry),
-       strikes_(strikes), volatilities_(volatilities) {
-
-        interpolation_ = boost::shared_ptr<Interpolation>(new
-            //SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
-            LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin())
-            //NaturalCubicSpline(strikes_.begin(), strikes_.end(), volatilities_.begin())
-            );
-     }
-
-     InterpolatedSmileSection::InterpolatedSmileSection(
-            const Date& d,
-            const DayCounter& dc,
-            const std::vector<Rate>& strikes,
-            const std::vector<Rate>& volatilities)
-     : SmileSectionInterface(d, dc),
-       strikes_(strikes), volatilities_(volatilities) {
-
-        interpolation_ = boost::shared_ptr<Interpolation>(new
-            //SABRInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin(), start, atmForward, Null<Real>(), Null<Real>(), Null<Real>(), Null<Real>())
-            LinearInterpolation(strikes_.begin(), strikes_.end(), volatilities_.begin())
-            //NaturalCubicSpline(strikes_.begin(), strikes_.end(), volatilities_.begin())
-            );
-     }
-
-    Real InterpolatedSmileSection::variance(Real strike) const {
-        const Real v = interpolation_->operator()(strike, true);
-        return v*v*exerciseTime_;
-    }
-
-    Real InterpolatedSmileSection::volatility(Real strike) const {
-        return interpolation_->operator()(strike, true);
-    }
+    SmileSectionInterface::SmileSectionInterface(Time exerciseTime,
+                                                 const DayCounter& dc)
+    : dc_(dc), exerciseTime_(exerciseTime) {
+        QL_REQUIRE(exerciseTime_>=0.0,
+                   "expiry time must be positive: " <<
+                   exerciseTime_ << " not allowed");
+    };
 
     SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
                                        const std::vector<Real>& sabrParams)
@@ -121,5 +102,5 @@ namespace QuantLib {
         return unsafeSabrVolatility(strike, forward_,
             exerciseTime_, alpha_, beta_, nu_, rho_);
      }
-}
 
+}

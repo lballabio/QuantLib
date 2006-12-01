@@ -24,8 +24,10 @@
 #ifndef quantlib_smile_section_hpp
 #define quantlib_smile_section_hpp
 
-#include <ql/termstructure.hpp>
-#include <ql/Math/linearinterpolation.hpp>
+#include <ql/Patterns/observable.hpp>
+#include <ql/date.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -34,54 +36,42 @@ namespace QuantLib {
     class SmileSectionInterface: public Observable {
       public:
         SmileSectionInterface(const Date& d,
-                              const DayCounter& dc,
-                              const Date& referenceDate = Date())
-        : exerciseDate_(d), dc_(dc) {
-            Date refDate = referenceDate!=Date() ? referenceDate :
-                           Settings::instance().evaluationDate();
-            QL_REQUIRE(d>=refDate,
-                       "expiry date (" << d << 
-                       ") must be greater than reference date (" <<
-                       refDate << ")");
-            exerciseTime_ = dc_.yearFraction(refDate, d);
-        };
+                              const DayCounter& dc = Actual365Fixed(),
+                              const Date& referenceDate = Date());
         SmileSectionInterface(Time exerciseTime,
-                              const DayCounter& dc = Actual365Fixed())
-        : dc_(dc), exerciseTime_(exerciseTime) {
-            QL_REQUIRE(exerciseTime_>=0.0,
-                       "expiry time must be positive: " <<
-                       exerciseTime_ << " not allowed");
-        };
+                              const DayCounter& dc = Actual365Fixed());
+        virtual ~SmileSectionInterface() {};
+
         virtual Real variance(Rate strike) const = 0;
         virtual Volatility volatility(Rate strike) const = 0;
-        virtual ~SmileSectionInterface() {};
-        virtual const Date& exerciseDate() const { return exerciseDate_; }
-        virtual Time exerciseTime() const { return exerciseTime_; };
-        virtual const DayCounter& dayCounter() const { return dc_; }
+
+        const Date& exerciseDate() const { return exerciseDate_; }
+        Time exerciseTime() const { return exerciseTime_; };
+        const DayCounter& dayCounter() const { return dc_; }
       protected:
         Date exerciseDate_;
         DayCounter dc_;
         Time exerciseTime_;
     };
 
-
-    class InterpolatedSmileSection : public SmileSectionInterface {
+    class FlatSmileSection : public SmileSectionInterface {
       public:
-        InterpolatedSmileSection(Time expiryTime,
-                                 const std::vector<Rate>& strikes,
-                                 const std::vector<Volatility>& volatilities);
-        InterpolatedSmileSection(const Date&,
-                                 const DayCounter&,
-                                 const std::vector<Rate>& strikes,
-                                 const std::vector<Volatility>& volatilities);
-        Real variance(Rate strike) const;
-        Volatility volatility(Rate strike) const;
-    private:
-        std::vector<Rate> strikes_;
-        std::vector<Volatility> volatilities_;
-        boost::shared_ptr<Interpolation> interpolation_;
-    };
+        FlatSmileSection(const Date& d,
+                         const DayCounter& dc,
+                         Volatility vol,
+                         const Date& referenceDate = Date())
+        : SmileSectionInterface(d, dc, referenceDate), vol_(vol) {};
 
+        FlatSmileSection(Time exerciseTime,
+                         Volatility vol,
+                         const DayCounter& dc = Actual365Fixed())
+        : SmileSectionInterface(exerciseTime, dc), vol_(vol) {};
+
+        Real variance(Rate strike) const { return vol_*vol_*exerciseTime_; }
+        Volatility volatility(Rate strike) const { return vol_; }
+      private:
+        Volatility vol_;
+    };
 
     class SabrSmileSection : public SmileSectionInterface {
       public:

@@ -25,88 +25,157 @@
 #define quantlib_interpolated_smile_section_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/Math/linearinterpolation.hpp>
+#include <ql/quote.hpp>
+#include <ql/Math/sabrinterpolation.hpp>
 #include <ql/Volatilities/smilesection.hpp> 
+
 namespace QuantLib {
 
-    template <class Interpolator>
-    class GenericInterpolatedSmileSection : public SmileSectionInterface,
-                                            public LazyObject {
+    template<class Interpolator = SABR>
+    class InterpolatedSmileSection : public SmileSectionInterface,
+                                     public LazyObject {
       public:
-        GenericInterpolatedSmileSection(Time expiryTime,
-                 const std::vector<Rate>& strikes,
-                 const std::vector<Handle<Quote> >& volatilities,
-                 const Interpolator& interpolator = Interpolator());
+        InterpolatedSmileSection(
+                           Time expiryTime,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Handle<Quote> >& volHandles,
+                           const Interpolator& interpolator = Interpolator(),
+                           const DayCounter& dc = Actual365Fixed());
+        InterpolatedSmileSection(
+                           Time expiryTime,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Volatility>& vols,
+                           const Interpolator& interpolator = Interpolator(),
+                           const DayCounter& dc = Actual365Fixed());
 
-        GenericInterpolatedSmileSection(const Date&,
-                 const DayCounter&,
-                 const std::vector<Rate>& strikes,
-                 const std::vector<Handle<Quote> >& volatilities,
-                 const Interpolator& interpolator = Interpolator());
+        InterpolatedSmileSection(
+                           const Date& d,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Handle<Quote> >& volHandles,
+                           const DayCounter& dc = Actual365Fixed(),
+                           const Interpolator& interpolator = Interpolator(),
+                           const Date& referenceDate = Date());
+        InterpolatedSmileSection(
+                           const Date& d,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Volatility>& vols,
+                           const DayCounter& dc = Actual365Fixed(),
+                           const Interpolator& interpolator = Interpolator(),
+                           const Date& referenceDate = Date());
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
       private:
         std::vector<Rate> strikes_;
-        mutable std::vector<Volatility> volatilities_;
+        std::vector<Handle<Quote> > volHandles_;
+        mutable std::vector<Volatility> vols_;
         Interpolation interpolation_;
-        std::vector<Handle<Quote> > volatilitiesHandles_;
     };
 
 
-    template <class Interpolator>
-    GenericInterpolatedSmileSection<Interpolator>::GenericInterpolatedSmileSection(
-        Time timeToExpiry,
-        const std::vector<Rate>& strikes,
-        const std::vector<Handle<Quote> >& volatilitiesHandles,
-        const Interpolator& interpolator = Interpolator())
-    : SmileSectionInterface(timeToExpiry), strikes_(strikes),
-        volatilitiesHandles_(volatilitiesHandles) {
-    for(Size i=0; i<volatilitiesHandles_.size(); ++i)
-        registerWith(volatilitiesHandles_[i]);
-    // check strikes!!!!!!!!!!!!!!!!!!!!
-    interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                              strikes_.end(),
-                                              volatilities_.begin());
+    template<class Interpolator>
+    InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
+                               Time timeToExpiry,
+                               const std::vector<Rate>& strikes,
+                               const std::vector<Handle<Quote> >& volHandles,
+                               const Interpolator& interpolator,
+                               const DayCounter& dc)
+    : SmileSectionInterface(timeToExpiry, dc), strikes_(strikes),
+      volHandles_(volHandles), vols_(volHandles.size())
+    {
+        for (Size i=0; i<volHandles_.size(); ++i)
+            registerWith(volHandles_[i]);
+
+        // check strikes!!!!!!!!!!!!!!!!!!!!
+        interpolation_ = interpolator.interpolate(strikes_.begin(),
+                                                  strikes_.end(),
+                                                  vols_.begin());
+    }
+
+    template<class Interpolator>
+    InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
+                                Time timeToExpiry,
+                                const std::vector<Rate>& strikes,
+                                const std::vector<Volatility>& vols,
+                                const Interpolator& interpolator,
+                                const DayCounter& dc)
+    : SmileSectionInterface(timeToExpiry, dc), strikes_(strikes),
+      volHandles_(vols.size()), vols_(vols)
+    {
+        // fill dummy handles to allow generic handle-based
+        // computations later on
+        for (Size i=0; i<vols.size(); ++i)
+            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
+                new SimpleQuote(vols_[i])));
+
+        // check strikes!!!!!!!!!!!!!!!!!!!!
+        interpolation_ = interpolator.interpolate(strikes_.begin(),
+                                                  strikes_.end(),
+                                                  vols_.begin());
     }
 
     template <class Interpolator>
-    GenericInterpolatedSmileSection<Interpolator>::GenericInterpolatedSmileSection(
-        const Date& d,
-        const DayCounter& dc,
-        const std::vector<Rate>& strikes,
-        const std::vector<Handle<Quote> >& volatilitiesHandles,
-        const Interpolator& interpolator = Interpolator())
-    : SmileSectionInterface(d, dc), strikes_(strikes),
-        volatilitiesHandles_(volatilitiesHandles) {
-    for(Size i=0; i<volatilitiesHandles_.size(); ++i)
-        registerWith(volatilitiesHandles_[i]);
-       // check strikes!!!!!!!!!!!!!!!!!!!!
-    interpolation_ = interpolator.interpolate(strikes_.begin(),
-                                               strikes_.end(),
-                                               volatilities_.begin());
+    InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
+                           const Date& d,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Handle<Quote> >& volHandles,
+                           const DayCounter& dc,
+                           const Interpolator& interpolator,
+                           const Date& referenceDate)
+    : SmileSectionInterface(d, dc, referenceDate), strikes_(strikes),
+      volHandles_(volHandles), vols_(volHandles.size())
+    {
+        for (Size i=0; i<volHandles_.size(); ++i)
+            registerWith(volHandles_[i]);
+
+        // check strikes!!!!!!!!!!!!!!!!!!!!
+        interpolation_ = interpolator.interpolate(strikes_.begin(),
+                                                  strikes_.end(),
+                                                  vols_.begin());
     }
 
     template <class Interpolator>
-    inline void GenericInterpolatedSmileSection<Interpolator>::
-        performCalculations() const {
-        for (Size i=0; i<volatilitiesHandles_.size(); ++i)
-            volatilities_[i] = volatilitiesHandles_[i]->value();
+    InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
+                           const Date& d,
+                           const std::vector<Rate>& strikes,
+                           const std::vector<Volatility>& vols,
+                           const DayCounter& dc,
+                           const Interpolator& interpolator,
+                           const Date& referenceDate)
+    : SmileSectionInterface(d, dc, referenceDate), strikes_(strikes),
+      volHandles_(vols.size()), vols_(vols)
+    {
+        // fill dummy handles to allow generic handle-based
+        // computations later on
+        for (Size i=0; i<vols.size(); ++i)
+            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
+                new SimpleQuote(vols_[i])));
+
+        // check strikes!!!!!!!!!!!!!!!!!!!!
+        interpolation_ = interpolator.interpolate(strikes_.begin(),
+                                                  strikes_.end(),
+                                                  vols_.begin());
+    }
+
+    template <class Interpolator>
+    inline void InterpolatedSmileSection<Interpolator>::performCalculations()
+                                                                      const {
+        for (Size i=0; i<volHandles_.size(); ++i)
+            vols_[i] = volHandles_[i]->value();
     };
 
     template <class Interpolator>
-    Real GenericInterpolatedSmileSection<Interpolator>::variance(Real strike) const {
+    Real InterpolatedSmileSection<Interpolator>::variance(Real strike) const {
         calculate();
         Real v = interpolation_(strike, true);
         return v*v*exerciseTime_;
     }
 
     template <class Interpolator>
-    Real GenericInterpolatedSmileSection<Interpolator>::volatility(Real strike) const {
+    Real InterpolatedSmileSection<Interpolator>::volatility(Real strike) const {
         calculate();
         return interpolation_(strike, true);
     }
 }
 
 #endif
-

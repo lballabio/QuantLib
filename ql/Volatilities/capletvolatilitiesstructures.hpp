@@ -26,12 +26,12 @@
 
 #include <ql/capvolstructures.hpp>
 #include <ql/Volatilities/smilesection.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/Solvers1D/brent.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 
 namespace QuantLib {
+
+    class CapFloor;
 
     //  temporary fucntions for test purpose
     inline double test (boost::shared_ptr<SmileSectionInterface>){

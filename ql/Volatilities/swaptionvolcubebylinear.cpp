@@ -20,11 +20,12 @@
 
 
 #include <ql/Volatilities/swaptionvolcubebylinear.hpp>
+#include <ql/Volatilities/interpolatedsmilesection.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 
-    SwaptionVolatilityCubeByLinear::SwaptionVolatilityCubeByLinear(
+    SwaptionVolCube2::SwaptionVolCube2(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& optionTenors,
         const std::vector<Period>& swapTenors,
@@ -39,7 +40,7 @@ namespace QuantLib {
       volSpreadsMatrix_(nStrikes_, Matrix(optionTenors.size(), swapTenors.size(), 0.0)) {
     }
 
-    void SwaptionVolatilityCubeByLinear::performCalculations() const{
+    void SwaptionVolCube2::performCalculations() const{
         //! set volSpreadsMatrix_ by volSpreads_ quotes
         for (Size i=0; i<nStrikes_; i++) 
             for (Size j=0; j<nOptionTenors_; j++)
@@ -58,7 +59,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeByLinear::smileSection(Time optionTime,
+    SwaptionVolCube2::smileSection(Time optionTime,
                                                  Time swapLength) const {
 
         Date optionDate = Date(static_cast<BigInteger>(
@@ -69,7 +70,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSectionInterface>
-    SwaptionVolatilityCubeByLinear::smileSection(const Date& optionDate,
+    SwaptionVolCube2::smileSection(const Date& optionDate,
                                                  const Period& swapTenor) const {
         calculate();
         const Rate atmForward = atmStrike(optionDate, swapTenor);
@@ -83,6 +84,6 @@ namespace QuantLib {
                       atmVol + volSpreadsInterpolator_[i](p.second, p.first));
         }
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(p.first, strikes, volatilities));
+            InterpolatedSmileSection<>(p.first, strikes, volatilities));
     }
 }

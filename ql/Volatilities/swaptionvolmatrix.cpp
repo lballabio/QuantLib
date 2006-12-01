@@ -267,15 +267,10 @@ namespace QuantLib {
                                              Time optionTime, Time swapLength) const {
 
         // dummy strike
-        const Volatility atmVol = volatility(optionTime, swapLength, 0.05);
+        Volatility atmVol = volatility(optionTime, swapLength, 0.05);
 
-        std::vector<Real> strikes, volatilities(2, atmVol);
-
-        strikes.push_back(0.0);
-        strikes.push_back(1.0);
-
-        return boost::shared_ptr<SmileSectionInterface>(
-                              new InterpolatedSmileSection(optionTime, strikes, volatilities));
+        return boost::shared_ptr<SmileSectionInterface>(new
+            FlatSmileSection(optionTime, atmVol));
     }
 
 	boost::shared_ptr<SmileSectionInterface>
@@ -283,16 +278,10 @@ namespace QuantLib {
                                            const Period& swapTenor) const {
 
         // dummy strike
-        const Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
-
-        std::vector<Real> strikes, volatilities(2, atmVol);
-
-        strikes.push_back(0.0);
-        strikes.push_back(1.0);
+        Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
 
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(timeFromReference(optionDate),
-                         strikes, volatilities));
+            FlatSmileSection(timeFromReference(optionDate), atmVol));
     }
 
     boost::shared_ptr<SmileSectionInterface>
@@ -300,16 +289,10 @@ namespace QuantLib {
                                            const Period& swapTenor) const {
 	    Date optionDate = optionDateFromTenor(optionTenor); 
 		// dummy strike
-        const Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
-
-        std::vector<Real> strikes, volatilities(2, atmVol);
-
-        strikes.push_back(0.0);
-        strikes.push_back(1.0);
+        Volatility atmVol = volatility(optionDate, swapTenor, 0.05);
 
         return boost::shared_ptr<SmileSectionInterface>(new
-            InterpolatedSmileSection(timeFromReference(optionDate),
-                         strikes, volatilities));
+            FlatSmileSection(timeFromReference(optionDate), atmVol));
     }
 
     void SwaptionVolatilityMatrix::checkInputs(Size volRows,

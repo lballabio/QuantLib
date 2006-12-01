@@ -291,7 +291,7 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    SwaptionVolatilityCubeByLinear volCube(atmVolMatrix_,
+    SwaptionVolCube2 volCube(atmVolMatrix_,
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
@@ -312,7 +312,7 @@ void SwaptionVolatilityCubeTest::testSmile() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    SwaptionVolatilityCubeByLinear volCube(atmVolMatrix_,
+    SwaptionVolCube2 volCube(atmVolMatrix_,
                                            optionTenors_,
                                            swapTenors_,
                                            strikeSpreads_,
