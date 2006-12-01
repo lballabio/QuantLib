@@ -55,7 +55,7 @@ using namespace QuantLib;
             return;
         }
         Size i = 1;
-        while(time < times[i])
+        while(time > times[i])
             i++;
         lowerBound = times[i-1];
         higherBound = times[i];
@@ -82,6 +82,8 @@ using namespace QuantLib;
             registerWith(smileSections[i]);
             tenorTimes_[i] = smileSections[i]->exerciseTime();
         }
+        //FIXME
+        TermStructure::enableExtrapolation();
         /*maxDate_ = smileSections.back()->exerciseDate();
         minStrike_ = 0;
         maxStrike_ = 1;*/
