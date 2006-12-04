@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,23 +19,22 @@
 */
 
 /*! \file capfloorlet.hpp
-    \brief Cap/floorlet valued using the Black model
+    \brief Cap/floorlet valued using the Black formula
 */
 
 #ifndef quantlib_cap_floorlet_hpp
 #define quantlib_cap_floorlet_hpp
 
-//#include <qk/Pricers/blackcapfloormodel.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/PricingEngines/blackcalculator.hpp>
+#include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
 
     //! Cap/floorlet valued using the Black model
-    class CapFloorlet : public FloatingRateCoupon {
+    class Optionlet : public FloatingRateCoupon {
       public:
-        CapFloorlet(const boost::shared_ptr<FloatingRateCoupon>&,
-                    Rate strike,
-                    const boost::shared_ptr<BlackCapFloorModel>&);
+        Optionlet(const boost::shared_ptr<FloatingRateCoupon>&, Rate strike);
         //! \name CashFlow interface
         //@{
         double amount() const;
@@ -56,22 +56,22 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
+        void setCapletVolatility(const Handle<CapletVolatilityStructure>& vol);
       protected:
         // data
         boost::shared_ptr<FloatingRateCoupon> underlying_;
         Rate strike_;
-        boost::shared_ptr<BlackCapFloorModel> model_;
+        Handle<CapletVolatilityStructure> volatility_;
         // utilities
         Time startTime() const;
         double volatility() const;
     };
 
     //! Caplet valued using the Black model
-    class Caplet : public CapFloorlet {
+    class Caplet : public Optionlet {
       public:
-        Caplet(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-               Rate cap,
-               const boost::shared_ptr<BlackCapFloorModel>& model);
+        Caplet(const boost::shared_ptr<FloatingRateCoupon>& underlying, 
+               Rate cap);
         //! \name Coupon interface
         //@{
         Rate rate() const;
@@ -79,17 +79,15 @@ namespace QuantLib {
     };
 
     //! Floorlet valued using the Black model
-    class Floorlet : public CapFloorlet {
+    class Floorlet : public Optionlet {
       public:
         Floorlet(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                 Rate floor,
-                 const boost::shared_ptr<BlackCapFloorModel>& model);
+                 Rate floor);
         //! \name Coupon interface
         //@{
         Rate rate() const;
         //@}
     };
-
 }
 
 #endif

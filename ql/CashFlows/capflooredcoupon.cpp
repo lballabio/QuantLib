@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,8 +26,7 @@ namespace QuantLib {
 
     CappedFlooredCoupon::CappedFlooredCoupon(
                   const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate cap, Rate floor,
-                  const boost::shared_ptr<BlackCapFloorModel>& model)
+                  Rate cap, Rate floor)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -34,13 +34,11 @@ namespace QuantLib {
                          underlying->fixingDays(),
                          underlying->index()),
       underlying_(underlying) {
+
         if (cap != Null<double>())
-            cap_ = boost::shared_ptr<CashFlow>(new Caplet(underlying,
-                                                              cap, model));
+            cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));
         if (floor != Null<double>())
-            floor_ = boost::shared_ptr<CashFlow>(new Floorlet(underlying,
-                                                                  floor,
-                                                                  model));
+            floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, floor));
         registerWith(underlying);
     }
 
@@ -85,4 +83,17 @@ namespace QuantLib {
             super::accept(v);
     }
 
+    void CappedFlooredCoupon::setCapletVolatility(
+               const Handle<CapletVolatilityStructure>& vol) {
+        if (!volatility_.empty())
+            unregisterWith(volatility_);
+        volatility_ = vol;
+        if (!volatility_.empty())
+            registerWith(volatility_);
+        notifyObservers();
+        if(cap_)
+            cap_->setCapletVolatility(vol);
+         if(floor_)
+            floor_->setCapletVolatility(vol);      
+    }
 }

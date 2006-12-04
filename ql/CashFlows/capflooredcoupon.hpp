@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 
 #include <ql/CashFlows/capfloorlet.hpp>
 
+
 namespace QuantLib {
 
     //! Cap/floorlet valued using the Black model
@@ -33,9 +35,7 @@ namespace QuantLib {
       public:
         CappedFlooredCoupon(
                   const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate cap,
-                  Rate floor,
-                  const boost::shared_ptr<BlackCapFloorModel>& model);
+                  Rate cap = Null<Rate>(), Rate floor = Null<Rate>());
         //! \name CashFlow interface
         //@{
         Real amount() const;
@@ -57,32 +57,16 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
-        //@}
-      protected:
+        //! \name Modifiers
+        //@{
+        void setCapletVolatility(const Handle<CapletVolatilityStructure>& vol);
+        //@}            
+    protected:
         // data
         boost::shared_ptr<FloatingRateCoupon> underlying_;
-        boost::shared_ptr<CashFlow> cap_, floor_;
+        boost::shared_ptr<Optionlet> cap_, floor_;
+        Handle<CapletVolatilityStructure> volatility_;
     };
-
-
-    class CappedCoupon : public CappedFlooredCoupon {
-      public:
-        CappedCoupon(const boost::shared_ptr<FloatingRateCoupon>&
-                                                            underlying,
-                     Rate cap,
-                     const boost::shared_ptr<BlackCapFloorModel>& model)
-        : CappedFlooredCoupon(underlying,cap,Null<double>(),model) {}
-    };
-
-    class FlooredCoupon : public CappedFlooredCoupon {
-      public:
-        FlooredCoupon(const boost::shared_ptr<FloatingRateCoupon>&
-                                                            underlying,
-                      Rate floor,
-                      const boost::shared_ptr<BlackCapFloorModel>& model)
-        : CappedFlooredCoupon(underlying,Null<double>(),floor,model) {}
-    };
-
 
 }
 

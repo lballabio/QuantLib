@@ -740,6 +740,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\capflooredcoupon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\capflooredcoupon.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\capfloorlet.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\capfloorlet.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\CashFlows\cashflowvectors.cpp"
 				>
 				<FileConfiguration

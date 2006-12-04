@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -30,6 +31,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/schedule.hpp>
 #include <ql/CashFlows/cmscoupon.hpp>
+#include <ql/CashFlows/capflooredcoupon.hpp>
 #include <ql/Indexes/swapindex.hpp>
 
 namespace QuantLib {
@@ -69,6 +71,28 @@ namespace QuantLib {
         ,
         const DayCounter& dayCounter = DayCounter());
 
+    //! helper function building a sequence of capped/floored floating rate coupons
+    std::vector<boost::shared_ptr<CashFlow> > CappedFlooredFloatingRateCouponVector(
+        const Schedule& schedule,
+        const BusinessDayConvention paymentAdjustment,
+        const std::vector<Real>& nominals,
+        const Integer settlementDays,
+        const boost::shared_ptr<Xibor>& index,
+        const std::vector<Real>& gearings
+        #if !defined(QL_PATCH_MSVC6)
+        = std::vector<Real>()
+        #endif
+        ,
+        const std::vector<Spread>& spreads
+        #if !defined(QL_PATCH_MSVC6)
+        = std::vector<Spread>()
+        #endif
+        ,
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>(),
+        const DayCounter& dayCounter = DayCounter(),
+        const Handle<CapletVolatilityStructure>& vol =
+              Handle<CapletVolatilityStructure>());
 
     std::vector<boost::shared_ptr<CashFlow> >
     CMSCouponVector(const Schedule& schedule,

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -160,6 +161,115 @@ namespace QuantLib {
         }
 
     }
+
+    std::vector<boost::shared_ptr<CashFlow> > 
+    CappedFlooredFloatingRateCouponVector(const Schedule& schedule,
+                             const BusinessDayConvention paymentAdjustment,
+                             const std::vector<Real>& nominals,
+                             const Integer settlementDays,
+                             const boost::shared_ptr<Xibor>& index,
+                             const std::vector<Real>& gearings,
+                             const std::vector<Spread>& spreads,
+                             const std::vector<Rate>& caps,
+                             const std::vector<Rate>& floors,
+                             const DayCounter& dayCounter,
+                             const Handle<CapletVolatilityStructure>& vol) {
+
+        std::vector<boost::shared_ptr<CashFlow> > leg;
+        Calendar calendar = schedule.calendar();
+        Size N = schedule.size();
+
+        QL_REQUIRE(!nominals.empty(), "no nominal given");
+
+        // first period might be short or long
+        Date start = schedule.date(0), end = schedule.date(1);
+        Date paymentDate = calendar.adjust(end,paymentAdjustment);
+        if (schedule.isRegular(1)) {
+            const boost::shared_ptr<FloatingRateCoupon> underlying =
+                 (boost::shared_ptr<FloatingRateCoupon>)
+                      (new FloatingRateCoupon(paymentDate,get(nominals,0),
+                                             start, end, settlementDays, index,
+                                             get(gearings,0,1.0),
+                                             get(spreads,0,0.0)));
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CappedFlooredCoupon(underlying, 
+                                        get(caps,0,Null<Rate>()),
+                                        get(floors,0,Null<Rate>()))));
+
+        } else {
+            Date reference = end - schedule.tenor();
+            reference = calendar.adjust(reference,paymentAdjustment);
+            const boost::shared_ptr<FloatingRateCoupon> underlying =
+                 (boost::shared_ptr<FloatingRateCoupon>)
+                      (new FloatingRateCoupon(paymentDate,get(nominals,0),
+                                             start, end, settlementDays, index,
+                                             get(gearings,0,1.0),
+                                             get(spreads,0,0.0),
+                                             reference, end));            
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CappedFlooredCoupon(underlying, 
+                                        get(caps,0,Null<Rate>()),
+                                        get(floors,0,Null<Rate>()))));
+       }
+        // regular periods
+        for (Size i=2; i<schedule.size()-1; i++) {
+            start = end; end = schedule.date(i);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
+            const boost::shared_ptr<FloatingRateCoupon> underlying =
+                 (boost::shared_ptr<FloatingRateCoupon>)
+                      (new FloatingRateCoupon(paymentDate,get(nominals,i-1),
+                                             start, end, settlementDays, index,
+                                             get(gearings,i-1,1.0),
+                                             get(spreads,i-1,0.0)));            
+            leg.push_back(boost::shared_ptr<CashFlow>(
+                new CappedFlooredCoupon(underlying,
+                                        get(caps,i-1,Null<Rate>()),
+                                        get(floors,i-1,Null<Rate>()))));
+        }
+        if (schedule.size() > 2) {
+            // last period might be short or long
+            start = end; end = schedule.date(N-1);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
+            if (schedule.isRegular(N-1)) {
+            const boost::shared_ptr<FloatingRateCoupon> underlying =
+                 (boost::shared_ptr<FloatingRateCoupon>)
+                      (new FloatingRateCoupon(paymentDate,get(nominals,N-2),
+                                             start, end, settlementDays, index,
+                                             get(gearings,N-2,1.0),
+                                             get(spreads,N-2,0.0)));            
+                leg.push_back(boost::shared_ptr<CashFlow>(
+                    new CappedFlooredCoupon(underlying,
+                                            get(caps,N-2,Null<Rate>()),
+                                            get(floors,N-2,Null<Rate>()))));
+            } else {
+                Date reference = start + schedule.tenor();
+                reference =
+                    calendar.adjust(reference,paymentAdjustment);
+                const boost::shared_ptr<FloatingRateCoupon> underlying =
+                     (boost::shared_ptr<FloatingRateCoupon>)
+                          (new FloatingRateCoupon(paymentDate,get(nominals,N-2),
+                                                 start, end, settlementDays, index,
+                                                 get(gearings,N-2,1.0),
+                                                 get(spreads,N-2,0.0),
+                                                 start, reference));            
+                leg.push_back(boost::shared_ptr<CashFlow>(
+                    new CappedFlooredCoupon(underlying,
+                                            get(caps,N-2,Null<Rate>()),
+                                            get(floors,N-2,Null<Rate>()))));
+            }
+        }
+
+        for (Size i=0; i<leg.size(); i++) {
+            const boost::shared_ptr<CappedFlooredCoupon> cappedflooredCoupon =
+               boost::dynamic_pointer_cast<CappedFlooredCoupon>(leg[i]);
+            if (cappedflooredCoupon)
+                cappedflooredCoupon->setCapletVolatility(vol);
+            else
+                QL_FAIL("unexpected error when casting to CappedFlooredCoupon");
+        }
+        return leg;
+
+    }    
 
     std::vector<boost::shared_ptr<CashFlow> >
     CMSCouponVector(const Schedule& schedule,
