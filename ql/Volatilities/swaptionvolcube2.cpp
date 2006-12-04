@@ -84,6 +84,6 @@ namespace QuantLib {
                       atmVol + volSpreadsInterpolator_[i](p.second, p.first));
         }
         return boost::shared_ptr<SmileSection>(new
-            InterpolatedSmileSection<>(p.first, strikes, volatilities));
+            InterpolatedSmileSection<Linear>(p.first, strikes, volatilities));
     }
 }
