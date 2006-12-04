@@ -46,14 +46,14 @@ namespace QuantLib {
     };
 
     SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
+                                       const Rate forward,
                                        const std::vector<Real>& sabrParams)
-    : SmileSection(timeToExpiry) {
+    : SmileSection(timeToExpiry), forward_(forward) {
 
         alpha_ = sabrParams[0];
         beta_ = sabrParams[1];
         nu_ = sabrParams[2];
         rho_ = sabrParams[3];
-        forward_ = sabrParams[4];
 
         QL_REQUIRE(forward_>0.0, "forward must be positive: "
                                 << io::rate(forward_) << " not allowed");
@@ -61,6 +61,7 @@ namespace QuantLib {
     }
 
     SabrSmileSection::SabrSmileSection(const Date& d,
+                                       const Rate forward,
                                        const std::vector<Real>& sabrParams,
                                        const DayCounter& dc)
     : SmileSection(d, dc) {

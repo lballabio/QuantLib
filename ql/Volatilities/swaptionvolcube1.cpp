@@ -455,7 +455,7 @@ namespace QuantLib {
         const std::vector<Real> sabrParameters =
             sabrParametersCube(optionTime, swapLength);
         return boost::shared_ptr<SmileSection>(new
-            SabrSmileSection(optionTime, sabrParameters));
+            SabrSmileSection(optionTime, sabrParameters[4], sabrParameters));
     }
 	
 	boost::shared_ptr<SmileSection>
