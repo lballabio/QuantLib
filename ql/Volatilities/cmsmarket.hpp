@@ -121,7 +121,6 @@ namespace QuantLib {
       public:
         
         enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
-		enum OptimMethod {DownHillSimplex, ConjugateGrad };
 
         SmileAndCmsCalibrationBySabr(
             Handle<SwaptionVolatilityStructure>& volCube,
@@ -134,9 +133,7 @@ namespace QuantLib {
         Matrix weights_;
         CalibrationType calibrationType_;
 
-        Array calibration(
-            const Array& guess,
-			SmileAndCmsCalibrationBySabr::OptimMethod optimizationMethod);
+        Array calibration(const boost::shared_ptr<OptimizationMethod>& method);
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 

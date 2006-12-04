@@ -293,51 +293,10 @@ namespace QuantLib {
     }
 
 	Array SmileAndCmsCalibrationBySabr::calibration(
-            const Array& guess,
-			SmileAndCmsCalibrationBySabr::OptimMethod optimizationMethod){
+            const boost::shared_ptr<OptimizationMethod>& method){
 
         ParametersConstraint constraint;
         ObjectiveFunction costFunction(this);
-        boost::shared_ptr<OptimizationMethod> method;
-		switch (optimizationMethod) {
-            case DownHillSimplex:
-                method = boost::shared_ptr<OptimizationMethod>(new Simplex(0.01));
-                break;
-			case ConjugateGrad:{
-                boost::shared_ptr<LineSearch> lineSearch(new
-                    ArmijoLineSearch(1e-12, 0.05, 0.65));
-				method = boost::shared_ptr<OptimizationMethod>(new
-                    ConjugateGradient(Array(), EndCriteria(), lineSearch));}
-				break;
-            default:
-                QL_FAIL("unknown/illegal optimization method");
-		}
-       
-        switch (calibrationType_) {
-            case OnSpread:
-                method->setEndCriteria(EndCriteria(30, 1e-1));
-                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
-                break;
-            case OnPrice:
-                method->setEndCriteria(EndCriteria(30, 300.));
-                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
-                break;
-            case OnForwardCmsPrice:
-                method->setEndCriteria(EndCriteria(30, 300.));
-                if(optimizationMethod==DownHillSimplex) method->setEndCriteria(EndCriteria(30, 1e-3));
-                break;
-            default:
-                QL_FAIL("unknown/illegal calibration type");
-        }
-        //Array guess(2);
-
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        //guess[0] = volCubeBySabr->sparseSabrParameters()[0][3];
-        //guess[1] = cmsMarket_->meanReversions()[0][0];
-
-        method->setInitialValue(guess);
-
         Problem problem(costFunction, constraint, *method);
         problem.minimize();
         Array result = problem.minimumValue();
