@@ -51,6 +51,7 @@
 #include "brownianbridge.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
+#include "capflooredcoupon.hpp"
 #include "cliquetoption.hpp"
 #include "cms.hpp"
 #include "compoundforward.hpp"
@@ -177,7 +178,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
-    test->add(CapFloorTest::suite());
+    test->add(CapFloorTest::suite()); 
+    test->add(CapFlooredCouponTest::suite());
     test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
