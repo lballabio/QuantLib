@@ -45,6 +45,7 @@ namespace QuantLib {
         virtual Real variance(Rate strike) const = 0;
         virtual Volatility volatility(Rate strike) const = 0;
 
+        //virtual Rate atmLevel() const = 0;
         const Date& exerciseDate() const { return exerciseDate_; }
         Time exerciseTime() const { return exerciseTime_; };
         const DayCounter& dayCounter() const { return dc_; }
@@ -67,8 +68,8 @@ namespace QuantLib {
                          const DayCounter& dc = Actual365Fixed())
         : SmileSection(exerciseTime, dc), vol_(vol) {};
 
-        Real variance(Rate strike) const { return vol_*vol_*exerciseTime_; }
-        Volatility volatility(Rate strike) const { return vol_; }
+        Real variance(Rate) const { return vol_*vol_*exerciseTime_; }
+        Volatility volatility(Rate) const { return vol_; }
       private:
         Volatility vol_;
     };
@@ -76,8 +77,10 @@ namespace QuantLib {
     class SabrSmileSection : public SmileSection {
       public:
         SabrSmileSection(Time timeToExpiry,
+                         //Rate forward,
                          const std::vector<Real>& sabrParameters);
         SabrSmileSection(const Date& d,
+                         //Rate forward,
                          const std::vector<Real>& sabrParameters,
                          const DayCounter& dc = Actual365Fixed());
         Real variance(Rate strike) const;

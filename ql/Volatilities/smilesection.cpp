@@ -57,15 +57,7 @@ namespace QuantLib {
 
         QL_REQUIRE(forward_>0.0, "forward must be positive: "
                                 << io::rate(forward_) << " not allowed");
-        QL_REQUIRE(alpha_>0.0, "alpha must be positive: "
-                              << alpha_ << " not allowed");
-        QL_REQUIRE(beta_>=0.0 && beta_<=1.0, "beta must be in [0.0, 1.0]: "
-                                           << beta_ << " not allowed");
-        QL_REQUIRE(nu_>=0.0, "nu must be non negative: "
-                            << nu_ << " not allowed");
-        QL_REQUIRE(rho_*rho_<=1.0, "rho square must be not greater than one: "
-                                 << rho_ << " not allowed");
-
+        validateSabrParameters(alpha_, beta_, nu_, rho_);
     }
 
     SabrSmileSection::SabrSmileSection(const Date& d,
