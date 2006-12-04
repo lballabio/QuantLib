@@ -26,12 +26,13 @@
 
 #include <ql/termstructure.hpp>
 #include <ql/quote.hpp>
-#include <ql/Math/sabrinterpolation.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 #include <ql/Volatilities/smilesection.hpp> 
 
 namespace QuantLib {
 
-    template<class Interpolator = SABR>
+    template<class Interpolator = Linear>
     class InterpolatedSmileSection : public SmileSection,
                                      public LazyObject {
       public:
