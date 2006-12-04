@@ -30,8 +30,7 @@
 
 namespace QuantLib {
 
-    class SwaptionVolCube1 : public SwaptionVolatilityCube, 
-                                         public LazyObject {
+    class SwaptionVolCube1 : public SwaptionVolatilityCube {
         class Cube {
           public:
             Cube() {};
@@ -95,14 +94,10 @@ namespace QuantLib {
             const Matrix& parametersGuess,
             const std::vector<bool>& isParameterFixed,
             bool isAtmCalibrated);
-        //! \name LazyObject interface
-        //@{
+        ////! \name LazyObject interface
+        ////@{
         void performCalculations() const;
-        void update() { 
-            TermStructure::update();
-            LazyObject::update();
-        };
-        //@}
+        ////@}
         //! \name SwaptionVolatilityCube interface
         //@{
         boost::shared_ptr<SmileSection> smileSection(

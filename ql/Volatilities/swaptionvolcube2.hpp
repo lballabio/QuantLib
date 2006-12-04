@@ -29,8 +29,7 @@
 
 namespace QuantLib {
 
-    class SwaptionVolCube2 : public SwaptionVolatilityCube, 
-                                           public LazyObject  {
+    class SwaptionVolCube2 : public SwaptionVolatilityCube{
       public:
         SwaptionVolCube2(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -40,14 +39,10 @@ namespace QuantLib {
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
             bool vegaWeightedSmileFit);        
-        //! \name LazyObject interface
-        //@{
+        ////! \name LazyObject interface
+        ////@{
         void performCalculations() const;
-        void update() { 
-            TermStructure::update();
-            LazyObject::update();
-        };
-        //@}
+        ////@}
         //! \name SwaptionVolatilityCube inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }

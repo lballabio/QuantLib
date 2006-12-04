@@ -34,7 +34,8 @@ namespace QuantLib {
     /*! \warning this class is not finalized and its interface might
                  change in subsequent releases.
     */
-    class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
+    class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete, 
+                                         public LazyObject  {
       public:
         SwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -51,6 +52,13 @@ namespace QuantLib {
         Time maxTime() const { return atmVol_->maxTime(); }
         const Date& referenceDate() const { return atmVol_->referenceDate();}
         Calendar calendar() const { return atmVol_->calendar(); }
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void update() { 
+            TermStructure::update();
+            LazyObject::update();
+        };
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
