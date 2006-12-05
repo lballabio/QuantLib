@@ -27,7 +27,6 @@
 
 #include <ql/Math/rounding.hpp>
 #include <ql/errors.hpp>
-#include <boost/shared_ptr.hpp>
 #include <ostream>
 
 namespace QuantLib {
