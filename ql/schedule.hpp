@@ -26,10 +26,10 @@
 #ifndef quantlib_schedule_hpp
 #define quantlib_schedule_hpp
 
-#include <ql/calendar.hpp>
+
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Utilities/null.hpp>
-#include <vector>
+
 
 namespace QuantLib {
 
