@@ -17,72 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file quote.hpp
+/*! \file compositequote.hpp
     \brief purely virtual base class for market observables
 */
 
-#ifndef quantlib_quote_hpp
-#define quantlib_quote_hpp
+#ifndef quantlib_composite_quote_hpp
+#define quantlib_composite_quote_hpp
+
+#ifdef QL_DISABLE_DEPRECATED
+#include <ql/quote.hpp>
+#endif
 
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
-
-    //! purely virtual base class for market observables
-    /*! \test the observability of class instances is tested.
-     */
-    class Quote : public Observable {
-      public:
-        virtual ~Quote() {}
-        //! returns the current value
-        virtual Real value() const = 0;
-    };
-
-#ifndef QL_DISABLE_DEPRECATED
-
-      //! market element returning a stored value
-    class SimpleQuote : public Quote {
-      public:
-        SimpleQuote(Real value);
-        //! \name Quote interface
-        //@{
-        Real value() const;
-        //@}
-        //! \name Modifiers
-        //@{
-        //! returns the difference between the new value and the old value
-        Real setValue(Real value);
-        //@}
-      private:
-        Real value_;
-    };
-
- 
-    //! market element whose value depends on another market element
-    /*! \test the correctness of the returned values is tested by
-              checking them against numerical calculations.
-    */
-    template <class UnaryFunction>
-    class DerivedQuote : public Quote, public Observer {
-      public:
-        DerivedQuote(const Handle<Quote>& element,
-                     const UnaryFunction& f);
-        //! \name Market element interface
-        //@{
-        Real value() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      private:
-        Handle<Quote> element_;
-        UnaryFunction f_;
-    };
-
-
+  
     //! market element whose value depends on two other market element
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
@@ -110,48 +61,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    // simple quote
-
-   inline SimpleQuote::SimpleQuote(Real value)
-    : value_(value) {}
-
-    inline Real SimpleQuote::value() const {
-        return value_;
-    }
-
-    inline Real SimpleQuote::setValue(Real value) {
-        Real diff = value-value_;
-        if (diff != 0.0) {
-            value_ = value;
-            notifyObservers();
-        }
-        return diff;
-    }
-
-    // derived quote
-
-    template <class UnaryFunction>
-    inline DerivedQuote<UnaryFunction>::DerivedQuote(
-                                                 const Handle<Quote>& element,
-                                                 const UnaryFunction& f)
-    : element_(element), f_(f) {
-        registerWith(element_);
-    }
-
-    template <class UnaryFunction>
-    inline Real DerivedQuote<UnaryFunction>::value() const {
-        QL_REQUIRE(!element_.empty(), "null market element set");
-        return f_(element_->value());
-    }
-
-    template <class UnaryFunction>
-    inline void DerivedQuote<UnaryFunction>::update() {
-        notifyObservers();
-    }
-
-
-    // composite quote
-
     template <class BinaryFunction>
     inline CompositeQuote<BinaryFunction>::CompositeQuote(
                                                 const Handle<Quote>& element1,
@@ -173,9 +82,6 @@ namespace QuantLib {
     inline void CompositeQuote<BinaryFunction>::update() {
         notifyObservers();
     }
-
-#endif
-
 }
 
 #endif

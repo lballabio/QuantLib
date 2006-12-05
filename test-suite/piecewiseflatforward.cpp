@@ -26,7 +26,11 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 #include <iomanip>
 
 using namespace QuantLib;

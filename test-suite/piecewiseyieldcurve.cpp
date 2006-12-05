@@ -33,7 +33,11 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 

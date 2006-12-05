@@ -22,7 +22,11 @@
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Processes/all.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;

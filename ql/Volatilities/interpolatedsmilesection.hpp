@@ -25,7 +25,11 @@
 #define quantlib_interpolated_smile_section_hpp
 
 #include <ql/termstructure.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Volatilities/smilesection.hpp> 

@@ -8785,6 +8785,18 @@
 		<Filter
 			Name="Quotes"
 			>
+			<File
+				RelativePath=".\ql\Quotes\compositequote.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\derivedquote.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\simplequote.hpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"

@@ -42,6 +42,7 @@ QL_BEGIN_TEST_LOCALS(TermStructureTest)
 Calendar calendar_;
 Integer settlementDays_;
 boost::shared_ptr<YieldTermStructure> termStructure_;
+boost::shared_ptr<YieldTermStructure> dummyTermStructure_;
 
 // utilities
 
@@ -100,6 +101,8 @@ void setup() {
                                              index));
     }
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
+              new PiecewiseFlatForward(settlement, instruments, Actual360()));
+    dummyTermStructure_ = boost::shared_ptr<YieldTermStructure>(
               new PiecewiseFlatForward(settlement, instruments, Actual360()));
 }
 
@@ -236,7 +239,7 @@ void TermStructureTest::testFSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<YieldTermStructure> h;
+    Handle<YieldTermStructure> h; //(dummyTermStructure_);
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
@@ -290,7 +293,8 @@ void TermStructureTest::testZSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<YieldTermStructure> h;
+    Handle<YieldTermStructure> h(dummyTermStructure_);
+    
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;

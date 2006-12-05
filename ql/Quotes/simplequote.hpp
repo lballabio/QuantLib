@@ -26,6 +26,7 @@
 
 #include <ql/quote.hpp>
 
+
 namespace QuantLib {
 
     //! market element returning a stored value

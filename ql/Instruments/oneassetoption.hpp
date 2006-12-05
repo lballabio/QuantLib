@@ -27,7 +27,13 @@
 
 #include <ql/option.hpp>
 #include <ql/stochasticprocess.hpp>
+
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
+
 
 namespace QuantLib {
 

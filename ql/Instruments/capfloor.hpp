@@ -31,7 +31,11 @@
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/yieldtermstructure.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 
 namespace QuantLib {
 

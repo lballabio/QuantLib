@@ -19,7 +19,11 @@
 
 #include "quotes.hpp"
 #include "utilities.hpp"
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

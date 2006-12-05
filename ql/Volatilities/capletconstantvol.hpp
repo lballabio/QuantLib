@@ -25,7 +25,11 @@
 #define quantlib_caplet_constant_volatility_hpp
 
 #include <ql/capvolstructures.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 #include <ql/Calendars/nullcalendar.hpp>
 
 namespace QuantLib {

@@ -21,7 +21,11 @@
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 
 
 namespace QuantLib {

@@ -29,7 +29,11 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
+#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#else
+#include <ql/quote.hpp>
+#endif
 
 namespace QuantLib {
 
