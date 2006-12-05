@@ -23,17 +23,21 @@
 #ifndef quantlib_derived_quote_hpp
 #define quantlib_derived_quote_hpp
 
-#ifdef QL_DISABLE_DEPRECATED
+
 #include <ql/quote.hpp>
-#endif
+
 
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
-
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <ql/index.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
+#ifdef QL_DISABLE_DEPRECATED
     //! market element whose value depends on another market element
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
@@ -75,6 +79,73 @@ namespace QuantLib {
 
     template <class UnaryFunction>
     inline void DerivedQuote<UnaryFunction>::update() {
+        notifyObservers();
+    }
+
+#endif
+    
+    class FowardValueQuote : public Quote, public Observer{
+    public:
+        FowardValueQuote(boost::shared_ptr<Index> index,
+                         const Date& fixingDate);
+        Real value() const;
+        void update();
+    private:
+        boost::function<Real()> fixing_;
+        Date fixingDate_;
+    };
+    inline FowardValueQuote::FowardValueQuote(boost::shared_ptr<Index> index,
+        const Date& fixingDate):fixingDate_(fixingDate){
+        registerWith(index);
+        fixing_ = boost::bind(&Index::fixing, index, fixingDate_, true);
+    }
+    inline Real FowardValueQuote::value() const{
+        return fixing_();
+    }
+    inline void FowardValueQuote::update(){
+        notifyObservers();
+    }
+
+    class ImpliedStdevQuote : public Quote, Observer{
+    public:
+        ImpliedStdevQuote(Option::Type optionType,
+                          const Handle<Quote>& forward,
+                          const Handle<Quote>& price,
+                          Real strike,
+                          Real guess = Null<Real>(),
+                          Real accuracy = 1.0e-6);
+        Real value() const;
+        void update();
+    private:
+        mutable Volatility impliedVolatility_;
+        Option::Type optionType_;
+        Real strike_;
+        Real accuracy_;
+        Handle<Quote> forward_;
+        Handle<Quote> price_;
+    };
+
+    inline  ImpliedStdevQuote::ImpliedStdevQuote(Option::Type optionType,
+                                      const Handle<Quote>& forward,
+                                      const Handle<Quote>& price,
+                                      Real strike, Real guess,
+                                      Real accuracy):
+    optionType_(optionType), forward_(forward), price_(price),
+    strike_(strike), impliedVolatility_(guess), accuracy_(accuracy){
+        registerWith(forward_);
+        registerWith(price_);
+    }
+
+    inline Real ImpliedStdevQuote::value() const {
+        static const Real discount_ = 1.0;
+        Rate forward = forward_->value();
+        Real price = price_->value();
+        impliedVolatility_ = blackImpliedStdDev(optionType_, strike_, 
+            forward, price, discount_, impliedVolatility_, accuracy_); 
+        return impliedVolatility_;
+    }
+
+    inline void ImpliedStdevQuote::update(){
         notifyObservers();
     }
 }

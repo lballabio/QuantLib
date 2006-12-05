@@ -38,6 +38,7 @@ namespace QuantLib {
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
+    #ifdef QL_DISABLE_DEPRECATED
     template <class BinaryFunction>
     class CompositeQuote : public Quote, public Observer {
       public:
@@ -82,6 +83,7 @@ namespace QuantLib {
     inline void CompositeQuote<BinaryFunction>::update() {
         notifyObservers();
     }
+    #endif
 }
 
 #endif

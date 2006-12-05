@@ -25,7 +25,12 @@
 #include <ql/Quotes/compositequote.hpp>
 #else
 #include <ql/quote.hpp>
+#include <ql/Quotes/derivedquote.hpp>
 #endif
+
+#include <ql/DayCounters/actualactual.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Indexes/euribor.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -117,6 +122,41 @@ void QuoteTest::testComposite() {
             BOOST_FAIL("composite quote yields " << x << "\n"
                        << "function result is " << y);
     }
+}
+
+void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
+    Real forwardRate = .05;
+    DayCounter dc = ActualActual();
+    boost::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));
+    Handle<Quote> forwardHandle(forwardQuote);
+    Date evaluationDate = Settings::instance().evaluationDate();
+    boost::shared_ptr<YieldTermStructure>yc (new FlatForward(
+        evaluationDate, forwardHandle, dc));
+    Handle<YieldTermStructure> ycHandle(yc);
+    Period euriborTenor(1,Years);
+    boost::shared_ptr<Index> euribor(new Euribor(euriborTenor, ycHandle));
+    Date fixingDate = evaluationDate + euriborTenor;
+    boost::shared_ptr<FowardValueQuote> fowardValueQuote( new 
+        FowardValueQuote(euribor, fixingDate));
+    Rate forwardValue =  fowardValueQuote->value();
+    Rate expectedForwardValue = euribor->fixing(fixingDate, true);
+    // we test if the forward value given by the quote is consistent 
+    // with the one directly given by the index
+    if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
+        BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
+                   << "expected result is " << expectedForwardValue);
+    // then we test the observer/observable chain
+    Flag f;
+    f.registerWith(fowardValueQuote);
+    forwardQuote->setValue(0.1);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of quote change");
+    // and we retest if the values are still matching
+    forwardValue =  fowardValueQuote->value();
+    expectedForwardValue = euribor->fixing(fixingDate, true);
+    if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
+        BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
+                   << "expected result is " << expectedForwardValue);
 }
 
 
