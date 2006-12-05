@@ -25,6 +25,7 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Volatilities/smilesection.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

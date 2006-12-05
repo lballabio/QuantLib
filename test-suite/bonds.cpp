@@ -29,6 +29,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Indexes/usdlibor.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;

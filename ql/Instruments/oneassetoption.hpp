@@ -27,7 +27,7 @@
 
 #include <ql/option.hpp>
 #include <ql/stochasticprocess.hpp>
-#include <ql/quote.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

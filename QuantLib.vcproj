@@ -8848,6 +8848,13 @@
 				RelativePath=".\ql\VolatilityModels\simplelocalestimator.hpp">
 			</File>
 		</Filter>
+		<Filter
+			Name="Quotes"
+			Filter="">
+			<File
+				RelativePath=".\ql\Quotes\simplequote.hpp">
+			</File>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp">
 		</File>

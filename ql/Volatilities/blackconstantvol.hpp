@@ -26,7 +26,7 @@
 #define quantlib_blackconstantvol_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <ql/quote.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {

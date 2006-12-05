@@ -25,6 +25,7 @@
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/FiniteDifferences/bsmtermoperator.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;

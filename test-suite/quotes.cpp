@@ -19,7 +19,7 @@
 
 #include "quotes.hpp"
 #include "utilities.hpp"
-#include <ql/quote.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

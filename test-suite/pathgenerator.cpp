@@ -22,6 +22,7 @@
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Processes/all.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;

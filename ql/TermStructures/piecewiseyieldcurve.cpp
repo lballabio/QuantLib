@@ -18,6 +18,7 @@
 */
 
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

@@ -18,6 +18,7 @@
 */
 
 #include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

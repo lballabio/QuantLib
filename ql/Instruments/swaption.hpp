@@ -29,7 +29,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
-#include <ql/quote.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

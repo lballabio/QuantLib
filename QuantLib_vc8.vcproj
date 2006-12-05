@@ -8782,6 +8782,10 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="Quotes"
+			>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp"
 			>

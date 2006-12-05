@@ -31,7 +31,7 @@
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/quote.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

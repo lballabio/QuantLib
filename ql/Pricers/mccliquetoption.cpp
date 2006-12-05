@@ -20,6 +20,7 @@
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

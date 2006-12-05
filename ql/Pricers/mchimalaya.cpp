@@ -21,6 +21,8 @@
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
+#include <ql/Quotes/simplequote.hpp>
+
 
 namespace QuantLib {
 

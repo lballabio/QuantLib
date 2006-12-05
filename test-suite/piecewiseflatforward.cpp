@@ -26,6 +26,7 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

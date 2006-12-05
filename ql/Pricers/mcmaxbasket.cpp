@@ -20,6 +20,7 @@
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Processes/stochasticprocessarray.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 

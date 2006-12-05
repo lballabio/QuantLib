@@ -33,6 +33,7 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
