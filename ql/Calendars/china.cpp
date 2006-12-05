@@ -48,9 +48,9 @@ namespace QuantLib {
             // Lunar New Year 2004
             || (d >= 22 && d <= 28 && m == January && y==2004)
             // Spring Festival
-            || (dd == springFestival(y-1900))
+            || (dd == springFestival(y))
             // Last day of Lunar Year
-            || (dd == springFestival(y-1900)-1)
+            || (dd == springFestival(y)-1)
             )
             return false;
         return true;
