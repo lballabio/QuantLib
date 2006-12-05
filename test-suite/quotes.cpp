@@ -21,6 +21,8 @@
 #include "utilities.hpp"
 #ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
+#include <ql/Quotes/derivedquote.hpp>
+#include <ql/Quotes/compositequote.hpp>
 #else
 #include <ql/quote.hpp>
 #endif
