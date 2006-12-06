@@ -31,6 +31,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -148,24 +149,56 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     // then we test the observer/observable chain
     Flag f;
     f.registerWith(fowardValueQuote);
-    forwardQuote->setValue(0.1);
+    forwardQuote->setValue(0.04);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
+    
     // and we retest if the values are still matching
     forwardValue =  fowardValueQuote->value();
     expectedForwardValue = euribor->fixing(fixingDate, true);
     if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
         BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
                    << "expected result is " << expectedForwardValue);
+    // we test the ImpliedStdevQuote class
+    f.unregisterWith(fowardValueQuote);
+    f.lower();
+    Real price = 0.02;
+    Rate strike = 0.04;
+    Volatility guess = .15;
+    Real accuracy = 1.0e-6;
+    Option::Type optionType = Option::Call;
+    boost::shared_ptr<SimpleQuote> priceQuote(new SimpleQuote(price));
+    Handle<Quote> priceHandle(priceQuote);
+    boost::shared_ptr<ImpliedStdevQuote> impliedStdevQuote(new 
+        ImpliedStdevQuote(optionType, forwardHandle, priceHandle, 
+        strike, guess, accuracy));
+    Real impliedStdev = impliedStdevQuote->value();
+    Real expectedImpliedStdev = blackImpliedStdDev(optionType,
+                            strike, forwardQuote->value(),
+                            price, 1.0, guess, accuracy = 1.0e-6);
+    if (std::fabs(impliedStdev-expectedImpliedStdev) > 1.0e-15)
+        BOOST_FAIL("impliedStdevQuote yields " << impliedStdev << "\n"
+                << "expected result is " << expectedImpliedStdev);
+    // then we test the observer/observable chain
+    f.registerWith(impliedStdevQuote);
+    forwardQuote->setValue(0.05);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of quote change");
+    f.lower();
+    priceQuote->setValue(0.11);
+    if (!f.isUp())
+        BOOST_FAIL("Observer was not notified of quote change");
+
 }
 
 
 test_suite* QuoteTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Quote tests");
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testObservable));
+    /*suite->add(BOOST_TEST_CASE(&QuoteTest::testObservable));
     suite->add(BOOST_TEST_CASE(&QuoteTest::testObservableHandle));
     suite->add(BOOST_TEST_CASE(&QuoteTest::testDerived));
-    suite->add(BOOST_TEST_CASE(&QuoteTest::testComposite));
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testComposite));*/
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testForwardValueQuoteAndImpliedStdevQuote));
     return suite;
 }
 
