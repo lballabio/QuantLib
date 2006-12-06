@@ -106,17 +106,17 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
                                                      const std::vector<Rate> caps,
                                                      const std::vector<Rate> floors,
                                                      Volatility volatility) {
-    
+
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
                       convention_,convention_,false,false);
 
     Handle<CapletVolatilityStructure> vol;
-    
+
     vol = Handle<CapletVolatilityStructure>(
           boost::shared_ptr<CapletVolatilityStructure>(new
             CapletConstantVolatility(today_, volatility, Actual365Fixed())));
-  
+
     return CappedFlooredFloatingRateCouponVector(schedule,convention_,nominals_,
                                            fixingDays_,index_,
                                            std::vector<Real>(),std::vector<Spread>(),
@@ -184,19 +184,19 @@ void CapFlooredCouponTest::testLargeRates() {
     Real tolerance = 0.05; //depending on variance (option expiry and volatility)
 
     // fixed leg with zero rate
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
         makeFixedLeg(startDate_,lenght_);
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > floatLeg =
         makeFloatingLeg(startDate_,lenght_);
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
         makeCapFlooredLeg(startDate_,lenght_,caps,floors,volatility_);
 
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
     Swap collarLeg( termStructure_,fixedLeg,collaredLeg);
-    
+
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
         BOOST_MESSAGE("Lenght: " << lenght_ << " y" << "\n" <<
-            "Vanilla floating leg NPV: " << vanillaLeg.NPV() 
+            "Vanilla floating leg NPV: " << vanillaLeg.NPV()
             << "\n" <<
             "Collared:" << "\n" <<
             "Collared floating leg NPV (strikes 0 and 100): " << collarLeg.NPV()
@@ -220,23 +220,23 @@ void CapFlooredCouponTest::testDecomposition() {
               = Nom * [rate + Min(0,strike-rate)] * accrualperiod =
               = Nom * rate * accrualperiod - Nom * Max(rate-strike,0) * accrualperiod =
               = VanillaFloatingLeg - Call
-    */   
+    */
 
     Rate floorstrike = 0.0;
     Rate capstrike = 0.05;
     std::vector<Rate> caps(lenght_,capstrike);
     std::vector<Rate> floors(lenght_,floorstrike);
     // fixed leg with zero rate
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg  = 
+    std::vector<boost::shared_ptr<CashFlow> > fixedLeg  =
         makeFixedLeg(startDate_,lenght_);
-    std::vector<boost::shared_ptr<CashFlow> > cappedLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > cappedLeg =
         makeCapFlooredLeg(startDate_,lenght_,caps,floors,volatility_);
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg  = 
+    std::vector<boost::shared_ptr<CashFlow> > floatLeg  =
         makeFloatingLeg(startDate_,lenght_);
 
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
     Swap capLeg(termStructure_,fixedLeg,cappedLeg);
-    boost::shared_ptr<CapFloor> cap = 
+    boost::shared_ptr<CapFloor> cap =
         makeCapFloor(CapFloor::Cap,floatLeg,capstrike,floorstrike,volatility_);
 
     Real npvVanilla = vanillaLeg.NPV();
@@ -262,11 +262,11 @@ void CapFlooredCouponTest::testDecomposition() {
     std::vector<Rate> caps1(lenght_,capstrike1);
     std::vector<Rate> floors1(lenght_,floorstrike1);
 
-    std::vector<boost::shared_ptr<CashFlow> > flooredLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > flooredLeg =
         makeCapFlooredLeg(startDate_,lenght_,caps1,floors1,volatility_);
 
     Swap floorLeg(termStructure_,fixedLeg,flooredLeg);
-    boost::shared_ptr<CapFloor> floor = 
+    boost::shared_ptr<CapFloor> floor =
         makeCapFloor(CapFloor::Floor,floatLeg,capstrike1,floorstrike1,volatility_);
 
     Real npvFlooredLeg = floorLeg.NPV();
@@ -289,13 +289,13 @@ void CapFlooredCouponTest::testDecomposition() {
     std::vector<Rate> caps2(lenght_,capstrike2);
     std::vector<Rate> floors2(lenght_,floorstrike2);
 
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg = 
+    std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
         makeCapFlooredLeg(startDate_,lenght_,caps2,floors2,volatility_);
 
     Swap collarLeg(termStructure_,fixedLeg,collaredLeg);
-    boost::shared_ptr<CapFloor> collar = 
+    boost::shared_ptr<CapFloor> collar =
         makeCapFloor(CapFloor::Collar,floatLeg,capstrike2,floorstrike2,volatility_);
- 
+
     Real npvCollaredLeg = collarLeg.NPV();
     Real npvCollar = collar->NPV();
     error = std::abs(npvCollaredLeg -(npvVanilla - npvCollar));
@@ -314,3 +314,4 @@ test_suite* CapFlooredCouponTest::suite() {
     suite->add(BOOST_TEST_CASE(&CapFlooredCouponTest::testDecomposition));
     return suite;
 }
+

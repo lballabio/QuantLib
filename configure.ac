@@ -362,6 +362,7 @@ AC_CONFIG_FILES([
     ql/PricingEngines/Swaption/Makefile
     ql/PricingEngines/Vanilla/Makefile
     ql/Processes/Makefile
+    ql/Quotes/Makefile
     ql/RandomNumbers/Makefile
     ql/ShortRateModels/Makefile
     ql/ShortRateModels/CalibrationHelpers/Makefile

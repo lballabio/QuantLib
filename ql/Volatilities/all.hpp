@@ -32,13 +32,15 @@
 #include <ql/Volatilities/capstripper.hpp>
 #include <ql/Volatilities/cmsmarket.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
+#include <ql/Volatilities/interpolatedsmilesection.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/smilesection.hpp>
 #include <ql/Volatilities/swaptionconstantvol.hpp>
-#include <ql/Volatilities/swaptionvolcubebysabr.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
+#include <ql/Volatilities/swaptionvolcube1.hpp>
+#include <ql/Volatilities/swaptionvolcube2.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 

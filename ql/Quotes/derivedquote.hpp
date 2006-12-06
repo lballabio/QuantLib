@@ -83,7 +83,7 @@ namespace QuantLib {
     }
 
 #endif
-    
+
     class FowardValueQuote : public Quote, public Observer{
     public:
         FowardValueQuote(boost::shared_ptr<Index> index,
@@ -125,13 +125,13 @@ namespace QuantLib {
         Handle<Quote> price_;
     };
 
-    inline  ImpliedStdevQuote::ImpliedStdevQuote(Option::Type optionType,
-                                      const Handle<Quote>& forward,
-                                      const Handle<Quote>& price,
-                                      Real strike, Real guess,
-                                      Real accuracy):
-    optionType_(optionType), forward_(forward), price_(price),
-    strike_(strike), impliedVolatility_(guess), accuracy_(accuracy){
+    inline ImpliedStdevQuote::ImpliedStdevQuote(Option::Type optionType,
+                                                const Handle<Quote>& forward,
+                                                const Handle<Quote>& price,
+                                                Real strike, Real guess,
+                                                Real accuracy):
+    impliedVolatility_(guess), optionType_(optionType), strike_(strike),
+    accuracy_(accuracy), forward_(forward), price_(price) {
         registerWith(forward_);
         registerWith(price_);
     }
@@ -140,8 +140,8 @@ namespace QuantLib {
         static const Real discount_ = 1.0;
         Rate forward = forward_->value();
         Real price = price_->value();
-        impliedVolatility_ = blackImpliedStdDev(optionType_, strike_, 
-            forward, price, discount_, impliedVolatility_, accuracy_); 
+        impliedVolatility_ = blackImpliedStdDev(optionType_, strike_,
+            forward, price, discount_, impliedVolatility_, accuracy_);
         return impliedVolatility_;
     }
 

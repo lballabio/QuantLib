@@ -31,11 +31,11 @@ namespace QuantLib {
         Date refDate = referenceDate!=Date() ? referenceDate :
                        Settings::instance().evaluationDate();
         QL_REQUIRE(d>=refDate,
-                   "expiry date (" << d << 
+                   "expiry date (" << d <<
                    ") must be greater than reference date (" <<
                    refDate << ")");
         exerciseTime_ = dc_.yearFraction(refDate, d);
-    };
+    }
 
     SmileSection::SmileSection(Time exerciseTime,
                                                  const DayCounter& dc)
@@ -43,7 +43,7 @@ namespace QuantLib {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
-    };
+    }
 
     SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
                                        const Rate forward,

@@ -49,6 +49,7 @@
 #include <ql/Pricers/all.hpp>
 #include <ql/PricingEngines/all.hpp>
 #include <ql/Processes/all.hpp>
+#include <ql/Quotes/all.hpp>
 #include <ql/RandomNumbers/all.hpp>
 #include <ql/ShortRateModels/all.hpp>
 #include <ql/Solvers1D/all.hpp>

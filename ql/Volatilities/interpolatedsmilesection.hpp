@@ -30,9 +30,9 @@
 #else
 #include <ql/quote.hpp>
 #endif
-#include <ql/patterns/lazyobject.hpp>
+#include <ql/Patterns/lazyobject.hpp>
 #include <ql/Math/linearinterpolation.hpp>
-#include <ql/Volatilities/smilesection.hpp> 
+#include <ql/Volatilities/smilesection.hpp>
 
 namespace QuantLib {
 
@@ -167,7 +167,7 @@ namespace QuantLib {
                                                                       const {
         for (Size i=0; i<volHandles_.size(); ++i)
             vols_[i] = volHandles_[i]->value();
-    };
+    }
 
     template <class Interpolator>
     Real InterpolatedSmileSection<Interpolator>::variance(Real strike) const {

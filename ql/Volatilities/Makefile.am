@@ -14,6 +14,7 @@ include_HEADERS = \
     capstripper.hpp \
     cmsmarket.hpp \
     impliedvoltermstructure.hpp \
+    interpolatedsmilesection.hpp \
     localconstantvol.hpp \
     localvolcurve.hpp \
     localvolsurface.hpp \

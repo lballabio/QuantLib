@@ -33,7 +33,7 @@ namespace QuantLib {
 
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
-    class SmileSection: public Observable {
+    class SmileSection : public virtual Observable {
       public:
         SmileSection(const Date& d,
                      const DayCounter& dc = Actual365Fixed(),

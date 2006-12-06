@@ -19,6 +19,7 @@ SUBDIRS = \
     Pricers \
     PricingEngines \
     Processes \
+    Quotes \
     RandomNumbers \
     ShortRateModels \
     Solvers1D \
