@@ -821,6 +821,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\capflooredcoupon.cpp">
+			</File>
+			<File
 				RelativePath=".\capstripper.cpp">
 			</File>
 			<File
@@ -2575,6 +2578,9 @@
 			</File>
 			<File
 				RelativePath="capfloor.hpp">
+			</File>
+			<File
+				RelativePath=".\capflooredcoupon.hpp">
 			</File>
 			<File
 				RelativePath=".\capstripper.hpp">
