@@ -35,7 +35,9 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& h)
     : InterestRateIndex(familyName, tenor, settlementDays, currency,
                         calendar, dayCounter),
-      convention_(convention), termStructure_(h), endOfMonth_(true) {}
+      convention_(convention), termStructure_(h), endOfMonth_(true) {
+        registerWith(termStructure_);
+    }
     #endif
     Xibor::Xibor(const std::string& familyName,
                  const Period& tenor,
@@ -48,7 +50,9 @@ namespace QuantLib {
                  const Handle<YieldTermStructure>& h)
     : InterestRateIndex(familyName, tenor, settlementDays, currency,
                         calendar, dayCounter),
-      convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {}
+      convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {
+        registerWith(termStructure_);
+      }
 
     Rate Xibor::forecastFixing(const Date& fixingDate) const
     {
