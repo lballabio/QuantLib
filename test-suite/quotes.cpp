@@ -137,9 +137,9 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Period euriborTenor(1,Years);
     boost::shared_ptr<Index> euribor(new Euribor(euriborTenor, ycHandle));
     Date fixingDate = evaluationDate + euriborTenor;
-    boost::shared_ptr<FowardValueQuote> fowardValueQuote( new 
-        FowardValueQuote(euribor, fixingDate));
-    Rate forwardValue =  fowardValueQuote->value();
+    boost::shared_ptr<ForwardValueQuote> ForwardValueQuote( new 
+        ForwardValueQuote(euribor, fixingDate));
+    Rate forwardValue =  ForwardValueQuote->value();
     Rate expectedForwardValue = euribor->fixing(fixingDate, true);
     // we test if the forward value given by the quote is consistent 
     // with the one directly given by the index
@@ -148,19 +148,19 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
                    << "expected result is " << expectedForwardValue);
     // then we test the observer/observable chain
     Flag f;
-    f.registerWith(fowardValueQuote);
+    f.registerWith(ForwardValueQuote);
     forwardQuote->setValue(0.04);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
     
     // and we retest if the values are still matching
-    forwardValue =  fowardValueQuote->value();
+    forwardValue =  ForwardValueQuote->value();
     expectedForwardValue = euribor->fixing(fixingDate, true);
     if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
         BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
                    << "expected result is " << expectedForwardValue);
     // we test the ImpliedStdevQuote class
-    f.unregisterWith(fowardValueQuote);
+    f.unregisterWith(ForwardValueQuote);
     f.lower();
     Real price = 0.02;
     Rate strike = 0.04;

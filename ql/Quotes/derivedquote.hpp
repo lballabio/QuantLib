@@ -82,9 +82,9 @@ namespace QuantLib {
 
 #endif
 
-    class FowardValueQuote : public Quote, public Observer{
+    class ForwardValueQuote : public Quote, public Observer{
     public:
-        FowardValueQuote(boost::shared_ptr<Index> index,
+        ForwardValueQuote(boost::shared_ptr<Index> index,
                          const Date& fixingDate);
         Real value() const;
         void update();
@@ -92,15 +92,15 @@ namespace QuantLib {
         boost::function<Real()> fixing_;
         Date fixingDate_;
     };
-    inline FowardValueQuote::FowardValueQuote(boost::shared_ptr<Index> index,
+    inline ForwardValueQuote::ForwardValueQuote(boost::shared_ptr<Index> index,
         const Date& fixingDate):fixingDate_(fixingDate){
         registerWith(index);
         fixing_ = boost::bind(&Index::fixing, index, fixingDate_, true);
     }
-    inline Real FowardValueQuote::value() const{
+    inline Real ForwardValueQuote::value() const{
         return fixing_();
     }
-    inline void FowardValueQuote::update(){
+    inline void ForwardValueQuote::update(){
         notifyObservers();
     }
 
