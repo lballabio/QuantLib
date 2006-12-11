@@ -41,6 +41,7 @@ OBJS = \
     "pseudosqrt.obj$(_mt)$(_D)" \
     "rounding.obj$(_mt)$(_D)" \
     "sampledcurve.obj$(_mt)$(_D)" \
+    "surface.obj$(_mt)$(_D)" \
     "svd.obj$(_mt)$(_D)" \
     "symmetricschurdecomposition.obj$(_mt)$(_D)" \
     "tqreigendecomposition.obj$(_mt)$(_D)"

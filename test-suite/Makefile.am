@@ -58,6 +58,7 @@ QL_TESTS = \
 	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	stats.hpp stats.cpp \
+	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \
 	swaption.hpp swaption.cpp \
 	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \

@@ -17,6 +17,7 @@ include_HEADERS = \
 	comparison.hpp \
 	convergencestatistics.hpp \
 	cubicspline.hpp \
+	curve.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \
 	extrapolation.hpp \
@@ -51,6 +52,7 @@ include_HEADERS = \
 	sequencestatistics.hpp \
 	simpsonintegral.hpp \
 	statistics.hpp \
+	surface.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
 	tqreigendecomposition.hpp \
@@ -76,6 +78,7 @@ libMath_la_SOURCES = \
 	pseudosqrt.cpp \
 	rounding.cpp \
 	sampledcurve.cpp \
+	surface.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp \
 	tqreigendecomposition.cpp

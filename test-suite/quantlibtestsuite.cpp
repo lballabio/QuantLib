@@ -95,6 +95,7 @@
 #include "sampledcurve.hpp"
 #include "shortratemodels.hpp"
 #include "solvers.hpp"
+#include "surface.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swaption.hpp"
@@ -225,6 +226,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ShortRateModelTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
+    test->add(SurfaceTest::suite());
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(SwaptionVolatilityCubeTest::suite());

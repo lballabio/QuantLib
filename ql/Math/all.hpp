@@ -36,6 +36,7 @@
 #include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
+#include <ql/Math/domain.hpp>
 #include <ql/Math/errorfunction.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <ql/Math/factorial.hpp>
@@ -66,6 +67,7 @@
 #include <ql/Math/sampledcurve.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/simpsonintegral.hpp>
+#include <ql/Math/surface.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/Math/tqreigendecomposition.hpp>
