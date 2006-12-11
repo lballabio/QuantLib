@@ -1994,6 +1994,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\surface.cpp"
+				>
+			</File>
+			<File
 				RelativePath="swap.cpp"
 				>
 				<FileConfiguration

@@ -3224,6 +3224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\surface.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Math\transformedgrid.hpp"
 				>
 			</File>
