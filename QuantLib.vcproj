@@ -8774,6 +8774,18 @@
 			Name="Quotes"
 			Filter="">
 			<File
+				RelativePath=".\ql\Quotes\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\compositequote.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\derivedquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\derivedquote.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Quotes\simplequote.hpp">
 			</File>
 		</Filter>
