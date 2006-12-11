@@ -104,14 +104,14 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    class ImpliedStdevQuote : public Quote, Observer{
+    class ImpliedStdDevQuote : public Quote, Observer{
     public:
-        ImpliedStdevQuote(Option::Type optionType,
-                          const Handle<Quote>& forward,
-                          const Handle<Quote>& price,
-                          Real strike,
-                          Real guess = Null<Real>(),
-                          Real accuracy = 1.0e-6);
+        ImpliedStdDevQuote(Option::Type optionType,
+                           const Handle<Quote>& forward,
+                           const Handle<Quote>& price,
+                           Real strike,
+                           Real guess = Null<Real>(),
+                           Real accuracy = 1.0e-6);
         Real value() const;
         void update();
     private:
@@ -123,18 +123,19 @@ namespace QuantLib {
         Handle<Quote> price_;
     };
 
-    inline ImpliedStdevQuote::ImpliedStdevQuote(Option::Type optionType,
-                                                const Handle<Quote>& forward,
-                                                const Handle<Quote>& price,
-                                                Real strike, Real guess,
-                                                Real accuracy):
+    inline ImpliedStdDevQuote::ImpliedStdDevQuote(Option::Type optionType,
+                                                  const Handle<Quote>& forward,
+                                                  const Handle<Quote>& price,
+                                                  Real strike,
+                                                  Real guess,
+                                                  Real accuracy):
     impliedVolatility_(guess), optionType_(optionType), strike_(strike),
     accuracy_(accuracy), forward_(forward), price_(price) {
         registerWith(forward_);
         registerWith(price_);
     }
 
-    inline Real ImpliedStdevQuote::value() const {
+    inline Real ImpliedStdDevQuote::value() const {
         static const Real discount_ = 1.0;
         Rate forward = forward_->value();
         Real price = price_->value();
@@ -143,7 +144,7 @@ namespace QuantLib {
         return impliedVolatility_;
     }
 
-    inline void ImpliedStdevQuote::update(){
+    inline void ImpliedStdDevQuote::update(){
         notifyObservers();
     }
 }

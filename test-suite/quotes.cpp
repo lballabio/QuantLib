@@ -169,9 +169,9 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Option::Type optionType = Option::Call;
     boost::shared_ptr<SimpleQuote> priceQuote(new SimpleQuote(price));
     Handle<Quote> priceHandle(priceQuote);
-    boost::shared_ptr<ImpliedStdevQuote> impliedStdevQuote(new 
-        ImpliedStdevQuote(optionType, forwardHandle, priceHandle, 
-        strike, guess, accuracy));
+    boost::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new 
+        ImpliedStdDevQuote(optionType, forwardHandle, priceHandle, 
+                           strike, guess, accuracy));
     Real impliedStdev = impliedStdevQuote->value();
     Real expectedImpliedStdev = blackImpliedStdDev(optionType,
                             strike, forwardQuote->value(),
