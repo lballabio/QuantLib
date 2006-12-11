@@ -77,10 +77,10 @@ namespace QuantLib {
     class SabrSmileSection : public SmileSection {
       public:
         SabrSmileSection(Time timeToExpiry,
-                         const Rate forward,
+                         Rate forward,
                          const std::vector<Real>& sabrParameters);
         SabrSmileSection(const Date& d,
-                         const Rate forward,
+                         Rate forward,
                          const std::vector<Real>& sabrParameters,
                          const DayCounter& dc = Actual365Fixed());
         Real variance(Rate strike) const;

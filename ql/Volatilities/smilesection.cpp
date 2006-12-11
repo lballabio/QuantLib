@@ -46,7 +46,7 @@ namespace QuantLib {
     }
 
     SabrSmileSection::SabrSmileSection(const Time timeToExpiry,
-                                       const Rate forward,
+                                       Rate forward,
                                        const std::vector<Real>& sabrParams)
     : SmileSection(timeToExpiry), forward_(forward) {
 
@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
     SabrSmileSection::SabrSmileSection(const Date& d,
-                                       const Rate forward,
+                                       Rate forward,
                                        const std::vector<Real>& sabrParams,
                                        const DayCounter& dc)
     : SmileSection(d, dc) {
