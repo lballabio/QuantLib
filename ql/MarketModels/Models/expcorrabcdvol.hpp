@@ -23,7 +23,7 @@
 #ifndef quantlib_exp_corr_abcd_vol_hpp
 #define quantlib_exp_corr_abcd_vol_hpp
 
-#include <ql/MarketModels/Models/abcd.hpp>
+#include <ql/Volatilities/abcd.hpp>
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/types.hpp>

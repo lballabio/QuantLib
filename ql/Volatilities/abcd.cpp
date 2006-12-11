@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/Models/abcd.hpp>
+#include <ql/Volatilities/abcd.hpp>
 #include <ql/Optimization/problem.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Optimization/armijo.hpp>

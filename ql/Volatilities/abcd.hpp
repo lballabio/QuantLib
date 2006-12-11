@@ -132,7 +132,7 @@ namespace QuantLib {
         class AbcdCostFunction;
         friend class AbcdCostFunction;
         class AbcdCostFunction : public CostFunction {
-            public:
+          public:
             AbcdCostFunction(Abcd* abcd,
                              const std::vector<Real>& blackVols,
                              const std::vector<Real>::const_iterator& t)
@@ -144,7 +144,7 @@ namespace QuantLib {
                 if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
                 return abcd_->error(blackVols_, t_);
             }
-            private:
+          private:
             Abcd* abcd_;
             std::vector<Real> blackVols_;
             std::vector<Real>::const_iterator t_;
@@ -156,7 +156,7 @@ namespace QuantLib {
 
     //! Abcd Squared functional. Helper class.
     class AbcdSquared : public std::unary_function<Real,Real> {
-    public:  
+      public:  
         AbcdSquared(Real a, Real b, Real c, Real d, Time S, Time T)
         : abcd_(new Abcd(a,b,c,d)), S_(S), T_(T) {}
         Real operator()(Time u) const {
@@ -166,7 +166,7 @@ namespace QuantLib {
                 return (*abcd_)(T_-u)*(*abcd_)(S_-u);        
         }
 
-    private:
+      private:
         boost::shared_ptr<Abcd> abcd_;
         Time S_, T_;
     };
