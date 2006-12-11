@@ -58,6 +58,6 @@ namespace QuantLib {
                                 Real guess,
                                 Real accuracy)
     : ImpliedStdDevQuote(optionType==Option::Call ? Option::Put : Option::Call,
-                         forward, price, strike, guess, accuracy) {}
+                         forward, price, 100.0-strike, guess, accuracy) {}
 
 }
