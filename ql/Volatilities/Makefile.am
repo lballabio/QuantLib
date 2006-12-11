@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Volatilities
 
 include_HEADERS = \
     all.hpp \
+    abcd.hpp \
     blackconstantvol.hpp \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
@@ -28,6 +29,7 @@ include_HEADERS = \
     swaptionvolmatrix.hpp
 
 libVolatilities_la_SOURCES = \
+    abcd.cpp \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
     capletvolatilitiesstructures.cpp \

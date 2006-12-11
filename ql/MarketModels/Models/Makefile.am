@@ -4,12 +4,10 @@ includedir = $(prefix)/include/ql/MarketModels/Models
 
 include_HEADERS = \
 	all.hpp \
-	abcd.hpp \
 	expcorrabcdvol.hpp \
 	expcorrflatvol.hpp
 
 libMarketModelsModels_la_SOURCES = \
-	abcd.cpp \
 	expcorrabcdvol.cpp \
 	expcorrflatvol.cpp
 

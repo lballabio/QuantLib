@@ -22,7 +22,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/MarketModels/Models/abcd.hpp>
 #include <ql/MarketModels/Models/expcorrabcdvol.hpp>
 #include <ql/MarketModels/Models/expcorrflatvol.hpp>
 

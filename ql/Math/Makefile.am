@@ -19,6 +19,7 @@ include_HEADERS = \
 	cubicspline.hpp \
 	curve.hpp \
 	discrepancystatistics.hpp \
+	domain.hpp \
 	errorfunction.hpp \
 	extrapolation.hpp \
 	factorial.hpp \

@@ -18,18 +18,19 @@ include_HEADERS = \
     eurliborswapfixb.hpp \
     eurliborswapfixifr.hpp \
     gbplibor.hpp \
+    iborindex.hpp \
+    indexmanager.hpp \
+    interestrateindex.hpp \
     jibar.hpp \
     jpylibor.hpp \
+    libor.hpp \
     nzdlibor.hpp \
+    swapindex.hpp \
     tibor.hpp \
     trlibor.hpp \
     usdlibor.hpp \
-    zibor.hpp \
     xibor.hpp \
-    libor.hpp \
-    indexmanager.hpp \
-    interestrateindex.hpp \
-    swapindex.hpp
+    zibor.hpp
 
 libIndexes_la_SOURCES = \
     euriborswapfixa.cpp \
@@ -37,8 +38,8 @@ libIndexes_la_SOURCES = \
     eurliborswapfixa.cpp \
     eurliborswapfixb.cpp \
     eurliborswapfixifr.cpp \
-    xibor.cpp \
     libor.cpp \
+    iborindex.cpp \
     indexmanager.cpp \
     interestrateindex.cpp \
     swapindex.cpp

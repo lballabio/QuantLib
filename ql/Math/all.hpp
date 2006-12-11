@@ -35,6 +35,7 @@
 #include <ql/Math/comparison.hpp>
 #include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/curve.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/domain.hpp>
 #include <ql/Math/errorfunction.hpp>

@@ -22,6 +22,7 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/Volatilities/abcd.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>

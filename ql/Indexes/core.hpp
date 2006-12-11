@@ -25,8 +25,8 @@
 #include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
 #include <ql/Indexes/libor.hpp>
-#include <ql/Indexes/swapindex.hpp>
 #include <ql/Indexes/iborindex.hpp>
+#include <ql/Indexes/swapindex.hpp>
 
 
 #endif
