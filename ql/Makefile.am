@@ -126,6 +126,7 @@ libQuantLib_la_LIBADD = \
     Pricers/libPricers.la \
     PricingEngines/libPricingEngines.la \
     Processes/libProcesses.la \
+    Quotes/libQuotes.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
     TermStructures/libTermStructures.la \

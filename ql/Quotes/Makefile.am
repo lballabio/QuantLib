@@ -8,3 +8,11 @@ include_HEADERS = \
     derivedquote.hpp \
     simplequote.hpp
 
+libQuotes_la_SOURCES = \
+    derivedquote.cpp
+
+noinst_LTLIBRARIES = libQuotes.la
+
+EXTRA_DIST = makefile.mak
+
+
