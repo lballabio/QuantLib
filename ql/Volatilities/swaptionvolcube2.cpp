@@ -71,19 +71,20 @@ namespace QuantLib {
 
     boost::shared_ptr<SmileSection>
     SwaptionVolCube2::smileSection(const Date& optionDate,
-                                                 const Period& swapTenor) const {
+                                   const Period& swapTenor) const {
         calculate();
-        const Rate atmForward = atmStrike(optionDate, swapTenor);
-        const Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
+        Rate atmForward = atmStrike(optionDate, swapTenor);
+        Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
                                                       atmForward);
-        std::vector<Real> strikes, volatilities;
-        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        for (Size i=0; i<nStrikes_; i++) {
+        std::vector<Real> strikes, stdDevs;
+        std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
+        Real exerciseTimeSqrt = std::sqrt(p.first);
+        for (Size i=0; i<nStrikes_; ++i) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
-            volatilities.push_back(
-                      atmVol + volSpreadsInterpolator_[i](p.second, p.first));
+            stdDevs.push_back(exerciseTimeSqrt*(
+                atmVol + volSpreadsInterpolator_[i](p.second, p.first)));
         }
         return boost::shared_ptr<SmileSection>(new
-            InterpolatedSmileSection<Linear>(p.first, strikes, volatilities));
+            InterpolatedSmileSection<Linear>(p.first, strikes, stdDevs));
     }
 }
