@@ -92,7 +92,7 @@ namespace QuantLib {
                          swapIndexBase_->settlementDays(),
                          swapIndexBase_->currency(),
                          swapIndexBase_->calendar(),
-                         swapIndexBase_->fixedLegFrequency(),
+                         swapIndexBase_->fixedLegTenor(),
                          swapIndexBase_->fixedLegConvention(),
                          swapIndexBase_->dayCounter(),
                          swapIndexBase_->iborIndex()).fixing(optionDate);
