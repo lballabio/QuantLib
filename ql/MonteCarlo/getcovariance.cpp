@@ -24,7 +24,7 @@ namespace QuantLib {
 
     CovarianceDecomposition::CovarianceDecomposition(const Matrix& cov,
                                                      Real tolerance)
-    : variances_(Array(cov.rows())), standardDeviations_(Array(cov.rows())),
+    : variances_(cov.diagonal()), standardDeviations_(Array(cov.rows())),
       correlationMatrix_(Matrix(cov.rows(), cov.rows())) {
 
         Size size = cov.rows();
@@ -33,8 +33,7 @@ namespace QuantLib {
 
         Size i, j;
         for (i=0; i<size; i++) {
-            variances_[i]=cov[i][i];
-            standardDeviations_[i] = std::sqrt(cov[i][i]);
+            standardDeviations_[i] = std::sqrt(variances_[i]);
             correlationMatrix_[i][i] = 1.0;
             for (j=0; j<i; j++){
                 QL_REQUIRE(std::fabs(cov[i][j]-cov[j][i]) <= tolerance,

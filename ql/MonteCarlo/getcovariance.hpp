@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    /*! Combines the correlation matrix and the vector of volatilities
+    /*! Combines the correlation matrix and the vector of standard deviations
         to return the covariance matrix.
 
         Note that only the symmetric part of the correlation matrix is
@@ -44,11 +44,11 @@ namespace QuantLib {
               CovarianceDecomposition
     */
     template<class DataIterator>
-    Disposable<Matrix> getCovariance(DataIterator volBegin,
-                                     DataIterator volEnd,
+    Disposable<Matrix> getCovariance(DataIterator stdDevBegin,
+                                     DataIterator stdDevEnd,
                                      const Matrix& corr,
                                      Real tolerance = 1.0e-12){
-        Size size = std::distance(volBegin, volEnd);
+        Size size = std::distance(stdDevBegin, stdDevEnd);
         QL_REQUIRE(corr.rows() == size,
                    "dimension mismatch between volatilities (" << size <<
                    ") and correlation rows (" << corr.rows() << ")");
@@ -59,8 +59,8 @@ namespace QuantLib {
         Matrix covariance(size,size);
         Size i, j;
         DataIterator iIt, jIt;
-        for (i=0, iIt=volBegin; i<size; i++, iIt++){
-            for (j=0, jIt=volBegin; j<i; j++, jIt++){
+        for (i=0, iIt=stdDevBegin; i<size; ++i, ++iIt){
+            for (j=0, jIt=stdDevBegin; j<i; ++j, ++jIt){
                 QL_REQUIRE(std::fabs(corr[i][j]-corr[j][i]) <= tolerance,
                            "correlation matrix not symmetric:"
                            << "\nc[" << i << "," << j << "] = " << corr[i][j]
@@ -79,7 +79,7 @@ namespace QuantLib {
         return covariance;
     }
 
-    /*! Extracts the correlation matrix and the vector of volatilities
+    /*! Extracts the correlation matrix and the vector of variances
         out of the input covariance matrix.
 
         Note that only the lower symmetric part of the covariance matrix is
