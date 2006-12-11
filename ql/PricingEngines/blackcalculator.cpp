@@ -194,7 +194,7 @@ namespace QuantLib {
     }
 
     void BlackCalculator::Calculator::visit(Payoff& p) {
-        QL_FAIL("unsupported payoff type: " << p.type());
+        QL_FAIL("unsupported payoff type: " << p.name());
     }
 
     void BlackCalculator::Calculator::visit(PlainVanillaPayoff&) {}
@@ -234,7 +234,7 @@ namespace QuantLib {
     }
 
     void BlackCalculator::Calculator::visit(GapPayoff& payoff) {
-        black_.X_ = payoff.strikePayoff();
+        black_.X_ = payoff.secondStrike();
         black_.DXDstrike_ = 0.0;
     }
 

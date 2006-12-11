@@ -32,7 +32,7 @@
 
 namespace QuantLib {
 
-    //! Base class for option payoffs
+    //! Abstract base class for option payoffs
     class Payoff : std::unary_function<Real,Real> {
       public:
         virtual ~Payoff() {}
@@ -42,7 +42,7 @@ namespace QuantLib {
                 payoffs. It is <b>not</b> meant to be used for writing
                 switch-on-type code.
         */
-        virtual std::string type() const = 0;
+        virtual std::string name() const = 0;
         virtual std::string description() const = 0;
         virtual Real operator()(Real price) const = 0;
         //@}

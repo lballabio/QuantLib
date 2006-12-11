@@ -150,7 +150,7 @@ namespace QuantLib {
         Real strike() const { return strike_; };
         //! \name Payoff interface
         //@{
-        std::string type() const { return "Forward";}
+        std::string name() const { return "Forward";}
         std::string description() const;
         Real operator()(Real price) const;
         //@}
@@ -188,7 +188,7 @@ namespace QuantLib {
 
     inline std::string ForwardTypePayoff::description() const {
         std::ostringstream result;
-        result << type() << ", " << strike() << " strike";
+        result << name() << ", " << strike() << " strike";
         return result.str();
     }
 

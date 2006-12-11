@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Warren Chou
  Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,12 +26,25 @@ namespace QuantLib {
 
     std::string TypePayoff::description() const {
         std::ostringstream result;
-        result << type() << " " << optionType();
+        result << name() << " " << optionType();
         return result.str();
     }
 
+    //std::string StrikedPayoff::description() const {
+    //    std::ostringstream result;
+    //    result << ", " << strike() << " strike";
+    //    return result.str();
+    //}
+
     Real FloatingTypePayoff::operator()(Real) const {
         QL_FAIL("floating payoff not handled");
+    }
+
+    std::string StrikedTypePayoff::description() const {
+        std::ostringstream result;
+        result << TypePayoff::description() << ", " <<
+                  strike() << " strike";
+        return result.str();
     }
 
     void FloatingTypePayoff::accept(AcyclicVisitor& v) {
@@ -40,12 +54,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             Payoff::accept(v);
-    }
-
-    std::string StrikedTypePayoff::description() const {
-        std::ostringstream result;
-        result << TypePayoff::description() << ", " << strike() << " strike";
-        return result.str();
     }
 
     Real PlainVanillaPayoff::operator()(Real price) const {
@@ -131,21 +139,20 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            Payoff::accept(v);
-    }
+            Payoff::accept(v);}
 
     std::string GapPayoff::description() const {
         std::ostringstream result;
-        result << StrikedTypePayoff::description() << ", " << strikePayoff() << " strike payoff";
+        result << StrikedTypePayoff::description() << ", " << secondStrike() << " strike payoff";
         return result.str();
     }
 
     Real GapPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
-            return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
+            return (price-strike_ >= 0.0 ? price-secondStrike_ : 0.0);
           case Option::Put:
-            return (strike_-price > 0.0 ? strikePayoff_-price : 0.0);
+            return (strike_-price >= 0.0 ? secondStrike_-price : 0.0);
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -160,25 +167,26 @@ namespace QuantLib {
             Payoff::accept(v);
     }
 
+    Real SuperFundPayoff::operator()(Real price) const {
+        return (price>=strike_ && price<secondStrike_) ? price/strike_ : 0.0;
+    }
+
+    void SuperFundPayoff::accept(AcyclicVisitor& v) {
+        Visitor<SuperFundPayoff>* v1 =
+            dynamic_cast<Visitor<SuperFundPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
     std::string SuperSharePayoff::description() const {
         std::ostringstream result;
-        result << StrikedTypePayoff::description() << ", " << strikeIncrement() << " strike increment";
+        result << StrikedTypePayoff::description() << ", " << secondStrike() << " second strike"<< ", " << cashPayoff() << " amount";
         return result.str();
     }
 
     Real SuperSharePayoff::operator()(Real price) const {
-        switch (type_) {
-          case Option::Call:
-            return ((price-strike_                  > 0.0 ? 1.0 : 0.0)
-                   -(price-strike_-strikeIncrement_ > 0.0 ? 1.0 : 0.0))
-                / strikeIncrement_;
-          case Option::Put:
-            return ((strike_                 -price > 0.0 ? 1.0 : 0.0)
-                   -(strike_+strikeIncrement_-price > 0.0 ? 1.0 : 0.0))
-                / strikeIncrement_;
-          default:
-            QL_FAIL("unknown/illegal option type");
-        }
+        return (price>=strike_ && price<secondStrike_) ? cashPayoff_ : 0.0;
     }
 
     void SuperSharePayoff::accept(AcyclicVisitor& v) {
