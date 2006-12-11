@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 François du Vignaud
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,15 +25,12 @@
 #ifndef quantlib_derived_quote_hpp
 #define quantlib_derived_quote_hpp
 
-
 #include <ql/quote.hpp>
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <ql/index.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -82,30 +81,21 @@ namespace QuantLib {
 
 #endif
 
-    class ForwardValueQuote : public Quote, public Observer{
-    public:
-        ForwardValueQuote(boost::shared_ptr<Index> index,
-                         const Date& fixingDate);
+    class ForwardValueQuote : public Quote,
+                              public Observer {
+      public:
+        ForwardValueQuote(const boost::shared_ptr<Index>& index,
+                          const Date& fixingDate);
         Real value() const;
         void update();
-    private:
-        boost::function<Real()> fixing_;
+      private:
+        boost::shared_ptr<Index> index_;
         Date fixingDate_;
     };
-    inline ForwardValueQuote::ForwardValueQuote(boost::shared_ptr<Index> index,
-        const Date& fixingDate):fixingDate_(fixingDate){
-        registerWith(index);
-        fixing_ = boost::bind(&Index::fixing, index, fixingDate_, true);
-    }
-    inline Real ForwardValueQuote::value() const{
-        return fixing_();
-    }
-    inline void ForwardValueQuote::update(){
-        notifyObservers();
-    }
 
-    class ImpliedStdDevQuote : public Quote, Observer{
-    public:
+    class ImpliedStdDevQuote : public Quote,
+                               public Observer {
+      public:
         ImpliedStdDevQuote(Option::Type optionType,
                            const Handle<Quote>& forward,
                            const Handle<Quote>& price,
@@ -113,8 +103,9 @@ namespace QuantLib {
                            Real guess = Null<Real>(),
                            Real accuracy = 1.0e-6);
         Real value() const;
+        virtual Real forwardValue() const { return forward_->value(); }
         void update();
-    private:
+      protected:
         mutable Volatility impliedVolatility_;
         Option::Type optionType_;
         Real strike_;
@@ -123,30 +114,36 @@ namespace QuantLib {
         Handle<Quote> price_;
     };
 
-    inline ImpliedStdDevQuote::ImpliedStdDevQuote(Option::Type optionType,
-                                                  const Handle<Quote>& forward,
-                                                  const Handle<Quote>& price,
-                                                  Real strike,
-                                                  Real guess,
-                                                  Real accuracy):
-    impliedVolatility_(guess), optionType_(optionType), strike_(strike),
-    accuracy_(accuracy), forward_(forward), price_(price) {
-        registerWith(forward_);
-        registerWith(price_);
+    class EurodollarFuturesImpliedStdDevQuote : public ImpliedStdDevQuote {
+      public:
+        EurodollarFuturesImpliedStdDevQuote(Option::Type optionType,
+                                            const Handle<Quote>& forward,
+                                            const Handle<Quote>& price,
+                                            Real strike,
+                                            Real guess = Null<Real>(),
+                                            Real accuracy = 1.0e-6);
+        Real forwardValue() const;
+    };
+
+
+    // inline
+
+    inline Real ForwardValueQuote::value() const {
+        return index_->fixing(fixingDate_);
     }
 
-    inline Real ImpliedStdDevQuote::value() const {
-        static const Real discount_ = 1.0;
-        Rate forward = forward_->value();
-        Real price = price_->value();
-        impliedVolatility_ = blackImpliedStdDev(optionType_, strike_,
-            forward, price, discount_, impliedVolatility_, accuracy_);
-        return impliedVolatility_;
+    inline void ForwardValueQuote::update() {
+        notifyObservers();
     }
 
     inline void ImpliedStdDevQuote::update(){
         notifyObservers();
     }
+
+    inline Real EurodollarFuturesImpliedStdDevQuote::forwardValue() const {
+        return 100.0 - forward_->value();
+    }
+
 }
 
 #endif

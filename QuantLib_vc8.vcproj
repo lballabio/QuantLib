@@ -8752,6 +8752,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Quotes\derivedquote.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Quotes\derivedquote.hpp"
 				>
 			</File>
