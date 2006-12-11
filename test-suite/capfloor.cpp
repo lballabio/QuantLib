@@ -47,7 +47,7 @@ Date today_, settlement_;
 std::vector<Real> nominals_;
 BusinessDayConvention convention_;
 Frequency frequency_;
-boost::shared_ptr<Xibor> index_;
+boost::shared_ptr<IborIndex> index_;
 Calendar calendar_;
 Integer settlementDays_, fixingDays_;
 Handle<YieldTermStructure> termStructure_;
@@ -110,7 +110,7 @@ std::string typeToString(CapFloor::Type type) {
 void setup() {
     nominals_ = std::vector<Real>(1,100.0);
     frequency_ = Semiannual;
-    index_ = boost::shared_ptr<Xibor>(new Euribor6M(termStructure_));
+    index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
     calendar_ = index_->calendar();
     convention_ = ModifiedFollowing;
     today_ = calendar_.adjust(Date::todaysDate());

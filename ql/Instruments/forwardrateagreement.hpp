@@ -25,7 +25,7 @@
 #define quantlib_forward_rate_agreement_hpp
 
 #include <ql/Instruments/forward.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
@@ -80,7 +80,7 @@ namespace QuantLib {
                              Position::Type type,
                              Rate strikeForwardRate,
                              Real notionalAmount,
-                             const boost::shared_ptr<Xibor>& index,
+                             const boost::shared_ptr<IborIndex>& index,
                              const Handle<YieldTermStructure>& discountCurve =
                                                  Handle<YieldTermStructure>());
         //! \name Calculations
@@ -109,7 +109,7 @@ namespace QuantLib {
         //! aka FRA fixing rate, contract rate
         InterestRate strikeForwardRate_;
         Real notionalAmount_;
-        boost::shared_ptr<Xibor> index_;
+        boost::shared_ptr<IborIndex> index_;
     };
 
 }

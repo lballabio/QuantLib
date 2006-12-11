@@ -26,7 +26,7 @@
 #define quantlib_par_coupon_hpp
 
 #include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +42,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   const Integer fixingDays,
-                  const boost::shared_ptr<Xibor>& index,
+                  const boost::shared_ptr<IborIndex>& index,
                   const Real gearing = 1.0,
                   const Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),

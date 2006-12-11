@@ -26,7 +26,7 @@
 
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         CapHelper(const Period& length,
                   const Handle<Quote>& volatility,
-                  const boost::shared_ptr<Xibor>& index,
+                  const boost::shared_ptr<IborIndex>& index,
                   // data for ATM swap-rate calculation
                   Frequency fixedLegFrequency,
                   const DayCounter& fixedLegDayCounter,

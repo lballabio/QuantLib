@@ -131,7 +131,8 @@ namespace QuantLib {
 
 
     Bond::Bond(Real faceAmount, 
-               const DayCounter& dayCount, const Calendar& calendar,
+               const DayCounter& dayCount,
+               const Calendar& calendar,
                BusinessDayConvention accrualConvention,
                BusinessDayConvention paymentConvention,
                Integer settlementDays,
@@ -163,7 +164,8 @@ namespace QuantLib {
     }
 
     Rate Bond::yield(Compounding compounding,
-                     Real accuracy, Size maxEvaluations) const {
+                     Real accuracy,
+                     Size maxEvaluations) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice(),
@@ -172,28 +174,28 @@ namespace QuantLib {
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
-    Real Bond::cleanPrice(Rate yield, Compounding compounding,
-                          Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-        return dirtyPrice(yield,compounding,settlement)
-             - accruedAmount(settlement);
+    Real Bond::cleanPrice(Rate yield,
+                          Compounding compounding,
+                          const Date& settlement) const {
+        Date sd = (settlement == Date()) ? settlementDate() : settlement;
+        return dirtyPrice(yield, compounding, sd) - accruedAmount(sd);
     }
 
-    Real Bond::dirtyPrice(Rate yield, Compounding compounding,
-                          Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
+    Real Bond::dirtyPrice(Rate yield,
+                          Compounding compounding,
+                          const Date& settlement) const {
+        Date sd = (settlement == Date()) ? settlementDate() : settlement;
         return dirtyPriceFromYield(faceAmount_, cashflows_, yield,
                                    compounding, frequency_, dayCount_,
-                                   settlement);
+                                   sd);
     }
 
-    Rate Bond::yield(Real cleanPrice, Compounding compounding,
-                     Date settlement,
-                     Real accuracy, Size maxEvaluations) const {
-        if (settlement == Date())
-            settlement = settlementDate();
+    Rate Bond::yield(Real cleanPrice,
+                     Compounding compounding,
+                     const Date& settlement,
+                     Real accuracy,
+                     Size maxEvaluations) const {
+        Date sd = (settlement == Date()) ? settlementDate() : settlement;
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
@@ -203,17 +205,15 @@ namespace QuantLib {
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
-    Real Bond::accruedAmount(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-
+    Real Bond::accruedAmount(const Date& settlement) const {
+        Date sd = (settlement == Date()) ? settlementDate() : settlement;
         for (Size i = 0; i<cashflows_.size(); ++i) {
             // the first coupon paying after d is the one we're after
-            if (!cashflows_[i]->hasOccurred(settlement)) {
+            if (!cashflows_[i]->hasOccurred(sd)) {
                 boost::shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
                 if (coupon)
-                    return coupon->accruedAmount(settlement)/faceAmount_*100.0;
+                    return coupon->accruedAmount(sd)/faceAmount_*100.0;
                 else
                     return 0.0;
             }

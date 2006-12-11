@@ -50,13 +50,13 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(LiborMarketModelTest)
 
-boost::shared_ptr<Xibor> makeIndex(std::vector<Date> dates,
+boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
                                    std::vector<Rate> rates) {
     DayCounter dayCounter = Actual360();
 
     Handle<YieldTermStructure> termStructure;
 
-    boost::shared_ptr<Xibor> index(new Euribor6M(termStructure));
+    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
     Date todaysDate = index->calendar().adjust(Date(4,September,2005));
     Settings::instance().evaluationDate() = todaysDate;
@@ -71,7 +71,7 @@ boost::shared_ptr<Xibor> makeIndex(std::vector<Date> dates,
 }
 
 
-boost::shared_ptr<Xibor> makeIndex() {
+boost::shared_ptr<IborIndex> makeIndex() {
     std::vector<Date> dates;
     std::vector<Rate> rates;
     dates.push_back(Date(4,September,2005));
@@ -200,7 +200,7 @@ void LiborMarketModelTest::testCapletPricing() {
     const Real tolerance = 1e-12;
     #endif
 
-    boost::shared_ptr<Xibor> index = makeIndex();
+    boost::shared_ptr<IborIndex> index = makeIndex();
     boost::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
 
@@ -268,7 +268,7 @@ void LiborMarketModelTest::testCalibration() {
                                  0.146036, 0.134555, 0.124393, 0.115038,
                                  0.106996, 0.100064};
 
-    boost::shared_ptr<Xibor> index = makeIndex();
+    boost::shared_ptr<IborIndex> index = makeIndex();
     boost::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
     const Handle<YieldTermStructure> termStructure(index->termStructure());
@@ -366,7 +366,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
     rates.push_back(0.04);
     rates.push_back(0.08);
 
-    boost::shared_ptr<Xibor> index = makeIndex(dates, rates);
+    boost::shared_ptr<IborIndex> index = makeIndex(dates, rates);
 
     boost::shared_ptr<LiborForwardModelProcess> process(
                                    new LiborForwardModelProcess(size, index));

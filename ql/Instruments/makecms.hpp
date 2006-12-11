@@ -87,7 +87,7 @@ namespace QuantLib {
         Date effectiveDate_;
         Calendar cmsCalendar_, floatCalendar_;
         Handle<YieldTermStructure> discountingTermStructure_;
-        boost::shared_ptr<Xibor> iborIndex_;
+        boost::shared_ptr<IborIndex> iborIndex_;
 
         bool payCMS_;
         Real nominal_;

@@ -56,10 +56,10 @@ namespace QuantLib {
       cmsDayCount_(Actual360()),
       floatDayCount_(swapIndex->iborIndex()->dayCounter())
     {
-        boost::shared_ptr<Xibor> baseIndex = swapIndex->iborIndex();
+        boost::shared_ptr<IborIndex> baseIndex = swapIndex->iborIndex();
         // FIXME use a familyName-based index factory
-        iborIndex_ = boost::shared_ptr<Xibor>(new
-            Xibor(baseIndex->familyName(),
+        iborIndex_ = boost::shared_ptr<IborIndex>(new
+            IborIndex(baseIndex->familyName(),
                   floatTenor_,
                   baseIndex->settlementDays(),
                   baseIndex->currency(),

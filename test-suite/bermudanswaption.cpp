@@ -42,7 +42,7 @@ Real nominal_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
-boost::shared_ptr<Xibor> index_;
+boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_;
 
 Handle<YieldTermStructure> termStructure_;
@@ -74,7 +74,7 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<Xibor>(new Euribor6M(termStructure_));
+    index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
     calendar_ = index_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;

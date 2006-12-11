@@ -18,14 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Indexes/xibor.hpp>
-#include <ql/Indexes/indexmanager.hpp>
-#include <sstream>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
-    Xibor::Xibor(const std::string& familyName,
+    IborIndex::IborIndex(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,
                  const Currency& currency,
@@ -39,7 +37,7 @@ namespace QuantLib {
         registerWith(termStructure_);
     }
     #endif
-    Xibor::Xibor(const std::string& familyName,
+    IborIndex::IborIndex(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,
                  const Currency& currency,
@@ -54,7 +52,7 @@ namespace QuantLib {
         registerWith(termStructure_);
       }
 
-    Rate Xibor::forecastFixing(const Date& fixingDate) const
+    Rate IborIndex::forecastFixing(const Date& fixingDate) const
     {
         QL_REQUIRE(!termStructure_.empty(),
                    "no forecasting term structure set to " << name());
@@ -69,7 +67,7 @@ namespace QuantLib {
         return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
     }
 
-    Date Xibor::maturityDate(const Date& valueDate) const {
+    Date IborIndex::maturityDate(const Date& valueDate) const {
         return calendar_.advance(valueDate, tenor_, convention_,endOfMonth_);
     }
 

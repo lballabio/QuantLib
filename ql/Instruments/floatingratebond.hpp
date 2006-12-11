@@ -25,7 +25,7 @@
 #define quantlib_floating_rate_bond_hpp
 
 #include <ql/Instruments/bond.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +42,7 @@ namespace QuantLib {
                          const Date& datedDate,
                          const Date& maturityDate,
                          Integer settlementDays,
-                         const boost::shared_ptr<Xibor>& index,
+                         const boost::shared_ptr<IborIndex>& index,
                          Integer fixingDays,
                          const std::vector<Real>& gearings,
                          const std::vector<Spread>& spreads,

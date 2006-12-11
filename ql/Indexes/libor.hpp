@@ -24,12 +24,12 @@
 #ifndef quantlib_libor_hpp
 #define quantlib_libor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
     //! base class for BBA LIBOR indexes
-    class Libor : public Xibor {
+    class Libor : public IborIndex {
       public:
         #ifndef QL_DISABLE_DEPRECATED
         Libor(const std::string& familyName,

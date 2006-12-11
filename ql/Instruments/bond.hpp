@@ -113,22 +113,22 @@ namespace QuantLib {
         /*! The default bond settlement is used if no date is given. */
         Real cleanPrice(Rate yield,
                         Compounding compounding,
-                        Date settlementDate = Date()) const;
+                        const Date& settlementDate = Date()) const;
         //! dirty price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real dirtyPrice(Rate yield,
                         Compounding compounding,
-                        Date settlementDate = Date()) const;
+                        const Date& settlementDate = Date()) const;
         //! yield given a (clean) price and settlement date
         /*! The default bond settlement is used if no date is given. */
         Rate yield(Real cleanPrice,
                    Compounding compounding,
-                   Date settlementDate = Date(),
+                   const Date& settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
-        Real accruedAmount(Date d = Date()) const;
+        Real accruedAmount(const Date& d = Date()) const;
         bool isExpired() const;
         //@}
       protected:

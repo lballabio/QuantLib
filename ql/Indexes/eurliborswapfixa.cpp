@@ -33,7 +33,7 @@ namespace QuantLib {
                 Annual, // fixedLegFrequency
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
 
     EurliborSwapFixA::EurliborSwapFixA(const Period& tenor,
                                        const Handle<YieldTermStructure>& h)
@@ -45,7 +45,7 @@ namespace QuantLib {
                 Annual, // fixedLegFrequency
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
     #endif
 
 
@@ -57,10 +57,10 @@ namespace QuantLib {
                 2, // settlementDays
                 EURCurrency(),
                 TARGET(), 
-                Annual, // fixedLegFrequency
+                1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor3M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor3M(h))) {}
 
 
     EurliborSwapFixAvs6M::EurliborSwapFixAvs6M(const Period& tenor,
@@ -70,10 +70,10 @@ namespace QuantLib {
                 2, // settlementDays
                 EURCurrency(),
                 TARGET(), 
-                Annual, // fixedLegFrequency
+                1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
 
 
 }

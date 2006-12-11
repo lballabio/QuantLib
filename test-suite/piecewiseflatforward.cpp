@@ -129,7 +129,7 @@ void setup() {
                                     settlementDays, calendar,
                                     depoConvention, depoDayCounter));
     }
-    boost::shared_ptr<Xibor> index(new Xibor("dummy",
+    boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                              Period(floatingLegFrequency),
                                              settlementDays,
                                              Currency(),
@@ -187,7 +187,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
     }
 
     // check swaps
-    boost::shared_ptr<Xibor> index(new
+    boost::shared_ptr<IborIndex> index(new
         Euribor(Period(floatingLegFrequency), euriborHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = settlement + swapData[i].n*swapData[i].units;

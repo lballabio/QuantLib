@@ -19,84 +19,20 @@
 */
 
 /*! \file xibor.hpp
-    \brief base class for LIBOR-like indexes
+    \brief base class for Inter-Bank-Offered-Rate indexes
 */
 
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp
 
-#include <ql/Indexes/interestrateindex.hpp>
+#include <ql/Indexes/iborindex.hpp>
 
 namespace QuantLib {
 
-    //! base class for LIBOR-like indexes
-    /*! \todo add methods returning InterestRate */
-    class Xibor : public InterestRateIndex {
-      public:
-        #ifndef QL_DISABLE_DEPRECATED
-        Xibor(const std::string& familyName,
-              const Period& tenor,
-              Integer settlementDays,
-              const Currency& currency,
-              const Calendar& calendar,
-              BusinessDayConvention businessDayConvention,
-              const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
-        #endif
-        Xibor(const std::string& familyName,
-              const Period& tenor,
-              Integer settlementDays,
-              const Currency& currency,
-              const Calendar& calendar,
-              BusinessDayConvention convention,
-              bool endOfMonth,
-              const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
-        //! \name InterestRateIndex interface
-        //@{
-        Rate forecastFixing(const Date& fixingDate) const;
-        Handle<YieldTermStructure> termStructureHandle() const;
-        boost::shared_ptr<YieldTermStructure> termStructure() const;
-        //@}
-        //! \name Inspectors
-        //@{
-        bool isAdjusted() const;
-        BusinessDayConvention businessDayConvention() const;
-        bool endOfMonth() const { return endOfMonth_; }
-        //@}
-        //! \name Date calculations
-        //@{
-        Date maturityDate(const Date& valueDate) const;
-        // @}
-      protected:
-        BusinessDayConvention convention_;
-        Handle<YieldTermStructure> termStructure_;
-        bool endOfMonth_;
-    };
-
-    //#ifndef QL_DISABLE_DEPRECATED
-    //typedef IborIndex Xibor;
-    //#endif
-
-    // inline definitions
-
-    inline bool Xibor::isAdjusted() const {
-        return (convention_ != Unadjusted);
-    }
-
-    inline BusinessDayConvention Xibor::businessDayConvention() const {
-        return convention_;
-    }
-
-   inline Handle<YieldTermStructure> Xibor::termStructureHandle() const {
-       return termStructure_;
-   }
-
-   inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
-       return termStructure_.currentLink();
-   }
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \depreceted use IborIndex instead
+    typedef IborIndex Xibor;
+    #endif
 
 }
 

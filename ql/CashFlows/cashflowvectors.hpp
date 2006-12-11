@@ -58,7 +58,7 @@ namespace QuantLib {
         const BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const Integer settlementDays,
-        const boost::shared_ptr<Xibor>& index,
+        const boost::shared_ptr<IborIndex>& index,
         const std::vector<Real>& gearings
         #if !defined(QL_PATCH_MSVC6)
         = std::vector<Real>()
@@ -77,7 +77,7 @@ namespace QuantLib {
         const BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const Integer settlementDays,
-        const boost::shared_ptr<Xibor>& index,
+        const boost::shared_ptr<IborIndex>& index,
         const std::vector<Real>& gearings
         #if !defined(QL_PATCH_MSVC6)
         = std::vector<Real>()

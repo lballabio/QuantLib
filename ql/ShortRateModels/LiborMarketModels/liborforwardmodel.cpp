@@ -149,7 +149,7 @@ namespace QuantLib {
             return swaptionVola;
         }
 
-        const boost::shared_ptr<Xibor> index = process_->index();
+        const boost::shared_ptr<IborIndex> index = process_->index();
         const Date today = process_->fixingDates()[0];
 
         const Size size=process_->size()/2;

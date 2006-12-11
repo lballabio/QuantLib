@@ -25,7 +25,7 @@
 #define quantlib_libor_forward_model_process_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/Processes/lfmcovarparam.hpp>
@@ -59,7 +59,7 @@ namespace QuantLib {
       public:
 
         LiborForwardModelProcess(Size size,
-                                 const boost::shared_ptr<Xibor>& index);
+                                 const boost::shared_ptr<IborIndex>& index);
 
         Disposable<Array>  initialValues() const;
         Disposable<Array>  drift(Time t, const Array& x) const;
@@ -74,7 +74,7 @@ namespace QuantLib {
         Size size() const;
         Size factors() const;
 
-        boost::shared_ptr<Xibor> index() const;
+        boost::shared_ptr<IborIndex> index() const;
         std::vector<boost::shared_ptr<CashFlow> > cashFlows(
                                                      Real amount = 1.0) const;
 
@@ -95,7 +95,7 @@ namespace QuantLib {
       private:
         Size size_;
 
-        const boost::shared_ptr<Xibor> index_;
+        const boost::shared_ptr<IborIndex> index_;
         boost::shared_ptr<LfmCovarianceParameterization> lfmParam_;
 
         Array initialValues_;

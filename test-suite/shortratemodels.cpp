@@ -71,7 +71,7 @@ void ShortRateModelTest::testCachedHullWhite() {
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
 
-    boost::shared_ptr<Xibor> index(new Euribor6M(termStructure));
+    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
     std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
     for (Size i=0; i<LENGTH(data); i++) {
@@ -169,7 +169,7 @@ void ShortRateModelTest::testSwaps() {
     Integer start[] = { -3, 0, 3 };
     Integer length[] = { 2, 5, 10 };
     Rate rates[] = { 0.02, 0.04, 0.06 };
-    boost::shared_ptr<Xibor> euribor(new Euribor6M(termStructure));
+    boost::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
 
     boost::shared_ptr<PricingEngine> engine(
                                         new TreeVanillaSwapEngine(model,120));

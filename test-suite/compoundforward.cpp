@@ -135,7 +135,7 @@ void CompoundForwardTest::testSuppliedRates() {
 
     Size i;
     // check swaps against original
-    boost::shared_ptr<Xibor> index(new Jibar(Period(frequency),
+    boost::shared_ptr<IborIndex> index(new Jibar(Period(frequency),
                                              liborHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = calendar.advance(settlement,
@@ -176,7 +176,7 @@ void CompoundForwardTest::testConvertedRates() {
     Size i;
     frequency = Quarterly;
     // check swaps against quarterly rates
-    boost::shared_ptr<Xibor> index(new Jibar(Period(frequency),
+    boost::shared_ptr<IborIndex> index(new Jibar(Period(frequency),
                                              liborHandle));
     for (i=0; i<swaps; i++) {
         Date maturity = calendar.advance(settlement,

@@ -84,7 +84,7 @@ void setup() {
                                        settlementDays_, calendar_,
                                        ModifiedFollowing, Actual360()));
     }
-    boost::shared_ptr<Xibor> index(new Xibor("dummy",
+    boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                              6*Months,
                                              settlementDays_,
                                              Currency(),

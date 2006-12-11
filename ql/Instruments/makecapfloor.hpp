@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         MakeCapFloor(CapFloor::Type capFloorType,
                      const Period& capFloorTenor, 
-                     const boost::shared_ptr<Xibor>& index,
+                     const boost::shared_ptr<IborIndex>& index,
                      Rate strike = Null<Rate>(),
                      const Period& forwardStart = 0*Days,
                      const boost::shared_ptr<PricingEngine>& engine =

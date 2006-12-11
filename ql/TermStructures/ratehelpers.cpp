@@ -252,7 +252,7 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<Xibor>& index)
+                                   const boost::shared_ptr<IborIndex>& index)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
@@ -270,7 +270,7 @@ namespace QuantLib {
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
                                    const DayCounter& fixedDayCount,
-                                   const boost::shared_ptr<Xibor>& index)
+                                   const boost::shared_ptr<IborIndex>& index)
     : RelativeDateRateHelper(rate),
       tenor_(tenor), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),
@@ -291,8 +291,8 @@ namespace QuantLib {
                                           settlementDays_, Days);
 
         // dummy Libor index with curve/swap arguments
-        boost::shared_ptr<Xibor> clonedIndex(new
-            Xibor(index_->familyName(),
+        boost::shared_ptr<IborIndex> clonedIndex(new
+            IborIndex(index_->familyName(),
                   index_->tenor(),
                   index_->settlementDays(),
                   index_->currency(),

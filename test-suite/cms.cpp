@@ -41,7 +41,7 @@ Calendar calendar_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
-boost::shared_ptr<Xibor> iborIndex_; 
+boost::shared_ptr<IborIndex> iborIndex_; 
 Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 Date referenceDate_;
@@ -95,7 +95,7 @@ void setup() {
     rateTolerance_ = 2.0e-4;
     priceTolerance_ = 2.0e-4;
 
-    iborIndex_ = boost::shared_ptr<Xibor>(
+    iborIndex_ = boost::shared_ptr<IborIndex>(
         new Euribor(Period(floatingFrequency_), termStructure_));
 
     calendar_ = iborIndex_->calendar();
@@ -113,7 +113,7 @@ void setup() {
                   settlementDays_,
                   iborIndex_->currency(),
                   calendar_,
-                  fixedFrequency_,
+                  Period(fixedFrequency_),
                   fixedConvention_,
                   iborIndex_->dayCounter(),
                   iborIndex_)
@@ -124,7 +124,7 @@ void setup() {
                    settlementDays_,
                    iborIndex_->currency(),
                    calendar_,
-                   fixedFrequency_,
+                   Period(fixedFrequency_),
                    fixedConvention_,
                    iborIndex_->dayCounter(),
                    iborIndex_)); 

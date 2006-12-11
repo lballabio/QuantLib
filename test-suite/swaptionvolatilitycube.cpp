@@ -61,10 +61,10 @@ Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
 DayCounter fixedLegDayCounter_;
 Handle<YieldTermStructure> termStructure_;
-boost::shared_ptr<Xibor> iborIndex_;
+boost::shared_ptr<IborIndex> iborIndex_;
 boost::shared_ptr<SwapIndex> swapIndexBase_;
 Time shortTenor_;
-boost::shared_ptr<Xibor> iborIndexShortTenor_;
+boost::shared_ptr<IborIndex> iborIndexShortTenor_;
 
 bool vegaWeightedSmileFit_;
 
@@ -262,9 +262,9 @@ void setup() {
     fixedLegConvention_ = Unadjusted;
     fixedLegDayCounter_ = Thirty360();
     termStructure_.linkTo(flatRate(referenceDate_, 0.05, Actual365Fixed()));
-    iborIndex_ = boost::shared_ptr<Xibor>(new Euribor6M(termStructure_));
+    iborIndex_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
     shortTenor_ = 2;
-    iborIndexShortTenor_ = boost::shared_ptr<Xibor>(new
+    iborIndexShortTenor_ = boost::shared_ptr<IborIndex>(new
         Euribor3M(termStructure_));
     swapIndexBase_ = boost::shared_ptr<SwapIndex>(new
         SwapIndex("EurliborSwapFixA",
@@ -272,7 +272,7 @@ void setup() {
                   swapSettlementDays_,
                   iborIndex_->currency(),
                   calendar_,
-                  fixedLegFrequency_,
+                  Period(fixedLegFrequency_),
                   fixedLegConvention_,
                   iborIndex_->dayCounter(),
                   iborIndex_));

@@ -32,7 +32,7 @@ namespace QuantLib {
                              Rate fixedRate,
                              const DayCounter& fixedDayCount,
                              const Schedule& floatSchedule,
-                             const boost::shared_ptr<Xibor>& index,
+                             const boost::shared_ptr<IborIndex>& index,
                              Spread spread,
                              const DayCounter& floatingDayCount,
                              const Handle<YieldTermStructure>& termStructure)
@@ -83,7 +83,7 @@ namespace QuantLib {
                              Rate fixedRate,
                              const DayCounter& fixedDayCount,
                              const Schedule& floatSchedule,
-                             const boost::shared_ptr<Xibor>& index,
+                             const boost::shared_ptr<IborIndex>& index,
                              Spread spread,
                              const DayCounter& floatingDayCount,
                              const Handle<YieldTermStructure>& termStructure)

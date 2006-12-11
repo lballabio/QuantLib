@@ -24,7 +24,7 @@
 #ifndef quantlib_cdor_hpp
 #define quantlib_cdor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/Calendars/canada.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/america.hpp>
@@ -40,12 +40,12 @@ namespace QuantLib {
         \todo check settlement days, end-of-month adjustment,
               and day-count convention.
     */
-    class Cdor : public Xibor {
+    class Cdor : public IborIndex {
       public:
         Cdor(const Period& tenor,
              const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Xibor("CDOR", tenor, 2, CADCurrency(),
+        : IborIndex("CDOR", tenor, 2, CADCurrency(),
                 Canada(), ModifiedFollowing, false,
                 Actual360(), h) {}
     };

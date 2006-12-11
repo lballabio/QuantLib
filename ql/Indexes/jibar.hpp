@@ -25,7 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_jibar_hpp
 #define quantlib_jibar_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/Calendars/southafrica.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Currencies/africa.hpp>
@@ -37,12 +37,12 @@ namespace QuantLib {
 
         \todo check settlement days and day-count convention.
     */
-    class Jibar : public Xibor {
+    class Jibar : public IborIndex {
       public:
         Jibar(const Period& tenor,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Xibor("Jibar", tenor, 0, ZARCurrency(),
+        : IborIndex("Jibar", tenor, 0, ZARCurrency(),
                 SouthAfrica(), ModifiedFollowing, false,
                 Actual365Fixed(), h) {}
     };

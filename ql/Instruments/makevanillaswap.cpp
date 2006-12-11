@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor, 
-                                     const boost::shared_ptr<Xibor>& index,
+                                     const boost::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : forwardStart_(forwardStart), swapTenor_(swapTenor),
@@ -51,7 +51,7 @@ namespace QuantLib {
                                      const Period& swapTenor, 
                                      const Calendar& cal,
                                      Rate fixedRate,
-                                     const boost::shared_ptr<Xibor>& index,
+                                     const boost::shared_ptr<IborIndex>& index,
                                      const Handle<YieldTermStructure>& termStructure)
     : forwardStart_(0*Days), swapTenor_(swapTenor),
       index_(index), fixedRate_(fixedRate),

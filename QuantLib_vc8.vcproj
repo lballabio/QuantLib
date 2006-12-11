@@ -1568,6 +1568,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\iborindex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\iborindex.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Indexes\indexmanager.cpp"
 				>
 			</File>
@@ -1622,56 +1630,6 @@
 			<File
 				RelativePath="ql\Indexes\usdlibor.hpp"
 				>
-			</File>
-			<File
-				RelativePath="ql\Indexes\xibor.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="ql\Indexes\xibor.hpp"
@@ -6402,6 +6360,14 @@
 			Name="Volatilities"
 			>
 			<File
+				RelativePath=".\ql\Volatilities\abcd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\abcd.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\all.hpp"
 				>
 			</File>
@@ -7362,14 +7328,6 @@
 			<Filter
 				Name="Models"
 				>
-				<File
-					RelativePath=".\ql\MarketModels\Models\abcd.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Models\abcd.hpp"
-					>
-				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.cpp"
 					>

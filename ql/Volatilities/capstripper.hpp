@@ -33,7 +33,7 @@
 #include <ql/Math/matrix.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/schedule.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 
@@ -48,7 +48,7 @@ namespace QuantLib {
         CapsStripper(const std::vector<Period>& tenors,
          const std::vector<Rate>& strikes,
          const std::vector<std::vector<Handle<Quote> > >& vols,
-         const boost::shared_ptr<Xibor>& index,
+         const boost::shared_ptr<IborIndex>& index,
          const Handle< YieldTermStructure > termStructure,
          const DayCounter& volatilityDayCounter = Actual365Fixed(),
          Real impliedVolatilityAccuracy = 1.0e-6,

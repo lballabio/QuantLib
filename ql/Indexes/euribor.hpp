@@ -27,7 +27,7 @@
 #ifndef quantlib_euribor_hpp
 #define quantlib_euribor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
@@ -41,14 +41,14 @@ namespace QuantLib {
         \warning This is the rate fixed by the ECB. Use EurLibor
                  if you're interested in the London fixing by BBA.
     */
-    class Euribor : public Xibor {
+    class Euribor : public IborIndex {
       public:
         Euribor(const Period& tenor,
                 const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                 BusinessDayConvention convention = ModifiedFollowing,
                 bool endOfMonth = true)
-        : Xibor("Euribor", tenor,
+        : IborIndex("Euribor", tenor,
                 2, // settlementDays
                 EURCurrency(), TARGET(),
                 convention, endOfMonth, Actual360(), h) {}
@@ -60,14 +60,14 @@ namespace QuantLib {
         convention used for Euribor and the actual/365 convention
         previously used by a few pre-EUR currencies.
     */
-    class Euribor365 : public Xibor {
+    class Euribor365 : public IborIndex {
       public:
         Euribor365(const Period& tenor,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                    BusinessDayConvention convention = ModifiedFollowing,
                    bool endOfMonth = true)
-        : Xibor("Euribor", tenor,
+        : IborIndex("Euribor", tenor,
                 2, // settlementDays
                 EURCurrency(), TARGET(),
                 convention, endOfMonth, Actual365Fixed(), h) {}

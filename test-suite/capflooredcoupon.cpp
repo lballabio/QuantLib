@@ -47,7 +47,7 @@ Calendar calendar_;
 std::vector<Real> nominals_;
 BusinessDayConvention convention_;
 Frequency frequency_;
-boost::shared_ptr<Xibor> index_;
+boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_, fixingDays_;
 Handle<YieldTermStructure> termStructure_;
 std::vector<Rate> caps_;
@@ -60,7 +60,7 @@ void setup() {
     volatility_ = 0.5;
     nominals_ = std::vector<Real>(lenght_,100.0);
     frequency_ = Annual;
-    index_ = boost::shared_ptr<Xibor>(new Euribor1Y(termStructure_));
+    index_ = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure_));
     calendar_ = index_->calendar();
     convention_ = ModifiedFollowing;
     today_ = calendar_.adjust(Date::todaysDate());

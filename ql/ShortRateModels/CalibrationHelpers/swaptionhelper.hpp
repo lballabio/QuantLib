@@ -35,7 +35,7 @@ namespace QuantLib {
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const Handle<Quote>& volatility,
-                       const boost::shared_ptr<Xibor>& index,
+                       const boost::shared_ptr<IborIndex>& index,
                        const Period& fixedLegTenor,
                        const DayCounter& fixedLegDayCounter,
                        const DayCounter& floatingLegDayCounter,

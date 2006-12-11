@@ -47,7 +47,7 @@ boost::shared_ptr<FlatForward> myTermStructure;
 boost::shared_ptr<Quote> forwardRate;
 Handle<Quote> forwardRateQuote;
 Handle<YieldTermStructure> rhTermStructure;
-boost::shared_ptr<Xibor> xiborIndex;
+boost::shared_ptr<IborIndex> xiborIndex;
 int fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
@@ -192,7 +192,7 @@ void setup(Real impliedVolatilityPrecision = 1e-5) {
                                   dayCounter));
     rhTermStructure.linkTo(myTermStructure);
 
-    xiborIndex = boost::shared_ptr<Xibor>(new Euribor6M(rhTermStructure));
+    xiborIndex = boost::shared_ptr<IborIndex>(new Euribor6M(rhTermStructure));
     capsStripper = boost::shared_ptr<CapsStripper>(new CapsStripper(tenors,
                                                 strikes,
                                                 volatilityQuoteHandle, 

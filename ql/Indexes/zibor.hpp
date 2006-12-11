@@ -24,7 +24,7 @@
 #ifndef quantlib_zibor_hpp
 #define quantlib_zibor_hpp
 
-#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/iborindex.hpp>
 #include <ql/Calendars/switzerland.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Currencies/europe.hpp>
@@ -40,12 +40,12 @@ namespace QuantLib {
         \todo check settlement days, end-of-month adjustment,
               and day-count convention.
     */
-    class Zibor : public Xibor {
+    class Zibor : public IborIndex {
       public:
         Zibor(const Period& tenor,
               const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : Xibor("Zibor", tenor, 2, CHFCurrency(),
+        : IborIndex("Zibor", tenor, 2, CHFCurrency(),
                 Switzerland(), ModifiedFollowing, false,
                 Actual360(), h) {}
     };

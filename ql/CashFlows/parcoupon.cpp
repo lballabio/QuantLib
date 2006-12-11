@@ -25,7 +25,7 @@ namespace QuantLib {
     ParCoupon::ParCoupon(const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
                          const Integer fixingDays,
-                         const boost::shared_ptr<Xibor>& index,
+                         const boost::shared_ptr<IborIndex>& index,
                          const Real gearing, const Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd,
                          const DayCounter& dayCounter)

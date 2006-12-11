@@ -53,7 +53,7 @@ DayCounter fixedDayCount_;
 
 BusinessDayConvention floatingConvention_;
 Period floatingTenor_;
-boost::shared_ptr<Xibor> index_;
+boost::shared_ptr<IborIndex> index_;
 
 Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
@@ -87,7 +87,7 @@ void setup() {
     fixedFrequency_ = Annual;
     fixedDayCount_ = Thirty360();
 
-    index_ = boost::shared_ptr<Xibor>(new
+    index_ = boost::shared_ptr<IborIndex>(new
         Euribor6M(termStructure_));
     floatingConvention_ = index_->businessDayConvention();
     floatingTenor_ = index_->tenor();

@@ -87,7 +87,7 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
 
-        Size q = swapIndex->fixedLegFrequency();
+        Size q = swapIndex->fixedLegTenor().frequency();
         Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
         DayCounter dc = swapIndex->dayCounter();
         //const DayCounter dc = coupon.dayCounter();

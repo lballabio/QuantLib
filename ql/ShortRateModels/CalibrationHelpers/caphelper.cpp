@@ -27,7 +27,7 @@ namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
-                         const boost::shared_ptr<Xibor>& index,
+                         const boost::shared_ptr<IborIndex>& index,
                          Frequency fixedLegFrequency,
                          const DayCounter& fixedLegDayCounter,
                          bool includeFirstSwaplet,
@@ -45,8 +45,8 @@ namespace QuantLib {
             startDate = termStructure->referenceDate() + indexTenor;
             maturity = termStructure->referenceDate() + length;
         }
-        boost::shared_ptr<Xibor> dummyIndex(
-                                     new Xibor("dummy",
+        boost::shared_ptr<IborIndex> dummyIndex(
+                                     new IborIndex("dummy",
                                                Period(indexTenor.length(),
                                                       indexTenor.units()),
                                                index->settlementDays(),

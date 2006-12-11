@@ -29,7 +29,7 @@ namespace QuantLib {
                            Position::Type type,
                            Rate strikeForwardRate,
                            Real notionalAmount,
-                           const boost::shared_ptr<Xibor>& index,
+                           const boost::shared_ptr<IborIndex>& index,
                            const Handle<YieldTermStructure>& discountCurve)
     : Forward(index->dayCounter(), index->calendar(),
               index->businessDayConvention(),

@@ -46,7 +46,7 @@ Calendar calendar_;
 BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
-boost::shared_ptr<Xibor> index_;
+boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_;
 Handle<YieldTermStructure> termStructure_;
 
@@ -78,7 +78,7 @@ void setup() {
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
-    index_ = boost::shared_ptr<Xibor>(new
+    index_ = boost::shared_ptr<IborIndex>(new
         Euribor(Period(floatingFrequency_), termStructure_));
     calendar_ = index_->calendar();
     today_ = calendar_.adjust(Date::todaysDate());
@@ -252,7 +252,7 @@ void SwapTest::testInArrears() {
                       Following,Following,false,false);
     DayCounter dayCounter = SimpleDayCounter();
     std::vector<Real> nominals(1, 100000000.0);
-    boost::shared_ptr<Xibor> index(new Xibor("dummy", 1*Years, 0,
+    boost::shared_ptr<IborIndex> index(new IborIndex("dummy", 1*Years, 0,
                                              EURCurrency(), calendar,
                                              Following, false, dayCounter,
                                              termStructure_));

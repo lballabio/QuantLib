@@ -40,8 +40,7 @@ namespace QuantLib {
                   Frequency fixedLegFrequency,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<Xibor>& iborIndex);
-        #endif
+                  const boost::shared_ptr<IborIndex>& iborIndex);
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Integer settlementDays,
@@ -50,7 +49,17 @@ namespace QuantLib {
                   Frequency fixedLegFrequency,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<Xibor>& iborIndex);
+                  const boost::shared_ptr<IborIndex>& iborIndex);
+        #endif
+        SwapIndex(const std::string& familyName,
+                  const Period& tenor,
+                  Integer settlementDays,
+                  Currency currency,
+                  const Calendar& calendar,
+                  const Period& fixedLegTenor,
+                  BusinessDayConvention fixedLegConvention,
+                  const DayCounter& fixedLegDayCounter,
+                  const boost::shared_ptr<IborIndex>& iborIndex);
         //! \name InterestRateIndex interface
         //@{
         Handle<YieldTermStructure> termStructureHandle() const;
@@ -62,9 +71,14 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Frequency fixedLegFrequency() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        Frequency fixedLegFrequency() const {
+            return fixedLegTenor_.frequency();
+        }
+        #endif
+        Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
-        boost::shared_ptr<Xibor> iborIndex() const;
+        boost::shared_ptr<IborIndex> iborIndex() const;
         Schedule fixedRateSchedule(const Date& fixingDate) const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
@@ -74,8 +88,8 @@ namespace QuantLib {
         //@}
       protected:
         Period tenor_;
-        boost::shared_ptr<Xibor> iborIndex_;
-        Frequency fixedLegFrequency_;
+        boost::shared_ptr<IborIndex> iborIndex_;
+        Period fixedLegTenor_;
         BusinessDayConvention fixedLegConvention_;
     };
 
@@ -92,19 +106,14 @@ namespace QuantLib {
         return iborIndex_->termStructure();
     }
 
-    inline Frequency SwapIndex::fixedLegFrequency() const {
-        return fixedLegFrequency_;
-    }
-
     inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
         return fixedLegConvention_;
     }
 
-    inline boost::shared_ptr<Xibor> SwapIndex::iborIndex() const {
+    inline boost::shared_ptr<IborIndex> SwapIndex::iborIndex() const {
         return iborIndex_;
     }
 
 }
-
 
 #endif

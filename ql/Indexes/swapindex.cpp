@@ -33,16 +33,14 @@ namespace QuantLib {
                          Frequency fixedLegFrequency,
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
-                         const boost::shared_ptr<Xibor>& iborIndex)
+                         const boost::shared_ptr<IborIndex>& iborIndex)
     : InterestRateIndex(familyName, years*Years, settlementDays,
                         currency, calendar, fixedLegDayCounter),
       tenor_(years*Years), iborIndex_(iborIndex),
-      fixedLegFrequency_(fixedLegFrequency),
-      fixedLegConvention_(fixedLegConvention)
-    {
+      fixedLegTenor_(Period(fixedLegFrequency)),
+      fixedLegConvention_(fixedLegConvention) {
         registerWith(iborIndex_);
     }
-    #endif
 
     SwapIndex::SwapIndex(const std::string& familyName,
                          const Period& tenor,
@@ -52,13 +50,30 @@ namespace QuantLib {
                          Frequency fixedLegFrequency,
                          BusinessDayConvention fixedLegConvention,
                          const DayCounter& fixedLegDayCounter,
-                         const boost::shared_ptr<Xibor>& iborIndex)
+                         const boost::shared_ptr<IborIndex>& iborIndex)
     : InterestRateIndex(familyName, tenor, settlementDays,
                         currency, calendar, fixedLegDayCounter),
       tenor_(tenor), iborIndex_(iborIndex),
-      fixedLegFrequency_(fixedLegFrequency),
-      fixedLegConvention_(fixedLegConvention)
-    {
+      fixedLegTenor_(Period(fixedLegFrequency)),
+      fixedLegConvention_(fixedLegConvention) {
+        registerWith(iborIndex_);
+    }
+    #endif
+
+    SwapIndex::SwapIndex(const std::string& familyName,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         Currency currency,
+                         const Calendar& calendar,
+                         const Period& fixedLegTenor,
+                         BusinessDayConvention fixedLegConvention,
+                         const DayCounter& fixedLegDayCounter,
+                         const boost::shared_ptr<IborIndex>& iborIndex)
+    : InterestRateIndex(familyName, tenor, settlementDays,
+                        currency, calendar, fixedLegDayCounter),
+      tenor_(tenor), iborIndex_(iborIndex),
+      fixedLegTenor_(fixedLegTenor),
+      fixedLegConvention_(fixedLegConvention) {
         registerWith(iborIndex_);
     }
 
@@ -76,7 +91,7 @@ namespace QuantLib {
             .withEffectiveDate(valueDate(fixingDate))
             .withFixedLegCalendar(calendar_)
             .withFixedLegDayCount(dayCounter_)
-            .withFixedLegTenor(Period(fixedLegFrequency_))
+            .withFixedLegTenor(fixedLegTenor_)
             .withFixedLegConvention(fixedLegConvention_)
             .withFixedLegTerminationDateConvention(fixedLegConvention_);
     }
@@ -86,7 +101,7 @@ namespace QuantLib {
         Date start = calendar_.advance(fixingDate, settlementDays_, Days);
         Date end = calendar_.advance(start, tenor_);
 
-        return Schedule(start, end, Period(fixedLegFrequency_), calendar_,
+        return Schedule(start, end, fixedLegTenor_, calendar_,
                         fixedLegConvention_, fixedLegConvention_,
                         false, false);
     }

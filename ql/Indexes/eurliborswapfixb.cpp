@@ -33,7 +33,7 @@ namespace QuantLib {
                 Annual, // fixedLegFrequency
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
     EurliborSwapFixB::EurliborSwapFixB(const Period& tenor,
                                        const Handle<YieldTermStructure>& h)
     : SwapIndex("EurliborSwapFixB", // familyName
@@ -44,7 +44,7 @@ namespace QuantLib {
                 Annual, // fixedLegFrequency
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
     #endif
 
     EurliborSwapFixBvs3M::EurliborSwapFixBvs3M(const Period& tenor,
@@ -54,10 +54,10 @@ namespace QuantLib {
                 2, // settlementDays
                 EURCurrency(),
                 TARGET(), 
-                Annual, // fixedLegFrequency
+                1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor3M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor3M(h))) {}
 
     EurliborSwapFixBvs6M::EurliborSwapFixBvs6M(const Period& tenor,
                                                const Handle<YieldTermStructure>& h)
@@ -66,8 +66,8 @@ namespace QuantLib {
                 2, // settlementDays
                 EURCurrency(),
                 TARGET(), 
-                Annual, // fixedLegFrequency
+                1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<Xibor>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
 }

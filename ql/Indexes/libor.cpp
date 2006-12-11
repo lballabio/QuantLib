@@ -32,7 +32,7 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : Xibor(familyName, n*units, settlementDays, currency,
+    : IborIndex(familyName, n*units, settlementDays, currency,
             JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
             convention, dayCounter, h),
       localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
@@ -46,7 +46,7 @@ namespace QuantLib {
                  BusinessDayConvention convention,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : Xibor(familyName, tenor, settlementDays, currency,
+    : IborIndex(familyName, tenor, settlementDays, currency,
             JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
             convention, dayCounter, h),
       localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
@@ -62,7 +62,7 @@ namespace QuantLib {
                  bool endOfMonth,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
-    : Xibor(familyName, tenor, settlementDays, currency,
+    : IborIndex(familyName, tenor, settlementDays, currency,
             JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
             convention, endOfMonth, dayCounter, h),
       localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}

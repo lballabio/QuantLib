@@ -28,7 +28,7 @@ namespace QuantLib {
 
     LiborForwardModelProcess::LiborForwardModelProcess(
                                         Size size,
-                                        const boost::shared_ptr<Xibor>& index)
+                                        const boost::shared_ptr<IborIndex>& index)
     : StochasticProcess(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       size_             (size),
@@ -169,7 +169,7 @@ namespace QuantLib {
         return lfmParam_;
     }
 
-    boost::shared_ptr<Xibor>
+    boost::shared_ptr<IborIndex>
     LiborForwardModelProcess::index() const {
         return index_;
     }

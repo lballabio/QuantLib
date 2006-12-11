@@ -144,7 +144,7 @@ namespace QuantLib {
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
                           Integer settlementDays,
-                          const boost::shared_ptr<Xibor>& index,
+                          const boost::shared_ptr<IborIndex>& index,
                           Integer fixingDays,
                           const std::vector<Spread>& spreads,
                           const DayCounter& dayCounter,

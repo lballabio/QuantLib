@@ -148,7 +148,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<Xibor>& index);
+                       const boost::shared_ptr<IborIndex>& index);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        Integer settlementDays,
@@ -158,7 +158,7 @@ namespace QuantLib {
                        BusinessDayConvention fixedConvention,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       const boost::shared_ptr<Xibor>& index);
+                       const boost::shared_ptr<IborIndex>& index);
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
@@ -171,7 +171,7 @@ namespace QuantLib {
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;
         DayCounter fixedDayCount_;
-        boost::shared_ptr<Xibor> index_;
+        boost::shared_ptr<IborIndex> index_;
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructureHandle_;
     };
