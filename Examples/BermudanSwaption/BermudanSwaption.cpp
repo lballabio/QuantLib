@@ -118,8 +118,8 @@ int main(int, char* [])
         Frequency floatingLegFrequency = Semiannual;
         bool payFixedRate = true;
         Rate dummyFixedRate = 0.03;
-        boost::shared_ptr<Xibor> indexSixMonths(
-                                              new Euribor6M(rhTermStructure));
+        boost::shared_ptr<IborIndex> indexSixMonths(new
+            Euribor6M(rhTermStructure));
 
         Date startDate = calendar.advance(settlementDate,1,Years,
                                           floatingLegConvention);

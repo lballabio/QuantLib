@@ -260,7 +260,7 @@ int main(int, char* [])
         Frequency swFixedLegFrequency = Annual;
         BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
-        boost::shared_ptr<Xibor> swFloatingLegIndex(new Euribor6M);
+        boost::shared_ptr<IborIndex> swFloatingLegIndex(new Euribor6M);
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             Handle<Quote>(s2yRate),
@@ -386,7 +386,7 @@ int main(int, char* [])
 
         // floating leg
         Frequency floatingLegFrequency = Semiannual;
-        boost::shared_ptr<Xibor> euriborIndex(
+        boost::shared_ptr<IborIndex> euriborIndex(
                                      new Euribor6M(forecastingTermStructure));
         Spread spread = 0.0;
 

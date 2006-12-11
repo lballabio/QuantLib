@@ -66,7 +66,7 @@ int main(int, char* []) {
          *********************/
 
         Handle<YieldTermStructure> euriborTermStructure;
-        boost::shared_ptr<Xibor> euribor3m(
+        boost::shared_ptr<IborIndex> euribor3m(
                                        new Euribor3M(euriborTermStructure));
 
         Date todaysDate = Date(23, May, 2006);
