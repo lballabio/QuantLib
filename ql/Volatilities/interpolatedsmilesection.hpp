@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file smilesection.hpp
-    \brief Swaption volatility structure
+/*! \file interpolatedsmilesection.hpp
+    \brief Interpolated smile section class
 */
 
 #ifndef quantlib_interpolated_smile_section_hpp
@@ -43,27 +44,27 @@ namespace QuantLib {
         InterpolatedSmileSection(
                            Time expiryTime,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Handle<Quote> >& volHandles,
+                           const std::vector<Handle<Quote> >& stdDevHandles,
                            const Interpolator& interpolator = Interpolator(),
                            const DayCounter& dc = Actual365Fixed());
         InterpolatedSmileSection(
                            Time expiryTime,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Volatility>& vols,
+                           const std::vector<Real>& stdDevs,
                            const Interpolator& interpolator = Interpolator(),
                            const DayCounter& dc = Actual365Fixed());
 
         InterpolatedSmileSection(
                            const Date& d,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Handle<Quote> >& volHandles,
+                           const std::vector<Handle<Quote> >& stdDevHandles,
                            const DayCounter& dc = Actual365Fixed(),
                            const Interpolator& interpolator = Interpolator(),
                            const Date& referenceDate = Date());
         InterpolatedSmileSection(
                            const Date& d,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Volatility>& vols,
+                           const std::vector<Real>& stdDevs,
                            const DayCounter& dc = Actual365Fixed(),
                            const Interpolator& interpolator = Interpolator(),
                            const Date& referenceDate = Date());
@@ -71,8 +72,9 @@ namespace QuantLib {
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
       private:
+        Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
-        std::vector<Handle<Quote> > volHandles_;
+        std::vector<Handle<Quote> > stdDevHandles_;
         mutable std::vector<Volatility> vols_;
         Interpolation interpolation_;
     };
@@ -82,14 +84,15 @@ namespace QuantLib {
     InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
                                Time timeToExpiry,
                                const std::vector<Rate>& strikes,
-                               const std::vector<Handle<Quote> >& volHandles,
+                               const std::vector<Handle<Quote> >& stdDevHandles,
                                const Interpolator& interpolator,
                                const DayCounter& dc)
-    : SmileSection(timeToExpiry, dc), strikes_(strikes),
-      volHandles_(volHandles), vols_(volHandles.size())
+    : SmileSection(timeToExpiry, dc),
+      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            registerWith(volHandles_[i]);
+        for (Size i=0; i<stdDevHandles_.size(); ++i)
+            registerWith(stdDevHandles_[i]);
 
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -101,17 +104,18 @@ namespace QuantLib {
     InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
                                 Time timeToExpiry,
                                 const std::vector<Rate>& strikes,
-                                const std::vector<Volatility>& vols,
+                                const std::vector<Real>& stdDevs,
                                 const Interpolator& interpolator,
                                 const DayCounter& dc)
-    : SmileSection(timeToExpiry, dc), strikes_(strikes),
-      volHandles_(vols.size()), vols_(vols)
+    : SmileSection(timeToExpiry, dc),
+      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
         // fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<vols.size(); ++i)
-            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
-                new SimpleQuote(vols_[i])));
+        for (Size i=0; i<stdDevs.size(); ++i)
+            stdDevHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                SimpleQuote(stdDevs[i])));
 
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -123,15 +127,16 @@ namespace QuantLib {
     InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
                            const Date& d,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Handle<Quote> >& volHandles,
+                           const std::vector<Handle<Quote> >& stdDevHandles,
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
-    : SmileSection(d, dc, referenceDate), strikes_(strikes),
-      volHandles_(volHandles), vols_(volHandles.size())
+    : SmileSection(d, dc, referenceDate),
+      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            registerWith(volHandles_[i]);
+        for (Size i=0; i<stdDevHandles_.size(); ++i)
+            registerWith(stdDevHandles_[i]);
 
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -143,18 +148,19 @@ namespace QuantLib {
     InterpolatedSmileSection<Interpolator>::InterpolatedSmileSection(
                            const Date& d,
                            const std::vector<Rate>& strikes,
-                           const std::vector<Volatility>& vols,
+                           const std::vector<Real>& stdDevs,
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
-    : SmileSection(d, dc, referenceDate), strikes_(strikes),
-      volHandles_(vols.size()), vols_(vols)
+    : SmileSection(d, dc, referenceDate),
+      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
         // fill dummy handles to allow generic handle-based
         // computations later on
-        for (Size i=0; i<vols.size(); ++i)
-            volHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(
-                new SimpleQuote(vols_[i])));
+        for (Size i=0; i<stdDevs.size(); ++i)
+            stdDevHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                SimpleQuote(stdDevs[i])));
 
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
@@ -165,8 +171,8 @@ namespace QuantLib {
     template <class Interpolator>
     inline void InterpolatedSmileSection<Interpolator>::performCalculations()
                                                                       const {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            vols_[i] = volHandles_[i]->value();
+        for (Size i=0; i<stdDevHandles_.size(); ++i)
+            vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot_;
     }
 
     template <class Interpolator>
