@@ -43,6 +43,7 @@
 #include <ql/Indexes/tibor.hpp>
 #include <ql/Indexes/trlibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
+#include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/zibor.hpp>
 
 
