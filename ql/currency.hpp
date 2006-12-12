@@ -101,13 +101,16 @@ namespace QuantLib {
     };
 
     /*! \relates Currency */
-    bool operator==(const Currency&, const Currency&);
+    bool operator==(const Currency&,
+                    const Currency&);
 
     /*! \relates Currency */
-    bool operator!=(const Currency&, const Currency&);
+    bool operator!=(const Currency&,
+                    const Currency&);
 
     /*! \relates Currency */
-    std::ostream& operator<<(std::ostream&, const Currency&);
+    std::ostream& operator<<(std::ostream&,
+                             const Currency&);
 
 
     // inline definitions

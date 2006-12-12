@@ -23,7 +23,7 @@ namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out, const Currency& c) {
         if (c.isValid())
-            return out << c.code() << " currency (" << c.name() << ")";
+            return out << c.code();
         else
             return out << "null currency";
     }

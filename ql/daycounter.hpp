@@ -89,14 +89,16 @@ namespace QuantLib {
         derived class.
         \relates DayCounter
     */
-    bool operator==(const DayCounter&, const DayCounter&);
+    bool operator==(const DayCounter&,
+                    const DayCounter&);
 
     /*! \relates DayCounter */
-    bool operator!=(const DayCounter&, const DayCounter&);
-    std::ostream& operator<<(std::ostream&, const DayCounter&);
+    bool operator!=(const DayCounter&,
+                    const DayCounter&);
 
     /*! \relates DayCounter */
-    std::ostream& operator<<(std::ostream&, const DayCounter&);
+    std::ostream& operator<<(std::ostream&,
+                             const DayCounter&);
 
 
     // inline definitions

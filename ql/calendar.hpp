@@ -76,7 +76,8 @@ namespace QuantLib {
     };
 
     /*! \relates BusinessDayConvention */
-    std::ostream& operator<<(std::ostream&, BusinessDayConvention);
+    std::ostream& operator<<(std::ostream&,
+                             BusinessDayConvention);
 
 
     //! abstract base class for calendar implementations
