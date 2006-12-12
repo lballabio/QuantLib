@@ -44,9 +44,21 @@ namespace QuantLib {
 
     Real ImpliedStdDevQuote::value() const {
         static const Real discount_ = 1.0;
+        Real blackprice = price_->value();
+        // ugly fix to avoid having a non sensical guess, to be improved ...
+        Real guess;
+        if (impliedVolatility_>.001 && impliedVolatility_<.4)
+            guess = impliedVolatility_;
+        else
+            guess = .15;
+        try {
         impliedVolatility_ = blackImpliedStdDev(optionType_, strike_,
-            forwardValue(), price_->value(),
-            discount_, impliedVolatility_, accuracy_);
+            forwardValue(), blackprice, discount_, guess, accuracy_);
+        } catch(QuantLib::Error&) {
+            QL_FAIL("ImpliedStdDevQuote::value:"
+                    "\niv computation failure at option strike " << strike_ 
+                    << ", option price is " << blackprice);
+        }
         return impliedVolatility_;
     }
 
