@@ -112,12 +112,13 @@ namespace QuantLib {
         const Matrix& marketVolCube(Size i) const {
             return marketVolCube_.points()[i];
         }
-        Matrix sparseSabrParameters() const;
+        Matrix sparseSabrParameters()const;
         Matrix denseSabrParameters() const;
         Matrix marketVolCube() const;
         Matrix volCubeAtmCalibrated() const;
         //@}
         void sabrCalibrationSection(const Cube& marketVolCube,
+                                    Cube& parametersCube,
                                     const Period& swapTenor) const;
         void recalibration(Real beta,
                            const Period& swapTenor);

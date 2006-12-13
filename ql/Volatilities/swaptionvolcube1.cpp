@@ -182,6 +182,7 @@ namespace QuantLib {
     }
     void SwaptionVolCube1::sabrCalibrationSection(
                                             const Cube& marketVolCube,
+                                            Cube& parametersCube,
                                             const Period& swapTenor) const {
 
         const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
@@ -246,17 +247,10 @@ namespace QuantLib {
                       ", swap tenor " << swapTenors[k] <<
                       ": max error " << calibrationResult[6]);
 
-            sparseParameters_.setPoint(optionDates[j], swapTenors[k],
+            parametersCube.setPoint(optionDates[j], swapTenors[k],
                                     optionTimes[j], swapLengths[k],
                                     calibrationResult);
-            sparseParameters_.updateInterpolators();
-            if(isAtmCalibrated_){
-                denseParameters_.setPoint(optionDates[j], swapTenors[k],
-                                        optionTimes[j], swapLengths[k],
-                                        calibrationResult);
-                denseParameters_.updateInterpolators();
-            }
-
+            parametersCube.updateInterpolators();
         }
 
     }
@@ -499,11 +493,11 @@ namespace QuantLib {
         parametersGuess_.setLayer(1, newBetaGuess);
         parametersGuess_.updateInterpolators();
 
-        sabrCalibrationSection(marketVolCube_,swapTenor);
+        sabrCalibrationSection(marketVolCube_,sparseParameters_,swapTenor);
 
         if(isAtmCalibrated_){
             fillVolatilityCube();
-            sabrCalibrationSection(volCubeAtmCalibrated_,swapTenor);
+            sabrCalibrationSection(volCubeAtmCalibrated_,denseParameters_,swapTenor);
         }
     }
 
