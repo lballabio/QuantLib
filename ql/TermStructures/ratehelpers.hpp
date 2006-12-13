@@ -58,7 +58,6 @@ namespace QuantLib {
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0);
-        Real referenceQuote() const;
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         Real convexityAdjustment() const { return convAdj_->value(); }

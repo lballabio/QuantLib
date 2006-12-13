@@ -27,6 +27,7 @@
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +46,7 @@ namespace QuantLib {
       //! market element returning a stored value
     class SimpleQuote : public Quote {
       public:
-        SimpleQuote(Real value);
+        SimpleQuote(Real value = Null<Real>());
         //! \name Quote interface
         //@{
         Real value() const;
@@ -116,6 +117,8 @@ namespace QuantLib {
     : value_(value) {}
 
     inline Real SimpleQuote::value() const {
+        QL_ENSURE(value_!=Null<Real>(),
+            "invalid simple quote: no value available");
         return value_;
     }
 
