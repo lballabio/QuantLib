@@ -45,17 +45,10 @@ namespace QuantLib {
     Real ImpliedStdDevQuote::value() const {
         static const Real discount_ = 1.0;
         Real blackPrice = price_->value();
-
-        // ugly fix to avoid having a non sensical guess, to be improved ...
-        Real guess;
-        if (impliedVolatility_>.001 && impliedVolatility_<.4)
-            guess = impliedVolatility_;
-        else
-            guess = .15;
-
         try {
             impliedVolatility_ = blackImpliedStdDev(optionType_, strike_,
-                forward_->value(), blackPrice, discount_, guess, accuracy_);
+                forward_->value(), blackPrice, discount_, impliedVolatility_,
+                accuracy_);
         } catch(QuantLib::Error&) {
             impliedVolatility_ = 0.0;
         }

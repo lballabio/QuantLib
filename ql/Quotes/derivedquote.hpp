@@ -100,7 +100,7 @@ namespace QuantLib {
                            const Handle<Quote>& forward,
                            const Handle<Quote>& price,
                            Real strike,
-                           Real guess = Null<Real>(),
+                           Real guess = .15,
                            Real accuracy = 1.0e-6);
         Real value() const;
         void update();
@@ -120,7 +120,7 @@ namespace QuantLib {
                                             const Handle<Quote>& callPrice,
                                             const Handle<Quote>& putPrice,
                                             Real strike,
-                                            Real guess = Null<Real>(),
+                                            Real guess = .15,
                                             Real accuracy = 1.0e-6);
         Real value() const;
         void update();
