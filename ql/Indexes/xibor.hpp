@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
-    //! \depreceted use IborIndex instead
+    //! \deprecated use IborIndex instead
     typedef IborIndex Xibor;
     #endif
 
