@@ -103,7 +103,6 @@ namespace QuantLib {
                            Real guess = Null<Real>(),
                            Real accuracy = 1.0e-6);
         Real value() const;
-        virtual Real forwardValue() const { return forward_->value(); }
         void update();
       protected:
         mutable Volatility impliedVolatility_;
@@ -114,15 +113,24 @@ namespace QuantLib {
         Handle<Quote> price_;
     };
 
-    class EurodollarFuturesImpliedStdDevQuote : public ImpliedStdDevQuote {
+    class EurodollarFuturesImpliedStdDevQuote : public Quote,
+                                                public Observer {
       public:
-        EurodollarFuturesImpliedStdDevQuote(Option::Type optionType,
-                                            const Handle<Quote>& forward,
-                                            const Handle<Quote>& price,
+        EurodollarFuturesImpliedStdDevQuote(const Handle<Quote>& forward,
+                                            const Handle<Quote>& callPrice,
+                                            const Handle<Quote>& putPrice,
                                             Real strike,
                                             Real guess = Null<Real>(),
                                             Real accuracy = 1.0e-6);
-        Real forwardValue() const;
+        Real value() const;
+        void update();
+      protected:
+        mutable Volatility impliedVolatility_;
+        Real strike_;
+        Real accuracy_;
+        Handle<Quote> forward_;
+        Handle<Quote> callPrice_;
+        Handle<Quote> putPrice_;
     };
 
 
@@ -140,10 +148,9 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Real EurodollarFuturesImpliedStdDevQuote::forwardValue() const {
-        return 100.0 - forward_->value();
+    inline void EurodollarFuturesImpliedStdDevQuote::update() {
+        notifyObservers();
     }
-
 }
 
 #endif
