@@ -52,7 +52,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real quoteError() const;
-        Real referenceQuote() const { return quote_->value(); }
+        virtual Real referenceQuote() const { return quote_->value(); }
         virtual Real impliedQuote() const = 0;
         virtual DiscountFactor discountGuess() const {
             return Null<Real>();
