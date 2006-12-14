@@ -25,7 +25,7 @@
 #define quantlib_joint_calendar_h
 
 #include <ql/calendar.hpp>
-#include <vector>
+
 
 namespace QuantLib {
 
