@@ -191,7 +191,7 @@ void setup() {
         parametersGuess[i][0] = .002+i*0.001;
         parametersGuess[i][1] = .53;
         parametersGuess[i][2] = .39;
-        parametersGuess[i][3] = 0.;
+        parametersGuess[i][3] = .1;
     }
 
     std::vector<bool> isParameterFixed(4,false);
