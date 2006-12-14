@@ -88,7 +88,7 @@ namespace QuantLib {
                                const Interpolator& interpolator,
                                const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
-      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
       stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
@@ -108,7 +108,7 @@ namespace QuantLib {
                                 const Interpolator& interpolator,
                                 const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
-      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
       stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
         // fill dummy handles to allow generic handle-based
@@ -132,7 +132,7 @@ namespace QuantLib {
                            const Interpolator& interpolator,
                            const Date& referenceDate)
     : SmileSection(d, dc, referenceDate),
-      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
       stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
@@ -153,10 +153,10 @@ namespace QuantLib {
                            const Interpolator& interpolator,
                            const Date& referenceDate)
     : SmileSection(d, dc, referenceDate),
-      exerciseTimeSquareRoot_(exerciseTime_), strikes_(strikes),
+      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
       stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
-        // fill dummy handles to allow generic handle-based
+        //fill dummy handles to allow generic handle-based
         // computations later on
         for (Size i=0; i<stdDevs.size(); ++i)
             stdDevHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
