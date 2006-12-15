@@ -76,7 +76,7 @@ namespace QuantLib {
         std::vector<Rate> strikes_;
         std::vector<Handle<Quote> > stdDevHandles_;
         mutable std::vector<Volatility> vols_;
-        Interpolation interpolation_;
+        mutable Interpolation interpolation_;
     };
 
 
@@ -173,6 +173,7 @@ namespace QuantLib {
                                                                       const {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot_;
+        interpolation_.update();
     }
 
     template <class Interpolator>
