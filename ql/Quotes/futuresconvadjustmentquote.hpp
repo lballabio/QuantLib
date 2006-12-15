@@ -41,6 +41,13 @@ namespace QuantLib {
                         const Handle<Quote>& meanReversion);
         Real value() const;
         void update();
+        //! \name Inspectors
+        //@{
+        Real futuresValue() const { return futuresQuote_->value(); }
+        Real volatility() const { return volatility_->value(); }
+        Real meanReversion() const { return meanReversion_->value(); }
+        Date immDate() const { return futuresDate_; }
+        //@}
       protected:
         DayCounter dc_;
         const Date indexMaturityDate_;
