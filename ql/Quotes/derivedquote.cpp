@@ -104,19 +104,17 @@ namespace QuantLib {
     }
 
     Real FuturesConvAdjustmentQuote::value() const {
-        
+        // move at construction time       
         DayCounter dc = index_->dayCounter();
+        Date indexMaturityDate = index_->maturityDate(futuresDate_);
+
         Date settlementDate = Settings::instance().evaluationDate();
         Time startTime = dc.yearFraction(settlementDate, futuresDate_);
-
-        Date indexMaturityDate = index_->maturityDate(futuresDate_);
         Time indexMaturity = dc.yearFraction(settlementDate, indexMaturityDate);
-
-        Real convexity = HullWhite::convexityBias(futuresQuote_->value(),
-                                                 startTime,
-                                                 indexMaturity,
-                                                 volatility_->value(),
-                                                 meanReversion_->value());
-        return convexity;
+        return HullWhite::convexityBias(futuresQuote_->value(),
+                                        startTime,
+                                        indexMaturity,
+                                        volatility_->value(),
+                                        meanReversion_->value());
     }
 }

@@ -116,13 +116,14 @@ namespace QuantLib {
     };
 
     class FuturesConvAdjustmentQuote : public Quote,
-                               public Observer {
+                                       public Observer {
       public:
-        FuturesConvAdjustmentQuote(const boost::shared_ptr<InterestRateIndex>& index,
-                           const Date& futuresDate,
-                           const Handle<Quote>& futuresQuote,
-                           const Handle<Quote>& volatility,
-                           const Handle<Quote>& meanReversion);
+        FuturesConvAdjustmentQuote(
+                        const boost::shared_ptr<InterestRateIndex>& index,
+                        const Date& futuresDate,
+                        const Handle<Quote>& futuresQuote,
+                        const Handle<Quote>& volatility,
+                        const Handle<Quote>& meanReversion);
         Real value() const;
         void update();
       protected:
