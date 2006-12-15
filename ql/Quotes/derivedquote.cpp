@@ -3,7 +3,6 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
- Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,7 +20,6 @@
 
 #include <ql/Quotes/derivedquote.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
-#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
 
 
 namespace QuantLib {
@@ -86,35 +84,5 @@ namespace QuantLib {
                 impliedVolatility_, accuracy_);
         }
         return impliedVolatility_;
-    }
-
-    
-    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
-                               const boost::shared_ptr<InterestRateIndex>& index,
-                               const Date& futuresDate, 
-                               const Handle<Quote>& futuresQuote,
-                               const Handle<Quote>& volatility,
-                               const Handle<Quote>& meanReversion)
-    : index_(index), futuresDate_(futuresDate), futuresQuote_(futuresQuote),
-      volatility_(volatility), meanReversion_(meanReversion) {
-        registerWith(index_);
-        registerWith(futuresQuote_);
-        registerWith(volatility_);
-        registerWith(meanReversion_);
-    }
-
-    Real FuturesConvAdjustmentQuote::value() const {
-        // move at construction time       
-        DayCounter dc = index_->dayCounter();
-        Date indexMaturityDate = index_->maturityDate(futuresDate_);
-
-        Date settlementDate = Settings::instance().evaluationDate();
-        Time startTime = dc.yearFraction(settlementDate, futuresDate_);
-        Time indexMaturity = dc.yearFraction(settlementDate, indexMaturityDate);
-        return HullWhite::convexityBias(futuresQuote_->value(),
-                                        startTime,
-                                        indexMaturity,
-                                        volatility_->value(),
-                                        meanReversion_->value());
     }
 }

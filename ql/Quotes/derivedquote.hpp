@@ -3,7 +3,6 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
- Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,7 +30,6 @@
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
 #include <ql/index.hpp>
-#include <ql/Indexes/interestrateindex.hpp>
 #include <ql/option.hpp>
 
 namespace QuantLib {
@@ -115,25 +113,6 @@ namespace QuantLib {
         Handle<Quote> price_;
     };
 
-    class FuturesConvAdjustmentQuote : public Quote,
-                                       public Observer {
-      public:
-        FuturesConvAdjustmentQuote(
-                        const boost::shared_ptr<InterestRateIndex>& index,
-                        const Date& futuresDate,
-                        const Handle<Quote>& futuresQuote,
-                        const Handle<Quote>& volatility,
-                        const Handle<Quote>& meanReversion);
-        Real value() const;
-        void update();
-      protected:
-        boost::shared_ptr<InterestRateIndex> index_;
-        const Date futuresDate_;
-        Handle<Quote> futuresQuote_;
-        Handle<Quote> volatility_;
-        Handle<Quote> meanReversion_;
-    };
-
     class EurodollarFuturesImpliedStdDevQuote : public Quote,
                                                 public Observer {
       public:
@@ -166,10 +145,6 @@ namespace QuantLib {
     }
 
     inline void ImpliedStdDevQuote::update(){
-        notifyObservers();
-    }
-
-    inline void FuturesConvAdjustmentQuote::update(){
         notifyObservers();
     }
 
