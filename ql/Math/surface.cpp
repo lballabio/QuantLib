@@ -26,7 +26,7 @@ namespace QuantLib {
         return sin(x) * cos(y);
     }
 
-    Domain* TestSurface::domain() const {
-        return new UniversalDomain;
+    boost::shared_ptr<Domain> TestSurface::domain() const {
+        return boost::shared_ptr<Domain>(new UniversalDomain);
     }
 }

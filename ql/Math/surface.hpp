@@ -26,6 +26,7 @@
 
 #include <ql/types.hpp>
 #include <functional>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
     class Domain;
@@ -35,14 +36,14 @@ namespace QuantLib {
     class Surface : public std::binary_function<Real, Real, Real> {
       public:
         virtual Real operator()(Real x, Real y) const = 0;
-        virtual Domain* domain() const = 0;
+        virtual boost::shared_ptr<Domain> domain() const = 0;
         virtual ~Surface() {};
     };
 
     class TestSurface : public Surface {
     public:
         Real operator()(Real x, Real y) const;
-        Domain* domain() const;
+        boost::shared_ptr<Domain> domain() const;
     };
 
 }
