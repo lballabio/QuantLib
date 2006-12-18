@@ -24,6 +24,7 @@
 
 #include <ql/Quotes/compositequote.hpp>
 #include <ql/Quotes/derivedquote.hpp>
+#include <ql/Quotes/futuresconvadjustmentquote.hpp>
 #include <ql/Quotes/simplequote.hpp>
 
 
