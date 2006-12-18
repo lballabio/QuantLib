@@ -8786,6 +8786,12 @@
 				RelativePath=".\ql\Quotes\derivedquote.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Quotes\futuresconvadjustmentquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Quotes\futuresconvadjustmentquote.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Quotes\simplequote.hpp">
 			</File>
 		</Filter>
