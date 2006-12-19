@@ -41,8 +41,8 @@ namespace QuantLib {
         }
     }
 
-    Real midRobust(const Real bid,
-                   const Real ask)
+    Real midSafe(const Real bid,
+                 const Real ask)
     {
         QL_REQUIRE(bid != Null<Real>() && bid > 0.0,
             "invalid bid price");
