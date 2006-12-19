@@ -47,7 +47,7 @@ namespace QuantLib {
         class SABRCoefficientHolder {
           public:
             SABRCoefficientHolder(Time t,
-                                  Real forward,
+                                  const Real& forward,
                                   Real alpha,
                                   Real beta,
                                   Real nu,
@@ -94,7 +94,7 @@ namespace QuantLib {
             /*! Option expiry */
             Real t_;
             /*! */
-            Real forward_;
+            const Real& forward_;
             /*! Sabr parameters */
             Real alpha_, beta_, nu_, rho_;
             bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
@@ -112,7 +112,7 @@ namespace QuantLib {
                           const I1& xEnd,
                           const I2& yBegin,  // y = volatilities
                           Time t,            // option expiry
-                          Real forward,
+                          const Real& forward,
                           Real alpha,
                           Real beta,
                           Real nu,
@@ -235,11 +235,12 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
             std::vector<Real> weights_;
+            Real forward_;
           public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
-                Time t, Real forward,
+                Time t, const Real& forward,
                 Real alpha, Real beta, Real nu, Real rho,
                 bool isAlphaFixed,
                 bool isBetaFixed,
@@ -248,6 +249,7 @@ namespace QuantLib {
                 bool vegaWeighted,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
+              forward_(forward),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
               isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
               method_(method), weights_(xEnd-xBegin, 1.0) {
