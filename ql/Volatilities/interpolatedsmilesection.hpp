@@ -88,7 +88,7 @@ namespace QuantLib {
                                const Interpolator& interpolator,
                                const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
-      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
+      exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
@@ -108,7 +108,7 @@ namespace QuantLib {
                                 const Interpolator& interpolator,
                                 const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
-      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
+      exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
         // fill dummy handles to allow generic handle-based
@@ -132,7 +132,7 @@ namespace QuantLib {
                            const Interpolator& interpolator,
                            const Date& referenceDate)
     : SmileSection(d, dc, referenceDate),
-      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
+      exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
@@ -153,7 +153,7 @@ namespace QuantLib {
                            const Interpolator& interpolator,
                            const Date& referenceDate)
     : SmileSection(d, dc, referenceDate),
-      exerciseTimeSquareRoot_(sqrt(exerciseTime_)), strikes_(strikes),
+      exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevs.size()), vols_(stdDevs.size())
     {
         //fill dummy handles to allow generic handle-based
@@ -180,7 +180,7 @@ namespace QuantLib {
     Real InterpolatedSmileSection<Interpolator>::variance(Real strike) const {
         calculate();
         Real v = interpolation_(strike, true);
-        return v*v*exerciseTime_;
+        return v*v*exerciseTime();
     }
 
     template <class Interpolator>
