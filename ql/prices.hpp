@@ -44,7 +44,7 @@ namespace QuantLib {
          MidSafe       /*!< Safe Mid price, returns the mid price only if
                             both bid and ask are available. */
          #ifndef QL_DISABLE_DEPRECATED
-         MidRobust     /*!< Robust Mid price, returns the mid price only if
+         , MidRobust   /*!< Robust Mid price, returns the mid price only if
                             both bid and ask are available. */
          #endif
     };
@@ -64,7 +64,11 @@ namespace QuantLib {
                  const Real ask);
 
     #ifndef QL_DISABLE_DEPRECATED
-    typedef midSafe midRobust;
+    //! \deprecated use midSafe instead
+    inline Real midRobust(const Real bid,
+                          const Real ask) {
+        return midSafe(bid, ask);
+    }
     #endif
 
     //! interval price
