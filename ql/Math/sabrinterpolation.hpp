@@ -159,9 +159,9 @@ namespace QuantLib {
     //! %SABR interpolation factory
     class SABR {
     public:
-        SABR(Time t, 
-             Real forward, 
-             Real alpha, 
+        SABR(Time t,
+             Real forward,
+             Real alpha,
              Real beta,
              Real nu,
              Real rho,
@@ -171,7 +171,7 @@ namespace QuantLib {
              bool isRhoFixed,
              bool vegaWeighted = false,
              const boost::shared_ptr<OptimizationMethod> method
-                = boost::shared_ptr<OptimizationMethod>()): 
+                = boost::shared_ptr<OptimizationMethod>()):
                 t_(t), forward_(forward), alpha_(alpha), beta_(beta),nu_(nu),
                 rho_(rho), isAlphaFixed_(isAlphaFixed),
                 isBetaFixed_(isBetaFixed), isNuFixed_(isNuFixed),
@@ -183,7 +183,7 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return SABRInterpolation(xBegin, xEnd, yBegin, t_,  forward_,
                 alpha_, beta_, nu_, rho_, isAlphaFixed_, isBetaFixed_,
-                isNuFixed_, isRhoFixed_, vegaWeighted_, 
+                isNuFixed_, isRhoFixed_, vegaWeighted_,
                 method_);
     }
 
@@ -249,10 +249,10 @@ namespace QuantLib {
                 bool vegaWeighted,
                 const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              forward_(forward),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
-              isAlphaFixed, isBetaFixed, isNuFixed, isRhoFixed),
-              method_(method), weights_(xEnd-xBegin, 1.0) {
+                                    isAlphaFixed, isBetaFixed, isNuFixed,
+                                    isRhoFixed),
+              forward_(forward), method_(method), weights_(xEnd-xBegin, 1.0) {
                 Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
                     std::vector<Real>::const_iterator x = this->xBegin_;

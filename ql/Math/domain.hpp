@@ -40,19 +40,19 @@ namespace QuantLib {
 
     class UniversalDomain : public Domain {
     public:
-        bool includes(Real x, Real y) const { return true; }
+        bool includes(Real, Real) const { return true; }
     };
 
     class NullDomain : public Domain {
     public:
-        bool includes(Real x, Real y) const { return false; }
+        bool includes(Real, Real) const { return false; }
     };
 
     class BoundedDomain : public Domain {
     public:
         virtual Real xLowerBound() const = 0;
-        virtual Real xUpperBound() const = 0; 
-        virtual Real yLowerBound() const = 0; 
+        virtual Real xUpperBound() const = 0;
+        virtual Real yLowerBound() const = 0;
         virtual Real yUpperBound() const = 0;
     };
 

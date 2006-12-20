@@ -28,10 +28,11 @@
 #include <functional>
 
 namespace QuantLib {
-    //! %curve abstract class
 
+    //! abstract curve class
     class Curve : public std::unary_function<Real, Real> {
       public:
+        virtual ~Curve() {}
         virtual Real operator()(Real x) const = 0;
     };
 
