@@ -66,8 +66,6 @@ namespace QuantLib {
               maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::none)
             {
-                QL_REQUIRE(forward>0.0, "forward must be positive: "
-                    << io::rate(forward) << " not allowed");
                 QL_REQUIRE(t>0.0, "expiry time must be positive: "
                                   << t << " not allowed");
 
@@ -123,7 +121,8 @@ namespace QuantLib {
                           bool isRhoFixed,
                           bool vegaWeighted = false,
                           const boost::shared_ptr<OptimizationMethod>& method
-                                  = boost::shared_ptr<OptimizationMethod>()) {
+                                  = boost::shared_ptr<OptimizationMethod>(),
+                          bool calculate = true) {
 
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
@@ -132,7 +131,8 @@ namespace QuantLib {
                                                      isAlphaFixed, isBetaFixed,
                                                      isNuFixed, isRhoFixed,
                                                      vegaWeighted,
-                                                     method));
+                                                     method,
+                                                     calculate));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
@@ -235,7 +235,7 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<OptimizationMethod> method_;
             std::vector<Real> weights_;
-            Real forward_;
+            const Real& forward_;
           public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
@@ -247,7 +247,8 @@ namespace QuantLib {
                 bool isNuFixed,
                 bool isRhoFixed,
                 bool vegaWeighted,
-                const boost::shared_ptr<OptimizationMethod>& method)
+                const boost::shared_ptr<OptimizationMethod>& method,
+                bool compute)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
                                     isAlphaFixed, isBetaFixed, isNuFixed,
@@ -270,11 +271,14 @@ namespace QuantLib {
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
 
-                calculate();
+                if (compute) 
+                    calculate();
             }
 
             void calculate()
             {
+                QL_REQUIRE(forward_>0.0, "forward must be positive: "
+                    << io::rate(forward_) << " not allowed");
                 // there is nothing to optimize
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {
                     error_ = interpolationError();
