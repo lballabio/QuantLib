@@ -22,7 +22,7 @@
 */
 
 #include <ql/Volatilities/capstripper.hpp>
-
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/Instruments/makecapfloor.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/Solvers1D/brent.hpp>
@@ -168,7 +168,7 @@ namespace QuantLib {
         } catch(QuantLib::Error&) {
             QL_FAIL("CapsStripper::performCalculations:"
                     "\nbooststrap failure at option tenor " << tenors_[i] <<
-                    ", strike " << strikes_[j] <<
+                    ", strike " << io::rate(strikes_[j]) <<
                     ", cap price is " << capPrice);
         }
     }
