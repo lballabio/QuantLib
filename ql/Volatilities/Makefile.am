@@ -20,6 +20,7 @@ include_HEADERS = \
     localvolcurve.hpp \
     localvolsurface.hpp \
     sabr.hpp \
+    sabrinterpolatedsmilesection.hpp \
     smilesection.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \

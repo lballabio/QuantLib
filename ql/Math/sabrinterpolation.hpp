@@ -253,7 +253,7 @@ namespace QuantLib {
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
                                     isAlphaFixed, isBetaFixed, isNuFixed,
                                     isRhoFixed),
-              forward_(forward), method_(method), weights_(xEnd-xBegin, 1.0) {
+              method_(method), weights_(xEnd-xBegin, 1.0), forward_(forward) {
                 Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
                     std::vector<Real>::const_iterator x = this->xBegin_;
@@ -271,7 +271,7 @@ namespace QuantLib {
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
 
-                if (compute) 
+                if (compute)
                     calculate();
             }
 

@@ -22,7 +22,7 @@
 */
 
 #include <ql/Volatilities/capstripper.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <ql/Instruments/makecapfloor.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/Solvers1D/brent.hpp>

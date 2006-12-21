@@ -37,11 +37,14 @@
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/Volatilities/sabr.hpp>
+#include <ql/Volatilities/sabrinterpolatedsmilesection.hpp>
 #include <ql/Volatilities/smilesection.hpp>
 #include <ql/Volatilities/swaptionconstantvol.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Volatilities/swaptionvolcube1.hpp>
 #include <ql/Volatilities/swaptionvolcube2.hpp>
+#include <ql/Volatilities/swaptionvoldiscrete.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 
