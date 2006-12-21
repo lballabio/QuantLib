@@ -44,6 +44,7 @@ QL_BEGIN_TEST_LOCALS(CapFlooredCouponTest)
 
 Date today_, settlement_, startDate_;
 Calendar calendar_;
+Real nominal_;
 std::vector<Real> nominals_;
 BusinessDayConvention convention_;
 Frequency frequency_;
@@ -56,9 +57,10 @@ Integer lenght_;
 Volatility volatility_;
 
 void setup() {
-    lenght_ = 20;
-    volatility_ = 0.5;
-    nominals_ = std::vector<Real>(lenght_,100.0);
+    lenght_ = 30;
+    volatility_ = 0.30;
+    nominal_ = 100.;
+    nominals_ = std::vector<Real>(lenght_,nominal_);
     frequency_ = Annual;
     index_ = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure_));
     calendar_ = index_->calendar();
@@ -115,7 +117,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
 
     vol = Handle<CapletVolatilityStructure>(
           boost::shared_ptr<CapletVolatilityStructure>(new
-            CapletConstantVolatility(today_, volatility, Actual365Fixed())));
+            CapletConstantVolatility(volatility, Actual365Fixed())));
 
     return CappedFlooredFloatingRateCouponVector(schedule,convention_,nominals_,
                                            fixingDays_,index_,
@@ -175,13 +177,13 @@ void CapFlooredCouponTest::testLargeRates() {
     QL_TEST_SETUP
 
     /* A vanilla floating leg and a capped floating leg with strike
-       equal to 100 and floor equal to 0 must have the same NPV.
+       equal to 100 and floor equal to 0 must have (about) the same NPV
+       (depending on variance: option expiry and volatility)
     */
 
     std::vector<Rate> caps(lenght_,100.0);
     std::vector<Rate> floors(lenght_,0.0);
-    std::vector<Rate> zeros(lenght_,0.0);
-    Real tolerance = 0.05; //depending on variance (option expiry and volatility)
+    Real tolerance = 0.002;
 
     // fixed leg with zero rate
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
@@ -196,6 +198,7 @@ void CapFlooredCouponTest::testLargeRates() {
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
         BOOST_MESSAGE("Lenght: " << lenght_ << " y" << "\n" <<
+            "Notional: " << nominal_ << "\n" <<
             "Vanilla floating leg NPV: " << vanillaLeg.NPV()
             << "\n" <<
             "Collared:" << "\n" <<
@@ -236,12 +239,11 @@ void CapFlooredCouponTest::testDecomposition() {
 
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
     Swap capLeg(termStructure_,fixedLeg,cappedLeg);
-    boost::shared_ptr<CapFloor> cap =
-        makeCapFloor(CapFloor::Cap,floatLeg,capstrike,floorstrike,volatility_);
+    Cap cap(floatLeg, std::vector<Rate>(1, capstrike), termStructure_, makeEngine(volatility_));
 
     Real npvVanilla = vanillaLeg.NPV();
     Real npvCappedLeg = capLeg.NPV();
-    Real npvCap = cap->NPV();
+    Real npvCap = cap.NPV();
     Real error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
     if (error>tolerance) {
         BOOST_MESSAGE("Capped Floating Leg NPV: " << npvCappedLeg << "\n" <<
@@ -266,11 +268,10 @@ void CapFlooredCouponTest::testDecomposition() {
         makeCapFlooredLeg(startDate_,lenght_,caps1,floors1,volatility_);
 
     Swap floorLeg(termStructure_,fixedLeg,flooredLeg);
-    boost::shared_ptr<CapFloor> floor =
-        makeCapFloor(CapFloor::Floor,floatLeg,capstrike1,floorstrike1,volatility_);
+    Floor floor(floatLeg, std::vector<Rate>(1, floorstrike1), termStructure_, makeEngine(volatility_));
 
     Real npvFlooredLeg = floorLeg.NPV();
-    Real npvFloor = floor->NPV();
+    Real npvFloor = floor.NPV();
     error = std::abs(npvFlooredLeg-(npvVanilla + npvFloor));
     if (error>tolerance) {
         BOOST_ERROR("Floored Floating Leg NPV: " << npvFlooredLeg << "\n" <<
