@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file surface.hpp
-    \brief Surface
+/*! \file curve.hpp
+    \brief Curve
 */
 
-#ifndef quantlib_surface_hpp
-#define quantlib_surface_hpp
+#ifndef quantlib_curve_hpp
+#define quantlib_curve_hpp
 
 #include <ql/types.hpp>
 #include <functional>
