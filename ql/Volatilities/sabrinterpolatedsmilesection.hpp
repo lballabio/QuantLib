@@ -36,7 +36,7 @@ namespace QuantLib {
                                          public LazyObject {
       public:
         SabrInterpolatedSmileSection(
-                           Time timeToExpiry,
+                           const Date& optionDate,
                            const std::vector<Rate>& strikes,
                            const std::vector<Handle<Quote> >& stdDevHandles,
                            const Handle<Quote>& forward,
@@ -52,15 +52,7 @@ namespace QuantLib {
                            const DayCounter& dc = Actual365Fixed()
                            );
 
-        //SabrInterpolatedSmileSection(
-        //                   const Date& d,
-        //                   const std::vector<Rate>& strikes,
-        //                   const std::vector<Handle<Quote> >& stdDevHandles,
-        //                   const Handle<Quote>& forward,
-        //                   const DayCounter& dc = Actual365Fixed(),
-        //                   const Interpolator& interpolator = Interpolator(),
-        //                   const Date& referenceDate = Date());
-        
+
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
@@ -75,7 +67,7 @@ namespace QuantLib {
     };
 
     inline SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(
-                       Time timeToExpiry,
+                       const Date& optionDate,
                        const std::vector<Rate>& strikes,
                        const std::vector<Handle<Quote> >& stdDevHandles,
                        const Handle<Quote>& forward,
@@ -89,12 +81,12 @@ namespace QuantLib {
                        bool isRhoFixed,
                        bool vegaWeighted,
                        const DayCounter& dc)
-    : SmileSection(timeToExpiry, dc),
+    : SmileSection(optionDate, dc),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevHandles), forward_(forward), 
       vols_(stdDevHandles.size()), 
       sabrInterpolation_(strikes_.begin(), strikes_.end(), vols_.begin(),
-                        timeToExpiry, forwardValue_, alpha, beta, nu, rho,
+                        exerciseTime(), forwardValue_, alpha, beta, nu, rho,
                         isAlphaFixed, isBetaFixed,
                         isNuFixed, isRhoFixed, vegaWeighted,
                         boost::shared_ptr<OptimizationMethod>(), false)
