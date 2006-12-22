@@ -12,8 +12,8 @@ body {
 }
 
 #menu {
-    float: left;
-    width: 20%;
+    float: right;
+    width: 11em;
     margin: 0;
     margin-bottom: 1em;
     padding: 1em;
@@ -22,19 +22,18 @@ body {
 }
 
 #profiles {
-    float: right;
-    margin: 0;
-    padding: 0;
+    text-align: right;
+    font-size: 80%;
 }
 
 #content {
-    margin-left: 25%;
+    margin-right: 15em;
     padding: 1em;
     vertical-align: top;
 }
 
 #header {
-    margin-left: 2em;
+    margin-left: 1em;
     text-align: left;
     border-bottom: 1px solid gray;
     margin-bottom: 1em;
@@ -70,6 +69,7 @@ img.titleimage {
 
 h3.subtitle {
     margin-top: 2px;
+    margin-bottom: 0;
 }
 
 ul.navbarlist {
@@ -80,29 +80,13 @@ ul.navbarlist {
 li.navlink {
     font-weight: normal;
     font-size: 80%;
-    list-style:none;
+    text-align: left;
+    list-style: none;
     margin: 0;
 }
 
 .navbartitle {
     text-align: center;
-}
-
-ul.profilelist {
-    width: auto;
-    padding: 0;
-    margin: 0;
-}
-
-li.profilelink {
-    float: left;
-    font-weight: normal;
-    font-size: 80%;
-    list-style:none;
-    margin-left: 1px;
-    padding: 5px;
-	background-color: #e8eef2;
-    border: 1px solid gray;
 }
 
 .hide { display: none }
