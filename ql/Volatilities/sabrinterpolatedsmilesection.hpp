@@ -58,6 +58,17 @@ namespace QuantLib {
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
+        Real alpha() const {return sabrInterpolation_.alpha(); }
+        Real beta() const {return sabrInterpolation_.beta(); }
+        Real nu() const {return sabrInterpolation_.nu(); }
+        Real rho() const {return sabrInterpolation_.rho(); }
+        Real interpolationError() const {
+            return sabrInterpolation_.interpolationError(); }
+        Real interpolationMaxError() const {
+            return sabrInterpolation_.interpolationMaxError(); }
+        EndCriteria::Type endCriteria() const { 
+            return sabrInterpolation_.endCriteria(); }
+
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
