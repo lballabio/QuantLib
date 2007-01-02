@@ -72,8 +72,6 @@ namespace QuantLib {
             if (mandatoryTimes_[0] > 0.0)
                 times_.push_back(0.0);
 
-            //std::copy(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-            //          std::back_inserter(times_));
             times_.insert(times_.end(),
                           mandatoryTimes_.begin(), mandatoryTimes_.end());
 
