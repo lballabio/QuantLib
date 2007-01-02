@@ -81,8 +81,6 @@ namespace QuantLib {
         swaption_->setupArguments(&args);
         std::vector<Time> swaptionTimes =
             DiscretizedSwaption(args).mandatoryTimes();
-        //std::copy(swaptionTimes.begin(), swaptionTimes.end(),
-        //          std::back_inserter(times));
         times.insert(times.end(),
                      swaptionTimes.begin(), swaptionTimes.end());
     }

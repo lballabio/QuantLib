@@ -40,8 +40,7 @@ namespace QuantLib {
         std::sort(allTimes.begin(), allTimes.end());
         std::vector<Time>::iterator end = std::unique(allTimes.begin(),
                                                       allTimes.end());
-        //std::copy(allTimes.begin(), end,
-        //          std::back_inserter(mergedTimes));
+        //mergedTimes.clear(); // shouldn't be cleared?
         mergedTimes.insert(mergedTimes.end(),
                            allTimes.begin(), end);
 

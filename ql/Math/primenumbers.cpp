@@ -47,8 +47,6 @@ namespace QuantLib {
     BigNatural PrimeNumbers::get(Size absoluteIndex) {
         if (primeNumbers_.empty()) {
             Size n = sizeof(firstPrimes)/sizeof(firstPrimes[0]);
-            //std::copy(firstPrimes, firstPrimes+n,
-            //          std::back_inserter(primeNumbers_));
             primeNumbers_.insert(primeNumbers_.end(),
                                  firstPrimes, firstPrimes+n);
         }

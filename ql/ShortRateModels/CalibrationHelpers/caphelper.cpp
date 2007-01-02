@@ -93,8 +93,6 @@ namespace QuantLib {
         cap_->setupArguments(&args);
         std::vector<Time> capTimes =
             DiscretizedCapFloor(args).mandatoryTimes();
-        //std::copy(capTimes.begin(), capTimes.end(),
-        //          std::back_inserter(times));
         times.insert(times.end(),
                      capTimes.begin(), capTimes.end());
     }
