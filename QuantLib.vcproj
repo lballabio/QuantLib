@@ -3576,6 +3576,9 @@
 				RelativePath="ql\Math\comparison.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\complexarray.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Math\convergencestatistics.hpp">
 			</File>
 			<File
@@ -3583,6 +3586,9 @@
 			</File>
 			<File
 				RelativePath="ql\Math\cubicspline.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\curve.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\discrepancystatistics.cpp">
@@ -3646,6 +3652,9 @@
 			</File>
 			<File
 				RelativePath="ql\Math\discrepancystatistics.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\domain.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\errorfunction.cpp">
@@ -3775,6 +3784,9 @@
 			</File>
 			<File
 				RelativePath="ql\Math\factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\fastfouriertransform.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Math\forwardflatinterpolation.hpp">
@@ -4297,6 +4309,12 @@
 			</File>
 			<File
 				RelativePath="ql\Math\statistics.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\surface.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\surface.hpp">
 			</File>
 			<File
 				RelativePath="ql\Math\svd.cpp">
