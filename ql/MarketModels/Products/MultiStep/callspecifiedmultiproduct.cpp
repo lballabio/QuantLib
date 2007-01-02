@@ -68,8 +68,10 @@ namespace QuantLib {
         cashFlowTimes_ = underlying_->possibleCashFlowTimes();
         rebateOffset_ = cashFlowTimes_.size();
         const std::vector<Time> rebateTimes = rebate_->possibleCashFlowTimes();
-        std::copy(rebateTimes.begin(), rebateTimes.end(),
-                  std::back_inserter(cashFlowTimes_));
+        //std::copy(rebateTimes.begin(), rebateTimes.end(),
+        //          std::back_inserter(cashFlowTimes_));
+        cashFlowTimes_.insert(cashFlowTimes_.end(),
+                              rebateTimes.begin(), rebateTimes.end());
 
         dummyCashFlowsThisStep_ = std::vector<Size>(products, 0);
         Size n = rebate_->maxNumberOfCashFlowsPerProductPerStep();

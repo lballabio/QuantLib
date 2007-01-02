@@ -119,8 +119,10 @@ namespace QuantLib {
         std::sort(allCashflowTimes.begin(), allCashflowTimes.end());
         std::vector<Time>::iterator end = std::unique(allCashflowTimes.begin(),
                                                       allCashflowTimes.end());
-        std::copy(allCashflowTimes.begin(), end,
-                  std::back_inserter(cashflowTimes_));
+        //std::copy(allCashflowTimes.begin(), end,
+        //          std::back_inserter(cashflowTimes_));
+        cashflowTimes_.insert(cashflowTimes_.end(),
+                              allCashflowTimes.begin(), end);
         // ...and map each product's cash-flow time into the total vector.
         for (i=components_.begin(); i!=components_.end(); ++i) {
             const std::vector<Time>& productTimes =

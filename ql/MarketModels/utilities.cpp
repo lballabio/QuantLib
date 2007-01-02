@@ -40,8 +40,10 @@ namespace QuantLib {
         std::sort(allTimes.begin(), allTimes.end());
         std::vector<Time>::iterator end = std::unique(allTimes.begin(),
                                                       allTimes.end());
-        std::copy(allTimes.begin(), end,
-                  std::back_inserter(mergedTimes));
+        //std::copy(allTimes.begin(), end,
+        //          std::back_inserter(mergedTimes));
+        mergedTimes.insert(mergedTimes.end(),
+                           allTimes.begin(), end);
 
         isPresent.resize(times.size());
         for (i=0; i<times.size(); i++) {
