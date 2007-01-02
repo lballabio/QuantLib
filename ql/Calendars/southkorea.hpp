@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! South Korean calendars
     /*! Holidays for the Korea exchange
-        (data from <http://www.kofex.com>):
+        (data from <http://www.krx.co.kr>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>

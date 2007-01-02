@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,6 +65,26 @@ namespace QuantLib {
                 || (d == 3 && m == November)
                 // Guru Nanak Jayanti
                 || (d == 15 && m == November)
+                )
+                return false;
+        }
+        if (y == 2006) {
+            if (// Bakri Id
+                (d == 11 && m == January)
+                // Moharram
+                || (d == 9 && m == February)
+                // Holi
+                || (d == 15 && m == March)
+                // Ram Navami
+                || (d == 6 && m == April)
+                // Mahavir Jayanti
+                || (d == 11 && m == April)
+                // Maharashtra Day
+                || (d == 1 && m == May)
+                // Bhaubeej
+                || (d == 24 && m == October)
+                // Ramzan Id
+                || (d == 25 && m == October)
                 )
                 return false;
         }

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,11 +40,10 @@ namespace QuantLib {
         <li>Labour Day, May 1st</li>
         <li>National Day, August 9th</li>
         <li>Christmas, December 25th </li>
-        <li>Boxing Day, December 26th </li>
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2004-2005 only:)
+        (data available for 2004-2007 only:)
         <ul>
         <li>Chinese New Year</li>
         <li>Hari Raya Haji</li>
