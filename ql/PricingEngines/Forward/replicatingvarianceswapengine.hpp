@@ -77,17 +77,13 @@ namespace QuantLib {
     : dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes),
       optionEngine_(engine) {
 
-        QL_REQUIRE(callStrikes.size()>0 && putStrikes.size()>0,
+        QL_REQUIRE(!callStrikes.empty() && !putStrikes.empty(),
                    "no strike(s) given");
-        if (putStrikes.size()>0)
-            QL_REQUIRE(
-                   *std::min_element(putStrikes.begin(),putStrikes.end())>0.0,
-                       "min put strike must be positive");
-        if (callStrikes.size()>0 && putStrikes.size()>0)
-            QL_REQUIRE(
-                  *std::min_element(callStrikes.begin(), callStrikes.end()) ==
-                  *std::max_element(putStrikes.begin(), putStrikes.end()),
-                  "min call and max put strikes differ");
+        QL_REQUIRE(*std::min_element(putStrikes.begin(),putStrikes.end())>0.0,
+                   "min put strike must be positive");
+        QL_REQUIRE(*std::min_element(callStrikes.begin(), callStrikes.end())==
+                   *std::max_element(putStrikes.begin(), putStrikes.end()),
+                   "min call and max put strikes differ");
         if (!engine)
             optionEngine_ = boost::shared_ptr<PricingEngine>(
                                                   new AnalyticEuropeanEngine);

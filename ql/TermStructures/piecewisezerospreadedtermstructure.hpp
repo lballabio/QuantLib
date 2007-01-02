@@ -76,7 +76,7 @@ namespace QuantLib {
                                    const std::vector<Date>& dates)
     : originalCurve_(h), spreads_(spreads), dates_(dates),
       times_(dates_.size()) {
-        QL_REQUIRE(spreads_.size() > 0, "no spreads given");
+        QL_REQUIRE(!spreads_.empty(), "no spreads given");
         QL_REQUIRE(spreads_.size() == dates_.size(),
                    "spread and date vector have different sizes");
         registerWith(originalCurve_);

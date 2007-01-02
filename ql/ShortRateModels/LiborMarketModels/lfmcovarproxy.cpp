@@ -124,7 +124,7 @@ namespace QuantLib {
             }
         }
 
-        QL_REQUIRE(x.size() == 0, "can not handle given x here");
+        QL_REQUIRE(x.empty(), "can not handle given x here");
 
         Real tmp=0.0;
         Var_Helper helper(this, i, j);

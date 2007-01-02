@@ -32,7 +32,7 @@ namespace QuantLib {
     }
 
     TimeBasket TimeBasket::rebin(const std::vector<Date>& buckets) const {
-        QL_REQUIRE(buckets.size() > 0, "empty bucket structure");
+        QL_REQUIRE(!buckets.empty(), "empty bucket structure");
 
         std::vector<Date> sbuckets = buckets;
         std::sort(sbuckets.begin(), sbuckets.end());

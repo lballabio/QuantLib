@@ -157,10 +157,8 @@ namespace QuantLib {
     : YieldTermStructure(dates[0], cal, dayCounter),
       dates_(dates), data_(discounts),
       interpolator_(interpolator) {
-        QL_REQUIRE(dates_.size() > 0,
-                   "no input dates given");
-        QL_REQUIRE(data_.size() > 0,
-                   "no input discount factors given");
+        QL_REQUIRE(!dates_.empty(), "no input dates given");
+        QL_REQUIRE(!data_.empty(), "no input discount factors given");
         QL_REQUIRE(data_.size() == dates_.size(),
                    "dates/discount factors count mismatch");
         QL_REQUIRE(data_[0] == 1.0,

@@ -57,7 +57,7 @@ namespace QuantLib {
         // because it is too slow and too inefficient.
         // This method is useful for testing and R&D.
         // Please overload the method within derived classes.
-        QL_REQUIRE(x.size() == 0, "can not handle given x here");
+        QL_REQUIRE(x.empty(), "can not handle given x here");
 
         Matrix tmp(size_, size_,0.0);
 

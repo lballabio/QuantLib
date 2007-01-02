@@ -66,12 +66,12 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
 
         Real gearing;
-        if (gearings.size() > 0) gearing = gearings[0];
-        else                     gearing = 1.0;
+        if (gearings.empty()) gearing = 1.0;
+        else                  gearing = gearings[0]; 
 
         Spread spread;
-        if (spreads.size() > 0) spread = spreads[0];
-        else                    spread = 0.0;
+        if (spreads.empty()) spread = 0.0;
+        else                 spread = spreads[0];   
 
         Real nominal = nominals[0];
         if (schedule.isRegular(1)) {

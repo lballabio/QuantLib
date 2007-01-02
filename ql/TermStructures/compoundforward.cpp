@@ -32,10 +32,8 @@ namespace QuantLib {
     : ForwardRateStructure(referenceDate, calendar, dayCounter),
       conv_(conv), compounding_(compounding),
       needsBootstrap_(true), dates_(dates), forwards_(forwards) {
-        QL_REQUIRE(dates_.size() > 0,
-                   "no input dates given");
-        QL_REQUIRE(forwards_.size() > 0,
-                   "no input rates given");
+        QL_REQUIRE(!dates_.empty(), "no input dates given");
+        QL_REQUIRE(!forwards_.empty(), "no input rates given");
         QL_REQUIRE(dates_.size() == forwards_.size(),
                    "inconsistent number of dates/forward rates");
         calibrateNodes();
