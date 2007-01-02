@@ -171,7 +171,7 @@ namespace QuantLib {
 
     bool Schedule::isRegular(Size i) const {
         QL_REQUIRE(fullInterface_, "full interface not available");
-        if (isRegular_.size()==0) {
+        if (isRegular_.empty()) {
             if (tenor_ < Period(1,Days)) {
                 return true;
             } else if (startFromEnd_) {
