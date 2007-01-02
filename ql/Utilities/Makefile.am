@@ -17,7 +17,6 @@ include_HEADERS = \
 libUtilities_la_SOURCES = \
     dataformatters.cpp \
     dataparsers.cpp \
-    strings.cpp \
     tracing.cpp
 
 noinst_LTLIBRARIES = libUtilities.la
