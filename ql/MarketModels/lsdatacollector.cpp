@@ -50,8 +50,7 @@ namespace QuantLib {
                            product.maxNumberOfCashFlowsPerProductPerStep());
 
 
-        std::vector<Time> rateTimes =
-            product.evolution().rateTimes();
+        std::vector<Time> rateTimes = product.evolution().rateTimes();
 
         std::vector<Time> cashFlowTimes = product.possibleCashFlowTimes();
         std::vector<Time> rebateTimes = rebate.possibleCashFlowTimes();
@@ -69,14 +68,14 @@ namespace QuantLib {
 
         n = rebateTimes.size();
         std::vector<MarketModelDiscounter> rebateDiscounters;
-        rebateDiscounters.resize(n);
+        rebateDiscounters.reserve(n);
         for (i=0; i<n; ++i)
             rebateDiscounters.push_back(
                                      MarketModelDiscounter(rebateTimes[i],
                                                            rateTimes));
         n = controlTimes.size();
         std::vector<MarketModelDiscounter> controlDiscounters;
-        controlDiscounters.resize(n);
+        controlDiscounters.reserve(n);
         for (i=0; i<n; ++i)
             controlDiscounters.push_back(
                                      MarketModelDiscounter(controlTimes[i],
