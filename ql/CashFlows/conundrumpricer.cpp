@@ -425,8 +425,8 @@ namespace QuantLib {
         std::vector<Real> b;
         b.reserve(accruals_.size());
         for (Size i=0; i<accruals_.size(); i++) {
-            Real temp = 1.0/(1.0+ accruals_[i]*x;
-            b.push_back(temp));
+            Real temp = 1.0/(1.0+ accruals_[i]*x);
+            b.push_back(temp);
             c *= temp;
             derC += accruals_[i]*temp;
         }

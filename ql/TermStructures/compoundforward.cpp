@@ -43,7 +43,7 @@ namespace QuantLib {
         Size i;
         Integer ci;
 
-        times_.reserve(dates_.size());
+        times_.resize(dates_.size());
         for (i = 0; i < dates_.size(); i++)
             times_[i] = dayCounter().yearFraction(referenceDate(),dates_[i]);
         fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),

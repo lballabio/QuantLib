@@ -61,7 +61,7 @@ namespace QuantLib {
 
         n = cashFlowTimes.size();
         std::vector<MarketModelDiscounter> productDiscounters;
-        productDiscounters.resize(n);
+        productDiscounters.reserve(n);
         for (i=0; i<n; ++i)
             productDiscounters.push_back(
                                      MarketModelDiscounter(cashFlowTimes[i],
