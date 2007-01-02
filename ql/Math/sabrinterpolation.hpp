@@ -75,7 +75,7 @@ namespace QuantLib {
 
                 if (beta_ != Null<Real>())
                     betaIsFixed_ = betaIsFixed;
-                else beta_=0.5;
+                else beta_ = 0.5;
 
                 if (nu_ != Null<Real>())
                     nuIsFixed_ = nuIsFixed;
@@ -115,10 +115,10 @@ namespace QuantLib {
                           Real beta,
                           Real nu,
                           Real rho,
-                          bool isAlphaFixed,
-                          bool isBetaFixed,
-                          bool isNuFixed,
-                          bool isRhoFixed,
+                          bool alphaIsFixed,
+                          bool betaIsFixed,
+                          bool nuIsFixed,
+                          bool rhoIsFixed,
                           bool vegaWeighted = false,
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>(),
@@ -128,8 +128,8 @@ namespace QuantLib {
                 detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                      t, forward,
                                                      alpha, beta, nu, rho,
-                                                     isAlphaFixed, isBetaFixed,
-                                                     isNuFixed, isRhoFixed,
+                                                     alphaIsFixed, betaIsFixed,
+                                                     nuIsFixed, rhoIsFixed,
                                                      vegaWeighted,
                                                      method,
                                                      calculate));
@@ -158,50 +158,40 @@ namespace QuantLib {
 
     //! %SABR interpolation factory
     class SABR {
-    public:
-        SABR(Time t,
-             Real forward,
-             Real alpha,
-             Real beta,
-             Real nu,
-             Real rho,
-             bool isAlphaFixed,
-             bool isBetaFixed,
-             bool isNuFixed,
-             bool isRhoFixed,
+      public:
+        SABR(Time t, Real forward,
+             Real alpha, Real beta, Real nu, Real rho,
+             bool alphaIsFixed, bool betaIsFixed,
+             bool nuIsFixed, bool rhoIsFixed,
              bool vegaWeighted = false,
              const boost::shared_ptr<OptimizationMethod> method
-                = boost::shared_ptr<OptimizationMethod>()):
-                t_(t), forward_(forward), alpha_(alpha), beta_(beta),nu_(nu),
-                rho_(rho), isAlphaFixed_(isAlphaFixed),
-                isBetaFixed_(isBetaFixed), isNuFixed_(isNuFixed),
-                isRhoFixed_(isRhoFixed), vegaWeighted_(vegaWeighted),
-                method_(method){}
-                SABR(){};
+                = boost::shared_ptr<OptimizationMethod>())
+        : t_(t), forward_(forward),
+          alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+          alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
+          nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
+          vegaWeighted_(vegaWeighted),
+          method_(method) {}
+        SABR() {};
+
         template <class I1, class I2>
         Interpolation interpolate(const I1& xBegin, const I1& xEnd,
                                   const I2& yBegin) const {
-            return SABRInterpolation(xBegin, xEnd, yBegin, t_,  forward_,
-                alpha_, beta_, nu_, rho_, isAlphaFixed_, isBetaFixed_,
-                isNuFixed_, isRhoFixed_, vegaWeighted_,
-                method_);
-    }
-
-    private:
+            return SABRInterpolation(xBegin, xEnd, yBegin,
+                                     t_,  forward_,
+                                     alpha_, beta_, nu_, rho_,
+                                     alphaIsFixed_, betaIsFixed_,
+                                     nuIsFixed_, rhoIsFixed_,
+                                     vegaWeighted_, method_);
+        }
+      private:
         Time t_;
         Real forward_;
-        Real alpha_;
-        Real beta_;
-        Real nu_;
-        Real rho_;
-        bool isAlphaFixed_;
-        bool isBetaFixed_;
-        bool isNuFixed_;
-        bool isRhoFixed_;
+        Real alpha_, beta_, nu_, rho_;
+        bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
         bool vegaWeighted_;
         const boost::shared_ptr<OptimizationMethod> method_;
     };
-
 
 
     namespace detail {
@@ -242,17 +232,17 @@ namespace QuantLib {
                 const I2& yBegin,
                 Time t, const Real& forward,
                 Real alpha, Real beta, Real nu, Real rho,
-                bool isAlphaFixed,
-                bool isBetaFixed,
-                bool isNuFixed,
-                bool isRhoFixed,
+                bool alphaIsFixed,
+                bool betaIsFixed,
+                bool nuIsFixed,
+                bool rhoIsFixed,
                 bool vegaWeighted,
                 const boost::shared_ptr<OptimizationMethod>& method,
                 bool compute)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
-                                    isAlphaFixed, isBetaFixed, isNuFixed,
-                                    isRhoFixed),
+                                    alphaIsFixed, betaIsFixed, nuIsFixed,
+                                    rhoIsFixed),
               method_(method), weights_(xEnd-xBegin, 1.0), forward_(forward) {
                 Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
