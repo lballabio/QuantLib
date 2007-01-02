@@ -161,7 +161,7 @@ namespace QuantLib {
     }
 
     inline void Observer::unregisterWith(
-                                     const boost::shared_ptr<Observable>& h) {
+                                    const boost::shared_ptr<Observable>& h) {
         if (h) {
             for (iterator i=observables_.begin();
                  i!=observables_.end();
