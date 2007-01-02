@@ -134,7 +134,8 @@ namespace QuantLib {
                     // at least one time step!
                     nSteps = (nSteps!=0 ? nSteps : 1);
                     Time dt = (periodEnd - periodBegin)/nSteps;
-                    for (Size n=1; n<=nSteps; n++)
+                    times_.reserve(nSteps);
+                    for (Size n=1; n<=nSteps; ++n)
                         times_.push_back(periodBegin + n*dt);
                 }
                 periodBegin = periodEnd;

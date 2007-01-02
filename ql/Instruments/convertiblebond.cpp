@@ -231,11 +231,16 @@ namespace QuantLib {
                 dayCounter.yearFraction(settlement, exercise_->date(i));
         }
 
+        Size n = callability_.size();
         moreArgs->callabilityTimes.clear();
         moreArgs->callabilityTypes.clear();
         moreArgs->callabilityPrices.clear();
         moreArgs->callabilityTriggers.clear();
-        for (i=0; i<callability_.size(); i++) {
+        moreArgs->callabilityTimes.reserve(n);
+        moreArgs->callabilityTypes.reserve(n);
+        moreArgs->callabilityPrices.reserve(n);
+        moreArgs->callabilityTriggers.reserve(n);
+        for (i=0; i<n; i++) {
             if (!callability_[i]->hasOccurred(settlement)) {
                 moreArgs->callabilityTypes.push_back(callability_[i]->type());
                 moreArgs->callabilityTimes.push_back(

@@ -47,7 +47,8 @@ namespace QuantLib {
                 calculate();
             }
             void calculate() {
-                for (Size i=0; i<(this->zData_.rows()); i++)
+                splines_.reserve(this->zData_.rows());
+                for (Size i=0; i<(this->zData_.rows()); ++i)
                     splines_.push_back(NaturalCubicSpline(
                                                   this->xBegin_, this->xEnd_,
                                                   this->zData_.row_begin(i)));

@@ -140,10 +140,12 @@ namespace QuantLib {
         arguments->stochasticProcess = stochasticProcess_;
         arguments->exercise = exercise_;
 
+        Size n = exercise_->dates().size();
         arguments->stoppingTimes.clear();
-        for (Size i=0; i<exercise_->dates().size(); i++) {
+        arguments->stoppingTimes.reserve(n);
+        for (Size i=0; i<n; ++i) {
             arguments->stoppingTimes.push_back(
-                                stochasticProcess_->time(exercise_->date(i)));
+                               stochasticProcess_->time(exercise_->date(i)));
         }
     }
 

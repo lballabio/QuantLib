@@ -181,7 +181,8 @@ namespace QuantLib {
     template <class T, class C>
     std::vector<Date> TimeSeries<T,C>::dates() const {
         std::vector<Date> v;
-        for (const_iterator i = begin(); i != end(); i++)
+        v.reserve(size());
+        for (const_iterator i = begin(); i != end(); ++i)
             v.push_back(i->first);
         return v;
     }
@@ -189,12 +190,12 @@ namespace QuantLib {
     template <class T, class C>
     std::vector<T> TimeSeries<T,C>::values() const {
         std::vector<T> v;
-        for (const_iterator i = begin(); i != end(); i++)
+        v.reserve(size());
+        for (const_iterator i = begin(); i != end(); ++i)
             v.push_back(i->second);
         return v;
     }
 
 }
-
 
 #endif

@@ -39,6 +39,7 @@ namespace QuantLib {
         const std::vector<Time>& cashFlowTimes =
             product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
+        discounters_.resize(cashFlowTimes.size());
         for (Size j=0; j<cashFlowTimes.size(); ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
                                                          rateTimes));

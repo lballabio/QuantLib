@@ -93,7 +93,8 @@ namespace QuantLib {
             }
             std::vector<Real> xValues() const {
                 std::vector<Real> result;
-                for (I1 i=xBegin_; i!=xEnd_; i++)
+                result.reserve(xEnd_-xBegin_);
+                for (I1 i=xBegin_; i!=xEnd_; ++i)
                     result.push_back(*i);
                 return result;
             }
@@ -105,6 +106,7 @@ namespace QuantLib {
             }
             std::vector<Real> yValues() const {
                 std::vector<Real> result;
+                result.reserve(yEnd_-yBegin_);
                 for (I2 i=yBegin_; i!=yEnd_; i++)
                     result.push_back(*i);
                 return result;

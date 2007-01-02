@@ -45,9 +45,9 @@ namespace QuantLib {
 
         nExercise_ = expiries_.size();
         nSwapTenors_ = swapIndices_.size();
-        for (Size j=0; j<nSwapTenors_ ; j++) {
+        swapTenors_.reserve(nSwapTenors_);
+        for (Size j=0; j<nSwapTenors_ ; ++j)
             swapTenors_.push_back(swapIndices_[j]->tenor());
-        }
 
         QL_REQUIRE(2*nSwapTenors_==bidAskSpreads[0].size(),
                    "2*nSwapTenors_!=bidAskSpreads columns()");

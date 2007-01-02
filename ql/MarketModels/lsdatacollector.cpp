@@ -57,19 +57,27 @@ namespace QuantLib {
         std::vector<Time> rebateTimes = rebate.possibleCashFlowTimes();
         std::vector<Time> controlTimes = control.possibleCashFlowTimes();
 
+        Size i, n;
+
+        n = cashFlowTimes.size();
         std::vector<MarketModelDiscounter> productDiscounters;
-        std::vector<MarketModelDiscounter> rebateDiscounters;
-        std::vector<MarketModelDiscounter> controlDiscounters;
-        Size i;
-        for (i=0; i<cashFlowTimes.size(); ++i)
+        productDiscounters.resize(n);
+        for (i=0; i<n; ++i)
             productDiscounters.push_back(
                                      MarketModelDiscounter(cashFlowTimes[i],
                                                            rateTimes));
-        for (i=0; i<rebateTimes.size(); ++i)
+
+        n = rebateTimes.size();
+        std::vector<MarketModelDiscounter> rebateDiscounters;
+        rebateDiscounters.resize(n);
+        for (i=0; i<n; ++i)
             rebateDiscounters.push_back(
                                      MarketModelDiscounter(rebateTimes[i],
                                                            rateTimes));
-        for (i=0; i<controlTimes.size(); ++i)
+        n = controlTimes.size();
+        std::vector<MarketModelDiscounter> controlDiscounters;
+        controlDiscounters.resize(n);
+        for (i=0; i<n; ++i)
             controlDiscounters.push_back(
                                      MarketModelDiscounter(controlTimes[i],
                                                            rateTimes));

@@ -79,8 +79,10 @@ namespace QuantLib {
                 settlement) ;
         }
         arguments->exercise = exercise_;
+        Size n = exercise_->dates().size();
         arguments->stoppingTimes.clear();
-        for (Size i=0; i<exercise_->dates().size(); i++) {
+        arguments->stoppingTimes.reserve(n);
+        for (Size i=0; i<n; ++i) {
             Time time = counter.yearFraction(settlement,
                                              exercise_->dates()[i]);
             arguments->stoppingTimes.push_back(time);

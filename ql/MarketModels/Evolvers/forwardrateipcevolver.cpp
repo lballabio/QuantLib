@@ -51,6 +51,8 @@ namespace QuantLib {
 
         currentStep_ = initialStep_;
 
+        calculators_.reserve(steps);
+        fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,

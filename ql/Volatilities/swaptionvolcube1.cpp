@@ -328,7 +328,9 @@ namespace QuantLib {
 
         for (Size j=0; j<optionTimes.size(); j++) {
             std::vector<boost::shared_ptr<SmileSection> > tmp;
-            for (Size k=0; k<swapLengths.size(); k++) {
+            Size n = swapLengths.size();
+            tmp.reserve(n)
+            for (Size k=0; k<n; ++k) {
                 tmp.push_back(smileSection(optionTimes[j], swapLengths[k],
                                            sparseParameters_));
             }

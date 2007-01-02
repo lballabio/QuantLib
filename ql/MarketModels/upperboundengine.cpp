@@ -153,7 +153,9 @@ namespace QuantLib {
             composite_.possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes =
             composite_.evolution().rateTimes();
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
+        Size n =cashFlowTimes.size();
+        discounters_.reserve(n);
+        for (Size j=0; j<n; ++j)
             discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
                                                          rateTimes));
     }

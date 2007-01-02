@@ -403,6 +403,7 @@ namespace QuantLib {
 
         delta_ = (paymentTime-swapStartTime) / (swapFirstPaymentTime-swapStartTime);
 
+        accruals_.reserve(fixedLeg.size());
         for(Size i=0; i<fixedLeg.size(); i++) {
             boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
@@ -422,10 +423,12 @@ namespace QuantLib {
         Real c = -1.;
         Real derC = 0.;
         std::vector<Real> b;
-        for(Size i=0; i<accruals_.size(); i++) {
-            b.push_back(1./(1.+ accruals_[i]*x));
-            c *= b.back();
-            derC += accruals_[i]*b.back();
+        b.reserve(accruals_.size());
+        for (Size i=0; i<accruals_.size(); i++) {
+            Real temp = 1.0/(1.0+ accruals_[i]*x;
+            b.push_back(temp));
+            c *= temp;
+            derC += accruals_[i]*temp;
         }
         c += 1.;
         c = 1./c;
@@ -442,11 +445,13 @@ namespace QuantLib {
         Real sum = 0.;
         Real sumOfSquare = 0.;
         std::vector<Real> b;
+        b.reserve(accruals_.size());
         for(Size i=0; i<accruals_.size(); i++) {
-            b.push_back(1./(1.+ accruals_[i]*x));
-            c *= b.back();
-            sum += accruals_[i]*b.back();
-            sumOfSquare += std::pow(accruals_[i]*b.back(),2.);
+            Real temp = 1.0/(1.0+ accruals_[i]*x);
+            b.push_back(temp);
+            c *= temp;
+            sum += accruals_[i]*temp;
+            sumOfSquare += std::pow(accruals_[i]*temp, 2.0);
         }
         c += 1.;
         c = 1./c;
@@ -500,6 +505,9 @@ namespace QuantLib {
 
         shapedPaymentTime_ = shapeOfShift(paymentTime);
 
+        accruals_.reserve(fixedLeg.size());
+        shapedSwapPaymentTimes_.reserve(fixedLeg.size());
+        swapPaymentDiscounts_.reserve(fixedLeg.size());
         for(Size i=0; i<fixedLeg.size(); i++) {
             boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(fixedLeg[i]);

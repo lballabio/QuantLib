@@ -296,7 +296,8 @@ namespace QuantLib {
                                             Frequency freq,
                                             bool extrapolate) const {
         std::vector<Date> dates(1, startDate);
-        for (Integer i=1; i<=tenor; i++)
+        dates.reserve(tenor+1);
+        for (Integer i=1; i<=tenor; ++i)
             dates.push_back(startDate + i*Years);
         return parRate(dates, freq, extrapolate);
     }

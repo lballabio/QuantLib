@@ -127,6 +127,7 @@ namespace QuantLib {
                                            const TimeSeries<IntervalPrice>& ts,
                                            IntervalPrice::Type t)  {
         std::vector<Real> returnval;
+        returnval.reserve(ts.size());
         for (TimeSeries<IntervalPrice>::const_iterator i = ts.begin();
              i != ts.end(); i++) {
             returnval.push_back(i->second.value(t));

@@ -45,7 +45,9 @@ namespace QuantLib {
             FDVanillaEngine::setupArguments(args);
             events_ = schedule;
             stoppingTimes_.clear();
-            for (Size i=0; i<schedule.size(); i++)
+            Size n = schedule.size();
+            stoppingTimes_.reserve(n);
+            for (Size i=0; i<n; ++i)
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         };
         virtual void setupArguments(const Arguments* a) const {

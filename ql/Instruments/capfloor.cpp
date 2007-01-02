@@ -122,24 +122,44 @@ namespace QuantLib {
             dynamic_cast<CapFloor::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        arguments->type = type_;
-        arguments->capRates.clear();
-        arguments->floorRates.clear();
+        Size n = floatingLeg_.size();
+
         arguments->startTimes.clear();
-        arguments->fixingTimes.clear();
+        arguments->startTimes.reserve(n);
+
         arguments->fixingDates.clear();
+        arguments->fixingDates.reserve(n);
+
+        arguments->fixingTimes.clear();
+        arguments->fixingTimes.reserve(n);
+
         arguments->endTimes.clear();
+        arguments->endTimes.reserve(n);
+
         arguments->accrualTimes.clear();
+        arguments->accrualTimes.reserve(n);
+
         arguments->forwards.clear();
-        arguments->gearings.clear();
+
         arguments->discounts.clear();
+
         arguments->nominals.clear();
+        arguments->nominals.reserve(n);
+
+        arguments->gearings.clear();
+        arguments->gearings.reserve(n);
+
+        arguments->capRates.clear();
+
+        arguments->floorRates.clear();
+
+        arguments->type = type_;
 
         Date today = Settings::instance().evaluationDate();
         Date settlement = termStructure_->referenceDate();
         DayCounter counter = termStructure_->dayCounter();
 
-        for (Size i=0; i<floatingLeg_.size(); i++) {
+        for (Size i=0; i<n; i++) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);

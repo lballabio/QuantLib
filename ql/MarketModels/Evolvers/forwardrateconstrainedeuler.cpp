@@ -48,6 +48,9 @@ namespace QuantLib {
         generator_ = factory.create(F_, steps-initialStep_);
         currentStep_ = initialStep_;
 
+        calculators_.reserve(steps);
+        variances_.reserve(steps);
+        fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(DriftCalculator(A,
@@ -101,19 +104,20 @@ namespace QuantLib {
         endIndexOfSwapRate_ = endIndexOfSwapRate;
 
         covariances_.clear();
-        std::vector<Real> covariances(n_);
+        covariances_.reserve(startIndexOfSwapRate_.size());
 
-        for (unsigned long i=0; i < startIndexOfSwapRate_.size(); i++)
-        {
+        std::vector<Real> covariances;
+        covariances.reserve(n_);
+
+        for (Size i=0; i < startIndexOfSwapRate_.size(); ++i) {
                 QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],
                                         "constrained euler currently only implemented for forward rates");
 
                 const Matrix& A = marketModel_->pseudoRoot(currentStep_);
 
-                for (unsigned long j=0; j < n_; j++)
-                {
+                for (Size j=0; j < n_; ++j) {
                     double cov=0.0;
-                    for (unsigned long k=0; k < F_; k++)
+                    for (Size k=0; k < F_; ++k)
                         cov += A[startIndexOfSwapRate_[i]][k]*A[j][k];
                     covariances[j] = cov;
 
