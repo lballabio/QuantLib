@@ -1307,7 +1307,7 @@ void EuropeanOptionTest::testPriceCurve() {
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
         SampledCurve price_curve = option.priceCurve();
-        if (price_curve.size() == 0) {
+        if (price_curve.empty()) {
             REPORT_FAILURE("no price curve", payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today,
                            values[i].v, values[i].result, 0.0,
