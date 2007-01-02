@@ -29,7 +29,9 @@
 #include <ql/Utilities/null.hpp>
 #include <ql/Utilities/observablevalue.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
-#include <ql/Utilities/strings.hpp>
+#ifndef QL_DISABLE_DEPRECATED
+#   include <ql/Utilities/strings.hpp>
+#endif
 #include <ql/Utilities/tracing.hpp>
 
 #endif

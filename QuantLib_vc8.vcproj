@@ -6340,10 +6340,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\strings.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\strings.hpp"
 				>
 			</File>

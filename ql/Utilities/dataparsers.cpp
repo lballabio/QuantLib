@@ -19,9 +19,9 @@
 */
 
 #include <ql/Utilities/dataparsers.hpp>
-#include <ql/Utilities/strings.hpp>
 #include <ql/Utilities/null.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::toupper; }
@@ -81,11 +81,11 @@ namespace QuantLib {
         Size i;
         for (i=0;i<flist.size();i++) {
             std::string sub = flist[i];
-            if (lowercase(sub) == "dd")
+            if (boost::algorithm::to_lower_copy(sub) == "dd")
                 d = boost::lexical_cast<Integer>(slist[i]);
-            else if (lowercase(sub) == "mm")
+            else if (boost::algorithm::to_lower_copy(sub) == "mm")
                 m = boost::lexical_cast<Integer>(slist[i]);
-            else if (lowercase(sub) == "yyyy") {
+            else if (boost::algorithm::to_lower_copy(sub) == "yyyy") {
                 y = boost::lexical_cast<Integer>(slist[i]);
                 if (y < 100)
                     y += 2000;

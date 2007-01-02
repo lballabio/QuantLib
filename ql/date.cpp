@@ -24,7 +24,7 @@
 #include <ql/date.hpp>
 #include <ql/settings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
-#include <ql/Utilities/strings.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <iomanip>
@@ -362,7 +362,7 @@ namespace QuantLib {
                               refDate :
                               Date(Settings::instance().evaluationDate()));
 
-        std::string code = QuantLib::uppercase(IMMcode);
+        std::string code = boost::algorithm::to_upper_copy(IMMcode);
         std::string ms = code.substr(0,1);
         Month m;
         if (ms=="F")      m = January;

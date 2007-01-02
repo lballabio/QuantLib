@@ -29,9 +29,16 @@
 
 namespace QuantLib {
 
-    std::string lowercase(const std::string&);
-
-    std::string uppercase(const std::string&);
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use boost::algorithm::to_upper_copy instead
+    inline std::string lowercase(const std::string&) {
+        return boost::algorithm::to_lower_copy(s);
+    }
+    //! \deprecated use boost::algorithm::to_upper_copy instead
+    inline std::string uppercase(const std::string&) {
+        return boost::algorithm::to_upper_copy(s);
+    }
+    #endif
 
 }
 

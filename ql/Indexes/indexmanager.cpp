@@ -18,46 +18,50 @@
 */
 
 #include <ql/Indexes/indexmanager.hpp>
-#include <ql/Utilities/strings.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
+
+using boost::algorithm::to_upper_copy;
+using std::string;
 
 namespace QuantLib {
 
-    bool IndexManager::hasHistory(const std::string& name) const {
-        return data_.find(uppercase(name)) != data_.end();
+    bool IndexManager::hasHistory(const string& name) const {
+        return data_.find(to_upper_copy(name)) != data_.end();
     }
 
-    const TimeSeries<Real>& IndexManager::getHistory(
-                                              const std::string& name) const {
-        return data_[uppercase(name)].value();
+    const TimeSeries<Real>&
+    IndexManager::getHistory(const string& name) const {
+        return data_[to_upper_copy(name)].value();
     }
 
-    void IndexManager::setHistory(const std::string& name,
+    void IndexManager::setHistory(const string& name,
                                   const TimeSeries<Real>& history) {
-        data_[uppercase(name)] = history;
+        data_[to_upper_copy(name)] = history;
     }
 
-    boost::shared_ptr<Observable> IndexManager::notifier(
-                                              const std::string& name) const {
+    boost::shared_ptr<Observable>
+    IndexManager::notifier(const string& name) const {
         #ifndef QL_PATCH_MSVC6
-        return data_[uppercase(name)];
+        return data_[to_upper_copy(name)];
         #else
-        return data_[uppercase(name)].observable();
+        return data_[to_upper_copy(name)].observable();
         #endif
     }
 
-    std::vector<std::string> IndexManager::histories() const {
-        std::vector<std::string> temp;
-        for (history_map::const_iterator i=data_.begin(); i!=data_.end(); i++)
+    std::vector<string> IndexManager::histories() const {
+        std::vector<string> temp;
+        for (history_map::const_iterator i=data_.begin();
+             i!=data_.end(); ++i)
             temp.push_back(i->first);
         return temp;
     }
 
-    void IndexManager::clearHistory(const std::string& name) {
-        data_[uppercase(name)] = TimeSeries<Real>();
+    void IndexManager::clearHistory(const string& name) {
+        data_[to_upper_copy(name)] = TimeSeries<Real>();
     }
 
     void IndexManager::clearHistories() {
-        for (history_map::iterator i=data_.begin(); i!=data_.end(); i++)
+        for (history_map::iterator i=data_.begin(); i!=data_.end(); ++i)
             i->second = TimeSeries<Real>();
     }
 
