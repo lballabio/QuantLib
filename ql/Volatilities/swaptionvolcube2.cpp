@@ -76,9 +76,11 @@ namespace QuantLib {
         Rate atmForward = atmStrike(optionDate, swapTenor);
         Volatility atmVol = atmVol_->volatility(optionDate, swapTenor,
                                                       atmForward);
-        std::vector<Real> strikes, stdDevs;
         std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         Real exerciseTimeSqrt = std::sqrt(p.first);
+        std::vector<Real> strikes, stdDevs;
+        strikes.reserve(nStrikes_);
+        stdDevs.reserve(nStrikes_);
         for (Size i=0; i<nStrikes_; ++i) {
             strikes.push_back(atmForward + strikeSpreads_[i]);
             stdDevs.push_back(exerciseTimeSqrt*(

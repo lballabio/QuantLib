@@ -307,6 +307,7 @@ namespace QuantLib {
                         spreadVolInterpolation(atmOptionDates[j],
                                                atmSwapTenors[k]);
                     std::vector<Real> volAtmCalibrated;
+                    volAtmCalibrated.reserve(nStrikes_);
                     for (Size i=0; i<nStrikes_; i++)
                         volAtmCalibrated.push_back(atmVol + spreadVols[i]);
                     volCubeAtmCalibrated_.setPoint(

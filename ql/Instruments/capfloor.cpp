@@ -42,11 +42,13 @@ namespace QuantLib {
         setPricingEngine(engine);
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
+            capRates_.reserve(floatingLeg_.size());
             while (capRates_.size() < floatingLeg_.size())
                 capRates_.push_back(capRates_.back());
         }
         if (type_ == Floor || type_ == Collar) {
             QL_REQUIRE(!floorRates_.empty(), "no floor rates given");
+            floorRates_.reserve(floatingLeg_.size());
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         }
@@ -70,10 +72,12 @@ namespace QuantLib {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
             capRates_ = strikes;
+            capRates_.reserve(floatingLeg_.size());
             while (capRates_.size() < floatingLeg_.size())
                 capRates_.push_back(capRates_.back());
         } else if (type_ == Floor) {
             floorRates_ = strikes;
+            floorRates_.reserve(floatingLeg_.size());
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         } else
