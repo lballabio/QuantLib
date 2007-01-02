@@ -165,11 +165,12 @@ namespace QuantLib {
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
                 }
             }
-        } catch(QuantLib::Error&) {
+        } catch(QuantLib::Error&e) {
             QL_FAIL("CapsStripper::performCalculations:"
                     "\nbooststrap failure at option tenor " << tenors_[i] <<
                     ", strike " << io::rate(strikes_[j]) <<
-                    ", cap price is " << capPrice);
+                    ", cap price is " << capPrice<<
+                    "\n"<< e.what());
         }
     }
 
