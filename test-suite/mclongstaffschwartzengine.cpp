@@ -102,7 +102,7 @@ class MCAmericanMaxEngine
        boost::shared_ptr<StochasticProcessArray> processArray =
            boost::dynamic_pointer_cast<StochasticProcessArray>(
                 this->arguments_.stochasticProcess);
-       QL_REQUIRE(processArray && processArray->size() > 0,
+       QL_REQUIRE(processArray && processArray->size()>0.0,
                   "Stochastic process array required");
 
        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
