@@ -50,13 +50,14 @@ namespace QuantLib {
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        virtual Rate fixing(const Date& fixingDate,
+        virtual Real fixing(const Date& fixingDate,
                             bool forecastTodaysFixing = false) const = 0;
         //! stores the historical fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
         */
-        void addFixing(const Date& fixingDate, Rate fixing);
+        void addFixing(const Date& fixingDate,
+			           Real fixing);
         //! stores historical fixings at the given dates
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.
@@ -79,6 +80,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
