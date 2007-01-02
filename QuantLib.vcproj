@@ -8444,9 +8444,6 @@
 				RelativePath="ql\Utilities\steppingiterator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\strings.cpp">
-			</File>
-			<File
 				RelativePath=".\ql\Utilities\strings.hpp">
 			</File>
 			<File
