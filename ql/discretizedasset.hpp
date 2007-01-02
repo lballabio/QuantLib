@@ -233,7 +233,7 @@ namespace QuantLib {
             std::find_if(exerciseTimes_.begin(),exerciseTimes_.end(),
                          std::bind2nd(std::greater_equal<Time>(),0.0));
         // and add the positive ones
-        std::copy(i,exerciseTimes_.end(),std::back_inserter(times));
+        times.insert(times.end(), i, exerciseTimes_.end());
         return times;
     }
 
