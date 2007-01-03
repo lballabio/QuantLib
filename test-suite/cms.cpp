@@ -225,8 +225,8 @@ void setup() {
     // ATM Volatility structure
     std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
     atmVolsHandle_ = std::vector<std::vector<Handle<Quote> > >(nRowsAtmVols);
-
-    for (Size i=0; i<nRowsAtmVols; i++){
+    Size i;
+    for (i=0; i<nRowsAtmVols; i++){
         atmVolsHandle_[i] = std::vector<Handle<Quote> >(nColsAtmVols);
         for (Size j=0; j<nColsAtmVols; j++) {
             atmVolsHandle_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
