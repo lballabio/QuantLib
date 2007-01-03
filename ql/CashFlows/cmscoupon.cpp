@@ -59,7 +59,7 @@ namespace QuantLib {
                    const Schedule& s, const DayCounter& dc) {
             Real sum = 0.0;
             DiscountFactor discount = D_s0;
-            for (Size j=1; j<s.size(); j++) {
+            for (Size j=1; j<s.size(); ++j) {
                 Time alpha = dc.yearFraction(s[j-1],s[j]);
                 discount *= 1.0/(1.0+alpha*R);
                 sum += alpha*discount;

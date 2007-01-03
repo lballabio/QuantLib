@@ -152,7 +152,7 @@ namespace QuantLib {
         Integer iFrom = Integer(t_.index(from));
         Integer iTo = Integer(t_.index(to));
 
-        for (Integer i=iFrom-1; i>=iTo; i--) {
+        for (Integer i=iFrom-1; i>=iTo; --i) {
             Array newValues(this->impl().size(i));
             this->impl().stepback(i, asset.values(), newValues);
             asset.time() = t_[i];

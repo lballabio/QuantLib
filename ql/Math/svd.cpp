@@ -219,9 +219,9 @@ namespace QuantLib {
             }
             U_[j][j] = 1.0;
         }
-        for (k = nct-1; k >= 0; k--) {
+        for (k = nct-1; k >= 0; --k) {
             if (s_[k] != 0.0) {
-                for (j = k+1; j < n_; j++) {
+                for (j = k+1; j < n_; ++j) {
                     Real t = 0;
                     for (i = k; i < m_; i++) {
                         t += U_[i][k]*U_[i][j];
@@ -248,9 +248,9 @@ namespace QuantLib {
 
         // generate V
 
-        for (k = n_-1; k >= 0; k--) {
+        for (k = n_-1; k >= 0; --k) {
             if ((k < nrt) & (e[k] != 0.0)) {
-                for (j = k+1; j < n_; j++) {
+                for (j = k+1; j < n_; ++j) {
                     Real t = 0;
                     for (i = k+1; i < n_; i++) {
                         t += V_[i][k]*V_[i][j];
@@ -288,7 +288,7 @@ namespace QuantLib {
             //              s(k), ..., s(p) are not negligible (qr step).
             // kase = 4     if e(p-1) is negligible (convergence).
 
-            for (k = p-2; k >= -1; k--) {
+            for (k = p-2; k >= -1; --k) {
                 if (k == -1) {
                     break;
                 }
@@ -302,7 +302,7 @@ namespace QuantLib {
                 kase = 4;
             } else {
                 Integer ks;
-                for (ks = p-1; ks >= k; ks--) {
+                for (ks = p-1; ks >= k; --ks) {
                     if (ks == k) {
                         break;
                     }
@@ -333,7 +333,7 @@ namespace QuantLib {
               case 1: {
                   Real f = e[p-2];
                   e[p-2] = 0.0;
-                  for (j = p-2; j >= k; j--) {
+                  for (j = p-2; j >= k; --j) {
                       Real t = hypot(s_[j],f);
                       Real cs = s_[j]/t;
                       Real sn = f/t;
@@ -475,7 +475,7 @@ namespace QuantLib {
                       k++;
                   }
                   iter = 0;
-                  p--;
+                  --p;
               }
                 break;
             }

@@ -49,12 +49,12 @@ namespace QuantLib {
         powBase_ = std::vector<std::vector<long int> >(mbit_,
             std::vector<long int>(2*base_-1, 0));
         powBase_[mbit_-1][base_] = 1;
-        for (int i2=mbit_-2; i2>=0; i2--)
+        for (int i2=mbit_-2; i2>=0; --i2)
             powBase_[i2][base_] = powBase_[i2+1][base_] * base_;
         for (int ii=0; ii<(int)mbit_; ii++) {
             for (int j1=base_+1; j1<2*(int)base_-1; j1++ )
                 powBase_[ii][j1] = powBase_[ii][j1-1] + powBase_[ii][base_];
-            for (int j2=base_-1; j2>=0; j2--)
+            for (int j2=base_-1; j2>=0; --j2)
                 powBase_[ii][j2] = powBase_[ii][j2+1] - powBase_[ii][base_];
         }
 
@@ -84,7 +84,7 @@ namespace QuantLib {
 
         long int fact = 1, diag;
         for (j=2; j<dimensionality_; j++) {
-          for (long int kk=mbit_-1; kk>=0 ; kk--) {
+          for (long int kk=mbit_-1; kk>=0 ; --kk) {
               diag = mbit_ - kk - 1;
               if (diag==0)
                   fact = 1;

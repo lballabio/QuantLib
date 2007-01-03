@@ -92,7 +92,7 @@ namespace QuantLib {
             Real P = 0.0;
             Real tP = 0.0;
 
-            for (Size i=0; i<cashflows.size(); i++) {
+            for (Size i=0; i<cashflows.size(); ++i) {
                 if (!cashflows[i]->hasOccurred(settlementDate)) {
                     Time t =
                         rate.dayCounter().yearFraction(settlementDate,
@@ -122,7 +122,7 @@ namespace QuantLib {
             Rate y = Rate(rate);
             Integer N = rate.frequency();
 
-            for (Size i=0; i<cashflows.size(); i++) {
+            for (Size i=0; i<cashflows.size(); ++i) {
                 if (!cashflows[i]->hasOccurred(settlementDate)) {
                     Time t =
                         rate.dayCounter().yearFraction(settlementDate,
@@ -178,7 +178,7 @@ namespace QuantLib {
                    const Handle<YieldTermStructure>& discountCurve) {
         const Date& settlementDate = discountCurve->referenceDate();
         Real totalNPV = 0.0;
-        for (Size i = 0; i <cashflows.size(); i++) {
+        for (Size i = 0; i <cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(settlementDate))
                 totalNPV += cashflows[i]->amount() *
                             discountCurve->discount(cashflows[i]->date());
@@ -204,7 +204,7 @@ namespace QuantLib {
         static const Spread basisPoint = 1.0e-4;
         const Date& settlementDate = discountCurve->referenceDate();
         BPSCalculator calc(discountCurve);
-        for (Size i = 0; i <cashflows.size(); i++) {
+        for (Size i = 0; i <cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(settlementDate))
                 cashflows[i]->accept(calc);
         }
@@ -243,7 +243,7 @@ namespace QuantLib {
 
         Integer lastSign = sign(-marketPrice),
                 signChanges = 0;
-        for (Size i = 0; i < cashflows.size(); i++) {
+        for (Size i = 0; i < cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Integer thisSign = sign(cashflows[i]->amount());
                 if (lastSign * thisSign < 0) // sign change
@@ -262,7 +262,7 @@ namespace QuantLib {
                                   // Check the aggregate cash flows (Norstrom)
             Real aggregateCashFlow = marketPrice;
             signChanges = 0;
-            for (Size i = 0; i < cashflows.size(); i++) {
+            for (Size i = 0; i < cashflows.size(); ++i) {
                 Real nextAggregateCashFlow =
                     aggregateCashFlow + cashflows[i]->amount();
 
@@ -319,7 +319,7 @@ namespace QuantLib {
         Rate y = Rate(rate);
         Integer N = rate.frequency();
 
-        for (Size i=0; i<cashflows.size(); i++) {
+        for (Size i=0; i<cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(settlementDate)) {
                 Time t = dayCounter.yearFraction(settlementDate,
                                                  cashflows[i]->date());

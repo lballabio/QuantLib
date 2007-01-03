@@ -98,10 +98,10 @@ namespace QuantLib {
             Time dt = (from-to)/steps, t = from;
             evolver_.setStep(dt);
 
-            for (Size i=0; i<steps; i++, t -= dt) {
+            for (Size i=0; i<steps; ++i, t -= dt) {
                 Time now = t, next = t-dt;
                 bool hit = false;
-                for (Integer j = stoppingTimes_.size()-1; j >= 0 ; j--) {
+                for (Integer j = stoppingTimes_.size()-1; j >= 0 ; --j) {
                     if (next <= stoppingTimes_[j] && stoppingTimes_[j] < now) {
                         // a stopping time was hit
                         hit = true;

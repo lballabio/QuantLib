@@ -148,7 +148,7 @@ namespace QuantLib {
         Integer iFrom = Integer(this->t_.index(from));
         Integer iTo = Integer(this->t_.index(to));
 
-        for (Integer i=iFrom-1; i>=iTo; i--) {
+        for (Integer i=iFrom-1; i>=iTo; --i) {
 
             Array newValues(this->size(i));
             Array newSpreadAdjustedRate(this->size(i));

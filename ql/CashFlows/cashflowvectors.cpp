@@ -68,7 +68,7 @@ namespace QuantLib {
                                     dc, start, end, reference, end)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if ((i-1) < couponRates.size())
@@ -212,7 +212,7 @@ namespace QuantLib {
                                         get(floors,0,Null<Rate>()))));
        }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             const boost::shared_ptr<FloatingRateCoupon> underlying =
@@ -259,7 +259,7 @@ namespace QuantLib {
             }
         }
 
-        for (Size i=0; i<leg.size(); i++) {
+        for (Size i=0; i<leg.size(); ++i) {
             const boost::shared_ptr<CappedFlooredCoupon> cappedflooredCoupon =
                boost::dynamic_pointer_cast<CappedFlooredCoupon>(leg[i]);
             if (cappedflooredCoupon)
@@ -319,7 +319,7 @@ namespace QuantLib {
                               reference, end)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
@@ -409,7 +409,7 @@ namespace QuantLib {
                               reference, end)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CMSCoupon(get(nominals,i-1), paymentDate, index,
@@ -499,7 +499,7 @@ namespace QuantLib {
                               reference, end, true)));
         }
         // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
+        for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(

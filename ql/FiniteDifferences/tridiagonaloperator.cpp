@@ -83,7 +83,7 @@ namespace QuantLib {
             result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
         }
         // cannot be j>=0 with Size j
-        for (j=size()-2; j>0; j--)
+        for (j=size()-2; j>0; --j)
             result[j] -= tmp[j+1]*result[j+1];
         result[0] -= tmp[1]*result[1];
         return result;
