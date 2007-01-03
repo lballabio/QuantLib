@@ -24,26 +24,26 @@
 #ifndef quantlib_strings_hpp
 #define quantlib_strings_hpp
 
+#ifndef QL_DISABLE_DEPRECATED
+
 #include <ql/qldefines.hpp>
 #include <string>
-#ifndef QL_DISABLE_DEPRECATED
 #include <boost/algorithm/string/case_conv.hpp>
-#endif
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use boost::algorithm::to_upper_copy instead
+    //! \deprecated use boost::algorithm::to_lower_copy instead
     inline std::string lowercase(const std::string& s) {
         return boost::algorithm::to_lower_copy(s);
     }
+
     //! \deprecated use boost::algorithm::to_upper_copy instead
     inline std::string uppercase(const std::string& s) {
         return boost::algorithm::to_upper_copy(s);
     }
-    #endif
 
 }
 
+#endif
 
 #endif
