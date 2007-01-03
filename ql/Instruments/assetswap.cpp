@@ -33,15 +33,23 @@ namespace QuantLib {
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
                   const DayCounter& floatingDayCount,
-                  const Handle<YieldTermStructure>& termStructure)
+                  const Handle<YieldTermStructure>& termStructure,
+                  bool parSwap)
     : Swap(termStructure,
            std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >()),
       payFixedRate_(payFixedRate), spread_(spread),
       bondCleanPrice_(bondCleanPrice) {
 
-        // par asset swap
-        nominal_ = bond->faceAmount();
+
+        upfrontDate_ = floatSchedule.startDate();
+        Real dirtyPrice = bondCleanPrice_ +
+                          bond->accruedAmount(upfrontDate_);
+
+        if (parSwap)
+            nominal_ = bond->faceAmount();
+        else
+            nominal_ = dirtyPrice;
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
@@ -59,26 +67,38 @@ namespace QuantLib {
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
-        // upfront
-        upfrontDate_ = floatSchedule.startDate();
-        Real dirtyPrice = bondCleanPrice_ + bond->accruedAmount(upfrontDate_);
-        Real upfront=(dirtyPrice-100.0)/100.0*nominal_;
-        boost::shared_ptr<CashFlow> upfrontCashFlow (new
-            SimpleCashFlow(upfront, upfrontDate_));
-        floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
-
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+        std::vector<boost::shared_ptr<CashFlow> > bondLeg =
             bond->cashflows();
-        // remove redemption
-        fixedLeg.pop_back();
-        for (i = fixedLeg.begin(); i < fixedLeg.end(); ++i)
+
+        // review what happen if floatSchedule.endDate() < bond->maturityDate()
+
+        // special flows
+        if (parSwap) {
+            // upfront on the floating leg
+            Real upfront=(dirtyPrice-100.0)/100.0*nominal_;
+            boost::shared_ptr<CashFlow> upfrontCashFlow (new
+                SimpleCashFlow(upfront, upfrontDate_));
+            floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
+            // remove redemption from the bond leg
+            bondLeg.pop_back();
+        } else {
+            // final nominal exchange
+            Real finalFlow=dirtyPrice/100.0*nominal_;
+            boost::shared_ptr<CashFlow> finalCashFlow (new
+                SimpleCashFlow(finalFlow, bond->maturityDate()));
+            floatingLeg.push_back(finalCashFlow);
+        }
+
+        QL_REQUIRE(!bondLeg.empty(),
+                   "empty bond leg");
+        for (i = bondLeg.begin(); i < bondLeg.end(); ++i)
             registerWith(*i);
 
         // handle when termination date is earlier than
         // bond maturity date
 
 
-        legs_[0] = fixedLeg;
+        legs_[0] = bondLeg;
         legs_[1] = floatingLeg;
         if (payFixedRate_) {
             payer_[0]=-1.0;
