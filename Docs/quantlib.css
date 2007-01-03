@@ -21,9 +21,19 @@ body {
     border: 1px solid gray;
 }
 
-#profiles {
+ul#profiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     text-align: right;
     font-size: 80%;
+    white-space: nowrap;
+    counter-reset: profile;
+}
+
+ul#profiles li {
+    display: inline;
+    margin: 0 0.2em;
 }
 
 #content {
