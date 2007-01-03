@@ -24,9 +24,10 @@
 #ifndef quantlib_strings_hpp
 #define quantlib_strings_hpp
 
+#include <ql/qldefines.hpp>
+
 #ifndef QL_DISABLE_DEPRECATED
 
-#include <ql/qldefines.hpp>
 #include <string>
 #include <boost/algorithm/string/case_conv.hpp>
 
