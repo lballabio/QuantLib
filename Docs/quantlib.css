@@ -235,12 +235,6 @@ DIV.groupHeader {
        font-weight: bold;
 }
 DIV.groupText { margin-left: 16px; font-style: italic; font-size: 90% }
-BODY {
-	background: white;
-	color: black;
-	margin-right: 20px;
-	margin-left: 20px;
-}
 TD.indexkey {
 	background-color: #e8eef2;
 	font-weight: bold;
