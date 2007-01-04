@@ -45,7 +45,10 @@ namespace QuantLib {
     class ZeroSpreadedTermStructure : public ZeroYieldStructure {
       public:
         ZeroSpreadedTermStructure(const Handle<YieldTermStructure>&,
-                                  const Handle<Quote>& spread);
+                                  const Handle<Quote>& spread,
+                                  Compounding comp = Continuous,
+                                  Frequency freq = NoFrequency,
+                                  const DayCounter& dc = DayCounter());
         //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
@@ -63,12 +66,22 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> spread_;
+        Compounding comp_;
+        Frequency freq_;
+        DayCounter dc_;
     };
 
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
                                           const Handle<YieldTermStructure>& h,
-                                          const Handle<Quote>& spread)
-    : originalCurve_(h), spread_(spread) {
+                                          const Handle<Quote>& spread,
+                                          Compounding comp,
+                                          Frequency freq,
+                                          const DayCounter& dc)
+    : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq) {
+        if (dc.empty())
+            dc_ = h.currentLink()->dayCounter();
+        else
+            dc_ = dc;
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -90,17 +103,16 @@ namespace QuantLib {
     }
 
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        // return originalCurve_->zeroYield(t, true) + spread_->value();
-        return originalCurve_->zeroRate(t, Continuous, NoFrequency, true)
+        // to be fixed: user defined daycounter should be used 
+        return originalCurve_->zeroRate(t, comp_, freq_, true)
             + spread_->value();
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
-        return originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true)
+        return originalCurve_->forwardRate(t, t, comp_, freq_, true)
             + spread_->value();
     }
 
 }
-
 
 #endif
