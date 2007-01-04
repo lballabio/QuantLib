@@ -26,7 +26,8 @@ namespace QuantLib {
     : rateTimes_(rateTimes) {
         std::vector<Time> evolutionTimes(1, rateTimes_[rateTimes_.size()-2]);
         std::vector<std::pair<Size,Size> > relevanceRates(1);
-        relevanceRates[0] = std::make_pair(0, rateTimes_.size()-1);
+        relevanceRates[0] =
+            std::make_pair<Size,Size>(0, rateTimes_.size()-1);
 
         evolution_ = EvolutionDescription(rateTimes_, evolutionTimes,
                                           relevanceRates);
