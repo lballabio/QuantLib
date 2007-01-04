@@ -248,7 +248,7 @@ void setup() {
 
     // Volatility Cube without smile
     Matrix parametersGuess(optionTenors_.size()*swapTenors_.size(), 4);
-    for(Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
         parametersGuess[i][0] = 0.2;
         parametersGuess[i][1] = 0.5;
         parametersGuess[i][2] = 0.4;
@@ -258,7 +258,7 @@ void setup() {
     isParameterFixed[1]=true;
 
     std::vector<std::vector<Handle<Quote> > > nullVolSpreads(nRows);
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
+    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
         nullVolSpreads[i] = std::vector<Handle<Quote> >(nCols);
         for (Size j=0; j<strikeSpreads_.size(); j++) {
             nullVolSpreads[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
