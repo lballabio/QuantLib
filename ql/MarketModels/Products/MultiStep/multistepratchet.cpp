@@ -32,12 +32,12 @@ namespace QuantLib {
                                  Real initialFloor,
                                  bool payer)
     : MultiProductMultiStep(rateTimes),
-      accruals_(accruals), paymentTimes_(paymentTimes), 
+      accruals_(accruals), paymentTimes_(paymentTimes),
       gearingOfFloor_(gearingOfFloor), gearingOfFixing_(gearingOfFixing),
       spreadOfFloor_(spreadOfFloor), spreadOfFixing_(spreadOfFixing),
-      floor_(initialFloor),
-      payer_(payer),
-      multiplier_(payer ? 1.0 : -1.0), lastIndex_(rateTimes.size()-1) {}
+      payer_(payer), multiplier_(payer ? 1.0 : -1.0),
+      lastIndex_(rateTimes.size()-1),
+      floor_(initialFloor) {}
 
     bool MultiStepRatchet::nextTimeStep(
             const CurveState& currentState,
@@ -47,10 +47,10 @@ namespace QuantLib {
     {
         Rate liborRate = currentState.forwardRate(currentIndex_);
         Real currentCoupon = std::max(gearingOfFloor_* floor_ + spreadOfFloor_,
-                                      gearingOfFixing_* liborRate + spreadOfFixing_); 
-        
+                                      gearingOfFixing_* liborRate + spreadOfFixing_);
+
         genCashFlows[0][0].timeIndex = currentIndex_;
-        genCashFlows[0][0].amount = 
+        genCashFlows[0][0].amount =
             multiplier_* accruals_[currentIndex_]*currentCoupon;
 
         //floor_ = liborRate;                           //StepRatchet

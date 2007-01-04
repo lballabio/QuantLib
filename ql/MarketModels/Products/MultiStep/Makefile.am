@@ -13,6 +13,7 @@ include_HEADERS = \
     multistepforwards.hpp \
     multistepnothing.hpp \
     multistepoptionlets.hpp \
+    multistepratchet.hpp \
     multistepswap.hpp
 
 libMarketModelsProductsMultiStep_la_SOURCES = \
@@ -25,6 +26,7 @@ libMarketModelsProductsMultiStep_la_SOURCES = \
     multistepforwards.cpp \
     multistepnothing.cpp \
     multistepoptionlets.cpp \
+    multistepratchet.cpp \
     multistepswap.cpp
 
 noinst_LTLIBRARIES = libMarketModelsProductsMultiStep.la
