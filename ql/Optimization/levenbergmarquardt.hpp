@@ -35,6 +35,7 @@ namespace QuantLib {
     */
     class LevenbergMarquardt : public OptimizationMethod {
       public:
+    #ifndef QL_DISABLE_DEPRECATED
         LevenbergMarquardt(Real epsfcn = 1.0e-8,
                            Real ftol = 1.0e-8,
                            Real xtol = 1.0e-8,
@@ -42,6 +43,14 @@ namespace QuantLib {
                            Size maxfev = 400,
                            const Array& initialValue = Array(),
                            const EndCriteria& endCriteria = EndCriteria());
+    #endif
+        LevenbergMarquardt(Real epsfcn,
+                            Real xtol,
+                            Real gtol,
+                            const Array& initialValue = Array(),
+                            const EndCriteria& endCriteria
+                            = EndCriteria(400, 1.0e-8, 1.0e-8));
+    
         void minimize(const Problem& P);
         virtual Integer getInfo() const;
         static void fcn(int m, int n,
@@ -53,8 +62,7 @@ namespace QuantLib {
 
         mutable Integer info_;
 
-        const Size maxfev_;
-        const Real epsfcn_, ftol_, xtol_, gtol_;
+        const Real epsfcn_, xtol_, gtol_;
     };
 
 }

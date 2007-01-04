@@ -25,6 +25,7 @@ namespace QuantLib {
     const Problem* LevenbergMarquardt::_thisP = 0;
     Array LevenbergMarquardt::_initCostValues(0);
 
+#ifndef QL_DISABLE_DEPRECATED
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real ftol,
                                            Real xtol,
@@ -33,8 +34,17 @@ namespace QuantLib {
                                            const Array& initialValue,
                                            const EndCriteria& endCriteria)
     : OptimizationMethod(initialValue, endCriteria),
-      info_(0), maxfev_(maxfev), epsfcn_(epsfcn),
-      ftol_(ftol), xtol_(xtol), gtol_(gtol) {}
+      info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
+#endif
+
+    LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
+                                           Real xtol,
+                                           Real gtol,
+                                           const Array& initialValue,
+                                           const EndCriteria& endCriteria):
+        OptimizationMethod(initialValue, endCriteria),
+        info_(0), epsfcn_(epsfcn),
+        xtol_(xtol), gtol_(gtol){}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
@@ -49,10 +59,10 @@ namespace QuantLib {
         boost::scoped_array<double> xx(new double[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
         boost::scoped_array<double> fvec(new double[m]);
-        double ftol = ftol_;
+        double ftol = endCriteria().functionEpsilon();
         double xtol = xtol_;
         double gtol = gtol_;
-        int maxfev = maxfev_;
+        int maxfev = endCriteria().maxIteration();
         double epsfcn = epsfcn_;
         boost::scoped_array<double> diag(new double[n]);
         int mode = 1;
