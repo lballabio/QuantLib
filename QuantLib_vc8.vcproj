@@ -7188,6 +7188,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepratchet.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepratchet.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.cpp"
 						>
 					</File>
