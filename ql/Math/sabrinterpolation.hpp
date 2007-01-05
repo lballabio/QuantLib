@@ -226,6 +226,8 @@ namespace QuantLib {
             boost::shared_ptr<OptimizationMethod> method_;
             std::vector<Real> weights_;
             const Real& forward_;
+            NoConstraint constraint_;
+
           public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
@@ -260,6 +262,21 @@ namespace QuantLib {
                 std::vector<Real>::iterator w = weights_.begin();
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
+                
+                // we convert the guess to the new coordinates
+                Array guess(4);
+                guess[0] = std::sqrt(alpha_);
+                guess[1] = std::sqrt(-std::log(std::max(beta_, QL_EPSILON)));
+                guess[2] = std::sqrt(nu_);
+                guess[3] = std::tan(M_PI/2.0*rho_);
+                
+                // if no method is provided we provide one
+                if (!method_){
+                    EndCriteria endCriteria(60000, 1e-8);
+                    method_ = boost::shared_ptr<OptimizationMethod>(new
+                        Simplex(1e-6, guess, endCriteria));
+                }else
+                   method_->setInitialValue(guess);
 
                 if (compute)
                     calculate();
@@ -276,43 +293,15 @@ namespace QuantLib {
                     SABREndCriteria_ = EndCriteria::none;
                     return;
                 } else {
-                    NoConstraint constraint;
+
+                    // these lines should be moved in the constructor ...
                     SABRError costFunction(this);
+                    Problem problem(costFunction, constraint_, *method_);
 
-                    if (!method_) {
-                        // DIRECT TRANSFORMATION
-                        Array guess(4);
-                        guess[0] = std::sqrt(alpha_);
-                        guess[1] = std::sqrt(-std::log(std::max(beta_, QL_EPSILON)));
-                        guess[2] = std::sqrt(nu_);
-                        guess[3] = std::tan(M_PI/2.0*rho_);
-
-                        EndCriteria endCriteria(120000, 1e-8);
-
-                        //boost::shared_ptr<LineSearch> lineSearch(new
-                        //    ArmijoLineSearch(1e-12, 0.15, 0.55));
-
-                        //method_ = boost::shared_ptr<OptimizationMethod>(new
-                        //    ConjugateGradient(guess, endCriteria, lineSearch));
-
-                        method_ = boost::shared_ptr<OptimizationMethod>(new
-                            Simplex(1e-6, guess, endCriteria));
-                    } else { // transform the guess
-                        // DIRECT TRANSFORMATION
-                        Array guess(4);
-                        const Array& sabrParameters = method_->x();
-                        guess[0] = std::sqrt(sabrParameters[0]);
-                        guess[1] = std::sqrt(-std::log(std::max(sabrParameters[1], QL_EPSILON)));
-                        guess[2] = std::sqrt(sabrParameters[2]);
-                        guess[3] = std::tan(M_PI/2.0*sabrParameters[3]);
-                        method_->setInitialValue(guess);
-                    }
-
-                    Problem problem(costFunction, constraint, *method_);
                     problem.minimize();
                     const Array& x = problem.minimumValue();
 
-                    // INVERSE TRANSFORMATION
+                    // we convert the result to the sabr coordinates
                     if (!alphaIsFixed_) alpha_ = std::max(x[0]*x[0], QL_EPSILON);
                     if (!betaIsFixed_)  beta_  = std::exp(-(x[1]*x[1]));
                     if (!nuIsFixed_)    nu_    = x[2]*x[2];
