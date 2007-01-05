@@ -25,6 +25,7 @@
 #include <ql/settings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 #include <iomanip>
@@ -33,6 +34,11 @@
 #if defined(BOOST_NO_STDC_NAMESPACE)
     namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
 #endif
+
+using boost::algorithm::is_digit;
+using boost::algorithm::is_any_of;
+using boost::algorithm::to_upper_copy;
+using std::string;
 
 namespace QuantLib {
 
@@ -264,13 +270,35 @@ namespace QuantLib {
         return (m == March || m == June || m == September || m == December);
     }
 
+    bool Date::isIMMcode(const std::string& in, bool mainCycle)
+    {
+        if (in.length() != 2)
+            return false;
+
+        string str1("0123456789");
+        string::size_type loc = str1.find(in.substr(1,1), 0);
+        if (loc == string::npos)
+            return false;
+
+        if (mainCycle) str1 = "hmzuHMZU";
+        else           str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
+        loc = str1.find(in.substr(0,1), 0);
+        if (loc == string::npos)
+            return false;
+
+        return true;
+    }
+
     Date Date::nextIMMdate(const Date& date, bool mainCycle) {
-        Year y = date.year();
-        Month m = date.month();
+        Date refDate = (date == Date() ?
+                        Date(Settings::instance().evaluationDate()) :
+                        date);
+        Year y = refDate.year();
+        Month m = refDate.month();
 
         Size offset = mainCycle ? 3 : 1;
         Size skipMonths = offset-(m%offset);
-        if (skipMonths != offset || date.dayOfMonth() > 21) {
+        if (skipMonths != offset || refDate.dayOfMonth() > 21) {
             skipMonths += Size(m);
             if (skipMonths<=12) {
                 m = Month(skipMonths);
@@ -278,27 +306,38 @@ namespace QuantLib {
                 m = Month(skipMonths-12);
                 y += 1;
             }
-        // date is in a IMM month and in the IMM week [15,21]
-        } else if (date.dayOfMonth() > 14) {
-            Date nextWednesday = nextWeekday(date, Wednesday);
-            if (nextWednesday.dayOfMonth() <= 21)
-                return nextWednesday;
-            else {
-                if (Size(m)+offset <= 12) {
-                    m = Month(Size(m)+offset);
-                } else {
-                    m = Month(Size(m)+offset-12);
-                    y += 1;
-                }
-            }
         }
 
-        return nthWeekday(3, Wednesday, m, y);
+        Date result = nthWeekday(3, Wednesday, m, y);
+        if (result<=refDate)
+            result = nextIMMdate(Date(22, m, y), mainCycle);
+        return result;
+    }
+
+    Date Date::nextIMMdate(const std::string& IMMcode,
+                           bool mainCycle,
+                           const Date& referenceDate)  {
+        Date immDate = IMMdate(IMMcode, referenceDate);
+        return nextIMMdate(immDate+1, mainCycle);
+    }
+
+
+    std::string Date::nextIMMcode(const Date& d,
+                                  bool mainCycle) {
+        Date date = nextIMMdate(d, mainCycle);
+        return IMMcode(date);
+    }
+
+    std::string Date::nextIMMcode(const std::string& immCode,
+                                  bool mainCycle,
+                                  const Date& referenceDate) {
+        Date date = nextIMMdate(immCode, mainCycle, referenceDate);
+        return IMMcode(date);
     }
 
     std::string Date::IMMcode(const Date& date) {
         QL_REQUIRE(isIMMdate(date, false),
-            date << " is not an IMM date");
+                   date << " is not an IMM date");
 
         std::ostringstream IMMcode;
         unsigned int y = date.year() % 10;
@@ -344,21 +383,24 @@ namespace QuantLib {
                         "(and it should have been)");
         }
 
-        QL_ENSURE(IMMcode.str().length()==2,
-                  "invalid IMM code result" << IMMcode.str());
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_ENSURE(isIMMcode(IMMcode.str(), false),
+                  "something really bad: the result " << IMMcode.str() <<
+                  " is an invalid IMM code");
+        #endif
         return IMMcode.str();
     }
 
-    Date Date::IMMdate(const std::string& IMMcode,
+    Date Date::IMMdate(const std::string& immCode,
                        const Date& refDate) {
-        QL_REQUIRE(IMMcode.length() == 2,
-            IMMcode << " is not a valid length IMM code");
+        QL_REQUIRE(isIMMcode(immCode, false),
+                   immCode << " is not a valid IMM code");
 
         Date referenceDate = (refDate != Date() ?
                               refDate :
                               Date(Settings::instance().evaluationDate()));
 
-        std::string code = boost::algorithm::to_upper_copy(IMMcode);
+        std::string code = boost::algorithm::to_upper_copy(immCode);
         std::string ms = code.substr(0,1);
         Month m;
         if (ms=="F")      m = January;
