@@ -13,5 +13,3 @@ libMarketModelsModels_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
 
-EXTRA_DIST = makefile.mak
-

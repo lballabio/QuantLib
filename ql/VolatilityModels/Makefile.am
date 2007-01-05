@@ -7,13 +7,11 @@ include_HEADERS = \
     constantestimator.hpp \
     simplelocalestimator.hpp \
     garmanklass.hpp \
-    garch.hpp 
+    garch.hpp
 
 libVolatilityModels_la_SOURCES = \
     constantestimator.cpp \
     garch.cpp
 
 noinst_LTLIBRARIES = libVolatilityModels.la
-
-EXTRA_DIST = makefile.mak
 

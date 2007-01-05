@@ -15,5 +15,3 @@ libTwoFactorModels_la_SOURCES = \
 
 noinst_LTLIBRARIES = libTwoFactorModels.la
 
-EXTRA_DIST = makefile.mak
-

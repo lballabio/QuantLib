@@ -87,5 +87,3 @@ libMath_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMath.la
 
-EXTRA_DIST = makefile.mak
-

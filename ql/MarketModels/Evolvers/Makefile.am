@@ -17,5 +17,3 @@ libMarketModelsEvolvers_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsEvolvers.la
 
-EXTRA_DIST = makefile.mak
-

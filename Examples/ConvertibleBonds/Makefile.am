@@ -13,10 +13,8 @@ ConvertibleBonds_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     ConvertibleBonds.dev \
-    ConvertibleBonds.dsp \
     ConvertibleBonds.vcproj \
     ConvertibleBonds_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples check-examples

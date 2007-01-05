@@ -20,5 +20,3 @@ libSwaptionEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libSwaptionEngines.la
 
-EXTRA_DIST = makefile.mak
-

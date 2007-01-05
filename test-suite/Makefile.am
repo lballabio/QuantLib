@@ -130,11 +130,9 @@ benchmark: quantlib-benchmark
 
 EXTRA_DIST = \
 	README.txt \
-	testsuite.dsp \
 	testsuite.vcproj \
 	testsuite_vc8.vcproj \
-	testsuite.dev \
-	makefile.mak
+	testsuite.dev
 
 else
 
@@ -142,10 +140,8 @@ EXTRA_DIST = \
 	${QL_TESTS} \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite.dsp \
 	testsuite.vcproj \
 	testsuite_vc8.vcproj \
-	testsuite.dev \
-	makefile.mak
+	testsuite.dev
 
 endif

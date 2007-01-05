@@ -15,6 +15,4 @@ libQuotes_la_SOURCES = \
 
 noinst_LTLIBRARIES = libQuotes.la
 
-EXTRA_DIST = makefile.mak
-
 

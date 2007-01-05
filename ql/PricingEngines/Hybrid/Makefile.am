@@ -7,10 +7,8 @@ include_HEADERS = \
 	binomialconvertibleengine.hpp \
 	discretizedconvertible.hpp
 
-EXTRA_DIST=makefile.mak
-
 libHybridEngines_la_SOURCES = \
-    discretizedconvertible.cpp 
+    discretizedconvertible.cpp
 
 noinst_LTLIBRARIES = libHybridEngines.la
 

@@ -18,5 +18,3 @@ libAsianEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libAsianEngines.la
 
-EXTRA_DIST = makefile.mak
-

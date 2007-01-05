@@ -46,5 +46,3 @@ libVolatilities_la_SOURCES = \
     swaptionvolmatrix.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la
-
-EXTRA_DIST = makefile.mak

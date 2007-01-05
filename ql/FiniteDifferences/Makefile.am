@@ -38,5 +38,3 @@ libFiniteDifferences_la_SOURCES = \
 
 noinst_LTLIBRARIES = libFiniteDifferences.la
 
-EXTRA_DIST = makefile.mak
-

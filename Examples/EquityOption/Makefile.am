@@ -13,10 +13,8 @@ EquityOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     EquityOption.dev \
-    EquityOption.dsp \
     EquityOption.vcproj \
     EquityOption_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples check-examples

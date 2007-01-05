@@ -80,5 +80,3 @@ libInstruments_la_SOURCES = \
 
 noinst_LTLIBRARIES = libInstruments.la
 
-EXTRA_DIST = makefile.mak
-

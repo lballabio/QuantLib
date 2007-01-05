@@ -13,5 +13,3 @@ libMarketModelsBrownianGenerators_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMarketModelsBrownianGenerators.la
 
-EXTRA_DIST = makefile.mak
-

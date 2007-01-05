@@ -41,5 +41,3 @@ libPricingEngines_la_LIBADD = \
     Vanilla/libVanillaEngines.la \
     Hybrid/libHybridEngines.la
 
-EXTRA_DIST = makefile.mak
-

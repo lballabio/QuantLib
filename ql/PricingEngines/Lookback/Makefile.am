@@ -13,5 +13,3 @@ libLookbackEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libLookbackEngines.la
 
-EXTRA_DIST = makefile.mak
-

@@ -16,5 +16,3 @@ libCurrencies_la_SOURCES = \
 
 noinst_LTLIBRARIES = libCurrencies.la
 
-EXTRA_DIST = makefile.mak
-

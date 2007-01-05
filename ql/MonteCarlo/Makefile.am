@@ -33,5 +33,3 @@ libMonteCarlo_la_SOURCES = \
 
 noinst_LTLIBRARIES = libMonteCarlo.la
 
-EXTRA_DIST = makefile.mak
-

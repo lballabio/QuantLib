@@ -29,5 +29,3 @@ libPricers_la_SOURCES = \
 
 noinst_LTLIBRARIES = libPricers.la
 
-EXTRA_DIST = makefile.mak
-

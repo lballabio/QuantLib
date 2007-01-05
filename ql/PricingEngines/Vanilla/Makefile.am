@@ -56,5 +56,3 @@ libVanillaEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libVanillaEngines.la
 
-EXTRA_DIST = makefile.mak
-

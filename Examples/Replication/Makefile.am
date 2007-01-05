@@ -13,10 +13,8 @@ Replication_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Replication.dev \
-    Replication.dsp \
     Replication.vcproj \
     Replication_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples check-examples

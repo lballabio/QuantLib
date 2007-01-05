@@ -19,5 +19,3 @@ libDayCounters_la_SOURCES = \
 
 noinst_LTLIBRARIES = libDayCounters.la
 
-EXTRA_DIST = makefile.mak
-

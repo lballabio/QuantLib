@@ -30,5 +30,3 @@ libLiborMarketModels_la_SOURCES = \
 
 noinst_LTLIBRARIES = libLiborMarketModels.la
 
-EXTRA_DIST = makefile.mak
-

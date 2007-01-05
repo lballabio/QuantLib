@@ -27,5 +27,3 @@ libShortRateModels_la_LIBADD = \
     TwoFactorModels/libTwoFactorModels.la \
     LiborMarketModels/libLiborMarketModels.la
 
-EXTRA_DIST = makefile.mak
-

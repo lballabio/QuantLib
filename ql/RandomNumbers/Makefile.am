@@ -33,5 +33,3 @@ libRandomNumbers_la_SOURCES = \
 
 noinst_LTLIBRARIES = libRandomNumbers.la
 
-EXTRA_DIST = makefile.mak
-

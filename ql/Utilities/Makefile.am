@@ -21,5 +21,3 @@ libUtilities_la_SOURCES = \
 
 noinst_LTLIBRARIES = libUtilities.la
 
-EXTRA_DIST = makefile.mak
-

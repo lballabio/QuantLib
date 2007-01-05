@@ -19,5 +19,3 @@ libCapFloorEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libCapFloorEngines.la
 
-EXTRA_DIST = makefile.mak
-

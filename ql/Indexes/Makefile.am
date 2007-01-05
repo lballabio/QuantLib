@@ -46,5 +46,3 @@ libIndexes_la_SOURCES = \
 
 noinst_LTLIBRARIES = libIndexes.la
 
-EXTRA_DIST = makefile.mak
-

@@ -15,5 +15,3 @@ libCalibrationHelpers_la_SOURCES = \
 
 noinst_LTLIBRARIES = libCalibrationHelpers.la
 
-EXTRA_DIST = makefile.mak
-

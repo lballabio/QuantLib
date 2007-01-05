@@ -19,5 +19,3 @@ libOneFactorModels_la_SOURCES = \
 
 noinst_LTLIBRARIES = libOneFactorModels.la
 
-EXTRA_DIST = makefile.mak
-

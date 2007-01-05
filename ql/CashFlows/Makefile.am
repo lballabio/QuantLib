@@ -39,5 +39,3 @@ libCashFlows_la_SOURCES = \
 
 noinst_LTLIBRARIES = libCashFlows.la
 
-EXTRA_DIST = makefile.mak
-

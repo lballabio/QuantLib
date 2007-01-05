@@ -13,10 +13,8 @@ Repo_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Repo.dev \
-    Repo.dsp \
     Repo.vcproj \
     Repo_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples check-examples

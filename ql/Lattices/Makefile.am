@@ -20,5 +20,3 @@ libLattices_la_SOURCES = \
 
 noinst_LTLIBRARIES = libLattices.la
 
-EXTRA_DIST = makefile.mak
-

@@ -13,5 +13,3 @@ libBarrierEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libBarrierEngines.la
 
-EXTRA_DIST = makefile.mak
-

@@ -37,5 +37,3 @@ libProcesses_la_SOURCES = \
 
 noinst_LTLIBRARIES = libProcesses.la
 
-EXTRA_DIST = makefile.mak
-

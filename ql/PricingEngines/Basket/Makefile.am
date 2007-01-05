@@ -15,5 +15,3 @@ libBasketEngines_la_SOURCES = \
 
 noinst_LTLIBRARIES = libBasketEngines.la
 
-EXTRA_DIST = makefile.mak
-

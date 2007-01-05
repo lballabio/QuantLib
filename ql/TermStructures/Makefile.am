@@ -34,5 +34,3 @@ libTermStructures_la_SOURCES = \
 
 noinst_LTLIBRARIES = libTermStructures.la
 
-EXTRA_DIST = makefile.mak
-

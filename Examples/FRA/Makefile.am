@@ -13,10 +13,8 @@ FRA_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     FRA.dev \
-    FRA.dsp \
     FRA.vcproj \
     FRA_vc8.vcproj \
-    makefile.mak \
     ReadMe.txt
 
 .PHONY: examples check-examples

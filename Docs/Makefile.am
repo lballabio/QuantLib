@@ -8,7 +8,6 @@ EXTRA_DIST = \
              quantlibheaderonline.html \
              qlintro.tex \
              quantlibheader.tex \
-             makefile.mak \
              README.txt
 
 DOXYGEN_CONFIG := quantlib.doxy

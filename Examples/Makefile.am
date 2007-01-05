@@ -13,9 +13,7 @@ SUBDIRS =  \
 
 SUBDIR_CHECKS = $(SUBDIRS:%=%.check)
 
-EXTRA_DIST = \
-    makefile.mak \
-    README.txt
+EXTRA_DIST = README.txt
 
 %.check:
 	$(MAKE) -C $* check-examples
