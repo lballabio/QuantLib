@@ -31,12 +31,7 @@ namespace QuantLib {
                bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed)
     : a_(a), b_(b), c_(c), d_(d), aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
       cIsFixed_(cIsFixed), dIsFixed_(dIsFixed) {
-        QL_REQUIRE(a+d>=0,
-                   "a+d (" << a << ", " << d <<") must be non negative");
-        QL_REQUIRE(d>=0,
-                   "d (" << d << ") must be non negative");
-        QL_REQUIRE(c>=0,
-                   "c (" << c << ") must be non negative");
+          validateAbcdParameters(a, b, c, d);
     }
 
     Real Abcd::operator()(Time u) const {
@@ -47,21 +42,19 @@ namespace QuantLib {
     }
 
     Real Abcd::instantaneousCovariance(Time u, Time T, Time S) const {
-        if (u>T || u>S)
-            return 0.0;
-        else
-            return (*this)(T-u)*(*this)(S-u);
+        return (*this)(T-u)*(*this)(S-u);
     }
 
     Real Abcd::covariance(Time t1, Time t2, Time T, Time S) const {
         QL_REQUIRE(t1<=t2,
                    "integrations bounds (" << t1 <<
                    "," << t2 << ") are in reverse order");
-        if (t1>=S || t1>=T) {
+        Time cutOff = std::min(S,T);
+        if (t1>=cutOff) {
             return 0.0;
         } else {
-            t2 = std::min(t2,std::min(S,T));
-            return primitive(t2, T, S) - primitive(t1, T, S);
+            cutOff = std::min(t2, cutOff);
+            return primitive(cutOff, T, S) - primitive(t1, T, S);
         }
     }
 
@@ -130,12 +123,9 @@ namespace QuantLib {
         if (!cIsFixed_) c_ = result[2];
         if (!dIsFixed_) d_ = result[3];
 
-        QL_ENSURE(d_>0.0, "d must be positive");
-        QL_ENSURE(a_+d_>0.0, "a+d must be positive");
-        QL_ENSURE(c_>0.0, "c must be positive");
+        validateAbcdParameters(a_, b_, c_, d_);
 
-		return method->endCriteria().criteria();
-                         
+        return method->endCriteria().criteria();
     }
 
 

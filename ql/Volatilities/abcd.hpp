@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,6 +31,105 @@
 
 namespace QuantLib {
 
+    inline void validateAbcdParameters(Real a, Real b, Real c, Real d) {
+        QL_REQUIRE(a+d>=0,
+                   "a+d (" << a << ", " << d <<") must be non negative");
+        QL_REQUIRE(c>=0,
+                   "c (" << c << ") must be non negative");
+        QL_REQUIRE(d>=0,
+                   "d (" << d << ") must be non negative");
+    }
+
+    //! Abcd functional form for instantaneous volatility
+    /*! \f[ f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d \f]
+        following Rebonato's notation.
+    */
+    struct AbcdFunction : public std::unary_function<Real, Real> {
+        Real a_, b_, c_, d_;
+
+        AbcdFunction(Real a=-0.06, Real b=0.17, Real c=0.54, Real d=0.17);
+
+        //! volatility function value at time u: \f[ f(u) \f]
+        Real operator()(Time u) const;
+
+        //! time at which the volatility function reaches maximum (if any)
+        Real maximumLocation() const;
+
+        //! maximum value of the volatility function
+        Real maximumValue() const;
+
+        //! volatility function value at time 0: \f[ f(0) \f]
+        Real shortTermValue() const { return a_+d_; }
+
+        //! volatility function value at time +inf: \f[ f(\inf) \f]
+        Real longTermValue() const { return d_; }
+
+        /*! instantaneous covariance function at time t between T-fixing and
+            S-fixing rates \f[ f(T-t)f(S-t) \f]
+        */
+        Real covariance(Time t, Time T, Time S) const;
+
+        /*! indefinite integral of the instantaneous covariance function at
+            time t between T-fixing and S-fixing rates
+            \f[ \int f(T-t)f(S-t)dt \f]
+        */
+        Real primitive(Time t, Time T, Time S) const;
+    };
+
+    inline AbcdFunction::AbcdFunction(Real a, Real b, Real c, Real d)
+    : a_(a), b_(b), c_(c), d_(d) {
+        validateAbcdParameters(a, b, c, d);
+    }
+
+    inline Real AbcdFunction::operator()(Time u) const {
+        if (u<0) return 0.0;
+        else     return (a_ + b_*u)*std::exp(-c_*u) + d_;
+    }
+
+    inline Real AbcdFunction::maximumLocation() const {
+        return (b_>0.0 ? (b_-c_*a_)/(c_*b_) : 0.0);
+    }
+
+    inline Real AbcdFunction::maximumValue() const {
+        return (b_>0.0 ?
+                b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ :
+                shortTermValue());
+    }
+
+    inline Real AbcdFunction::covariance(Time t, Time T, Time S) const {
+        return (*this)(T-t) * (*this)(S-t);        
+    }
+
+    inline Real AbcdFunction::primitive(Time t, Time T, Time S) const {
+        if (T<t || S<t) return 0.0;
+
+        Real k1=std::exp(c_*t), k2=std::exp(c_*S), k3=std::exp(c_*T);
+        return (b_*b_*(-1 - 2*c_*c_*S*T - c_*(S + T)
+                     + k1*k1*(1 + c_*(S + T - 2*t) + 2*c_*c_*(S - t)*(T - t)))
+                + 2*c_*c_*(2*d_*a_*(k2 + k3)*(k1 - 1)
+                         +a_*a_*(k1*k1 - 1)+2*c_*d_*d_*k2*k3*t)
+                + 2*b_*c_*(a_*(-1 - c_*(S + T) + k1*k1*(1 + c_*(S + T - 2*t)))
+                         -2*d_*(k3*(1 + c_*S) + k2*(1 + c_*T)
+                               - k1*k3*(1 + c_*(S - t))
+                               - k1*k2*(1 + c_*(T - t)))
+                         )
+                ) / (4*c_*c_*c_*k2*k3);
+    }
+
+
+    // Helper class used by unit tests
+    struct AbcdSquared : public std::unary_function<Real,Real> {
+        boost::shared_ptr<AbcdFunction> abcdFunction_;
+        Time S_, T_;
+        AbcdSquared(Real a, Real b, Real c, Real d, Time T, Time S)
+        : abcdFunction_(new AbcdFunction(a,b,c,d)), T_(T), S_(S) {}
+        Real operator()(Time t) const {
+            return abcdFunction_->covariance(t, T_, S_);
+        }
+    };
+
+
+
     class OptimizationMethod;
 
     //! Abcd functional form for instantaneous volatility
@@ -43,7 +142,7 @@ namespace QuantLib {
 
     */
     class Abcd : public std::unary_function<Real,Real> {
-    public:
+      public:
         Abcd(Real a = -0.06,
              Real b =  0.17,
              Real c =  0.54,
@@ -59,15 +158,17 @@ namespace QuantLib {
         Real c() const { return c_; }
         Real d() const { return d_; }
 
-        /*! instantaneous volatility at time u of the T-fixing rate:
-            \f[ f(T-u) \f]
+        /*! instantaneous volatility at time t of the T-fixing rate:
+            \f[ f(T-t) \f]
         */
-        Real instantaneousVolatility(Time u, Time T) const;
-        /*! instantaneous variance at time u of T-fixing rate:
-            \f[ f(T-u)f(T-u) \f]
+        Real instantaneousVolatility(Time t, Time T) const;
+
+        /*! instantaneous variance at time t of T-fixing rate:
+            \f[ f(T-t)f(T-t) \f]
         */
-        Real instantaneousVariance(Time u, Time T) const;
-        /*! instantaneous covariance at time u between T and S fixing rates:
+        Real instantaneousVariance(Time t, Time T) const;
+
+        /*! instantaneous covariance at time t between T and S fixing rates:
             \f[ f(T-u)f(S-u) \f]
         */
         Real instantaneousCovariance(Time u, Time T, Time S) const;
@@ -76,6 +177,7 @@ namespace QuantLib {
             \f[ \sqrt{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
         */
         Real volatility(Time tMin, Time tMax, Time T) const;
+
         /*! variance in [tMin,tMax] of T-fixing rate:
             \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
         */
@@ -110,7 +212,7 @@ namespace QuantLib {
             const std::vector<Real>::const_iterator& t,
             const boost::shared_ptr<OptimizationMethod>& method
                                 = boost::shared_ptr<OptimizationMethod>());
-    private:
+      private:
         //! indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
         Real primitive(Time u, Time T, Time S) const;
         //! optimization constraints
@@ -154,24 +256,6 @@ namespace QuantLib {
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
     };
 
-    //! Abcd Squared functional. Helper class.
-    class AbcdSquared : public std::unary_function<Real,Real> {
-      public:  
-        AbcdSquared(Real a, Real b, Real c, Real d, Time S, Time T)
-        : abcd_(new Abcd(a,b,c,d)), S_(S), T_(T) {}
-        Real operator()(Time u) const {
-            if (u>T_ || u>S_)
-                return 0.0;
-            else
-                return (*abcd_)(T_-u)*(*abcd_)(S_-u);        
-        }
-
-      private:
-        boost::shared_ptr<Abcd> abcd_;
-        Time S_, T_;
-    };
-
-
     // inline
 
     inline Real Abcd::shortTermVolatility() const {
@@ -203,8 +287,8 @@ namespace QuantLib {
     inline Real Abcd::volatility(Time tMin, Time tMax, Time T) const {
         if (tMax==tMin)
             return instantaneousVolatility(tMax, T);
-        else
-            return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
+        QL_REQUIRE(tMax>tMin, "tMax must be > tMin");
+        return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
     }
 
     inline Real Abcd::variance(Time tMin, Time tMax, Time T) const {
