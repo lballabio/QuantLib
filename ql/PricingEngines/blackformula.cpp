@@ -133,7 +133,7 @@ namespace QuantLib {
             signedMoneyness_ = optionType*std::log(forward/strike);
         }
         Real operator()(Real stdDev) const {
-            #ifdef QL_DEBUG
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                     "stdDev (" << stdDev << ") must be non-negative");
             #endif
@@ -150,7 +150,7 @@ namespace QuantLib {
             return std::max(Real(0.0), result) - undiscountedBlackPrice_;
         }
         Real derivative(Real stdDev) const {
-            #ifdef QL_DEBUG
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif

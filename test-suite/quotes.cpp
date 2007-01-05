@@ -126,6 +126,7 @@ void QuoteTest::testComposite() {
 }
 
 void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
+    BOOST_MESSAGE("Testing ForwardValue and ImpliedStdev quotes...");
     Real forwardRate = .05;
     DayCounter dc = ActualActual();
     boost::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));

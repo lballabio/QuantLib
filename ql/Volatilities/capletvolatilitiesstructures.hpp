@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class CapFloor;
 
-    //  temporary fucntions for test purpose
+    //  temporary functions for test purpose
     inline double test (boost::shared_ptr<SmileSection>){
         return 0;
     }
