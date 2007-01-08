@@ -12,6 +12,7 @@ include_HEADERS = \
     callabilityschedule.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
+    cmscouponbond.hpp \
     compositeinstrument.hpp \
     convertiblebond.hpp \
     core.hpp \
@@ -50,6 +51,7 @@ libInstruments_la_SOURCES = \
     bond.cpp \
     capfloor.cpp \
     cliquetoption.cpp \
+    cmscouponbond.cpp \
     compositeinstrument.cpp \
     convertiblebond.cpp \
     dividendvanillaoption.cpp \

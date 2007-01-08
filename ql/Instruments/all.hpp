@@ -31,6 +31,7 @@
 #include <ql/Instruments/bond.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/cliquetoption.hpp>
+#include <ql/Instruments/cmscouponbond.hpp>
 #include <ql/Instruments/compositeinstrument.hpp>
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
