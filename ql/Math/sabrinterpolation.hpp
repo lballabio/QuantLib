@@ -274,7 +274,7 @@ namespace QuantLib {
                 if (!method_){
                     EndCriteria endCriteria(60000, 1e-8);
                     method_ = boost::shared_ptr<OptimizationMethod>(new
-                        Simplex(1e-6, guess, endCriteria));
+                        Simplex(0.01, guess, endCriteria));
                 }else
                    method_->setInitialValue(guess);
 
