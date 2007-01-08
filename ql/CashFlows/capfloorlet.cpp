@@ -48,6 +48,10 @@ namespace QuantLib {
         return underlying_->indexFixing();
     }
 
+    Rate Optionlet::strike() const {
+        return strike_;
+    }
+
     void Optionlet::update() {
         notifyObservers();
     }

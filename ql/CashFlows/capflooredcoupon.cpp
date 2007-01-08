@@ -69,6 +69,20 @@ namespace QuantLib {
         return underlying_->indexFixing();
     }
 
+    Rate CappedFlooredCoupon::cap() const {
+        if(cap_) 
+            return cap_->strike();
+        else
+            return Rate(1.);
+    }
+    
+    Rate CappedFlooredCoupon::floor() const {
+        if(floor_) 
+            return floor_->strike();
+        else
+            return Rate(0.);
+    }
+
     void CappedFlooredCoupon::update() {
         notifyObservers();
     }

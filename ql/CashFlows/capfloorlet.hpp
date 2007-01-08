@@ -52,6 +52,10 @@ namespace QuantLib {
         //@{
         void update();
         //@}
+        //! \name Optionlet interface
+        //@{
+        Rate strike() const;
+        //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

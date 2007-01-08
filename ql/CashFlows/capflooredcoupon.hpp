@@ -51,7 +51,9 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
-        Rate indexFixing() const;        
+        Rate indexFixing() const;
+        Rate cap() const;
+        Rate floor() const;
         //@}
         //! \name Observer interface
         //@{
