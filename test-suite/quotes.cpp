@@ -129,6 +129,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     BOOST_MESSAGE("Testing ForwardValue and ImpliedStdev quotes...");
     Real forwardRate = .05;
     DayCounter dc = ActualActual();
+    Calendar calendar = TARGET();
     boost::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));
     Handle<Quote> forwardHandle(forwardQuote);
     Date evaluationDate = Settings::instance().evaluationDate();
@@ -137,12 +138,12 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Handle<YieldTermStructure> ycHandle(yc);
     Period euriborTenor(1,Years);
     boost::shared_ptr<Index> euribor(new Euribor(euriborTenor, ycHandle));
-    Date fixingDate = evaluationDate + euriborTenor;
-    boost::shared_ptr<ForwardValueQuote> forwardValueQuote( new 
+    Date fixingDate = calendar.advance(evaluationDate, euriborTenor);
+    boost::shared_ptr<ForwardValueQuote> forwardValueQuote( new
         ForwardValueQuote(euribor, fixingDate));
     Rate forwardValue =  forwardValueQuote->value();
     Rate expectedForwardValue = euribor->fixing(fixingDate, true);
-    // we test if the forward value given by the quote is consistent 
+    // we test if the forward value given by the quote is consistent
     // with the one directly given by the index
     if (std::fabs(forwardValue-expectedForwardValue) > 1.0e-15)
         BOOST_FAIL("Foward Value Quote quote yields " << forwardValue << "\n"
@@ -153,7 +154,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     forwardQuote->setValue(0.04);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
-    
+
     // and we retest if the values are still matching
     forwardValue =  forwardValueQuote->value();
     expectedForwardValue = euribor->fixing(fixingDate, true);
@@ -170,8 +171,8 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     Option::Type optionType = Option::Call;
     boost::shared_ptr<SimpleQuote> priceQuote(new SimpleQuote(price));
     Handle<Quote> priceHandle(priceQuote);
-    boost::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new 
-        ImpliedStdDevQuote(optionType, forwardHandle, priceHandle, 
+    boost::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new
+        ImpliedStdDevQuote(optionType, forwardHandle, priceHandle,
                            strike, guess, accuracy));
     Real impliedStdev = impliedStdevQuote->value();
     Real expectedImpliedStdev = blackImpliedStdDev(optionType,

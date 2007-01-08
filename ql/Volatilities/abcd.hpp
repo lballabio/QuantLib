@@ -97,7 +97,7 @@ namespace QuantLib {
     }
 
     inline Real AbcdFunction::covariance(Time t, Time T, Time S) const {
-        return (*this)(T-t) * (*this)(S-t);        
+        return (*this)(T-t) * (*this)(S-t);
     }
 
     inline Real AbcdFunction::primitive(Time t, Time T, Time S) const {
@@ -122,7 +122,7 @@ namespace QuantLib {
         boost::shared_ptr<AbcdFunction> abcdFunction_;
         Time S_, T_;
         AbcdSquared(Real a, Real b, Real c, Real d, Time T, Time S)
-        : abcdFunction_(new AbcdFunction(a,b,c,d)), T_(T), S_(S) {}
+        : abcdFunction_(new AbcdFunction(a,b,c,d)), S_(S), T_(T) {}
         Real operator()(Time t) const {
             return abcdFunction_->covariance(t, T_, S_);
         }
