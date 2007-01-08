@@ -35,7 +35,7 @@ namespace QuantLib {
                                            const EndCriteria&)
     : OptimizationMethod(initialValue, EndCriteria(maxfev, ftol, ftol)),
       info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
-    #else
+    #endif
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real xtol,
                                            Real gtol,
@@ -43,7 +43,7 @@ namespace QuantLib {
                                            const EndCriteria& endCriteria)
     : OptimizationMethod(initialValue, endCriteria),
       info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
-    #endif
+    
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
