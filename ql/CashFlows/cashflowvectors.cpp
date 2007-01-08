@@ -175,6 +175,12 @@ namespace QuantLib {
                              const DayCounter& dayCounter,
                              const Handle<CapletVolatilityStructure>& vol) {
 
+        #ifdef QL_USE_INDEXED_COUPON
+        typedef UpFrontIndexedCoupon coupon_type;
+        #else
+        typedef ParCoupon coupon_type; 
+        #endif
+
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
@@ -187,25 +193,24 @@ namespace QuantLib {
         if (schedule.isRegular(1)) {
             const boost::shared_ptr<FloatingRateCoupon> underlying =
                  (boost::shared_ptr<FloatingRateCoupon>)
-                      (new FloatingRateCoupon(paymentDate,get(nominals,0),
-                                             start, end, settlementDays, index,
-                                             get(gearings,0,1.0),
-                                             get(spreads,0,0.0)));
+                      (new coupon_type(paymentDate,get(nominals,0),
+                                       start, end, settlementDays, index,
+                                       get(gearings,0,1.0),
+                                       get(spreads,0,0.0)));
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying, 
                                         get(caps,0,Null<Rate>()),
                                         get(floors,0,Null<Rate>()))));
-
         } else {
             Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,paymentAdjustment);
             const boost::shared_ptr<FloatingRateCoupon> underlying =
                  (boost::shared_ptr<FloatingRateCoupon>)
-                      (new FloatingRateCoupon(paymentDate,get(nominals,0),
-                                             start, end, settlementDays, index,
-                                             get(gearings,0,1.0),
-                                             get(spreads,0,0.0),
-                                             reference, end));            
+                      (new coupon_type(paymentDate,get(nominals,0),
+                                       start, end, settlementDays, index,
+                                       get(gearings,0,1.0),
+                                       get(spreads,0,0.0),
+                                       reference, end));            
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying, 
                                         get(caps,0,Null<Rate>()),
@@ -217,10 +222,10 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             const boost::shared_ptr<FloatingRateCoupon> underlying =
                  (boost::shared_ptr<FloatingRateCoupon>)
-                      (new FloatingRateCoupon(paymentDate,get(nominals,i-1),
-                                             start, end, settlementDays, index,
-                                             get(gearings,i-1,1.0),
-                                             get(spreads,i-1,0.0)));            
+                      (new coupon_type(paymentDate,get(nominals,i-1),
+                                       start, end, settlementDays, index,
+                                       get(gearings,i-1,1.0),
+                                       get(spreads,i-1,0.0)));         
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying,
                                         get(caps,i-1,Null<Rate>()),
@@ -233,10 +238,10 @@ namespace QuantLib {
             if (schedule.isRegular(N-1)) {
             const boost::shared_ptr<FloatingRateCoupon> underlying =
                  (boost::shared_ptr<FloatingRateCoupon>)
-                      (new FloatingRateCoupon(paymentDate,get(nominals,N-2),
-                                             start, end, settlementDays, index,
-                                             get(gearings,N-2,1.0),
-                                             get(spreads,N-2,0.0)));            
+                      (new coupon_type(paymentDate,get(nominals,N-2),
+                                       start, end, settlementDays, index,
+                                       get(gearings,N-2,1.0),
+                                       get(spreads,N-2,0.0)));            
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CappedFlooredCoupon(underlying,
                                             get(caps,N-2,Null<Rate>()),
@@ -247,11 +252,11 @@ namespace QuantLib {
                     calendar.adjust(reference,paymentAdjustment);
                 const boost::shared_ptr<FloatingRateCoupon> underlying =
                      (boost::shared_ptr<FloatingRateCoupon>)
-                          (new FloatingRateCoupon(paymentDate,get(nominals,N-2),
-                                                 start, end, settlementDays, index,
-                                                 get(gearings,N-2,1.0),
-                                                 get(spreads,N-2,0.0),
-                                                 start, reference));            
+                          (new coupon_type(paymentDate,get(nominals,N-2),
+                                           start, end, settlementDays, index,
+                                           get(gearings,N-2,1.0),
+                                           get(spreads,N-2,0.0),
+                                           start, reference));            
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CappedFlooredCoupon(underlying,
                                             get(caps,N-2,Null<Rate>()),
@@ -268,8 +273,8 @@ namespace QuantLib {
                 QL_FAIL("unexpected error when casting to CappedFlooredCoupon");
         }
         return leg;
-
     }    
+
 
     std::vector<boost::shared_ptr<CashFlow> >
     CMSCouponVector(const Schedule& schedule,

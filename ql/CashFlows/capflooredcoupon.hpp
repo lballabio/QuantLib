@@ -26,6 +26,8 @@
 #define quantlib_capped_floored_coupon_hpp
 
 #include <ql/CashFlows/capfloorlet.hpp>
+#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 
 
 namespace QuantLib {
@@ -48,7 +50,7 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
-        Rate indexFixing() const;
+        Rate indexFixing() const;        
         //@}
         //! \name Observer interface
         //@{
@@ -66,6 +68,7 @@ namespace QuantLib {
         boost::shared_ptr<FloatingRateCoupon> underlying_;
         boost::shared_ptr<Optionlet> cap_, floor_;
         Handle<CapletVolatilityStructure> volatility_;
+        
     };
 
 }

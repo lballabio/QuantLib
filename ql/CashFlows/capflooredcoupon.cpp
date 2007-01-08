@@ -35,9 +35,9 @@ namespace QuantLib {
                          underlying->index()),
       underlying_(underlying) {
 
-        if (cap != Null<double>())
+        if (cap != Null<Rate>())
             cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));
-        if (floor != Null<double>())
+        if (floor != Null<Rate>())
             floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, floor));
         registerWith(underlying);
     }

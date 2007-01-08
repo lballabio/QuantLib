@@ -91,7 +91,7 @@ namespace QuantLib {
         } else {
             // not yet determined, use Black model
             Rate fixing = 
-                 blackFormula(Option::Call, strike_, underlying_->rate(),
+                 blackFormula(Option::Call, strike_, underlying_->adjustedFixing(),
                               std::sqrt(volatility_->blackVariance(fixingDate(),strike_)));
             #if defined(QL_PATCH_MSVC6)
             return std::max(fixing,0.0);
@@ -108,7 +108,7 @@ namespace QuantLib {
         } else {
             // not yet determined, use Black model
             Rate fixing = 
-                 blackFormula(Option::Put, strike_, underlying_->rate(),
+                 blackFormula(Option::Put, strike_, underlying_->adjustedFixing(),
                               std::sqrt(volatility_->blackVariance(fixingDate(),strike_)));
             #if defined(QL_PATCH_MSVC6)
             return std::max(fixing,0.0);

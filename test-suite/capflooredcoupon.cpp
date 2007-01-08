@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+
 #include "capflooredcoupon.hpp"
 #include "utilities.hpp"
 #include <ql/Instruments/capfloor.hpp>
@@ -57,8 +58,8 @@ Integer lenght_;
 Volatility volatility_;
 
 void setup() {
-    lenght_ = 30;
-    volatility_ = 0.30;
+    lenght_ = 25;           //years
+    volatility_ = 0.20;
     nominal_ = 100.;
     nominals_ = std::vector<Real>(lenght_,nominal_);
     frequency_ = Annual;
@@ -183,7 +184,7 @@ void CapFlooredCouponTest::testLargeRates() {
 
     std::vector<Rate> caps(lenght_,100.0);
     std::vector<Rate> floors(lenght_,0.0);
-    Real tolerance = 0.002;
+    Real tolerance = 1e-10;
 
     // fixed leg with zero rate
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
@@ -198,10 +199,10 @@ void CapFlooredCouponTest::testLargeRates() {
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
         BOOST_MESSAGE("Lenght: " << lenght_ << " y" << "\n" <<
+            "Volatility: " << volatility_*100 << "%\n" <<
             "Notional: " << nominal_ << "\n" <<
             "Vanilla floating leg NPV: " << vanillaLeg.NPV()
             << "\n" <<
-            "Collared:" << "\n" <<
             "Collared floating leg NPV (strikes 0 and 100): " << collarLeg.NPV()
             << "\n" <<
             "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
@@ -216,7 +217,7 @@ void CapFlooredCouponTest::testDecomposition() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Real tolerance = 2e-2; //depending on variance (option expiry and volatility)
+    Real tolerance = 1e-10;
 
     /* CAPPED coupon - Decomposition of payoff
        Payoff = Nom * Min(rate,strike) * accrualperiod =
