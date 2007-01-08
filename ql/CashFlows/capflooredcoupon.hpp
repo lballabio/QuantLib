@@ -37,7 +37,8 @@ namespace QuantLib {
       public:
         CappedFlooredCoupon(
                   const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate cap = Null<Rate>(), Rate floor = Null<Rate>());
+                  Rate cap = Null<Rate>(),
+                  Rate floor = Null<Rate>());
         //! \name CashFlow interface
         //@{
         Real amount() const;
