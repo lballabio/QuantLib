@@ -33,12 +33,16 @@ namespace QuantLib {
     class FuturesConvAdjustmentQuote : public Quote,
                                        public Observer {
       public:
-        FuturesConvAdjustmentQuote(
-                        const boost::shared_ptr<IborIndex>& index,
-                        const Date& futuresDate,
-                        const Handle<Quote>& futuresQuote,
-                        const Handle<Quote>& volatility,
-                        const Handle<Quote>& meanReversion);
+        FuturesConvAdjustmentQuote(const boost::shared_ptr<IborIndex>& index,
+                                   const Date& futuresDate,
+                                   const Handle<Quote>& futuresQuote,
+                                   const Handle<Quote>& volatility,
+                                   const Handle<Quote>& meanReversion);
+        FuturesConvAdjustmentQuote(const boost::shared_ptr<IborIndex>& index,
+                                   const std::string& immCode,
+                                   const Handle<Quote>& futuresQuote,
+                                   const Handle<Quote>& volatility,
+                                   const Handle<Quote>& meanReversion);
         Real value() const;
         void update();
         //! \name Inspectors
@@ -50,8 +54,7 @@ namespace QuantLib {
         //@}
       protected:
         DayCounter dc_;
-        const Date indexMaturityDate_;
-        const Date futuresDate_;
+        const Date futuresDate_, indexMaturityDate_;
         Handle<Quote> futuresQuote_;
         Handle<Quote> volatility_;
         Handle<Quote> meanReversion_;

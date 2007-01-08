@@ -30,8 +30,26 @@ namespace QuantLib {
                                const Handle<Quote>& volatility,
                                const Handle<Quote>& meanReversion)
     : dc_(index->dayCounter()),
-      indexMaturityDate_(index->maturityDate(futuresDate)),
-      futuresDate_(futuresDate), futuresQuote_(futuresQuote),
+      futuresDate_(futuresDate),
+      indexMaturityDate_(index->maturityDate(futuresDate_)),
+      futuresQuote_(futuresQuote),
+      volatility_(volatility), meanReversion_(meanReversion) {
+
+        registerWith(futuresQuote_);
+        registerWith(volatility_);
+        registerWith(meanReversion_);
+    }
+
+    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
+                               const boost::shared_ptr<IborIndex>& index,
+                               const std::string& immCode,
+                               const Handle<Quote>& futuresQuote,
+                               const Handle<Quote>& volatility,
+                               const Handle<Quote>& meanReversion)
+    : dc_(index->dayCounter()),
+      futuresDate_(Date::IMMdate(immCode)),
+      indexMaturityDate_(index->maturityDate(futuresDate_)),
+      futuresQuote_(futuresQuote),
       volatility_(volatility), meanReversion_(meanReversion) {
 
         registerWith(futuresQuote_);
