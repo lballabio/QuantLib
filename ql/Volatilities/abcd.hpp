@@ -120,9 +120,9 @@ namespace QuantLib {
     // Helper class used by unit tests
     struct AbcdSquared : public std::unary_function<Real,Real> {
         boost::shared_ptr<AbcdFunction> abcdFunction_;
-        Time S_, T_;
+        Time T_, S_;
         AbcdSquared(Real a, Real b, Real c, Real d, Time T, Time S)
-        : abcdFunction_(new AbcdFunction(a,b,c,d)), S_(S), T_(T) {}
+        : abcdFunction_(new AbcdFunction(a,b,c,d)), T_(T), S_(S) {}
         Real operator()(Time t) const {
             return abcdFunction_->covariance(t, T_, S_);
         }
