@@ -44,9 +44,9 @@ namespace QuantLib {
                            const Array& initialValue = Array(),
                            const EndCriteria& endCriteria = EndCriteria());
         #endif
-        LevenbergMarquardt(Real epsfcn = 1.0e-8,
-                           Real xtol = 1.0e-8,
-                           Real gtol = 1.0e-8,
+        LevenbergMarquardt(Real epsfcn,
+                           Real xtol,
+                           Real gtol,
                            const Array& initialValue = Array(),
                            const EndCriteria& endCriteria
                             = EndCriteria(400, 1.0e-8, 1.0e-8));

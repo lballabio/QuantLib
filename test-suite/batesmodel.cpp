@@ -344,7 +344,7 @@ void BatesModelTest::testDAXCalibration() {
     }
 
     // check calibration engine
-    LevenbergMarquardt om;
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
     batesModel->calibrate(options, om);
 
     Real expected = 36.6;

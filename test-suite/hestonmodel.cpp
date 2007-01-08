@@ -112,7 +112,7 @@ void HestonModelTest::testBlackCalibration() {
         for (Size i = 0; i < options.size(); ++i)
             options[i]->setPricingEngine(engine);
 
-        LevenbergMarquardt om;
+        LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
         model->calibrate(options, om);
 
         Real tolerance = 3.0e-3;
@@ -228,7 +228,7 @@ void HestonModelTest::testDAXCalibration() {
     for (i = 0; i < options.size(); ++i)
         options[i]->setPricingEngine(engine);
 
-    LevenbergMarquardt om;
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
     model->calibrate(options, om);
 
     Real sse = 0;
