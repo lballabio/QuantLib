@@ -25,7 +25,7 @@ namespace QuantLib {
     const Problem* LevenbergMarquardt::_thisP = 0;
     Array LevenbergMarquardt::_initCostValues(0);
 
-#ifndef QL_DISABLE_DEPRECATED
+    #ifndef QL_DISABLE_DEPRECATED
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real ftol,
                                            Real xtol,
@@ -33,18 +33,17 @@ namespace QuantLib {
                                            Size maxfev,
                                            const Array& initialValue,
                                            const EndCriteria& endCriteria)
-    : OptimizationMethod(initialValue, endCriteria),
+    : OptimizationMethod(initialValue, EndCriteria(maxfev, ftol, ftol)),
       info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
-#endif
+    #endif
 
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real xtol,
                                            Real gtol,
                                            const Array& initialValue,
-                                           const EndCriteria& endCriteria):
-        OptimizationMethod(initialValue, endCriteria),
-        info_(0), epsfcn_(epsfcn),
-        xtol_(xtol), gtol_(gtol){}
+                                           const EndCriteria& endCriteria)
+    : OptimizationMethod(initialValue, endCriteria),
+      info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
