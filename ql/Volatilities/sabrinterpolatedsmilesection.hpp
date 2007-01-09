@@ -68,7 +68,8 @@ namespace QuantLib {
             return sabrInterpolation_.interpolationMaxError(); }
         EndCriteria::Type endCriteria() const { 
             return sabrInterpolation_.endCriteria(); }
-
+        Real minStrike () const { return strikes_.front(); };
+        Real maxStrike () const { return strikes_.back(); };
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;

@@ -42,6 +42,8 @@ namespace QuantLib {
                      const DayCounter& dc = Actual365Fixed());
         virtual ~SmileSection() {};
 
+        virtual Real minStrike() const = 0;
+        virtual Real maxStrike() const = 0;
         virtual Real variance(Rate strike) const = 0;
         virtual Volatility volatility(Rate strike) const = 0;
 
@@ -70,6 +72,9 @@ namespace QuantLib {
 
         Real variance(Rate) const { return vol_*vol_*exerciseTime_; }
         Volatility volatility(Rate) const { return vol_; }
+        Real minStrike () const { return 0.0; };
+        Real maxStrike () const { return QL_MAX_REAL; };
+
       private:
         Volatility vol_;
     };
@@ -85,6 +90,8 @@ namespace QuantLib {
                          const DayCounter& dc = Actual365Fixed());
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
+        Real minStrike () const { return 0.0; };
+        Real maxStrike () const { return QL_MAX_REAL; };
     private:
         Real alpha_, beta_, nu_, rho_, forward_;
     };

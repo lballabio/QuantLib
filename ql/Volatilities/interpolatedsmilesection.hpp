@@ -71,6 +71,8 @@ namespace QuantLib {
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
+        Real minStrike () const { return strikes_.front(); };
+        Real maxStrike () const { return strikes_.back(); };
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
