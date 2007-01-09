@@ -45,7 +45,7 @@ namespace QuantLib {
     void BlackCapFloorEngine::calculate() const
     {
         Real value = 0.0;
-        Real vega_ = 0.0;
+        Real vega = 0.0;
         CapFloor::Type type = arguments_.type;
         DayCounter volatilityDayCounter = volatility_->dayCounter();
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
@@ -57,42 +57,63 @@ namespace QuantLib {
                 Real gearing = arguments_.gearings[i];
                 DiscountFactor q = arguments_.discounts[i];
                 Rate forward = arguments_.forwards[i];
+                Real stdDev;
 
+                // include caplets with past fixing date
                 if ((type == CapFloor::Cap) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.capRates[i];
-                    Real stdDev = std::sqrt(volatility_->blackVariance(
-                        arguments_.fixingDates[i], strike));
+                    // std dev is set to 0 if fixing is at a past date
+                    if (arguments_.fixingTimes[i] > 0) { 
+                         stdDev = std::sqrt(volatility_->blackVariance(
+                            arguments_.fixingDates[i], strike));
+                    } else {
+                        stdDev = 0;
+                    }
                     value += q * accrualTime * nominal * gearing *
                         blackFormula(Option::Call, strike, forward, stdDev);
-                    vega_ += nominal * gearing * accrualTime * q 
-                            * blackStdDevDerivative(strike, forward, stdDev)
-                            * std::sqrt(timeToMaturity);
+                    // vega is set to 0 if fixinf is at a past date
+                    if (arguments_.fixingTimes[i] > 0) { 
+                        vega += nominal * gearing * accrualTime * q 
+                                * blackStdDevDerivative(strike, forward, stdDev)
+                                * std::sqrt(timeToMaturity);
+                    }
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.floorRates[i];
-                    Real stdDev = std::sqrt(volatility_->blackVariance(
-                        arguments_.fixingDates[i], strike));
+                    // std dev is set to 0 if fixing is at a past date
+                    if (arguments_.fixingTimes[i] > 0) { 
+                        stdDev = std::sqrt(volatility_->blackVariance(
+                            arguments_.fixingDates[i], strike));
+                    } else {
+                        stdDev = 0;
+                    }
                     Real temp = q * accrualTime * nominal * gearing *
                         blackFormula(Option::Put, strike, forward, stdDev);
                     if (type == CapFloor::Floor) {
                         value += temp;
-                        vega_ += nominal * gearing * accrualTime * q 
-                                * blackStdDevDerivative(strike, forward, stdDev)
-                                * std::sqrt(timeToMaturity);
+                        //vega is set to 0 if fixing is at a past date
+                        if (arguments_.fixingTimes[i] > 0) { 
+                            vega += nominal * gearing * accrualTime * q 
+                                    * blackStdDevDerivative(strike, forward, stdDev)
+                                    * std::sqrt(timeToMaturity);
+                        }
                     } else {
                         // a collar is long a cap and short a floor
                         value -= temp;
-                        vega_ -= nominal * gearing * accrualTime * q 
-                                * blackStdDevDerivative(strike, forward, stdDev)
-                                * std::sqrt(timeToMaturity);
+                        // vega is set to 0 if fixing is at a past date
+                        if (arguments_.fixingTimes[i] > 0) { 
+                            vega -= nominal * gearing * accrualTime * q 
+                                    * blackStdDevDerivative(strike, forward, stdDev)
+                                    * std::sqrt(timeToMaturity);
+                        }
                     }
                 }
             }
         }
         results_.value = value;
-        results_.vega_ = vega_;
+        results_.vega_ = vega;
     }
     
 }
