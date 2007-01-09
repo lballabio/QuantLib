@@ -74,6 +74,8 @@ namespace QuantLib {
         Real maxStrike() const;
         //@}
     private:
+        Real minStrike_, maxStrike_;
+        Date maxDate_;
         DayCounter dayCounter_;
         std::vector<Time> tenorTimes_;
         SmileSectionInterfaceVector smileSections_;

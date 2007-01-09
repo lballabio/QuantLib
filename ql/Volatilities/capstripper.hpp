@@ -54,8 +54,8 @@ namespace QuantLib {
          Real impliedVolatilityAccuracy = 1.0e-6,
          Size maxEvaluations = 100,
          const std::vector<boost::shared_ptr<SmileSection> >& 
-             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >()
-             );
+             smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >(),
+         bool allowExtrapolation = true);
         //@}
         //! \name LazyObject interface
         //@{

@@ -80,13 +80,14 @@ namespace QuantLib {
          Real impliedVolatilityAccuracy,
          Size maxEvaluations,
          const std::vector<boost::shared_ptr<SmileSection> >&
-             smileSectionInterfaces)
+             smileSectionInterfaces,
+         bool allowExtrapolation)
     : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
       maxEvaluations_(maxEvaluations){
-
+      enableExtrapolation(allowExtrapolation);
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
                    ") and vol rows(" << vols.size() << ")");

@@ -82,12 +82,24 @@ using namespace QuantLib;
         for (Size i = 0; i < smileSections_.size(); i++){
             registerWith(smileSections[i]);
             tenorTimes_[i] = smileSections[i]->exerciseTime();
+            if (i>0) 
+                QL_REQUIRE(tenorTimes_[i] > tenorTimes_[i-1], 
+                "Smile sections must in increasing time order !");
         }
-        //FIXME
+
         TermStructure::enableExtrapolation();
-        /*maxDate_ = smileSections.back()->exerciseDate();
-        minStrike_ = 0;
-        maxStrike_ = 1;*/
+
+        minStrike_ = QL_MIN_REAL;
+        maxStrike_ = QL_MAX_REAL;
+        for (Size i=0; i < smileSections.size(); i++){
+            if (smileSections[i]->minStrike() >  minStrike_)
+                minStrike_ = smileSections[i]->minStrike();
+            if (smileSections[i]->maxStrike() <  maxStrike_)
+                maxStrike_ = smileSections[i]->maxStrike();
+       }
+
+       maxDate_ = smileSections.back()->exerciseDate();
+
     }
 
      Volatility SmileSectionsVolStructure::volatilityImpl(Time length,
@@ -113,15 +125,15 @@ using namespace QuantLib;
                 nextLowerTenor, nextHigherTenor);
         }
 
-     // to be changed ...
+    
     Date SmileSectionsVolStructure::maxDate() const {
         return smileSections_.back()->exerciseDate(); }
     DayCounter SmileSectionsVolStructure::dayCounter() const {
         return dayCounter_;}
     Real SmileSectionsVolStructure::minStrike() const {
-        return 0;}
+        return minStrike_;}
     Real SmileSectionsVolStructure::maxStrike() const {
-        return 10;}
+        return maxStrike_;}
 
     BilinInterpCapletVolStructure::
         BilinInterpCapletVolStructure(
