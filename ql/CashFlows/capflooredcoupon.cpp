@@ -32,7 +32,9 @@ namespace QuantLib {
                          underlying->accrualStartDate(),
                          underlying->accrualEndDate(),
                          underlying->fixingDays(),
-                         underlying->index()),
+                         underlying->index(),
+                         underlying->gearing(),
+                         underlying->spread()),
       underlying_(underlying) {
 
         if (cap != Null<Rate>())

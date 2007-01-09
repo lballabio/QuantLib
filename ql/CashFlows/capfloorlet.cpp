@@ -31,7 +31,9 @@ namespace QuantLib {
                          underlying->accrualStartDate(),
                          underlying->accrualEndDate(),
                          underlying->fixingDays(),
-                         underlying->index()),
+                         underlying->index(),
+                         underlying->gearing(),
+                         underlying->spread()),
       underlying_(underlying), strike_(strike) {
         registerWith(underlying);
     }
@@ -72,8 +74,8 @@ namespace QuantLib {
     }
 
     double Optionlet::volatility() const {
-        return std::sqrt(volatility_->blackVariance(fixingDate(),strike_))/
-               startTime();
+        return std::sqrt(volatility_->blackVariance(fixingDate(),strike_ )/
+                         startTime());
     }
 
     Caplet::Caplet(const boost::shared_ptr<FloatingRateCoupon>& underlying,
@@ -85,22 +87,26 @@ namespace QuantLib {
     : Optionlet(underlying, floor) {}
 
     double Optionlet::amount() const {
+        
         return rate() * nominal() * accrualPeriod();
     }
 
     Rate Caplet::rate() const {
         if (fixingDate() <= Settings::instance().evaluationDate()) {
             // the amount is determined
-            return std::max(underlying_->rate() - strike_, 0.0);
+            return std::max(underlying_->rate()- strike_, 0.0);
         } else {
+            Rate effStrike = (strike_ - underlying_->spread())/underlying_->gearing();
             // not yet determined, use Black model
             Rate fixing = 
-                 blackFormula(Option::Call, strike_, underlying_->adjustedFixing(),
-                              std::sqrt(volatility_->blackVariance(fixingDate(),strike_)));
+                 blackFormula(Option::Call,
+                              effStrike,
+                              underlying_->adjustedFixing(),
+                              std::sqrt(volatility_->blackVariance(fixingDate(),effStrike)));
             #if defined(QL_PATCH_MSVC6)
             return std::max(fixing,0.0);
             #else
-            return fixing;
+            return underlying_->gearing() * fixing;
             #endif
         }
     }
@@ -110,14 +116,17 @@ namespace QuantLib {
             // the amount is determined
             return std::max(strike_-underlying_->rate(), 0.0);
         } else {
+            Rate effStrike = (strike_ - underlying_->spread())/underlying_->gearing();
             // not yet determined, use Black model
             Rate fixing = 
-                 blackFormula(Option::Put, strike_, underlying_->adjustedFixing(),
-                              std::sqrt(volatility_->blackVariance(fixingDate(),strike_)));
+                 blackFormula(Option::Put,
+                              effStrike, 
+                              underlying_->adjustedFixing(),
+                              std::sqrt(volatility_->blackVariance(fixingDate(),effStrike)));
             #if defined(QL_PATCH_MSVC6)
             return std::max(fixing,0.0);
             #else
-            return fixing;
+            return underlying_->gearing() * fixing;
             #endif
         }
     }
