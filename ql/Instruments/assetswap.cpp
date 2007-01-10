@@ -46,10 +46,12 @@ namespace QuantLib {
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
 
-        if (parSwap)
-            nominal_ = bond->faceAmount();
-        else
-            nominal_ = dirtyPrice;
+        nominal_ = bond->faceAmount();
+
+        //if (parSwap)
+        //    nominal_ = bond->faceAmount();
+        //else
+        //    nominal_ = dirtyPrice*bond->faceAmount();
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
@@ -70,6 +72,9 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > bondLeg =
             bond->cashflows();
 
+        QL_REQUIRE(!bondLeg.empty(),
+                   "empty bond leg to start with");
+
         // review what happen if floatSchedule.endDate() < bond->maturityDate()
 
         // special flows
@@ -83,20 +88,19 @@ namespace QuantLib {
             bondLeg.pop_back();
         } else {
             // final nominal exchange
-            Real finalFlow=dirtyPrice/100.0*nominal_;
+            Real finalFlow = (dirtyPrice)/100.0*nominal_;
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(finalFlow, bond->maturityDate()));
+                SimpleCashFlow(finalFlow, floatSchedule.endDate()));
+                //SimpleCashFlow(finalFlow, bond->maturityDate()));
             floatingLeg.push_back(finalCashFlow);
         }
 
-        QL_REQUIRE(!bondLeg.empty(),
-                   "empty bond leg");
+        QL_REQUIRE(!bondLeg.empty(), "empty bond leg");
         for (i = bondLeg.begin(); i < bondLeg.end(); ++i)
             registerWith(*i);
 
         // handle when termination date is earlier than
         // bond maturity date
-
 
         legs_[0] = bondLeg;
         legs_[1] = floatingLeg;

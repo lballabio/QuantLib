@@ -41,10 +41,14 @@ namespace QuantLib {
 
         cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
         // redemption
+        // !!!
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
             SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
+
+        QL_ENSURE(!cashflows().empty(),
+                  "empty bond leg for the zero coupon bond");
     }
 
 }

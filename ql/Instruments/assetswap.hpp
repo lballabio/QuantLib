@@ -31,8 +31,12 @@
 
 namespace QuantLib {
 
-    //! Asset swap
-    /*! \ingroup instruments */
+    /*! for mechanics of Par Asset Swap and Market Asset Swap refer to
+        "Introduction to Asset Swap", Lehman Brothers European Fixed
+        Income Research - January 2000, D. O'Kane
+
+        \ingroup instruments 
+    */
     class AssetSwap : public Swap {
       public:
         class arguments;

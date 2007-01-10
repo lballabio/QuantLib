@@ -84,6 +84,7 @@ namespace QuantLib {
         cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
 
         // redemption
+        // !!!
         redemption *= faceAmount_/100.0;
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
             SimpleCashFlow(redemption, maturityDate_)));
@@ -115,12 +116,14 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
+        // !!!
         cashflows_ = FixedRateCouponVector(schedule,
                                            schedule.businessDayConvention(),
                                            std::vector<Real>(1, faceAmount_),
                                            coupons, dayCounter);
 
         // redemption
+        // !!!
         redemption *= faceAmount_/100.0;
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
             SimpleCashFlow(redemption, maturityDate_)));
@@ -154,6 +157,7 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
+        // !!!
         cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
                                    schedule, schedule.businessDayConvention(),
                                    std::vector<Real>(1, faceAmount_),
@@ -165,6 +169,7 @@ namespace QuantLib {
                                    #endif
                                    );
         // redemption
+        // !!!
         redemption *= faceAmount_/100.0;
         cashflows_.push_back(boost::shared_ptr<CashFlow>(
                               new SimpleCashFlow(redemption, maturityDate_)));

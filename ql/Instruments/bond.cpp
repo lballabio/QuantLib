@@ -159,6 +159,7 @@ namespace QuantLib {
 
     Real Bond::dirtyPrice() const {
         calculate();
+        // !!!
         return NPV_/faceAmount_*100.0;
     }
 
@@ -213,6 +214,7 @@ namespace QuantLib {
                 boost::shared_ptr<Coupon> coupon =
                     boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
                 if (coupon)
+                    // !!!
                     return coupon->accruedAmount(settlement)/faceAmount_*100.0;
                 else
                     return 0.0;

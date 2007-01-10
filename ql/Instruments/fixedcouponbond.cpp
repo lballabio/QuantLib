@@ -54,9 +54,12 @@ namespace QuantLib {
                           calendar, accrualConvention, accrualConvention,
                           fromEnd, false, firstDate, nextToLastDate);
 
+        // !!!
         cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
             std::vector<Real>(1, faceAmount_), coupons, dayCounter);
+
         // redemption
+        // !!!
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new
