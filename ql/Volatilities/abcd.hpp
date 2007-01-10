@@ -224,6 +224,7 @@ namespace QuantLib {
             \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
         */
         Real variance(Time tMin, Time tMax, Time T) const;
+
         /*! covariance in [tMin,tMax] between T and S fixing rates:
             \f[ \int_{tMin}^{tMax} f(T-u)f(S-u)du \f]
         */

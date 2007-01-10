@@ -2206,12 +2206,12 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
 
     return suite;
 }
