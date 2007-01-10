@@ -69,6 +69,13 @@ namespace QuantLib {
         */
         Real covariance(Time t, Time T, Time S) const;
 
+        /*! integral of the instantaneous covariance function between
+            time t1 and t2 for T-fixing and S-fixing rates
+            \f[ \int_{t1}^{t2} f(T-t)f(S-t)dt \f]
+        */
+
+        Real covariance(Time t1, Time t2, Time T, Time S) const;
+
         /*! indefinite integral of the instantaneous covariance function at
             time t between T-fixing and S-fixing rates
             \f[ \int f(T-t)f(S-t)dt \f]
@@ -82,8 +89,7 @@ namespace QuantLib {
     }
 
     inline Real AbcdFunction::operator()(Time u) const {
-        if (u<0) return 0.0;
-        else     return (a_ + b_*u)*std::exp(-c_*u) + d_;
+        return u<0 ? 0.0 : (a_ + b_*u)*std::exp(-c_*u) + d_;
     }
 
     inline Real AbcdFunction::maximumLocation() const {
@@ -115,6 +121,21 @@ namespace QuantLib {
                          )
                 ) / (4*c_*c_*c_*k2*k3);
     }
+
+    inline Real AbcdFunction::covariance(Time t1, Time t2, Time T, Time S) 
+        const {
+        QL_REQUIRE(t1<=t2,
+                   "integrations bounds (" << t1 <<
+                   "," << t2 << ") are in reverse order");
+        Time cutOff = std::min(S,T);
+        if (t1>=cutOff) {
+            return 0.0;
+        } else {
+            cutOff = std::min(t2, cutOff);
+            return primitive(cutOff, T, S) - primitive(t1, T, S);
+        }
+    }
+
 
 
     // Helper class used by unit tests
@@ -215,6 +236,7 @@ namespace QuantLib {
       private:
         //! indefinite integral \f[ \int f(T-t)f(S-t)dt \f]
         Real primitive(Time u, Time T, Time S) const;
+
         //! optimization constraints
         class AbcdConstraint : public Constraint {
             private:
