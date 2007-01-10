@@ -81,6 +81,16 @@ namespace QuantLib {
             \f[ \int f(T-t)f(S-t)dt \f]
         */
         Real primitive(Time t, Time T, Time S) const;
+
+         /*! volatility in [tMin,tMax] of T-fixing rate:
+            \f[ \sqrt{ \int_{tMin}^{tMax} f^2(T-u)du }\f]
+        */
+        Real volatility(Time T, Time tMax, Time tMin) const;
+
+        /*! variance in [tMin,tMax] of T-fixing rate:
+            \f[ \int_{tMin}^{tMax} f^2(T-u)du \f]
+        */
+        Real variance(Time T, Time tMax, Time tMin) const;
     };
 
     inline AbcdFunction::AbcdFunction(Real a, Real b, Real c, Real d)
@@ -134,6 +144,17 @@ namespace QuantLib {
             cutOff = std::min(t2, cutOff);
             return primitive(cutOff, T, S) - primitive(t1, T, S);
         }
+    }
+
+    inline Real AbcdFunction::volatility(Time T, Time tMax, Time tMin) const {
+        if (tMax==tMin)
+            return std::sqrt(covariance(tMax, T, T));
+        QL_REQUIRE(tMax>tMin, "tMax must be > tMin");
+        return std::sqrt(variance(tMin, tMax, T)/(tMax-tMin));
+    }
+
+    inline Real AbcdFunction::variance(Time T, Time tMax, Time tMin) const {
+        return covariance(tMin, tMax, T, T);
     }
 
 
