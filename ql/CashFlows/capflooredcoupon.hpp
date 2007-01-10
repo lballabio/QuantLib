@@ -54,6 +54,7 @@ namespace QuantLib {
         Rate indexFixing() const;
         Rate cap() const;
         Rate floor() const;
+        Rate convexityAdjustment() const;
         //@}
         //! \name Observer interface
         //@{

@@ -78,6 +78,10 @@ namespace QuantLib {
             return Rate(1.);
     }
     
+    Rate CappedFlooredCoupon::convexityAdjustment() const {
+        return underlying_->convexityAdjustment();
+    }
+
     Rate CappedFlooredCoupon::floor() const {
         if(floor_) 
             return floor_->strike();
