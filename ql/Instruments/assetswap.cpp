@@ -46,12 +46,19 @@ namespace QuantLib {
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
 
-        nominal_ = bond->faceAmount();
+        //nominal_ = bond->faceAmount();
 
-        //if (parSwap)
-        //    nominal_ = bond->faceAmount();
-        //else
-        //    nominal_ = dirtyPrice*bond->faceAmount();
+        if (parSwap)
+            nominal_ = bond->faceAmount();
+
+        // In the market asset swap, the bond is purchased in return
+        //   for payment of the full price.
+        //The notional of the floating leg is then scaled by the full price,
+        //    and the resulting value of the asset swap spread is different.
+
+        else
+
+            nominal_ = dirtyPrice/100*bond->faceAmount();
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
@@ -88,7 +95,7 @@ namespace QuantLib {
             bondLeg.pop_back();
         } else {
             // final nominal exchange
-            Real finalFlow = (dirtyPrice)/100.0*nominal_;
+            Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
             boost::shared_ptr<CashFlow> finalCashFlow (new
                 SimpleCashFlow(finalFlow, floatSchedule.endDate()));
                 //SimpleCashFlow(finalFlow, bond->maturityDate()));
