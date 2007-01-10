@@ -344,7 +344,11 @@ void BatesModelTest::testDAXCalibration() {
     }
 
     // check calibration engine
+    #ifndef QL_DISABLE_DEPRECATED
     LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+    #else
+    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
+    #endif
     batesModel->calibrate(options, om);
 
     Real expected = 36.6;

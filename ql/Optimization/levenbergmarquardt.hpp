@@ -43,14 +43,14 @@ namespace QuantLib {
                            Size maxfev = 400,
                            const Array& initialValue = Array(),
                            const EndCriteria& endCriteria = EndCriteria());
-        #endif
+        #else
         LevenbergMarquardt(Real epsfcn,
                            Real xtol,
                            Real gtol,
                            const Array& initialValue = Array(),
                            const EndCriteria& endCriteria
                             = EndCriteria(400, 1.0e-8, 1.0e-8));
-
+        #endif
         void minimize(const Problem& P);
         virtual Integer getInfo() const;
         static void fcn(int m,
