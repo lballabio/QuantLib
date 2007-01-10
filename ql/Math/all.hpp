@@ -24,7 +24,6 @@
 
 #include <ql/Math/core.hpp>
 
-#include <ql/Math/abcdinterpolation.hpp>
 #include <ql/Math/backwardflatinterpolation.hpp>
 #include <ql/Math/beta.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
