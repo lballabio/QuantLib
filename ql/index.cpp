@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    void Index::addFixing(const Date& fixingDate, Rate fixing) {
+    void Index::addFixing(const Date& fixingDate, Real fixing) {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate.weekday() << ", " <<
                    fixingDate << " is not valid");
