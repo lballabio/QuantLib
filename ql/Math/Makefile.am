@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/Math
 include_HEADERS = \
 	all.hpp \
 	core.hpp \
+	abcdflatinterpolation.hpp \
 	array.hpp \
 	backwardflatinterpolation.hpp \
 	beta.hpp \
