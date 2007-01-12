@@ -44,6 +44,10 @@ namespace QuantLib {
         Cashflows();
         Cashflows(const Cashflows&);
       public:
+        static Date startDate(
+                        const std::vector<boost::shared_ptr<CashFlow> >&);
+        static Date maturityDate(
+                        const std::vector<boost::shared_ptr<CashFlow> >&);
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure.

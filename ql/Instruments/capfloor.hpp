@@ -94,7 +94,9 @@ namespace QuantLib {
         }
         Rate atmRate() const;
         Real vega() const;
-        Date lastFixingDate()const;
+        Date startDate() const;
+        Date maturityDate() const;
+        Date lastFixingDate() const;
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
@@ -200,6 +202,5 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, CapFloor::Type);
 
 }
-
 
 #endif

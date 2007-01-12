@@ -110,6 +110,14 @@ namespace QuantLib {
         return lastPaymentDate < termStructure_->referenceDate();
     }
 
+    Date CapFloor::startDate() const {
+        return Cashflows::startDate(floatingLeg_);
+    }
+
+    Date CapFloor::maturityDate() const {
+        return Cashflows::maturityDate(floatingLeg_);
+    }
+
     Date CapFloor::lastFixingDate() const {
         boost::shared_ptr<CashFlow> lastCoupon(floatingLeg_.back());
         boost::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =

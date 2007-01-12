@@ -172,6 +172,28 @@ namespace QuantLib {
 
     }
 
+   Date Cashflows::startDate(
+                const std::vector<boost::shared_ptr<CashFlow> >& cashflows) {
+        Date d = Date::maxDate();
+        for (Size i=0; i<cashflows.size(); ++i) {
+            boost::shared_ptr<Coupon> c =
+                boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
+            if (c)
+                d = std::min(d, c->accrualStartDate());
+        }
+        QL_REQUIRE(d != Date::maxDate(),
+                   "not enough information available");
+        return d;
+    }
+
+    Date Cashflows::maturityDate(
+                const std::vector<boost::shared_ptr<CashFlow> >& cashflows) {
+        Date d = Date::minDate();
+        for (Size i=0; i<cashflows.size(); ++i)
+            d = std::max(d, cashflows[i]->date());
+        QL_REQUIRE(d != Date::minDate(), "no cashflows");
+        return d;
+    }
 
     Real Cashflows::npv(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
