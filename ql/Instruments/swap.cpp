@@ -92,27 +92,25 @@ namespace QuantLib {
 
     Date Swap::startDate() const {
         Date d = Date::maxDate();
-        for (Size j=0; j<legs_.size(); j++) {
-            for (Size i=0; i<legs_[j].size(); i++) {
-                boost::shared_ptr<Coupon> c =
-                    boost::dynamic_pointer_cast<Coupon>(legs_[j][i]);
-                if (c)
-                    d = std::min(d, c->accrualStartDate());
-            }
-        }
-        QL_REQUIRE(d != Date::maxDate(),
-                   "not enough information available");
+        for (Size j=0; j<legs_.size(); ++j)
+            d = std::min(d, Cashflows::startDate(legs_[j]));
         return d;
     }
 
-    Date Swap::maturity() const {
+    Date Swap::maturityDate() const {
         Date d = Date::minDate();
-        for (Size j=0; j<legs_.size(); j++) {
-            for (Size i=0; i<legs_[j].size(); i++)
-                d = std::max(d, legs_[j][i]->date());
-        }
-        QL_REQUIRE(d != Date::minDate(), "empty swap");
+        for (Size j=0; j<legs_.size(); ++j)
+            d = std::max(d, Cashflows::maturityDate(legs_[j]));
         return d;
     }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    Date Swap::maturity() const {
+        Date d = Date::minDate();
+        for (Size j=0; j<legs_.size(); ++j)
+            d = std::max(d, Cashflows::maturityDate(legs_[j]));
+        return d;
+    }
+    #endif
 
 }

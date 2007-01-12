@@ -57,7 +57,10 @@ namespace QuantLib {
         //! \name Additional interface
         //@{
         Date startDate() const;
+        Date maturityDate() const;
+        #ifndef QL_DISABLE_DEPRECATED
         Date maturity() const;
+        #endif
         Real legBPS(Size j) const {
             QL_REQUIRE(j<legs_.size(),
                 "legBPS: leg# " << j << " doesn't exist!");
