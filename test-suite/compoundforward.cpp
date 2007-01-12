@@ -189,7 +189,7 @@ void CompoundForwardTest::testConvertedRates() {
                          schedule, index, 0.0, index->dayCounter(),
                          liborHandle);
         DayCounter tsdc  = termStructure->dayCounter();
-        Rate expectedRate = termStructure->compoundForward(swap.maturity(),
+        Rate expectedRate = termStructure->compoundForward(swap.maturityDate(),
                                                            frequency);
         Rate estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {

@@ -298,7 +298,7 @@ namespace QuantLib {
             .withFixedLegTerminationDateConvention(fixedConvention_);
 
         // Usually...
-        latestDate_ = swap_->maturity();
+        latestDate_ = swap_->maturityDate();
         // ...but due to adjustments, the last floating coupon might
         // need a later date for fixing
         #ifdef QL_USE_INDEXED_COUPON
