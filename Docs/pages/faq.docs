@@ -210,14 +210,15 @@
 
     If you're using Visual C++ 7.1 or 8.0, you don't need to build
     Boost: an installer for precompiled binaries is available at
-    <http://www.boost-consulting.com/download.html>.
+    <http://www.boost-consulting.com/download.html> (note, though,
+    that at this time it won't work through a proxy server.)
 
-    If you're using another compiler, you can ask for help on the
-    QuantLib mailing list. However, you'll probably get better help
-    from the Boost mailing list (see
-    <http://boost.org/more/mailing_lists.htm#users> as the Boost
-    people have much better expertise in troubleshooting their
-    libraries than we have.
+    If you're using another compiler (or you are, alas, behind a proxy
+    server) you can ask for help on the QuantLib mailing
+    list. However, you'll probably get better help from the Boost
+    mailing list (see <http://boost.org/more/mailing_lists.htm#users>
+    as the Boost people have much better expertise in troubleshooting
+    their libraries than we have.
 
 
     <strong>
