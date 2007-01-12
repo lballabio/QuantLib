@@ -91,25 +91,24 @@ namespace QuantLib {
     }
 
     Date Swap::startDate() const {
-        Date d = Date::maxDate();
-        for (Size j=0; j<legs_.size(); ++j)
+        QL_REQUIRE(!legs_.empty(), "no legs given");
+        Date d = Cashflows::startDate(legs_[0]);
+        for (Size j=1; j<legs_.size(); ++j)
             d = std::min(d, Cashflows::startDate(legs_[j]));
         return d;
     }
 
     Date Swap::maturityDate() const {
-        Date d = Date::minDate();
-        for (Size j=0; j<legs_.size(); ++j)
+        QL_REQUIRE(!legs_.empty(), "no legs given");
+        Date d = Cashflows::maturityDate(legs_[0]);
+        for (Size j=1; j<legs_.size(); ++j)
             d = std::max(d, Cashflows::maturityDate(legs_[j]));
         return d;
     }
 
     #ifndef QL_DISABLE_DEPRECATED
     Date Swap::maturity() const {
-        Date d = Date::minDate();
-        for (Size j=0; j<legs_.size(); ++j)
-            d = std::max(d, Cashflows::maturityDate(legs_[j]));
-        return d;
+        return maturityDate();
     }
     #endif
 
