@@ -62,7 +62,7 @@ namespace QuantLib {
         // !!!
         cashflows_ = CMSCouponVector(schedule,paymentConvention,
                         std::vector<Real>(1, faceAmount_),
-                        index,settlementDays,dayCounter,gearings,
+                        index,fixingDays,dayCounter,gearings,
                         spreads,caps,floors,
                         pricer);
         // redemption
