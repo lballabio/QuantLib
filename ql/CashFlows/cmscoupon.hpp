@@ -96,7 +96,11 @@ namespace QuantLib {
         //@}
       private:
         Rate convexityAdjustmentImpl(Rate f) const {
-            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing() - f);
+            if (cap_ != Null<Rate>())
+                f = (std::min(gearing() * f + spread(), cap_)-spread())/gearing();
+            if (floor_ != Null<Rate>())
+                f = (std::max(gearing() * f + spread(), floor_)-spread())/gearing();
+            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing()-f);
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
