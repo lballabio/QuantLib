@@ -57,7 +57,11 @@ namespace QuantLib {
         //@{
         std::string familyName() const;
         Period tenor() const;
-        Integer settlementDays() const;
+        Integer fixingDays() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use fixingDays instead
+        Integer settlementDays() const { return fixingDays(); }
+        #endif
         const Currency& currency() const;
         Calendar calendar() const;
         const DayCounter& dayCounter() const;
@@ -82,7 +86,7 @@ namespace QuantLib {
       protected:
         std::string familyName_;
         Period tenor_;
-        Integer settlementDays_;
+        Integer fixingDays_;
         Currency currency_;
         Calendar calendar_;
         DayCounter dayCounter_;
@@ -103,8 +107,8 @@ namespace QuantLib {
         return tenor_;
     }
 
-    inline Integer InterestRateIndex::settlementDays() const {
-        return settlementDays_;
+    inline Integer InterestRateIndex::fixingDays() const {
+        return fixingDays_;
     }
 
     inline const Currency& InterestRateIndex::currency() const {

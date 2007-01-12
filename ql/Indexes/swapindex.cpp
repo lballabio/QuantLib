@@ -98,7 +98,7 @@ namespace QuantLib {
 
     Schedule SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
 
-        Date start = calendar_.advance(fixingDate, settlementDays_, Days);
+        Date start = calendar_.advance(fixingDate, fixingDays_, Days);
         Date end = calendar_.advance(start, tenor_);
 
         return Schedule(start, end, fixedLegTenor_, calendar_,

@@ -68,7 +68,7 @@ namespace QuantLib {
       localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
 
     Date Libor::valueDate(const Date& fixingDate) const {
-        Date d = localCalendar_.advance(fixingDate,settlementDays_,Days);
+        Date d = localCalendar_.advance(fixingDate,fixingDays_,Days);
         return calendar().adjust(d);
     }
 

@@ -27,11 +27,11 @@ namespace QuantLib {
 
     InterestRateIndex::InterestRateIndex(const std::string& familyName,
                                          const Period& tenor,
-                                         Integer settlementDays,
+                                         Integer fixingDays,
                                          const Currency& currency,
                                          const Calendar& calendar,
                                          const DayCounter& dayCounter)
-    : familyName_(familyName), tenor_(tenor), settlementDays_(settlementDays),
+    : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
       currency_(currency), calendar_(calendar), dayCounter_(dayCounter)
     {
         registerWith(Settings::instance().evaluationDate());
@@ -85,7 +85,7 @@ namespace QuantLib {
     Date InterestRateIndex::valueDate(const Date& fixingDate) const {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
-        return calendar_.advance(fixingDate, settlementDays_, Days);
+        return calendar_.advance(fixingDate, fixingDays_, Days);
     }
 
     #ifndef QL_DISABLE_DEPRECATED
