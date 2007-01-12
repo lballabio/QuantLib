@@ -38,13 +38,13 @@ namespace QuantLib {
     class ParCoupon : public FloatingRateCoupon {
       public:
         ParCoupon(const Date& paymentDate,
-                  const Real nominal,
+                  Real nominal,
                   const Date& startDate,
                   const Date& endDate,
-                  const Integer fixingDays,
+                  Integer fixingDays,
                   const boost::shared_ptr<IborIndex>& index,
-                  const Real gearing = 1.0,
-                  const Spread spread = 0.0,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter());

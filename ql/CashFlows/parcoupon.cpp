@@ -22,11 +22,11 @@
 
 namespace QuantLib {
 
-    ParCoupon::ParCoupon(const Date& paymentDate, const Real nominal,
+    ParCoupon::ParCoupon(const Date& paymentDate, Real nominal,
                          const Date& startDate, const Date& endDate,
-                         const Integer fixingDays,
+                         Integer fixingDays,
                          const boost::shared_ptr<IborIndex>& index,
-                         const Real gearing, const Spread spread,
+                         Real gearing, Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd,
                          const DayCounter& dayCounter)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
