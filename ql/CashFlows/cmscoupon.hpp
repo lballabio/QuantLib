@@ -95,12 +95,27 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
+
+        Rate adjustedFixing() const{
+            CMSCoupon couponWithoutOptionality(nominal(), 
+                                              date(),
+                                              swapIndex(),
+                                              accrualStartDate(), 
+                                              accrualEndDate(),
+                                              fixingDays(),
+                                              dayCounter(),
+                                              pricer_,
+                                              gearing(),
+                                              spread(),
+                                              100.,
+                                              0.,
+                                              accrualStartDate(), 
+                                              accrualEndDate(),
+                                              isInArrears_);
+            return (couponWithoutOptionality.rate()-spread())/gearing();
+        }
         Rate convexityAdjustmentImpl(Rate f) const {
-            if (cap_ != Null<Rate>())
-                f = (std::min(gearing() * f + spread(), cap_)-spread())/gearing();
-            if (floor_ != Null<Rate>())
-                f = (std::max(gearing() * f + spread(), floor_)-spread())/gearing();
-            return (gearing() == 0.0 ? 0.0 : (rate()-spread())/gearing()-f);
+            return (gearing() == 0.0 ? 0.0 : adjustedFixing()-f);
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
