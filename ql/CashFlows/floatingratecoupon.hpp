@@ -114,7 +114,8 @@ namespace QuantLib {
                          const DayCounter& dayCounter)
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
-      index_(index), dayCounter_(dayCounter), fixingDays_(fixingDays),
+      index_(index), dayCounter_(dayCounter),
+      fixingDays_(fixingDays==Null<Integer>() ? index->fixingDays() : fixingDays),
       gearing_(gearing), spread_(spread)
     {
         if (dayCounter_.empty())

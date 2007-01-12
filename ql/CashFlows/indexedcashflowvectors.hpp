@@ -51,11 +51,7 @@ namespace QuantLib {
                         const boost::shared_ptr<IndexType>& index,
                         const std::vector<Real>& gearings,
                         const std::vector<Spread>& spreads,
-                        const DayCounter& dayCounter = DayCounter()
-                        #ifdef QL_PATCH_MSVC6
-                        , const IndexedCouponType* msvc6_bug = 0
-                        #endif
-                        )
+                        const DayCounter& paymentDayCounter = DayCounter())
     {
         QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
@@ -80,7 +76,7 @@ namespace QuantLib {
                                       start, end,
                                       fixingDays, index,
                                       gearing, spread,
-                                      start, end, dayCounter)));
+                                      start, end, paymentDayCounter)));
         } else {
             Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,
@@ -91,7 +87,7 @@ namespace QuantLib {
                                            start, end,
                                            fixingDays, index,
                                            gearing, spread,
-                                           reference, end, dayCounter)));
+                                           reference, end, paymentDayCounter)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
@@ -114,7 +110,7 @@ namespace QuantLib {
                                       start, end,
                                       fixingDays, index,
                                       gearing, spread,
-                                      start, end, dayCounter)));
+                                      start, end, paymentDayCounter)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -139,7 +135,7 @@ namespace QuantLib {
                                           start, end,
                                           fixingDays, index,
                                           gearing, spread,
-                                          start, end, dayCounter)));
+                                          start, end, paymentDayCounter)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference = calendar.adjust(reference,
@@ -150,7 +146,7 @@ namespace QuantLib {
                                                start, end,
                                                fixingDays, index,
                                                gearing, spread,
-                                               start, reference, dayCounter)));
+                                               start, reference, paymentDayCounter)));
             }
         }
         return leg;
