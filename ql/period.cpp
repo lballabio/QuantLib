@@ -90,6 +90,9 @@ namespace QuantLib {
     }
 
     bool operator<(const Period& p1, const Period& p2) {
+        if (p1.length()==0) return (p2.length()>0);
+        if (p2.length()==0) return (p1.length()<0);
+
         switch (p1.units()) {
           case Days:
             switch (p2.units()) {
