@@ -36,6 +36,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! helper function building a sequence of fixed rate coupons
     std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
         const Schedule& schedule,
@@ -116,6 +117,88 @@ namespace QuantLib {
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors,
                     const boost::shared_ptr<VanillaCMSCouponPricer>& pricer);
+    #endif
+
+    //! helper function building a sequence of fixed rate coupons
+    std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const std::vector<Rate>& couponRates,
+        const DayCounter& paymentDayCounter,
+        BusinessDayConvention paymentAdjustment = Following,
+        const DayCounter& firstPeriodDayCounter = DayCounter());
+
+    //! helper function building a sequence of par coupons
+    /*! Either UpFrontIndexedCoupons or ParCoupons are used depending
+        on the library configuration.
+
+        \todo A suitable algorithm should be implemented for the
+              calculation of the interpolated index fixing for a
+              short/long first coupon.
+    */
+    std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<IborIndex>& index,
+        const DayCounter& paymentDayCounter = DayCounter(),
+        Integer fixingDays = Null<Integer>(),
+        const BusinessDayConvention paymentAdjustment = Following,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>());
+
+    //! helper function building a sequence of capped/floored floating rate coupons
+    std::vector<boost::shared_ptr<CashFlow> > CappedFlooredFloatingRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<IborIndex>& index,
+        const DayCounter& paymentDayCounter = DayCounter(),
+        Integer fixingDays = Null<Integer>(),
+        const BusinessDayConvention paymentAdjustment = Following,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>(),
+        const Handle<CapletVolatilityStructure>& vol =
+              Handle<CapletVolatilityStructure>());
+
+    std::vector<boost::shared_ptr<CashFlow> > CMSCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<SwapIndex>& index,
+        const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+        const DayCounter& paymentDayCounter = DayCounter(),
+        Integer fixingDays = Null<Integer>(),
+        const BusinessDayConvention paymentAdjustment = Following,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>());
+
+    std::vector<boost::shared_ptr<CashFlow> > CMSZeroCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<SwapIndex>& index,
+        const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+        const DayCounter& paymentDayCounter = DayCounter(),
+        Integer fixingDays = Null<Integer>(),
+        const BusinessDayConvention paymentAdjustment = Following,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>());
+
+    std::vector<boost::shared_ptr<CashFlow> > CMSInArrearsCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<SwapIndex>& index,
+        const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+        const DayCounter& paymentDayCounter = DayCounter(),
+        Integer fixingDays = Null<Integer>(),
+        const BusinessDayConvention paymentAdjustment = Following,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>());
 
 }
 
