@@ -42,7 +42,7 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const std::vector<Rate>& couponRates,
-        const DayCounter& dayCount,
+        const DayCounter& paymentDayCount,
         const DayCounter& firstPeriodDayCount = DayCounter());
 
     //! helper function building a sequence of par coupons
@@ -57,40 +57,24 @@ namespace QuantLib {
         const Schedule& schedule,
         const BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
-        const Integer settlementDays,
+        Integer fixingDays,
         const boost::shared_ptr<IborIndex>& index,
-        const std::vector<Real>& gearings
-        #if !defined(QL_PATCH_MSVC6)
-        = std::vector<Real>()
-        #endif
-        ,
-        const std::vector<Spread>& spreads
-        #if !defined(QL_PATCH_MSVC6)
-        = std::vector<Spread>()
-        #endif
-        ,
-        const DayCounter& dayCounter = DayCounter());
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const DayCounter& paymentDayCounter = DayCounter());
 
     //! helper function building a sequence of capped/floored floating rate coupons
     std::vector<boost::shared_ptr<CashFlow> > CappedFlooredFloatingRateCouponVector(
         const Schedule& schedule,
         const BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
-        const Integer settlementDays,
+        Integer fixingDays,
         const boost::shared_ptr<IborIndex>& index,
-        const std::vector<Real>& gearings
-        #if !defined(QL_PATCH_MSVC6)
-        = std::vector<Real>()
-        #endif
-        ,
-        const std::vector<Spread>& spreads
-        #if !defined(QL_PATCH_MSVC6)
-        = std::vector<Spread>()
-        #endif
-        ,
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
         const std::vector<Rate>& caps = std::vector<Rate>(),
         const std::vector<Rate>& floors = std::vector<Rate>(),
-        const DayCounter& dayCounter = DayCounter(),
+        const DayCounter& paymentDayCounter = DayCounter(),
         const Handle<CapletVolatilityStructure>& vol =
               Handle<CapletVolatilityStructure>());
 
@@ -99,8 +83,8 @@ namespace QuantLib {
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
-                    Integer settlementDays,
-                    const DayCounter& dayCounter,
+                    Integer fixingDays,
+                    const DayCounter& paymentDayCounter,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
@@ -112,8 +96,8 @@ namespace QuantLib {
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
-                    Integer settlementDays,
-                    const DayCounter& dayCounter,
+                    Integer fixingDays,
+                    const DayCounter& paymentDayCounter,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
@@ -125,8 +109,8 @@ namespace QuantLib {
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
-                    Integer settlementDays,
-                    const DayCounter& dayCounter,
+                    Integer fixingDays,
+                    const DayCounter& paymentDayCounter,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
