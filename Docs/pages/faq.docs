@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@
     - \ref faq_contributing_code "How do I contribute code to the project?"
 
     \ref faq_building
+    - \ref faq_compiling_boost "I'm having trouble building Boost."
     - \ref faq_compiling_mingw "I'm having trouble building QuantLib with MinGW."
     - \ref faq_compiling_devcpp_choking "I get an error when trying to compile QuantLib in the Dev-C++ IDE."
     - \ref faq_compiling_missing_boost "I get a compile error about a missing boost header."
@@ -201,6 +202,23 @@
 
 
     \section faq_building Building QuantLib
+
+    <strong>
+    \anchor faq_compiling_boost
+    I'm having trouble building Boost.
+    </strong>
+
+    If you're using Visual C++ 7.1 or 8.0, you don't need to build
+    Boost: an installer for precompiled binaries is available at
+    <http://www.boost-consulting.com/download.html>.
+
+    If you're using another compiler, you can ask for help on the
+    QuantLib mailing list. However, you'll probably get better help
+    from the Boost mailing list (see
+    <http://boost.org/more/mailing_lists.htm#users> as the Boost
+    people have much better expertise in troubleshooting their
+    libraries than we have.
+
 
     <strong>
     \anchor faq_compiling_mingw
