@@ -22,9 +22,6 @@
 
 namespace QuantLib {
 
-    const Problem* LevenbergMarquardt::_thisP = 0;
-    Array LevenbergMarquardt::_initCostValues(0);
-
     #ifndef QL_DISABLE_DEPRECATED
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real ftol,
@@ -50,10 +47,11 @@ namespace QuantLib {
     }
 
     void LevenbergMarquardt::minimize(const Problem& P) {
-        _thisP = &P;
-        _initCostValues = P.costFunction().values(x());
+        ProblemData::instance().problem() = &P;
+        ProblemData::instance().initCostValues() 
+            = P.costFunction().values(x());
 
-        int m = _initCostValues.size();
+        int m = ProblemData::instance().initCostValues().size();
         int n = x().size();
         boost::scoped_array<double> xx(new double[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
@@ -84,7 +82,6 @@ namespace QuantLib {
                                  nprint, &info, &nfev, fjac.get(),
                                  ldfjac, ipvt.get(), qtf.get(),
                                  wa1.get(), wa2.get(), wa3.get(), wa4.get());
-
         info_ = info;
 
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
@@ -110,14 +107,13 @@ namespace QuantLib {
 
         // constraint handling needs some improvement in the future
         // starting point shouldn't be close to a constraint violation
-        Array result;
-        if (_thisP->constraint().test(xt)) {
-            const Array& tmp = _thisP->values(xt);
+        if (ProblemData::instance().problem()->constraint().test(xt)) {
+            const Array& tmp = ProblemData::instance().problem()->values(xt);
             std::copy(tmp.begin(), tmp.end(), fvec);
         } else {
-            std::copy(_initCostValues.begin(), _initCostValues.end(), fvec);
+            std::copy(ProblemData::instance().initCostValues().begin(), 
+                      ProblemData::instance().initCostValues().end(), fvec);
         }
-
     }
 
 }
