@@ -27,8 +27,6 @@ namespace QuantLib {
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-plain payoff given");
-        QL_REQUIRE(payoff->strike()>0.0,
-                   "Strike must be positive");
 
         boost::shared_ptr<GeneralizedBlackScholesProcess> process =
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
@@ -39,12 +37,16 @@ namespace QuantLib {
 
         switch (payoff->optionType()) {
           case Option::Call:
+            QL_REQUIRE(payoff->strike()>=0.0,
+                       "Strike must be positive or null");
             if (strike <= minmax())
                 results_.value = A(1) + C(1);
             else
                 results_.value = B(1);
             break;
           case Option::Put:
+            QL_REQUIRE(payoff->strike()>0.0,
+                       "Strike must be positive");
             if (strike >= minmax())
                 results_.value = A(-1) + C(-1);
             else
