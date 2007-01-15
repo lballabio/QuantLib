@@ -109,10 +109,11 @@ namespace QuantLib {
                                               spread(),
                                               100.,
                                               0.,
-                                              accrualStartDate(), 
-                                              accrualEndDate(),
+                                              referencePeriodStart(), 
+                                              referencePeriodEnd(),
                                               isInArrears_);
-            return (couponWithoutOptionality.rate()-spread())/gearing();
+            return (gearing() == 0.0 ? 0.0 :
+                couponWithoutOptionality.rate()-spread())/gearing();
         }
         Rate convexityAdjustmentImpl(Rate f) const {
             return (gearing() == 0.0 ? 0.0 : adjustedFixing()-f);
