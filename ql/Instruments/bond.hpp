@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,6 +60,9 @@ namespace QuantLib {
              const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
       public:
+        class arguments;
+        class results;
+        class engine;
         //! \name Inspectors
         //@{
         Date settlementDate() const;
@@ -128,22 +131,39 @@ namespace QuantLib {
                    Size maxEvaluations = 100) const;
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
-        Real accruedAmount(Date d = Date()) const;
+        virtual Real accruedAmount(Date d = Date()) const;
         bool isExpired() const;
         //@}
       protected:
         void performCalculations() const;
+        void setupArguments(Arguments*) const;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention accrualConvention_, paymentConvention_;
         Real faceAmount_;
-		DayCounter dayCount_;
+        DayCounter dayCount_;
 
         Date issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
         std::vector<boost::shared_ptr<CashFlow> > cashflows_;
         Handle<YieldTermStructure> discountCurve_;
     };
+
+    class Bond::arguments : public Arguments {
+      public:
+        Date settlementDate;
+        std::vector<boost::shared_ptr<CashFlow> > cashflows;
+        Calendar calendar;
+        BusinessDayConvention accrualConvention, paymentConvention;
+        DayCounter dayCounter;
+        Frequency frequency;
+        void validate() const;
+    };
+ 
+    class Bond::results : public Value {};
+
+    class Bond::engine : public GenericEngine<Bond::arguments,
+                                              Bond::results> {};
 
 
     // inline definitions

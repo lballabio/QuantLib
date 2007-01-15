@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -130,7 +130,7 @@ namespace QuantLib {
     }
 
 
-    Bond::Bond(Real faceAmount, 
+    Bond::Bond(Real faceAmount,
                const DayCounter& dayCount, const Calendar& calendar,
                BusinessDayConvention accrualConvention,
                BusinessDayConvention paymentConvention,
@@ -147,10 +147,14 @@ namespace QuantLib {
 
     Date Bond::settlementDate() const {
         // usually, the settlement is at T+n...
-        Date d = calendar_.advance(Settings::instance().evaluationDate(),
-                                   settlementDays_, Days);
-        // ...but the bond won't be traded until the issue date.
-        return std::max(d, issueDate_);
+        Date settlement =
+            calendar_.advance(Settings::instance().evaluationDate(),
+                              settlementDays_, Days);
+        // ...but the bond won't be traded until the issue date (if given.)
+        if (issueDate_ == Date())
+            return settlement;
+        else
+            return std::max(settlement, issueDate_);
     }
 
     Real Bond::cleanPrice() const {
@@ -229,23 +233,49 @@ namespace QuantLib {
 
     void Bond::performCalculations() const {
 
-        QL_REQUIRE(!discountCurve_.empty(),
-                   "no discounting term structure set to Bond");
+        if (engine_) {
+            Instrument::performCalculations();
+        } else {
+            QL_REQUIRE(!discountCurve_.empty(),
+                       "no discounting term structure set");
 
-        Date settlement = settlementDate();
-		NPV_ = 0.0;
+            Date settlement = settlementDate();
+            NPV_ = 0.0;
 
-        // add the discounted cash flows including redemption
-        for (Size i=0; i<cashflows_.size(); i++) {
+            // add the discounted cash flows including redemption
+            for (Size i=0; i<cashflows_.size(); i++) {
 
-            Date d = cashflows_[i]->date();
-            if (!cashflows_[i]->hasOccurred(settlement)) {
-                NPV_ += cashflows_[i]->amount() * discountCurve_->discount(d);
+                Date d = cashflows_[i]->date();
+                if (!cashflows_[i]->hasOccurred(settlement)) {
+                    NPV_ += cashflows_[i]->amount() *
+                            discountCurve_->discount(d);
+                }
             }
-        }
 
-        // adjust to bond settlement
-        NPV_ /= discountCurve_->discount(settlement);
+            // adjust to bond settlement
+            NPV_ /= discountCurve_->discount(settlement);
+        }
+    }
+
+
+    void Bond::setupArguments(Arguments* args) const {
+        Bond::arguments* arguments = dynamic_cast<Bond::arguments*>(args);
+        QL_REQUIRE(arguments != 0, "wrong argument type");
+
+        arguments->settlementDate = settlementDate();
+        arguments->cashflows = cashflows_;
+        arguments->calendar = calendar_;
+        arguments->accrualConvention = accrualConvention_;
+        arguments->paymentConvention = paymentConvention_;
+        arguments->dayCounter = dayCount_;
+        arguments->frequency = frequency_;
+    }
+
+    void Bond::arguments::validate() const {
+        QL_REQUIRE(settlementDate != Date(), "no settlement date provided");
+        for (Size i=0; i<cashflows.size(); ++i)
+            QL_REQUIRE(cashflows[i], "null coupon provided");
     }
 
 }
+
