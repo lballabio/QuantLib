@@ -29,6 +29,7 @@ include_HEADERS = \
     proxygreekengine.hpp \
     swapbasissystem.hpp \
     swapforwardconversionmatrix.hpp \
+    swapforwardmappings.hpp \
     upperboundengine.hpp \
     utilities.hpp
 
