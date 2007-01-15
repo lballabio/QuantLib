@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,6 +58,10 @@ namespace QuantLib {
         const Date& accrualStartDate() const;
         //! end of the accrual period
         const Date& accrualEndDate() const;
+        //! start date of the reference period
+        const Date& referencePeriodStart() const;
+        //! end date of the reference period
+        const Date& referencePeriodEnd() const;
         //! accrual period as fraction of year
         Time accrualPeriod() const;
         //! accrual period in days
@@ -111,6 +115,14 @@ namespace QuantLib {
 
     inline const Date& Coupon::accrualEndDate() const {
         return accrualEndDate_;
+    }
+
+    inline const Date& Coupon::referencePeriodStart() const {
+        return refPeriodStart_;
+    }
+
+    inline const Date& Coupon::referencePeriodEnd() const {
+        return refPeriodEnd_;
     }
 
     inline Time Coupon::accrualPeriod() const {
