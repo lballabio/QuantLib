@@ -94,7 +94,7 @@ namespace QuantLib {
     };
 
     class ImpliedStdDevQuote : public Quote,
-                               public Observer {
+                               public LazyObject {
       public:
         ImpliedStdDevQuote(Option::Type optionType,
                            const Handle<Quote>& forward,
@@ -104,8 +104,9 @@ namespace QuantLib {
                            Real accuracy = 1.0e-6);
         Real value() const;
         void update();
+        void performCalculations() const;
       protected:
-        mutable Volatility impliedVolatility_;
+        mutable Real impliedStdev_;
         Option::Type optionType_;
         Real strike_;
         Real accuracy_;
@@ -114,7 +115,7 @@ namespace QuantLib {
     };
 
     class EurodollarFuturesImpliedStdDevQuote : public Quote,
-                                                public Observer {
+                                                public LazyObject {
       public:
         EurodollarFuturesImpliedStdDevQuote(const Handle<Quote>& forward,
                                             const Handle<Quote>& callPrice,
@@ -124,8 +125,9 @@ namespace QuantLib {
                                             Real accuracy = 1.0e-6);
         Real value() const;
         void update();
+        void performCalculations() const;
       protected:
-        mutable Volatility impliedVolatility_;
+        mutable Real impliedStdev_;
         Real strike_;
         Real accuracy_;
         Handle<Quote> forward_;
@@ -145,11 +147,11 @@ namespace QuantLib {
     }
 
     inline void ImpliedStdDevQuote::update(){
-        notifyObservers();
+        Quote::notifyObservers();
     }
 
     inline void EurodollarFuturesImpliedStdDevQuote::update() {
-        notifyObservers();
+        Quote::notifyObservers();
     }
 }
 

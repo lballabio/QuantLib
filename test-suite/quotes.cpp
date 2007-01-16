@@ -182,7 +182,8 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
         BOOST_FAIL("impliedStdevQuote yields " << impliedStdev << "\n"
                 << "expected result is " << expectedImpliedStdev);
     // then we test the observer/observable chain
-    f.registerWith(impliedStdevQuote);
+    boost::shared_ptr<Quote> quote = impliedStdevQuote;
+    f.registerWith(quote);
     forwardQuote->setValue(0.05);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");

@@ -37,23 +37,27 @@ namespace QuantLib {
                                            Real strike,
                                            Real guess,
                                            Real accuracy)
-    : impliedVolatility_(guess), optionType_(optionType), strike_(strike),
+    : impliedStdev_(guess), optionType_(optionType), strike_(strike),
       accuracy_(accuracy), forward_(forward), price_(price) {
         registerWith(forward_);
         registerWith(price_);
     }
 
     Real ImpliedStdDevQuote::value() const {
+        calculate();
+        return impliedStdev_;
+    }
+
+    void ImpliedStdDevQuote::performCalculations() const {
         static const Real discount_ = 1.0;
         Real blackPrice = price_->value();
         try {
-            impliedVolatility_ = blackImpliedStdDev(optionType_, strike_,
-                forward_->value(), blackPrice, discount_, impliedVolatility_,
+            impliedStdev_ = blackImpliedStdDev(optionType_, strike_,
+                forward_->value(), blackPrice, discount_, impliedStdev_,
                 accuracy_);
         } catch(QuantLib::Error&) {
-            impliedVolatility_ = 0.0;
+            impliedStdev_ = 0.0;
         }
-        return impliedVolatility_;
     }
 
     EurodollarFuturesImpliedStdDevQuote::EurodollarFuturesImpliedStdDevQuote(
@@ -63,7 +67,7 @@ namespace QuantLib {
                                 Real strike,
                                 Real guess,
                                 Real accuracy)
-    : impliedVolatility_(guess), strike_(100.0-strike),
+    : impliedStdev_(guess), strike_(100.0-strike),
       accuracy_(accuracy), forward_(forward),
       callPrice_(callPrice), putPrice_(putPrice) {
         registerWith(forward_);
@@ -72,17 +76,22 @@ namespace QuantLib {
     }
 
     Real EurodollarFuturesImpliedStdDevQuote::value() const {
+        calculate();
+        return impliedStdev_;
+    }
+
+    void EurodollarFuturesImpliedStdDevQuote::performCalculations() const {
         static const Real discount_ = 1.0;
         Real forwardValue = 100.0-forward_->value();
         if (strike_>forwardValue) {
-            impliedVolatility_ = blackImpliedStdDev(Option::Call, strike_,
+            impliedStdev_ = blackImpliedStdDev(Option::Call, strike_,
                 forwardValue, putPrice_->value(), discount_,
-                impliedVolatility_, accuracy_);
+                impliedStdev_, accuracy_);
         } else {
-            impliedVolatility_ = blackImpliedStdDev(Option::Put, strike_,
+            impliedStdev_ = blackImpliedStdDev(Option::Put, strike_,
                 forwardValue, callPrice_->value(), discount_,
-                impliedVolatility_, accuracy_);
+                impliedStdev_, accuracy_);
         }
-        return impliedVolatility_;
     }
+
 }
