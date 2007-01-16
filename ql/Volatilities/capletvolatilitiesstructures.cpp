@@ -79,6 +79,8 @@ using namespace QuantLib;
         dayCounter_(dayCounter),
         tenorTimes_(smileSections.size()),
         smileSections_(smileSections) {
+        QL_REQUIRE(!smileSections.empty(), "Smile Sections vector must \
+                                                        not be empty!");
         for (Size i = 0; i < smileSections_.size(); i++){
             registerWith(smileSections[i]);
             tenorTimes_[i] = smileSections[i]->exerciseTime();
