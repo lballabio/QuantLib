@@ -3201,6 +3201,10 @@
 				Name="Interpolations"
 				>
 				<File
+					RelativePath=".\ql\Math\abcdinterpolation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\Math\backwardflatinterpolation.hpp"
 					>
 				</File>
