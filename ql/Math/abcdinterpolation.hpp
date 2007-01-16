@@ -234,7 +234,7 @@ namespace QuantLib {
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
 
-                // why????
+                // volatility values might be not set at construction time
                 if (compute)
                     calculate();
             }
