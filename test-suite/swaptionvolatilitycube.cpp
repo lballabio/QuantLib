@@ -338,12 +338,17 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Matrix parametersGuess(optionTenors_.size()*swapTenors_.size(), 4);
-    for(Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
-        parametersGuess[i][0] = 0.2;
-        parametersGuess[i][1] = 0.5;
-        parametersGuess[i][2] = 0.4;
-        parametersGuess[i][3] = 0.0;
+    std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
+    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(4);
+        parametersGuess[i][0] = 
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] = 
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] = 
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] = 
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     }
     std::vector<bool> isParameterFixed(4, false);
 

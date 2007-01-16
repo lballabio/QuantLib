@@ -43,29 +43,39 @@ namespace QuantLib {
                 const std::vector<std::vector<Handle<Quote> > >& volSpreads,
                 const boost::shared_ptr<SwapIndex>& swapIndexBase,
                 bool vegaWeightedSmileFit,
-                const Matrix& parametersGuess,
+                const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
                 bool isAtmCalibrated)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
+      parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated)
     {
+       registerWithParametersGuess();
+    }
 
+    void SwaptionVolCube1::registerWithParametersGuess()
+    {
+        for (Size i=0; i<4; i++)
+            for (Size j=0; j<nOptionTenors_; j++)
+                for (Size k=0; k<nSwapTenors_; k++)
+                    registerWith(parametersGuessQuotes_[j+k*nOptionTenors_][i]);
+    }
+
+    void SwaptionVolCube1::performCalculations() const{
+        //! set parametersGuess_ by parametersGuessQuotes_
         parametersGuess_ = Cube(optionDates_, swapTenors_,
                                 optionTimes_, swapLengths_, 4);
         Size i;
         for (i=0; i<4; i++)
             for (Size j=0; j<nOptionTenors_ ; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
-                    parametersGuess_.setElement(
-                                 i, j, k, parametersGuess[j+k*nOptionTenors_][i]);
+                    parametersGuess_.setElement(i, j, k, 
+                        parametersGuessQuotes_[j+k*nOptionTenors_][i]->value());
                 }
         parametersGuess_.updateInterpolators();
-        
-    }
 
-    void SwaptionVolCube1::performCalculations() const{
         //! set marketVolCube_ by volSpreads_ quotes
         marketVolCube_ = Cube(optionDates_, swapTenors_,
                               optionTimes_, swapLengths_, nStrikes_);

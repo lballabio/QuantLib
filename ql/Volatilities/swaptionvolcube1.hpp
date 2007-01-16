@@ -91,7 +91,7 @@ namespace QuantLib {
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
             bool vegaWeightedSmileFit,
-            const Matrix& parametersGuess,
+            const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
             const std::vector<bool>& isParameterFixed,
             bool isAtmCalibrated);
         ////! \name LazyObject interface
@@ -123,6 +123,7 @@ namespace QuantLib {
         void recalibration(Real beta,
                            const Period& swapTenor);
      protected:
+        void registerWithParametersGuess();
         boost::shared_ptr<SmileSection> smileSection(
                                     Time optionTime,
                                     Time swapLength,
@@ -139,6 +140,7 @@ namespace QuantLib {
         mutable Cube denseParameters_;
         mutable std::vector< std::vector<boost::shared_ptr<SmileSection> > >
                                                                 sparseSmiles_;
+        std::vector<std::vector<Handle<Quote> > > parametersGuessQuotes_;
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
