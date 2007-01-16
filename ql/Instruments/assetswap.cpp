@@ -91,8 +91,15 @@ namespace QuantLib {
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
-            // remove redemption from the bond leg
-            bondLeg.pop_back();
+            ////// remove redemption from the bond leg
+            ////bondLeg.pop_back();
+             //back payment
+             //the investor receives the difference between redemption value and 100, 
+             //for bonds not redeeming at par
+            Real backpayment=nominal_/100.0*nominal_;
+            boost::shared_ptr<CashFlow> backpaymentCashFlow (new
+                SimpleCashFlow(backpayment, floatSchedule.endDate()));
+            floatingLeg.push_back(backpaymentCashFlow);
         } else {
             // final nominal exchange
             Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
