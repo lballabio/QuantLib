@@ -32,6 +32,7 @@ libCashFlows_la_SOURCES = \
     cmscoupon.cpp \
     conundrumpricer.cpp \
     dividend.cpp \
+    floatingratecoupon.cpp \
     inarrearindexedcoupon.cpp \
     parcoupon.cpp \
     shortfloatingcoupon.cpp \
