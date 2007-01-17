@@ -45,10 +45,12 @@ namespace QuantLib {
                              const Spread spread = 0.0,
                              const Date& refPeriodStart = Date(),
                              const Date& refPeriodEnd = Date(),
-                             const DayCounter& dayCounter = DayCounter())
+                             const DayCounter& dayCounter = DayCounter(),
+                             bool isInArrears = false)
         : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                              fixingDays, index, gearing, spread,
-                             refPeriodStart, refPeriodEnd, dayCounter) {}
+                             refPeriodStart, refPeriodEnd, 
+                             dayCounter, isInArrears) {}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

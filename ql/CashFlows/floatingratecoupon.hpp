@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
  Copyright (C) 2003 Nicolas Di Césaré
@@ -30,6 +31,7 @@
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/Utilities/null.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
+#include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
 
@@ -52,7 +54,8 @@ namespace QuantLib {
                            const Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter());
+                           const DayCounter& dayCounter = DayCounter(),
+                           bool isInArrears = false);
         virtual ~FloatingRateCoupon() {}
         //! \name CashFlow interface
         //@{
@@ -91,6 +94,8 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
+        void setCapletVolatility(const Handle<CapletVolatilityStructure>& v);
+
       protected:
         //! convexity adjustment for the given index fixing
         virtual Rate convexityAdjustmentImpl(Rate fixing) const;
@@ -99,110 +104,12 @@ namespace QuantLib {
         Integer fixingDays_;
         Real gearing_;
         Spread spread_;
+        bool isInArrears_;
+        Handle<CapletVolatilityStructure> capletVolatility_;
     };
 
 
-    // inline definitions
-
-    inline FloatingRateCoupon::FloatingRateCoupon(
-                         const Date& paymentDate, const Real nominal,
-                         const Date& startDate, const Date& endDate,
-                         const Integer fixingDays,
-                         const boost::shared_ptr<InterestRateIndex>& index,
-                         const Real gearing, const Spread spread,
-                         const Date& refPeriodStart, const Date& refPeriodEnd,
-                         const DayCounter& dayCounter)
-    : Coupon(nominal, paymentDate,
-             startDate, endDate, refPeriodStart, refPeriodEnd),
-      index_(index), dayCounter_(dayCounter),
-      fixingDays_(fixingDays==Null<Integer>() ? index->fixingDays() : fixingDays),
-      gearing_(gearing), spread_(spread)
-    {
-        if (dayCounter_.empty())
-            dayCounter_ = index_->dayCounter();
-        registerWith(index_);
-        registerWith(Settings::instance().evaluationDate());
-    }
-
-    inline Rate FloatingRateCoupon::rate() const {
-        return gearing() * adjustedFixing() + spread();
-    }
-
-    inline Real FloatingRateCoupon::amount() const {
-        return rate() * accrualPeriod() * nominal();
-    }
-
-    inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
-        if (d <= accrualStartDate_ || d > paymentDate_) {
-            return 0.0;
-        } else {
-            return nominal() * rate() *
-                dayCounter().yearFraction(accrualStartDate_,
-                                          std::min(d,accrualEndDate_),
-                                          refPeriodStart_,
-                                          refPeriodEnd_);
-        }
-    }
-
-    inline DayCounter FloatingRateCoupon::dayCounter() const {
-        return dayCounter_;
-   }
-
-    inline const boost::shared_ptr<InterestRateIndex>&
-    FloatingRateCoupon::index() const {
-        return index_;
-    }
-
-    inline Integer FloatingRateCoupon::fixingDays() const {
-        return fixingDays_;
-    }
-
-    inline Date FloatingRateCoupon::fixingDate() const {
-        return index_->calendar().advance(accrualStartDate_,
-                                          -fixingDays(), Days,
-                                          Preceding);
-    }
-
-
-
-    inline Real FloatingRateCoupon::gearing() const {
-        return gearing_;
-    }
-
-    inline Rate FloatingRateCoupon::indexFixing() const {
-        return index_->fixing(fixingDate());
-    }
-
-    inline Rate FloatingRateCoupon::convexityAdjustment() const {
-        return convexityAdjustmentImpl(indexFixing());
-    }
-
-    inline Rate FloatingRateCoupon::adjustedFixing() const {
-        Rate f = indexFixing();
-        return f + convexityAdjustmentImpl(f);
-    }
-
-    inline Spread FloatingRateCoupon::spread() const {
-        return spread_;
-    }
-
-    inline void FloatingRateCoupon::update() {
-        notifyObservers();
-    }
-
-    inline Rate
-    FloatingRateCoupon::convexityAdjustmentImpl(Rate) const {
-        return 0.0;
-    }
-
-    inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FloatingRateCoupon>* v1 =
-            dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            Coupon::accept(v);
-    }
+  
 
 }
 

@@ -47,10 +47,12 @@ namespace QuantLib {
               const Spread spread = 0.0,
               const Date& refPeriodStart = Date(),
               const Date& refPeriodEnd = Date(),
-              const DayCounter& dayCounter = DayCounter())
+              const DayCounter& dayCounter = DayCounter(),
+              bool isInArrears = false)
         : IndexedCouponType(paymentDate, nominal, startDate, endDate,
                             fixingDays, index, gearing, spread,
-                            refPeriodStart, refPeriodEnd, dayCounter) {}
+                            refPeriodStart, refPeriodEnd, 
+                            dayCounter, isInArrears) {}
         //! inhibit calculation
         /*! Unlike ParCoupon, this coupon can't calculate
             its fixing for future dates, either.

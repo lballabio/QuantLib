@@ -21,6 +21,7 @@
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>
 
 namespace QuantLib {
+#ifndef QL_DISABLE_DEPRECATED
 
     void InArrearIndexedCoupon::setCapletVolatility(
                                  const Handle<CapletVolatilityStructure>& v) {
@@ -47,6 +48,5 @@ namespace QuantLib {
             }
         }
     }
-
+#endif
 }
-

@@ -47,7 +47,8 @@ namespace QuantLib {
               const Spread spread = 0.0,
               const Date& refPeriodStart = Date(),
               const Date& refPeriodEnd = Date(),
-              const DayCounter& dayCounter = DayCounter());
+              const DayCounter& dayCounter = DayCounter(),
+              bool isInArrears = false);
         //! throws when an interpolated fixing is needed
         Real rate() const;
         //! \name Visitability

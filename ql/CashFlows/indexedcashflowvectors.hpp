@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! helper function building a leg of floating coupons
-    /*! Either ParCoupon, UpFrontIndexedCoupon, InArrearIndexedCoupon,
+    /*! Either ParCoupon, UpFrontIndexedCoupon, 
         or any other coupon can be used whose constructor takes the
         same arguments.
 
@@ -51,7 +51,8 @@ namespace QuantLib {
                         const boost::shared_ptr<IndexType>& index,
                         const std::vector<Real>& gearings,
                         const std::vector<Spread>& spreads,
-                        const DayCounter& paymentDayCounter = DayCounter())
+                        const DayCounter& paymentDayCounter = DayCounter(),
+                        bool isInArrears = false)
     {
         QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
@@ -76,7 +77,9 @@ namespace QuantLib {
                                       start, end,
                                       fixingDays, index,
                                       gearing, spread,
-                                      start, end, paymentDayCounter)));
+                                      start, end, 
+                                      paymentDayCounter,
+                                      isInArrears)));
         } else {
             Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,
@@ -87,7 +90,9 @@ namespace QuantLib {
                                            start, end,
                                            fixingDays, index,
                                            gearing, spread,
-                                           reference, end, paymentDayCounter)));
+                                           reference, end, 
+                                           paymentDayCounter,
+                                           isInArrears)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
@@ -110,7 +115,9 @@ namespace QuantLib {
                                       start, end,
                                       fixingDays, index,
                                       gearing, spread,
-                                      start, end, paymentDayCounter)));
+                                      start, end, 
+                                      paymentDayCounter,
+                                      isInArrears)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -135,7 +142,9 @@ namespace QuantLib {
                                           start, end,
                                           fixingDays, index,
                                           gearing, spread,
-                                          start, end, paymentDayCounter)));
+                                          start, end, 
+                                          paymentDayCounter,
+                                          isInArrears)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference = calendar.adjust(reference,
@@ -146,7 +155,9 @@ namespace QuantLib {
                                                start, end,
                                                fixingDays, index,
                                                gearing, spread,
-                                               start, reference, paymentDayCounter)));
+                                               start, reference, 
+                                               paymentDayCounter,
+                                               isInArrears)));
             }
         }
         return leg;

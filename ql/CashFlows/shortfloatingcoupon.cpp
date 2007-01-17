@@ -27,13 +27,14 @@ namespace QuantLib {
         const Integer fixingDays, const boost::shared_ptr<IborIndex>& index,
         const Real gearing, const Spread spread,
         const Date& refPeriodStart, const Date& refPeriodEnd,
-        const DayCounter& dayCounter)
+        const DayCounter& dayCounter,
+        bool isInArrears)
     : ParCoupon(paymentDate, nominal,
                 startDate, endDate,
                 fixingDays, index,
                 gearing, spread,
                 refPeriodStart, refPeriodEnd,
-                dayCounter) {}
+                dayCounter, isInArrears) {}
 
     Real Short<ParCoupon>::rate() const {
         Date today = Settings::instance().evaluationDate();

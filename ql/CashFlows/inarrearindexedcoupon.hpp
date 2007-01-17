@@ -29,6 +29,7 @@
 #include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
+#ifndef QL_DISABLE_DEPRECATED
 
     //! In-arrear floating-rate coupon
     /*! \warning This class does not perform any date adjustment,
@@ -89,7 +90,7 @@ namespace QuantLib {
         else
             FloatingRateCoupon::accept(v);
     }
-
+#endif
 }
 
 #endif

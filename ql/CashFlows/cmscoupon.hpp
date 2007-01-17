@@ -87,9 +87,10 @@ namespace QuantLib {
         }
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
-        //! fixing date
-        virtual Date fixingDate() const;
-        //@}
+
+        //void setPricer(const boost::shared_ptr<VanillaCMSCouponPricer>& pricer){
+		//	pricer_ = pricer;
+		//};
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -120,7 +121,6 @@ namespace QuantLib {
         }
         boost::shared_ptr<SwapIndex> swapIndex_;
         Rate cap_, floor_;
-        bool isInArrears_;
         boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
     };
 

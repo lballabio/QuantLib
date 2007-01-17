@@ -41,8 +41,8 @@ namespace QuantLib {
                     bool isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter),
-      swapIndex_(index), cap_(cap), floor_(floor), isInArrears_(isInArrears),
+                         refPeriodStart, refPeriodEnd, dayCounter, isInArrears),
+      swapIndex_(index), cap_(cap), floor_(floor),
       pricer_(pricer) {}
 
     namespace {
@@ -210,12 +210,6 @@ namespace QuantLib {
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
-    }
-
-    Date CMSCoupon::fixingDate() const {
-        Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
-        return index_->calendar().advance(refDate, -fixingDays_*Days,
-                                          Preceding);
     }
 
 }

@@ -28,10 +28,12 @@ namespace QuantLib {
                          const boost::shared_ptr<IborIndex>& index,
                          Real gearing, Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd,
-                         const DayCounter& dayCounter)
+                         const DayCounter& dayCounter,
+                         bool isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter) {}
+                         refPeriodStart, refPeriodEnd, 
+                         dayCounter,isInArrears) {}
 
     Rate ParCoupon::rate() const {
         boost::shared_ptr<YieldTermStructure> termStructure =

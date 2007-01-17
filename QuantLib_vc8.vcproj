@@ -846,6 +846,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\floatingratecoupon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\CashFlows\floatingratecoupon.hpp"
 				>
 			</File>
