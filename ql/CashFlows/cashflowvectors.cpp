@@ -303,39 +303,39 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0),
+                              start, end, fixingDays, index, 
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end)));
+                              reference, end, paymentDayCounter)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,i-1), 
+                              start, end, fixingDays, index, 
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -343,25 +343,25 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end)));
+                                  start, end, paymentDayCounter)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index,
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference)));
+                                  start, reference, paymentDayCounter)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {
@@ -401,63 +401,63 @@ namespace QuantLib {
         Date start = schedule.date(0), end = schedule.date(1);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate,get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end)));
+                              reference, end, paymentDayCounter)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,i-1), 
+                              start, end, fixingDays, index,
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
             start = end; end = schedule.date(N-1);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2),  
+                                  start, end, fixingDays, index,
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end)));
+                                  start, end, paymentDayCounter)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2),  
+                                  start, end, fixingDays, index,
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference)));
+                                  start, reference, paymentDayCounter)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {
@@ -498,39 +498,39 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0),  
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end, true)));
+                              start, end, paymentDayCounter, true)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end, true)));
+                              reference, end,paymentDayCounter, true)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,i-1),
+                              start, end, fixingDays, index,
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end, true)));
+                              start, end, paymentDayCounter, true)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -538,25 +538,25 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index,
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end, true)));
+                                  start, end, paymentDayCounter, true)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2),
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference, true)));
+                                  start, reference, paymentDayCounter, true)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {
@@ -832,39 +832,39 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0),
+                              start, end, fixingDays, index, 
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end)));
+                              reference, end, paymentDayCounter)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,i-1), 
+                              start, end, fixingDays, index, 
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -872,25 +872,25 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter, 
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end)));
+                                  start, end, paymentDayCounter)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter, 
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference)));
+                                  start, reference, paymentDayCounter)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {
@@ -929,63 +929,63 @@ namespace QuantLib {
         Date start = schedule.date(0), end = schedule.date(1);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,0),  
+                              start, end, fixingDays, index,
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end)));
+                              reference, end, paymentDayCounter)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter,
+                new CMSCoupon(paymentDate, get(nominals,i-1), 
+                              start, end, fixingDays, index,
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end)));
+                              start, end, paymentDayCounter)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
             start = end; end = schedule.date(N-1);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter, 
+                    new CMSCoupon(paymentDate, get(nominals,N-2),
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end)));
+                                  start, end, paymentDayCounter)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter, 
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference)));
+                                  start, reference, paymentDayCounter)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {
@@ -1026,39 +1026,39 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index, 
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              start, end, true)));
+                              start, end, paymentDayCounter,true)));
 
         } else {
             Date reference = end - schedule.tenor();
             reference =
                 calendar.adjust(reference,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,0), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,0), 
+                              start, end, fixingDays, index, 
                               get(gearings,0,1.0),
                               get(spreads,0,0.0),
                               get(caps,0,Null<Rate>()),
                               get(floors,0,Null<Rate>()),
-                              reference, end, true)));
+                              reference, end, paymentDayCounter,true)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new CMSCoupon(get(nominals,i-1), paymentDate, index,
-                              start, end, fixingDays, paymentDayCounter, 
+                new CMSCoupon(paymentDate, get(nominals,i-1), 
+                              start, end, fixingDays, index, 
                               get(gearings,i-1,1.0),
                               get(spreads,i-1,0.0),
                               get(caps,i-1,Null<Rate>()),
                               get(floors,i-1,Null<Rate>()),
-                              start, end, true)));
+                              start, end,paymentDayCounter, true)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -1066,25 +1066,25 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter, 
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index, 
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, end, true)));
+                                  start, end, paymentDayCounter, true)));
             } else {
                 Date reference = start + schedule.tenor();
                 reference =
                     calendar.adjust(reference,paymentAdjustment);
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CMSCoupon(get(nominals,N-2), paymentDate, index,
-                                  start, end, fixingDays, paymentDayCounter,
+                    new CMSCoupon(paymentDate, get(nominals,N-2), 
+                                  start, end, fixingDays, index,
                                   get(gearings,N-2,1.0),
                                   get(spreads,N-2,0.0),
                                   get(caps,N-2,Null<Rate>()),
                                   get(floors,N-2,Null<Rate>()),
-                                  start, reference, true)));
+                                  start, reference, paymentDayCounter,true)));
             }
         }
         for (Size i=0; i<leg.size(); ++i) {

@@ -52,6 +52,8 @@ namespace QuantLib {
                            const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing = 1.0,
                            const Spread spread = 0.0,
+                           //const Rate cap = Null<Rate>(),
+                           //const Rate floor = Null<Rate>(),
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),

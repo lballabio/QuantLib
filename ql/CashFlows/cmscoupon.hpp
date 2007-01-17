@@ -59,19 +59,21 @@ namespace QuantLib {
     */
     class CMSCoupon : public FloatingRateCoupon {
       public:
-        CMSCoupon(const Real nominal,
-                  const Date& paymentDate,
+        CMSCoupon(const Date& paymentDate,
+                  const Real nominal,
+                  const Date& startDate, 
+                  const Date& endDate,
+                  const Integer fixingDays,
                   const boost::shared_ptr<SwapIndex>& index,
-                  const Date& startDate, const Date& endDate,
-                  Integer fixingDays,
-                  const DayCounter& dayCounter,
-                  Real gearing,
-                  Spread spread,
-                  Rate cap = Null<Rate>(),
-                  Rate floor = Null<Rate>(),
+                  const Real gearing = 1.0,
+                  const Spread spread= 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false);
+
         //! \name Coupon interface
         //@{
         Real price(const Handle<YieldTermStructure>& discountingCurve) const;
@@ -97,19 +99,19 @@ namespace QuantLib {
       private:
 
         Rate adjustedFixing() const{
-            CMSCoupon couponWithoutOptionality(nominal(), 
-                                              date(),
-                                              swapIndex(),
+            CMSCoupon couponWithoutOptionality(date(),
+                                              nominal(),
                                               accrualStartDate(), 
                                               accrualEndDate(),
                                               fixingDays(),
-                                              dayCounter(),
+                                              swapIndex(),
                                               gearing(),
                                               spread(),
                                               100.,
                                               0.,
                                               referencePeriodStart(), 
                                               referencePeriodEnd(),
+                                              dayCounter(),
                                               isInArrears_);
             couponWithoutOptionality.setPricer(pricer_);
             return (gearing() == 0.0 ? 0.0 :

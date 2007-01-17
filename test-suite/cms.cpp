@@ -394,16 +394,20 @@ void CmsTest::testFairRate()  {
 							   modelOfYieldCurves_[h],0.));
 
     //Coupons
-    CMSCoupon coupon1(1,
-        paymentDate_, index_, startDate_, endDate_, settlementDays_,
-        iborIndex_->dayCounter(),
-        gearing_, spread_, infiniteCap_, infiniteFloor_);
+    CMSCoupon coupon1(
+        paymentDate_,1, startDate_, endDate_, settlementDays_,
+        index_, gearing_, spread_, 
+        infiniteCap_, infiniteFloor_,
+        startDate_, endDate_,
+        iborIndex_->dayCounter());
     coupon1.setPricer(numericalPricer);
 
-    CMSCoupon coupon2(1,
-        paymentDate_, index_, startDate_, endDate_, settlementDays_,
-        iborIndex_->dayCounter(),
-        gearing_, spread_, infiniteCap_, infiniteFloor_);
+    CMSCoupon coupon2(
+        paymentDate_,1, startDate_, endDate_, settlementDays_,
+         index_, gearing_, spread_, 
+         infiniteCap_, infiniteFloor_, 
+         startDate_, endDate_,
+         iborIndex_->dayCounter());
     coupon2.setPricer(analyticPricer);
  
     //Computation
@@ -458,29 +462,32 @@ void CmsTest::testParity() {
             for (Size pricerIndex=0; pricerIndex < pricers.size();
                  pricerIndex++) {
 
-                CMSCoupon swaplet(1, paymentDate_, index_,
+                CMSCoupon swaplet(paymentDate_, 1,  
                                   startDate_, endDate_, settlementDays_,
-                                  iborIndex_->dayCounter(),
-                                  gearing_, spread_, 
-                                  infiniteCap_, infiniteFloor_);
+                                  index_, gearing_, spread_, 
+                                  infiniteCap_, infiniteFloor_,
+                                  startDate_, endDate_,
+                                  iborIndex_->dayCounter());
                 swaplet.setPricer(pricers[pricerIndex]);
                 Real strike = .02;
 
                 for (Size strikeIndex = 0; strikeIndex < 10; strikeIndex++) {
 
                     strike += .005;
-                    CMSCoupon caplet(1, paymentDate_, index_,
+                    CMSCoupon caplet(paymentDate_, 1, 
                                      startDate_, endDate_, settlementDays_,
-                                     iborIndex_->dayCounter(),
-                                     gearing_, spread_, 
-                                     strike, infiniteFloor_);
+                                     index_, gearing_, spread_, 
+                                     strike, infiniteFloor_, 
+                                     startDate_, endDate_,
+                                     iborIndex_->dayCounter());
                     caplet.setPricer(pricers[pricerIndex]);
 
-                    CMSCoupon floorlet(1, paymentDate_, index_,
+                    CMSCoupon floorlet(paymentDate_, 1, 
                                        startDate_, endDate_, settlementDays_,
-                                       iborIndex_->dayCounter(),
-                                       gearing_, spread_, 
-                                       infiniteCap_, strike);
+                                       index_, gearing_, spread_, 
+                                       infiniteCap_, strike,
+                                       startDate_, endDate_,
+                                       iborIndex_->dayCounter());
                     floorlet.setPricer(pricers[pricerIndex]);
 
                     //Computation

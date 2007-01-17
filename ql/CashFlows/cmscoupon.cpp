@@ -25,18 +25,19 @@
 namespace QuantLib {
 
     CMSCoupon::CMSCoupon(
-                    const Real nominal,
                     const Date& paymentDate,
+                    const Real nominal,
+                    const Date& startDate, 
+                    const Date& endDate,
+                    const Integer fixingDays,
                     const boost::shared_ptr<SwapIndex>& index,
-                    const Date& startDate, const Date& endDate,
-                    Integer fixingDays,
-                    const DayCounter& dayCounter,
-                    Real gearing,
-                    Spread spread,
-                    Rate cap,
-                    Rate floor,
+                    const Real gearing,
+                    const Spread spread,
+                    const Rate cap,
+                    const Rate floor,
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
+                    const DayCounter& dayCounter,
                     bool isInArrears)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
