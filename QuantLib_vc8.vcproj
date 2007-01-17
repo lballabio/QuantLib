@@ -53,7 +53,7 @@
 				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
 				ObjectFile=".\build\vc80\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-gd-0_4_0"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-gd-0_9_0"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-gd-0_4_0.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-gd-0_9_0.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -160,7 +160,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-s-0_4_0.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-s-0_9_0.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -244,7 +244,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-0_4_0.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-0_9_0.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -302,7 +302,7 @@
 				PrecompiledHeaderFile=".\build\vc80\$(ConfigurationName)/QuantLib.pch"
 				AssemblerListingLocation=".\build\vc80\$(ConfigurationName)/"
 				ObjectFile=".\build\vc80\$(ConfigurationName)/"
-				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-sgd-0_4_0"
+				ProgramDataBaseFileName=".\lib\QuantLib-vc80-mt-sgd-0_9_0"
 				BrowseInformation="1"
 				BrowseInformationFile=".\build\vc80\$(ConfigurationName)/"
 				WarningLevel="3"
@@ -325,7 +325,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\lib\QuantLib-vc80-mt-sgd-0_4_0.lib"
+				OutputFile=".\lib\QuantLib-vc80-mt-sgd-0_9_0.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
