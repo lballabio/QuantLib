@@ -31,7 +31,6 @@ namespace QuantLib {
                     const Date& startDate, const Date& endDate,
                     Integer fixingDays,
                     const DayCounter& dayCounter,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                     Real gearing,
                     Spread spread,
                     Rate cap,
@@ -42,8 +41,7 @@ namespace QuantLib {
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, isInArrears),
-      swapIndex_(index), cap_(cap), floor_(floor),
-      pricer_(pricer) {}
+      swapIndex_(index), cap_(cap), floor_(floor){}
 
     namespace {
 
@@ -110,6 +108,7 @@ namespace QuantLib {
                 r = std::max(r, floor_);
             return r;
         } else {
+            QL_REQUIRE(pricer_, "pricer not set");
             pricer_->initialize(*this);
             return pricer_->rate();
         }

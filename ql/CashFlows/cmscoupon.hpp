@@ -65,7 +65,6 @@ namespace QuantLib {
                   const Date& startDate, const Date& endDate,
                   Integer fixingDays,
                   const DayCounter& dayCounter,
-                  const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
                   Real gearing,
                   Spread spread,
                   Rate cap = Null<Rate>(),
@@ -88,9 +87,9 @@ namespace QuantLib {
         Rate cap() const { return cap_; }
         Rate floor() const { return floor_; }
 
-        //void setPricer(const boost::shared_ptr<VanillaCMSCouponPricer>& pricer){
-		//	pricer_ = pricer;
-		//};
+        void setPricer(const boost::shared_ptr<VanillaCMSCouponPricer>& pricer){
+			pricer_ = pricer;
+		};
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
@@ -105,7 +104,6 @@ namespace QuantLib {
                                               accrualEndDate(),
                                               fixingDays(),
                                               dayCounter(),
-                                              pricer_,
                                               gearing(),
                                               spread(),
                                               100.,
@@ -113,6 +111,7 @@ namespace QuantLib {
                                               referencePeriodStart(), 
                                               referencePeriodEnd(),
                                               isInArrears_);
+            couponWithoutOptionality.setPricer(pricer_);
             return (gearing() == 0.0 ? 0.0 :
                 couponWithoutOptionality.rate()-spread())/gearing();
         }
