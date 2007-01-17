@@ -3309,9 +3309,6 @@
 			Name="Math"
 			Filter="">
 			<File
-				RelativePath=".\ql\Math\abcdinterpolation.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Math\all.hpp">
 			</File>
 			<File

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=888
+UnitCount=887
 Type=2
 Ver=1
 ObjFiles=
@@ -8879,16 +8879,6 @@ BuildCmd=
 
 [Unit887]
 FileName=ql\Math\surface.cpp
-CompileCpp=1
-Folder=Math
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit888]
-FileName=ql\Math\abcdinterpolation.hpp
 CompileCpp=1
 Folder=Math
 Compile=1
