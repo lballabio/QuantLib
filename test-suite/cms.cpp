@@ -397,12 +397,14 @@ void CmsTest::testFairRate()  {
     CMSCoupon coupon1(1,
         paymentDate_, index_, startDate_, endDate_, settlementDays_,
         iborIndex_->dayCounter(),
-        numericalPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
+        gearing_, spread_, infiniteCap_, infiniteFloor_);
+    coupon1.setPricer(numericalPricer);
 
     CMSCoupon coupon2(1,
         paymentDate_, index_, startDate_, endDate_, settlementDays_,
         iborIndex_->dayCounter(),
-        analyticPricer, gearing_, spread_, infiniteCap_, infiniteFloor_);
+        gearing_, spread_, infiniteCap_, infiniteFloor_);
+    coupon2.setPricer(analyticPricer);
  
     //Computation
     const double rate1 = coupon1.rate();
@@ -459,9 +461,9 @@ void CmsTest::testParity() {
                 CMSCoupon swaplet(1, paymentDate_, index_,
                                   startDate_, endDate_, settlementDays_,
                                   iborIndex_->dayCounter(),
-                                  pricers[pricerIndex], gearing_,
-                                  spread_, infiniteCap_, infiniteFloor_);
-
+                                  gearing_, spread_, 
+                                  infiniteCap_, infiniteFloor_);
+                swaplet.setPricer(pricers[pricerIndex]);
                 Real strike = .02;
 
                 for (Size strikeIndex = 0; strikeIndex < 10; strikeIndex++) {
@@ -470,14 +472,16 @@ void CmsTest::testParity() {
                     CMSCoupon caplet(1, paymentDate_, index_,
                                      startDate_, endDate_, settlementDays_,
                                      iborIndex_->dayCounter(),
-                                     pricers[pricerIndex], gearing_,
-                                     spread_, strike, infiniteFloor_);
+                                     gearing_, spread_, 
+                                     strike, infiniteFloor_);
+                    caplet.setPricer(pricers[pricerIndex]);
 
                     CMSCoupon floorlet(1, paymentDate_, index_,
                                        startDate_, endDate_, settlementDays_,
                                        iborIndex_->dayCounter(),
-                                       pricers[pricerIndex], gearing_,
-                                       spread_, infiniteCap_, strike);
+                                       gearing_, spread_, 
+                                       infiniteCap_, strike);
+                    floorlet.setPricer(pricers[pricerIndex]);
 
                     //Computation
                     const double price1 = swaplet.price(termStructure_)
