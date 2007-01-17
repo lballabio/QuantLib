@@ -271,7 +271,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCappedLeg = capLeg.NPV();
     npvCap = cap.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCapped Leg: gearing=1, spread=0%, strike=" << capstrike*100 << 
                     "%\n" <<
                     "  Capped Floating Leg NPV: " << npvCappedLeg << "\n" <<
@@ -295,7 +295,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvFlooredLeg = floorLeg.NPV();
     npvFloor = floor.NPV();
     error = std::abs(npvFlooredLeg-(npvVanilla + npvFloor));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("Floored Leg: gearing=1, spread=0%, strike=" << floorstrike *100 <<
                     "%\n" <<
                     "  Floored Floating Leg NPV: " << npvFlooredLeg << "\n" <<
@@ -319,7 +319,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCollaredLeg = collarLeg.NPV();
     npvCollar = collar.NPV();
     error = std::abs(npvCollaredLeg -(npvVanilla - npvCollar));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCollared Leg: gearing=1, spread=0%, strike=" <<
                     floorstrike*100 << "% and " << capstrike*100 << "%\n" <<
                     "  Collared Floating Leg NPV: " << npvCollaredLeg << "\n" <<
@@ -351,7 +351,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCappedLeg = capLeg_p.NPV();
     npvCap = cap_p.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCapped Leg: gearing=" << gearing_p << ", " << 
                     "spread= " << spread_p *100 <<
                     "%, strike=" << capstrike*100  << "%, " <<
@@ -373,7 +373,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCappedLeg = capLeg_n.NPV();
     npvFloor = floor_n.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla+ gearing_n*npvFloor));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " << 
                     "spread= " << spread_n *100 <<
                     "%, strike=" << capstrike*100  << "%, " <<
@@ -408,7 +408,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvFlooredLeg = floorLeg_p1.NPV();
     npvFloor = floor_p1.NPV();
     error = std::abs(npvFlooredLeg - (npvVanilla+npvFloor));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nFloored Leg: gearing=" << gearing_p << ", " 
                       << "spread= " << spread_p *100<< "%, strike=" << floorstrike *100 << "%, " 
                       << "effective strike= " << (floorstrike-spread_p)/gearing_p*100
@@ -430,7 +430,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvFlooredLeg = floorLeg_n.NPV();
     npvCap = cap_n.NPV();
     error = std::abs(npvFlooredLeg - (npvVanilla - gearing_n*npvCap));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " << 
                     "spread= " << spread_n *100 <<
                     "%, strike=" << floorstrike*100  << "%, " <<
@@ -461,7 +461,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCollaredLeg = collarLeg_p1.NPV();
     npvCollar = collar_p.NPV();
     error = std::abs(npvCollaredLeg - (npvVanilla - npvCollar));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCollared Leg: gearing=" << gearing_p << ", " 
                       << "spread= " << spread_p*100 << "%, strike=" 
                       << floorstrike*100 << "% and " << capstrike*100
@@ -488,7 +488,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCollaredLeg = collarLeg_n1.NPV();
     npvCollar = collar_n.NPV();
     error = std::abs(npvCollaredLeg - (npvVanilla - gearing_n*npvCollar));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCollared Leg: gearing=" << gearing_n << ", " 
                       << "spread= " << spread_n*100 << "%, strike=" 
                       << floorstrike*100 << "% and " << capstrike*100
