@@ -37,10 +37,17 @@ namespace QuantLib {
                          underlying->spread()),
       underlying_(underlying) {
 
-        if (cap != Null<Rate>())
-            cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));
-        if (floor != Null<Rate>())
-            floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, floor));
+          if (underlying->gearing() > 0) {
+            if (cap != Null<Rate>())
+                cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));
+            if (floor != Null<Rate>())
+                floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, floor));
+          } else {
+            if (cap != Null<Rate>())
+                floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, cap));          
+            if (floor != Null<Rate>())
+                cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, floor));
+          }
         registerWith(underlying);
     }
 
@@ -72,21 +79,49 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::cap() const {
-        if(cap_) 
-            return cap_->strike();
-        else
-            return Rate(1.);
-    }
-    
-    Rate CappedFlooredCoupon::convexityAdjustment() const {
-        return underlying_->convexityAdjustment();
-    }
+        if (underlying_->gearing() > 0) {
+            if(cap_) 
+                return cap_->strike();
+            else
+                return Rate(1.);
+        } else {
+             if(floor_) 
+                return floor_->strike();
+            else
+                return Rate(1.);     
+        }
+    } 
 
     Rate CappedFlooredCoupon::floor() const {
+        if (underlying_->gearing() > 0) {
+            if(floor_) 
+                return floor_->strike();
+            else
+                return Rate(0.);
+        } else {
+            if(cap_) 
+                return cap_->strike();
+            else
+                return Rate(0.);        
+        }
+    }
+    
+    Rate CappedFlooredCoupon::effectiveCap() const {
+        if(cap_)
+            return cap_->effectiveStrike();
+        else
+            return Rate(1.);
+    } 
+
+    Rate CappedFlooredCoupon::effectiveFloor() const {
         if(floor_) 
-            return floor_->strike();
+            return floor_->effectiveStrike();
         else
             return Rate(0.);
+    }
+
+    Rate CappedFlooredCoupon::convexityAdjustment() const {
+        return underlying_->convexityAdjustment();
     }
 
     void CappedFlooredCoupon::update() {

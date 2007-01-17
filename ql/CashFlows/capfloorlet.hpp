@@ -55,6 +55,7 @@ namespace QuantLib {
         //! \name Optionlet interface
         //@{
         Rate strike() const;
+        Rate effectiveStrike() const;
         //@}
         //! \name Visitability
         //@{
