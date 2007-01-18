@@ -40,6 +40,9 @@ namespace QuantLib {
       randomStart_(dimensionality, 0UL),
       randomShift_(dimensionality, 0.0) {
 
+        QL_REQUIRE(dimensionality>0, 
+                   "dimensionality must be greater than 0");
+
         if (randomStart || randomShift) {
             RandomSequenceGenerator<MersenneTwisterUniformRng>
                 uniformRsg(dimensionality_, seed);

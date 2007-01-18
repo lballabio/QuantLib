@@ -1258,6 +1258,8 @@ namespace QuantLib {
       integerSequence_(dimensionality, 0),
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_)) {
 
+        QL_REQUIRE(dimensionality>0, 
+                   "dimensionality must be greater than 0");
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
                    "dimensionality " << dimensionality
                    << " exceeds the number of available "

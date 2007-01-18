@@ -49,7 +49,10 @@ namespace QuantLib {
                                 const RNG& rng)
         : dimensionality_(dimensionality), rng_(rng),
           sequence_(Array(dimensionality), 1.0),
-          int32Sequence_(dimensionality) {}
+          int32Sequence_(dimensionality) {
+          QL_REQUIRE(dimensionality>0, 
+                     "dimensionality must be greater than 0");
+        }
 
         RandomSequenceGenerator(Size dimensionality,
                                 BigNatural seed = 0)
