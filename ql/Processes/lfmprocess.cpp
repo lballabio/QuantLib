@@ -184,13 +184,13 @@ namespace QuantLib {
                             index_->tenor(), index_->calendar(),
                             index_->businessDayConvention(),
                             index_->businessDayConvention(), false, false),       
-                   index_->businessDayConvention(),
                    std::vector<Real>(1, amount),
-                   index_->settlementDays(),
                    index_,
+                   index_->dayCounter(),
+                   index_->fixingDays(),
+                   index_->businessDayConvention(),
                    std::vector<Real>(),
-                   std::vector<Spread>(),
-                   index_->dayCounter()
+                   std::vector<Spread>()
                    );
     }
 

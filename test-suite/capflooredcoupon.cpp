@@ -89,7 +89,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeFixedLeg(const Date& startDate,
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     std::vector<Rate> coupons(length, 0.0);
-    return FixedRateCouponVector(schedule,Following,nominals_,coupons, Thirty360());
+    return FixedRateCouponVector(schedule, nominals_, coupons, Thirty360(), Following);
 }
 
 std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
@@ -101,11 +101,16 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
                       convention_,convention_,false,false);
 
-    std::vector<Rate> gearingVector(lenght_, gearing);
+    std::vector<Real> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return FloatingRateCouponVector(schedule, convention_, nominals_, fixingDays_,index_,
-                                    gearingVector,spreadVector,
-                                    index_->dayCounter());
+    return FloatingRateCouponVector(schedule,
+                                    nominals_,
+                                    index_,
+                                    index_->dayCounter(),
+                                    fixingDays_,
+                                    convention_,
+                                    gearingVector,
+                                    spreadVector);
 }
 
 std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDate,
@@ -125,10 +130,17 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
             CapletConstantVolatility(volatility, Actual365Fixed())));
     std::vector<Rate> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return CappedFlooredFloatingRateCouponVector(schedule,convention_,nominals_,
-                                           fixingDays_,index_,
-                                           gearingVector,spreadVector,
-                                           caps,floors,index_->dayCounter(),vol);
+    return CappedFlooredFloatingRateCouponVector(schedule,
+                                                 nominals_,
+                                                 index_,
+                                                 index_->dayCounter(),
+                                                 fixingDays_,
+                                                 convention_,
+                                                 gearingVector,
+                                                 spreadVector,
+                                                 caps,
+                                                 floors,
+                                                 vol);
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {

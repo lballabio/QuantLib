@@ -263,8 +263,8 @@ void SwapTest::testInArrears() {
 
     std::vector<Rate> coupons(1, oneYear);
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-        FixedRateCouponVector(schedule, Following, nominals,
-                              coupons, dayCounter);
+        FixedRateCouponVector(schedule, nominals, coupons,
+                              dayCounter, Following);
 
 
     std::vector<Real> gearings;

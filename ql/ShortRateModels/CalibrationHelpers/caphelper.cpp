@@ -45,17 +45,16 @@ namespace QuantLib {
             startDate = termStructure->referenceDate() + indexTenor;
             maturity = termStructure->referenceDate() + length;
         }
-        boost::shared_ptr<IborIndex> dummyIndex(
-                                     new IborIndex("dummy",
-                                               Period(indexTenor.length(),
-                                                      indexTenor.units()),
-                                               index->settlementDays(),
-                                               index->currency(),
-                                               index->calendar(),
-                                               index->businessDayConvention(),
-                                               index->endOfMonth(),
-                                               termStructure->dayCounter(),
-                                               termStructure));
+        boost::shared_ptr<IborIndex> dummyIndex(new
+            IborIndex("dummy",
+                      indexTenor,
+                      index->fixingDays(),
+                      index->currency(),
+                      index->calendar(),
+                      index->businessDayConvention(),
+                      index->endOfMonth(),
+                      termStructure->dayCounter(),
+                      termStructure));
 
         std::vector<Real> nominals(1,1.0);
 
@@ -64,19 +63,20 @@ namespace QuantLib {
                                index->businessDayConvention(), false, false); 
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     index->businessDayConvention(),
                                      nominals,
-                                     0, index, std::vector<Real>(),
-                                     std::vector<Spread>());
+                                     index,
+                                     DayCounter(),
+                                     0,
+                                     index->businessDayConvention());
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
                                index->calendar(), Unadjusted, Unadjusted,
                                false, false); 
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
-                                  index->businessDayConvention(),
                                   nominals,
                                   std::vector<Rate>(1, fixedRate),
-                                  fixedLegDayCounter);
+                                  fixedLegDayCounter,
+                                  index->businessDayConvention());
 
         boost::shared_ptr<Swap> swap(
             new Swap(termStructure, floatingLeg, fixedLeg));

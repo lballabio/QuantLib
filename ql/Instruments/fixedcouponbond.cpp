@@ -55,8 +55,11 @@ namespace QuantLib {
                           fromEnd, false, firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = FixedRateCouponVector(schedule, paymentConvention,
-            std::vector<Real>(1, faceAmount_), coupons, dayCounter);
+        cashflows_ = FixedRateCouponVector(schedule,
+                                           std::vector<Real>(1, faceAmount_),
+                                           coupons,
+                                           dayCounter,
+                                           paymentConvention);
 
         // redemption
         // !!!

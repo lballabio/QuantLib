@@ -65,12 +65,13 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
+                                     std::vector<Real>(1, nominal_),
+                                     index,
+                                     floatingDayCount,
+                                     index->fixingDays(),
                                      convention,
-                                     std::vector<Real>(1,nominal_),
-                                     index->settlementDays(), index,
-                                     std::vector<Real>(1,1.0),
-                                     std::vector<Spread>(1,spread),
-                                     floatingDayCount);
+                                     std::vector<Real>(1, 1.0),
+                                     std::vector<Spread>(1, spread));
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
 
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
