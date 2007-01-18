@@ -89,7 +89,7 @@ namespace QuantLib {
         // FIXME use a familyName-based index factory
         return SwapIndex(swapIndexBase_->familyName(),
                          swapTenor,
-                         swapIndexBase_->settlementDays(),
+                         swapIndexBase_->fixingDays(),
                          swapIndexBase_->currency(),
                          swapIndexBase_->calendar(),
                          swapIndexBase_->fixedLegTenor(),
