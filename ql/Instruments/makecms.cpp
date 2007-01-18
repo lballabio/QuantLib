@@ -31,7 +31,7 @@ namespace QuantLib {
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
       iborSpread_(iborSpread),
-      cmsVanillapricer_(pricer), 
+      cmsVanillapricer_(pricer),
       forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
@@ -100,26 +100,26 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
             CMSCouponVector(cmsSchedule,
-                            cmsConvention_,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
-                            swapIndex_->fixingDays(),
+                            cmsVanillapricer_,
                             cmsDayCount_,
+                            swapIndex_->fixingDays(),
+                            cmsConvention_,
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_),
-                            cmsVanillapricer_);
+                            std::vector<Rate>(1, cmsFloor_));
 
         std::vector<boost::shared_ptr<CashFlow> > floatLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     floatConvention_,
                                      std::vector<Real>(1, nominal_),
-                                     iborIndex_->fixingDays(),
                                      iborIndex_,
+                                     floatDayCount_,
+                                     iborIndex_->fixingDays(),
+                                     floatConvention_,
                                      std::vector<Real>(1, 1.0), // gearing
-                                     std::vector<Spread>(1, iborSpread_),
-                                     floatDayCount_);
+                                     std::vector<Spread>(1, iborSpread_));
         if (payCMS_)
             return Swap(discountingTermStructure_, cmsLeg, floatLeg);
         else
@@ -156,26 +156,26 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
             CMSCouponVector(cmsSchedule,
-                            cmsConvention_,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
-                            swapIndex_->fixingDays(),
+                            cmsVanillapricer_,
                             cmsDayCount_,
+                            swapIndex_->fixingDays(),
+                            cmsConvention_,
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_),
-                            cmsVanillapricer_);
+                            std::vector<Rate>(1, cmsFloor_));
 
         std::vector<boost::shared_ptr<CashFlow> > floatLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     floatConvention_,
                                      std::vector<Real>(1, nominal_),
-                                     iborIndex_->fixingDays(),
                                      iborIndex_,
+                                     floatDayCount_,
+                                     iborIndex_->fixingDays(),
+                                     floatConvention_,
                                      std::vector<Real>(1, 1.0), // gearing
-                                     std::vector<Spread>(1, iborSpread_),
-                                     floatDayCount_);
+                                     std::vector<Spread>(1, iborSpread_));
         if (payCMS_)
             return boost::shared_ptr<Swap>(new
                 Swap(discountingTermStructure_, cmsLeg, floatLeg));
