@@ -57,22 +57,6 @@ namespace QuantLib {
                                  choose the first business day after
                                  the holiday. */
         Unadjusted          /*!< Do not adjust. */
-        #ifndef QL_DISABLE_DEPRECATED
-        ,
-        MonthEndReference,  /*!< Choose the first business day after
-                                 the given holiday. If the original
-                                 date falls on last business day of
-                                 the month, choose the last business
-                                 day of the month */
-        UnadjustedMonthEnd  /*!< Do not adjust, unless the original
-                                 date falls on the last business day
-                                 of month. In this case, choose the
-                                 last day of the month regardless of
-                                 whether it is a business day.
-
-                                 \deprecated use the endOfMonth boolean in
-                                             Calendar::advance instead */
-        #endif
     };
 
     /*! \relates BusinessDayConvention */

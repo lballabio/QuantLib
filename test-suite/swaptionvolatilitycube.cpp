@@ -24,11 +24,7 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Volatilities/swaptionvolcube2.hpp>
 #include <ql/Volatilities/swaptionvolcube1.hpp>
@@ -341,13 +337,13 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
     for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
-        parametersGuess[i][0] = 
+        parametersGuess[i][0] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] = 
+        parametersGuess[i][1] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] = 
+        parametersGuess[i][2] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] = 
+        parametersGuess[i][3] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     }
     std::vector<bool> isParameterFixed(4, false);

@@ -22,17 +22,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
-                                           Real ftol,
-                                           Real xtol,
-                                           Real gtol,
-                                           Size maxfev,
-                                           const Array& initialValue,
-                                           const EndCriteria&)
-    : OptimizationMethod(initialValue, EndCriteria(maxfev, ftol, ftol)),
-      info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
-    #else
     LevenbergMarquardt::LevenbergMarquardt(Real epsfcn,
                                            Real xtol,
                                            Real gtol,
@@ -40,7 +29,6 @@ namespace QuantLib {
                                            const EndCriteria& endCriteria)
     : OptimizationMethod(initialValue, endCriteria),
       info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol) {}
-    #endif
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
@@ -48,7 +36,7 @@ namespace QuantLib {
 
     void LevenbergMarquardt::minimize(const Problem& P) {
         ProblemData::instance().problem() = &P;
-        ProblemData::instance().initCostValues() 
+        ProblemData::instance().initCostValues()
             = P.costFunction().values(x());
 
         int m = ProblemData::instance().initCostValues().size();
@@ -111,7 +99,7 @@ namespace QuantLib {
             const Array& tmp = ProblemData::instance().problem()->values(xt);
             std::copy(tmp.begin(), tmp.end(), fvec);
         } else {
-            std::copy(ProblemData::instance().initCostValues().begin(), 
+            std::copy(ProblemData::instance().initCostValues().begin(),
                       ProblemData::instance().initCostValues().end(), fvec);
         }
     }

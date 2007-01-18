@@ -24,42 +24,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    SwapIndex::SwapIndex(const std::string& familyName,
-                         Integer years,
-                         Integer settlementDays,
-                         const Currency& currency,
-                         const Calendar& calendar,
-                         Frequency fixedLegFrequency,
-                         BusinessDayConvention fixedLegConvention,
-                         const DayCounter& fixedLegDayCounter,
-                         const boost::shared_ptr<IborIndex>& iborIndex)
-    : InterestRateIndex(familyName, years*Years, settlementDays,
-                        currency, calendar, fixedLegDayCounter),
-      tenor_(years*Years), iborIndex_(iborIndex),
-      fixedLegTenor_(Period(fixedLegFrequency)),
-      fixedLegConvention_(fixedLegConvention) {
-        registerWith(iborIndex_);
-    }
-
-    SwapIndex::SwapIndex(const std::string& familyName,
-                         const Period& tenor,
-                         Integer settlementDays,
-                         Currency currency,
-                         const Calendar& calendar,
-                         Frequency fixedLegFrequency,
-                         BusinessDayConvention fixedLegConvention,
-                         const DayCounter& fixedLegDayCounter,
-                         const boost::shared_ptr<IborIndex>& iborIndex)
-    : InterestRateIndex(familyName, tenor, settlementDays,
-                        currency, calendar, fixedLegDayCounter),
-      tenor_(tenor), iborIndex_(iborIndex),
-      fixedLegTenor_(Period(fixedLegFrequency)),
-      fixedLegConvention_(fixedLegConvention) {
-        registerWith(iborIndex_);
-    }
-    #endif
-
     SwapIndex::SwapIndex(const std::string& familyName,
                          const Period& tenor,
                          Integer settlementDays,
@@ -106,12 +70,9 @@ namespace QuantLib {
                         false, false);
     }
 
-    #ifdef QL_DISABLE_DEPRECATED
     Date SwapIndex::maturityDate(const Date& valueDate) const {
         return calendar_.advance(valueDate, tenor_, Unadjusted, false);
     }
-    #endif
-
 
 }
 

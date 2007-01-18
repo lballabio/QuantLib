@@ -32,12 +32,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    class BlackCalculator;
-    //! \deprecated use BlackCalculator instead
-    typedef BlackCalculator BlackFormula;
-    #endif
-
     /*! Black 1976 formula
         \warning instead of volatility it uses standard deviation,
                  i.e. volatility*sqrt(timeToMaturity)
@@ -118,22 +112,6 @@ namespace QuantLib {
                                  Real strike,
                                  Real forward,
                                  Real stdDev);
-
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! Black 1976 probability of being in the money (in the bond martingale
-        measure), i.e. N(d2).
-        It is a risk-neutral probability, not the real world one.
-        \deprecated use blackCashItmProbability instead
-        \warning instead of volatility it uses standard deviation,
-                 i.e. volatility*sqrt(timeToMaturity)
-    */
-    inline Real blackItmProbability(Option::Type optionType,
-                             Real strike,
-                             Real forward,
-                             Real stdDev) {
-         return blackCashItmProbability(optionType, strike, forward, stdDev);
-    }
-    #endif
 
     /*! Black 1976 probability of being in the money (in the bond martingale
         measure), i.e. N(d2).

@@ -33,26 +33,6 @@
 
 namespace QuantLib {
 
-    //! %EuriborSwapFixA index
-    /*! EuriborSwapFixA rate fixed by ISDA. The swap index is based
-        on the Euribor 6M and is fixed at 11:00AM FRANKFURT.
-        Reuters page ISDAFIX2 or EURSFIXA=.
-
-        \deprecated use EuriborSwapFixAvs3M or EuriborSwapFixAvs6M instead
-    */
-    #ifndef QL_DISABLE_DEPRECATED
-    class EuriborSwapFixA : public SwapIndex {
-      public:
-        EuriborSwapFixA(Integer years,
-                        const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
-        EuriborSwapFixA(const Period& tenor,
-                        const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
-    };
-    #endif
-
-
     //! %EuriborSwapFixA vs 3M index base class
     /*! EuriborSwapFixA rate fixed by ISDA. The swap index is based
         on the Euribor 3M and is fixed at 11:00AM FRANKFURT.

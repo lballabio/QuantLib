@@ -24,64 +24,27 @@
 
 namespace QuantLib {
 
-    MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor, 
+    MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
                                      const boost::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
     : forwardStart_(forwardStart), swapTenor_(swapTenor),
-      index_(index), fixedRate_(fixedRate), 
+      index_(index), fixedRate_(fixedRate),
       effectiveDate_(Date()),
       fixedCalendar_(index->calendar()), floatCalendar_(index->calendar()),
-      discountingTermStructure_(index->termStructureHandle()), 
-      type_(VanillaSwap::Payer), nominal_(1.0), 
-      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
+      discountingTermStructure_(index->termStructureHandle()),
+      type_(VanillaSwap::Payer), nominal_(1.0),
+      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()),
       fixedConvention_(ModifiedFollowing),
       fixedTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(ModifiedFollowing),
       floatTerminationDateConvention_(ModifiedFollowing),
-      fixedBackward_(true), floatBackward_(true), 
+      fixedBackward_(true), floatBackward_(true),
       fixedEndOfMonth_(false), floatEndOfMonth_(false),
       fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
       floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      floatSpread_(0.0), 
+      floatSpread_(0.0),
       fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
-
-#ifndef QL_DISABLE_DEPRECATED
-    MakeVanillaSwap::MakeVanillaSwap(const Date& effectiveDate,
-                                     const Period& swapTenor, 
-                                     const Calendar& cal,
-                                     Rate fixedRate,
-                                     const boost::shared_ptr<IborIndex>& index,
-                                     const Handle<YieldTermStructure>& termStructure)
-    : forwardStart_(0*Days), swapTenor_(swapTenor),
-      index_(index), fixedRate_(fixedRate),
-      effectiveDate_(effectiveDate),
-      fixedCalendar_(cal), floatCalendar_(cal), 
-      discountingTermStructure_(termStructure), 
-      type_(VanillaSwap::Payer), nominal_(1.0), 
-      fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()), 
-      fixedConvention_(ModifiedFollowing),
-      fixedTerminationDateConvention_(ModifiedFollowing),
-      floatConvention_(ModifiedFollowing),
-      floatTerminationDateConvention_(ModifiedFollowing),
-      fixedBackward_(true), floatBackward_(true), 
-      fixedEndOfMonth_(false), floatEndOfMonth_(false),
-      fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      floatSpread_(0.0), 
-      fixedDayCount_(Thirty360()), floatDayCount_(index->dayCounter()) {}
-
-    MakeVanillaSwap& MakeVanillaSwap::withFixedLegNotEndOfMonth(bool flag) {
-        fixedEndOfMonth_ = !flag;
-        return *this;
-    }
-
-    MakeVanillaSwap&
-    MakeVanillaSwap::withFloatingLegNotEndOfMonth(bool flag) {
-        floatEndOfMonth_ = !flag;
-        return *this;
-    }
-#endif
 
     MakeVanillaSwap::operator VanillaSwap() const {
 
@@ -91,7 +54,8 @@ namespace QuantLib {
         else {
           Integer fixingDays = index_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
+          Date spotDate =
+              floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
         }
 
@@ -198,7 +162,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& 
+    MakeVanillaSwap&
     MakeVanillaSwap::withFixedLegCalendar(const Calendar& cal) {
         fixedCalendar_ = cal;
         return *this;
@@ -237,7 +201,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& 
+    MakeVanillaSwap&
     MakeVanillaSwap::withFixedLegDayCount(const DayCounter& dc) {
         fixedDayCount_ = dc;
         return *this;
@@ -248,7 +212,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& 
+    MakeVanillaSwap&
     MakeVanillaSwap::withFloatingLegCalendar(const Calendar& cal) {
         floatCalendar_ = cal;
         return *this;
@@ -258,7 +222,7 @@ namespace QuantLib {
     MakeVanillaSwap::withFloatingLegConvention(BusinessDayConvention bdc) {
         floatConvention_ = bdc;
         return *this;
-    }    
+    }
 
     MakeVanillaSwap&
     MakeVanillaSwap::withFloatingLegTerminationDateConvention(BusinessDayConvention bdc) {

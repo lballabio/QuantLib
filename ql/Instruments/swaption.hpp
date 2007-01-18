@@ -29,11 +29,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/Instruments/vanillaswap.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 
 namespace QuantLib {
 
@@ -85,7 +81,7 @@ namespace QuantLib {
                  const boost::shared_ptr<Exercise>& exercise,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine,
-				 Settlement::Type delivery = Settlement::Physical);
+                 Settlement::Type delivery = Settlement::Physical);
         //! \name Instrument interface
         //@{
         bool isExpired() const;

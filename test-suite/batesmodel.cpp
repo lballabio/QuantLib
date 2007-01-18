@@ -105,7 +105,7 @@ void BatesModelTest::testAnalyticVsBlack() {
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
                     << QL_SCIENTIFIC
-				    << "\n    error:      " << error);
+                    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDetJumpEngine(
@@ -124,7 +124,7 @@ void BatesModelTest::testAnalyticVsBlack() {
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
                     << QL_SCIENTIFIC
-				    << "\n    error:      " << error);
+                    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpEngine(
@@ -141,7 +141,7 @@ void BatesModelTest::testAnalyticVsBlack() {
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
                     << QL_SCIENTIFIC
-				    << "\n    error:      " << error);
+                    << "\n    error:      " << error);
     }
 
     engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpDetJumpEngine(
@@ -160,7 +160,7 @@ void BatesModelTest::testAnalyticVsBlack() {
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
                     << QL_SCIENTIFIC
-				    << "\n    error:      " << error);
+                    << "\n    error:      " << error);
     }
 
     QL_TEST_TEARDOWN
@@ -344,11 +344,7 @@ void BatesModelTest::testDAXCalibration() {
     }
 
     // check calibration engine
-    #ifndef QL_DISABLE_DEPRECATED
-    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-    #else
-    LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-    #endif
+    LevenbergMarquardt om;
     batesModel->calibrate(options, om);
 
     Real expected = 36.6;

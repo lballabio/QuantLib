@@ -54,7 +54,7 @@ namespace QuantLib {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
         Date today = Settings::instance().evaluationDate();
-        bool enforceTodaysHistoricFixings = 
+        bool enforceTodaysHistoricFixings =
             Settings::instance().enforceTodaysHistoricFixings();
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
@@ -94,12 +94,6 @@ namespace QuantLib {
                   "Fixing date " << fixingDate << " is not valid");
         return fixingDate;
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    Date InterestRateIndex::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, tenor_, Unadjusted);
-    }
-    #endif
 
 }
 

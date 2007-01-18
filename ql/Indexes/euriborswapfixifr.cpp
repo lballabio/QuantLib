@@ -22,53 +22,28 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    EuriborSwapFixIFR::EuriborSwapFixIFR(Integer years,
-                                         const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixIFR", // familyName
-                years*Years,
-                2, // settlementDays
-                EURCurrency(),
-                TARGET(), 
-                Annual, // fixedLegFrequency
-                Unadjusted, // fixedLegConvention
-                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
-    EuriborSwapFixIFR::EuriborSwapFixIFR(const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixIFR", // familyName
-                tenor,
-                2, // settlementDays
-                EURCurrency(),
-                TARGET(), 
-                Annual, // fixedLegFrequency
-                Unadjusted, // fixedLegConvention
-                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
-                boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
-    #endif
-
     EuriborSwapFixIFRvs3M::EuriborSwapFixIFRvs3M(const Period& tenor,
                                                  const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapFixIFR", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
-                TARGET(), 
+                TARGET(),
                 1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
-                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
+                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
-   
+
     EuriborSwapFixIFRvs6M::EuriborSwapFixIFRvs6M(const Period& tenor,
                                                  const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapFixIFR", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
-                TARGET(), 
+                TARGET(),
                 1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
-                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter 
+                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
 
 }

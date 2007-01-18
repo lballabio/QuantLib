@@ -22,11 +22,7 @@
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/makevanillaswap.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 
 namespace QuantLib {
 

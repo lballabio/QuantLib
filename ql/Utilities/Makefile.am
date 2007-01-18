@@ -11,7 +11,6 @@ include_HEADERS = \
     null.hpp \
     observablevalue.hpp \
     steppingiterator.hpp \
-    strings.hpp \
     tracing.hpp
 
 libUtilities_la_SOURCES = \

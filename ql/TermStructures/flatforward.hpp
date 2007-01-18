@@ -26,11 +26,7 @@
 #define quantlib_flat_forward_curve_hpp
 
 #include <ql/yieldtermstructure.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 
 namespace QuantLib {
 

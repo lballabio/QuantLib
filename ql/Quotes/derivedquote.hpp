@@ -34,7 +34,6 @@
 
 namespace QuantLib {
 
-#ifdef QL_DISABLE_DEPRECATED
     //! market element whose value depends on another market element
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
@@ -57,29 +56,6 @@ namespace QuantLib {
         UnaryFunction f_;
     };
 
-
-    // inline definitions
-
-    template <class UnaryFunction>
-    inline DerivedQuote<UnaryFunction>::DerivedQuote(
-                                                 const Handle<Quote>& element,
-                                                 const UnaryFunction& f)
-    : element_(element), f_(f) {
-        registerWith(element_);
-    }
-
-    template <class UnaryFunction>
-    inline Real DerivedQuote<UnaryFunction>::value() const {
-        QL_REQUIRE(!element_.empty(), "null market element set");
-        return f_(element_->value());
-    }
-
-    template <class UnaryFunction>
-    inline void DerivedQuote<UnaryFunction>::update() {
-        notifyObservers();
-    }
-
-#endif
 
     class ForwardValueQuote : public Quote,
                               public Observer {
@@ -136,7 +112,26 @@ namespace QuantLib {
     };
 
 
-    // inline
+    // inline definitions
+
+    template <class UnaryFunction>
+    inline DerivedQuote<UnaryFunction>::DerivedQuote(
+                                                 const Handle<Quote>& element,
+                                                 const UnaryFunction& f)
+    : element_(element), f_(f) {
+        registerWith(element_);
+    }
+
+    template <class UnaryFunction>
+    inline Real DerivedQuote<UnaryFunction>::value() const {
+        QL_REQUIRE(!element_.empty(), "null market element set");
+        return f_(element_->value());
+    }
+
+    template <class UnaryFunction>
+    inline void DerivedQuote<UnaryFunction>::update() {
+        notifyObservers();
+    }
 
     inline Real ForwardValueQuote::value() const {
         return index_->fixing(fixingDate_);

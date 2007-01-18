@@ -22,36 +22,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Libor::Libor(const std::string& familyName,
-                 Integer n, TimeUnit units,
-                 Integer settlementDays,
-                 const Currency& currency,
-                 const Calendar& localCalendar,
-                 const Calendar& currencyCalendar,
-                 BusinessDayConvention convention,
-                 const DayCounter& dayCounter,
-                 const Handle<YieldTermStructure>& h)
-    : IborIndex(familyName, n*units, settlementDays, currency,
-            JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
-            convention, dayCounter, h),
-      localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
-
-    Libor::Libor(const std::string& familyName,
-                 const Period& tenor,
-                 Integer settlementDays,
-                 const Currency& currency,
-                 const Calendar& localCalendar,
-                 const Calendar& currencyCalendar,
-                 BusinessDayConvention convention,
-                 const DayCounter& dayCounter,
-                 const Handle<YieldTermStructure>& h)
-    : IborIndex(familyName, tenor, settlementDays, currency,
-            JointCalendar(localCalendar,currencyCalendar,JoinHolidays),
-            convention, dayCounter, h),
-      localCalendar_(localCalendar), currencyCalendar_(currencyCalendar) {}
-    #endif
-
     Libor::Libor(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,

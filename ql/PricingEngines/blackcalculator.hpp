@@ -39,12 +39,6 @@ namespace QuantLib {
         class Calculator;
         friend class Calculator;
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        BlackCalculator(Real forward,
-                        DiscountFactor discount,
-                        Real variance,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff);
-        #endif
         BlackCalculator(const boost::shared_ptr<StrikedTypePayoff>& payoff,
                         Real forward,
                         Real stdDev,

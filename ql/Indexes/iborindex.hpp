@@ -33,17 +33,6 @@ namespace QuantLib {
     /*! \todo add methods returning InterestRate */
     class IborIndex : public InterestRateIndex {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        IborIndex(const std::string& familyName,
-                  const Period& tenor,
-                  Integer settlementDays,
-                  const Currency& currency,
-                  const Calendar& calendar,
-                  BusinessDayConvention businessDayConvention,
-                  const DayCounter& dayCounter,
-                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
-        #endif
         IborIndex(const std::string& familyName,
                   const Period& tenor,
                   Integer settlementDays,
@@ -62,12 +51,6 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use businessDayConvention() instead
-        bool isAdjusted() const {
-        return (convention_ != Unadjusted);
-        }
-        #endif
         BusinessDayConvention businessDayConvention() const;
         bool endOfMonth() const { return endOfMonth_; }
         //@}
@@ -81,20 +64,23 @@ namespace QuantLib {
         bool endOfMonth_;
     };
 
+
     // inline definitions
 
     inline BusinessDayConvention IborIndex::businessDayConvention() const {
         return convention_;
     }
 
-   inline Handle<YieldTermStructure> IborIndex::termStructureHandle() const {
-       return termStructure_;
-   }
+    inline Handle<YieldTermStructure> IborIndex::termStructureHandle() const {
+        return termStructure_;
+    }
 
-   inline boost::shared_ptr<YieldTermStructure> IborIndex::termStructure() const {
-       return termStructure_.currentLink();
-   }
+    inline boost::shared_ptr<YieldTermStructure>
+    IborIndex::termStructure() const {
+        return termStructure_.currentLink();
+    }
 
 }
+
 
 #endif

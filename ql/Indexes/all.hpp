@@ -43,9 +43,6 @@
 #include <ql/Indexes/tibor.hpp>
 #include <ql/Indexes/trlibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
-#ifndef QL_DISABLE_DEPRECATED
-#   include <ql/Indexes/xibor.hpp>
-#endif
 #include <ql/Indexes/zibor.hpp>
 
 

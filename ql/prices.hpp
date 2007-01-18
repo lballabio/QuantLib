@@ -43,10 +43,6 @@ namespace QuantLib {
                             c) the last price; or d) the close price. */
          MidSafe       /*!< Safe Mid price, returns the mid price only if
                             both bid and ask are available. */
-         #ifndef QL_DISABLE_DEPRECATED
-         , MidRobust   /*!< Robust Mid price, returns the mid price only if
-                            both bid and ask are available. */
-         #endif
     };
 
     /*! return the MidEquivalent price, i.e. the mid if available,
@@ -62,14 +58,6 @@ namespace QuantLib {
     */
     Real midSafe(const Real bid,
                  const Real ask);
-
-    #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use midSafe instead
-    inline Real midRobust(const Real bid,
-                          const Real ask) {
-        return midSafe(bid, ask);
-    }
-    #endif
 
     //! interval price
     class IntervalPrice {

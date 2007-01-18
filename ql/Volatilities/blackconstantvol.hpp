@@ -26,11 +26,7 @@
 #define quantlib_blackconstantvol_hpp
 
 #include <ql/voltermstructure.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 #include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {

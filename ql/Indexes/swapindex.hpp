@@ -31,26 +31,6 @@ namespace QuantLib {
     //! base class for swap-rate indexes
     class SwapIndex : public InterestRateIndex {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        SwapIndex(const std::string& familyName,
-                  Integer years,
-                  Integer settlementDays,
-                  const Currency& currency,
-                  const Calendar& calendar,
-                  Frequency fixedLegFrequency,
-                  BusinessDayConvention fixedLegConvention,
-                  const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<IborIndex>& iborIndex);
-        SwapIndex(const std::string& familyName,
-                  const Period& tenor,
-                  Integer settlementDays,
-                  Currency currency,
-                  const Calendar& calendar,
-                  Frequency fixedLegFrequency,
-                  BusinessDayConvention fixedLegConvention,
-                  const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<IborIndex>& iborIndex);
-        #endif
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Integer settlementDays,
@@ -65,17 +45,10 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructureHandle() const;
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         Rate forecastFixing(const Date& fixingDate) const;
-        #ifdef QL_DISABLE_DEPRECATED
         Date maturityDate(const Date& valueDate) const;
-        #endif
         //@}
         //! \name Inspectors
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        Frequency fixedLegFrequency() const {
-            return fixedLegTenor_.frequency();
-        }
-        #endif
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
         boost::shared_ptr<IborIndex> iborIndex() const;

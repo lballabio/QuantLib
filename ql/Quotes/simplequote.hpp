@@ -26,9 +26,8 @@
 
 #include <ql/quote.hpp>
 
-
 namespace QuantLib {
-    #ifdef QL_DISABLE_DEPRECATED
+
     //! market element returning a stored value
     class SimpleQuote : public Quote {
       public:
@@ -65,7 +64,7 @@ namespace QuantLib {
         }
         return diff;
     }
-    #endif
+
 }
 
 #endif

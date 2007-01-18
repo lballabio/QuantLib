@@ -24,21 +24,17 @@
 #ifndef quantlib_composite_quote_hpp
 #define quantlib_composite_quote_hpp
 
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/quote.hpp>
-#endif
-
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
-  
+
     //! market element whose value depends on two other market element
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
-    #ifdef QL_DISABLE_DEPRECATED
     template <class BinaryFunction>
     class CompositeQuote : public Quote, public Observer {
       public:
@@ -83,7 +79,8 @@ namespace QuantLib {
     inline void CompositeQuote<BinaryFunction>::update() {
         notifyObservers();
     }
-    #endif
+
 }
+
 
 #endif

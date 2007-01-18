@@ -36,21 +36,10 @@ namespace QuantLib {
     */
     class MakeVanillaSwap {
       public:
-        MakeVanillaSwap(const Period& swapTenor, 
+        MakeVanillaSwap(const Period& swapTenor,
                         const boost::shared_ptr<IborIndex>& index,
                         Rate fixedRate = Null<Rate>(),
                         const Period& forwardStart = 0*Days);
-        #ifndef QL_DISABLE_DEPRECATED
-        MakeVanillaSwap(
-                const Date& effectiveDate,
-                const Period& swapTenor, 
-                const Calendar& cal,
-                Rate fixedRate,
-                const boost::shared_ptr<IborIndex>& index,
-                const Handle<YieldTermStructure>& discountingTermStructure);
-        MakeVanillaSwap& withFixedLegNotEndOfMonth(bool flag = true);
-        MakeVanillaSwap& withFloatingLegNotEndOfMonth(bool flag = true);
-        #endif
 
         operator VanillaSwap() const;
         operator boost::shared_ptr<VanillaSwap>() const ;
@@ -65,7 +54,8 @@ namespace QuantLib {
         MakeVanillaSwap& withFixedLegTenor(const Period& t);
         MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
         MakeVanillaSwap& withFixedLegConvention(BusinessDayConvention bdc);
-        MakeVanillaSwap& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFixedLegTerminationDateConvention(
+                                                   BusinessDayConvention bdc);
         MakeVanillaSwap& withFixedLegForward(bool flag = true);
         MakeVanillaSwap& withFixedLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFixedLegFirstDate(const Date& d);
@@ -75,14 +65,15 @@ namespace QuantLib {
         MakeVanillaSwap& withFloatingLegTenor(const Period& t);
         MakeVanillaSwap& withFloatingLegCalendar(const Calendar& cal);
         MakeVanillaSwap& withFloatingLegConvention(BusinessDayConvention bdc);
-        MakeVanillaSwap& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFloatingLegTerminationDateConvention(
+                                                   BusinessDayConvention bdc);
         MakeVanillaSwap& withFloatingLegForward(bool flag = true);
         MakeVanillaSwap& withFloatingLegEndOfMonth(bool flag = true);
         MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
         MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
         MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
         MakeVanillaSwap& withFloatingLegSpread(Spread sp);
-        
+
       private:
         Period forwardStart_, swapTenor_;
         boost::shared_ptr<IborIndex> index_;
@@ -94,7 +85,7 @@ namespace QuantLib {
 
         VanillaSwap::Type type_;
         Real nominal_;
-        Period fixedTenor_, floatTenor_; 
+        Period fixedTenor_, floatTenor_;
         BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
         bool fixedBackward_, floatBackward_;

@@ -19,15 +19,9 @@
 
 #include "quotes.hpp"
 #include "utilities.hpp"
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
 #include <ql/Quotes/derivedquote.hpp>
 #include <ql/Quotes/compositequote.hpp>
-#else
-#include <ql/quote.hpp>
-#include <ql/Quotes/derivedquote.hpp>
-#endif
-
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>

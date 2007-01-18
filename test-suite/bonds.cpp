@@ -29,11 +29,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Indexes/usdlibor.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 #include <ql/Utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -253,7 +249,7 @@ void BondTest::testCached() {
     Real marketPrice1 = 99.203125;
     Rate marketYield1 = 0.02925;
 
-    FixedCouponBond bond2(faceAmount, 
+    FixedCouponBond bond2(faceAmount,
                           Date(15,November,2004),
                           Date(15,November,2004),
                           Date(15,November,2009),
@@ -372,7 +368,7 @@ void BondTest::testCached() {
 
     // with explicit settlement date:
 
-    FixedCouponBond bond3(faceAmount, 
+    FixedCouponBond bond3(faceAmount,
                           Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2006),
@@ -434,7 +430,7 @@ void BondTest::testCachedZero() {
 
     // plain
 
-    ZeroCouponBond bond1(faceAmount, 
+    ZeroCouponBond bond1(faceAmount,
                          Date(30,November,2004),
                          Date(30,November,2008),
                          settlementDays,
@@ -454,7 +450,7 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice1);
     }
 
-    ZeroCouponBond bond2(faceAmount, 
+    ZeroCouponBond bond2(faceAmount,
                          Date(30,November,2004),
                          Date(30,November,2007),
                          settlementDays,
@@ -474,7 +470,7 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice2);
     }
 
-    ZeroCouponBond bond3(faceAmount, 
+    ZeroCouponBond bond3(faceAmount,
                          Date(30,November,2004),
                          Date(30,November,2006),
                          settlementDays,
@@ -516,7 +512,7 @@ void BondTest::testCachedFixed() {
 
     // plain
 
-    FixedCouponBond bond1(faceAmount, 
+    FixedCouponBond bond1(faceAmount,
                           Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2008),
@@ -547,7 +543,7 @@ void BondTest::testCachedFixed() {
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
 
-    FixedCouponBond bond2(faceAmount, 
+    FixedCouponBond bond2(faceAmount,
                           Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,November,2008),
@@ -572,7 +568,7 @@ void BondTest::testCachedFixed() {
 
     // stub date
 
-    FixedCouponBond bond3(faceAmount, 
+    FixedCouponBond bond3(faceAmount,
                           Date(30,November,2004),
                           Date(30,November,2004),
                           Date(30,March,2009),
@@ -622,7 +618,7 @@ void BondTest::testCachedFloating() {
 
     // plain
 
-    FloatingRateBond bond1(faceAmount, 
+    FloatingRateBond bond1(faceAmount,
                            Date(30,November,2004),
                            Date(30,November,2004),
                            Date(30,November,2008),
@@ -682,7 +678,7 @@ void BondTest::testCachedFloating() {
     spreads[2] = 0.0014;
     spreads[3] = 0.0016;
 
-    FloatingRateBond bond3(faceAmount, 
+    FloatingRateBond bond3(faceAmount,
                            Date(30,November,2004),
                            Date(30,November,2004),
                            Date(30,November,2008),

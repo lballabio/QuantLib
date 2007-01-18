@@ -69,7 +69,7 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess1D> process_;
         mutable sample_type next_;
         mutable std::vector<Real> temp_;
-        New::BrownianBridge bb_;
+        BrownianBridge bb_;
     };
 
 

@@ -29,7 +29,6 @@ include_HEADERS = \
     tibor.hpp \
     trlibor.hpp \
     usdlibor.hpp \
-    xibor.hpp \
     zibor.hpp
 
 libIndexes_la_SOURCES = \

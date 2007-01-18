@@ -328,12 +328,8 @@ void LiborMarketModelTest::testCalibration() {
         }
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    LevenbergMarquardt om(1e-6, 1e-6, 1e-6, 1e-6, 2000);
-    #else
     LevenbergMarquardt om(1e-6, 1e-6, 1e-6, Array(),
                           EndCriteria(2000, 1e-6, 1e-6));
-    #endif
     model->calibrate(calibrationHelper, om);
 
     // measure the calibration error

@@ -58,10 +58,6 @@ namespace QuantLib {
         std::string familyName() const;
         Period tenor() const;
         Integer fixingDays() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use fixingDays instead
-        Integer settlementDays() const { return fixingDays(); }
-        #endif
         const Currency& currency() const;
         Calendar calendar() const;
         const DayCounter& dayCounter() const;
@@ -78,11 +74,7 @@ namespace QuantLib {
         */
         virtual Date valueDate(const Date& fixingDate) const;
         virtual Date fixingDate(const Date& valueDate) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        virtual Date maturityDate(const Date& valueDate) const;
-        #else
         virtual Date maturityDate(const Date& valueDate) const = 0;
-        #endif
         // @}
       protected:
         std::string familyName_;

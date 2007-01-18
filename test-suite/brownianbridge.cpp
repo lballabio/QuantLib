@@ -81,7 +81,7 @@ void BrownianBridgeTest::testVariates() {
     SobolRsg sobol(N, seed);
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> generator(sobol);
 
-    New::BrownianBridge bridge(times);
+    BrownianBridge bridge(times);
 
     SequenceStatistics stats1(N);
     SequenceStatistics stats2(N);
@@ -124,14 +124,14 @@ void BrownianBridgeTest::testVariates() {
         BOOST_ERROR("failed to reproduce expected mean values"
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-				    << "\n    max error:  " << maxMeanError);
+                    << "\n    max error:  " << maxMeanError);
     }
 
     if (maxCovError > covTolerance) {
         BOOST_ERROR("failed to reproduce expected covariance\n"
                     << "    calculated:\n" << covariance
                     << "    expected:\n" << expectedCovariance
-				    << "    max error:  " << maxCovError);
+                    << "    max error:  " << maxCovError);
     }
 
     // denormalized sums along the path
@@ -159,14 +159,14 @@ void BrownianBridgeTest::testVariates() {
         BOOST_ERROR("failed to reproduce expected mean values"
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-				    << "\n    max error:  " << maxMeanError);
+                    << "\n    max error:  " << maxMeanError);
     }
 
     if (maxCovError > covTolerance) {
         BOOST_ERROR("failed to reproduce expected covariance\n"
                     << "    calculated:\n" << covariance
                     << "    expected:\n" << expectedCovariance
-				    << "    max error:  " << maxCovError);
+                    << "    max error:  " << maxCovError);
     }
 }
 
@@ -255,14 +255,14 @@ void BrownianBridgeTest::testPathGeneration() {
         BOOST_ERROR("failed to reproduce expected mean values"
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-				    << "\n    max error:  " << maxMeanError);
+                    << "\n    max error:  " << maxMeanError);
     }
 
     if (maxCovError > covTolerance) {
         BOOST_ERROR("failed to reproduce expected covariance\n"
                     << "    calculated:\n" << covariance
                     << "    expected:\n" << expectedCovariance
-				    << "    max error:  " << maxCovError);
+                    << "    max error:  " << maxCovError);
     }
 }
 

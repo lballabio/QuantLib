@@ -20,11 +20,7 @@
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 
 namespace QuantLib {
 

@@ -23,11 +23,7 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
-#ifdef QL_DISABLE_DEPRECATED
 #include <ql/Quotes/simplequote.hpp>
-#else
-#include <ql/quote.hpp>
-#endif
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 

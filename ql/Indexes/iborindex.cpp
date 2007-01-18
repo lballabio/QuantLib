@@ -22,21 +22,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    IborIndex::IborIndex(const std::string& familyName,
-                 const Period& tenor,
-                 Integer settlementDays,
-                 const Currency& currency,
-                 const Calendar& calendar,
-                 BusinessDayConvention convention,
-                 const DayCounter& dayCounter,
-                 const Handle<YieldTermStructure>& h)
-    : InterestRateIndex(familyName, tenor, settlementDays, currency,
-                        calendar, dayCounter),
-      convention_(convention), termStructure_(h), endOfMonth_(true) {
-        registerWith(termStructure_);
-    }
-    #endif
     IborIndex::IborIndex(const std::string& familyName,
                  const Period& tenor,
                  Integer settlementDays,
@@ -52,8 +37,7 @@ namespace QuantLib {
         registerWith(termStructure_);
       }
 
-    Rate IborIndex::forecastFixing(const Date& fixingDate) const
-    {
+    Rate IborIndex::forecastFixing(const Date& fixingDate) const {
         QL_REQUIRE(!termStructure_.empty(),
                    "no forecasting term structure set to " << name());
         Date fixingValueDate = valueDate(fixingDate);

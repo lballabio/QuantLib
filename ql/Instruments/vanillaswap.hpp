@@ -54,19 +54,6 @@ namespace QuantLib {
         enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
-        #ifndef QL_DISABLE_DEPRECATED
-        VanillaSwap(bool payFixedRate,
-                    Real nominal,
-                    const Schedule& fixedSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDayCount,
-                    const Schedule& floatSchedule,
-                    const boost::shared_ptr<IborIndex>& index,
-                    Spread spread,
-                    const DayCounter& floatingDayCount,
-                    const Handle<YieldTermStructure>& termStructure);
-        bool payFixedRate() const { return type_==Payer ? true : false; }
-        #endif
         VanillaSwap(Type type,
                     Real nominal,
                     const Schedule& fixedSchedule,
@@ -116,15 +103,9 @@ namespace QuantLib {
     class VanillaSwap::arguments : public virtual Arguments {
       public:
         arguments() : type(Receiver),
-                      #ifndef QL_DISABLE_DEPRECATED
-                      payFixed(false),
-                      #endif
                       nominal(Null<Real>()),
                       currentFloatingCoupon(Null<Real>()) {}
         Type type;
-        #ifndef QL_DISABLE_DEPRECATED
-        bool payFixed;
-        #endif
         Real nominal;
         std::vector<Time> fixedResetTimes;
         std::vector<Time> fixedPayTimes;

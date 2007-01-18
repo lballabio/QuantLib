@@ -106,10 +106,4 @@ namespace QuantLib {
         return d;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    Date Swap::maturity() const {
-        return maturityDate();
-    }
-    #endif
-
 }
