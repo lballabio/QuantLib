@@ -65,14 +65,14 @@ namespace QuantLib {
             }
         }
         Date fixingValueDate = index()->calendar().advance(
-                                 fixing_date, index()->settlementDays(), Days);
+                                 fixing_date, index()->fixingDays(), Days);
         DiscountFactor startDiscount =
             termStructure->discount(fixingValueDate);
         Date temp = index()->calendar().advance(accrualEndDate_,
                                                -fixingDays(), Days);
         DiscountFactor endDiscount =
             termStructure->discount(index()->calendar().advance(
-                                       temp, index()->settlementDays(), Days));
+                                       temp, index()->fixingDays(), Days));
         return gearing()*(startDiscount/endDiscount-1.0)/accrualPeriod() +
                spread();
     }
