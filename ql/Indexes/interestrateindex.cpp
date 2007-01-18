@@ -88,6 +88,13 @@ namespace QuantLib {
         return calendar_.advance(fixingDate, fixingDays_, Days);
     }
 
+    Date InterestRateIndex::fixingDate(const Date& valueDate) const {
+        Date fixingDate = calendar_.advance(fixingDate, -fixingDays_, Days);
+        QL_ENSURE(isValidFixingDate(fixingDate),
+                  "Fixing date " << fixingDate << " is not valid");
+        return fixingDate;
+    }
+
     #ifndef QL_DISABLE_DEPRECATED
     Date InterestRateIndex::maturityDate(const Date& valueDate) const {
         return calendar_.advance(valueDate, tenor_, Unadjusted);

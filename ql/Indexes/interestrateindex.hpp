@@ -77,6 +77,7 @@ namespace QuantLib {
             @{
         */
         virtual Date valueDate(const Date& fixingDate) const;
+        virtual Date fixingDate(const Date& valueDate) const;
         #ifndef QL_DISABLE_DEPRECATED
         virtual Date maturityDate(const Date& valueDate) const;
         #else
