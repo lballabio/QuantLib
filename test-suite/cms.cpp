@@ -554,7 +554,7 @@ void CmsTest::testCmsSwap() {
         std::vector<Real> caps(n, infiniteCap_);
         std::vector<Real> floors(n, infiniteFloor_);
         std::vector<Real> fractions(n, gearing_);
-        std::vector<Real> baseRate(n, 0);
+        std::vector<Spread> baseRate(n, 0.0);
 
         for (Size volStructureIndex = 0;
              volStructureIndex < swaptionVolatilityStructures_.size();
@@ -599,22 +599,27 @@ void CmsTest::testCmsSwap() {
                      pricerIndex++) {
 
                     std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-                        CMSCouponVector(
-                            fixedSchedule, fixedCmsConvention_,
-                            fixedNominals, index_, settlementDays_,
-                            fixedCmsDayCount_, baseRate, fractions,
-                            caps, floors,
-                            pricers[pricerIndex]);
+                        CMSCouponVector(fixedSchedule,
+                                        fixedNominals, 
+                                        index_,
+                                        pricers[pricerIndex],
+                                        fixedCmsDayCount_, 
+                                        settlementDays_,
+                                        fixedCmsConvention_,
+                                        baseRate, // FIXME: wrong order
+                                        fractions, // FIXME: wrong order
+                                        caps,
+                                        floors);
 
                     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
                         FloatingRateCouponVector(floatingSchedule,
-                                                 floatingCmsConvention_,
                                                  floatingNominals,
-                                                 settlementDays_,
                                                  iborIndex_,
+                                                 iborIndex_->dayCounter(),
+                                                 settlementDays_,
+                                                 floatingCmsConvention_,
                                                  std::vector<Real>(),
-                                                 std::vector<Spread>(),
-                                                 iborIndex_->dayCounter());
+                                                 std::vector<Spread>());
 
 
                     boost::shared_ptr<Swap> swap(
