@@ -61,7 +61,7 @@ namespace QuantLib {
         iborIndex_ = boost::shared_ptr<IborIndex>(new
             IborIndex(baseIndex->familyName(),
                   floatTenor_,
-                  baseIndex->settlementDays(),
+                  baseIndex->fixingDays(),
                   baseIndex->currency(),
                   baseIndex->calendar(),
                   baseIndex->businessDayConvention(),
@@ -76,7 +76,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = swapIndex_->settlementDays();
+          Integer fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
@@ -103,7 +103,7 @@ namespace QuantLib {
                             cmsConvention_,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
-                            swapIndex_->settlementDays(),
+                            swapIndex_->fixingDays(),
                             cmsDayCount_,
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
@@ -115,7 +115,7 @@ namespace QuantLib {
             FloatingRateCouponVector(floatSchedule,
                                      floatConvention_,
                                      std::vector<Real>(1, nominal_),
-                                     iborIndex_->settlementDays(),
+                                     iborIndex_->fixingDays(),
                                      iborIndex_,
                                      std::vector<Real>(1, 1.0), // gearing
                                      std::vector<Spread>(1, iborSpread_),
@@ -132,7 +132,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = swapIndex_->settlementDays();
+          Integer fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
@@ -159,7 +159,7 @@ namespace QuantLib {
                             cmsConvention_,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
-                            swapIndex_->settlementDays(),
+                            swapIndex_->fixingDays(),
                             cmsDayCount_,
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
@@ -171,7 +171,7 @@ namespace QuantLib {
             FloatingRateCouponVector(floatSchedule,
                                      floatConvention_,
                                      std::vector<Real>(1, nominal_),
-                                     iborIndex_->settlementDays(),
+                                     iborIndex_->fixingDays(),
                                      iborIndex_,
                                      std::vector<Real>(1, 1.0), // gearing
                                      std::vector<Spread>(1, iborSpread_),
