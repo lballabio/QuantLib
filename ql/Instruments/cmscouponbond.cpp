@@ -60,11 +60,17 @@ namespace QuantLib {
                           firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = CMSCouponVector(schedule,paymentConvention,
-                        std::vector<Real>(1, faceAmount_),
-                        index,fixingDays,dayCounter,gearings,
-                        spreads,caps,floors,
-                        pricer);
+        cashflows_ = CMSCouponVector(schedule,
+                                     std::vector<Real>(1, faceAmount_),
+                                     index,
+                                     pricer,
+                                     dayCounter,
+                                     fixingDays,
+                                     paymentConvention,
+                                     gearings,
+                                     spreads,
+                                     caps,
+                                     floors);
         // redemption
         // !!!
         Date redemptionDate =
