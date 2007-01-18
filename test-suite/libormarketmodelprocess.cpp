@@ -57,7 +57,7 @@ boost::shared_ptr<IborIndex> makeIndex() {
     Settings::instance().evaluationDate() = todaysDate;
 
     dates[0] = index->calendar().advance(todaysDate,
-                                         index->settlementDays(), Days);
+                                         index->fixingDays(), Days);
 
     termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
@@ -132,7 +132,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
         Date todaysDate = calendar.adjust(Date::todaysDate()+daysOffset);
         Settings::instance().evaluationDate() = todaysDate;
         Date settlementDate =
-            calendar.advance(todaysDate, index->settlementDays(), Days);
+            calendar.advance(todaysDate, index->fixingDays(), Days);
 
         termStructure.linkTo(flatRate(settlementDate, 0.04, dayCounter));
 

@@ -62,7 +62,7 @@ boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
     Settings::instance().evaluationDate() = todaysDate;
 
     dates[0] = index->calendar().advance(todaysDate,
-                                         index->settlementDays(), Days);
+                                         index->fixingDays(), Days);
 
     termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));

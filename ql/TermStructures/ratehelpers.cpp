@@ -282,7 +282,7 @@ namespace QuantLib {
         boost::shared_ptr<IborIndex> clonedIndex(new
             IborIndex(index_->familyName(),
                   index_->tenor(),
-                  index_->settlementDays(),
+                  index_->fixingDays(),
                   index_->currency(),
                   index_->calendar(),
                   index_->businessDayConvention(),

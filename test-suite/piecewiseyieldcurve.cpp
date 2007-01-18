@@ -196,7 +196,7 @@ void setup() {
         Handle<Quote> r(fraRates[i]);
         fraHelpers[i] = boost::shared_ptr<RateHelper>(
               new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
-                                euribor3m.settlementDays(),
+                                euribor3m.fixingDays(),
                                 euribor3m.calendar(),
                                 euribor3m.businessDayConvention(),
                                 euribor3m.dayCounter()));

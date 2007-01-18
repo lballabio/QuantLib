@@ -33,7 +33,7 @@ namespace QuantLib {
                            const Handle<YieldTermStructure>& discountCurve)
     : Forward(index->dayCounter(), index->calendar(),
               index->businessDayConvention(),
-              index->settlementDays(), boost::shared_ptr<Payoff>(),
+              index->fixingDays(), boost::shared_ptr<Payoff>(),
               valueDate, maturityDate, discountCurve),
       fraType_(type), notionalAmount_(notionalAmount), index_(index) {
 
