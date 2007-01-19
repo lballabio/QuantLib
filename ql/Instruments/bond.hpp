@@ -67,7 +67,7 @@ namespace QuantLib {
         //@{
         Date settlementDate() const;
         Date maturityDate() const;
-        Date firstCouponDate() const;
+        Date interestAccrualDate() const;
         /*! \warning the returned vector includes the redemption as
                      the last cash flow.
         */
@@ -172,7 +172,7 @@ namespace QuantLib {
         return maturityDate_;
     }
 
-    inline Date Bond::firstCouponDate() const {
+    inline Date Bond::interestAccrualDate() const {
         return datedDate_;
     }
 
