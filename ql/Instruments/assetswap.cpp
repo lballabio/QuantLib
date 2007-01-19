@@ -97,7 +97,7 @@ namespace QuantLib {
              //back payment
              //the investor receives the difference between redemption value and 100, 
              //for bonds not redeeming at par
-            Real backpayment=nominal_/100.0*nominal_;
+            Real backpayment=nominal_;
             boost::shared_ptr<CashFlow> backpaymentCashFlow (new
                 SimpleCashFlow(backpayment, floatSchedule.endDate()));
             floatingLeg.push_back(backpaymentCashFlow);
