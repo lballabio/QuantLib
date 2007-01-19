@@ -716,6 +716,9 @@
 				RelativePath="ql\CashFlows\fixedratecoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\floatingratecoupon.cpp">
+			</File>
+			<File
 				RelativePath="ql\CashFlows\floatingratecoupon.hpp">
 			</File>
 			<File
@@ -1862,6 +1865,12 @@
 			</File>
 			<File
 				RelativePath="ql\Instruments\cliquetoption.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\cmscouponbond.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\cmscouponbond.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\compositeinstrument.cpp">
