@@ -53,8 +53,7 @@ namespace QuantLib {
                         const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>(),
                         const Date& stub = Date(),
-                        bool fromEnd = true,
-                        bool longFinal = false);
+                        bool fromEnd = true );
     };
 
 }

@@ -39,7 +39,7 @@ namespace QuantLib {
                     BusinessDayConvention paymentConvention,
                     Real redemption,
                     const Handle<YieldTermStructure>& discountCurve,
-                    const Date& stub, bool fromEnd, bool)
+                    const Date& stub, bool fromEnd)
     : Bond(faceAmount, dayCounter, calendar, accrualConvention,
            paymentConvention, settlementDays, discountCurve) {
 
