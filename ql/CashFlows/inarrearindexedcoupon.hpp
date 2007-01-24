@@ -51,10 +51,11 @@ namespace QuantLib {
                               const Spread spread = 0.0,
                               const Date& refPeriodStart = Date(),
                               const Date& refPeriodEnd = Date(),
-                              const DayCounter& dayCounter = DayCounter())
+                              const DayCounter& dayCounter = DayCounter(),
+                              bool isInArrears = true)
         : FloatingRateCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                         index, gearing, spread, refPeriodStart, refPeriodEnd,
-                        dayCounter) {}
+                        dayCounter, isInArrears) {}
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
