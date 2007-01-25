@@ -526,11 +526,10 @@ void CmsTest::testCmsSwap() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    modelOfYieldCurves_.clear();
-    modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
-    modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
-    modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
-    modelOfYieldCurves_.push_back(GFunctionFactory::NonParallelShifts);
+    swaptionVolatilityStructures_.clear();
+    swaptionVolatilityStructures_.push_back(atmVol_);
+    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
+    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube2_);
 
     std::vector<Size> swapLengths;
     swapLengths.push_back(1);
@@ -606,8 +605,8 @@ void CmsTest::testCmsSwap() {
                                         fixedCmsDayCount_, 
                                         settlementDays_,
                                         fixedCmsConvention_,
-                                        baseRate, // FIXME: wrong order
-                                        fractions, // FIXME: wrong order
+                                        fractions, 
+                                        baseRate, 
                                         caps,
                                         floors);
 
@@ -645,8 +644,8 @@ void CmsTest::testCmsSwap() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
-    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    //suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
+    //suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
     return suite;
 }
