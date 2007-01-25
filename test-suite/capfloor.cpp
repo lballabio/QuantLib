@@ -146,7 +146,7 @@ void CapFloorTest::testVega() {
 
     Date startDate = termStructure_->referenceDate();
     static const Real shift = 1e-8;
-    static const Real tolerance = 0.002;
+    static const Real tolerance = 0.003;
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(vols); j++) {
@@ -172,7 +172,7 @@ void CapFloorTest::testVega() {
                         discrepancy /= numericalVega;
                         if (discrepancy > tolerance)
                             BOOST_FAIL("failed to compute CapFloor vega:" <<
-                                "\n    lengths:     " << lengths[j]*Years <<
+                                "\n    lengths:     " << lengths[i]*Years <<
                                 "\n    strike:      " << io::rate(strikes[k]) <<
                                 //"\n    types:       " << types[h] <<
                                 QL_FIXED << std::setprecision(12) <<
