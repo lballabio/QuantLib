@@ -45,6 +45,8 @@ namespace QuantLib {
                 Time tau = index_->dayCounter().yearFraction(d1, d2);
                 Real variance = capletVolatility_->blackVariance(d1, f0);
                 return f0*f0*variance*tau/(1.0+f0*tau);
+                // A better approximation is Hull, 4th ed., page 553
+                //return exp(f0*variance*tau/(1.0+f0*tau)); 
             }
         }
     }
