@@ -52,6 +52,19 @@ namespace QuantLib {
         //@}
     };
 
+    /*! \relates CashFlow */
+    inline bool operator<(const CashFlow& c1,
+                          const CashFlow& c2) {
+
+        if (c1.date()<c2.date())
+            return true;
+
+        if (c1.date()==c2.date() &&
+            c1.amount()<c2.amount())
+            return true;
+
+        return false;
+    }
 
     // inline definitions
 
