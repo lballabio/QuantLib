@@ -528,7 +528,7 @@ void CmsTest::testCmsSwap() {
 
     swaptionVolatilityStructures_.clear();
     swaptionVolatilityStructures_.push_back(atmVol_);
-    swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
+    //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube2_);
 
     std::vector<Size> swapLengths;
@@ -536,9 +536,6 @@ void CmsTest::testCmsSwap() {
     swapLengths.push_back(5);
     swapLengths.push_back(6);
     swapLengths.push_back(10);
-    swapLengths.push_back(15);
-    swapLengths.push_back(20);
-    swapLengths.push_back(30);
 
     int priceIndex = 1;
 
@@ -644,8 +641,8 @@ void CmsTest::testCmsSwap() {
 
 test_suite* CmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS tests");
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
-    //suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
+    suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));
     return suite;
 }
