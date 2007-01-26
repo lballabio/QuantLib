@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,7 @@
 #define quantlib_comparison_hpp
 
 #include <ql/types.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -83,6 +84,19 @@ namespace QuantLib {
         each needed type (see CashFlow for an example.)
     */
     template <class T> struct earlier_than;
+
+    /* partial specialization for shared pointers, forwarding to their
+       pointees. */
+    template <class T>
+    struct earlier_than<boost::shared_ptr<T> >
+        : std::binary_function<boost::shared_ptr<T>,
+                               boost::shared_ptr<T>,
+                               bool> {
+        bool operator()(const boost::shared_ptr<T>& x,
+                        const boost::shared_ptr<T>& y) {
+            return earlier_than<T>()(*x,*y);
+        }
+    };
 
 }
 
