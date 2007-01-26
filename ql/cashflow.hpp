@@ -26,6 +26,7 @@
 #define quantlib_cash_flow_hpp
 
 #include <ql/event.hpp>
+#include <ql/Math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -52,19 +53,25 @@ namespace QuantLib {
         //@}
     };
 
-    /*! \relates CashFlow */
-    inline bool operator<(const CashFlow& c1,
-                          const CashFlow& c2) {
 
-        if (c1.date()<c2.date())
-            return true;
+    template <>
+    struct earlier_than<CashFlow>
+            : public std::binary_function<CashFlow,CashFlow,bool> {
+        bool operator()(const CashFlow& c1,
+                        const CashFlow& c2) {
+            if (c1.date()<c2.date())
+                return true;
 
-        if (c1.date()==c2.date() &&
-            c1.amount()<c2.amount())
-            return true;
+            if (c1.date()==c2.date() &&
+                c1.amount()<c2.amount())
+                return true;
 
-        return false;
-    }
+            return false;
+        }
+    };
+
+    // std::sort(v.begin(), v.end(), earlier_than<CashFlow>());
+
 
     // inline definitions
 

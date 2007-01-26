@@ -75,6 +75,15 @@ namespace QuantLib {
                diff <= tolerance*std::fabs(y);
     }
 
+
+
+    //! compare two objects by date
+    /*! There is no generic implementation of this struct.
+        Template specializations will have to be defined for
+        each needed type (see CashFlow for an example.)
+    */
+    template <class T> struct earlier_than;
+
 }
 
 
