@@ -98,8 +98,8 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-            CMSCouponVector(cmsSchedule,
+        Leg cmsLeg =
+            CMSLeg(cmsSchedule,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
                             cmsVanillapricer_,
@@ -111,8 +111,8 @@ namespace QuantLib {
                             std::vector<Rate>(1, cmsCap_),
                             std::vector<Rate>(1, cmsFloor_));
 
-        std::vector<boost::shared_ptr<CashFlow> > floatLeg =
-            FloatingRateCouponVector(floatSchedule,
+        Leg floatLeg =
+            FloatingRateLeg(floatSchedule,
                                      std::vector<Real>(1, nominal_),
                                      iborIndex_,
                                      floatDayCount_,
@@ -154,8 +154,8 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-            CMSCouponVector(cmsSchedule,
+        Leg cmsLeg =
+            CMSLeg(cmsSchedule,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
                             cmsVanillapricer_,
@@ -167,8 +167,8 @@ namespace QuantLib {
                             std::vector<Rate>(1, cmsCap_),
                             std::vector<Rate>(1, cmsFloor_));
 
-        std::vector<boost::shared_ptr<CashFlow> > floatLeg =
-            FloatingRateCouponVector(floatSchedule,
+        Leg floatLeg =
+            FloatingRateLeg(floatSchedule,
                                      std::vector<Real>(1, nominal_),
                                      iborIndex_,
                                      floatDayCount_,

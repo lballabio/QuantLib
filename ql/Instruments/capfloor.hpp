@@ -58,13 +58,13 @@ namespace QuantLib {
         class results;
         class engine;
         CapFloor(Type type,
-                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
         CapFloor(Type type,
-                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
@@ -76,7 +76,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Type type() const { return type_; }
-        const std::vector<boost::shared_ptr<CashFlow> >& leg() const {
+        const Leg& leg() const {
             return floatingLeg_;
         }
         const std::vector<Rate>& capRates() const {
@@ -85,7 +85,7 @@ namespace QuantLib {
         const std::vector<Rate>& floorRates() const {
             return floorRates_;
         }
-        const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const {
+        const Leg& floatingLeg() const {
             return floatingLeg_;
         }
         Rate atmRate() const;
@@ -104,7 +104,7 @@ namespace QuantLib {
                                                                         const;
       private:
         Type type_;
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg_;
+        Leg floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
         Handle<YieldTermStructure> termStructure_;
@@ -130,7 +130,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Cap : public CapFloor {
       public:
-        Cap(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+        Cap(const Leg& floatingLeg,
             const std::vector<Rate>& exerciseRates,
             const Handle<YieldTermStructure>& termStructure,
             const boost::shared_ptr<PricingEngine>& engine)
@@ -143,7 +143,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Floor : public CapFloor {
       public:
-        Floor(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+        Floor(const Leg& floatingLeg,
               const std::vector<Rate>& exerciseRates,
               const Handle<YieldTermStructure>& termStructure,
               const boost::shared_ptr<PricingEngine>& engine)
@@ -156,7 +156,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Collar : public CapFloor {
       public:
-        Collar(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+        Collar(const Leg& floatingLeg,
                const std::vector<Rate>& capRates,
                const std::vector<Rate>& floorRates,
                const Handle<YieldTermStructure>& termStructure,

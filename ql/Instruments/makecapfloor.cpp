@@ -43,13 +43,13 @@ namespace QuantLib {
 
         VanillaSwap swap = makeVanillaSwap_;
 
-        std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
+        Leg leg = swap.floatingLeg();
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = Cashflows::atmRate(leg, swap.termStructure());
+            strikeVector[0] = CashFlows::atmRate(leg, swap.termStructure());
 
         return CapFloor(capFloorType_, leg, strikeVector,
                         swap.termStructure(), engine_);
@@ -59,13 +59,13 @@ namespace QuantLib {
 
         VanillaSwap swap = makeVanillaSwap_;
 
-        std::vector<boost::shared_ptr<CashFlow> > leg = swap.floatingLeg();
+        Leg leg = swap.floatingLeg();
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = Cashflows::atmRate(leg, swap.termStructure());
+            strikeVector[0] = CashFlows::atmRate(leg, swap.termStructure());
 
         return boost::shared_ptr<CapFloor>(new
             CapFloor(capFloorType_, leg, strikeVector, swap.termStructure(),

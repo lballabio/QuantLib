@@ -59,7 +59,7 @@ namespace QuantLib {
 
         Real income = 0.0;
         Date settlement = settlementDate();
-        std::vector<boost::shared_ptr<CashFlow> > cf =
+        Leg cf =
             fixedCouponBond_->cashflows();
 
         /*

@@ -43,8 +43,8 @@ namespace QuantLib {
                  <tt>Type</tt> is the desired coupon type.
     */
     template <class IndexedCouponType, class IndexType>
-    std::vector<boost::shared_ptr<CashFlow> >
-    IndexedCouponVector(const Schedule& schedule,
+    Leg
+    IndexedLeg(const Schedule& schedule,
                         const BusinessDayConvention paymentAdjustment,
                         const std::vector<Real>& nominals,
                         const Integer fixingDays,
@@ -56,7 +56,7 @@ namespace QuantLib {
     {
         QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
-        std::vector<boost::shared_ptr<CashFlow> > leg;
+        Leg leg;
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Calendar calendar = schedule.calendar();

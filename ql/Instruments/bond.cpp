@@ -31,7 +31,7 @@ namespace QuantLib {
 
         Real dirtyPriceFromYield(
                    Real faceAmount,
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    Rate yield,
                    Compounding compounding,
                    Frequency frequency,
@@ -98,7 +98,7 @@ namespace QuantLib {
           public:
             YieldFinder(
                    Real faceAmount,
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    Real dirtyPrice,
                    Compounding compounding,
                    const DayCounter& dayCounter,
@@ -119,7 +119,7 @@ namespace QuantLib {
             }
           private:
             Real faceAmount_;
-            std::vector<boost::shared_ptr<CashFlow> > cashflows_;
+            Leg cashflows_;
             Real dirtyPrice_;
             Compounding compounding_;
             DayCounter dayCounter_;

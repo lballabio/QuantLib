@@ -60,7 +60,7 @@ namespace QuantLib {
                           firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = CMSCouponVector(schedule,
+        cashflows_ = CMSLeg(schedule,
                                      std::vector<Real>(1, faceAmount_),
                                      index,
                                      pricer,

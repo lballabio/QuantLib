@@ -27,8 +27,8 @@ namespace QuantLib {
 
 
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
-               const Swap::Leg& firstLeg,
-               const Swap::Leg& secondLeg)
+               const Leg& firstLeg,
+               const Leg& secondLeg)
     : termStructure_(termStructure), legs_(2), payer_(2),
       legNPV_(2, 0.0), legBPS_(2, 0.0) {
         legs_[0] = firstLeg;
@@ -36,7 +36,7 @@ namespace QuantLib {
         payer_[0] = -1.0;
         payer_[1] =  1.0;
         registerWith(termStructure_);
-        Swap::Leg::iterator i;
+        Leg::iterator i;
         for (i = legs_[0].begin(); i!= legs_[0].end(); ++i)
             registerWith(*i);
         for (i = legs_[1].begin(); i!= legs_[1].end(); ++i)
@@ -44,14 +44,14 @@ namespace QuantLib {
     }
 
     Swap::Swap(const Handle<YieldTermStructure>& termStructure,
-               const std::vector<Swap::Leg>& legs,
+               const std::vector<Leg>& legs,
                const std::vector<bool>& payer)
     : termStructure_(termStructure), legs_(legs), payer_(legs.size(), 1.0),
       legNPV_(legs.size(), 0.0), legBPS_(legs.size(), 0.0) {
         QL_REQUIRE(payer.size()==legs_.size(),
                    "payer/leg mismatch");
         registerWith(termStructure_);
-        Swap::Leg::iterator i;
+        Leg::iterator i;
         for (Size j=0; j<legs_.size(); j++) {
             if (payer[j]) payer_[j]=-1.0;
             for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
@@ -61,7 +61,7 @@ namespace QuantLib {
 
     bool Swap::isExpired() const {
         Date settlement = termStructure_->referenceDate();
-        Swap::Leg::const_iterator i;
+        Leg::const_iterator i;
         for (Size j=0; j<legs_.size(); j++) {
             for (i = legs_[j].begin(); i!= legs_[j].end(); ++i)
                 if (!(*i)->hasOccurred(settlement))
@@ -84,25 +84,25 @@ namespace QuantLib {
         errorEstimate_ = Null<Real>();
         NPV_ = 0.0;
         for (Size j=0; j<legs_.size(); j++) {
-            legNPV_[j]= payer_[j]*Cashflows::npv(legs_[j], termStructure_);
+            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j], termStructure_);
             NPV_ += legNPV_[j] ;
-            legBPS_[j] = payer_[j]*Cashflows::bps(legs_[j], termStructure_);
+            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j], termStructure_);
         }
     }
 
     Date Swap::startDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
-        Date d = Cashflows::startDate(legs_[0]);
+        Date d = CashFlows::startDate(legs_[0]);
         for (Size j=1; j<legs_.size(); ++j)
-            d = std::min(d, Cashflows::startDate(legs_[j]));
+            d = std::min(d, CashFlows::startDate(legs_[j]));
         return d;
     }
 
     Date Swap::maturityDate() const {
         QL_REQUIRE(!legs_.empty(), "no legs given");
-        Date d = Cashflows::maturityDate(legs_[0]);
+        Date d = CashFlows::maturityDate(legs_[0]);
         for (Size j=1; j<legs_.size(); ++j)
-            d = std::max(d, Cashflows::maturityDate(legs_[j]));
+            d = std::max(d, CashFlows::maturityDate(legs_[j]));
         return d;
     }
 

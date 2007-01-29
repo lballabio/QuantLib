@@ -43,7 +43,7 @@ namespace QuantLib {
         class irrFinder : public std::unary_function<Rate,Real> {
           public:
             irrFinder(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    Real marketPrice,
                    const DayCounter& dayCounter,
                    Compounding compounding,
@@ -54,11 +54,11 @@ namespace QuantLib {
               frequency_(frequency), settlementDate_(settlementDate) {}
             Real operator()(Rate guess) const {
                 InterestRate y(guess, dayCounter_, compounding_, frequency_);
-                Real NPV = Cashflows::npv(cashflows_,y,settlementDate_);
+                Real NPV = CashFlows::npv(cashflows_,y,settlementDate_);
                 return marketPrice_ - NPV;
             }
           private:
-            const std::vector<boost::shared_ptr<CashFlow> >& cashflows_;
+            const Leg& cashflows_;
             Real marketPrice_;
             DayCounter dayCounter_;
             Compounding compounding_;
@@ -85,7 +85,7 @@ namespace QuantLib {
         };
 
         Real simpleDuration(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    const InterestRate& rate,
                    Date settlementDate) {
 
@@ -113,7 +113,7 @@ namespace QuantLib {
         }
 
         Real modifiedDuration(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    const InterestRate& rate,
                    Date settlementDate) {
 
@@ -156,7 +156,7 @@ namespace QuantLib {
         }
 
         Real macaulayDuration(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+                   const Leg& cashflows,
                    const InterestRate& rate,
                    Date settlementDate) {
 
@@ -172,8 +172,8 @@ namespace QuantLib {
 
     }
 
-   Date Cashflows::startDate(
-                const std::vector<boost::shared_ptr<CashFlow> >& cashflows) {
+   Date CashFlows::startDate(
+                const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {
             boost::shared_ptr<Coupon> c =
@@ -186,8 +186,8 @@ namespace QuantLib {
         return d;
     }
 
-    Date Cashflows::maturityDate(
-                const std::vector<boost::shared_ptr<CashFlow> >& cashflows) {
+    Date CashFlows::maturityDate(
+                const Leg& cashflows) {
         Date d = Date::minDate();
         for (Size i=0; i<cashflows.size(); ++i)
             d = std::max(d, cashflows[i]->date());
@@ -195,8 +195,8 @@ namespace QuantLib {
         return d;
     }
 
-    Real Cashflows::npv(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Real CashFlows::npv(
+                   const Leg& cashflows,
                    const Handle<YieldTermStructure>& discountCurve) {
         const Date& settlementDate = discountCurve->referenceDate();
         Real totalNPV = 0.0;
@@ -208,8 +208,8 @@ namespace QuantLib {
         return totalNPV;
     }
 
-    Real Cashflows::npv(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Real CashFlows::npv(
+                   const Leg& cashflows,
                    const InterestRate& irr,
                    Date settlementDate) {
         if (settlementDate == Date())
@@ -220,8 +220,8 @@ namespace QuantLib {
         return npv(cashflows, Handle<YieldTermStructure>(flatRate));
     }
 
-    Real Cashflows::bps(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Real CashFlows::bps(
+                   const Leg& cashflows,
                    const Handle<YieldTermStructure>& discountCurve) {
         static const Spread basisPoint = 1.0e-4;
         const Date& settlementDate = discountCurve->referenceDate();
@@ -233,8 +233,8 @@ namespace QuantLib {
         return basisPoint*calc.result();
     }
 
-    Real Cashflows::bps(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Real CashFlows::bps(
+                   const Leg& cashflows,
                    const InterestRate& irr,
                    Date settlementDate) {
         if (settlementDate == Date())
@@ -245,8 +245,8 @@ namespace QuantLib {
         return bps(cashflows, Handle<YieldTermStructure>(flatRate));
     }
 
-    Rate Cashflows::irr(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Rate CashFlows::irr(
+                   const Leg& cashflows,
                    Real marketPrice,
                    const DayCounter& dayCounter,
                    Compounding compounding,
@@ -305,8 +305,8 @@ namespace QuantLib {
                             tolerance, guess, guess/10.0);
     }
 
-    Time Cashflows::duration(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Time CashFlows::duration(
+                   const Leg& cashflows,
                    const InterestRate& rate,
                    Duration::Type type,
                    Date settlementDate) {
@@ -326,8 +326,8 @@ namespace QuantLib {
         }
     }
 
-    Real Cashflows::convexity(
-                   const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+    Real CashFlows::convexity(
+                   const Leg& cashflows,
                    const InterestRate& rate,
                    Date settlementDate) {
 
@@ -373,13 +373,13 @@ namespace QuantLib {
         return d2Pdy2/P;
     }
 
-    Rate Cashflows::atmRate(
-                  const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+    Rate CashFlows::atmRate(
+                  const Leg& cashFlows,
                   const Handle<YieldTermStructure>& discountCurve,
                   Real npv) {
-        Real bps = Cashflows::bps(cashFlows, discountCurve);
+        Real bps = CashFlows::bps(cashFlows, discountCurve);
         if (npv==Null<Real>())
-            npv = Cashflows::npv(cashFlows, discountCurve);
+            npv = CashFlows::npv(cashFlows, discountCurve);
         return 1.0e-4*npv/bps;
     }
 

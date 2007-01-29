@@ -45,18 +45,17 @@ namespace QuantLib {
     }
 
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    FixedRateCouponVector(const Schedule& schedule,
-                          const std::vector<Real>& nominals,
-                          const std::vector<Rate>& couponRates,
-                          const DayCounter& paymentDayCounter,
-                          BusinessDayConvention paymentAdjustment,
-                          const DayCounter& firstPeriodDayCount) {
+    Leg FixedRateLeg(const Schedule& schedule,
+                     const std::vector<Real>& nominals,
+                     const std::vector<Rate>& couponRates,
+                     const DayCounter& paymentDayCounter,
+                     BusinessDayConvention paymentAdjustment,
+                     const DayCounter& firstPeriodDayCount) {
 
         QL_REQUIRE(!couponRates.empty(), "coupon rates not specified");
         QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
-        std::vector<boost::shared_ptr<CashFlow> > leg;
+        Leg leg;
         Calendar calendar = schedule.calendar();
 
         // first period might be short or long
@@ -130,15 +129,14 @@ namespace QuantLib {
         return leg;
     }
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    FloatingRateCouponVector(const Schedule& schedule,
-                             const std::vector<Real>& nominals,
-                             const boost::shared_ptr<IborIndex>& index,
-                             const DayCounter& paymentDayCounter,
-                             Integer fixingDays,
-                             BusinessDayConvention paymentAdjustment,
-                             const std::vector<Real>& gearings,
-                             const std::vector<Spread>& spreads) {
+    Leg FloatingRateLeg(const Schedule& schedule,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<IborIndex>& index,
+                        const DayCounter& paymentDayCounter,
+                        Integer fixingDays,
+                        BusinessDayConvention paymentAdjustment,
+                        const std::vector<Real>& gearings,
+                        const std::vector<Spread>& spreads) {
 
         #ifdef QL_USE_INDEXED_COUPON
         typedef UpFrontIndexedCoupon coupon_type;
@@ -146,37 +144,32 @@ namespace QuantLib {
         typedef ParCoupon coupon_type;
         #endif
 
-        std::vector<boost::shared_ptr<CashFlow> > leg =
-            IndexedCouponVector<coupon_type>(schedule,
-                                             paymentAdjustment,
-                                             nominals,
-                                             fixingDays,
-                                             index,
-                                             gearings,
-                                             spreads,
-                                             paymentDayCounter
-                                             #ifdef QL_PATCH_MSVC6
-                                             , (const coupon_type*) 0
-                                             #endif
-                                             );
+        Leg leg = IndexedLeg<coupon_type>(schedule,
+                                          paymentAdjustment,
+                                          nominals,
+                                          fixingDays,
+                                          index,
+                                          gearings,
+                                          spreads,
+                                          paymentDayCounter);
         return leg;
     }
 
 
 
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    CappedFlooredFloatingRateCouponVector(const Schedule& schedule,
-                             const std::vector<Real>& nominals,
-                             const boost::shared_ptr<IborIndex>& index,
-                             const DayCounter& paymentDayCounter,
-                             Integer fixingDays,
-                             BusinessDayConvention paymentAdjustment,
-                             const std::vector<Real>& gearings,
-                             const std::vector<Spread>& spreads,
-                             const std::vector<Rate>& caps,
-                             const std::vector<Rate>& floors,
-                             const Handle<CapletVolatilityStructure>& vol) {
+    Leg CappedFlooredFloatingRateLeg(
+                            const Schedule& schedule,
+                            const std::vector<Real>& nominals,
+                            const boost::shared_ptr<IborIndex>& index,
+                            const DayCounter& paymentDayCounter,
+                            Integer fixingDays,
+                            BusinessDayConvention paymentAdjustment,
+                            const std::vector<Real>& gearings,
+                            const std::vector<Spread>& spreads,
+                            const std::vector<Rate>& caps,
+                            const std::vector<Rate>& floors,
+                            const Handle<CapletVolatilityStructure>& vol) {
 
         #ifdef QL_USE_INDEXED_COUPON
         typedef UpFrontIndexedCoupon coupon_type;
@@ -184,7 +177,7 @@ namespace QuantLib {
         typedef ParCoupon coupon_type;
         #endif
 
-        std::vector<boost::shared_ptr<CashFlow> > leg;
+        Leg leg;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
 
@@ -279,22 +272,21 @@ namespace QuantLib {
     }
 
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSCouponVector(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+    Leg CMSLeg(const Schedule& schedule,
+               const std::vector<Real>& nominals,
+               const boost::shared_ptr<SwapIndex>& index,
+               const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+               const DayCounter& paymentDayCounter,
+               Integer fixingDays,
+               BusinessDayConvention paymentAdjustment,
+               const std::vector<Real>& gearings,
+               const std::vector<Spread>& spreads,
+               const std::vector<Rate>& caps,
+               const std::vector<Rate>& floors) {
 
         //std::vector<CMSCoupon> leg;
-        std::vector<boost::shared_ptr<CashFlow> > leg;
-        //std::vector<boost::shared_ptr<CashFlow> > legCashFlow;
+        Leg leg;
+        //Leg legCashFlow;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
 
@@ -376,20 +368,20 @@ namespace QuantLib {
         }
         return leg;
     }
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSZeroCouponVector(const Schedule& schedule,
-                        const std::vector<Real>& nominals,
-                        const boost::shared_ptr<SwapIndex>& index,
-                        const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                        const DayCounter& paymentDayCounter,
-                        Integer fixingDays,
-                        BusinessDayConvention paymentAdjustment,
-                        const std::vector<Real>& gearings,
-                        const std::vector<Spread>& spreads,
-                        const std::vector<Rate>& caps,
-                        const std::vector<Rate>& floors) {
 
-        std::vector<boost::shared_ptr<CashFlow> > leg;
+    Leg CMSZeroLeg(const Schedule& schedule,
+                   const std::vector<Real>& nominals,
+                   const boost::shared_ptr<SwapIndex>& index,
+                   const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                   const DayCounter& paymentDayCounter,
+                   Integer fixingDays,
+                   BusinessDayConvention paymentAdjustment,
+                   const std::vector<Real>& gearings,
+                   const std::vector<Spread>& spreads,
+                   const std::vector<Rate>& caps,
+                   const std::vector<Rate>& floors) {
+
+        Leg leg;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
 
@@ -473,22 +465,21 @@ namespace QuantLib {
     }
 
 
-    std::vector<boost::shared_ptr<CashFlow> >
-    CMSInArrearsCouponVector(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+    Leg CMSInArrearsLeg(const Schedule& schedule,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<SwapIndex>& index,
+                        const boost::shared_ptr<VanillaCMSCouponPricer>& p,
+                        const DayCounter& paymentDayCounter,
+                        Integer fixingDays,
+                        BusinessDayConvention paymentAdjustment,
+                        const std::vector<Real>& gearings,
+                        const std::vector<Spread>& spreads,
+                        const std::vector<Rate>& caps,
+                        const std::vector<Rate>& floors) {
 
         //std::vector<CMSCoupon> leg;
-        std::vector<boost::shared_ptr<CashFlow> > leg;
-        //std::vector<boost::shared_ptr<CashFlow> > legCashFlow;
+        Leg leg;
+        //Leg legCashFlow;
         Calendar calendar = schedule.calendar();
         Size N = schedule.size();
 
@@ -564,15 +555,11 @@ namespace QuantLib {
             const boost::shared_ptr<CMSCoupon> cmsCoupon =
                boost::dynamic_pointer_cast<CMSCoupon>(leg[i]);
             if (cmsCoupon)
-                cmsCoupon->setPricer(pricer);
+                cmsCoupon->setPricer(p);
             else
                 QL_FAIL("unexpected error when casting to CMSCoupon");
         }
         return leg;
     }
-
-
-
-
 
 }

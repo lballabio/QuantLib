@@ -39,7 +39,7 @@ namespace QuantLib {
         maturityDate_ = maturityDate;
         frequency_ = Once;
 
-        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        cashflows_ = Leg();
         // redemption
         // !!!
         Date redemptionDate =

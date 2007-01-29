@@ -42,7 +42,7 @@ namespace QuantLib {
       m1(size_), m2(size_) {
 
         const DayCounter dayCounter = index_->dayCounter();
-        const std::vector<boost::shared_ptr<CashFlow> > flows = cashFlows();
+        const Leg flows = cashFlows();
 
         QL_REQUIRE(size_ == flows.size(), "wrong number of cashflows");
 
@@ -174,11 +174,11 @@ namespace QuantLib {
         return index_;
     }
 
-    std::vector<boost::shared_ptr<CashFlow> >
+    Leg
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
 
-        return FloatingRateCouponVector(  
+        return FloatingRateLeg(  
                    Schedule(refDate, refDate + Period(index_->tenor().length()*size_,
                                                       index_->tenor().units()),
                             index_->tenor(), index_->calendar(),

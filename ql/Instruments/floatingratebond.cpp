@@ -57,7 +57,7 @@ namespace QuantLib {
                           firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+        cashflows_ = IndexedLeg<UpFrontIndexedCoupon>(
                                              schedule, paymentConvention,
                                              std::vector<Real>(1, faceAmount_),
                                              fixingDays, index, 

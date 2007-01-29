@@ -31,7 +31,7 @@ namespace QuantLib {
 
     CapFloor::CapFloor(
                  CapFloor::Type type,
-                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const Leg& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
                  const Handle<YieldTermStructure>& termStructure,
@@ -52,7 +52,7 @@ namespace QuantLib {
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         }
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+        Leg::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
@@ -62,7 +62,7 @@ namespace QuantLib {
 
     CapFloor::CapFloor(
                  CapFloor::Type type,
-                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const Leg& floatingLeg,
                  const std::vector<Rate>& strikes,
                  const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine)
@@ -83,7 +83,7 @@ namespace QuantLib {
         } else
             QL_FAIL("only Cap/Floor types allowed in this constructor");
 
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+        Leg::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
 
@@ -100,7 +100,7 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate() const {
-        return Cashflows::atmRate(floatingLeg_, termStructure_);
+        return CashFlows::atmRate(floatingLeg_, termStructure_);
     }
 
     bool CapFloor::isExpired() const {
@@ -111,11 +111,11 @@ namespace QuantLib {
     }
 
     Date CapFloor::startDate() const {
-        return Cashflows::startDate(floatingLeg_);
+        return CashFlows::startDate(floatingLeg_);
     }
 
     Date CapFloor::maturityDate() const {
-        return Cashflows::maturityDate(floatingLeg_);
+        return CashFlows::maturityDate(floatingLeg_);
     }
 
     Date CapFloor::lastFixingDate() const {

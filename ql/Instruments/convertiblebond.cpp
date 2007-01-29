@@ -81,7 +81,7 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        cashflows_ = std::vector<boost::shared_ptr<CashFlow> >();
+        cashflows_ = Leg();
 
         // redemption
         // !!!
@@ -117,7 +117,7 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = FixedRateCouponVector(schedule,
+        cashflows_ = FixedRateLeg(schedule,
                                            std::vector<Real>(1, faceAmount_),
                                            coupons,
                                            dayCounter,
@@ -159,7 +159,7 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = IndexedCouponVector<UpFrontIndexedCoupon>(
+        cashflows_ = IndexedLeg<UpFrontIndexedCoupon>(
                                    schedule, schedule.businessDayConvention(),
                                    std::vector<Real>(1, faceAmount_),
                                    fixingDays, index,
@@ -193,7 +193,7 @@ namespace QuantLib {
             const DividendSchedule& dividends,
             const CallabilitySchedule& callability,
             const Handle<Quote>& creditSpread,
-            const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+            const Leg& cashflows,
             const DayCounter& dayCounter,
             const Schedule& schedule,
             const Date& issueDate,
@@ -269,7 +269,7 @@ namespace QuantLib {
             }
         }
 
-        const std::vector<boost::shared_ptr<CashFlow> >& cashflows =
+        const Leg& cashflows =
                                                            bond_->cashflows();
         moreArgs->couponTimes.clear();
         moreArgs->couponAmounts.clear();

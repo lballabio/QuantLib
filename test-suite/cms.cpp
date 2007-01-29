@@ -595,7 +595,7 @@ void CmsTest::testCmsSwap() {
                      pricerIndex++) {
 
                     std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-                        CMSCouponVector(fixedSchedule,
+                        CMSLeg(fixedSchedule,
                                         fixedNominals, 
                                         index_,
                                         pricers[pricerIndex],
@@ -608,7 +608,7 @@ void CmsTest::testCmsSwap() {
                                         floors);
 
                     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-                        FloatingRateCouponVector(floatingSchedule,
+                        FloatingRateLeg(floatingSchedule,
                                                  floatingNominals,
                                                  iborIndex_,
                                                  iborIndex_->dayCounter(),

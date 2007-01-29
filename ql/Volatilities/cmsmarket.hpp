@@ -35,7 +35,7 @@
 
 namespace QuantLib {
 
-     typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
+     typedef Leg Leg;
 
      class CmsMarket{
       public:

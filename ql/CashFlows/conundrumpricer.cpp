@@ -384,7 +384,7 @@ namespace QuantLib {
         const boost::shared_ptr<VanillaSwap>& swap =
             swapIndex->underlyingSwap(coupon.fixingDate());
 
-        const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
+        const Leg fixedLeg(swap->fixedLeg());
         const Schedule schedule =
             swapIndex->fixedRateSchedule(coupon.fixingDate());
         const boost::shared_ptr<YieldTermStructure> rateCurve =
@@ -488,7 +488,7 @@ namespace QuantLib {
 
         objectiveFunction_ = boost::shared_ptr<ObjectiveFunction>(new ObjectiveFunction(*this, swapRateValue_));
 
-        const std::vector<boost::shared_ptr<CashFlow> > fixedLeg(swap->fixedLeg());
+        const Leg fixedLeg(swap->fixedLeg());
         const Schedule schedule =
             swapIndex->fixedRateSchedule(coupon.fixingDate());
         const boost::shared_ptr<YieldTermStructure> rateCurve =

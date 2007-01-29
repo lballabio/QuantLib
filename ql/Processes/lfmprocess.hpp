@@ -75,7 +75,7 @@ namespace QuantLib {
         Size factors() const;
 
         boost::shared_ptr<IborIndex> index() const;
-        std::vector<boost::shared_ptr<CashFlow> > cashFlows(
+        Leg cashFlows(
                                                      Real amount = 1.0) const;
 
         void setCovarParam(

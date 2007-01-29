@@ -39,20 +39,20 @@ namespace QuantLib {
 
     //! cashflows analysis functions
     /*! \todo add tests */
-    class Cashflows {
+    class CashFlows {
       private:
-        Cashflows();
-        Cashflows(const Cashflows&);
+        CashFlows();
+        CashFlows(const CashFlows&);
       public:
         static Date startDate(
-                        const std::vector<boost::shared_ptr<CashFlow> >&);
+                        const Leg&);
         static Date maturityDate(
-                        const std::vector<boost::shared_ptr<CashFlow> >&);
+                        const Leg&);
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure.
         */
-        static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Real npv(const Leg&,
                         const Handle<YieldTermStructure>& discountCurve);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
@@ -60,7 +60,7 @@ namespace QuantLib {
             flows. The change for each coupon is discounted according
             to the given term structure.
         */
-        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Real bps(const Leg&,
                         const Handle<YieldTermStructure>& discountCurve);
         //! At The Money Rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
@@ -69,7 +69,7 @@ namespace QuantLib {
             not given, the input cash flow vector's NPV is used instead.
         */
         static Rate atmRate(
-            const std::vector<boost::shared_ptr<CashFlow> >& cashFlows,
+            const Leg& cashFlows,
             const Handle<YieldTermStructure>& discountCurve,
             Real npv = Null<Real>());
 
@@ -79,7 +79,7 @@ namespace QuantLib {
             is affected by the choice of the interest-rate compounding
             and the relative frequency and day counter.
         */
-        static Real npv(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Real npv(const Leg&,
                         const InterestRate&,
                         Date settlementDate = Date());
         //! Basis-point sensitivity of the cash flows.
@@ -90,7 +90,7 @@ namespace QuantLib {
             affected by the choice of the interest-rate compounding
             and the relative frequency and day counter.
         */
-        static Real bps(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Real bps(const Leg&,
                         const InterestRate&,
                         Date settlementDate = Date());
 
@@ -100,7 +100,7 @@ namespace QuantLib {
             the theoretical existance of an IRR and numerically
             establishes the IRR to the desired precision.
         */
-        static Rate irr(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Rate irr(const Leg&,
                         Real marketPrice,
                         const DayCounter& dayCounter,
                         Compounding compounding,
@@ -134,7 +134,7 @@ namespace QuantLib {
             where \f$ y \f$ is the IRR and \f$ N \f$ is the number of
             cash flows per year.
         */
-        static Time duration(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Time duration(const Leg&,
                              const InterestRate& y,
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date());
@@ -147,7 +147,7 @@ namespace QuantLib {
             where \f$ P \f$ is the present value of the cash flows
             according to the given IRR \f$ y \f$.
         */
-        static Real convexity(const std::vector<boost::shared_ptr<CashFlow> >&,
+        static Real convexity(const Leg&,
                               const InterestRate& y,
                               Date settlementDate = Date()); 
     };

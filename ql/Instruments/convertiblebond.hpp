@@ -165,7 +165,7 @@ namespace QuantLib {
                const DividendSchedule& dividends,
                const CallabilitySchedule& callability,
                const Handle<Quote>& creditSpread,
-               const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
+               const Leg& cashflows,
                const DayCounter& dayCounter,
                const Schedule& schedule,
                const Date& issueDate,
@@ -179,7 +179,7 @@ namespace QuantLib {
         CallabilitySchedule callability_;
         DividendSchedule  dividends_;
         Handle<Quote> creditSpread_;
-        std::vector<boost::shared_ptr<CashFlow> > cashflows_;
+        Leg cashflows_;
         DayCounter dayCounter_;
         Date issueDate_;
         Schedule schedule_;

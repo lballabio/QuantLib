@@ -36,8 +36,8 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& termStructure,
                   bool parSwap)
     : Swap(termStructure,
-           std::vector<boost::shared_ptr<CashFlow> >(),
-           std::vector<boost::shared_ptr<CashFlow> >()),
+           Leg(),
+           Leg()),
       payFixedRate_(payFixedRate), spread_(spread),
       bondCleanPrice_(bondCleanPrice) {
 
@@ -63,8 +63,8 @@ namespace QuantLib {
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
 
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-            FloatingRateCouponVector(floatSchedule,
+        Leg floatingLeg =
+            FloatingRateLeg(floatSchedule,
                                      std::vector<Real>(1, nominal_),
                                      index,
                                      floatingDayCount,
@@ -72,12 +72,12 @@ namespace QuantLib {
                                      convention,
                                      std::vector<Real>(1, 1.0),
                                      std::vector<Spread>(1, spread));
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+        Leg::const_iterator i;
 
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
-        std::vector<boost::shared_ptr<CashFlow> > bondLeg =
+        Leg bondLeg =
             bond->cashflows();
 
         QL_REQUIRE(!bondLeg.empty(),
@@ -143,7 +143,7 @@ namespace QuantLib {
         DayCounter counter = termStructure_->dayCounter();
         Size i;
 
-        const std::vector<boost::shared_ptr<CashFlow> >& fixedCoupons =
+        const Leg& fixedCoupons =
             bondLeg();
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
@@ -162,7 +162,7 @@ namespace QuantLib {
             arguments->fixedCoupons[i] = coupon->amount();
         }
 
-        const std::vector<boost::shared_ptr<CashFlow> >& floatingCoupons =
+        const Leg& floatingCoupons =
             floatingLeg();
 
         arguments->floatingResetTimes = arguments->floatingPayTimes =

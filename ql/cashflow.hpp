@@ -27,6 +27,7 @@
 
 #include <ql/event.hpp>
 #include <ql/Math/comparison.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -53,6 +54,7 @@ namespace QuantLib {
         //@}
     };
 
+    typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
 
     template <>
     struct earlier_than<CashFlow>
@@ -62,17 +64,19 @@ namespace QuantLib {
             if (c1.date()<c2.date())
                 return true;
 
-            if (c1.date()==c2.date() &&
-                c1.amount()<c2.amount())
-                return true;
+            if (c1.date()==c2.date()) {
+                try {
+                    if (c1.amount()<c2.amount())
+                        return true;
+                } catch (...) {
+                        return false;
+                }
+
+            }
 
             return false;
         }
     };
-
-    // std::sort(v.begin(), v.end(),
-    //           earlier_than<boost::shared_ptr<CashFlow> >());
-
 
     // inline definitions
 
@@ -85,6 +89,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

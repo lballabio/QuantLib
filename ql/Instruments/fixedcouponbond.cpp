@@ -55,7 +55,7 @@ namespace QuantLib {
                           fromEnd, false, firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = FixedRateCouponVector(schedule,
+        cashflows_ = FixedRateLeg(schedule,
                                            std::vector<Real>(1, faceAmount_),
                                            coupons,
                                            dayCounter,

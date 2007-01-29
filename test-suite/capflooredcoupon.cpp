@@ -89,7 +89,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeFixedLeg(const Date& startDate,
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     std::vector<Rate> coupons(length, 0.0);
-    return FixedRateCouponVector(schedule, nominals_, coupons, Thirty360(), Following);
+    return FixedRateLeg(schedule, nominals_, coupons, Thirty360(), Following);
 }
 
 std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
@@ -103,7 +103,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
 
     std::vector<Real> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return FloatingRateCouponVector(schedule,
+    return FloatingRateLeg(schedule,
                                     nominals_,
                                     index_,
                                     index_->dayCounter(),
@@ -130,7 +130,7 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
             CapletConstantVolatility(volatility, Actual365Fixed())));
     std::vector<Rate> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return CappedFlooredFloatingRateCouponVector(schedule,
+    return CappedFlooredFloatingRateLeg(schedule,
                                                  nominals_,
                                                  index_,
                                                  index_->dayCounter(),

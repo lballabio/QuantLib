@@ -70,11 +70,11 @@ namespace QuantLib {
         Date settlement = termStructure_->referenceDate();
         // only if cash settled
         if (arguments->settlementType==Settlement::Cash) {
-            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg =
+            const Leg& swapFixedLeg =
                 swap_->fixedLeg();
             DayCounter dc = (boost::dynamic_pointer_cast<FixedRateCoupon>(
                 swapFixedLeg[0]))->dayCounter();
-            arguments->fixedCashBPS = Cashflows::bps(swapFixedLeg,
+            arguments->fixedCashBPS = CashFlows::bps(swapFixedLeg,
                 InterestRate(arguments->fairRate, dc, Compounded),
                 settlement) ;
         }

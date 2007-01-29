@@ -38,7 +38,6 @@ namespace QuantLib {
         \ingroup instruments
     */
     class Swap : public Instrument {
-        typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
       public:
         /*! The cash flows belonging to the first leg are paid;
             the ones belonging to the second leg are received.

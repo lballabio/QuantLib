@@ -71,7 +71,7 @@ namespace QuantLib {
         /*! \warning the returned vector includes the redemption as
                      the last cash flow.
         */
-        const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
+        const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
         BusinessDayConvention accrualConvention() const;
@@ -145,14 +145,14 @@ namespace QuantLib {
 
         Date issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
-        std::vector<boost::shared_ptr<CashFlow> > cashflows_;
+        Leg cashflows_;
         Handle<YieldTermStructure> discountCurve_;
     };
 
     class Bond::arguments : public Arguments {
       public:
         Date settlementDate;
-        std::vector<boost::shared_ptr<CashFlow> > cashflows;
+        Leg cashflows;
         Calendar calendar;
         BusinessDayConvention accrualConvention, paymentConvention;
         DayCounter dayCounter;
@@ -177,7 +177,7 @@ namespace QuantLib {
     }
 
     inline
-    const std::vector<boost::shared_ptr<CashFlow> >& Bond::cashflows() const {
+    const Leg& Bond::cashflows() const {
         return cashflows_;
     }
 
