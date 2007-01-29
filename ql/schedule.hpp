@@ -61,7 +61,7 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
-        bool empty() { return dates_.empty(); }
+        bool empty() const { return dates_.empty(); }
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
