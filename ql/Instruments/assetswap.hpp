@@ -47,8 +47,8 @@ namespace QuantLib {
                   const Schedule& floatSchedule,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
-                  const DayCounter& floatingDayCount,
-                  const Handle<YieldTermStructure>& termStructure,
+                  const Handle<YieldTermStructure>& discountCurve,
+                  const DayCounter& floatingDayCount = DayCounter(),
                   bool parSwap = true);
         // results
         Spread fairSpread() const;

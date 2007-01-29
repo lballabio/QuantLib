@@ -32,19 +32,22 @@ namespace QuantLib {
                   const Schedule& floatSchedule,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
-                  const DayCounter& floatingDayCount,
-                  const Handle<YieldTermStructure>& termStructure,
+                  const Handle<YieldTermStructure>& discountCurve,
+                  const DayCounter& floatingDayCounter,
                   bool parSwap)
-    : Swap(termStructure,
+    : Swap(discountCurve,
            Leg(),
            Leg()),
       payFixedRate_(payFixedRate), spread_(spread),
       bondCleanPrice_(bondCleanPrice) {
 
+        DayCounter dc = floatingDayCounter;
+        if (dc==DayCounter())
+            dc = index->dayCounter();
 
-          if (floatSchedule.empty()) {
-              QL_FAIL("");
-          }
+        if (floatSchedule.empty()) {
+          QL_FAIL("");
+        }
 
         upfrontDate_ = floatSchedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
@@ -71,7 +74,7 @@ namespace QuantLib {
             FloatingRateLeg(floatSchedule,
                                      std::vector<Real>(1, nominal_),
                                      index,
-                                     floatingDayCount,
+                                     dc,
                                      index->fixingDays(),
                                      convention,
                                      std::vector<Real>(1, 1.0),
