@@ -29,27 +29,28 @@ namespace QuantLib {
                   bool payFixedRate,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
-                  const Schedule& floatSchedule,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
                   const Handle<YieldTermStructure>& discountCurve,
+                  const Schedule& floatSch,
                   const DayCounter& floatingDayCounter,
                   bool parSwap)
-    : Swap(discountCurve,
-           Leg(),
-           Leg()),
+    : Swap(discountCurve, Leg(), Leg()),
       payFixedRate_(payFixedRate), spread_(spread),
       bondCleanPrice_(bondCleanPrice) {
 
-        DayCounter dc = floatingDayCounter;
-        if (dc==DayCounter())
-            dc = index->dayCounter();
+        Schedule schedule = floatSch;
+        if (floatSch.empty())
+            schedule = Schedule(bond->settlementDate(),
+                                bond->maturityDate(),
+                                index->tenor(),
+                                index->calendar(),
+                                index->businessDayConvention(),
+                                Unadjusted,
+                                true,
+                                index->endOfMonth());
 
-        if (floatSchedule.empty()) {
-          QL_FAIL("");
-        }
-
-        upfrontDate_ = floatSchedule.startDate();
+        upfrontDate_ = schedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
 
@@ -64,28 +65,30 @@ namespace QuantLib {
         //    and the resulting value of the asset swap spread is different.
 
         else
-
             nominal_ = dirtyPrice/100*bond->faceAmount();
 
-        BusinessDayConvention convention =
-            floatSchedule.businessDayConvention();
+        DayCounter dc = floatingDayCounter;
+        if (dc==DayCounter())
+            dc = index->dayCounter();
 
-        Leg floatingLeg =
-            FloatingRateLeg(floatSchedule,
-                                     std::vector<Real>(1, nominal_),
-                                     index,
-                                     dc,
-                                     index->fixingDays(),
-                                     convention,
-                                     std::vector<Real>(1, 1.0),
-                                     std::vector<Spread>(1, spread));
+        // might become input parameters
+        BusinessDayConvention paymentAdjustment = Following;
+        Integer fixingDays = index->fixingDays();
+        Real gearing = 1.0;
+
+        Leg floatingLeg = FloatingRateLeg(schedule,
+                                          std::vector<Real>(1, nominal_),
+                                          index,
+                                          dc,
+                                          fixingDays,
+                                          paymentAdjustment,
+                                          std::vector<Real>(1, gearing),
+                                          std::vector<Spread>(1, spread));
         Leg::const_iterator i;
-
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
-        Leg bondLeg =
-            bond->cashflows();
+        Leg bondLeg = bond->cashflows();
 
         QL_REQUIRE(!bondLeg.empty(),
                    "empty bond leg to start with");
@@ -106,13 +109,13 @@ namespace QuantLib {
              //for bonds not redeeming at par
             Real backpayment=nominal_;
             boost::shared_ptr<CashFlow> backpaymentCashFlow (new
-                SimpleCashFlow(backpayment, floatSchedule.endDate()));
+                SimpleCashFlow(backpayment, schedule.endDate()));
             floatingLeg.push_back(backpaymentCashFlow);
         } else {
             // final nominal exchange
             Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(finalFlow, floatSchedule.endDate()));
+                SimpleCashFlow(finalFlow, schedule.endDate()));
                 //SimpleCashFlow(finalFlow, bond->maturityDate()));
             floatingLeg.push_back(finalCashFlow);
         }

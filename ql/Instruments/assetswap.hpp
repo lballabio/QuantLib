@@ -27,6 +27,7 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/bond.hpp>
 #include <ql/Indexes/iborindex.hpp>
+#include <ql/interestrate.hpp>
 #include <ql/schedule.hpp>
 
 namespace QuantLib {
@@ -44,10 +45,10 @@ namespace QuantLib {
         AssetSwap(bool payFixedRate,
                   const boost::shared_ptr<Bond>& bond,
                   Real bondCleanPrice,
-                  const Schedule& floatSchedule,
                   const boost::shared_ptr<IborIndex>& index,
                   Spread spread,
                   const Handle<YieldTermStructure>& discountCurve,
+                  const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parSwap = true);
         // results
