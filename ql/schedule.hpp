@@ -49,6 +49,7 @@ namespace QuantLib {
                  bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
+        Schedule() {}
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -60,6 +61,7 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
+        bool empty() { return dates_.empty(); }
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;

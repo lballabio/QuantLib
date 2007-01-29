@@ -42,6 +42,10 @@ namespace QuantLib {
       bondCleanPrice_(bondCleanPrice) {
 
 
+          if (floatSchedule.empty()) {
+              QL_FAIL("");
+          }
+
         upfrontDate_ = floatSchedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
