@@ -21,6 +21,7 @@
 
 #include <ql/CashFlows/capflooredcoupon.hpp>
 #include <ql/PricingEngines/core.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -37,6 +38,10 @@ namespace QuantLib {
                          underlying->spread()),
       underlying_(underlying) {
 
+          if(cap != Null<Rate>() && floor != Null<Rate>()) {
+              QL_REQUIRE(floor<=cap, "floor rate (" << io::rate(floor) << 
+                         ") greater than cap rate (" << io::rate(cap) << ")");
+          }
           if (underlying->gearing() > 0) {
             if (cap != Null<Rate>())
                 cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));

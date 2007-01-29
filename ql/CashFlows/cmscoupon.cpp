@@ -21,6 +21,7 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/option.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +43,11 @@ namespace QuantLib {
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, spread,
                          refPeriodStart, refPeriodEnd, dayCounter, isInArrears),
-      swapIndex_(index), cap_(cap), floor_(floor){}
+      swapIndex_(index), cap_(cap), floor_(floor){
+    
+          QL_REQUIRE(floor_<=cap_, "floor rate (" << io::rate(floor_) << 
+                     ") greater than cap rate (" << io::rate(cap_) << ")");
+    }
 
     namespace {
 
