@@ -234,12 +234,15 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
                                     exercise, mertonEngine);
         Real expected = mertonOption.NPV();
 
-        Real tolerance = 1e-8;
-        if (std::fabs(calculated - expected)/expected > tolerance) {
-            BOOST_FAIL("failed to reproduce Merton76 price with " \
-                       "BatesEngine"
+        Real tolerance = 2e-8;
+        Real relError = std::fabs(calculated - expected)/expected;
+        if (relError > tolerance) {
+            BOOST_FAIL("failed to reproduce Merton76 price with BatesEngine"
+                       << QL_FIXED << std::setprecision(8)
                        << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expected);
+                       << "\n    expected:   " << expected
+                       << "\n    rel. error: " << relError
+                       << "\n    tolerance:  " << tolerance);
         }
     }
 
