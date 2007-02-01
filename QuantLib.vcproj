@@ -8826,9 +8826,6 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="ql\argsandresults.hpp">
-		</File>
-		<File
 			RelativePath=".\ql\auto_link.hpp">
 		</File>
 		<File
