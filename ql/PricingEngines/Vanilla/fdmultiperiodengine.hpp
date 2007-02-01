@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,7 +41,7 @@ namespace QuantLib {
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
         virtual void setupArguments(
-               const Arguments* args,
+               const PricingEngine::arguments* args,
                const std::vector<boost::shared_ptr<Event> >& schedule) const {
             FDVanillaEngine::setupArguments(args);
             events_ = schedule;
@@ -50,7 +51,7 @@ namespace QuantLib {
             for (Size i=0; i<n; ++i)
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         };
-        virtual void setupArguments(const Arguments* a) const {
+        virtual void setupArguments(const PricingEngine::arguments* a) const {
             FDVanillaEngine::setupArguments(a);
             const OneAssetOption::arguments *args =
                 dynamic_cast<const OneAssetOption::arguments*>(a);
@@ -59,7 +60,7 @@ namespace QuantLib {
             stoppingTimes_ = args->stoppingTimes;
         };
 
-        virtual void calculate(Results* result) const;
+        virtual void calculate(PricingEngine::results*) const;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         mutable boost::shared_ptr<StandardFiniteDifferenceModel> model_;
         virtual void executeIntermediateStep(Size step) const = 0;

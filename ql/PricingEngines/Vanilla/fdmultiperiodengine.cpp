@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,7 +27,7 @@ namespace QuantLib {
     : FDVanillaEngine(gridPoints, timeSteps, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
 
-    void FDMultiPeriodEngine::calculate(Results* r) const {
+    void FDMultiPeriodEngine::calculate(PricingEngine::results* r) const {
         OneAssetOption::results *results =
             dynamic_cast<OneAssetOption::results *>(r);
         QL_REQUIRE(results, "incorrect argument type");
@@ -114,7 +115,7 @@ namespace QuantLib {
         results->value = prices_.valueAtCenter();
         results->delta = prices_.firstDerivativeAtCenter();
         results->gamma = prices_.secondDerivativeAtCenter();
-        results->priceCurve = prices_;
+        results->additionalResults["priceCurve"] = prices_;
     }
 
     void FDMultiPeriodEngine::initializeStepCondition() const{

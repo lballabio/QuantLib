@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -84,8 +84,8 @@ namespace QuantLib {
             return legs_[1];
         }
         // other
-        void setupArguments(Arguments* args) const;
-        void fetchResults(const Results*) const;
+        void setupArguments(PricingEngine::arguments* args) const;
+        void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
         void performCalculations() const;
@@ -100,7 +100,7 @@ namespace QuantLib {
 
 
     //! %Arguments for simple swap calculation
-    class VanillaSwap::arguments : public virtual Arguments {
+    class VanillaSwap::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : type(Receiver),
                       nominal(Null<Real>()),
@@ -120,14 +120,14 @@ namespace QuantLib {
     };
 
     //! %Results from simple swap calculation
-    class VanillaSwap::results : public Value {
+    class VanillaSwap::results : public Instrument::results {
       public:
         Real fixedLegBPS;
         Real floatingLegBPS;
         Rate fairRate;
         Spread fairSpread;
-        results() { reset(); }
         void reset() {
+            Instrument::results::reset();
             fixedLegBPS = floatingLegBPS = Null<Real>();
             fairRate = Null<Rate>();
             fairSpread = Null<Spread>();

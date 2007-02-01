@@ -4,6 +4,7 @@
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Marco Bianchetti
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,7 +75,6 @@ namespace QuantLib {
     class Swaption : public Option {
       public:
         class arguments;
-        class results;
         class engine;
         // constructors
         Swaption(const boost::shared_ptr<VanillaSwap>& swap,
@@ -94,18 +94,15 @@ namespace QuantLib {
             return swap_;
         }
         //@}
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
         //! implied volatility
         Volatility impliedVolatility(Real price,
                                      Real accuracy = 1.0e-4,
                                      Size maxEvaluations = 100,
-                                     Volatility minVol = QL_MIN_VOLATILITY,
-                                     Volatility maxVol = QL_MAX_VOLATILITY)
-                                                                        const;
-       void fetchResults (const Results* r) const;
-       Rate atmRate() const;
-       Real vega() const;
-    private:
+                                     Volatility minVol = 1.0e-7,
+                                     Volatility maxVol = 4.0) const;
+        Rate atmRate() const;
+      private:
         // arguments
         boost::shared_ptr<VanillaSwap> swap_;
         Handle<YieldTermStructure> termStructure_;
@@ -122,9 +119,8 @@ namespace QuantLib {
             Handle<YieldTermStructure> termStructure_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
-            const Value* results_;
+            const Instrument::results* results_;
         };
-        mutable Real vega_;
     };
 
     //! %Arguments for swaption calculation
@@ -143,12 +139,6 @@ namespace QuantLib {
         Real fixedCashBPS;
         Settlement::Type settlementType;
         void validate() const;
-    };
-
-    //! %Results from swaption calculation
-    class Swaption::results : public Value {
-        public:
-        Real vega_;
     };
 
     //! base class for swaption engines

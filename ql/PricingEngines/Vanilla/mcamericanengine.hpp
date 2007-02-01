@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Klaus Spanderen
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -204,7 +205,7 @@ namespace QuantLib {
                    "control variation pricing engine");
 
         VanillaOption::arguments* controlArguments =
-            dynamic_cast<VanillaOption::arguments*>(controlPE->arguments());
+            dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
         *controlArguments = this->arguments_;
         controlArguments->exercise = boost::shared_ptr<Exercise>(
              new EuropeanExercise(this->arguments_.exercise->lastDate()));
@@ -212,7 +213,8 @@ namespace QuantLib {
         controlPE->calculate();
 
         const VanillaOption::results* controlResults =
-            dynamic_cast<const VanillaOption::results*>(controlPE->results());
+            dynamic_cast<const VanillaOption::results*>(
+                                                     controlPE->getResults());
 
         return controlResults->value;
     }

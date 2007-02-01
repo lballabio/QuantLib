@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004 Neil Firth
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -77,7 +78,8 @@ namespace QuantLib {
             vega_ = rho_ = dividendRho_ =  0.0;
     }
 
-    void MultiAssetOption::setupArguments(Arguments* args) const {
+    void MultiAssetOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
         MultiAssetOption::arguments* arguments =
             dynamic_cast<MultiAssetOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -95,7 +97,7 @@ namespace QuantLib {
         }
     }
 
-    void MultiAssetOption::fetchResults(const Results* r) const {
+    void MultiAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
         const Greeks* results = dynamic_cast<const Greeks*>(r);
         QL_ENSURE(results != 0,

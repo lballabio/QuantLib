@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 Warren Chou
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -66,8 +67,8 @@ namespace QuantLib {
         std::vector<std::pair<Real, Real> > optionWeights(Option::Type) const;
         //@}
         // other
-        void setupArguments(Arguments* args) const;
-        void fetchResults(const Results*) const;
+        void setupArguments(PricingEngine::arguments* args) const;
+        void fetchResults(const PricingEngine::results*) const;
       protected:
         void setupExpired() const;
         void performCalculations() const;
@@ -84,7 +85,7 @@ namespace QuantLib {
 
 
     //! %Arguments for forward fair-variance calculation
-    class VarianceSwap::arguments : public virtual Arguments {
+    class VarianceSwap::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : strike(Null<Real>()), notional(Null<Real>()) {}
         void validate() const;
@@ -97,13 +98,13 @@ namespace QuantLib {
 
 
     //! %Results from variance-swap calculation
-    class VarianceSwap::results : public Value {
+    class VarianceSwap::results : public Instrument::results {
       public:
         Real fairVariance;
         WeightsType optionWeights;
         WeightsType::const_iterator iterator;
-        results() { reset(); }
         void reset() {
+            Instrument::results::reset();
             fairVariance = Null<Real>();
             optionWeights = WeightsType();
         }

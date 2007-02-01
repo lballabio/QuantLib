@@ -22,7 +22,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/argsandresults.hpp>
 #include <ql/calendar.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>

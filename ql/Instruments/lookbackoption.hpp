@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +42,7 @@ namespace QuantLib {
                           const boost::shared_ptr<Exercise>& exercise,
                           const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
         Real minmax_;
@@ -60,7 +61,7 @@ namespace QuantLib {
                           const boost::shared_ptr<Exercise>& exercise,
                           const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
       protected:
         // arguments
         Real minmax_;

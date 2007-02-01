@@ -258,7 +258,7 @@ namespace QuantLib {
     }
 
 
-    void Bond::setupArguments(Arguments* args) const {
+    void Bond::setupArguments(PricingEngine::arguments* args) const {
         Bond::arguments* arguments = dynamic_cast<Bond::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 

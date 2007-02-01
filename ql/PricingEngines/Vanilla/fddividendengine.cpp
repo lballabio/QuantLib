@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +43,8 @@ xi        Real variance = volatility_*volatility_*residualTime_;
     }
     */
 
-    void FDDividendEngineBase::setupArguments(const Arguments *a) const {
+    void FDDividendEngineBase::setupArguments(
+                                    const PricingEngine::arguments *a) const {
         const DividendVanillaOption::arguments *args =
             dynamic_cast<const DividendVanillaOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");

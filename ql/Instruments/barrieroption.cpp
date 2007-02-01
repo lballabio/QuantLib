@@ -4,6 +4,7 @@
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +43,7 @@ namespace QuantLib {
 
     }
 
-    void BarrierOption::setupArguments(Arguments* args) const {
+    void BarrierOption::setupArguments(PricingEngine::arguments* args) const {
 
         BarrierOption::arguments* moreArgs =
             dynamic_cast<BarrierOption::arguments*>(args);

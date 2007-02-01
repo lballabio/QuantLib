@@ -35,7 +35,7 @@ namespace QuantLib {
     class Option : public Instrument {
       public:
         class arguments;
-        enum Type { Put = -1, 
+        enum Type { Put = -1,
                     Call = 1
         };
         Option(const boost::shared_ptr<Payoff>& payoff,
@@ -62,7 +62,7 @@ namespace QuantLib {
         - how to handle strike-less option (asian average strike,
           forward, etc.)?
     */
-    class Option::arguments : public virtual Arguments {
+    class Option::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() {}
         void validate() const {
@@ -75,20 +75,9 @@ namespace QuantLib {
         std::vector<Time> stoppingTimes;
     };
 
-    //! additional pricing results
-    class PriceCurve : public virtual Results {
-      public:
-        PriceCurve() { reset(); }
-        void reset() {
-            priceCurve = Null<SampledCurve>();
-        }
-        SampledCurve priceCurve;
-    };
-
     //! additional %option results
-    class Greeks : public virtual Results {
+    class Greeks : public virtual PricingEngine::results {
       public:
-        Greeks() { reset(); }
         void reset() {
             delta =  gamma = theta = vega =
                 rho = dividendRho = Null<Real>();
@@ -100,10 +89,8 @@ namespace QuantLib {
     };
 
     //! more additional %option results
-    // add here vomma, ect.
-    class MoreGreeks : public virtual Results {
+    class MoreGreeks : public virtual PricingEngine::results {
       public:
-        MoreGreeks() { reset(); }
         void reset() {
             itmCashProbability = deltaForward = elasticity = thetaPerDay =
                 strikeSensitivity = Null<Real>();

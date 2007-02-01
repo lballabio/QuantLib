@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,8 @@ namespace QuantLib {
     : VanillaOption(process, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {}
 
-    void ForwardVanillaOption::setupArguments(Arguments* args) const {
+    void ForwardVanillaOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
         VanillaOption::setupArguments(args);
         ForwardVanillaOption::arguments* arguments =
             dynamic_cast<ForwardVanillaOption::arguments*>(args);
@@ -42,7 +44,8 @@ namespace QuantLib {
 
     }
 
-    void ForwardVanillaOption::fetchResults(const Results* r) const {
+    void ForwardVanillaOption::fetchResults(
+                                      const PricingEngine::results* r) const {
         VanillaOption::fetchResults(r);
         const ForwardVanillaOption::results* results =
             dynamic_cast<const ForwardVanillaOption::results*>(r);

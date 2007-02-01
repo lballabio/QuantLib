@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,7 +76,7 @@ namespace QuantLib {
         }
     }
 
-    void VanillaSwap::setupArguments(Arguments* args) const {
+    void VanillaSwap::setupArguments(PricingEngine::arguments* args) const {
         VanillaSwap::arguments* arguments =
             dynamic_cast<VanillaSwap::arguments*>(args);
 
@@ -194,7 +194,7 @@ namespace QuantLib {
         }
     }
 
-    void VanillaSwap::fetchResults(const Results* r) const {
+    void VanillaSwap::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
         const VanillaSwap::results* results =
             dynamic_cast<const VanillaSwap::results*>(r);

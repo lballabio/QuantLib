@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,8 +44,8 @@ namespace QuantLib {
         //@{
         Real strikeSensitivity() const;
         //@}
-        void setupArguments(Arguments*) const;
-        void fetchResults(const Results*) const;
+        void setupArguments(PricingEngine::arguments*) const;
+        void fetchResults(const PricingEngine::results*) const;
       protected:
         void setupExpired() const;
         // results

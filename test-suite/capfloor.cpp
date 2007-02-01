@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -167,8 +167,9 @@ void CapFloorTest::testVega() {
                     Real value2 = shiftedCapFloor2->NPV();
                     Real numericalVega = (value2 - value1) / (2*shift);
                     if (numericalVega>1.0e-4) {
-                        Real analyticalVega = capFloor->vega();
-                        Real discrepancy = std::fabs(numericalVega - analyticalVega);
+                        Real analyticalVega = capFloor->result<Real>("vega");
+                        Real discrepancy =
+                            std::fabs(numericalVega - analyticalVega);
                         discrepancy /= numericalVega;
                         if (discrepancy > tolerance)
                             BOOST_FAIL("failed to compute CapFloor vega:" <<

@@ -136,7 +136,7 @@ namespace QuantLib {
         //@}
       protected:
         void performCalculations() const;
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
         Integer settlementDays_;
         Calendar calendar_;
         BusinessDayConvention accrualConvention_, paymentConvention_;
@@ -149,7 +149,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
     };
 
-    class Bond::arguments : public Arguments {
+    class Bond::arguments : public PricingEngine::arguments {
       public:
         Date settlementDate;
         Leg cashflows;
@@ -159,8 +159,8 @@ namespace QuantLib {
         Frequency frequency;
         void validate() const;
     };
- 
-    class Bond::results : public Value {};
+
+    class Bond::results : public Instrument::results {};
 
     class Bond::engine : public GenericEngine<Bond::arguments,
                                               Bond::results> {};

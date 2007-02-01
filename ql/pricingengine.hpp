@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,10 +23,9 @@
     \brief Base class for pricing engines
 */
 
-#ifndef quantlib_pricingengine_h
-#define quantlib_pricingengine_h
+#ifndef quantlib_pricing_engine_hpp
+#define quantlib_pricing_engine_hpp
 
-#include <ql/argsandresults.hpp>
 #include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
@@ -33,11 +33,25 @@ namespace QuantLib {
     //! interface for pricing engines
     class PricingEngine : public Observable {
       public:
+        class arguments;
+        class results;
         virtual ~PricingEngine() {}
-        virtual Arguments* arguments() const = 0;
-        virtual const Results* results() const = 0;
-        virtual void reset() const = 0;
+        virtual arguments* getArguments() const = 0;
+        virtual const results* getResults() const = 0;
+        virtual void reset() = 0;
         virtual void calculate() const = 0;
+    };
+
+    class PricingEngine::arguments {
+      public:
+        virtual ~arguments() {}
+        virtual void validate() const = 0;
+    };
+
+    class PricingEngine::results {
+      public:
+        virtual ~results() {}
+        virtual void reset() = 0;
     };
 
 
@@ -48,9 +62,9 @@ namespace QuantLib {
     template<class ArgumentsType, class ResultsType>
     class GenericEngine : public PricingEngine {
       public:
-        Arguments* arguments() const { return &arguments_; }
-        const Results* results() const { return &results_; }
-        void reset() const { results_.reset(); }
+        PricingEngine::arguments* getArguments() const { return &arguments_; }
+        const PricingEngine::results* getResults() const { return &results_; }
+        void reset() { results_.reset(); }
       protected:
         mutable ArgumentsType arguments_;
         mutable ResultsType results_;

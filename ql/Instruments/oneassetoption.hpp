@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -58,7 +59,6 @@ namespace QuantLib {
         Real rho() const;
         Real dividendRho() const;
         Real itmCashProbability() const;
-        SampledCurve priceCurve() const;
         //@}
         /*! \warning currently, this method returns the Black-Scholes
                      implied volatility. It will give unconsistent
@@ -78,17 +78,15 @@ namespace QuantLib {
         Volatility impliedVolatility(Real price,
                                      Real accuracy = 1.0e-4,
                                      Size maxEvaluations = 100,
-                                     Volatility minVol = QL_MIN_VOLATILITY,
-                                     Volatility maxVol = QL_MAX_VOLATILITY)
-                                                                        const;
-        void setupArguments(Arguments*) const;
-        void fetchResults(const Results*) const;
+                                     Volatility minVol = 1.0e-7,
+                                     Volatility maxVol = 4.0) const;
+        void setupArguments(PricingEngine::arguments*) const;
+        void fetchResults(const PricingEngine::results*) const;
       protected:
         void setupExpired() const;
         // results
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
-        mutable SampledCurve priceCurve_;
         // arguments
         boost::shared_ptr<StochasticProcess> stochasticProcess_;
       private:
@@ -102,7 +100,7 @@ namespace QuantLib {
             boost::shared_ptr<PricingEngine> engine_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
-            const Value* results_;
+            const Instrument::results* results_;
         };
     };
 
@@ -115,21 +113,19 @@ namespace QuantLib {
     };
 
     //! %Results from single-asset option calculation
-    class OneAssetOption::results : public Value,
-                          public PriceCurve,
-                          public Greeks,
-                          public MoreGreeks {
+    class OneAssetOption::results : public Instrument::results,
+                                    public Greeks,
+                                    public MoreGreeks {
       public:
         void reset() {
-            Value::reset();
-            PriceCurve::reset();
+            Instrument::results::reset();
             Greeks::reset();
             MoreGreeks::reset();
         }
     };
     class OneAssetOption::engine :
         public GenericEngine<OneAssetOption::arguments,
-                              OneAssetOption::results> {};
+                             OneAssetOption::results> {};
 }
 
 

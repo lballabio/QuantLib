@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,7 +37,8 @@ namespace QuantLib {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
 
-    void DiscreteAveragingAsianOption::setupArguments(Arguments* args) const {
+    void DiscreteAveragingAsianOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
 
         OneAssetStrikedOption::setupArguments(args);
 
@@ -91,8 +93,9 @@ namespace QuantLib {
     : OneAssetStrikedOption(process, payoff, exercise, engine),
       averageType_(averageType) {}
 
-    void ContinuousAveragingAsianOption::setupArguments(Arguments* args)
-                                                                     const {
+    void ContinuousAveragingAsianOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
+
         OneAssetStrikedOption::setupArguments(args);
 
         ContinuousAveragingAsianOption::arguments* moreArgs =

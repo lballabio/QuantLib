@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -105,7 +106,7 @@ namespace QuantLib {
             ////// remove redemption from the bond leg
             ////bondLeg.pop_back();
              //back payment
-             //the investor receives the difference between redemption value and 100, 
+             //the investor receives the difference between redemption value and 100,
              //for bonds not redeeming at par
             Real backpayment=nominal_;
             boost::shared_ptr<CashFlow> backpaymentCashFlow (new
@@ -138,7 +139,7 @@ namespace QuantLib {
         }
     }
 
-    void AssetSwap::setupArguments(Arguments* args) const {
+    void AssetSwap::setupArguments(PricingEngine::arguments* args) const {
         AssetSwap::arguments* arguments =
             dynamic_cast<AssetSwap::arguments*>(args);
 
@@ -245,7 +246,7 @@ namespace QuantLib {
         }
     }
 
-    void AssetSwap::fetchResults(const Results* r) const {
+    void AssetSwap::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
         const AssetSwap::results* results =
             dynamic_cast<const AssetSwap::results*>(r);

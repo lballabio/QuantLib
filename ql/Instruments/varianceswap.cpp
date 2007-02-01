@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,7 +86,7 @@ namespace QuantLib {
         optionWeights_.clear();
     }
 
-    void VarianceSwap::setupArguments(Arguments* args) const {
+    void VarianceSwap::setupArguments(PricingEngine::arguments* args) const {
         VarianceSwap::arguments* arguments =
             dynamic_cast<VarianceSwap::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -97,7 +98,7 @@ namespace QuantLib {
         arguments->maturityDate = maturityDate_;
     }
 
-    void VarianceSwap::fetchResults(const Results* r) const {
+    void VarianceSwap::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
         const VarianceSwap::results* results =
             dynamic_cast<const VarianceSwap::results*>(r);

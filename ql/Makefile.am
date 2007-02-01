@@ -38,7 +38,6 @@ EXTRA_DIST= \
 
 include_HEADERS = \
 	core.hpp \
-	argsandresults.hpp \
 	auto_link.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \

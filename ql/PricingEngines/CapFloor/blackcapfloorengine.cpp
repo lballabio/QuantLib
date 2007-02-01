@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,7 +64,7 @@ namespace QuantLib {
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.capRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingTimes[i] > 0) { 
+                    if (arguments_.fixingTimes[i] > 0) {
                          stdDev = std::sqrt(volatility_->blackVariance(
                             arguments_.fixingDates[i], strike));
                     } else {
@@ -73,8 +73,8 @@ namespace QuantLib {
                     value += q * accrualTime * nominal * gearing *
                         blackFormula(Option::Call, strike, forward, stdDev);
                     // vega is set to 0 if fixinf is at a past date
-                    if (arguments_.fixingTimes[i] > 0) { 
-                        vega += nominal * gearing * accrualTime * q 
+                    if (arguments_.fixingTimes[i] > 0) {
+                        vega += nominal * gearing * accrualTime * q
                                 * blackStdDevDerivative(strike, forward, stdDev)
                                 * std::sqrt(timeToMaturity);
                     }
@@ -83,7 +83,7 @@ namespace QuantLib {
                     (type == CapFloor::Collar)) {
                     Rate strike = arguments_.floorRates[i];
                     // std dev is set to 0 if fixing is at a past date
-                    if (arguments_.fixingTimes[i] > 0) { 
+                    if (arguments_.fixingTimes[i] > 0) {
                         stdDev = std::sqrt(volatility_->blackVariance(
                             arguments_.fixingDates[i], strike));
                     } else {
@@ -94,8 +94,8 @@ namespace QuantLib {
                     if (type == CapFloor::Floor) {
                         value += temp;
                         //vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingTimes[i] > 0) { 
-                            vega += nominal * gearing * accrualTime * q 
+                        if (arguments_.fixingTimes[i] > 0) {
+                            vega += nominal * gearing * accrualTime * q
                                     * blackStdDevDerivative(strike, forward, stdDev)
                                     * std::sqrt(timeToMaturity);
                         }
@@ -103,8 +103,8 @@ namespace QuantLib {
                         // a collar is long a cap and short a floor
                         value -= temp;
                         // vega is set to 0 if fixing is at a past date
-                        if (arguments_.fixingTimes[i] > 0) { 
-                            vega -= nominal * gearing * accrualTime * q 
+                        if (arguments_.fixingTimes[i] > 0) {
+                            vega -= nominal * gearing * accrualTime * q
                                     * blackStdDevDerivative(strike, forward, stdDev)
                                     * std::sqrt(timeToMaturity);
                         }
@@ -113,7 +113,7 @@ namespace QuantLib {
             }
         }
         results_.value = value;
-        results_.vega_ = vega;
+        results_.additionalResults["vega"] = vega;
     }
-    
+
 }

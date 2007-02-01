@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Neil Firth
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +43,7 @@ namespace QuantLib {
                      const boost::shared_ptr<Exercise>&,
                      const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
       private:
         BasketType basketType_;
     };

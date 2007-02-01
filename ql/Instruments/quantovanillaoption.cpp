@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,7 +65,8 @@ namespace QuantLib {
         qvega_ = qrho_ = qlambda_ = 0.0;
     }
 
-    void QuantoVanillaOption::setupArguments(Arguments* args) const {
+    void QuantoVanillaOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
         VanillaOption::setupArguments(args);
         QuantoVanillaOption::arguments* arguments =
             dynamic_cast<QuantoVanillaOption::arguments*>(args);
@@ -79,7 +81,8 @@ namespace QuantLib {
 
     }
 
-    void QuantoVanillaOption::fetchResults(const Results* r) const {
+    void QuantoVanillaOption::fetchResults(
+                                      const PricingEngine::results* r) const {
         VanillaOption::fetchResults(r);
         const QuantoVanillaOption::results* quantoResults =
             dynamic_cast<const QuantoVanillaOption::results*>(r);

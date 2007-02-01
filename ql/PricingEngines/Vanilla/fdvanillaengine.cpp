@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
  Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -37,7 +37,7 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::setupArguments(
-                                 const Arguments* a) const {
+                                    const PricingEngine::arguments* a) const {
         const OneAssetOption::arguments * args =
             dynamic_cast<const OneAssetOption::arguments *>(a);
         QL_REQUIRE(args, "incorrect argument type");

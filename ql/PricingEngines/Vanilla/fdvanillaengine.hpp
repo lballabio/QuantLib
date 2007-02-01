@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
  Copyright (C) 2005 Joseph Wang
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,6 +27,7 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
+#include <ql/pricingengine.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
@@ -56,7 +57,7 @@ namespace QuantLib {
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
         // methods
-        virtual void setupArguments(const Arguments* args) const;
+        virtual void setupArguments(const PricingEngine::arguments*) const;
         virtual void setGridLimits() const;
         virtual void setGridLimits(Real, Time) const;
         virtual void initializeInitialCondition() const;

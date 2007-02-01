@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2005, 2006 Theo Boafo
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -172,7 +172,7 @@ namespace QuantLib {
                Integer settlementDays,
                Real redemption);
 
-        void setupArguments(Arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const;
       private:
         const ConvertibleBond* bond_;
         Real conversionRatio_;

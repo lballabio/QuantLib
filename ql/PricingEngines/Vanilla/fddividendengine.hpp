@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,7 +44,7 @@ namespace QuantLib {
             : FDMultiPeriodEngine(timeSteps, gridPoints,
                                   timeDependent) {}
     protected:
-        virtual void setupArguments(const Arguments *a) const;
+        virtual void setupArguments(const PricingEngine::arguments*) const;
         void setGridLimits() const = 0;
         void executeIntermediateStep(Size step) const = 0;
         Real getDividendAmount(Size i) const {

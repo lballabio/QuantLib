@@ -4,7 +4,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François Du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -91,14 +91,6 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    void CapFloor::fetchResults(const Results* r) const{
-        Instrument::fetchResults(r);
-        const CapFloor::results* results =
-            dynamic_cast<const CapFloor::results*>(r);
-        vega_ = results->vega_;
-
-    }
-
     Rate CapFloor::atmRate() const {
         return CashFlows::atmRate(floatingLeg_, termStructure_);
     }
@@ -125,7 +117,7 @@ namespace QuantLib {
         return lastFloatingCoupon->fixingDate();
     }
 
-    void CapFloor::setupArguments(Arguments* args) const {
+    void CapFloor::setupArguments(PricingEngine::arguments* args) const {
         CapFloor::arguments* arguments =
             dynamic_cast<CapFloor::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -251,11 +243,6 @@ namespace QuantLib {
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
-    Real CapFloor::vega() const {
-        calculate();
-        return vega_;
-    }
-
 
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
                               const CapFloor& cap,
@@ -266,9 +253,10 @@ namespace QuantLib {
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
         engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
-        cap.setupArguments(engine_->arguments());
+        cap.setupArguments(engine_->getArguments());
 
-        results_ = dynamic_cast<const Value*>(engine_->results());
+        results_ =
+            dynamic_cast<const Instrument::results*>(engine_->getResults());
     }
 
     Real CapFloor::ImpliedVolHelper::operator()(Volatility x) const {

@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Cristina Duminuco
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +24,7 @@
 #include <ql/Volatilities/swaptionconstantvol.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
- 
+
 namespace QuantLib {
 
     BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility) {
@@ -45,9 +45,9 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    
+
     void BlackSwaptionEngine::calculate() const
-	{
+    {
         static const Spread basisPoint = 1.0e-4;
         Time exercise = arguments_.stoppingTimes[0];
         Time maturity = arguments_.floatingPayTimes.back();
@@ -76,7 +76,7 @@ namespace QuantLib {
         Real stdDev = std::sqrt(variance);
         Rate forward = arguments_.fairRate;
         Rate strike = arguments_.fixedRate;
-        results_.vega_ =  std::sqrt(exercise) *
+        results_.additionalResults["vega"] =  std::sqrt(exercise) *
             blackStdDevDerivative(strike, forward, stdDev, annuity);
     }
 }

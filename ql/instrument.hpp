@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,9 @@
 #include <ql/pricingengine.hpp>
 #include <ql/errors.hpp>
 #include <ql/Utilities/null.hpp>
+#include <boost/any.hpp>
+#include <map>
+#include <string>
 
 namespace QuantLib {
 
@@ -40,6 +43,7 @@ namespace QuantLib {
     */
     class Instrument : public LazyObject {
       public:
+        class results;
         Instrument();
         //! \name Inspectors
         //@{
@@ -47,6 +51,10 @@ namespace QuantLib {
         Real NPV() const;
         //! returns the error estimate on the NPV when available.
         Real errorEstimate() const;
+        //! returns any additional result returned by the pricing engine.
+        template <typename T> T result(const std::string& tag) const;
+        //! returns all additional result returned by the pricing engine.
+        const std::map<std::string,boost::any>& additionalResults() const;
         //! returns whether the instrument is still tradable.
         virtual bool isExpired() const = 0;
         //@}
@@ -63,12 +71,12 @@ namespace QuantLib {
             instrument, this method should be overridden to fill
             it. This is mandatory in case a pricing engine is used.
         */
-        virtual void setupArguments(Arguments*) const;
+        virtual void setupArguments(PricingEngine::arguments*) const;
         /*! When a derived result structure is defined for an
             instrument, this method should be overridden to read from
             it. This is mandatory in case a pricing engine is used.
         */
-        virtual void fetchResults(const Results*) const;
+        virtual void fetchResults(const PricingEngine::results*) const;
       protected:
         //! \name Calculations
         //@{
@@ -91,27 +99,27 @@ namespace QuantLib {
         */
         //@{
         mutable Real NPV_, errorEstimate_;
+        mutable std::map<std::string,boost::any> additionalResults_;
         //@}
-      protected:
         boost::shared_ptr<PricingEngine> engine_;
     };
 
-    //! pricing results
-    class Value : public virtual Results {
+    class Instrument::results : public virtual PricingEngine::results {
       public:
-        Value() { reset(); }
         void reset() {
             value = errorEstimate = Null<Real>();
+            additionalResults.clear();
         }
         Real value;
         Real errorEstimate;
+        std::map<std::string,boost::any> additionalResults;
     };
 
 
     // inline definitions
 
     inline Instrument::Instrument()
-    : NPV_(0.0), errorEstimate_(Null<Real>()) {}
+    : NPV_(Null<Real>()), errorEstimate_(Null<Real>()) {}
 
     inline void Instrument::setPricingEngine(
                                   const boost::shared_ptr<PricingEngine>& e) {
@@ -124,7 +132,7 @@ namespace QuantLib {
         update();
     }
 
-    inline void Instrument::setupArguments(Arguments*) const {
+    inline void Instrument::setupArguments(PricingEngine::arguments*) const {
         QL_FAIL("Instrument::setupArguments() not implemented");
     }
 
@@ -139,23 +147,27 @@ namespace QuantLib {
 
     inline void Instrument::setupExpired() const {
         NPV_ = errorEstimate_ = 0.0;
+        additionalResults_.clear();
     }
 
     inline void Instrument::performCalculations() const {
         QL_REQUIRE(engine_, "null pricing engine");
         engine_->reset();
-        setupArguments(engine_->arguments());
-        engine_->arguments()->validate();
+        setupArguments(engine_->getArguments());
+        engine_->getArguments()->validate();
         engine_->calculate();
-        fetchResults(engine_->results());
+        fetchResults(engine_->getResults());
     }
 
-    inline void Instrument::fetchResults(const Results* r) const {
-        const Value* results = dynamic_cast<const Value*>(r);
+    inline void Instrument::fetchResults(
+                                      const PricingEngine::results* r) const {
+        const Instrument::results* results =
+            dynamic_cast<const Instrument::results*>(r);
         QL_ENSURE(results != 0,
                   "no results returned from pricing engine");
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
+        additionalResults_ = results->additionalResults;
     }
 
     inline Real Instrument::NPV() const {
@@ -169,6 +181,19 @@ namespace QuantLib {
         QL_REQUIRE(errorEstimate_ != Null<Real>(),
                    "error estimate not provided");
         return errorEstimate_;
+    }
+
+    template <class T>
+    inline T Instrument::result(const std::string& tag) const {
+        calculate();
+        const boost::any& value = additionalResults_[tag];
+        QL_REQUIRE(!value.empty(), tag << " not provided");
+        return boost::any_cast<T>(value);
+    }
+
+    inline const std::map<std::string,boost::any>&
+    Instrument::additionalResults() const {
+        return additionalResults_;
     }
 
 }

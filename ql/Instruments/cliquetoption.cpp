@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +31,7 @@ namespace QuantLib {
     : OneAssetStrikedOption(process,payoff,maturity,engine),
       resetDates_(resetDates) {}
 
-    void CliquetOption::setupArguments(Arguments* args) const {
+    void CliquetOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetStrikedOption::setupArguments(args);
         // set accrued coupon, last fixing, caps, floors
         CliquetOption::arguments* moreArgs =

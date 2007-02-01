@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -115,13 +115,13 @@ namespace QuantLib {
 
             VanillaOption::arguments* controlArguments =
                 dynamic_cast<VanillaOption::arguments*>(
-                    controlPE->arguments());
+                                                   controlPE->getArguments());
             *controlArguments = arguments_;
             controlPE->calculate();
 
             const VanillaOption::results* controlResults =
                 dynamic_cast<const VanillaOption::results*>(
-                    controlPE->results());
+                                                     controlPE->getResults());
 
             return controlResults->value;
     }

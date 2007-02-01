@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +39,8 @@ namespace QuantLib {
         return strikeSensitivity_;
     }
 
-    void OneAssetStrikedOption::setupArguments(Arguments* args) const {
+    void OneAssetStrikedOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
 
         OneAssetOption::setupArguments(args);
 
@@ -54,7 +56,8 @@ namespace QuantLib {
         strikeSensitivity_ = 0.0;
     }
 
-    void OneAssetStrikedOption::fetchResults(const Results* r) const {
+    void OneAssetStrikedOption::fetchResults(
+                                      const PricingEngine::results* r) const {
         OneAssetOption::fetchResults(r);
         const MoreGreeks* results = dynamic_cast<const MoreGreeks*>(r);
         QL_ENSURE(results != 0,

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,7 +37,7 @@ namespace QuantLib {
         "Introduction to Asset Swap", Lehman Brothers European Fixed
         Income Research - January 2000, D. O'Kane
 
-        \ingroup instruments 
+        \ingroup instruments
     */
     class AssetSwap : public Swap {
       public:
@@ -66,8 +67,8 @@ namespace QuantLib {
             return legs_[1];
         }
         // other
-        void setupArguments(Arguments* args) const;
-        void fetchResults(const Results*) const;
+        void setupArguments(PricingEngine::arguments* args) const;
+        void fetchResults(const PricingEngine::results*) const;
       private:
         void setupExpired() const;
         void performCalculations() const;
@@ -84,7 +85,7 @@ namespace QuantLib {
 
 
     //! %Arguments for asset swap calculation
-    class AssetSwap::arguments : public virtual Arguments {
+    class AssetSwap::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : payFixed(false),
                       nominal(Null<Real>()),
@@ -104,13 +105,13 @@ namespace QuantLib {
     };
 
     //! %Results from simple swap calculation
-    class AssetSwap::results : public Value {
+    class AssetSwap::results : public Instrument::results {
       public:
         Real floatingLegBPS;
         Spread fairSpread;
         Real fairPrice;
-        results() { reset(); }
         void reset() {
+            Instrument::results::reset();
             floatingLegBPS = Null<Real>();
             fairSpread = Null<Spread>();
             fairPrice = Null<Real>();

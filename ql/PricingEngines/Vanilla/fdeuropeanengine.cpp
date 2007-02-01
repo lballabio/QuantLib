@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +45,7 @@ namespace QuantLib {
                                            results_.value,
                                            results_.delta,
                                            results_.gamma);
-        results_.priceCurve = prices_;
+        results_.additionalResults["priceCurve"] = prices_;
     }
 
 }

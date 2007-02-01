@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,7 +25,7 @@
 
 namespace QuantLib {
 
-    void FDStepConditionEngine::calculate(Results* r) const {
+    void FDStepConditionEngine::calculate(PricingEngine::results* r) const {
         OneAssetOption::results * results =
             dynamic_cast<OneAssetOption::results *>(r);
         setGridLimits();
@@ -95,7 +96,7 @@ namespace QuantLib {
         results->gamma = prices_.secondDerivativeAtCenter()
             - controlPrices_.secondDerivativeAtCenter()
             + black.gamma(spot);
-        results->priceCurve = prices_;
+        results->additionalResults["priceCurve"] = prices_;
     }
 
 }

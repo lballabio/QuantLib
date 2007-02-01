@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,14 +65,14 @@ namespace QuantLib {
         Volatility impliedVolatility(Real targetValue,
                                      Real accuracy = 1e-4,
                                      Size maxEvaluations = 100,
-                                     Volatility minVol = QL_MIN_VOLATILITY,
-                                     Volatility maxVol = QL_MAX_VOLATILITY)
+                                     Volatility minVol = 1.0e-7,
+                                     Volatility maxVol = 4.0)
                                                                         const;
         Spread impliedDivYield(Real targetValue,
                                Real accuracy = 1e-4,
                                Size maxEvaluations = 100,
-                               Spread minYield = QL_MIN_DIVYIELD,
-                               Spread maxYield = QL_MAX_DIVYIELD) const;
+                               Spread minYield = 1.0e-7,
+                               Spread maxYield = 4.0) const;
         virtual boost::shared_ptr<SingleAssetOption> clone() const = 0;
       protected:
         Real underlying_;

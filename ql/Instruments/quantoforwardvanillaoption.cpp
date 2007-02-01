@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,7 +38,8 @@ namespace QuantLib {
         QL_REQUIRE(engine, "null engine or wrong engine type");
     }
 
-    void QuantoForwardVanillaOption::setupArguments(Arguments* args) const {
+    void QuantoForwardVanillaOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
         VanillaOption::setupArguments(args);
         QuantoForwardVanillaOption::arguments* arguments =
             dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);

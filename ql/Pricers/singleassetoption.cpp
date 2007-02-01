@@ -50,10 +50,10 @@ namespace QuantLib {
     }
 
     void SingleAssetOption::setVolatility(Volatility volatility) {
-        QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
+        QL_REQUIRE(volatility >= 1.0e-7,
                    "volatility too small (" << volatility << ")");
 
-        QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
+        QL_REQUIRE(volatility <= 4.0,
                    "volatility too high (" << volatility << ")");
 
         volatility_ = volatility;

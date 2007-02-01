@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -111,10 +112,10 @@ namespace QuantLib {
             originalEngine)
     : originalEngine_(originalEngine) {
         QL_REQUIRE(originalEngine_, "null engine");
-        originalResults_ = dynamic_cast<const ResultsType*>(
-            originalEngine_->results());
-        originalArguments_ = dynamic_cast<ArgumentsType*>(
-            originalEngine_->arguments());
+        originalResults_ =
+            dynamic_cast<const ResultsType*>(originalEngine_->getResults());
+        originalArguments_ =
+            dynamic_cast<ArgumentsType*>(originalEngine_->getArguments());
     }
 
     template<class ArgumentsType, class ResultsType>

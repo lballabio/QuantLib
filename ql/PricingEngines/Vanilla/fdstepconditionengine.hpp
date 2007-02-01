@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 Joseph Wang
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,7 +47,7 @@ namespace QuantLib {
         mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
         mutable SampledCurve controlPrices_;
         virtual void initializeStepCondition() const = 0;
-        virtual void calculate(Results* result) const;
+        virtual void calculate(PricingEngine::results*) const;
     };
 
 }

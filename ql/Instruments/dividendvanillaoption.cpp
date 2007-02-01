@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,7 +34,8 @@ namespace QuantLib {
       cashFlow_(DividendVector(dividendDates, dividends)) {
     }
 
-    void DividendVanillaOption::setupArguments(Arguments* args) const {
+    void DividendVanillaOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
         VanillaOption::setupArguments(args);
 
         DividendVanillaOption::arguments* arguments =

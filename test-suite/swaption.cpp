@@ -1,10 +1,11 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2003 RiskMap srl
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -134,7 +135,7 @@ void SwaptionTest::testStrikeDependency() {
                         makeSwaption(swap,exerciseDate,vol);
                     values.push_back(swaption->NPV());
                     boost::shared_ptr<Swaption> swaption_cash =
-						makeSwaption(swap,exerciseDate,vol,Settlement::Cash);
+                        makeSwaption(swap,exerciseDate,vol,Settlement::Cash);
                     values_cash.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
@@ -447,7 +448,8 @@ void SwaptionTest::testVega() {
                             (swaption2->NPV()-swaption1->NPV())/(200.0*shift);
                         // check only relevant vega
                         if (numericalVegaPerPoint/swaptionNPV>1.0e-7) {
-                            Real analyticalVegaPerPoint = swaption->vega()/100.0;
+                            Real analyticalVegaPerPoint =
+                                swaption->result<Real>("vega")/100.0;
                             Real discrepancy = std::fabs(analyticalVegaPerPoint
                                 - numericalVegaPerPoint);
                             discrepancy /= numericalVegaPerPoint;

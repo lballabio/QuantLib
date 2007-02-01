@@ -4,6 +4,7 @@
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Marco Bianchetti
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,7 +45,7 @@ namespace QuantLib {
         return exercise_->dates().back() < termStructure_->referenceDate();
     }
 
-    void Swaption::setupArguments(Arguments* args) const {
+    void Swaption::setupArguments(PricingEngine::arguments* args) const {
 
         swap_->setupArguments(args);
 
@@ -134,9 +135,10 @@ namespace QuantLib {
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<Quote> h(vol_);
         engine_ = boost::shared_ptr<PricingEngine>(new BlackSwaptionEngine(h));
-        swaption.setupArguments(engine_->arguments());
+        swaption.setupArguments(engine_->getArguments());
 
-        results_ = dynamic_cast<const Value*>(engine_->results());
+        results_ =
+            dynamic_cast<const Instrument::results*>(engine_->getResults());
     }
 
     Real Swaption::ImpliedVolHelper::operator()(Volatility x) const {
@@ -145,20 +147,7 @@ namespace QuantLib {
         return results_->value-targetValue_;
     }
 
-    void Swaption::fetchResults (const Results* r) const{
-        Instrument::fetchResults(r);
-        const Swaption::results* results =
-            dynamic_cast<const Swaption::results*>(r);
-        vega_ = results->vega_;
-        
-    }
-
-    Real Swaption::vega() const {
-        calculate();
-        return vega_;
-    }
-
     Rate Swaption::atmRate() const{
-        return swap_->fairRate();    
+        return swap_->fairRate();
     }
 }

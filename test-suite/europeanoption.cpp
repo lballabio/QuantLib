@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1306,7 +1306,7 @@ void EuropeanOptionTest::testPriceCurve() {
                                       Handle<BlackVolTermStructure>(volTS)));
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
-        SampledCurve price_curve = option.priceCurve();
+        SampledCurve price_curve = option.result<SampledCurve>("priceCurve");
         if (price_curve.empty()) {
             REPORT_FAILURE("no price curve", payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today,

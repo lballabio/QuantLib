@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,7 +68,8 @@ namespace QuantLib {
         baseEngine_->reset();
 
         VanillaOption::arguments* baseArguments =
-            dynamic_cast<VanillaOption::arguments*>(baseEngine_->arguments());
+            dynamic_cast<VanillaOption::arguments*>(
+                                                 baseEngine_->getArguments());
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
@@ -83,7 +85,7 @@ namespace QuantLib {
 
         const VanillaOption::results* baseResults =
             dynamic_cast<const VanillaOption::results*>(
-            baseEngine_->results());
+                                                   baseEngine_->getResults());
 
         results_.value       = 0.0;
         results_.delta       = 0.0;
@@ -95,7 +97,7 @@ namespace QuantLib {
 
         Real r, v, weight, lastContribution = 1.0;
         Size i;
-		Real theta_correction;
+        Real theta_correction;
         // Haug arbitrary criterium is:
         //for (i=0; i<11; i++) {
         for (i=0;
@@ -118,7 +120,7 @@ namespace QuantLib {
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
-			results_.vega        += weight * (std::sqrt(variance/t)/v)*
+            results_.vega        += weight * (std::sqrt(variance/t)/v)*
                                                            baseResults->vega;
             // theta modified
             theta_correction = baseResults->vega*((i*jumpSquareVol)/

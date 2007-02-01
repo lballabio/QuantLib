@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -101,13 +102,6 @@ namespace QuantLib {
         return itmCashProbability_;
     }
 
-    SampledCurve OneAssetOption::priceCurve() const {
-        calculate();
-        QL_REQUIRE(!priceCurve_.empty(),
-                   "price curve not provided");
-        return priceCurve_;
-    }
-
     Volatility OneAssetOption::impliedVolatility(Real targetValue,
                                                  Real accuracy,
                                                  Size maxEvaluations,
@@ -129,10 +123,9 @@ namespace QuantLib {
         delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
             thetaPerDay_ = vega_ = rho_ = dividendRho_ =
             itmCashProbability_ = 0.0;
-        priceCurve_ = SampledCurve();
     }
 
-    void OneAssetOption::setupArguments(Arguments* args) const {
+    void OneAssetOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::arguments* arguments =
             dynamic_cast<OneAssetOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
@@ -149,7 +142,7 @@ namespace QuantLib {
         }
     }
 
-    void OneAssetOption::fetchResults(const Results* r) const {
+    void OneAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
         const Greeks* results = dynamic_cast<const Greeks*>(r);
         QL_ENSURE(results != 0,
@@ -184,12 +177,6 @@ namespace QuantLib {
         elasticity_         = moreResults->elasticity;
         thetaPerDay_        = moreResults->thetaPerDay;
         itmCashProbability_ = moreResults->itmCashProbability;
-
-        const PriceCurve* priceCurveResults =
-            dynamic_cast<const PriceCurve*>(r);
-        QL_ENSURE(moreResults != 0,
-                  "no price curve returned from pricing engine");
-        priceCurve_ = priceCurveResults->priceCurve;
     }
 
 
@@ -211,7 +198,7 @@ namespace QuantLib {
                                Real targetValue)
     : engine_(engine), targetValue_(targetValue) {
         OneAssetOption::arguments* arguments_ =
-            dynamic_cast<OneAssetOption::arguments*>(engine_->arguments());
+            dynamic_cast<OneAssetOption::arguments*>(engine_->getArguments());
         QL_REQUIRE(arguments_ != 0,
                    "pricing engine does not supply needed arguments");
         // make a new stochastic process in order not to modify the given one.
@@ -243,7 +230,8 @@ namespace QuantLib {
                                          Handle<Quote>(vol_),
                                          blackVol->dayCounter())));
         arguments_->stochasticProcess = process;
-        results_ = dynamic_cast<const Value*>(engine_->results());
+        results_ =
+            dynamic_cast<const Instrument::results*>(engine_->getResults());
         QL_REQUIRE(results_ != 0,
                    "pricing engine does not supply needed results");
     }

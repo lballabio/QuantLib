@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Warren Chou
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,8 +31,8 @@ namespace QuantLib {
     : OneAssetOption(process, payoff, exercise, engine),
       minmax_(minmax) {}
 
-    void ContinuousFloatingLookbackOption::setupArguments(Arguments* args)
-								 const {
+    void ContinuousFloatingLookbackOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
 
         OneAssetOption::setupArguments(args);
 
@@ -53,7 +54,7 @@ namespace QuantLib {
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
-	           << minmax << " not allowed");
+               << minmax << " not allowed");
     }
 
 
@@ -66,7 +67,8 @@ namespace QuantLib {
     : OneAssetStrikedOption(process, payoff, exercise, engine),
       minmax_(minmax) {}
 
-    void ContinuousFixedLookbackOption::setupArguments(Arguments* args) const {
+    void ContinuousFixedLookbackOption::setupArguments(
+                                       PricingEngine::arguments* args) const {
 
         OneAssetStrikedOption::setupArguments(args);
 
@@ -87,7 +89,7 @@ namespace QuantLib {
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
-	           << minmax << " not allowed");
+               << minmax << " not allowed");
     }
 
 }

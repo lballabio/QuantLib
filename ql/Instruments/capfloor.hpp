@@ -4,7 +4,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 François Du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -55,7 +55,6 @@ namespace QuantLib {
       public:
         enum Type { Cap, Floor, Collar };
         class arguments;
-        class results;
         class engine;
         CapFloor(Type type,
                  const Leg& floatingLeg,
@@ -71,7 +70,7 @@ namespace QuantLib {
         //! \name Instrument interface
         //@{
         bool isExpired() const;
-        void fetchResults (const Results*) const;
+        void setupArguments(PricingEngine::arguments*) const;
         //@}
         //! \name Inspectors
         //@{
@@ -89,26 +88,22 @@ namespace QuantLib {
             return floatingLeg_;
         }
         Rate atmRate() const;
-        Real vega() const;
         Date startDate() const;
         Date maturityDate() const;
         Date lastFixingDate() const;
         //@}
-        void setupArguments(Arguments*) const;
         //! implied term volatility
         Volatility impliedVolatility(Real price,
                                      Real accuracy = 1.0e-4,
                                      Size maxEvaluations = 100,
-                                     Volatility minVol = QL_MIN_VOLATILITY,
-                                     Volatility maxVol = QL_MAX_VOLATILITY)
-                                                                        const;
+                                     Volatility minVol = 1.0e-7,
+                                     Volatility maxVol = 4.0) const;
       private:
         Type type_;
         Leg floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
         Handle<YieldTermStructure> termStructure_;
-        mutable Real vega_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
@@ -122,7 +117,7 @@ namespace QuantLib {
             Handle<YieldTermStructure> termStructure_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
-            const Value* results_;
+            const Instrument::results* results_;
         };
     };
 
@@ -167,7 +162,7 @@ namespace QuantLib {
 
 
     //! %Arguments for cap/floor calculation
-    class CapFloor::arguments : public virtual Arguments {
+    class CapFloor::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : type(CapFloor::Type(-1)) {}
         CapFloor::Type type;
@@ -183,12 +178,6 @@ namespace QuantLib {
         std::vector<DiscountFactor> discounts;
         std::vector<Real> nominals;
         void validate() const;
-    };
-
-    //! %Results from cap/floor calculation
-    class CapFloor::results : public Value {
-        public:
-        Real vega_;
     };
 
     //! base class for cap/floor engines
