@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file payoffs.hpp
+/*! \file stickyratchet.hpp
     \brief Payoffs for double nested options of sticky or ratchet type
 */
 
-#ifndef quantlib_payoffs_hpp
-#define quantlib_payoffs_hpp
+#ifndef quantlib_stickyratchet_hpp
+#define quantlib_stickyratchet_hpp
 
 #include <ql/option.hpp>
 
