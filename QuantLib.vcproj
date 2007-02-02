@@ -2455,6 +2455,12 @@
 				RelativePath="ql\Instruments\quantovanillaoption.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Instruments\stickyratchet.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Instruments\stickyratchet.hpp">
+			</File>
+			<File
 				RelativePath="ql\Instruments\stock.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
