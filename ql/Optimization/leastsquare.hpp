@@ -207,9 +207,6 @@ namespace QuantLib {
 
         // set initial value of the optimization method
         om_->setInitialValue (initialValue_);
-        // set end criteria with a given maximum number of iteration
-        // and a given error eps
-        om_->setEndCriteria(EndCriteria(maxIterations_, eps));
 
         // wrap the least square problem in an optimization function
         LeastSquareFunction lsf(lsProblem);
@@ -218,10 +215,11 @@ namespace QuantLib {
         Problem P(lsf, c_, *om_);
 
         // minimize
-        P.minimize();
+        EndCriteria ec(maxIterations_, eps);
+        P.minimize(ec);
 
         // summarize results of minimization
-        exitFlag_ = om_->endCriteria ().criteria();
+        exitFlag_ = ec.criteria();
         nbIterations_ = om_->iterationNumber();
 
         results_ = om_->x();
