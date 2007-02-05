@@ -94,7 +94,9 @@ namespace QuantLib {
     EndCriteria::Type Abcd::capletCalibration(
                 const std::vector<Real>& blackVols,
                 const std::vector<Real>::const_iterator& t,
+                const boost::shared_ptr<EndCriteria>& endCr,
                 const boost::shared_ptr<OptimizationMethod>& meth) {
+
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
             Array guess(4);
@@ -103,19 +105,23 @@ namespace QuantLib {
             guess[2] = c_;
             guess[3] = d_;
 
-            EndCriteria endCriteria(100000, 0.3e-4);
-
             boost::shared_ptr<LineSearch> lineSearch(new
                 ArmijoLineSearch(1e-12, 0.15, 0.55));
 
             method = boost::shared_ptr<OptimizationMethod>(new
-                ConjugateGradient(guess, endCriteria, lineSearch));
+                ConjugateGradient(guess, lineSearch));
+        }
+
+        boost::shared_ptr<EndCriteria> endCriteria = endCr;
+        if (!endCriteria) {
+            endCriteria = boost::shared_ptr<EndCriteria>(new
+                EndCriteria(100000, 0.3e-4));
         }
 
         AbcdConstraint constraint;
         AbcdCostFunction costFunction(this, blackVols, t);
         Problem problem(costFunction, constraint, *method);
-        problem.minimize();
+        problem.minimize(*endCriteria);
 
 		Array result = problem.minimumValue();
         if (!aIsFixed_) a_ = result[0];
@@ -125,7 +131,7 @@ namespace QuantLib {
 
         validateAbcdParameters(a_, b_, c_, d_);
 
-        return method->endCriteria().criteria();
+        return endCriteria->criteria();
     }
 
 

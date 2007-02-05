@@ -76,6 +76,7 @@ namespace QuantLib {
     void CalibratedModel::calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
         OptimizationMethod& method,
+        const EndCriteria& endCriteria,
         const Constraint& additionalConstraint,
         const std::vector<Real>& weights) {
 
@@ -95,7 +96,7 @@ namespace QuantLib {
 
         method.setInitialValue(params());
         Problem prob(f, c, method);
-        prob.minimize();
+        prob.minimize(endCriteria);
 
         Array result(prob.minimumValue());
         setParams(result);

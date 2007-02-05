@@ -78,6 +78,7 @@ namespace QuantLib {
                           std::vector<std::vector<NodeData> >& simulationData,
                           const ParametricExercise& exercise,
                           std::vector<std::vector<Real> >& parameters,
+                          const EndCriteria& endCriteria,
                           OptimizationMethod& method) {
 
         Size steps = simulationData.size();
@@ -101,7 +102,7 @@ namespace QuantLib {
             NoConstraint c;
 
             Problem p(f, c, method);
-            p.minimize();
+            p.minimize(endCriteria);
 
             Array result = p.minimumValue();
             std::copy(result.begin(), result.end(),

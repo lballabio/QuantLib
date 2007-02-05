@@ -23,7 +23,8 @@
 
 namespace QuantLib {
 
-    void ConjugateGradient::minimize(const Problem &P) {
+    void ConjugateGradient::minimize(const Problem &P,
+                                     const EndCriteria& endCriteria) {
         bool done = false;
 
         // function and squared norm of gradient values;
@@ -43,7 +44,7 @@ namespace QuantLib {
 
         do {
             // Linesearch
-            t = (*lineSearch_)(P, t);
+            t = (*lineSearch_)(P, endCriteria, t);
             // don't throw: it can fail just because maxIterations exceeded
             //QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             if (lineSearch_->succeed())
@@ -67,9 +68,9 @@ namespace QuantLib {
                 lineSearch_->searchDirection() = -g + c * d;
                 
                 // End criteria
-                done = endCriteria()(iterationNumber_,
-                                     fold, std::sqrt(gold2), functionValue(),
-                                     std::sqrt(gradientNormValue()), normdiff);
+                done = endCriteria(iterationNumber_,
+                                   fold, std::sqrt(gold2), functionValue(),
+                                   std::sqrt(gradientNormValue()), normdiff);
 			    // Increase interation number
                 ++iterationNumber_;
             } else {

@@ -33,7 +33,6 @@ namespace QuantLib {
     class LineSearchBasedMethod : public OptimizationMethod {
       public:
         LineSearchBasedMethod(const Array& initialValue = Array(),
-                              const EndCriteria& endCriteria = EndCriteria(),
                               const boost::shared_ptr<LineSearch>& lSearch =
                                             boost::shared_ptr<LineSearch>());
         virtual ~LineSearchBasedMethod() {}

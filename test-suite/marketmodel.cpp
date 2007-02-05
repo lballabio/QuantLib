@@ -1642,11 +1642,12 @@ void MarketModelTest::testCallableSwapAnderson() {
                             control, trainingPaths_, collectedData);
 
                         Simplex om(0.01);
+                        EndCriteria ec;
 
                         Size initialNumeraire = evolver->numeraires().front();
                         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
                         Real firstPassValue = genericEarlyExerciseOptimization(
-                            collectedData, parametricForm, parameters, om) * 
+                            collectedData, parametricForm, parameters, ec, om) * 
                             initialNumeraireValue;
 
                         if (printReport_)

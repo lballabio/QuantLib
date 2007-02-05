@@ -54,6 +54,7 @@ namespace QuantLib {
         std::vector<std::vector<NodeData> >& simulationData,
         const ParametricExercise& exercise,
         std::vector<std::vector<Real> >& parameters,
+        const EndCriteria& endCriteria,
         OptimizationMethod& method);
 
 }

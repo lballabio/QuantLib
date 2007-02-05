@@ -36,12 +36,12 @@ namespace QuantLib {
     class SteepestDescent : public LineSearchBasedMethod {
       public:
         SteepestDescent(const Array& initialValue = Array(),
-                        const EndCriteria& endCriteria = EndCriteria(),
                         const boost::shared_ptr<LineSearch>& lineSearch =
                                             boost::shared_ptr<LineSearch>())
-        : LineSearchBasedMethod(initialValue, endCriteria, lineSearch) {}
+        : LineSearchBasedMethod(initialValue, lineSearch) {}
         //! minimize the optimization problem P
-        void minimize(const Problem& P);
+        void minimize(const Problem& P,
+                      const EndCriteria& endCriteria);
     };
 
 }

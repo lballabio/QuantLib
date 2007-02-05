@@ -28,6 +28,8 @@
 
 namespace QuantLib {
 
+    class EndCriteria;
+
     //! Armijo line search.
     /*! Let \f$ \alpha \f$ and \f$ \beta \f$ be 2 scalars in \f$ [0,1]
         \f$.  Let \f$ x \f$ be the current value of the unknown, \f$ d
@@ -53,6 +55,7 @@ namespace QuantLib {
 
         //! Perform line search
         Real operator()(const Problem& P, // Optimization problem
+                        const EndCriteria&,
                         Real t_ini);      // initial value of line-search step
       private:
         Real alpha_, beta_;

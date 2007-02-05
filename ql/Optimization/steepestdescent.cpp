@@ -23,7 +23,8 @@
 
 namespace QuantLib {
 
-    void SteepestDescent::minimize(const Problem& P) {
+    void SteepestDescent::minimize(const Problem& P,
+                                   const EndCriteria& endCriteria) {
         bool end;
 
         // function and squared norm of gradient values;
@@ -42,15 +43,15 @@ namespace QuantLib {
 
         do {
             // Linesearch
-            t = (*lineSearch_)(P, t);
+            t = (*lineSearch_)(P, endCriteria, t);
 
             QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             // End criteria
-            end = endCriteria()(iterationNumber_, functionValue(),
-                                std::sqrt(gradientNormValue()),
-                                lineSearch_->lastFunctionValue(),
-                                std::sqrt(lineSearch_->lastGradientNorm2()),
-                                normdiff);
+            end = endCriteria(iterationNumber_, functionValue(),
+                              std::sqrt(gradientNormValue()),
+                              lineSearch_->lastFunctionValue(),
+                              std::sqrt(lineSearch_->lastGradientNorm2()),
+                              normdiff);
 
             // Updates
             // New point

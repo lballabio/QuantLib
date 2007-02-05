@@ -120,7 +120,6 @@ namespace QuantLib {
 
             ConjugateGradient optimize;
             EndCriteria endCriteria(100, 1e-8);
-            optimize.setEndCriteria(endCriteria);
             HypersphereCostFunction costFunction(targetMatrix, variance,
                                                  lowerDiagonal);
             NoConstraint constraint;
@@ -153,7 +152,7 @@ namespace QuantLib {
                 }
                 optimize.setInitialValue(theta);
                 Problem p(costFunction, constraint, optimize);
-                p.minimize();
+                p.minimize(endCriteria);
                 theta = p.minimumValue();
                 std::fill(result.begin(),result.end(),1.0);
                 for (i=0; i<size; i++) {
@@ -198,7 +197,7 @@ namespace QuantLib {
                 }
                 optimize.setInitialValue(theta);
                 Problem p(costFunction, constraint, optimize);
-                p.minimize();
+                p.minimize(endCriteria);
                 theta=p.minimumValue();
                 std::fill(result.begin(),result.end(),1.0);
                 for (i=0; i<size; i++) {

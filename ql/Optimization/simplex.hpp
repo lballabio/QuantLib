@@ -40,11 +40,11 @@ namespace QuantLib {
       public:
         /*! Constructor taking as input the characteristic length */
         Simplex(Real lambda,
-                const Array& initialValue = Array(),
-                const EndCriteria& endCriteria = EndCriteria())
-        : OptimizationMethod(initialValue, endCriteria),
+                const Array& initialValue = Array())
+        : OptimizationMethod(initialValue),
           lambda_(lambda) {}
-        void minimize(const Problem& P);
+        void minimize(const Problem& P,
+                      const EndCriteria& endCriteria);
       private:
         Real extrapolate(const Problem& P,
                          Size iHighest,

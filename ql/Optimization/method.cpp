@@ -22,19 +22,14 @@
 
 namespace QuantLib {
 
-    OptimizationMethod::OptimizationMethod(const Array& initialValue,
-                                           const EndCriteria& endCriteria)
-    : endCriteria_(endCriteria) {
+    OptimizationMethod::OptimizationMethod(const Array& initialValue)
+    {
         setInitialValue(initialValue);
     }
 
     void OptimizationMethod::reset() {
         iterationNumber_ = functionEvaluation_ = gradientEvaluation_ = 0;
         functionValue_ = squaredNorm_ = Null<Real>();
-    }
-
-    void OptimizationMethod::setEndCriteria(const EndCriteria& endC) {
-        endCriteria_ = endC;
     }
 
     void OptimizationMethod::setInitialValue(const Array& initVal) {

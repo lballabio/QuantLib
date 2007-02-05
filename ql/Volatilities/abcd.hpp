@@ -253,6 +253,8 @@ namespace QuantLib {
         EndCriteria::Type capletCalibration(
             const std::vector<Real>& blackVols,
             const std::vector<Real>::const_iterator& t,
+            const boost::shared_ptr<EndCriteria>& endCriteria
+                                = boost::shared_ptr<EndCriteria>(),
             const boost::shared_ptr<OptimizationMethod>& method
                                 = boost::shared_ptr<OptimizationMethod>());
       private:

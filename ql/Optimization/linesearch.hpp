@@ -31,6 +31,7 @@ namespace QuantLib {
 
     class Problem;
     class Constraint;
+    class EndCriteria;
 
     //! Base class for line search
     class LineSearch {
@@ -53,9 +54,9 @@ namespace QuantLib {
         bool succeed() { return succeed_; }
 
         //! Perform line search
-        virtual Real operator()(const Problem& P,
-                                Real t_ini) = 0;
-
+        virtual Real operator()(const Problem& P, // Optimization problem
+                                const EndCriteria&,
+                                Real t_ini) = 0;      // initial value of line-search step
         Real update(Array& params,
                     const Array& direction,
                     Real beta,

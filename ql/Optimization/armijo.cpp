@@ -24,6 +24,7 @@
 namespace QuantLib {
 
     Real ArmijoLineSearch::operator()(const Problem& P,
+                                      const EndCriteria& endCriteria,
                                       Real t_ini)
     {
         OptimizationMethod& method = P.method();
@@ -63,7 +64,7 @@ namespace QuantLib {
                 qt_ = P.value (xtd_);
                 P.gradient (gradient_, xtd_);
                 // and it squared norm
-                maxIter = P.method().endCriteria().checkIterationNumber(loopNumber);
+                maxIter = endCriteria.checkIterationNumber(loopNumber);
             } while (
                      (((qt_ - q0) > (-alpha_ * t * qpt_)) ||
                       ((qtold - q0) <= (-alpha_ * t * qpt_ / beta_))) &&

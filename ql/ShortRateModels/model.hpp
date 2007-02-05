@@ -33,6 +33,7 @@
 namespace QuantLib {
 
     class OptimizationMethod;
+    class EndCriteria;
 
     //! Affine model class
     /*! Base class for analytically tractable models.
@@ -89,6 +90,7 @@ namespace QuantLib {
         void calibrate(
                    const std::vector<boost::shared_ptr<CalibrationHelper> >&,
                    OptimizationMethod& method,
+                   const EndCriteria& endCriteria,
                    const Constraint& constraint = Constraint(),
                    const std::vector<Real>& weights = std::vector<Real>());
 

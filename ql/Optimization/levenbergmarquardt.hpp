@@ -39,10 +39,11 @@ namespace QuantLib {
         LevenbergMarquardt(Real epsfcn = 1.0e-8,
                            Real xtol = 1.0e-8,
                            Real gtol = 1.0e-8,
-                           const Array& initialValue = Array(),
-                           const EndCriteria& endCriteria
-                            = EndCriteria(400, 1.0e-8, 1.0e-8));
-        void minimize(const Problem& P);
+                           const Array& initialValue = Array());
+        void minimize(const Problem& P,
+                      const EndCriteria& endCriteria
+                      //      = EndCriteria(400, 1.0e-8, 1.0e-8)
+                      );
         virtual Integer getInfo() const;
         static void fcn(int m,
                         int n,

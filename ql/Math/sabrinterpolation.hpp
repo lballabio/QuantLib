@@ -120,6 +120,8 @@ namespace QuantLib {
                           bool nuIsFixed,
                           bool rhoIsFixed,
                           bool vegaWeighted = false,
+                          const boost::shared_ptr<EndCriteria>& endCriteria
+                                  = boost::shared_ptr<EndCriteria>(),
                           const boost::shared_ptr<OptimizationMethod>& method
                                   = boost::shared_ptr<OptimizationMethod>(),
                           bool calculate = true) {
@@ -131,6 +133,7 @@ namespace QuantLib {
                                                      alphaIsFixed, betaIsFixed,
                                                      nuIsFixed, rhoIsFixed,
                                                      vegaWeighted,
+                                                     endCriteria,
                                                      method,
                                                      calculate));
             coeffs_ =
@@ -164,6 +167,8 @@ namespace QuantLib {
              bool alphaIsFixed, bool betaIsFixed,
              bool nuIsFixed, bool rhoIsFixed,
              bool vegaWeighted = false,
+             const boost::shared_ptr<EndCriteria> endCriteria
+                = boost::shared_ptr<EndCriteria>(),
              const boost::shared_ptr<OptimizationMethod> method
                 = boost::shared_ptr<OptimizationMethod>())
         : t_(t), forward_(forward),
@@ -171,6 +176,7 @@ namespace QuantLib {
           alphaIsFixed_(alphaIsFixed), betaIsFixed_(betaIsFixed),
           nuIsFixed_(nuIsFixed), rhoIsFixed_(rhoIsFixed),
           vegaWeighted_(vegaWeighted),
+          endCriteria_(endCriteria),
           method_(method) {}
         SABR() {};
 
@@ -182,7 +188,7 @@ namespace QuantLib {
                                      alpha_, beta_, nu_, rho_,
                                      alphaIsFixed_, betaIsFixed_,
                                      nuIsFixed_, rhoIsFixed_,
-                                     vegaWeighted_, method_);
+                                     vegaWeighted_, endCriteria_, method_);
         }
       private:
         Time t_;
@@ -190,6 +196,7 @@ namespace QuantLib {
         Real alpha_, beta_, nu_, rho_;
         bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
         bool vegaWeighted_;
+        const boost::shared_ptr<EndCriteria> endCriteria_;
         const boost::shared_ptr<OptimizationMethod> method_;
     };
 
@@ -223,6 +230,7 @@ namespace QuantLib {
             };
 
             // optimization method used for fitting
+            boost::shared_ptr<EndCriteria> endCriteria_;
             boost::shared_ptr<OptimizationMethod> method_;
             std::vector<Real> weights_;
             const Real& forward_;
@@ -239,13 +247,14 @@ namespace QuantLib {
                 bool nuIsFixed,
                 bool rhoIsFixed,
                 bool vegaWeighted,
+                const boost::shared_ptr<EndCriteria>& endCriteria,
                 const boost::shared_ptr<OptimizationMethod>& method,
                 bool compute)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
                                     alphaIsFixed, betaIsFixed, nuIsFixed,
                                     rhoIsFixed),
-              method_(method), weights_(xEnd-xBegin, 1.0), forward_(forward) {
+              endCriteria_(endCriteria), method_(method), weights_(xEnd-xBegin, 1.0), forward_(forward) {
                 Real weightsSum = this->xEnd_-this->xBegin_;
                 if (vegaWeighted) {
                     std::vector<Real>::const_iterator x = this->xBegin_;
@@ -271,12 +280,17 @@ namespace QuantLib {
                 guess[3] = std::tan(M_PI/2.0*rho_);
                 
                 // if no method is provided we provide one
-                if (!method_){
-                    EndCriteria endCriteria(60000, 1e-8);
+                if (!method_) {
                     method_ = boost::shared_ptr<OptimizationMethod>(new
-                        Simplex(0.01, guess, endCriteria));
-                }else
+                        Simplex(0.01, guess));
+                } else {
                    method_->setInitialValue(guess);
+                }
+
+                if (!endCriteria_) {
+                    endCriteria_ = boost::shared_ptr<EndCriteria>(new
+                        EndCriteria(60000, 1e-8));
+                }
 
                 if (compute)
                     calculate();
@@ -298,7 +312,7 @@ namespace QuantLib {
                     SABRError costFunction(this);
                     Problem problem(costFunction, constraint_, *method_);
 
-                    problem.minimize();
+                    problem.minimize(*endCriteria_);
                     const Array& x = problem.minimumValue();
 
                     // we convert the result to the sabr coordinates
@@ -359,7 +373,7 @@ namespace QuantLib {
             }
 
             EndCriteria::Type endCriteria() {
-                return method_->endCriteria().criteria();
+                return endCriteria_->criteria();
             }
         };
 

@@ -150,6 +150,7 @@ namespace QuantLib {
                                           isParameterFixed_[2],
                                           isParameterFixed_[3],
                                           vegaWeightedSmileFit_,
+                                          boost::shared_ptr<EndCriteria>(),
                                           boost::shared_ptr<OptimizationMethod>()));
 
                 Real interpolationError =
@@ -232,6 +233,7 @@ namespace QuantLib {
                                         isParameterFixed_[2],
                                         isParameterFixed_[3],
                                         vegaWeightedSmileFit_,
+                                        boost::shared_ptr<EndCriteria>(),
                                         boost::shared_ptr<OptimizationMethod>()));
 
             Real interpolationError =

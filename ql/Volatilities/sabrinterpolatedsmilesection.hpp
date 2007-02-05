@@ -49,6 +49,8 @@ namespace QuantLib {
                            bool isNuFixed,
                            bool isRhoFixed,
                            bool vegaWeighted = false,
+                           const boost::shared_ptr<EndCriteria>& endCriteria
+                            = boost::shared_ptr<EndCriteria>(),
                            const boost::shared_ptr<OptimizationMethod>& method
                             = boost::shared_ptr<OptimizationMethod>(),
                            const DayCounter& dc = Actual365Fixed()
@@ -94,6 +96,7 @@ namespace QuantLib {
                        bool isNuFixed,
                        bool isRhoFixed,
                        bool vegaWeighted,
+                       const boost::shared_ptr<EndCriteria>& endCriteria,
                        const boost::shared_ptr<OptimizationMethod>& method,
                        const DayCounter& dc)
     : SmileSection(optionDate, dc),
@@ -104,7 +107,7 @@ namespace QuantLib {
                         exerciseTime(), forwardValue_, alpha, beta, nu, rho,
                         isAlphaFixed, isBetaFixed,
                         isNuFixed, isRhoFixed, vegaWeighted,
-                        method, false)
+                        endCriteria, method, false)
     {
         registerWith(forward_);
         for (Size i=0; i<stdDevHandles_.size(); ++i)

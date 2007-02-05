@@ -60,7 +60,9 @@ namespace QuantLib {
         CostFunction& costFunction() const { return costFunction_; }
 
         //! Minimization
-        void minimize() const { method_.minimize(*this); }
+        void minimize(const EndCriteria& endCriteria) const {
+            method_.minimize(*this, endCriteria);
+        }
 
         Array minimumValue() const { return method_.x (); }
 

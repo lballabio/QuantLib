@@ -133,7 +133,8 @@ namespace QuantLib {
         Matrix weights_;
         CalibrationType calibrationType_;
 
-        Array calibration(const boost::shared_ptr<OptimizationMethod>& method);
+        Array calibration(const boost::shared_ptr<EndCriteria>& endCriteria,
+                          const boost::shared_ptr<OptimizationMethod>& method);
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 

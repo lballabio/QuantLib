@@ -37,27 +37,22 @@ namespace QuantLib {
     //! Abstract class for constrained optimization method
     class OptimizationMethod {
       public:
-        OptimizationMethod(const Array& initialValue = Array(),
-                           const EndCriteria& endCriteria = EndCriteria());
+        OptimizationMethod(const Array& initialValue = Array());
         virtual ~OptimizationMethod() {}
 
         //! Set initial value
         virtual void setInitialValue(const Array& initialValue);
 
-        //! Set optimization end criteria
-        void setEndCriteria(const EndCriteria& endCriteria);
-
         //! minimize the optimization problem P
-        virtual void minimize(const Problem& P) = 0;
+        virtual void minimize(const Problem& P,
+                              //const EndCriteria& endCriteria = EndCriteria()) = 0;
+                              const EndCriteria& endCriteria) = 0;
 
         //! current value of the local minimum
         const Array& x() const { return x_; }
 
         //! current iteration number
         Integer iterationNumber() const { return iterationNumber_; }
-
-        //! optimization end criteria
-        const EndCriteria& endCriteria() const { return endCriteria_; }
 
         //! number of evaluation of cost function
         Integer& functionEvaluation() { return functionEvaluation_; }
@@ -83,8 +78,6 @@ namespace QuantLib {
         Integer functionEvaluation_, gradientEvaluation_;
         //! function and gradient norm values of the last step
         Real functionValue_, squaredNorm_;
-        //! optimization end criteria
-        EndCriteria endCriteria_;
         //! current values of the local minimum
         Array x_;
     };
