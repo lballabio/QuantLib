@@ -186,9 +186,11 @@ namespace QuantLib {
     template <class T>
     inline T Instrument::result(const std::string& tag) const {
         calculate();
-        const boost::any& value = additionalResults_[tag];
-        QL_REQUIRE(!value.empty(), tag << " not provided");
-        return boost::any_cast<T>(value);
+        std::map<std::string,boost::any>::const_iterator value =
+            additionalResults_.find(tag);
+        QL_REQUIRE(value != additionalResults_.end(),
+                   tag << " not provided");
+        return boost::any_cast<T>(value->second);
     }
 
     inline const std::map<std::string,boost::any>&
