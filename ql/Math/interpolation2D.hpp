@@ -92,11 +92,7 @@ namespace QuantLib {
                 return *(xEnd_-1);
             }
             std::vector<Real> xValues() const {
-                std::vector<Real> result;
-                result.reserve(xEnd_-xBegin_);
-                for (I1 i=xBegin_; i!=xEnd_; ++i)
-                    result.push_back(*i);
-                return result;
+                return std::vector<Real>(xBegin_,xEnd_);
             }
             Real yMin() const {
                 return *yBegin_;
@@ -105,11 +101,7 @@ namespace QuantLib {
                 return *(yEnd_-1);
             }
             std::vector<Real> yValues() const {
-                std::vector<Real> result;
-                result.reserve(yEnd_-yBegin_);
-                for (I2 i=yBegin_; i!=yEnd_; i++)
-                    result.push_back(*i);
-                return result;
+                return std::vector<Real>(yBegin_,yEnd_);
             }
             const Matrix& zData() const {
                 return zData_;
