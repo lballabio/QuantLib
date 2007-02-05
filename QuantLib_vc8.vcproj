@@ -3116,14 +3116,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Math\interpolation.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\Math\interpolation2D.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\lexicographicalview.hpp"
 				>
 			</File>
@@ -3238,6 +3230,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\Math\forwardflatinterpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\interpolation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="ql\Math\interpolation2D.hpp"
 					>
 				</File>
 				<File

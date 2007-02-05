@@ -31,6 +31,7 @@
 #include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -41,6 +42,8 @@ namespace QuantLib {
         virtual void calculate() = 0;
         virtual Real xMin() const = 0;
         virtual Real xMax() const = 0;
+        virtual std::vector<Real> xValues() const = 0;
+        virtual std::vector<Real> yValues() const = 0;
         virtual bool isInRange(Real) const = 0;
         virtual Real value(Real) const = 0;
         virtual Real primitive(Real) const = 0;
@@ -77,6 +80,12 @@ namespace QuantLib {
             }
             Real xMax() const {
                 return *(xEnd_-1);
+            }
+            std::vector<Real> xValues() const {
+                return std::vector<Real>(xBegin_,xEnd_);
+            }
+            std::vector<Real> yValues() const {
+                return std::vector<Real>(yBegin_,yBegin_+(xEnd_-xBegin_));
             }
             bool isInRange(Real x) const {
                 Real x1 = xMin(), x2 = xMax();
