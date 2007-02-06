@@ -2675,7 +2675,7 @@
 				Name="Bonds"
 				>
 				<File
-					RelativePath=".\cappedflooredcouponbond.cpp"
+					RelativePath=".\ql\Instruments\cappedflooredcouponbond.cpp"
 					>
 				</File>
 				<File
