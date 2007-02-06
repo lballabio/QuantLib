@@ -17,7 +17,7 @@
 // FOR A PARTICULAR PURPOSE.  See the license for more details.
 //*/
 
-#include <ql/Instruments/Bonds/cappedflooredcouponbond.hpp>
+#include <ql/Instruments/cappedflooredcouponbond.hpp>
 #include <ql/CashFlows/capflooredcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
