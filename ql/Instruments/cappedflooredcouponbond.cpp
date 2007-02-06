@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-                CappedflooredCouponBond::CappedflooredCouponBond(
+                CappedFlooredCouponBond::CappedFlooredCouponBond(
                 Real faceAmount,
                 const Date& issueDate,
                 const Date& datedDate,

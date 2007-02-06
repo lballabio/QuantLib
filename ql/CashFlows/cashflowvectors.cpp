@@ -261,10 +261,10 @@ namespace QuantLib {
         }
 
         for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<CappedFlooredCoupon> cappedflooredCoupon =
+            const boost::shared_ptr<CappedFlooredCoupon> cappedFlooredCoupon =
                boost::dynamic_pointer_cast<CappedFlooredCoupon>(leg[i]);
-            if (cappedflooredCoupon)
-                cappedflooredCoupon->setCapletVolatility(vol);
+            if (cappedFlooredCoupon)
+                cappedFlooredCoupon->setCapletVolatility(vol);
             else
                 QL_FAIL("unexpected error when casting to CappedFlooredCoupon");
         }

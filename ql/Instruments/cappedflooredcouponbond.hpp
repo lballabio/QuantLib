@@ -37,9 +37,9 @@ namespace QuantLib {
         \test calculations are tested by checking results against
               cached values.
     */
-    class CappedflooredCouponBond : public Bond {
+    class CappedFlooredCouponBond : public Bond {
       public:
-          CappedflooredCouponBond(Real faceAmount,
+          CappedFlooredCouponBond(Real faceAmount,
                          const Date& issueDate,
                          const Date& datedDate,
                          const Date& maturityDate,
