@@ -192,7 +192,9 @@ namespace QuantLib {
                       (new coupon_type(paymentDate,get(nominals,0),
                                        start, end, fixingDays, index,
                                        get(gearings,0,1.0),
-                                       get(spreads,0,0.0)));
+                                       get(spreads,0,0.0),
+                                       Date(),Date(),
+                                       paymentDayCounter));
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying,
                                         get(caps,0,Null<Rate>()),
@@ -206,7 +208,8 @@ namespace QuantLib {
                                        start, end, fixingDays, index,
                                        get(gearings,0,1.0),
                                        get(spreads,0,0.0),
-                                       reference, end));
+                                       reference, end,
+                                       paymentDayCounter));
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying,
                                         get(caps,0,Null<Rate>()),
@@ -221,7 +224,9 @@ namespace QuantLib {
                       (new coupon_type(paymentDate,get(nominals,i-1),
                                        start, end, fixingDays, index,
                                        get(gearings,i-1,1.0),
-                                       get(spreads,i-1,0.0)));
+                                       get(spreads,i-1,0.0),
+                                       Date(),Date(),
+                                       paymentDayCounter));
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new CappedFlooredCoupon(underlying,
                                         get(caps,i-1,Null<Rate>()),
@@ -237,7 +242,9 @@ namespace QuantLib {
                       (new coupon_type(paymentDate,get(nominals,N-2),
                                        start, end, fixingDays, index,
                                        get(gearings,N-2,1.0),
-                                       get(spreads,N-2,0.0)));
+                                       get(spreads,N-2,0.0),
+                                       Date(),Date(),
+                                       paymentDayCounter));
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CappedFlooredCoupon(underlying,
                                             get(caps,N-2,Null<Rate>()),
@@ -252,7 +259,8 @@ namespace QuantLib {
                                            start, end, fixingDays, index,
                                            get(gearings,N-2,1.0),
                                            get(spreads,N-2,0.0),
-                                           start, reference));
+                                           start, reference,
+                                           paymentDayCounter));
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new CappedFlooredCoupon(underlying,
                                             get(caps,N-2,Null<Rate>()),
