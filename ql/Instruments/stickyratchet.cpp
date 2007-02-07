@@ -24,8 +24,10 @@ namespace QuantLib {
 
     // Double Sticky/Ratchet payoffs
     Real DoubleStickyRatchetPayoff::operator()(Real forward) const {
-        QL_REQUIRE(abs(type1_)==1.0, "unknown/illegal option type");
-        QL_REQUIRE(abs(type2_)==1.0, "unknown/illegal option type");
+        QL_REQUIRE((abs(type1_)==1.0 || type2_==0.0), 
+            "unknown/illegal type1 value (only 0.0 and +/-1,0 are allowed))");
+        QL_REQUIRE((abs(type2_)==1.0 || type2_==0.0), 
+            "unknown/illegal type2 value(only 0.0 and +/-1,0 are allowed)");
         Real swaplet = gearing3_ * forward + spread3_;
         Real effStrike1 = gearing1_ * initialValue1_ + spread1_;
         Real effStrike2 = gearing2_ * initialValue2_ + spread2_;

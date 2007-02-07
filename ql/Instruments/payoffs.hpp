@@ -157,8 +157,7 @@ namespace QuantLib {
         the first strike (same Call/Put type) and b) short a
         CashOrNothingPayoff at the first strike (same Call/Put type) with
         cash payoff equal to the difference between the second and the first
-        strike
-
+        strike.
         \warning this payoff can be negative depending on the strikes
     */
     class GapPayoff : public StrikedTypePayoff {
@@ -179,14 +178,14 @@ namespace QuantLib {
         Real secondStrike_;
     };
   
-    //! Binary supershare and superfund payoff
+    //! Binary supershare and superfund payoffs
 
-       //! Binary superfund payoff
+    //! 1) Binary superfund payoff
     /*! Superfund sometimes also called "supershare", which can lead to ambiguity; within QuantLib 
         the terms supershare and superfund are used consistently according to the definitions in
         Bloomberg OVX function's help pages.
     */
-    /*! This payoff is equivalent to being (1/lowerstrike)a) long (short) an AssetOrNothing
+    /*! This payoff is equivalent to being (1/lowerstrike) a) long (short) an AssetOrNothing
         Call (Put) at the lower strike and b) short (long) an AssetOrNothing
         Call (Put) at the higher strike
     */
@@ -210,12 +209,11 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
         Real secondStrike() const { return secondStrike_;}
-        protected:
+      protected:
         Real secondStrike_;
     };
-        //! Binary supershare payoff
-
-      class SuperSharePayoff : public StrikedTypePayoff {
+    //! 2) Binary supershare payoff
+    class SuperSharePayoff : public StrikedTypePayoff {
       public:
         SuperSharePayoff(Real strike,
                          Real secondStrike,
