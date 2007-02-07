@@ -22,7 +22,44 @@
 
 namespace QuantLib {
 
-    // Sticky/Ratchet payoffs
+    // Double Sticky/Ratchet payoffs
+    Real DoubleStickyRatchetPayoff::operator()(Real forward) const {
+        QL_REQUIRE(abs(type1_)==1.0, "unknown/illegal option type");
+        QL_REQUIRE(abs(type2_)==1.0, "unknown/illegal option type");
+        Real swaplet = gearing3_ * forward + spread3_;
+        Real effStrike1 = gearing1_ * initialValue1_ + spread1_;
+        Real effStrike2 = gearing2_ * initialValue2_ + spread2_;
+        Real effStrike3 = type1_*type2_*std::max<Real>(type2_*(swaplet-effStrike2),0.0);
+        Real price = accrualFactor_ * (swaplet - 
+                    type1_*std::max<Real>(type1_*(swaplet-effStrike1),effStrike3));
+        return price;
+    }
+
+    std::string DoubleStickyRatchetPayoff::name() const { 
+        return "DoubleStickyRatchetPayoff";
+    }
+
+    std::string DoubleStickyRatchetPayoff::description() const {
+        std::ostringstream result;
+        result << name();
+        return result.str();
+    }
+
+    void DoubleStickyRatchetPayoff::accept(AcyclicVisitor& v) {
+        Visitor<DoubleStickyRatchetPayoff>* v1 =
+            dynamic_cast<Visitor<DoubleStickyRatchetPayoff>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            Payoff::accept(v);
+    }
+
+/*---------------------------------------------------------------------------
+
+    // Old code for single sticky/ratchet payoffs, 
+    // superated by DoubleStickyRatchetPayoff class above
+
+    // Single Sticky/Ratchet payoffs
     Real StickyRatchetPayoff::operator()(Real forward) const {
         QL_REQUIRE(abs(type_)==1.0, "unknown/illegal option type");
         Real swaplet = gearing2_ * forward + spread2_;
@@ -46,33 +83,6 @@ namespace QuantLib {
         else
             Payoff::accept(v);
     }
-
-    // Double Sticky/Ratchet payoffs
-    Real DoubleStickyRatchetPayoff::operator()(Real forward) const {
-        QL_REQUIRE(abs(type1_)==1.0, "unknown/illegal option type");
-        QL_REQUIRE(abs(type2_)==1.0, "unknown/illegal option type");
-        Real swaplet = gearing3_ * forward + spread3_;
-        Real effStrike1 = gearing1_ * initialValue1_ + spread1_;
-        Real effStrike2 = gearing2_ * initialValue2_ + spread2_;
-        Real effStrike3 = type1_*type2_*std::max<Real>(type2_*(swaplet-effStrike2),0.0);
-        Real price = accrualFactor_ * (swaplet - 
-                    type1_*std::max<Real>(type1_*(swaplet-effStrike1),effStrike3));
-        return price;
-    }
-
-    std::string DoubleStickyRatchetPayoff::description() const {
-        std::ostringstream result;
-        result << name();
-        return result.str();
-    }
-
-    void DoubleStickyRatchetPayoff::accept(AcyclicVisitor& v) {
-        Visitor<DoubleStickyRatchetPayoff>* v1 =
-            dynamic_cast<Visitor<DoubleStickyRatchetPayoff>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            Payoff::accept(v);
-    }
+-----------------------------------------------------------------------------*/
 
 }

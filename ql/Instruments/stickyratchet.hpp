@@ -29,6 +29,144 @@
 
 namespace QuantLib {
 
+    //! Intermediate class for single/double sticky/ratchet payoffs.
+    //  initialValues can be a (forward) rate or a coupon/accrualFactor 
+    class DoubleStickyRatchetPayoff : public Payoff {
+      public:
+        DoubleStickyRatchetPayoff(Real type1, Real type2,
+                            Real gearing1, Real gearing2, Real gearing3,
+                            Spread spread1, Spread spread2, Spread spread3,
+                            Real initialValue1, Real initialValue2, 
+                            Real accrualFactor) 
+        : type1_(type1), type2_(type2), 
+          gearing1_(gearing1), gearing2_(gearing2), gearing3_(gearing3),
+          spread1_(spread1), spread2_(spread2), spread3_(spread3),
+          initialValue1_(initialValue1), initialValue2_(initialValue2), 
+          accrualFactor_(accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const;
+        Real operator()(Real forward) const;
+        std::string description() const;
+        virtual void accept(AcyclicVisitor&);
+        //@}
+      protected:
+        Real type1_ ,type2_;
+        Real gearing1_, gearing2_, gearing3_;
+        Spread spread1_, spread2_, spread3_;
+        Real initialValue1_, initialValue2_, accrualFactor_;
+    };
+
+    //! Ratchet payoff (single option)
+    class RatchetPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         RatchetPayoff(Real gearing1, Real gearing2,
+                       Spread spread1, Spread spread2,
+                       Real initialValue, Real accrualFactor)
+        : DoubleStickyRatchetPayoff(-1.0, 0.0,
+                            gearing1, 0.0, gearing2,
+                            spread1, 0.0, spread2,
+                            initialValue, 0.0, 
+                            accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "Ratchet";}
+        //@}
+    };    
+
+    //! Sticky payoff (single option)
+    class StickyPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         StickyPayoff(Real gearing1, Real gearing2,
+                       Spread spread1, Spread spread2,
+                       Real initialValue, Real accrualFactor)
+        : DoubleStickyRatchetPayoff(+1.0, 0.0,
+                            gearing1, 0.0, gearing2,
+                            spread1, 0.0, spread2,
+                            initialValue, 0.0, 
+                            accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "Sticky";}
+        //@}
+    };
+
+    //! RatchetMax payoff (double option)
+    class RatchetMaxPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         RatchetMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
+                          Spread spread1, Spread spread2, Spread spread3,
+                          Real initialValue1, Real initialValue2, 
+                          Real accrualFactor)
+        : DoubleStickyRatchetPayoff(-1.0, -1.0,
+                                    gearing1, gearing2, gearing3,
+                                    spread1, spread2, spread3,
+                                    initialValue1, initialValue2, 
+                                    accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "RatchetMax";}
+        //@}
+    };    
+
+    //! RatchetMin payoff (double option)
+    class RatchetMinPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         RatchetMinPayoff(Real gearing1, Real gearing2, Real gearing3,
+                          Spread spread1, Spread spread2, Spread spread3,
+                          Real initialValue1, Real initialValue2, 
+                          Real accrualFactor)
+        : DoubleStickyRatchetPayoff(-1.0, +1.0,
+                                    gearing1, gearing2, gearing3,
+                                    spread1, spread2, spread3,
+                                    initialValue1, initialValue2, 
+                                    accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "RatchetMin";}
+        //@}
+    };    
+
+    //! StickyMax payoff (double option)
+    class StickyMaxPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         StickyMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
+                          Spread spread1, Spread spread2, Spread spread3,
+                          Real initialValue1, Real initialValue2, 
+                          Real accrualFactor)
+        : DoubleStickyRatchetPayoff(+1.0, -1.0,
+                                    gearing1, gearing2, gearing3,
+                                    spread1, spread2, spread3,
+                                    initialValue1, initialValue2, 
+                                    accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "StickyMax";}
+        //@}
+    };    
+
+    //! StickyMin payoff (double option)
+    class StickyMinPayoff : public DoubleStickyRatchetPayoff {
+      public:
+         StickyMinPayoff(Real gearing1, Real gearing2, Real gearing3,
+                          Spread spread1, Spread spread2, Spread spread3,
+                          Real initialValue1, Real initialValue2, 
+                          Real accrualFactor)
+        : DoubleStickyRatchetPayoff(+1.0, +1.0,
+                                    gearing1, gearing2, gearing3,
+                                    spread1, spread2, spread3,
+                                    initialValue1, initialValue2, 
+                                    accrualFactor) {}
+        //! \name Payoff interface
+        //@{
+        std::string name() const { return "StickyMin";}
+        //@}
+    };    
+
+/*---------------------------------------------------------------------------------
+    // Old code for single sticky/ratchet payoffs, 
+    // superated by DoubleStickyRatchetPayoff class above
+
     //! Intermediate class for sticky/ratchet payoffs
     //  initialValue can be a (forward) rate or a coupon/accrualFactor 
     class StickyRatchetPayoff : public Payoff {
@@ -84,139 +222,7 @@ namespace QuantLib {
         std::string name() const { return "Sticky";}
         //@}
     };
-
-    //! Intermediate class for double sticky/ratchet payoffs
-    //  initialValues can be a (forward) rate or a coupon/accrualFactor 
-    class DoubleStickyRatchetPayoff : public Payoff {
-      public:
-        DoubleStickyRatchetPayoff(Real type1, Real type2,
-                            Real gearing1, Real gearing2, Real gearing3,
-                            Spread spread1, Spread spread2, Spread spread3,
-                            Real initialValue1, Real initialValue2, 
-                            Real accrualFactor) 
-        : type1_(type1), type2_(type2), 
-          gearing1_(gearing1), gearing2_(gearing2), gearing3_(gearing3),
-          spread1_(spread1), spread2_(spread2), spread3_(spread3),
-          initialValue1_(initialValue1), initialValue2_(initialValue2), 
-          accrualFactor_(accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        Real operator()(Real forward) const;
-        std::string description() const;
-        virtual void accept(AcyclicVisitor&);
-        //@}
-      protected:
-        Real type1_ ,type2_;
-        Real gearing1_, gearing2_, gearing3_;
-        Spread spread1_, spread2_, spread3_;
-        Real initialValue1_, initialValue2_, accrualFactor_;
-    };
-
-    //! Ratchet payoff
-    class RatchetPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         RatchetPayoff(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
-                       Real initialValue, Real accrualFactor)
-        : DoubleStickyRatchetPayoff(-1.0, 0.0,
-                            gearing1, 0.0, gearing2,
-                            spread1, 0.0, spread2,
-                            initialValue, 0.0, 
-                            accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "Ratchet";}
-        //@}
-    };    
-
-    //! Sticky payoff
-    class StickyPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         StickyPayoff(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
-                       Real initialValue, Real accrualFactor)
-        : DoubleStickyRatchetPayoff(+1.0, 0.0,
-                            gearing1, 0.0, gearing2,
-                            spread1, 0.0, spread2,
-                            initialValue, 0.0, 
-                            accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "Sticky";}
-        //@}
-    };
-
-    //! RatchetMax payoff
-    class RatchetMaxPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         RatchetMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
-                          Real initialValue1, Real initialValue2, 
-                          Real accrualFactor)
-        : DoubleStickyRatchetPayoff(-1.0, -1.0,
-                                    gearing1, gearing2, gearing3,
-                                    spread1, spread2, spread3,
-                                    initialValue1, initialValue2, 
-                                    accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "RatchetMax";}
-        //@}
-    };    
-
-    //! RatchetMin payoff
-    class RatchetMinPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         RatchetMinPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
-                          Real initialValue1, Real initialValue2, 
-                          Real accrualFactor)
-        : DoubleStickyRatchetPayoff(-1.0, +1.0,
-                                    gearing1, gearing2, gearing3,
-                                    spread1, spread2, spread3,
-                                    initialValue1, initialValue2, 
-                                    accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "RatchetMin";}
-        //@}
-    };    
-
-    //! StickyMax payoff
-    class StickyMaxPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         StickyMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
-                          Real initialValue1, Real initialValue2, 
-                          Real accrualFactor)
-        : DoubleStickyRatchetPayoff(+1.0, -1.0,
-                                    gearing1, gearing2, gearing3,
-                                    spread1, spread2, spread3,
-                                    initialValue1, initialValue2, 
-                                    accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "StickyMax";}
-        //@}
-    };    
-
-    //! StickyMin payoff
-    class StickyMinPayoff : public DoubleStickyRatchetPayoff {
-      public:
-         StickyMinPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
-                          Real initialValue1, Real initialValue2, 
-                          Real accrualFactor)
-        : DoubleStickyRatchetPayoff(+1.0, +1.0,
-                                    gearing1, gearing2, gearing3,
-                                    spread1, spread2, spread3,
-                                    initialValue1, initialValue2, 
-                                    accrualFactor) {}
-        //! \name Payoff interface
-        //@{
-        std::string name() const { return "StickyMin";}
-        //@}
-    };    
+-----------------------------------------------------------------------------*/
 
 }
 
