@@ -44,34 +44,40 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
       public:
-        static Date startDate(
-                        const Leg&);
-        static Date maturityDate(
-                        const Leg&);
+        static Date startDate(const Leg& leg);
+        static Date maturityDate(const Leg& leg);
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure.
         */
-        static Real npv(const Leg&,
-                        const Handle<YieldTermStructure>& discountCurve);
+        static Real npv(const Leg& leg,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        const Date& settlementDate = Date(),
+                        const Date& npvDate = Date() ,
+                        Integer exDividendDays = 0);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
             flows. The change for each coupon is discounted according
             to the given term structure.
         */
-        static Real bps(const Leg&,
-                        const Handle<YieldTermStructure>& discountCurve);
+        static Real bps(const Leg& leg,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        const Date& settlementDate = Date(),
+                        const Date& npvDate = Date(),
+                        Integer exDividendDays = 0);
         //! At The Money Rate of the cash flows.
         /*! The result is the fixed rate for which a fixed rate cash flow
             vector, equivalent to the input vector, has the required NPV
             according to the given term structure. If the required NPV is
             not given, the input cash flow vector's NPV is used instead.
         */
-        static Rate atmRate(
-            const Leg& cashFlows,
-            const Handle<YieldTermStructure>& discountCurve,
-            Real npv = Null<Real>());
+        static Rate atmRate(const Leg& leg,
+                            const Handle<YieldTermStructure>& discountCurve,
+                            const Date& settlementDate = Date(),
+                            const Date& npvDate = Date(),
+                            Integer exDividendDays = 0,
+                            Real npv = Null<Real>());
 
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
@@ -79,7 +85,7 @@ namespace QuantLib {
             is affected by the choice of the interest-rate compounding
             and the relative frequency and day counter.
         */
-        static Real npv(const Leg&,
+        static Real npv(const Leg& leg,
                         const InterestRate&,
                         Date settlementDate = Date());
         //! Basis-point sensitivity of the cash flows.
@@ -90,7 +96,7 @@ namespace QuantLib {
             affected by the choice of the interest-rate compounding
             and the relative frequency and day counter.
         */
-        static Real bps(const Leg&,
+        static Real bps(const Leg& leg,
                         const InterestRate&,
                         Date settlementDate = Date());
 
@@ -100,7 +106,7 @@ namespace QuantLib {
             the theoretical existance of an IRR and numerically
             establishes the IRR to the desired precision.
         */
-        static Rate irr(const Leg&,
+        static Rate irr(const Leg& leg,
                         Real marketPrice,
                         const DayCounter& dayCounter,
                         Compounding compounding,
@@ -134,7 +140,7 @@ namespace QuantLib {
             where \f$ y \f$ is the IRR and \f$ N \f$ is the number of
             cash flows per year.
         */
-        static Time duration(const Leg&,
+        static Time duration(const Leg& leg,
                              const InterestRate& y,
                              Duration::Type type = Duration::Modified,
                              Date settlementDate = Date());
@@ -147,7 +153,7 @@ namespace QuantLib {
             where \f$ P \f$ is the present value of the cash flows
             according to the given IRR \f$ y \f$.
         */
-        static Real convexity(const Leg&,
+        static Real convexity(const Leg& leg,
                               const InterestRate& y,
                               Date settlementDate = Date()); 
     };

@@ -40,15 +40,16 @@ namespace QuantLib {
                 return -1;
         }
 
+        static const Spread basisPoint_ = 1.0e-4;
+
         class irrFinder : public std::unary_function<Rate,Real> {
           public:
-            irrFinder(
-                   const Leg& cashflows,
-                   Real marketPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate)
+            irrFinder(const Leg& cashflows,
+                      Real marketPrice,
+                      const DayCounter& dayCounter,
+                      Compounding compounding,
+                      Frequency frequency,
+                      Date settlementDate)
             : cashflows_(cashflows), marketPrice_(marketPrice),
               dayCounter_(dayCounter), compounding_(compounding),
               frequency_(frequency), settlementDate_(settlementDate) {}
@@ -70,24 +71,30 @@ namespace QuantLib {
                               public Visitor<CashFlow>,
                               public Visitor<Coupon> {
           public:
-            BPSCalculator(const Handle<YieldTermStructure>& termStructure)
-            : termStructure_(termStructure), result_(0.0) {}
+            BPSCalculator(const Handle<YieldTermStructure>& termStructure,
+                          const Date& npvDate)
+            : termStructure_(termStructure), npvDate_(npvDate), result_(0.0) {}
             void visit(Coupon& c)  {
                 result_ += c.accrualPeriod() *
                            c.nominal() *
                            termStructure_->discount(c.date());
             }
             void visit(CashFlow&) {}
-            Real result() const { return result_; }
+            Real result() const {
+                if (npvDate_==Date())
+                    return result_;
+                else
+                    return result_/termStructure_->discount(npvDate_);
+            }
           private:
             Handle<YieldTermStructure> termStructure_;
+            Date npvDate_;
             Real result_;
         };
 
-        Real simpleDuration(
-                   const Leg& cashflows,
-                   const InterestRate& rate,
-                   Date settlementDate) {
+        Real simpleDuration(const Leg& cashflows,
+                            const InterestRate& rate,
+                            Date settlementDate) {
 
             Real P = 0.0;
             Real tP = 0.0;
@@ -112,10 +119,9 @@ namespace QuantLib {
             return tP/P;
         }
 
-        Real modifiedDuration(
-                   const Leg& cashflows,
-                   const InterestRate& rate,
-                   Date settlementDate) {
+        Real modifiedDuration(const Leg& cashflows,
+                              const InterestRate& rate,
+                              Date settlementDate) {
 
             Real P = 0.0;
             Real dPdy = 0.0;
@@ -155,10 +161,9 @@ namespace QuantLib {
             return -dPdy/P;
         }
 
-        Real macaulayDuration(
-                   const Leg& cashflows,
-                   const InterestRate& rate,
-                   Date settlementDate) {
+        Real macaulayDuration(const Leg& cashflows,
+                              const InterestRate& rate,
+                              Date settlementDate) {
 
             Rate y = Rate(rate);
             Integer N = rate.frequency();
@@ -172,8 +177,7 @@ namespace QuantLib {
 
     }
 
-   Date CashFlows::startDate(
-                const Leg& cashflows) {
+   Date CashFlows::startDate(const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {
             boost::shared_ptr<Coupon> c =
@@ -186,8 +190,7 @@ namespace QuantLib {
         return d;
     }
 
-    Date CashFlows::maturityDate(
-                const Leg& cashflows) {
+    Date CashFlows::maturityDate(const Leg& cashflows) {
         Date d = Date::minDate();
         for (Size i=0; i<cashflows.size(); ++i)
             d = std::max(d, cashflows[i]->date());
@@ -195,66 +198,79 @@ namespace QuantLib {
         return d;
     }
 
-    Real CashFlows::npv(
-                   const Leg& cashflows,
-                   const Handle<YieldTermStructure>& discountCurve) {
-        const Date& settlementDate = discountCurve->referenceDate();
+    Real CashFlows::npv(const Leg& cashflows,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        const Date& settlementDate,
+                        const Date& npvDate,
+                        Integer exDividendDays) {
+        Date d = settlementDate;
+        if (d==Date())
+            d = discountCurve->referenceDate();
+
         Real totalNPV = 0.0;
-        for (Size i = 0; i <cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(settlementDate))
+        for (Size i=0; i<cashflows.size(); ++i) {
+            if (!cashflows[i]->hasOccurred(d+exDividendDays))
                 totalNPV += cashflows[i]->amount() *
                             discountCurve->discount(cashflows[i]->date());
         }
-        return totalNPV;
+
+        if (npvDate==Date())
+            return totalNPV;
+        else
+            return totalNPV/discountCurve->discount(npvDate);
     }
 
-    Real CashFlows::npv(
-                   const Leg& cashflows,
-                   const InterestRate& irr,
-                   Date settlementDate) {
+    Real CashFlows::npv(const Leg& cashflows,
+                        const InterestRate& irr,
+                        Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
         boost::shared_ptr<YieldTermStructure> flatRate(
                  new FlatForward(settlementDate, irr.rate(), irr.dayCounter(),
                                  irr.compounding(), irr.frequency()));
-        return npv(cashflows, Handle<YieldTermStructure>(flatRate));
+        return npv(cashflows, Handle<YieldTermStructure>(flatRate),
+                   settlementDate, settlementDate);
     }
 
-    Real CashFlows::bps(
-                   const Leg& cashflows,
-                   const Handle<YieldTermStructure>& discountCurve) {
-        static const Spread basisPoint = 1.0e-4;
-        const Date& settlementDate = discountCurve->referenceDate();
-        BPSCalculator calc(discountCurve);
-        for (Size i = 0; i <cashflows.size(); ++i) {
-            if (!cashflows[i]->hasOccurred(settlementDate))
+    Real CashFlows::bps(const Leg& cashflows,
+                        const Handle<YieldTermStructure>& discountCurve,
+                        const Date& settlementDate,
+                        const Date& npvDate,
+                        Integer exDividendDays) {
+
+        Date d = settlementDate;
+        if (d==Date())
+            d = discountCurve->referenceDate();
+
+        BPSCalculator calc(discountCurve, npvDate);
+        for (Size i=0; i<cashflows.size(); ++i) {
+            if (!cashflows[i]->hasOccurred(d+exDividendDays))
                 cashflows[i]->accept(calc);
         }
-        return basisPoint*calc.result();
+        return basisPoint_*calc.result();
     }
 
-    Real CashFlows::bps(
-                   const Leg& cashflows,
-                   const InterestRate& irr,
-                   Date settlementDate) {
+    Real CashFlows::bps(const Leg& cashflows,
+                        const InterestRate& irr,
+                        Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
         boost::shared_ptr<YieldTermStructure> flatRate(
                  new FlatForward(settlementDate, irr.rate(), irr.dayCounter(),
                                  irr.compounding(), irr.frequency()));
-        return bps(cashflows, Handle<YieldTermStructure>(flatRate));
+        return bps(cashflows, Handle<YieldTermStructure>(flatRate),
+                   settlementDate, settlementDate);
     }
 
-    Rate CashFlows::irr(
-                   const Leg& cashflows,
-                   Real marketPrice,
-                   const DayCounter& dayCounter,
-                   Compounding compounding,
-                   Frequency frequency,
-                   Date settlementDate,
-                   Real tolerance,
-                   Size maxIterations,
-                   Rate guess) {
+    Rate CashFlows::irr(const Leg& cashflows,
+                        Real marketPrice,
+                        const DayCounter& dayCounter,
+                        Compounding compounding,
+                        Frequency frequency,
+                        Date settlementDate,
+                        Real tolerance,
+                        Size maxIterations,
+                        Rate guess) {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -305,11 +321,10 @@ namespace QuantLib {
                             tolerance, guess, guess/10.0);
     }
 
-    Time CashFlows::duration(
-                   const Leg& cashflows,
-                   const InterestRate& rate,
-                   Duration::Type type,
-                   Date settlementDate) {
+    Time CashFlows::duration(const Leg& cashflows,
+                             const InterestRate& rate,
+                             Duration::Type type,
+                             Date settlementDate) {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -326,10 +341,9 @@ namespace QuantLib {
         }
     }
 
-    Real CashFlows::convexity(
-                   const Leg& cashflows,
-                   const InterestRate& rate,
-                   Date settlementDate) {
+    Real CashFlows::convexity(const Leg& cashflows,
+                              const InterestRate& rate,
+                              Date settlementDate) {
 
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
@@ -373,14 +387,18 @@ namespace QuantLib {
         return d2Pdy2/P;
     }
 
-    Rate CashFlows::atmRate(
-                  const Leg& cashFlows,
-                  const Handle<YieldTermStructure>& discountCurve,
-                  Real npv) {
-        Real bps = CashFlows::bps(cashFlows, discountCurve);
+    Rate CashFlows::atmRate(const Leg& cashFlows,
+                            const Handle<YieldTermStructure>& discountCurve,
+                            const Date& settlementDate,
+                            const Date& npvDate,
+                            Integer exDividendDays,
+                            Real npv) {
+        Real bps = CashFlows::bps(cashFlows, discountCurve, settlementDate,
+                                  npvDate, exDividendDays);
         if (npv==Null<Real>())
-            npv = CashFlows::npv(cashFlows, discountCurve);
-        return 1.0e-4*npv/bps;
+            npv = CashFlows::npv(cashFlows, discountCurve, settlementDate,
+                                  npvDate, exDividendDays);
+        return basisPoint_*npv/bps;
     }
 
 }
