@@ -20,10 +20,12 @@
 */
 
 #include <ql/Instruments/bond.hpp>
-#include <ql/settings.hpp>
+
+#include <ql/CashFlows/analysis.hpp>
 #include <ql/CashFlows/coupon.hpp>
-#include <ql/TermStructures/flatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -238,22 +240,8 @@ namespace QuantLib {
         } else {
             QL_REQUIRE(!discountCurve_.empty(),
                        "no discounting term structure set");
-
-            Date settlement = settlementDate();
-            NPV_ = 0.0;
-
-            // add the discounted cash flows including redemption
-            for (Size i=0; i<cashflows_.size(); i++) {
-
-                Date d = cashflows_[i]->date();
-                if (!cashflows_[i]->hasOccurred(settlement)) {
-                    NPV_ += cashflows_[i]->amount() *
-                            discountCurve_->discount(d);
-                }
-            }
-
-            // adjust to bond settlement
-            NPV_ /= discountCurve_->discount(settlement);
+            NPV_= CashFlows::npv(cashflows_, discountCurve_, settlementDate(),
+                                                             settlementDate());
         }
     }
 
