@@ -29,13 +29,10 @@
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/CashFlows/inarrearindexedcoupon.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/parcoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/shortindexedcoupon.hpp>
 #include <ql/CashFlows/timebasket.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
 
 
 #endif

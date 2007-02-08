@@ -23,6 +23,7 @@
 #include "utilities.hpp"
 #include <ql/DayCounters/all.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/CashFlows/capflooredcoupon.hpp>
 #include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/TermStructures/all.hpp>
@@ -66,7 +67,7 @@ bool vegaWeightedSmileFit_;
 Frequency fixedCmsFrequency_, floatingCmsFrequency_;
 BusinessDayConvention fixedCmsConvention_, floatingCmsConvention_;
 
-// CMS valuation
+// Cms valuation
 std::vector<GFunctionFactory::ModelOfYieldCurve> modelOfYieldCurves_;
 Rate infiniteCap_, infiniteFloor_;
 Real gearing_;
@@ -346,7 +347,7 @@ void setup() {
 
     // Cms valuation
     infiniteCap_ = 100.0;
-    infiniteFloor_ = -100.0;
+    infiniteFloor_ = 0.0;
     gearing_ = 1.0;
     spread_ = 0.0;
 
@@ -386,15 +387,15 @@ void CmsTest::testFairRate()  {
 
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
-    boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(new
+    boost::shared_ptr<CmsCouponPricer> numericalPricer(new
         ConundrumPricerByNumericalIntegration(atmVol_,
 											  modelOfYieldCurves_[h],0., 0., 1.));
-    boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(new
+    boost::shared_ptr<CmsCouponPricer> analyticPricer(new
         ConundrumPricerByBlack(atmVol_,
 							   modelOfYieldCurves_[h],0.));
 
     //Coupons
-    CMSCoupon coupon1(
+    CappedFlooredCmsCoupon coupon1(
         paymentDate_,1, startDate_, endDate_, settlementDays_,
         index_, gearing_, spread_, 
         infiniteCap_, infiniteFloor_,
@@ -402,7 +403,7 @@ void CmsTest::testFairRate()  {
         iborIndex_->dayCounter());
     coupon1.setPricer(numericalPricer);
 
-    CMSCoupon coupon2(
+    CappedFlooredCmsCoupon coupon2(
         paymentDate_,1, startDate_, endDate_, settlementDays_,
          index_, gearing_, spread_, 
          infiniteCap_, infiniteFloor_, 
@@ -444,14 +445,14 @@ void CmsTest::testParity() {
 			modelOfYieldCurveIndex<modelOfYieldCurves_.size();
 			modelOfYieldCurveIndex++) {
 
-			std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
+			std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
 			{
-				boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
+				boost::shared_ptr<CmsCouponPricer> analyticPricer(
 					new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
 											   modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
 				pricers.push_back(analyticPricer);
 
-				boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
+				boost::shared_ptr<CmsCouponPricer> numericalPricer(
 					new ConundrumPricerByNumericalIntegration(
 												swaptionVolatilityStructures_[volStructureIndex],
 												modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
@@ -462,7 +463,7 @@ void CmsTest::testParity() {
             for (Size pricerIndex=0; pricerIndex < pricers.size();
                  pricerIndex++) {
 
-                CMSCoupon swaplet(paymentDate_, 1,  
+                CappedFlooredCmsCoupon swaplet(paymentDate_, 1,  
                                   startDate_, endDate_, settlementDays_,
                                   index_, gearing_, spread_, 
                                   infiniteCap_, infiniteFloor_,
@@ -474,7 +475,7 @@ void CmsTest::testParity() {
                 for (Size strikeIndex = 0; strikeIndex < 10; strikeIndex++) {
 
                     strike += .005;
-                    CMSCoupon caplet(paymentDate_, 1, 
+                    CappedFlooredCmsCoupon caplet(paymentDate_, 1, 
                                      startDate_, endDate_, settlementDays_,
                                      index_, gearing_, spread_, 
                                      strike, infiniteFloor_, 
@@ -482,7 +483,7 @@ void CmsTest::testParity() {
                                      iborIndex_->dayCounter());
                     caplet.setPricer(pricers[pricerIndex]);
 
-                    CMSCoupon floorlet(paymentDate_, 1, 
+                    CappedFlooredCmsCoupon floorlet(paymentDate_, 1, 
                                        startDate_, endDate_, settlementDays_,
                                        index_, gearing_, spread_, 
                                        infiniteCap_, strike,
@@ -560,14 +561,14 @@ void CmsTest::testCmsSwap() {
                  modelOfYieldCurveIndex<modelOfYieldCurves_.size();
                  modelOfYieldCurveIndex++) {
 
-                std::vector<boost::shared_ptr<VanillaCMSCouponPricer> > pricers;
-                boost::shared_ptr<VanillaCMSCouponPricer> analyticPricer(
+                std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
+                boost::shared_ptr<CmsCouponPricer> analyticPricer(
                     new ConundrumPricerByBlack(
 									swaptionVolatilityStructures_[volStructureIndex],
 									modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
                 pricers.push_back(analyticPricer);
 
-                boost::shared_ptr<VanillaCMSCouponPricer> numericalPricer(
+                boost::shared_ptr<CmsCouponPricer> numericalPricer(
                     new ConundrumPricerByNumericalIntegration(
                                 swaptionVolatilityStructures_[volStructureIndex],
 								modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
@@ -595,7 +596,7 @@ void CmsTest::testCmsSwap() {
                      pricerIndex++) {
 
                     std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-                        CMSLeg(fixedSchedule,
+                        CmsLeg(fixedSchedule,
                                         fixedNominals, 
                                         index_,
                                         pricers[pricerIndex],
@@ -608,7 +609,7 @@ void CmsTest::testCmsSwap() {
                                         floors);
 
                     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-                        FloatingRateLeg(floatingSchedule,
+                        IborLeg(floatingSchedule,
                                                  floatingNominals,
                                                  iborIndex_,
                                                  iborIndex_->dayCounter(),
@@ -640,7 +641,7 @@ void CmsTest::testCmsSwap() {
 }
 
 test_suite* CmsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CMS tests");
+    test_suite* suite = BOOST_TEST_SUITE("Cms tests");
     suite->add(BOOST_TEST_CASE(&CmsTest::testFairRate));
     suite->add(BOOST_TEST_CASE(&CmsTest::testParity));
     suite->add(BOOST_TEST_CASE(&CmsTest::testCmsSwap));

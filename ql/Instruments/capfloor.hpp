@@ -30,6 +30,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/Quotes/simplequote.hpp>
 
@@ -175,6 +176,7 @@ namespace QuantLib {
         std::vector<Rate> floorRates;
         std::vector<Rate> forwards;
         std::vector<Real> gearings;
+        std::vector<Real> spreads;
         std::vector<DiscountFactor> discounts;
         std::vector<Real> nominals;
         void validate() const;

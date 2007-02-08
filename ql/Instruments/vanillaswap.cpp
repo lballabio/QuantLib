@@ -20,7 +20,7 @@
 
 #include <ql/Instruments/vanillaswap.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
@@ -52,14 +52,14 @@ namespace QuantLib {
                                   convention);
 
         Leg floatingLeg =
-            FloatingRateLeg(floatSchedule,
-                                     std::vector<Real>(1,nominal),
-                                     index,
-                                     floatingDayCount,
-                                     index->fixingDays(),
-                                     convention,
-                                     std::vector<Real>(1,1.0),
-                                     std::vector<Spread>(1,spread));
+            IborLeg(floatSchedule,
+                     std::vector<Real>(1,nominal),
+                     index,
+                     floatingDayCount,
+                     index->fixingDays(),
+                     convention,
+                     std::vector<Real>(1,1.0),
+                     std::vector<Spread>(1,spread));
         Leg::const_iterator i;
 
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
@@ -120,8 +120,8 @@ namespace QuantLib {
             std::vector<Spread>(floatingCoupons.size());
 
         for (i=0; i<floatingCoupons.size(); i++) {
-            boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+            boost::shared_ptr<IborCoupon> coupon =
+                boost::dynamic_pointer_cast<IborCoupon>(
                                                           floatingCoupons[i]);
 
             Date resetDate = coupon->accrualStartDate(); // already adjusted

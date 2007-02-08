@@ -24,47 +24,48 @@
 #ifndef quantlib_short_indexed_coupon_hpp
 #define quantlib_short_indexed_coupon_hpp
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
-
-namespace QuantLib {
-
-    //! %Short indexed coupon
-    /*! \warning This class does not perform any date adjustment,
-                 i.e., the start and end date passed upon construction
-                 should be already rolled to a business day.
-    */
-    template <class IndexedCouponType>
-    class Short : public IndexedCouponType {
-      public:
-        template <class IndexType>
-        Short(const Date& paymentDate,
-              const Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              const Integer fixingDays,
-              const boost::shared_ptr<IndexType>& index,
-              const Real gearing = 1.0,
-              const Spread spread = 0.0,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date(),
-              const DayCounter& dayCounter = DayCounter(),
-              bool isInArrears = false)
-        : IndexedCouponType(paymentDate, nominal, startDate, endDate,
-                            fixingDays, index, gearing, spread,
-                            refPeriodStart, refPeriodEnd, 
-                            dayCounter, isInArrears) {}
-        //! inhibit calculation
-        /*! Unlike ParCoupon, this coupon can't calculate
-            its fixing for future dates, either.
-        */
-        Real amount() const {
-            QL_FAIL("short/long indexed coupons not supported yet"
-                    << " (start = " << this->accrualStartDate_
-                    << ", end = " << this->accrualEndDate_ << ")");
-        }
-    };
-
-}
+//#include <ql/CashFlows/floatingratecoupon.hpp>
+//
+//namespace QuantLib {
+//
+//    //! %Short indexed coupon
+//    /*! \warning This class does not perform any date adjustment,
+//                 i.e., the start and end date passed upon construction
+//                 should be already rolled to a business day.
+//    */
+//    template <class IndexedCouponType>
+//    class Short : public IndexedCouponType {
+//      public:
+//        template <class IndexType>
+//        Short(const Date& paymentDate,
+//              const Real nominal,
+//              const Date& startDate,
+//              const Date& endDate,
+//              const Integer fixingDays,
+//              const boost::shared_ptr<IndexType>& index,
+//              const Real gearing = 1.0,
+//              const Spread spread = 0.0,
+//              const Date& refPeriodStart = Date(),
+//              const Date& refPeriodEnd = Date(),
+//              const DayCounter& dayCounter = DayCounter(),
+//              bool isInArrears = false)
+//        : IndexedCouponType(paymentDate, nominal, startDate, endDate,
+//                            fixingDays, index, 
+//                            gearing, spread,
+//                            refPeriodStart, refPeriodEnd, 
+//                            dayCounter, isInArrears) {}
+//        //! inhibit calculation
+//        /*! Unlike ParCoupon, this coupon can't calculate
+//            its fixing for future dates, either.
+//        */
+//        Real amount() const {
+//            QL_FAIL("short/long indexed coupons not supported yet"
+//                    << " (start = " << this->accrualStartDate_
+//                    << ", end = " << this->accrualEndDate_ << ")");
+//        }
+//    };
+//
+//}
 
 
 #endif

@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-                CappedFlooredCouponBond::CappedFlooredCouponBond(
+    CappedFlooredCouponBond::CappedFlooredCouponBond(
                 Real faceAmount,
                 const Date& issueDate,
                 const Date& datedDate,
@@ -59,18 +59,20 @@ namespace QuantLib {
                           accrualConvention, accrualConvention, fromEnd, false, 
                           firstDate, nextToLastDate);
 
+        boost::shared_ptr<IborCouponPricer> 
+                pricer(new BlackIborCouponPricer(vol));
         // !!!
-        cashflows_ = CappedFlooredFloatingRateLeg(schedule,
-                                     std::vector<Real>(1, faceAmount_),
-                                     index,
-                                     dayCounter,
-                                     fixingDays,
-                                     paymentConvention,
-                                     gearings,
-                                     spreads,
-                                     caps,
-                                     floors,
-                                     vol);
+        cashflows_ = IborLeg(schedule,
+                             std::vector<Real>(1, faceAmount_),
+                             index,
+                             dayCounter,
+                             fixingDays,
+                             paymentConvention,
+                             gearings,
+                             spreads,
+                             pricer,
+                             caps,
+                             floors);
         // redemption
         // !!!
         Date redemptionDate =

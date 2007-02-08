@@ -632,7 +632,12 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, riskFreeRate);
 
+    #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice1 = 99.874645;
+    #else
+    Real cachedPrice1 = 100.013038;
+    #endif
+
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -659,7 +664,11 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, discountCurve);
 
+    #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice2 = 97.955904;
+    #else
+    Real cachedPrice2 = 98.092692;
+    #endif
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -692,7 +701,12 @@ void BondTest::testCachedFloating() {
                            ModifiedFollowing, ModifiedFollowing,
                            100.0, discountCurve);
 
-    Real cachedPrice3 = 98.495458;
+   
+    #if defined(QL_USE_INDEXED_COUPON)
+     Real cachedPrice3 = 98.495458;
+    #else
+     Real cachedPrice3 = 98.632247;
+    #endif
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {

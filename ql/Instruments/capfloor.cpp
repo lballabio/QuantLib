@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 #include <ql/Instruments/swap.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Solvers1D/brent.hpp>
@@ -161,9 +161,8 @@ namespace QuantLib {
 
         for (Size i=0; i<n; i++) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
-                                                             floatingLeg_[i]);
-            QL_REQUIRE(coupon, "non-floating coupon given");
+                boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg_[i]);
+            QL_REQUIRE(coupon, "non-iborCoupon given");
             Date beginDate = coupon->accrualStartDate();
             Time time = counter.yearFraction(settlement, beginDate);
             arguments->startTimes.push_back(time);
@@ -189,6 +188,7 @@ namespace QuantLib {
             Real gearing = coupon->gearing();
             QL_REQUIRE(gearing > 0.0, "positive gearing required");
             arguments->gearings.push_back(gearing);
+            arguments->spreads.push_back(spread);
             if (type_ == Cap || type_ == Collar)
                 arguments->capRates.push_back((capRates_[i]-spread)/gearing);
             if (type_ == Floor || type_ == Collar)

@@ -26,6 +26,7 @@
 
 #include <ql/Instruments/bond.hpp>
 #include <ql/Indexes/iborindex.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 
 namespace QuantLib {
 

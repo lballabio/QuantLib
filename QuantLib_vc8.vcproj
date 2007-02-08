@@ -748,14 +748,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\capfloorlet.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\CashFlows\capfloorlet.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\CashFlows\cashflowvectors.cpp"
 				>
 				<FileConfiguration
@@ -834,6 +826,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\couponpricer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\couponpricer.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\CashFlows\dividend.cpp"
 				>
 			</File>
@@ -854,69 +854,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\inarrearindexedcoupon.cpp"
+				RelativePath=".\ql\CashFlows\iborcoupon.cpp"
 				>
 			</File>
 			<File
-				RelativePath="ql\CashFlows\inarrearindexedcoupon.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\CashFlows\indexedcashflowvectors.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\parcoupon.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\parcoupon.hpp"
+				RelativePath=".\ql\CashFlows\iborcoupon.hpp"
 				>
 			</File>
 			<File
@@ -1033,10 +975,6 @@
 			</File>
 			<File
 				RelativePath="ql\CashFlows\timebasket.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\upfrontindexedcoupon.hpp"
 				>
 			</File>
 		</Filter>

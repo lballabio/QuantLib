@@ -17,36 +17,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/CashFlows/shortfloatingcoupon.hpp>
-
-namespace QuantLib {
-
-    Short<ParCoupon>::Short(
-        const Date& paymentDate, const Real nominal, 
-        const Date& startDate, const Date& endDate,
-        const Integer fixingDays, const boost::shared_ptr<IborIndex>& index,
-        const Real gearing, const Spread spread,
-        const Date& refPeriodStart, const Date& refPeriodEnd,
-        const DayCounter& dayCounter,
-        bool isInArrears)
-    : ParCoupon(paymentDate, nominal,
-                startDate, endDate,
-                fixingDays, index,
-                gearing, spread,
-                refPeriodStart, refPeriodEnd,
-                dayCounter, isInArrears) {}
-
-    Real Short<ParCoupon>::rate() const {
-        Date today = Settings::instance().evaluationDate();
-        Date fixing_date = fixingDate();
-        QL_REQUIRE(fixing_date >= today,
-                   // must have been fixed
-                   // but we have no way to interpolate the fixing yet
-                   "short/long floating coupons not supported yet"
-                   << " (start = " << accrualStartDate_
-                   << ", end = " << accrualEndDate_ << ")");
-        return ParCoupon::rate();
-    }
-
-}
+//#include <ql/CashFlows/shortfloatingcoupon.hpp>
+//
+//namespace QuantLib {
+//
+//    Short<ParCoupon>::Short(
+//        const Date& paymentDate, const Real nominal, 
+//        const Date& startDate, const Date& endDate,
+//        const Integer fixingDays, const boost::shared_ptr<IborIndex>& index,
+//        const Real gearing, const Spread spread,
+//        const Date& refPeriodStart, const Date& refPeriodEnd,
+//        const DayCounter& dayCounter,
+//        bool isInArrears)
+//    : ParCoupon(paymentDate, nominal,
+//                startDate, endDate,
+//                fixingDays, index,
+//                gearing, spread,
+//                refPeriodStart, refPeriodEnd,
+//                dayCounter, isInArrears) {}
+//
+//    Real Short<ParCoupon>::rate() const {
+//        Date today = Settings::instance().evaluationDate();
+//        Date fixing_date = fixingDate();
+//        QL_REQUIRE(fixing_date >= today,
+//                   // must have been fixed
+//                   // but we have no way to interpolate the fixing yet
+//                   "short/long floating coupons not supported yet"
+//                   << " (start = " << accrualStartDate_
+//                   << ", end = " << accrualEndDate_ << ")");
+//        return ParCoupon::rate();
+//    }
+//
+//}
 

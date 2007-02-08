@@ -24,7 +24,7 @@
 #define quantlib_conundrum_pricer_hpp
 
 #include <ql/CashFlows/cmscoupon.hpp>
-#include <ql/option.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 
 namespace QuantLib {
@@ -77,9 +77,9 @@ namespace QuantLib {
                              Real delta,
                              Size swapLength);
         static boost::shared_ptr<GFunction>
-        newGFunctionExactYield(const CMSCoupon& coupon);
+        newGFunctionExactYield(const CmsCoupon& coupon);
         static boost::shared_ptr<GFunction>
-        newGFunctionWithShifts(const CMSCoupon& coupon,
+        newGFunctionWithShifts(const CmsCoupon& coupon,
                                Real meanReversion);
       private:
         GFunctionFactory();
@@ -106,7 +106,7 @@ namespace QuantLib {
 
         class GFunctionExactYield : public GFunction {
           public:
-            GFunctionExactYield(const CMSCoupon& coupon);
+            GFunctionExactYield(const CmsCoupon& coupon);
             Real operator()(Real x) ;
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
@@ -161,7 +161,7 @@ namespace QuantLib {
 
             boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
           public:
-            GFunctionWithShifts(const CMSCoupon& coupon,
+            GFunctionWithShifts(const CmsCoupon& coupon,
                                 Real meanReversion);
             Real operator()(Real x) ;
             Real firstDerivative(Real x);
@@ -170,18 +170,22 @@ namespace QuantLib {
 
     };
 
-    // forward declaration
-    class CMSCoupon;
 
     //! ConundrumPricer
-    /*! Base class for the pricing of a CMS coupon via static replication
+    /*! Base class for the pricing of a Cms coupon via static replication
         as in Hagan's "Conundrums..." article
     */
 
-    class ConundrumPricer: public VanillaCMSCouponPricer {
+    class ConundrumPricer: public CmsCouponPricer {
       public:
-        Real price() const;
-        Rate rate() const;
+        /* */
+        virtual Real swapletPrice() const = 0;
+        virtual Rate swapletRate() const;
+        virtual Real capletPrice(Rate effectiveCap) const;
+        virtual Rate capletRate(Rate effectiveCap) const;
+        virtual Real floorletPrice(Rate effectiveFloor) const;
+        virtual Rate floorletRate(Rate effectiveFloor) const;
+        /* */
 		Real meanReversion() const { return meanReversion_; }
 		void setMeanReversion(Real meanReversion) {
 			meanReversion_ = meanReversion;
@@ -191,23 +195,22 @@ namespace QuantLib {
 				const Handle<SwaptionVolatilityStructure>& swaptionVol,
                 GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 				Real meanReversion);
-        void initialize(const CMSCoupon& coupon);
+        void initialize(const FloatingRateCoupon& coupon);
 
-        virtual Real optionLetPrice(Option::Type optionType,
+        virtual Real optionletPrice(Option::Type optionType,
                                     Real strike) const = 0;
-        virtual Real swapLetPrice() const = 0;
 
         boost::shared_ptr<YieldTermStructure> rateCurve_;
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
         boost::shared_ptr<GFunction> gFunction_;
-        const CMSCoupon* coupon_;
+        const CmsCoupon* coupon_;
         Date paymentDate_, fixingDate_;
         Rate swapRateValue_;
         DiscountFactor discount_;
         Real annuity_;
-        Rate min_, max_;
         Real gearing_;
         Spread spread_;
+        Real spreadLegValue_;
         Rate cutoffForCaplet_, cutoffForFloorlet_;
 		Real meanReversion_;
         Period swapTenor_;
@@ -216,7 +219,7 @@ namespace QuantLib {
 
 
     //! ConundrumPricerByNumericalIntegration
-    /*! Prices a CMS coupon via static replication as in Hagan's
+    /*! Prices a Cms coupon via static replication as in Hagan's
         "Conundrums..." article via numerical integration based on
         prices of vanilla swaptions
     */
@@ -272,9 +275,9 @@ namespace QuantLib {
         Real integrate(Real a,
                        Real b,
                        const ConundrumIntegrand& Integrand) const;
-        virtual Real optionLetPrice(Option::Type optionType,
+        virtual Real optionletPrice(Option::Type optionType,
                                     Rate strike) const;
-        virtual Real swapLetPrice() const;
+        virtual Real swapletPrice() const;
 
         const Real upperLimit_, lowerLimit_;
     };
@@ -286,9 +289,9 @@ namespace QuantLib {
 			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 			Real meanReversion);
       protected:
-        Real optionLetPrice(Option::Type optionType,
+        Real optionletPrice(Option::Type optionType,
                             Real strike) const;
-        Real swapLetPrice() const;
+        Real swapletPrice() const;
     };
 
 }

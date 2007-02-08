@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
  Copyright (C) 2003 Nicolas Di Césaré
@@ -25,6 +26,10 @@
 
 namespace QuantLib {
 
+//===========================================================================//
+//                            FloatingRateCoupon                             //
+//===========================================================================//
+
     FloatingRateCoupon::FloatingRateCoupon(
                          const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
@@ -38,22 +43,20 @@ namespace QuantLib {
              startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter),
       fixingDays_(fixingDays==Null<Integer>() ? index->fixingDays() : fixingDays),
-      gearing_(gearing), spread_(spread), isInArrears_(isInArrears)
+      gearing_(gearing), spread_(spread), 
+      isInArrears_(isInArrears)
     {
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
+
         registerWith(index_);
         registerWith(Settings::instance().evaluationDate());
     }
 
-    Rate FloatingRateCoupon::rate() const {
-        return gearing() * adjustedFixing() + spread();
-    }
 
     Real FloatingRateCoupon::amount() const {
         return rate() * accrualPeriod() * nominal();
     }
-
     Real FloatingRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
@@ -66,12 +69,16 @@ namespace QuantLib {
         }
     }
 
+  
+    Real FloatingRateCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
+        return amount()*discountingCurve->discount(date());
+    }
+
     DayCounter FloatingRateCoupon::dayCounter() const {
         return dayCounter_;
     }
 
-    const boost::shared_ptr<InterestRateIndex>&
-    FloatingRateCoupon::index() const {
+    const boost::shared_ptr<InterestRateIndex>& FloatingRateCoupon::index() const {
         return index_;
     }
 
@@ -90,44 +97,32 @@ namespace QuantLib {
         return gearing_;
     }
 
-    Rate FloatingRateCoupon::indexFixing() const {
-        return index_->fixing(fixingDate());
-    }
-
-    Rate FloatingRateCoupon::convexityAdjustment() const {
-        return convexityAdjustmentImpl(indexFixing());
-    }
-
-    Rate FloatingRateCoupon::adjustedFixing() const {
-        Rate f = indexFixing();
-        return f + convexityAdjustmentImpl(f);
-    }
-
     Spread FloatingRateCoupon::spread() const {
         return spread_;
     }
 
-    void FloatingRateCoupon::update() {
-        notifyObservers();
+
+    Rate FloatingRateCoupon::indexFixing() const {
+        return index_->fixing(fixingDate());
+    }
+    Rate FloatingRateCoupon::rate() const {
+        QL_REQUIRE(pricer_, "pricer not set");
+        pricer_->initialize(*this);
+        return pricer_->swapletRate();
     }
 
-    Rate FloatingRateCoupon::convexityAdjustmentImpl(Rate f0) const {
-        if (!isInArrears_) {
-            return 0.0;
-        } else {
-            QL_REQUIRE(!capletVolatility_.empty(), "volatility not set");
-            // see Hull, 4th ed., page 550
-            Date d1 = fixingDate(),
-                 referenceDate = capletVolatility_->referenceDate();
-            if (d1 <= referenceDate) {
-                return 0.0;
-            } else {
-                Date d2 = index_->maturityDate(d1);
-                Time tau = index_->dayCounter().yearFraction(d1, d2);
-                Real variance = capletVolatility_->blackVariance(d1, f0);
-                return f0*f0*variance*tau/(1.0+f0*tau);
-            }
-        }
+    Rate FloatingRateCoupon::adjustedFixing() const{
+        return (rate()-spread())/gearing();
+    }
+    Rate FloatingRateCoupon::convexityAdjustmentImpl(Rate f) const {
+       return (gearing() == 0.0 ? 0.0 : adjustedFixing()-f);
+    }
+    Rate FloatingRateCoupon::convexityAdjustment() const {
+        return convexityAdjustmentImpl(indexFixing());
+    }
+
+    void FloatingRateCoupon::update() {
+        notifyObservers();
     }
 
     void FloatingRateCoupon::accept(AcyclicVisitor& v) {
@@ -139,12 +134,5 @@ namespace QuantLib {
             Coupon::accept(v);
     }
 
-    void FloatingRateCoupon::setCapletVolatility(
-                                 const Handle<CapletVolatilityStructure>& v) {
-        unregisterWith(capletVolatility_);
-        capletVolatility_ = v;
-        registerWith(capletVolatility_);
-        notifyObservers();
-    }
-}
 
+}

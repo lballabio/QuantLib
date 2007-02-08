@@ -82,6 +82,7 @@
 				AdditionalLibraryDirectories="..\lib"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
+				AssemblyDebug="0"
 				ProgramDatabaseFile=".\build\vc80\$(ConfigurationName)/testsuite.pdb"
 				SubSystem="1"
 				TargetMachine="1"

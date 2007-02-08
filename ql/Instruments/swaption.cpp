@@ -22,7 +22,6 @@
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
-#include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/DayCounters/all.hpp>
 #include <ql/CashFlows/analysis.hpp>

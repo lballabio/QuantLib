@@ -24,7 +24,7 @@
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 
 using namespace QuantLib;
 

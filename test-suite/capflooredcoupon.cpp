@@ -28,10 +28,6 @@
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
-#ifdef QL_USE_INDEXED_COUPON
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
-#endif
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -100,17 +96,10 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
                       convention_,convention_,false,false);
-
     std::vector<Real> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return FloatingRateLeg(schedule,
-                                    nominals_,
-                                    index_,
-                                    index_->dayCounter(),
-                                    fixingDays_,
-                                    convention_,
-                                    gearingVector,
-                                    spreadVector);
+    return IborLeg(schedule, nominals_, index_, index_->dayCounter(), fixingDays_,
+                   convention_, gearingVector, spreadVector);
 }
 
 std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDate,
@@ -128,19 +117,15 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
     vol = Handle<CapletVolatilityStructure>(
           boost::shared_ptr<CapletVolatilityStructure>(new
             CapletConstantVolatility(volatility, Actual365Fixed())));
+
+    boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
     std::vector<Rate> gearingVector(lenght_, gearing);
     std::vector<Spread> spreadVector(lenght_, spread);
-    return CappedFlooredFloatingRateLeg(schedule,
-                                                 nominals_,
-                                                 index_,
-                                                 index_->dayCounter(),
-                                                 fixingDays_,
-                                                 convention_,
-                                                 gearingVector,
-                                                 spreadVector,
-                                                 caps,
-                                                 floors,
-                                                 vol);
+
+    return IborLeg(schedule, nominals_, index_,
+                    index_->dayCounter(), fixingDays_,
+                    convention_, gearingVector,
+                    spreadVector, pricer, caps, floors);
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
@@ -148,8 +133,7 @@ boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
     return boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(vol));
 }
 
-boost::shared_ptr<CapFloor> makeCapFloor(
-                         CapFloor::Type type,
+boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          Rate capstrike, Rate floorstrike,
                          Volatility volatility) {
@@ -392,6 +376,8 @@ void CapFlooredCouponTest::testDecomposition() {
                     "effective strike= " << (capstrike-spread_n)/gearing_n*100 <<
                      "%\n" <<
                      "  Capped Floating Leg NPV: " << npvCappedLeg << "\n" <<
+                     "  npv Vanilla: " << npvVanilla << "\n" <<
+                     "  npvFloor: " << npvFloor << "\n" <<
                      "  Floating Leg NPV - Cap NPV: " << npvVanilla + gearing_n*npvFloor << "\n" <<
                      "  Diff: " << error ); 
     }

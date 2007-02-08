@@ -27,10 +27,6 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Math/matrix.hpp>
-#ifdef QL_USE_INDEXED_COUPON
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
-#endif
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
@@ -63,14 +59,14 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length*Years,convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
-    return FloatingRateLeg(schedule,
-                                    nominals_,
-                                    index_,
-                                    index_->dayCounter(),
-                                    fixingDays_,
-                                    convention_,
-                                    std::vector<Real>(),
-                                    std::vector<Spread>());
+    return IborLeg(schedule,
+                    nominals_,
+                    index_,
+                    index_->dayCounter(),
+                    fixingDays_,
+                    convention_,
+                    std::vector<Real>(),
+                    std::vector<Spread>());
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {

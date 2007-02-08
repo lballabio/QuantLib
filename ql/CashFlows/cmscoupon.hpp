@@ -19,47 +19,26 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 /*! \file cmscoupon.hpp
-    \brief CMS coupon
+    \brief Cms coupon
 */
 
 #ifndef quantlib_cms_coupon_hpp
 #define quantlib_cms_coupon_hpp
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/Indexes/swapindex.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
 namespace QuantLib {
 
-    class CMSCoupon;
-
-    //! pricer for vanilla CMS coupons
-    class VanillaCMSCouponPricer {
-      public:
-		VanillaCMSCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-		: swaptionVol_(swaptionVol) {};
-        virtual ~VanillaCMSCouponPricer() {};
-        virtual Real price() const = 0;
-        virtual Rate rate() const = 0;
-        virtual void initialize(const CMSCoupon& coupon) = 0;
-		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
-			return swaptionVol_;
-	    };
-		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
-			swaptionVol_ = swaptionVol;
-		};
-      private:
-		Handle<SwaptionVolatilityStructure> swaptionVol_;
-    };
-
-    //! CMS coupon class
+    //! Cms coupon class
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-    class CMSCoupon : public FloatingRateCoupon {
+    class CmsCoupon : public FloatingRateCoupon {
       public:
-        CMSCoupon(const Date& paymentDate,
+        CmsCoupon(const Date& paymentDate,
                   const Real nominal,
                   const Date& startDate, 
                   const Date& endDate,
@@ -67,62 +46,23 @@ namespace QuantLib {
                   const boost::shared_ptr<SwapIndex>& index,
                   const Real gearing = 1.0,
                   const Spread spread= 0.0,
-                  const Rate cap = Null<Rate>(),
-                  const Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false);
 
-        //! \name Coupon interface
-        //@{
-        Real price(const Handle<YieldTermStructure>& discountingCurve) const;
-        Rate rate() const;
-        // legacy code (analytical integration) to be removed later
-        Rate rate1() const;
-        //@}
         //! \name Inspectors
         //@{
         const boost::shared_ptr<SwapIndex>& swapIndex() const {
             return swapIndex_;
-        }
-        Rate cap() const { return cap_; }
-        Rate floor() const { return floor_; }
+        } //da eliminare dovrebbere convergere nel metodo index di float
 
-        void setPricer(const boost::shared_ptr<VanillaCMSCouponPricer>& pricer){
-			pricer_ = pricer;
-		};
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-
-        Rate adjustedFixing() const{
-            CMSCoupon couponWithoutOptionality(date(),
-                                              nominal(),
-                                              accrualStartDate(), 
-                                              accrualEndDate(),
-                                              fixingDays(),
-                                              swapIndex(),
-                                              gearing(),
-                                              spread(),
-                                              100.,
-                                              0.,
-                                              referencePeriodStart(), 
-                                              referencePeriodEnd(),
-                                              dayCounter(),
-                                              isInArrears_);
-            couponWithoutOptionality.setPricer(pricer_);
-            return (gearing() == 0.0 ? 0.0 :
-                couponWithoutOptionality.rate()-spread())/gearing();
-        }
-        Rate convexityAdjustmentImpl(Rate f) const {
-            return (gearing() == 0.0 ? 0.0 : adjustedFixing()-f);
-        }
         boost::shared_ptr<SwapIndex> swapIndex_;
-        Rate cap_, floor_;
-        boost::shared_ptr<VanillaCMSCouponPricer> pricer_;
     };
 
 }

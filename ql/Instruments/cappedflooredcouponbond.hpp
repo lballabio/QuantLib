@@ -26,8 +26,8 @@
 
 #include <ql/Instruments/bond.hpp>
 #include <ql/Indexes/iborindex.hpp>
-#include <ql/CashFlows/capfloorlet.hpp>
 #include <ql/PricingEngines/core.hpp>
+#include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
 

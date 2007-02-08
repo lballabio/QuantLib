@@ -25,10 +25,8 @@
 #ifndef quantlib_capped_floored_coupon_hpp
 #define quantlib_capped_floored_coupon_hpp
 
-#include <ql/CashFlows/capfloorlet.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-
+#include <ql/CashFlows/iborcoupon.hpp>
+#include <ql/CashFlows/cmscoupon.hpp>
 
 namespace QuantLib {
 
@@ -55,9 +53,6 @@ namespace QuantLib {
         where \f$ csi = sgn(a) \f$. Then:
         Payoff = (a L + b) + |a| min(\frac{C - b}{|a|} - \csi L, 0) //
         \f]
-
-        \warning The evaluation is made using the Black model.
-
     */
 
 
@@ -67,25 +62,17 @@ namespace QuantLib {
                   const boost::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>());
-        //! \name CashFlow interface
-        //@{
-        Real amount() const;
-        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const;
-        DayCounter dayCounter() const;
         //@}
-        //! \name FloatingRateCoupon interface
-        //@{
-        Date fixingDate() const;
-        Rate indexFixing() const;
+        //! cap 
         Rate cap() const;
+        //! floor 
         Rate floor() const;
-        //! \name interface
-        //@{
-        Rate convexityAdjustment() const;
+        //! effective cap of fixing
         Rate effectiveCap() const;
+        //! effective floor of fixing
         Rate effectiveFloor() const;
         //@}
         //! \name Observer interface
@@ -95,16 +82,71 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
-        //! \name Modifiers
-        //@{
-        void setCapletVolatility(const Handle<CapletVolatilityStructure>& vol);
-        //@}            
+        
+        bool isCapped() const {return isCapped_;} 
+        bool isFloored() const {return isFloored_;}
+
+        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
+			pricer_ = pricer;
+            underlying_->setPricer(pricer);
+		}
+
     protected:
         // data
         boost::shared_ptr<FloatingRateCoupon> underlying_;
-        boost::shared_ptr<Optionlet> cap_, floor_;
-        Handle<CapletVolatilityStructure> volatility_;
-        
+        Rate cap_, floor_;
+        bool isCapped_, isFloored_;  
+     
+    };
+
+    class CappedFlooredIborCoupon : public CappedFlooredCoupon {
+      public:
+        CappedFlooredIborCoupon(
+                  const Date& paymentDate,
+                  const Real nominal,
+                  const Date& startDate, 
+                  const Date& endDate,
+                  const Integer fixingDays,
+                  const boost::shared_ptr<InterestRateIndex>& index,
+                  const Real gearing = 1.0,
+                  const Spread spread = 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false)
+        : CappedFlooredCoupon(
+                  boost::shared_ptr<FloatingRateCoupon>(
+                      new IborCoupon(paymentDate, nominal, startDate, endDate,
+                          fixingDays, index, gearing, spread, refPeriodStart, 
+                          refPeriodEnd, dayCounter, isInArrears)),
+                  cap, floor) {}
+    };
+
+    class CappedFlooredCmsCoupon : public CappedFlooredCoupon {
+      public:
+        CappedFlooredCmsCoupon(
+                  const Date& paymentDate,
+                  const Real nominal,
+                  const Date& startDate, 
+                  const Date& endDate,
+                  const Integer fixingDays,
+                  const boost::shared_ptr<SwapIndex>& index,
+                  const Real gearing = 1.0,
+                  const Spread spread= 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false)
+        : CappedFlooredCoupon(
+                  boost::shared_ptr<FloatingRateCoupon>(
+                    new CmsCoupon(paymentDate, nominal, startDate, endDate,
+                        fixingDays, index, gearing, spread, refPeriodStart, 
+                        refPeriodEnd, dayCounter, isInArrears)),
+                  cap, floor) {}
     };
 
 }

@@ -25,6 +25,7 @@
 #define quantlib_cms_coupon_bond_hpp
 
 #include <ql/Instruments/bond.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/cmscoupon.hpp>
 #include <ql/Indexes/swapindex.hpp>
 #include <ql/swaptionvolstructure.hpp>
@@ -51,7 +52,7 @@ namespace QuantLib {
                          Frequency couponFrequency,
                          const Calendar& calendar,
                          const DayCounter& dayCounter,
-                         const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                         const boost::shared_ptr<CmsCouponPricer>& pricer,
                          const std::vector<Rate>& caps,
                          const std::vector<Rate>& floors,
                          BusinessDayConvention accrualConvention = Following,

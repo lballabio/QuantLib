@@ -62,21 +62,21 @@ namespace QuantLib {
                                index->businessDayConvention(),
                                index->businessDayConvention(), false, false); 
         Leg floatingLeg =
-            FloatingRateLeg(floatSchedule,
-                                     nominals,
-                                     index,
-                                     DayCounter(),
-                                     0,
-                                     index->businessDayConvention());
+            IborLeg(floatSchedule,
+                     nominals,
+                     index,
+                     DayCounter(),
+                     0,
+                     index->businessDayConvention());
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
                                index->calendar(), Unadjusted, Unadjusted,
                                false, false); 
         Leg fixedLeg =
             FixedRateLeg(fixedSchedule,
-                                  nominals,
-                                  std::vector<Rate>(1, fixedRate),
-                                  fixedLegDayCounter,
-                                  index->businessDayConvention());
+                          nominals,
+                          std::vector<Rate>(1, fixedRate),
+                          fixedLegDayCounter,
+                          index->businessDayConvention());
 
         boost::shared_ptr<Swap> swap(
             new Swap(termStructure, floatingLeg, fixedLeg));

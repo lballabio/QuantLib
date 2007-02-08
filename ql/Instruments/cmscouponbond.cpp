@@ -37,7 +37,7 @@ namespace QuantLib {
                 Frequency couponFrequency,
                 const Calendar& calendar,
                 const DayCounter& dayCounter,
-                const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                const boost::shared_ptr<CmsCouponPricer>& pricer,
                 const std::vector<Rate>& caps,
                 const std::vector<Rate>& floors,
                 BusinessDayConvention accrualConvention,
@@ -60,17 +60,17 @@ namespace QuantLib {
                           firstDate, nextToLastDate);
 
         // !!!
-        cashflows_ = CMSLeg(schedule,
-                                     std::vector<Real>(1, faceAmount_),
-                                     index,
-                                     pricer,
-                                     dayCounter,
-                                     fixingDays,
-                                     paymentConvention,
-                                     gearings,
-                                     spreads,
-                                     caps,
-                                     floors);
+        cashflows_ = CmsLeg(schedule,
+                            std::vector<Real>(1, faceAmount_),
+                            index,
+                            pricer,
+                            dayCounter,
+                            fixingDays,
+                            paymentConvention,
+                            gearings,
+                            spreads,
+                            caps,
+                            floors);
         // redemption
         // !!!
         Date redemptionDate =

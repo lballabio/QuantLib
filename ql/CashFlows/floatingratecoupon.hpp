@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Giorgio Facchinetti
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004 StatPro Italia srl
  Copyright (C) 2003 Nicolas Di Césaré
@@ -29,18 +30,14 @@
 #define quantlib_floating_rate_coupon_hpp
 
 #include <ql/CashFlows/coupon.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 #include <ql/Utilities/null.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
 #include <ql/capvolstructures.hpp>
+#include <ql/PricingEngines/core.hpp>
 
 namespace QuantLib {
-
-    //! %Coupon paying a variable index-based rate
-    /*! \warning This class does not perform any date adjustment,
-                 i.e., the start and end date passed upon construction
-                 should be already rolled to a business day.
-        \todo add gearing unit test
-    */
+    
     class FloatingRateCoupon : public Coupon,
                                public Observer {
       public:
@@ -52,8 +49,6 @@ namespace QuantLib {
                            const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing = 1.0,
                            const Spread spread = 0.0,
-                           //const Rate cap = Null<Rate>(),
-                           //const Rate floor = Null<Rate>(),
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
                            const DayCounter& dayCounter = DayCounter(),
@@ -66,8 +61,9 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        Real price(const Handle<YieldTermStructure>& discountingCurve) const;
         DayCounter dayCounter() const;
-        Real accruedAmount(const Date&) const;
+        Real accruedAmount(const Date&) const; //Attenzione
         //@}
         //! \name Inspectors
         //@{
@@ -79,14 +75,16 @@ namespace QuantLib {
         virtual Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
         Real gearing() const;
+        //! spread paid over the fixing of the underlying index
+        Spread spread() const;
         //! fixing of the underlying index
         Rate indexFixing() const;
         //! convexity adjustment
         Rate convexityAdjustment() const;
         //! convexity-adjusted fixing
         Rate adjustedFixing() const;
-        //! spread paid over the fixing of the underlying index
-        Spread spread() const;
+
+        bool isInArrears() const {return isInArrears_;};
         //@}
         //! \name Observer interface
         //@{
@@ -96,18 +94,23 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-        void setCapletVolatility(const Handle<CapletVolatilityStructure>& v);
-
+        //@}
+        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
+			pricer_ = pricer;
+		}
+        boost::shared_ptr<FloatingRateCouponPricer> pricer() const{
+			return pricer_;
+	    }
       protected:
         //! convexity adjustment for the given index fixing
-        virtual Rate convexityAdjustmentImpl(Rate fixing) const;
+        Rate convexityAdjustmentImpl(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Integer fixingDays_;
         Real gearing_;
         Spread spread_;
-        bool isInArrears_;
-        Handle<CapletVolatilityStructure> capletVolatility_;
+        bool isInArrears_; 
+        boost::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
 

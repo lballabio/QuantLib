@@ -18,8 +18,8 @@
 */
 
 #include <ql/Instruments/floatingratebond.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 
 namespace QuantLib {
@@ -55,18 +55,15 @@ namespace QuantLib {
         Schedule schedule(datedDate, maturityDate, Period(couponFrequency), calendar,
                           accrualConvention, accrualConvention, fromEnd, false, 
                           firstDate, nextToLastDate);
-
         // !!!
-        cashflows_ = IndexedLeg<UpFrontIndexedCoupon>(
-                                             schedule, paymentConvention,
-                                             std::vector<Real>(1, faceAmount_),
-                                             fixingDays, index, 
-                                             gearings, spreads,
-                                             dayCounter
-                                             #ifdef QL_PATCH_MSVC6
-                                             , (const UpFrontIndexedCoupon*) 0
-                                             #endif
-                                             );
+        cashflows_ = IborLeg(
+                     schedule, 
+                     std::vector<Real>(1, faceAmount_),
+                     index,
+                     dayCounter,
+                     fixingDays, 
+                     paymentConvention,
+                     gearings, spreads);
         // redemption
         // !!!
         Date redemptionDate =

@@ -20,7 +20,7 @@
 
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 #include <ql/Instruments/assetswap.hpp>
 
@@ -77,14 +77,14 @@ namespace QuantLib {
         Integer fixingDays = index->fixingDays();
         Real gearing = 1.0;
 
-        Leg floatingLeg = FloatingRateLeg(schedule,
-                                          std::vector<Real>(1, nominal_),
-                                          index,
-                                          dc,
-                                          fixingDays,
-                                          paymentAdjustment,
-                                          std::vector<Real>(1, gearing),
-                                          std::vector<Spread>(1, spread));
+        Leg floatingLeg = IborLeg(schedule,
+                                  std::vector<Real>(1, nominal_),
+                                  index,
+                                  dc,
+                                  fixingDays,
+                                  paymentAdjustment,
+                                  std::vector<Real>(1, gearing),
+                                  std::vector<Spread>(1, spread));
         Leg::const_iterator i;
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);

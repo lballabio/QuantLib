@@ -175,16 +175,16 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
-    test->add(BermudanSwaptionTest::suite());
-    test->add(BondTest::suite());
+    test->add(BermudanSwaptionTest::suite());                 
+    test->add(BondTest::suite()); 
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
-    test->add(CapFloorTest::suite()); 
-    test->add(CapFlooredCouponTest::suite());
+    test->add(CapFloorTest::suite());                      
+    test->add(CapFlooredCouponTest::suite()); 
     test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite());
+    test->add(CompoundForwardTest::suite());                
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(DateTest::suite());
@@ -203,7 +203,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
-    test->add(LiborMarketModelTest::suite());
+    test->add(LiborMarketModelTest::suite());               
     test->add(LiborMarketModelProcessTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
@@ -223,12 +223,12 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
-    test->add(ShortRateModelTest::suite());
+    test->add(ShortRateModelTest::suite());                 
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());
-    test->add(SwapTest::suite());
-    test->add(SwaptionTest::suite());
+    test->add(SwapTest::suite());                           
+    test->add(SwaptionTest::suite());                       
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
@@ -237,7 +237,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
     test->add(VarianceSwapTest::suite());
-    test->add(VolatilityModelsTest::suite());
+    test->add(VolatilityModelsTest::suite()); 
     //tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 

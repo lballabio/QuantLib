@@ -44,7 +44,7 @@ namespace QuantLib {
             const std::vector<Period>& expiries,
             const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
             const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector< boost::shared_ptr<VanillaCMSCouponPricer> >& pricers,
+            const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
             const Handle<YieldTermStructure>& yieldTermStructure);
 
         void createForwardStartingCms();
@@ -108,7 +108,7 @@ namespace QuantLib {
 
 
         Matrix meanReversions_;
-        std::vector< boost::shared_ptr<VanillaCMSCouponPricer> > pricers_;
+        std::vector< boost::shared_ptr<CmsCouponPricer> > pricers_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
 
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;

@@ -26,6 +26,7 @@
 
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Instruments/swaption.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 
 namespace QuantLib {
 

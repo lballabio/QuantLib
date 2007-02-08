@@ -20,8 +20,7 @@
 
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 
@@ -159,16 +158,12 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = IndexedLeg<UpFrontIndexedCoupon>(
-                                   schedule, schedule.businessDayConvention(),
-                                   std::vector<Real>(1, faceAmount_),
-                                   fixingDays, index,
-                                   std::vector<Real>(1, 1.0), spreads,
-                                   dayCounter
-                                   #ifdef QL_PATCH_MSVC6
-                                   , (const UpFrontIndexedCoupon*) 0
-                                   #endif
-                                   );
+        cashflows_ = IborLeg(schedule, 
+                           std::vector<Real>(1, faceAmount_),
+                           index,dayCounter,
+                           fixingDays, 
+                           schedule.businessDayConvention(),
+                           std::vector<Real>(1, 1.0), spreads);
         // redemption
         // !!!
         redemption *= faceAmount_/100.0;

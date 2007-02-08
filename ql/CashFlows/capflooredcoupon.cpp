@@ -1,8 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Giorgio Facchinetti
+ Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006 StatPro Italia srl
- Copyright (C) 2006 Cristina Duminuco
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,98 +37,88 @@ namespace QuantLib {
                          underlying->fixingDays(),
                          underlying->index(),
                          underlying->gearing(),
-                         underlying->spread()),
-      underlying_(underlying) {
+                         underlying->spread(),
+                         underlying->referencePeriodStart(),
+                         underlying->referencePeriodEnd(),
+                         underlying->dayCounter(),
+                         underlying->isInArrears()),
+      underlying_(underlying), isCapped_(false), isFloored_(false) {
+        
+        if (cap != Null<Rate>() && floor != Null<Rate>())
+            QL_REQUIRE(cap >= floor, "cap < floor");
 
-          if(cap != Null<Rate>() && floor != Null<Rate>()) {
-              QL_REQUIRE(floor<=cap, "floor rate (" << io::rate(floor) << 
-                         ") greater than cap rate (" << io::rate(cap) << ")");
-          }
-          if (underlying->gearing() > 0) {
-            if (cap != Null<Rate>())
-                cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, cap));
-            if (floor != Null<Rate>())
-                floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, floor));
+        if (gearing_ > 0) {
+            if (cap != Null<Rate>()){
+                QL_REQUIRE(cap >= 0., "negative cap rate not allowed");
+                isCapped_ = true;
+                cap_ = cap;
+            }
+            if (floor != Null<Rate>()){
+                QL_REQUIRE(floor >= 0., "negative floor rate not allowed");
+                floor_ = floor;
+                isFloored_ = true;
+            }
           } else {
-            if (cap != Null<Rate>())
-                floor_ = boost::shared_ptr<Optionlet>(new Floorlet(underlying, cap));          
-            if (floor != Null<Rate>())
-                cap_ = boost::shared_ptr<Optionlet>(new Caplet(underlying, floor));
-          }
+              if (cap != Null<Rate>()){
+                QL_REQUIRE(cap >= 0., "negative cap rate not allowed");
+                floor_ = cap;  
+                isFloored_ = true;
+              }
+              if (floor != Null<Rate>()){
+                QL_REQUIRE(floor >= 0., "negative floor rate not allowed");
+                isCapped_ = true;
+                cap_ = floor;
+              }
+        }
         registerWith(underlying);
     }
 
-    double CappedFlooredCoupon::amount() const {
-        double result = underlying_->amount();
-        if (cap_)
-            result -= cap_->amount();
-        if (floor_)
-            result += floor_->amount();
-        return result;
-    }
-
-    DayCounter CappedFlooredCoupon::dayCounter() const {
-        return underlying_->dayCounter();
-    }
-
     Rate CappedFlooredCoupon::rate() const {
-        QL_REQUIRE(nominal() != 0.0, "null nominal");
-        QL_REQUIRE(accrualPeriod() != 0.0, "null accrual period");
-        return amount()/(nominal()*accrualPeriod());
+        QL_REQUIRE(underlying_->pricer(), "pricer not set");
+        Rate swapletRate = underlying_->rate();
+        Rate floorletRate = 0.;
+        if(isFloored_)
+            floorletRate = underlying_->pricer()->floorletRate(effectiveFloor());
+        Rate capletRate = 0.;
+        if(isCapped_)
+            capletRate = underlying_->pricer()->capletRate(effectiveCap());
+        return swapletRate + floorletRate - capletRate;
     }
-
-    Date CappedFlooredCoupon::fixingDate() const {
-        return underlying_->fixingDate();
-    }
-
-    Rate CappedFlooredCoupon::indexFixing() const {
-        return underlying_->indexFixing();
-    }
-
     Rate CappedFlooredCoupon::cap() const {
-        if (underlying_->gearing() > 0) {
-            if(cap_) 
-                return cap_->strike();
+        if (gearing_ > 0) {
+            if(isCapped_) 
+                return cap_;
             else
                 return Rate(1.);
-        } else {
-             if(floor_) 
-                return floor_->strike();
+          } else {
+            if(isFloored_) 
+                return floor_;
             else
-                return Rate(1.);     
+                return Rate(1.);
         }
+
     } 
 
     Rate CappedFlooredCoupon::floor() const {
-        if (underlying_->gearing() > 0) {
-            if(floor_) 
-                return floor_->strike();
+       if (gearing_ > 0) {
+            if(isFloored_) 
+                return floor_;
             else
                 return Rate(0.);
-        } else {
-            if(cap_) 
-                return cap_->strike();
+          } else {
+            if(isCapped_) 
+                return cap_;
             else
-                return Rate(0.);        
+                return Rate(0.);
         }
     }
-    
+
     Rate CappedFlooredCoupon::effectiveCap() const {
-        if(cap_)
-            return cap_->effectiveStrike();
-        else
-            return Rate(1.);
+        return (cap_ - spread())/gearing() ;      
     } 
 
     Rate CappedFlooredCoupon::effectiveFloor() const {
-        if(floor_) 
-            return floor_->effectiveStrike();
-        else
-            return Rate(0.);
-    }
-
-    Rate CappedFlooredCoupon::convexityAdjustment() const {
-        return underlying_->convexityAdjustment();
+        return (floor_ - spread())/gearing() ;
     }
 
     void CappedFlooredCoupon::update() {
@@ -143,17 +135,4 @@ namespace QuantLib {
             super::accept(v);
     }
 
-    void CappedFlooredCoupon::setCapletVolatility(
-               const Handle<CapletVolatilityStructure>& vol) {
-        if (!volatility_.empty())
-            unregisterWith(volatility_);
-        volatility_ = vol;
-        if (!volatility_.empty())
-            registerWith(volatility_);
-        notifyObservers();
-        if(cap_)
-            cap_->setCapletVolatility(vol);
-         if(floor_)
-            floor_->setCapletVolatility(vol);      
-    }
 }

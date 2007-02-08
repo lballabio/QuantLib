@@ -20,7 +20,7 @@
 #include <cmath>
 #include <ql/MarketModels/Products/MultiStep/multistepratchet.hpp>
 
-namespace QuantLib {
+namespace QuantLib { 
 
     MultiStepRatchet::MultiStepRatchet(const std::vector<Time>& rateTimes,
                                  const std::vector<Real>& accruals,

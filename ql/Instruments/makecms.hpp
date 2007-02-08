@@ -35,48 +35,48 @@ namespace QuantLib {
     /*! This class provides a more comfortable way
         to instantiate standard market constant maturity swap.
     */
-    class MakeCMS {
+    class MakeCms {
       public:
-        MakeCMS(const Period& swapTenor,
+        MakeCms(const Period& swapTenor,
                 const boost::shared_ptr<SwapIndex>& swapIndex,
                 Spread iborSpread,
-                const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                const boost::shared_ptr<CmsCouponPricer>& pricer,
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
         operator boost::shared_ptr<Swap>() const ;
 
-        MakeCMS& receiveCMS(bool flag = true);
-        MakeCMS& withNominal(Real n);
-        MakeCMS& withEffectiveDate(const Date&);
-        MakeCMS& withDiscountingTermStructure(
+        MakeCms& receiveCms(bool flag = true);
+        MakeCms& withNominal(Real n);
+        MakeCms& withEffectiveDate(const Date&);
+        MakeCms& withDiscountingTermStructure(
             const Handle<YieldTermStructure>& discountingTermStructure);
 
-        MakeCMS& withCMSLegTenor(const Period& t);
-        MakeCMS& withCMSLegCalendar(const Calendar& cal);
-        MakeCMS& withCMSLegConvention(BusinessDayConvention bdc);
-        MakeCMS& withCMSLegTerminationDateConvention(BusinessDayConvention bdc);
-        MakeCMS& withCMSLegForward(bool flag = true);
-        MakeCMS& withCMSLegEndOfMonth(bool flag = true);
-        MakeCMS& withCMSLegFirstDate(const Date& d);
-        MakeCMS& withCMSLegNextToLastDate(const Date& d);
-        MakeCMS& withCMSLegDayCount(const DayCounter& dc);
+        MakeCms& withCmsLegTenor(const Period& t);
+        MakeCms& withCmsLegCalendar(const Calendar& cal);
+        MakeCms& withCmsLegConvention(BusinessDayConvention bdc);
+        MakeCms& withCmsLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeCms& withCmsLegForward(bool flag = true);
+        MakeCms& withCmsLegEndOfMonth(bool flag = true);
+        MakeCms& withCmsLegFirstDate(const Date& d);
+        MakeCms& withCmsLegNextToLastDate(const Date& d);
+        MakeCms& withCmsLegDayCount(const DayCounter& dc);
 
-        MakeCMS& withFloatingLegTenor(const Period& t);
-        MakeCMS& withFloatingLegCalendar(const Calendar& cal);
-        MakeCMS& withFloatingLegConvention(BusinessDayConvention bdc);
-        MakeCMS& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
-        MakeCMS& withFloatingLegForward(bool flag = true);
-        MakeCMS& withFloatingLegEndOfMonth(bool flag = true);
-        MakeCMS& withFloatingLegFirstDate(const Date& d);
-        MakeCMS& withFloatingLegNextToLastDate(const Date& d);
-        MakeCMS& withFloatingLegDayCount(const DayCounter& dc);
+        MakeCms& withFloatingLegTenor(const Period& t);
+        MakeCms& withFloatingLegCalendar(const Calendar& cal);
+        MakeCms& withFloatingLegConvention(BusinessDayConvention bdc);
+        MakeCms& withFloatingLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeCms& withFloatingLegForward(bool flag = true);
+        MakeCms& withFloatingLegEndOfMonth(bool flag = true);
+        MakeCms& withFloatingLegFirstDate(const Date& d);
+        MakeCms& withFloatingLegNextToLastDate(const Date& d);
+        MakeCms& withFloatingLegDayCount(const DayCounter& dc);
         
       private:
         Period swapTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
         Spread iborSpread_;
-        boost::shared_ptr<VanillaCMSCouponPricer> cmsVanillapricer_;
+        boost::shared_ptr<CmsCouponPricer> cmsVanillapricer_;
 
         Period forwardStart_;
 
@@ -89,7 +89,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountingTermStructure_;
         boost::shared_ptr<IborIndex> iborIndex_;
 
-        bool payCMS_;
+        bool payCms_;
         Real nominal_;
         Period cmsTenor_, floatTenor_; 
         BusinessDayConvention cmsConvention_, cmsTerminationDateConvention_;

@@ -48,12 +48,12 @@ namespace QuantLib {
 
         const Date settlement = index_->termStructure()->referenceDate();
         const Date startDate =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(
+            boost::dynamic_pointer_cast<IborCoupon>(
                                                   flows[0])->fixingDate();
 
         for (Size i = 0; i < size_; ++i) {
-            const boost::shared_ptr<FloatingRateCoupon> coupon =
-               boost::dynamic_pointer_cast<FloatingRateCoupon>(flows[i]);
+            const boost::shared_ptr<IborCoupon> coupon =
+               boost::dynamic_pointer_cast<IborCoupon>(flows[i]);
 
             QL_REQUIRE(coupon->date() == coupon->accrualEndDate(),
                        "irregular coupon types are not suppported");
@@ -178,7 +178,7 @@ namespace QuantLib {
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
 
-        return FloatingRateLeg(  
+        return IborLeg(  
                    Schedule(refDate, refDate + Period(index_->tenor().length()*size_,
                                                       index_->tenor().units()),
                             index_->tenor(), index_->calendar(),

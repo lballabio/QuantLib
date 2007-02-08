@@ -26,9 +26,8 @@
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <ql/CashFlows/inarrearindexedcoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
@@ -270,29 +269,26 @@ void SwapTest::testInArrears() {
     std::vector<Real> gearings;
     std::vector<Rate> spreads;
     Integer fixingDays = 0;
-    std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-        IndexedLeg<FloatingRateCoupon>(schedule, Following,
-                                                   nominals,
-                                                   fixingDays, index,
-                                                   gearings, spreads,
-                                                   dayCounter,true);
-
-    Swap swap(termStructure_,floatingLeg,fixedLeg);
-
-    //if (std::fabs(swap.NPV()) > 1.0e-4)
-    //    BOOST_ERROR("While setting up test:\n"
-    //                << "    expected swap NPV: 0.0\n"
-    //                << "    calculated:        " << swap.NPV());
-
+    
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
         boost::shared_ptr<CapletVolatilityStructure>(
                          new CapletConstantVolatility(today_,capletVolatility,
                                                       dayCounter)));
-    for (Size i=0; i<floatingLeg.size(); i++) {
-        boost::dynamic_pointer_cast<FloatingRateCoupon>(floatingLeg[i])
-            ->setCapletVolatility(vol);
-    }
+    boost::shared_ptr<IborCouponPricer> 
+            pricer(new BlackIborCouponPricer(vol));
+
+    std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
+        IborInArrearsLeg(schedule, 
+                nominals,
+                index,
+                pricer,
+                dayCounter,
+                fixingDays, 
+                Following,
+                gearings, spreads);
+
+    Swap swap(termStructure_,floatingLeg,fixedLeg);
 
     Decimal storedValue = -144813.0;
     Real tolerance = 1.0;

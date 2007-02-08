@@ -19,7 +19,7 @@
 */
 
 #include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/makevanillaswap.hpp>
 #include <ql/Quotes/simplequote.hpp>

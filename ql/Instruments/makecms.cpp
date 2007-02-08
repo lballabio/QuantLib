@@ -18,16 +18,15 @@
 */
 
 #include <ql/Instruments/makecms.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
-    MakeCMS::MakeCMS(const Period& swapTenor,
+    MakeCms::MakeCms(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
-                     const boost::shared_ptr<VanillaCMSCouponPricer>& pricer,
+                     const boost::shared_ptr<CmsCouponPricer>& pricer,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
       iborSpread_(iborSpread),
@@ -43,7 +42,7 @@ namespace QuantLib {
 
       discountingTermStructure_(swapIndex->termStructureHandle()),
 
-      payCMS_(true), nominal_(1000000.0),
+      payCms_(true), nominal_(1000000.0),
       cmsTenor_(3*Months), floatTenor_(3*Months),
       cmsConvention_(ModifiedFollowing),
       cmsTerminationDateConvention_(ModifiedFollowing),
@@ -70,7 +69,7 @@ namespace QuantLib {
                   baseIndex->termStructureHandle()));
       }
 
-    MakeCMS::operator Swap() const {
+    MakeCms::operator Swap() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -99,7 +98,7 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         Leg cmsLeg =
-            CMSLeg(cmsSchedule,
+            CmsLeg(cmsSchedule,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
                             cmsVanillapricer_,
@@ -112,21 +111,21 @@ namespace QuantLib {
                             std::vector<Rate>(1, cmsFloor_));
 
         Leg floatLeg =
-            FloatingRateLeg(floatSchedule,
-                                     std::vector<Real>(1, nominal_),
-                                     iborIndex_,
-                                     floatDayCount_,
-                                     iborIndex_->fixingDays(),
-                                     floatConvention_,
-                                     std::vector<Real>(1, 1.0), // gearing
-                                     std::vector<Spread>(1, iborSpread_));
-        if (payCMS_)
+            IborLeg(floatSchedule,
+                     std::vector<Real>(1, nominal_),
+                     iborIndex_,
+                     floatDayCount_,
+                     iborIndex_->fixingDays(),
+                     floatConvention_,
+                     std::vector<Real>(1, 1.0), // gearing
+                     std::vector<Spread>(1, iborSpread_));
+        if (payCms_)
             return Swap(discountingTermStructure_, cmsLeg, floatLeg);
         else
             return Swap(discountingTermStructure_, floatLeg, cmsLeg);
     }
 
-    MakeCMS::operator boost::shared_ptr<Swap>() const {
+    MakeCms::operator boost::shared_ptr<Swap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -155,7 +154,7 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         Leg cmsLeg =
-            CMSLeg(cmsSchedule,
+            CmsLeg(cmsSchedule,
                             std::vector<Real>(1, nominal_),
                             swapIndex_,
                             cmsVanillapricer_,
@@ -168,15 +167,15 @@ namespace QuantLib {
                             std::vector<Rate>(1, cmsFloor_));
 
         Leg floatLeg =
-            FloatingRateLeg(floatSchedule,
-                                     std::vector<Real>(1, nominal_),
-                                     iborIndex_,
-                                     floatDayCount_,
-                                     iborIndex_->fixingDays(),
-                                     floatConvention_,
-                                     std::vector<Real>(1, 1.0), // gearing
-                                     std::vector<Spread>(1, iborSpread_));
-        if (payCMS_)
+            IborLeg(floatSchedule,
+                     std::vector<Real>(1, nominal_),
+                     iborIndex_,
+                     floatDayCount_,
+                     iborIndex_->fixingDays(),
+                     floatConvention_,
+                     std::vector<Real>(1, 1.0), // gearing
+                     std::vector<Spread>(1, iborSpread_));
+        if (payCms_)
             return boost::shared_ptr<Swap>(new
                 Swap(discountingTermStructure_, cmsLeg, floatLeg));
         else
@@ -184,125 +183,125 @@ namespace QuantLib {
                 Swap(discountingTermStructure_, floatLeg, cmsLeg));
     }
 
-    MakeCMS& MakeCMS::receiveCMS(bool flag) {
-        payCMS_ = !flag;
+    MakeCms& MakeCms::receiveCms(bool flag) {
+        payCms_ = !flag;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withNominal(Real n) {
+    MakeCms& MakeCms::withNominal(Real n) {
         nominal_ = n;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withEffectiveDate(const Date& effectiveDate) {
+    MakeCms&
+    MakeCms::withEffectiveDate(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withDiscountingTermStructure(
+    MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
         discountingTermStructure_ = discountingTermStructure;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withCMSLegTenor(const Period& t) {
+    MakeCms& MakeCms::withCmsLegTenor(const Period& t) {
         cmsTenor_ = t;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withCMSLegCalendar(const Calendar& cal) {
+    MakeCms&
+    MakeCms::withCmsLegCalendar(const Calendar& cal) {
         cmsCalendar_ = cal;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withCMSLegConvention(BusinessDayConvention bdc) {
+    MakeCms&
+    MakeCms::withCmsLegConvention(BusinessDayConvention bdc) {
         cmsConvention_ = bdc;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withCMSLegTerminationDateConvention(BusinessDayConvention bdc) {
+    MakeCms&
+    MakeCms::withCmsLegTerminationDateConvention(BusinessDayConvention bdc) {
         cmsTerminationDateConvention_ = bdc;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withCMSLegForward(bool flag) {
+    MakeCms& MakeCms::withCmsLegForward(bool flag) {
         cmsBackward_ = !flag;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withCMSLegEndOfMonth(bool flag) {
+    MakeCms& MakeCms::withCmsLegEndOfMonth(bool flag) {
         cmsEndOfMonth_ = flag;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withCMSLegFirstDate(const Date& d) {
+    MakeCms& MakeCms::withCmsLegFirstDate(const Date& d) {
         cmsFirstDate_ = d;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withCMSLegNextToLastDate(const Date& d) {
+    MakeCms&
+    MakeCms::withCmsLegNextToLastDate(const Date& d) {
         cmsNextToLastDate_ = d;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withCMSLegDayCount(const DayCounter& dc) {
+    MakeCms&
+    MakeCms::withCmsLegDayCount(const DayCounter& dc) {
         cmsDayCount_ = dc;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withFloatingLegTenor(const Period& t) {
+    MakeCms& MakeCms::withFloatingLegTenor(const Period& t) {
         floatTenor_ = t;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegCalendar(const Calendar& cal) {
+    MakeCms&
+    MakeCms::withFloatingLegCalendar(const Calendar& cal) {
         floatCalendar_ = cal;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegConvention(BusinessDayConvention bdc) {
+    MakeCms&
+    MakeCms::withFloatingLegConvention(BusinessDayConvention bdc) {
         floatConvention_ = bdc;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegTerminationDateConvention(BusinessDayConvention bdc) {
+    MakeCms&
+    MakeCms::withFloatingLegTerminationDateConvention(BusinessDayConvention bdc) {
         floatTerminationDateConvention_ = bdc;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withFloatingLegForward(bool flag) {
+    MakeCms& MakeCms::withFloatingLegForward(bool flag) {
         floatBackward_ = !flag;
         return *this;
     }
 
-    MakeCMS& MakeCMS::withFloatingLegEndOfMonth(bool flag) {
+    MakeCms& MakeCms::withFloatingLegEndOfMonth(bool flag) {
         floatEndOfMonth_ = flag;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegFirstDate(const Date& d) {
+    MakeCms&
+    MakeCms::withFloatingLegFirstDate(const Date& d) {
         floatFirstDate_ = d;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegNextToLastDate(const Date& d) {
+    MakeCms&
+    MakeCms::withFloatingLegNextToLastDate(const Date& d) {
         floatNextToLastDate_ = d;
         return *this;
     }
 
-    MakeCMS&
-    MakeCMS::withFloatingLegDayCount(const DayCounter& dc) {
+    MakeCms&
+    MakeCms::withFloatingLegDayCount(const DayCounter& dc) {
         floatDayCount_ = dc;
         return *this;
     }

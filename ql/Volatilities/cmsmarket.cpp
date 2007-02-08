@@ -36,7 +36,7 @@ namespace QuantLib {
         const std::vector<Period>& expiries,
         const std::vector< boost::shared_ptr<SwapIndex> >& swapIndices,
         const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-        const std::vector< boost::shared_ptr<VanillaCMSCouponPricer> >& pricers,
+        const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
         const Handle<YieldTermStructure>& yieldTermStructure):
     expiries_(expiries),
     pricers_(pricers),
@@ -87,7 +87,7 @@ namespace QuantLib {
 				meanReversions_[i][j] = pricer->meanReversion();
 
                 swapTmp.push_back(
-                    MakeCMS(expiries_[i], swapIndices_[j], 0.,
+                    MakeCms(expiries_[i], swapIndices_[j], 0.,
 						pricers_[j],Period()).operator boost::shared_ptr<Swap>()
                );
 
@@ -128,7 +128,7 @@ namespace QuantLib {
                 Period tenorOfForwardCms =
                     Period(expiries_[i].length()-startingCmsTenor.length(),expiries_[i].units());
                 boost::shared_ptr<Swap> forwardSwap =
-                     MakeCMS(tenorOfForwardCms, swapIndices_[j], 0., 
+                     MakeCms(tenorOfForwardCms, swapIndices_[j], 0., 
                         pricers_[j],startingCmsTenor).operator boost::shared_ptr<Swap>();
 
                 // ForwardPrice errors valuation
@@ -172,7 +172,7 @@ namespace QuantLib {
     
 		for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nSwapTenors_ ; j++) {
-	            swaps_[i][j] = MakeCMS(expiries_[i], swapIndices_[j], 0.,
+	            swaps_[i][j] = MakeCms(expiries_[i], swapIndices_[j], 0.,
                     pricers_[j],Period()).operator boost::shared_ptr<Swap>();
 
                 // Spread errors valuation
@@ -316,15 +316,18 @@ namespace QuantLib {
 
     Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::value(const Array& x) const {
         const Array y = x;
-        Real beta = y[0];
-        Real meanReversion = y[1];
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        Size nSwapTenors = swapTenors.size();
+        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 == x.size()");
+
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-
-        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
-        for (Size i=0; i<swapTenors.size(); i++){
+        
+        for (Size i=0; i<nSwapTenors; i++){
+            Real beta = y[i];
             volCubeBySabr->recalibration(beta, swapTenors[i]);
         }
+        Real meanReversion = y[nSwapTenors];
         cmsMarket_->reprice(volCube_, meanReversion);
         switch (calibrationType_) {
             case OnSpread:
