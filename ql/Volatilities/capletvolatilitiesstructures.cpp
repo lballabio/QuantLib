@@ -28,11 +28,7 @@
 
 using namespace QuantLib;
 
-
-
-    // we should used std::lower_bound but how do we retrieve the index
-    // from an iterator ?
-    Size lowerIndex(const std::vector<Time>& times, Time time){
+    Size upperIndex(const std::vector<Time>& times, Time time){
         if (time <= times.front())
             return 0;
         if (time >= times.back())
@@ -40,7 +36,7 @@ using namespace QuantLib;
         Size i = 1;
         while(time > times[i])
             i++;
-        return i-1;
+        return i;
     }
 
     void findClosestBounds(Time time, const std::vector<Time>& times,
@@ -60,13 +56,6 @@ using namespace QuantLib;
             i++;
         lowerBound = times[i-1];
         higherBound = times[i];
-    }
-
-    Real linearInterpolation(Real x, Real x1, Real x2,
-                                            Real y1, Real y2){
-        if (x == x1)
-            return y1;
-        return y1 + (x-x1)*(y2-y1)/(x2-x1);
     }
 
 
@@ -111,14 +100,14 @@ using namespace QuantLib;
             if (length >= tenorTimes_.back())
                 return smileSections_.back()->volatility(strike);
 
-            Size i = lowerIndex(tenorTimes_, length);
+            Size i = upperIndex(tenorTimes_, length);
             Volatility lowerVolatility =
-                smileSections_[i]->volatility(strike);
+                smileSections_[i-1]->volatility(strike);
             Volatility upperVolatility =
-                smileSections_[i+1]->volatility(strike);
+                smileSections_[i]->volatility(strike);
 
-            return linearInterpolation(length, tenorTimes_[i],
-                tenorTimes_[i+1], lowerVolatility, upperVolatility);
+            return linearInterpolation(length, tenorTimes_[i-1],
+                tenorTimes_[i], lowerVolatility, upperVolatility);
         }
 
      void SmileSectionsVolStructure::setClosestTenors(Time time,
@@ -193,84 +182,81 @@ using namespace QuantLib;
     Real BilinInterpCapletVolStructure::maxStrike()
         const {return maxStrike_;}
 
-    HybridCapletVolatilityStructure::HybridCapletVolatilityStructure(
+
+    DecInterpCapletVolStructure::
+        DecInterpCapletVolStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps,
-            const std::vector<Rate>& strikes,
-            const boost::shared_ptr<SmileSectionsVolStructure>
-                shortTermCapletVolatilityStructure):
-        ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter),
-            shortTermCapletVolatilityStructure_(
-                shortTermCapletVolatilityStructure){
+            const std::vector<Rate>& strikes):
+            ParametrizedCapletVolStructure(referenceDate),
+            dayCounter_(dayCounter),
+            tenorTimes_(referenceCaps.size()), strikes_(strikes),
+            volatilities_(referenceCaps.size(), strikes_.size(), .2) {
 
-        volatilitiesFromCaps_ =
-            boost::shared_ptr<BilinInterpCapletVolStructure>(
-                new BilinInterpCapletVolStructure(referenceDate, dayCounter,
-                    referenceCaps, strikes));
-
-        registerWith(shortTermCapletVolatilityStructure);
-
-        Time maxShortTermMaturity = shortTermCapletVolatilityStructure->
-                                        maxTime();
-            Time minCapMaturity = volatilitiesFromCaps_->minTime();
-            overlapStart = std::min(maxShortTermMaturity, minCapMaturity);
-            overlapEnd = std::max(maxShortTermMaturity, minCapMaturity);
+        /* we compute the times for which the volatilities points will
+           be known*/
+        for (Size i = 0; i < tenorTimes_.size(); i++){
+            Date tenorDate = referenceCaps[i].front()->lastFixingDate();
+            tenorTimes_[i] = dayCounter_.yearFraction(
+                TermStructure::referenceDate(), tenorDate);
+            //volatilities_[i].resize(strikes_.size(), .2);
+            boost::shared_ptr<Interpolation> newInterpolation(
+                new LinearInterpolation(strikes_.begin(), 
+                    strikes_.end(), volatilities_[i]));
+            strikeInterpolations_.push_back(newInterpolation);
         }
-
-    Volatility HybridCapletVolatilityStructure::volatilityImpl(
-                              Time length,
-                              Rate strike) const {
-            if (length < overlapStart)
-                return shortTermCapletVolatilityStructure_->volatility(length,
-                strike, true);
-            if (length > overlapEnd)
-                return volatilitiesFromCaps_->volatility(length, strike,
-                                                        true);
-
-            Time nextLowerFutureTenor, nextHigherFutureTenor,
-                nextLowerCapTenor, nextHigherCapTenor,
-                nextLowerTenor, nextHigherTenor;
-            Volatility volAtNextLowerTenor, volAtNextHigherTenor;
-
-            volatilitiesFromCaps_->setClosestTenors(length,
-                nextLowerCapTenor, nextHigherCapTenor);
-
-            shortTermCapletVolatilityStructure_->setClosestTenors(length,
-                nextLowerFutureTenor, nextHigherFutureTenor);
-
-            /* we determine which volatility surface should be used for the
-               lower value*/
-            if (nextLowerCapTenor < nextLowerFutureTenor) {
-                nextLowerTenor = nextLowerFutureTenor;
-                volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
-                    volatility(nextLowerTenor, strike, true);
-            } else {
-                nextLowerTenor = nextLowerCapTenor;
-                volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
-                    nextLowerTenor, strike, true);
-            }
-
-            /* we determine which volatility surface should be used for
-               the higher value*/
-            if (nextHigherCapTenor < nextHigherFutureTenor){
-                nextHigherTenor = nextHigherCapTenor;
-                volAtNextHigherTenor = volatilitiesFromCaps_->volatility(
-                    nextHigherTenor, strike, true);
-            }else{
-                nextHigherTenor = nextHigherFutureTenor;
-                volAtNextHigherTenor = shortTermCapletVolatilityStructure_->
-                    volatility(nextHigherTenor, strike, true);
-            }
-
-            return linearInterpolation(length, nextLowerTenor,
-                nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
+        // the interpolator will be used for shorter maturities
+        maxStrike_ = strikes_.back();
+        minStrike_ = strikes_.front();
+        maxDate_ = referenceCaps.back().front()->lastFixingDate();
     }
 
 
-    Date HybridCapletVolatilityStructure::maxDate() const{
-        return volatilitiesFromCaps_->maxDate();}
-    DayCounter HybridCapletVolatilityStructure::dayCounter() const{
-        return dayCounter_;}
-    Real HybridCapletVolatilityStructure::minStrike() const {return 0;}
-    Real HybridCapletVolatilityStructure::maxStrike() const {return 10;}
+    Volatility DecInterpCapletVolStructure::
+        volatilityImpl(Time length, Rate strike) const {
+        Size i = upperIndex(tenorTimes_, length);
+        if (i <= 0){
+            strikeInterpolations_.front()->update();
+            return strikeInterpolations_.front()->operator()(strike);
+        }
+        if (i ==tenorTimes_.size()){
+            strikeInterpolations_.back()->update();
+            return strikeInterpolations_.back()->operator()(strike);
+        }
+        strikeInterpolations_[i-1]->update();
+        strikeInterpolations_[i]->update();
+        Volatility lowerVolatiliy = 
+            strikeInterpolations_[i-1]->operator()(strike);
+        Volatility higherVolatiliy = 
+            strikeInterpolations_[i]->operator()(strike);
+        return linearInterpolation(length, tenorTimes_[i-1], tenorTimes_[i],
+                lowerVolatiliy, higherVolatiliy);
+    }
+
+    
+
+    void DecInterpCapletVolStructure::setClosestTenors(
+                                            Time time, Time& nextLowerTenor,
+                                            Time& nextHigherTenor){
+        findClosestBounds(time, tenorTimes_, nextLowerTenor, nextHigherTenor);
+    }
+
+    Date DecInterpCapletVolStructure::maxDate() const{
+        return maxDate_; }
+
+    DayCounter DecInterpCapletVolStructure::
+        dayCounter() const{ return dayCounter_;}
+
+    Real DecInterpCapletVolStructure::minStrike()
+        const {return minStrike_;}
+
+    Real DecInterpCapletVolStructure::maxStrike()
+        const {return maxStrike_;}
+
+    void DecInterpCapletVolStructure::update() {
+        for (Size i = 0; i < strikeInterpolations_.size(); ++i)
+            strikeInterpolations_[i]->update();
+    }
+
+    

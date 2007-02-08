@@ -33,14 +33,6 @@ namespace QuantLib {
 
     class CapFloor;
 
-    //  temporary functions for test purpose
-    inline double test (boost::shared_ptr<SmileSection>){
-        return 0;
-    }
-
-    inline double test2 (std::vector<boost::shared_ptr<SmileSection> >&){
-        return 0;
-    }
 
     typedef std::vector<boost::shared_ptr<SmileSection> > \
         SmileSectionInterfaceVector;
@@ -86,8 +78,12 @@ namespace QuantLib {
     public:
         ParametrizedCapletVolStructure(Date referenceDate):
           CapletVolatilityStructure(referenceDate){};
-
+       virtual void update() = 0;
        virtual Matrix& volatilityParameters() const = 0;
+       virtual Time minTime() const = 0;
+       virtual Time maxTime() const = 0;
+       virtual void setClosestTenors(Time time,
+            Time& nextLowerTenor, Time& nextHigherTenor) = 0;
     };
 
     class BilinInterpCapletVolStructure:
@@ -105,6 +101,8 @@ namespace QuantLib {
             Time& nextLowerTenor, Time& nextHigherTenor);
 
         Time minTime() const{ return tenorTimes_.front();}
+
+        Time maxTime() const{ return tenorTimes_.back();}
 
         Real& volatilityParameter(Size i, Size j) const {
             return volatilities_[i][j];
@@ -125,6 +123,7 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
+        void update(){};
     private:
         DayCounter dayCounter_;
         LinearInterpolation firstRowInterpolator_;
@@ -136,7 +135,62 @@ namespace QuantLib {
         Rate maxStrike_, minStrike_;
     };
 
+	//! this class is interpolating caplets volatilities linealy in two steps (instead of 
+	// one for the BilinInterpCapletVolStructure
+	
+    class DecInterpCapletVolStructure:
+        public ParametrizedCapletVolStructure{
+    public:
+        DecInterpCapletVolStructure(
+            const Date& referenceDate,
+            const DayCounter dayCounter,
+            const CapMatrix& referenceCaps,
+            const std::vector<Rate>& strikes);
 
+        Volatility volatilityImpl(Time length, Rate strike) const;
+        
+        void setClosestTenors(Time time,
+            Time& nextLowerTenor, Time& nextHigherTenor);
+
+        Time minTime() const{ return tenorTimes_.front();}
+        
+        Time maxTime() const{ return tenorTimes_.back();}
+
+        Real& volatilityParameter(Size i, Size j) const {
+            return volatilities_[i][j];
+        }
+
+        Matrix& volatilityParameters() const {
+            return volatilities_;
+        }
+
+        //! \name TermStructure interface
+        //@{
+        Date maxDate() const;
+        DayCounter dayCounter() const;
+        //@}
+
+        //! \name CapletVolatilityStructure interface
+        //@{
+        Real minStrike() const;
+        Real maxStrike() const;
+        //@}
+         
+        void update();
+
+    private:
+        DayCounter dayCounter_;
+        std::vector<Time> tenorTimes_;
+        std::vector<Rate> strikes_;
+        mutable Matrix volatilities_;
+        //mutable std::vector< std::vector<Volatility> > volatilities_;
+        std::vector< boost::shared_ptr<Interpolation> >
+            strikeInterpolations_;
+        Date maxDate_;
+        Rate maxStrike_, minStrike_;
+    };
+
+    template <class T>
     class HybridCapletVolatilityStructure:
         public ParametrizedCapletVolStructure{
     public:
@@ -166,16 +220,128 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
+
+        Time minTime() const{ return volatilitiesFromCaps_->minTime();}
+
+        Time maxTime() const{ return volatilitiesFromCaps_->maxTime();}
+
+        void setClosestTenors(Time time,
+            Time& nextLowerTenor, Time& nextHigherTenor){
+                // to be implemnted ...
+         };
+        void update();
     private:
         DayCounter dayCounter_;
         Time overlapStart, overlapEnd;
-        boost::shared_ptr<BilinInterpCapletVolStructure>
+        boost::shared_ptr<ParametrizedCapletVolStructure>
             volatilitiesFromCaps_;
         boost::shared_ptr<SmileSectionsVolStructure>
             shortTermCapletVolatilityStructure_;
         Date maxDate_;
         Rate minStrike_, maxStrike_;
     };
+
+    inline Real linearInterpolation(Real x, Real x1, Real x2,
+                                            Real y1, Real y2){
+        if (x == x1)
+            return y1;
+        return y1 + (x-x1)*(y2-y1)/(x2-x1);
+    }
+
+    template <class T>
+    inline HybridCapletVolatilityStructure<T>::HybridCapletVolatilityStructure(
+            const Date& referenceDate,
+            const DayCounter dayCounter,
+            const CapMatrix& referenceCaps,
+            const std::vector<Rate>& strikes,
+            const boost::shared_ptr<SmileSectionsVolStructure>
+                shortTermCapletVolatilityStructure):
+        ParametrizedCapletVolStructure(referenceDate), dayCounter_(dayCounter),
+            shortTermCapletVolatilityStructure_(
+                shortTermCapletVolatilityStructure){
+
+        volatilitiesFromCaps_ =
+            boost::shared_ptr<ParametrizedCapletVolStructure>(
+                new T(referenceDate, dayCounter,
+                    referenceCaps, strikes));
+
+        registerWith(shortTermCapletVolatilityStructure);
+
+        Time maxShortTermMaturity = shortTermCapletVolatilityStructure->
+                                        maxTime();
+            Time minCapMaturity = volatilitiesFromCaps_->minTime();
+            overlapStart = std::min(maxShortTermMaturity, minCapMaturity);
+            overlapEnd = std::max(maxShortTermMaturity, minCapMaturity);
+        }
+
+    template <class T>
+    inline Volatility HybridCapletVolatilityStructure<T>::volatilityImpl(
+                              Time length,
+                              Rate strike) const {
+            if (length < overlapStart)
+                return shortTermCapletVolatilityStructure_->volatility(length,
+                strike, true);
+            if (length > overlapEnd)
+                return volatilitiesFromCaps_->volatility(length, strike,
+                                                        true);
+
+            Time nextLowerFutureTenor, nextHigherFutureTenor,
+                nextLowerCapTenor, nextHigherCapTenor,
+                nextLowerTenor, nextHigherTenor;
+            Volatility volAtNextLowerTenor, volAtNextHigherTenor;
+
+            volatilitiesFromCaps_->setClosestTenors(length,
+                nextLowerCapTenor, nextHigherCapTenor);
+
+            shortTermCapletVolatilityStructure_->setClosestTenors(length,
+                nextLowerFutureTenor, nextHigherFutureTenor);
+
+            /* we determine which volatility surface should be used for the
+               lower value*/
+            if (nextLowerCapTenor < nextLowerFutureTenor) {
+                nextLowerTenor = nextLowerFutureTenor;
+                volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
+                    volatility(nextLowerTenor, strike, true);
+            } else {
+                nextLowerTenor = nextLowerCapTenor;
+                volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
+                    nextLowerTenor, strike, true);
+            }
+
+            /* we determine which volatility surface should be used for
+               the higher value*/
+            if (nextHigherCapTenor < nextHigherFutureTenor){
+                nextHigherTenor = nextHigherCapTenor;
+                volAtNextHigherTenor = volatilitiesFromCaps_->volatility(
+                    nextHigherTenor, strike, true);
+            }else{
+                nextHigherTenor = nextHigherFutureTenor;
+                volAtNextHigherTenor = shortTermCapletVolatilityStructure_->
+                    volatility(nextHigherTenor, strike, true);
+            }
+
+            return linearInterpolation(length, nextLowerTenor,
+                nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
+    }
+
+    template <class T>
+    inline Date HybridCapletVolatilityStructure<T>::maxDate() const{
+        return volatilitiesFromCaps_->maxDate();}
+
+    template <class T>
+    inline DayCounter HybridCapletVolatilityStructure<T>::dayCounter() const{
+        return dayCounter_;}
+
+    template <class T>
+    inline Real HybridCapletVolatilityStructure<T>::minStrike() const {return 0;}
+
+    template <class T>
+    inline Real HybridCapletVolatilityStructure<T>::maxStrike() const {return 10;}
+
+    template <class T>
+    inline void HybridCapletVolatilityStructure<T>::update(){
+        volatilitiesFromCaps_->update();
+    }
 
 }
 

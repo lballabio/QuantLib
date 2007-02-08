@@ -55,7 +55,9 @@ namespace QuantLib {
          Size maxEvaluations = 100,
          const std::vector<boost::shared_ptr<SmileSection> >& 
              smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >(),
-         bool allowExtrapolation = true);
+         bool allowExtrapolation = true,
+         bool decoupleInterpolation = false);
+
         //@}
         //! \name LazyObject interface
         //@{

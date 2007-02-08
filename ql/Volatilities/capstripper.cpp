@@ -81,7 +81,8 @@ namespace QuantLib {
          Size maxEvaluations,
          const std::vector<boost::shared_ptr<SmileSection> >&
              smileSectionInterfaces,
-         bool allowExtrapolation)
+         bool allowExtrapolation,
+         bool decoupleInterpolation)
     : CapletVolatilityStructure(0, index->calendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
@@ -113,27 +114,49 @@ namespace QuantLib {
                registerWith(marketDataCap_[i][j]);
            }
         }
+        // if the volatility surface given by the smile sections volatility 
+        // structure is empty we will use a simple caplet vol surface
         if (smileSectionInterfaces.empty())
-            parametrizedCapletVolStructure_
-               = boost::shared_ptr<ParametrizedCapletVolStructure>(
-                new BilinInterpCapletVolStructure(referenceDate(),
-                                                  volatilityDayCounter,
-                                                  marketDataCap_,
-                                                  strikes));
+            if (decoupleInterpolation)
+                parametrizedCapletVolStructure_
+                   = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                    new DecInterpCapletVolStructure(
+                            referenceDate(),volatilityDayCounter,
+                            marketDataCap_,
+                            strikes));
+            else
+                parametrizedCapletVolStructure_
+                   = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                    new BilinInterpCapletVolStructure(referenceDate(),
+                                                    volatilityDayCounter,
+                                                    marketDataCap_,
+                                                    strikes));
+        // otherwise we use an HybridCapletVolatilityStructure            
         else{
              boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure(
                  new SmileSectionsVolStructure(referenceDate(),
                                                volatilityDayCounter,
                                                smileSectionInterfaces));
-             parametrizedCapletVolStructure_
-               = boost::shared_ptr<ParametrizedCapletVolStructure>(
-                new HybridCapletVolatilityStructure(referenceDate(),
-                                                  volatilityDayCounter,
-                                                  marketDataCap_,
-                                                  strikes,
-                                                  smileSectionsVolStructure));
-             registerWith(parametrizedCapletVolStructure_);
-            }
+             if (decoupleInterpolation)
+                 parametrizedCapletVolStructure_
+                   = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                    new HybridCapletVolatilityStructure<BilinInterpCapletVolStructure>
+                                        ( referenceDate(),
+                                        volatilityDayCounter,
+                                        marketDataCap_,
+                                        strikes,
+                                        smileSectionsVolStructure));
+             else
+                parametrizedCapletVolStructure_
+                   = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                    new HybridCapletVolatilityStructure<BilinInterpCapletVolStructure>
+                                        ( referenceDate(),
+                                        volatilityDayCounter,
+                                        marketDataCap_,
+                                        strikes,
+                                        smileSectionsVolStructure));
+             
+        }
 
        Handle<CapletVolatilityStructure> bilinInterpCapletVolStructureHandle(
            parametrizedCapletVolStructure_);
@@ -160,7 +183,7 @@ namespace QuantLib {
             for (j = 0 ; j < strikes_.size(); j++) {
                 for (i = 0 ; i < tenors_.size(); i++) {
                     CapFloor & mktCap = *marketDataCap_[i][j];
-                    Real capPrice = mktCap.NPV();
+                    capPrice = mktCap.NPV();
                     fitVolatilityParameter(calibCap_[i][j],
                         volatilityParameters[i][j],
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
@@ -170,22 +193,11 @@ namespace QuantLib {
             QL_FAIL("CapsStripper::performCalculations:"
                     "\nbooststrap failure at option tenor " << tenors_[i] <<
                     ", strike " << io::rate(strikes_[j]) <<
-                    ", cap price is " << capPrice<<
+                    ", cap price is " << capPrice <<
                     "\n"<< e.what());
         }
     }
 
-    Size locateTime(Time x,
-                     const std::vector<Time>& values){
-        if (x <= values[0])
-            return 0;
-        if (x >= values.back())
-            return values.size()-1;
-        Size i = 0;
-        while (x > values[i])
-            i++;
-        return i;
-    }
 
     Volatility CapsStripper::volatilityImpl(Time t, Rate r) const {
             calculate();
