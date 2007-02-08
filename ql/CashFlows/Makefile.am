@@ -25,6 +25,7 @@ libCashFlows_la_SOURCES = \
     cashflowvectors.cpp \
     cmscoupon.cpp \
     conundrumpricer.cpp \
+    couponpricer.cpp \
     dividend.cpp \
     floatingratecoupon.cpp \
     shortfloatingcoupon.cpp \
