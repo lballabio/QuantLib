@@ -170,7 +170,7 @@ using namespace QuantLib;
     Volatility BilinInterpCapletVolStructure::
         volatilityImpl(Time length, Rate strike) const {
         if (length < minTime())
-            return firstRowInterpolator_(strike);
+            return firstRowInterpolator_(strike, true);
         else
             return bilinearInterpolation_->operator()(strike, length, true);
     }
