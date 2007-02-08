@@ -11,9 +11,11 @@ include_HEADERS = \
         cmscoupon.hpp \
         conundrumpricer.hpp \
         coupon.hpp \
+	couponpricer.hpp \
         dividend.hpp \
         fixedratecoupon.hpp \
         floatingratecoupon.hpp \
+	iborcoupon.hpp \
         shortfloatingcoupon.hpp \
         shortindexedcoupon.hpp \
         simplecashflow.hpp \
@@ -28,6 +30,7 @@ libCashFlows_la_SOURCES = \
     couponpricer.cpp \
     dividend.cpp \
     floatingratecoupon.cpp \
+    iborcoupon.cpp \
     shortfloatingcoupon.cpp \
     timebasket.cpp
 
