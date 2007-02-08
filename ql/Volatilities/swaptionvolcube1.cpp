@@ -45,13 +45,22 @@ namespace QuantLib {
                 bool vegaWeightedSmileFit,
                 const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
-                bool isAtmCalibrated)
+                bool isAtmCalibrated,
+                Real maxErrorTolerance,
+                Size maxIterations)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
-      isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated)
+      isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
+      maxIterations_(maxIterations)
     {
+        if(maxErrorTolerance != Null<Rate>()){
+            maxErrorTolerance_ = maxErrorTolerance;
+        } else{
+        	maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+			if (vegaWeightedSmileFit_) maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
+        }
        registerWithParametersGuess();
     }
 
@@ -150,7 +159,8 @@ namespace QuantLib {
                                           isParameterFixed_[2],
                                           isParameterFixed_[3],
                                           vegaWeightedSmileFit_,
-                                          boost::shared_ptr<EndCriteria>(),
+                                          boost::shared_ptr<EndCriteria>(new
+                                            EndCriteria(maxIterations_, 1e-8)),
                                           boost::shared_ptr<OptimizationMethod>()));
 
                 Real interpolationError =
@@ -169,9 +179,7 @@ namespace QuantLib {
                           ", swap tenor " << swapTenors[k] <<
                           ": max iteration");
 
-				Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
-				if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
-                QL_ENSURE(maxErrors[j][k]<maxErrorTolerance,
+                QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max error " << io::rate(maxErrors[j][k]));
@@ -233,7 +241,8 @@ namespace QuantLib {
                                         isParameterFixed_[2],
                                         isParameterFixed_[3],
                                         vegaWeightedSmileFit_,
-                                        boost::shared_ptr<EndCriteria>(),
+                                        boost::shared_ptr<EndCriteria>(new
+                                            EndCriteria(maxIterations_, 1e-8)),
                                         boost::shared_ptr<OptimizationMethod>()));
 
             Real interpolationError =
@@ -252,9 +261,7 @@ namespace QuantLib {
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration");
 
-			Real maxErrorTolerance = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
-			if (vegaWeightedSmileFit_) maxErrorTolerance = SWAPTIONVOLCUBE_TOL;
-            QL_ENSURE(calibrationResult[6]< maxErrorTolerance,
+            QL_ENSURE(calibrationResult[6]< maxErrorTolerance_,
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max error " << calibrationResult[6]);

@@ -134,7 +134,8 @@ namespace QuantLib {
         CalibrationType calibrationType_;
 
         Array calibration(const boost::shared_ptr<EndCriteria>& endCriteria,
-                          const boost::shared_ptr<OptimizationMethod>& method);
+                          const boost::shared_ptr<OptimizationMethod>& method,
+                          const Array& guess);
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 

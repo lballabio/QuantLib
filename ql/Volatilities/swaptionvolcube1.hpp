@@ -93,7 +93,9 @@ namespace QuantLib {
             bool vegaWeightedSmileFit,
             const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
             const std::vector<bool>& isParameterFixed,
-            bool isAtmCalibrated);
+            bool isAtmCalibrated,
+            Real maxErrorTolerance = Null<Real>(),
+            Size maxIterations = 60000);
         ////! \name LazyObject interface
         ////@{
         void performCalculations() const;
@@ -144,6 +146,8 @@ namespace QuantLib {
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
+        Real maxErrorTolerance_;
+        Size maxIterations_;
     };
     
 }

@@ -296,11 +296,12 @@ namespace QuantLib {
 
 	Array SmileAndCmsCalibrationBySabr::calibration(
             const boost::shared_ptr<EndCriteria>& endCriteria, 
-            const boost::shared_ptr<OptimizationMethod>& method){
+            const boost::shared_ptr<OptimizationMethod>& method,
+            const Array& guess){
 
         ParametersConstraint constraint;
         ObjectiveFunction costFunction(this);
-        Problem problem(costFunction, constraint); // FIXME initialValue?
+        Problem problem(costFunction, constraint,guess);
         endCriteria_ = method->minimize(problem, *endCriteria);
         error_ = problem.functionValue();
         Array result = problem.currentValue();
