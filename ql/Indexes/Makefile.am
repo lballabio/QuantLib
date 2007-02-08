@@ -12,6 +12,7 @@ include_HEADERS = \
     dkklibor.hpp \
     euribor.hpp \
     euriborswapfixa.hpp \
+    euriborswapfixb.hpp \
     euriborswapfixifr.hpp \
     eurlibor.hpp \
     eurliborswapfixa.hpp \
@@ -33,6 +34,7 @@ include_HEADERS = \
 
 libIndexes_la_SOURCES = \
     euriborswapfixa.cpp \
+    euriborswapfixb.cpp \
     euriborswapfixifr.cpp \
     eurliborswapfixa.cpp \
     eurliborswapfixb.cpp \
