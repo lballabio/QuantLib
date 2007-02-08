@@ -23,27 +23,27 @@
 
 namespace QuantLib {
 
-    Real ArmijoLineSearch::operator()(const Problem& P,
+    Real ArmijoLineSearch::operator()(Problem& P,
                                       const EndCriteria& endCriteria,
                                       Real t_ini)
     {
-        OptimizationMethod& method = P.method();
+        //OptimizationMethod& method = P.method();
         Constraint& constraint = P.constraint();
         succeed_=true;
         bool maxIter = false;
         Real qtold, t = t_ini;
         Size loopNumber = 0;
 
-        Real q0 = method.functionValue();
-        Real qp0 = method.gradientNormValue();
+        Real q0 = P.functionValue();
+        Real qp0 = P.gradientNormValue();
 
         qt_ = q0;
         qpt_ = (gradient_.empty()) ? qp0 : -DotProduct(gradient_,searchDirection_);
 
         // Initialize gradient
-        gradient_ = Array(method.x().size());
+        gradient_ = Array(P.currentValue().size());
         // Compute new point
-        xtd_ = method.x();
+        xtd_ = P.currentValue();
         t = update(xtd_, searchDirection_, t, constraint);
         // Compute function value at the new point
         qt_ = P.value (xtd_);
@@ -57,7 +57,7 @@ namespace QuantLib {
                 // Store old value of the function
                 qtold = qt_;
                 // New point value
-                xtd_ = method.x();
+                xtd_ = P.currentValue();
                 t = update(xtd_, searchDirection_, t, constraint);
 
                 // Compute function value at the new point

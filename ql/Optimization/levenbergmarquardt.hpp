@@ -38,12 +38,11 @@ namespace QuantLib {
       public:
         LevenbergMarquardt(Real epsfcn = 1.0e-8,
                            Real xtol = 1.0e-8,
-                           Real gtol = 1.0e-8,
-                           const Array& initialValue = Array());
-        void minimize(const Problem& P,
-                      const EndCriteria& endCriteria
-                      //      = EndCriteria(400, 1.0e-8, 1.0e-8)
-                      );
+                           Real gtol = 1.0e-8);
+        virtual EndCriteria::Type minimize(Problem& P,
+                                           const EndCriteria& endCriteria //= EndCriteria()
+                                           );
+                                           //      = EndCriteria(400, 1.0e-8, 1.0e-8)
         virtual Integer getInfo() const;
         static void fcn(int m,
                         int n,
@@ -55,10 +54,10 @@ namespace QuantLib {
         // algorithm sessionId() safe (or multi threading safe).
         class ProblemData : public Singleton<ProblemData> {
           public:
-            const Problem* & problem() { return thisP_; }
+            Problem* & problem() { return thisP_; }
             Array& initCostValues()    { return initCostValues_; }
           private:
-            const Problem* thisP_;
+            Problem* thisP_;
             Array initCostValues_;
         };
 

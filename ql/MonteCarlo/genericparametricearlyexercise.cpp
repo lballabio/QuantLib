@@ -97,14 +97,13 @@ namespace QuantLib {
             exercise.guess(i-1, parameters[i-1]);
             std::copy(parameters[i-1].begin(), parameters[i-1].end(),
                       guess.begin());
-            method.setInitialValue(guess);
 
             NoConstraint c;
 
-            Problem p(f, c, method);
-            p.minimize(endCriteria);
+            Problem p(f, c, guess);
+            method.minimize(p, endCriteria);
 
-            Array result = p.minimumValue();
+            Array result = p.currentValue();
             std::copy(result.begin(), result.end(),
                       parameters[i-1].begin());
 

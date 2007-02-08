@@ -35,13 +35,13 @@ namespace QuantLib {
     */
     class SteepestDescent : public LineSearchBasedMethod {
       public:
-        SteepestDescent(const Array& initialValue = Array(),
-                        const boost::shared_ptr<LineSearch>& lineSearch =
+        SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch =
                                             boost::shared_ptr<LineSearch>())
-        : LineSearchBasedMethod(initialValue, lineSearch) {}
+        : LineSearchBasedMethod(lineSearch) {}
         //! minimize the optimization problem P
-        void minimize(const Problem& P,
-                      const EndCriteria& endCriteria);
+        virtual EndCriteria::Type minimize(Problem& P,
+                                           const EndCriteria& endCriteria //= EndCriteria()
+                                           );
     };
 
 }

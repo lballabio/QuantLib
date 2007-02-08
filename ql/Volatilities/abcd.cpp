@@ -21,8 +21,7 @@
 
 #include <ql/Volatilities/abcd.hpp>
 #include <ql/Optimization/problem.hpp>
-#include <ql/Optimization/conjugategradient.hpp>
-#include <ql/Optimization/armijo.hpp>
+#include <ql/Optimization/simplex.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -99,17 +98,8 @@ namespace QuantLib {
 
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
-            Array guess(4);
-            guess[0] = a_;
-            guess[1] = b_;
-            guess[2] = c_;
-            guess[3] = d_;
-
-            boost::shared_ptr<LineSearch> lineSearch(new
-                ArmijoLineSearch(1e-12, 0.15, 0.55));
-
             method = boost::shared_ptr<OptimizationMethod>(new
-                ConjugateGradient(guess, lineSearch));
+                Simplex(0.01));
         }
 
         boost::shared_ptr<EndCriteria> endCriteria = endCr;
@@ -118,12 +108,18 @@ namespace QuantLib {
                 EndCriteria(100000, 0.3e-4));
         }
 
+        Array guess(4);
+        guess[0] = a_;
+        guess[1] = b_;
+        guess[2] = c_;
+        guess[3] = d_;
+
         AbcdConstraint constraint;
         AbcdCostFunction costFunction(this, blackVols, t);
-        Problem problem(costFunction, constraint, *method);
-        problem.minimize(*endCriteria);
+        Problem problem(costFunction, constraint, guess);
+        EndCriteria::Type ec = method->minimize(problem, *endCriteria);
 
-		Array result = problem.minimumValue();
+		Array result = problem.currentValue();
         if (!aIsFixed_) a_ = result[0];
         if (!bIsFixed_) b_ = result[1];
         if (!cIsFixed_) c_ = result[2];
@@ -131,7 +127,7 @@ namespace QuantLib {
 
         validateAbcdParameters(a_, b_, c_, d_);
 
-        return endCriteria->criteria();
+        return ec;
     }
 
 

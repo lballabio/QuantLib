@@ -298,16 +298,11 @@ namespace QuantLib {
 
         ParametersConstraint constraint;
         ObjectiveFunction costFunction(this);
-        Problem problem(costFunction, constraint, *method);
-        problem.minimize(*endCriteria);
-        Array result = problem.minimumValue();
-
-        Array y = result;
-
-        error_ = method->functionValue();
-        endCriteria_ = endCriteria->criteria();
-
-        return y;
+        Problem problem(costFunction, constraint); // FIXME initialValue?
+        endCriteria_ = method->minimize(problem, *endCriteria);
+        error_ = problem.functionValue();
+        Array result = problem.currentValue();
+        return result;
     }
 
     //===========================================================================//

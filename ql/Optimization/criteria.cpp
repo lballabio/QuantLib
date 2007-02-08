@@ -30,21 +30,23 @@ namespace QuantLib {
       functionEpsilon_(functionEpsilon), gradientEpsilon_(gradientEpsilon),
       positiveOptimization_(true), 
       maxIterStatPt_(std::min(Size(maxIteration/10.0), Size(1000))),
-      statState_(0), endCriteria_(none) {
+      statState_(0), endCriteria_(None) {
         if (gradientEpsilon_==Null<Real>())
             gradientEpsilon_ = functionEpsilon_;
     }
 
     std::ostream& operator<<(std::ostream& out,  EndCriteria::Type ec) {
         switch (ec) {
-        case QuantLib::EndCriteria::none:
+        case QuantLib::EndCriteria::None:
             return out << "None";
-        case QuantLib::EndCriteria::maxIter:
+        case QuantLib::EndCriteria::MaxIterations:
             return out << "MaxIterations";
-        case QuantLib::EndCriteria::statPt:
+        case QuantLib::EndCriteria::StationaryPoint:
             return out << "StationaryPoint";
-        case QuantLib::EndCriteria::statGd:
+        case QuantLib::EndCriteria::StationaryGradient:
             return out << "StationaryGradient";
+        case QuantLib::EndCriteria::Unknown:
+            return out << "Unknown";
         default:
             QL_FAIL("unknown EndCriteria::Type (" << Integer(ec) << ")");
         }

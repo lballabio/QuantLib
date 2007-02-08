@@ -94,11 +94,10 @@ namespace QuantLib {
                               weights;
         CalibrationFunction f(this, instruments, w);
 
-        method.setInitialValue(params());
-        Problem prob(f, c, method);
-        prob.minimize(endCriteria);
+        Problem prob(f, c, params());
+        method.minimize(prob, endCriteria);
 
-        Array result(prob.minimumValue());
+        Array result(prob.currentValue());
         setParams(result);
     }
 

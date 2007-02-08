@@ -40,7 +40,11 @@ namespace QuantLib {
     */
     class EndCriteria {
       public:
-        enum Type { none, maxIter, statPt, statGd };
+        enum Type { None,
+                    MaxIterations,
+                    StationaryPoint,
+                    StationaryGradient,
+                    Unknown};
 
         //! initialization constructor
         EndCriteria(Size maxIteration = 1000,
@@ -53,13 +57,10 @@ namespace QuantLib {
                         Real fold,
                         Real normgold,
                         Real fnew,
-                        Real normgnew,
-                        Real) const;
-        //! return the end criteria type
-        Type criteria() const;
+                        Real normgnew) const;
         //! return the end criteria type
         Type type() const;
-        Size maxIteration() const;
+        Size maxIterations() const;
         Real functionEpsilon() const;
         Real gradientEpsilon() const;
 
@@ -94,7 +95,7 @@ namespace QuantLib {
     inline bool EndCriteria::checkIterationNumber(Size iteration) const{
         bool test = (iteration >= maxIteration_);
         if (test)
-            endCriteria_ = maxIter;
+            endCriteria_ = MaxIterations;
         return test;
     }
 
@@ -104,7 +105,7 @@ namespace QuantLib {
         if (test) {
             statState_++;
             if (statState_ > maxIterStatPt_) {
-                endCriteria_ = statPt;
+                endCriteria_ = StationaryPoint;
             }
         } else {
             if (statState_ != 0)
@@ -116,7 +117,7 @@ namespace QuantLib {
     inline bool EndCriteria::checkAccuracyValue(Real f) const {
         bool test = (f < functionEpsilon_ && positiveOptimization_);
         if (test) {
-            endCriteria_ = statPt;
+            endCriteria_ = StationaryPoint;
         }
         return test;
     }
@@ -124,14 +125,14 @@ namespace QuantLib {
     inline bool EndCriteria::checkStationaryGradientNorm(Real normDiff) const {
         bool test = (normDiff < gradientEpsilon_);
         if (test)
-            endCriteria_ = statGd;
+            endCriteria_ = StationaryGradient;
         return test;
     }
 
     inline bool EndCriteria::checkAccuracyGradientNorm(Real norm) const {
         bool test = (norm < gradientEpsilon_);
         if (test)
-            endCriteria_ = statGd;
+            endCriteria_ = StationaryGradient;
         return test;
     }
 
@@ -139,8 +140,7 @@ namespace QuantLib {
                                         Real fold,
                                         Real normgold,
                                         Real fnew,
-                                        Real normgnew,
-                                        Real) const {
+                                        Real normgnew) const {
         return
             checkIterationNumber(iteration) ||
             checkStationaryValue(fold, fnew) ||
@@ -150,15 +150,11 @@ namespace QuantLib {
             checkAccuracyGradientNorm(normgold);
     }
 
-    inline EndCriteria::Type EndCriteria::criteria() const {
-        return endCriteria_;
-    }
-
     inline EndCriteria::Type EndCriteria::type() const {
         return endCriteria_;
     }
 
-    inline Size EndCriteria::maxIteration() const {
+    inline Size EndCriteria::maxIterations() const {
         return maxIteration_;
     }
 

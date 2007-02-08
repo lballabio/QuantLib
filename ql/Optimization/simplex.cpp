@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    Real Simplex::extrapolate(const Problem& P,
+    Real Simplex::extrapolate(Problem& P,
                               Size iHighest,
                               Real &factor) const {
 
@@ -50,8 +50,12 @@ namespace QuantLib {
 
     }
 
-    void Simplex::minimize(const Problem& P,
-                           const EndCriteria& endCriteria) {
+    EndCriteria::Type Simplex::minimize(Problem& P,
+                                        const EndCriteria& endCriteria) {
+        P.reset();
+        Array x_ = P.currentValue();
+        Integer iterationNumber_=0;
+
         bool end = false;
 
         Size n = x_.size(), i;
@@ -98,15 +102,17 @@ namespace QuantLib {
 
             Real rtol = 2.0*std::fabs(high - low)/
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
+            ++iterationNumber_;
             if (rtol < endCriteria.functionEpsilon() ||
-                endCriteria.checkIterationNumber(++iterationNumber_)) {
-				//in this case set endCriteria_ = statPt
+                endCriteria.checkIterationNumber(iterationNumber_)) {
+				//in this case set endCriteria_ = StationaryPoint
 				endCriteria.checkAccuracyValue(QL_EPSILON); 
-				endCriteria.checkIterationNumber(iterationNumber());
+				endCriteria.checkIterationNumber(iterationNumber_);
                 x_ = vertices_[iLowest];
-				//and set the functionValue_
-				functionValue_ = low;
-                return;
+
+				P.setFunctionValue(low);
+                P.setCurrentValue(x_);
+                return endCriteria.type();
             }
 
             Real factor = -1.0;
@@ -131,6 +137,8 @@ namespace QuantLib {
                 }
             }
         } while (end == false);
+
+        QL_FAIL("optimization failed: unexpected behaviour");
     }
 
 }

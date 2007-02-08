@@ -23,18 +23,10 @@
 namespace QuantLib {
 
     LineSearchBasedMethod::LineSearchBasedMethod(
-                           const Array& initialValue,
                            const boost::shared_ptr<LineSearch>& lineSearch)
-    : OptimizationMethod(initialValue),
-      lineSearch_(lineSearch) {
+    : lineSearch_(lineSearch) {
         if (!lineSearch_)
            lineSearch_ = boost::shared_ptr<LineSearch>(new ArmijoLineSearch);
-        lineSearch_->searchDirection() = Array(x_.size());
-    }
-
-    void LineSearchBasedMethod::setInitialValue(const Array& initVal) {
-        OptimizationMethod::setInitialValue(initVal);
-        lineSearch_->searchDirection() = Array(x_.size());
     }
 
 }

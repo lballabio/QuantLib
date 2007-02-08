@@ -23,8 +23,13 @@
 
 namespace QuantLib {
 
-    void ConjugateGradient::minimize(const Problem &P,
-                                     const EndCriteria& endCriteria) {
+    EndCriteria::Type ConjugateGradient::minimize(Problem &P,
+                                                  const EndCriteria& endCriteria) {
+        P.reset();
+        Array x_ = P.currentValue();
+        Integer iterationNumber_=0;
+        lineSearch_->searchDirection() = Array(x_.size());
+
         bool done = false;
 
         // function and squared norm of gradient values;
@@ -38,9 +43,9 @@ namespace QuantLib {
         Size sz = lineSearch_->searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
 
-        functionValue() = P.valueAndGradient(g, x_);
+        P.setFunctionValue(P.valueAndGradient(g, x_));
         lineSearch_->searchDirection() = -g;
-        gradientNormValue() = DotProduct(g, g);
+        P.setGradientNormValue(DotProduct(g, g));
 
         do {
             // Linesearch
@@ -54,14 +59,14 @@ namespace QuantLib {
                 // New point
                 x_ = lineSearch_->lastX();
                 // New function value
-                fold = functionValue();
-                functionValue() = lineSearch_->lastFunctionValue();
+                fold = P.functionValue();
+                P.setFunctionValue(lineSearch_->lastFunctionValue());
                 // New gradient and search direction vectors
                 g = lineSearch_->lastGradient();
                 // orthogonalization coef
-                gold2 = gradientNormValue();
-                gradientNormValue() = lineSearch_->lastGradientNorm2();
-                c = gradientNormValue() / gold2;
+                gold2 = P.gradientNormValue();
+                P.setGradientNormValue(lineSearch_->lastGradientNorm2());
+                c = P.gradientNormValue() / gold2;
                 // conjugate gradient search direction
                 sddiff = (-g + c * d) - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));
@@ -69,14 +74,20 @@ namespace QuantLib {
                 
                 // End criteria
                 done = endCriteria(iterationNumber_,
-                                   fold, std::sqrt(gold2), functionValue(),
-                                   std::sqrt(gradientNormValue()), normdiff);
+                                   fold, std::sqrt(gold2), P.functionValue(),
+                                   std::sqrt(P.gradientNormValue())
+                                   // FIXME: it's never been used!
+                                   //, normdiff
+                                   );
 			    // Increase interation number
                 ++iterationNumber_;
             } else {
                 done=true;
             }
         } while (!done);
+
+        P.setCurrentValue(x_);
+        return endCriteria.type();
 
 	}
 

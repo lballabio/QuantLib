@@ -54,7 +54,7 @@ namespace QuantLib {
         : LineSearch(eps), alpha_(alpha), beta_(beta) {}
 
         //! Perform line search
-        Real operator()(const Problem& P, // Optimization problem
+        Real operator()(Problem& P, // Optimization problem
                         const EndCriteria&,
                         Real t_ini);      // initial value of line-search step
       private:

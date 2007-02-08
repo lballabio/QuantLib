@@ -2082,7 +2082,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
     Real d0 = instVol.d();
     Real error0 = instVol.error(blackVols, rateTimes.begin());
 
-    instVol.capletCalibration(blackVols, rateTimes.begin());
+    EndCriteria::Type ec = instVol.capletCalibration(blackVols, rateTimes.begin());
     Real a1 = instVol.a();
     Real b1 = instVol.b();
     Real c1 = instVol.c();
@@ -2103,11 +2103,13 @@ void MarketModelTest::testAbcdVolatilityFit() {
         if (std::abs(k[i]-1.0)>tol) {
             Real modelVol =
                 instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
-            BOOST_FAIL("\n   Fixing Time = " << rateTimes[i] <<
-                       "\n   MktVol = " << io::rate(blackVols[i]) <<
-                       "\n   ModVol = " << io::rate(modelVol) <<
-                       "\n   k=" << k[i] << " error=" << std::abs(k[i]-1.0) <<
-                       "\n   tol=" << tol);
+            BOOST_FAIL("\n EndCriteria = " << ec <<
+                       "\n Fixing Time = " << rateTimes[i] <<
+                       "\n MktVol      = " << io::rate(blackVols[i]) <<
+                       "\n ModVol      = " << io::rate(modelVol) <<
+                       "\n k           = " << k[i] <<
+                       "\n error       = " << std::abs(k[i]-1.0) <<
+                       "\n tol         = " << tol);
         }
     }
 

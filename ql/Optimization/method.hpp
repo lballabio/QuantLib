@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2007 F
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,49 +38,12 @@ namespace QuantLib {
     //! Abstract class for constrained optimization method
     class OptimizationMethod {
       public:
-        OptimizationMethod(const Array& initialValue = Array());
         virtual ~OptimizationMethod() {}
 
-        //! Set initial value
-        virtual void setInitialValue(const Array& initialValue);
-
         //! minimize the optimization problem P
-        virtual void minimize(const Problem& P,
-                              //const EndCriteria& endCriteria = EndCriteria()) = 0;
-                              const EndCriteria& endCriteria) = 0;
-
-        //! current value of the local minimum
-        const Array& x() const { return x_; }
-
-        //! current iteration number
-        Integer iterationNumber() const { return iterationNumber_; }
-
-        //! number of evaluation of cost function
-        Integer& functionEvaluation() { return functionEvaluation_; }
-        Integer functionEvaluation() const { return functionEvaluation_; }
-
-        //! number of evaluation of cost function gradient
-        Integer& gradientEvaluation() { return gradientEvaluation_; }
-        Integer gradientEvaluation() const { return gradientEvaluation_; }
-
-        //! value of cost function
-        Real& functionValue() { return functionValue_; }
-        Real functionValue() const { return functionValue_; }
-
-        //! value of cost function gradient norm
-        Real& gradientNormValue() { return squaredNorm_; }
-        Real gradientNormValue() const { return squaredNorm_; }
-
-      protected:
-        void reset();
-        //! current iteration step in the Optimization process
-        Integer iterationNumber_;
-        //! number of evaluation of cost function and its gradient
-        Integer functionEvaluation_, gradientEvaluation_;
-        //! function and gradient norm values of the last step
-        Real functionValue_, squaredNorm_;
-        //! current values of the local minimum
-        Array x_;
+        virtual EndCriteria::Type minimize(Problem& P,
+                                           const EndCriteria& endCriteria //= EndCriteria()
+                                           ) = 0;
     };
 
 }

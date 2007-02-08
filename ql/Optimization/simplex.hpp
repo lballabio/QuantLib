@@ -39,14 +39,12 @@ namespace QuantLib {
     class Simplex : public OptimizationMethod {
       public:
         /*! Constructor taking as input the characteristic length */
-        Simplex(Real lambda,
-                const Array& initialValue = Array())
-        : OptimizationMethod(initialValue),
-          lambda_(lambda) {}
-        void minimize(const Problem& P,
-                      const EndCriteria& endCriteria);
+        Simplex(Real lambda) : lambda_(lambda) {}
+        virtual EndCriteria::Type minimize(Problem& P,
+                                           const EndCriteria& endCriteria //= EndCriteria()
+                                           );
       private:
-        Real extrapolate(const Problem& P,
+        Real extrapolate(Problem& P,
                          Size iHighest,
                          Real& factor) const;
         Real lambda_;

@@ -4158,10 +4158,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\method.cpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Optimization\method.hpp"
 				>
 			</File>

@@ -64,7 +64,7 @@ namespace QuantLib {
               rhoIsFixed_(false),
               error_(Null<Real>()),
               maxError_(Null<Real>()),
-              SABREndCriteria_(EndCriteria::none)
+              SABREndCriteria_(EndCriteria::None)
             {
                 QL_REQUIRE(t>0.0, "expiry time must be positive: "
                                   << t << " not allowed");
@@ -272,20 +272,10 @@ namespace QuantLib {
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
                 
-                // we convert the guess to the new coordinates
-                Array guess(4);
-                guess[0] = std::sqrt(alpha_);
-                guess[1] = std::sqrt(-std::log(std::max(beta_, QL_EPSILON)));
-                guess[2] = std::sqrt(nu_);
-                guess[3] = std::tan(M_PI/2.0*rho_);
-                
                 // if no method is provided we provide one
-                if (!method_) {
+                if (!method_)
                     method_ = boost::shared_ptr<OptimizationMethod>(new
-                        Simplex(0.01, guess));
-                } else {
-                   method_->setInitialValue(guess);
-                }
+                        Simplex(0.01));
 
                 if (!endCriteria_) {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
@@ -304,16 +294,23 @@ namespace QuantLib {
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError();
-                    SABREndCriteria_ = EndCriteria::none;
+                    SABREndCriteria_ = EndCriteria::None;
                     return;
                 } else {
 
+                    // we convert the guess to the new coordinates
+                    Array guess(4);
+                    guess[0] = std::sqrt(alpha_);
+                    guess[1] = std::sqrt(-std::log(std::max(beta_, QL_EPSILON)));
+                    guess[2] = std::sqrt(nu_);
+                    guess[3] = std::tan(M_PI/2.0*rho_);
+                
                     // these lines should be moved in the constructor ...
                     SABRError costFunction(this);
-                    Problem problem(costFunction, constraint_, *method_);
+                    Problem problem(costFunction, constraint_, guess);
 
-                    problem.minimize(*endCriteria_);
-                    const Array& x = problem.minimumValue();
+                    SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
+                    const Array& x = problem.currentValue();
 
                     // we convert the result to the sabr coordinates
                     if (!alphaIsFixed_) alpha_ = std::max(x[0]*x[0], QL_EPSILON);
@@ -322,7 +319,6 @@ namespace QuantLib {
                     if (!rhoIsFixed_)   rho_   = std::max(std::min(2.0/M_PI*std::atan(x[3]), 1.0-QL_EPSILON), -1.0+QL_EPSILON);
                 }
 
-                SABREndCriteria_ = endCriteria();
                 error_ = interpolationError();
                 maxError_ = interpolationMaxError();
             }

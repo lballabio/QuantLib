@@ -150,10 +150,9 @@ namespace QuantLib {
                         }
                     }
                 }
-                optimize.setInitialValue(theta);
-                Problem p(costFunction, constraint, optimize);
-                p.minimize(endCriteria);
-                theta = p.minimumValue();
+                Problem p(costFunction, constraint, theta);
+                optimize.minimize(p, endCriteria);
+                theta = p.currentValue();
                 std::fill(result.begin(),result.end(),1.0);
                 for (i=0; i<size; i++) {
                     for (k=0; k<size; k++) {
@@ -195,10 +194,9 @@ namespace QuantLib {
                         }
                     }
                 }
-                optimize.setInitialValue(theta);
-                Problem p(costFunction, constraint, optimize);
-                p.minimize(endCriteria);
-                theta=p.minimumValue();
+                Problem p(costFunction, constraint, theta);
+                optimize.minimize(p, endCriteria);
+                theta=p.currentValue();
                 std::fill(result.begin(),result.end(),1.0);
                 for (i=0; i<size; i++) {
                     for (k=0; k<size; k++) {
