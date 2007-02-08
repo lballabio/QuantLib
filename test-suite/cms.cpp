@@ -384,15 +384,20 @@ void CmsTest::testFairRate()  {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-
+  
+    Handle<Quote> nullMeanReversionQuote = 
+                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
     boost::shared_ptr<CmsCouponPricer> numericalPricer(new
         ConundrumPricerByNumericalIntegration(atmVol_,
-											  modelOfYieldCurves_[h],0., 0., 1.));
+											  modelOfYieldCurves_[h],
+                                              nullMeanReversionQuote, 
+                                              0., 1.));
     boost::shared_ptr<CmsCouponPricer> analyticPricer(new
         ConundrumPricerByBlack(atmVol_,
-							   modelOfYieldCurves_[h],0.));
+							   modelOfYieldCurves_[h],
+                               nullMeanReversionQuote));
 
     //Coupons
     CappedFlooredCmsCoupon coupon1(
@@ -435,6 +440,9 @@ void CmsTest::testParity() {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
+    
+    Handle<Quote> nullMeanReversionQuote = 
+                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
 
     int priceIndex = 1;
     for (Size volStructureIndex = 0;
@@ -449,13 +457,15 @@ void CmsTest::testParity() {
 			{
 				boost::shared_ptr<CmsCouponPricer> analyticPricer(
 					new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
-											   modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
+											   modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                               nullMeanReversionQuote));
 				pricers.push_back(analyticPricer);
 
 				boost::shared_ptr<CmsCouponPricer> numericalPricer(
 					new ConundrumPricerByNumericalIntegration(
 												swaptionVolatilityStructures_[volStructureIndex],
-												modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
+												modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                                nullMeanReversionQuote,
 												0, 1));
 				pricers.push_back(numericalPricer);
 			}
@@ -539,6 +549,8 @@ void CmsTest::testCmsSwap() {
     swapLengths.push_back(10);
 
     int priceIndex = 1;
+    Handle<Quote> nullMeanReversionQuote = 
+        Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
 
     for (Size swapLengthIndex = 0; swapLengthIndex<swapLengths.size();
         swapLengthIndex++) {
@@ -565,13 +577,15 @@ void CmsTest::testCmsSwap() {
                 boost::shared_ptr<CmsCouponPricer> analyticPricer(
                     new ConundrumPricerByBlack(
 									swaptionVolatilityStructures_[volStructureIndex],
-									modelOfYieldCurves_[modelOfYieldCurveIndex],0.));
+									modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                    nullMeanReversionQuote));
                 pricers.push_back(analyticPricer);
 
                 boost::shared_ptr<CmsCouponPricer> numericalPricer(
                     new ConundrumPricerByNumericalIntegration(
                                 swaptionVolatilityStructures_[volStructureIndex],
-								modelOfYieldCurves_[modelOfYieldCurveIndex],0.,
+								modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                nullMeanReversionQuote,
                                 0, 1));
                 pricers.push_back(numericalPricer);
 

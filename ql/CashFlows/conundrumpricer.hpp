@@ -80,7 +80,7 @@ namespace QuantLib {
         newGFunctionExactYield(const CmsCoupon& coupon);
         static boost::shared_ptr<GFunction>
         newGFunctionWithShifts(const CmsCoupon& coupon,
-                               Real meanReversion);
+                               const Handle<Quote>& meanReversion);
       private:
         GFunctionFactory();
 
@@ -130,7 +130,7 @@ namespace QuantLib {
             Real discountAtStart_, discountRatio_;
 
             Real swapRateValue_;
-            Real meanReversion_;
+            Handle<Quote> meanReversion_;
 
             Real calibratedShift_, tmpRs_;
             const Real accuracy_;
@@ -162,7 +162,7 @@ namespace QuantLib {
             boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
           public:
             GFunctionWithShifts(const CmsCoupon& coupon,
-                                Real meanReversion);
+                                const Handle<Quote>& meanReversion);
             Real operator()(Real x) ;
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
@@ -186,15 +186,15 @@ namespace QuantLib {
         virtual Real floorletPrice(Rate effectiveFloor) const;
         virtual Rate floorletRate(Rate effectiveFloor) const;
         /* */
-		Real meanReversion() const { return meanReversion_; }
-		void setMeanReversion(Real meanReversion) {
+		Real meanReversion() const { return meanReversion_->value(); }
+		void setMeanReversion(const Handle<Quote>& meanReversion) {
 			meanReversion_ = meanReversion;
 		};
       protected:
         ConundrumPricer(
 				const Handle<SwaptionVolatilityStructure>& swaptionVol,
                 GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-				Real meanReversion);
+				const Handle<Quote>& meanReversion);
         void initialize(const FloatingRateCoupon& coupon);
 
         virtual Real optionletPrice(Option::Type optionType,
@@ -212,7 +212,7 @@ namespace QuantLib {
         Spread spread_;
         Real spreadLegValue_;
         Rate cutoffForCaplet_, cutoffForFloorlet_;
-		Real meanReversion_;
+		Handle<Quote> meanReversion_;
         Period swapTenor_;
         boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
     };
@@ -228,7 +228,7 @@ namespace QuantLib {
         ConundrumPricerByNumericalIntegration(
 			const Handle<SwaptionVolatilityStructure>& swaptionVol,
 			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-			Real meanReversion,
+			const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0);
       private:
@@ -287,7 +287,7 @@ namespace QuantLib {
         ConundrumPricerByBlack(
             const Handle<SwaptionVolatilityStructure>& swaptionVol,
 			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-			Real meanReversion);
+			const Handle<Quote>& meanReversion);
       protected:
         Real optionletPrice(Option::Type optionType,
                             Real strike) const;

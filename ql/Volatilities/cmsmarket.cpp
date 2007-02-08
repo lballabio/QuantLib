@@ -25,6 +25,7 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/makecms.hpp>
 #include <ql/Optimization/armijo.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
 
@@ -161,13 +162,14 @@ namespace QuantLib {
 
      void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                              Real meanReversion){
-
+        Handle<Quote> meanReversionQuote = Handle<Quote>(boost::shared_ptr<Quote>(new
+                SimpleQuote(meanReversion)));
         for (Size j=0; j<nSwapTenors_ ; j++) {
 			// set new volatility structure and new mean reversion
 			pricers_[j]->setSwaptionVolatility(volStructure);
 			const boost::shared_ptr<ConundrumPricer> pricer =
 				boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
-			pricer->setMeanReversion(meanReversion);
+			pricer->setMeanReversion(meanReversionQuote);
 		}
     
 		for (Size i=0; i<nExercise_; i++) {

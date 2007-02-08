@@ -28,6 +28,7 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/Volatilities/smilesection.hpp>
+#include <ql/Quotes/simplequote.hpp>
 
 
 namespace QuantLib {
@@ -61,7 +62,7 @@ namespace QuantLib {
     ConundrumPricer::ConundrumPricer(
                 const Handle<SwaptionVolatilityStructure>& swaptionVol,
                 GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-                Real meanReversion)
+                const Handle<Quote>& meanReversion)
     : CmsCouponPricer(swaptionVol),
       modelOfYieldCurve_(modelOfYieldCurve),
       cutoffForCaplet_(2), cutoffForFloorlet_(0),
@@ -106,8 +107,11 @@ namespace QuantLib {
             case GFunctionFactory::ExactYield:
                 gFunction_ = GFunctionFactory::newGFunctionExactYield(*coupon_);
                 break;
-            case GFunctionFactory::ParallelShifts:
-                gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, 0.0);
+            case GFunctionFactory::ParallelShifts: {
+                Handle<Quote> nullMeanReversionQuote = 
+                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+                gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, nullMeanReversionQuote);
+                }
                 break;
             case GFunctionFactory::NonParallelShifts:
                 gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, meanReversion_);
@@ -180,7 +184,7 @@ namespace QuantLib {
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-        Real meanReversion,
+        const Handle<Quote>& meanReversion,
         Real lowerLimit,
         Real upperLimit)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
@@ -308,7 +312,7 @@ namespace QuantLib {
     ConundrumPricerByBlack::ConundrumPricerByBlack(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
-        Real meanReversion)
+        const Handle<Quote>& meanReversion)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion)
       { }
 
@@ -521,7 +525,7 @@ namespace QuantLib {
 
     GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(
                     const CmsCoupon& coupon,
-                    Real meanReversion)
+                    const Handle<Quote>& meanReversion)
     : meanReversion_(meanReversion), calibratedShift_(0.03),
       tmpRs_(10000000.0), accuracy_( 1.0e-14) {
 
@@ -707,8 +711,9 @@ namespace QuantLib {
 
     Real GFunctionFactory::GFunctionWithShifts::shapeOfShift(Real s) const {
         const Real x(s-swapStartTime_);
-        if(meanReversion_>0) {
-            return (1.-std::exp(-meanReversion_*x))/meanReversion_;
+        Real meanReversion = meanReversion_->value();
+        if(meanReversion>0) {
+            return (1.-std::exp(-meanReversion*x))/meanReversion;
         }
         else {
             return x;
@@ -748,7 +753,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<GFunction> GFunctionFactory::newGFunctionWithShifts(const CmsCoupon& coupon,
-                                                                          Real meanReversion) {
+                                                                          const Handle<Quote>& meanReversion) {
         return boost::shared_ptr<GFunction>(new GFunctionWithShifts(coupon, meanReversion));
     }
 
