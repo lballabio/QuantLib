@@ -369,7 +369,7 @@ namespace QuantLib {
             }
 
             EndCriteria::Type endCriteria() {
-                return endCriteria_->criteria();
+                return endCriteria_->type();
             }
         };
 

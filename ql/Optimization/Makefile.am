@@ -28,7 +28,6 @@ libOptimization_la_SOURCES = \
     linesearch.cpp \
     linesearchbasedmethod.cpp \
     lmdif.cpp \
-    method.cpp \
     simplex.cpp \
     steepestdescent.cpp
 
