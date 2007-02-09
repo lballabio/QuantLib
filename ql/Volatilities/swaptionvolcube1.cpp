@@ -46,14 +46,14 @@ namespace QuantLib {
                 const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
                 const std::vector<bool>& isParameterFixed,
                 bool isAtmCalibrated,
-                Real maxErrorTolerance,
-                Size maxIterations)
+                const boost::shared_ptr<EndCriteria>& endCriteria,
+                Real maxErrorTolerance)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
-      maxIterations_(maxIterations)
+      endCriteria_(endCriteria)
     {
         if(maxErrorTolerance != Null<Rate>()){
             maxErrorTolerance_ = maxErrorTolerance;
@@ -159,8 +159,7 @@ namespace QuantLib {
                                           isParameterFixed_[2],
                                           isParameterFixed_[3],
                                           vegaWeightedSmileFit_,
-                                          boost::shared_ptr<EndCriteria>(new
-                                            EndCriteria(maxIterations_, 1e-8)),
+                                          endCriteria_,
                                           boost::shared_ptr<OptimizationMethod>()));
 
                 Real interpolationError =
@@ -241,8 +240,7 @@ namespace QuantLib {
                                         isParameterFixed_[2],
                                         isParameterFixed_[3],
                                         vegaWeightedSmileFit_,
-                                        boost::shared_ptr<EndCriteria>(new
-                                            EndCriteria(maxIterations_, 1e-8)),
+                                        endCriteria_,
                                         boost::shared_ptr<OptimizationMethod>()));
 
             Real interpolationError =

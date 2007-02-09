@@ -27,6 +27,7 @@
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Patterns/lazyobject.hpp>
+#include <ql/Optimization/criteria.hpp>
 
 namespace QuantLib {
 
@@ -94,8 +95,9 @@ namespace QuantLib {
             const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
             const std::vector<bool>& isParameterFixed,
             bool isAtmCalibrated,
-            Real maxErrorTolerance = Null<Real>(),
-            Size maxIterations = 60000);
+            const boost::shared_ptr<EndCriteria>& endCriteria
+                = boost::shared_ptr<EndCriteria>(),
+            Real maxErrorTolerance = Null<Real>());
         ////! \name LazyObject interface
         ////@{
         void performCalculations() const;
@@ -146,8 +148,8 @@ namespace QuantLib {
         mutable Cube parametersGuess_;
         std::vector<bool> isParameterFixed_;
         bool isAtmCalibrated_;
+        const boost::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
-        Size maxIterations_;
     };
     
 }
