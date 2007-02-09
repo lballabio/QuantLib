@@ -205,26 +205,22 @@ namespace QuantLib {
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
         Real eps = accuracy_;
 
-        // set initial value of the optimization method
-        om_->setInitialValue (initialValue_);
-
         // wrap the least square problem in an optimization function
         LeastSquareFunction lsf(lsProblem);
 
         // define optimization problem
-        Problem P(lsf, c_, *om_);
+        Problem P(lsf, c_, initialValue_);
 
         // minimize
         EndCriteria ec(maxIterations_, eps);
-        P.minimize(ec);
+        exitFlag_ = om_->minimize(P, ec);
 
         // summarize results of minimization
-        exitFlag_ = ec.criteria();
-        nbIterations_ = om_->iterationNumber();
+        //        nbIterations_ = om_->iterationNumber();
 
-        results_ = om_->x();
-        resnorm_ = om_->functionValue();
-        bestAccuracy_ = om_->functionValue();
+        results_ = P.currentValue();
+        resnorm_ = P.functionValue();
+        bestAccuracy_ = P.functionValue();
 
         return results_;
     }
