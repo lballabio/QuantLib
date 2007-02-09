@@ -76,53 +76,56 @@ namespace QuantLib {
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
         rateCurve_ = swapIndex->termStructure();
         discount_ = rateCurve_->discount(paymentDate_);
-        swapTenor_ = swapIndex->tenor();
-        boost::shared_ptr<VanillaSwap> swap = swapIndex->underlyingSwap(fixingDate_);
-
-        swapRateValue_ = swap->fairRate();
-
-        static const Spread bp = 1.0e-4;
-        annuity_ = (swap->floatingLegBPS()/bp);
 
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
+        
+        Date today = Settings::instance().evaluationDate();
+        if (fixingDate_ > today){
+            swapTenor_ = swapIndex->tenor();
+            boost::shared_ptr<VanillaSwap> swap = swapIndex->underlyingSwap(fixingDate_);
 
-        Size q = swapIndex->fixedLegTenor().frequency();
-        Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
-        DayCounter dc = swapIndex->dayCounter();
-        //const DayCounter dc = coupon.dayCounter();
-        Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
-                                         swap->startDate());
-        Time swapFirstPaymentTime =
-            dc.yearFraction(rateCurve_->referenceDate(), schedule.date(1));
-        Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
-                                           paymentDate_);
-        Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
+            swapRateValue_ = swap->fairRate();
 
-        switch (modelOfYieldCurve_) {
-            case GFunctionFactory::Standard:
-                gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
-                break;
-            case GFunctionFactory::ExactYield:
-                gFunction_ = GFunctionFactory::newGFunctionExactYield(*coupon_);
-                break;
-            case GFunctionFactory::ParallelShifts: {
-                Handle<Quote> nullMeanReversionQuote = 
-                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
-                gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, nullMeanReversionQuote);
-                }
-                break;
-            case GFunctionFactory::NonParallelShifts:
-                gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, meanReversion_);
-                break;
-            default:
-                QL_FAIL("unknown/illegal gFunction type");
-        }
+            static const Spread bp = 1.0e-4;
+            annuity_ = (swap->floatingLegBPS()/bp);
 
-        vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(new
-            BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
-                                     swaptionVolatility().currentLink()));
+            Size q = swapIndex->fixedLegTenor().frequency();
+            Schedule schedule = swapIndex->fixedRateSchedule(fixingDate_);
+            DayCounter dc = swapIndex->dayCounter();
+            //const DayCounter dc = coupon.dayCounter();
+            Time startTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                             swap->startDate());
+            Time swapFirstPaymentTime =
+                dc.yearFraction(rateCurve_->referenceDate(), schedule.date(1));
+            Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
+                                               paymentDate_);
+            Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
+            
+            switch (modelOfYieldCurve_) {
+                case GFunctionFactory::Standard:
+                    gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
+                    break;
+                case GFunctionFactory::ExactYield:
+                    gFunction_ = GFunctionFactory::newGFunctionExactYield(*coupon_);
+                    break;
+                case GFunctionFactory::ParallelShifts: {
+                    Handle<Quote> nullMeanReversionQuote = 
+                        Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+                    gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, nullMeanReversionQuote);
+                    }
+                    break;
+                case GFunctionFactory::NonParallelShifts:
+                    gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, meanReversion_);
+                    break;
+                default:
+                    QL_FAIL("unknown/illegal gFunction type");
+            }
+            vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(new
+                BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
+                                        swaptionVolatility().currentLink()));
+         }
     }
 
     Rate ConundrumPricer::swapletRate() const {
