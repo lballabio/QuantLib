@@ -4694,6 +4694,9 @@
 				RelativePath="ql\Optimization\conjugategradient.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Optimization\constraint.cpp">
+			</File>
+			<File
 				RelativePath="ql\Optimization\constraint.hpp">
 			</File>
 			<File
@@ -4703,10 +4706,13 @@
 				RelativePath="ql\Optimization\costfunction.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\criteria.cpp">
+				RelativePath=".\ql\Optimization\endcriteria.cpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\criteria.hpp">
+				RelativePath=".\ql\Optimization\endcriteria.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Optimization\leastsquare.cpp">
 			</File>
 			<File
 				RelativePath="ql\Optimization\leastsquare.hpp">
