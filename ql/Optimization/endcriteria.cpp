@@ -18,20 +18,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/endcriteria.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    EndCriteria::EndCriteria(Size maxIteration,
+    EndCriteria::EndCriteria(Size maxIterations,
                              Real functionEpsilon,
-                             Real gradientEpsilon)
-    : maxIteration_(maxIteration),
-      functionEpsilon_(functionEpsilon), gradientEpsilon_(gradientEpsilon),
-      positiveOptimization_(true), 
-      maxIterStatPt_(std::min(Size(maxIteration/10.0), Size(1000))),
-      statState_(0), endCriteria_(None) {
-        if (gradientEpsilon_==Null<Real>())
+                             Real gradientEpsilon,
+                             Size maxStationaryStateIterations)
+    : maxIterations_(maxIterations),
+      functionEpsilon_(functionEpsilon),
+      gradientEpsilon_(gradientEpsilon),
+      maxStationaryStateIterations_(maxStationaryStateIterations) {
+
+        if (maxStationaryStateIterations_ == Null<Size>())
+            maxStationaryStateIterations_ = std::min(Size(maxIterations/10.0),
+                                                     Size(1000));
+
+        if (gradientEpsilon_ == Null<Real>())
             gradientEpsilon_ = functionEpsilon_;
     }
 

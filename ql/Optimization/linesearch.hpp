@@ -26,6 +26,7 @@
 #define quantlib_optimization_line_search_h_
 
 #include <ql/Math/array.hpp>
+#include <ql/Optimization/endcriteria.hpp>
 
 namespace QuantLib {
 
@@ -55,8 +56,9 @@ namespace QuantLib {
 
         //! Perform line search
         virtual Real operator()(Problem& P, // Optimization problem
+                                EndCriteria::Type& ecType,
                                 const EndCriteria&,
-                                Real t_ini) = 0;      // initial value of line-search step
+                                const Real t_ini) = 0;      // initial value of line-search step
         Real update(Array& params,
                     const Array& direction,
                     Real beta,

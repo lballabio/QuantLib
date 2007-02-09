@@ -26,9 +26,12 @@
 #define quantlib_least_square_hpp
 
 #include <ql/Math/matrix.hpp>
-#include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/costfunction.hpp>
 
 namespace QuantLib {
+
+    class Constraint;
+    class OptimizationMethod;
 
     //! Base class for least square problem
     class LeastSquareProblem {
@@ -142,90 +145,6 @@ namespace QuantLib {
 
     };
 
-    // inline definitions
-
-    inline Real LeastSquareFunction::value(const Array & x) const {
-        // size of target and function to fit vectors
-        Array target(lsp_.size()), fct2fit(lsp_.size());
-        // compute its values
-        lsp_.targetAndValue(x, target, fct2fit);
-        // do the difference
-        Array diff = target - fct2fit;
-        // and compute the scalar product (square of the norm)
-        return DotProduct(diff, diff);
-    }
-
-    inline void LeastSquareFunction::gradient(Array& grad_f,
-                                              const Array& x) const {
-        // size of target and function to fit vectors
-        Array target (lsp_.size ()), fct2fit (lsp_.size ());
-        // size of gradient matrix
-        Matrix grad_fct2fit (lsp_.size (), x.size ());
-        // compute its values
-        lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
-        // do the difference
-        Array diff = target - fct2fit;
-        // compute derivative
-        grad_f = -2.0*(transpose(grad_fct2fit)*diff);
-    }
-
-    inline Real LeastSquareFunction::valueAndGradient(Array& grad_f,
-                                                      const Array& x) const {
-        // size of target and function to fit vectors
-        Array target(lsp_.size()), fct2fit(lsp_.size());
-        // size of gradient matrix
-        Matrix grad_fct2fit(lsp_.size(), x.size());
-        // compute its values
-        lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
-        // do the difference
-        Array diff = target - fct2fit;
-        // compute derivative
-        grad_f = -2.0*(transpose(grad_fct2fit)*diff);
-        // and compute the scalar product (square of the norm)
-        return DotProduct(diff, diff);
-    }
-
-    inline NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
-                                                      Real accuracy,
-                                                      Size maxiter)
-    : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
-      c_(c)
-    {}
-
-    inline NonLinearLeastSquare::NonLinearLeastSquare(
-                                     Constraint& c,
-                                     Real accuracy,
-                                     Size maxiter,
-                                     boost::shared_ptr<OptimizationMethod> om)
-    : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (om), c_(c) {}
-
-    inline
-    Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
-        Real eps = accuracy_;
-
-        // wrap the least square problem in an optimization function
-        LeastSquareFunction lsf(lsProblem);
-
-        // define optimization problem
-        Problem P(lsf, c_, initialValue_);
-
-        // minimize
-        EndCriteria ec(maxIterations_, eps);
-        exitFlag_ = om_->minimize(P, ec);
-
-        // summarize results of minimization
-        //        nbIterations_ = om_->iterationNumber();
-
-        results_ = P.currentValue();
-        resnorm_ = P.functionValue();
-        bestAccuracy_ = P.functionValue();
-
-        return results_;
-    }
-
 }
-
 
 #endif

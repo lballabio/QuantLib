@@ -29,7 +29,7 @@
 #include <ql/Utilities/null.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
-#include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/endcriteria.hpp>
 
 namespace QuantLib {
 

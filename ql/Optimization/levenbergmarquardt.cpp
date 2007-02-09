@@ -33,6 +33,7 @@ namespace QuantLib {
 
     EndCriteria::Type LevenbergMarquardt::minimize(Problem& P,
                                                    const EndCriteria& endCriteria) {
+        EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
         Integer iterationNumber_=0;
@@ -90,7 +91,8 @@ namespace QuantLib {
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
         // endCriteria should be evaluated here
-        return QuantLib::EndCriteria::Unknown;
+        ecType = QuantLib::EndCriteria::Unknown;
+        return ecType;
     }
 
     void LevenbergMarquardt::fcn(int, int n,

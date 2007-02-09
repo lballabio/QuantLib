@@ -25,9 +25,10 @@ namespace QuantLib {
 
     EndCriteria::Type SteepestDescent::minimize(Problem& P,
                                                 const EndCriteria& endCriteria) {
+        EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
-        Integer iterationNumber_=0;
+        Size iterationNumber_=0, stationaryStateIterationNumber_=0;
         lineSearch_->searchDirection() = Array(x_.size());
 
         bool end;
@@ -48,14 +49,18 @@ namespace QuantLib {
 
         do {
             // Linesearch
-            t = (*lineSearch_)(P, endCriteria, t);
+            t = (*lineSearch_)(P, ecType, endCriteria, t);
 
             QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             // End criteria
-            end = endCriteria(iterationNumber_, P.functionValue(),
+            end = endCriteria(iterationNumber_,
+                              stationaryStateIterationNumber_,
+                              true, //FIXME: it should be in the problem
+                              P.functionValue(),
                               std::sqrt(P.gradientNormValue()),
                               lineSearch_->lastFunctionValue(),
-                              std::sqrt(lineSearch_->lastGradientNorm2())
+                              std::sqrt(lineSearch_->lastGradientNorm2()),
+                              ecType
                               // FIXME: it's never been used!
                               //, normdiff
                               );
@@ -78,7 +83,7 @@ namespace QuantLib {
         } while (end == false);
 
         P.setCurrentValue(x_);
-        return endCriteria.type();
+        return ecType;
 
     }
 

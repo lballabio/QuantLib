@@ -25,9 +25,10 @@ namespace QuantLib {
 
     EndCriteria::Type ConjugateGradient::minimize(Problem &P,
                                                   const EndCriteria& endCriteria) {
+        EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
-        Integer iterationNumber_=0;
+        Size iterationNumber_=0, stationaryStateIterationNumber_=0;
         lineSearch_->searchDirection() = Array(x_.size());
 
         bool done = false;
@@ -49,7 +50,7 @@ namespace QuantLib {
 
         do {
             // Linesearch
-            t = (*lineSearch_)(P, endCriteria, t);
+            t = (*lineSearch_)(P, ecType, endCriteria, t);
             // don't throw: it can fail just because maxIterations exceeded
             //QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             if (lineSearch_->succeed())
@@ -74,8 +75,13 @@ namespace QuantLib {
                 
                 // End criteria
                 done = endCriteria(iterationNumber_,
-                                   fold, std::sqrt(gold2), P.functionValue(),
-                                   std::sqrt(P.gradientNormValue())
+                                   stationaryStateIterationNumber_,
+                                   true, //FIXME: it should be in the problem
+                                   fold,
+                                   std::sqrt(gold2),
+                                   P.functionValue(),
+                                   std::sqrt(P.gradientNormValue()),
+                                   ecType
                                    // FIXME: it's never been used!
                                    //, normdiff
                                    );
@@ -87,7 +93,7 @@ namespace QuantLib {
         } while (!done);
 
         P.setCurrentValue(x_);
-        return endCriteria.type();
+        return ecType;
 
 	}
 

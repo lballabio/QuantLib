@@ -27,7 +27,7 @@
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Patterns/lazyobject.hpp>
-#include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/endcriteria.hpp>
 
 namespace QuantLib {
 

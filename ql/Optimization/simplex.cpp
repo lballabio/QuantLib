@@ -52,6 +52,7 @@ namespace QuantLib {
 
     EndCriteria::Type Simplex::minimize(Problem& P,
                                         const EndCriteria& endCriteria) {
+        EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
         Integer iterationNumber_=0;
@@ -104,15 +105,14 @@ namespace QuantLib {
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             ++iterationNumber_;
             if (rtol < endCriteria.functionEpsilon() ||
-                endCriteria.checkIterationNumber(iterationNumber_)) {
-				//in this case set endCriteria_ = StationaryPoint
-				endCriteria.checkAccuracyValue(QL_EPSILON); 
-				endCriteria.checkIterationNumber(iterationNumber_);
+                endCriteria.checkIterationNumber(iterationNumber_, ecType)) {
+				endCriteria.checkAccuracyValue(QL_EPSILON, true, ecType); 
+				endCriteria.checkIterationNumber(iterationNumber_, ecType);
                 x_ = vertices_[iLowest];
 
 				P.setFunctionValue(low);
                 P.setCurrentValue(x_);
-                return endCriteria.type();
+                return ecType;
             }
 
             Real factor = -1.0;
