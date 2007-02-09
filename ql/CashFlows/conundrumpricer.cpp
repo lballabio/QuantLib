@@ -72,7 +72,6 @@ namespace QuantLib {
         coupon_ =  dynamic_cast<const CmsCoupon*>(&coupon);
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
 
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
@@ -84,6 +83,8 @@ namespace QuantLib {
         if(paymentDate_ > today)
             discount_ = rateCurve_->discount(paymentDate_);
         else discount_= 1.;
+
+        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
 
         if (fixingDate_ > today){
             swapTenor_ = swapIndex->tenor();

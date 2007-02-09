@@ -35,7 +35,13 @@ namespace QuantLib {
         Date paymentDate = coupon_->date();
         const boost::shared_ptr<InterestRateIndex>& index = coupon_->index();
         boost::shared_ptr<YieldTermStructure> rateCurve = index->termStructure();
-        discount_ = rateCurve->discount(paymentDate);
+
+        Date today = Settings::instance().evaluationDate();
+
+        if(paymentDate > today)
+            discount_ = rateCurve->discount(paymentDate);
+        else discount_= 1.;
+
         spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
 
     }
