@@ -70,18 +70,21 @@ namespace QuantLib {
 
     void ConundrumPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const CmsCoupon*>(&coupon);
+        gearing_ = coupon_->gearing();
+        spread_ = coupon_->spread();
+        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
 
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
         rateCurve_ = swapIndex->termStructure();
-        discount_ = rateCurve_->discount(paymentDate_);
-
-        gearing_ = coupon_->gearing();
-        spread_ = coupon_->spread();
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
         
         Date today = Settings::instance().evaluationDate();
+
+        if(paymentDate_ > today)
+            discount_ = rateCurve_->discount(paymentDate_);
+        else discount_= 1.;
+
         if (fixingDate_ > today){
             swapTenor_ = swapIndex->tenor();
             boost::shared_ptr<VanillaSwap> swap = swapIndex->underlyingSwap(fixingDate_);

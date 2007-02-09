@@ -122,6 +122,15 @@ namespace QuantLib {
                           fixingDays, index, gearing, spread, refPeriodStart, 
                           refPeriodEnd, dayCounter, isInArrears)),
                   cap, floor) {}
+
+        virtual void accept(AcyclicVisitor& v) {
+            Visitor<CappedFlooredIborCoupon>* v1 =
+                dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                CappedFlooredCoupon::accept(v);
+        }
     };
 
     class CappedFlooredCmsCoupon : public CappedFlooredCoupon {
@@ -147,6 +156,15 @@ namespace QuantLib {
                         fixingDays, index, gearing, spread, refPeriodStart, 
                         refPeriodEnd, dayCounter, isInArrears)),
                   cap, floor) {}
+
+        virtual void accept(AcyclicVisitor& v) {
+            Visitor<CappedFlooredCmsCoupon>* v1 =
+                dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                CappedFlooredCoupon::accept(v);
+        }
     };
 
 }
