@@ -620,73 +620,10 @@
 				RelativePath=".\ql\CashFlows\capflooredcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\capfloorlet.cpp">
+				RelativePath=".\ql\CashFlows\cashflowvectors.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\capfloorlet.hpp">
-			</File>
-			<File
-				RelativePath="ql\CashFlows\cashflowvectors.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\cashflowvectors.hpp">
+				RelativePath=".\ql\CashFlows\cashflowvectors.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\CashFlows\cmscoupon.cpp">
@@ -704,7 +641,13 @@
 				RelativePath=".\ql\CashFlows\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\coupon.hpp">
+				RelativePath=".\ql\CashFlows\coupon.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\couponpricer.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\couponpricer.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\CashFlows\dividend.cpp">
@@ -713,223 +656,37 @@
 				RelativePath=".\ql\CashFlows\dividend.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\fixedratecoupon.hpp">
+				RelativePath=".\ql\CashFlows\fixedratecoupon.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\CashFlows\floatingratecoupon.cpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\floatingratecoupon.hpp">
+				RelativePath=".\ql\CashFlows\floatingratecoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\inarrearindexedcoupon.cpp">
+				RelativePath=".\ql\CashFlows\iborcoupon.cpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\inarrearindexedcoupon.hpp">
+				RelativePath=".\ql\CashFlows\iborcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\indexedcashflowvectors.hpp">
+				RelativePath=".\ql\CashFlows\shortfloatingcoupon.cpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\indexedcoupon.hpp">
+				RelativePath=".\ql\CashFlows\shortfloatingcoupon.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\parcoupon.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\ql\CashFlows\shortindexedcoupon.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\parcoupon.hpp">
+				RelativePath=".\ql\CashFlows\simplecashflow.hpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\shortfloatingcoupon.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\ql\CashFlows\timebasket.cpp">
 			</File>
 			<File
-				RelativePath="ql\CashFlows\shortfloatingcoupon.hpp">
-			</File>
-			<File
-				RelativePath="ql\CashFlows\shortindexedcoupon.hpp">
-			</File>
-			<File
-				RelativePath="ql\CashFlows\simplecashflow.hpp">
-			</File>
-			<File
-				RelativePath="ql\CashFlows\timebasket.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\CashFlows\timebasket.hpp">
-			</File>
-			<File
-				RelativePath="ql\CashFlows\upfrontindexedcoupon.hpp">
+				RelativePath=".\ql\CashFlows\timebasket.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -4740,9 +4497,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\Optimization\lmdif.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\Optimization\method.cpp">
 			</File>
 			<File
 				RelativePath="ql\Optimization\method.hpp">
