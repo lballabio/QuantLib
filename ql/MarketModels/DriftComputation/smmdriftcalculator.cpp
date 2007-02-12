@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/smmdriftcalculator.hpp>
+#include <ql/MarketModels/DriftComputation/smmdriftcalculator.hpp>
 
 namespace QuantLib {
 

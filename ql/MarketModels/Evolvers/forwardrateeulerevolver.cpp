@@ -51,7 +51,7 @@ namespace QuantLib {
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(DriftCalculator(A,
+            calculators_.push_back(LMMDriftCalculator(A,
                                                    displacements_,
                                                    marketModel->evolution().rateTaus(),
                                                    numeraires[j],

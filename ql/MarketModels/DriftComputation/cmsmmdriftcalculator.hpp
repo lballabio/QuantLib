@@ -32,14 +32,14 @@ namespace QuantLib {
     //! Drift computation for Market Models
     /*! \ingroup Market Models */
 
-    class DriftCalculator {
+    class LMMDriftCalculator {
       public:
         /*! Returns the drift \f$ \mu \Delta t \f$.
             See Mark Joshi, "\it {Rapid Computation of Drifts in a 
             Reduced Factor Libor Market Model}", Wilmott Magazine, 
             May 2003.
         */
-        DriftCalculator(const Matrix& pseudo,
+        LMMDriftCalculator(const Matrix& pseudo,
                         const std::vector<Spread>& displacements,
                         const std::vector<Time>& taus,
                         Size numeraire,

@@ -24,7 +24,6 @@
 
 #include <ql/MarketModels/core.hpp>
 
-#include <ql/MarketModels/driftcalculator.hpp>
 #include <ql/MarketModels/exercisevalue.hpp>
 #include <ql/MarketModels/lsbasisfunctions.hpp>
 #include <ql/MarketModels/lsdatacollector.hpp>
@@ -38,6 +37,7 @@
 #include <ql/MarketModels/utilities.hpp>
 
 #include <ql/MarketModels/BrownianGenerators/all.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/Evolvers/all.hpp>
 #include <ql/MarketModels/ExerciseStrategies/all.hpp>
 #include <ql/MarketModels/ExerciseValues/all.hpp>

@@ -44,7 +44,7 @@ namespace QuantLib {
                          Size alive);
         //! Computes the drifts
         void compute(const CurveState& cs,
-                    std::vector<Real>& drifts) const;
+                     std::vector<Real>& drifts) const;
 
       private:
         Size nRates_, nFactors_;

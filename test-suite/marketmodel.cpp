@@ -2147,7 +2147,7 @@ void MarketModelTest::testDriftCalculator() {
             //BOOST_MESSAGE(io::ordinal(j) << " pseudoroot:\n" << A);
             Size inf = std::max(0,static_cast<Integer>(alive[j]));
             for (Size h=inf; h<numeraires.size(); ++h) {     // loop over numeraires
-                DriftCalculator driftcalculator(A, displacements, rateTaus,
+                LMMDriftCalculator driftcalculator(A, displacements, rateTaus,
                                                 numeraires[h], alive[j]);
                 driftcalculator.computePlain(todaysForwards, drifts);
                 driftcalculator.computeReduced(todaysForwards,

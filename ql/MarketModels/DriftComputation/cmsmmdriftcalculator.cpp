@@ -20,12 +20,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/MarketModels/driftcalculator.hpp>
+#include <ql/MarketModels/DriftComputation/cmsmmdriftcalculator.hpp>
 #include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 
-    DriftCalculator::DriftCalculator(const Matrix& pseudo,
+    LMMDriftCalculator::LMMDriftCalculator(const Matrix& pseudo,
                                      const std::vector<Spread>& displacements,
                                      const std::vector<Time>& taus,
                                      Size numeraire,
@@ -65,7 +65,7 @@ namespace QuantLib {
         }
     }
 
-    void DriftCalculator::compute(const std::vector<Rate>& forwards,
+    void LMMDriftCalculator::compute(const std::vector<Rate>& forwards,
                                   std::vector<Real>& drifts) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
@@ -78,7 +78,7 @@ namespace QuantLib {
             computeReduced(forwards, drifts);
     }
 
-    void DriftCalculator::computePlain(const std::vector<Rate>& forwards,
+    void LMMDriftCalculator::computePlain(const std::vector<Rate>& forwards,
                                        std::vector<Real>& drifts) const {
 
         // Compute drifts without factor reduction,
@@ -99,7 +99,7 @@ namespace QuantLib {
         }
     }
 
-    void DriftCalculator::computeReduced(const std::vector<Rate>& forwards,
+    void LMMDriftCalculator::computeReduced(const std::vector<Rate>& forwards,
                                          std::vector<Real>& drifts) const {
 
         // Compute drifts with factor reduction,

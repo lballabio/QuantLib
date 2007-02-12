@@ -26,7 +26,7 @@
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
-#include <ql/MarketModels/driftcalculator.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 
 namespace QuantLib {
 
@@ -86,7 +86,7 @@ namespace QuantLib {
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
          // helper classes
-        std::vector<DriftCalculator> calculators_;
+        std::vector<LMMDriftCalculator> calculators_;
     };
 
 }

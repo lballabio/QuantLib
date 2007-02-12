@@ -6924,6 +6924,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\MarketModels\newcurvestate.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\MarketModels\nodedataprovider.hpp"
 				>
 			</File>
@@ -7460,6 +7464,26 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="DriftComputation"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.hpp"
 					>
 				</File>
 			</Filter>
