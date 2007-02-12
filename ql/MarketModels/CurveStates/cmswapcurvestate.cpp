@@ -21,9 +21,20 @@
 
 namespace QuantLib {
 
+    CMSwapCurveState::CMSwapCurveState(const std::vector<Time>& rateTimes,
+                    Size spanningForwards)
+    : NewCurveState(rateTimes),
+      spanningFwds_(spanningForwards),
+      first_(nRates_),
+      forwardRates_(nRates_),
+      cotSwaps_(nRates_), cmSwaps_(nRates_),
+      discRatios_(nRates_+1),
+      cotAnnuities_(nRates_), cmSwapAnn_(nRates_) {
+    }
+
     void CMSwapCurveState::setOnCMSwapRates(
-                    const std:vector<Rate>& cmSwapRates,
-                    Size firstValidIndex = 0) {
+                    const std::vector<Rate>& cmSwapRates,
+                    Size firstValidIndex) {
         QL_REQUIRE(cmSwapRates.size()==nRates_,
                    "rates mismatch: " <<
                    nRates_ << " required, " <<
@@ -35,7 +46,8 @@ namespace QuantLib {
 
             // forwards
             first_ = firstValidIndex;
-            std::copy(begin+first_, end, cmSwaps_.begin()+first_);
+            std::copy(cmSwapRates.begin()+first_, cmSwapRates.end(),
+                     cmSwaps_.begin()+first_);
 
             // discount ratios
             discRatios_[first_] = 1.0;
@@ -43,14 +55,10 @@ namespace QuantLib {
             }
 
             // lazy evaluation of coterminal swap rates and annuities
-            firstCotSwap_ = nRates_;
     }
 
 
     const std::vector<Rate>& CMSwapCurveState::forwardRates() const {
-    }
-
-    const std::vector<DiscountFactor>& CMSwapCurveState::discountRatios() const {
     }
 
     const std::vector<Real>& CMSwapCurveState::coterminalSwapAnnuities() const {

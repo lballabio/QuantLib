@@ -19,11 +19,10 @@
 */
 
 
-#ifndef quantlib_curvestate_hpp
-#define quantlib_curvestate_hpp
+#ifndef quantlib_lmmcurvestate_hpp
+#define quantlib_lmmcurvestate_hpp
 
-#include <ql/Math/array.hpp>
-#include <vector>
+#include <ql/MarketModels/newcurvestate.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +35,7 @@ namespace QuantLib {
         Many products will not need expired rates and others will only require
         the first rate.
     */
-    class LMMCurveState : public CurveState {
+    class LMMCurveState : public NewCurveState {
     /* There will n+1 rate times expressing payment and reset times
         of forward rates.
 
@@ -48,8 +47,8 @@ namespace QuantLib {
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        LMMCurveState(const std:vector<Rate>& fwdRates)
-        : CurveState(fwdRates.begin(), fwdRates.end()),
+        LMMCurveState(const std::vector<Time>& rateTimes)
+        : NewCurveState(rateTimes),
           first_(nRates_), firstCotSwap_(nRates_),
           forwardRates_(nRates_), discRatios_(nRates_+1, 1.0),
           cotSwaps_(nRates_), cotAnnuities_(nRates_)
@@ -57,10 +56,10 @@ namespace QuantLib {
 
         //! \name Modifiers
         //@{
-        void setOnForwardRates(const std:vector<Rate>& fwdRates,
+        void setOnForwardRates(const std::vector<Rate>& fwdRates,
                              Size firstValidIndex = 0) {
-            QL_REQUIRE(Size(end-begin)==nRates_,
-                       "too many forward rates: " <<
+            QL_REQUIRE(fwdRates.size()==nRates_,
+                       "forward rates mismatch: " <<
                        nRates_ << " required, " <<
                        end-begin << " provided");
             QL_REQUIRE(firstValidIndex<nRates_,

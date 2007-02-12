@@ -22,14 +22,14 @@
 #ifndef quantlib_coterminalswapcurvestate_hpp
 #define quantlib_coterminalswapcurvestate_hpp
 
-#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/newcurvestate.hpp>
 
 namespace QuantLib {
 
-    class CoterminalSwapCurveState : public CurveState {
+    class CoterminalSwapCurveState : public NewCurveState {
       public:
-        CoterminalSwapCurveState(const std:vector<Rate>& swapRates)
-        : CurveState(swapRates.begin(), swapRates.end()) {}
+        CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
+        : NewCurveState(rateTimes) {}
 
         //! \name Modifiers
         //@{

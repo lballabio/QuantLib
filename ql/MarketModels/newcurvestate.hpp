@@ -19,8 +19,8 @@
 */
 
 
-#ifndef quantlib_curvestate_hpp
-#define quantlib_curvestate_hpp
+#ifndef quantlib_newcurvestate_hpp
+#define quantlib_newcurvestate_hpp
 
 #include <ql/Math/array.hpp>
 #include <vector>
@@ -36,7 +36,7 @@ namespace QuantLib {
         Many products will not need expired rates and others will only require
         the first rate.
     */
-    class CurveState {
+    class NewCurveState {
     /* There will n+1 rate times expressing payment and reset times
         of forward rates.
 
@@ -48,9 +48,9 @@ namespace QuantLib {
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        template <class ForwardIterator>
-        CurveState(ForwardIterator begin, ForwardIterator end)
-        : rateTimes_(begin, end), taus_(rateTimes_.size()),
+        NewCurveState(const std::vector<Time>& rateTimes)
+        : rateTimes_(rateTimes.begin(), rateTimes.end()),
+          taus_(rateTimes_.size()),
           nRates_(rateTimes_.size()-1)
         {
             for (Size i=0; i<nRates_; ++i)
@@ -64,10 +64,8 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes() const { return rateTimes_; }
         const std::vector<Time>& rateTaus() const { return taus_; }
 
-        Real discountRatio(Size i, Size j) const;
-
+        virtual Real discountRatio(Size i, Size j) const = 0;
         virtual const std::vector<Rate>& forwardRates() const = 0;
-        virtual const std::vector<DiscountFactor>& discountRatios() const = 0;
         virtual const std::vector<Real>& coterminalSwapAnnuities() const = 0;
         virtual const std::vector<Rate>& coterminalSwapRates() const = 0;
         virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const = 0;
@@ -87,12 +85,6 @@ namespace QuantLib {
         Size nRates_;
     };
 
-    inline Real CurveState::discountRatio(Size i, Size j) const {
-        Size iMin = std::min(i, j);
-        QL_REQUIRE(iMin>=first_, "index too low");
-        QL_REQUIRE(std::max(i, j)<=nRates_, "index too high");
-        return discRatios_[i]/discRatios_[j];
-    }
 
 }
 
