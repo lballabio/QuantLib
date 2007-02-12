@@ -4,13 +4,13 @@ includedir = $(prefix)/include/ql/MarketModels/DriftComputation
 
 include_HEADERS = \
 	cmsmmdriftcalculator.hpp \
-	lmmdriftcalculator.hpp \
-	smmdriftcalculator.hpp
+	lmmdriftcalculator.hpp 
+#	smmdriftcalculator.hpp
 
 libMarketModelsDriftComputation_la_SOURCES = \
 	cmsmmdriftcalculator.cpp \
-	lmmdriftcalculator.cpp \
-	smmdriftcalculator.cpp
+	lmmdriftcalculator.cpp 
+#	smmdriftcalculator.cpp
 
 noinst_LTLIBRARIES = libMarketModelsDriftComputation.la
 
