@@ -18,6 +18,7 @@
 */
 
 #include <ql/MarketModels/DriftComputation/smmdriftcalculator.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 
@@ -72,8 +73,8 @@ namespace QuantLib {
 
         // Precompute forwards factor
         for (Size i=alive_; i<nRates_; ++i)
-            tmp_[i] = (forwards[i]+displacements_[i]) /
-                (oneOverTaus_[i]+forwards[i]);
+            tmp_[i] = (cs.forwardRate(i)+displacements_[i]) /
+                (oneOverTaus_[i]+cs.forwardRate(i));
 
         // calculates and stores wkaj_, wkpj1_
         // assuming terminal bond measure

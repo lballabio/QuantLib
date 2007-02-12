@@ -28,7 +28,7 @@
 #include <vector>
 
 namespace QuantLib {
-
+    class CurveState;
     //! Drift computation for Coterminal Swap Market Models
     /*! \ingroup Market Models */
     class SMMDriftCalculator {

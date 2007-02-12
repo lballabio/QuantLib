@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels
 
 SUBDIRS = BrownianGenerators Evolvers ExerciseStrategies \
-    ExerciseValues Models Products
+    ExerciseValues Models Products DriftComputation
 
 include_HEADERS = \
     all.hpp \
@@ -11,7 +11,6 @@ include_HEADERS = \
     accountingengine.hpp \
     browniangenerator.hpp \
     curvestate.hpp \
-    driftcalculator.hpp \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
     exercisevalue.hpp \
@@ -36,7 +35,6 @@ include_HEADERS = \
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
     curvestate.cpp \
-    driftcalculator.cpp \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
     marketmodeldiscounter.cpp \
