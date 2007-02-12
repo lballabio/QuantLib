@@ -6864,14 +6864,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\driftcalculator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\driftcalculator.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\duffsdeviceinnerproduct.hpp"
 				>
 			</File>
