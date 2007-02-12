@@ -80,6 +80,7 @@ namespace QuantLib {
             std::copy(begin+first_, end, forwardRates_.begin()+first_);
 
             // discount ratios
+            discRatios_[first_] = 1.0;
             for (Size i=first_; i<nRates_; ++i)
                 discRatios_[i+1] = discRatios_[i] /
                                     (1.0+forwardRates_[i]*taus_[i]);
