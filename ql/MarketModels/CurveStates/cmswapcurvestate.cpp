@@ -59,36 +59,45 @@ namespace QuantLib {
 
 
     const std::vector<Rate>& CMSwapCurveState::forwardRates() const {
+        QL_FAIL("not implemented yet");
     }
 
     const std::vector<Real>& CMSwapCurveState::coterminalSwapAnnuities() const {
+        QL_FAIL("not implemented yet");
     }
 
     const std::vector<Rate>& CMSwapCurveState::coterminalSwapRates() const {
+        QL_FAIL("not implemented yet");
     }
 
     const std::vector<Real>& CMSwapCurveState::cmSwapAnnuities(Size spanningForwards) const {
+        QL_FAIL("not implemented yet");
     }
 
     const std::vector<Rate>& CMSwapCurveState::cmSwapRates(Size spanningForwards) const {
+        QL_FAIL("not implemented yet");
     }
 
-
     Rate CMSwapCurveState::forwardRate(Size i) const {
+        QL_FAIL("not implemented yet");
     }
 
     Rate CMSwapCurveState::coterminalSwapAnnuity(Size i) const {
+        QL_FAIL("not implemented yet");
     }
 
     Rate CMSwapCurveState::coterminalSwapRate(Size i) const {
+        QL_FAIL("not implemented yet");
     }
 
     Rate CMSwapCurveState::cmSwapAnnuity(Size i,
                              Size spanningForwards) const {
+        QL_FAIL("not implemented yet");
     }
 
     Rate CMSwapCurveState::cmSwapRate(Size i,
                           Size spanningForwards) const {
+        QL_FAIL("not implemented yet");
     }
 
 }

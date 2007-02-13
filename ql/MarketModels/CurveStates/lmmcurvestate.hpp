@@ -47,39 +47,11 @@ namespace QuantLib {
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        LMMCurveState(const std::vector<Time>& rateTimes)
-        : NewCurveState(rateTimes),
-          first_(nRates_), firstCotSwap_(nRates_),
-          forwardRates_(nRates_), discRatios_(nRates_+1, 1.0),
-          cotSwaps_(nRates_), cotAnnuities_(nRates_)
-        {}
-
+        LMMCurveState(const std::vector<Time>& rateTimes);
         //! \name Modifiers
         //@{
         void setOnForwardRates(const std::vector<Rate>& fwdRates,
-                             Size firstValidIndex = 0) {
-            QL_REQUIRE(fwdRates.size()==nRates_,
-                       "forward rates mismatch: " <<
-                       nRates_ << " required, " <<
-                       end-begin << " provided");
-            QL_REQUIRE(firstValidIndex<nRates_,
-                       "first valid index must be less than " <<
-                       nRates_ << ": " <<
-                       firstValidIndex << " not allowed");
-
-            // forwards
-            first_ = firstValidIndex;
-            std::copy(begin+first_, end, forwardRates_.begin()+first_);
-
-            // discount ratios
-            discRatios_[first_] = 1.0;
-            for (Size i=first_; i<nRates_; ++i)
-                discRatios_[i+1] = discRatios_[i] /
-                                    (1.0+forwardRates_[i]*taus_[i]);
-
-            // lazy evaluation of coterminal swap rates and annuities
-            firstCotSwap_ = nRates_;
-        }
+                               Size firstValidIndex = 0);
 
         template <class ForwardIterator>
         void setOnDiscountRatios(ForwardIterator begin,
@@ -111,20 +83,20 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        virtual const std::vector<Rate>& forwardRates() const;
-        virtual const std::vector<DiscountFactor>& discountRatios() const;
-        virtual const std::vector<Real>& coterminalSwapAnnuities() const;
-        virtual const std::vector<Rate>& coterminalSwapRates() const;
-        virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
-        virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
+        Real discountRatio(Size i, Size j) const = 0;
+        const std::vector<Rate>& forwardRates() const;
+        const std::vector<Real>& coterminalSwapAnnuities() const;
+        const std::vector<Rate>& coterminalSwapRates() const;
+        const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
+        const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
 
-        virtual Rate forwardRate(Size i) const;
-        virtual Rate coterminalSwapAnnuity(Size i) const;
-        virtual Rate coterminalSwapRate(Size i) const;
-        virtual Rate cmSwapAnnuity(Size i,
-                                 Size spanningForwards) const;
-        virtual Rate cmSwapRate(Size i,
-                              Size spanningForwards) const;
+        Rate forwardRate(Size i) const;
+        Rate coterminalSwapAnnuity(Size i) const;
+        Rate coterminalSwapRate(Size i) const;
+        Rate cmSwapAnnuity(Size i,
+                           Size spanningForwards) const;
+        Rate cmSwapRate(Size i,
+                        Size spanningForwards) const;
         //@}
       private:
         void computeCoterminalSwap(Size firstIndex) const;

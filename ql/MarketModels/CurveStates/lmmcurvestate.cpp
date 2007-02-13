@@ -25,15 +25,44 @@
 
 namespace QuantLib {
 
+    LMMCurveState::LMMCurveState(const std::vector<Time>& rateTimes)
+    : NewCurveState(rateTimes),
+      first_(nRates_), firstCotSwap_(nRates_),
+      forwardRates_(nRates_), discRatios_(nRates_+1, 1.0),
+      cotSwaps_(nRates_), cotAnnuities_(nRates_) {}
+
+    void LMMCurveState::setOnForwardRates(
+                           const std::vector<Rate>& fwdRates,
+                           Size firstValidIndex) {
+        QL_REQUIRE(fwdRates.size()==nRates_,
+                   "forward rates mismatch: " <<
+                   nRates_ << " required, " <<
+                   fwdRates.size() << " provided");
+        QL_REQUIRE(firstValidIndex<nRates_,
+                   "first valid index must be less than " <<
+                   nRates_ << ": " <<
+                   firstValidIndex << " not allowed");
+
+        // forwards
+        first_ = firstValidIndex;
+        std::copy(fwdRates.begin()+first_, fwdRates.end(),
+                  forwardRates_.begin()+first_);
+
+        // discount ratios
+        discRatios_[first_] = 1.0;
+        for (Size i=first_; i<nRates_; ++i)
+            discRatios_[i+1] = discRatios_[i] /
+                                (1.0+forwardRates_[i]*taus_[i]);
+
+        // lazy evaluation of coterminal swap rates and annuities
+        firstCotSwap_ = nRates_;
+    }
+
+
+
     const std::vector<Rate>& LMMCurveState::forwardRates() const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         return forwardRates_;
-    }
-
-    const std::vector<DiscountFactor>&
-    LMMCurveState::discountRatios() const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        return discRatios_;
     }
 
     const std::vector<Rate>&

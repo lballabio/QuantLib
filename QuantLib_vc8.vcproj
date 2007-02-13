@@ -7479,6 +7479,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="CurveStates"
+				>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="PricingEngines"
