@@ -33,7 +33,7 @@ namespace QuantLib {
 
         //! \name Modifiers
         //@{
-        void setOnCoterminalSwapRates(const std:vector<Rate>& swapRates,
+        void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
                             Size firstValidIndex = 0) {
             QL_REQUIRE(swapRates.size()==nRates_,
                        "rates mismatch: " <<
