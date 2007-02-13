@@ -125,7 +125,6 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void swap(Matrix&);
-        void fill(Real);
         //@}
       private:
         boost::scoped_array<Real> data_;
@@ -439,10 +438,6 @@ namespace QuantLib {
         return rows_ == 0 || columns_ == 0;
     }
     
-    inline void Matrix::fill(Real r) {
-        std::fill(begin(), end(), r);
-    }
-
     inline const Disposable<Matrix> operator+(const Matrix& m1,
                                               const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
