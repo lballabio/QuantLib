@@ -84,6 +84,11 @@ namespace QuantLib {
             capletRate = underlying_->pricer()->capletRate(effectiveCap());
         return swapletRate + floorletRate - capletRate;
     }
+
+    Rate CappedFlooredCoupon::convexityAdjustment() const {
+        return underlying_->convexityAdjustment();
+    }
+
     Rate CappedFlooredCoupon::cap() const {
         if (gearing_ > 0) {
             if(isCapped_) 

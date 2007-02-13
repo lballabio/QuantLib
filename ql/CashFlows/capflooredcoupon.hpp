@@ -65,6 +65,7 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
+        Rate convexityAdjustment() const;
         //@}
         //! cap 
         Rate cap() const;
