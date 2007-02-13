@@ -2679,12 +2679,6 @@
 				RelativePath=".\ql\MarketModels\curvestate.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\driftcalculator.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\MarketModels\driftcalculator.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\duffsdeviceinnerproduct.hpp">
 			</File>
 			<File
@@ -3086,6 +3080,47 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="CurveStates"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="DriftComputation"
+				Filter="">
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.hpp">
 				</File>
 			</Filter>
 		</Filter>
