@@ -7247,6 +7247,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp"
 					>
 				</File>
@@ -7476,6 +7484,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.hpp"
 					>
 				</File>
 				<File
