@@ -21,8 +21,8 @@
     \brief Drift computation for Market Model
 */
 
-#ifndef quantlib_drift_calculator_hpp
-#define quantlib_drift_calculator_hpp
+#ifndef quantlib_cms_drift_calculator_hpp
+#define quantlib_cms_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
 #include <vector>
@@ -32,14 +32,14 @@ namespace QuantLib {
     //! Drift computation for Market Models
     /*! \ingroup Market Models */
 
-    class LMMDriftCalculator {
+    class CMSMMDriftCalculator {
       public:
         /*! Returns the drift \f$ \mu \Delta t \f$.
             See Mark Joshi, "\it {Rapid Computation of Drifts in a 
             Reduced Factor Libor Market Model}", Wilmott Magazine, 
             May 2003.
         */
-        LMMDriftCalculator(const Matrix& pseudo,
+        CMSMMDriftCalculator(const Matrix& pseudo,
                         const std::vector<Spread>& displacements,
                         const std::vector<Time>& taus,
                         Size numeraire,

@@ -1,10 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Marco Bianchetti
- Copyright (C) 2006 Silvia Frasson
- Copyright (C) 2006 Mario Pucci
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +22,7 @@
 
 namespace QuantLib {
 
-    LMMDriftCalculator::LMMDriftCalculator(const Matrix& pseudo,
+    CMSMMDriftCalculator::CMSMMDriftCalculator(const Matrix& pseudo,
                                      const std::vector<Spread>& displacements,
                                      const std::vector<Time>& taus,
                                      Size numeraire,
@@ -65,7 +62,7 @@ namespace QuantLib {
         }
     }
 
-    void LMMDriftCalculator::compute(const std::vector<Rate>& forwards,
+    void CMSMMDriftCalculator::compute(const std::vector<Rate>& forwards,
                                   std::vector<Real>& drifts) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
             QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
@@ -78,7 +75,7 @@ namespace QuantLib {
             computeReduced(forwards, drifts);
     }
 
-    void LMMDriftCalculator::computePlain(const std::vector<Rate>& forwards,
+    void CMSMMDriftCalculator::computePlain(const std::vector<Rate>& forwards,
                                        std::vector<Real>& drifts) const {
 
         // Compute drifts without factor reduction,
@@ -99,7 +96,7 @@ namespace QuantLib {
         }
     }
 
-    void LMMDriftCalculator::computeReduced(const std::vector<Rate>& forwards,
+    void CMSMMDriftCalculator::computeReduced(const std::vector<Rate>& forwards,
                                          std::vector<Real>& drifts) const {
 
         // Compute drifts with factor reduction,

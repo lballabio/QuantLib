@@ -7463,6 +7463,10 @@
 				Name="DriftComputation"
 				>
 				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.hpp"
 					>
 				</File>
@@ -7472,6 +7476,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.cpp"
 					>
 				</File>
 				<File

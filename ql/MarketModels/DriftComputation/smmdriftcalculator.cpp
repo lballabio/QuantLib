@@ -84,8 +84,8 @@ namespace QuantLib {
                 //wkpj1_[k][nRates_-1]= 0.0;
                 //wkaj_[k][nRates_-1] = 0.0;
             for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_); --j) {
-                wkpj1_= 0.0; //fill in here
-                wkaj_ = 0.0; //fill in here
+                wkpj1_[k][j]= 0.0; //fill in here
+                wkaj_[k][j] = 0.0; //fill in here
             }
         }
 
@@ -96,27 +96,23 @@ namespace QuantLib {
         // we want cross variation with aj/pN
 
         // we need to subtract < Wk, PN/pn> (pn/pN)*(Aj/pN)
-        numeraireRatio = d[nRates_] / d[numeraire_];
+        //numeraireRatio = d[nRates_] / d[numeraire_];
         
 
-  for (Size k=0; k<nFactors_; ++k) {
-      // compute < Wk, PN/pn> 
-
-      for (Size j=alive_; j<nRates_; ++j) 
-      {
-        wkajN_[k][j] = wkaj_[k][j] - wkpNn[k]*numeraireRatio*//(Aj/pN);
-           
-      }
-
-   }
+        for (Size k=0; k<nFactors_; ++k) {
+            // compute < Wk, PN/pn> 
+            for (Size j=alive_; j<nRates_; ++j) {
+                //wkajN_[k][j] = wkaj_[k][j] - wkpNn[k]*numeraireRatio*//(Aj/pN);
+            }
+        }
 
         // eq 5.3 (in log coordinates)
         for (Size j=alive_; j<nRates_; ++j) {
             drifts[j] = 0.0;
             for (Size k=0; k<nFactors_; ++k) {
-                drifts[j] += wkajN_[k][j]*pseudo_[j][k];
+                //drifts[j] += wkajN_[k][j]*pseudo_[j][k];
             }
-            drift[j] *= -d[numeraire_]/a[j];
+            drifts[j] *= -d[numeraire_]/a[j];
         }
 
     }
