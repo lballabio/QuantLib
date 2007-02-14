@@ -47,10 +47,10 @@ namespace QuantLib {
         virtual Real discountRatio(Size i, Size j) const;
 
         virtual Rate forwardRate(Size i) const;
-        virtual Rate coterminalSwapAnnuity(Size i) const;
+        virtual Rate coterminalSwapAnnuity(Size i, Size numeraire) const;
         virtual Rate coterminalSwapRate(Size i) const;
-        virtual Rate cmSwapAnnuity(Size i,
-                                 Size spanningForwards) const;
+        virtual Rate cmSwapAnnuity(Size i, Size spanningForwards,
+                                   Size numeraire) const;
         virtual Rate cmSwapRate(Size i,
                               Size spanningForwards) const;
         //@}

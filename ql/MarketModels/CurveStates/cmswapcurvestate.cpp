@@ -96,7 +96,7 @@ namespace QuantLib {
         QL_FAIL("not implemented yet");
     }
 
-    Rate CMSwapCurveState::coterminalSwapAnnuity(Size i) const {
+    Rate CMSwapCurveState::coterminalSwapAnnuity(Size i, Size numeraire) const {
         QL_FAIL("not implemented yet");
     }
 
@@ -113,7 +113,8 @@ namespace QuantLib {
     }
     
     Rate CMSwapCurveState::cmSwapAnnuity(Size i,
-                                 Size spanningForwards) const{
+                                 Size spanningForwards,
+                                 Size numeraire) const{
         QL_FAIL("not implemented yet");
     }
     
