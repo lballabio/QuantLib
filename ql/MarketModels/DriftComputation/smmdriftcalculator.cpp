@@ -68,7 +68,7 @@ namespace QuantLib {
     }
 
     void SMMDriftCalculator::compute(const CurveState& cs,
-                                  std::vector<Real>& drifts) const {
+                                     std::vector<Real>& drifts) const {
 
         // ADD DISPLACEMENT LATER
 

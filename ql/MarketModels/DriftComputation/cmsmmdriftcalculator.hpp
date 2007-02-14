@@ -50,17 +50,6 @@ namespace QuantLib {
         //! Computes the drifts
         void compute(const CMSwapCurveState& cs,
                      std::vector<Real>& drifts) const;
-
-        /*! Computes the drifts without factor reduction as in 
-            eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
-        void computePlain(const CMSwapCurveState& cs,
-                          std::vector<Real>& drifts) const;
-
-        /*! Computes the drifts with factor reduction as in eq. 7 of ref. [1]
-            (uses pseudo square root of the covariance matrix). */
-        void computeReduced(const CMSwapCurveState& cs,
-                                  std::vector<Real>& drifts) const;
-
       private:
         Size dim_, factors_;
         bool isFullFactor_;
