@@ -51,11 +51,12 @@ namespace QuantLib {
 
             // discount ratios
             discRatios_[first_] = 1.0;
-            // to be removed ...
+            // to be replaced by coterminal swap computations...
             for (Size i = nRates_ - spanningFwds_; i<= nRates_; ++i)
                 discRatios_[i] = 1.0;
             for (Size i = nRates_ - spanningFwds_; i< nRates_; ++i)
                 cmSwapAnn_[i] = Real(nRates_ - i);
+
             for (Integer i=static_cast<Integer>(nRates_)- spanningFwds_;
              i>=static_cast<Integer>(first_+1); --i) {
                  // formula 6.1 Joshi Liesch
