@@ -25,7 +25,7 @@ namespace QuantLib {
     CoterminalSwapCurveState::CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
     : NewCurveState(rateTimes),
       first_(nRates_), firstCotSwap_(nRates_),
-      forwardRates_(nRates_), cmSwapRates_(nRates_),
+      forwardRates_(nRates_), cmSwapRates_(nRates_), cmSwapAnnuities_(nRates_),
       discRatios_(nRates_+1, 1.0),
       cotSwapRates_(nRates_), cotAnnuities_(nRates_) {}
 
@@ -51,7 +51,7 @@ namespace QuantLib {
         // discRatios_[nRates_+1] = 1.0; by construction
         cotAnnuities_[nRates_] = taus_[nRates_];
         // j < n
-        for (Integer i=nRates_; i>first_; --i) {
+        for (Size i=nRates_; i>first_; --i) {
             discRatios_[i] = 1.0 + cotSwapRates_[i] * cotAnnuities_[i];
             cotAnnuities_[i-1] = cotAnnuities_[i] + taus_[i] * discRatios_[i];            
         }
@@ -88,19 +88,22 @@ namespace QuantLib {
     Rate CoterminalSwapCurveState::cmSwapAnnuity(Size numeraire,
                              Size i,
                              Size spanningForwards) const {
+        // consider lazy evaluation here
         QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
                   "invalid numeraire");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
-        forwardsFromDiscountRatios(first_, discRatios_, taus_, forwardRates_);
-        return forwardRates_[i];
+        constantMaturityFromDiscountRatios(spanningForwards, first_,
+            discRatios_, taus_, cmSwapRates_, cmSwapAnnuities_);
+        return cmSwapAnnuities_[i]/discRatios_[numeraire];
     }
 
     Rate CoterminalSwapCurveState::cmSwapRate(Size i,
                                            Size spanningForwards) const {
+        // consider lazy evaluation here
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
-        forwardsFromDiscountRatios(first_, discRatios_, taus_, forwardRates_);
-        return forwardRates_[i];
+        constantMaturityFromDiscountRatios(spanningForwards, first_,
+            discRatios_, taus_, cmSwapRates_, cmSwapAnnuities_);
+        return cmSwapRates_[i];
     }
-
 
 }

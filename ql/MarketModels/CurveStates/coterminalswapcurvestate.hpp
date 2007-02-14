@@ -75,6 +75,7 @@ namespace QuantLib {
         mutable Size firstCotSwap_;
         std::vector<Time> taus_;
         mutable std::vector<Rate> forwardRates_, cmSwapRates_;
+        mutable std::vector<Real> cmSwapAnnuities_;
         std::vector<DiscountFactor> discRatios_;
         std::vector<Rate> cotSwapRates_;
         mutable std::vector<Real> cotAnnuities_;
