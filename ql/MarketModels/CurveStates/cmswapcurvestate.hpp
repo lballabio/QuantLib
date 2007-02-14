@@ -44,6 +44,7 @@ namespace QuantLib {
         virtual const std::vector<Rate>& coterminalSwapRates() const;
         virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
         virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
+        virtual Real discountRatio(Size i, Size j) const;
 
         virtual Rate forwardRate(Size i) const;
         virtual Rate coterminalSwapAnnuity(Size i) const;

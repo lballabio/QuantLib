@@ -25,6 +25,8 @@
 #define quantlib_cms_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
+#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -43,20 +45,21 @@ namespace QuantLib {
                         const std::vector<Spread>& displacements,
                         const std::vector<Time>& taus,
                         Size numeraire,
-                        Size alive);
+                        Size alive,
+                        Size spanningFwds);
         //! Computes the drifts
-        void compute(const std::vector<Rate>& forwards,
-                     std::vector<Real>& drifts) const;
+        void compute(const CMSwapCurveState& cs,
+                                  std::vector<Real>& drifts) const;
 
         /*! Computes the drifts without factor reduction as in 
             eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
-        void computePlain(const std::vector<Rate>& forwards,
-                          std::vector<Real>& drifts) const;
+        void computePlain(const CMSwapCurveState& cs,
+                                  std::vector<Real>& drifts) const;
 
         /*! Computes the drifts with factor reduction as in eq. 7 of ref. [1]
             (uses pseudo square root of the covariance matrix). */
-        void computeReduced(const std::vector<Rate>& forwards,
-                            std::vector<Real>& drifts) const;
+        void computeReduced(const CMSwapCurveState& cs,
+                                  std::vector<Real>& drifts) const;
 
       private:
         Size dim_, factors_;
@@ -67,8 +70,10 @@ namespace QuantLib {
         Matrix C_, pseudo_;
         // temporary variables to be added later
         mutable std::vector<Real> tmp_;
-        mutable Matrix e_;
+        mutable Matrix PjPnWk_; // < Wk, P_{j}/P_n> (k, j)
+        mutable Matrix wkaj_;    // < Wk , Aj/Pn> (k, j)
         std::vector<Size> downs_, ups_;
+        Size spanningFwds_;
     };
 
 }

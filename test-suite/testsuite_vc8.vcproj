@@ -865,6 +865,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\curvestates.cpp"
+				>
+			</File>
+			<File
 				RelativePath="dates.cpp"
 				>
 				<FileConfiguration
@@ -2305,6 +2309,10 @@
 			</File>
 			<File
 				RelativePath="covariance.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\curvestates.hpp"
 				>
 			</File>
 			<File

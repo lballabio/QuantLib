@@ -51,7 +51,21 @@ namespace QuantLib {
 
             // discount ratios
             discRatios_[first_] = 1.0;
-            for (Size i=first_; i<nRates_; ++i) {
+            // to be removed ...
+            for (Size i = nRates_ - spanningFwds_; i<= nRates_; ++i)
+                discRatios_[i] = 1.0;
+            for (Size i = nRates_ - spanningFwds_; i< nRates_; ++i)
+                cmSwapAnn_[i] = Real(nRates_ - i);
+            for (Integer i=static_cast<Integer>(nRates_)- spanningFwds_;
+             i>=static_cast<Integer>(first_+1); --i) {
+                 // formula 6.1 Joshi Liesch
+               cmSwapAnn_[i-1]= cmSwapAnn_[i]-
+                   forwardRates_[i+spanningFwds_]*taus_[i+spanningFwds_]+
+                   forwardRates_[i]*taus_[i];
+               discRatios_[i] = discRatios_[i + spanningFwds_] +
+                    cmSwaps_[i]*cmSwapAnn_[i];
+               forwardRates_[i]=(discRatios_[i]/discRatios_[i+1]-1.0) /
+                    taus_[i];
             }
 
             // lazy evaluation of coterminal swap rates and annuities
@@ -71,11 +85,11 @@ namespace QuantLib {
     }
 
     const std::vector<Real>& CMSwapCurveState::cmSwapAnnuities(Size spanningForwards) const {
-        QL_FAIL("not implemented yet");
+        return cmSwapAnn_;
     }
 
     const std::vector<Rate>& CMSwapCurveState::cmSwapRates(Size spanningForwards) const {
-        QL_FAIL("not implemented yet");
+        return cmSwaps_;
     }
 
     Rate CMSwapCurveState::forwardRate(Size i) const {
@@ -90,13 +104,21 @@ namespace QuantLib {
         QL_FAIL("not implemented yet");
     }
 
-    Rate CMSwapCurveState::cmSwapAnnuity(Size i,
-                             Size spanningForwards) const {
-        QL_FAIL("not implemented yet");
+    const std::vector<DiscountFactor>& CMSwapCurveState::discountRatios() const {
+        return discRatios_;
     }
 
+    Real CMSwapCurveState::discountRatio(Size i, Size j) const {
+        return discRatios_[i]/discRatios_[j];
+    }
+    
+    Rate CMSwapCurveState::cmSwapAnnuity(Size i,
+                                 Size spanningForwards) const{
+        QL_FAIL("not implemented yet");
+    }
+    
     Rate CMSwapCurveState::cmSwapRate(Size i,
-                          Size spanningForwards) const {
+                              Size spanningForwards) const{
         QL_FAIL("not implemented yet");
     }
 

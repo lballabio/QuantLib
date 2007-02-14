@@ -57,6 +57,7 @@
 #include "compoundforward.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
+#include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
 #include "digitaloption.hpp"
@@ -168,7 +169,8 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-
+    test->add(CurveStatesTest::suite());
+    //test->add(MarketModelTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());

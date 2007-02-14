@@ -18,7 +18,7 @@
 */
 
 #include <ql/MarketModels/DriftComputation/cmsmmdriftcalculator.hpp>
-#include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
+
 
 namespace QuantLib {
 
@@ -26,14 +26,15 @@ namespace QuantLib {
                                      const std::vector<Spread>& displacements,
                                      const std::vector<Time>& taus,
                                      Size numeraire,
-                                     Size alive)
+                                     Size alive,
+                                     Size spanningFwds)
     : dim_(taus.size()), factors_(pseudo.columns()),
       isFullFactor_(factors_==dim_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),
-      e_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      downs_(taus.size()), ups_(taus.size()) {
+      downs_(taus.size()), ups_(taus.size()),
+      spanningFwds_(spanningFwds){
 
         // Check requirements
         QL_REQUIRE(dim_>0, "Dim out of range");
@@ -62,103 +63,47 @@ namespace QuantLib {
         }
     }
 
-    void CMSMMDriftCalculator::compute(const std::vector<Rate>& forwards,
+    void CMSMMDriftCalculator::compute(const CMSwapCurveState& cs,
                                   std::vector<Real>& drifts) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-            QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
-            QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
+            /*QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
+            QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");*/
         #endif
 
         if (isFullFactor_)
-            computePlain(forwards, drifts);
+            computePlain(cs, drifts);
         else
-            computeReduced(forwards, drifts);
+            computeReduced(cs, drifts);
     }
 
-    void CMSMMDriftCalculator::computePlain(const std::vector<Rate>& forwards,
-                                       std::vector<Real>& drifts) const {
+    void CMSMMDriftCalculator::computePlain(const CMSwapCurveState& cs,
+                                  std::vector<Real>& drifts) const {
 
-        // Compute drifts without factor reduction,
-        // using directly the covariance matrix.
-
-        // Precompute forwards factor
-        Size i;
-        for(i=alive_; i<dim_; ++i)
-            tmp_[i] = (forwards[i]+displacements_[i]) /
-                      (oneOverTaus_[i]+forwards[i]);
+        const std::vector<Rate>& SR = cs.cmSwapRates(spanningFwds_);
+        const std::vector<Rate>& A = cs.cmSwapAnnuities(spanningFwds_);
+        const std::vector<DiscountFactor>& df = cs.discountRatios();  
+        DiscountFactor pn = cs.discountRatios()[numeraire_]; // numeraire
         // Compute drifts
-        for (i=alive_; i<dim_; ++i) {
-            drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
-                                           tmp_.begin()+ups_[i],
-                                           C_.row_begin(i)+downs_[i], 0.0);
-            if (numeraire_>i+1)
-                drifts[i] = -drifts[i];
+        for (Size k = 0; PjPnWk_.rows(); ++k){
+            for (Integer j=static_cast<Integer>(dim_)- spanningFwds_-1;
+                 j>=static_cast<Integer>(alive_); --j) {
+                PjPnWk_[k][j+1] = SR[j+1] * wkaj_[k][j+1]
+                                   + A[j+1]/pn + pseudo_[k][j+1]
+                                   + PjPnWk_[k][j+spanningFwds_+1];
+               wkaj_[k][j] = wkaj_[k][j] - PjPnWk_[k][j+spanningFwds_+1]
+                             + PjPnWk_[k][j+1];
+            }
+        }
+        for(Size j = 0; PjPnWk_.rows(); ++j){
+            for (Size k = 0; PjPnWk_.rows(); ++k){
+                drifts[j] -= pseudo_[j][k]/A[j]*wkaj_[k][j];
+            }
+            drifts[j] *= pn;
         }
     }
 
-    void CMSMMDriftCalculator::computeReduced(const std::vector<Rate>& forwards,
-                                         std::vector<Real>& drifts) const {
+    void CMSMMDriftCalculator::computeReduced(const CMSwapCurveState& cs,
+                                  std::vector<Real>& drifts) const {
 
-        // Compute drifts with factor reduction,
-        // using the pseudo square root of the covariance matrix.
-
-        // Precompute forwards factor
-        for (Size i=alive_; i<dim_; ++i)
-            tmp_[i] = (forwards[i]+displacements_[i]) /
-                (oneOverTaus_[i]+forwards[i]);
-
-        // Enforce initialization
-        for (Size r=0; r<factors_; ++r)
-            e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
-
-        // Now compute drifts: take the numeraire P_N (numeraire_=N)
-        // as the reference point, divide the summation into 3 steps,
-        // et impera:
-
-        // 1st step: the drift corresponding to the numeraire P_N is zero.
-        // (if N=0 no drift is null, if N=dim_ the last drift is null).
-        if (numeraire_>0) drifts[numeraire_-1] = 0.0;
-
-        // 2nd step: then, move backward from N-2 (included) back to
-        // alive (included) (if N=0 jumps to 3rd step, if N=dim_ the
-        // e_[r][N-1] are correctly initialized):
-
-        for (Integer i=static_cast<Integer>(numeraire_)-2;
-             i>=static_cast<Integer>(alive_); --i) {
-            drifts[i] = 0.0;
-            for (Size r=0; r<factors_; ++r) {
-                e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
-                drifts[i] -= e_[r][i]*pseudo_[i][r];
-            }
-
-            /*
-            Matrix::column_iterator p1 = e_.column_begin(i);
-            Matrix::column_iterator end = e_.column_end(i);
-            Matrix::const_column_iterator p2 = e_.column_begin(i+1);
-            Matrix::const_row_iterator q1 = pseudo_.row_begin(i);
-            Matrix::const_row_iterator q2 = pseudo_.row_begin(i+1);
-            Real x = tmp_[i+1];
-            while (p1 != end) {
-                *p1 = *p2 + x*(*q2);
-                drifts[i] -= *p1*(*q1);
-                ++p1; ++p2; ++q1; ++q2;
-            }
-            */
-        }
-
-        // 3rd step: now, move forward from N (included) up to n (excluded)
-        // (if N=0 this is the only relevant computation):
-        for (Size i=numeraire_; i<dim_; ++i) {
-            drifts[i] = 0.0;
-            for (Size r=0; r<factors_; ++r) {
-                if (i==0) {
-                    e_[r][i] = tmp_[i] * pseudo_[i][r];
-                } else {
-                    e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
-                }
-                drifts[i] += e_[r][i]*pseudo_[i][r];
-            }
-        }
     }
-
 }
