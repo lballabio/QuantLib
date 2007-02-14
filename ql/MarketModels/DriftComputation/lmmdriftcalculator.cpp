@@ -89,6 +89,7 @@ namespace QuantLib {
         for(i=alive_; i<dim_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (oneOverTaus_[i]+forwards[i]);
+
         // Compute drifts
         for (i=alive_; i<dim_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],

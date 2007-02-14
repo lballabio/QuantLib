@@ -25,7 +25,8 @@ namespace QuantLib {
     CoterminalSwapCurveState::CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
     : NewCurveState(rateTimes),
       first_(nRates_), firstCotSwap_(nRates_),
-      forwardRates_(nRates_), discRatios_(nRates_+1, 1.0),
+      forwardRates_(nRates_), cmSwapRates_(nRates_),
+      discRatios_(nRates_+1, 1.0),
       cotSwapRates_(nRates_), cotAnnuities_(nRates_) {}
 
       void CoterminalSwapCurveState::setOnCoterminalSwapRates(
@@ -50,51 +51,56 @@ namespace QuantLib {
         // discRatios_[nRates_+1] = 1.0; by construction
         cotAnnuities_[nRates_] = taus_[nRates_];
         // j < n
-        for (Integer i=nRates_; i>0; --i) { // controllare estremi loop
+        for (Integer i=nRates_; i>first_; --i) {
             discRatios_[i] = 1.0 + cotSwapRates_[i] * cotAnnuities_[i];
             cotAnnuities_[i-1] = cotAnnuities_[i] + taus_[i] * discRatios_[i];            
         }
-        discRatios_[0] = 1.0 + cotSwapRates_[0] * cotAnnuities_[1]; 
-    }
-
-    const std::vector<Rate>& CoterminalSwapCurveState::forwardRates() const {
-        // controls
-        return forwardRates_;
-    }
-
-    const std::vector<Rate>&
-    CoterminalSwapCurveState::coterminalSwapAnnuities() const {
-        // controls
-        return cotAnnuities_;
-    }
-
-    const std::vector<Rate>& CoterminalSwapCurveState::coterminalSwapRates() const {
-        // todo controls
-        return cotSwapRates_;
+        discRatios_[first_] = 1.0 + cotSwapRates_[first_] * cotAnnuities_[first_]; 
     }
 
     Real CoterminalSwapCurveState::discountRatio(Size i, Size j) const {
         Size iMin = std::min(i, j);
-        QL_REQUIRE(iMin>=first_, "index too low");
+        QL_REQUIRE(iMin>=first_, "expired index");
         QL_REQUIRE(std::max(i, j)<=nRates_, "index too high");
         return discRatios_[i]/discRatios_[j];
     }
 
-    Rate CoterminalSwapCurveState::coterminalSwapAnnuity(Size i) const {
-        // controls
-        return cotAnnuities_[i];
+    Rate CoterminalSwapCurveState::coterminalSwapAnnuity(Size numeraire,
+                                                     Size i) const {
+        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
+                  "invalid numeraire");
+        return cotAnnuities_[i]/discRatios_[numeraire];
     }
 
     Rate CoterminalSwapCurveState::coterminalSwapRate(Size i) const {
-        // controls
+        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
         return cotSwapRates_[i];
     }
 
-    // Computation of fwd rates
-    // from coterminal swap rates and annuities
-    void CoterminalSwapCurveState::computeForwardRate(Size i) const {
-        // controls    
-        forwardRates_[i] = (discountRatio(i,i+i)-1.0)/taus_[i-1];
+
+    Rate CoterminalSwapCurveState::forwardRate(Size i) const {
+        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        forwardsFromDiscountRatios(first_, discRatios_, taus_, forwardRates_);
+        return forwardRates_[i];
     }
+
+    Rate CoterminalSwapCurveState::cmSwapAnnuity(Size numeraire,
+                             Size i,
+                             Size spanningForwards) const {
+        QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
+                  "invalid numeraire");
+        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        forwardsFromDiscountRatios(first_, discRatios_, taus_, forwardRates_);
+        return forwardRates_[i];
+    }
+
+    Rate CoterminalSwapCurveState::cmSwapRate(Size i,
+                                           Size spanningForwards) const {
+        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        forwardsFromDiscountRatios(first_, discRatios_, taus_, forwardRates_);
+        return forwardRates_[i];
+    }
+
 
 }

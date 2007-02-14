@@ -30,9 +30,8 @@
 
 namespace QuantLib {
 
-    //! Drift computation for Libor Market Models
+    //! Drift computation for Normal Libor Market Models
     /*! \ingroup Market Models */
-
     class LMMNormalDriftCalculator {
       public:
         /*! Returns the drift \f$ \mu \Delta t \f$.

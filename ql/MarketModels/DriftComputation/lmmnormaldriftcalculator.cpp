@@ -85,13 +85,13 @@ namespace QuantLib {
         // Precompute forwards factor
         Size i;
         for(i=alive_; i<dim_; ++i)
-            tmp_[i] = 1./(oneOverTaus_[i]+forwards[i]);
+            tmp_[i] = 1.0/(oneOverTaus_[i]+forwards[i]);
                       
         // Compute drifts
         for (i=alive_; i<dim_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
-                                           tmp_.begin()+ups_[i],
-                                           C_.row_begin(i)+downs_[i], 0.0);
+                tmp_.begin()+ups_[i],
+                C_.row_begin(i)+downs_[i], 0.0);
             if (numeraire_>i+1)
                 drifts[i] = -drifts[i];
         }
@@ -105,7 +105,7 @@ namespace QuantLib {
 
         // Precompute forwards factor
         for (Size i=alive_; i<dim_; ++i)
-            tmp_[i] = 1.0 /(oneOverTaus_[i]+forwards[i]);
+            tmp_[i] = 1.0/(oneOverTaus_[i]+forwards[i]);
 
         // Enforce initialization
         for (Size r=0; r<factors_; ++r)

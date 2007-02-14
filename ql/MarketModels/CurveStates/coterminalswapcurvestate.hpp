@@ -49,43 +49,23 @@ namespace QuantLib {
         CoterminalSwapCurveState(const std::vector<Time>& rateTimes);
         //! \name Modifiers
         //@{
-<<<<<<< coterminalswapcurvestate.hpp
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
-                                      Size firstValidIndex = 0);
-=======
-        void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
-                            Size firstValidIndex = 0) {
-            QL_REQUIRE(swapRates.size()==nRates_,
-                       "rates mismatch: " <<
-                       nRates_ << " required, " <<
-                       swapRates.size() << " provided");
-            QL_REQUIRE(firstValidIndex<nRates_,
-                       "first valid index must be less than " <<
-                       nRates_ << ": " <<
-                       firstValidIndex << " not allowed");
-
-            // implementation here
->>>>>>> 1.3
-
+                                    Size firstValidIndex = 0);
         //@}
 
         //! \name Inspectors
         //@{
-        virtual const std::vector<Rate>& coterminalSwapRates() const;
-        virtual const std::vector<Rate>& forwardRates() const;
-        virtual const std::vector<DiscountFactor>& discountRatios() const;
-        virtual const std::vector<Real>& coterminalSwapAnnuities() const;
-        virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
-        virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
-
-        Real discountRatio(Size i, Size j) const = 0;
-        virtual Rate coterminalSwapRate(Size i) const;
-        virtual Rate forwardRate(Size i) const;
-        virtual Rate coterminalSwapAnnuity(Size i) const;
-        virtual Rate cmSwapAnnuity(Size i,
-                                 Size spanningForwards) const;
-        virtual Rate cmSwapRate(Size i,
-                              Size spanningForwards) const;
+        Real discountRatio(Size i,
+                         Size j) const;
+        Rate coterminalSwapRate(Size i) const;
+        Rate forwardRate(Size i) const;
+        Rate coterminalSwapAnnuity(Size numeraire,
+                                 Size i) const;
+        Rate cmSwapAnnuity(Size numeraire,
+                          Size i,
+                          Size spanningForwards) const;
+        Rate cmSwapRate(Size i,
+                       Size spanningForwards) const;
         //@}
       private:
         void computeForwardRate(Size firstIndex) const;
@@ -94,7 +74,7 @@ namespace QuantLib {
         Size first_;
         mutable Size firstCotSwap_;
         std::vector<Time> taus_;
-        mutable std::vector<Rate> forwardRates_;
+        mutable std::vector<Rate> forwardRates_, cmSwapRates_;
         std::vector<DiscountFactor> discRatios_;
         std::vector<Rate> cotSwapRates_;
         mutable std::vector<Real> cotAnnuities_;

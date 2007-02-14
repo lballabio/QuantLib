@@ -51,8 +51,7 @@ namespace QuantLib {
         NewCurveState(const std::vector<Time>& rateTimes)
         : rateTimes_(rateTimes.begin(), rateTimes.end()),
           taus_(rateTimes_.size()),
-          nRates_(rateTimes_.size()-1)
-        {
+          nRates_(rateTimes_.size()-1) {
             for (Size i=0; i<nRates_; ++i)
                 taus_[i] = rateTimes_[i+1] - rateTimes_[i];
         }
@@ -64,17 +63,14 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes() const { return rateTimes_; }
         const std::vector<Time>& rateTaus() const { return taus_; }
 
-        virtual Real discountRatio(Size i, Size j) const = 0;
-        virtual const std::vector<Rate>& forwardRates() const = 0;
-        virtual const std::vector<Real>& coterminalSwapAnnuities() const = 0;
-        virtual const std::vector<Rate>& coterminalSwapRates() const = 0;
-        virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const = 0;
-        virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const = 0;
-
+        virtual Real discountRatio(Size i,
+                                 Size j) const = 0;
         virtual Rate forwardRate(Size i) const = 0;
-        virtual Rate coterminalSwapAnnuity(Size i) const = 0;
+        virtual Rate coterminalSwapAnnuity(Size numeraire,
+                                        Size i) const = 0;
         virtual Rate coterminalSwapRate(Size i) const = 0;
-        virtual Rate cmSwapAnnuity(Size i,
+        virtual Rate cmSwapAnnuity(Size numeraire,
+                                 Size i,
                                  Size spanningForwards) const = 0;
         virtual Rate cmSwapRate(Size i,
                               Size spanningForwards) const = 0;
@@ -86,6 +82,24 @@ namespace QuantLib {
     };
 
 
+    void forwardsFromDiscountRatios(Size firstValidIndex,
+                                  const std::vector<DiscountFactor>& ds,
+                                  const std::vector<Time>& taus,
+                                  std::vector<Rate>& fwds);
+
+    void coterminalFromDiscountRatios(Size firstValidIndex,
+                                   const std::vector<DiscountFactor>& ds,
+                                   const std::vector<Time>& taus,
+                                   std::vector<Rate>& cotSwapRates,
+                                   std::vector<Rate>& cotSwapAnnuities);
+
+    void constantMaturityFromDiscountRatios(// Size i, // to be added later
+                                         Size spanningForwards,
+                                         Size firstValidIndex,
+                                         const std::vector<DiscountFactor>& ds,
+                                         const std::vector<Time>& taus,
+                                         std::vector<Rate>& cotSwapRates,
+                                         std::vector<Rate>& cotSwapAnnuities);
 }
 
 #endif
