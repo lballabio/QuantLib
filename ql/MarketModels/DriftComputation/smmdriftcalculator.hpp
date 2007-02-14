@@ -56,7 +56,8 @@ namespace QuantLib {
         // temporary variables to be added later
         mutable std::vector<Real> tmp_;
         mutable Matrix wkaj_;  // < W(k) | A(j)/P(n) >
-        mutable Matrix wkpj1_; // < W(k) | P(j+1)/P(n) >
+        mutable Matrix wkpj_; // < W(k) | P(j)/P(n) >
+        mutable Matrix wkajshifted_;
         //std::vector<Size> downs_, ups_;
     };
 

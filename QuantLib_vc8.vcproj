@@ -7186,82 +7186,94 @@
 			<Filter
 				Name="Evolvers"
 				>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp"
+				<Filter
+					Name="LogNormalForwardRate"
 					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp"
 						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp"
 						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp"
 						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp"
 						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp"
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="NormalForwardRate"
 					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.cpp"
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="LogNormalSwapRate"
 					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp"
-					>
-				</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="BrownianGenerators"
@@ -7512,6 +7524,10 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.cpp"
 					>
 				</File>
 				<File

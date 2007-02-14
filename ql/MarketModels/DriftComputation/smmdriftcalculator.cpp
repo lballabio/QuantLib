@@ -35,7 +35,9 @@ namespace QuantLib {
       tmp_(taus.size(), 0.0),
       // zero initialization required for (used by) the last element
       wkaj_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      wkpj1_(pseudo_.columns(), pseudo_.rows(), 0.0)/*,
+      wkpj_(pseudo_.columns(), pseudo_.rows()+1, 0.0),
+      wkajshifted_(pseudo_.columns(), pseudo_.rows(), 0.0)
+      /*,
       downs_(taus.size()), ups_(taus.size())*/ {
 
         // Check requirements
@@ -68,6 +70,9 @@ namespace QuantLib {
     void SMMDriftCalculator::compute(const CurveState& cs,
                                   std::vector<Real>& drifts) const {
 
+        // ADD DISPLACEMENT LATER
+
+
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
 
@@ -80,6 +85,7 @@ namespace QuantLib {
         // assuming terminal bond measure
         // eq 5.4-5.7
         Real Pn = cs.discountRatio(nRates_,0);
+        const std::vector<Time>& taus=cs.rateTaus();
         for (Size k=0; k<nFactors_; ++k) {
                 // taken care in the constructor
                 // wkpj1_[k][nRates_-1]= 0.0;
@@ -87,27 +93,26 @@ namespace QuantLib {
             for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_); --j) {
                  // < W(k) | P(j+1)/P(n) > = 
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
-                wkpj1_[k][j]= cs.coterminalSwapRate(j+1) * 
+                wkpj_[k][j+1]= cs.coterminalSwapRate(j+1) * 
                             ( pseudo_[j+1][k] * cs.coterminalSwapAnnuity(j+1) / Pn
-                            +  wkaj_[k][nRates_-1] );
-                wkaj_[k][j] = 0.0; //fill in here
+                            +  wkaj_[k][j+1] );
+                wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1]; 
             }
+            wkpj_[k][alive_]= cs.coterminalSwapRate(alive_) * 
+                            ( pseudo_[alive_][k] * cs.coterminalSwapAnnuity(alive_) / Pn
+                            +  wkaj_[k][nRates_-1] );
         }
 
-        const std::vector<Real>& a = cs.coterminalSwapAnnuities();
-        const std::vector<DiscountFactor>& d = cs.discountRatios();
-
-        // we have computed cross variation with aj/pn
-        // we want cross variation with aj/pN
-
-        // we need to subtract < Wk, PN/pn> (pn/pN)*(Aj/pN)
-        //numeraireRatio = d[nRates_] / d[numeraire_];
+ 
+        double numeraireRatio = cs.discountRatio(nRates_,numeraire_);
         
 
         for (Size k=0; k<nFactors_; ++k) {
             // compute < Wk, PN/pn> 
-            for (Size j=alive_; j<nRates_; ++j) {
-                //wkajN_[k][j] = wkaj_[k][j] - wkpNn[k]*numeraireRatio*//(Aj/pN);
+            for (Size j=alive_; j<nRates_; ++j) 
+            {
+                wkajshifted_[k][j] = wkaj_[k][j] - wkpj_[k][numeraire_]
+                                                *numeraireRatio;
             }
         }
 
@@ -115,9 +120,9 @@ namespace QuantLib {
         for (Size j=alive_; j<nRates_; ++j) {
             drifts[j] = 0.0;
             for (Size k=0; k<nFactors_; ++k) {
-                //drifts[j] += wkajN_[k][j]*pseudo_[j][k];
+                drifts[j] += wkajshifted_[k][j]*pseudo_[j][k];
             }
-            drifts[j] *= -d[numeraire_]/a[j];
+       
         }
 
     }
