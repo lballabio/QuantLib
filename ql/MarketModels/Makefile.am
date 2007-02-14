@@ -55,5 +55,7 @@ libMarketModels_la_LIBADD = \
     ExerciseValues/libMarketModelsExerciseValues.la \
     ExerciseStrategies/libMarketModelsExerciseStrategies.la \
     Models/libMarketModelsModels.la \
-    Products/libMarketModelsProducts.la
+    Products/libMarketModelsProducts.la \
+    DriftComputation/libMarketModelsDriftComputation.la
+
 

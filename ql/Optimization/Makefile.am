@@ -23,6 +23,7 @@ include_HEADERS = \
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
+    constraint.cpp \
     endcriteria.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \

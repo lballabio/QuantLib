@@ -368,9 +368,6 @@ namespace QuantLib {
                 return maxError;
             }
 
-            EndCriteria::Type endCriteria() {
-                return endCriteria_->type();
-            }
         };
 
     }
