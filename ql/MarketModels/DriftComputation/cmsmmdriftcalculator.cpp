@@ -84,7 +84,7 @@ namespace QuantLib {
             PjPnWk_[k][dim_] = 0.0;
             wkaj_[k][dim_-1]=0.0;
 
-            for (Integer j=static_cast<Integer>(dim_)-1;
+            for (Integer j=static_cast<Integer>(dim_)-2;
                 j>=static_cast<Integer>(alive_); --j) 
                 {
                 double sr = cs.cmSwapRate(j+1,spanningFwds_);
