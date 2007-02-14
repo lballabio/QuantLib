@@ -33,8 +33,7 @@ namespace QuantLib {
       numeraires_(numeraires),
       initialStep_(initialStep),
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
-      curveState_(marketModel->evolution().rateTimes().begin(),
-                  marketModel->evolution().rateTimes().end()),
+      curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
@@ -214,7 +213,7 @@ namespace QuantLib {
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
 
         // c) update curve state
-        curveState_.setOnForwardRates(forwards_.begin(), forwards_.end());
+        curveState_.setOnForwardRates(forwards_);
 
         ++currentStep_;
 

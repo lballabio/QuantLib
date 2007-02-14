@@ -22,7 +22,7 @@
 #ifndef quantlib_coterminalswapcurvestate_hpp
 #define quantlib_coterminalswapcurvestate_hpp
 
-#include <ql/MarketModels/newcurvestate.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
     /*! This class stores the state of the yield curve associated to the
@@ -34,7 +34,7 @@ namespace QuantLib {
         Many products will not need expired rates and others will only require
         the first rate.
     */
-    class CoterminalSwapCurveState : public NewCurveState {
+    class CoterminalSwapCurveState : public CurveState {
     /* There will n+1 rate times expressing payment and reset times
         of coterminal swap rates.
 
@@ -68,6 +68,8 @@ namespace QuantLib {
         Rate cmSwapAnnuity(Size numeraire,
                            Size i,
                            Size spanningForwards) const;
+        const std::vector<Rate>& forwardRates() const;
+        const std::vector<Rate>& coterminalSwapRates() const;
         //@}
       private:
         Size first_;

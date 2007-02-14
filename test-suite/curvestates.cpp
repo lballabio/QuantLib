@@ -157,9 +157,9 @@ void CurveStatesTest::testCMSwapCurveState() {
     cs.setOnCMSwapRates(forwards);
     std::vector<Real> drifts(nbRates);
     driftcalulator.compute(cs,drifts);
-    const std::vector<Rate>& dfs = cs.discountRatios();
+//    const std::vector<Rate>& dfs = cs.discountRatios();
     for (Size i = 0; i <nbRates; ++i)
-        std::cout << dfs[i] << std::endl;
+        std::cout << cs.discountRatio(i, nbRates) << std::endl;
 }
 
 // --- Call the desired tests

@@ -32,8 +32,7 @@ namespace QuantLib {
       numeraires_(numeraires),
       initialStep_(initialStep),
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
-      curveState_(marketModel->evolution().rateTimes().begin(),
-                  marketModel->evolution().rateTimes().end()),
+      curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()), drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
@@ -120,7 +119,7 @@ namespace QuantLib {
         }
 
         // e) update curve state
-        curveState_.setOnForwardRates(forwards_.begin(), forwards_.end());
+        curveState_.setOnForwardRates(forwards_);
 
         ++currentStep_;
 

@@ -26,7 +26,7 @@
 
 #include <ql/Math/matrix.hpp>
 #include <vector>
-#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 
 namespace QuantLib {
 
@@ -36,8 +36,8 @@ namespace QuantLib {
     class SwapCovarianceApproximator {
       public:
     /*! Given the forward covariance matrix, it returns 
-        an approximation for the corresponding covariance matrix 
-        for coterminal swaps. See e.g.:
+        an approximation for the corresponding coterminal swap
+        covariance matrix. See e.g.:
         [1] P. Jackel, R. Rebonato, "\it {Linking Caplet and Swaption
             Volatilities in a BGM/J Framework: Approximate Solutions}", 
             QUARCH preprint, 2000 (http://www.quarchome.org).
@@ -70,7 +70,7 @@ namespace QuantLib {
         //Real swapVariance(const Matrix& covariance);
 
       private:
-        CurveState initialCurveState_;
+        LMMCurveState initialCurveState_;
         Size expiry_, maturity_;
         Spread displacement_;
         Matrix forwardCovarianceMatrix_, swapCovarianceMatrix_;

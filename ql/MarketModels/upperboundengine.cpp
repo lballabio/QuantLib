@@ -23,6 +23,7 @@
 #include <ql/MarketModels/Products/MultiStep/callspecifiedmultiproduct.hpp>
 #include <ql/MarketModels/Products/MultiStep/exerciseadapter.hpp>
 #include <ql/MarketModels/utilities.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <algorithm>
 
 namespace QuantLib {
@@ -57,7 +58,7 @@ namespace QuantLib {
             }
 
             bool nextTimeStep(
-                    const CurveState& currentState,
+                    const LMMCurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
                 if (recording_)
@@ -91,7 +92,8 @@ namespace QuantLib {
                 recording_ = false;
             }
           private:
-            std::vector<CurveState> savedStates_;
+            // FIXME
+            std::vector<LMMCurveState> savedStates_;
             Size lastSavedStep_;
             bool recording_;
             std::vector<Size> numberCashFlowsThisStep_;

@@ -25,17 +25,16 @@ namespace QuantLib {
     namespace {
 
         Rate swapRate(const CurveState& state, Size begin, Size end) {
-            const std::vector<DiscountFactor>& P = state.discountRatios();
             const std::vector<Time>& taus = state.rateTaus();
+            Size nRates = state.numberOfRates();
 
             QL_REQUIRE(end > begin, "empty range specified");
-            QL_REQUIRE(end < P.size(), "out-of-bound access");
 
             Real sum = 0.0;
-            for (Size i=begin; i<end; ++i) {
-                sum += taus[i]*P[i+1];
-            }
-            return (P[begin]-P[end])/sum;
+            for (Size i=begin; i<end; ++i)
+                sum += taus[i]*state.discountRatio(i+1, nRates);
+
+            return (state.discountRatio(begin, nRates)-state.discountRatio(end, nRates))/sum;
         }
 
     }

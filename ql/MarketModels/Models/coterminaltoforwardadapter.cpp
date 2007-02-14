@@ -19,7 +19,7 @@
 */
 
 #include <ql/MarketModels/Models/coterminaltoforwardadapter.hpp>
-#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 #include <ql/MarketModels/swapforwardmappings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
@@ -47,11 +47,10 @@ namespace QuantLib
 
         const std::vector<Time>& rateTimes =
             coterminalModel_->evolution().rateTimes();
-        CurveState cs(rateTimes.begin(), rateTimes.end());
+        CoterminalSwapCurveState cs(rateTimes);
         const std::vector<Rate>& initialCoterminalSwapRates =
             coterminalModel_->initialRates();
-        cs.setOnCoterminalSwapRates(initialCoterminalSwapRates.begin(),
-                                    initialCoterminalSwapRates.end());
+        cs.setOnCoterminalSwapRates(initialCoterminalSwapRates);
         initialRates_ = cs.forwardRates();
 
         Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(

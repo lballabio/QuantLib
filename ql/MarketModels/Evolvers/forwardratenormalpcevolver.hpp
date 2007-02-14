@@ -26,6 +26,7 @@
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <ql/MarketModels/DriftComputation/lmmnormaldriftcalculator.hpp>
 
 namespace QuantLib {
@@ -55,7 +56,7 @@ namespace QuantLib {
         boost::shared_ptr<BrownianGenerator> generator_;
          // working variables
         Size n_, F_;
-        CurveState curveState_;
+        LMMCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> forwards_, displacements_;
         std::vector<Real> drifts1_, drifts2_, initialDrifts_;

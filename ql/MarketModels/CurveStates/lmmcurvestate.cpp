@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     LMMCurveState::LMMCurveState(const std::vector<Time>& rateTimes)
-    : NewCurveState(rateTimes),
+    : CurveState(rateTimes),
       first_(nRates_),
       discRatios_(nRates_+1, 1.0),
       forwardRates_(nRates_),
@@ -121,4 +121,14 @@ namespace QuantLib {
         return cmSwapRates_[i];
     }
 
+    const std::vector<Rate>& LMMCurveState::forwardRates() const {
+        return forwardRates_;
+    }
+
+    const std::vector<Rate>& LMMCurveState::coterminalSwapRates() const {
+        coterminalFromDiscountRatios(first_,
+                                     discRatios_, taus_,
+                                     cotSwapRates_, cotAnnuities_);
+        return cotSwapRates_;
+    }
 }

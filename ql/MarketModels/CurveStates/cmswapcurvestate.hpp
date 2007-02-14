@@ -22,11 +22,11 @@
 #ifndef quantlib_cmswapcurvestate_hpp
 #define quantlib_cmswapcurvestate_hpp
 
-#include <ql/MarketModels/newcurvestate.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 
-    class CMSwapCurveState : public NewCurveState {
+    class CMSwapCurveState : public CurveState {
       public:
         CMSwapCurveState(const std::vector<Time>& rateTimes,
                          Size spanningForwards);
@@ -51,6 +51,8 @@ namespace QuantLib {
         Rate cmSwapAnnuity(Size numeraire,
                            Size i,
                            Size spanningForwards) const;
+        const std::vector<Rate>& forwardRates() const;
+        const std::vector<Rate>& coterminalSwapRates() const;
         //@}
       private:
         Size spanningFwds_;

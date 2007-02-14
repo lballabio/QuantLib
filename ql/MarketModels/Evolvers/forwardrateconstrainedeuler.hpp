@@ -27,6 +27,7 @@
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 
 namespace QuantLib {
 
@@ -79,7 +80,7 @@ namespace QuantLib {
         std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
                                                                                           // step first index
         Size n_, F_;
-        CurveState curveState_;
+        LMMCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
         std::vector<Real> drifts1_, initialDrifts_;

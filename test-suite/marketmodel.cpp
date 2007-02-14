@@ -55,6 +55,7 @@
 #include <ql/MarketModels/BrownianGenerators/mtbrowniangenerator.hpp>
 #include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp>
 #include <ql/MarketModels/swapforwardmappings.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <ql/MonteCarlo/genericlsregression.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
@@ -67,9 +68,6 @@
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/convergencestatistics.hpp>
 #include <ql/Math/functional.hpp>
-
-//#include <ql/Optimization/levenbergmarquardt.hpp>
-//#include <ql/Optimization/steepestdescent.hpp>
 #include <ql/Optimization/simplex.hpp>
 #include <sstream>
 
@@ -403,16 +401,16 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     
     Size N = todaysForwards.size();
     // check Swaps
-    Real maxError = 0;
-    CurveState curveState(rateTimes.begin(), rateTimes.end());
-    curveState.setOnForwardRates(todaysForwards.begin(), todaysForwards.end());
+    Real maxError = QL_MIN_REAL;
+    LMMCurveState curveState(rateTimes);
+    curveState.setOnForwardRates(todaysForwards);
     std::vector<Rate> atmRates = curveState.coterminalSwapRates();
-    std::vector<Real> discountRatios = curveState.discountRatios();
-    std::vector<Real> annuities = curveState.coterminalSwapAnnuities();
+//    std::vector<Real> discountRatios = curveState.discountRatios();
+//    std::vector<Real> annuities = curveState.coterminalSwapAnnuities();
     std::vector<Real> expectedNPVs(atmRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = annuities[i] * (atmRates[i]-fixedRate) *
+        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) * (atmRates[i]-fixedRate) *
             todaysDiscounts[0];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
@@ -453,7 +451,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         Real expectedSwaption = BlackCalculator(payoff,
                         todaysCoterminalSwapRates[i]+displacement,
                         std::sqrt(cotSwapsCovariance[i][i]),
-                        annuities[i] * todaysDiscounts[0]).value();
+                        curveState.coterminalSwapAnnuity(i,i) * todaysDiscounts[0]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
@@ -583,6 +581,104 @@ void checkCoinitialSwaps(const SequenceStatistics& stats,
         BOOST_ERROR("test failed");
     }
 }
+
+void checkCoterminalSwaps(const SequenceStatistics& stats,
+                          const Real fixedRate,
+                          const std::string& config) {
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    std::vector<Real> stdDevs(todaysForwards.size());
+
+    std::vector<Rate> expected(todaysForwards.size());
+    Real minError = QL_MAX_REAL;
+    Real maxError = QL_MIN_REAL;
+    Real tmp = 0.;
+    Size N = expected.size();
+    LMMCurveState curveState(rateTimes);
+    curveState.setOnForwardRates(todaysForwards); 
+    for (Size i=1; i<=N; ++i) {
+        Rate swapRate = curveState.coterminalSwapRate(N-i);
+        //Real cotAnnuity = curveState.coterminalSwapAnnuity(N-i);
+        Real tmp = curveState.coterminalSwapAnnuity(N-i, N-i) *(swapRate-fixedRate);
+        /*tmp += (todaysForwards[N-i]-fixedRate)
+            *accruals[N-i]*todaysDiscounts[N-i+1];*/
+        expected[N-i] = tmp;
+        stdDevs[N-i] = (results[N-i]-expected[N-i])/errors[N-i];
+        Real relError = (results[N-i]-expected[N-i])/expected[N-i];
+        /*if (stdDevs[N-i]>maxError)
+            maxError = stdDevs[N-i];*/
+        maxError = std::max(std::fabs(relError), maxError);
+       /* else if (stdDevs[N-i]<minError)
+            minError = stdDevs[N-i];*/
+        //if (printReport_)
+        std::cout <<
+            "N-i: " << N-i
+            << std::setprecision(2)
+            << " expected: " << tmp
+            << " obtained: " << results[N-i]
+            << " error: " << errors[N-i]
+            //<< " stdDev: " << (results[N-i]-expected[N-i])/errors[N-i]
+            << " maxError: " << io::percent(maxError)
+            << " rel error: " << io::percent((results[N-i]-expected[N-i])/expected[N-i])
+            << "\n";
+    }
+    Real errorThreshold = 2.32;
+    if (minError <-errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
+        for (Size i=0; i<results.size(); ++i) {
+            BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap: "
+                          << io::rate(results[i])
+                          << " +- " << io::rate(errors[i])
+                          << "; expected: " << io::rate(expected[i])
+                          << "; discrepancy = "
+                          << stdDevs[i]
+                          << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+}
+
+void checkCoterminalSwaptions(const SequenceStatistics& stats,
+                              const std::vector<Rate>& strikes,
+                              const std::string& config) {
+    std::vector<Real> results = stats.mean();
+    std::vector<Real> errors = stats.errorEstimate();
+    Size N = todaysForwards.size();
+    std::vector<Rate> expectedSwaptions(N);
+    std::vector<Real> stdDevSwaptions(N);
+    Real minError = QL_MAX_REAL;
+    Real maxError = QL_MIN_REAL;
+    for (Size i=1; i<=N; ++i) {
+        Time expiry = rateTimes[N-i];
+        expectedSwaptions[N-i] = blackFormula(
+                         Option::Call,
+                         strikes[N-i]+displacement,
+                         todaysCoterminalSwapRates[N-i]+displacement,
+                         swaptionsVolatilities[N-i]*std::sqrt(expiry)) *
+            coterminalAnnuity[N-i];
+        stdDevSwaptions[N-i] = (results[N-i]-expectedSwaptions[N-i])/errors[N-i];
+        if (stdDevSwaptions[N-i]>maxError) maxError = stdDevSwaptions[N-i];
+        else if (stdDevSwaptions[N-i]<minError) minError = stdDevSwaptions[N-i];
+    }
+    Real errorThreshold = 2.50;
+    if (minError > 0.0 || maxError < 0.0 ||
+        minError < -errorThreshold || maxError > errorThreshold) {
+        BOOST_MESSAGE(config);
+        for (Size i=1; i<=N; ++i) {
+            BOOST_MESSAGE(
+                    io::ordinal(i) << " Swaption: "
+                    << io::rate(results[N-i])
+                    << " +- " << io::rate(errors[N-i])
+                    << "; expected: " << io::rate(expectedSwaptions[N-i])
+                    << "; discrepancy = "
+                    << (results[N-i]-expectedSwaptions[N-i])/(errors[N-i] == 0.0 ?
+                                                          1.0 : errors[N-i])
+                    << " standard errors");
+        }
+        BOOST_ERROR("test failed");
+    }
+}
+
 
 void checkCallableSwap(const SequenceStatistics& stats,
                        const std::string& config) {

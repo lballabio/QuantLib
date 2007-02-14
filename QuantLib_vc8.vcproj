@@ -6916,10 +6916,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\newcurvestate.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\MarketModels\nodedataprovider.hpp"
 				>
 			</File>

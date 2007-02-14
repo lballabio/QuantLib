@@ -40,10 +40,10 @@ namespace QuantLib {
             May 2003.
         */
         LMMDriftCalculator(const Matrix& pseudo,
-                       const std::vector<Spread>& displacements,
-                       const std::vector<Time>& taus,
-                       Size numeraire,
-                       Size alive);
+                           const std::vector<Spread>& displacements,
+                           const std::vector<Time>& taus,
+                           Size numeraire,
+                           Size alive);
         //! Computes the drifts
         void compute(const std::vector<Rate>& forwards,
                      std::vector<Real>& drifts) const;

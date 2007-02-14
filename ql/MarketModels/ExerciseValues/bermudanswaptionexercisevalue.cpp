@@ -52,10 +52,10 @@ namespace QuantLib {
 
     void BermudanSwaptionExerciseValue::nextStep(const CurveState& state) {
         const Payoff& p = (*payoffs_[currentIndex_]);
-        Real value = state.coterminalSwapAnnuities()[currentIndex_] *
+        Real value = state.coterminalSwapAnnuity(currentIndex_, currentIndex_) *
             p(state.coterminalSwapRate(currentIndex_));
 
-        value /= state.discountRatios()[currentIndex_];
+     //   value /= state.discountRatios()[currentIndex_];
         value =  std::max(value, 0.0);
         cf_.timeIndex = currentIndex_;
         cf_.amount = value;
