@@ -79,9 +79,9 @@ namespace QuantLib {
         // Compute cross variations
 
 
-        for (Size k = 0; PjPnWk_.rows(); ++k)
+        for (Size k = 0; k<PjPnWk_.rows(); ++k)
             {
-            PjPnWk_[k][dim_] = 0.0;
+            PjPnWk_[k][dim_-1] = 0.0;
             wkaj_[k][dim_-1]=0.0;
 
             for (Integer j=static_cast<Integer>(dim_)-2;
