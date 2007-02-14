@@ -3092,6 +3092,9 @@
 					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.cpp">
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.hpp">
 				</File>
 				<File

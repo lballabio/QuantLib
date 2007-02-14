@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         /*! Returns the drift \f$ \mu \Delta t \f$.
             See Mark Joshi, Lorenzo Liesch, "\it {Effective
-            Implementation Of Generic Market Model}".
+            Implementation Of Generic Market Models}".
         */
         SMMDriftCalculator(const Matrix& pseudo,
                          const std::vector<Spread>& displacements,
@@ -55,9 +55,9 @@ namespace QuantLib {
         Matrix C_, pseudo_;
         // temporary variables to be added later
         mutable std::vector<Real> tmp_;
-        mutable Matrix wkaj_; // <wk | Aj/Pn>
-        mutable Matrix wkpj1_; // <wk | P(j+1)/Pn>
-        std::vector<Size> downs_, ups_;
+        mutable Matrix wkaj_;  // < W(k) | A(j)/P(n) >
+        mutable Matrix wkpj1_; // < W(k) | P(j+1)/P(n) >
+        //std::vector<Size> downs_, ups_;
     };
 
 }

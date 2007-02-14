@@ -35,8 +35,8 @@ namespace QuantLib {
       tmp_(taus.size(), 0.0),
       // zero initialization required for (used by) the last element
       wkaj_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      wkpj1_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      downs_(taus.size()), ups_(taus.size()) {
+      wkpj1_(pseudo_.columns(), pseudo_.rows(), 0.0)/*,
+      downs_(taus.size()), ups_(taus.size())*/ {
 
         // Check requirements
         QL_REQUIRE(nRates_>0, "Dim out of range");
@@ -59,10 +59,10 @@ namespace QuantLib {
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation
-        for (Size i=alive_; i<nRates_; ++i) {
-            downs_[i] = std::min(i+1, numeraire_);
-            ups_[i]   = std::max(i+1, numeraire_);
-        }
+        //for (Size i=alive_; i<nRates_; ++i) {
+        //    downs_[i] = std::min(i+1, numeraire_);
+        //    ups_[i]   = std::max(i+1, numeraire_);
+        //}
     }
 
     void SMMDriftCalculator::compute(const CurveState& cs,
@@ -72,19 +72,24 @@ namespace QuantLib {
         // using the pseudo square root of the covariance matrix.
 
         // Precompute forwards factor
-        for (Size i=alive_; i<nRates_; ++i)
-            tmp_[i] = (cs.forwardRate(i)+displacements_[i]) /
-                (oneOverTaus_[i]+cs.forwardRate(i));
+        //for (Size i=alive_; i<nRates_; ++i)
+        //    tmp_[i] = (cs.forwardRate(i)+displacements_[i]) /
+        //        (oneOverTaus_[i]+cs.forwardRate(i));
 
         // calculates and stores wkaj_, wkpj1_
         // assuming terminal bond measure
         // eq 5.4-5.7
+        Real Pn = cs.discountRatio(nRates,0);
         for (Size k=0; k<nFactors_; ++k) {
                 // taken care in the constructor
-                //wkpj1_[k][nRates_-1]= 0.0;
-                //wkaj_[k][nRates_-1] = 0.0;
+                // wkpj1_[k][nRates_-1]= 0.0;
+                // wkaj_[k][nRates_-1] = 0.0;
             for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_); --j) {
-                wkpj1_[k][j]= 0.0; //fill in here
+                 // < W(k) | P(j+1)/P(n) > = 
+                 // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
+                wkpj1_[k][j]= cs.coterminalSwapRate(j+1) * 
+                            ( pseudo_[j+1][k] * cs.coterminalSwapAnnuity(j+1) / Pn
+                            +  wkaj_[k][nRates_-1] );
                 wkaj_[k][j] = 0.0; //fill in here
             }
         }

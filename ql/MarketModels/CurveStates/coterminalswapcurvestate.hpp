@@ -25,14 +25,34 @@
 #include <ql/MarketModels/newcurvestate.hpp>
 
 namespace QuantLib {
-
+    /*! This class stores the state of the yield curve associated to the
+        fixed calendar times within the simulation.
+        This is the workhorse discounting object associated to the rate times
+        of the simulation. It's important to pass the rates via an object like
+        this to the product rather than directly to make it easier to switch
+        to other engines such as a coterminal swap rate engine.
+        Many products will not need expired rates and others will only require
+        the first rate.
+    */
     class CoterminalSwapCurveState : public NewCurveState {
-      public:
-        CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
-        : NewCurveState(rateTimes) {}
+    /* There will n+1 rate times expressing payment and reset times
+        of coterminal swap rates.
 
+                |-----|-----|-----|-----|-----|      (size = 6)
+                t0    t1    t2    t3    t4    t5     rateTimes
+                f0    f1    f2    f3    f4           forwardRates
+                d0    d1    d2    d3    d4    d5     discountBonds
+                d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
+                sr0   sr1   sr2   sr3   sr4          cotSwaps
+    */
+      public:
+        CoterminalSwapCurveState(const std::vector<Time>& rateTimes);
         //! \name Modifiers
         //@{
+<<<<<<< coterminalswapcurvestate.hpp
+        void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
+                                      Size firstValidIndex = 0);
+=======
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
                             Size firstValidIndex = 0) {
             QL_REQUIRE(swapRates.size()==nRates_,
@@ -45,28 +65,39 @@ namespace QuantLib {
                        firstValidIndex << " not allowed");
 
             // implementation here
+>>>>>>> 1.3
 
-        }
         //@}
 
         //! \name Inspectors
         //@{
+        virtual const std::vector<Rate>& coterminalSwapRates() const;
         virtual const std::vector<Rate>& forwardRates() const;
         virtual const std::vector<DiscountFactor>& discountRatios() const;
         virtual const std::vector<Real>& coterminalSwapAnnuities() const;
-        virtual const std::vector<Rate>& coterminalSwapRates() const;
         virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
         virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
 
+        Real discountRatio(Size i, Size j) const = 0;
+        virtual Rate coterminalSwapRate(Size i) const;
         virtual Rate forwardRate(Size i) const;
         virtual Rate coterminalSwapAnnuity(Size i) const;
-        virtual Rate coterminalSwapRate(Size i) const;
         virtual Rate cmSwapAnnuity(Size i,
                                  Size spanningForwards) const;
         virtual Rate cmSwapRate(Size i,
                               Size spanningForwards) const;
         //@}
       private:
+        void computeForwardRate(Size firstIndex) const;
+        std::vector<Time> rateTimes_;
+        Size nRates_;
+        Size first_;
+        mutable Size firstCotSwap_;
+        std::vector<Time> taus_;
+        mutable std::vector<Rate> forwardRates_;
+        std::vector<DiscountFactor> discRatios_;
+        std::vector<Rate> cotSwapRates_;
+        mutable std::vector<Real> cotAnnuities_;
     };
 
 }
