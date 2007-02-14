@@ -56,6 +56,8 @@ namespace QuantLib {
             for (Size i=0; i<nRates_; ++i)
                 taus_[i] = rateTimes_[i+1] - rateTimes_[i];
         }
+        virtual ~CurveState() {}
+        
 
         //! \name Inspectors
         //@{
