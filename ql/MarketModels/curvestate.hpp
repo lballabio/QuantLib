@@ -50,7 +50,7 @@ namespace QuantLib {
       public:
         CurveState(const std::vector<Time>& rateTimes)
         : rateTimes_(rateTimes.begin(), rateTimes.end()),
-          taus_(rateTimes_.size()),
+          taus_(rateTimes_.size()-1),
           nRates_(rateTimes_.size()> 0 ? rateTimes_.size()-1 : 0) {
             QL_REQUIRE(nRates_>0, "too few rate times");
             for (Size i=0; i<nRates_; ++i)
