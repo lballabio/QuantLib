@@ -64,46 +64,54 @@ namespace QuantLib {
     }
 
     void CMSMMDriftCalculator::compute(const CMSwapCurveState& cs,
-                                  std::vector<Real>& drifts) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
-            /*QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
-            QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");*/
-        #endif
+        std::vector<Real>& drifts) const 
+        {
+#if defined(QL_EXTRA_SAFETY_CHECKS)
+        /*QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
+        QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");*/
+#endif
 
-        if (isFullFactor_)
-            computePlain(cs, drifts);
-        else
-            computeReduced(cs, drifts);
-    }
 
-    void CMSMMDriftCalculator::computePlain(const CMSwapCurveState& cs,
-                                  std::vector<Real>& drifts) const {
+        const std::vector<Time>& taus = cs.rateTaus();
+        // final bond is numeraire
 
-        const std::vector<Rate>& SR = cs.cmSwapRates(spanningFwds_);
-        const std::vector<Rate>& A = cs.cmSwapAnnuities(spanningFwds_);
-        const std::vector<DiscountFactor>& df = cs.discountRatios();  
-        DiscountFactor pn = cs.discountRatios()[numeraire_]; // numeraire
-        // Compute drifts
-        for (Size k = 0; PjPnWk_.rows(); ++k){
-            for (Integer j=static_cast<Integer>(dim_)- spanningFwds_-1;
-                 j>=static_cast<Integer>(alive_); --j) {
-                PjPnWk_[k][j+1] = SR[j+1] * wkaj_[k][j+1]
-                                   + A[j+1]/pn + pseudo_[k][j+1]
-                                   + PjPnWk_[k][j+spanningFwds_+1];
-               wkaj_[k][j] = wkaj_[k][j] - PjPnWk_[k][j+spanningFwds_+1]
-                             + PjPnWk_[k][j+1];
+        // Compute cross variations
+
+
+        for (Size k = 0; PjPnWk_.rows(); ++k)
+            {
+            PjPnWk_[k][dim_] = 0.0;
+            wkaj_[k][dim_-1]=0.0;
+
+            for (Integer j=static_cast<Integer>(dim_)-1;
+                j>=static_cast<Integer>(alive_); --j) 
+                {
+                double sr = cs.cmSwapRate(j+1,spanningFwds_);
+                Integer endIndex = std::min(j+spanningFwds_+1,dim_);
+                PjPnWk_[k][j+1] = sr * wkaj_[k][j+1]
+                + cs.cmSwapAnnuity(numeraire_,j+1,spanningFwds_) 
+                    * sr
+                    *pseudo_[k][j+1]
+                + PjPnWk_[k][endIndex];
+
+                wkaj_[k][j] = wkaj_[k][j+1]    
+                + PjPnWk_[k][j+1]*taus[j];
+
+                if (j+spanningFwds_+1 <= dim_)
+                    wkaj_[k][j]-= PjPnWk_[k][endIndex]*taus[endIndex-1];
+                }
+            }
+
+        for(Size j = 0; j< dim_; ++j)
+            {
+            drifts[j]=0.0;
+
+            for (Size k = 0; k < factors_; ++k)
+                {
+                drifts[j] += pseudo_[j][k]*wkaj_[k][j];
+                }
+            drifts[j] /= -cs.cmSwapAnnuity(numeraire_,j,spanningFwds_);
             }
         }
-        for(Size j = 0; PjPnWk_.rows(); ++j){
-            for (Size k = 0; PjPnWk_.rows(); ++k){
-                drifts[j] -= pseudo_[j][k]/A[j]*wkaj_[k][j];
-            }
-            drifts[j] *= pn;
-        }
-    }
-
-    void CMSMMDriftCalculator::computeReduced(const CMSwapCurveState& cs,
-                                  std::vector<Real>& drifts) const {
 
     }
-}
