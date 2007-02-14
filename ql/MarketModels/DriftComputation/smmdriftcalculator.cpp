@@ -79,7 +79,7 @@ namespace QuantLib {
         // calculates and stores wkaj_, wkpj1_
         // assuming terminal bond measure
         // eq 5.4-5.7
-        Real Pn = cs.discountRatio(nRates,0);
+        Real Pn = cs.discountRatio(nRates_,0);
         for (Size k=0; k<nFactors_; ++k) {
                 // taken care in the constructor
                 // wkpj1_[k][nRates_-1]= 0.0;
