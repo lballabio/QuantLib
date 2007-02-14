@@ -24,6 +24,28 @@
 
 namespace QuantLib {
 
+    CurveState::CurveState(const std::vector<Time>& rateTimes)
+    : rateTimes_(rateTimes.begin(), rateTimes.end()),
+      rateTaus_(rateTimes_.size()-1),
+      nRates_(rateTimes_.size()> 0 ? rateTimes_.size()-1 : 0) {
+        QL_REQUIRE(nRates_>0, "no rate times provided");
+        for (Size i=0; i<nRates_; ++i)
+            rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
+    }
+
+    Rate CurveState::swapRate(Size begin,
+                              Size end) const {
+
+        QL_REQUIRE(end > begin, "empty range specified");
+        QL_REQUIRE(end <= nRates_, "taus/end mismatch");
+
+        Real sum = 0.0;
+        for (Size i=begin; i<end; ++i)
+            sum += rateTaus_[i]*discountRatio(i+1, nRates_);
+
+        return (discountRatio(begin, nRates_)-discountRatio(end, nRates_))/sum;
+    }
+
     void forwardsFromDiscountRatios(Size firstValidIndex,
                                     const std::vector<DiscountFactor>& ds,
                                     const std::vector<Time>& taus,
@@ -36,7 +58,6 @@ namespace QuantLib {
         for (Size i=firstValidIndex; i<fwds.size(); ++i)
             fwds[i] = (ds[i]-ds[i+1])/(ds[i]*taus[i]);
     };
-
 
     void coterminalFromDiscountRatios(Size firstValidIndex,
                                       const std::vector<DiscountFactor>& ds,

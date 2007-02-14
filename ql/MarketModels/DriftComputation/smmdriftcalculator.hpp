@@ -25,6 +25,7 @@
 #define quantlib_smm_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
+#include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -38,14 +39,13 @@ namespace QuantLib {
             Implementation Of Generic Market Models}".
         */
         SMMDriftCalculator(const Matrix& pseudo,
-                         const std::vector<Spread>& displacements,
-                         const std::vector<Time>& taus,
-                         Size numeraire,
-                         Size alive);
+                           const std::vector<Spread>& displacements,
+                           const std::vector<Time>& taus,
+                           Size numeraire,
+                           Size alive);
         //! Computes the drifts
-        void compute(const CurveState& cs,
+        void compute(const CoterminalSwapCurveState& cs,
                      std::vector<Real>& drifts) const;
-
       private:
         Size nRates_, nFactors_;
         bool isFullFactor_;

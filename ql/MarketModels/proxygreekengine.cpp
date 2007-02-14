@@ -22,24 +22,6 @@
 
 namespace QuantLib {
 
-    namespace {
-
-        Rate swapRate(const CurveState& state, Size begin, Size end) {
-            const std::vector<Time>& taus = state.rateTaus();
-            Size nRates = state.numberOfRates();
-
-            QL_REQUIRE(end > begin, "empty range specified");
-
-            Real sum = 0.0;
-            for (Size i=begin; i<end; ++i)
-                sum += taus[i]*state.discountRatio(i+1, nRates);
-
-            return (state.discountRatio(begin, nRates)-state.discountRatio(end, nRates))/sum;
-        }
-
-    }
-
-
     ProxyGreekEngine::ProxyGreekEngine(
             const boost::shared_ptr<MarketModelEvolver>& evolver,
             const std::vector<
@@ -150,10 +132,9 @@ namespace QuantLib {
                                           numberCashFlowsThisStep_,
                                           cashFlowsGenerated_);
             if (storeRates) {
-                constraints_[thisStep] =
-                    swapRate(evolver.currentState(),
-                             startIndexOfConstraint_[thisStep],
-                             endIndexOfConstraint_[thisStep]);
+                constraints_[thisStep] = evolver.currentState().swapRate(
+                                        startIndexOfConstraint_[thisStep],
+                                        endIndexOfConstraint_[thisStep]);
                 constraintsActive_[thisStep] = true;
             }
 

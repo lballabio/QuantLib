@@ -25,6 +25,7 @@
 #define quantlib_lmm_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,17 +46,17 @@ namespace QuantLib {
                            Size numeraire,
                            Size alive);
         //! Computes the drifts
-        void compute(const std::vector<Rate>& forwards,
+        void compute(const LMMCurveState& cs,
                      std::vector<Real>& drifts) const;
 
         /*! Computes the drifts without factor reduction as in 
             eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
-        void computePlain(const std::vector<Rate>& forwards,
+        void computePlain(const LMMCurveState& cs,
                           std::vector<Real>& drifts) const;
 
         /*! Computes the drifts with factor reduction as in eq. 7 of ref. [1]
             (uses pseudo square root of the covariance matrix). */
-        void computeReduced(const std::vector<Rate>& forwards,
+        void computeReduced(const LMMCurveState& cs,
                             std::vector<Real>& drifts) const;
 
       private:

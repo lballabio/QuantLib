@@ -42,11 +42,11 @@ namespace QuantLib {
             May 2003.
         */
         CMSMMDriftCalculator(const Matrix& pseudo,
-                        const std::vector<Spread>& displacements,
-                        const std::vector<Time>& taus,
-                        Size numeraire,
-                        Size alive,
-                        Size spanningFwds);
+                             const std::vector<Spread>& displacements,
+                             const std::vector<Time>& taus,
+                             Size numeraire,
+                             Size alive,
+                             Size spanningFwds);
         //! Computes the drifts
         void compute(const CMSwapCurveState& cs,
                      std::vector<Real>& drifts) const;

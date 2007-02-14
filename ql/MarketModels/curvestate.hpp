@@ -48,29 +48,21 @@ namespace QuantLib {
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        CurveState(const std::vector<Time>& rateTimes)
-        : rateTimes_(rateTimes.begin(), rateTimes.end()),
-          taus_(rateTimes_.size()-1),
-          nRates_(rateTimes_.size()> 0 ? rateTimes_.size()-1 : 0) {
-            QL_REQUIRE(nRates_>0, "too few rate times");
-            for (Size i=0; i<nRates_; ++i)
-                taus_[i] = rateTimes_[i+1] - rateTimes_[i];
-        }
+        CurveState(const std::vector<Time>& rateTimes);
         virtual ~CurveState() {}
-        
 
         //! \name Inspectors
         //@{
         Size numberOfRates() const { return nRates_; }
 
         const std::vector<Time>& rateTimes() const { return rateTimes_; }
-        const std::vector<Time>& rateTaus() const { return taus_; }
+        const std::vector<Time>& rateTaus() const { return rateTaus_; }
 
         virtual Real discountRatio(Size i,
-                                 Size j) const = 0;
+                                   Size j) const = 0;
         virtual Rate forwardRate(Size i) const = 0;
         virtual Rate coterminalSwapAnnuity(Size numeraire,
-                                        Size i) const = 0;
+                                           Size i) const = 0;
         virtual Rate coterminalSwapRate(Size i) const = 0;
         virtual Rate cmSwapAnnuity(Size numeraire,
                                    Size i,
@@ -81,14 +73,15 @@ namespace QuantLib {
         virtual const std::vector<Rate>& forwardRates() const = 0;
         virtual const std::vector<Rate>& coterminalSwapRates() const = 0;
         virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const = 0;
+        Rate swapRate(Size begin,
+                      Size end) const;
         //@}
       protected:
-        std::vector<Time> rateTimes_, taus_;
+        std::vector<Time> rateTimes_, rateTaus_;
         Size nRates_;
     };
 
-
-     void forwardsFromDiscountRatios(Size firstValidIndex,
+    void forwardsFromDiscountRatios(Size firstValidIndex,
                                     const std::vector<DiscountFactor>& ds,
                                     const std::vector<Time>& taus,
                                     std::vector<Rate>& fwds);

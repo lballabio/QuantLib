@@ -30,8 +30,8 @@ namespace QuantLib {
       first_(nRates_),
       discRatios_(nRates_+1, 1.0),
       forwardRates_(nRates_),
-      cmSwapRates_(nRates_), cmSwapAnnuities_(nRates_,taus_[nRates_-1]),
-      cotSwapRates_(nRates_), cotAnnuities_(nRates_, taus_[nRates_-1]) {}
+      cmSwapRates_(nRates_), cmSwapAnnuities_(nRates_,rateTaus_[nRates_-1]),
+      cotSwapRates_(nRates_), cotAnnuities_(nRates_, rateTaus_[nRates_-1]) {}
 
     void LMMCurveState::setOnForwardRates(const std::vector<Rate>& rates,
                                           Size firstValidIndex) {
@@ -53,7 +53,7 @@ namespace QuantLib {
         // taken care at constructor time
         //discRatios_[nRates_] = 1.0;
         for (Size i=first_; i<nRates_; ++i)
-            discRatios_[i+1]=discRatios_[i]/(1.0+forwardRates_[i]*taus_[i]);
+            discRatios_[i+1]=discRatios_[i]/(1.0+forwardRates_[i]*rateTaus_[i]);
 
         // lazy evaluation of:
         // - coterminal swap rates/annuities
@@ -79,7 +79,7 @@ namespace QuantLib {
 
         for (Size i=first_; i<nRates_; ++i)
             forwardRates_[i] = (discRatios_[i]/discRatios_[i+1]-1.0) /
-                                                                taus_[i];
+                                                                rateTaus_[i];
 
         // lazy evaluation of:
         // - coterminal swap rates/annuities
@@ -106,7 +106,7 @@ namespace QuantLib {
                    "invalid numeraire");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
         coterminalFromDiscountRatios(first_,
-                                     discRatios_, taus_,
+                                     discRatios_, rateTaus_,
                                      cotSwapRates_, cotAnnuities_);
         return cotAnnuities_[i]/discRatios_[numeraire];
     }
@@ -115,7 +115,7 @@ namespace QuantLib {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
         coterminalFromDiscountRatios(first_,
-                                     discRatios_, taus_,
+                                     discRatios_, rateTaus_,
                                      cotSwapRates_, cotAnnuities_);
         return cotSwapRates_[i];
     }
@@ -130,7 +130,7 @@ namespace QuantLib {
 
         // consider lazy evaluation here
         constantMaturityFromDiscountRatios(spanningForwards, first_,
-                                           discRatios_, taus_,
+                                           discRatios_, rateTaus_,
                                            cmSwapRates_, cmSwapAnnuities_);
         return cmSwapAnnuities_[i]/discRatios_[numeraire];
     }
@@ -142,7 +142,7 @@ namespace QuantLib {
 
         // consider lazy evaluation here
         constantMaturityFromDiscountRatios(spanningForwards, first_,
-                                           discRatios_, taus_,
+                                           discRatios_, rateTaus_,
                                            cmSwapRates_, cmSwapAnnuities_);
         return cmSwapRates_[i];
     }
@@ -155,7 +155,7 @@ namespace QuantLib {
     const std::vector<Rate>& LMMCurveState::coterminalSwapRates() const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         coterminalFromDiscountRatios(first_,
-                                     discRatios_, taus_,
+                                     discRatios_, rateTaus_,
                                      cotSwapRates_, cotAnnuities_);
         return cotSwapRates_;
     }
@@ -163,7 +163,7 @@ namespace QuantLib {
     const std::vector<Rate>& LMMCurveState::cmSwapRates(Size spanningForwards) const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         constantMaturityFromDiscountRatios(spanningForwards, first_,
-                                           discRatios_, taus_,
+                                           discRatios_, rateTaus_,
                                            cmSwapRates_, cmSwapAnnuities_);
         return cmSwapRates_;
     }

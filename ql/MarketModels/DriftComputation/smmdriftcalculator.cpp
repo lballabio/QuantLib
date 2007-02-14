@@ -22,11 +22,12 @@
 
 namespace QuantLib {
 
-    SMMDriftCalculator::SMMDriftCalculator(const Matrix& pseudo,
-                                     const std::vector<Spread>& displacements,
-                                     const std::vector<Time>& taus,
-                                     Size numeraire,
-                                     Size alive)
+    SMMDriftCalculator::SMMDriftCalculator(
+                                    const Matrix& pseudo,
+                                    const std::vector<Spread>& displacements,
+                                    const std::vector<Time>& taus,
+                                    Size numeraire,
+                                    Size alive)
     : nRates_(taus.size()), nFactors_(pseudo.columns()),
       isFullFactor_(nFactors_==nRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
@@ -67,7 +68,7 @@ namespace QuantLib {
         //}
     }
 
-    void SMMDriftCalculator::compute(const CurveState& cs,
+    void SMMDriftCalculator::compute(const CoterminalSwapCurveState& cs,
                                      std::vector<Real>& drifts) const {
 
         // ADD DISPLACEMENT LATER

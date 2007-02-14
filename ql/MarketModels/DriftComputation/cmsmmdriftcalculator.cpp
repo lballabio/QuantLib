@@ -65,7 +65,7 @@ namespace QuantLib {
     }
 
     void CMSMMDriftCalculator::compute(const CMSwapCurveState& cs,
-        std::vector<Real>& drifts) const 
+                                       std::vector<Real>& drifts) const 
         {
 #if defined(QL_EXTRA_SAFETY_CHECKS)
         /*QL_REQUIRE(forwards.size()==dim_, "forwards.size() <> dim");
@@ -77,8 +77,6 @@ namespace QuantLib {
         // final bond is numeraire
 
         // Compute cross variations
-
-
         for (Size k = 0; k<PjPnWk_.rows(); ++k)
             {
             PjPnWk_[k][dim_-1] = 0.0;
