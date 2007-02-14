@@ -9,7 +9,7 @@ include_HEADERS = \
     conjugategradient.hpp \
     constraint.hpp \
     costfunction.hpp \
-    criteria.hpp \
+    endcriteria.hpp \
     leastsquare.hpp \
     levenbergmarquardt.hpp \
     linesearch.hpp \
@@ -23,7 +23,7 @@ include_HEADERS = \
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
-    criteria.cpp \
+    endcriteria.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \
     linesearchbasedmethod.cpp \
