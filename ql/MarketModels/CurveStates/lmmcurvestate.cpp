@@ -60,6 +60,32 @@ namespace QuantLib {
         // - constant maturity swap rates/annuities
     }
 
+    void LMMCurveState::setOnDiscountRatios(const std::vector<DiscountFactor>& discRatios,
+                                            Size firstValidIndex) {
+        QL_REQUIRE(discRatios.size()==nRates_+1,
+                   "too many discount ratios: " <<
+                   nRates_+1 << " required, " <<
+                   discRatios.size() << " provided");
+        QL_REQUIRE(firstValidIndex<nRates_,
+                   "first valid index must be less than " <<
+                   nRates_+1 << ": " <<
+                   firstValidIndex << " not allowed");
+
+        // first copy input...
+        first_ = firstValidIndex;
+        std::copy(discRatios.begin()+first_, discRatios.end(),
+                  discRatios_.begin()+first_);
+        // ...then calculate forwards
+
+        for (Size i=first_; i<nRates_; ++i)
+            forwardRates_[i] = (discRatios_[i]/discRatios_[i+1]-1.0) /
+                                                                taus_[i];
+
+        // lazy evaluation of:
+        // - coterminal swap rates/annuities
+        // - constant maturity swap rates/annuities
+    }
+
     Real LMMCurveState::discountRatio(Size i, Size j) const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(std::min(i, j)>=first_, "invalid index");

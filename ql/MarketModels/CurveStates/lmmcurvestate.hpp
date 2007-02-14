@@ -53,32 +53,8 @@ namespace QuantLib {
         void setOnForwardRates(const std::vector<Rate>& fwdRates,
                                Size firstValidIndex = 0);
 
-        template <class ForwardIterator>
-        void setOnDiscountRatios(ForwardIterator begin,
-                                 ForwardIterator end,
-                                 Size firstValidIndex = 0) {
-            QL_REQUIRE(end-begin==nRates_+1,
-                       "too many discount ratios: " <<
-                       nRates_+1 << " required, " <<
-                       end-begin << " provided");
-            QL_REQUIRE(firstValidIndex<nRates_,
-                       "first valid index must be less than " <<
-                       nRates_+1 << ": " <<
-                       firstValidIndex << " not allowed");
-
-            // discount ratios
-            first_ = firstValidIndex;
-            std::copy(begin+first_, end, discRatios_.begin()+first_);
-
-            // fwd rates
-            for (Size i=first_; i<nRates_; ++i)
-                forwardRates_[i] = (discRatios_[i]/discRatios_[i+1]-1.0) /
-                                                                    taus_[i];
-
-            // lazy evaluation of coterminal swap rates and annuities
-            firstCotSwap_ = nRates_;
-        }
-
+        void setOnDiscountRatios(const std::vector<DiscountFactor>& discRatios,
+                                 Size firstValidIndex = 0);
         //@}
 
         //! \name Inspectors
