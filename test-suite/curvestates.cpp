@@ -27,6 +27,8 @@
 #include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 #include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
+
 #include <ql/Math/matrix.hpp>
 #include <ql/schedule.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
@@ -139,27 +141,51 @@ void CurveStatesTest::testCMSwapCurveState() {
     Size factors = nbRates;
     Matrix pseudo(nbRates, factors, 1.0);
     std::vector<Spread> displacements(nbRates, .0);
-    std::vector<Time> rateTimes(nbRates);
+    std::vector<Time> rateTimes(nbRates+1);
     std::vector<Time> taus(nbRates, .5);
-    std::vector<Rate> forwards(nbRates-1, .04);
+    std::vector<Rate> forwards(nbRates, 0.0);
+    
+    std::cout << "rate value:"<< std::endl;
     for (Size i = 0; i < forwards.size(); ++i){
-        rateTimes[i] = static_cast<Time>(i)*.05;
+        forwards[i] = static_cast<Time>(i)*.01+.04;
+        std::cout << forwards[i] << std::endl;
+    }
+    std::cout << "rate Times:"<< std::endl;
+    for (Size i = 0; i < rateTimes.size(); ++i){
+        rateTimes[i] = static_cast<Time>(i)*.5;
+        std::cout << rateTimes[i] << std::endl;
     }
     Size numeraire = nbRates; 
     Size alive = 0; 
-    Size spanningFwds = 5;
+    Size spanningFwds = 1;
 
-    CMSMMDriftCalculator driftcalulator(pseudo, displacements, taus, numeraire,
+    CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus, numeraire,
                                         alive, spanningFwds);
+
+    CMSwapCurveState cmsCs(rateTimes, spanningFwds);
+    cmsCs.setOnCMSwapRates(forwards);
+    std::vector<Real> cmsDrifts(nbRates);
+    cmsDriftcalulator.compute(cmsCs,cmsDrifts);
+
+    LMMDriftCalculator  lmmDriftcalulator(pseudo, displacements, taus, numeraire,
+                                        alive);
+    LMMCurveState lmmCs(rateTimes);
+    lmmCs.setOnForwardRates(forwards);
+    std::vector<Real> lmmDrifts(nbRates);
+    lmmDriftcalulator.compute(forwards,lmmDrifts);
     
-    
-    CMSwapCurveState cs(rateTimes, spanningFwds);
-    cs.setOnCMSwapRates(forwards);
-    std::vector<Real> drifts(nbRates);
-    driftcalulator.compute(cs,drifts);
+    std::cout << "drifts:"<< std::endl;
+    std::cout << "LMM\t\tCMS"<< std::endl;
+    for (Size i = 0; i<nbRates; ++i){
+         std::cout << lmmDrifts[i] << "\t\t"<< cmsDrifts[i] << std::endl;
+    }
+
 //    const std::vector<Rate>& dfs = cs.discountRatios();
-    for (Size i = 0; i <nbRates; ++i)
-        std::cout << cs.discountRatio(i, nbRates) << std::endl;
+    std::cout << "discounts ratios:"<< std::endl;
+    std::cout << "LMM\tCMS"<< std::endl;
+    for (Size i = 0; i <nbRates; ++i){
+        std::cout << lmmCs.discountRatio(i, nbRates) << "\t"<< cmsCs.discountRatio(i, nbRates) << std::endl;
+    }
 }
 
 // --- Call the desired tests
