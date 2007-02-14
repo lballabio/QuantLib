@@ -32,8 +32,6 @@ class MarketModelTest {
     static void testOneStepForwardsAndOptionlets();
     static void testMultiStepCoterminalSwapsAndSwaptions();
     static void testMultiStepCoinitialSwaps();
-    static void testMultiStepCoterminalSwaps();
-    static void testMultiStepCoterminalSwaptions();
     static void testCallableSwapNaif();
     static void testCallableSwapLS();
     static void testCallableSwapAnderson();
