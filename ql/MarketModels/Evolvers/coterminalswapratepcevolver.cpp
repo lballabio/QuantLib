@@ -131,7 +131,7 @@ namespace QuantLib {
         }
 
          //e) update curve state
-        curveState_.setOnCoterminalSwapRates(swapRates_.begin(), swapRates_.end());
+        curveState_.setOnCoterminalSwapRates(swapRates_);
 
         ++currentStep_;
 
@@ -142,7 +142,7 @@ namespace QuantLib {
         return currentStep_;
     }
 
-    const NewCurveState& CoterminalSwapRatePcEvolver::currentState() const {
+    const CurveState& CoterminalSwapRatePcEvolver::currentState() const {
         return curveState_;
     }
 
