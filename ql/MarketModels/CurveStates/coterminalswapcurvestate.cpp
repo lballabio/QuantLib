@@ -48,14 +48,14 @@ namespace QuantLib {
                   cotSwapRates_.begin()+first_);
         // ...then calculate discount ratios and annuities
         
-        // taken care at constructor time
-        //discRatios_[nRates_] = 1.0;
-        cotAnnuities_[nRates_] = taus_[nRates_];
-
+        // discount ratios and coterminal annuities
+        // reference discount bond = the last one P(n)
+        // discRatios_[nRates_] = P(n)/P(n) = 1.0 by construction/definition
+        cotAnnuities_[nRates_-1] = taus_[nRates_-1];
         // j < n
-        for (Size i=nRates_; i>first_; --i) {
+        for (Size i=nRates_-1; i>first_; --i) {
             discRatios_[i] = 1.0 + cotSwapRates_[i] * cotAnnuities_[i];
-            cotAnnuities_[i-1] = cotAnnuities_[i] + taus_[i] * discRatios_[i];            
+            cotAnnuities_[i-1] = cotAnnuities_[i] + taus_[i-1] * discRatios_[i];            
         }
         discRatios_[first_] = 1.0 + cotSwapRates_[first_] * cotAnnuities_[first_]; 
 
