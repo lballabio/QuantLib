@@ -29,36 +29,38 @@ namespace QuantLib {
     class CMSwapCurveState : public NewCurveState {
       public:
         CMSwapCurveState(const std::vector<Time>& rateTimes,
-                        Size spanningForwards);
+                         Size spanningForwards);
 
         //! \name Modifiers
         //@{
         void setOnCMSwapRates(const std::vector<Rate>& cmSwapRates,
-                            Size firstValidIndex = 0);
+                              Size firstValidIndex = 0);
         //@}
         //! \name Inspectors
         //@{
-        virtual const std::vector<Rate>& forwardRates() const;
-        virtual const std::vector<DiscountFactor>& discountRatios() const;
-        virtual const std::vector<Real>& coterminalSwapAnnuities() const;
-        virtual const std::vector<Rate>& coterminalSwapRates() const;
-        virtual const std::vector<Real>& cmSwapAnnuities(Size spanningForwards) const;
-        virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
-        virtual Real discountRatio(Size i, Size j) const;
+        Real discountRatio(Size i,
+                           Size j) const;
+        Rate forwardRate(Size i) const;
 
-        virtual Rate forwardRate(Size i) const;
-        virtual Rate coterminalSwapAnnuity(Size i, Size numeraire) const;
-        virtual Rate coterminalSwapRate(Size i) const;
-        virtual Rate cmSwapAnnuity(Size i, Size spanningForwards,
-                                   Size numeraire) const;
-        virtual Rate cmSwapRate(Size i,
-                              Size spanningForwards) const;
+        Rate coterminalSwapRate(Size i) const;
+        Rate coterminalSwapAnnuity(Size numeraire,
+                                   Size i) const;
+
+        Rate cmSwapRate(Size i,
+                        Size spanningForwards) const;
+        Rate cmSwapAnnuity(Size numeraire,
+                           Size i,
+                           Size spanningForwards) const;
         //@}
       private:
-        Size spanningFwds_, first_;
-        std::vector<Rate> forwardRates_, cotSwaps_, cmSwaps_;
+        Size spanningFwds_;
+        Size first_;
         std::vector<DiscountFactor> discRatios_;
-        std::vector<Real> cotAnnuities_, cmSwapAnn_;
+        mutable std::vector<Rate> forwardRates_;
+        std::vector<Rate> cmSwapRates_;
+        std::vector<Real> cmSwapAnnuities_;
+        mutable std::vector<Rate> cotSwapRates_;
+        mutable std::vector<Real> cotAnnuities_;
     };
 
 }

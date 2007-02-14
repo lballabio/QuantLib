@@ -50,35 +50,33 @@ namespace QuantLib {
         //! \name Modifiers
         //@{
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
-                                    Size firstValidIndex = 0);
+                                      Size firstValidIndex = 0);
         //@}
 
         //! \name Inspectors
         //@{
         Real discountRatio(Size i,
-                         Size j) const;
-        Rate coterminalSwapRate(Size i) const;
+                           Size j) const;
         Rate forwardRate(Size i) const;
+
+        Rate coterminalSwapRate(Size i) const;
         Rate coterminalSwapAnnuity(Size numeraire,
-                                 Size i) const;
-        Rate cmSwapAnnuity(Size numeraire,
-                          Size i,
-                          Size spanningForwards) const;
+                                   Size i) const;
+
         Rate cmSwapRate(Size i,
-                       Size spanningForwards) const;
+                        Size spanningForwards) const;
+        Rate cmSwapAnnuity(Size numeraire,
+                           Size i,
+                           Size spanningForwards) const;
         //@}
       private:
-        void computeForwardRate(Size firstIndex) const;
-        std::vector<Time> rateTimes_;
-        Size nRates_;
         Size first_;
-        mutable Size firstCotSwap_;
-        std::vector<Time> taus_;
-        mutable std::vector<Rate> forwardRates_, cmSwapRates_;
-        mutable std::vector<Real> cmSwapAnnuities_;
         std::vector<DiscountFactor> discRatios_;
+        mutable std::vector<Rate> forwardRates_;
+        mutable std::vector<Rate> cmSwapRates_;
+        mutable std::vector<Real> cmSwapAnnuities_;
         std::vector<Rate> cotSwapRates_;
-        mutable std::vector<Real> cotAnnuities_;
+        std::vector<Real> cotAnnuities_;
     };
 
 }
