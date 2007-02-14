@@ -53,6 +53,7 @@ namespace QuantLib {
                            Size spanningForwards) const;
         const std::vector<Rate>& forwardRates() const;
         const std::vector<Rate>& coterminalSwapRates() const;
+        const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
         //@}
       private:
         Size spanningFwds_;
@@ -61,6 +62,8 @@ namespace QuantLib {
         mutable std::vector<Rate> forwardRates_;
         std::vector<Rate> cmSwapRates_;
         std::vector<Real> cmSwapAnnuities_;
+        mutable std::vector<Rate> irrCMSwapRates_;
+        mutable std::vector<Real> irrCMSwapAnnuities_;
         mutable std::vector<Rate> cotSwapRates_;
         mutable std::vector<Real> cotAnnuities_;
     };

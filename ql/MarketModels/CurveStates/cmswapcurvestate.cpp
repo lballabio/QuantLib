@@ -29,6 +29,7 @@ namespace QuantLib {
       discRatios_(nRates_+1, 1.0),
       forwardRates_(nRates_),
       cmSwapRates_(nRates_), cmSwapAnnuities_(nRates_, taus_[nRates_-1]),
+      irrCMSwapRates_(nRates_), irrCMSwapAnnuities_(nRates_, taus_[nRates_-1]),
       cotSwapRates_(nRates_), cotAnnuities_(nRates_, taus_[nRates_-1]) {}
 
     void CMSwapCurveState::setOnCMSwapRates(const std::vector<Rate>& rates,
@@ -136,6 +137,17 @@ namespace QuantLib {
                                      discRatios_, taus_,
                                      cotSwapRates_, cotAnnuities_);
         return cotSwapRates_;
+    }
+
+    const std::vector<Rate>& CMSwapCurveState::cmSwapRates(Size spanningForwards) const {
+        if (spanningForwards==spanningFwds_)
+            return cmSwapRates_;
+        else {
+            constantMaturityFromDiscountRatios(spanningForwards, first_,
+                                               discRatios_, taus_,
+                                               irrCMSwapRates_, irrCMSwapAnnuities_);
+            return irrCMSwapRates_;
+        }
     }
 
 }

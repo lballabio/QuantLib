@@ -70,6 +70,7 @@ namespace QuantLib {
                            Size spanningForwards) const;
         const std::vector<Rate>& forwardRates() const;
         const std::vector<Rate>& coterminalSwapRates() const;
+        const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
         //@}
       private:
         Size first_;

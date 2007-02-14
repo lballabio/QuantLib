@@ -71,13 +71,14 @@ namespace QuantLib {
                                         Size i) const = 0;
         virtual Rate coterminalSwapRate(Size i) const = 0;
         virtual Rate cmSwapAnnuity(Size numeraire,
-                                 Size i,
-                                 Size spanningForwards) const = 0;
+                                   Size i,
+                                   Size spanningForwards) const = 0;
         virtual Rate cmSwapRate(Size i,
-                              Size spanningForwards) const = 0;
+                                Size spanningForwards) const = 0;
 
         virtual const std::vector<Rate>& forwardRates() const = 0;
         virtual const std::vector<Rate>& coterminalSwapRates() const = 0;
+        virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const = 0;
         //@}
       protected:
         std::vector<Time> rateTimes_, taus_;

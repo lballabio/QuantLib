@@ -129,4 +129,11 @@ namespace QuantLib {
         return cotSwapRates_;
     }
 
+    const std::vector<Rate>& CoterminalSwapCurveState::cmSwapRates(Size spanningForwards) const {
+        constantMaturityFromDiscountRatios(spanningForwards, first_,
+                                           discRatios_, taus_,
+                                           cmSwapRates_, cmSwapAnnuities_);
+        return cmSwapRates_;
+    }
+
 }
