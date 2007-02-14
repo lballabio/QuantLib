@@ -43,6 +43,7 @@ namespace QuantLib {
                 |-----|-----|-----|-----|-----|      (size = 6)
                 t0    t1    t2    t3    t4    t5     rateTimes
                 f0    f1    f2    f3    f4           forwardRates
+                tau0  tau1  tau2  tau3  tau4         taus
                 d0    d1    d2    d3    d4    d5     discountBonds
                 d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
@@ -50,7 +51,7 @@ namespace QuantLib {
       public:
         NewCurveState(const std::vector<Time>& rateTimes)
         : rateTimes_(rateTimes.begin(), rateTimes.end()),
-          taus_(rateTimes_.size()),
+          taus_(rateTimes_.size()-1),
           nRates_(rateTimes_.size()-1) {
             for (Size i=0; i<nRates_; ++i)
                 taus_[i] = rateTimes_[i+1] - rateTimes_[i];
@@ -83,23 +84,78 @@ namespace QuantLib {
 
 
     void forwardsFromDiscountRatios(Size firstValidIndex,
-                                    const std::vector<DiscountFactor>& ds,
-                                    const std::vector<Time>& taus,
-                                    std::vector<Rate>& fwds);
+                                  const std::vector<DiscountFactor>& ds,
+                                  const std::vector<Time>& taus,
+                                  std::vector<Rate>& fwds){
+        QL_REQUIRE(taus.size()==fwds.size(),
+                   "taus.size()!=fwds.size()");
+        QL_REQUIRE(ds.size()==fwds.size()+1,
+                   "ds.size()!=fwds.size()+1");
+
+        for (Size i=firstValidIndex; i<fwds.size(); ++i)
+            fwds[i] = (ds[i]-ds[i+1])/(ds[i]*taus[i]);
+    };
+
 
     void coterminalFromDiscountRatios(Size firstValidIndex,
-                                      const std::vector<DiscountFactor>& ds,
-                                      const std::vector<Time>& taus,
-                                      std::vector<Rate>& cotSwapRates,
-                                      std::vector<Real>& cotSwapAnnuities);
+                                   const std::vector<DiscountFactor>& ds,
+                                   const std::vector<Time>& taus,
+                                   std::vector<Rate>& cotSwapRates,
+                                   std::vector<Rate>& cotSwapAnnuities){
+        Size nCotSwapRates = cotSwapRates.size();
+        QL_REQUIRE(taus.size()==nCotSwapRates,
+                   "taus.size()!=cotSwapRates.size()");
+        QL_REQUIRE(cotSwapAnnuities.size()==nCotSwapRates,
+                   "cotSwapAnnuities.size()!=cotSwapRates.size()");
+        QL_REQUIRE(ds.size()==nCotSwapRates+1,
+                   "ds.size()!=cotSwapRates.size()+1");
+        
+        cotSwapAnnuities[nCotSwapRates-1] = taus[nCotSwapRates-1]*ds[nCotSwapRates];
+        cotSwapRates[nCotSwapRates-1] = (ds[nCotSwapRates-1]-ds[nCotSwapRates])/cotSwapAnnuities[nCotSwapRates-1];
+        
+        for (Size i=nCotSwapRates-1; i>firstValidIndex; --i) {
+            cotSwapAnnuities[i-1] = cotSwapAnnuities[i] + taus[i-1] * ds[i];
+            cotSwapRates[i-1] = (ds[i-1]-ds[nCotSwapRates])/cotSwapAnnuities[i-1];
+        }
+    };
+
 
     void constantMaturityFromDiscountRatios(// Size i, // to be added later
-                                            Size spanningForwards,
-                                            Size firstValidIndex,
-                                            const std::vector<DiscountFactor>& ds,
-                                            const std::vector<Time>& taus,
-                                            std::vector<Rate>& cotSwapRates,
-                                            std::vector<Real>& cotSwapAnnuities);
+                                         Size spanningForwards,
+                                         Size firstValidIndex,
+                                         const std::vector<DiscountFactor>& ds,
+                                         const std::vector<Time>& taus,
+                                         std::vector<Rate>& constMatSwapRates,
+                                         std::vector<Rate>& constMatSwapAnnuities){
+        Size nConstMatSwapRates = constMatSwapRates.size();
+        QL_REQUIRE(taus.size()==nConstMatSwapRates,
+                   "taus.size()!=nConstMatSwapRates");
+        QL_REQUIRE(constMatSwapAnnuities.size()==nConstMatSwapRates,
+                   "constMatSwapAnnuities.size()!=nConstMatSwapRates");
+        QL_REQUIRE(ds.size()==nConstMatSwapRates+1,
+                   "ds.size()!=nConstMatSwapRates+1");
+        // compute the first cmsrate and cmsannuity     
+        constMatSwapAnnuities[firstValidIndex]=0.;
+        Size lastIndex = std::min(firstValidIndex+spanningForwards,nConstMatSwapRates);
+        for (Size i=firstValidIndex; i<lastIndex; ++i) {
+            constMatSwapAnnuities[firstValidIndex]+= taus[i] * ds[i+1];
+        }  
+        constMatSwapRates[firstValidIndex] = 
+            (ds[firstValidIndex]-ds[lastIndex])/
+                constMatSwapAnnuities[firstValidIndex];
+
+        // compute all the other cmas rates and cms annuities
+        for (Size i=firstValidIndex+1; i<nConstMatSwapRates; ++i) {
+            Size lastIndex = std::min(i+spanningForwards,nConstMatSwapRates);
+            constMatSwapAnnuities[i] = constMatSwapAnnuities[i-1] 
+                                       - taus[i-1] * ds[i];
+            if(lastIndex<nConstMatSwapRates)
+               constMatSwapAnnuities[i] += taus[lastIndex-1] * ds[lastIndex];
+            constMatSwapRates[i] = 
+                (ds[i]-ds[lastIndex])/
+                    constMatSwapAnnuities[i];
+        }
+    };
 }
 
 #endif
