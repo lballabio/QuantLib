@@ -34,6 +34,7 @@ namespace QuantLib {
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),
       downs_(taus.size()), ups_(taus.size()),
+      wkaj_(factors_,taus.size()),
       spanningFwds_(spanningFwds){
 
         // Check requirements
