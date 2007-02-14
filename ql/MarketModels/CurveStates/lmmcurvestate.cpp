@@ -148,10 +148,12 @@ namespace QuantLib {
     }
 
     const std::vector<Rate>& LMMCurveState::forwardRates() const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         return forwardRates_;
     }
 
     const std::vector<Rate>& LMMCurveState::coterminalSwapRates() const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         coterminalFromDiscountRatios(first_,
                                      discRatios_, taus_,
                                      cotSwapRates_, cotAnnuities_);
@@ -159,6 +161,7 @@ namespace QuantLib {
     }
 
     const std::vector<Rate>& LMMCurveState::cmSwapRates(Size spanningForwards) const {
+        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         constantMaturityFromDiscountRatios(spanningForwards, first_,
                                            discRatios_, taus_,
                                            cmSwapRates_, cmSwapAnnuities_);
