@@ -32,8 +32,7 @@ namespace QuantLib {
       numeraires_(numeraires),
       initialStep_(initialStep),
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
-      curveState_(/*marketModel->evolution().rateTimes().begin(),
-                  marketModel->evolution().rateTimes().end()*/marketModel->evolution().rateTimes()),
+      curveState_(marketModel->evolution().rateTimes()),
       swapRates_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
       logSwapRates_(n_), initialLogSwapRates_(n_), drifts1_(n_), drifts2_(n_),
@@ -80,8 +79,8 @@ namespace QuantLib {
                    "mismatch between swapRates and rateTimes");
         for (Size i=0; i<n_; ++i) 
             initialLogSwapRates_[i] = std::log(swapRates[i] +
-                                              displacements_[i]);
-        calculators_[initialStep_].compute(/*swapRates*/curveState_, initialDrifts_);
+                                               displacements_[i]);
+        calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
 
     void CoterminalSwapRatePcEvolver::setInitialState(const CoterminalSwapCurveState& cs) {      

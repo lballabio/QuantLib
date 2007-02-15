@@ -7269,6 +7269,14 @@
 				<Filter
 					Name="LogNormalSwapRate"
 					>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.hpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="LogNormalCMSwapRate"
@@ -7279,18 +7287,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\MarketModels\Evolvers\cmswapratepcevolver.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="LogNormalCTswapRate"
-					>
-					<File
-						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.hpp"
 						>
 					</File>
 				</Filter>
