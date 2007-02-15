@@ -46,7 +46,7 @@ namespace QuantLib {
         return (discountRatio(begin, nRates_)-discountRatio(end, nRates_))/sum;
     }
 
-    void forwardsFromDiscountRatios(Size firstValidIndex,
+    void forwardsFromDiscountRatios(const Size firstValidIndex,
                                     const std::vector<DiscountFactor>& ds,
                                     const std::vector<Time>& taus,
                                     std::vector<Rate>& fwds) {
@@ -59,7 +59,7 @@ namespace QuantLib {
             fwds[i] = (ds[i]-ds[i+1])/(ds[i+1]*taus[i]);
     };
 
-    void coterminalFromDiscountRatios(Size firstValidIndex,
+    void coterminalFromDiscountRatios(const Size firstValidIndex,
                                       const std::vector<DiscountFactor>& ds,
                                       const std::vector<Time>& taus,
                                       std::vector<Rate>& cotSwapRates,
@@ -83,8 +83,8 @@ namespace QuantLib {
 
 
     void constantMaturityFromDiscountRatios(// Size i, // to be added later
-                                            Size spanningForwards,
-                                            Size firstValidIndex,
+                                            const Size spanningForwards,
+                                            const Size firstValidIndex,
                                             const std::vector<DiscountFactor>& ds,
                                             const std::vector<Time>& taus,
                                             std::vector<Rate>& constMatSwapRates,
