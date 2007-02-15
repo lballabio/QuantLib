@@ -108,7 +108,7 @@ namespace QuantLib {
             }
         }
 
-        Real PnOverPN = cs.discountRatio(dim_, numeraire_);
+        //Real PnOverPN = cs.discountRatio(dim_, numeraire_);
         Real PnOverPN = 1.0;
 
         for (Size j=0; j<dim_; ++j)
