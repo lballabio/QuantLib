@@ -96,12 +96,12 @@ namespace QuantLib {
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
                 wkpj_[k][j+1]= cs.coterminalSwapRate(j+1) * 
                             ( pseudo_[j+1][k] * cs.coterminalSwapAnnuity(nRates_,j+1) 
-                            +  wkaj_[k][j+1] );
+                            +  wkaj_[k][j+1] )+pseudo_[j+1][k]*displacements_[j+1]* cs.coterminalSwapAnnuity(nRates_,j+1);
                 wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1]; 
             }
             wkpj_[k][alive_]= cs.coterminalSwapRate(alive_) * 
                             ( pseudo_[alive_][k] * cs.coterminalSwapAnnuity(nRates_, alive_)
-                            +  wkaj_[k][nRates_-1] );
+                            +  wkaj_[k][nRates_-1] )+pseudo_[alive_][k]*displacements_[alive_]* cs.coterminalSwapAnnuity(nRates_, alive_);
         }
 
  

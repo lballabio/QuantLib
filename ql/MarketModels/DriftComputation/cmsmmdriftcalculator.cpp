@@ -89,7 +89,7 @@ namespace QuantLib {
                 Integer endIndex = std::min(j+spanningFwds_+1,dim_);
                 Real first = sr * wkaj_[k][j+1];
                 Real second = cs.cmSwapAnnuity(numeraire_,j+1,spanningFwds_) 
-                                 * sr
+                                 * (sr+displacements_[j+1])
                                  *pseudo_[j+1][k];
                 Real third = PjPnWk_[k][endIndex];
                 PjPnWk_[k][j+1] = first
