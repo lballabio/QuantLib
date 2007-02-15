@@ -94,7 +94,7 @@ std::vector<Rate> todaysForwards, todaysCoterminalSwapRates;
 std::vector<Real> coterminalAnnuity;
 Spread displacement;
 std::vector<DiscountFactor> todaysDiscounts;
-std::vector<Volatility> volatilities, blackVols;
+std::vector<Volatility> volatilities, blackVols, normalVols;
 std::vector<Volatility> swaptionsVolatilities, swaptionsBlackVols;
 Real a, b, c, d;
 Real longTermCorrelation, beta;
@@ -178,10 +178,12 @@ void setup() {
     d =  0.1710;
     volatilities = std::vector<Volatility>(todaysForwards.size());
     blackVols = std::vector<Volatility>(todaysForwards.size());
+    normalVols = std::vector<Volatility>(todaysForwards.size());
     for (Size i=0; i<LENGTH(mktVols); i++) {
         volatilities[i] = todaysForwards[i]*mktVols[i]/
                          (todaysForwards[i]+displacement);
         blackVols[i]= mktVols[i];
+        normalVols[i]= mktVols[i]*todaysForwards[i];
     }
 
     // Swaption volatility quick fix
@@ -238,6 +240,7 @@ std::string marketModelTypeToString(MarketModelType type) {
 }
 
 boost::shared_ptr<MarketModel> makeMarketModel(
+                                        bool logNormal,
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors,
                                         MarketModelType marketModelType,
@@ -258,9 +261,14 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                    std::bind1st(std::plus<Rate>(), forwardBump));
 
     std::vector<Volatility> bumpedVols(volatilities.size());
-    std::transform(volatilities.begin(), volatilities.end(),
-                   bumpedVols.begin(),
-                   std::bind1st(std::plus<Rate>(), volBump));
+    if (logNormal)
+        std::transform(volatilities.begin(), volatilities.end(),
+                       bumpedVols.begin(),
+                       std::bind1st(std::plus<Rate>(), volBump));
+    else
+        std::transform(normalVols.begin(), normalVols.end(),
+                       bumpedVols.begin(),
+                       std::bind1st(std::plus<Rate>(), volBump));
 
 
     switch (marketModelType) {
@@ -850,8 +858,9 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                 EvolverType evolvers[] = { Pc, Ipc };
                 boost::shared_ptr<MarketModelEvolver> evolver;
@@ -940,8 +949,9 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
+                bool logNormal = false;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                 EvolverType evolvers[] = { NormalPc};
                 boost::shared_ptr<MarketModelEvolver> evolver;
@@ -970,9 +980,9 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
                         checkNormalForwardsAndOptionlets(*stats,
-                                                   forwardStrikes,
-                                                   displacedPayoffs,
-                                                   config.str());
+                                                         forwardStrikes,
+                                                         displacedPayoffs,
+                                                         config.str());
                     }
                 }
             }
@@ -1034,8 +1044,9 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
         for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                 EvolverType evolvers[] = { Pc, Ipc };
@@ -1110,8 +1121,9 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                 EvolverType evolvers[] = { Pc, Ipc };
@@ -1192,8 +1204,9 @@ void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
                 EvolverType evolvers[] = { Pc, Ipc };
                 boost::shared_ptr<MarketModelEvolver> evolver;
@@ -1289,8 +1302,9 @@ void MarketModelTest::testCallableSwapNaif() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                 EvolverType evolvers[] = { Pc, Ipc };
@@ -1450,8 +1464,9 @@ void MarketModelTest::testCallableSwapLS() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                 EvolverType evolvers[] = { Pc, Ipc };
@@ -1621,8 +1636,9 @@ void MarketModelTest::testCallableSwapAnderson() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
+                bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
-                    makeMarketModel(evolution, factors, marketModels[j]);
+                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
 
 
                 EvolverType evolvers[] = { Pc, Ipc };
@@ -1785,8 +1801,9 @@ void MarketModelTest::testGreeks() {
                                            SobolBrownianGenerator::Diagonal,
                                            seed_);
 
+                    bool logNormal = true;
                     boost::shared_ptr<MarketModel> marketModel =
-                        makeMarketModel(evolution, factors,
+                        makeMarketModel(logNormal, evolution, factors,
                                         marketModels[j]);
 
                     boost::shared_ptr<MarketModelEvolver> evolver(new
@@ -1820,7 +1837,7 @@ void MarketModelTest::testGreeks() {
 
                     Spread forwardBump = 1.0e-6;
                     marketModel =
-                        makeMarketModel(evolution, factors,
+                        makeMarketModel(logNormal, evolution, factors,
                                         marketModels[j], -forwardBump);
                     deltaGammaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
@@ -1830,7 +1847,7 @@ void MarketModelTest::testGreeks() {
                     deltaGammaEvolvers.back()->setConstraintType(
                         startIndexOfConstraint, endIndexOfConstraint);
                     marketModel =
-                        makeMarketModel(evolution, factors,
+                        makeMarketModel(logNormal, evolution, factors,
                                         marketModels[j], forwardBump);
                     deltaGammaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
@@ -1857,7 +1874,7 @@ void MarketModelTest::testGreeks() {
 
                     Volatility volBump = 1.0e-4;
                     marketModel =
-                        makeMarketModel(evolution, factors,
+                        makeMarketModel(logNormal, evolution, factors,
                                         marketModels[j], 0.0, -volBump);
                     vegaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
@@ -1867,7 +1884,7 @@ void MarketModelTest::testGreeks() {
                     vegaEvolvers.back()->setConstraintType(
                         startIndexOfConstraint, endIndexOfConstraint);
                     marketModel =
-                        makeMarketModel(evolution, factors,
+                        makeMarketModel(logNormal, evolution, factors,
                                         marketModels[j], 0.0, volBump);
                     vegaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
@@ -2152,8 +2169,9 @@ void MarketModelTest::testDriftCalculator() {
     MarketModelType marketModels[] = {ExponentialCorrelationFlatVolatility,
                                       ExponentialCorrelationAbcdVolatility};
     for (Size k=0; k<LENGTH(marketModels); ++k) {   // loop over market models
+        bool logNormal = true;
         boost::shared_ptr<MarketModel> marketModel =
-            makeMarketModel(evolution, factors, marketModels[k]);
+            makeMarketModel(logNormal, evolution, factors, marketModels[k]);
         std::vector<Rate> displacements = marketModel->displacements();
         for (Size j=0; j<numberOfSteps; ++j) {     // loop over steps
             const Matrix& A = marketModel->pseudoRoot(j);

@@ -34,7 +34,7 @@ namespace QuantLib {
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
-      displacements_(marketModel->displacements()), drifts1_(n_), drifts2_(n_),
+      drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(marketModel->evolution().firstAliveRate())
     {
@@ -51,7 +51,6 @@ namespace QuantLib {
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(LMMNormalDriftCalculator(A,
-                                                   displacements_,
                                                    marketModel->evolution().rateTaus(),
                                                    numeraires[j],
                                                    alive_[j]));
