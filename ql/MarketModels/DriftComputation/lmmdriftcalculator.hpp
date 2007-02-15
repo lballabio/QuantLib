@@ -46,8 +46,8 @@ namespace QuantLib {
                            Size numeraire,
                            Size alive);
         //! Computes the drifts
-        //void compute(const LMMCurveState& cs,
-        //             std::vector<Real>& drifts) const;
+        void compute(const LMMCurveState& cs,
+                     std::vector<Real>& drifts) const;
         void compute(const std::vector<Rate>& fwds,
                      std::vector<Real>& drifts) const;
 

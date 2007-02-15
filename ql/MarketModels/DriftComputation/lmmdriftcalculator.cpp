@@ -25,7 +25,8 @@
 
 namespace QuantLib {
 
-    LMMDriftCalculator::LMMDriftCalculator(const Matrix& pseudo,
+    LMMDriftCalculator::LMMDriftCalculator(
+                                     const Matrix& pseudo,
                                      const std::vector<Spread>& displacements,
                                      const std::vector<Time>& taus,
                                      Size numeraire,
@@ -65,10 +66,10 @@ namespace QuantLib {
         }
     }
 
-    //void LMMDriftCalculator::compute(const LMMCurveState& cs,
-    //                                 std::vector<Real>& drifts) const {
-    //    compute(cs.forwardRates(), drifts);
-    //}
+    void LMMDriftCalculator::compute(const LMMCurveState& cs,
+                                     std::vector<Real>& drifts) const {
+        compute(cs.forwardRates(), drifts);
+    }
 
     void LMMDriftCalculator::compute(const std::vector<Rate>& fwds,
                                      std::vector<Real>& drifts) const {
@@ -170,11 +171,10 @@ namespace QuantLib {
         for (Size i=numeraire_; i<dim_; ++i) {
             drifts[i] = 0.0;
             for (Size r=0; r<factors_; ++r) {
-                if (i==0) {
+                if (i==0)
                     e_[r][i] = tmp_[i] * pseudo_[i][r];
-                } else {
+                else
                     e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
-                }
                 drifts[i] += e_[r][i]*pseudo_[i][r];
             }
         }

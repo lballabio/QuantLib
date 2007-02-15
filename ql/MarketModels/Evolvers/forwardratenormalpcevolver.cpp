@@ -34,6 +34,7 @@ namespace QuantLib {
       n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
+      initialForwards_(marketModel->initialRates()),
       drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(marketModel->evolution().firstAliveRate())
@@ -47,13 +48,13 @@ namespace QuantLib {
         currentStep_ = initialStep_;
 
         calculators_.reserve(steps);
-        //fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(LMMNormalDriftCalculator(A,
-                                                   marketModel->evolution().rateTaus(),
-                                                   numeraires[j],
-                                                   alive_[j]));
+            calculators_.push_back(
+                LMMNormalDriftCalculator(A,
+                                         marketModel->evolution().rateTaus(),
+                                         numeraires[j],
+                                         alive_[j]));
             for (Size k=0; k<n_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
@@ -82,6 +83,8 @@ namespace QuantLib {
 
     Real ForwardRateNormalPcEvolver::startNewPath() {
         currentStep_ = initialStep_;
+        std::copy(initialForwards_.begin(), initialForwards_.end(),
+                  forwards_.begin());
         return generator_->nextPath();
     }
 
@@ -102,7 +105,7 @@ namespace QuantLib {
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
 
         Size i, alive = alive_[currentStep_];
-        for (i=alive; i<n_; i++) {
+        for (i=alive; i<n_; ++i) {
             forwards_[i] += drifts1_[i] ;
             forwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),

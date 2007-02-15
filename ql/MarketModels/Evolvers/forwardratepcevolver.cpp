@@ -35,7 +35,8 @@ namespace QuantLib {
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
-      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_), drifts2_(n_),
+      logForwards_(n_), initialLogForwards_(n_),
+      drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(marketModel->evolution().firstAliveRate())
     {
@@ -51,11 +52,12 @@ namespace QuantLib {
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(LMMDriftCalculator(A,
-                                                   displacements_,
-                                                   marketModel->evolution().rateTaus(),
-                                                   numeraires[j],
-                                                   alive_[j]));
+            calculators_.push_back(
+                LMMDriftCalculator(A,
+                                   displacements_,
+                                   marketModel->evolution().rateTaus(),
+                                   numeraires[j],
+                                   alive_[j]));
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
                 Real variance =
@@ -112,7 +114,7 @@ namespace QuantLib {
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size i, alive = alive_[currentStep_];
-        for (i=alive; i<n_; i++) {
+        for (i=alive; i<n_; ++i) {
             logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),

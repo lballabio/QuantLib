@@ -585,9 +585,9 @@ void checkNormalForwardsAndOptionlets(const SequenceStatistics& stats,
         Time expiry = rateTimes[i];
         expectedCaplets[i] =
             bachelierBlackFormula(displacedPayoffs[i],
-                            todaysForwards[i]+displacement,
-                            volatilities[i]*std::sqrt(expiry),
-                            todaysDiscounts[i+1]*accruals[i]);
+                                  todaysForwards[i]+displacement,
+                                  normalVols[i]*std::sqrt(expiry),
+                                  todaysDiscounts[i+1]*accruals[i]);
         capletStdDev[i] = (results[i+N]-expectedCaplets[i])/errors[i+N];
         if (capletStdDev[i]>maxError)
             maxError = capletStdDev[i];

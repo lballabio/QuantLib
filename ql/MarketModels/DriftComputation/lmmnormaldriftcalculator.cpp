@@ -23,10 +23,11 @@
 
 namespace QuantLib {
 
-    LMMNormalDriftCalculator::LMMNormalDriftCalculator(const Matrix& pseudo,
-                                     const std::vector<Time>& taus,
-                                     Size numeraire,
-                                     Size alive)
+    LMMNormalDriftCalculator::LMMNormalDriftCalculator(
+                                         const Matrix& pseudo,
+                                         const std::vector<Time>& taus,
+                                         Size numeraire,
+                                         Size alive)
     : dim_(taus.size()), factors_(pseudo.columns()),
       isFullFactor_(factors_==dim_ ? true : false),
       numeraire_(numeraire), alive_(alive),
@@ -60,10 +61,10 @@ namespace QuantLib {
         }
     }
 
-    //void LMMNormalDriftCalculator::compute(const LMMCurveState& cs,
-    //                                       std::vector<Real>& drifts) const {
-    //    compute(cs.forwardRates(), drifts);
-    //}
+    void LMMNormalDriftCalculator::compute(const LMMCurveState& cs,
+                                           std::vector<Real>& drifts) const {
+        compute(cs.forwardRates(), drifts);
+    }
 
     void LMMNormalDriftCalculator::compute(const std::vector<Rate>& fwds,
                                            std::vector<Real>& drifts) const {
@@ -97,8 +98,8 @@ namespace QuantLib {
         // Compute drifts
         for (i=alive_; i<dim_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
-                tmp_.begin()+ups_[i],
-                C_.row_begin(i)+downs_[i], 0.0);
+                                           tmp_.begin()+ups_[i],
+                                           C_.row_begin(i)+downs_[i], 0.0);
             if (numeraire_>i+1)
                 drifts[i] = -drifts[i];
         }
@@ -143,19 +144,6 @@ namespace QuantLib {
                 drifts[i] -= e_[r][i]*pseudo_[i][r];
             }
 
-            /*
-            Matrix::column_iterator p1 = e_.column_begin(i);
-            Matrix::column_iterator end = e_.column_end(i);
-            Matrix::const_column_iterator p2 = e_.column_begin(i+1);
-            Matrix::const_row_iterator q1 = pseudo_.row_begin(i);
-            Matrix::const_row_iterator q2 = pseudo_.row_begin(i+1);
-            Real x = tmp_[i+1];
-            while (p1 != end) {
-                *p1 = *p2 + x*(*q2);
-                drifts[i] -= *p1*(*q1);
-                ++p1; ++p2; ++q1; ++q2;
-            }
-            */
         }
 
         // 3rd step: now, move forward from N (included) up to n (excluded)
@@ -163,11 +151,10 @@ namespace QuantLib {
         for (Size i=numeraire_; i<dim_; ++i) {
             drifts[i] = 0.0;
             for (Size r=0; r<factors_; ++r) {
-                if (i==0) {
+                if (i==0)
                     e_[r][i] = tmp_[i] * pseudo_[i][r];
-                } else {
+                else
                     e_[r][i] = e_[r][i-1] + tmp_[i] * pseudo_[i][r];
-                }
                 drifts[i] += e_[r][i]*pseudo_[i][r];
             }
         }
