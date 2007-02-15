@@ -50,8 +50,8 @@ namespace QuantLib {
                      std::vector<Real>& drifts) const;
 
         //! Computes the drifts
-        void compute(const std::vector<Rate>& fwds,
-                     std::vector<Real>& drifts) const;
+        //void compute(const std::vector<Rate>& fwds,
+        //             std::vector<Real>& drifts) const;
 
         /*! Computes the drifts without factor reduction as in 
             eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */

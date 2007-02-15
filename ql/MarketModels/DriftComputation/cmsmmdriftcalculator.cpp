@@ -79,8 +79,8 @@ namespace QuantLib {
         // final bond is numeraire
 
         // Compute cross variations
-        for (Size k = 0; k<PjPnWk_.rows(); ++k) {
-            PjPnWk_[k][dim_] = 0.0;
+        for (Size k=0; k<PjPnWk_.rows(); ++k) {
+            PjPnWk_[k][dim_]=0.0;
             wkaj_[k][dim_-1]=0.0;
 
             for (Integer j=static_cast<Integer>(dim_)-2;
@@ -111,14 +111,14 @@ namespace QuantLib {
         Real PnOverPN = cs.discountRatio(dim_, numeraire_);
         //Real PnOverPN = 1.0;
 
-        for (Size j=0; j<dim_; ++j)
+        for (Size j=alive_; j<dim_; ++j)
             for (Size k=0; k<factors_; ++k)
                 wkajN_[k][j] =  wkaj_[k][j]*PnOverPN
                     -PjPnWk_[k][numeraire_]*PnOverPN*cs.cmSwapAnnuity(numeraire_,j,spanningFwds_);
 
 
 
-        for (Size j = 0; j< dim_; ++j)
+        for (Size j=alive_; j<dim_; ++j)
         {
             drifts[j]=0.0;
             for (Size k=0; k<factors_; ++k)
