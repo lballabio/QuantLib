@@ -54,18 +54,22 @@ namespace QuantLib {
         //cmSwapAnnuities_[nRates_-1] = rateTaus_[nRates_-1];
 
         // assume i+1 and do i 
+        Integer oldAnnuityEndIndex = nRates_;
         for (Size i=nRates_-1; i>first_; --i) 
         {
             // formula 6.1 Joshi Liesch
             Integer endIndex = std::min(i + spanningFwds_,nRates_);
+            Integer annuityEndIndex = std::min(i + spanningFwds_-1,nRates_);
 
             discRatios_[i] = discRatios_[endIndex] +
             cmSwapRates_[i]*cmSwapAnnuities_[i];
             cmSwapAnnuities_[i-1]= cmSwapAnnuities_[i]
             +discRatios_[i] * rateTaus_[i-1];
 
-            if (i + spanningFwds_ < nRates_)
-            cmSwapAnnuities_[i]-=discRatios_[endIndex] * rateTaus_[endIndex-1 ];               
+            if (annuityEndIndex < oldAnnuityEndIndex)
+              cmSwapAnnuities_[i-1]-=discRatios_[oldAnnuityEndIndex] * rateTaus_[oldAnnuityEndIndex-1 ];     
+
+            oldAnnuityEndIndex = annuityEndIndex;
         }
         Integer endIndex = std::min(first_ + spanningFwds_,nRates_);
 

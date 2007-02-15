@@ -56,7 +56,7 @@ namespace QuantLib {
                    "ds.size()!=fwds.size()+1");
 
         for (Size i=firstValidIndex; i<fwds.size(); ++i)
-            fwds[i] = (ds[i]-ds[i+1])/(ds[i]*taus[i]);
+            fwds[i] = (ds[i]-ds[i+1])/(ds[i+1]*taus[i]);
     };
 
     void coterminalFromDiscountRatios(Size firstValidIndex,
@@ -105,17 +105,18 @@ namespace QuantLib {
         constMatSwapRates[firstValidIndex] = 
             (ds[firstValidIndex]-ds[lastIndex])/
                 constMatSwapAnnuities[firstValidIndex];
+        Size oldLastIndex = lastIndex;
 
         // compute all the other cmas rates and cms annuities
         for (Size i=firstValidIndex+1; i<nConstMatSwapRates; ++i) {
             Size lastIndex = std::min(i+spanningForwards,nConstMatSwapRates);
             constMatSwapAnnuities[i] = constMatSwapAnnuities[i-1] 
                                        - taus[i-1] * ds[i];
-            if(lastIndex<nConstMatSwapRates)
+            if (lastIndex!=oldLastIndex)
                constMatSwapAnnuities[i] += taus[lastIndex-1] * ds[lastIndex];
-            constMatSwapRates[i] = 
-                (ds[i]-ds[lastIndex])/
-                    constMatSwapAnnuities[i];
+            constMatSwapRates[i] = (ds[i]-ds[lastIndex])
+                /constMatSwapAnnuities[i];
+            oldLastIndex = lastIndex;
         }
     };
 
