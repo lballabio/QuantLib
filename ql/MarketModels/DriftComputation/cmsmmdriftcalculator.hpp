@@ -61,6 +61,8 @@ namespace QuantLib {
         mutable std::vector<Real> tmp_;
         mutable Matrix PjPnWk_; // < Wk, P_{j}/P_n> (k, j)
         mutable Matrix wkaj_;    // < Wk , Aj/Pn> (k, j)
+        mutable Matrix wkajN_;    // < Wk , Aj/PN> (k, j)
+      
         std::vector<Size> downs_, ups_;
         Size spanningFwds_;
     };
