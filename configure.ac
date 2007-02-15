@@ -337,6 +337,7 @@ AC_CONFIG_FILES([
     ql/Lattices/Makefile
     ql/MarketModels/Makefile
     ql/MarketModels/BrownianGenerators/Makefile
+    ql/MarketModels/CurveStates/Makefile
     ql/MarketModels/DriftComputation/Makefile
     ql/MarketModels/Evolvers/Makefile
     ql/MarketModels/ExerciseStrategies/Makefile

@@ -19,6 +19,7 @@ QL_TESTS = \
 	compoundforward.hpp compoundforward.cpp \
 	convertiblebonds.hpp convertiblebonds.cpp \
 	covariance.hpp covariance.cpp \
+	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
 	digitaloption.hpp digitaloption.cpp \

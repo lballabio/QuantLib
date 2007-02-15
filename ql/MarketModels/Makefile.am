@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels
 
 SUBDIRS = BrownianGenerators Evolvers ExerciseStrategies \
-    ExerciseValues Models Products DriftComputation
+    ExerciseValues Models Products DriftComputation CurveStates
 
 include_HEADERS = \
     all.hpp \
@@ -43,6 +43,7 @@ libMarketModels_la_SOURCES = \
     proxygreekengine.cpp \
     swapbasissystem.cpp \
     swapforwardconversionmatrix.cpp \
+    swapforwardmappings.cpp \
     upperboundengine.cpp \
     utilities.cpp
 
@@ -51,6 +52,7 @@ noinst_LTLIBRARIES = libMarketModels.la
 
 libMarketModels_la_LIBADD = \
     BrownianGenerators/libMarketModelsBrownianGenerators.la \
+    CurveStates/libMarketModelsCurveStates.la \
     Evolvers/libMarketModelsEvolvers.la \
     ExerciseValues/libMarketModelsExerciseValues.la \
     ExerciseStrategies/libMarketModelsExerciseStrategies.la \
