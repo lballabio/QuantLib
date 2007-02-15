@@ -123,6 +123,8 @@ namespace QuantLib {
             for (Size k=0; k<nFactors_; ++k) {
                 drifts[j] += wkajshifted_[k][j]*pseudo_[j][k];
             }
+
+            drifts[j] /= -cs.coterminalSwapAnnuity(numeraire_,j);
        
         }
 

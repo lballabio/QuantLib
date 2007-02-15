@@ -34,7 +34,7 @@ namespace QuantLib {
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),
       downs_(taus.size()), ups_(taus.size()),
-      wkaj_(factors_,taus.size()),PjPnWk_(factors_,taus.size()),
+      wkaj_(factors_,taus.size()),PjPnWk_(factors_,1+taus.size()),
       spanningFwds_(spanningFwds){
 
         // Check requirements
@@ -79,7 +79,7 @@ namespace QuantLib {
         // Compute cross variations
         for (Size k = 0; k<PjPnWk_.rows(); ++k)
             {
-            PjPnWk_[k][dim_-1] = 0.0;
+            PjPnWk_[k][dim_] = 0.0;
             wkaj_[k][dim_-1]=0.0;
 
             for (Integer j=static_cast<Integer>(dim_)-2;
@@ -87,11 +87,14 @@ namespace QuantLib {
                 {
                 double sr = cs.cmSwapRate(j+1,spanningFwds_);
                 Integer endIndex = std::min(j+spanningFwds_+1,dim_);
-                PjPnWk_[k][j+1] = sr * wkaj_[k][j+1]
-                + cs.cmSwapAnnuity(numeraire_,j+1,spanningFwds_) 
-                    * sr
-                    *pseudo_[k][j+1]
-                + PjPnWk_[k][endIndex];
+                Real first = sr * wkaj_[k][j+1];
+                Real second = cs.cmSwapAnnuity(numeraire_,j+1,spanningFwds_) 
+                                 * sr
+                                 *pseudo_[j+1][k];
+                Real third = PjPnWk_[k][endIndex];
+                PjPnWk_[k][j+1] = first
+                + second
+                + third;
 
                 wkaj_[k][j] = wkaj_[k][j+1]    
                 + PjPnWk_[k][j+1]*taus[j];
