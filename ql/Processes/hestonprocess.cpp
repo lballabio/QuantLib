@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,7 +56,13 @@ namespace QuantLib {
         tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
                - dividendYield_->forwardRate(t, t, Continuous)
                - 0.5 * vol * vol;
-        tmp[1] = kappa_*(theta_ - x[1]);
+
+        // A plain vanilla discretization schema that
+        // seems to produce the smallest bias.
+        // See Lord, R., R. Koekkoek and D. van Dijk (2006), 
+        // "A Comparison of biased simulation schemes for 
+        //  stochastic volatility models", Working Paper, Tinbergen Institute
+        tmp[1] = kappa_*(theta_ - vol*vol);
         return tmp;
     }
 
