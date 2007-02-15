@@ -47,7 +47,7 @@ namespace QuantLib {
                 sr0   sr1   sr2   sr3   sr4          cotSwaps
     */
       public:
-        LMMCurveState(const std::vector<Time>& rateTimes);
+        explicit LMMCurveState(const std::vector<Time>& rateTimes);
         //! \name Modifiers
         //@{
         void setOnForwardRates(const std::vector<Rate>& fwdRates,

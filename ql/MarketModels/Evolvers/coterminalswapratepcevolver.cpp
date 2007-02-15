@@ -101,15 +101,14 @@ namespace QuantLib {
     {
          //we're going from T1 to T2
 
-         //a) compute drifts D1 at T1;
-        if (currentStep_ > initialStep_) {
-            calculators_[currentStep_].compute(swapRates_, drifts1_);
-        } else {
+        //a) compute drifts D1 at T1;
+        if (currentStep_ > initialStep_)
+            calculators_[currentStep_].compute(curveState_, drifts1_);
+        else
             std::copy(initialDrifts_.begin(), initialDrifts_.end(),
                       drifts1_.begin());
-        }
 
-         //b) evolve forwards up to T2 using D1;
+        //b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
@@ -123,16 +122,19 @@ namespace QuantLib {
             swapRates_[i] = std::exp(logSwapRates_[i]) - displacements_[i];
         }
 
-         //c) recompute drifts D2 using the predicted forwards;
-        calculators_[currentStep_].compute(swapRates_, drifts2_);
+        // intermediate curve state update
+        curveState_.setOnCoterminalSwapRates(swapRates_);
 
-         //d) correct forwards using both drifts
+        //c) recompute drifts D2 using the predicted forwards;
+        calculators_[currentStep_].compute(curveState_, drifts2_);
+
+        //d) correct forwards using both drifts
         for (i=alive; i<n_; ++i) {
             logSwapRates_[i] += (drifts2_[i]-drifts1_[i])/2.0;
             swapRates_[i] = std::exp(logSwapRates_[i]) - displacements_[i];
         }
 
-         //e) update curve state
+        //e) update curve state
         curveState_.setOnCoterminalSwapRates(swapRates_);
 
         ++currentStep_;

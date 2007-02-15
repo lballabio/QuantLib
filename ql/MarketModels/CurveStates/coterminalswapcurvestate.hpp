@@ -49,7 +49,7 @@ namespace QuantLib {
                 a0    a1    a2    a3    a4           cotAnnuities   (i = 0, ..., 4; dim = 5)
     */
       public:
-        CoterminalSwapCurveState(const std::vector<Time>& rateTimes);
+        explicit CoterminalSwapCurveState(const std::vector<Time>& rateTimes);
         //! \name Modifiers
         //@{
         void setOnCoterminalSwapRates(const std::vector<Rate>& swapRates,
