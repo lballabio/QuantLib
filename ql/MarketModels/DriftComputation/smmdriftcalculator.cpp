@@ -91,17 +91,19 @@ namespace QuantLib {
                 // taken care in the constructor
                 // wkpj1_[k][nRates_-1]= 0.0;
                 // wkaj_[k][nRates_-1] = 0.0;
-            for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_); --j) {
+            for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_)-1; --j) {
                  // < W(k) | P(j+1)/P(n) > = 
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
                 wkpj_[k][j+1]= cs.coterminalSwapRate(j+1) * 
                             ( pseudo_[j+1][k] * cs.coterminalSwapAnnuity(nRates_,j+1) 
                             +  wkaj_[k][j+1] )+pseudo_[j+1][k]*displacements_[j+1]* cs.coterminalSwapAnnuity(nRates_,j+1);
-                wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1]; 
+                
+                if (j >=static_cast<Integer>(alive_))
+                    wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1]; 
             }
-            wkpj_[k][alive_]= cs.coterminalSwapRate(alive_) * 
-                            ( pseudo_[alive_][k] * cs.coterminalSwapAnnuity(nRates_, alive_)
-                            +  wkaj_[k][nRates_-1] )+pseudo_[alive_][k]*displacements_[alive_]* cs.coterminalSwapAnnuity(nRates_, alive_);
+          //  wkpj_[k][alive_]= cs.coterminalSwapRate(alive_) * 
+            //                ( pseudo_[alive_][k] * cs.coterminalSwapAnnuity(nRates_, alive_)
+              //              +  wkaj_[k][nRates_-1] )+pseudo_[alive_][k]*displacements_[alive_]* cs.coterminalSwapAnnuity(nRates_, alive_);
         }
 
  
@@ -112,7 +114,8 @@ namespace QuantLib {
             // compute < Wk, PN/pn> 
             for (Size j=alive_; j<nRates_; ++j) 
             {
-                wkajshifted_[k][j] = wkaj_[k][j] - wkpj_[k][numeraire_]
+                wkajshifted_[k][j] = -wkaj_[k][j]/cs.coterminalSwapAnnuity(nRates_,j) 
+                                    + wkpj_[k][numeraire_]
                                                 *numeraireRatio;
             }
         }
@@ -124,7 +127,7 @@ namespace QuantLib {
                 drifts[j] += wkajshifted_[k][j]*pseudo_[j][k];
             }
 
-            drifts[j] /= -cs.coterminalSwapAnnuity(numeraire_,j);
+         //   drifts[j] /= -cs.coterminalSwapAnnuity(numeraire_,j);
        
         }
 

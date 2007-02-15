@@ -89,7 +89,7 @@ namespace QuantLib {
                 double sr = cs.cmSwapRate(j+1,spanningFwds_);
                 Integer endIndex = std::min(j+spanningFwds_+1,dim_);
                 Real first = sr * wkaj_[k][j+1];
-                Real second = cs.cmSwapAnnuity(numeraire_,j+1,spanningFwds_) 
+                Real second = cs.cmSwapAnnuity(dim_,j+1,spanningFwds_) 
                 * (sr+displacements_[j+1])
                 *pseudo_[j+1][k];
                 Real third = PjPnWk_[k][endIndex];
@@ -108,8 +108,8 @@ namespace QuantLib {
             }
         }
 
-        //Real PnOverPN = cs.discountRatio(dim_, numeraire_);
-        Real PnOverPN = 1.0;
+        Real PnOverPN = cs.discountRatio(dim_, numeraire_);
+        //Real PnOverPN = 1.0;
 
         for (Size j=0; j<dim_; ++j)
             for (Size k=0; k<factors_; ++k)
