@@ -65,24 +65,33 @@ namespace QuantLib {
 
     void LMMNormalDriftCalculator::compute(const LMMCurveState& cs,
                                            std::vector<Real>& drifts) const {
+        compute(cs.forwardRates(), drifts);
+    }
+
+    void LMMNormalDriftCalculator::compute(const std::vector<Rate>& fwds,
+                                           std::vector<Real>& drifts) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-            QL_REQUIRE(cs.numberOfRates()==dim_, "numberOfRates <> dim");
+            QL_REQUIRE(fwds.size()==dim_, "numberOfRates <> dim");
             QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
         #endif
 
         if (isFullFactor_)
-            computePlain(cs, drifts);
+            computePlain(fwds, drifts);
         else
-            computeReduced(cs, drifts);
+            computeReduced(fwds, drifts);
     }
 
     void LMMNormalDriftCalculator::computePlain(const LMMCurveState& cs,
+                                                std::vector<Real>& drifts) const {
+        computePlain(cs.forwardRates(), drifts);
+    }
+
+    void LMMNormalDriftCalculator::computePlain(const std::vector<Rate>& forwards,
                                                 std::vector<Real>& drifts) const {
 
         // Compute drifts without factor reduction,
         // using directly the covariance matrix.
 
-        const std::vector<Rate>& forwards = cs.forwardRates();
         // Precompute forwards factor
         Size i;
         for(i=alive_; i<dim_; ++i)
@@ -99,12 +108,16 @@ namespace QuantLib {
     }
 
     void LMMNormalDriftCalculator::computeReduced(const LMMCurveState& cs,
+                                                std::vector<Real>& drifts) const {
+        computeReduced(cs.forwardRates(), drifts);
+    }
+
+    void LMMNormalDriftCalculator::computeReduced(const std::vector<Rate>& forwards,
                                                   std::vector<Real>& drifts) const {
 
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
 
-        const std::vector<Rate>& forwards = cs.forwardRates();
         // Precompute forwards factor
         for (Size i=alive_; i<dim_; ++i)
             tmp_[i] = 1.0/(oneOverTaus_[i]+forwards[i]);

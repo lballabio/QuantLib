@@ -48,20 +48,23 @@ namespace QuantLib {
         //! Computes the drifts
         void compute(const LMMCurveState& cs,
                      std::vector<Real>& drifts) const;
-
-        //! Computes the drifts
-        //void compute(const std::vector<Rate>& fwds,
-        //             std::vector<Real>& drifts) const;
+        void compute(const std::vector<Rate>& fwds,
+                     std::vector<Real>& drifts) const;
 
         /*! Computes the drifts without factor reduction as in 
             eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
         void computePlain(const LMMCurveState& cs,
+                          std::vector<Real>& drifts) const;
+        void computePlain(const std::vector<Rate>& fwds,
                           std::vector<Real>& drifts) const;
 
         /*! Computes the drifts with factor reduction as in eq. 7 of ref. [1]
             (uses pseudo square root of the covariance matrix). */
         void computeReduced(const LMMCurveState& cs,
                             std::vector<Real>& drifts) const;
+        void computeReduced(const std::vector<Rate>& fwds,
+                            std::vector<Real>& drifts) const;
+
 
       private:
         Size dim_, factors_;
