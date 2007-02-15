@@ -1463,6 +1463,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\marketmodel_smm.cpp"
+				>
+			</File>
+			<File
 				RelativePath="matrices.cpp"
 				>
 				<FileConfiguration
@@ -2401,6 +2405,10 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\marketmodel_smm.hpp"
 				>
 			</File>
 			<File

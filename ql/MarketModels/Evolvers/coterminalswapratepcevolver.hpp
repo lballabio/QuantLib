@@ -45,7 +45,7 @@ namespace QuantLib {
         Real advanceStep();
         Size currentStep() const;
         const CurveState& currentState() const;
-        void setInitialState(const CoterminalSwapCurveState&);
+        void setInitialState(const CurveState&);
         //@}
       private:
         //void setForwards(const std::vector<Real>& forwards);

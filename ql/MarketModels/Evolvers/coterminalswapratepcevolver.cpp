@@ -83,8 +83,11 @@ namespace QuantLib {
         calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
 
-    void CoterminalSwapRatePcEvolver::setInitialState(const CoterminalSwapCurveState& cs) {      
-        setCoterminalSwapRates(cs.coterminalSwapRates());
+    void CoterminalSwapRatePcEvolver::setInitialState(const CurveState& cs) {
+        
+        const CoterminalSwapCurveState* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
+        const std::vector<Real>& swapRates = cotcs->coterminalSwapRates();
+        setCoterminalSwapRates(swapRates);
     }
 
     Real CoterminalSwapRatePcEvolver::startNewPath() {
