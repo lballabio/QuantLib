@@ -271,7 +271,7 @@ namespace QuantLib {
                 std::vector<Real>::iterator w = weights_.begin();
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
-                
+
                 // if no method is provided we provide one
                 if (!method_)
                     method_ = boost::shared_ptr<OptimizationMethod>(new
@@ -304,7 +304,7 @@ namespace QuantLib {
                     guess[1] = std::sqrt(-std::log(std::max(beta_, QL_EPSILON)));
                     guess[2] = std::sqrt(nu_);
                     guess[3] = std::tan(M_PI/2.0*rho_);
-                
+
                     // these lines should be moved in the constructor ...
                     SABRError costFunction(this);
                     Problem problem(costFunction, constraint_, guess);
@@ -367,7 +367,6 @@ namespace QuantLib {
                 }
                 return maxError;
             }
-
         };
 
     }

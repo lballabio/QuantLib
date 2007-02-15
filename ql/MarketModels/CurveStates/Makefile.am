@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MarketModels/CurveStates
 
 include_HEADERS = \
+	all.hpp \
 	cmswapcurvestate.hpp \
 	coterminalswapcurvestate.hpp \
 	lmmcurvestate.hpp

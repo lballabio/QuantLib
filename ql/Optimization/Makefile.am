@@ -25,6 +25,7 @@ libOptimization_la_SOURCES = \
     conjugategradient.cpp \
     constraint.cpp \
     endcriteria.cpp \
+    leastsquare.cpp \
     levenbergmarquardt.cpp \
     linesearch.cpp \
     linesearchbasedmethod.cpp \

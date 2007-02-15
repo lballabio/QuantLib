@@ -106,14 +106,14 @@ void setup() {
         floatingLeg = todaysDiscounts[N-i]-todaysDiscounts[N];
         todaysCoterminalSwapRates[N-i] = floatingLeg/coterminalAnnuity[N-i];
     }
-    
+
     std::vector<Time> evolutionTimes(rateTimes.size()-1);
     std::copy(rateTimes.begin(), rateTimes.end()-1, evolutionTimes.begin());
     EvolutionDescription evolution(rateTimes,evolutionTimes);
     std::vector<Real> rateTaus = evolution.rateTaus();
     std::vector<Size> alive = evolution.firstAliveRate();
     Size numberOfSteps = evolutionTimes.size();
-};
+}
 
 QL_END_TEST_LOCALS(CurveStatesTest)
 
@@ -144,7 +144,7 @@ void CurveStatesTest::testCMSwapCurveState() {
     std::vector<Time> rateTimes(nbRates+1);
     std::vector<Time> taus(nbRates, .5);
     std::vector<Rate> forwards(nbRates, 0.0);
-    
+
     std::cout << "rate value:"<< std::endl;
     for (Size i = 0; i < forwards.size(); ++i){
         forwards[i] = static_cast<Time>(i)*.01+.04;
@@ -155,8 +155,8 @@ void CurveStatesTest::testCMSwapCurveState() {
         rateTimes[i] = static_cast<Time>(i)*.5;
         std::cout << rateTimes[i] << std::endl;
     }
-    Size numeraire = nbRates; 
-    Size alive = 0; 
+    Size numeraire = nbRates;
+    Size alive = 0;
     Size spanningFwds = 1;
 
     CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus, numeraire,
@@ -173,7 +173,7 @@ void CurveStatesTest::testCMSwapCurveState() {
     lmmCs.setOnForwardRates(forwards);
     std::vector<Real> lmmDrifts(nbRates);
     lmmDriftcalulator.compute(forwards,lmmDrifts);
-    
+
     std::cout << "drifts:"<< std::endl;
     std::cout << "LMM\t\tCMS"<< std::endl;
     for (Size i = 0; i<nbRates; ++i){

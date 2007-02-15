@@ -57,7 +57,7 @@ namespace QuantLib {
 
         for (Size i=firstValidIndex; i<fwds.size(); ++i)
             fwds[i] = (ds[i]-ds[i+1])/(ds[i+1]*taus[i]);
-    };
+    }
 
     void coterminalFromDiscountRatios(const Size firstValidIndex,
                                       const std::vector<DiscountFactor>& ds,
@@ -71,15 +71,15 @@ namespace QuantLib {
                    "cotSwapAnnuities.size()!=cotSwapRates.size()");
         QL_REQUIRE(ds.size()==nCotSwapRates+1,
                    "ds.size()!=cotSwapRates.size()+1");
-        
+
         cotSwapAnnuities[nCotSwapRates-1] = taus[nCotSwapRates-1]*ds[nCotSwapRates];
         cotSwapRates[nCotSwapRates-1] = (ds[nCotSwapRates-1]-ds[nCotSwapRates])/cotSwapAnnuities[nCotSwapRates-1];
-        
+
         for (Size i=nCotSwapRates-1; i>firstValidIndex; --i) {
             cotSwapAnnuities[i-1] = cotSwapAnnuities[i] + taus[i-1] * ds[i];
             cotSwapRates[i-1] = (ds[i-1]-ds[nCotSwapRates])/cotSwapAnnuities[i-1];
         }
-    };
+    }
 
 
     void constantMaturityFromDiscountRatios(// Size i, // to be added later
@@ -96,13 +96,13 @@ namespace QuantLib {
                    "constMatSwapAnnuities.size()!=nConstMatSwapRates");
         QL_REQUIRE(ds.size()==nConstMatSwapRates+1,
                    "ds.size()!=nConstMatSwapRates+1");
-        // compute the first cmsrate and cmsannuity     
+        // compute the first cmsrate and cmsannuity
         constMatSwapAnnuities[firstValidIndex]=0.;
         Size lastIndex = std::min(firstValidIndex+spanningForwards,nConstMatSwapRates);
         for (Size i=firstValidIndex; i<lastIndex; ++i) {
             constMatSwapAnnuities[firstValidIndex]+= taus[i] * ds[i+1];
-        }  
-        constMatSwapRates[firstValidIndex] = 
+        }
+        constMatSwapRates[firstValidIndex] =
             (ds[firstValidIndex]-ds[lastIndex])/
                 constMatSwapAnnuities[firstValidIndex];
         Size oldLastIndex = lastIndex;
@@ -110,7 +110,7 @@ namespace QuantLib {
         // compute all the other cmas rates and cms annuities
         for (Size i=firstValidIndex+1; i<nConstMatSwapRates; ++i) {
             Size lastIndex = std::min(i+spanningForwards,nConstMatSwapRates);
-            constMatSwapAnnuities[i] = constMatSwapAnnuities[i-1] 
+            constMatSwapAnnuities[i] = constMatSwapAnnuities[i-1]
                                        - taus[i-1] * ds[i];
             if (lastIndex!=oldLastIndex)
                constMatSwapAnnuities[i] += taus[lastIndex-1] * ds[lastIndex];
@@ -118,6 +118,6 @@ namespace QuantLib {
                 /constMatSwapAnnuities[i];
             oldLastIndex = lastIndex;
         }
-    };
+    }
 
 }
