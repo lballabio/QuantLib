@@ -63,10 +63,10 @@ namespace QuantLib {
         }
     }
 
-    void LMMNormalDriftCalculator::compute(const LMMCurveState& cs,
-                                           std::vector<Real>& drifts) const {
-        compute(cs.forwardRates(), drifts);
-    }
+    //void LMMNormalDriftCalculator::compute(const LMMCurveState& cs,
+    //                                       std::vector<Real>& drifts) const {
+    //    compute(cs.forwardRates(), drifts);
+    //}
 
     void LMMNormalDriftCalculator::compute(const std::vector<Rate>& fwds,
                                            std::vector<Real>& drifts) const {
