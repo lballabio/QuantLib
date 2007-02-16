@@ -34,10 +34,11 @@ namespace QuantLib {
     class Problem {
       public:
         //! default constructor
-        Problem(CostFunction& f,// Function and it gradient vector
-                Constraint& c,  // Constraint
+        Problem(CostFunction& costFunction,
+                Constraint& constraint,
                 const Array& initialValue = Array())
-        : costFunction_(f), constraint_(c), currentValue_(initialValue) {}
+        : costFunction_(costFunction), constraint_(constraint),
+          currentValue_(initialValue) {}
 
         /*! \warning it does not reset the current minumum to any initial value
         */
