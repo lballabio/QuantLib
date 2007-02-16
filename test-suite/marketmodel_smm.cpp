@@ -433,7 +433,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
     }
-    errorThreshold = 3.5;
+    errorThreshold = 3.7;
 
    if (maxError > errorThreshold) {
         BOOST_MESSAGE(config);
