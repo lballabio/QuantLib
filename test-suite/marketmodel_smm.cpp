@@ -100,7 +100,7 @@ void setup() {
 
     // Rates & displacement
     todaysForwards = std::vector<Rate>(accruals.size());
-    displacement = 0.02;
+    displacement = 0.00;
     for (Size i=0; i<todaysForwards.size(); ++i) {
         todaysForwards[i] = 0.05 + 0.0010*i;
         //todaysForwards[i] = 0.04;
