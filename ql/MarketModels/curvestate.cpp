@@ -31,6 +31,7 @@ namespace QuantLib {
         QL_REQUIRE(nRates_>0, "no rate times provided");
         for (Size i=0; i<nRates_; ++i)
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
+            QL_REQUIRE(rateTaus_[i]>0, "non increasing rate times");
     }
 
     Rate CurveState::swapRate(Size begin,
