@@ -4290,10 +4290,6 @@
 				>
 			</File>
 			<File
-				RelativePath="ql\Patterns\bridge.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\Patterns\composite.hpp"
 				>
 			</File>
