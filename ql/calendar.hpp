@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Piter Dias
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,7 +27,6 @@
 #define quantlib_calendar_hpp
 
 #include <ql/date.hpp>
-#include <ql/Patterns/bridge.hpp>
 #include <set>
 #include <vector>
 
@@ -64,16 +63,6 @@ namespace QuantLib {
                              BusinessDayConvention);
 
 
-    //! abstract base class for calendar implementations
-    class CalendarImpl {
-      public:
-        virtual ~CalendarImpl() {}
-        virtual std::string name() const = 0;
-        virtual bool isBusinessDay(const Date&) const = 0;
-        virtual bool isWeekend(Weekday) const = 0;
-        std::set<Date> addedHolidays, removedHolidays;
-    };
-
     //! %calendar class
     /*! This class provides methods for determining whether a date is a
         business day or a holiday for a given market, and for
@@ -92,10 +81,28 @@ namespace QuantLib {
               by inspecting the calendar before and after their
               invocation.
     */
-    class Calendar : public Bridge<Calendar,CalendarImpl> {
+    class Calendar {
+      protected:
+        //! abstract base class for calendar implementations
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual std::string name() const = 0;
+            virtual bool isBusinessDay(const Date&) const = 0;
+            virtual bool isWeekend(Weekday) const = 0;
+            std::set<Date> addedHolidays, removedHolidays;
+        };
+        boost::shared_ptr<Impl> impl_;
       public:
+        /*! The default constructor returns a calendar with a null
+            implementation, which is therefore unusable except as a
+            placeholder.
+        */
+        Calendar() {}
         //! \name Calendar interface
         //@{
+        //!  Returns whether or not the calendar is initialized
+        bool empty() const;
         //! Returns the name of the calendar.
         /*! \warning This method is used for output and comparison between
                 calendars. It is <b>not</b> meant to be used for writing
@@ -169,7 +176,7 @@ namespace QuantLib {
             Monday for a given year, as well as specifying Saturdays
             and Sundays as weekend days.
         */
-        class WesternImpl : public CalendarImpl {
+        class WesternImpl : public Impl {
           protected:
             bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
@@ -180,22 +187,12 @@ namespace QuantLib {
             Easter Monday for a given year, as well as specifying
             Saturdays and Sundays as weekend days.
         */
-        class OrthodoxImpl : public CalendarImpl {
+        class OrthodoxImpl : public Impl {
           protected:
             bool isWeekend(Weekday) const;
             //! expressed relative to first day of year
             static Day easterMonday(Year);
         };
-        /*! This default constructor returns a calendar with a null
-            implementation, which is therefore unusable except as a
-            placeholder.
-        */
-        Calendar() {}
-      protected:
-        /*! This protected constructor will only be invoked by derived
-            classes which define a given Calendar implementation */
-        Calendar(const boost::shared_ptr<CalendarImpl>& impl)
-        : Bridge<Calendar,CalendarImpl>(impl) {}
     };
 
     /*! Returns <tt>true</tt> iff the two calendars belong to the same
@@ -212,6 +209,10 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline bool Calendar::empty() const {
+        return !impl_;
+    }
 
     inline std::string Calendar::name() const {
         return impl_->name();

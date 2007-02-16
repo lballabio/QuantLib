@@ -31,15 +31,16 @@
 
 namespace QuantLib {
 
-    //! Base class for model parameter implementation
-    class ParameterImpl {
-      public:
-        virtual ~ParameterImpl() {}
-        virtual Real value(const Array& params, Time t) const = 0;
-    };
-
     //! Base class for model arguments
-    class Parameter : public Bridge<Parameter,ParameterImpl> {
+    class Parameter {
+      protected:
+        //! Base class for model parameter implementation
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual Real value(const Array& params, Time t) const = 0;
+        };
+        boost::shared_ptr<Impl> impl_;
       public:
         Parameter()
         : constraint_(NoConstraint()) {}
@@ -52,15 +53,14 @@ namespace QuantLib {
         Real operator()(Time t) const {
             return impl_->value(params_, t);
         }
-        const boost::shared_ptr<ParameterImpl>& implementation() const {
+        const boost::shared_ptr<Impl>& implementation() const {
             return impl_;
         }
       protected:
         Parameter(Size size,
-                  const boost::shared_ptr<ParameterImpl>& impl,
+                  const boost::shared_ptr<Impl>& impl,
                   const Constraint& constraint)
-        : Bridge<Parameter,ParameterImpl>(impl),
-          params_(size), constraint_(constraint) {}
+        : impl_(impl), params_(size), constraint_(constraint) {}
         Array params_;
         Constraint constraint_;
     };

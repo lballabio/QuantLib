@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,26 +22,12 @@
     \brief day counter class
 */
 
-#ifndef quantlib_day_counter_h
-#define quantlib_day_counter_h
+#ifndef quantlib_day_counter_hpp
+#define quantlib_day_counter_hpp
 
 #include <ql/date.hpp>
-#include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {
-
-    //! abstract base class for day counter implementations
-    class DayCounterImpl {
-      public:
-        virtual ~DayCounterImpl() {}
-        virtual std::string name() const = 0;
-        //! to be overloaded by more complex day counters
-        virtual BigInteger dayCount(const Date& d1,
-                                    const Date& d2) const { return (d2-d1); }
-        virtual Time yearFraction(const Date&, const Date&,
-                                  const Date& refPeriodStart,
-                                  const Date& refPeriodEnd) const = 0;
-    };
 
     //! day counter class
     /*! This class provides methods for determining the length of a time
@@ -53,10 +39,37 @@ namespace QuantLib {
 
         \ingroup datetime
     */
-    class DayCounter : public Bridge<DayCounter,DayCounterImpl> {
+    class DayCounter {
+      protected:
+        //! abstract base class for day counter implementations
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual std::string name() const = 0;
+            //! to be overloaded by more complex day counters
+            virtual BigInteger dayCount(const Date& d1,
+                                        const Date& d2) const {
+                return (d2-d1);
+            }
+            virtual Time yearFraction(const Date&, const Date&,
+                                      const Date& refPeriodStart,
+                                      const Date& refPeriodEnd) const = 0;
+        };
+        boost::shared_ptr<Impl> impl_;
+        /*! This constructor can be invoked by derived classes which
+            define a given implementation.
+        */
+        DayCounter(const boost::shared_ptr<Impl>& impl) : impl_(impl) {}
       public:
+        /*! The default constructor returns a day counter with a null
+            implementation, which is therefore unusable except as a
+            placeholder.
+        */
+        DayCounter() {}
         //! \name DayCounter interface
         //@{
+        //!  Returns whether or not the day counter is initialized
+        bool empty() const;
         //! Returns the name of the day counter.
         /*! \warning This method is used for output and comparison between
                 day counters. It is <b>not</b> meant to be used for writing
@@ -71,16 +84,6 @@ namespace QuantLib {
                           const Date& refPeriodStart = Date(),
                           const Date& refPeriodEnd = Date()) const;
         //@}
-        /*! This default constructor returns a day counter with a null
-            implementation, which is therefore unusable except as a
-            placeholder.
-        */
-        DayCounter() {}
-      protected:
-        /*! This protected constructor will only be invoked by derived
-            classes which define a given DayCounter implementation */
-        DayCounter(const boost::shared_ptr<DayCounterImpl>& impl)
-        : Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 
     // comparison based on name
@@ -103,8 +106,11 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline std::string DayCounter::name() const {
+    inline bool DayCounter::empty() const {
+        return !impl_;
+    }
 
+    inline std::string DayCounter::name() const {
         QL_REQUIRE(impl_, "no implementation provided");
         return impl_->name();
     }

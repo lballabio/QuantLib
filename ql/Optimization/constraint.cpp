@@ -21,10 +21,10 @@
 
 namespace QuantLib {
 
-    Constraint::Constraint(const boost::shared_ptr<ConstraintImpl>& impl)
-    : Bridge<Constraint,ConstraintImpl>(impl) {}
+    Constraint::Constraint(const boost::shared_ptr<Constraint::Impl>& impl)
+    : impl_(impl) {}
 
-    Real Constraint::update(Array& params, 
+    Real Constraint::update(Array& params,
                             const Array& direction,
                             Real beta) {
 

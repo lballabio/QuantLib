@@ -25,27 +25,28 @@
 #define quantlib_optimization_constraint_h
 
 #include <ql/Math/array.hpp>
-#include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {
 
-    //! Base class for constraint implementations
-    class ConstraintImpl {
-      public:
-        virtual ~ConstraintImpl() {}
-        //! Tests if params satisfy the constraint
-        virtual bool test(const Array& params) const = 0;
-    };
-
     //! Base constraint class
-    class Constraint : public Bridge<Constraint, ConstraintImpl> {
+    class Constraint {
+      protected:
+        //! Base class for constraint implementations
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            //! Tests if params satisfy the constraint
+            virtual bool test(const Array& params) const = 0;
+        };
+        boost::shared_ptr<Impl> impl_;
       public:
+        bool empty() const { return !impl_; }
         bool test(const Array& p) const { return impl_->test(p); }
         Real update(Array& p,
                     const Array& direction,
                     Real beta);
-        Constraint(const boost::shared_ptr<ConstraintImpl>& impl =
-                                      boost::shared_ptr<ConstraintImpl>());
+        Constraint(const boost::shared_ptr<Impl>& impl =
+                                                   boost::shared_ptr<Impl>());
     };
 
     //! No constraint
@@ -110,7 +111,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(const Constraint& c1, 
+            Impl(const Constraint& c1,
                  const Constraint& c2)
             : c1_(c1), c2_(c2) {}
             bool test(const Array& params) const {

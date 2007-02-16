@@ -26,30 +26,12 @@
 #ifndef quantlib_interpolation_hpp
 #define quantlib_interpolation_hpp
 
-#include <ql/Patterns/bridge.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/errors.hpp>
-#include <ql/types.hpp>
 #include <vector>
 
 namespace QuantLib {
-
-    //! abstract base class for interpolation implementations
-    class InterpolationImpl {
-      public:
-        virtual ~InterpolationImpl() {}
-        virtual void calculate() = 0;
-        virtual Real xMin() const = 0;
-        virtual Real xMax() const = 0;
-        virtual std::vector<Real> xValues() const = 0;
-        virtual std::vector<Real> yValues() const = 0;
-        virtual bool isInRange(Real) const = 0;
-        virtual Real value(Real) const = 0;
-        virtual Real primitive(Real) const = 0;
-        virtual Real derivative(Real) const = 0;
-        virtual Real secondDerivative(Real) const = 0;
-    };
 
     //! base class for 1-D interpolations.
     /*! Classes derived from this class will provide interpolated
@@ -57,14 +39,30 @@ namespace QuantLib {
         discretized values of a variable and a function of the former,
         respectively.
     */
-    class Interpolation : public Bridge<Interpolation,InterpolationImpl>,
-                          public Extrapolator {
+    class Interpolation : public Extrapolator {
+      protected:
+        //! abstract base class for interpolation implementations
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual void calculate() = 0;
+            virtual Real xMin() const = 0;
+            virtual Real xMax() const = 0;
+            virtual std::vector<Real> xValues() const = 0;
+            virtual std::vector<Real> yValues() const = 0;
+            virtual bool isInRange(Real) const = 0;
+            virtual Real value(Real) const = 0;
+            virtual Real primitive(Real) const = 0;
+            virtual Real derivative(Real) const = 0;
+            virtual Real secondDerivative(Real) const = 0;
+        };
+        boost::shared_ptr<Impl> impl_;
       public:
         typedef Real argument_type;
         typedef Real result_type;
         //! basic template implementation
         template <class I1, class I2>
-        class templateImpl : public InterpolationImpl {
+        class templateImpl : public Impl {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
@@ -106,6 +104,7 @@ namespace QuantLib {
       public:
         Interpolation() {}
         virtual ~Interpolation() {}
+        bool empty() const { return !impl_; }
         Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->value(x);

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -114,24 +115,27 @@ namespace QuantLib {
 
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
-                                 JointCalendarRule r)
-    : Calendar(boost::shared_ptr<Calendar::Impl>(
-                                new JointCalendar::Impl(c1,c2,r))) {}
+                                 JointCalendarRule r) {
+        impl_ = boost::shared_ptr<Calendar::Impl>(
+                                            new JointCalendar::Impl(c1,c2,r));
+    }
 
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  const Calendar& c3,
-                                 JointCalendarRule r)
-    : Calendar(boost::shared_ptr<Calendar::Impl>(
-                                new JointCalendar::Impl(c1,c2,c3,r))) {}
+                                 JointCalendarRule r) {
+        impl_ = boost::shared_ptr<Calendar::Impl>(
+                                         new JointCalendar::Impl(c1,c2,c3,r));
+    }
 
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  const Calendar& c3,
                                  const Calendar& c4,
-                                 JointCalendarRule r)
-    : Calendar(boost::shared_ptr<Calendar::Impl>(
-                                new JointCalendar::Impl(c1,c2,c3,c4,r))) {}
+                                 JointCalendarRule r) {
+        impl_ = boost::shared_ptr<Calendar::Impl>(
+                                      new JointCalendar::Impl(c1,c2,c3,c4,r));
+    }
 
 }
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2006 Ferdinando Ametrano
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +25,6 @@
 #ifndef quantlib_interpolation2D_hpp
 #define quantlib_interpolation2D_hpp
 
-#include <ql/Patterns/bridge.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <ql/Math/comparison.hpp>
 #include <ql/Math/matrix.hpp>
@@ -35,24 +34,6 @@
 
 namespace QuantLib {
 
-    //! abstract base class for 2-D interpolation implementations
-    class Interpolation2DImpl {
-      public:
-        virtual ~Interpolation2DImpl() {}
-        virtual void calculate() = 0;
-        virtual Real xMin() const = 0;
-        virtual Real xMax() const = 0;
-        virtual std::vector<Real> xValues() const = 0;
-        virtual Size locateX(Real x) const = 0;
-        virtual Real yMin() const = 0;
-        virtual Real yMax() const = 0;
-        virtual std::vector<Real> yValues() const = 0;
-        virtual Size locateY(Real y) const = 0;
-        virtual const Matrix& zData() const = 0;
-        virtual bool isInRange(Real x, Real y) const = 0;
-        virtual Real value(Real x, Real y) const = 0;
-    };
-
     //! base class for 2-D interpolations.
     /*! Classes derived from this class will provide interpolated
         values from two sequences of length \f$ N \f$ and \f$ M \f$,
@@ -60,16 +41,33 @@ namespace QuantLib {
         \f$ variables, and a \f$ N \times M \f$ matrix representing
         the tabulated function values.
     */
-    class Interpolation2D
-        : public Bridge<Interpolation2D,Interpolation2DImpl>,
-          public Extrapolator {
+    class Interpolation2D : public Extrapolator {
+      protected:
+        //! abstract base class for 2-D interpolation implementations
+        class Impl {
+          public:
+            virtual ~Impl() {}
+            virtual void calculate() = 0;
+            virtual Real xMin() const = 0;
+            virtual Real xMax() const = 0;
+            virtual std::vector<Real> xValues() const = 0;
+            virtual Size locateX(Real x) const = 0;
+            virtual Real yMin() const = 0;
+            virtual Real yMax() const = 0;
+            virtual std::vector<Real> yValues() const = 0;
+            virtual Size locateY(Real y) const = 0;
+            virtual const Matrix& zData() const = 0;
+            virtual bool isInRange(Real x, Real y) const = 0;
+            virtual Real value(Real x, Real y) const = 0;
+        };
+        boost::shared_ptr<Impl> impl_;
       public:
         typedef Real first_argument_type;
         typedef Real second_argument_type;
         typedef Real result_type;
         //! basic template implementation
         template <class I1, class I2, class M>
-        class templateImpl : public Interpolation2DImpl {
+        class templateImpl : public Impl {
           public:
             templateImpl(const I1& xBegin, const I1& xEnd,
                          const I2& yBegin, const I2& yEnd,
