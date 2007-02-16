@@ -28,7 +28,7 @@
 
 class MarketModelCmsTest {
   public:
-    static void testMultiStepCoterminalSwapsAndSwaptions();
+    static void testMultiStepCmSwapsAndSwaptions();
    
     static boost::unit_test_framework::test_suite* suite();
 };
