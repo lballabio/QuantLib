@@ -22,16 +22,15 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
-#include <ql/payoff.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
     class MultiStepCoterminalSwaptions : public MultiProductMultiStep {
       public:
         MultiStepCoterminalSwaptions(const std::vector<Time>& rateTimes,
-                                     const std::vector<Real>& accruals,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<boost::shared_ptr<Payoff> >&);
+                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >&);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;
@@ -46,9 +45,8 @@ namespace QuantLib {
          //@}
 
       private:
-        std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
-        std::vector<boost::shared_ptr<Payoff> > payoffs_;
+        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs_;
         Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;

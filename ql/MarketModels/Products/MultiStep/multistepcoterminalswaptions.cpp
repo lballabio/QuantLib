@@ -23,10 +23,9 @@ namespace QuantLib {
 
     MultiStepCoterminalSwaptions::MultiStepCoterminalSwaptions(
                     const std::vector<Time>& rateTimes,
-                    const std::vector<Real>& accruals,
                     const std::vector<Time>& paymentTimes,
-                    const std::vector<boost::shared_ptr<Payoff> >& payoffs)
-    : MultiProductMultiStep(rateTimes), accruals_(accruals),
+                    const std::vector<boost::shared_ptr<StrikedTypePayoff> >& payoffs)
+    : MultiProductMultiStep(rateTimes),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {  
         // data checks
         lastIndex_ = rateTimes.size()-1;
@@ -38,11 +37,12 @@ namespace QuantLib {
             std::vector<std::vector<MarketModelMultiProduct::CashFlow> >&
                                                                genCashFlows) 
     {
-        Rate swapRate = currentState.coterminalSwapRate(currentIndex_);
         genCashFlows[currentIndex_][0].timeIndex = currentIndex_;
+
+        Rate swapRate = currentState.coterminalSwapRate(currentIndex_);
+        Real annuity = currentState.coterminalSwapAnnuity(currentIndex_, currentIndex_);
         genCashFlows[currentIndex_][0].amount =
-            (*payoffs_[currentIndex_])(swapRate) *
-            accruals_[currentIndex_];
+            (*payoffs_[currentIndex_])(swapRate) * annuity;
         std::fill(numberCashFlowsThisStep.begin(),
                   numberCashFlowsThisStep.end(),0);
         numberCashFlowsThisStep[currentIndex_] = 1;
