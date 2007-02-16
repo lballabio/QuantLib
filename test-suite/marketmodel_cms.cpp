@@ -22,6 +22,7 @@
 
 #include "marketmodel_cms.hpp"
 #include "utilities.hpp"
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 #include <ql/MarketModels/Evolvers/cmswapratepcevolver.hpp>
 #include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
@@ -395,15 +396,18 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     Size N = todaysForwards.size();
     // check Swaps
     Real maxError = QL_MIN_REAL;
+    LMMCurveState curveState_lmm(rateTimes);                                // set up curve state in LMM
+    curveState_lmm.setOnForwardRates(todaysForwards);                       // set up fwd rates in LMM
+    std::vector<Rate> cmSwapRates = curveState_lmm.coterminalSwapRates();  // calculate ct swap rates in LMM
     CMSwapCurveState curveState(rateTimes, spanningForwards);
-    curveState.setOnCMSwapRates(todaysForwards);
-    std::vector<Rate> atmRates = curveState.coterminalSwapRates();
+    curveState.setOnCMSwapRates(cmSwapRates);
+
 //    std::vector<Real> discountRatios = curveState.discountRatios();
 //    std::vector<Real> annuities = curveState.coterminalSwapAnnuities();
-    std::vector<Real> expectedNPVs(atmRates.size());
+    std::vector<Real> expectedNPVs(cmSwapRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) * (atmRates[i]-fixedRate) *
+        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) * (cmSwapRates[i]-fixedRate) *
             todaysDiscounts[0];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
@@ -444,7 +448,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         Real expectedSwaption = BlackCalculator(payoff,
                         todaysCoterminalSwapRates[i]+displacement,
                         std::sqrt(cotSwapsCovariance[i][i]),
-                        curveState.coterminalSwapAnnuity(1,i) * todaysDiscounts[0]).value();
+                        curveState.coterminalSwapAnnuity(0,i) * todaysDiscounts[i]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
