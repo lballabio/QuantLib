@@ -170,8 +170,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-    test->add(CurveStatesTest::suite());
-    //test->add(MarketModelTest::suite());
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -190,6 +188,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CompoundForwardTest::suite());                
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
+    test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
     test->add(DigitalOptionTest::suite());
