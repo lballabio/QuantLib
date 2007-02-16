@@ -28,7 +28,7 @@ namespace QuantLib {
 
     class CMSwapCurveState : public CurveState {
       public:
-        CMSwapCurveState(const std::vector<Time>& rateTimes,
+        explicit CMSwapCurveState(const std::vector<Time>& rateTimes,
                          Size spanningForwards);
 
         //! \name Modifiers
