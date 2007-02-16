@@ -22,7 +22,7 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/Optimization/endendcriteria.hpp>
+#include <ql/Optimization/endcriteria.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/method.hpp>
