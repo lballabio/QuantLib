@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2004 Decillion Pty(Ltd)
 
  This file is part of QuantLib, a free-software/open-source library
@@ -57,14 +57,14 @@ namespace QuantLib {
 
         if (type == ExchangeRate::Direct) {
             return directLookup(source,target,date);
-        } else if (source.triangulationCurrency().isValid()) {
+        } else if (!source.triangulationCurrency().empty()) {
             const Currency& link = source.triangulationCurrency();
             if (link == target)
                 return directLookup(source,link,date);
             else
                 return ExchangeRate::chain(directLookup(source,link,date),
                                            lookup(link,target,date));
-        } else if (target.triangulationCurrency().isValid()) {
+        } else if (!target.triangulationCurrency().empty()) {
             const Currency& link = target.triangulationCurrency();
             if (source == link)
                 return directLookup(link,target,date);

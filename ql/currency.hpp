@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Decillion Pty(Ltd)
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -66,7 +66,7 @@ namespace QuantLib {
         //! \name other info
         //@{
         //! is this a usable instance?
-        bool isValid() const;
+        bool empty() const;
         //! currency used for triangulated exchange when required
         const Currency& triangulationCurrency() const;
         //@}
@@ -149,8 +149,8 @@ namespace QuantLib {
         return data_->formatString;
     }
 
-    inline bool Currency::isValid() const {
-        return data_;
+    inline bool Currency::empty() const {
+        return !data_;
     }
 
     inline const Currency& Currency::triangulationCurrency() const {

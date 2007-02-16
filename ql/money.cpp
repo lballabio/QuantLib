@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 Decillion Pty(Ltd)
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,7 +44,7 @@ namespace QuantLib {
         }
 
         void convertToBase(Money& m) {
-            QL_REQUIRE(Money::baseCurrency.isValid(), "no base currency set");
+            QL_REQUIRE(!Money::baseCurrency.empty(), "no base currency set");
             convertTo(m, Money::baseCurrency);
         }
 
