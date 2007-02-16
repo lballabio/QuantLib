@@ -42,6 +42,7 @@ QL_TESTS = \
 	lookbackoptions.hpp lookbackoptions.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
 	marketmodel.hpp marketmodel.cpp \
+	marketmodel_smm.hpp marketmodel_smm.cpp \
 	matrices.hpp matrices.cpp \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
