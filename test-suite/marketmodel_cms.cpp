@@ -385,8 +385,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 
 void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
                     const Rate fixedRate,
-                    const std::vector<Rate>& strikes,
-                    const std::vector<boost::shared_ptr<Payoff> >& payoffs,
+                    const std::vector<boost::shared_ptr<StrikedTypePayoff> >& payoffs,
                     const boost::shared_ptr<MarketModel> marketModel,
                     const std::string& config) {
     std::vector<Real> results = stats.mean();
@@ -442,7 +441,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
         Time expiry = rateTimes[i];
         boost::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(Option::Call, strikes[i]+displacement));
+            new PlainVanillaPayoff(Option::Call, fixedRate+displacement));
         
         const std::vector<Time>&  taus = curveState.rateTaus();
         Real expectedSwaption = BlackCalculator(payoff,
@@ -484,12 +483,12 @@ void MarketModelCmsTest::testMultiStepCoterminalSwapsAndSwaptions() {
     MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals,
                                      paymentTimes, fixedRate);
 
-    std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
+    std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(todaysForwards.size());
     for (Size i = 0; i < payoffs.size(); ++i)
-        payoffs[i] = boost::shared_ptr<Payoff>(new 
+        payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new 
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
 
-    MultiStepCoterminalSwaptions swaptions(rateTimes, accruals,
+    MultiStepCoterminalSwaptions swaptions(rateTimes,
                                            paymentTimes, payoffs);
     MultiProductComposite product;
     product.add(swaps);
@@ -547,7 +546,7 @@ void MarketModelCmsTest::testMultiStepCoterminalSwapsAndSwaptions() {
                         std::cout << config.str() << "\n";
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, product);
-                        checkCoterminalSwapsAndSwaptions(*stats, fixedRate, todaysForwards, payoffs, marketModel,config.str());
+                        checkCoterminalSwapsAndSwaptions(*stats, fixedRate, payoffs, marketModel,config.str());
                     }
                 }
             }

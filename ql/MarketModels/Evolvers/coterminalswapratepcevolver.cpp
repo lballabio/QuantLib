@@ -52,10 +52,10 @@ namespace QuantLib {
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(SMMDriftCalculator(A,
-                                                   displacements_,
-                                                   marketModel->evolution().rateTaus(),
-                                                   numeraires[j],
-                                                   alive_[j]));
+                                                      displacements_,
+                                                      marketModel->evolution().rateTaus(),
+                                                      numeraires[j],
+                                                      alive_[j]));
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
                 Real variance =
@@ -80,6 +80,7 @@ namespace QuantLib {
         for (Size i=0; i<n_; ++i) 
             initialLogSwapRates_[i] = std::log(swapRates[i] +
                                                displacements_[i]);
+        curveState_.setOnCoterminalSwapRates(swapRates);
         calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
 
