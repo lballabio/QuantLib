@@ -33,10 +33,10 @@ namespace QuantLib {
         numeraire_(numeraire), alive_(alive),
         displacements_(displacements), oneOverTaus_(taus.size()),
         pseudo_(pseudo), tmp_(taus.size(), 0.0),
-        downs_(taus.size()), ups_(taus.size()),
+        PjPnWk_(factors_,1+taus.size()),
         wkaj_(factors_,taus.size()),
         wkajN_(factors_,taus.size()),
-        PjPnWk_(factors_,1+taus.size()),
+        downs_(taus.size()), ups_(taus.size()),
         spanningFwds_(spanningFwds)
         {
 
