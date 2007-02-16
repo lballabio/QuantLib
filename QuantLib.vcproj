@@ -2918,30 +2918,64 @@
 			<Filter
 				Name="Evolvers"
 				Filter="">
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp">
-				</File>
+				<Filter
+					Name="LogNormalCMSwapRate"
+					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\cmswapratepcevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\cmswapratepcevolver.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="LogNormalForwardRate"
+					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="LogNormalSwapRate"
+					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="NormalForwardRate"
+					Filter="">
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.hpp">
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="BrownianGenerators"
@@ -3118,6 +3152,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.cpp">
