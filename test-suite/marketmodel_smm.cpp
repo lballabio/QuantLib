@@ -100,7 +100,7 @@ void setup() {
 
     // Rates & displacement
     todaysForwards = std::vector<Rate>(accruals.size());
-    displacement = 0.0;
+    displacement = 0.02;
     for (Size i=0; i<todaysForwards.size(); ++i) {
         todaysForwards[i] = 0.05 + 0.0010*i;
         //todaysForwards[i] = 0.04;
@@ -414,7 +414,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     
     // check Swaptions
     maxError = 0;
-    const Spread displacement = 0;
+    //const Spread displacement = 0;
     Matrix jacobian =
         SwapForwardMappings::coterminalSwapZedMatrix(curveState, displacement);    
     std::vector<Rate> expectedSwaptions(N);
@@ -422,18 +422,19 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         for (Size i=0; i<N; ++i) {
         const Matrix& forwardsCovariance = marketModel->totalCovariance(i);
         Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
-        Time expiry = rateTimes[i];
+        //Time expiry = rateTimes[i];
         const std::vector<Time>&  taus = curveState.rateTaus();
         Real expectedSwaption = BlackCalculator(
                         payoffs[i],
                         atmSwapRates[i]+displacement,
-                        std::sqrt(cotSwapsCovariance[i][i]),
+                        //std::sqrt(cotSwapsCovariance[i][i]),
+                        volatilities[i]*std::sqrt(rateTimes[i]),
                         curveState.coterminalSwapAnnuity(i,i) * todaysDiscounts[i]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
     }
-    errorThreshold = 3.7;
+    errorThreshold = 2.0;
 
    if (maxError > errorThreshold) {
         BOOST_MESSAGE(config);

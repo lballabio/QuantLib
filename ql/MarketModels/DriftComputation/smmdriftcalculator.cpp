@@ -71,21 +71,15 @@ namespace QuantLib {
     void SMMDriftCalculator::compute(const CoterminalSwapCurveState& cs,
                                      std::vector<Real>& drifts) const {
 
-        // ADD DISPLACEMENT LATER
-
+      
 
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.
 
-        // Precompute forwards factor
-        //for (Size i=alive_; i<nRates_; ++i)
-        //    tmp_[i] = (cs.forwardRate(i)+displacements_[i]) /
-        //        (oneOverTaus_[i]+cs.forwardRate(i));
-
+        const std::vector<Rate>& SR=cs.coterminalSwapRates();
         // calculates and stores wkaj_, wkpj1_
         // assuming terminal bond measure
         // eq 5.4-5.7
-    //    Real Pn = cs.discountRatio(nRates_,0);
         const std::vector<Time>& taus=cs.rateTaus();
         for (Size k=0; k<nFactors_; ++k) {
                 // taken care in the constructor
@@ -94,22 +88,20 @@ namespace QuantLib {
             for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_)-1; --j) {
                  // < W(k) | P(j+1)/P(n) > = 
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
-                wkpj_[k][j+1]= cs.coterminalSwapRate(j+1) * 
-                            ( pseudo_[j+1][k] * cs.coterminalSwapAnnuity(nRates_,j+1) 
-                            +  wkaj_[k][j+1] )+pseudo_[j+1][k]*displacements_[j+1]* cs.coterminalSwapAnnuity(nRates_,j+1);
+                Real annuity = cs.coterminalSwapAnnuity(nRates_,j+1);
+                wkpj_[k][j+1]= SR[j+1] * 
+                            ( pseudo_[j+1][k] * annuity +  wkaj_[k][j+1] )+
+                            pseudo_[j+1][k]*displacements_[j+1]* annuity;
                 
                 if (j >=static_cast<Integer>(alive_))
                     wkaj_[k][j] = wkpj_[k][j+1]*taus[j ]+wkaj_[k][j+1]; 
             }
-          //  wkpj_[k][alive_]= cs.coterminalSwapRate(alive_) * 
-            //                ( pseudo_[alive_][k] * cs.coterminalSwapAnnuity(nRates_, alive_)
-              //              +  wkaj_[k][nRates_-1] )+pseudo_[alive_][k]*displacements_[alive_]* cs.coterminalSwapAnnuity(nRates_, alive_);
-        }
+          }
 
  
         double numeraireRatio = cs.discountRatio(nRates_,numeraire_);
         
-
+// change to work for general numeraire
         for (Size k=0; k<nFactors_; ++k) {
             // compute < Wk, PN/pn> 
             for (Size j=alive_; j<nRates_; ++j) 
@@ -126,9 +118,6 @@ namespace QuantLib {
             for (Size k=0; k<nFactors_; ++k) {
                 drifts[j] += wkajshifted_[k][j]*pseudo_[j][k];
             }
-
-         //   drifts[j] /= -cs.coterminalSwapAnnuity(numeraire_,j);
-       
         }
 
     }
