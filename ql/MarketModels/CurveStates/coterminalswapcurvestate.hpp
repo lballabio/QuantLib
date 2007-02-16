@@ -58,16 +58,11 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Real discountRatio(Size i,
-                           Size j) const;
+        Real discountRatio(Size i, Size j) const;
         Rate forwardRate(Size i) const;
-
         Rate coterminalSwapRate(Size i) const;
-        Rate coterminalSwapAnnuity(Size numeraire,
-                                   Size i) const;
-
-        Rate cmSwapRate(Size i,
-                        Size spanningForwards) const;
+        Rate coterminalSwapAnnuity(Size numeraire, Size i) const;
+        Rate cmSwapRate(Size i, Size spanningForwards) const;
         Rate cmSwapAnnuity(Size numeraire,
                            Size i,
                            Size spanningForwards) const;

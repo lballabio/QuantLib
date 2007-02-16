@@ -41,15 +41,12 @@ namespace QuantLib {
                        "first valid index must be less than " <<
                        nRates_ << ": " <<
                        firstValidIndex << " not allowed");
-
         // first copy input...
         first_ = firstValidIndex;
         std::copy(rates.begin()+first_, rates.end(),
                   cotSwapRates_.begin()+first_);
-        // ...then calculate discount ratios and annuities
-        
-        // discount ratios and coterminal annuities
-        // reference discount bond = the last one P(n)
+        // ...then calculate discount ratios and coterminal annuities:
+        // reference discount bond =  P(n) (the last one)
         // discRatios_[nRates_] = P(n)/P(n) = 1.0 by construction/definition
         cotAnnuities_[nRates_-1] = rateTaus_[nRates_-1];
         // j < n
@@ -59,7 +56,7 @@ namespace QuantLib {
         }
         discRatios_[first_] = 1.0 + cotSwapRates_[first_] * cotAnnuities_[first_]; 
 
-        // lazy evaluation of:
+        // Insert here lazy evaluation of:
         // - forward rates
         // - constant maturity swap rates/annuities
     }

@@ -384,14 +384,14 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     CoterminalSwapCurveState curveState(rateTimes);                         // set up curve state in SMM
     curveState.setOnCoterminalSwapRates(atmSwapRates);                      // set up ct swap rates in SMM coherently with fwd rates in LMM
     // alternatively
-    //CoterminalSwapCurveState curveState(rateTimes);                   // set up curve state in SMM
-    //curveState.setOnCoterminalSwapRates(todaysCoterminalSwapRates);   // set up ct swap rates in SMM
+    //CoterminalSwapCurveState curveState(rateTimes);                       // set up curve state in SMM
+    //curveState.setOnCoterminalSwapRates(todaysCoterminalSwapRates);       // set up ct swap rates in SMM
 
     std::vector<Real> expectedNPVs(atmSwapRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) * (atmSwapRates[i]-fixedRate) *
-            todaysDiscounts[0];
+        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) 
+            * (atmSwapRates[i]-fixedRate) * todaysDiscounts[0];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
@@ -474,13 +474,10 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
     product.add(swaps);
     product.add(swaptions);
     product.finalize();
-
     EvolutionDescription evolution = product.evolution();
-
     MarketModelType marketModels[] = {// CalibratedMM,
                                        ExponentialCorrelationFlatVolatility,
                                        ExponentialCorrelationAbcdVolatility };
-
     for (Size j=0; j<LENGTH(marketModels); j++) {
         Size testedFactors[] = { /*4, 8,*/ todaysForwards.size()};
         for (Size m=0; m<LENGTH(testedFactors); ++m) {        
