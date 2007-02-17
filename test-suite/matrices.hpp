@@ -31,6 +31,7 @@ class MatricesTest {
     static void testEigenvectors();
     static void testSqrt();
     static void testSVD();
+    static void testInverse();
     static boost::unit_test_framework::test_suite* suite();
 };
 

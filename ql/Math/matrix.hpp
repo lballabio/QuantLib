@@ -173,6 +173,8 @@ namespace QuantLib {
     /*! \relates Matrix */
     std::ostream& operator<<(std::ostream&, const Matrix&);
 
+    /*! \get inverse Matrix */
+    Disposable<Matrix> inverse(const Matrix& m);
 
     // inline definitions
 
@@ -437,7 +439,7 @@ namespace QuantLib {
     inline bool Matrix::empty() const {
         return rows_ == 0 || columns_ == 0;
     }
-    
+
     inline const Disposable<Matrix> operator+(const Matrix& m1,
                                               const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&

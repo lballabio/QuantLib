@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -189,12 +190,41 @@ void MatricesTest::testSVD() {
     QL_TEST_END
 }
 
+void MatricesTest::testInverse() {
+
+    BOOST_MESSAGE("Testing inverse calculation...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Real tol = 1.0e-12;
+    Matrix testMatrices[] = { M1, M2, I };
+
+    for (Size j = 0; j < LENGTH(testMatrices); j++) {
+        Matrix& A = testMatrices[j];
+        Matrix invA = inverse(A);
+
+        Matrix I1 = invA*A;
+        Matrix I2 = A*invA;
+
+        if (norm(I1 - I) > tol)
+            BOOST_FAIL("inverse(A)*A does not recover unit matrix (norm = "
+                       << norm(I1-I) << ")");
+
+        if (norm(I2 - I) > tol)
+            BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = "
+                       << norm(I1-I) << ")");
+    }
+
+    QL_TEST_END
+}
 
 test_suite* MatricesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Matrix tests");
     suite->add(BOOST_TEST_CASE(&MatricesTest::testEigenvectors));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSqrt));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSVD));
+    suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
     return suite;
 }
 
