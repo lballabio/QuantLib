@@ -66,7 +66,9 @@ namespace QuantLib {
     : CmsCouponPricer(swaptionVol),
       modelOfYieldCurve_(modelOfYieldCurve),
       cutoffForCaplet_(2), cutoffForFloorlet_(0),
-      meanReversion_(meanReversion) {}
+      meanReversion_(meanReversion) {
+          registerWith(meanReversion_);
+    }
 
     void ConundrumPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const CmsCoupon*>(&coupon);

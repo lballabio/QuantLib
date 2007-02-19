@@ -37,7 +37,8 @@ namespace QuantLib {
     //
     //! generic pricer for FloatingRate coupons
     //
-    class FloatingRateCouponPricer {
+    class FloatingRateCouponPricer: public virtual Observer,
+                                    public virtual Observable{
       public:
         virtual ~FloatingRateCouponPricer() {}
         /* */
@@ -47,7 +48,11 @@ namespace QuantLib {
         virtual Rate capletRate(Rate effectiveCap) const = 0;
         virtual Real floorletPrice(Rate effectiveFloor) const = 0;
         virtual Rate floorletRate(Rate effectiveFloor) const = 0;
-        virtual void initialize(const FloatingRateCoupon& coupon)= 0;       
+        virtual void initialize(const FloatingRateCoupon& coupon)= 0;  
+        //! \name Observer interface
+        //@{
+        void update(){notifyObservers();}
+        //@}
     };
 
     
@@ -56,15 +61,19 @@ namespace QuantLib {
     class IborCouponPricer: public FloatingRateCouponPricer{
       public:
         IborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol)
-         : capletVol_(capletVol) {};
-        virtual ~IborCouponPricer() {};
+         : capletVol_(capletVol) { registerWith(capletVol_);};
+        virtual ~IborCouponPricer() {}
 		
         Handle<CapletVolatilityStructure> capletVolatility() const{
 	        return capletVol_;
-	    };
+	    }
 		void setCapletVolatility(const Handle<CapletVolatilityStructure>& capletVol){
-			capletVol_ = capletVol;
-		};
+            unregisterWith(capletVol_);
+            capletVol_ = capletVol;
+            QL_REQUIRE(!capletVol_.empty(), "no adequate capletVol given");
+            registerWith(capletVol_);
+            update();
+		}
     private:
         Handle<CapletVolatilityStructure> capletVol_;
     };
@@ -105,13 +114,17 @@ namespace QuantLib {
     class CmsCouponPricer: public FloatingRateCouponPricer {
       public:
 		CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-            : swaptionVol_(swaptionVol) {}
+            : swaptionVol_(swaptionVol) {registerWith(swaptionVol_);}
 
 		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
 			return swaptionVol_;
 	     }
 		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
-			swaptionVol_ = swaptionVol;
+            unregisterWith(swaptionVol_);
+            swaptionVol_ = swaptionVol;
+            QL_REQUIRE(!swaptionVol_.empty(), "no adequate swaptionVol given");
+            registerWith(swaptionVol_);
+            update();
 		}
       private:
         Handle<SwaptionVolatilityStructure> swaptionVol_;

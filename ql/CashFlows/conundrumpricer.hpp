@@ -188,7 +188,11 @@ namespace QuantLib {
         /* */
 		Real meanReversion() const { return meanReversion_->value(); }
 		void setMeanReversion(const Handle<Quote>& meanReversion) {
-			meanReversion_ = meanReversion;
+            unregisterWith(meanReversion_);
+            meanReversion_ = meanReversion;
+            QL_REQUIRE(!meanReversion_.empty(), "no adequate meanReversion given");
+            registerWith(meanReversion_);
+            update();
 		};
       protected:
         ConundrumPricer(

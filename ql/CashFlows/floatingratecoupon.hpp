@@ -96,7 +96,12 @@ namespace QuantLib {
         //@}
         //@}
         void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-			pricer_ = pricer;
+            if(pricer_)
+                unregisterWith(pricer_);
+            pricer_ = pricer;
+            QL_REQUIRE(pricer_, "no adequate pricer given");
+            registerWith(pricer_);
+            update();
 		}
         boost::shared_ptr<FloatingRateCouponPricer> pricer() const{
 			return pricer_;
