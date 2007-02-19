@@ -46,6 +46,8 @@ namespace QuantLib {
       gearing_(gearing), spread_(spread), 
       isInArrears_(isInArrears)
     {
+        QL_REQUIRE(gearing_!=0, "Null gearing: degenerate Floating Rate Coupon not admitted");
+        
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
 
