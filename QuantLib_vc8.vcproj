@@ -3078,6 +3078,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Math\matrix.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\Math\matrix.hpp"
 				>
 			</File>
