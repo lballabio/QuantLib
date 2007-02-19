@@ -135,26 +135,35 @@ namespace QuantLib {
 
         Array calibration(const boost::shared_ptr<EndCriteria>& endCriteria,
                           const boost::shared_ptr<OptimizationMethod>& method,
-                          const Array& guess);
+                          const Array& guess,
+                          bool isMeanReversionFixed);
         Real error(){return error_;};
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 
       private:
-
+        
         class ParametersConstraint : public Constraint {
               private:
                 class Impl : public Constraint::Impl {
+                    Size nBeta_;
                   public:
+                    Impl(Size nBeta)
+                    : Constraint::Impl(),nBeta_(nBeta){}
+
                     bool test(const Array& params) const {
-                        return params[0]>=0.0 && params[0]<=1.0 // beta
-                            && params[1]>0.0 && params[1]<2.0;   // mean reversion
+                        QL_REQUIRE(params.size()==nBeta_+1,"params.size()!=nBeta_+1");
+                        bool areBetasInConstraints = true;
+                        for(Size i=0;i<nBeta_;i++)
+                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
+                        return areBetasInConstraints             // betas
+                            && params[nBeta_]>0.0 && params[nBeta_]<2.0;   // mean reversion
                     }
                 };
               public:
-                ParametersConstraint()
-                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
+                ParametersConstraint(Size nBeta)
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
             };
-  
+
         class ObjectiveFunction : public CostFunction {
           public:
             ObjectiveFunction(SmileAndCmsCalibrationBySabr* smileAndCms)
@@ -172,6 +181,53 @@ namespace QuantLib {
             Matrix weights_;
             CalibrationType calibrationType_;
         };
+
+
+ 
+        class ParametersConstraintWithFixedMeanReversion : public Constraint {
+              private:
+                class Impl : public Constraint::Impl {
+                    Size nBeta_;
+                  public:
+                    Impl(Size nBeta)
+                    : Constraint::Impl(),nBeta_(nBeta){}
+
+                    bool test(const Array& params) const {
+                        QL_REQUIRE(params.size()==nBeta_,"params.size()!=nBeta_");
+                        bool areBetasInConstraints = true;
+                        for(Size i=0;i<nBeta_;i++)
+                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
+                        return areBetasInConstraints;   
+                    }
+                };
+              public:
+                ParametersConstraintWithFixedMeanReversion(Size nBeta)
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
+        };
+
+        class ObjectiveFunctionWithFixedMeanReversion : public CostFunction {
+          public:
+            ObjectiveFunctionWithFixedMeanReversion(SmileAndCmsCalibrationBySabr* smileAndCms,
+                                                    Real fixedMeanReversion)
+                :smileAndCms_(smileAndCms),
+                volCube_(smileAndCms->volCube_),
+                cmsMarket_(smileAndCms->cmsMarket_),
+                weights_(smileAndCms->weights_),
+                calibrationType_(smileAndCms->calibrationType_),
+                fixedMeanReversion_(fixedMeanReversion){};
+
+                Real value(const Array& x) const;
+          private:
+            SmileAndCmsCalibrationBySabr* smileAndCms_;
+            Handle<SwaptionVolatilityStructure> volCube_;
+            boost::shared_ptr<CmsMarket> cmsMarket_;
+            Matrix weights_;
+            CalibrationType calibrationType_;
+            Real fixedMeanReversion_;
+        };
+
+
+        
         Real error_; 
 		EndCriteria::Type endCriteria_;
   

@@ -297,14 +297,30 @@ namespace QuantLib {
 	Array SmileAndCmsCalibrationBySabr::calibration(
             const boost::shared_ptr<EndCriteria>& endCriteria, 
             const boost::shared_ptr<OptimizationMethod>& method,
-            const Array& guess){
-
-        ParametersConstraint constraint;
-        ObjectiveFunction costFunction(this);
-        Problem problem(costFunction, constraint,guess);
-        endCriteria_ = method->minimize(problem, *endCriteria);
-        error_ = problem.functionValue();
-        Array result = problem.currentValue();
+            const Array& guess,
+            bool isMeanReversionFixed){
+        Array result;
+        if(isMeanReversionFixed){
+            Size nBeta = guess.size()-1;
+            ParametersConstraintWithFixedMeanReversion constraint(nBeta);
+            Real fixedMeanReversion = guess[nBeta];
+            Array betasGuess(nBeta);
+            for(Size i=0;i<nBeta;i++)
+                betasGuess[i] = guess[i];
+            ObjectiveFunctionWithFixedMeanReversion costFunction(this, fixedMeanReversion);
+            Problem problem(costFunction, constraint,betasGuess);
+            endCriteria_ = method->minimize(problem, *endCriteria);
+            error_ = problem.functionValue();
+            result = problem.currentValue();
+        }
+        else {
+            ParametersConstraint constraint(guess.size()-1);
+            ObjectiveFunction costFunction(this);
+            Problem problem(costFunction, constraint,guess);
+            endCriteria_ = method->minimize(problem, *endCriteria);
+            error_ = problem.functionValue();
+            result = problem.currentValue();
+        }
         return result;
     }
 
@@ -316,7 +332,7 @@ namespace QuantLib {
         const Array y = x;
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
         Size nSwapTenors = swapTenors.size();
-        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 == x.size()");
+        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 != x.size()");
 
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
                boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
@@ -327,6 +343,38 @@ namespace QuantLib {
         }
         Real meanReversion = y[nSwapTenors];
         cmsMarket_->reprice(volCube_, meanReversion);
+        switch (calibrationType_) {
+            case OnSpread:
+                return cmsMarket_->weightedError(weights_);
+            case OnPrice:
+                return cmsMarket_->weightedPriceError(weights_);
+            case OnForwardCmsPrice:
+                return cmsMarket_->weightedForwardPriceError(weights_);
+            default:
+                QL_FAIL("unknown/illegal calibration type");
+        }
+    }
+
+    //===========================================================================//
+    //   SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion   //
+    //===========================================================================//
+
+    Real SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion::value(
+                                                                    const Array& x) const {
+        const Array y = x;
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        Size nSwapTenors = swapTenors.size();
+        QL_REQUIRE(nSwapTenors == x.size(),"bad calibration guess nSwapTenors != x.size()");
+
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        
+        for (Size i=0; i<nSwapTenors; i++){
+            Real beta = y[i];
+            volCubeBySabr->recalibration(beta, swapTenors[i]);
+        }
+
+        cmsMarket_->reprice(volCube_, fixedMeanReversion_);
         switch (calibrationType_) {
             case OnSpread:
                 return cmsMarket_->weightedError(weights_);
