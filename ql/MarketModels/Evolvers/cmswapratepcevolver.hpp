@@ -35,11 +35,11 @@ namespace QuantLib {
     //! Predictor-Corrector
     class CmSwapRatePcEvolver : public MarketModelEvolver {
       public:
-        CmSwapRatePcEvolver(const boost::shared_ptr<MarketModel>&,
-                             const BrownianGeneratorFactory&,
-                             const std::vector<Size>& numeraires,
-                             const Size spanningForwards,
-                             Size initialStep = 0);
+        CmSwapRatePcEvolver(const Size spanningForwards,
+                            const boost::shared_ptr<MarketModel>&,
+                            const BrownianGeneratorFactory&,
+                            const std::vector<Size>& numeraires,
+                            Size initialStep = 0);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -50,8 +50,9 @@ namespace QuantLib {
         void setInitialState(const CurveState&);
         //@}
       private:
-        void setForwards(const std::vector<Real>& forwards);
+        void setCMSwapRates(const std::vector<Real>& swapRates);
         // inputs
+        Size spanningForwards_;
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
@@ -62,7 +63,7 @@ namespace QuantLib {
         Size n_, F_;
         CMSwapCurveState curveState_;
         Size currentStep_;
-        std::vector<Rate> swapRates_, displacements_, logSwaps_, initialLogSwaps_;
+        std::vector<Rate> swapRates_, displacements_, logSwapRates_, initialLogSwapRates_;
         std::vector<Real> drifts1_, drifts2_, initialDrifts_;
         Array brownians_, correlatedBrownians_;
         std::vector<Size> alive_;

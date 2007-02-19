@@ -35,9 +35,9 @@ namespace QuantLib {
     class CoterminalSwapRatePcEvolver : public MarketModelEvolver {
       public:
         CoterminalSwapRatePcEvolver(const boost::shared_ptr<MarketModel>&,
-                             const BrownianGeneratorFactory&,
-                             const std::vector<Size>& numeraires,
-                             Size initialStep = 0);
+                                    const BrownianGeneratorFactory&,
+                                    const std::vector<Size>& numeraires,
+                                    Size initialStep = 0);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -48,7 +48,6 @@ namespace QuantLib {
         void setInitialState(const CurveState&);
         //@}
       private:
-        //void setForwards(const std::vector<Real>& forwards);
         void setCoterminalSwapRates(const std::vector<Real>& swapRates);
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;

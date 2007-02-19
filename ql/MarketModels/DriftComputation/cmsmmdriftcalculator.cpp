@@ -74,7 +74,6 @@ namespace QuantLib {
                    "drifts.size() <> numberOfRates");
         #endif
 
-
         const std::vector<Time>& taus = cs.rateTaus();
         // final bond is numeraire
 

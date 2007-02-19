@@ -58,7 +58,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(MarketModelTest)
+QL_BEGIN_TEST_LOCALS(MarketModelTest_smm)
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
@@ -73,7 +73,6 @@ std::vector<Real> coterminalAnnuity;
 Spread displacement;
 std::vector<DiscountFactor> todaysDiscounts;
 std::vector<Volatility> volatilities, blackVols;
-std::vector<Volatility> swaptionsBlackVols;
 Real a, b, c, d;
 Real longTermCorrelation, beta;
 Size measureOffset_;
@@ -102,7 +101,7 @@ void setup() {
     todaysForwards = std::vector<Rate>(accruals.size());
     displacement = 0.02;
     for (Size i=0; i<todaysForwards.size(); ++i) {
-        todaysForwards[i] = 0.05 + 0.0010*i;
+        todaysForwards[i] = 0.03 + 0.0010*i;
         //todaysForwards[i] = 0.04;
     }
     LMMCurveState curveState_lmm(rateTimes); 
@@ -143,7 +142,7 @@ void setup() {
     d =  0.1710;
     volatilities = std::vector<Volatility>(todaysSwaps.size());
     blackVols = std::vector<Volatility>(todaysSwaps.size());
-    for (Size i=0; i<todaysForwards.size(); i++) {
+    for (Size i=0; i<todaysSwaps.size(); i++) {
         volatilities[i] = todaysSwaps[i]*mktVols[i]/
                          (todaysSwaps[i]+displacement);
         blackVols[i]= mktVols[i];
@@ -204,7 +203,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors,
                                         MarketModelType marketModelType,
-                                        Spread forwardBump = 0.0,
+                                        Spread rateBump = 0.0,
                                         Volatility volBump = 0.0) {
 
     std::vector<Time> fixingTimes(evolution.rateTimes());
@@ -220,7 +219,8 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     std::vector<Rate> usedRates = curveState_lmm.coterminalSwapRates();
     std::transform(usedRates.begin(), usedRates.end(),
                    bumpedRates.begin(),
-                   std::bind1st(std::plus<Rate>(), forwardBump));
+                   std::bind1st(std::plus<Rate>(), rateBump));
+                   
     std::vector<Volatility> bumpedVols(volatilities.size());
     std::transform(volatilities.begin(), volatilities.end(),
                    bumpedVols.begin(),
@@ -319,16 +319,16 @@ std::vector<Size> makeMeasure(const MarketModelMultiProduct& product,
     return result;
 }
 
-enum EvolverType { /*Ipc,*/ Pc /*, NormalPc*/};
+enum EvolverType { Ipc, Pc , NormalPc};
 
 std::string evolverTypeToString(EvolverType type) {
     switch (type) {
-      //case Ipc:
-      //    return "iterative predictor corrector";
+      case Ipc:
+          return "iterative predictor corrector";
       case Pc:
           return "predictor corrector";
-      //case NormalPc:
-      //    return "predictor corrector for normal case";
+      case NormalPc:
+          return "predictor corrector for normal case";
       default:
         QL_FAIL("unknown MarketModelEvolver type");
     }
@@ -344,7 +344,8 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
                 CoterminalSwapRatePcEvolver(marketModel, generatorFactory,
-                                            numeraires, initialStep));
+                                            numeraires,
+                                            initialStep));
         default:
             QL_FAIL("unknown CoterminalSwapMarketModelEvolver type");
     }
@@ -394,7 +395,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     maxError = 0;
     std::vector<Rate> expectedSwaptions(N);
     std::vector<Real> stdDevSwaptions(N);
-        for (Size i=0; i<N; ++i) {
+    for (Size i=0; i<N; ++i) {
         const std::vector<Time>&  taus = curveState_lmm.rateTaus();
         Real expectedSwaption = BlackCalculator(
                         displacedPayoff[i],

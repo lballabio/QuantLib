@@ -70,8 +70,10 @@ namespace QuantLib {
 
     void SMMDriftCalculator::compute(const CoterminalSwapCurveState& cs,
                                      std::vector<Real>& drifts) const {
-
-      
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        QL_REQUIRE(drifts.size()==cs.numberOfRates(),
+                   "drifts.size() <> numberOfRates");
+        #endif
 
         // Compute drifts with factor reduction,
         // using the pseudo square root of the covariance matrix.

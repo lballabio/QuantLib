@@ -85,7 +85,7 @@ namespace QuantLib {
     }
 
     void CoterminalSwapRatePcEvolver::setInitialState(const CurveState& cs) {
-        
+        // why??
         const CoterminalSwapCurveState* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
         const std::vector<Real>& swapRates = cotcs->coterminalSwapRates();
         setCoterminalSwapRates(swapRates);
@@ -115,7 +115,7 @@ namespace QuantLib {
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size i, alive = alive_[currentStep_];
-        for (i=alive; i<n_; i++) {
+        for (i=alive; i<n_; ++i) {
             logSwapRates_[i] += drifts1_[i] + fixedDrift[i];
             logSwapRates_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
