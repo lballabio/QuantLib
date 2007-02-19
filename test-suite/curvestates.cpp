@@ -28,11 +28,12 @@
 #include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 #include <ql/Math/matrix.hpp>
 #include <ql/schedule.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
-#include <iostream>
+//#include <iostream>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -139,24 +140,32 @@ void CurveStatesTest::testCMSwapCurveState() {
     QL_TEST_SETUP
     Size nbRates = todaysForwards.size();
     Size factors = nbRates;
-    Matrix pseudo(nbRates, factors, 1.0);
+    Matrix pseudo(nbRates, factors, 0.1);
     std::vector<Spread> displacements(nbRates, .0);
     std::vector<Time> rateTimes(nbRates+1);
     std::vector<Time> taus(nbRates, .5);
     std::vector<Rate> forwards(nbRates, 0.0);
 
-    std::cout << "rate value:"<< std::endl;
+    //std::cout << "rate value:"<< std::endl;
+
     for (Size i = 0; i < forwards.size(); ++i){
-        forwards[i] = static_cast<Time>(i)*.01+.04;
-        std::cout << forwards[i] << std::endl;
+        forwards[i] = static_cast<Time>(i)*.001+.04;
+        
     }
-    std::cout << "rate Times:"<< std::endl;
+    
     for (Size i = 0; i < rateTimes.size(); ++i){
         rateTimes[i] = static_cast<Time>(i)*.5;
-        std::cout << rateTimes[i] << std::endl;
+       
     }
-    Size numeraire = nbRates;
-    Size alive = 0;
+
+    //BOOST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
+    //for (Size i = 0; i < rateTimes.size()-1; ++i){
+    //    std::cout << rateTimes[i+1] << "\t"<<io::rate(forwards[i]) << std::endl;
+    //}
+
+    Size numeraire = nbRates; 
+    Size alive = 0; 
+
     Size spanningFwds = 1;
 
     CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus, numeraire,
@@ -172,20 +181,20 @@ void CurveStatesTest::testCMSwapCurveState() {
     LMMCurveState lmmCs(rateTimes);
     lmmCs.setOnForwardRates(forwards);
     std::vector<Real> lmmDrifts(nbRates);
-    lmmDriftcalulator.compute(forwards,lmmDrifts);
 
-    std::cout << "drifts:"<< std::endl;
+   
+ /*   std::cout << "drifts:"<< std::endl;
     std::cout << "LMM\t\tCMS"<< std::endl;
     for (Size i = 0; i<nbRates; ++i){
          std::cout << lmmDrifts[i] << "\t\t"<< cmsDrifts[i] << std::endl;
-    }
+    }*/
 
 //    const std::vector<Rate>& dfs = cs.discountRatios();
-    std::cout << "discounts ratios:"<< std::endl;
-    std::cout << "LMM\tCMS"<< std::endl;
-    for (Size i = 0; i <nbRates; ++i){
+    //std::cout << "discounts ratios:"<< std::endl;
+    //std::cout << "LMM\tCMS"<< std::endl;
+    /*for (Size i = 0; i <nbRates; ++i){
         std::cout << lmmCs.discountRatio(i, nbRates) << "\t"<< cmsCs.discountRatio(i, nbRates) << std::endl;
-    }
+    }*/
 }
 
 // --- Call the desired tests
