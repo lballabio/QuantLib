@@ -22,11 +22,9 @@
 #define quantlib_piecewise_const_abcd_variance_hpp
 
 #include <ql/MarketModels/Models/piecewiseconstantvariance.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
-
-    class EvolutionDescription;
-    class Matrix;
 
     class PiecewiseConstantAbcdVariance : public PiecewiseConstantVariance {
       public:
@@ -38,6 +36,10 @@ namespace QuantLib {
                                    const EvolutionDescription& evolution);
         const EvolutionDescription& evolution() const;
         const std::vector<Real>& variances() const;
+      private:
+        std::vector<Real> variances_;
+        EvolutionDescription evolution_;
+
     };
 
 }

@@ -18,18 +18,33 @@
 */
 
 #include <ql/MarketModels/Models/piecewiseconstantabcdvariance.hpp>
+#include <ql/Volatilities/abcd.hpp>
 
 namespace QuantLib {
 
     PiecewiseConstantAbcdVariance::PiecewiseConstantAbcdVariance(
-            Real a,
-            Real b,
-            Real c,
-            Real d,
-            const Size resetIndex,
-            const EvolutionDescription& evolution)
+        Real a,
+        Real b,
+        Real c,
+        Real d,
+        const Size resetIndex,
+        const EvolutionDescription& evolution) 
+        : variances_(evolution.numberOfRates()), evolution_(evolution)
     {
-    
+        AbcdFunction abcdFunction(a,b,c,d); 
+        const std::vector<Time> rateTimes = evolution.rateTimes();
+        for (Size i=0; i<resetIndex; ++i) {
+            variances_[i] = abcdFunction.variance(rateTimes[resetIndex],
+                                                  rateTimes[i+1],
+                                                  rateTimes[i]);
+        } 
+        // from resetIndex it is zero
+    }
+    const EvolutionDescription& PiecewiseConstantAbcdVariance::evolution() const {
+        return evolution_;
+    }
+    const std::vector<Real>& PiecewiseConstantAbcdVariance::variances() const {
+        return variances_;
     }
 
 }
