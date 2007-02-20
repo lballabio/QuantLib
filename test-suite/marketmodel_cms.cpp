@@ -76,7 +76,7 @@ Size measureOffset_;
 unsigned long seed_;
 Size paths_, trainingPaths_;
 bool printReport_ = true;
-Size spanningForwards = 1;
+Size spanningForwards;
 
 void setup() {
 
@@ -84,7 +84,7 @@ void setup() {
     calendar = NullCalendar();
     todaysDate = Settings::instance().evaluationDate();
     //startDate = todaysDate + 5*Years;
-    endDate = todaysDate + 18*Months;
+    endDate = todaysDate + 10*Years;
     Schedule dates(todaysDate, endDate, Period(Semiannual),
                    calendar, Following, Following, true, false);
     rateTimes = std::vector<Time>(dates.size()-1);
@@ -99,11 +99,13 @@ void setup() {
 
     // Rates & displacement
     todaysForwards = std::vector<Rate>(accruals.size());
-    displacement = 0.0;
+    displacement = 0.02;
     for (Size i=0; i<todaysForwards.size(); ++i)
         todaysForwards[i] = 0.03 + 0.0010*i;
     LMMCurveState curveState_lmm(rateTimes); 
     curveState_lmm.setOnForwardRates(todaysForwards); 
+    // until ConstantMaturitySwap is ready
+    spanningForwards = todaysForwards.size();
     todaysCMSwapRates = curveState_lmm.cmSwapRates(spanningForwards);
 
     // Discounts
@@ -140,7 +142,7 @@ void setup() {
     d =  0.1710;
     volatilities = std::vector<Volatility>(todaysCMSwapRates.size());
     blackVols = std::vector<Volatility>(todaysCMSwapRates.size());
-    for (Size i=0; i<LENGTH(todaysCMSwapRates); i++) {
+    for (Size i=0; i<todaysCMSwapRates.size(); i++) {
         volatilities[i] = todaysCMSwapRates[i]*mktVols[i]/
                          (todaysCMSwapRates[i]+displacement);
         blackVols[i]= mktVols[i];
@@ -161,10 +163,6 @@ void setup() {
     paths_ = 32767; //262144-1; //; // 2^15-1
     trainingPaths_ = 8191; // 2^13-1
 #endif
-
-
-    // until ConstantMaturitySwap is ready
-    spanningForwards = todaysCMSwapRates.size();
 
 
 }
