@@ -35,8 +35,8 @@ namespace QuantLib {
 
     bool capletCoterminalCalibration(
             const TimeDependantCorrelationStructure& corr,
-            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& swapVariances,
-            const std::vector<Volatility>& capletVols,
+            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+            const std::vector<Volatility>& displacedCapletVols,
             const CurveState& cs,
             const Spread displacement,
             const std::vector<Real>& alpha,
