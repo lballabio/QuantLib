@@ -34,7 +34,7 @@ namespace QuantLib {
             const EvolutionDescription& evolution,
             const Size numberOfFactors) : 
         evolution_(evolution), numberOfFactors_(numberOfFactors),
-            pseudoRoots_(pseudoRoots_),
+            pseudoRoots_(evolution.numberOfRates()),
             fraCorrelationMatrix_(evolution.numberOfRates()){    
     
         //1. creating Fra Correlation Matrices
