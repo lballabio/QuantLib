@@ -81,6 +81,7 @@
 #include "lowdiscrepancysequences.hpp"
 #include "marketmodel.hpp"
 #include "marketmodel_smm.hpp"
+#include "marketmodel_cms.hpp"
 #include "matrices.hpp"
 #include "mclongstaffschwartzengine.hpp"
 #include "mersennetwister.hpp"
