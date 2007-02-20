@@ -1177,6 +1177,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\forwardoption.cpp"
 				>
 			</File>
@@ -1468,6 +1472,10 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smm.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcapletcalibration.cpp"
 				>
 			</File>
 			<File
@@ -2356,6 +2364,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\forwardoption.hpp"
 				>
 			</File>
@@ -2417,6 +2429,10 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smm.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcapletcalibration.hpp"
 				>
 			</File>
 			<File
@@ -2489,6 +2505,10 @@
 			</File>
 			<File
 				RelativePath="stats.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\surface.hpp"
 				>
 			</File>
 			<File

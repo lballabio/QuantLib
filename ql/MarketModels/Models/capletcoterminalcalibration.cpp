@@ -93,10 +93,8 @@ namespace QuantLib {
                 totVariance[i] += displacedSwapVariances[i]->variances()[j];
             for (Integer j=0; j<=static_cast<Integer>(i)-1; ++j)
                 almostTotVariance[i] += swapTimeInhomogeneousVariances[j][i];
-
             Integer j=0;
-            for (; j<=static_cast<Integer>(i)-2; ++j) 
-            {
+            for (; j<=static_cast<Integer>(i)-2; ++j) {
                  const Matrix& thisPseudo = corr.pseudoRoot(j);
                  Real correlation = 0.0;
 
@@ -108,17 +106,17 @@ namespace QuantLib {
                                                 *swapTimeInhomogeneousVariances[j][i-1]);
 
             }
-              
-            const Matrix& thisPseudo = corr.pseudoRoot(j);
-            Real correlation = 0.0;
 
-            for (Size k=0; k<numberOfFactors; ++k)
-                correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
+            if (i>0) {
+                const Matrix& thisPseudo = corr.pseudoRoot(j);
+                Real correlation = 0.0;
+                for (Size k=0; k<numberOfFactors; ++k)
+                    correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
+                leftCovariance[j] = correlation*
+                                    sqrt(swapTimeInhomogeneousVariances[j][i]
+                                         *swapTimeInhomogeneousVariances[j][i-1]);
 
-            leftCovariance[j] = correlation*
-                                sqrt(swapTimeInhomogeneousVariances[j][i]
-                                     *swapTimeInhomogeneousVariances[j][i-1]);
-
+            }
         }
 
         // multiplier up to rate reset previous time

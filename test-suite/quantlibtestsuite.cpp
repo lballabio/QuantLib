@@ -80,6 +80,7 @@
 #include "lookbackoptions.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "marketmodel.hpp"
+#include "marketmodel_smmcapletcalibration.hpp"
 #include "marketmodel_smm.hpp"
 #include "marketmodel_cms.hpp"
 #include "matrices.hpp"
@@ -213,6 +214,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LowDiscrepancyTest::suite());
     test->add(MarketModelTest::suite());
     test->add(MarketModelSmmTest::suite());
+    test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelCmsTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
