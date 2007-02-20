@@ -161,6 +161,12 @@ void setup() {
     paths_ = 32767; //262144-1; //; // 2^15-1
     trainingPaths_ = 8191; // 2^13-1
 #endif
+
+
+    // until ConstantMaturitySwap is ready
+    spanningForwards = todaysCMSwapRates.size();
+
+
 }
 
 const boost::shared_ptr<SequenceStatistics> simulate(
@@ -437,6 +443,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
     
 	// swaps
     std::vector<Time> swapPaymentTimes(rateTimes.begin()+1, rateTimes.end());
+    // until ConstantMaturitySwap is ready
     MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals, 
                                    swapPaymentTimes,
                                    fixedRate);
@@ -452,6 +459,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
             PlainVanillaPayoff(Option::Call, fixedRate));
     }
 
+    // until ConstantMaturitySwap is ready
     MultiStepCoterminalSwaptions swaptions(rateTimes,
                                            swaptionPaymentTimes,
                                            undisplacedPayoff);
