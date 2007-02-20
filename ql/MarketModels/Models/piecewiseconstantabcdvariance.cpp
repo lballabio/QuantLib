@@ -23,13 +23,11 @@
 namespace QuantLib {
 
     PiecewiseConstantAbcdVariance::PiecewiseConstantAbcdVariance(
-        Real a,
-        Real b,
-        Real c,
-        Real d,
-        const Size resetIndex,
-        const EvolutionDescription& evolution) 
-        : variances_(evolution.numberOfRates()), evolution_(evolution)
+        Real a, Real b, Real c, Real d,
+        const Size resetIndex, const EvolutionDescription& evolution) 
+        : variances_(evolution.numberOfRates()),
+          piecewiseConstantInstantaneousVolatilities_(evolution.numberOfRates()),
+          evolution_(evolution)
     {
         AbcdFunction abcdFunction(a,b,c,d); 
         const std::vector<Time> rateTimes = evolution.rateTimes();
@@ -37,15 +35,26 @@ namespace QuantLib {
             variances_[i] = abcdFunction.variance(rateTimes[resetIndex],
                                                   rateTimes[i+1],
                                                   rateTimes[i]);
+            piecewiseConstantInstantaneousVolatilities_[i+1] =
+                std::sqrt(variances_[i]/evolution.rateTaus()[i]);
         } 
-        // from resetIndex it is zero
+        piecewiseConstantInstantaneousVolatilities_[0] =
+                piecewiseConstantInstantaneousVolatilities_[1];
     }
+
     const EvolutionDescription& PiecewiseConstantAbcdVariance::evolution() const {
         return evolution_;
     }
+
     const std::vector<Real>& PiecewiseConstantAbcdVariance::variances() const {
         return variances_;
     }
+
+    const std::vector<Real>&
+        PiecewiseConstantAbcdVariance::piecewiseConstantVolatilities() const {
+        return piecewiseConstantInstantaneousVolatilities_;       
+    }
+
 
 }
 

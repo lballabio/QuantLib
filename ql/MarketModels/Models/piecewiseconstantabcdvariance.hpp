@@ -28,17 +28,16 @@ namespace QuantLib {
 
     class PiecewiseConstantAbcdVariance : public PiecewiseConstantVariance {
       public:
-        PiecewiseConstantAbcdVariance(Real a,
-                                   Real b,
-                                   Real c,
-                                   Real d,
-                                   const Size resetIndex,
-                                   const EvolutionDescription& evolution);
+        PiecewiseConstantAbcdVariance(Real a, Real b, Real c, Real d,
+                                      const Size resetIndex,
+                                      const EvolutionDescription& evolution);
         const EvolutionDescription& evolution() const;
         const std::vector<Real>& variances() const;
+        const std::vector<Real>& piecewiseConstantVolatilities() const;
       private:
         std::vector<Real> variances_;
-        EvolutionDescription evolution_;
+        std::vector<Real> piecewiseConstantInstantaneousVolatilities_;
+        const EvolutionDescription evolution_;
 
     };
 
