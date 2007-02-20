@@ -7351,6 +7351,22 @@
 				Name="Models"
 				>
 				<File
+					RelativePath=".\ql\MarketModels\Models\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\capletcoterminalcalibration.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.cpp"
 					>
 				</File>
@@ -7380,6 +7396,30 @@
 				</File>
 				<File
 					RelativePath=".\ql\MarketModels\Models\forwardtocoterminaladapter.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\piecewiseconstantabcdvariance.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\piecewiseconstantabcdvariance.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\piecewiseconstantvariance.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\swapfromfracorrelationstructure.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\swapfromfracorrelationstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\MarketModels\Models\timedependantcorrelationstructure.hpp"
 					>
 				</File>
 			</Filter>
