@@ -36,15 +36,15 @@ namespace QuantLib {
                      //const std::vector<Size>& numeraires,
                      const std::vector<std::pair<Size,Size> >& relevanceRates)
     : rateTimes_(rateTimes),
-      evolutionTimes_(evolutionTimes.size()==0 ?
+      evolutionTimes_(evolutionTimes.size()>0 ?
                       evolutionTimes :
                       std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)),
-      steps_(evolutionTimes.size()),
+      steps_(evolutionTimes_.size()),
       //numeraires_(numeraires),
       relevanceRates_(relevanceRates),
-      rateTaus_(rateTimes.size()-1),
-      effStopTime_(evolutionTimes.size(), rateTimes.size()-1),
-      firstAliveRate_(evolutionTimes.size())
+      rateTaus_(rateTimes_.size()-1),
+      effStopTime_(evolutionTimes_.size(), rateTimes_.size()-1),
+      firstAliveRate_(evolutionTimes_.size())
     {
 
         // Set up and check coherence of data: 
@@ -62,35 +62,35 @@ namespace QuantLib {
             QL_REQUIRE(rateTimes[i]>rateTimes[i-1],
                        "rate times must be strictly increasing");
 
-        // Check evolution times (steps_ = evolutionTimes.size()):
-        // - evolutionTimes has 1 elements at least (steps_ >= 1);
-        // - evolutionTimes[i] are strictly increasing;
-        // - the last evolutionTimes is <= the last rateTimes.
+        // Check evolution times (steps_ = evolutionTimes_.size()):
+        // - evolutionTimes_ has 1 elements at least (steps_ >= 1);
+        // - evolutionTimes_[i] are strictly increasing;
+        // - the last evolutionTimes_ is <= the last rateTimes.
         QL_REQUIRE(steps_>0,
                    "Evolution times must have 1 elements at least");
         for (i = 1; i<steps_; ++i)
-            QL_REQUIRE(evolutionTimes[i]>evolutionTimes[i-1],
+            QL_REQUIRE(evolutionTimes_[i]>evolutionTimes_[i-1],
                        "Evolution times must be strictly increasing");
-        QL_REQUIRE(rateTimes.back() >= evolutionTimes.back(),
+        QL_REQUIRE(rateTimes.back() >= evolutionTimes_.back(),
                    "The last evolution time is past the last rate time");
 
         // Set up and check numeraires (n_num = numeraires.size()):
         // - if numeraires is empty, put the last ZCbond as default numeraire;
-        // - numeraires are as many as evolutionTimes (n_num = steps_);
-        // - the numeraire[i] must not have expired before the end of the step evolutionTimes[i].
+        // - numeraires are as many as evolutionTimes_ (n_num = steps_);
+        // - the numeraire[i] must not have expired before the end of the step evolutionTimes_[i].
         //if (numeraires.empty()) {
         //    numeraires_ = std::vector<Size>(steps_, rateTimes_.size()-1);
         //} else {
         //    QL_REQUIRE(numeraires.size() == steps_,
-        //               "Numeraires / evolutionTimes mismatch");
+        //               "Numeraires / evolutionTimes_ mismatch");
         //    for (Size i=0; i<numeraires.size()-1; i++)
-        //        QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes[i],
+        //        QL_REQUIRE(rateTimes[numeraires[i]] >= evolutionTimes_[i],
         //                   "Numeraire " << i << " expired");
         //}
 
         // Set up and check relevance rates (n_rr = relevanceRates.size()):
         // - if relevanceRates is empty, put as default 0 and n;
-        // - relevanceRates are as many as evolutionTimes (n_rr = steps_).
+        // - relevanceRates are as many as evolutionTimes_ (n_rr = steps_).
         if (relevanceRates.empty()) {
             relevanceRates_ = std::vector<std::pair<Size,Size> >(
                                 steps_, std::make_pair(0,rateTimes.size()-1));
@@ -101,7 +101,7 @@ namespace QuantLib {
 
         // Set up and check times:
         // - set up rateTaus_
-        // - set up the effective stop time for step j and rate time i as MIN{evolutionTimes[j],rateTimes[i]}
+        // - set up the effective stop time for step j and rate time i as MIN{evolutionTimes_[j],rateTimes[i]}
         // - set up firstAliveRate_ as the first alive rate for each step
         for (i=0; i<rateTaus_.size(); i++)
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
