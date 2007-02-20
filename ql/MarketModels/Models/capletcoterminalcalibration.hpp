@@ -38,7 +38,7 @@ namespace QuantLib {
             const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& swapVariances,
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
-            const std::vector<Spread>& displacements,
+            const Spread displacement,
             const std::vector<Real>& alpha,
             std::vector<Matrix>& pseudoRoots);
 
