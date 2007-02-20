@@ -22,7 +22,11 @@
 #define quantlib_fra_time_dep_corr_struct_hpp
 
 #include <ql/MarketModels/Models/timedependantcorrelationstructure.hpp>
+#include <vector>
+#include <ql/Math/matrix.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
+//class CurveState;
 namespace QuantLib {
 
     class SwapFromFRACorrelationStructure : public TimeDependantCorrelationStructure {
@@ -30,11 +34,17 @@ namespace QuantLib {
         SwapFromFRACorrelationStructure(
             const Real longTermCorr,
             const Real beta,
+            const CurveState& curveState,
             const EvolutionDescription& evolution,
             const Size numberOfFactors);
         const EvolutionDescription& evolution() const;
         Size numberOfFactors() const;
         const Matrix& pseudoRoot(Size i) const;
+    private:
+        std::vector<Matrix> fraCorrelationMatrix_;
+        std::vector<Matrix> pseudoRoots_;
+        Size numberOfFactors_;
+        const EvolutionDescription& evolution_;
     };
 
 }
