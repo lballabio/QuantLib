@@ -22,18 +22,25 @@
 #define quantlib_caplet_coterminal_calibration_hpp
 
 #include <ql/types.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib {
 
-    class EvolutionDescription;
+    class TimeDependantCorrelationStructure;
+    class PiecewiseConstantVariance;
+    class CurveState;
+    class MarketModel;
     class Matrix;
 
-    class CapletCoterminalCalibration {
-      public:
-        CapletCoterminalCalibration();
-        const EvolutionDescription& evolution() const;
-        const std::vector<Real>& variances() const;
-    };
+    bool capletCoterminalCalibration(
+            const TimeDependantCorrelationStructure& corr,
+            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& swapVariances,
+            const std::vector<Volatility>& capletVols,
+            const CurveState& cs,
+            const std::vector<Spread>& displacements,
+            const std::vector<Real>& alpha,
+            std::vector<Matrix>& pseudoRoots);
 
 }
 

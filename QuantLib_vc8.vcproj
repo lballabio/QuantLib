@@ -7363,6 +7363,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\MarketModels\Models\capletcoterminalcalibration.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\MarketModels\Models\capletcoterminalcalibration.hpp"
 					>
 				</File>
