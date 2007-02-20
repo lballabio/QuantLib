@@ -35,7 +35,10 @@ namespace QuantLib {
                      const std::vector<Time>& evolutionTimes,
                      //const std::vector<Size>& numeraires,
                      const std::vector<std::pair<Size,Size> >& relevanceRates)
-    : rateTimes_(rateTimes), evolutionTimes_(evolutionTimes),
+    : rateTimes_(rateTimes),
+      evolutionTimes_(evolutionTimes.size()==0 ?
+                      evolutionTimes :
+                      std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)),
       steps_(evolutionTimes.size()),
       //numeraires_(numeraires),
       relevanceRates_(relevanceRates),

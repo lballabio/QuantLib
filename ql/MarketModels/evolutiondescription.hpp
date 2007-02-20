@@ -57,9 +57,9 @@ namespace QuantLib {
         typedef std::pair<Size,Size> range;
       public:
         EvolutionDescription();
-        EvolutionDescription(
+        explicit EvolutionDescription(
             const std::vector<Time>& rateTimes,
-            const std::vector<Time>& evolutionTimes,
+            const std::vector<Time>& evolutionTimes = std::vector<Time>(),
             const std::vector<std::pair<Size,Size> >& relevanceRates =
                                                         std::vector<range>());
         const std::vector<Time>& rateTimes() const;
