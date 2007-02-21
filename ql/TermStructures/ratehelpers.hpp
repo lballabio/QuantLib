@@ -122,7 +122,7 @@ namespace QuantLib {
         Date fixingDate_;
         Integer settlementDays_;
         boost::shared_ptr<IborIndex> index_;
-        Handle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
 
@@ -168,7 +168,7 @@ namespace QuantLib {
         Integer monthsToStart_;
         Integer settlementDays_;
         boost::shared_ptr<IborIndex> index_;
-        Handle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
     //! Rate helper for bootstrapping over swap rates
@@ -208,7 +208,7 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         boost::shared_ptr<IborIndex> index_;
         boost::shared_ptr<VanillaSwap> swap_;
-        Handle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
 }

@@ -253,7 +253,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
         new PlainVanillaPayoff(type, strike));
 
-    Handle<Quote> underlyingH;
+    RelinkableHandle<Quote> underlyingH;
 
     boost::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
         GeneralizedBlackScholesProcess(

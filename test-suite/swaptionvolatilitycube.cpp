@@ -56,7 +56,7 @@ Integer swapSettlementDays_;
 Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
 DayCounter fixedLegDayCounter_;
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 boost::shared_ptr<IborIndex> iborIndex_;
 boost::shared_ptr<SwapIndex> swapIndexBase_;
 Time shortTenor_;

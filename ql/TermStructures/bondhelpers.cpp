@@ -39,7 +39,7 @@ namespace QuantLib {
                                       BusinessDayConvention paymentConvention,
                                       Real redemption,
                                       const Date& stub, bool fromEnd)
-	: RateHelper(cleanPrice),
+    : RateHelper(cleanPrice),
       issueDate_(issueDate), datedDate_(datedDate),
       maturityDate_(maturityDate), settlementDays_(settlementDays),
       coupons_(coupons), frequency_(frequency), dayCounter_(dayCounter),
@@ -47,8 +47,8 @@ namespace QuantLib {
       paymentConvention_(paymentConvention), redemption_(redemption),
       stub_(stub), fromEnd_(fromEnd) {
 
-		registerWith(Settings::instance().evaluationDate());
-	}
+        registerWith(Settings::instance().evaluationDate());
+    }
 
     void FixedCouponBondHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
@@ -61,12 +61,12 @@ namespace QuantLib {
         settlement_ = calendar_.advance(today,settlementDays_,Days);
 
         bond_ = boost::shared_ptr<FixedCouponBond>(
-                   new FixedCouponBond(100.0, issueDate_, datedDate_, maturityDate_,
-                                       settlementDays_, coupons_,
-                                       frequency_, calendar_, dayCounter_,
-                                       accrualConvention_, paymentConvention_,
-                                       redemption_, termStructureHandle_,
-                                       stub_, fromEnd_));
+             new FixedCouponBond(100.0, issueDate_, datedDate_, maturityDate_,
+                                 settlementDays_, coupons_,
+                                 frequency_, calendar_, dayCounter_,
+                                 accrualConvention_, paymentConvention_,
+                                 redemption_, termStructureHandle_,
+                                 stub_, fromEnd_));
         latestDate_ = maturityDate_;
     }
 

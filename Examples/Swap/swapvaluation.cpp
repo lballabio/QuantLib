@@ -374,9 +374,9 @@ int main(int, char* [])
 
         // Term structures that will be used for pricing:
         // the one used for discounting cash flows
-        Handle<YieldTermStructure> discountingTermStructure;
+        RelinkableHandle<YieldTermStructure> discountingTermStructure;
         // the one used for forward rate forecasting
-        Handle<YieldTermStructure> forecastingTermStructure;
+        RelinkableHandle<YieldTermStructure> forecastingTermStructure;
 
 
         /*********************

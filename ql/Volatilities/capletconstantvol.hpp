@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,11 +67,9 @@ namespace QuantLib {
                                               const Date& referenceDate,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : CapletVolatilityStructure(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+    : CapletVolatilityStructure(referenceDate),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Date& referenceDate,
@@ -85,19 +83,15 @@ namespace QuantLib {
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : CapletVolatilityStructure(0, NullCalendar()), dayCounter_(dayCounter)
-    {
-        volatility_.linkTo(boost::shared_ptr<Quote>(
-            new SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+    : CapletVolatilityStructure(0, NullCalendar()),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)
     : CapletVolatilityStructure(0, NullCalendar()), volatility_(volatility),
-      dayCounter_(dayCounter)
-    {
+      dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 

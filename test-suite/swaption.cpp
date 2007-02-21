@@ -57,7 +57,7 @@ Period floatingTenor_;
 boost::shared_ptr<IborIndex> index_;
 
 Integer settlementDays_;
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
 
@@ -538,27 +538,24 @@ void SwaptionTest::testCashSettledSwaptions() {
             const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_a365 = swap_a365->fixedLeg();
 
             // FlatForward curves
-            boost::shared_ptr<YieldTermStructure> flatRate_u360(
-                new FlatForward(settlement_,swap_u360->fairRate(),
-                                Thirty360(),Compounded,fixedFrequency_));
-            boost::shared_ptr<YieldTermStructure> flatRate_a360(
-                new FlatForward(settlement_,swap_a360->fairRate(),
-                                Thirty360(),Compounded,fixedFrequency_));
-            boost::shared_ptr<YieldTermStructure> flatRate_u365(
-                new FlatForward(settlement_,swap_u365->fairRate(),
-                                Actual365Fixed(),Compounded,fixedFrequency_));
-            boost::shared_ptr<YieldTermStructure> flatRate_a365(
-                new FlatForward(settlement_,swap_a365->fairRate(),
-                                Actual365Fixed(),Compounded,fixedFrequency_));
-
-            Handle<YieldTermStructure> termStructure_u360;
-            Handle<YieldTermStructure> termStructure_a360;
-            Handle<YieldTermStructure> termStructure_u365;
-            Handle<YieldTermStructure> termStructure_a365;
-            termStructure_u360.linkTo(flatRate_u360);
-            termStructure_a360.linkTo(flatRate_a360);
-            termStructure_u365.linkTo(flatRate_u365);
-            termStructure_a365.linkTo(flatRate_a365);
+            Handle<YieldTermStructure> termStructure_u360(
+                boost::shared_ptr<YieldTermStructure>(
+                    new FlatForward(settlement_,swap_u360->fairRate(),
+                                    Thirty360(),Compounded,fixedFrequency_)));
+            Handle<YieldTermStructure> termStructure_a360(
+                boost::shared_ptr<YieldTermStructure>(
+                    new FlatForward(settlement_,swap_a360->fairRate(),
+                                    Thirty360(),Compounded,fixedFrequency_)));
+            Handle<YieldTermStructure> termStructure_u365(
+                boost::shared_ptr<YieldTermStructure>(
+                    new FlatForward(settlement_,swap_u365->fairRate(),
+                                    Actual365Fixed(),Compounded,
+                                    fixedFrequency_)));
+            Handle<YieldTermStructure> termStructure_a365(
+                boost::shared_ptr<YieldTermStructure>(
+                    new FlatForward(settlement_,swap_a365->fairRate(),
+                                    Actual365Fixed(),Compounded,
+                                    fixedFrequency_)));
 
             // Annuity calculated by swap method fixedLegBPS().
             // Fixed leg conventions: Unadjusted, 30/360

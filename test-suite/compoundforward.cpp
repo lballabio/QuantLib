@@ -130,8 +130,8 @@ void CompoundForwardTest::testSuppliedRates() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Handle<YieldTermStructure> liborHandle;
-    liborHandle.linkTo(termStructure);
+    Handle<YieldTermStructure> liborHandle =
+        Handle<YieldTermStructure>(termStructure);
 
     Size i;
     // check swaps against original
@@ -170,8 +170,8 @@ void CompoundForwardTest::testConvertedRates() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Handle<YieldTermStructure> liborHandle;
-    liborHandle.linkTo(termStructure);
+    Handle<YieldTermStructure> liborHandle =
+        Handle<YieldTermStructure>(termStructure);
 
     Size i;
     frequency = Quarterly;

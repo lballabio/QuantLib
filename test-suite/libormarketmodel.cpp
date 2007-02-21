@@ -54,7 +54,7 @@ boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
                                    std::vector<Rate> rates) {
     DayCounter dayCounter = Actual360();
 
-    Handle<YieldTermStructure> termStructure;
+    RelinkableHandle<YieldTermStructure> termStructure;
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 

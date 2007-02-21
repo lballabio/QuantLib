@@ -93,7 +93,7 @@ int main(int, char* []) {
 
         Settings::instance().evaluationDate() = repoSettlementDate;
 
-        Handle<YieldTermStructure> bondCurve;
+        RelinkableHandle<YieldTermStructure> bondCurve;
         bondCurve.linkTo(boost::shared_ptr<YieldTermStructure>(
                                        new FlatForward(repoSettlementDate,
                                                        .01, // dummy rate
@@ -128,7 +128,7 @@ int main(int, char* []) {
         Position::Type fwdType = Position::Long;
         double dummyStrike = 91.5745;
 
-        Handle<YieldTermStructure> repoCurve;
+        RelinkableHandle<YieldTermStructure> repoCurve;
         repoCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
                                        new FlatForward(repoSettlementDate,
                                                        repoRate,

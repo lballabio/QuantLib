@@ -59,9 +59,8 @@ void ShortRateModelTest::testCachedHullWhite() {
     Date settlement(19, February, 2002);
     Settings::instance().evaluationDate() = today;
 
-    Handle<YieldTermStructure> termStructure;
-    termStructure.linkTo(flatRate(settlement,0.04875825,
-                                  Actual365Fixed()));
+    Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
+                                                      Actual365Fixed()));
 
     boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
 
@@ -156,12 +155,13 @@ void ShortRateModelTest::testSwaps() {
         0.433022
     };
 
-    Handle<YieldTermStructure> termStructure;
-    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
-       new DiscountCurve(
-           std::vector<Date>(dates,dates+LENGTH(dates)),
-           std::vector<DiscountFactor>(discounts,discounts+LENGTH(discounts)),
-           Actual365Fixed())));
+    Handle<YieldTermStructure> termStructure(
+       boost::shared_ptr<YieldTermStructure>(
+           new DiscountCurve(
+               std::vector<Date>(dates,dates+LENGTH(dates)),
+               std::vector<DiscountFactor>(discounts,
+                                           discounts+LENGTH(discounts)),
+               Actual365Fixed())));
 
     boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
 

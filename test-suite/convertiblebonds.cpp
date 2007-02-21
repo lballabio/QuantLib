@@ -45,12 +45,12 @@ DayCounter dayCounter_;
 Frequency frequency_;
 Integer settlementDays_;
 
-Handle<Quote> underlying_;
-Handle<YieldTermStructure> dividendYield_, riskFreeRate_;
-Handle<BlackVolTermStructure> volatility_;
+RelinkableHandle<Quote> underlying_;
+RelinkableHandle<YieldTermStructure> dividendYield_, riskFreeRate_;
+RelinkableHandle<BlackVolTermStructure> volatility_;
 boost::shared_ptr<StochasticProcess> process_;
 
-Handle<Quote> creditSpread_;
+RelinkableHandle<Quote> creditSpread_;
 
 CallabilitySchedule no_callability;
 DividendSchedule no_dividends;

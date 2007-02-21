@@ -43,12 +43,11 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure>& dividendTS,
                                  Real underlying)
     : LocalVolTermStructure(blackTS->dayCounter()),
-      blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS) {
+      blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
+      underlying_(boost::shared_ptr<Quote>(new SimpleQuote(underlying))) {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
-        underlying_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
     }
 
     void LocalVolSurface::accept(AcyclicVisitor& v) {

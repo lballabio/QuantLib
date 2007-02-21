@@ -27,10 +27,10 @@
 
 namespace QuantLib {
 
-    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility) {
-        volatility_.linkTo(boost::shared_ptr<SwaptionVolatilityStructure>(
-               new SwaptionConstantVolatility(0, NullCalendar(),
-                                              volatility, Actual365Fixed())));
+    BlackSwaptionEngine::BlackSwaptionEngine(const Handle<Quote>& volatility)
+    : volatility_(boost::shared_ptr<SwaptionVolatilityStructure>(
+              new SwaptionConstantVolatility(0, NullCalendar(),
+                                             volatility, Actual365Fixed()))) {
         registerWith(volatility_);
     }
 

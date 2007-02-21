@@ -233,7 +233,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                                        Actual360(), 1.0e-12,
                                                        interpolator));
 
-    Handle<YieldTermStructure> curveHandle;
+    RelinkableHandle<YieldTermStructure> curveHandle;
     curveHandle.linkTo(termStructure);
 
     // check deposits
@@ -560,8 +560,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
            new PiecewiseYieldCurve<Discount,LogLinear>(settlement,swapHelpers,
                                                        Actual360(), 1.0e-12));
 
-    Handle<YieldTermStructure> curveHandle;
-    curveHandle.linkTo(termStructure);
+    Handle<YieldTermStructure> curveHandle =
+        Handle<YieldTermStructure>(termStructure);
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(curveHandle));
     for (Size i=0; i<swaps; i++) {

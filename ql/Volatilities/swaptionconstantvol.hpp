@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -82,11 +82,9 @@ namespace QuantLib {
                                               const Date& referenceDate,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+    : SwaptionVolatilityStructure(referenceDate),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline SwaptionConstantVolatility::SwaptionConstantVolatility(
                                               const Date& referenceDate,
@@ -103,11 +101,8 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(settlementDays, calendar),
-      dayCounter_(dayCounter) {
-        volatility_.linkTo(boost::shared_ptr<Quote>(new
-            SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline SwaptionConstantVolatility::SwaptionConstantVolatility(
                                               Integer settlementDays,
@@ -151,7 +146,7 @@ namespace QuantLib {
     SwaptionConstantVolatility::smileSection(Time optionTime,
                                              Time) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new 
+        return boost::shared_ptr<SmileSection>(new
             FlatSmileSection(optionTime, atmVol));
     }
 

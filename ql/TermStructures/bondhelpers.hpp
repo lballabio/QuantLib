@@ -67,7 +67,7 @@ namespace QuantLib {
         bool fromEnd_;
         Date settlement_, latestDate_;
         boost::shared_ptr<FixedCouponBond> bond_;
-        Handle<YieldTermStructure> termStructureHandle_;
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
 }

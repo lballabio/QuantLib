@@ -65,7 +65,7 @@ int main(int, char* []) {
          ***  MARKET DATA  ***
          *********************/
 
-        Handle<YieldTermStructure> euriborTermStructure;
+        RelinkableHandle<YieldTermStructure> euriborTermStructure;
         boost::shared_ptr<IborIndex> euribor3m(
                                        new Euribor3M(euriborTermStructure));
 
@@ -113,11 +113,11 @@ int main(int, char* []) {
         boost::shared_ptr<SimpleQuote> fra9x12Rate(
                                       new SimpleQuote(threeMonthFraQuote[9]));
 
-        Handle<Quote> h1x4;  h1x4.linkTo(fra1x4Rate);
-        Handle<Quote> h2x5;  h2x5.linkTo(fra2x5Rate);
-        Handle<Quote> h3x6;  h3x6.linkTo(fra3x6Rate);
-        Handle<Quote> h6x9;  h6x9.linkTo(fra6x9Rate);
-        Handle<Quote> h9x12; h9x12.linkTo(fra9x12Rate);
+        RelinkableHandle<Quote> h1x4;  h1x4.linkTo(fra1x4Rate);
+        RelinkableHandle<Quote> h2x5;  h2x5.linkTo(fra2x5Rate);
+        RelinkableHandle<Quote> h3x6;  h3x6.linkTo(fra3x6Rate);
+        RelinkableHandle<Quote> h6x9;  h6x9.linkTo(fra6x9Rate);
+        RelinkableHandle<Quote> h9x12; h9x12.linkTo(fra9x12Rate);
 
         /*********************
          ***  RATE HELPERS ***
@@ -191,7 +191,7 @@ int main(int, char* []) {
 
         // Term structures used for pricing/discounting
 
-        Handle<YieldTermStructure> discountingTermStructure;
+        RelinkableHandle<YieldTermStructure> discountingTermStructure;
         discountingTermStructure.linkTo(fraTermStructure);
 
 

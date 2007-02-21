@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,13 +45,13 @@ DayCounter fixedDayCount_;
 boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_;
 
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
 
 boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
     Date start = calendar_.advance(settlement_,startYears_,Years);
-    Date maturity = calendar_.advance(start,length_,Years);     
+    Date maturity = calendar_.advance(start,length_,Years);
     Schedule fixedSchedule(start, maturity, Period(fixedFrequency_), calendar_,
                            fixedConvention_, fixedConvention_, false, false);
     Schedule floatSchedule(start, maturity, Period(floatingFrequency_), calendar_,

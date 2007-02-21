@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -90,8 +90,8 @@ namespace QuantLib {
                                     Compounding compounding,
                                     Frequency frequency)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
+      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
       compounding_(compounding), frequency_(frequency) {
-        forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
         updateRate();
     }
 
@@ -114,8 +114,8 @@ namespace QuantLib {
                                     Compounding compounding,
                                     Frequency frequency)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
+      forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
       compounding_(compounding), frequency_(frequency) {
-        forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
         updateRate();
     }
 

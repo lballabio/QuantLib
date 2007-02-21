@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,11 +76,9 @@ namespace QuantLib {
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : BlackVolatilityTermStructure(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(boost::shared_ptr<Quote>(new
-            SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+    : BlackVolatilityTermStructure(referenceDate),
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               const Handle<Quote>& volatility,
@@ -95,11 +93,8 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
     : BlackVolatilityTermStructure(settlementDays,calendar),
-      dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
+      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(dayCounter) {}
 
     inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
                                               const Calendar& calendar,

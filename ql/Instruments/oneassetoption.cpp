@@ -217,18 +217,19 @@ namespace QuantLib {
                                             originalProcess->dividendYield());
         Handle<YieldTermStructure> riskFreeRate(
                                             originalProcess->riskFreeRate());
-        Handle<BlackVolTermStructure> volatility;
-        boost::shared_ptr<StochasticProcess> process(
-               new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
-                                                  riskFreeRate, volatility));
 
         const boost::shared_ptr<BlackVolTermStructure>& blackVol =
             originalProcess->blackVolatility();
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
+        Handle<BlackVolTermStructure> volatility(
+               boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(blackVol->referenceDate(),
                                          Handle<Quote>(vol_),
                                          blackVol->dayCounter())));
+
+        boost::shared_ptr<StochasticProcess> process(
+               new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
+                                                  riskFreeRate, volatility));
         arguments_->stochasticProcess = process;
         results_ =
             dynamic_cast<const Instrument::results*>(engine_->getResults());

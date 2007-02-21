@@ -148,8 +148,7 @@ void PathGeneratorTest::testPathGenerator() {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0;
-    x0.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));

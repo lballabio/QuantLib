@@ -47,7 +47,7 @@ boost::shared_ptr<IborIndex> makeIndex() {
     rates.push_back(0.01);
     rates.push_back(0.08);
 
-    Handle<YieldTermStructure> termStructure(
+    RelinkableHandle<YieldTermStructure> termStructure(
                       boost::shared_ptr<YieldTermStructure>(
                                       new ZeroCurve(dates,rates,dayCounter)));
 
@@ -118,7 +118,7 @@ void LiborMarketModelProcessTest::testInitialisation() {
     QL_TEST_BEGIN
 
     DayCounter dayCounter = Actual360();
-    Handle<YieldTermStructure> termStructure(
+    RelinkableHandle<YieldTermStructure> termStructure(
         flatRate(Date::todaysDate(), 0.04, dayCounter));
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));

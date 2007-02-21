@@ -47,7 +47,7 @@ Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_;
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
 

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,22 +29,38 @@
 
 namespace QuantLib {
 
-    //! Relinkable access to a shared pointer
-    /*! \pre Class T must inherit from Observable */
+    //! Shared handle to an observable
+    /*! All copies of an instance of this class refer to the same
+        observable by means of a relinkable smart pointer. When such
+        pointer is relinked to another observable, the change will be
+        propagated to all the copies.
+
+        \pre Class T must inherit from Observable
+    */
     template <class T>
-    class Link : public Observable, public Observer {
+    class Handle {
+      protected:
+        class Link : public Observable, public Observer {
+          public:
+            explicit Link(const boost::shared_ptr<T>& h,
+                          bool registerAsObserver);
+            void linkTo(const boost::shared_ptr<T>&,
+                        bool registerAsObserver);
+            bool empty() const { return !h_; }
+            const boost::shared_ptr<T>& currentLink() const { return h_; }
+            void update() { notifyObservers(); }
+          private:
+            boost::shared_ptr<T> h_;
+            bool isObserver_;
+        };
+        boost::shared_ptr<Link> link_;
       public:
-        /*! \warning see the documentation of the linkTo() method for
-                     issues relatives to <tt>registerAsObserver</tt>.
-        */
-        explicit Link(const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
-                      bool registerAsObserver = true);
         /*! \warning <tt>registerAsObserver</tt> is left as a backdoor
                      in case the programmer cannot guarantee that the
                      object pointed to will remain alive for the whole
                      lifetime of the handle---namely, it should be set
                      to <tt>false</tt> when the passed shared pointer
-                     was created with <tt>owns = false</tt> (the
+                     will not automatically delete the pointee (the
                      latter should only happen in a controlled
                      environment, so that the programmer is aware of
                      it). Failure to do so can very likely result in a
@@ -54,50 +70,9 @@ namespace QuantLib {
                      the handle gets destroyed before the pointed
                      object does.
         */
-        void linkTo(const boost::shared_ptr<T>&,
-                    bool registerAsObserver = true);
-        //! Checks if the contained shared pointer points to anything
-        bool empty() const { return !h_; }
-        //! Returns the contained shared pointer
-        const boost::shared_ptr<T>& currentLink() const { return h_; }
-        //! Swaps two links
-        void swap(Link<T>& other) {
-            h_.swap(other.h_);
-            std::swap(isObserver_, other.isObserver_);
-        }
-        //! Observer interface
-        void update() { notifyObservers(); }
-      private:
-        boost::shared_ptr<T> h_;
-        bool isObserver_;
-    };
-
-    /*! \relates Link */
-    template <class T> void swap(Link<T>&, Link<T>&);
-
-
-    //! Globally accessible relinkable pointer
-    /*! An instance of this class can be relinked to another shared
-        pointer: such change will be propagated to all the copies of
-        the instance.
-
-        \pre Class T must inherit from Observable
-    */
-    template <class T>
-    class Handle {
-      private:
-        boost::shared_ptr<Link<T> > link_;
-      public:
-        /*! \warning see the documentation of the Link class for
-                     issues relatives to <tt>registerAsObserver</tt>.
-        */
-        explicit Handle(const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
-                        bool registerAsObserver = true);
-        /*! \warning see the documentation of the Link class for
-                     issues relatives to <tt>registerAsObserver</tt>.
-        */
-        void linkTo(const boost::shared_ptr<T>&,
-                    bool registerAsObserver = true);
+        explicit Handle(
+                       const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
+                       bool registerAsObserver = true);
         //! dereferencing
         const boost::shared_ptr<T>& currentLink() const;
         const boost::shared_ptr<T>& operator->() const;
@@ -105,8 +80,6 @@ namespace QuantLib {
         bool empty() const;
         //! allows registration as observable
         operator boost::shared_ptr<Observable>() const;
-        //! swaps two handles
-        void swap(Handle<T>& other) { link_.swap(other.link_); }
         //! equality test
         template <class U>
         bool operator==(const Handle<U>& other) {
@@ -124,53 +97,57 @@ namespace QuantLib {
         }
     };
 
-    /*! \relates Handle */
-    template <class T> void swap(Handle<T>&, Handle<T>&);
+    //! Relinkable handle to an observable
+    /*! An instance of this class can be relinked so that it points to
+        another observable. The change will be propagated to all
+        handles that were created as copies of such instance.
+
+        \pre Class T must inherit from Observable
+    */
+    template <class T>
+    class RelinkableHandle : public Handle<T> {
+      public:
+        /*! \warning see the Handle documentation for issues
+                     relatives to <tt>registerAsObserver</tt>.
+        */
+        explicit RelinkableHandle(
+                       const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),
+                       bool registerAsObserver = true);
+        /*! \warning see the Handle documentation for issues
+                     relatives to <tt>registerAsObserver</tt>.
+        */
+        void linkTo(const boost::shared_ptr<T>&,
+                    bool registerAsObserver = true);
+    };
 
 
     // inline definitions
 
     template <class T>
-    inline Link<T>::Link(const boost::shared_ptr<T>& h,
-                         bool registerAsObserver)
+    inline Handle<T>::Link::Link(const boost::shared_ptr<T>& h,
+                                 bool registerAsObserver)
     : isObserver_(false) {
         linkTo(h,registerAsObserver);
     }
 
     template <class T>
-    inline void Link<T>::linkTo(const boost::shared_ptr<T>& h,
-                                bool registerAsObserver) {
+    inline void Handle<T>::Link::linkTo(const boost::shared_ptr<T>& h,
+                                        bool registerAsObserver) {
         if ((h != h_) || (isObserver_ != registerAsObserver)) {
-            if (bool(h_) && isObserver_) {
-                boost::shared_ptr<Observable> obs = h_;
-                unregisterWith(obs);
-            }
+            if (h_ && isObserver_)
+                unregisterWith(h_);
             h_ = h;
             isObserver_ = registerAsObserver;
-            if (bool(h_) && isObserver_) {
-                boost::shared_ptr<Observable> obs = h_;
-                registerWith(obs);
-            }
+            if (h_ && isObserver_)
+                registerWith(h_);
             notifyObservers();
         }
     }
 
     template <class T>
-    inline void swap(Link<T>& l1, Link<T>& l2) {
-        l1.swap(l2);
-    }
-
-
-    template <class T>
     inline Handle<T>::Handle(const boost::shared_ptr<T>& h,
                              bool registerAsObserver)
-    : link_(new Link<T>(h,registerAsObserver)) {}
-
-    template <class T>
-    inline void Handle<T>::linkTo(const boost::shared_ptr<T>& h,
-                                  bool registerAsObserver) {
-        link_->linkTo(h,registerAsObserver);
-    }
+    : link_(new Link(h,registerAsObserver)) {}
 
     template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::currentLink() const {
@@ -195,8 +172,14 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline void swap(Handle<T>& h1, Handle<T>& h2) {
-        h1.swap(h2);
+    inline RelinkableHandle<T>::RelinkableHandle(const boost::shared_ptr<T>& h,
+                                                 bool registerAsObserver)
+    : Handle<T>(h,registerAsObserver) {}
+
+    template <class T>
+    inline void RelinkableHandle<T>::linkTo(const boost::shared_ptr<T>& h,
+                                            bool registerAsObserver) {
+        this->link_->linkTo(h,registerAsObserver);
     }
 
 }

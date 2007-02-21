@@ -191,7 +191,7 @@ void TermStructureTest::testImpliedObs() {
     Date today = Settings::instance().evaluationDate();
     Date newToday = today + 3*Years;
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
-    Handle<YieldTermStructure> h;
+    RelinkableHandle<YieldTermStructure> h;
     boost::shared_ptr<YieldTermStructure> implied(
                                   new ImpliedTermStructure(h, newSettlement));
     Flag flag;
@@ -244,7 +244,7 @@ void TermStructureTest::testFSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<YieldTermStructure> h; //(dummyTermStructure_);
+    RelinkableHandle<YieldTermStructure> h; //(dummyTermStructure_);
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
@@ -298,7 +298,7 @@ void TermStructureTest::testZSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<YieldTermStructure> h(dummyTermStructure_);
+    RelinkableHandle<YieldTermStructure> h(dummyTermStructure_);
 
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));

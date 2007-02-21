@@ -79,7 +79,7 @@ Integer settlementDays_;
 DayCounter fixedCmsDayCount_;
 
 // Term Structure
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 
 // indices and index conventions
 Frequency fixedLegFrequency_;
@@ -89,7 +89,7 @@ boost::shared_ptr<IborIndex> iborIndex_;
 boost::shared_ptr<SwapIndex> swapIndexBase_;
 Time shortTenor_;
 boost::shared_ptr<IborIndex> iborIndexShortTenor_;
-boost::shared_ptr<SwapIndex> index_; 
+boost::shared_ptr<SwapIndex> index_;
 
 //test parameters
 Real rateTolerance_;
@@ -104,7 +104,7 @@ void teardown() {
     Settings::instance().evaluationDate() = Date();
 }
 void setup() {
-    
+
     //General Settings
     calendar_ = TARGET();
     today_ = calendar_.adjust(Date::todaysDate());
@@ -251,13 +251,13 @@ void setup() {
     std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
     for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
-        parametersGuess[i][0] = 
+        parametersGuess[i][0] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
-        parametersGuess[i][1] = 
+        parametersGuess[i][1] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
-        parametersGuess[i][2] = 
+        parametersGuess[i][2] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
-        parametersGuess[i][3] = 
+        parametersGuess[i][3] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     }
     std::vector<bool> isParameterFixed(4, false);
@@ -337,7 +337,7 @@ void setup() {
     modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
     modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
     modelOfYieldCurves_.push_back(GFunctionFactory::NonParallelShifts);
-    
+
     // Cms Schedules conventions
     fixedCmsConvention_ = Unadjusted;
     floatingCmsConvention_ = ModifiedFollowing;
@@ -384,25 +384,25 @@ void CmsTest::testFairRate()  {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-  
-    Handle<Quote> nullMeanReversionQuote = 
+
+    Handle<Quote> nullMeanReversionQuote =
                     Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
     boost::shared_ptr<CmsCouponPricer> numericalPricer(new
         ConundrumPricerByNumericalIntegration(atmVol_,
-											  modelOfYieldCurves_[h],
-                                              nullMeanReversionQuote, 
+                                              modelOfYieldCurves_[h],
+                                              nullMeanReversionQuote,
                                               0., 1.));
     boost::shared_ptr<CmsCouponPricer> analyticPricer(new
         ConundrumPricerByBlack(atmVol_,
-							   modelOfYieldCurves_[h],
+                               modelOfYieldCurves_[h],
                                nullMeanReversionQuote));
 
     //Coupons
     CappedFlooredCmsCoupon coupon1(
         paymentDate_,1, startDate_, endDate_, settlementDays_,
-        index_, gearing_, spread_, 
+        index_, gearing_, spread_,
         infiniteCap_, infiniteFloor_,
         startDate_, endDate_,
         iborIndex_->dayCounter());
@@ -410,12 +410,12 @@ void CmsTest::testFairRate()  {
 
     CappedFlooredCmsCoupon coupon2(
         paymentDate_,1, startDate_, endDate_, settlementDays_,
-         index_, gearing_, spread_, 
-         infiniteCap_, infiniteFloor_, 
+         index_, gearing_, spread_,
+         infiniteCap_, infiniteFloor_,
          startDate_, endDate_,
          iborIndex_->dayCounter());
     coupon2.setPricer(analyticPricer);
- 
+
     //Computation
     const double rate1 = coupon1.rate();
     const double rate2 = coupon2.rate();
@@ -440,42 +440,42 @@ void CmsTest::testParity() {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-    
-    Handle<Quote> nullMeanReversionQuote = 
+
+    Handle<Quote> nullMeanReversionQuote =
                     Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
 
     int priceIndex = 1;
     for (Size volStructureIndex = 0;
          volStructureIndex < swaptionVolatilityStructures_.size();
          volStructureIndex++) {
-		
-		for(Size modelOfYieldCurveIndex=0;
-			modelOfYieldCurveIndex<modelOfYieldCurves_.size();
-			modelOfYieldCurveIndex++) {
 
-			std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
-			{
-				boost::shared_ptr<CmsCouponPricer> analyticPricer(
-					new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
-											   modelOfYieldCurves_[modelOfYieldCurveIndex],
+        for(Size modelOfYieldCurveIndex=0;
+            modelOfYieldCurveIndex<modelOfYieldCurves_.size();
+            modelOfYieldCurveIndex++) {
+
+            std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
+            {
+                boost::shared_ptr<CmsCouponPricer> analyticPricer(
+                    new ConundrumPricerByBlack(swaptionVolatilityStructures_[volStructureIndex],
+                                               modelOfYieldCurves_[modelOfYieldCurveIndex],
                                                nullMeanReversionQuote));
-				pricers.push_back(analyticPricer);
+                pricers.push_back(analyticPricer);
 
-				boost::shared_ptr<CmsCouponPricer> numericalPricer(
-					new ConundrumPricerByNumericalIntegration(
-												swaptionVolatilityStructures_[volStructureIndex],
-												modelOfYieldCurves_[modelOfYieldCurveIndex],
+                boost::shared_ptr<CmsCouponPricer> numericalPricer(
+                    new ConundrumPricerByNumericalIntegration(
+                                                swaptionVolatilityStructures_[volStructureIndex],
+                                                modelOfYieldCurves_[modelOfYieldCurveIndex],
                                                 nullMeanReversionQuote,
-												0, 1));
-				pricers.push_back(numericalPricer);
-			}
+                                                0, 1));
+                pricers.push_back(numericalPricer);
+            }
 
             for (Size pricerIndex=0; pricerIndex < pricers.size();
                  pricerIndex++) {
 
-                CappedFlooredCmsCoupon swaplet(paymentDate_, 1,  
+                CappedFlooredCmsCoupon swaplet(paymentDate_, 1,
                                   startDate_, endDate_, settlementDays_,
-                                  index_, gearing_, spread_, 
+                                  index_, gearing_, spread_,
                                   infiniteCap_, infiniteFloor_,
                                   startDate_, endDate_,
                                   iborIndex_->dayCounter());
@@ -485,17 +485,17 @@ void CmsTest::testParity() {
                 for (Size strikeIndex = 0; strikeIndex < 10; strikeIndex++) {
 
                     strike += .005;
-                    CappedFlooredCmsCoupon caplet(paymentDate_, 1, 
+                    CappedFlooredCmsCoupon caplet(paymentDate_, 1,
                                      startDate_, endDate_, settlementDays_,
-                                     index_, gearing_, spread_, 
-                                     strike, infiniteFloor_, 
+                                     index_, gearing_, spread_,
+                                     strike, infiniteFloor_,
                                      startDate_, endDate_,
                                      iborIndex_->dayCounter());
                     caplet.setPricer(pricers[pricerIndex]);
 
-                    CappedFlooredCmsCoupon floorlet(paymentDate_, 1, 
+                    CappedFlooredCmsCoupon floorlet(paymentDate_, 1,
                                        startDate_, endDate_, settlementDays_,
-                                       index_, gearing_, spread_, 
+                                       index_, gearing_, spread_,
                                        infiniteCap_, strike,
                                        startDate_, endDate_,
                                        iborIndex_->dayCounter());
@@ -549,7 +549,7 @@ void CmsTest::testCmsSwap() {
     swapLengths.push_back(10);
 
     int priceIndex = 1;
-    Handle<Quote> nullMeanReversionQuote = 
+    Handle<Quote> nullMeanReversionQuote =
         Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
 
     for (Size swapLengthIndex = 0; swapLengthIndex<swapLengths.size();
@@ -576,15 +576,15 @@ void CmsTest::testCmsSwap() {
                 std::vector<boost::shared_ptr<CmsCouponPricer> > pricers;
                 boost::shared_ptr<CmsCouponPricer> analyticPricer(
                     new ConundrumPricerByBlack(
-									swaptionVolatilityStructures_[volStructureIndex],
-									modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                    swaptionVolatilityStructures_[volStructureIndex],
+                                    modelOfYieldCurves_[modelOfYieldCurveIndex],
                                     nullMeanReversionQuote));
                 pricers.push_back(analyticPricer);
 
                 boost::shared_ptr<CmsCouponPricer> numericalPricer(
                     new ConundrumPricerByNumericalIntegration(
                                 swaptionVolatilityStructures_[volStructureIndex],
-								modelOfYieldCurves_[modelOfYieldCurveIndex],
+                                modelOfYieldCurves_[modelOfYieldCurveIndex],
                                 nullMeanReversionQuote,
                                 0, 1));
                 pricers.push_back(numericalPricer);
@@ -611,14 +611,14 @@ void CmsTest::testCmsSwap() {
 
                     std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
                         CmsLeg(fixedSchedule,
-                                        fixedNominals, 
+                                        fixedNominals,
                                         index_,
                                         pricers[pricerIndex],
-                                        fixedCmsDayCount_, 
+                                        fixedCmsDayCount_,
                                         settlementDays_,
                                         fixedCmsConvention_,
-                                        fractions, 
-                                        baseRate, 
+                                        fractions,
+                                        baseRate,
                                         caps,
                                         floors);
 

@@ -80,7 +80,7 @@ namespace QuantLib {
         Handle<Quote> x0_;
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
-        mutable Handle<LocalVolTermStructure> localVolatility_;
+        mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_;
     };
 

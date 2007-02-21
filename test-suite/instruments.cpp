@@ -30,7 +30,7 @@ void InstrumentTest::testObservable() {
     BOOST_MESSAGE("Testing observability of instruments...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
-    Handle<Quote> h(me1);
+    RelinkableHandle<Quote> h(me1);
     boost::shared_ptr<Instrument> s(new Stock(h));
 
     Flag f;

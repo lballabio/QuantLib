@@ -46,7 +46,7 @@ Frequency frequency_;
 boost::shared_ptr<IborIndex> index_;
 Calendar calendar_;
 Integer settlementDays_, fixingDays_;
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
 

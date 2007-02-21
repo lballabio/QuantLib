@@ -47,7 +47,7 @@ BusinessDayConvention convention_;
 Frequency frequency_;
 boost::shared_ptr<IborIndex> index_;
 Integer settlementDays_, fixingDays_;
-Handle<YieldTermStructure> termStructure_;
+RelinkableHandle<YieldTermStructure> termStructure_;
 std::vector<Rate> caps_;
 std::vector<Rate> floors_;
 Integer length_;
