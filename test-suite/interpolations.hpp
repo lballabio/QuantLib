@@ -41,6 +41,7 @@ class InterpolationTest {
     // other interpolations
     static void testBackwardFlat();
     static void testForwardFlat();
+    static void testSabrInterpolation();
     static boost::unit_test_framework::test_suite* suite();
 };
 
