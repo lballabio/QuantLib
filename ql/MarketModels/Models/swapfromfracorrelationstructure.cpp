@@ -34,11 +34,11 @@ namespace QuantLib {
             const Real beta,
             const CurveState& curveState,
             const EvolutionDescription& evolution,
-            const Size numberOfFactors) : 
-        evolution_(evolution), numberOfFactors_(numberOfFactors),
-            pseudoRoots_(evolution.numberOfRates()),
-            fraCorrelationMatrix_(evolution.numberOfRates()){    
-    
+            const Size numberOfFactors) :
+    fraCorrelationMatrix_(evolution.numberOfRates()),
+    pseudoRoots_(evolution.numberOfRates()),
+    numberOfFactors_(numberOfFactors), evolution_(evolution) {
+
         //1. creating Fra Correlation Matrices
         Size nbRates = evolution.numberOfRates();
         Matrix fraCorrelation(nbRates, nbRates);
@@ -47,7 +47,7 @@ namespace QuantLib {
                 for (Size j = 0; j< nbRates; ++j)
                     fraCorrelation[i][j] = longTermCorr + (1.0-longTermCorr) *
                     std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
-        //2.Reduced-factor pseudo-root matrices for each time step   
+        //2.Reduced-factor pseudo-root matrices for each time step
         const Spread displacement = 0;
         Real componentRetainedPercentage = 1.0;
         Matrix jacobian =
@@ -55,13 +55,13 @@ namespace QuantLib {
                     curveState, displacement);
         for (Size k=0; k<fraCorrelationMatrix_.size();++k){
             //reducing rank
-            Disposable<Matrix> fraPseudoRoot = rankReducedSqrt(fraCorrelation, 
-                                                numberOfFactors_, 
+            Disposable<Matrix> fraPseudoRoot = rankReducedSqrt(fraCorrelation,
+                                                numberOfFactors_,
                                                 componentRetainedPercentage,
                                                 SalvagingAlgorithm::None);
             // converting to swap correlation
             Disposable<Matrix> swapPseudoRoot = jacobian*fraPseudoRoot;
-            // rescaling swapPseudoRoot 
+            // rescaling swapPseudoRoot
             for (Size i = 0; i< swapPseudoRoot.rows(); ++i){
                 Real sum = 0;
                 for (Size j = 0; j< swapPseudoRoot.columns(); ++j){
@@ -78,15 +78,15 @@ namespace QuantLib {
 
     //0.add yield curve and displacements in the costructor
     //1.FRA correlation matrix (todo: later)
-    //2.Reduced-factor pseudo-root matrices for each time step 
+    //2.Reduced-factor pseudo-root matrices for each time step
     //3.Compute Z matrix
-    //4.Normalize 2.*3. 
+    //4.Normalize 2.*3.
 
-    const EvolutionDescription& SwapFromFRACorrelationStructure::evolution() 
+    const EvolutionDescription& SwapFromFRACorrelationStructure::evolution()
         const {return evolution_;}
-    Size SwapFromFRACorrelationStructure::numberOfFactors() 
+    Size SwapFromFRACorrelationStructure::numberOfFactors()
         const {return numberOfFactors_;}
-    const Matrix& SwapFromFRACorrelationStructure::pseudoRoot(Size i) 
+    const Matrix& SwapFromFRACorrelationStructure::pseudoRoot(Size i)
         const {return pseudoRoots_[i];}
 
 }
@@ -96,8 +96,8 @@ namespace QuantLib {
             swapCorrelation = jacobian*fraCorrelationMatrix_[k]*transpose(jacobian);
             Real componentRetainedPercentage = 1.0;
             Matrix& pseudoRoot = pseudoRoots_[k];
-            pseudoRoot = rankReducedSqrt(  swapCorrelation, 
-                                                numberOfFactors_, 
+            pseudoRoot = rankReducedSqrt(  swapCorrelation,
+                                                numberOfFactors_,
                                                 componentRetainedPercentage,
                                                 SalvagingAlgorithm::None);
             for (Size i = 0; i< pseudoRoots_.rows(); ++i){
