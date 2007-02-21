@@ -24,11 +24,11 @@
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
+#include <ql/MarketModels/DriftComputation/lmmnormaldriftcalculator.hpp>
 
 namespace QuantLib {
 
     class MarketModel;
-    class LMMNormalDriftCalculator;
     class BrownianGenerator;
     class BrownianGeneratorFactory;
 
