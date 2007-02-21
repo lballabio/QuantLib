@@ -149,128 +149,420 @@ namespace QuantLib {
             Calendar calendar = schedule.calendar();
             Size N = schedule.size();
 
+            boost::shared_ptr<CashFlow> cf;
+
             if (!hasEmbeddedOption) {
+
+                boost::shared_ptr<IborCouponPricer>
+                        pricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
 
                 // first period might be short or long
                 Date start = schedule.date(0), end = schedule.date(1);
                 Date paymentDate = calendar.adjust(end,paymentAdjustment);
                 if (schedule.isRegular(1)) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,0), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    Date(),Date(),paymentDayCounter)));
+                    if (get(gearings,0,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new IborCoupon(paymentDate, get(nominals,0),
+                                        start, end, fixingDays, index,
+                                        get(gearings,0,1.0),
+                                        get(spreads,0,0.0),
+                                        Date(),Date(), paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,0), paymentDate,
+                                        get(spreads,0,0.0), paymentDayCounter,
+                                        start, end, start, end));
+                        // no pricer is needed for a fixed rate coupon
+                    }
+                    leg.push_back(cf);
+                    //leg.push_back(boost::shared_ptr<CashFlow>(
+                    //    new IborCoupon(paymentDate, get(nominals,0), start, end,
+                    //                                fixingDays, index, get(gearings,0,1.0),
+                    //                                get(spreads,0,0.0),
+                    //                                Date(),Date(),paymentDayCounter)));
                 } else {
                     Date reference = end - schedule.tenor();
                     reference = calendar.adjust(reference,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,0), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    reference,end,paymentDayCounter)));
+                    if (get(gearings,0,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new IborCoupon(paymentDate, get(nominals,0),
+                                        start, end, fixingDays, index,
+                                        get(gearings,0,1.0),
+                                        get(spreads,0,0.0),
+                                        reference, end, paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,0), paymentDate,
+                                        get(spreads,0,0.0), paymentDayCounter,
+                                        start, end, reference, end));
+                        // no pricer is needed for a fixed rate coupon
+                        //leg.push_back(boost::shared_ptr<CashFlow>(
+                        //new IborCoupon(paymentDate, get(nominals,0), start, end,
+                        //                            fixingDays, index, get(gearings,0,1.0),
+                        //                            get(spreads,0,0.0),
+                        //                            reference,end,paymentDayCounter)));
+                    }
                 }
                 // regular periods
                 for (Size i=2; i<schedule.size()-1; ++i) {
                     start = end; end = schedule.date(i);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,i-1), start, end,
-                                                    fixingDays, index, get(gearings,i-1,1.0),
-                                                    get(spreads,i-1,0.0),
-                                                    Date(),Date(),paymentDayCounter)));
+                    if (get(gearings,i-1,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new IborCoupon(paymentDate, get(nominals,i-1),
+                                        start, end, fixingDays, index,
+                                        get(gearings,i-1,1.0),
+                                        get(spreads,i-1,0.0),
+                                        Date(),Date(), paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,i-1), paymentDate,
+                                        get(spreads,i-1,0.0), paymentDayCounter,
+                                        start, end, start, end));
+                        // no pricer is needed for a fixed rate coupon
+                    }
+                    leg.push_back(cf);
+                    //leg.push_back(boost::shared_ptr<CashFlow>(
+                    //    new IborCoupon(paymentDate, get(nominals,i-1), start, end,
+                    //                                fixingDays, index, get(gearings,i-1,1.0),
+                    //                                get(spreads,i-1,0.0),
+                    //                                Date(),Date(),paymentDayCounter)));
                 }
                 if (schedule.size() > 2) {
                     // last period might be short or long
                     start = end; end = schedule.date(N-1);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (schedule.isRegular(N-1)) {
-                       leg.push_back(boost::shared_ptr<CashFlow>(
-                            new IborCoupon(paymentDate, get(nominals,N-2), start, end,
-                                                        fixingDays, index, get(gearings,N-2,1.0),
-                                                        get(spreads,N-2,0.0),
-                                                        Date(),Date(),paymentDayCounter)));
+                        if (get(gearings,N-2,1.0)!=0.0) {
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new IborCoupon(paymentDate, get(nominals,N-2),
+                                            start, end, fixingDays, index,
+                                            get(gearings,N-2,1.0),
+                                            get(spreads,N-2,0.0),
+                                            Date(),Date(), paymentDayCounter));
+                            // set the pricer
+                            const boost::shared_ptr<IborCoupon> iborCoupon =
+                               boost::dynamic_pointer_cast<IborCoupon>(cf);
+                            if (iborCoupon)
+                                iborCoupon->setPricer(pricer);
+                            else
+                                QL_FAIL("unexpected error when casting to IborCoupon");
+                        } else {
+                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // margin is constructed
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            start, end, start, end));
+                            // no pricer is needed for a fixed rate coupon
+                        }
+                        leg.push_back(cf);
+                       //leg.push_back(boost::shared_ptr<CashFlow>(
+                       //     new IborCoupon(paymentDate, get(nominals,N-2), start, end,
+                       //                                 fixingDays, index, get(gearings,N-2,1.0),
+                       //                                 get(spreads,N-2,0.0),
+                       //                                 Date(),Date(),paymentDayCounter)));
                     } else {
                         Date reference = start + schedule.tenor();
-                        reference =
-                            calendar.adjust(reference,paymentAdjustment);
-                           leg.push_back(boost::shared_ptr<CashFlow>(
-                                new IborCoupon(paymentDate, get(nominals,N-2), start, end,
-                                                            fixingDays, index, get(gearings,N-2,1.0),
-                                                            get(spreads,N-2,0.0),
-                                                            start, reference,paymentDayCounter)));              
+                        reference = calendar.adjust(reference,paymentAdjustment);
+                        if (get(gearings,N-2,1.0)!=0.0) {
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new IborCoupon(paymentDate, get(nominals,N-2),
+                                            start, end, fixingDays, index,
+                                            get(gearings,N-2,1.0),
+                                            get(spreads,N-2,0.0),
+                                            start, reference, paymentDayCounter));
+                            // set the pricer
+                            const boost::shared_ptr<IborCoupon> iborCoupon =
+                               boost::dynamic_pointer_cast<IborCoupon>(cf);
+                            if (iborCoupon)
+                                iborCoupon->setPricer(pricer);
+                            else
+                                QL_FAIL("unexpected error when casting to IborCoupon");
+                        } else {
+                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // margin is constructed
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            start, end, start, reference));
+                            // no pricer is needed for a fixed rate coupon
+                        }
+                        leg.push_back(cf);
+                       //leg.push_back(boost::shared_ptr<CashFlow>(
+                       //     new IborCoupon(paymentDate, get(nominals,N-2), start, end,
+                       //                                 fixingDays, index, get(gearings,N-2,1.0),
+                       //                                 get(spreads,N-2,0.0),
+                       //                                 start, reference,paymentDayCounter)));              
                     }
                 }
 
-                boost::shared_ptr<IborCouponPricer> 
-                        pricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+                //boost::shared_ptr<IborCouponPricer> 
+                //        pricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
 
-                for (Size i=0; i<leg.size(); ++i) {
-                    const boost::shared_ptr<IborCoupon> iborCoupon =
-                       boost::dynamic_pointer_cast<IborCoupon>(leg[i]);
-                    if (iborCoupon)
-                        iborCoupon->setPricer(pricer);
-                    else
-                        QL_FAIL("unexpected error when casting to IborCoupon");
-                }
+                //for (Size i=0; i<leg.size(); ++i) {
+                //    const boost::shared_ptr<IborCoupon> iborCoupon =
+                //       boost::dynamic_pointer_cast<IborCoupon>(leg[i]);
+                //    if (iborCoupon)
+                //        iborCoupon->setPricer(pricer);
+                //    else
+                //        QL_FAIL("unexpected error when casting to IborCoupon");
+                //}
             } else {
 
                 // first period might be short or long
                 Date start = schedule.date(0), end = schedule.date(1);
                 Date paymentDate = calendar.adjust(end,paymentAdjustment);
                 if (schedule.isRegular(1)) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,0), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    get(caps,0,Null<Rate>()),
-                                                    get(floors,0,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter)));
+                    if (get(gearings,0,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new CappedFlooredIborCoupon(paymentDate, get(nominals,0),
+                                        start, end, fixingDays, index,
+                                        get(gearings,0,1.0),
+                                        get(spreads,0,0.0),
+                                        get(caps,0,Null<Rate>()),
+                                        get(floors,0,Null<Rate>()),
+                                        Date(),Date(), paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,0), paymentDate,
+                                        get(spreads,0,0.0), paymentDayCounter,
+                                        start, end, start, end));
+                        // no pricer is needed for a fixed rate coupon
+                    }
+                    leg.push_back(cf);
+                    //leg.push_back(boost::shared_ptr<CashFlow>(
+                    //    new CappedFlooredIborCoupon(paymentDate, get(nominals,0), start, end,
+                    //                                fixingDays, index, get(gearings,0,1.0),
+                    //                                get(spreads,0,0.0),
+                    //                                get(caps,0,Null<Rate>()),
+                    //                                get(floors,0,Null<Rate>()),
+                    //                                Date(),Date(),paymentDayCounter)));
                 } else {
                     Date reference = end - schedule.tenor();
                     reference = calendar.adjust(reference,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,0), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    get(caps,0,Null<Rate>()),
-                                                    get(floors,0,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter)));
+                    if (get(gearings,0,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new CappedFlooredIborCoupon(paymentDate, get(nominals,0),
+                                        start, end, fixingDays, index,
+                                        get(gearings,0,1.0),
+                                        get(spreads,0,0.0),
+                                        get(caps,0,Null<Rate>()),
+                                        get(floors,0,Null<Rate>()),
+                                        reference, end, paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,0), paymentDate,
+                                        get(spreads,0,0.0), paymentDayCounter,
+                                        start, end, reference, end));
+                        // no pricer is needed for a fixed rate coupon
+                    }
+                    leg.push_back(cf);
+                    //leg.push_back(boost::shared_ptr<CashFlow>(
+                    //    new CappedFlooredIborCoupon(paymentDate, get(nominals,0), start, end,
+                    //                                fixingDays, index, get(gearings,0,1.0),
+                    //                                get(spreads,0,0.0),
+                    //                                get(caps,0,Null<Rate>()),
+                    //                                get(floors,0,Null<Rate>()),
+                    //                                Date(),Date(),paymentDayCounter)));
                 }
                 // regular periods
                 for (Size i=2; i<schedule.size()-1; ++i) {
                     start = end; end = schedule.date(i);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,i-1), start, end,
-                                                    fixingDays, index, get(gearings,i-1,1.0),
-                                                    get(spreads,i-1,0.0),
-                                                    get(caps,i-1,Null<Rate>()),
-                                                    get(floors,i-1,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter)));
+                    if (get(gearings,i-1,1.0)!=0.0) {
+                        cf = boost::shared_ptr<CashFlow>(
+                                new CappedFlooredIborCoupon(paymentDate, get(nominals,i-1),
+                                        start, end, fixingDays, index,
+                                        get(gearings,i-1,1.0),
+                                        get(spreads,i-1,0.0),
+                                        get(caps,i-1,Null<Rate>()),
+                                        get(floors,i-1,Null<Rate>()),
+                                        Date(),Date(), paymentDayCounter));
+                        // set the pricer
+                        const boost::shared_ptr<IborCoupon> iborCoupon =
+                           boost::dynamic_pointer_cast<IborCoupon>(cf);
+                        if (iborCoupon)
+                            iborCoupon->setPricer(pricer);
+                        else
+                            QL_FAIL("unexpected error when casting to IborCoupon");
+                    } else {
+                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // margin is constructed
+                        QL_REQUIRE(get(caps,i-1,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        QL_REQUIRE(get(floors,i-1,Null<Rate>())==Null<Real>(),
+                                   "Incongruous data: fixed rate coupon "<<
+                                   "(from null gearing ibor coupon) " << 
+                                   "with embedded option");
+                        cf = boost::shared_ptr<CashFlow>(
+                                new FixedRateCoupon(get(nominals,i-1), paymentDate,
+                                        get(spreads,i-1,0.0), paymentDayCounter,
+                                        start, end, start, end));
+                        // no pricer is needed for a fixed rate coupon
+                    }
+                    leg.push_back(cf);
+                    //leg.push_back(boost::shared_ptr<CashFlow>(
+                    //    new CappedFlooredIborCoupon(paymentDate, get(nominals,i-1), start, end,
+                    //                                fixingDays, index, get(gearings,i-1,1.0),
+                    //                                get(spreads,i-1,0.0),
+                    //                                get(caps,i-1,Null<Rate>()),
+                    //                                get(floors,i-1,Null<Rate>()),
+                    //                                Date(),Date(),paymentDayCounter)));
                 }
                 if (schedule.size() > 2) {
                     // last period might be short or long
                     start = end; end = schedule.date(N-1);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (schedule.isRegular(N-1)) {
-                       leg.push_back(boost::shared_ptr<CashFlow>(
-                            new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2), start, end,
-                                                        fixingDays, index, get(gearings,N-2,1.0),
-                                                        get(spreads,N-2,0.0),
-                                                        get(caps,N-2,Null<Rate>()),
-                                                        get(floors,N-2,Null<Rate>()),
-                                                        Date(),Date(),paymentDayCounter)));
+                        if (get(gearings,N-2,1.0)!=0.0) {
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2),
+                                            start, end, fixingDays, index,
+                                            get(gearings,N-2,1.0),
+                                            get(spreads,N-2,0.0),
+                                            get(caps,N-2,Null<Rate>()),
+                                            get(floors,N-2,Null<Rate>()),
+                                            Date(),Date(), paymentDayCounter));
+                            // set the pricer
+                            const boost::shared_ptr<IborCoupon> iborCoupon =
+                               boost::dynamic_pointer_cast<IborCoupon>(cf);
+                            if (iborCoupon)
+                                iborCoupon->setPricer(pricer);
+                            else
+                                QL_FAIL("unexpected error when casting to IborCoupon");
+                        } else {
+                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // margin is constructed
+                            QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>(),
+                                       "Incongruous data: fixed rate coupon "<<
+                                       "(from null gearing ibor coupon) " << 
+                                       "with embedded option");
+                            QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>(),
+                                       "Incongruous data: fixed rate coupon "<<
+                                       "(from null gearing ibor coupon) " << 
+                                       "with embedded option");
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            start, end, start, end));
+                            // no pricer is needed for a fixed rate coupon
+                        }
+                        leg.push_back(cf);
+                            //leg.push_back(boost::shared_ptr<CashFlow>(
+                            //new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2), start, end,
+                            //                            fixingDays, index, get(gearings,N-2,1.0),
+                            //                            get(spreads,N-2,0.0),
+                            //                            get(caps,N-2,Null<Rate>()),
+                            //                            get(floors,N-2,Null<Rate>()),
+                            //                            Date(),Date(),paymentDayCounter)));
                     } else {
                         Date reference = start + schedule.tenor();
-                        reference =
-                            calendar.adjust(reference,paymentAdjustment);
-                           leg.push_back(boost::shared_ptr<CashFlow>(
-                                new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2), start, end,
-                                                            fixingDays, index, get(gearings,N-2,1.0),
-                                                            get(spreads,N-2,0.0),
-                                                            get(caps,N-2,Null<Rate>()),
-                                                            get(floors,N-2,Null<Rate>()),
-                                                            start, reference, paymentDayCounter )));              
+                        reference = calendar.adjust(reference,paymentAdjustment);
+                        if (get(gearings,N-2,1.0)!=0.0) {
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2),
+                                            start, end, fixingDays, index,
+                                            get(gearings,N-2,1.0),
+                                            get(spreads,N-2,0.0),
+                                            get(caps,N-2,Null<Rate>()),
+                                            get(floors,N-2,Null<Rate>()),
+                                            start, reference, paymentDayCounter));
+                            // set the pricer
+                            const boost::shared_ptr<IborCoupon> iborCoupon =
+                               boost::dynamic_pointer_cast<IborCoupon>(cf);
+                            if (iborCoupon)
+                                iborCoupon->setPricer(pricer);
+                            else
+                                QL_FAIL("unexpected error when casting to IborCoupon");
+                        } else {
+                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // margin is constructed
+                            QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>(),
+                                       "Incongruous data: fixed rate coupon "<<
+                                       "(from null gearing ibor coupon) " << 
+                                       "with embedded option");
+                            QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>(),
+                                       "Incongruous data: fixed rate coupon "<<
+                                       "(from null gearing ibor coupon) " << 
+                                       "with embedded option");
+                            cf = boost::shared_ptr<CashFlow>(
+                                    new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            start, end, start, reference));
+                            // no pricer is needed for a fixed rate coupon
+                        }
+                        leg.push_back(cf);
+                           //leg.push_back(boost::shared_ptr<CashFlow>(
+                           //     new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2), start, end,
+                           //                                 fixingDays, index, get(gearings,N-2,1.0),
+                           //                                 get(spreads,N-2,0.0),
+                           //                                 get(caps,N-2,Null<Rate>()),
+                           //                                 get(floors,N-2,Null<Rate>()),
+                           //                                 start, reference, paymentDayCounter )));              
                     }
                 }
 
