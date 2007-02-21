@@ -102,8 +102,8 @@ void setup() {
     displacement = 0.02;
     for (Size i=0; i<todaysForwards.size(); ++i)
         todaysForwards[i] = 0.03 + 0.0010*i;
-    LMMCurveState curveState_lmm(rateTimes); 
-    curveState_lmm.setOnForwardRates(todaysForwards); 
+    LMMCurveState curveState_lmm(rateTimes);
+    curveState_lmm.setOnForwardRates(todaysForwards);
     // until ConstantMaturitySwap is ready
     spanningForwards = todaysForwards.size();
     todaysCMSwapRates = curveState_lmm.cmSwapRates(spanningForwards);
@@ -213,7 +213,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
         LmExtLinearExponentialVolModel(fixingTimes, 0.5, 0.6, 0.1, 0.1));
     boost::shared_ptr<LmCorrelationModel> corrModel(new
         LmLinearExponentialCorrelationModel(evolution.numberOfRates(),
-        									longTermCorrelation, beta));
+                                            longTermCorrelation, beta));
     std::vector<Rate> bumpedRates(todaysCMSwapRates.size());
     LMMCurveState curveState_lmm(rateTimes);
     curveState_lmm.setOnForwardRates(todaysForwards);
@@ -363,23 +363,23 @@ void checkCMSAndSwaptions(const SequenceStatistics& stats,
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> discrepancies(todaysForwards.size());
-    
+
     Size N = todaysForwards.size();
     // check Swaps
     Real maxError = QL_MIN_REAL;
     LMMCurveState curveState_lmm(rateTimes);
     curveState_lmm.setOnForwardRates(todaysForwards);
-    
+
     std::vector<Real> expectedNPVs(todaysCMSwapRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState_lmm.cmSwapAnnuity(i, i, spanningForwards) 
-        	* (todaysCMSwapRates[i]-fixedRate) * todaysDiscounts[i];
+        Real expectedNPV = curveState_lmm.cmSwapAnnuity(i, i, spanningForwards)
+            * (todaysCMSwapRates[i]-fixedRate) * todaysDiscounts[i];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
     }
-   
+
     if (maxError > errorThreshold) {
         BOOST_MESSAGE(config);
         for (Size i=0; i<N; ++i) {
@@ -393,7 +393,7 @@ void checkCMSAndSwaptions(const SequenceStatistics& stats,
         }
         BOOST_ERROR("test failed");
     }
-    
+
     // check Swaptions
     maxError = 0;
 
@@ -402,7 +402,7 @@ void checkCMSAndSwaptions(const SequenceStatistics& stats,
     for (Size i=0; i<N; ++i) {
         const std::vector<Time>&  taus = curveState_lmm.rateTaus();
         Real expectedSwaption = BlackCalculator(
-        				displacedPayoff[i],
+                        displacedPayoff[i],
                         todaysCMSwapRates[i]+displacement,
                         volatilities[i]*std::sqrt(rateTimes[i]),
                         curveState_lmm.cmSwapAnnuity(i,i, spanningForwards) * todaysDiscounts[i]).value();
@@ -434,26 +434,26 @@ QL_END_TEST_LOCALS(MarketModelTest_cms)
 void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 
     BOOST_MESSAGE("Repricing multi-step Constant maturity swaps "
-                  " and swaptions in a CMS market model...");
+                  "and swaptions in a CMS market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
     Real fixedRate = 0.04;
-    
-	// swaps
+
+    // swaps
     std::vector<Time> swapPaymentTimes(rateTimes.begin()+1, rateTimes.end());
     // until ConstantMaturitySwap is ready
-    MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals, 
+    MultiStepCoterminalSwaps swaps(rateTimes, accruals, accruals,
                                    swapPaymentTimes,
                                    fixedRate);
-	// swaptions
+    // swaptions
     std::vector<Time> swaptionPaymentTimes(rateTimes.begin(), rateTimes.end()-1);
     std::vector<boost::shared_ptr<StrikedTypePayoff> >
         displacedPayoff(todaysForwards.size()), undisplacedPayoff(todaysForwards.size());
     for (Size i=0; i<undisplacedPayoff.size(); ++i) {
-        displacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new 
+        displacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate+displacement));
 
-        undisplacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new 
+        undisplacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate));
     }
 
@@ -505,13 +505,13 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
                                                          evolvers[i]);
                         std::ostringstream config;
                         config <<
-                            marketModelTypeToString(marketModels[j]) << ", " << 
+                            marketModelTypeToString(marketModels[j]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
                             measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        BOOST_MESSAGE("    " << config.str());
-                        std::cout << config.str() << "\n";
+                        if (printReport_)
+                            BOOST_MESSAGE("    " << config.str());
 
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
                         checkCMSAndSwaptions(*stats, fixedRate,
@@ -530,7 +530,7 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 // --- Call the desired tests
 test_suite* MarketModelCmsTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CMS Market-model tests");
- 
+
     suite->add(BOOST_TEST_CASE(&MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
 
 

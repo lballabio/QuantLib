@@ -104,8 +104,8 @@ void setup() {
         todaysForwards[i] = 0.03 + 0.0010*i;
         //todaysForwards[i] = 0.04;
     }
-    LMMCurveState curveState_lmm(rateTimes); 
-    curveState_lmm.setOnForwardRates(todaysForwards); 
+    LMMCurveState curveState_lmm(rateTimes);
+    curveState_lmm.setOnForwardRates(todaysForwards);
     todaysSwaps = curveState_lmm.coterminalSwapRates();
 
     // Discounts
@@ -220,7 +220,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     std::transform(usedRates.begin(), usedRates.end(),
                    bumpedRates.begin(),
                    std::bind1st(std::plus<Rate>(), rateBump));
-                   
+
     std::vector<Volatility> bumpedVols(volatilities.size());
     std::transform(volatilities.begin(), volatilities.end(),
                    bumpedVols.begin(),
@@ -356,11 +356,11 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
                                       const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
                                       const boost::shared_ptr<MarketModel> marketModel,
                                       const std::string& config) {
-    
+
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> discrepancies(todaysForwards.size());
-    
+
     Size N = todaysForwards.size();
 
     // check Swaps
@@ -371,7 +371,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     std::vector<Real> expectedNPVs(todaysSwaps.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState_lmm.coterminalSwapAnnuity(i, i) 
+        Real expectedNPV = curveState_lmm.coterminalSwapAnnuity(i, i)
             * (todaysSwaps[i]-fixedRate) * todaysDiscounts[i];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
@@ -390,7 +390,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         }
         BOOST_ERROR("test failed");
     }
-    
+
     // check Swaptions
     maxError = 0;
     std::vector<Rate> expectedSwaptions(N);
@@ -429,7 +429,7 @@ QL_END_TEST_LOCALS(MarketModelTest_smm)
 void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
 
     BOOST_MESSAGE("Repricing multi-step coterminal swaps "
-                  " and swaptions in a SWAP market model...");
+                  "and swaptions in a swap market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
     Real fixedRate = 0.04;
@@ -444,13 +444,13 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
     std::vector<boost::shared_ptr<StrikedTypePayoff> >
         displacedPayoff(todaysForwards.size()), undisplacedPayoff(todaysForwards.size());
     for (Size i=0; i<undisplacedPayoff.size(); ++i) {
-        displacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new 
+        displacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate+displacement));
-  
-        undisplacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new 
+
+        undisplacedPayoff[i] = boost::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, fixedRate));
     }
-  
+
     MultiStepCoterminalSwaptions swaptions(rateTimes,
                                            swaptionPaymentTimes,
                                            undisplacedPayoff);
@@ -464,7 +464,7 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                                        ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
         Size testedFactors[] = { /*4, 8,*/ todaysForwards.size()};
-        for (Size m=0; m<LENGTH(testedFactors); ++m) {        
+        for (Size m=0; m<LENGTH(testedFactors); ++m) {
             Size factors = testedFactors[m];
             // Composite's ProductSuggested is the Terminal one
             MeasureType measures[] = { // ProductSuggested,
@@ -477,7 +477,7 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                     makeMarketModel(evolution, factors, marketModels[j]);
                 EvolverType evolvers[] = { Pc /*, Ipc */};
                 boost::shared_ptr<MarketModelEvolver> evolver;
-                Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;                
+                Size stop = isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                 for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
@@ -489,13 +489,13 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
                                                          evolvers[i]);
                         std::ostringstream config;
                         config <<
-                            marketModelTypeToString(marketModels[j]) << ", " << 
+                            marketModelTypeToString(marketModels[j]) << ", " <<
                             factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
                             measureTypeToString(measures[k]) << ", " <<
                             evolverTypeToString(evolvers[i]) << ", " <<
                             "MT BGF";
-                        BOOST_MESSAGE("    " << config.str());
-                        std::cout << config.str() << "\n";
+                        if (printReport_)
+                            BOOST_MESSAGE("    " << config.str());
                         boost::shared_ptr<SequenceStatistics> stats = simulate(evolver, product);
                         checkCoterminalSwapsAndSwaptions(*stats, fixedRate,
                                                          displacedPayoff, marketModel,config.str());
