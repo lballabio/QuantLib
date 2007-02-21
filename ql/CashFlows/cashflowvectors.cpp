@@ -549,79 +549,210 @@ namespace QuantLib {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
+        boost::shared_ptr<CashFlow> cf;
+
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              start, end, paymentDayCounter)));
-
+            if (get(gearings,0,1.0)!=0.0) {
+                cf = boost::shared_ptr<CashFlow>(
+                        new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
+                                start, end, fixingDays, index,
+                                get(gearings,0,1.0),
+                                get(spreads,0,0.0),
+                                get(caps,0,Null<Rate>()),
+                                get(floors,0,Null<Rate>()),
+                                start, end, paymentDayCounter));
+                // set the pricer
+                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
+                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
+                if (cmsCoupon)
+                    cmsCoupon->setPricer(pricer);
+                else
+                    QL_FAIL("unexpected error when casting to CmsCoupon");
+            } else {
+                // if gearing is null a fixed rate coupon with rate equal to 
+                // margin is constructed
+                QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
+                           get(caps,0,Null<Rate>())==1.0,
+                           "Incongruous data: fixed rate coupon " <<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
+                           get(floors,0,Null<Rate>())==0.0,
+                           "Incongruous data: fixed rate coupon "<<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                cf = boost::shared_ptr<CashFlow>(
+                        new FixedRateCoupon(get(nominals,0), paymentDate,
+                                get(spreads,0,0.0), paymentDayCounter,
+                                start, end, start, end));
+                // no pricer is needed for a fixed rate coupon
+            }
+            leg.push_back(cf);
         } else {
             Date reference = end - schedule.tenor();
-            reference =
-                calendar.adjust(reference,paymentAdjustment);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              reference, end, paymentDayCounter)));
+            reference = calendar.adjust(reference,paymentAdjustment);
+            if (get(gearings,0,1.0)!=0.0) {
+                cf = boost::shared_ptr<CashFlow>(
+                        new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
+                                start, end, fixingDays, index,
+                                get(gearings,0,1.0),
+                                get(spreads,0,0.0),
+                                get(caps,0,Null<Rate>()),
+                                get(floors,0,Null<Rate>()),
+                                reference, end, paymentDayCounter));
+                // set the pricer
+                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
+                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
+                if (cmsCoupon)
+                    cmsCoupon->setPricer(pricer);
+                else
+                    QL_FAIL("unexpected error when casting to CmsCoupon");
+            } else {
+                // if gearing is null a fixed rate coupon with rate equal to 
+                // margin is constructed
+                QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
+                           get(caps,0,Null<Rate>())==1.0,
+                           "Incongruous data: fixed rate coupon "<<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
+                           get(floors,0,Null<Rate>())==0.0,
+                           "Incongruous data: fixed rate coupon "<<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                cf = boost::shared_ptr<CashFlow>(
+                        new FixedRateCoupon(get(nominals,0), paymentDate,
+                                get(spreads,0,0.0), paymentDayCounter,
+                                start, end, reference, end));
+                // no pricer is needed for a fixed rate coupon
+            }
+            leg.push_back(cf);
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals,i-1),
-                              start, end, fixingDays, index,
-                              get(gearings,i-1,1.0),
-                              get(spreads,i-1,0.0),
-                              get(caps,i-1,Null<Rate>()),
-                              get(floors,i-1,Null<Rate>()),
-                              start, end, paymentDayCounter)));
+            if (get(gearings,i-1,1.0)!=0.0) {
+                cf = boost::shared_ptr<CashFlow>(
+                        new CappedFlooredCmsCoupon(paymentDate, get(nominals,i-1),
+                                start, end, fixingDays, index,
+                                get(gearings,i-1,1.0),
+                                get(spreads,i-1,0.0),
+                                get(caps,i-1,Null<Rate>()),
+                                get(floors,i-1,Null<Rate>()),
+                                start, end, paymentDayCounter));
+                // set the pricer
+                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
+                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
+                if (cmsCoupon)
+                    cmsCoupon->setPricer(pricer);
+                else
+                    QL_FAIL("unexpected error when casting to CmsCoupon");
+            } else {
+                // if gearing is null a fixed rate coupon with rate equal to 
+                // margin is constructed
+                QL_REQUIRE(get(caps,i-1,Null<Rate>())==Null<Real>() ||
+                           get(caps,i-1,Null<Rate>())==1.0,
+                           "Incongruous data: fixed rate coupon " <<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                QL_REQUIRE(get(floors,i-1,Null<Rate>())==Null<Real>() ||
+                           get(floors,i-1,Null<Rate>())==0.0,
+                           "Incongruous data: fixed rate coupon " <<
+                           "(from null gearing cms coupon) " << 
+                           "with embedded option");
+                cf = boost::shared_ptr<CashFlow>(
+                        new FixedRateCoupon(get(nominals,i-1), paymentDate,
+                                get(spreads,i-1,0.0), paymentDayCounter,
+                                start, end, start, end));
+                // no pricer is needed for a fixed rate coupon
+            }
+            leg.push_back(cf);
         }
         if (schedule.size() > 2) {
             // last period might be short or long
             start = end; end = schedule.date(N-1);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
-                                  start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, end, paymentDayCounter)));
+                if (get(gearings,N-2,1.0)!=0.0) {
+                    cf = boost::shared_ptr<CashFlow>(
+                            new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
+                                    start, end, fixingDays, index,
+                                    get(gearings,N-2,1.0),
+                                    get(spreads,N-2,0.0),
+                                    get(caps,N-2,Null<Rate>()),
+                                    get(floors,N-2,Null<Rate>()),
+                                    start, end, paymentDayCounter));
+                    // set the pricer
+                    const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
+                       boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
+                    if (cmsCoupon)
+                        cmsCoupon->setPricer(pricer);
+                    else
+                        QL_FAIL("unexpected error when casting to CmsCoupon");
+                } else {
+                    // if gearing is null a fixed rate coupon with rate equal to 
+                    // margin is constructed
+                    QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
+                               get(caps,N-2,Null<Rate>())==1.0,
+                               "Incongruous data: fixed rate coupon " <<
+                               "(from null gearing cms coupon) " << 
+                               "with embedded option");
+                    QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
+                               get(floors,N-2,Null<Rate>())==0.0,
+                               "Incongruous data: fixed rate coupon " <<
+                               "(from null gearing cms coupon) " << 
+                               "with embedded option");
+                    cf = boost::shared_ptr<CashFlow>(
+                            new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                    get(spreads,N-2,0.0), paymentDayCounter,
+                                    start, end, start, end));
+                    // no pricer is needed for a fixed rate coupon
+                }
+                leg.push_back(cf);
             } else {
                 Date reference = start + schedule.tenor();
-                reference =
-                    calendar.adjust(reference,paymentAdjustment);
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
-                                  start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, reference, paymentDayCounter)));
+                reference = calendar.adjust(reference,paymentAdjustment);
+                if (get(gearings,N-2,1.0)!=0.0) {
+                    cf = boost::shared_ptr<CashFlow>(
+                            new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
+                                    start, end, fixingDays, index,
+                                    get(gearings,N-2,1.0),
+                                    get(spreads,N-2,0.0),
+                                    get(caps,N-2,Null<Rate>()),
+                                    get(floors,N-2,Null<Rate>()),
+                                    start, reference, paymentDayCounter));
+                    // set the pricer
+                    const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
+                       boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
+                    if (cmsCoupon)
+                        cmsCoupon->setPricer(pricer);
+                    else
+                        QL_FAIL("unexpected error when casting to CmsCoupon");
+                } else {
+                    // if gearing is null a fixed rate coupon with rate equal to 
+                    // margin is constructed
+                    QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
+                               get(caps,N-2,Null<Rate>())==1.0,
+                               "Incongruous data: fixed rate coupon "<<
+                               "(from null gearing cms coupon) " << 
+                               "with embedded option");
+                    QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
+                               get(floors,N-2,Null<Rate>())==0.0,
+                               "Incongruous data: fixed rate coupon "<<
+                               "(from null gearing cms coupon) " << 
+                               "with embedded option");
+                    cf = boost::shared_ptr<CashFlow>(
+                            new FixedRateCoupon(get(nominals,N-2), paymentDate,
+                                    get(spreads,N-2,0.0), paymentDayCounter,
+                                    start, end, start, reference));
+                    // no pricer is needed for a fixed rate coupon
+                }
+                leg.push_back(cf);
             }
-        }
-        for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setPricer(pricer);
-            else
-                QL_FAIL("unexpected error when casting to CmsCoupon");
         }
         return leg;
     }
