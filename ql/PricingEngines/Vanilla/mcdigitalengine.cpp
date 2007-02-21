@@ -41,7 +41,7 @@ namespace QuantLib {
         Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
-        Array u = sequenceGen_.nextSequence().value;
+        std::vector<Real> u = sequenceGen_.nextSequence().value;
         Real log_strike = std::log(payoff_->strike());
 
         Size i;

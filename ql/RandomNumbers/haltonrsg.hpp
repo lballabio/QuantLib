@@ -24,7 +24,7 @@
 #ifndef quantlib_halton_ld_rsg_h
 #define quantlib_halton_ld_rsg_h
 
-#include <ql/Math/array.hpp>
+
 #include <ql/MonteCarlo/sample.hpp>
 #include <vector>
 
@@ -43,7 +43,7 @@ namespace QuantLib {
     */
     class HaltonRsg {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         HaltonRsg(Size dimensionality,
                   unsigned long seed = 0,
                   bool randomStart = true,
@@ -58,7 +58,7 @@ namespace QuantLib {
         mutable unsigned long sequenceCounter_;
         mutable sample_type sequence_;
         std::vector<unsigned long> randomStart_;
-        Array randomShift_;
+        std::vector<Real>  randomShift_;
     };
 }
 

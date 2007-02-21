@@ -24,8 +24,9 @@
 #ifndef quantlib_random_sequence_generator_h
 #define quantlib_random_sequence_generator_h
 
-#include <ql/Math/array.hpp>
+
 #include <ql/MonteCarlo/sample.hpp>
+#include <ql/errors.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -44,11 +45,11 @@ namespace QuantLib {
     template<class RNG>
     class RandomSequenceGenerator {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         RandomSequenceGenerator(Size dimensionality,
                                 const RNG& rng)
         : dimensionality_(dimensionality), rng_(rng),
-          sequence_(Array(dimensionality), 1.0),
+          sequence_(std::vector<Real> (dimensionality), 1.0),
           int32Sequence_(dimensionality) {
           QL_REQUIRE(dimensionality>0, 
                      "dimensionality must be greater than 0");
@@ -57,7 +58,7 @@ namespace QuantLib {
         RandomSequenceGenerator(Size dimensionality,
                                 BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_(seed),
-          sequence_(Array(dimensionality), 1.0),
+          sequence_(std::vector<Real> (dimensionality), 1.0),
           int32Sequence_(dimensionality) {}
 
         const sample_type& nextSequence() const {

@@ -21,6 +21,7 @@
 #include <ql/RandomNumbers/sobolrsg.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/errors.hpp>
 #include <cmath>
 
 namespace QuantLib {
@@ -1255,7 +1256,7 @@ namespace QuantLib {
                        unsigned long seed,
                        DirectionIntegers directionIntegers)
     : dimensionality_(dimensionality), sequenceCounter_(0), firstDraw_(true),
-      sequence_(Array(dimensionality), 1.0),
+      sequence_(std::vector<Real> (dimensionality), 1.0),
       integerSequence_(dimensionality, 0),
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_)) {
 

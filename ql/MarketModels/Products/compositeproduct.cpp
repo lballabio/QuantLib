@@ -79,7 +79,6 @@ namespace QuantLib {
         add(product, -multiplier);
     }
 
-
     void MarketModelComposite::finalize() {
         QL_REQUIRE(!finalized_, "product already finalized");
         QL_REQUIRE(!components_.empty(), "no sub-product provided");
@@ -158,4 +157,3 @@ namespace QuantLib {
     }
 
 }
-

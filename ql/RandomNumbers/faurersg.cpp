@@ -26,7 +26,7 @@ namespace QuantLib {
     FaureRsg::FaureRsg(Size dimensionality)
     : dimensionality_(dimensionality),
 //      sequenceCounter_(0),
-      sequence_(Array(dimensionality), 1.0),
+      sequence_(std::vector<Real> (dimensionality), 1.0),
       integerSequence_(dimensionality, 0) {
 
       QL_REQUIRE(dimensionality>0, 

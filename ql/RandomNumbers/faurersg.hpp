@@ -45,7 +45,7 @@ namespace QuantLib {
     */
     class FaureRsg {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         FaureRsg(Size dimensionality);
         const std::vector<long int>& nextIntSequence() const {
             generateNextIntSequence();

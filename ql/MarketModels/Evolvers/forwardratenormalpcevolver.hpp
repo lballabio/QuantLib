@@ -61,7 +61,7 @@ namespace QuantLib {
         Size currentStep_;
         std::vector<Rate> forwards_, initialForwards_;
         std::vector<Real> drifts1_, drifts2_, initialDrifts_;
-        Array brownians_, correlatedBrownians_;
+        std::vector<Real> brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
         std::vector<LMMNormalDriftCalculator> calculators_;

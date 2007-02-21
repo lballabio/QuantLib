@@ -54,7 +54,7 @@ namespace QuantLib {
                                                          = SobolRsg::Jaeckel);
 
         Real nextPath();
-        Real nextStep(Array&);
+        Real nextStep(std::vector<Real>&);
 
         Size numberOfFactors() const;
         Size numberOfSteps() const;

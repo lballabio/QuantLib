@@ -89,7 +89,7 @@ void BrownianBridgeTest::testVariates() {
     std::vector<Real> temp(N);
 
     for (Size i=0; i<samples; ++i) {
-        const Array& sample = generator.nextSequence().value;
+        const std::vector<Real>& sample = generator.nextSequence().value;
 
         bridge.transform(sample.begin(), sample.end(), temp.begin());
         stats1.add(temp.begin(), temp.end());

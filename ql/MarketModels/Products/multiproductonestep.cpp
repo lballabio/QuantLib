@@ -24,8 +24,8 @@ namespace QuantLib {
     MultiProductOneStep::MultiProductOneStep(
             const std::vector<Time>& rateTimes)
     : rateTimes_(rateTimes) {
-        QL_REQUIRE(rateTimes_.size()>1, 
-            "rateTimes must contain at least two values");
+        QL_REQUIRE(rateTimes_.size()>1,
+                   "Rate times must contain at least two values");
         std::vector<Time> evolutionTimes(1, rateTimes_[rateTimes_.size()-2]);
         std::vector<std::pair<Size,Size> > relevanceRates(1);
         relevanceRates[0] =

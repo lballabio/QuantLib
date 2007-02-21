@@ -813,7 +813,7 @@ void InterpolationTest::testMultiSpline() {
     Real tolerance = 1.7e-4;
     // actually tested up to 2^21-1=2097151 Sobol draws
     for (i = 0; i < 1023; ++i) {
-        const Array& next = rsg.nextSequence().value;
+        const std::vector<Real>& next = rsg.nextSequence().value;
         s = grid[0].front() + next[0]*(grid[0].back()-grid[0].front());
         t = grid[1].front() + next[1]*(grid[1].back()-grid[1].front());
         u = grid[2].front() + next[2]*(grid[2].back()-grid[2].front());

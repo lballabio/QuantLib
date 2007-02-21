@@ -57,7 +57,7 @@ namespace QuantLib {
               class PRS = RandomSequenceGenerator<MersenneTwisterUniformRng> >
     class RandomizedLDS {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         RandomizedLDS(const LDS& ldsg,
                       const PRS& prsg);
         RandomizedLDS(const LDS& ldsg);
@@ -87,7 +87,7 @@ namespace QuantLib {
     RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, const PRS& prsg)
     : ldsg_(ldsg), pristineldsg_(ldsg),
       prsg_(prsg), dimension_(ldsg_.dimension()),
-      x(Array(dimension_), 1.0), randomizer_(Array(dimension_), 1.0) {
+      x(std::vector<Real> (dimension_), 1.0), randomizer_(std::vector<Real> (dimension_), 1.0) {
 
         QL_REQUIRE(prsg_.dimension()==dimension_,
                    "generator mismatch: "
@@ -102,7 +102,7 @@ namespace QuantLib {
     RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg)
     : ldsg_(ldsg), pristineldsg_(ldsg),
       prsg_(ldsg_.dimension()), dimension_(ldsg_.dimension()),
-      x(Array(dimension_), 1.0), randomizer_(Array(dimension_), 1.0) {
+      x(std::vector<Real> (dimension_), 1.0), randomizer_(std::vector<Real> (dimension_), 1.0) {
 
         randomizer_ = prsg_.nextSequence();
 
@@ -114,7 +114,7 @@ namespace QuantLib {
                                            BigNatural prsSeed)
     : ldsg_(dimensionality, ldsSeed), pristineldsg_(dimensionality, ldsSeed),
       prsg_(dimensionality, prsSeed), dimension_(dimensionality),
-      x(Array(dimensionality), 1.0), randomizer_(Array(dimensionality), 1.0) {
+      x(std::vector<Real> (dimensionality), 1.0), randomizer_(std::vector<Real> (dimensionality), 1.0) {
 
         randomizer_ = prsg_.nextSequence();
     }

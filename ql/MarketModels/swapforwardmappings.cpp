@@ -31,8 +31,6 @@ namespace QuantLib {
     SwapForwardMappings::coterminalSwapForwardJacobian(const CurveState& cs)
     {
         Size n = cs.numberOfRates();
-//        const std::vector<Real>& b = cs.coterminalSwapAnnuities();
-  //      const std::vector<Real>& p = cs.discountRatios();
         const std::vector<Rate>& f = cs.forwardRates();
         const std::vector<Time>& tau = cs.rateTaus();
 

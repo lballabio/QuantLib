@@ -36,7 +36,7 @@ namespace QuantLib {
     HaltonRsg::HaltonRsg(Size dimensionality, unsigned long seed,
                          bool randomStart, bool randomShift)
     : dimensionality_(dimensionality), sequenceCounter_(0),
-      sequence_(Array(dimensionality), 1.0),
+      sequence_(std::vector<Real> (dimensionality), 1.0),
       randomStart_(dimensionality, 0UL),
       randomShift_(dimensionality, 0.0) {
 

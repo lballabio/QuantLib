@@ -61,5 +61,4 @@ namespace QuantLib {
 
 }
 
-
 #endif

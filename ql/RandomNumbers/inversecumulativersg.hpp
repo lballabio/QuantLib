@@ -25,8 +25,9 @@
 #ifndef quantlib_inversecumulative_rsg_h
 #define quantlib_inversecumulative_rsg_h
 
-#include <ql/Math/array.hpp>
+
 #include <ql/MonteCarlo/sample.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -55,7 +56,7 @@ namespace QuantLib {
     template <class USG, class IC>
     class InverseCumulativeRsg {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         explicit InverseCumulativeRsg(const USG& uniformSequenceGenerator);
         InverseCumulativeRsg(const USG& uniformSequenceGenerator,
                              const IC& inverseCumulative);
@@ -74,14 +75,14 @@ namespace QuantLib {
     InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg)
     : uniformSequenceGenerator_(usg),
       dimension_(uniformSequenceGenerator_.dimension()),
-      x_(Array(dimension_), 1.0) {}
+      x_(std::vector<Real> (dimension_), 1.0) {}
 
     template <class USG, class IC>
     InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg,
                                                         const IC& inverseCum)
     : uniformSequenceGenerator_(usg),
       dimension_(uniformSequenceGenerator_.dimension()),
-      x_(Array(dimension_), 1.0),
+      x_(std::vector<Real> (dimension_), 1.0),
       ICD_(inverseCum) {}
 
     template <class USG, class IC>

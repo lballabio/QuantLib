@@ -29,6 +29,8 @@ namespace QuantLib {
     : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes),
       strikes_(strikes), currentStep_(0), rateIndex_(exerciseTimes.size()),
       evolution_(rateTimes, exerciseTimes) {
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])

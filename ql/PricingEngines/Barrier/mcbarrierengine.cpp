@@ -56,7 +56,7 @@ namespace QuantLib {
         Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
-        Array u = sequenceGen_.nextSequence().value;
+        std::vector<Real> u = sequenceGen_.nextSequence().value;
         Size i;
 
         switch (barrierType_) {

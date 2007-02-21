@@ -45,7 +45,7 @@ namespace QuantLib {
                             Size steps,
                             unsigned long seed = 0);
 
-        Real nextStep(Array&);
+        Real nextStep(std::vector<Real>&);
         Real nextPath();
 
         Size numberOfFactors() const;

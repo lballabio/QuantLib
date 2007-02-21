@@ -26,9 +26,10 @@ namespace QuantLib {
     MarketModelDiscounter::MarketModelDiscounter(
                                          Time paymentTime,
                                          const std::vector<Time>& rateTimes) {
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
 		before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),
-                                   paymentTime)-
-			rateTimes.begin();
+                                   paymentTime) - rateTimes.begin();
 
         // handle the case where the payment is in the last
         // period or after the last period
@@ -39,14 +40,13 @@ namespace QuantLib {
             (rateTimes[before_+1]-rateTimes[before_]);
     }
 
-    Real MarketModelDiscounter::numeraireBonds(
-                                          const CurveState& curveState,
-                                          Size numeraire) const {
-        double preDF = curveState.discountRatio(before_,numeraire);
+    Real MarketModelDiscounter::numeraireBonds(const CurveState& curveState,
+                                               Size numeraire) const {
+        Real preDF = curveState.discountRatio(before_,numeraire);
 		if (beforeWeight_==1.0)
 			return preDF;
 		
-		double postDF = curveState.discountRatio(before_+1,numeraire);
+		Real postDF = curveState.discountRatio(before_+1,numeraire);
 		if (beforeWeight_==0.0)
 			return postDF;
 	

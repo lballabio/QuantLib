@@ -108,7 +108,7 @@ void LowDiscrepancyTest::testSobol() {
     BOOST_MESSAGE("Testing Sobol sequences up to dimension "
                   << PPMT_MAX_DIM << "...");
 
-    Array point;
+    std::vector<Real> point;
     Real tolerance = 1.0e-15;
 
     // testing max dimensionality
@@ -191,7 +191,7 @@ void LowDiscrepancyTest::testFaure() {
 
     BOOST_MESSAGE("Testing Faure sequences...");
 
-    Array point;
+    std::vector<Real> point;
     Real tolerance = 1.0e-15;
 
     // testing "high" dimensionality
@@ -340,7 +340,7 @@ void LowDiscrepancyTest::testHalton() {
 
     BOOST_MESSAGE("Testing Halton sequences...");
 
-    Array point;
+    std::vector<Real> point;
     Real tolerance = 1.0e-15;
 
     // testing "high" dimensionality
@@ -756,7 +756,7 @@ void testGeneratorDiscrepancy(const T& generatorFactory,
     Real tolerance = 1.0e-2;
     #endif
 
-    Array point;
+    std::vector<Real> point;
     Size dim;
     BigNatural seed = 123456;
     Real discr;

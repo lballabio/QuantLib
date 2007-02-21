@@ -155,7 +155,7 @@ namespace QuantLib {
         return sample.weight;
     }
 
-    Real SobolBrownianGenerator::nextStep(Array& output) {
+    Real SobolBrownianGenerator::nextStep(std::vector<Real>& output) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(output.size() == factors_, "size mismatch");
         QL_REQUIRE(lastStep_<steps_, "sequence exhausted");

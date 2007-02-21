@@ -26,13 +26,13 @@ namespace QuantLib {
     : factors_(factors), steps_(steps), lastStep_(0),
       generator_(factors*steps, MersenneTwisterUniformRng(seed)) {}
 
-    Real MTBrownianGenerator::nextStep(Array& output) {
+    Real MTBrownianGenerator::nextStep(std::vector<Real>& output) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(output.size() == factors_, "size mismatch");
         QL_REQUIRE(lastStep_<steps_, "uniform sequence exhausted");
         #endif
         // no copying, just fetching a reference
-        const Array& currentSequence = generator_.lastSequence().value;
+        const std::vector<Real>& currentSequence = generator_.lastSequence().value;
         Size start = lastStep_*factors_, end = (lastStep_+1)*factors_;
         std::transform(currentSequence.begin()+start,
                        currentSequence.begin()+end,

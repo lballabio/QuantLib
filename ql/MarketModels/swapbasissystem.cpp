@@ -26,6 +26,8 @@ namespace QuantLib {
                                      const std::vector<Time>& exerciseTimes)
     : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes),
       rateIndex_(exerciseTimes.size()) {
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])

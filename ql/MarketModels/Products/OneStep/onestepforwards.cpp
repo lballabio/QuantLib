@@ -23,9 +23,9 @@
 namespace QuantLib {
 
     OneStepForwards::OneStepForwards(const std::vector<Time>& rateTimes,
-                                    const std::vector<Real>& accruals,
-                                    const std::vector<Time>& paymentTimes,
-                                    const std::vector<Rate>& strikes)
+                                     const std::vector<Real>& accruals,
+                                     const std::vector<Time>& paymentTimes,
+                                     const std::vector<Rate>& strikes)
     : MultiProductOneStep(rateTimes), accruals_(accruals),
       paymentTimes_(paymentTimes), strikes_(strikes) {}
 

@@ -28,9 +28,9 @@ namespace QuantLib {
     class OneStepForwards : public MultiProductOneStep {
       public:
         OneStepForwards(const std::vector<Time>& rateTimes,
-                                   const std::vector<Real>& accruals,
-                                   const std::vector<Time>& paymentTimes,
-                                   const std::vector<Rate>& strikes);
+                        const std::vector<Real>& accruals,
+                        const std::vector<Time>& paymentTimes,
+                        const std::vector<Rate>& strikes);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const;

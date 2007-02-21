@@ -25,7 +25,7 @@
 #ifndef quantlib_sobol_ld_rsg_hpp
 #define quantlib_sobol_ld_rsg_hpp
 
-#include <ql/Math/array.hpp>
+
 #include <ql/MonteCarlo/sample.hpp>
 #include <vector>
 
@@ -93,7 +93,7 @@ namespace QuantLib {
     */
     class SobolRsg {
       public:
-        typedef Sample<Array> sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         enum DirectionIntegers {
             Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux };
         /*! \pre dimensionality must be <= PPMT_MAX_DIM */

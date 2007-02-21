@@ -46,7 +46,7 @@ namespace QuantLib {
         Size nRates_ = rateTimes_.size() - 1; 
 
         QL_REQUIRE(nRates_>0,
-                   "Rate times must have 2 elements at least");
+                   "Rate times must contain at least two values");
         QL_REQUIRE(rateTimes_[0]>=0.0,
                    "first rate time must be non negative");
         for (Size i=0; i<nRates_; ++i) {

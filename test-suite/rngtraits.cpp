@@ -32,7 +32,7 @@ void RngTraitsTest::testGaussian() {
     PseudoRandom::rsg_type rsg =
         PseudoRandom::make_sequence_generator(100, 1234);
 
-    const Array& values = rsg.nextSequence().value;
+    const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
     for (Size i=0; i<values.size(); i++)
         sum += values[i];
@@ -55,7 +55,7 @@ void RngTraitsTest::testDefaultPoisson() {
     PoissonPseudoRandom::rsg_type rsg =
         PoissonPseudoRandom::make_sequence_generator(100, 1234);
 
-    const Array& values = rsg.nextSequence().value;
+    const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
     for (Size i=0; i<values.size(); i++)
         sum += values[i];
@@ -78,7 +78,7 @@ void RngTraitsTest::testCustomPoisson() {
     PoissonPseudoRandom::rsg_type rsg =
         PoissonPseudoRandom::make_sequence_generator(100, 1234);
 
-    const Array& values = rsg.nextSequence().value;
+    const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
     for (Size i=0; i<values.size(); i++)
         sum += values[i];

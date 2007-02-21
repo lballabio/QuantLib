@@ -21,8 +21,9 @@
 #ifndef quantlib_brownian_generator_hpp
 #define quantlib_brownian_generator_hpp
 
-#include <ql/Math/array.hpp>
+#include <ql/types.hpp>
 #include <boost/shared_ptr.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -31,7 +32,7 @@ namespace QuantLib {
                 
         virtual ~BrownianGenerator() {}
 
-        virtual Real nextStep(Array&) = 0;
+        virtual Real nextStep(std::vector<Real>&) = 0;
         virtual Real nextPath() = 0;
 
         virtual Size numberOfFactors() const = 0;
