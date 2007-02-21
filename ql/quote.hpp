@@ -34,7 +34,7 @@ namespace QuantLib {
     //! purely virtual base class for market observables
     /*! \test the observability of class instances is tested.
      */
-    class Quote : public Observable {
+    class Quote : public virtual Observable {
       public:
         virtual ~Quote() {}
         //! returns the current value

@@ -40,8 +40,8 @@ namespace QuantLib {
                          dayCounter, isInArrears){ }
 
     Rate IborCoupon::indexFixing() const {
-        
-#ifdef QL_USE_INDEXED_COUPON 
+
+#ifdef QL_USE_INDEXED_COUPON
         return index_->fixing(fixingDate());
 #else
         if(isInArrears()){
@@ -96,6 +96,5 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
-
-
 }
+
