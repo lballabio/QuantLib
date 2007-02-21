@@ -44,13 +44,13 @@ QL_TESTS = \
 	marketmodel.hpp marketmodel.cpp \
 	marketmodel_cms.hpp marketmodel_cms.cpp \
 	marketmodel_smm.hpp marketmodel_smm.cpp \
+	marketmodel_smmcapletcalibration.hpp marketmodel_smmcapletcalibration.cpp \
 	matrices.hpp matrices.cpp \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
 	money.hpp money.cpp \
 	operators.hpp operators.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
-	piecewiseflatforward.hpp piecewiseflatforward.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \

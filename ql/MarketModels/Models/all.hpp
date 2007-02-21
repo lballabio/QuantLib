@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,8 +22,13 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/MarketModels/Models/capletcoterminalcalibration.hpp>
 #include <ql/MarketModels/Models/expcorrabcdvol.hpp>
 #include <ql/MarketModels/Models/expcorrflatvol.hpp>
+#include <ql/MarketModels/Models/piecewiseconstantabcdvariance.hpp>
+#include <ql/MarketModels/Models/piecewiseconstantvariance.hpp>
+#include <ql/MarketModels/Models/swapfromfracorrelationstructure.hpp>
+#include <ql/MarketModels/Models/timedependantcorrelationstructure.hpp>
 
 
 #endif
