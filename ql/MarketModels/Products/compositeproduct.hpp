@@ -21,6 +21,7 @@
 #define quantlib_market_model_composite_product_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {

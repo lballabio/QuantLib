@@ -23,13 +23,14 @@
 #define quantlib_forward_rate_normal_pc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/browniangenerator.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
-#include <ql/MarketModels/DriftComputation/lmmnormaldriftcalculator.hpp>
 
 namespace QuantLib {
+
+    class MarketModel;
+    class LMMNormalDriftCalculator;
+    class BrownianGenerator;
+    class BrownianGeneratorFactory;
 
     //! Predictor-Corrector
     class ForwardRateNormalPcEvolver : public MarketModelEvolver {

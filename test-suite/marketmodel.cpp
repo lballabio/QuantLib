@@ -22,6 +22,7 @@
 
 #include "marketmodel.hpp"
 #include "utilities.hpp"
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/Products/OneStep/onestepforwards.hpp>
 #include <ql/MarketModels/Products/OneStep/onestepoptionlets.hpp>
 #include <ql/MarketModels/Products/MultiStep/multistepforwards.hpp>
@@ -68,6 +69,7 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/convergencestatistics.hpp>
+#include <ql/Volatilities/abcd.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Optimization/simplex.hpp>
 #include <sstream>

@@ -22,7 +22,7 @@
 #define quantlib_bermudan_swaption_exercise_value_hpp
 
 #include <ql/MarketModels/exercisevalue.hpp>
-#include <ql/option.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 

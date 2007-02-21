@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,8 +39,9 @@ namespace QuantLib {
         std::vector<Matrix>& pseudoRoots) {
 
         const EvolutionDescription& evolution = corr.evolution();
-        //for
-        //    QL_REQUIRE(evol==displacedSwapVariances.avolution())
+        //for (Size i=0; i<displacedSwapVariances.size(); ++i)
+        //    QL_REQUIRE(evolution==displacedSwapVariances[i]->evolution(),
+        //               "mismatched evolutions");
 
         Size numberOfRates_ = evolution.numberOfRates();
 

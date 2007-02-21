@@ -23,13 +23,14 @@
 #define quantlib_coterminalswap_rate_pc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/browniangenerator.hpp>
-#include <ql/MarketModels/DriftComputation/smmdriftcalculator.hpp>
 #include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 
 namespace QuantLib {
+
+    class MarketModel;
+    class BrownianGenerator;
+    class BrownianGeneratorFactory;
+    class SMMDriftCalculator;
 
     //! Predictor-Corrector
     class CoterminalSwapRatePcEvolver : public MarketModelEvolver {

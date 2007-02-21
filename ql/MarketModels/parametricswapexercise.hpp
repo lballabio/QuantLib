@@ -21,6 +21,7 @@
 #define quantlib_market_model_parametric_swap_exercise_hpp
 
 #include <ql/MarketModels/parametricexercise.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 

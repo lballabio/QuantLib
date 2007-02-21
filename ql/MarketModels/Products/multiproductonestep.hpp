@@ -22,6 +22,7 @@
 #define quantlib_multiproduct_onestep_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 

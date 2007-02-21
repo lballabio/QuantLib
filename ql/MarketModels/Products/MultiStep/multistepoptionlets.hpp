@@ -23,9 +23,10 @@
 #define quantlib_multistep_optionlets_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
-#include <ql/payoff.hpp>
 
 namespace QuantLib {
+
+    class Payoff;
 
     class MultiStepOptionlets : public MultiProductMultiStep {
       public:

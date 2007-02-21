@@ -22,6 +22,7 @@
 #define quantlib_market_model_cash_rebate_hpp
 
 #include <ql/MarketModels/marketmodelproduct.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 

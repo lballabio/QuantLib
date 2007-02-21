@@ -18,6 +18,10 @@
 */
 
 #include <ql/MarketModels/proxygreekengine.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/curvestate.hpp>
+#include <ql/MarketModels/marketmodeldiscounter.hpp>
+#include <ql/MarketModels/marketmodelconstrainedevolver.hpp>
 #include <algorithm>
 
 namespace QuantLib {

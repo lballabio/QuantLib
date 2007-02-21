@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,13 +22,23 @@
 #ifndef quantlib_accounting_engine_hpp
 #define quantlib_accounting_engine_hpp
 
+// to be removed using forward declaration
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
-#include <ql/MarketModels/marketmodelevolver.hpp>
 #include <ql/Math/sequencestatistics.hpp>
+
 #include <ql/Utilities/clone.hpp>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
+
+    class MarketModelEvolver;
+
+    //class MarketModelDiscounter;
+    //class SequenceStatistics;
+    //class MarketModelMultiProduct;
+    //struct MarketModelMultiProduct::CashFlow;
 
     class AccountingEngine {
       public:

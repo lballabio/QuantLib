@@ -18,6 +18,8 @@
 */
 
 #include <ql/MarketModels/parametricexerciseadapter.hpp>
+#include <ql/MarketModels/parametricexercise.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 

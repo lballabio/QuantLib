@@ -21,14 +21,13 @@
 #ifndef quantlib_callspecified_multiproduct_hpp
 #define quantlib_callspecified_multiproduct_hpp
 
+#include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
 
-    /*!
-    */
     class CallSpecifiedMultiProduct : public MarketModelMultiProduct {
      public:
         CallSpecifiedMultiProduct(

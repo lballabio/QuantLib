@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <ql/MarketModels/Products/MultiStep/multistepratchet.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib { 
 

@@ -19,6 +19,10 @@
 */
 
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/browniangenerator.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {

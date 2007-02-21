@@ -22,15 +22,16 @@
 #define quantlib_bermudan_swaption_exercise_value_hpp
 
 #include <ql/MarketModels/exercisevalue.hpp>
-#include <ql/option.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
 
+    class Payoff;
+
     class BermudanSwaptionExerciseValue : public MarketModelExerciseValue {
       public:
-        //! \todo use Payoff
         BermudanSwaptionExerciseValue(const std::vector<Time>& rateTimes,
-                            const std::vector<boost::shared_ptr<Payoff> >&);
+                                      const std::vector<boost::shared_ptr<Payoff> >&);
         Size numberOfExercises() const;
         // including any time at which state should be updated
         const EvolutionDescription& evolution() const;

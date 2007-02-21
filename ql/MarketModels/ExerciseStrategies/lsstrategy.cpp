@@ -20,6 +20,8 @@
 #include <ql/MarketModels/ExerciseStrategies/lsstrategy.hpp>
 #include <ql/MarketModels/marketmodeldiscounter.hpp>
 #include <ql/MarketModels/utilities.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 

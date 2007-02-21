@@ -21,9 +21,12 @@
 #ifndef quantlib_market_model_evolver_hpp
 #define quantlib_market_model_evolver_hpp
 
-#include <ql/MarketModels/curvestate.hpp>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
+
+    class CurveState;
 
     /*! Abstact base class. The evolver does the actual gritty work of
         evolving the forward rates from one time to the next.

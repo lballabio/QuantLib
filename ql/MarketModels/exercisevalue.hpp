@@ -21,12 +21,15 @@
 #ifndef quantlib_market_model_exercise_value_hpp
 #define quantlib_market_model_exercise_value_hpp
 
-#include <ql/MarketModels/curvestate.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
+// to be removed using forward declaration
 #include <ql/MarketModels/marketmodelproduct.hpp>
 #include <memory>
 
 namespace QuantLib {
+
+    class CurveState;
+    class EvolutionDescription;
+    //struct MarketModelMultiProduct::CashFlow;
 
     class MarketModelExerciseValue {
       public:

@@ -18,6 +18,7 @@
 */
 
 #include <ql/MarketModels/swapbasissystem.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 

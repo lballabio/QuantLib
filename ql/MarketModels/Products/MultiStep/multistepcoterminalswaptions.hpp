@@ -22,9 +22,10 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/MarketModels/Products/multiproductmultistep.hpp>
-#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
+
+    class StrikedTypePayoff;
 
     class MultiStepCoterminalSwaptions : public MultiProductMultiStep {
       public:

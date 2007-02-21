@@ -21,11 +21,13 @@
 #ifndef quantlib_market_model_parametric_exercise_adapter_hpp
 #define quantlib_market_model_parametric_exercise_adapter_hpp
 
-#include <ql/MarketModels/parametricexercise.hpp>
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
+
+    class CurveState;
+    class MarketModelParametricExercise;
 
     class ParametricExerciseAdapter : public ExerciseStrategy<CurveState> {
       public:

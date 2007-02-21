@@ -27,7 +27,6 @@
 
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/types.hpp>
 #include <ql/Math/matrix.hpp>
 #include <vector>
 

@@ -18,6 +18,10 @@
 */
 
 #include <ql/MarketModels/accountingengine.hpp>
+#include <ql/MarketModels/marketmodeldiscounter.hpp>
+#include <ql/MarketModels/marketmodelevolver.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 #include <algorithm>
 
 namespace QuantLib {

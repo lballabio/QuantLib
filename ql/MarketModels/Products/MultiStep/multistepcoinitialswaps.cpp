@@ -18,6 +18,7 @@
 */
 
 #include <ql/MarketModels/Products/MultiStep/multistepcoinitialswaps.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 

@@ -18,6 +18,10 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 #include <ql/MarketModels/Evolvers/forwardrateconstrainedeuler.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/MarketModels/browniangenerator.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/duffsdeviceinnerproduct.hpp>
 #include <ql/Math/normaldistribution.hpp>
 

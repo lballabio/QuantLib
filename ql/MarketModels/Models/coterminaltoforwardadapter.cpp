@@ -21,6 +21,7 @@
 #include <ql/MarketModels/Models/coterminaltoforwardadapter.hpp>
 #include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 #include <ql/MarketModels/swapforwardmappings.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 

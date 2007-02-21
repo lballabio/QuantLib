@@ -23,11 +23,10 @@
 
 #include <ql/types.hpp>
 #include <vector>
-#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 
-    //class CurveState;
+    class CurveState;
 
     class MarketModelDiscounter {
       public:

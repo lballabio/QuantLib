@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,11 +26,12 @@
 #define quantlib_smm_drift_calculator_hpp
 
 #include <ql/Math/matrix.hpp>
-#include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
 #include <vector>
 
 namespace QuantLib {
-    class CurveState;
+
+    class CoterminalSwapCurveState;
+
     //! Drift computation for Coterminal Swap Market Models
     /*! \ingroup Market Models */
     class SMMDriftCalculator {
@@ -58,7 +60,6 @@ namespace QuantLib {
         mutable Matrix wkaj_;  // < W(k) | A(j)/P(n) >
         mutable Matrix wkpj_; // < W(k) | P(j)/P(n) >
         mutable Matrix wkajshifted_;
-        //std::vector<Size> downs_, ups_;
     };
 
 }

@@ -24,9 +24,9 @@
 #ifndef quantlib_swap_forward_conversion_matrix_hpp
 #define quantlib_swap_forward_conversion_matrix_hpp
 
+#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 #include <ql/Math/matrix.hpp>
 #include <vector>
-#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 
 namespace QuantLib {
 

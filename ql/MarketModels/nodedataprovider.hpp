@@ -21,10 +21,13 @@
 #ifndef quantlib_market_model_node_data_provider_hpp
 #define quantlib_market_model_node_data_provider_hpp
 
-#include <ql/MarketModels/curvestate.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
+
+    class CurveState;
+    class EvolutionDescription;
 
     class MarketModelNodeDataProvider {
       public:

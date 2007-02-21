@@ -21,13 +21,16 @@
 #ifndef quantlib_longstaff_schwartz_data_collector_hpp
 #define quantlib_longstaff_schwartz_data_collector_hpp
 
-#include <ql/MonteCarlo/nodedata.hpp>
-#include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/nodedataprovider.hpp>
-#include <ql/MarketModels/exercisevalue.hpp>
+#include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
+
+    class MarketModelEvolver;
+    class MarketModelMultiProduct;
+    class MarketModelNodeDataProvider;
+    class MarketModelExerciseValue;
+    struct NodeData;
 
     void collectNodeData(MarketModelEvolver& evolver,
                          MarketModelMultiProduct& product,

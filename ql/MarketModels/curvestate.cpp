@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,8 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-
 #include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
@@ -27,7 +25,7 @@ namespace QuantLib {
     CurveState::CurveState(const std::vector<Time>& rateTimes)
     : rateTimes_(rateTimes.begin(), rateTimes.end()),
       rateTaus_(rateTimes_.size()-1),
-      nRates_(rateTimes_.size()> 0 ? rateTimes_.size()-1 : 0) {
+      nRates_(rateTimes_.empty() ? 0 : rateTimes_.size()-1) {
         QL_REQUIRE(nRates_>0, "no rate times provided");
         for (Size i=0; i<nRates_; ++i) {
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];

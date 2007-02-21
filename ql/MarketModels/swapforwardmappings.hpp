@@ -26,9 +26,10 @@
 #define quantlib_swap_forward_mappings_hpp
 
 #include <ql/Math/matrix.hpp>
-#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
+
+    class CurveState;
 
     class SwapForwardMappings {
       public:

@@ -20,6 +20,7 @@
 
 #include <ql/MarketModels/Models/forwardtocoterminaladapter.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
+#include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/MarketModels/swapforwardmappings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 

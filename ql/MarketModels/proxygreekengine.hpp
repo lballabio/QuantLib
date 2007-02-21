@@ -21,13 +21,17 @@
 #ifndef quantlib_proxy_greek_engine_hpp
 #define quantlib_proxy_greek_engine_hpp
 
+// to be removed using forward declaration
 #include <ql/MarketModels/marketmodelproduct.hpp>
-#include <ql/MarketModels/marketmodeldiscounter.hpp>
-#include <ql/MarketModels/marketmodelconstrainedevolver.hpp>
 #include <ql/Math/sequencestatistics.hpp>
+
 #include <ql/Utilities/clone.hpp>
 
 namespace QuantLib {
+
+    class MarketModelEvolver;
+    class ConstrainedEvolver;
+    class MarketModelDiscounter;
 
     class ProxyGreekEngine {
       public:

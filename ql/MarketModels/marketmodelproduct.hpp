@@ -21,11 +21,14 @@
 #ifndef quantlib_marketmodelmultiproduct_hpp
 #define quantlib_marketmodelmultiproduct_hpp
 
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/curvestate.hpp>
+#include <ql/types.hpp>
+#include <vector>
 #include <memory>
 
 namespace QuantLib {
+
+    class EvolutionDescription;
+    class CurveState;
 
     /*! This is the abstract base class that encapsulates the notion of a
         product: it contains the information that would be in the termsheet

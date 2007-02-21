@@ -22,17 +22,18 @@
 #ifndef quantlib_upper_bound_engine_hpp
 #define quantlib_upper_bound_engine_hpp
 
-#include <ql/MarketModels/marketmodelproduct.hpp>
 #include <ql/MarketModels/Products/multiproductcomposite.hpp>
-#include <ql/MarketModels/marketmodeldiscounter.hpp>
-#include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/exercisevalue.hpp>
 #include <ql/MonteCarlo/exercisestrategy.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/Utilities/clone.hpp>
 #include <utility>
 
 namespace QuantLib {
+
+    class MarketModelEvolver;
+    class MarketModelDiscounter;
+    class MarketModelMultiProduct;
+    class MarketModelExerciseValue;
 
     /*! \pre product and hedge must have the same rate times
              and exercise times

@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,11 +68,11 @@ namespace QuantLib {
         const Matrix& effectiveStopTime() const;
         const std::vector<Size>& firstAliveRate() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
-        Size numberOfRates() const;     // returns rateTimes().size() - 1
-        Size numberOfSteps() const;     // returns evolutionTimes().size()
+        Size numberOfRates() const;
+        Size numberOfSteps() const;
       private:
         std::vector<Time> rateTimes_, evolutionTimes_;
-        Size steps_;
+        //Size steps_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
         std::vector<Time> rateTaus_;
         Matrix effStopTime_;

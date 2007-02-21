@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,15 +22,15 @@
 #ifndef quantlib_swap_rate_pc_evolver_hpp
 #define quantlib_swap_rate_pc_evolver_hpp
 
-#include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/DriftComputation/cmsmmdriftcalculator.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/browniangenerator.hpp>
-
+#include <ql/MarketModels/CurveStates/cmswapcurvestate.hpp>
 
 namespace QuantLib {
+
+    class MarketModel;
+    class CMSMMDriftCalculator;
+    class BrownianGenerator;
+    class BrownianGeneratorFactory;
 
     //! Predictor-Corrector
     class CmSwapRatePcEvolver : public MarketModelEvolver {

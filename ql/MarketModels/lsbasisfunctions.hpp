@@ -38,5 +38,4 @@ namespace QuantLib {
 
 }
 
-
 #endif

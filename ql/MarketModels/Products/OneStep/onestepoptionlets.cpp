@@ -19,6 +19,8 @@
 */
 
 #include <ql/MarketModels/Products/OneStep/onestepoptionlets.hpp>
+#include <ql/MarketModels/curvestate.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

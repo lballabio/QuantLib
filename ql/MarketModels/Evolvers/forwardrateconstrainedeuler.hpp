@@ -23,15 +23,16 @@
 #define quantlib_forward_rate_euler_constrained_evolver_hpp
 
 #include <ql/MarketModels/marketmodelconstrainedevolver.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/browniangenerator.hpp>
-#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 
 namespace QuantLib {
 
-  //! euler stepping
+    class MarketModel;
+    class LMMDriftCalculator;
+    class BrownianGenerator;
+    class BrownianGeneratorFactory;
+
+    //! euler stepping
     class ForwardRateConstrainedEuler : public ConstrainedEvolver
         {
       public:

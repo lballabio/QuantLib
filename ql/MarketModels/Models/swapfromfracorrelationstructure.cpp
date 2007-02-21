@@ -1,7 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Mark Joshi
+ Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

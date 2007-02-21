@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #include <ql/MarketModels/ExerciseValues/bermudanswaptionexercisevalue.hpp>
+#include <ql/payoff.hpp>
+#include <ql/MarketModels/curvestate.hpp>
 
 namespace QuantLib {
 

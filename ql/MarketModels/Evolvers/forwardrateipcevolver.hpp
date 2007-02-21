@@ -23,13 +23,14 @@
 #define quantlib_forward_rate_ipc_evolver_hpp
 
 #include <ql/MarketModels/marketmodelevolver.hpp>
-#include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/browniangenerator.hpp>
-#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
 
 namespace QuantLib {
+
+    class MarketModel;
+    class LMMDriftCalculator;
+    class BrownianGenerator;
+    class BrownianGeneratorFactory;
 
     //! Iterative Predictor-Corrector
     class ForwardRateIpcEvolver : public MarketModelEvolver {

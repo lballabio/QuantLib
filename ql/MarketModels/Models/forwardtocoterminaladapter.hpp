@@ -23,9 +23,10 @@
 #define quantlib_forward_to_coterminal_adapter_hpp
 
 #include <ql/MarketModels/marketmodel.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
 
 namespace QuantLib {
+
+    class EvolutionDescription;
 
     class ForwardToCoterminalAdapter : public MarketModel {
       public:
