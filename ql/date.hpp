@@ -248,7 +248,7 @@ namespace QuantLib {
         /*! returns the IMM code for the given date
             (e.g. H3 for March 20th, 2013).
 
-            \warning It raise an exception if the input
+            \warning It raises an exception if the input
                      date is not an IMM date
         */
         static std::string IMMcode(const Date& immDate);
@@ -256,7 +256,7 @@ namespace QuantLib {
         /*! returns the IMM date for the given IMM code
             (e.g. March 20th, 2013 for H3).
 
-            \warning It raise an exception if the input
+            \warning It raises an exception if the input
                      string is not an IMM code
         */
         static Date IMMdate(const std::string& immCode,

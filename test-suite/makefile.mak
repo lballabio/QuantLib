@@ -72,7 +72,6 @@ QL_TESTS = \
     "old_pricers.obj$(_mt)$(_D)" \
     "operators.obj$(_mt)$(_D)" \
     "pathgenerator.obj$(_mt)$(_D)" \
-    "piecewiseflatforward.obj$(_mt)$(_D)" \
     "piecewiseyieldcurve.obj$(_mt)$(_D)" \
     "quantlibtestsuite.obj$(_mt)$(_D)" \
     "quantooption.obj$(_mt)$(_D)" \

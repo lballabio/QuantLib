@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capletvariancecurve.hpp
-    \brief caplet variance curve
+/*! \file capstripper.hpp
+    \brief caplet volatility stripper
 */
 
 #ifndef quantlib_interpolated_caplet_variance_curve_hpp
@@ -39,10 +39,10 @@
 
 
 namespace QuantLib {
-    
+
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
-    class CapsStripper : public CapletVolatilityStructure, 
+    class CapsStripper : public CapletVolatilityStructure,
                          public LazyObject{
       public:
         CapsStripper(const std::vector<Period>& tenors,
@@ -53,7 +53,7 @@ namespace QuantLib {
          const DayCounter& volatilityDayCounter = Actual365Fixed(),
          Real impliedVolatilityAccuracy = 1.0e-6,
          Size maxEvaluations = 100,
-         const std::vector<boost::shared_ptr<SmileSection> >& 
+         const std::vector<boost::shared_ptr<SmileSection> >&
              smileSectionInterfaces = std::vector<boost::shared_ptr<SmileSection> >(),
          bool allowExtrapolation = true,
          bool decoupleInterpolation = false);
@@ -62,7 +62,7 @@ namespace QuantLib {
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
-        void update() { 
+        void update() {
             TermStructure::update();
             LazyObject::update();
         };
@@ -82,7 +82,7 @@ namespace QuantLib {
         const std::vector<Period>& tenors() { return tenors_; }
         const std::vector<Rate>& strikes() { return strikes_; }
         const CapMatrix& marketDataCap() { return marketDataCap_; }
-        Real impliedVolatilityAccuracy() { 
+        Real impliedVolatilityAccuracy() {
             return impliedVolatilityAccuracy_; }
         boost::shared_ptr<ParametrizedCapletVolStructure>
             parametrizedCapletVolStructure() {
@@ -98,7 +98,7 @@ namespace QuantLib {
         std::vector<Rate> strikes_;
         Real impliedVolatilityAccuracy_;
         Size maxEvaluations_;
-        boost::shared_ptr<ParametrizedCapletVolStructure> 
+        boost::shared_ptr<ParametrizedCapletVolStructure>
             parametrizedCapletVolStructure_;
     };
 

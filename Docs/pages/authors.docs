@@ -41,6 +41,7 @@
     - Enrico Sirola, StatPro Italia srl
     - Klaus Spanderen
     - Niels Elken Sønderby
+    - François du Vignaud, Banca Caboto SpA
     - Joseph Wang
     - François du Vignaud, Banca Caboto SpA
     
@@ -52,14 +53,15 @@
     Joe Byers, Antoine Cellerier, Aurelien Chanudet, Yiping Chen,
     Warren Chou, Jon Davidson, Daniele De Francesco, Piter Dias,
     Silvia Frasson, Matteo Gallivanoni, Roman Gitlin, Richard Gould,
-    Tomoya Kawanishi, Gary Kennedy, Allen Kuo, Roland Lichters, André
-    Louw, Enrico Michelotti, Tiziano Müller, Gilbert Peffer, Walter
-    Penschke, Gianni Piolanti, Fabio Ramponi, Peter Schmitteckert,
-    David Schwartz, Eugene Shevkoplyas, Maxim Sokolov, Marco Tarenghi,
-    Charles Whitmore, Bernd Johannes Wuebben, and Jeff Yu.
+    Tomoya Kawanishi, Gary Kennedy, Allen Kuo, James Lee, Roland
+    Lichters, André Louw, Enrico Michelotti, Tiziano Müller, Gilbert
+    Peffer, Walter Penschke, Gianni Piolanti, Fabio Ramponi, Peter
+    Schmitteckert, David Schwartz, Eugene Shevkoplyas, Maxim Sokolov,
+    Marco Tarenghi, Charles Whitmore, Bernd Johannes Wuebben, and
+    Jeff Yu.
 
-    %QuantLib also includes code taken from Peter Jäckel's book "Monte Carlo
-    Methods in Finance".
+    %QuantLib also includes code taken from Peter Jäckel's book "Monte
+    Carlo Methods in Finance".
 
     %QuantLib includes software developed by the University of
     Chicago, as Operator of Argonne National Laboratory.

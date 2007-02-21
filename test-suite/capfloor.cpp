@@ -60,13 +60,13 @@ std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     return IborLeg(schedule,
-                    nominals_,
-                    index_,
-                    index_->dayCounter(),
-                    fixingDays_,
-                    convention_,
-                    std::vector<Real>(),
-                    std::vector<Spread>());
+                   nominals_,
+                   index_,
+                   index_->dayCounter(),
+                   fixingDays_,
+                   convention_,
+                   std::vector<Real>(),
+                   std::vector<Spread>());
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
@@ -130,7 +130,7 @@ QL_END_TEST_LOCALS(CapFloorTest)
 
 void CapFloorTest::testVega() {
 
-    BOOST_MESSAGE("Testing cap/floor dependency on strike...");
+    BOOST_MESSAGE("Testing cap/floor vega...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -142,7 +142,7 @@ void CapFloorTest::testVega() {
 
     Date startDate = termStructure_->referenceDate();
     static const Real shift = 1e-8;
-    static const Real tolerance = 0.003;
+    static const Real tolerance = 0.004;
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(vols); j++) {
@@ -168,15 +168,16 @@ void CapFloorTest::testVega() {
                             std::fabs(numericalVega - analyticalVega);
                         discrepancy /= numericalVega;
                         if (discrepancy > tolerance)
-                            BOOST_FAIL("failed to compute CapFloor vega:" <<
-                                "\n    lengths:     " << lengths[i]*Years <<
-                                "\n    strike:      " << io::rate(strikes[k]) <<
-                                //"\n    types:       " << types[h] <<
+                            BOOST_FAIL(
+                                "failed to compute cap/floor vega:" <<
+                                "\n   lengths:     " << lengths[j]*Years <<
+                                "\n   strike:      " << io::rate(strikes[k]) <<
+                                //"\n   types:       " << types[h] <<
                                 QL_FIXED << std::setprecision(12) <<
-                                "\n    calculated:  " << analyticalVega <<
-                                "\n    expected:    " << numericalVega <<
-                                "\n    discrepancy: " << discrepancy <<
-                                "\n    error:       " << tolerance);
+                                "\n   calculated:  " << analyticalVega <<
+                                "\n   expected:    " << numericalVega <<
+                                "\n   discrepancy: " << io::rate(discrepancy) <<
+                                "\n   tolerance:   " << io::rate(tolerance));
                      }
                 }
             }

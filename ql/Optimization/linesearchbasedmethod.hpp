@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file method.hpp
+/*! \file linesearchbasedmethod.hpp
     \brief Abstract optimization method class
 */
 

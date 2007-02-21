@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2006 StatPro Italia srl
+ Copyright (C) 2000-2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +18,50 @@
 
 /*! \page history Version history
 
-    <strong>Release 0.3.14 - November 2006</strong>
+    <strong>Release 0.4.0 - February 2007</strong>
+
+    PORTABILITY
+    - Starting with release 0.4.0, the Borland free compiler 5.5 and
+      Microsoft Visual C++ 6.0 are no longer supported.  If you use
+      one of these compilers and want support to continue, you can
+      volunteer for maintaining the necessary patches: contact the
+      QuantLib developers for information.
+
+    CALENDARS
+    - Added 2007 holidays for Hong Kong, India, Singapore, and Taiwan
+      exchanges.
+
+    LIBOR MARKET MODEL
+    - This release includes an experimental implementation of a Libor
+      market model developed with Mark Joshi.  Improvements since
+      release 0.3.14 include the use of quasi-random number generators
+      and the calculation of Greeks and of upper bounds for
+      instruments with early-exercise features.  The interface of the
+      model and its integration with the bulk of the library are still
+      in development.
+
+    INSTRUMENTS
+    - Added helper classes to make it easier to instantiate swaps,
+      caps/floors, and CMS instruments.
+
+    INTEREST RATES
+    - Added capped/floored floating-rate coupons (including convexity
+      adjustment.)
+
+    MATH
+    - Curve, domain and surface interfaces added.
+
+    PROCESSES
+    - Added reversion level to Ornstein-Uhlenbeck process (thanks to
+      Roland Lichters.)
+
+    VOLATILITY TERM STRUCTURES
+    - Added stripping of caplet-volatility term structure from cap
+      quotes.
+    - Improved SABR interpolation and calibration.
+
+
+    <strong>Release 0.3.14 - November 6th, 2006</strong>
 
     PORTABILITY
     - Version 0.3.14 is the last QuantLib release to support the Borland

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006  François du Vignaud
+ Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -73,8 +73,8 @@ using namespace QuantLib;
         for (Size i = 0; i < smileSections_.size(); i++){
             registerWith(smileSections[i]);
             tenorTimes_[i] = smileSections[i]->exerciseTime();
-            if (i>0) 
-                QL_REQUIRE(tenorTimes_[i] > tenorTimes_[i-1], 
+            if (i>0)
+                QL_REQUIRE(tenorTimes_[i] > tenorTimes_[i-1],
                 "Smile sections must in increasing time order !");
         }
 
@@ -116,7 +116,7 @@ using namespace QuantLib;
                 nextLowerTenor, nextHigherTenor);
         }
 
-    
+
     Date SmileSectionsVolStructure::maxDate() const {
         return smileSections_.back()->exerciseDate(); }
     DayCounter SmileSectionsVolStructure::dayCounter() const {

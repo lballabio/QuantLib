@@ -26,7 +26,6 @@ OBJS = \
     "bondhelpers.obj$(_mt)$(_D)" \
     "compoundforward.obj$(_mt)$(_D)" \
     "extendeddiscountcurve.obj$(_mt)$(_D)" \
-    "piecewiseflatforward.obj$(_mt)$(_D)" \
     "piecewiseyieldcurve.obj$(_mt)$(_D)" \
     "ratehelpers.obj$(_mt)$(_D)"
 

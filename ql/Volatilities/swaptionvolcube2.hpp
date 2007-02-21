@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube.hpp
+/*! \file swaptionvolcube2.hpp
     \brief Swaption volatility cube, fit-later-interpolate-early approach
 */
 
@@ -38,7 +38,7 @@ namespace QuantLib {
             const std::vector<Spread>& strikeSpreads,
             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
             const boost::shared_ptr<SwapIndex>& swapIndexBase,
-            bool vegaWeightedSmileFit);        
+            bool vegaWeightedSmileFit);
         ////! \name LazyObject interface
         ////@{
         void performCalculations() const;
@@ -47,7 +47,7 @@ namespace QuantLib {
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
 
-		boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSection> smileSection(
                                               Time optionTime,
                                               Time swapLength) const;
         boost::shared_ptr<SmileSection> smileSection(

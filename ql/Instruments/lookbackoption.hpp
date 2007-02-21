@@ -36,7 +36,7 @@ namespace QuantLib {
         class arguments;
         class engine;
         ContinuousFloatingLookbackOption(
-                          const Real currentMinmax,
+                          Real currentMinmax,
                           const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<TypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise,
@@ -55,7 +55,7 @@ namespace QuantLib {
         class arguments;
         class engine;
         ContinuousFixedLookbackOption(
-                          const Real currentMinmax,
+                          Real currentMinmax,
                           const boost::shared_ptr<StochasticProcess>& process,
                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
                           const boost::shared_ptr<Exercise>& exercise,

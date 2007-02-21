@@ -178,20 +178,18 @@ namespace QuantLib {
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
 
-        return IborLeg(  
-                   Schedule(refDate, refDate + Period(index_->tenor().length()*size_,
-                                                      index_->tenor().units()),
+        return IborLeg(
+                   Schedule(refDate,
+                            refDate + Period(index_->tenor().length()*size_,
+                                             index_->tenor().units()),
                             index_->tenor(), index_->calendar(),
                             index_->businessDayConvention(),
-                            index_->businessDayConvention(), false, false),       
+                            index_->businessDayConvention(), false, false),
                    std::vector<Real>(1, amount),
                    index_,
                    index_->dayCounter(),
                    index_->fixingDays(),
-                   index_->businessDayConvention(),
-                   std::vector<Real>(),
-                   std::vector<Spread>()
-                   );
+                   index_->businessDayConvention());
     }
 
     Size LiborForwardModelProcess::size() const {

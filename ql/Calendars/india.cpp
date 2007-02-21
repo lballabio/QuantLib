@@ -88,6 +88,26 @@ namespace QuantLib {
                 )
                 return false;
         }
+        if (y == 2007) {
+            if (// Bakri Id
+                (d == 1 && m == January)
+                // Moharram
+                || (d == 30 && m == January)
+                // Mahashivratri
+                || (d == 16 && m == February)
+                // Ram Navami
+                || (d == 27 && m == March)
+                // Maharashtra Day
+                || (d == 1 && m == May)
+                // Buddha Pournima 
+                || (d == 2 && m == May)
+                // Laxmi Puja
+                || (d == 9 && m == November)
+                // Bakri Id (again)
+                || (d == 21 && m == December)
+                )
+                return false;
+        }
         return true;
     }
 

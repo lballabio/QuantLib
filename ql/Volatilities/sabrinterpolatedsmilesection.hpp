@@ -68,7 +68,7 @@ namespace QuantLib {
             return sabrInterpolation_.interpolationError(); }
         Real interpolationMaxError() const {
             return sabrInterpolation_.interpolationMaxError(); }
-        EndCriteria::Type endCriteria() const { 
+        EndCriteria::Type endCriteria() const {
             return sabrInterpolation_.endCriteria(); }
         Real minStrike () const { return strikes_.front(); };
         Real maxStrike () const { return strikes_.back(); };
@@ -101,8 +101,8 @@ namespace QuantLib {
                        const DayCounter& dc)
     : SmileSection(optionDate, dc),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
-      stdDevHandles_(stdDevHandles), forward_(forward), 
-      vols_(stdDevHandles.size()), 
+      stdDevHandles_(stdDevHandles), forward_(forward),
+      vols_(stdDevHandles.size()),
       sabrInterpolation_(strikes_.begin(), strikes_.end(), vols_.begin(),
                         exerciseTime(), forwardValue_, alpha, beta, nu, rho,
                         isAlphaFixed, isBetaFixed,
@@ -114,7 +114,7 @@ namespace QuantLib {
             registerWith(stdDevHandles_[i]);
     }
 
-    
+
     inline void SabrInterpolatedSmileSection::performCalculations()
                                                                       const {
         forwardValue_ = 1-forward_->value()/100;
@@ -123,6 +123,7 @@ namespace QuantLib {
         sabrInterpolation_.update();
     }
 
+    #ifndef __DOXYGEN__
     inline Real SabrInterpolatedSmileSection::variance(Real strike) const {
         calculate();
         Real v = sabrInterpolation_(strike, true);
@@ -133,6 +134,8 @@ namespace QuantLib {
         calculate();
         return sabrInterpolation_(strike, true);
     }
+    #endif
+
 }
 
 #endif

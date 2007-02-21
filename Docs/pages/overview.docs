@@ -50,8 +50,7 @@
       ISDA, AFB), 30/360 (US, European, Italian), 1/1.
 
     To do:
-    - Differentiate more calendars depending on country or exchange, instead of
-      city.
+    - Differentiate more calendars depending on exchange besides country.
     - enable business day calculation in addition to calendar days calculation
       in DayCounter::daycount(). See DayTypeEnum in FpML.
 
@@ -289,10 +288,11 @@
 
     <strong>Financial Instruments</strong>
     - Instrument base class: npv(), isExpired(), etc.
-    - Interest-rate swap: simple, normal.
+    - Interest-rate swap.
     - Swaption.
     - Cap/floor.
-    - Fixed-rate coupon bond.
+    - Zero-coupon, fixed-rate coupon, and floating-rate coupon bond.
+    - Convertible bond.
     - Stock.
     - One-asset option base class.
     - Asian option.
@@ -304,11 +304,7 @@
     - Vanilla option.
     - Multi-asset option base class.
     - Basket option.
-
-    To do:
-    - Forward (stock) and FRA (forward-rate agreement).
-    - More bonds.
-
+    - More...
 
 
 
@@ -364,12 +360,12 @@
     <strong>Test suite</strong>
 
     Implemented by means of the Boost unit-test framework.
-    More than 210 automated tests.
+    More than 270 automated tests.
     \htmlonly
-    An automatically-generated list is available <a href="test.html">here</a>.
+    A semi-automatically-generated list is available <a href="test.html">here</a>.
     \endhtmlonly
     \latexonly
-    An automatically-generated list is available in chapter~\ref{test}.
+    A semi-automatically-generated list is available in chapter~\ref{test}.
     \endlatexonly
 
 	To do:

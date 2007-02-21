@@ -117,10 +117,10 @@ namespace QuantLib {
 
         // !!!
         cashflows_ = FixedRateLeg(schedule,
-                                           std::vector<Real>(1, faceAmount_),
-                                           coupons,
-                                           dayCounter,
-                                           schedule.businessDayConvention());
+                                  std::vector<Real>(1, faceAmount_),
+                                  coupons,
+                                  dayCounter,
+                                  schedule.businessDayConvention());
 
         // redemption
         // !!!
@@ -158,10 +158,10 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = IborLeg(schedule, 
+        cashflows_ = IborLeg(schedule,
                            std::vector<Real>(1, faceAmount_),
                            index,dayCounter,
-                           fixingDays, 
+                           fixingDays,
                            schedule.businessDayConvention(),
                            std::vector<Real>(1, 1.0), spreads);
         // redemption

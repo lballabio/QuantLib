@@ -68,10 +68,6 @@ namespace QuantLib {
         else
             nominal_ = dirtyPrice/100*bond->faceAmount();
 
-        DayCounter dc = floatingDayCounter;
-        if (dc==DayCounter())
-            dc = index->dayCounter();
-
         // might become input parameters
         BusinessDayConvention paymentAdjustment = Following;
         Integer fixingDays = index->fixingDays();
@@ -80,7 +76,7 @@ namespace QuantLib {
         Leg floatingLeg = IborLeg(schedule,
                                   std::vector<Real>(1, nominal_),
                                   index,
-                                  dc,
+                                  floatingDayCounter,
                                   fixingDays,
                                   paymentAdjustment,
                                   std::vector<Real>(1, gearing),

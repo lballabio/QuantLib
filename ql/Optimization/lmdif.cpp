@@ -136,7 +136,7 @@ agiant = rgiant/floatn;
 
 for( i=0; i<n; i++ )
 {
-xabs = fabs(x[i]);
+xabs = std::fabs(x[i]);
 if( (xabs > rdwarf) && (xabs < agiant) )
     {
 /*
@@ -188,7 +188,7 @@ else
 if(s1 != zero)
     {
     temp = s1 + (s2/x1max)/x1max;
-    ans = x1max*sqrt(temp);
+    ans = x1max*std::sqrt(temp);
     return(ans);
     }
 if(s2 != zero)
@@ -197,11 +197,11 @@ if(s2 != zero)
         temp = s2*(one+(x3max/s2)*(x3max*s3));
     else
         temp = x3max*((s2/x3max)+(x3max*s3));
-    ans = sqrt(temp);
+    ans = std::sqrt(temp);
     }
 else
     {
-    ans = x3max*sqrt(s3);
+    ans = x3max*std::sqrt(s3);
     }
 return(ans);
 /*
@@ -357,7 +357,7 @@ static double zero = 0.0;
 
 
 temp = dmax1(epsfcn,MACHEP);
-eps = sqrt(temp);
+eps = std::sqrt(temp);
 #if BUG
 printf( "fdjac2\n" );
 #endif
@@ -365,7 +365,7 @@ ij = 0;
 for( j=0; j<n; j++ )
     {
     temp = x[j];
-    h = eps * fabs(temp);
+    h = eps * std::fabs(temp);
     if(h == zero)
         h = eps;
     x[j] = temp + h;
@@ -577,7 +577,7 @@ for( k=jp1; k<n; k++ )
         {
         temp = a[j+m*k]/rdiag[k];
         temp = dmax1( zero, one-temp*temp );
-        rdiag[k] *= sqrt(temp);
+        rdiag[k] *= std::sqrt(temp);
         temp = rdiag[k]/wa[k];
         if( (p05*temp*temp) <= MACHEP)
             {
@@ -740,16 +740,16 @@ for( k=j; k<n; k++ )
     if(sdiag[k] == zero)
         continue;
     kk = k + ldr * k;
-    if(fabs(r[kk]) < fabs(sdiag[k]))
+    if(std::fabs(r[kk]) < std::fabs(sdiag[k]))
         {
         cotan = r[kk]/sdiag[k];
-        sin = p5/sqrt(p25+p25*cotan*cotan);
+        sin = p5/std::sqrt(p25+p25*cotan*cotan);
         cos = sin*cotan;
         }
     else
         {
         tan = sdiag[k]/r[kk];
-        cos = p5/sqrt(p25+p25*tan*tan);
+        cos = p5/std::sqrt(p25+p25*tan*tan);
         sin = cos*tan;
         }
 /*
@@ -1080,7 +1080,7 @@ iter += 1;
 */
 if( *par == zero)
     *par = dmax1(DWARF,p001*paru);
-temp = sqrt( *par );
+temp = std::sqrt( *par );
 for( j=0; j<n; j++ )
     wa1[j] = temp*diag[j];
 qrsolv(n,r,ldr,ipvt,wa1,qtb,x,sdiag,wa2);
@@ -1094,7 +1094,7 @@ fp = dxnorm - delta;
 *    of par. also test for the exceptional cases where parl
 *    is zero or the number of iterations has reached 10.
 */
-if( (fabs(fp) <= p1*delta)
+if( (std::fabs(fp) <= p1*delta)
  || ((parl == zero) && (fp <= temp) && (temp < zero))
  || (iter == 10) )
     goto L220;
@@ -1509,7 +1509,7 @@ for( j=0; j<n; j++ )
                 sum += fjac[ij]*(qtf[i]/fnorm);
                 ij += 1; /* fjac[i+m*j] */
                 }
-            gnorm = dmax1(gnorm,fabs(sum/wa2[l]));
+            gnorm = dmax1(gnorm,std::fabs(sum/wa2[l]));
             }
         jj += m;
         }
@@ -1594,7 +1594,7 @@ for( j=0; j<n; j++ )
     jj += m;
     }
 temp1 = enorm(n,wa3)/fnorm;
-temp2 = (sqrt(par)*pnorm)/fnorm;
+temp2 = (std::sqrt(par)*pnorm)/fnorm;
 prered = temp1*temp1 + (temp2*temp2)/p5;
 dirder = -(temp1*temp1 + temp2*temp2);
 /*
@@ -1649,13 +1649,13 @@ if(ratio >= p0001)
 /*
 *       tests for convergence.
 */
-if( (fabs(actred) <= ftol)
+if( (std::fabs(actred) <= ftol)
   && (prered <= ftol)
   && (p5*ratio <= one) )
     *info = 1;
 if(delta <= xtol*xnorm)
     *info = 2;
-if( (fabs(actred) <= ftol)
+if( (std::fabs(actred) <= ftol)
   && (prered <= ftol)
   && (p5*ratio <= one)
   && ( *info == 2) )
@@ -1667,7 +1667,7 @@ if( *info != 0)
 */
 if( *nfev >= maxfev)
     *info = 5;
-if( (fabs(actred) <= MACHEP)
+if( (std::fabs(actred) <= MACHEP)
   && (prered <= MACHEP)
   && (p5*ratio <= one) )
     *info = 6;

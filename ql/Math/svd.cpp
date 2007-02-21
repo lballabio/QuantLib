@@ -49,7 +49,7 @@ namespace QuantLib {
                 return std::fabs(b);
             } else {
                 Real c = b/a;
-                return std::fabs(a) * sqrt(1 + c*c);
+                return std::fabs(a) * std::sqrt(1 + c*c);
             }
         }
 
@@ -394,7 +394,7 @@ namespace QuantLib {
                   Real c = (sp*epm1)*(sp*epm1);
                   Real shift = 0.0;
                   if ((b != 0.0) | (c != 0.0)) {
-                      shift = sqrt(b*b + c);
+                      shift = std::sqrt(b*b + c);
                       if (b < 0.0) {
                           shift = -shift;
                       }

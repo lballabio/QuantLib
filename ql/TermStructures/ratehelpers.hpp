@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -84,6 +84,7 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over deposit rates
     class DepositRateHelper : public RelativeDateRateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
                           Integer settlementDays,
@@ -96,22 +97,39 @@ namespace QuantLib {
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
+        #endif
+        DepositRateHelper(const Handle<Quote>& rate,
+                          const Period& tenor,
+                          Integer settlementDays,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          bool endOfMonth,
+                          Integer fixingDays,
+                          const DayCounter& dayCounter);
+        DepositRateHelper(Rate rate,
+                          const Period& tenor,
+                          Integer settlementDays,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          bool endOfMonth,
+                          Integer fixingDays,
+                          const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
+        void setTermStructure(YieldTermStructure*);
       private:
         void initializeDates();
-        Period tenor_;
+        Date fixingDate_;
         Integer settlementDays_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        DayCounter dayCounter_;
-        Time yearFraction_;
+        boost::shared_ptr<IborIndex> index_;
+        Handle<YieldTermStructure> termStructureHandle_;
     };
 
 
     //! Rate helper for bootstrapping over %FRA rates
     class FraRateHelper : public RelativeDateRateHelper {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         FraRateHelper(const Handle<Quote>& rate,
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
@@ -124,16 +142,33 @@ namespace QuantLib {
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       const DayCounter& dayCounter);
+        #endif
+        FraRateHelper(const Handle<Quote>& rate,
+                      Integer monthsToStart, Integer monthsToEnd,
+                      Integer settlementDays,
+                      const Calendar& calendar,
+                      BusinessDayConvention convention,
+                      bool endOfMonth,
+                      Integer fixingDays,
+                      const DayCounter& dayCounter);
+        FraRateHelper(Rate rate,
+                      Integer monthsToStart, Integer monthsToEnd,
+                      Integer settlementDays,
+                      const Calendar& calendar,
+                      BusinessDayConvention convention,
+                      bool endOfMonth,
+                      Integer fixingDays,
+                      const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
+        void setTermStructure(YieldTermStructure*);
       private:
         void initializeDates();
-        Integer monthsToStart_, monthsToEnd_;
+        Date fixingDate_;
+        Integer monthsToStart_;
         Integer settlementDays_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        DayCounter dayCounter_;
-        Time yearFraction_;
+        boost::shared_ptr<IborIndex> index_;
+        Handle<YieldTermStructure> termStructureHandle_;
     };
 
     //! Rate helper for bootstrapping over swap rates

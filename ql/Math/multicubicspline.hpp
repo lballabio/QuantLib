@@ -246,7 +246,8 @@ namespace QuantLib {
                     &u = ((y2[0] = y[2]) -= y[1]) /= d[1], &t = v[dim];
                 y2[1] = -d[1] / d2[0], v[1] = 6.0 * (u - w) / d2[0];
                 for(; k < dim; u = w, j = k, k = l, ++l) {
-                    (u -= ((w = y[l]) -= y[k]) /= d[k]) *= 6.0;
+                    w = (y[l]-y[k])/d[k];
+                    u = (u-w)*6.0;
                     (y2[k] = d[k]) /= ((t = -y2[j]) *= d[j]) -= d2[j];
                     (v[k] = (u += d[j] * v[j])) /= t;
                 }

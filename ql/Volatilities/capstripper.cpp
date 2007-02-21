@@ -75,7 +75,7 @@ namespace QuantLib {
          const std::vector<Rate>& strikes,
          const std::vector<std::vector<Handle<Quote> > >& vols,
          const boost::shared_ptr<IborIndex>& index,
-         const Handle< YieldTermStructure > termStructure,
+         const Handle< YieldTermStructure >,
          const DayCounter& volatilityDayCounter,
          Real impliedVolatilityAccuracy,
          Size maxEvaluations,

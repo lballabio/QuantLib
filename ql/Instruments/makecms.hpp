@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaswap.hpp
-    \brief Simple cms-rate vs Libor swap
+/*! \file makecms.hpp
+    \brief Helper class to instantiate standard market CMS.
 */
 
 #ifndef quantlib_makecms_hpp
@@ -71,7 +71,7 @@ namespace QuantLib {
         MakeCms& withFloatingLegFirstDate(const Date& d);
         MakeCms& withFloatingLegNextToLastDate(const Date& d);
         MakeCms& withFloatingLegDayCount(const DayCounter& dc);
-        
+
       private:
         Period swapTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
@@ -91,7 +91,7 @@ namespace QuantLib {
 
         bool payCms_;
         Real nominal_;
-        Period cmsTenor_, floatTenor_; 
+        Period cmsTenor_, floatTenor_;
         BusinessDayConvention cmsConvention_, cmsTerminationDateConvention_;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
         bool cmsBackward_, floatBackward_;

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,7 +48,7 @@ namespace QuantLib {
             // Labor Day
             || (d == 1 && m == May)
             // SAR Establishment Day
-            || (d == 1 && m == July)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == July)
             // National Day
             || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
                 && m == October)
@@ -97,6 +98,20 @@ namespace QuantLib {
                 || (d == 7 && m == October)
                 // Chung Yeung festival
                 || (d == 30 && m == October))
+            return false;
+        }
+
+        if (y == 2007) {
+            if (// Lunar New Year
+                ((d >= 17 && d <= 20) && m == January)
+                // Buddha's birthday
+                || (d == 24 && m == May)
+                // Tuen NG festival
+                || (d == 19 && m == June)
+                // Mid-autumn festival
+                || (d == 26 && m == September)
+                // Chung Yeung festival
+                || (d == 19 && m == October))
             return false;
         }
 

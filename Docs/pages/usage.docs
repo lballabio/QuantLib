@@ -39,24 +39,14 @@
     A few suggestions for Visual C++ users wanting to use %QuantLib into their
     own application:
     -# you won't have to explicitly link your application to the QuantLib
-    library. This is done automatically by compiler directives embedded
-    in the sources.
+       library. This is done automatically by compiler directives embedded
+       in the sources.
     -# Your project must be compiled with the same options that were used in
-    compiling the %QuantLib library you're linking with.
-    For VC6 please
-
-    a) select the appropriate run-time library under project settings,
-    "C/C++" tab, "Code Generation",
-
-    b) check the "Use RTTI" option under the "C++ Language" category.
-
-    For VC7 (.NET) under
-
-    a) Property Pages -> C/C++ -> Code Generation -> Runtime Library:
-    please select the appropriate run-time library.
-
-    b) Property Pages -> C/C++ -> Code Generation -> Basic Runtime Checks:
-    please select "Both (/RTC1, equiv. to /RTCsu)".
+       compiling the %QuantLib library you're linking with, namely,
+       - Property Pages -> C/C++ -> Code Generation -> Runtime Library:
+         select the appropriate run-time library.
+       - Property Pages -> C/C++ -> Code Generation -> Basic Runtime Checks:
+         select "Both (/RTC1, equiv. to /RTCsu)".
 
 */
 

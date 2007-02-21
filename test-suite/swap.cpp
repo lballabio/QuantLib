@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -263,28 +263,28 @@ void SwapTest::testInArrears() {
     std::vector<Rate> coupons(1, oneYear);
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
         FixedRateLeg(schedule, nominals, coupons,
-                              dayCounter, Following);
+                     dayCounter, Following);
 
 
     std::vector<Real> gearings;
     std::vector<Rate> spreads;
     Integer fixingDays = 0;
-    
+
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
         boost::shared_ptr<CapletVolatilityStructure>(
                          new CapletConstantVolatility(today_,capletVolatility,
                                                       dayCounter)));
-    boost::shared_ptr<IborCouponPricer> 
+    boost::shared_ptr<IborCouponPricer>
             pricer(new BlackIborCouponPricer(vol));
 
     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-        IborInArrearsLeg(schedule, 
+        IborInArrearsLeg(schedule,
                 nominals,
                 index,
                 pricer,
                 dayCounter,
-                fixingDays, 
+                fixingDays,
                 Following,
                 gearings, spreads);
 

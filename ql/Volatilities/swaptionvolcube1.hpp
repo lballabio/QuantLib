@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcubebysabr.hpp
+/*! \file swaptionvolcube1.hpp
     \brief Swaption volatility cube, fit-early-interpolate-later approach
 */
 
@@ -151,7 +151,7 @@ namespace QuantLib {
         const boost::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
     };
-    
+
 }
 
 #endif

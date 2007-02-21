@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 François Du Vignaud
+ Copyright (C) 2006 François du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
 

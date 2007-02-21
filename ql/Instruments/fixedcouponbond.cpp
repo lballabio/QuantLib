@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -56,10 +56,10 @@ namespace QuantLib {
 
         // !!!
         cashflows_ = FixedRateLeg(schedule,
-                                           std::vector<Real>(1, faceAmount_),
-                                           coupons,
-                                           dayCounter,
-                                           paymentConvention);
+                                  std::vector<Real>(1, faceAmount_),
+                                  coupons,
+                                  dayCounter,
+                                  paymentConvention);
 
         // redemption
         // !!!

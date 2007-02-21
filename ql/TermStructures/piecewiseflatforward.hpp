@@ -28,14 +28,6 @@
 
 #if !defined(QL_PATCH_MSVC6)
 
-namespace QuantLib {
-
-    //! Piecewise flat-forward term structure
-    /*! \ingroup yieldtermstructures */
-    typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
-
-}
-
 #else
 
 namespace QuantLib {

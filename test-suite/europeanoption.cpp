@@ -785,13 +785,19 @@ void EuropeanOptionTest::testImpliedVol() {
                   Volatility implVol = 0.0; // just to remove a warning...
                   if (value != 0.0) {
                       // shift guess somehow
-                      vol->setValue(v*1.5);
+                      vol->setValue(v*0.5);
+                      if (std::fabs(value-option->NPV()) <= 1.0e-12) {
+                          // flat price vs vol --- pointless (and
+                          // numerically unstable) to solve
+                          continue;
+                      }
                       try {
                           implVol = option->impliedVolatility(value,
                                                               tolerance,
                                                               maxEvaluations);
                       } catch (std::exception& e) {
-                          BOOST_FAIL("\nimplied vol calculation failed:" <<
+                          BOOST_ERROR(
+                              "\nimplied vol calculation failed:" <<
                               "\n   option:         " << types[i] <<
                               "\n   strike:         " << strikes[j] <<
                               "\n   spot value:     " << u <<
@@ -809,7 +815,7 @@ void EuropeanOptionTest::testImpliedVol() {
                           Real value2 = option->NPV();
                           Real error = relativeError(value,value2,u);
                           if (error > tolerance) {
-                              BOOST_FAIL(
+                              BOOST_ERROR(
                                   types[i] << " option :\n"
                                   << "    spot value:          " << u << "\n"
                                   << "    strike:              "
@@ -891,24 +897,24 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     option1->impliedVolatility(refValue*1.5, tolerance, maxEvaluations);
 
     if (f.isUp())
-        BOOST_FAIL("implied volatility calculation triggered a change "
-                   "in another instrument");
+        BOOST_ERROR("implied volatility calculation triggered a change "
+                    "in another instrument");
 
     option2->recalculate();
     if (std::fabs(option2->NPV() - refValue) >= 1.0e-8)
-        BOOST_FAIL("implied volatility calculation changed the value "
-                   << "of another instrument: \n"
-                   << std::setprecision(8)
-                   << "previous value: " << refValue << "\n"
-                   << "current value:  " << option2->NPV());
+        BOOST_ERROR("implied volatility calculation changed the value "
+                    << "of another instrument: \n"
+                    << std::setprecision(8)
+                    << "previous value: " << refValue << "\n"
+                    << "current value:  " << option2->NPV());
 
     vol->setValue(vol->value()*1.5);
 
     if (!f.isUp())
-        BOOST_FAIL("volatility change not notified");
+        BOOST_ERROR("volatility change not notified");
 
     if (std::fabs(option2->NPV() - refValue) <= 1.0e-8)
-        BOOST_FAIL("volatility change did not cause the value to change");
+        BOOST_ERROR("volatility change did not cause the value to change");
 
 }
 
@@ -986,7 +992,7 @@ void testEngineConsistency(EngineType *engines,
                           Real value = options[engines[ii]]->NPV();
                           Real relErr = relativeError(value,refValue,u);
                           if (relErr > tolerance) {
-                              BOOST_FAIL(
+                              BOOST_ERROR(
                                   "European " << types[i] << " option :\n"
                                   << "    spot value: " << u << "\n"
                                   << "    strike:           "

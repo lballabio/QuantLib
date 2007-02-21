@@ -195,16 +195,16 @@ namespace QuantLib {
     }
 
     Real G2ForwardProcess::xForwardDrift(Time t, Time T) const {
-        Real expatT = exp(-a_*(T-t));
-        Real expbtT = exp(-b_*(T-t));
+        Real expatT = std::exp(-a_*(T-t));
+        Real expbtT = std::exp(-b_*(T-t));
 
         return -(sigma_*sigma_/a_) * (1-expatT)
               - (rho_*sigma_*eta_/b_) * (1-expbtT);
     }
 
     Real G2ForwardProcess::yForwardDrift(Time t, Time T) const {
-        Real expatT = exp(-a_*(T-t));
-        Real expbtT = exp(-b_*(T-t));
+        Real expatT = std::exp(-a_*(T-t));
+        Real expbtT = std::exp(-b_*(T-t));
 
         return -(eta_*eta_/b_) * (1-expbtT)
               - (rho_*sigma_*eta_/a_) * (1-expatT);
@@ -213,20 +213,22 @@ namespace QuantLib {
     Real G2ForwardProcess::Mx_T(Real s, Real t, Real T) const {
         Real M;
         M = ( (sigma_*sigma_)/(a_*a_) + (rho_*sigma_*eta_)/(a_*b_) )
-          * (1-exp(-a_*(t-s)));
-        M += -(sigma_*sigma_)/(2*a_*a_) * (exp(-a_*(T-t))-exp(-a_*(T+t-2*s)));
+          * (1-std::exp(-a_*(t-s)));
+        M += -(sigma_*sigma_)/(2*a_*a_) *
+              (std::exp(-a_*(T-t))-std::exp(-a_*(T+t-2*s)));
         M += -(rho_*sigma_*eta_)/(b_*(a_+b_))
-            * (exp(-b_*(T-t)) -exp(-b_*T-a_*t+(a_+b_)*s));
+            * (std::exp(-b_*(T-t)) -std::exp(-b_*T-a_*t+(a_+b_)*s));
         return M;
     }
 
     Real G2ForwardProcess::My_T(Real s, Real t, Real T) const {
         Real M;
         M = ( (eta_*eta_)/(b_*b_) + (rho_*sigma_*eta_)/(a_*b_) )
-          * (1-exp(-b_*(t-s)));
-        M += -(eta_*eta_)/(2*b_*b_) * (exp(-b_*(T-t))-exp(-b_*(T+t-2*s)));
+          * (1-std::exp(-b_*(t-s)));
+        M += -(eta_*eta_)/(2*b_*b_) *
+              (std::exp(-b_*(T-t))-std::exp(-b_*(T+t-2*s)));
         M += -(rho_*sigma_*eta_)/(a_*(a_+b_))
-            * (exp(-a_*(T-t))-exp(-a_*T-b_*t+(a_+b_)*s));
+            * (std::exp(-a_*(T-t))-std::exp(-a_*T-b_*t+(a_+b_)*s));
         return M;
     }
 

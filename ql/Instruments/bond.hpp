@@ -66,6 +66,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         Date settlementDate() const;
+        Date issueDate() const;
         Date maturityDate() const;
         Date interestAccrualDate() const;
         /*! \warning the returned vector includes the redemption as
@@ -167,6 +168,10 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline Date Bond::issueDate() const {
+        return issueDate_;
+    }
 
     inline Date Bond::maturityDate() const {
         return maturityDate_;

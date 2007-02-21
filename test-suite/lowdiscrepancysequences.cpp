@@ -739,24 +739,21 @@ class HaltonFactory {
 
 template <class T>
 void testGeneratorDiscrepancy(const T& generatorFactory,
+                              #ifndef PRINT_ONLY
                               const Real * const discrepancy[8],
+                              const std::string&,
+                              const std::string&
+                              #else
+                              const Real * const [8],
                               const std::string& fileName,
-                              const std::string& arrayName) {
+                              const std::string& arrayName
+                              #endif
+                              ) {
 
     QL_TEST_START_TIMING
 
     #ifndef PRINT_ONLY
     Real tolerance = 1.0e-2;
-    #endif
-
-    // just to avoid Borland warning
-    #if defined(QL_PATCH_BORLAND)
-    #ifndef PRINT_ONLY
-    fileName;
-    arrayName;
-    #else
-    discrepancy;
-    #endif
     #endif
 
     Array point;

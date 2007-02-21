@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,8 +25,9 @@
 #ifndef quantlib_least_square_hpp
 #define quantlib_least_square_hpp
 
+#include <ql/Optimization/problem.hpp>
+#include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Math/matrix.hpp>
-#include <ql/Optimization/costfunction.hpp>
 
 namespace QuantLib {
 

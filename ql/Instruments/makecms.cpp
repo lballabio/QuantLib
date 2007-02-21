@@ -99,16 +99,16 @@ namespace QuantLib {
 
         Leg cmsLeg =
             CmsLeg(cmsSchedule,
-                            std::vector<Real>(1, nominal_),
-                            swapIndex_,
-                            cmsVanillapricer_,
-                            cmsDayCount_,
-                            swapIndex_->fixingDays(),
-                            cmsConvention_,
-                            std::vector<Real>(1, cmsGearing_),
-                            std::vector<Spread>(1, cmsSpread_),
-                            std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_));
+                   std::vector<Real>(1, nominal_),
+                   swapIndex_,
+                   cmsVanillapricer_,
+                   cmsDayCount_,
+                   swapIndex_->fixingDays(),
+                   cmsConvention_,
+                   std::vector<Real>(1, cmsGearing_),
+                   std::vector<Spread>(1, cmsSpread_),
+                   std::vector<Rate>(1, cmsCap_),
+                   std::vector<Rate>(1, cmsFloor_));
 
         Leg floatLeg =
             IborLeg(floatSchedule,
@@ -155,16 +155,16 @@ namespace QuantLib {
 
         Leg cmsLeg =
             CmsLeg(cmsSchedule,
-                            std::vector<Real>(1, nominal_),
-                            swapIndex_,
-                            cmsVanillapricer_,
-                            cmsDayCount_,
-                            swapIndex_->fixingDays(),
-                            cmsConvention_,
-                            std::vector<Real>(1, cmsGearing_),
-                            std::vector<Spread>(1, cmsSpread_),
-                            std::vector<Rate>(1, cmsCap_),
-                            std::vector<Rate>(1, cmsFloor_));
+                   std::vector<Real>(1, nominal_),
+                   swapIndex_,
+                   cmsVanillapricer_,
+                   cmsDayCount_,
+                   swapIndex_->fixingDays(),
+                   cmsConvention_,
+                   std::vector<Real>(1, cmsGearing_),
+                   std::vector<Spread>(1, cmsSpread_),
+                   std::vector<Rate>(1, cmsCap_),
+                   std::vector<Rate>(1, cmsFloor_));
 
         Leg floatLeg =
             IborLeg(floatSchedule,

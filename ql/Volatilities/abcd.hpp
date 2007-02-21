@@ -31,7 +31,7 @@
 
 namespace QuantLib {
 
-    inline void validateAbcdParameters(Real a, Real b, Real c, Real d) {
+    inline void validateAbcdParameters(Real a, Real, Real c, Real d) {
         QL_REQUIRE(a+d>=0,
                    "a+d (" << a << ", " << d <<") must be non negative");
         QL_REQUIRE(c>=0,
@@ -132,7 +132,7 @@ namespace QuantLib {
                 ) / (4*c_*c_*c_*k2*k3);
     }
 
-    inline Real AbcdFunction::covariance(Time t1, Time t2, Time T, Time S) 
+    inline Real AbcdFunction::covariance(Time t1, Time t2, Time T, Time S)
         const {
         QL_REQUIRE(t1<=t2,
                    "integrations bounds (" << t1 <<

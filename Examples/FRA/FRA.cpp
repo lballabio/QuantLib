@@ -73,7 +73,7 @@ int main(int, char* []) {
         Settings::instance().evaluationDate() = todaysDate;
 
         Calendar calendar = euribor3m->calendar();
-        Integer fixingDays = euribor3m->settlementDays();
+        Integer fixingDays = euribor3m->fixingDays();
         Date settlementDate = calendar.advance(todaysDate, fixingDays, Days);
 
         std::cout << "Today: " << todaysDate.weekday()
@@ -130,30 +130,36 @@ int main(int, char* []) {
 
         DayCounter fraDayCounter = euribor3m->dayCounter();
         BusinessDayConvention convention = euribor3m->businessDayConvention();
+        bool endOfMonth = euribor3m->endOfMonth();
 
         boost::shared_ptr<RateHelper> fra1x4(
                            new FraRateHelper(h1x4, 1, 4,
                                              fixingDays, calendar, convention,
+                                             endOfMonth, fixingDays,
                                              fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra2x5(
                            new FraRateHelper(h2x5, 2, 5,
                                              fixingDays, calendar, convention,
+                                             endOfMonth, fixingDays,
                                              fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra3x6(
                            new FraRateHelper(h3x6, 3, 6,
                                              fixingDays, calendar, convention,
+                                             endOfMonth, fixingDays,
                                              fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra6x9(
                            new FraRateHelper(h6x9, 6, 9,
                                              fixingDays, calendar, convention,
+                                             endOfMonth, fixingDays,
                                              fraDayCounter));
 
         boost::shared_ptr<RateHelper> fra9x12(
                            new FraRateHelper(h9x12, 9, 12,
                                              fixingDays, calendar, convention,
+                                             endOfMonth, fixingDays,
                                              fraDayCounter));
 
 
@@ -177,8 +183,9 @@ int main(int, char* []) {
         fraInstruments.push_back(fra6x9);
         fraInstruments.push_back(fra9x12);
 
-        boost::shared_ptr<YieldTermStructure> fraTermStructure(new
-                    PiecewiseFlatForward(settlementDate, fraInstruments,
+        boost::shared_ptr<YieldTermStructure> fraTermStructure(
+                     new PiecewiseYieldCurve<Discount,LogLinear>(
+                                         settlementDate, fraInstruments,
                                          termStructureDayCounter, tolerance));
 
 

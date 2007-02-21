@@ -24,14 +24,15 @@
 #include <ql/Math/gaussianorthogonalpolynomial.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/errors.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
     Real GaussianOrthogonalPolynomial::value(Size n, Real x) const {
         if (n > 1) {
-            return  (x-alpha(n-1)) * value(n-1, x) 
+            return  (x-alpha(n-1)) * value(n-1, x)
                        - beta(n-1) * value(n-2, x);
-        } 
+        }
         else if (n == 1) {
             return x-alpha(0);
         }
@@ -157,7 +158,7 @@ namespace QuantLib {
     : GaussJacobiPolynomial(-0.5, -0.5) {
     }
 
-    GaussGegenbauerPolynomial::GaussGegenbauerPolynomial(Real lambda) 
+    GaussGegenbauerPolynomial::GaussGegenbauerPolynomial(Real lambda)
     : GaussJacobiPolynomial(lambda-0.5, lambda-0.5){
     }
 

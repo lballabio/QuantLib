@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -192,6 +192,15 @@ namespace QuantLib {
 
     #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
+    //! Piecewise flat-forward term structure
+    /*! \ingroup yieldtermstructures
+        \deprecated provide your own typedef if needed
+    */
+    typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
+    #endif
+
+
     // inline definitions
 
     template <class C, class I>
@@ -256,34 +265,32 @@ namespace QuantLib {
         QL_REQUIRE(!instruments_.empty(), "no instrument given");
 
         // sort rate helpers
-        Size i;
-        for (i=0; i<instruments_.size(); i++)
+        for (Size i=0; i<instruments_.size(); i++)
             instruments_[i]->setTermStructure(this);
         std::sort(instruments_.begin(),instruments_.end(),
                   detail::RateHelperSorter());
         // check that there is no instruments with the same maturity
-        for (i=1; i<instruments_.size(); i++) {
+        for (Size i=1; i<instruments_.size(); i++) {
             Date m1 = instruments_[i-1]->latestDate(),
                  m2 = instruments_[i]->latestDate();
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity ("<< m1 <<")");
         }
-        for (i=0; i<instruments_.size(); i++)
+        for (Size i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
     }
 
     template <class C, class I>
     void PiecewiseYieldCurve<C,I>::performCalculations() const
     {
-        Size i;
         // check that there is no instruments with invalid quote
-        for (i=0; i<instruments_.size(); i++)
+        for (Size i=0; i<instruments_.size(); i++)
             QL_REQUIRE(instruments_[i]->referenceQuote()!=Null<Real>(),
                        "instrument with null price");
 
         // setup vectors
         Size n = instruments_.size();
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             // don't try this at home!
             instruments_[i]->setTermStructure(
                                  const_cast<PiecewiseYieldCurve<C,I>*>(this));
@@ -304,8 +311,7 @@ namespace QuantLib {
         // bootstrapping loop
         for (Size iteration = 0; ; iteration++) {
             std::vector<Real> previousData = this->data_;
-            Size i;
-            for (i=1; i<n+1; i++) {
+            for (Size i=1; i<n+1; i++) {
                 if (iteration == 0) {
                     // extend interpolation a point at a time
                     if (I::global && i < 2) {
@@ -352,7 +358,7 @@ namespace QuantLib {
                 break;   // no need for convergence loop
 
             Real improvement = 0.0;
-            for (i=1; i<n+1; i++)
+            for (Size i=1; i<n+1; i++)
                 improvement += std::abs(this->data_[i]-previousData[i]);
             if (improvement <= n*accuracy_)  // convergence reached
                 break;

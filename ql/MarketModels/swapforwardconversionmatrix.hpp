@@ -31,21 +31,21 @@
 namespace QuantLib {
 
     //! Swaption covariance matrix approximation for Market Models
-    /*! \ingroup Market Models */
-
-    class SwapCovarianceApproximator {
-      public:
-    /*! Given the forward covariance matrix, it returns 
+    /*! Given the forward covariance matrix, it returns
         an approximation for the corresponding coterminal swap
         covariance matrix. See e.g.:
-        [1] P. Jackel, R. Rebonato, "\it {Linking Caplet and Swaption
-            Volatilities in a BGM/J Framework: Approximate Solutions}", 
-            QUARCH preprint, 2000 (http://www.quarchome.org).
-        [2] R. Rebonato, "\it {Modern Pricing of Interest Rate Derivatives}",
-            Princeton University Press (2002).
-        [3] M. Joshi, "\it {The Concepts and Practice of Mathematical 
-            Finance}", Cambridge University Press (2003).
+        -# P. Jackel, R. Rebonato, <i>Linking Caplet and Swaption
+           Volatilities in a BGM/J Framework: Approximate Solutions</i>,
+           QUARCH preprint, 2000 (http://www.quarchome.org).
+        -# R. Rebonato, <i>Modern Pricing of Interest Rate Derivatives</i>,
+           Princeton University Press (2002).
+        -# M. Joshi, <i>The Concepts and Practice of Mathematical
+           Finance</i>, Cambridge University Press (2003).
+
+        \ingroup Market Models
     */
+    class SwapCovarianceApproximator {
+      public:
         SwapCovarianceApproximator(const CurveState& initialCurveState,
                                    Size expiry,
                                    Size maturity,
@@ -53,11 +53,11 @@ namespace QuantLib {
                                    const Matrix& forwardCovarianceMatrix);
 
         /*! Given the forward covariance matrix, it returns the approximated
-            swap covariance matrix corresponding to the (sub)set of coterminal 
+            swap covariance matrix corresponding to the (sub)set of coterminal
             swaps between expiry and maturity.    */
         Disposable<Matrix> swapCovarianceMatrix();
 
-        /*! Returns the subportion of Z matrix corresponding to the segment 
+        /*! Returns the subportion of Z matrix corresponding to the segment
             of curve between expiry and maturity.    */
         Disposable<Matrix> zzMatrix();
 

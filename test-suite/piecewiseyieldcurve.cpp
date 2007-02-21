@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -144,20 +144,19 @@ void setup() {
     rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
     fraRates = std::vector<boost::shared_ptr<SimpleQuote> >(fras);
     prices = std::vector<boost::shared_ptr<SimpleQuote> >(bonds);
-    Size i;
-    for (i=0; i<deposits; i++) {
+    for (Size i=0; i<deposits; i++) {
         rates[i] = boost::shared_ptr<SimpleQuote>(
                                     new SimpleQuote(depositData[i].rate/100));
     }
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
                                        new SimpleQuote(swapData[i].rate/100));
     }
-    for (i=0; i<fras; i++) {
+    for (Size i=0; i<fras; i++) {
         fraRates[i] = boost::shared_ptr<SimpleQuote>(
                                         new SimpleQuote(fraData[i].rate/100));
     }
-    for (i=0; i<bonds; i++) {
+    for (Size i=0; i<bonds; i++) {
         prices[i] = boost::shared_ptr<SimpleQuote>(
                                           new SimpleQuote(bondData[i].price));
     }
@@ -171,15 +170,17 @@ void setup() {
         std::vector<boost::shared_ptr<RateHelper> >(bonds);
 
     boost::shared_ptr<IborIndex> euribor(new Euribor6M);
-    for (i=0; i<deposits; i++) {
+    for (Size i=0; i<deposits; i++) {
         Handle<Quote> r(rates[i]);
         instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n*depositData[i].units,
                                     settlementDays, calendar,
                                     euribor->businessDayConvention(),
+                                    euribor->endOfMonth(),
+                                    euribor->fixingDays(),
                                     euribor->dayCounter()));
     }
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
         instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, swapData[i].n*swapData[i].units,
@@ -188,16 +189,18 @@ void setup() {
                                    fixedLegDayCounter, euribor));
     }
     Euribor3M euribor3m;
-    for (i=0; i<fras; i++) {
+    for (Size i=0; i<fras; i++) {
         Handle<Quote> r(fraRates[i]);
         fraHelpers[i] = boost::shared_ptr<RateHelper>(
               new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
                                 euribor3m.fixingDays(),
                                 euribor3m.calendar(),
                                 euribor3m.businessDayConvention(),
+                                euribor3m.endOfMonth(),
+                                euribor3m.fixingDays(),
                                 euribor3m.dayCounter()));
     }
-    for (i=0; i<bonds; i++) {
+    for (Size i=0; i<bonds; i++) {
         Handle<Quote> p(prices[i]);
         Date maturity =
             calendar.advance(today, bondData[i].n, bondData[i].units);
@@ -233,9 +236,8 @@ void testCurveConsistency(const T&, const I& interpolator) {
     Handle<YieldTermStructure> curveHandle;
     curveHandle.linkTo(termStructure);
 
-    Size i;
     // check deposits
-    for (i=0; i<deposits; i++) {
+    for (Size i=0; i<deposits; i++) {
         Euribor index(depositData[i].n*depositData[i].units,curveHandle);
         Rate expectedRate  = depositData[i].rate/100,
              estimatedRate = index.fixing(today);
@@ -252,7 +254,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
     // check swaps
     boost::shared_ptr<IborIndex> euribor6m(new Euribor6M(curveHandle));
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, euribor6m, 0.0)
@@ -264,8 +266,6 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        Rate approximateRate = curveHandle->parRate(swapData[i].n,
-            settlement, fixedLegFrequency);
         #ifdef QL_PATCH_BORLAND
         Real tolerance = 1.0e-5;
         #else
@@ -275,20 +275,10 @@ void testCurveConsistency(const T&, const I& interpolator) {
         if (error > tolerance) {
             BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
                     << std::setprecision(8)
-                    << "\n approximate rate: " << io::rate(approximateRate)
-                    << "\n expected rate:    " << io::rate(expectedRate)
-                    << "\n error:            " << io::rate(error)
-                    << "\n tolerance:        " << io::rate(tolerance));
-        }
-        Real tolerance2 = 0.00025;
-        error = std::fabs(approximateRate-estimatedRate);
-        if (error > tolerance2) {
-            BOOST_ERROR(swapData[i].n << " year(s) swap:"
-                    << std::setprecision(3)
-                    << "\n approximate rate: " << io::rate(approximateRate)
-                    << "\n expected rate:    " << io::rate(expectedRate)
-                    << "\n error:            " << io::rate(error)
-                    << "\n tolerance:        " << io::rate(tolerance2));
+                    << "\n estimated rate: " << io::rate(estimatedRate)
+                    << "\n expected rate:  " << io::rate(expectedRate)
+                    << "\n error:          " << io::rate(error)
+                    << "\n tolerance:      " << io::rate(tolerance));
         }
     }
 
@@ -299,7 +289,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
                                                        interpolator));
     curveHandle.linkTo(termStructure);
 
-    for (i=0; i<bonds; i++) {
+    for (Size i=0; i<bonds; i++) {
         Date maturity =
             calendar.advance(today, bondData[i].n, bondData[i].units);
         Date issue = calendar.advance(maturity, -bondData[i].length, Years);
@@ -331,12 +321,14 @@ void testCurveConsistency(const T&, const I& interpolator) {
     curveHandle.linkTo(termStructure);
 
     boost::shared_ptr<IborIndex> euribor3m(new Euribor3M(curveHandle));
-    for (i=0; i<fras; i++) {
+    for (Size i=0; i<fras; i++) {
         Date start = calendar.advance(settlement,
                                       fraData[i].n, fraData[i].units,
-                                      euribor3m->businessDayConvention());
+                                      euribor3m->businessDayConvention(),
+                                      euribor3m->endOfMonth());
         Date end = calendar.advance(start, 3, Months,
-                                    euribor3m->businessDayConvention());
+                                    euribor3m->businessDayConvention(),
+                                    euribor3m->endOfMonth());
 
         ForwardRateAgreement fra(start, end, Position::Long,
                                  fraData[i].rate/100, 100.0,
@@ -345,7 +337,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
              estimatedRate = fra.forwardRate();
         Real tolerance = 1.0e-9;
         if (std::fabs(expectedRate-estimatedRate) > tolerance) {
-            BOOST_ERROR(io::ordinal(i) << " bond:\n"
+            BOOST_ERROR(io::ordinal(i) << " FRA:\n"
                        << std::setprecision(8)
                        << "    estimated rate: "
                        << io::rate(estimatedRate) << "\n"
@@ -554,9 +546,8 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
     std::vector<boost::shared_ptr<RateHelper> > swapHelpers(swaps);
     boost::shared_ptr<IborIndex> euribor6m(new Euribor6M);
-    Size i;
 
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         Handle<Quote> r(rates[i+deposits]);
         swapHelpers[i] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, Period(swapData[i].n, swapData[i].units),
@@ -573,7 +564,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     curveHandle.linkTo(termStructure);
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(curveHandle));
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
@@ -610,7 +601,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     if (!f.isUp())
         BOOST_ERROR("Observer was not notified of rate fixing");
 
-    for (i=0; i<swaps; i++) {
+    for (Size i=0; i<swaps; i++) {
         Period tenor = swapData[i].n*swapData[i].units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)

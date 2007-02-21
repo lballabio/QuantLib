@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -89,7 +89,6 @@
 #include "money.hpp"
 #include "operators.hpp"
 #include "pathgenerator.hpp"
-#include "piecewiseflatforward.hpp"
 #include "piecewiseyieldcurve.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
@@ -178,16 +177,16 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
-    test->add(BermudanSwaptionTest::suite());                 
-    test->add(BondTest::suite()); 
+    test->add(BermudanSwaptionTest::suite());
+    test->add(BondTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(CalendarTest::suite());
-    test->add(CapFloorTest::suite());                      
-    test->add(CapFlooredCouponTest::suite()); 
+    test->add(CapFloorTest::suite());
+    test->add(CapFlooredCouponTest::suite());
     test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite());                
+    test->add(CompoundForwardTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CurveStatesTest::suite());
@@ -207,7 +206,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
-    test->add(LiborMarketModelTest::suite());               
+    test->add(LiborMarketModelTest::suite());
     test->add(LiborMarketModelProcessTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
@@ -222,7 +221,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());
     test->add(PathGeneratorTest::suite());
-    test->add(PiecewiseFlatForwardTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
@@ -230,12 +228,12 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
-    test->add(ShortRateModelTest::suite());                 
+    test->add(ShortRateModelTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());
-    test->add(SwapTest::suite());                           
-    test->add(SwaptionTest::suite());                       
+    test->add(SwapTest::suite());
+    test->add(SwaptionTest::suite());
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
@@ -244,7 +242,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TracingTest::suite());
     test->add(TransformedGridTest::suite());
     test->add(VarianceSwapTest::suite());
-    test->add(VolatilityModelsTest::suite()); 
+    test->add(VolatilityModelsTest::suite());
     //tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 

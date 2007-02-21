@@ -15,7 +15,6 @@ include_HEADERS = \
     forwardspreadedtermstructure.hpp \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
-    piecewiseflatforward.hpp \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
@@ -28,7 +27,6 @@ libTermStructures_la_SOURCES = \
     bondhelpers.cpp \
     compoundforward.cpp \
     extendeddiscountcurve.cpp \
-    piecewiseflatforward.cpp \
     piecewiseyieldcurve.cpp \
     ratehelpers.cpp
 

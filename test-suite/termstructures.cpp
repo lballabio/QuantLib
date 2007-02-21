@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/flatforward.hpp>
-#include <ql/TermStructures/piecewiseflatforward.hpp>
+#include <ql/TermStructures/piecewiseyieldcurve.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/zerospreadedtermstructure.hpp>
@@ -82,7 +82,8 @@ void setup() {
                  new DepositRateHelper(depositData[i].rate/100,
                                        depositData[i].n*depositData[i].units,
                                        settlementDays_, calendar_,
-                                       ModifiedFollowing, Actual360()));
+                                       ModifiedFollowing, true,
+                                       settlementDays_, Actual360()));
     }
     boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                              6*Months,
@@ -101,9 +102,13 @@ void setup() {
                                              index));
     }
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
-              new PiecewiseFlatForward(settlement, instruments, Actual360()));
+                    new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                                instruments,
+                                                                Actual360()));
     dummyTermStructure_ = boost::shared_ptr<YieldTermStructure>(
-              new PiecewiseFlatForward(settlement, instruments, Actual360()));
+                    new PiecewiseYieldCurve<Discount,LogLinear>(settlement,
+                                                                instruments,
+                                                                Actual360()));
 }
 
 void teardown() {
@@ -294,7 +299,7 @@ void TermStructureTest::testZSpreadedObs() {
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
     Handle<YieldTermStructure> h(dummyTermStructure_);
-    
+
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;

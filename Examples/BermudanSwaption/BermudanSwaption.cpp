@@ -3,7 +3,7 @@
 /*!
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -116,7 +116,7 @@ int main(int, char* [])
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
-        bool payFixedRate = true;
+        VanillaSwap::Type type = VanillaSwap::Payer;
         Rate dummyFixedRate = 0.03;
         boost::shared_ptr<IborIndex> indexSixMonths(new
             Euribor6M(rhTermStructure));
@@ -133,7 +133,7 @@ int main(int, char* [])
                                false,false);
 
         boost::shared_ptr<VanillaSwap> swap(new VanillaSwap(
-            payFixedRate, 1000.0,
+            type, 1000.0,
             fixedSchedule, dummyFixedRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
@@ -142,17 +142,17 @@ int main(int, char* [])
         Rate fixedITMRate = fixedATMRate * 0.8;
 
         boost::shared_ptr<VanillaSwap> atmSwap(new VanillaSwap(
-            payFixedRate, 1000.0,
+            type, 1000.0,
             fixedSchedule, fixedATMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
         boost::shared_ptr<VanillaSwap> otmSwap(new VanillaSwap(
-            payFixedRate, 1000.0,
+            type, 1000.0,
             fixedSchedule, fixedOTMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));
         boost::shared_ptr<VanillaSwap> itmSwap(new VanillaSwap(
-            payFixedRate, 1000.0,
+            type, 1000.0,
             fixedSchedule, fixedITMRate, fixedLegDayCounter,
             floatSchedule, indexSixMonths, 0.0,
             indexSixMonths->dayCounter(), rhTermStructure));

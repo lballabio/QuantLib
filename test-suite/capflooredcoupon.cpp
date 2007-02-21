@@ -50,14 +50,14 @@ Integer settlementDays_, fixingDays_;
 Handle<YieldTermStructure> termStructure_;
 std::vector<Rate> caps_;
 std::vector<Rate> floors_;
-Integer lenght_;
+Integer length_;
 Volatility volatility_;
 
 void setup() {
-    lenght_ = 20;           //years
+    length_ = 20;           //years
     volatility_ = 0.20;
     nominal_ = 100.;
-    nominals_ = std::vector<Real>(lenght_,nominal_);
+    nominals_ = std::vector<Real>(length_,nominal_);
     frequency_ = Annual;
     index_ = boost::shared_ptr<IborIndex>(new Euribor1Y(termStructure_));
     calendar_ = index_->calendar();
@@ -96,8 +96,8 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
                       convention_,convention_,false,false);
-    std::vector<Real> gearingVector(lenght_, gearing);
-    std::vector<Spread> spreadVector(lenght_, spread);
+    std::vector<Real> gearingVector(length_, gearing);
+    std::vector<Spread> spreadVector(length_, spread);
     return IborLeg(schedule, nominals_, index_, index_->dayCounter(), fixingDays_,
                    convention_, gearingVector, spreadVector);
 }
@@ -119,8 +119,8 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
             CapletConstantVolatility(volatility, Actual365Fixed())));
 
     boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
-    std::vector<Rate> gearingVector(lenght_, gearing);
-    std::vector<Spread> spreadVector(lenght_, spread);
+    std::vector<Rate> gearingVector(length_, gearing);
+    std::vector<Spread> spreadVector(length_, spread);
 
     return IborLeg(schedule, nominals_, index_,
                     index_->dayCounter(), fixingDays_,
@@ -173,7 +173,7 @@ QL_END_TEST_LOCALS(CapFlooredCouponTest)
 
 void CapFlooredCouponTest::testLargeRates() {
 
-    BOOST_MESSAGE("Testing collared coupon with cap rate 100 and floor rate 0 ...");
+    BOOST_MESSAGE("Testing degenerate collared coupon...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -183,23 +183,23 @@ void CapFlooredCouponTest::testLargeRates() {
        (depending on variance: option expiry and volatility)
     */
 
-    std::vector<Rate> caps(lenght_,100.0);
-    std::vector<Rate> floors(lenght_,0.0);
+    std::vector<Rate> caps(length_,100.0);
+    std::vector<Rate> floors(length_,0.0);
     Real tolerance = 1e-10;
 
     // fixed leg with zero rate
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-        makeFixedLeg(startDate_,lenght_);
+        makeFixedLeg(startDate_,length_);
     std::vector<boost::shared_ptr<CashFlow> > floatLeg =
-        makeFloatingLeg(startDate_,lenght_);
+        makeFloatingLeg(startDate_,length_);
     std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors,volatility_);
+        makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
 
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
     Swap collarLeg( termStructure_,fixedLeg,collaredLeg);
 
     if (std::abs(vanillaLeg.NPV()-collarLeg.NPV())>tolerance) {
-        BOOST_MESSAGE("Lenght: " << lenght_ << " y" << "\n" <<
+        BOOST_MESSAGE("Lenght: " << length_ << " y" << "\n" <<
             "Volatility: " << volatility_*100 << "%\n" <<
             "Notional: " << nominal_ << "\n" <<
             "Vanilla floating leg NPV: " << vanillaLeg.NPV()
@@ -213,7 +213,7 @@ void CapFlooredCouponTest::testLargeRates() {
 
 void CapFlooredCouponTest::testDecomposition() {
 
-    BOOST_MESSAGE("Testing collared coupon against its decomposition ...");
+    BOOST_MESSAGE("Testing collared coupon against its decomposition...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -223,9 +223,9 @@ void CapFlooredCouponTest::testDecomposition() {
     Real error;
     Rate floorstrike = 0.05;
     Rate capstrike = 0.10;
-    std::vector<Rate> caps(lenght_,capstrike);
+    std::vector<Rate> caps(length_,capstrike);
     std::vector<Rate> caps0 = std::vector<Rate>();
-    std::vector<Rate> floors(lenght_,floorstrike);
+    std::vector<Rate> floors(length_,floorstrike);
     std::vector<Rate> floors0 = std::vector<Rate>();
     Rate gearing_p = Rate(0.5);
     Spread spread_p = Spread(0.002);
@@ -233,16 +233,16 @@ void CapFlooredCouponTest::testDecomposition() {
     Spread spread_n = Spread(0.12);
     // fixed leg with zero rate
     std::vector<boost::shared_ptr<CashFlow> > fixedLeg  =
-        makeFixedLeg(startDate_,lenght_);
+        makeFixedLeg(startDate_,length_);
     // floating leg with gearing=1 and spread=0
     std::vector<boost::shared_ptr<CashFlow> > floatLeg  =
-        makeFloatingLeg(startDate_,lenght_);
+        makeFloatingLeg(startDate_,length_);
     // floating leg with positive gearing (gearing_p) and spread<>0
     std::vector<boost::shared_ptr<CashFlow> > floatLeg_p =
-        makeFloatingLeg(startDate_,lenght_,gearing_p,spread_p);
+        makeFloatingLeg(startDate_,length_,gearing_p,spread_p);
     // floating leg with negative gearing (gearing_n) and spread<>0
     std::vector<boost::shared_ptr<CashFlow> > floatLeg_n =
-        makeFloatingLeg(startDate_,lenght_,gearing_n,spread_n);
+        makeFloatingLeg(startDate_,length_,gearing_n,spread_n);
     // Swap with null fixed leg and floating leg with gearing=1 and spread=0
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
     // Swap with null fixed leg and floating leg with positive gearing and spread<>0
@@ -259,7 +259,7 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Case gearing = 1 and spread = 0
     std::vector<boost::shared_ptr<CashFlow> > cappedLeg =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors0,volatility_);
+        makeCapFlooredLeg(startDate_,length_,caps,floors0,volatility_);
     Swap capLeg(termStructure_,fixedLeg,cappedLeg);
     Cap cap(floatLeg, std::vector<Rate>(1, capstrike),
             termStructure_, makeEngine(volatility_));
@@ -268,7 +268,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCap = cap.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
     if (1/*error>tolerance*/) {
-        BOOST_ERROR("\nCapped Leg: gearing=1, spread=0%, strike=" << capstrike*100 << 
+        BOOST_ERROR("\nCapped Leg: gearing=1, spread=0%, strike=" << capstrike*100 <<
                     "%\n" <<
                     "  Capped Floating Leg NPV: " << npvCappedLeg << "\n" <<
                     "  Floating Leg NPV - Cap NPV: " << npvVanilla - npvCap << "\n" <<
@@ -284,7 +284,7 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     std::vector<boost::shared_ptr<CashFlow> > flooredLeg =
-        makeCapFlooredLeg(startDate_,lenght_,caps0,floors,volatility_);
+        makeCapFlooredLeg(startDate_,length_,caps0,floors,volatility_);
     Swap floorLeg(termStructure_,fixedLeg,flooredLeg);
     Floor floor(floatLeg, std::vector<Rate>(1, floorstrike),
                 termStructure_, makeEngine(volatility_));
@@ -296,7 +296,7 @@ void CapFlooredCouponTest::testDecomposition() {
                     "%\n" <<
                     "  Floored Floating Leg NPV: " << npvFlooredLeg << "\n" <<
                     "  Floating Leg NPV + Floor NPV: " << npvVanilla + npvFloor << "\n" <<
-                    "  Diff: " << error );    
+                    "  Diff: " << error );
     }
 
     /* gearing = 1 and spread = 0
@@ -306,12 +306,12 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors,volatility_);
+        makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
     Swap collarLeg(termStructure_,fixedLeg,collaredLeg);
-    Collar collar(floatLeg, 
+    Collar collar(floatLeg,
                   std::vector<Rate>(1, capstrike),
                   std::vector<Rate>(1, floorstrike),
-                  termStructure_, makeEngine(volatility_)); 
+                  termStructure_, makeEngine(volatility_));
     npvCollaredLeg = collarLeg.NPV();
     npvCollar = collar.NPV();
     error = std::abs(npvCollaredLeg -(npvVanilla - npvCollar));
@@ -320,17 +320,17 @@ void CapFlooredCouponTest::testDecomposition() {
                     floorstrike*100 << "% and " << capstrike*100 << "%\n" <<
                     "  Collared Floating Leg NPV: " << npvCollaredLeg << "\n" <<
                     "  Floating Leg NPV - Collar NPV: " << npvVanilla - npvCollar << "\n" <<
-                    "  Diff: " << error );   
+                    "  Diff: " << error );
     }
 
     /* gearing = a and spread = b
        CAPPED coupon - Decomposition of payoff
-       Payoff 
+       Payoff
        = Nom * Min(a*rate+b,strike) * accrualperiod =
        = Nom * [a*rate+b + Min(0,strike-a*rate-b)] * accrualperiod =
        = Nom * a*rate+b * accrualperiod + Nom * Min(strike-b-a*rate,0) * accrualperiod
-       --> If a>0 (assuming positive effective strike):   
-           Payoff = VanillaFloatingLeg - Call(a*rate+b,strike)  
+       --> If a>0 (assuming positive effective strike):
+           Payoff = VanillaFloatingLeg - Call(a*rate+b,strike)
        --> If a<0 (assuming positive effective strike):
            Payoff = VanillaFloatingLeg + Nom * Min(strike-b+|a|*rate+,0) * accrualperiod =
                   = VanillaFloatingLeg + Put(|a|*rate+b,strike)
@@ -338,7 +338,7 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Positive gearing
     std::vector<boost::shared_ptr<CashFlow> > cappedLeg_p =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors0,
+        makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_p,spread_p);
     Swap capLeg_p(termStructure_,fixedLeg,cappedLeg_p);
     Cap cap_p(floatLeg_p,std::vector<Rate>(1,capstrike),
@@ -348,7 +348,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCap = cap_p.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
     if (error>tolerance) {
-        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_p << ", " << 
+        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_p << ", " <<
                     "spread= " << spread_p *100 <<
                     "%, strike=" << capstrike*100  << "%, " <<
                     "effective strike= " << (capstrike-spread_p)/gearing_p*100 <<
@@ -357,12 +357,12 @@ void CapFlooredCouponTest::testDecomposition() {
                      "  Vanilla Leg NPV: " << npvVanilla << "\n" <<
                      "  Cap NPV: " << npvCap << "\n" <<
                      "  Floating Leg NPV - Cap NPV: " << npvVanilla - npvCap << "\n" <<
-                     "  Diff: " << error ); 
+                     "  Diff: " << error );
     }
 
     // Negative gearing
     std::vector<boost::shared_ptr<CashFlow> > cappedLeg_n =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors0,
+        makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_n,spread_n);
     Swap capLeg_n(termStructure_,fixedLeg,cappedLeg_n);
     Floor floor_n(floatLeg,std::vector<Rate>(1,(capstrike-spread_n)/gearing_n),
@@ -372,7 +372,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvFloor = floor_n.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla+ gearing_n*npvFloor));
     if (error>tolerance) {
-        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " << 
+        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " <<
                     "spread= " << spread_n *100 <<
                     "%, strike=" << capstrike*100  << "%, " <<
                     "effective strike= " << (capstrike-spread_n)/gearing_n*100 <<
@@ -381,17 +381,17 @@ void CapFlooredCouponTest::testDecomposition() {
                      "  npv Vanilla: " << npvVanilla << "\n" <<
                      "  npvFloor: " << npvFloor << "\n" <<
                      "  Floating Leg NPV - Cap NPV: " << npvVanilla + gearing_n*npvFloor << "\n" <<
-                     "  Diff: " << error ); 
+                     "  Diff: " << error );
     }
 
     /* gearing = a and spread = b
        FLOORED coupon - Decomposition of payoff
-       Payoff 
+       Payoff
        = Nom * Max(a*rate+b,strike) * accrualperiod =
        = Nom * [a*rate+b + Max(0,strike-a*rate-b)] * accrualperiod =
        = Nom * a*rate+b * accrualperiod + Nom * Max(strike-b-a*rate,0) * accrualperiod
-       --> If a>0 (assuming positive effective strike):   
-           Payoff = VanillaFloatingLeg + Put(a*rate+b,strike)  
+       --> If a>0 (assuming positive effective strike):
+           Payoff = VanillaFloatingLeg + Put(a*rate+b,strike)
        --> If a<0 (assuming positive effective strike):
            Payoff = VanillaFloatingLeg + Nom * Max(strike-b+|a|*rate+,0) * accrualperiod =
                   = VanillaFloatingLeg - Call(|a|*rate+b,strike)
@@ -399,7 +399,7 @@ void CapFlooredCouponTest::testDecomposition() {
 
     // Positive gearing
     std::vector<boost::shared_ptr<CashFlow> > flooredLeg_p1 =
-        makeCapFlooredLeg(startDate_,lenght_,caps0,floors,
+        makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_p,spread_p);
     Swap floorLeg_p1(termStructure_,fixedLeg,flooredLeg_p1);
     Floor floor_p1(floatLeg_p,std::vector<Rate>(1,floorstrike),
@@ -409,19 +409,19 @@ void CapFlooredCouponTest::testDecomposition() {
     npvFloor = floor_p1.NPV();
     error = std::abs(npvFlooredLeg - (npvVanilla+npvFloor));
     if (error>tolerance) {
-        BOOST_ERROR("\nFloored Leg: gearing=" << gearing_p << ", " 
-                      << "spread= " << spread_p *100<< "%, strike=" << floorstrike *100 << "%, " 
+        BOOST_ERROR("\nFloored Leg: gearing=" << gearing_p << ", "
+                      << "spread= " << spread_p *100<< "%, strike=" << floorstrike *100 << "%, "
                       << "effective strike= " << (floorstrike-spread_p)/gearing_p*100
                       << "%\n" <<
-                      "  Floored Floating Leg NPV: "    << npvFlooredLeg 
+                      "  Floored Floating Leg NPV: "    << npvFlooredLeg
                       << "\n" <<
-                      "  Floating Leg NPV + Floor NPV: " << npvVanilla + npvFloor 
+                      "  Floating Leg NPV + Floor NPV: " << npvVanilla + npvFloor
                       << "\n" <<
-                      "  Diff: " << error );    
+                      "  Diff: " << error );
     }
     // Negative gearing
     std::vector<boost::shared_ptr<CashFlow> > flooredLeg_n =
-        makeCapFlooredLeg(startDate_,lenght_,caps0,floors,
+        makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_n,spread_n);
     Swap floorLeg_n(termStructure_,fixedLeg,flooredLeg_n);
     Cap cap_n(floatLeg,std::vector<Rate>(1,(floorstrike-spread_n)/gearing_n),
@@ -431,26 +431,26 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCap = cap_n.NPV();
     error = std::abs(npvFlooredLeg - (npvVanilla - gearing_n*npvCap));
     if (error>tolerance) {
-        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " << 
+        BOOST_ERROR("\nCapped Leg: gearing=" << gearing_n << ", " <<
                     "spread= " << spread_n *100 <<
                     "%, strike=" << floorstrike*100  << "%, " <<
                     "effective strike= " << (floorstrike-spread_n)/gearing_n*100 <<
                      "%\n" <<
                      "  Capped Floating Leg NPV: " << npvFlooredLeg << "\n" <<
                      "  Floating Leg NPV - Cap NPV: " << npvVanilla - gearing_n*npvCap << "\n" <<
-                     "  Diff: " << error ); 
+                     "  Diff: " << error );
     }
     /* gearing = a and spread = b
        COLLARED coupon - Decomposition of payoff
        Payoff = Nom * Min(caprate,Max(a*rate+b,floorrate)) * accrualperiod
-       --> If a>0 (assuming positive effective strike):   
-           Payoff = VanillaFloatingLeg - Collar(a*rate+b, floorrate, caprate) 
-       --> If a<0 (assuming positive effective strike):   
-           Payoff = VanillaFloatingLeg + Collar(|a|*rate+b, caprate, floorrate) 
+       --> If a>0 (assuming positive effective strike):
+           Payoff = VanillaFloatingLeg - Collar(a*rate+b, floorrate, caprate)
+       --> If a<0 (assuming positive effective strike):
+           Payoff = VanillaFloatingLeg + Collar(|a|*rate+b, caprate, floorrate)
     */
     // Positive gearing
     std::vector<boost::shared_ptr<CashFlow> > collaredLeg_p =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors,
+        makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_p,spread_p);
     Swap collarLeg_p1(termStructure_,fixedLeg,collaredLeg_p);
     Collar collar_p(floatLeg_p,
@@ -462,22 +462,22 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCollar = collar_p.NPV();
     error = std::abs(npvCollaredLeg - (npvVanilla - npvCollar));
     if (error>tolerance) {
-        BOOST_ERROR("\nCollared Leg: gearing=" << gearing_p << ", " 
-                      << "spread= " << spread_p*100 << "%, strike=" 
+        BOOST_ERROR("\nCollared Leg: gearing=" << gearing_p << ", "
+                      << "spread= " << spread_p*100 << "%, strike="
                       << floorstrike*100 << "% and " << capstrike*100
                       << "%, "
                       << "effective strike=" << (floorstrike-spread_p)/gearing_p*100
                       <<  "% and " << (capstrike-spread_p)/gearing_p*100
                       << "%\n" <<
-                      "  Collared Floating Leg NPV: "    << npvCollaredLeg 
+                      "  Collared Floating Leg NPV: "    << npvCollaredLeg
                       << "\n" <<
-                      "  Floating Leg NPV - Collar NPV: " << npvVanilla - npvCollar  
+                      "  Floating Leg NPV - Collar NPV: " << npvVanilla - npvCollar
                       << "\n" <<
-                      "  Diff: " << error );    
+                      "  Diff: " << error );
     }
     // Negative gearing
     std::vector<boost::shared_ptr<CashFlow> > collaredLeg_n =
-        makeCapFlooredLeg(startDate_,lenght_,caps,floors,
+        makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_n,spread_n);
     Swap collarLeg_n1(termStructure_,fixedLeg,collaredLeg_n);
     Collar collar_n(floatLeg,
@@ -489,18 +489,18 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCollar = collar_n.NPV();
     error = std::abs(npvCollaredLeg - (npvVanilla - gearing_n*npvCollar));
     if (error>tolerance) {
-        BOOST_ERROR("\nCollared Leg: gearing=" << gearing_n << ", " 
-                      << "spread= " << spread_n*100 << "%, strike=" 
+        BOOST_ERROR("\nCollared Leg: gearing=" << gearing_n << ", "
+                      << "spread= " << spread_n*100 << "%, strike="
                       << floorstrike*100 << "% and " << capstrike*100
                       << "%, "
                       << "effective strike=" << (floorstrike-spread_n)/gearing_n*100
                       <<  "% and " << (capstrike-spread_n)/gearing_n*100
                       << "%\n" <<
-                      "  Collared Floating Leg NPV: "    << npvCollaredLeg 
+                      "  Collared Floating Leg NPV: "    << npvCollaredLeg
                       << "\n" <<
-                      "  Floating Leg NPV - Collar NPV: " << npvVanilla - gearing_n*npvCollar  
+                      "  Floating Leg NPV - Collar NPV: " << npvVanilla - gearing_n*npvCollar
                       << "\n" <<
-                      "  Diff: " << error );    
+                      "  Diff: " << error );
     }
     QL_TEST_TEARDOWN
 }

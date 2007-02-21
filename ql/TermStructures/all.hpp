@@ -33,7 +33,6 @@
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/forwardstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
-#include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
 #include <ql/TermStructures/piecewisezerospreadedtermstructure.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>

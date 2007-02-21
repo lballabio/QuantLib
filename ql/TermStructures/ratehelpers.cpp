@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,10 @@
 #include <ql/Quotes/simplequote.hpp>
 
 namespace QuantLib {
+
+    namespace {
+        void no_deletion(YieldTermStructure*) {}
+    }
 
     FuturesRateHelper::FuturesRateHelper(
                                      const Handle<Quote>& price,
@@ -123,7 +127,7 @@ namespace QuantLib {
     }
 
 
-
+    #ifndef QL_DISABLE_DEPRECATED
     DepositRateHelper::DepositRateHelper(
                        const Handle<Quote>& rate,
                        const Period& tenor,
@@ -131,9 +135,11 @@ namespace QuantLib {
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), tenor_(tenor),
-      settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                      new IborIndex("dummy", tenor, settlementDays,
+                                    Currency(), calendar, convention,
+                                    false, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
@@ -144,48 +150,99 @@ namespace QuantLib {
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), tenor_(tenor),
-      settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                      new IborIndex("dummy", tenor, settlementDays,
+                                    Currency(), calendar, convention,
+                                    false, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+    #endif
+
+    DepositRateHelper::DepositRateHelper(
+                       const Handle<Quote>& rate,
+                       const Period& tenor,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       bool endOfMonth,
+                       Integer fixingDays,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                 new IborIndex("dummy", tenor, fixingDays,
+                               Currency(), calendar, convention,
+                               endOfMonth, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+
+    DepositRateHelper::DepositRateHelper(
+                       Rate rate,
+                       const Period& tenor,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention,
+                       bool endOfMonth,
+                       Integer fixingDays,
+                       const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                 new IborIndex("dummy", tenor, fixingDays,
+                               Currency(), calendar, convention,
+                               endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return (termStructure_->discount(earliestDate_) /
-                termStructure_->discount(latestDate_)-1.0) /
-            yearFraction_;
+        return index_->fixing(fixingDate_,true);
     }
 
     DiscountFactor DepositRateHelper::discountGuess() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we'll play it safe - no extrapolation
-        if (termStructure_->maxDate() < earliestDate_)
+        if (termStructure_->maxDate() < earliestDate_) {
             return Null<Real>();
-        else
+        } else {
+            Time T = index_->dayCounter().yearFraction(earliestDate_,
+                                                       latestDate_);
             return termStructure_->discount(earliestDate_) /
-                (1.0+quote_->value()*yearFraction_);
+                (1.0+quote_->value()*T);
+        }
+    }
+
+    void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
+        // no need to register---the index is not lazy
+        termStructureHandle_.linkTo(
+                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
+        RelativeDateRateHelper::setTermStructure(t);
     }
 
     void DepositRateHelper::initializeDates() {
         earliestDate_ =
-            calendar_.advance(evaluationDate_,settlementDays_,Days);
-        latestDate_ = calendar_.advance(earliestDate_,tenor_,convention_);
-        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
+            index_->calendar().advance(evaluationDate_,settlementDays_,Days);
+        latestDate_ = index_->maturityDate(earliestDate_);
+        fixingDate_ = index_->calendar().advance(earliestDate_,
+                                                 -index_->fixingDays(), Days);
     }
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Integer monthsToStart, Integer monthsToEnd,
                                  Integer settlementDays,
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate),
-      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
-      settlementDays_(settlementDays),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                      new IborIndex("dummy",
+                                    (monthsToEnd-monthsToStart)*Months,
+                                    settlementDays,
+                                    Currency(), calendar, convention,
+                                    false, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
@@ -195,37 +252,87 @@ namespace QuantLib {
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate),
-      monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
-      settlementDays_(settlementDays),
-      calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                      new IborIndex("dummy",
+                                    (monthsToEnd-monthsToStart)*Months,
+                                    settlementDays,
+                                    Currency(), calendar, convention,
+                                    false, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+    #endif
+
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 bool endOfMonth,
+                                 Integer fixingDays,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                 new IborIndex("dummy",
+                               (monthsToEnd-monthsToStart)*Months,
+                               fixingDays,
+                               Currency(), calendar, convention,
+                               endOfMonth, dayCounter, termStructureHandle_));
+        initializeDates();
+    }
+
+    FraRateHelper::FraRateHelper(Rate rate,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
+                                 const Calendar& calendar,
+                                 BusinessDayConvention convention,
+                                 bool endOfMonth,
+                                 Integer fixingDays,
+                                 const DayCounter& dayCounter)
+    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
+      settlementDays_(settlementDays) {
+        index_ = boost::shared_ptr<IborIndex>(
+                 new IborIndex("dummy",
+                               (monthsToEnd-monthsToStart)*Months,
+                               fixingDays,
+                               Currency(), calendar, convention,
+                               endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return (termStructure_->discount(earliestDate_) /
-                termStructure_->discount(latestDate_)-1.0) /
-            yearFraction_;
+        return index_->fixing(fixingDate_,true);
     }
 
     DiscountFactor FraRateHelper::discountGuess() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        // extrapolation shouldn't be needed if the input makes sense
-        // but we'll play it safe
+        Time T = index_->dayCounter().yearFraction(earliestDate_,
+                                                   latestDate_);
         return termStructure_->discount(earliestDate_,true) /
-            (1.0+quote_->value()*yearFraction_);
+            (1.0+quote_->value()*T);
+    }
+
+    void FraRateHelper::setTermStructure(YieldTermStructure* t) {
+        // no need to register---the index is not lazy
+        termStructureHandle_.linkTo(
+                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
+        RelativeDateRateHelper::setTermStructure(t);
     }
 
     void FraRateHelper::initializeDates() {
         Date settlement =
-            calendar_.advance(evaluationDate_,settlementDays_,Days);
-        earliestDate_ = calendar_.advance(
-                               settlement,monthsToStart_,Months,convention_);
-        latestDate_ = calendar_.advance(
-                earliestDate_,monthsToEnd_-monthsToStart_,Months,convention_);
-        yearFraction_ = dayCounter_.yearFraction(earliestDate_,latestDate_);
+            index_->calendar().advance(evaluationDate_,settlementDays_,Days);
+        earliestDate_ = index_->calendar().advance(
+                               settlement,monthsToStart_,Months,
+                               index_->businessDayConvention(),
+                               index_->endOfMonth());
+        latestDate_ = index_->maturityDate(earliestDate_);
+        fixingDate_ = index_->calendar().advance(earliestDate_,
+                                                 -index_->fixingDays(), Days);
     }
 
 
@@ -263,10 +370,6 @@ namespace QuantLib {
       index_(index) {
         registerWith(index_);
         initializeDates();
-    }
-
-    namespace {
-        void no_deletion(YieldTermStructure*) {}
     }
 
     void SwapRateHelper::initializeDates() {

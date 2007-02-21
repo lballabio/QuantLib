@@ -46,10 +46,10 @@ namespace QuantLib {
 
         Leg fixedLeg =
             FixedRateLeg(fixedSchedule,
-                                  std::vector<Real>(1,nominal),
-                                  std::vector<Rate>(1,fixedRate),
-                                  fixedDayCount,
-                                  convention);
+                         std::vector<Real>(1,nominal),
+                         std::vector<Rate>(1,fixedRate),
+                         fixedDayCount,
+                         convention);
 
         Leg floatingLeg =
             IborLeg(floatSchedule,
@@ -61,7 +61,6 @@ namespace QuantLib {
                      std::vector<Real>(1,1.0),
                      std::vector<Spread>(1,spread));
         Leg::const_iterator i;
-
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 

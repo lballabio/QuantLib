@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaswap.hpp
-    \brief Simple fixed-rate vs Libor swap
+/*! \file makevanillaswap.hpp
+    \brief Helper class to instantiate standard market swaps.
 */
 
 #ifndef quantlib_makevanillaswap_hpp

@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube.hpp
-    \brief Swaption volatility cube
+/*! \file swaptionvoldiscrete.hpp
+    \brief Discretized swaption volatility
 */
 
 #ifndef quantlib_swaption_volatility_discrete_h

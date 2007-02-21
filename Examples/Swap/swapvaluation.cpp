@@ -2,7 +2,7 @@
 
 /*!
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
@@ -165,42 +165,48 @@ int main(int, char* [])
         boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
             Handle<Quote>(d1wRate),
             1*Weeks, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
             Handle<Quote>(d1mRate),
             1*Months, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
             Handle<Quote>(d3mRate),
             3*Months, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
             Handle<Quote>(d6mRate),
             6*Months, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
             Handle<Quote>(d9mRate),
             9*Months, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
             Handle<Quote>(d1yRate),
             1*Years, fixingDays,
-            calendar, ModifiedFollowing, depositDayCounter));
+            calendar, ModifiedFollowing,
+            true, fixingDays, depositDayCounter));
 
 
         // setup FRAs
         boost::shared_ptr<RateHelper> fra3x6(new FraRateHelper(
             Handle<Quote>(fra3x6Rate),
             3, 6, fixingDays, calendar, ModifiedFollowing,
-            depositDayCounter));
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x9(new FraRateHelper(
             Handle<Quote>(fra6x9Rate),
             6, 9, fixingDays, calendar, ModifiedFollowing,
-            depositDayCounter));
+            true, fixingDays, depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x12(new FraRateHelper(
             Handle<Quote>(fra6x12Rate),
             6, 12, fixingDays, calendar, ModifiedFollowing,
-            depositDayCounter));
+            true, fixingDays, depositDayCounter));
 
 
         // setup futures
@@ -319,9 +325,10 @@ int main(int, char* [])
         depoSwapInstruments.push_back(s5y);
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
-        boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(settlementDate, depoSwapInstruments,
-                                 termStructureDayCounter, tolerance));
+        boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(
+            new PiecewiseYieldCurve<Discount,LogLinear>(
+                                          settlementDate, depoSwapInstruments,
+                                          termStructureDayCounter, tolerance));
 
 
         // A depo-futures-swap curve
@@ -340,9 +347,10 @@ int main(int, char* [])
         depoFutSwapInstruments.push_back(s5y);
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
-        boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(new
-            PiecewiseFlatForward(settlementDate, depoFutSwapInstruments,
-                                 termStructureDayCounter, tolerance));
+        boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(
+            new PiecewiseYieldCurve<Discount,LogLinear>(
+                                       settlementDate, depoFutSwapInstruments,
+                                       termStructureDayCounter, tolerance));
 
 
         // A depo-FRA-swap curve
@@ -358,9 +366,10 @@ int main(int, char* [])
         depoFRASwapInstruments.push_back(s5y);
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
-        boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(new
-            PiecewiseFlatForward(settlementDate, depoFRASwapInstruments,
-                                 termStructureDayCounter, tolerance));
+        boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(
+            new PiecewiseYieldCurve<Discount,LogLinear>(
+                                       settlementDate, depoFRASwapInstruments,
+                                       termStructureDayCounter, tolerance));
 
 
         // Term structures that will be used for pricing:

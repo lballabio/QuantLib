@@ -2,7 +2,7 @@
 
 /*!
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -96,10 +96,10 @@ public:
         DiscountFactor rDiscount = std::exp(-r_*maturity_);
         DiscountFactor qDiscount = 1.0;
         Real forward = s0_*qDiscount/rDiscount;
-        Real variance = sigma_*sigma_*maturity_;
+        Real stdDev = std::sqrt(sigma_*sigma_*maturity_);
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                              new PlainVanillaPayoff(payoff_));
-        BlackFormula black(forward,rDiscount,variance,payoff);
+        BlackCalculator black(payoff,forward,stdDev,rDiscount);
         std::cout << "Option value: " << black.value() << std::endl;
 
         // store option's vega, since Derman and Kamal's formula needs it
@@ -245,10 +245,10 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
     DiscountFactor rDiscount = std::exp(-r_*maturity_);
     DiscountFactor qDiscount = std::exp(-stockDividendYield*maturity_);
     Real forward = stock*qDiscount/rDiscount;
-    Real variance = sigma_*sigma_*maturity_;
+    Real stdDev = std::sqrt(sigma_*sigma_*maturity_);
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(type_,strike_));
-    BlackFormula black(forward,rDiscount,variance,payoff);
+    BlackCalculator black(payoff,forward,stdDev,rDiscount);
     // sell the option, cash in its premium
     money_account += black.value();
     // compute delta
@@ -276,8 +276,8 @@ Real ReplicationPathPricer::operator()(const Path& path) const {
         rDiscount = std::exp(-r_*(maturity_-t));
         qDiscount = std::exp(-stockDividendYield*(maturity_-t));
         forward = stock*qDiscount/rDiscount;
-        variance = sigma_*sigma_*(maturity_-t);
-        BlackFormula black(forward,rDiscount,variance,payoff);
+        stdDev = std::sqrt(sigma_*sigma_*(maturity_-t));
+        BlackCalculator black(payoff,forward,stdDev,rDiscount);
 
         // recalculate delta
         delta = black.delta(stock);

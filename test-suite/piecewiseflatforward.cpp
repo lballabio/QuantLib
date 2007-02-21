@@ -123,7 +123,7 @@ void setup() {
         instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n*depositData[i].units,
                                     settlementDays, calendar,
-                                    depoConvention, depoDayCounter));
+                                    depoConvention, true, 2, depoDayCounter));
     }
     boost::shared_ptr<IborIndex> index(new IborIndex("dummy",
                                              Period(floatingLegFrequency),

@@ -25,8 +25,8 @@
 #define quantlib_surface_hpp
 
 #include <ql/types.hpp>
-#include <functional>
 #include <boost/shared_ptr.hpp>
+#include <functional>
 
 namespace QuantLib {
     class Domain;

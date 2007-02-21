@@ -33,7 +33,7 @@ namespace QuantLib {
     //! Ornstein-Uhlenbeck process class
     /*! This class describes the Ornstein-Uhlenbeck process governed by
         \f[
-            dx = -a x_t dt + \sigma dW_t.
+            dx = a (r - x_t) dt + \sigma dW_t.
         \f]
 
         \ingroup processes
@@ -42,10 +42,14 @@ namespace QuantLib {
       public:
         OrnsteinUhlenbeckProcess(Real speed,
                                  Volatility vol,
-                                 Real x0 = 0.0);
+                                 Real x0 = 0.0,
+                                 Real level = 0.0);
         //! \name StochasticProcess interface
         //@{
         Real x0() const;
+        Real speed() const;
+        Real volatility() const;
+        Real level() const;
         Real drift(Time t, Real x) const;
         Real diffusion(Time t, Real x) const;
         Real expectation(Time t0, Real x0, Time dt) const;
@@ -53,7 +57,7 @@ namespace QuantLib {
         Real variance(Time t0, Real x0, Time dt) const;
         //@}
       private:
-        Real x0_, speed_;
+        Real x0_, speed_, level_;
         Volatility volatility_;
     };
 

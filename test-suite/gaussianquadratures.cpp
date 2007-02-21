@@ -61,11 +61,11 @@ Real x_x_normaldistribution(Real x) {
 }
 
 Real inv_cosh(Real x) {
-    return 1/cosh(x);
+    return 1/std::cosh(x);
 }
 
 Real x_inv_cosh(Real x) {
-    return x/cosh(x);
+    return x/std::cosh(x);
 }
 
 template <class T>

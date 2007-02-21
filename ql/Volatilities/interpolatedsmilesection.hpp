@@ -174,6 +174,7 @@ namespace QuantLib {
         interpolation_.update();
     }
 
+    #ifndef __DOXYGEN__
     template <class Interpolator>
     Real InterpolatedSmileSection<Interpolator>::variance(Real strike) const {
         calculate();
@@ -186,6 +187,8 @@ namespace QuantLib {
         calculate();
         return interpolation_(strike, true);
     }
+    #endif
+
 }
 
 #endif

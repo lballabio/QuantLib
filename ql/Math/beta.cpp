@@ -45,16 +45,16 @@ namespace QuantLib {
             m2=2*m;
             aa=m*(b-m)*x/((qam+m2)*(a+m2));
             d=1.0+aa*d;
-            if (fabs(d) < QL_EPSILON) d=QL_EPSILON;
+            if (std::fabs(d) < QL_EPSILON) d=QL_EPSILON;
             c=1.0+aa/c;
-            if (fabs(c) < QL_EPSILON) c=QL_EPSILON;
+            if (std::fabs(c) < QL_EPSILON) c=QL_EPSILON;
             d=1.0/d;
             result *= d*c;
             aa = -(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
             d=1.0+aa*d;
-            if (fabs(d) < QL_EPSILON) d=QL_EPSILON;
+            if (std::fabs(d) < QL_EPSILON) d=QL_EPSILON;
             c=1.0+aa/c;
-            if (fabs(c) < QL_EPSILON) c=QL_EPSILON;
+            if (std::fabs(c) < QL_EPSILON) c=QL_EPSILON;
             d=1.0/d;
             del=d*c;
             result *= del;
@@ -68,27 +68,27 @@ namespace QuantLib {
                                 Real x, Real accuracy,
                                 Integer maxIteration) {
 
-	QL_REQUIRE(a > 0.0, "a must be greater than zero");
-	QL_REQUIRE(b > 0.0, "b must be greater than zero");
+    QL_REQUIRE(a > 0.0, "a must be greater than zero");
+    QL_REQUIRE(b > 0.0, "b must be greater than zero");
 
 
-	if (x == 0.0)
-	    return 0.0;
-	else if (x == 1.0)
-	    return 1.0;
-	else
-	    QL_REQUIRE(x>0.0 && x<1.0, "x must be in [0,1]");
+    if (x == 0.0)
+        return 0.0;
+    else if (x == 1.0)
+        return 1.0;
+    else
+        QL_REQUIRE(x>0.0 && x<1.0, "x must be in [0,1]");
 
-	Real result = std::exp(GammaFunction().logValue(a+b) -
-		GammaFunction().logValue(a) - GammaFunction().logValue(b) +
-		a*std::log(x) + b*std::log(1.0-x));
+    Real result = std::exp(GammaFunction().logValue(a+b) -
+        GammaFunction().logValue(a) - GammaFunction().logValue(b) +
+        a*std::log(x) + b*std::log(1.0-x));
 
-	if (x < (a+1.0)/(a+b+2.0))
-		return result *
-		    betaContinuedFraction(a, b, x, accuracy, maxIteration)/a;
-	else
-		return 1.0 - result *
-		    betaContinuedFraction(b, a, 1.0-x, accuracy, maxIteration)/b;
+    if (x < (a+1.0)/(a+b+2.0))
+        return result *
+            betaContinuedFraction(a, b, x, accuracy, maxIteration)/a;
+    else
+        return 1.0 - result *
+            betaContinuedFraction(b, a, 1.0-x, accuracy, maxIteration)/b;
     }
 
 }

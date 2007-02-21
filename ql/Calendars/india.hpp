@@ -43,12 +43,17 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given (data available for
-        2005-2006 only:)
+        2005-2007 only:)
         <ul>
         <li>Bakri Id</li>
         <li>Moharram</li>
+        <li>Mahashivratri</li>
         <li>Holi</li>
+        <li>Ram Navami</li>
+        <li>Mahavir Jayanti</li>
+        <li>Id-E-Milad</li>
         <li>Maharashtra Day</li>
+        <li>Buddha Pournima</li>
         <li>Ganesh Chaturthi</li>
         <li>Dasara</li>
         <li>Laxmi Puja</li>

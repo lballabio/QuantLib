@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -77,11 +78,7 @@ namespace QuantLib {
                                           Compounding comp,
                                           Frequency freq,
                                           const DayCounter& dc)
-    : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq) {
-        if (dc.empty())
-            dc_ = h.currentLink()->dayCounter();
-        else
-            dc_ = dc;
+    : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq), dc_(dc) {
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -103,9 +100,14 @@ namespace QuantLib {
     }
 
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        // to be fixed: user defined daycounter should be used 
-        return originalCurve_->zeroRate(t, comp_, freq_, true)
-            + spread_->value();
+        // to be fixed: user-defined daycounter should be used
+        InterestRate zeroRate =
+            originalCurve_->zeroRate(t, comp_, freq_, true);
+        InterestRate spreadedRate(zeroRate + spread_->value(),
+                                  zeroRate.dayCounter(),
+                                  zeroRate.compounding(),
+                                  zeroRate.frequency());
+        return spreadedRate.equivalentRate(t,Continuous,NoFrequency);
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
