@@ -486,7 +486,6 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(product, measures[k]);
 
-
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(evolution, factors, marketModels[j]);
 
