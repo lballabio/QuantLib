@@ -68,7 +68,8 @@ void calibrateModel(
           const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers) {
 
     LevenbergMarquardt om;
-    model->calibrate(helpers, om);
+    model->calibrate(helpers, om,
+                     EndCriteria(400, 1.0e-8, 1.0e-8));
 
     // Output the implied Black volatilities
     for (Size i=0; i<numRows; i++) {
