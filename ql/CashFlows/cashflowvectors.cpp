@@ -129,7 +129,7 @@ namespace QuantLib {
         return leg;
     }
 
-    
+
     Leg IborLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<IborIndex>& index,
@@ -144,7 +144,7 @@ namespace QuantLib {
 
             QL_REQUIRE(!nominals.empty(), "no nominal given");
             bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
-            
+
             Leg leg;
             Calendar calendar = schedule.calendar();
             Size N = schedule.size();
@@ -161,21 +161,16 @@ namespace QuantLib {
                 Date paymentDate = calendar.adjust(end,paymentAdjustment);
                 if (schedule.isRegular(1)) {
                     if (get(gearings,0,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<IborCoupon> iborCoupon(
                                 new IborCoupon(paymentDate, get(nominals,0),
                                         start, end, fixingDays, index,
                                         get(gearings,0,1.0),
                                         get(spreads,0,0.0),
                                         Date(),Date(), paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<IborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<IborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to IborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // margin is constructed
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,0), paymentDate,
@@ -188,21 +183,16 @@ namespace QuantLib {
                     Date reference = end - schedule.tenor();
                     reference = calendar.adjust(reference,paymentAdjustment);
                     if (get(gearings,0,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<IborCoupon> iborCoupon(
                                 new IborCoupon(paymentDate, get(nominals,0),
                                         start, end, fixingDays, index,
                                         get(gearings,0,1.0),
                                         get(spreads,0,0.0),
                                         reference, end, paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<IborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<IborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to IborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // margin is constructed
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,0), paymentDate,
@@ -216,21 +206,16 @@ namespace QuantLib {
                     start = end; end = schedule.date(i);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (get(gearings,i-1,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<IborCoupon> iborCoupon(
                                 new IborCoupon(paymentDate, get(nominals,i-1),
                                         start, end, fixingDays, index,
                                         get(gearings,i-1,1.0),
                                         get(spreads,i-1,0.0),
                                         Date(),Date(), paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<IborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<IborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to IborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // margin is constructed
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,i-1), paymentDate,
@@ -246,21 +231,17 @@ namespace QuantLib {
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (schedule.isRegular(N-1)) {
                         if (get(gearings,N-2,1.0)!=0.0) {
-                            cf = boost::shared_ptr<CashFlow>(
-                                    new IborCoupon(paymentDate, get(nominals,N-2),
-                                            start, end, fixingDays, index,
-                                            get(gearings,N-2,1.0),
-                                            get(spreads,N-2,0.0),
-                                            Date(),Date(), paymentDayCounter));
-                            // set the pricer
-                            const boost::shared_ptr<IborCoupon> iborCoupon =
-                               boost::dynamic_pointer_cast<IborCoupon>(cf);
-                            if (iborCoupon)
-                                iborCoupon->setPricer(pricer);
-                            else
-                                QL_FAIL("unexpected error when casting to IborCoupon");
+                            boost::shared_ptr<IborCoupon> iborCoupon(
+                                new IborCoupon(paymentDate, get(nominals,N-2),
+                                               start, end, fixingDays, index,
+                                               get(gearings,N-2,1.0),
+                                               get(spreads,N-2,0.0),
+                                               Date(),Date(),
+                                               paymentDayCounter));
+                            iborCoupon->setPricer(pricer);
+                            cf = iborCoupon;
                         } else {
-                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // if gearing is null a fixed rate coupon with rate equal to
                             // margin is constructed
                             cf = boost::shared_ptr<CashFlow>(
                                     new FixedRateCoupon(get(nominals,N-2), paymentDate,
@@ -273,21 +254,17 @@ namespace QuantLib {
                         Date reference = start + schedule.tenor();
                         reference = calendar.adjust(reference,paymentAdjustment);
                         if (get(gearings,N-2,1.0)!=0.0) {
-                            cf = boost::shared_ptr<CashFlow>(
-                                    new IborCoupon(paymentDate, get(nominals,N-2),
-                                            start, end, fixingDays, index,
-                                            get(gearings,N-2,1.0),
-                                            get(spreads,N-2,0.0),
-                                            start, reference, paymentDayCounter));
-                            // set the pricer
-                            const boost::shared_ptr<IborCoupon> iborCoupon =
-                               boost::dynamic_pointer_cast<IborCoupon>(cf);
-                            if (iborCoupon)
-                                iborCoupon->setPricer(pricer);
-                            else
-                                QL_FAIL("unexpected error when casting to IborCoupon");
+                            boost::shared_ptr<IborCoupon> iborCoupon(
+                                new IborCoupon(paymentDate, get(nominals,N-2),
+                                               start, end, fixingDays, index,
+                                               get(gearings,N-2,1.0),
+                                               get(spreads,N-2,0.0),
+                                               start, reference,
+                                               paymentDayCounter));
+                            iborCoupon->setPricer(pricer);
+                            cf = iborCoupon;
                         } else {
-                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // if gearing is null a fixed rate coupon with rate equal to
                             // margin is constructed
                             cf = boost::shared_ptr<CashFlow>(
                                     new FixedRateCoupon(get(nominals,N-2), paymentDate,
@@ -306,7 +283,7 @@ namespace QuantLib {
                 Date paymentDate = calendar.adjust(end,paymentAdjustment);
                 if (schedule.isRegular(1)) {
                     if (get(gearings,0,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon(
                                 new CappedFlooredIborCoupon(paymentDate, get(nominals,0),
                                         start, end, fixingDays, index,
                                         get(gearings,0,1.0),
@@ -314,15 +291,10 @@ namespace QuantLib {
                                         get(caps,0,Null<Rate>()),
                                         get(floors,0,Null<Rate>()),
                                         Date(),Date(), paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // Min [caprate, Max[floorrate, spread] ] is constructed
                         Rate effectiveRate = std::min(get(caps,0,0.0),
                                          std::max(get(floors,0,0.0),get(spreads,0,0.0)));
@@ -337,7 +309,7 @@ namespace QuantLib {
                     Date reference = end - schedule.tenor();
                     reference = calendar.adjust(reference,paymentAdjustment);
                     if (get(gearings,0,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon(
                                 new CappedFlooredIborCoupon(paymentDate, get(nominals,0),
                                         start, end, fixingDays, index,
                                         get(gearings,0,1.0),
@@ -345,15 +317,10 @@ namespace QuantLib {
                                         get(caps,0,Null<Rate>()),
                                         get(floors,0,Null<Rate>()),
                                         reference, end, paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // Min [caprate, Max[floorrate, spread] ] is constructed
                         Rate effectiveRate = std::min(get(caps,0,0.0),
                                          std::max(get(floors,0,0.0),get(spreads,0,0.0)));
@@ -370,7 +337,7 @@ namespace QuantLib {
                     start = end; end = schedule.date(i);
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (get(gearings,i-1,1.0)!=0.0) {
-                        cf = boost::shared_ptr<CashFlow>(
+                        boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon(
                                 new CappedFlooredIborCoupon(paymentDate, get(nominals,i-1),
                                         start, end, fixingDays, index,
                                         get(gearings,i-1,1.0),
@@ -378,15 +345,10 @@ namespace QuantLib {
                                         get(caps,i-1,Null<Rate>()),
                                         get(floors,i-1,Null<Rate>()),
                                         Date(),Date(), paymentDayCounter));
-                        // set the pricer
-                        const boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon =
-                           boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(cf);
-                        if (iborCoupon)
-                            iborCoupon->setPricer(pricer);
-                        else
-                            QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
+                        iborCoupon->setPricer(pricer);
+                        cf = iborCoupon;
                     } else {
-                        // if gearing is null a fixed rate coupon with rate equal to 
+                        // if gearing is null a fixed rate coupon with rate equal to
                         // Min [caprate, Max[floorrate, spread] ] is constructed
                         Rate effectiveRate = std::min(get(caps,i-1,0.0),
                                      std::max(get(floors,i-1,0.0),get(spreads,i-1,0.0)));
@@ -404,7 +366,7 @@ namespace QuantLib {
                     paymentDate = calendar.adjust(end,paymentAdjustment);
                     if (schedule.isRegular(N-1)) {
                         if (get(gearings,N-2,1.0)!=0.0) {
-                            cf = boost::shared_ptr<CashFlow>(
+                            boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon(
                                     new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2),
                                             start, end, fixingDays, index,
                                             get(gearings,N-2,1.0),
@@ -412,15 +374,10 @@ namespace QuantLib {
                                             get(caps,N-2,Null<Rate>()),
                                             get(floors,N-2,Null<Rate>()),
                                             Date(),Date(), paymentDayCounter));
-                            // set the pricer
-                            const boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon =
-                               boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(cf);
-                            if (iborCoupon)
-                                iborCoupon->setPricer(pricer);
-                            else
-                                QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
+                            iborCoupon->setPricer(pricer);
+                            cf = iborCoupon;
                         } else {
-                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // if gearing is null a fixed rate coupon with rate equal to
                             // Min [caprate, Max[floorrate, spread] ] is constructed
                             Rate effectiveRate = std::min(get(caps,N-2,0.0),
                                      std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
@@ -435,7 +392,7 @@ namespace QuantLib {
                         Date reference = start + schedule.tenor();
                         reference = calendar.adjust(reference,paymentAdjustment);
                         if (get(gearings,N-2,1.0)!=0.0) {
-                            cf = boost::shared_ptr<CashFlow>(
+                            boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon(
                                     new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2),
                                             start, end, fixingDays, index,
                                             get(gearings,N-2,1.0),
@@ -443,15 +400,10 @@ namespace QuantLib {
                                             get(caps,N-2,Null<Rate>()),
                                             get(floors,N-2,Null<Rate>()),
                                             start, reference, paymentDayCounter));
-                            // set the pricer
-                            const boost::shared_ptr<CappedFlooredIborCoupon> iborCoupon =
-                               boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(cf);
-                            if (iborCoupon)
-                                iborCoupon->setPricer(pricer);
-                            else
-                                QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
+                            iborCoupon->setPricer(pricer);
+                            cf = iborCoupon;
                         } else {
-                            // if gearing is null a fixed rate coupon with rate equal to 
+                            // if gearing is null a fixed rate coupon with rate equal to
                             // Min [caprate, Max[floorrate, spread] ] is constructed
                             Rate effectiveRate = std::min(get(caps,N-2,0.0),
                                      std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
@@ -461,7 +413,7 @@ namespace QuantLib {
                                             start, end, start, reference));
                             // no pricer is needed for a fixed rate coupon
                         }
-                        leg.push_back(cf);         
+                        leg.push_back(cf);
                     }
                 }
             }
@@ -471,7 +423,7 @@ namespace QuantLib {
 
 
 
-      
+
     Leg IborInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<IborIndex>& index,
@@ -486,7 +438,7 @@ namespace QuantLib {
 
             QL_REQUIRE(!nominals.empty(), "no nominal given");
             bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
-            
+
             Leg leg;
             Calendar calendar = schedule.calendar();
             Size N = schedule.size();
@@ -539,7 +491,7 @@ namespace QuantLib {
                                 new IborCoupon(paymentDate, get(nominals,N-2), start, end,
                                                             fixingDays, index, get(gearings,N-2,1.0),
                                                             get(spreads,N-2,0.0),
-                                                            start,reference,paymentDayCounter,true)));              
+                                                            start,reference,paymentDayCounter,true)));
                     }
                 }
                 for (Size i=0; i<leg.size(); ++i) {
@@ -608,7 +560,7 @@ namespace QuantLib {
                                                             get(spreads,N-2,0.0),
                                                             get(caps,N-2,Null<Rate>()),
                                                             get(floors,N-2,Null<Rate>()),
-                                                            start,reference,paymentDayCounter,true)));              
+                                                            start,reference,paymentDayCounter,true)));
                     }
                 }
 
@@ -626,8 +578,8 @@ namespace QuantLib {
         }
 
 
-      
-    
+
+
     Leg IborInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<IborIndex>& index,
@@ -712,7 +664,7 @@ namespace QuantLib {
     }
 
 
-    
+
     Leg CmsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
@@ -738,7 +690,7 @@ namespace QuantLib {
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             if (get(gearings,0,1.0)!=0.0) {
-                cf = boost::shared_ptr<CashFlow>(
+                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
                         new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
                                 start, end, fixingDays, index,
                                 get(gearings,0,1.0),
@@ -746,15 +698,10 @@ namespace QuantLib {
                                 get(caps,0,Null<Rate>()),
                                 get(floors,0,Null<Rate>()),
                                 start, end, paymentDayCounter));
-                // set the pricer
-                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
-                if (cmsCoupon)
-                    cmsCoupon->setPricer(pricer);
-                else
-                    QL_FAIL("unexpected error when casting to CmsCoupon");
+                cmsCoupon->setPricer(pricer);
+                cf = cmsCoupon;
             } else {
-                // if gearing is null a fixed rate coupon with rate equal to 
+                // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
                 Rate effectiveRate = std::min(get(caps,0,0.0),
                                  std::max(get(floors,0,0.0),get(spreads,0,0.0)));
@@ -769,7 +716,7 @@ namespace QuantLib {
             Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,paymentAdjustment);
             if (get(gearings,0,1.0)!=0.0) {
-                cf = boost::shared_ptr<CashFlow>(
+                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
                         new CappedFlooredCmsCoupon(paymentDate, get(nominals,0),
                                 start, end, fixingDays, index,
                                 get(gearings,0,1.0),
@@ -777,15 +724,10 @@ namespace QuantLib {
                                 get(caps,0,Null<Rate>()),
                                 get(floors,0,Null<Rate>()),
                                 reference, end, paymentDayCounter));
-                // set the pricer
-                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
-                if (cmsCoupon)
-                    cmsCoupon->setPricer(pricer);
-                else
-                    QL_FAIL("unexpected error when casting to CmsCoupon");
+                cmsCoupon->setPricer(pricer);
+                cf = cmsCoupon;
             } else {
-                // if gearing is null a fixed rate coupon with rate equal to 
+                // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
                 Rate effectiveRate = std::min(get(caps,0,0.0),
                                  std::max(get(floors,0,0.0),get(spreads,0,0.0)));
@@ -802,7 +744,7 @@ namespace QuantLib {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (get(gearings,i-1,1.0)!=0.0) {
-                cf = boost::shared_ptr<CashFlow>(
+                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
                         new CappedFlooredCmsCoupon(paymentDate, get(nominals,i-1),
                                 start, end, fixingDays, index,
                                 get(gearings,i-1,1.0),
@@ -810,15 +752,10 @@ namespace QuantLib {
                                 get(caps,i-1,Null<Rate>()),
                                 get(floors,i-1,Null<Rate>()),
                                 start, end, paymentDayCounter));
-                // set the pricer
-                const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-                   boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
-                if (cmsCoupon)
-                    cmsCoupon->setPricer(pricer);
-                else
-                    QL_FAIL("unexpected error when casting to CmsCoupon");
+                cmsCoupon->setPricer(pricer);
+                cf = cmsCoupon;
             } else {
-                // if gearing is null a fixed rate coupon with rate equal to 
+                // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
                 Rate effectiveRate = std::min(get(caps,i-1,0.0),
                                  std::max(get(floors,i-1,0.0),get(spreads,i-1,0.0)));
@@ -836,7 +773,7 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 if (get(gearings,N-2,1.0)!=0.0) {
-                    cf = boost::shared_ptr<CashFlow>(
+                    boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
                             new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
                                     start, end, fixingDays, index,
                                     get(gearings,N-2,1.0),
@@ -844,15 +781,10 @@ namespace QuantLib {
                                     get(caps,N-2,Null<Rate>()),
                                     get(floors,N-2,Null<Rate>()),
                                     start, end, paymentDayCounter));
-                    // set the pricer
-                    const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-                       boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
-                    if (cmsCoupon)
-                        cmsCoupon->setPricer(pricer);
-                    else
-                        QL_FAIL("unexpected error when casting to CmsCoupon");
+                    cmsCoupon->setPricer(pricer);
+                    cf = cmsCoupon;
                 } else {
-                    // if gearing is null a fixed rate coupon with rate equal to 
+                    // if gearing is null a fixed rate coupon with rate equal to
                     // Min [caprate, Max[floorrate, spread] ] is constructed
                     Rate effectiveRate = std::min(get(caps,N-2,0.0),
                                      std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
@@ -867,7 +799,7 @@ namespace QuantLib {
                 Date reference = start + schedule.tenor();
                 reference = calendar.adjust(reference,paymentAdjustment);
                 if (get(gearings,N-2,1.0)!=0.0) {
-                    cf = boost::shared_ptr<CashFlow>(
+                    boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
                             new CappedFlooredCmsCoupon(paymentDate, get(nominals,N-2),
                                     start, end, fixingDays, index,
                                     get(gearings,N-2,1.0),
@@ -875,15 +807,10 @@ namespace QuantLib {
                                     get(caps,N-2,Null<Rate>()),
                                     get(floors,N-2,Null<Rate>()),
                                     start, reference, paymentDayCounter));
-                    // set the pricer
-                    const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-                       boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(cf);
-                    if (cmsCoupon)
-                        cmsCoupon->setPricer(pricer);
-                    else
-                        QL_FAIL("unexpected error when casting to CmsCoupon");
+                    cmsCoupon->setPricer(pricer);
+                    cf = cmsCoupon;
                 } else {
-                    // if gearing is null a fixed rate coupon with rate equal to 
+                    // if gearing is null a fixed rate coupon with rate equal to
                     // Min [caprate, Max[floorrate, spread] ] is constructed
                     Rate effectiveRate = std::min(get(caps,N-2,0.0),
                                      std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
@@ -899,7 +826,7 @@ namespace QuantLib {
         return leg;
     }
 
-    
+
     Leg CmsInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
@@ -995,7 +922,7 @@ namespace QuantLib {
         return leg;
     }
 
-    
+
     Leg CmsZeroLeg(const Schedule& schedule,
                    const std::vector<Real>& nominals,
                    const boost::shared_ptr<SwapIndex>& index,
@@ -1090,6 +1017,5 @@ namespace QuantLib {
         }
          return leg;
     }
-
 
 }
