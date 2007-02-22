@@ -323,20 +323,12 @@ namespace QuantLib {
                             QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to 
-                        // margin is constructed
-                       QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
-                                  get(caps,0,Null<Rate>())==1.0,
-                                   "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
-                        QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
-                                   get(floors,0,Null<Rate>())==0.0,
-                                  "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
+                        // Min [caprate, Max[floorrate, spread] ] is constructed
+                        Rate effectiveRate = std::min(get(caps,0,0.0),
+                                         std::max(get(floors,0,0.0),get(spreads,0,0.0)));
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,0), paymentDate,
-                                        get(spreads,0,0.0), paymentDayCounter,
+                                        effectiveRate, paymentDayCounter,
                                         start, end, start, end));
                         // no pricer is needed for a fixed rate coupon
                     }
@@ -362,20 +354,12 @@ namespace QuantLib {
                             QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to 
-                        // margin is constructed
-                       QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
-                                  get(caps,0,Null<Rate>())==1.0,
-                                   "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
-                        QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
-                                   get(floors,0,Null<Rate>())==0.0,
-                                   "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
+                        // Min [caprate, Max[floorrate, spread] ] is constructed
+                        Rate effectiveRate = std::min(get(caps,0,0.0),
+                                         std::max(get(floors,0,0.0),get(spreads,0,0.0)));
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,0), paymentDate,
-                                        get(spreads,0,0.0), paymentDayCounter,
+                                        effectiveRate, paymentDayCounter,
                                         start, end, reference, end));
                         // no pricer is needed for a fixed rate coupon
                     }
@@ -403,20 +387,12 @@ namespace QuantLib {
                             QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to 
-                        // margin is constructed
-                        QL_REQUIRE(get(caps,i-1,Null<Rate>())==Null<Real>()||
-                                   get(caps,i-1,Null<Rate>())==1.0,
-                                   "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
-                        QL_REQUIRE(get(floors,i-1,Null<Rate>())==Null<Real>() ||
-                                   get(floors,i-1,Null<Rate>())==0.0,
-                                   "Incongruous data: fixed rate coupon "<<
-                                   "(from null gearing ibor coupon) " << 
-                                   "with embedded option");
+                        // Min [caprate, Max[floorrate, spread] ] is constructed
+                        Rate effectiveRate = std::min(get(caps,i-1,0.0),
+                                     std::max(get(floors,i-1,0.0),get(spreads,i-1,0.0)));
                         cf = boost::shared_ptr<CashFlow>(
                                 new FixedRateCoupon(get(nominals,i-1), paymentDate,
-                                        get(spreads,i-1,0.0), paymentDayCounter,
+                                        effectiveRate, paymentDayCounter,
                                         start, end, start, end));
                         // no pricer is needed for a fixed rate coupon
                     }
@@ -445,20 +421,12 @@ namespace QuantLib {
                                 QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to 
-                            // margin is constructed
-                            QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
-                                       get(caps,N-2,Null<Rate>())==1.0,
-                                       "Incongruous data: fixed rate coupon "<<
-                                       "(from null gearing ibor coupon) " << 
-                                       "with embedded option");
-                            QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
-                                       get(floors,N-2,Null<Rate>())==0.0,
-                                       "Incongruous data: fixed rate coupon "<<
-                                       "(from null gearing ibor coupon) " << 
-                                       "with embedded option");
+                            // Min [caprate, Max[floorrate, spread] ] is constructed
+                            Rate effectiveRate = std::min(get(caps,N-2,0.0),
+                                     std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
                             cf = boost::shared_ptr<CashFlow>(
                                     new FixedRateCoupon(get(nominals,N-2), paymentDate,
-                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            effectiveRate, paymentDayCounter,
                                             start, end, start, end));
                             // no pricer is needed for a fixed rate coupon
                         }
@@ -484,20 +452,12 @@ namespace QuantLib {
                                 QL_FAIL("unexpected error when casting to CappedFlooredIborCoupon");
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to 
-                            // margin is constructed
-                            QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
-                                       get(caps,N-2,Null<Rate>())==1.0,
-                                       "Incongruous data: fixed rate coupon "<<
-                                       "(from null gearing ibor coupon) " << 
-                                       "with embedded option");
-                            QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
-                                       get(floors,N-2,Null<Rate>())==0.0,
-                                       "Incongruous data: fixed rate coupon "<<
-                                       "(from null gearing ibor coupon) " << 
-                                       "with embedded option");
+                            // Min [caprate, Max[floorrate, spread] ] is constructed
+                            Rate effectiveRate = std::min(get(caps,N-2,0.0),
+                                     std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
                             cf = boost::shared_ptr<CashFlow>(
                                     new FixedRateCoupon(get(nominals,N-2), paymentDate,
-                                            get(spreads,N-2,0.0), paymentDayCounter,
+                                            effectiveRate, paymentDayCounter,
                                             start, end, start, reference));
                             // no pricer is needed for a fixed rate coupon
                         }
@@ -795,20 +755,12 @@ namespace QuantLib {
                     QL_FAIL("unexpected error when casting to CmsCoupon");
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to 
-                // margin is constructed
-                QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
-                           get(caps,0,Null<Rate>())==1.0,
-                           "Incongruous data: fixed rate coupon " <<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
-                QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
-                           get(floors,0,Null<Rate>())==0.0,
-                           "Incongruous data: fixed rate coupon "<<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
+                // Min [caprate, Max[floorrate, spread] ] is constructed
+                Rate effectiveRate = std::min(get(caps,0,0.0),
+                                 std::max(get(floors,0,0.0),get(spreads,0,0.0)));
                 cf = boost::shared_ptr<CashFlow>(
                         new FixedRateCoupon(get(nominals,0), paymentDate,
-                                get(spreads,0,0.0), paymentDayCounter,
+                                effectiveRate, paymentDayCounter,
                                 start, end, start, end));
                 // no pricer is needed for a fixed rate coupon
             }
@@ -834,20 +786,12 @@ namespace QuantLib {
                     QL_FAIL("unexpected error when casting to CmsCoupon");
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to 
-                // margin is constructed
-                QL_REQUIRE(get(caps,0,Null<Rate>())==Null<Real>() ||
-                           get(caps,0,Null<Rate>())==1.0,
-                           "Incongruous data: fixed rate coupon "<<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
-                QL_REQUIRE(get(floors,0,Null<Rate>())==Null<Real>() ||
-                           get(floors,0,Null<Rate>())==0.0,
-                           "Incongruous data: fixed rate coupon "<<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
+                // Min [caprate, Max[floorrate, spread] ] is constructed
+                Rate effectiveRate = std::min(get(caps,0,0.0),
+                                 std::max(get(floors,0,0.0),get(spreads,0,0.0)));
                 cf = boost::shared_ptr<CashFlow>(
                         new FixedRateCoupon(get(nominals,0), paymentDate,
-                                get(spreads,0,0.0), paymentDayCounter,
+                                effectiveRate, paymentDayCounter,
                                 start, end, reference, end));
                 // no pricer is needed for a fixed rate coupon
             }
@@ -875,20 +819,12 @@ namespace QuantLib {
                     QL_FAIL("unexpected error when casting to CmsCoupon");
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to 
-                // margin is constructed
-                QL_REQUIRE(get(caps,i-1,Null<Rate>())==Null<Real>() ||
-                           get(caps,i-1,Null<Rate>())==1.0,
-                           "Incongruous data: fixed rate coupon " <<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
-                QL_REQUIRE(get(floors,i-1,Null<Rate>())==Null<Real>() ||
-                           get(floors,i-1,Null<Rate>())==0.0,
-                           "Incongruous data: fixed rate coupon " <<
-                           "(from null gearing cms coupon) " << 
-                           "with embedded option");
+                // Min [caprate, Max[floorrate, spread] ] is constructed
+                Rate effectiveRate = std::min(get(caps,i-1,0.0),
+                                 std::max(get(floors,i-1,0.0),get(spreads,i-1,0.0)));
                 cf = boost::shared_ptr<CashFlow>(
                         new FixedRateCoupon(get(nominals,i-1), paymentDate,
-                                get(spreads,i-1,0.0), paymentDayCounter,
+                                effectiveRate, paymentDayCounter,
                                 start, end, start, end));
                 // no pricer is needed for a fixed rate coupon
             }
@@ -917,20 +853,12 @@ namespace QuantLib {
                         QL_FAIL("unexpected error when casting to CmsCoupon");
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to 
-                    // margin is constructed
-                    QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
-                               get(caps,N-2,Null<Rate>())==1.0,
-                               "Incongruous data: fixed rate coupon " <<
-                               "(from null gearing cms coupon) " << 
-                               "with embedded option");
-                    QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
-                               get(floors,N-2,Null<Rate>())==0.0,
-                               "Incongruous data: fixed rate coupon " <<
-                               "(from null gearing cms coupon) " << 
-                               "with embedded option");
+                    // Min [caprate, Max[floorrate, spread] ] is constructed
+                    Rate effectiveRate = std::min(get(caps,N-2,0.0),
+                                     std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
                     cf = boost::shared_ptr<CashFlow>(
                             new FixedRateCoupon(get(nominals,N-2), paymentDate,
-                                    get(spreads,N-2,0.0), paymentDayCounter,
+                                    effectiveRate, paymentDayCounter,
                                     start, end, start, end));
                     // no pricer is needed for a fixed rate coupon
                 }
@@ -956,20 +884,12 @@ namespace QuantLib {
                         QL_FAIL("unexpected error when casting to CmsCoupon");
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to 
-                    // margin is constructed
-                    QL_REQUIRE(get(caps,N-2,Null<Rate>())==Null<Real>() ||
-                               get(caps,N-2,Null<Rate>())==1.0,
-                               "Incongruous data: fixed rate coupon "<<
-                               "(from null gearing cms coupon) " << 
-                               "with embedded option");
-                    QL_REQUIRE(get(floors,N-2,Null<Rate>())==Null<Real>() ||
-                               get(floors,N-2,Null<Rate>())==0.0,
-                               "Incongruous data: fixed rate coupon "<<
-                               "(from null gearing cms coupon) " << 
-                               "with embedded option");
+                    // Min [caprate, Max[floorrate, spread] ] is constructed
+                    Rate effectiveRate = std::min(get(caps,N-2,0.0),
+                                     std::max(get(floors,N-2,0.0),get(spreads,N-2,0.0)));
                     cf = boost::shared_ptr<CashFlow>(
                             new FixedRateCoupon(get(nominals,N-2), paymentDate,
-                                    get(spreads,N-2,0.0), paymentDayCounter,
+                                    effectiveRate, paymentDayCounter,
                                     start, end, start, reference));
                     // no pricer is needed for a fixed rate coupon
                 }
