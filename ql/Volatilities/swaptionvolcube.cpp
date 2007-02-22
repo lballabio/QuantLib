@@ -66,7 +66,7 @@ namespace QuantLib {
                        ") in the " << io::ordinal(i) << " row");
 
         registerWith(atmVol_);
-        atmVol_.currentLink()->enableExtrapolation();
+        atmVol_->enableExtrapolation();
 
         // register with SwapIndexBase
         if (!swapIndexBase_)

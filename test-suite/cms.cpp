@@ -286,7 +286,7 @@ void setup() {
         false));
     flatSwaptionVolatilityCube1_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube1));
-    flatSwaptionVolatilityCube1_.currentLink()->enableExtrapolation();
+    flatSwaptionVolatilityCube1_->enableExtrapolation();
 
     boost::shared_ptr<SwaptionVolCube2>
     flatSwaptionVolatilityCube2(new SwaptionVolCube2(atmVol_,
@@ -298,7 +298,7 @@ void setup() {
                                            vegaWeightedSmileFit_));
     flatSwaptionVolatilityCube2_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2));
-    flatSwaptionVolatilityCube2_.currentLink()->enableExtrapolation();
+    flatSwaptionVolatilityCube2_->enableExtrapolation();
 
 
     // Volatility Cube with smile
@@ -325,7 +325,7 @@ void setup() {
         false));
     swaptionVolatilityCubeBySabr_ = Handle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
-    swaptionVolatilityCubeBySabr_.currentLink()->enableExtrapolation();
+    swaptionVolatilityCubeBySabr_->enableExtrapolation();
 
 
     swaptionVolatilityStructures_.push_back(atmVol_);

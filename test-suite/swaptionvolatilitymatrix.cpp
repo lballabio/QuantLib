@@ -113,12 +113,14 @@ void makeObservabiltyTest(
 
     // test market data change...
     if (mktDataFloating){
-        Volatility initialVolatility = volsHandles_[0][0].currentLink()->value();
-        dynamic_cast<SimpleQuote*>(&*volsHandles_[0][0].currentLink())->setValue(10);
+        Volatility initialVolatility = volsHandles_[0][0]->value();
+        boost::dynamic_pointer_cast<SimpleQuote>(
+                              volsHandles_[0][0].currentLink())->setValue(10);
         newVol = vol->volatility(
                 referenceDate + optionTenors_[0],
                 swapTenors_[0], .02, false);
-        dynamic_cast<SimpleQuote*>(&*volsHandles_[0][0].currentLink())->setValue(initialVolatility);
+        boost::dynamic_pointer_cast<SimpleQuote>(
+               volsHandles_[0][0].currentLink())->setValue(initialVolatility);
         if (initialVol == newVol)
             BOOST_ERROR(description << " the volatility should change when"
                         " the market data is changed !");
