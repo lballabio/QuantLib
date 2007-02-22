@@ -267,7 +267,7 @@ void CapFlooredCouponTest::testDecomposition() {
     npvCappedLeg = capLeg.NPV();
     npvCap = cap.NPV();
     error = std::abs(npvCappedLeg - (npvVanilla-npvCap));
-    if (1/*error>tolerance*/) {
+    if (error>tolerance) {
         BOOST_ERROR("\nCapped Leg: gearing=1, spread=0%, strike=" << capstrike*100 <<
                     "%\n" <<
                     "  Capped Floating Leg NPV: " << npvCappedLeg << "\n" <<
