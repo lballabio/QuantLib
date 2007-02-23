@@ -163,9 +163,10 @@ namespace QuantLib {
                                    polynomOrder_, polynomType_));
 
         return boost::shared_ptr<LongstaffSchwartzPathPricer<Path> > (
-             new LongstaffSchwartzPathPricer<Path>(this->timeGrid(),
-                                                   earlyExercisePathPricer,
-                                                   process->riskFreeRate()));
+             new LongstaffSchwartzPathPricer<Path>(
+                                      this->timeGrid(),
+                                      earlyExercisePathPricer,
+                                      process->riskFreeRate().currentLink()));
     }
 
     template <class RNG, class S>

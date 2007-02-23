@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +48,7 @@ namespace QuantLib {
     boost::shared_ptr<VanillaSwap> SwapIndex::underlyingSwap(
                                                const Date& fixingDate) const {
         QL_REQUIRE(iborIndex_, "no index set");
-        QL_REQUIRE(iborIndex_->termStructure(),
+        QL_REQUIRE(!iborIndex_->termStructure().empty(),
                    "no forecasting term structure set to " <<
                    iborIndex_->name());
         return MakeVanillaSwap(tenor_, iborIndex_, 0.0)

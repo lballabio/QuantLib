@@ -34,23 +34,23 @@ namespace QuantLib {
         spread_ = coupon_->spread();
         Date paymentDate = coupon_->date();
         const boost::shared_ptr<InterestRateIndex>& index = coupon_->index();
-        boost::shared_ptr<YieldTermStructure> rateCurve = index->termStructure();
+        Handle<YieldTermStructure> rateCurve = index->termStructure();
 
         Date today = Settings::instance().evaluationDate();
 
         if(paymentDate > today)
             discount_ = rateCurve->discount(paymentDate);
-        else discount_= 1.;
+        else
+            discount_ = 1.0;
 
         spreadLegValue_ = spread_ * coupon_->accrualPeriod()* discount_;
-
     }
 
     Real BlackIborCouponPricer::swapletPrice() const {
         // past or future fixing is managed in InterestRateIndex::fixing()
-        
-        Real swapletPrice = 
-           adjustedFixing()* coupon_->accrualPeriod()* discount_;        
+
+        Real swapletPrice =
+           adjustedFixing()* coupon_->accrualPeriod()* discount_;
         return gearing_ * swapletPrice + spreadLegValue_;
     }
 
@@ -92,9 +92,9 @@ namespace QuantLib {
         } else {
             QL_REQUIRE(!capletVolatility().empty(),"missing caplet volatility");
             // not yet determined, use Black model
-            Rate fixing = 
+            Rate fixing =
                  blackFormula(optionType,
-                              effStrike, 
+                              effStrike,
                               adjustedFixing(),
                               std::sqrt(capletVolatility()->blackVariance(fixingDate,effStrike)));
             #if defined(QL_PATCH_MSVC6)
@@ -106,9 +106,9 @@ namespace QuantLib {
     }
 
     Rate BlackIborCouponPricer::adjustedFixing() const {
- 
+
         Real adjustement;
-        
+
         Rate fixing = coupon_->indexFixing();
 
         if (!coupon_->isInArrears()) {

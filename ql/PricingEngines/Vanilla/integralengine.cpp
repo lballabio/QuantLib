@@ -65,11 +65,9 @@ namespace QuantLib {
                            arguments_.exercise->lastDate(), payoff->strike());
 
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(
-                                             arguments_.exercise->lastDate());
+            process->dividendYield()->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(
-                                             arguments_.exercise->lastDate());
+            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Rate drift = std::log(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
         Integrand f(arguments_.payoff,
@@ -79,8 +77,7 @@ namespace QuantLib {
 
         Real infinity = 10.0*std::sqrt(variance);
         results_.value =
-            process->riskFreeRate()->discount(
-                                            arguments_.exercise->lastDate()) /
+            process->riskFreeRate()->discount(arguments_.exercise->lastDate()) /
             std::sqrt(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }

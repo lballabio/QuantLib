@@ -54,10 +54,8 @@ namespace QuantLib {
         DayCounter voldc = process->blackVolatility()->dayCounter();
 
         Spread dividendYield = 0.5 * (
-            // process->riskFreeRate()->zeroYield(exercise) +
             process->riskFreeRate()->zeroRate(exercise, rfdc,
                                               Continuous, NoFrequency) +
-            // process->dividendYield()->zeroYield(exercise) +
             process->dividendYield()->zeroRate(exercise, divdc,
                                                Continuous, NoFrequency) +
             volatility*volatility/6.0);

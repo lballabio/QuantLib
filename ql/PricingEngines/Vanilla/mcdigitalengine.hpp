@@ -174,12 +174,11 @@ namespace QuantLib {
 
         return boost::shared_ptr<
                         QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>(
-          new DigitalPathPricer(
-            payoff,
-            exercise,
-            Handle<YieldTermStructure>(process->riskFreeRate()),
-            process,
-            sequenceGen));
+          new DigitalPathPricer(payoff,
+                                exercise,
+                                process->riskFreeRate(),
+                                process,
+                                sequenceGen));
     }
 
 

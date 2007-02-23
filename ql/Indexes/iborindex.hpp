@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,8 +46,7 @@ namespace QuantLib {
         //! \name InterestRateIndex interface
         //@{
         Rate forecastFixing(const Date& fixingDate) const;
-        Handle<YieldTermStructure> termStructureHandle() const;
-        boost::shared_ptr<YieldTermStructure> termStructure() const;
+        Handle<YieldTermStructure> termStructure() const;
         //@}
         //! \name Inspectors
         //@{
@@ -71,13 +70,8 @@ namespace QuantLib {
         return convention_;
     }
 
-    inline Handle<YieldTermStructure> IborIndex::termStructureHandle() const {
+    inline Handle<YieldTermStructure> IborIndex::termStructure() const {
         return termStructure_;
-    }
-
-    inline boost::shared_ptr<YieldTermStructure>
-    IborIndex::termStructure() const {
-        return termStructure_.currentLink();
     }
 
 }

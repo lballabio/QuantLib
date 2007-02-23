@@ -140,21 +140,20 @@ namespace QuantLib {
                 this->arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        Handle<Quote> spot(process->stateVariable());
-        Handle<YieldTermStructure> riskFreeRate(process->riskFreeRate());
+        Handle<Quote> spot = process->stateVariable();
+        Handle<YieldTermStructure> riskFreeRate = process->riskFreeRate();
         // dividendTS needs modification
         Handle<YieldTermStructure> dividendYield(
             boost::shared_ptr<YieldTermStructure>(
-                new QuantoTermStructure(
-                    Handle<YieldTermStructure>(process->dividendYield()),
-                    Handle<YieldTermStructure>(process->riskFreeRate()),
-                    this->arguments_.foreignRiskFreeTS,
-                    Handle<BlackVolTermStructure>(process->blackVolatility()),
-                    strike,
-                    this->arguments_.exchRateVolTS,
-                    exchangeRateATMlevel,
-                    this->arguments_.correlation)));
-        Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
+                new QuantoTermStructure(process->dividendYield(),
+                                        process->riskFreeRate(),
+                                        this->arguments_.foreignRiskFreeTS,
+                                        process->blackVolatility(),
+                                        strike,
+                                        this->arguments_.exchRateVolTS,
+                                        exchangeRateATMlevel,
+                                        this->arguments_.correlation)));
+        Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
         originalArguments_->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
                   new GeneralizedBlackScholesProcess(spot, dividendYield,
@@ -186,9 +185,9 @@ namespace QuantLib {
                                         process->stateVariable()->value());
         this->results_.qvega = this->arguments_.correlation *
             process->blackVolatility()->blackVol(
-                this->arguments_.exercise->lastDate(),
-                process->stateVariable()->value()) *
-                    originalResults_->dividendRho;
+                                        this->arguments_.exercise->lastDate(),
+                                        process->stateVariable()->value()) *
+                                            originalResults_->dividendRho;
         this->results_.qrho = - originalResults_->dividendRho;
         this->results_.qlambda = exchangeRateFlatVol *
             volatility * originalResults_->dividendRho;

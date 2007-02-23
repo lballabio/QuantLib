@@ -85,8 +85,7 @@ namespace QuantLib {
                    "negative value after subtracting dividends");
 
         // binomial trees with constant coefficient
-        Handle<Quote> underlying(
-                               boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+        Handle<Quote> underlying(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
         Handle<YieldTermStructure> flatRiskFree(
             boost::shared_ptr<YieldTermStructure>(
                 new FlatForward(referenceDate, riskFreeRate, rfdc)));

@@ -94,8 +94,9 @@ namespace QuantLib {
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             results_.rho += weight * black.rho(dt);
 
-            Time t = divdc.yearFraction(process->dividendYield()->referenceDate(),
-                                        resetDates[i-1]);
+            Time t = divdc.yearFraction(
+                                    process->dividendYield()->referenceDate(),
+                                    resetDates[i-1]);
             dt = divdc.yearFraction(resetDates[i-1],resetDates[i]);
             results_.dividendRho += weight * (black.dividendRho(dt) -
                                               t * black.value());

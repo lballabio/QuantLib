@@ -59,8 +59,8 @@ namespace QuantLib {
 
         // A plain vanilla discretization schema that
         // seems to produce the smallest bias.
-        // See Lord, R., R. Koekkoek and D. van Dijk (2006), 
-        // "A Comparison of biased simulation schemes for 
+        // See Lord, R., R. Koekkoek and D. van Dijk (2006),
+        // "A Comparison of biased simulation schemes for
         //  stochastic volatility models", Working Paper, Tinbergen Institute
         tmp[1] = kappa_*(theta_ - vol*vol);
         return tmp;
@@ -114,14 +114,12 @@ namespace QuantLib {
         return sigma_;
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
-    HestonProcess::dividendYield() const {
-        return dividendYield_.currentLink();
+    const Handle<YieldTermStructure>& HestonProcess::dividendYield() const {
+        return dividendYield_;
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
-    HestonProcess::riskFreeRate() const {
-        return riskFreeRate_.currentLink();
+    const Handle<YieldTermStructure>& HestonProcess::riskFreeRate() const {
+        return riskFreeRate_;
     }
 
     Time HestonProcess::time(const Date& d) const {

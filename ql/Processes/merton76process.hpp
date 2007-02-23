@@ -59,14 +59,13 @@ namespace QuantLib {
         Time time(const Date&) const;
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<Quote>& stateVariable() const;
-        const boost::shared_ptr<YieldTermStructure>& dividendYield() const;
-        const boost::shared_ptr<YieldTermStructure>& riskFreeRate() const;
-        const boost::shared_ptr<BlackVolTermStructure>&
-                                                     blackVolatility() const;
-        const boost::shared_ptr<Quote>& jumpIntensity() const;
-        const boost::shared_ptr<Quote>& logMeanJump() const;
-        const boost::shared_ptr<Quote>& logJumpVolatility() const;
+        const Handle<Quote>& stateVariable() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+        const Handle<BlackVolTermStructure>& blackVolatility() const;
+        const Handle<Quote>& jumpIntensity() const;
+        const Handle<Quote>& logMeanJump() const;
+        const Handle<Quote>& logJumpVolatility() const;
         //@}
       private:
         boost::shared_ptr<GeneralizedBlackScholesProcess> blackProcess_;

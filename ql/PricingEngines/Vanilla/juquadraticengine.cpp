@@ -72,9 +72,8 @@ namespace QuantLib {
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            Time t = rfdc.yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
-                                     arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                       arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
             t = divdc.yearFraction(process->dividendYield()->referenceDate(),

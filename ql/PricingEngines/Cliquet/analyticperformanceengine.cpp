@@ -92,7 +92,7 @@ namespace QuantLib {
 
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                      resetDates[i-1]);
+                                       resetDates[i-1]);
             results_.rho += discount * moneyness->strike() *
                 (black.rho(dt) - t * black.value());
 

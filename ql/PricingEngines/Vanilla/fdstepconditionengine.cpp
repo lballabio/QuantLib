@@ -74,9 +74,8 @@ namespace QuantLib {
         QL_REQUIRE(striked_payoff, "non-striked payoff given");
 
         Real variance =
-            process_->blackVolatility()->
-            blackVariance(exerciseDate_,
-                          striked_payoff->strike());
+            process_->blackVolatility()->blackVariance(
+                                     exerciseDate_, striked_payoff->strike());
         DiscountFactor dividendDiscount =
             process_->dividendYield()->discount(exerciseDate_);
         DiscountFactor riskFreeDiscount =

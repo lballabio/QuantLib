@@ -212,13 +212,13 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                arguments_->stochasticProcess);
         QL_REQUIRE(originalProcess, "Black-Scholes process required");
-        Handle<Quote> stateVariable(originalProcess->stateVariable());
-        Handle<YieldTermStructure> dividendYield(
-                                            originalProcess->dividendYield());
-        Handle<YieldTermStructure> riskFreeRate(
-                                            originalProcess->riskFreeRate());
+        Handle<Quote> stateVariable = originalProcess->stateVariable();
+        Handle<YieldTermStructure> dividendYield =
+            originalProcess->dividendYield();
+        Handle<YieldTermStructure> riskFreeRate =
+            originalProcess->riskFreeRate();
 
-        const boost::shared_ptr<BlackVolTermStructure>& blackVol =
+        const Handle<BlackVolTermStructure>& blackVol =
             originalProcess->blackVolatility();
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volatility(

@@ -51,36 +51,33 @@ namespace QuantLib {
         return blackProcess_->time(d);
     }
 
-    const boost::shared_ptr<Quote>& Merton76Process::stateVariable() const {
+    const Handle<Quote>& Merton76Process::stateVariable() const {
         return blackProcess_->stateVariable();
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
-    Merton76Process::dividendYield() const {
+    const Handle<YieldTermStructure>& Merton76Process::dividendYield() const {
         return blackProcess_->dividendYield();
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
-    Merton76Process::riskFreeRate() const {
+    const Handle<YieldTermStructure>& Merton76Process::riskFreeRate() const {
         return blackProcess_->riskFreeRate();
     }
 
-    const boost::shared_ptr<BlackVolTermStructure>&
+    const Handle<BlackVolTermStructure>&
     Merton76Process::blackVolatility() const {
         return blackProcess_->blackVolatility();
     }
 
-    const boost::shared_ptr<Quote>& Merton76Process::jumpIntensity() const {
-        return jumpIntensity_.currentLink();
+    const Handle<Quote>& Merton76Process::jumpIntensity() const {
+        return jumpIntensity_;
     }
 
-    const boost::shared_ptr<Quote>& Merton76Process::logMeanJump() const {
-        return logMeanJump_.currentLink();
+    const Handle<Quote>& Merton76Process::logMeanJump() const {
+        return logMeanJump_;
     }
 
-    const boost::shared_ptr<Quote>&
-    Merton76Process::logJumpVolatility() const {
-        return logJumpVolatility_.currentLink();
+    const Handle<Quote>& Merton76Process::logJumpVolatility() const {
+        return logJumpVolatility_;
     }
 
 }

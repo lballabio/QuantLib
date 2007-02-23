@@ -64,8 +64,8 @@ namespace QuantLib {
         Real theta() const;
         Real sigma() const;
 
-        const boost::shared_ptr<YieldTermStructure>& dividendYield() const;
-        const boost::shared_ptr<YieldTermStructure>& riskFreeRate() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
 
         Time time(const Date&) const;
       private:

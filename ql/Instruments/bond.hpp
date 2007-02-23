@@ -80,7 +80,7 @@ namespace QuantLib {
         Real faceAmount() const { return faceAmount_;}
         const DayCounter& dayCounter() const;
         Frequency frequency() const;
-        boost::shared_ptr<YieldTermStructure> discountCurve() const;
+        Handle<YieldTermStructure> discountCurve() const;
         //@}
         //! \name Calculations
         //@{
@@ -210,8 +210,8 @@ namespace QuantLib {
         return frequency_;
     }
 
-    inline boost::shared_ptr<YieldTermStructure> Bond::discountCurve() const {
-        return discountCurve_.currentLink();
+    inline Handle<YieldTermStructure> Bond::discountCurve() const {
+        return discountCurve_;
     }
 
 }

@@ -69,9 +69,9 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         //! term structure relevant to the contract (e.g. repo curve)
-        boost::shared_ptr<YieldTermStructure> discountCurve() const;
+        Handle<YieldTermStructure> discountCurve() const;
         //! term structure that discounts the underlying's income cash flows
-        boost::shared_ptr<YieldTermStructure> incomeDiscountCurve() const;
+        Handle<YieldTermStructure> incomeDiscountCurve() const;
         //! returns whether the instrument is still tradable.
         bool isExpired() const;
         //@}
@@ -175,14 +175,12 @@ namespace QuantLib {
         return dayCount_;
     }
 
-    inline boost::shared_ptr<YieldTermStructure>
-    Forward::discountCurve() const {
-        return discountCurve_.currentLink();
+    inline Handle<YieldTermStructure> Forward::discountCurve() const {
+        return discountCurve_;
     }
 
-    inline boost::shared_ptr<YieldTermStructure>
-    Forward::incomeDiscountCurve() const {
-        return incomeDiscountCurve_.currentLink();
+    inline Handle<YieldTermStructure> Forward::incomeDiscountCurve() const {
+        return incomeDiscountCurve_;
     }
 
 

@@ -47,9 +47,9 @@ namespace QuantLib {
         if(isInArrears()){
             return index_->fixing(fixingDate());
         } else {
-            boost::shared_ptr<YieldTermStructure> termStructure =
-                index_->termStructure();
-            QL_REQUIRE(termStructure,"null term structure set to par coupon");
+            Handle<YieldTermStructure> termStructure = index_->termStructure();
+            QL_REQUIRE(!termStructure.empty(),
+                       "null term structure set to par coupon");
             Date today = Settings::instance().evaluationDate();
             Date fixing_date = fixingDate();
             if (fixing_date < today) {

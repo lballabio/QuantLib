@@ -40,7 +40,7 @@ namespace QuantLib {
       cmsCalendar_(swapIndex->calendar()),
       floatCalendar_(swapIndex->iborIndex()->calendar()),
 
-      discountingTermStructure_(swapIndex->termStructureHandle()),
+      discountingTermStructure_(swapIndex->termStructure()),
 
       payCms_(true), nominal_(1000000.0),
       cmsTenor_(3*Months), floatTenor_(3*Months),
@@ -66,7 +66,7 @@ namespace QuantLib {
                   baseIndex->businessDayConvention(),
                   baseIndex->endOfMonth(),
                   baseIndex->dayCounter(),
-                  baseIndex->termStructureHandle()));
+                  baseIndex->termStructure()));
       }
 
     MakeCms::operator Swap() const {

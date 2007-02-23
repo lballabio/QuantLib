@@ -78,8 +78,8 @@ namespace QuantLib {
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
-        rateCurve_ = swapIndex->termStructure();
-        
+        rateCurve_ = swapIndex->termStructure().currentLink();
+
         Date today = Settings::instance().evaluationDate();
 
         if(paymentDate_ > today)
@@ -108,7 +108,7 @@ namespace QuantLib {
             Time paymentTime = dc.yearFraction(rateCurve_->referenceDate(),
                                                paymentDate_);
             Real delta = (paymentTime-startTime) / (swapFirstPaymentTime-startTime);
-            
+
             switch (modelOfYieldCurve_) {
                 case GFunctionFactory::Standard:
                     gFunction_ = GFunctionFactory::newGFunctionStandard(q, delta, swapTenor_.length());
@@ -117,7 +117,7 @@ namespace QuantLib {
                     gFunction_ = GFunctionFactory::newGFunctionExactYield(*coupon_);
                     break;
                 case GFunctionFactory::ParallelShifts: {
-                    Handle<Quote> nullMeanReversionQuote = 
+                    Handle<Quote> nullMeanReversionQuote =
                         Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
                     gFunction_ = GFunctionFactory::newGFunctionWithShifts(*coupon_, nullMeanReversionQuote);
                     }
@@ -143,12 +143,12 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
             // the fixing is determined
-            const Rate Rs = 
+            const Rate Rs =
                 std::max(coupon_->swapIndex()->fixing(fixingDate_)-effectiveCap, 0.);
             Rate price = (gearing_*Rs)*(coupon_->accrualPeriod()*discount_);
             return price;
         } else {
-            Real cutoffNearZero = 1e-10;        
+            Real cutoffNearZero = 1e-10;
             Real capletPrice = 0;
             if (effectiveCap < cutoffForCaplet_) {
                 Rate effectiveStrikeForMax = std::max(effectiveCap,cutoffNearZero);
@@ -167,12 +167,12 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
             // the fixing is determined
-            const Rate Rs = 
+            const Rate Rs =
                 std::max(effectiveFloor-coupon_->swapIndex()->fixing(fixingDate_),0.);
             Rate price = (gearing_*Rs)*(coupon_->accrualPeriod()*discount_);
             return price;
         } else {
-            Real cutoffNearZero = 1e-10;         
+            Real cutoffNearZero = 1e-10;
             Real floorletPrice = 0;
             if (effectiveFloor > cutoffForFloorlet_){
                 Rate effectiveStrikeForMin = std::max(effectiveFloor,cutoffNearZero);
@@ -373,7 +373,7 @@ namespace QuantLib {
             Real price = 0;
             price += discount_*swapRateValue_;
             price += firstDerivativeOfGAtForwardValue*annuity_*swapRateValue_*
-                     swapRateValue_*(std::exp(variance)-1.);            
+                     swapRateValue_*(std::exp(variance)-1.);
             return gearing_ * price * coupon_->accrualPeriod() + spreadLegValue_;
         }
     }
@@ -444,8 +444,7 @@ namespace QuantLib {
         const Leg fixedLeg(swap->fixedLeg());
         const Schedule schedule =
             swapIndex->fixedRateSchedule(coupon.fixingDate());
-        const boost::shared_ptr<YieldTermStructure> rateCurve =
-            swapIndex->termStructure();
+        Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
 
         const DayCounter dc = swapIndex->dayCounter();
         //const DayCounter dc = coupon.dayCounter();
@@ -548,8 +547,7 @@ namespace QuantLib {
         const Leg fixedLeg(swap->fixedLeg());
         const Schedule schedule =
             swapIndex->fixedRateSchedule(coupon.fixingDate());
-        const boost::shared_ptr<YieldTermStructure> rateCurve =
-            swapIndex->termStructure();
+        Handle<YieldTermStructure> rateCurve = swapIndex->termStructure();
         const DayCounter dc = swapIndex->dayCounter();
         //const DayCounter dc = coupon.dayCounter();
 

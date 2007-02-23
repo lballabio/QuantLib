@@ -96,7 +96,7 @@ namespace QuantLib {
 
         boost::shared_ptr<StochasticProcess1D> bs(
                          new GeneralizedBlackScholesProcess(
-                                      Handle<Quote>(process->stateVariable()),
+                                      process->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
 
         // adjust the bermudan exercise times according to the tree steps

@@ -73,12 +73,12 @@ namespace QuantLib {
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
-        Handle<Quote> stateVariable(jdProcess->stateVariable());
-        Handle<YieldTermStructure> dividendTS(jdProcess->dividendYield());
+        Handle<Quote> stateVariable = jdProcess->stateVariable();
+        Handle<YieldTermStructure> dividendTS = jdProcess->dividendYield();
         RelinkableHandle<YieldTermStructure> riskFreeTS(
-                                                   jdProcess->riskFreeRate());
+                               jdProcess->riskFreeRate().currentLink());
         RelinkableHandle<BlackVolTermStructure> volTS(
-                                                jdProcess->blackVolatility());
+                            jdProcess->blackVolatility().currentLink());
         baseArguments->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
                  new GeneralizedBlackScholesProcess(stateVariable, dividendTS,

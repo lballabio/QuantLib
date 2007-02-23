@@ -48,11 +48,9 @@ namespace QuantLib {
         Real spot = process->stateVariable()->value() - riskless;
 
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(
-                                            arguments_.exercise->lastDate());
+            process->dividendYield()->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeRate()->discount(
-                                            arguments_.exercise->lastDate());
+            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         Real variance =

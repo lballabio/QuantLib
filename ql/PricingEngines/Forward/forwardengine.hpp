@@ -125,17 +125,15 @@ namespace QuantLib {
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
         // the vol
-        Handle<Quote> spot(process->stateVariable());
+        Handle<Quote> spot = process->stateVariable();
         Handle<YieldTermStructure> dividendYield(
             boost::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(
-                         Handle<YieldTermStructure>(process->dividendYield()),
-                         this->arguments_.resetDate)));
+               new ImpliedTermStructure(process->dividendYield(),
+                                        this->arguments_.resetDate)));
         Handle<YieldTermStructure> riskFreeRate(
             boost::shared_ptr<YieldTermStructure>(
-               new ImpliedTermStructure(
-                          Handle<YieldTermStructure>(process->riskFreeRate()),
-                          this->arguments_.resetDate)));
+               new ImpliedTermStructure(process->riskFreeRate(),
+                                        this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
         // In the latter case the right solution would be stochastic
@@ -143,9 +141,8 @@ namespace QuantLib {
         // implies an unrealistic time-decreasing smile)
         Handle<BlackVolTermStructure> blackVolatility(
             boost::shared_ptr<BlackVolTermStructure>(
-                new ImpliedVolTermStructure(
-                    Handle<BlackVolTermStructure>(process->blackVolatility()),
-                    this->arguments_.resetDate)));
+                new ImpliedVolTermStructure(process->blackVolatility(),
+                                            this->arguments_.resetDate)));
 
         originalArguments_->stochasticProcess =
             boost::shared_ptr<StochasticProcess>(
@@ -176,10 +173,10 @@ namespace QuantLib {
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         Time resetTime = rfdc.yearFraction(
-            process->riskFreeRate()->referenceDate(),
-            this->arguments_.resetDate);
+                                     process->riskFreeRate()->referenceDate(),
+                                     this->arguments_.resetDate);
         DiscountFactor discQ = process->dividendYield()->discount(
-                                    this->arguments_.resetDate);
+                                                  this->arguments_.resetDate);
 
         this->results_.value = discQ * originalResults_->value;
         // I need the strike derivative here ...

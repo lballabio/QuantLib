@@ -173,7 +173,7 @@ namespace QuantLib {
              new LongstaffSchwartzPathPricer<MultiPath>(
                      this->timeGrid(),
                      earlyExercisePathPricer,
-                     process->riskFreeRate())
+                     process->riskFreeRate().currentLink())
              );
     }
 

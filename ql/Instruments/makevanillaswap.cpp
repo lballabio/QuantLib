@@ -32,7 +32,7 @@ namespace QuantLib {
       index_(index), fixedRate_(fixedRate),
       effectiveDate_(Date()),
       fixedCalendar_(index->calendar()), floatCalendar_(index->calendar()),
-      discountingTermStructure_(index->termStructureHandle()),
+      discountingTermStructure_(index->termStructure()),
       type_(VanillaSwap::Payer), nominal_(1.0),
       fixedTenor_(Period(1, Years)), floatTenor_(index->tenor()),
       fixedConvention_(ModifiedFollowing),

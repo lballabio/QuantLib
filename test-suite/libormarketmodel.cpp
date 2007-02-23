@@ -224,8 +224,8 @@ void LiborMarketModelTest::testCapletPricing() {
     boost::shared_ptr<AnalyticCapFloorEngine> engine1(
         new AnalyticCapFloorEngine(model));
 
-    const Handle<YieldTermStructure> termStructure(
-        process->index()->termStructure());
+    const Handle<YieldTermStructure> termStructure =
+        process->index()->termStructure();
 
     boost::shared_ptr<Cap> cap1(
         new Cap(process->cashFlows(),
@@ -271,7 +271,7 @@ void LiborMarketModelTest::testCalibration() {
     boost::shared_ptr<IborIndex> index = makeIndex();
     boost::shared_ptr<LiborForwardModelProcess> process(
         new LiborForwardModelProcess(size, index));
-    const Handle<YieldTermStructure> termStructure(index->termStructure());
+    Handle<YieldTermStructure> termStructure = index->termStructure();
 
     // set-up the model
     boost::shared_ptr<LmVolatilityModel> volaModel(
@@ -406,8 +406,8 @@ void LiborMarketModelTest::testSwaptionPricing() {
     boost::shared_ptr<LiborForwardModel>
         liborModel(new LiborForwardModel(process, volaModel, corrModel));
 
-    Calendar calendar   = index->calendar();
-    DayCounter dayCounter=index->termStructure()->dayCounter();
+    Calendar calendar = index->calendar();
+    DayCounter dayCounter = index->termStructure()->dayCounter();
     BusinessDayConvention convention = index->businessDayConvention();
 
     Date settlement  = index->termStructure()->referenceDate();
@@ -428,8 +428,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
                 VanillaSwap(VanillaSwap::Receiver, 1.0,
                             schedule, swapRate, dayCounter,
                             schedule, index, 0.0, index->dayCounter(),
-                            Handle<YieldTermStructure>(
-                                        index->termStructure())));
+                            index->termStructure()));
 
             // check forward pricing first
             const Real expected = forwardSwap->fairRate();
@@ -445,8 +444,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
                 VanillaSwap(VanillaSwap::Receiver, 1.0,
                             schedule, swapRate, dayCounter,
                             schedule, index, 0.0, index->dayCounter(),
-                            Handle<YieldTermStructure>(
-                                   index->termStructure())));
+                            index->termStructure()));
 
             if (i == j && i<=size/2) {
                 boost::shared_ptr<PricingEngine> engine(
@@ -456,8 +454,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
                 boost::shared_ptr<Swaption> swaption(
                     new Swaption(forwardSwap, exercise,
-                                 Handle<YieldTermStructure>(
-                                     index->termStructure()), engine));
+                                 index->termStructure(), engine));
 
                 GeneralStatistics stat;
 

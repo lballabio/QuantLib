@@ -89,8 +89,8 @@ namespace QuantLib {
         const Real capRate   = (1.0/strike - 1.0)/tenor;
         const Volatility var = covarProxy_
             ->integratedCovariance(i, i, process_->fixingTimes()[i]);
-        const DiscountFactor dis
-            = process_->index()->termStructure()->discount(bondMaturity);
+        const DiscountFactor dis =
+            process_->index()->termStructure()->discount(bondMaturity);
 
         const Real black = blackFormula(
             (type==Option::Put ? Option::Call : Option::Put),

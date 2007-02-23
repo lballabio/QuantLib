@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -68,13 +68,11 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<Quote>& stateVariable() const;
-        const boost::shared_ptr<YieldTermStructure>& dividendYield() const;
-        const boost::shared_ptr<YieldTermStructure>& riskFreeRate() const;
-        const boost::shared_ptr<BlackVolTermStructure>& blackVolatility()
-                                                                        const;
-        const boost::shared_ptr<LocalVolTermStructure>& localVolatility()
-                                                                        const;
+        const Handle<Quote>& stateVariable() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+        const Handle<BlackVolTermStructure>& blackVolatility() const;
+        const Handle<LocalVolTermStructure>& localVolatility() const;
         //@}
       private:
         Handle<Quote> x0_;

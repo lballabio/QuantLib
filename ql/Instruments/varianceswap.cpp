@@ -107,6 +107,8 @@ namespace QuantLib {
     }
 
     void VarianceSwap::arguments::validate() const {
+        QL_REQUIRE(!stochasticProcess->stateVariable().empty(),
+                   "no underlying given");
         QL_REQUIRE(stochasticProcess->stateVariable()->value() > 0.0,
                    "negative or zero underlying given");
         QL_REQUIRE(strike != Null<Real>(), "no strike given");

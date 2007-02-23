@@ -60,15 +60,14 @@ namespace QuantLib {
                      object pointed to will remain alive for the whole
                      lifetime of the handle---namely, it should be set
                      to <tt>false</tt> when the passed shared pointer
-                     will not automatically delete the pointee (the
-                     latter should only happen in a controlled
-                     environment, so that the programmer is aware of
-                     it). Failure to do so can very likely result in a
-                     program crash.  If the programmer does want the
-                     handle to register as observer of such a shared
-                     pointer, it is his responsibility to ensure that
-                     the handle gets destroyed before the pointed
-                     object does.
+                     does not own the pointee (this should only happen
+                     in a controlled environment, so that the
+                     programmer is aware of it). Failure to do so can
+                     very likely result in a program crash.  If the
+                     programmer does want the handle to register as
+                     observer of such a shared pointer, it is his
+                     responsibility to ensure that the handle gets
+                     destroyed before the pointed object does.
         */
         explicit Handle(
                        const boost::shared_ptr<T>& h = boost::shared_ptr<T>(),

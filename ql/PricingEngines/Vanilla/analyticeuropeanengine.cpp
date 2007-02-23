@@ -42,8 +42,7 @@ namespace QuantLib {
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         DiscountFactor dividendDiscount =
-            process->dividendYield()->discount(
-                                             arguments_.exercise->lastDate());
+            process->dividendYield()->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
             process->riskFreeRate()->discount(arguments_.exercise->lastDate());
         Real spot = process->stateVariable()->value();

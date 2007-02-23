@@ -59,10 +59,8 @@ namespace QuantLib {
         Real getDiscountedDividend(Size i) const {
             Real dividend = getDividendAmount(i);
             Real discount =
-                process_->riskFreeRate()->
-                discount(events_[i]->date()) /
-                process_->dividendYield()->
-                discount(events_[i]->date());
+                process_->riskFreeRate()->discount(events_[i]->date()) /
+                process_->dividendYield()->discount(events_[i]->date());
             return dividend * discount;
         }
     };

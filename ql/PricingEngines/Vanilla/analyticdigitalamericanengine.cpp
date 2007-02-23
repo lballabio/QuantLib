@@ -64,9 +64,8 @@ namespace QuantLib {
             results_.gamma = pricer.gamma();
 
             DayCounter rfdc = process->riskFreeRate()->dayCounter();
-            Time t = rfdc.yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
-                                     arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                       arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
     }

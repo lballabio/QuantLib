@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
- Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -76,34 +76,34 @@ namespace QuantLib {
         StochasticProcess1D::update();
     }
 
-    const boost::shared_ptr<Quote>&
+    const Handle<Quote>&
     GeneralizedBlackScholesProcess::stateVariable() const {
-        return x0_.currentLink();
+        return x0_;
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
+    const Handle<YieldTermStructure>&
     GeneralizedBlackScholesProcess::dividendYield() const {
-        return dividendYield_.currentLink();
+        return dividendYield_;
     }
 
-    const boost::shared_ptr<YieldTermStructure>&
+    const Handle<YieldTermStructure>&
     GeneralizedBlackScholesProcess::riskFreeRate() const {
-        return riskFreeRate_.currentLink();
+        return riskFreeRate_;
     }
 
-    const boost::shared_ptr<BlackVolTermStructure>&
+    const Handle<BlackVolTermStructure>&
     GeneralizedBlackScholesProcess::blackVolatility() const {
-        return blackVolatility_.currentLink();
+        return blackVolatility_;
     }
 
-    const boost::shared_ptr<LocalVolTermStructure>&
+    const Handle<LocalVolTermStructure>&
     GeneralizedBlackScholesProcess::localVolatility() const {
         if (!updated_) {
 
             // constant Black vol?
             boost::shared_ptr<BlackConstantVol> constVol =
                 boost::dynamic_pointer_cast<BlackConstantVol>(
-                                                           blackVolatility());
+                                             blackVolatility().currentLink());
             if (constVol) {
                 // ok, the local vol is constant too.
                 localVolatility_.linkTo(
@@ -112,13 +112,13 @@ namespace QuantLib {
                                          constVol->blackVol(0.0, x0_->value()),
                                          constVol->dayCounter())));
                 updated_ = true;
-                return localVolatility_.currentLink();
+                return localVolatility_;
             }
 
             // ok, so it's not constant. Maybe it's strike-independent?
             boost::shared_ptr<BlackVarianceCurve> volCurve =
                 boost::dynamic_pointer_cast<BlackVarianceCurve>(
-                                                           blackVolatility());
+                                             blackVolatility().currentLink());
             if (volCurve) {
                 // ok, we can use the optimized algorithm
                 localVolatility_.linkTo(
@@ -126,7 +126,7 @@ namespace QuantLib {
                         new LocalVolCurve(
                                       Handle<BlackVarianceCurve>(volCurve))));
                 updated_ = true;
-                return localVolatility_.currentLink();
+                return localVolatility_;
             }
 
             // ok, so it's strike-dependent. Never mind.
@@ -135,10 +135,10 @@ namespace QuantLib {
                           new LocalVolSurface(blackVolatility_, riskFreeRate_,
                                               dividendYield_, x0_->value())));
             updated_ = true;
-            return localVolatility_.currentLink();
+            return localVolatility_;
 
         } else {
-            return localVolatility_.currentLink();
+            return localVolatility_;
         }
     }
 
