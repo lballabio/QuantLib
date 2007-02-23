@@ -88,7 +88,12 @@ namespace QuantLib {
         bool isFloored() const {return isFloored_;}
 
         void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-			pricer_ = pricer;
+			if(pricer_)
+                unregisterWith(pricer_);
+            pricer_ = pricer;
+            QL_REQUIRE(pricer_, "no adequate pricer given");
+            registerWith(pricer_);
+            update();
             underlying_->setPricer(pricer);
 		}
 
