@@ -22,7 +22,7 @@
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/floatingratebond.hpp>
+#include <ql/Instruments/cappedflooredcouponbond.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
@@ -230,11 +230,35 @@ void ConvertibleBondTest::testBond() {
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    FloatingRateBond floating(faceAmount_,issueDate_,issueDate_,maturityDate_,
-                              settlementDays_, index, fixingDays, gearings,
-                              spreads, frequency_, calendar_, dayCounter_,
-                              Following, Following, redemption_,
-                              discountCurve);
+    CappedFlooredCouponBond floating(
+        settlementDays_,
+        issueDate_,
+
+        calendar_,
+        issueDate_,
+        frequency_,
+        maturityDate_,
+        Following,
+
+        faceAmount_,
+
+        index,
+        dayCounter_,
+
+        Handle<CapletVolatilityStructure>(),
+
+        fixingDays,
+        Following,
+
+        gearings,
+        spreads,
+
+        std::vector<Rate>(),
+        std::vector<Rate>(),
+
+        discountCurve,
+
+        redemption_);
 
     tolerance = 2.0e-2 * (faceAmount_/100.0);
 

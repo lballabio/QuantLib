@@ -54,7 +54,6 @@ namespace QuantLib {
         Bond(Real faceAmount,
              const DayCounter& dayCount,
              const Calendar& calendar,
-             BusinessDayConvention accrualConvention,
              BusinessDayConvention paymentConvention,
              Integer settlementDays,
              const Handle<YieldTermStructure>& discountCurve
@@ -65,7 +64,7 @@ namespace QuantLib {
         class engine;
         //! \name Inspectors
         //@{
-        Date settlementDate() const;
+        Date settlementDate(const Date& d = Date()) const;
         Date issueDate() const;
         Date maturityDate() const;
         Date interestAccrualDate() const;
@@ -75,7 +74,7 @@ namespace QuantLib {
         const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
-        BusinessDayConvention accrualConvention() const;
+        //BusinessDayConvention accrualConvention() const;
         BusinessDayConvention paymentConvention() const;
         Real faceAmount() const { return faceAmount_;}
         const DayCounter& dayCounter() const;
@@ -140,7 +139,8 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments*) const;
         Integer settlementDays_;
         Calendar calendar_;
-        BusinessDayConvention accrualConvention_, paymentConvention_;
+        //BusinessDayConvention accrualConvention_;
+        BusinessDayConvention paymentConvention_;
         Real faceAmount_;
         DayCounter dayCount_;
 
@@ -155,7 +155,8 @@ namespace QuantLib {
         Date settlementDate;
         Leg cashflows;
         Calendar calendar;
-        BusinessDayConvention accrualConvention, paymentConvention;
+        //BusinessDayConvention accrualConvention;
+        BusinessDayConvention paymentConvention;
         DayCounter dayCounter;
         Frequency frequency;
         void validate() const;
@@ -194,9 +195,9 @@ namespace QuantLib {
         return calendar_;
     }
 
-    inline BusinessDayConvention Bond::accrualConvention() const {
-        return accrualConvention_;
-    }
+    //inline BusinessDayConvention Bond::accrualConvention() const {
+    //    return accrualConvention_;
+    //}
 
     inline BusinessDayConvention Bond::paymentConvention() const {
         return paymentConvention_;

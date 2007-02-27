@@ -134,12 +134,11 @@ namespace QuantLib {
 
     Bond::Bond(Real faceAmount,
                const DayCounter& dayCount, const Calendar& calendar,
-               BusinessDayConvention accrualConvention,
                BusinessDayConvention paymentConvention,
                Integer settlementDays,
                const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
-      accrualConvention_(accrualConvention),
+      //accrualConvention_(accrualConvention),
       paymentConvention_(paymentConvention), faceAmount_(faceAmount),
       dayCount_(dayCount),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
@@ -147,11 +146,13 @@ namespace QuantLib {
         registerWith(discountCurve_);
     }
 
-    Date Bond::settlementDate() const {
+    Date Bond::settlementDate(const Date& date) const {
+        Date d = (date==Date() ?
+                  Settings::instance().evaluationDate() :
+                  date);
+
         // usually, the settlement is at T+n...
-        Date settlement =
-            calendar_.advance(Settings::instance().evaluationDate(),
-                              settlementDays_, Days);
+        Date settlement = calendar_.advance(d, settlementDays_, Days);
         // ...but the bond won't be traded until the issue date (if given.)
         if (issueDate_ == Date())
             return settlement;
@@ -253,7 +254,7 @@ namespace QuantLib {
         arguments->settlementDate = settlementDate();
         arguments->cashflows = cashflows_;
         arguments->calendar = calendar_;
-        arguments->accrualConvention = accrualConvention_;
+        //arguments->accrualConvention = accrualConvention_;
         arguments->paymentConvention = paymentConvention_;
         arguments->dayCounter = dayCount_;
         arguments->frequency = frequency_;

@@ -40,28 +40,38 @@ namespace QuantLib {
     */
     class CmsCouponBond : public Bond {
       public:
-           CmsCouponBond(Real faceAmount,
-                         const Date& issueDate,
-                         const Date& datedDate,
-                         const Date& maturityDate,
-                         Integer settlementDays,
-                         const boost::shared_ptr<SwapIndex>& index,
-                         Integer fixingDays,
-                         const std::vector<Real>& gearings,
-                         const std::vector<Spread>& spreads,
-                         Frequency couponFrequency,
-                         const Calendar& calendar,
-                         const DayCounter& dayCounter,
-                         const boost::shared_ptr<CmsCouponPricer>& pricer,
-                         const std::vector<Rate>& caps,
-                         const std::vector<Rate>& floors,
-                         BusinessDayConvention accrualConvention = Following,
-                         BusinessDayConvention paymentConvention = Following,
-                         Real redemption = 100.0,
-                         const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>(),
-                         const Date& stub = Date(),
-                         bool fromEnd = true);
+        CmsCouponBond(
+            Integer settlementDays,    // bond specific
+            const Date& issueDate,     // bond specific
+
+            const Calendar& calendar,                // schedule
+            const Date& datedDate,                   // schedule
+            Frequency couponFrequency,               // schedule
+            const Date& maturityDate,                // schedule
+            BusinessDayConvention accrualConvention, // schedule
+
+            Real faceAmount, // nominals
+
+            const boost::shared_ptr<SwapIndex>& index,
+            const DayCounter& paymentDayCounter,
+
+            const boost::shared_ptr<CmsCouponPricer>& pricer,
+
+            Integer fixingDays = Null<Integer>(),
+            BusinessDayConvention paymentConvention = Following,
+
+             const std::vector<Real>& gearings = std::vector<Real>(),
+             const std::vector<Spread>& spreads = std::vector<Spread>(),
+
+             const std::vector<Rate>& caps = std::vector<Rate>(),
+             const std::vector<Rate>& floors = std::vector<Rate>(),
+
+             const Handle<YieldTermStructure>& discountCurve
+                                  = Handle<YieldTermStructure>(),
+
+             Real redemption = 100.0,   // bond specific
+             const Date& stub = Date(), // schedule
+             bool fromEnd = true);      // schedule
     };
 
 }

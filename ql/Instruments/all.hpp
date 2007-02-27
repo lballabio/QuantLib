@@ -38,7 +38,6 @@
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
 #include <ql/Instruments/fixedcouponbondforward.hpp>
-#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/forward.hpp>
 #include <ql/Instruments/forwardrateagreement.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>

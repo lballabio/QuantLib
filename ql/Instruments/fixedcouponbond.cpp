@@ -40,7 +40,7 @@ namespace QuantLib {
                     Real redemption,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Date& stub, bool fromEnd)
-    : Bond(faceAmount, dayCounter, calendar, accrualConvention,
+    : Bond(faceAmount, dayCounter, calendar,
            paymentConvention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;

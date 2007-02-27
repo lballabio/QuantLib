@@ -25,27 +25,38 @@
 namespace QuantLib {
 
     CappedFlooredCouponBond::CappedFlooredCouponBond(
-                Real faceAmount,
-                const Date& issueDate,
-                const Date& datedDate,
-                const Date& maturityDate,
-                Integer settlementDays,
-                const boost::shared_ptr<IborIndex>& index,
-                Integer fixingDays,
-                const std::vector<Real>& gearings,
-                const std::vector<Spread>& spreads,
-                Frequency couponFrequency,
-                const Calendar& calendar,
-                const DayCounter& dayCounter,
-                const std::vector<Rate>& caps,
-                const std::vector<Rate>& floors,
-                BusinessDayConvention accrualConvention,
-                BusinessDayConvention paymentConvention,
-                Real redemption,
-                const Handle<CapletVolatilityStructure>& vol,
-                const Handle<YieldTermStructure>& discountCurve,
-                const Date& stub, bool fromEnd)
-    : Bond(faceAmount, dayCounter, calendar, accrualConvention,
+             Integer settlementDays,    // bond specific
+             const Date& issueDate,     // bond specific
+
+             const Calendar& calendar,               // schedule
+             const Date& datedDate,                   // schedule
+             Frequency couponFrequency,               // schedule
+             const Date& maturityDate,                // schedule
+             BusinessDayConvention accrualConvention, // schedule
+
+             Real faceAmount, // nominals
+
+             const boost::shared_ptr<IborIndex>& index,
+             const DayCounter& paymentDayCounter,
+
+             const Handle<CapletVolatilityStructure>& vol,
+
+             Integer fixingDays,
+             BusinessDayConvention paymentConvention,
+
+             const std::vector<Real>& gearings,
+             const std::vector<Spread>& spreads,
+
+             const std::vector<Rate>& caps,
+             const std::vector<Rate>& floors,
+
+             const Handle<YieldTermStructure>& discountCurve,
+
+             Real redemption,   // bond specific
+             const Date& stub, // schedule
+             bool fromEnd)      // schedule
+    : Bond(faceAmount, paymentDayCounter,
+           calendar,
            paymentConvention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
@@ -59,22 +70,20 @@ namespace QuantLib {
                           accrualConvention, accrualConvention, fromEnd, false, 
                           firstDate, nextToLastDate);
 
-        boost::shared_ptr<IborCouponPricer> 
-                pricer(new BlackIborCouponPricer(vol));
-        // !!!
         cashflows_ = IborLeg(schedule,
                              std::vector<Real>(1, faceAmount_),
                              index,
-                             dayCounter,
+                             paymentDayCounter,
                              fixingDays,
                              paymentConvention,
-                             gearings,
-                             spreads,
-                             caps,
-                             floors);
-        CashFlows::setPricer(cashflows_,pricer);
+                             gearings, spreads,
+                             caps, floors);
+
+        boost::shared_ptr<IborCouponPricer> pricer(new
+            BlackIborCouponPricer(vol));
+        CashFlows::setPricer(cashflows_, pricer);
+
         // redemption
-        // !!!
         Date redemptionDate =
             calendar.adjust(maturityDate, paymentConvention);
         cashflows_.push_back(boost::shared_ptr<CashFlow>(new

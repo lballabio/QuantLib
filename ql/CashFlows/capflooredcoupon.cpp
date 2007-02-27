@@ -90,32 +90,19 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::cap() const {
-        if (gearing_ > 0) {
-            if(isCapped_) 
+        if ( (gearing_ > 0) && isCapped_) 
                 return cap_;
-            else
-                return Rate(1.);
-          } else {
-            if(isFloored_) 
-                return floor_;
-            else
-                return Rate(1.);
-        }
-
+        if ( (gearing_ < 0) && isFloored_)
+            return floor_;
+        return Null<Rate>();
     } 
 
     Rate CappedFlooredCoupon::floor() const {
-       if (gearing_ > 0) {
-            if(isFloored_) 
-                return floor_;
-            else
-                return Rate(0.);
-          } else {
-            if(isCapped_) 
-                return cap_;
-            else
-                return Rate(0.);
-        }
+        if ( (gearing_ > 0) && isFloored_) 
+            return floor_;
+        if ( (gearing_ < 0) && isCapped_) 
+            return cap_;
+        return Null<Rate>();
     }
 
     Rate CappedFlooredCoupon::effectiveCap() const {

@@ -55,7 +55,7 @@ namespace QuantLib {
         static Real npv(const Leg& leg,
                         const Handle<YieldTermStructure>& discountCurve,
                         const Date& settlementDate = Date(),
-                        const Date& npvDate = Date() ,
+                        const Date& npvDate = Date(),
                         Integer exDividendDays = 0);
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform

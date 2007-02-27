@@ -32,7 +32,7 @@ namespace QuantLib {
                         BusinessDayConvention paymentConvention,
                         Real redemption,
                         const Handle<YieldTermStructure>& discountCurve)
-    : Bond(faceAmount,dayCounter, calendar, Unadjusted, paymentConvention,
+    : Bond(faceAmount,dayCounter, calendar, paymentConvention,
            settlementDays, discountCurve) {
 
         issueDate_ = datedDate_ = issueDate;

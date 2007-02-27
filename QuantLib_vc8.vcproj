@@ -2661,14 +2661,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\Instruments\floatingratebond.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\Instruments\floatingratebond.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\Instruments\zerocouponbond.cpp"
 					>
 				</File>

@@ -40,7 +40,6 @@ namespace QuantLib {
             const Schedule& schedule,
             Real)
     : Bond(100.0, dayCounter, schedule.calendar(),
-           schedule.businessDayConvention(),
            schedule.businessDayConvention(), settlementDays),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {

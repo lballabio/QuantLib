@@ -79,14 +79,19 @@ namespace QuantLib {
     void Swap::performCalculations() const {
         QL_REQUIRE(!termStructure_.empty(),
                    "no discounting term structure set to Swap");
-        Date settlement = termStructure_->referenceDate();
+
+        Date d = termStructure_->referenceDate();
 
         errorEstimate_ = Null<Real>();
         NPV_ = 0.0;
         for (Size j=0; j<legs_.size(); j++) {
-            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j], termStructure_);
+            //Date settlement = calendar_[j].advance(d, settlementDays_[j], Days);
+            Date settlement = d;
+            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j], termStructure_,
+                                                 settlement);
             NPV_ += legNPV_[j] ;
-            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j], termStructure_);
+            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j], termStructure_,
+                                                  settlement);
         }
     }
 
