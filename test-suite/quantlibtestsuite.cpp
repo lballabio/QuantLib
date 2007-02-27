@@ -211,10 +211,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
-    test->add(MarketModelTest::suite());
+    test->add(MarketModelCmsTest::suite());
     test->add(MarketModelSmmTest::suite());
     test->add(MarketModelSmmCapletCalibrationTest::suite());
-    test->add(MarketModelCmsTest::suite());
+    test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
