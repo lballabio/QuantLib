@@ -39,12 +39,11 @@ namespace QuantLib {
         from the book "Monte Carlo Methods in Finance" by Peter
         Jäckel.
 
-        21 200 primitive polynomials modulo two are provided by
-        default in QuantLib. Jäckel has calculated 8 129 334
-        polynomials, also available in a different file that can be
-        downloaded from http://quantlib.org. If you need that many
-        dimensions you must replace the default version of the
-        primitivepolynomials.c file with the extended one.
+        21 200 primitive polynomials modulo two are provided in QuantLib.
+        Jäckel has calculated 8 129 334 polynomials: if you need that many
+        dimensions you can replace the primitivepolynomials.c file included
+        in QuantLib with the one provided in the CD of the "Monte Carlo
+        Methods in Finance" book.
 
         The choice of initialization numbers (also know as free direction
         integers) is crucial for the homogeneity properties of the sequence.
@@ -106,7 +105,7 @@ namespace QuantLib {
         const SobolRsg::sample_type& nextSequence() const {
             const std::vector<unsigned long>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
-            for (Size k=0; k<dimensionality_; k++)
+            for (Size k=0; k<dimensionality_; ++k)
                 sequence_.value[k] = v[k] * normalizationFactor_;
             return sequence_;
         }
