@@ -68,6 +68,10 @@ namespace QuantLib {
                                   DayCounter(),
                                   0,
                                   index->businessDayConvention());
+        boost::shared_ptr<IborCouponPricer> 
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(floatingLeg,fictitiousPricer);
+
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
                                index->calendar(), Unadjusted, Unadjusted,
                                false, false);

@@ -63,8 +63,6 @@ namespace QuantLib {
                 const BusinessDayConvention paymentAdjustment = Following,
                 const std::vector<Real>& gearings = std::vector<Real>(),
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
-                const boost::shared_ptr<IborCouponPricer>& pricer 
-                    = boost::shared_ptr<IborCouponPricer>(),
                 const std::vector<Rate>& caps = std::vector<Rate>(),
                 const std::vector<Rate>& floors = std::vector<Rate>());
 
@@ -73,7 +71,6 @@ namespace QuantLib {
                 const Schedule& schedule,
                 const std::vector<Real>& nominals,
                 const boost::shared_ptr<IborIndex>& index,
-                const boost::shared_ptr<IborCouponPricer>& pricer,
                 const DayCounter& paymentDayCounter = DayCounter(),
                 Integer fixingDays = Null<Integer>(),
                 const BusinessDayConvention paymentAdjustment = Following,
@@ -86,7 +83,6 @@ namespace QuantLib {
     Leg CmsLeg(const Schedule& schedule,
                const std::vector<Real>& nominals,
                const boost::shared_ptr<SwapIndex>& index,
-               const boost::shared_ptr<CmsCouponPricer>& pricer,
                const DayCounter& paymentDayCounter = DayCounter(),
                Integer fixingDays = Null<Integer>(),
                BusinessDayConvention paymentAdjustment = Following,
@@ -100,7 +96,6 @@ namespace QuantLib {
                 const Schedule& schedule,
                 const std::vector<Real>& nominals,
                 const boost::shared_ptr<SwapIndex>& index,
-                const boost::shared_ptr<CmsCouponPricer>& pricer,
                 const DayCounter& paymentDayCounter = DayCounter(),
                 Integer fixingDays = Null<Integer>(),
                 BusinessDayConvention paymentAdjustment = Following,
@@ -114,7 +109,6 @@ namespace QuantLib {
     Leg CmsZeroLeg(const Schedule& schedule,
                const std::vector<Real>& nominals,
                const boost::shared_ptr<SwapIndex>& index,
-               const boost::shared_ptr<CmsCouponPricer>& pricer,
                const DayCounter& paymentDayCounter = DayCounter(),
                Integer fixingDays = Null<Integer>(),
                BusinessDayConvention paymentAdjustment = Following,

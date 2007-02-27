@@ -282,11 +282,11 @@ void SwapTest::testInArrears() {
         IborInArrearsLeg(schedule,
                 nominals,
                 index,
-                pricer,
                 dayCounter,
                 fixingDays,
                 Following,
                 gearings, spreads);
+    CashFlows::setPricer(floatingLeg, pricer);
 
     Swap swap(termStructure_,floatingLeg,fixedLeg);
 

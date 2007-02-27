@@ -64,7 +64,6 @@ namespace QuantLib {
         cashflows_ = CmsLeg(schedule,
                             std::vector<Real>(1, faceAmount_),
                             index,
-                            pricer,
                             dayCounter,
                             fixingDays,
                             paymentConvention,
@@ -72,6 +71,7 @@ namespace QuantLib {
                             spreads,
                             caps,
                             floors);
+        CashFlows::setPricer(cashflows_,pricer);
         // redemption
         // !!!
         Date redemptionDate =

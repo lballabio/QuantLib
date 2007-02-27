@@ -178,7 +178,7 @@ namespace QuantLib {
     LiborForwardModelProcess::cashFlows(Real amount) const {
         const Date refDate = index_->termStructure()->referenceDate();
 
-        return IborLeg(
+        Leg floatingLeg = IborLeg(
                    Schedule(refDate,
                             refDate + Period(index_->tenor().length()*size_,
                                              index_->tenor().units()),
@@ -190,6 +190,11 @@ namespace QuantLib {
                    index_->dayCounter(),
                    index_->fixingDays(),
                    index_->businessDayConvention());
+        boost::shared_ptr<IborCouponPricer> 
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(floatingLeg,fictitiousPricer);
+        return floatingLeg;
+
     }
 
     Size LiborForwardModelProcess::size() const {

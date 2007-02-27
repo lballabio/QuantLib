@@ -70,9 +70,9 @@ namespace QuantLib {
                              paymentConvention,
                              gearings,
                              spreads,
-                             pricer,
                              caps,
                              floors);
+        CashFlows::setPricer(cashflows_,pricer);
         // redemption
         // !!!
         Date redemptionDate =

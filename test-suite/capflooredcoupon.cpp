@@ -98,8 +98,13 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
                       convention_,convention_,false,false);
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
-    return IborLeg(schedule, nominals_, index_, index_->dayCounter(), fixingDays_,
+    std::vector<boost::shared_ptr<CashFlow> > floatLeg =
+        IborLeg(schedule, nominals_, index_, index_->dayCounter(), fixingDays_,
                    convention_, gearingVector, spreadVector);
+    boost::shared_ptr<IborCouponPricer> 
+                    fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+    CashFlows::setPricer(floatLeg,fictitiousPricer);
+    return floatLeg;
 }
 
 std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDate,
@@ -122,10 +127,13 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
     std::vector<Rate> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
 
-    return IborLeg(schedule, nominals_, index_,
+    std::vector<boost::shared_ptr<CashFlow> >  iborLeg = 
+        IborLeg(schedule, nominals_, index_,
                     index_->dayCounter(), fixingDays_,
                     convention_, gearingVector,
-                    spreadVector, pricer, caps, floors);
+                    spreadVector, caps, floors);
+     CashFlows::setPricer(iborLeg, pricer);
+     return iborLeg;
 }
 
 boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {

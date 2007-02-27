@@ -613,7 +613,6 @@ void CmsTest::testCmsSwap() {
                         CmsLeg(fixedSchedule,
                                         fixedNominals,
                                         index_,
-                                        pricers[pricerIndex],
                                         fixedCmsDayCount_,
                                         settlementDays_,
                                         fixedCmsConvention_,
@@ -621,6 +620,7 @@ void CmsTest::testCmsSwap() {
                                         baseRate,
                                         caps,
                                         floors);
+                    CashFlows::setPricer(cmsLeg, pricers[pricerIndex]);
 
                     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
                         IborLeg(floatingSchedule,
@@ -631,7 +631,9 @@ void CmsTest::testCmsSwap() {
                                                  floatingCmsConvention_,
                                                  std::vector<Real>(),
                                                  std::vector<Spread>());
-
+                    boost::shared_ptr<IborCouponPricer> 
+                      fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+                    CashFlows::setPricer(floatingLeg,fictitiousPricer);
 
                     boost::shared_ptr<Swap> swap(
                                new Swap(termStructure_, cmsLeg, floatingLeg));

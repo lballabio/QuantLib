@@ -64,6 +64,9 @@ namespace QuantLib {
                      fixingDays, 
                      paymentConvention,
                      gearings, spreads);
+       boost::shared_ptr<IborCouponPricer> 
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(cashflows_,fictitiousPricer);
         // redemption
         // !!!
         Date redemptionDate =

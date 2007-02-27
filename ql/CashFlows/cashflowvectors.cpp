@@ -20,7 +20,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
@@ -138,7 +137,6 @@ namespace QuantLib {
                     BusinessDayConvention paymentAdjustment,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
-                    const boost::shared_ptr<IborCouponPricer>& pricer,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors) {
 
@@ -167,7 +165,6 @@ namespace QuantLib {
                                         get(gearings,0,1.0),
                                         get(spreads,0,0.0),
                                         Date(),Date(), paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -189,7 +186,6 @@ namespace QuantLib {
                                         get(gearings,0,1.0),
                                         get(spreads,0,0.0),
                                         reference, end, paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -212,7 +208,6 @@ namespace QuantLib {
                                         get(gearings,i-1,1.0),
                                         get(spreads,i-1,0.0),
                                         Date(),Date(), paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -238,7 +233,6 @@ namespace QuantLib {
                                                get(spreads,N-2,0.0),
                                                Date(),Date(),
                                                paymentDayCounter));
-                            iborCoupon->setPricer(pricer);
                             cf = iborCoupon;
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to
@@ -261,7 +255,6 @@ namespace QuantLib {
                                                get(spreads,N-2,0.0),
                                                start, reference,
                                                paymentDayCounter));
-                            iborCoupon->setPricer(pricer);
                             cf = iborCoupon;
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to
@@ -291,7 +284,6 @@ namespace QuantLib {
                                         get(caps,0,Null<Rate>()),
                                         get(floors,0,Null<Rate>()),
                                         Date(),Date(), paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -317,7 +309,6 @@ namespace QuantLib {
                                         get(caps,0,Null<Rate>()),
                                         get(floors,0,Null<Rate>()),
                                         reference, end, paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -345,7 +336,6 @@ namespace QuantLib {
                                         get(caps,i-1,Null<Rate>()),
                                         get(floors,i-1,Null<Rate>()),
                                         Date(),Date(), paymentDayCounter));
-                        iborCoupon->setPricer(pricer);
                         cf = iborCoupon;
                     } else {
                         // if gearing is null a fixed rate coupon with rate equal to
@@ -374,7 +364,6 @@ namespace QuantLib {
                                             get(caps,N-2,Null<Rate>()),
                                             get(floors,N-2,Null<Rate>()),
                                             Date(),Date(), paymentDayCounter));
-                            iborCoupon->setPricer(pricer);
                             cf = iborCoupon;
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to
@@ -400,7 +389,6 @@ namespace QuantLib {
                                             get(caps,N-2,Null<Rate>()),
                                             get(floors,N-2,Null<Rate>()),
                                             start, reference, paymentDayCounter));
-                            iborCoupon->setPricer(pricer);
                             cf = iborCoupon;
                         } else {
                             // if gearing is null a fixed rate coupon with rate equal to
@@ -427,7 +415,6 @@ namespace QuantLib {
     Leg IborInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<IborIndex>& index,
-                    const boost::shared_ptr<IborCouponPricer>& pricer,
                     const DayCounter& paymentDayCounter,
                     Integer fixingDays,
                     BusinessDayConvention paymentAdjustment,
@@ -494,14 +481,6 @@ namespace QuantLib {
                                                             start,reference,paymentDayCounter,true)));
                     }
                 }
-                for (Size i=0; i<leg.size(); ++i) {
-                    const boost::shared_ptr<IborCoupon> iborCoupon =
-                       boost::dynamic_pointer_cast<IborCoupon>(leg[i]);
-                    if (iborCoupon)
-                        iborCoupon->setPricer(pricer);
-                    else
-                        QL_FAIL("unexpected error when casting to IborCoupon");
-                }
             } else {
 
                 // first period might be short or long
@@ -564,14 +543,6 @@ namespace QuantLib {
                     }
                 }
 
-                for (Size i=0; i<leg.size(); ++i) {
-                    const boost::shared_ptr<CappedFlooredIborCoupon> cappedflooredCoupon =
-                       boost::dynamic_pointer_cast<CappedFlooredIborCoupon>(leg[i]);
-                    if (cappedflooredCoupon)
-                        cappedflooredCoupon->setPricer(pricer);
-                    else
-                        QL_FAIL("unexpected error when casting to CappedFlooredCoupon");
-                }
             }
 
             return leg;
@@ -583,7 +554,6 @@ namespace QuantLib {
     Leg IborInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<IborIndex>& index,
-                    const boost::shared_ptr<IborCouponPricer>& p,
                     const DayCounter& paymentDayCounter,
                     Integer fixingDays,
                     BusinessDayConvention paymentAdjustment,
@@ -652,14 +622,6 @@ namespace QuantLib {
                                   start, reference, paymentDayCounter,true)));
             }
         }
-        for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<IborCoupon> iborCoupon =
-               boost::dynamic_pointer_cast<IborCoupon>(leg[i]);
-            if (iborCoupon)
-                iborCoupon->setPricer(p);
-            else
-                QL_FAIL("unexpected error when casting to IborCoupon");
-        }
         return leg;
     }
 
@@ -668,7 +630,6 @@ namespace QuantLib {
     Leg CmsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
-                    const boost::shared_ptr<CmsCouponPricer>& pricer,
                     const DayCounter& paymentDayCounter,
                     Integer fixingDays,
                     BusinessDayConvention paymentAdjustment,
@@ -698,7 +659,6 @@ namespace QuantLib {
                                 get(caps,0,Null<Rate>()),
                                 get(floors,0,Null<Rate>()),
                                 start, end, paymentDayCounter));
-                cmsCoupon->setPricer(pricer);
                 cf = cmsCoupon;
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
@@ -724,7 +684,6 @@ namespace QuantLib {
                                 get(caps,0,Null<Rate>()),
                                 get(floors,0,Null<Rate>()),
                                 reference, end, paymentDayCounter));
-                cmsCoupon->setPricer(pricer);
                 cf = cmsCoupon;
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
@@ -752,7 +711,6 @@ namespace QuantLib {
                                 get(caps,i-1,Null<Rate>()),
                                 get(floors,i-1,Null<Rate>()),
                                 start, end, paymentDayCounter));
-                cmsCoupon->setPricer(pricer);
                 cf = cmsCoupon;
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
@@ -781,7 +739,6 @@ namespace QuantLib {
                                     get(caps,N-2,Null<Rate>()),
                                     get(floors,N-2,Null<Rate>()),
                                     start, end, paymentDayCounter));
-                    cmsCoupon->setPricer(pricer);
                     cf = cmsCoupon;
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to
@@ -807,7 +764,6 @@ namespace QuantLib {
                                     get(caps,N-2,Null<Rate>()),
                                     get(floors,N-2,Null<Rate>()),
                                     start, reference, paymentDayCounter));
-                    cmsCoupon->setPricer(pricer);
                     cf = cmsCoupon;
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to
@@ -830,7 +786,6 @@ namespace QuantLib {
     Leg CmsInArrearsLeg(const Schedule& schedule,
                     const std::vector<Real>& nominals,
                     const boost::shared_ptr<SwapIndex>& index,
-                    const boost::shared_ptr<CmsCouponPricer>& p,
                     const DayCounter& paymentDayCounter,
                     Integer fixingDays,
                     BusinessDayConvention paymentAdjustment,
@@ -911,14 +866,6 @@ namespace QuantLib {
                                   start, reference, paymentDayCounter,true)));
             }
         }
-        for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setPricer(p);
-            else
-                QL_FAIL("unexpected error when casting to CmsCoupon");
-        }
         return leg;
     }
 
@@ -926,7 +873,6 @@ namespace QuantLib {
     Leg CmsZeroLeg(const Schedule& schedule,
                    const std::vector<Real>& nominals,
                    const boost::shared_ptr<SwapIndex>& index,
-                   const boost::shared_ptr<CmsCouponPricer>& pricer,
                    const DayCounter& paymentDayCounter,
                    Integer fixingDays,
                    BusinessDayConvention paymentAdjustment,
@@ -1007,15 +953,28 @@ namespace QuantLib {
                                   start, reference, paymentDayCounter)));
             }
         }
-        for (Size i=0; i<leg.size(); ++i) {
-            const boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon =
-               boost::dynamic_pointer_cast<CappedFlooredCmsCoupon>(leg[i]);
-            if (cmsCoupon)
-                cmsCoupon->setPricer(pricer);
-            else
-                QL_FAIL("unexpected error when casting to CmsCoupon");
-        }
          return leg;
+    }
+
+//===========================================================================//
+//                 setPricers methods by CouponSelectorToSetPricer           //
+//===========================================================================//
+
+    void CashFlows::setPricer(const Leg& leg,
+               const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
+         for(Size i=0; i<leg.size(); ++i){
+            CouponSelectorToSetPricer selector(pricer);
+            leg[i]->accept(selector);
+       }
+    }
+    
+    void CashFlows::setPricers(const Leg& leg,
+            const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers){
+        QL_REQUIRE(leg.size() == pricers.size(), "mismatch between leg and pricers");
+        for(QuantLib::Size i=0; i<leg.size(); ++i){
+            CouponSelectorToSetPricer selector(pricers[i]);
+            leg[i]->accept(selector);
+       }
     }
 
 }

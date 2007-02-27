@@ -101,7 +101,6 @@ namespace QuantLib {
             CmsLeg(cmsSchedule,
                    std::vector<Real>(1, nominal_),
                    swapIndex_,
-                   cmsVanillapricer_,
                    cmsDayCount_,
                    swapIndex_->fixingDays(),
                    cmsConvention_,
@@ -109,6 +108,7 @@ namespace QuantLib {
                    std::vector<Spread>(1, cmsSpread_),
                    std::vector<Rate>(1, cmsCap_),
                    std::vector<Rate>(1, cmsFloor_));
+        CashFlows::setPricer(cmsLeg,cmsVanillapricer_);
 
         Leg floatLeg =
             IborLeg(floatSchedule,
@@ -119,6 +119,10 @@ namespace QuantLib {
                      floatConvention_,
                      std::vector<Real>(1, 1.0), // gearing
                      std::vector<Spread>(1, iborSpread_));
+        boost::shared_ptr<IborCouponPricer> 
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(floatLeg,fictitiousPricer);
+
         if (payCms_)
             return Swap(discountingTermStructure_, cmsLeg, floatLeg);
         else
@@ -157,7 +161,6 @@ namespace QuantLib {
             CmsLeg(cmsSchedule,
                    std::vector<Real>(1, nominal_),
                    swapIndex_,
-                   cmsVanillapricer_,
                    cmsDayCount_,
                    swapIndex_->fixingDays(),
                    cmsConvention_,
@@ -165,6 +168,7 @@ namespace QuantLib {
                    std::vector<Spread>(1, cmsSpread_),
                    std::vector<Rate>(1, cmsCap_),
                    std::vector<Rate>(1, cmsFloor_));
+        CashFlows::setPricer(cmsLeg,cmsVanillapricer_);
 
         Leg floatLeg =
             IborLeg(floatSchedule,
@@ -175,6 +179,10 @@ namespace QuantLib {
                      floatConvention_,
                      std::vector<Real>(1, 1.0), // gearing
                      std::vector<Spread>(1, iborSpread_));
+        boost::shared_ptr<IborCouponPricer> 
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(floatLeg,fictitiousPricer);
+
         if (payCms_)
             return boost::shared_ptr<Swap>(new
                 Swap(discountingTermStructure_, cmsLeg, floatLeg));

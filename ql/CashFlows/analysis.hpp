@@ -37,6 +37,8 @@ namespace QuantLib {
         enum Type { Simple, Macaulay, Modified };
     };
 
+    class FloatingRateCouponPricer;
+
     //! cashflows analysis functions
     /*! \todo add tests */
     class CashFlows {
@@ -156,9 +158,24 @@ namespace QuantLib {
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
                               Date settlementDate = Date()); 
+        //! Cash-flow convexity
+        /*! The convexity of a string of cash flows is defined as
+            \f[
+            C = \frac{1}{P} \frac{\partial^2 P}{\partial y^2}
+            \f]
+            where \f$ P \f$ is the present value of the cash flows
+            according to the given IRR \f$ y \f$.
+        */
+
+
+        static void setPricer(const Leg& leg,
+               const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
+
+        static void setPricers(const Leg& leg,
+               const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers); 
     };
 
-   
+
     
 }
 

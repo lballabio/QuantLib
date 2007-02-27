@@ -137,6 +137,25 @@ namespace QuantLib {
     class ConundrumPricer::ConundrumPricerByBlack
     */
 
+    class CappedFlooredIborCoupon;
+    class CappedFlooredCmsCoupon;
+    
+    class CouponSelectorToSetPricer : public AcyclicVisitor,
+                                    public Visitor<IborCoupon>,
+                                    public Visitor<CmsCoupon>,
+                                    public Visitor<CappedFlooredIborCoupon>,
+                                    public Visitor<CappedFlooredCmsCoupon> {
+      private:
+       const boost::shared_ptr<FloatingRateCouponPricer>   pricer_;
+      public:
+        CouponSelectorToSetPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer):
+          pricer_(pricer){ };
+
+        void visit(IborCoupon& c);
+        void visit(CappedFlooredIborCoupon& c);
+        void visit(CmsCoupon& c);
+        void visit(CappedFlooredCmsCoupon& c);
+    };
 }
 
 #endif
