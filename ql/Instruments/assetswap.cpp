@@ -55,18 +55,12 @@ namespace QuantLib {
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
 
-        //nominal_ = bond->faceAmount();
-
-        if (parSwap)
-            nominal_ = bond->faceAmount();
-
-        // In the market asset swap, the bond is purchased in return
-        //   for payment of the full price.
-        //The notional of the floating leg is then scaled by the full price,
-        //    and the resulting value of the asset swap spread is different.
-
-        else
-            nominal_ = dirtyPrice/100*bond->faceAmount();
+        /* In the market asset swap, the bond is purchased in return for
+           payment of the full price. The notional of the floating leg is
+           then scaled by the full price, and the resulting value of the
+           asset swap spread is different. */
+        if (parSwap) nominal_ = bond->faceAmount();
+        else         nominal_ = dirtyPrice/100*bond->faceAmount();
 
         // might become input parameters
         BusinessDayConvention paymentAdjustment = Following;
@@ -75,25 +69,28 @@ namespace QuantLib {
         std::vector<Real> gearings(1, 1.0);
         std::vector<Spread> spreads(1, spread);
 
-        Leg floatingLeg = IborLeg(schedule,
-                                  nominals,
-                                  index,
-                                  floatingDayCounter,
-                                  fixingDays,
-                                  paymentAdjustment,
-                                  gearings, spreads);
+        legs_[1] = IborLeg(schedule,
+                           nominals,
+                           index,
+                           floatingDayCounter,
+                           fixingDays,
+                           paymentAdjustment,
+                           gearings, spreads);
 
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
             BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
-        CashFlows::setPricer(floatingLeg, fictitiousPricer);
+        CashFlows::setPricer(legs_[1], fictitiousPricer);
 
-        Leg::const_iterator i;
-        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
+        for (Leg::const_iterator i=legs_[1].begin(); i<legs_[1].end(); ++i)
             registerWith(*i);
 
-        Leg bondLeg = bond->cashflows();
+        const Leg& bondLeg = bond->cashflows();
+        for (Leg::const_iterator i=bondLeg.begin(); i<bondLeg.end(); ++i) {
+            if (!(*i)->hasOccurred(upfrontDate_))
+                legs_[0].push_back(*i);
+        }
 
-        QL_REQUIRE(!bondLeg.empty(),
+        QL_REQUIRE(!legs_[0].empty(),
                    "empty bond leg to start with");
 
         // review what happen if floatSchedule.endDate() < bond->maturityDate()
@@ -104,34 +101,32 @@ namespace QuantLib {
             Real upfront=(dirtyPrice-100.0)/100.0*nominal_;
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
-            floatingLeg.insert(floatingLeg.begin(), upfrontCashFlow);
+            legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             ////// remove redemption from the bond leg
-            ////bondLeg.pop_back();
+            ////leg_[0].pop_back();
              //back payment
              //the investor receives the difference between redemption value and 100,
              //for bonds not redeeming at par
             Real backpayment=nominal_;
             boost::shared_ptr<CashFlow> backpaymentCashFlow (new
                 SimpleCashFlow(backpayment, schedule.endDate()));
-            floatingLeg.push_back(backpaymentCashFlow);
+            legs_[1].push_back(backpaymentCashFlow);
         } else {
             // final nominal exchange
             Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
             boost::shared_ptr<CashFlow> finalCashFlow (new
                 SimpleCashFlow(finalFlow, schedule.endDate()));
                 //SimpleCashFlow(finalFlow, bond->maturityDate()));
-            floatingLeg.push_back(finalCashFlow);
+            legs_[1].push_back(finalCashFlow);
         }
 
-        QL_REQUIRE(!bondLeg.empty(), "empty bond leg");
-        for (i = bondLeg.begin(); i < bondLeg.end(); ++i)
+        QL_REQUIRE(!legs_[0].empty(), "empty bond leg");
+        for (Leg::const_iterator i=legs_[0].begin(); i<legs_[0].end(); ++i)
             registerWith(*i);
 
         // handle when termination date is earlier than
         // bond maturity date
 
-        legs_[0] = bondLeg;
-        legs_[1] = floatingLeg;
         if (payFixedRate_) {
             payer_[0]=-1.0;
             payer_[1]=+1.0;
