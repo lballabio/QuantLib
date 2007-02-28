@@ -141,6 +141,7 @@ namespace QuantLib {
     class CappedFlooredCmsCoupon;
     
     class CouponSelectorToSetPricer : public AcyclicVisitor,
+                                    public Visitor<Coupon>,
                                     public Visitor<IborCoupon>,
                                     public Visitor<CmsCoupon>,
                                     public Visitor<CappedFlooredIborCoupon>,
@@ -151,6 +152,7 @@ namespace QuantLib {
         CouponSelectorToSetPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer):
           pricer_(pricer){ };
 
+        void visit(Coupon& c);
         void visit(IborCoupon& c);
         void visit(CappedFlooredIborCoupon& c);
         void visit(CmsCoupon& c);
