@@ -44,28 +44,30 @@ namespace QuantLib {
                          underlying->isInArrears()),
       underlying_(underlying), isCapped_(false), isFloored_(false) {
         
-        if (cap != Null<Rate>() && floor != Null<Rate>())
+        if (gearing_ > 0) {
+          if (cap != Null<Rate>() && floor != Null<Rate>())
             QL_REQUIRE(cap >= floor, "cap < floor");
+        }
+        if (gearing_ < 0) {
+          if (cap != Null<Rate>() && floor != Null<Rate>())
+            QL_REQUIRE(cap <= floor, "cap > floor");
+        }
 
         if (gearing_ > 0) {
             if (cap != Null<Rate>()){
-                QL_REQUIRE(cap >= 0., "negative cap rate not allowed");
                 isCapped_ = true;
                 cap_ = cap;
             }
             if (floor != Null<Rate>()){
-                QL_REQUIRE(floor >= 0., "negative floor rate not allowed");
                 floor_ = floor;
                 isFloored_ = true;
             }
           } else {
               if (cap != Null<Rate>()){
-                QL_REQUIRE(cap >= 0., "negative cap rate not allowed");
                 floor_ = cap;  
                 isFloored_ = true;
               }
               if (floor != Null<Rate>()){
-                QL_REQUIRE(floor >= 0., "negative floor rate not allowed");
                 isCapped_ = true;
                 cap_ = floor;
               }
@@ -106,11 +108,11 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::effectiveCap() const {
-        return (cap_ - spread())/gearing() ;      
+        return (cap_ - spread())/gearing();
     } 
 
     Rate CappedFlooredCoupon::effectiveFloor() const {
-        return (floor_ - spread())/gearing() ;
+        return (floor_ - spread())/gearing();
     }
 
     void CappedFlooredCoupon::update() {
