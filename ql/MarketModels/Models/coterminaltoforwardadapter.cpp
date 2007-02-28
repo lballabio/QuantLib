@@ -56,11 +56,11 @@ namespace QuantLib
 
         Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
             cs, displacements[0]);
-        Matrix invertedZedMatrix = zedMatrix; //FIXME
+        Matrix invertedZedMatrix = inverse(zedMatrix); //FIXME -> fixed :-)
 
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=invertedZedMatrix*coterminalModel_->pseudoRoot(k);
-            // FIXME
+            // FIXME what's wrong ? 
             covariance_[k]=pseudoRoots_[k]*transpose(pseudoRoots_[k]);
             totalCovariance_[k] = covariance_[k];
             if (k>0)
