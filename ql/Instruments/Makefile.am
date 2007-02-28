@@ -50,7 +50,7 @@ libInstruments_la_SOURCES = \
     basketoption.cpp \
     bond.cpp \
     capfloor.cpp \
-    cappedflooredcouponbond.hpp \
+    cappedflooredcouponbond.cpp \
     cliquetoption.cpp \
     cmscouponbond.cpp \
     compositeinstrument.cpp \
