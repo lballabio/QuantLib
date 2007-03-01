@@ -42,27 +42,19 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying), isCapped_(false), isFloored_(false) {
+      underlying_(underlying),
+      isCapped_(false), isFloored_(false) {
         
         if (gearing_ > 0) {
-          if (cap != Null<Rate>() && floor != Null<Rate>())
-            QL_REQUIRE(cap >= floor, "cap < floor");
-        }
-        if (gearing_ < 0) {
-          if (cap != Null<Rate>() && floor != Null<Rate>())
-            QL_REQUIRE(cap <= floor, "cap > floor");
-        }
-
-        if (gearing_ > 0) {
-            if (cap != Null<Rate>()){
+            if (cap != Null<Rate>()) {
                 isCapped_ = true;
                 cap_ = cap;
             }
-            if (floor != Null<Rate>()){
+            if (floor != Null<Rate>()) {
                 floor_ = floor;
                 isFloored_ = true;
             }
-          } else {
+        } else {
               if (cap != Null<Rate>()){
                 floor_ = cap;  
                 isFloored_ = true;
@@ -72,6 +64,11 @@ namespace QuantLib {
                 cap_ = floor;
               }
         }
+        if (isCapped_ && isFloored_)
+            QL_REQUIRE(cap >= floor,
+                       "cap level (" << cap <<
+                       ") less than floor level (" << floor << ")");
+
         registerWith(underlying);
     }
 
