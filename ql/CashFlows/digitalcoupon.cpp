@@ -43,9 +43,10 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying), hasLowerStrike_(false), hasUpperStrike_(false),
-      isCashOrNothing_(false), eps_(eps) {
-        
+      underlying_(underlying), eps_(eps),
+      hasUpperStrike_(false), hasLowerStrike_(false),
+      isCashOrNothing_(false) {
+
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>())
             QL_REQUIRE(putStrike >= callStrike, "putStrike < callStrike");
 
@@ -59,7 +60,7 @@ namespace QuantLib {
             lowerStrike_ = callStrike;
             hasLowerStrike_ = true;
         }
-        
+
         if (cashRate != Null<Rate>()){
             cashRate_ = cashRate;
             isCashOrNothing_ = true;
@@ -69,7 +70,7 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::rate() const {
-        
+
         Rate lowerDigitalRate = cashRate_;
         if(hasLowerStrike_&& lowerStrike_>eps_){
             boost::shared_ptr<CappedFlooredCoupon> next(
@@ -96,7 +97,7 @@ namespace QuantLib {
                 boost::shared_ptr<CappedFlooredCoupon> previous(
                     new CappedFlooredCoupon(underlying_, upperStrike_-eps_, Null<Rate>()));
                 upperDigitalRate = cashRate_*(next->rate()-previous->rate())/(2*eps_);
-            } else 
+            } else
                 upperDigitalRate = cashRate_;
             // if asset-or-nothing
             Rate assetRate = 0.;
@@ -117,14 +118,14 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::callStrike() const {
-            //if(hasLowerStrike_) 
+            //if(hasLowerStrike_)
                 return lowerStrike_;
             //else
             //    return NuRate(0.);
-   } 
+   }
 
     Rate DigitalCoupon::putStrike() const {
-            //if(hasUpperStrike_) 
+            //if(hasUpperStrike_)
                 return upperStrike_;
             //else
             //    return Rate(1000.);
