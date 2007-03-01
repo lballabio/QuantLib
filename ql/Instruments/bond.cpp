@@ -266,5 +266,11 @@ namespace QuantLib {
             QL_REQUIRE(cashflows[i], "null coupon provided");
     }
 
+    void Bond::setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
+        CashFlows::setPricer(cashflows_, pricer);
+    }
+    void Bond::setPricers(const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers){
+        CashFlows::setPricers(cashflows_, pricers);
+    } 
 }
 

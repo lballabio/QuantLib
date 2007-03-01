@@ -32,6 +32,7 @@
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/yieldtermstructure.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -134,6 +135,9 @@ namespace QuantLib {
         virtual Real accruedAmount(Date d = Date()) const;
         bool isExpired() const;
         //@}
+        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
+        void setPricers(const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers); 
+
       protected:
         void performCalculations() const;
         void setupArguments(PricingEngine::arguments*) const;
