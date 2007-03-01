@@ -26,11 +26,9 @@ namespace QuantLib {
     MakeCms::MakeCms(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
-                     const boost::shared_ptr<CmsCouponPricer>& pricer,
                      const Period& forwardStart)
     : swapTenor_(swapTenor), swapIndex_(swapIndex),
       iborSpread_(iborSpread),
-      cmsVanillapricer_(pricer),
       forwardStart_(forwardStart),
 
       cmsSpread_(0.0), cmsGearing_(1.0),
@@ -108,7 +106,6 @@ namespace QuantLib {
                    std::vector<Spread>(1, cmsSpread_),
                    std::vector<Rate>(1, cmsCap_),
                    std::vector<Rate>(1, cmsFloor_));
-        CashFlows::setPricer(cmsLeg,cmsVanillapricer_);
 
         Leg floatLeg =
             IborLeg(floatSchedule,
@@ -168,7 +165,6 @@ namespace QuantLib {
                    std::vector<Spread>(1, cmsSpread_),
                    std::vector<Rate>(1, cmsCap_),
                    std::vector<Rate>(1, cmsFloor_));
-        CashFlows::setPricer(cmsLeg,cmsVanillapricer_);
 
         Leg floatLeg =
             IborLeg(floatSchedule,

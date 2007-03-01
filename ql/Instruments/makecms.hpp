@@ -40,7 +40,6 @@ namespace QuantLib {
         MakeCms(const Period& swapTenor,
                 const boost::shared_ptr<SwapIndex>& swapIndex,
                 Spread iborSpread,
-                const boost::shared_ptr<CmsCouponPricer>& pricer,
                 const Period& forwardStart = 0*Days);
 
         operator Swap() const;
@@ -76,7 +75,6 @@ namespace QuantLib {
         Period swapTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
         Spread iborSpread_;
-        boost::shared_ptr<CmsCouponPricer> cmsVanillapricer_;
 
         Period forwardStart_;
 

@@ -37,7 +37,7 @@ namespace QuantLib {
 
      typedef Leg Leg;
 
-     class CmsMarket{
+     class CmsMarket: public LazyObject{
       public:
 
         CmsMarket(
@@ -47,6 +47,12 @@ namespace QuantLib {
             const std::vector< boost::shared_ptr<CmsCouponPricer> >& pricers,
             const Handle<YieldTermStructure>& yieldTermStructure);
 
+        //! \name LazyObject interface
+        //@{
+        void update() { LazyObject::update();}
+        void performCalculations() const;
+        //@}
+        void registerWithMarketData();
         void createForwardStartingCms();
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                      Real meanReversion);
@@ -70,48 +76,48 @@ namespace QuantLib {
         Size nSwapTenors_;
 
         // market bid spreads
-        Matrix bids_;
+        mutable Matrix bids_;
         // market ask spreads
-        Matrix asks_;
+        mutable Matrix asks_;
         // market mid spreads
-        Matrix mids_;
+        mutable Matrix mids_;
         // Implied spreads to model prices
-        Matrix modelCmsSpreads_;
+        mutable Matrix modelCmsSpreads_;
         // Differences between implied and mid spreads 
-        Matrix spreadErrors_;
+        mutable Matrix spreadErrors_;
         
         // prices of constant maturity swaps with spread = 0
-        Matrix prices_;           
+        mutable Matrix prices_;           
         // market prices of Cms Leg corrisponding to bid spreads
-        Matrix marketBidCmsLegValues_;
+        mutable Matrix marketBidCmsLegValues_;
         // market prices of Cms Leg corrisponding to ask spreads
-        Matrix marketAskCmsLegValues_;
+        mutable Matrix marketAskCmsLegValues_;
         // market prices of Cms Leg corrisponding to mid spreads
-        Matrix marketMidCmsLegValues_;
+        mutable Matrix marketMidCmsLegValues_;
         // model prices of Cms Leg corrisponding to mid spreads
-        Matrix modelCmsLegValues_;
+        mutable Matrix modelCmsLegValues_;
         // Differences between modelCmsLegValue and marketMidCmsLegValue_ 
-        Matrix priceErrors_;
+        mutable Matrix priceErrors_;
 
 
         // market prices of Forward Cms Leg corrisponding to bid spreads
-        Matrix marketBidForwardCmsLegValues_; 
+        mutable Matrix marketBidForwardCmsLegValues_; 
         // market prices of Forward Cms Leg corrisponding to ask spreads
-        Matrix marketAskForwardCmsLegValues_;
+        mutable Matrix marketAskForwardCmsLegValues_;
         // market prices of Forward Cms Leg corrisponding to mid spreads
-        Matrix marketMidForwardCmsLegValues_;
+        mutable Matrix marketMidForwardCmsLegValues_;
         // model prices of Forward Cms Leg corrisponding to mid spreads
-        Matrix modelForwardCmsLegValues_;
+        mutable Matrix modelForwardCmsLegValues_;
         // Differences between modelForwardCmsLegValues and marketMidCmsLegValues 
-        Matrix forwardPriceErrors_;
+        mutable Matrix forwardPriceErrors_;
 
-
-
-        Matrix meanReversions_;
+        mutable Matrix meanReversions_;
         std::vector< boost::shared_ptr<CmsCouponPricer> > pricers_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
+        const std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
 
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
+        std::vector< std::vector< boost::shared_ptr<Swap> > > forwardSwaps_;
 
         Handle<YieldTermStructure> yieldTermStructure_;
      };
