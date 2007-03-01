@@ -57,33 +57,38 @@ namespace QuantLib {
             std::string name() const {
                 return std::string("Actual/Actual (ISMA)");
             }
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& refPeriodStart,
+                              const Date& refPeriodEnd) const;
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
                 return std::string("Actual/Actual (ISDA)");
             }
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const;
         };
         class AFB_Impl : public DayCounter::Impl {
           public:
             std::string name() const {
                 return std::string("Actual/Actual (AFB)");
             }
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const;
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(
-                                                                Convention c);
+                                                               Convention c);
       public:
         ActualActual(Convention c = ActualActual::ISDA)
         : DayCounter(implementation(c)) {}
     };
 
 }
-
 
 #endif

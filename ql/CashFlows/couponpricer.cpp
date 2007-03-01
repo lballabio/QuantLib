@@ -137,6 +137,7 @@ namespace QuantLib {
     void CouponSelectorToSetPricer::visit(Coupon& c) {
         // nothing to do
     }
+
     void CouponSelectorToSetPricer::visit(IborCoupon& c) {
         const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
             boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
@@ -145,6 +146,7 @@ namespace QuantLib {
         else
             QL_FAIL("unexpected error when casting to IborCouponPricer");
     }
+
     void CouponSelectorToSetPricer::visit(CappedFlooredIborCoupon& c) {
         const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
             boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);

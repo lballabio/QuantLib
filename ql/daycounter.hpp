@@ -51,7 +51,8 @@ namespace QuantLib {
                                         const Date& d2) const {
                 return (d2-d1);
             }
-            virtual Time yearFraction(const Date&, const Date&,
+            virtual Time yearFraction(const Date& d1,
+                                      const Date& d2,
                                       const Date& refPeriodStart,
                                       const Date& refPeriodEnd) const = 0;
         };
@@ -142,6 +143,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

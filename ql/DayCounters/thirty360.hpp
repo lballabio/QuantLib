@@ -60,35 +60,42 @@ namespace QuantLib {
         class US_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30/360 (Bond Basis)");}
-            BigInteger dayCount(const Date& d1, const Date& d2) const;
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
+            BigInteger dayCount(const Date& d1,
+                                const Date& d2) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&, 
+                              const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class EU_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30E/360 (Eurobond Basis)");}
-            BigInteger dayCount(const Date& d1, const Date& d2) const;
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
+            BigInteger dayCount(const Date& d1,
+                                const Date& d2) const;
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         class IT_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30/360 (Italian)");}
             BigInteger dayCount(const Date& d1, const Date& d2) const;
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const {
                 return dayCount(d1,d2)/360.0; }
         };
         static boost::shared_ptr<DayCounter::Impl> implementation(
-                                                                Convention c);
+                                                               Convention c);
       public:
         Thirty360(Convention c = Thirty360::BondBasis)
         : DayCounter(implementation(c)) {}
     };
 
 }
-
 
 #endif

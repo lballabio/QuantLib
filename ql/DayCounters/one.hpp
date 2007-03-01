@@ -39,8 +39,10 @@ namespace QuantLib {
                 // the sign is all we need
                 return (d2 >= d1 ? 1 : -1);
             };
-            Time yearFraction(const Date& d1, const Date& d2,
-                              const Date&, const Date&) const {
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date&,
+                              const Date&) const {
                 return Time(dayCount(d1, d2));
             }
         };
@@ -51,6 +53,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

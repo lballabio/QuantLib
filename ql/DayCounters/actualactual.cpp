@@ -40,7 +40,8 @@ namespace QuantLib {
     }
 
 
-    Time ActualActual::ISMA_Impl::yearFraction(const Date& d1, const Date& d2,
+    Time ActualActual::ISMA_Impl::yearFraction(const Date& d1,
+                                               const Date& d2,
                                                const Date& d3,
                                                const Date& d4) const {
         if (d1 == d2)
@@ -136,7 +137,8 @@ namespace QuantLib {
         }
     }
 
-    Time ActualActual::ISDA_Impl::yearFraction(const Date& d1, const Date& d2,
+    Time ActualActual::ISDA_Impl::yearFraction(const Date& d1,
+                                               const Date& d2,
                                                const Date&,
                                                const Date&) const {
         if (d1 == d2)
@@ -155,8 +157,10 @@ namespace QuantLib {
         return sum;
     }
 
-    Time ActualActual::AFB_Impl::yearFraction(const Date& d1, const Date& d2,
-                                              const Date&, const Date&) const {
+    Time ActualActual::AFB_Impl::yearFraction(const Date& d1,
+                                              const Date& d2,
+                                              const Date&,
+                                              const Date&) const {
         if (d1 == d2)
             return 0.0;
 
