@@ -168,10 +168,12 @@ namespace QuantLib {
         */
 
 
-        static void setPricer(const Leg& leg,
+        static void setPricer(
+               const Leg& leg,
                const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
 
-        static void setPricers(const Leg& leg,
+        static void setPricers(
+               const Leg& leg,
                const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers); 
     };
 

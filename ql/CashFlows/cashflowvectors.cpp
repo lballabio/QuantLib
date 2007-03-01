@@ -854,28 +854,4 @@ namespace QuantLib {
         }
          return leg;
     }
-
-//===========================================================================//
-//                 setPricers methods by CouponSelectorToSetPricer           //
-//===========================================================================//
-
-    void CashFlows::setPricer(
-               const Leg& leg,
-               const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-         for(Size i=0; i<leg.size(); ++i){
-            CouponSelectorToSetPricer selector(pricer);
-            leg[i]->accept(selector);
-       }
-    }
-    
-    void CashFlows::setPricers(
-            const Leg& leg,
-            const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers){
-        QL_REQUIRE(leg.size() == pricers.size(), "mismatch between leg and pricers");
-        for(QuantLib::Size i=0; i<leg.size(); ++i){
-            CouponSelectorToSetPricer selector(pricers[i]);
-            leg[i]->accept(selector);
-       }
-    }
-
 }
