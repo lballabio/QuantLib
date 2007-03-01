@@ -20,7 +20,7 @@
 #include "bonds.hpp"
 #include "utilities.hpp"
 #include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/cappedflooredcouponbond.hpp>
+#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/unitedstates.hpp>
@@ -618,34 +618,22 @@ void BondTest::testCachedFloating() {
 
     // plain
 
-    CappedFlooredCouponBond bond1(
-                           settlementDays,
+    FloatingRateBond bond1(faceAmount,
                            Date(30,November,2004),
-
-                           UnitedStates(UnitedStates::GovernmentBond),
                            Date(30,November,2004),
-                           Semiannual,
                            Date(30,November,2008),
-                           ModifiedFollowing,
-
-                           faceAmount,
-
+                           settlementDays,
                            index,
-                           ActualActual(ActualActual::ISMA),
-
-                           Handle<CapletVolatilityStructure>(),
-
                            fixingDays,
-                           ModifiedFollowing,
-
                            std::vector<Rate>(1, 1.0),
                            std::vector<Spread>(),
-
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-
-                           riskFreeRate,
-                           100.0);
+                           Semiannual,
+                           UnitedStates(UnitedStates::GovernmentBond),
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing,
+                           ModifiedFollowing,
+                           100.0,
+                           riskFreeRate);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice1 = 99.874645;
@@ -665,34 +653,22 @@ void BondTest::testCachedFloating() {
 
     // different risk-free and discount curve
 
-    CappedFlooredCouponBond bond2(
-                           settlementDays,
+    FloatingRateBond bond2(faceAmount,
                            Date(30,November,2004),
-
-                           UnitedStates(UnitedStates::GovernmentBond),
                            Date(30,November,2004),
-                           Semiannual,
                            Date(30,November,2008),
-                           ModifiedFollowing,
-
-                           faceAmount,
+                           settlementDays,
                            index,
-                           ActualActual(ActualActual::ISMA),
-
-                           Handle<CapletVolatilityStructure>(),
-                           
                            fixingDays,
-                           ModifiedFollowing,
-
                            std::vector<Real>(1, 1.0),
                            std::vector<Spread>(),
-
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-
-                           discountCurve,
-
-                           100.0);
+                           Semiannual,
+                           UnitedStates(UnitedStates::GovernmentBond),
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing,
+                           ModifiedFollowing,
+                           100.0,
+                           discountCurve);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice2 = 97.955904;
@@ -717,41 +693,28 @@ void BondTest::testCachedFloating() {
     spreads[2] = 0.0014;
     spreads[3] = 0.0016;
 
-    CappedFlooredCouponBond bond3(
-                           settlementDays,
+    FloatingRateBond bond3(faceAmount,
                            Date(30,November,2004),
-
-                           UnitedStates(UnitedStates::GovernmentBond),
                            Date(30,November,2004),
-                           Semiannual,
                            Date(30,November,2008),
-                           ModifiedFollowing,
-
-                           faceAmount,
-
+                           settlementDays,
                            index,
-                           ActualActual(ActualActual::ISMA),
-
-                           Handle<CapletVolatilityStructure>(),
-                           
                            fixingDays,
-                           ModifiedFollowing,
-
                            std::vector<Real>(1, 1.0),
                            spreads,
+                           Semiannual,
+                           UnitedStates(UnitedStates::GovernmentBond),
+                           ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing,
+                           ModifiedFollowing,
+                           100.0,
+                           discountCurve);
 
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-                           
-                           discountCurve,
 
-                           100.0);
-
-   
     #if defined(QL_USE_INDEXED_COUPON)
-     Real cachedPrice3 = 98.495458;
+    Real cachedPrice3 = 98.495458;
     #else
-     Real cachedPrice3 = 98.632247;
+    Real cachedPrice3 = 98.632247;
     #endif
 
     price = bond3.cleanPrice();

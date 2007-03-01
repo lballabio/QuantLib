@@ -22,6 +22,7 @@ include_HEADERS = \
     europeanoption.hpp \
     fixedcouponbond.hpp \
     fixedcouponbondforward.hpp \
+    floatingratebond.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
@@ -59,6 +60,7 @@ libInstruments_la_SOURCES = \
     europeanoption.cpp \
     fixedcouponbond.cpp \
     fixedcouponbondforward.cpp \
+    floatingratebond.cpp \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
