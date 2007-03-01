@@ -75,7 +75,6 @@ namespace QuantLib {
         const Leg& cashflows() const;
         const boost::shared_ptr<CashFlow>& redemption() const;
         const Calendar& calendar() const;
-        //BusinessDayConvention accrualConvention() const;
         BusinessDayConvention paymentConvention() const;
         Real faceAmount() const { return faceAmount_;}
         const DayCounter& dayCounter() const;
@@ -143,7 +142,6 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments*) const;
         Integer settlementDays_;
         Calendar calendar_;
-        //BusinessDayConvention accrualConvention_;
         BusinessDayConvention paymentConvention_;
         Real faceAmount_;
         DayCounter dayCount_;
@@ -159,7 +157,6 @@ namespace QuantLib {
         Date settlementDate;
         Leg cashflows;
         Calendar calendar;
-        //BusinessDayConvention accrualConvention;
         BusinessDayConvention paymentConvention;
         DayCounter dayCounter;
         Frequency frequency;
@@ -198,10 +195,6 @@ namespace QuantLib {
     inline const Calendar& Bond::calendar() const {
         return calendar_;
     }
-
-    //inline BusinessDayConvention Bond::accrualConvention() const {
-    //    return accrualConvention_;
-    //}
 
     inline BusinessDayConvention Bond::paymentConvention() const {
         return paymentConvention_;

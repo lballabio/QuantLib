@@ -26,18 +26,17 @@
 
 namespace QuantLib {
 
-    AssetSwap::AssetSwap(
-                  bool payFixedRate,
-                  const boost::shared_ptr<Bond>& bond,
-                  Real bondCleanPrice,
-                  const boost::shared_ptr<IborIndex>& index,
-                  Spread spread,
-                  const Handle<YieldTermStructure>& discountCurve,
-                  const Schedule& floatSch,
-                  const DayCounter& floatingDayCounter,
-                  bool parSwap)
+    AssetSwap::AssetSwap(bool payFixedRate,
+                         const boost::shared_ptr<Bond>& bond,
+                         Real bondCleanPrice,
+                         const boost::shared_ptr<IborIndex>& index,
+                         Spread spread,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         const Schedule& floatSch,
+                         const DayCounter& floatingDayCounter,
+                         bool parSwap)
     : Swap(discountCurve, Leg(), Leg()),
-      payFixedRate_(payFixedRate), spread_(spread),
+      spread_(spread),
       bondCleanPrice_(bondCleanPrice) {
 
         Schedule schedule = floatSch;
@@ -102,11 +101,8 @@ namespace QuantLib {
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
-            ////// remove redemption from the bond leg
-            ////leg_[0].pop_back();
-             //back payment
-             //the investor receives the difference between redemption value and 100,
-             //for bonds not redeeming at par
+            // backpayment on the floating leg
+            // (accounts for non-par redemption, if any)
             Real backpayment=nominal_;
             boost::shared_ptr<CashFlow> backpaymentCashFlow (new
                 SimpleCashFlow(backpayment, schedule.endDate()));
@@ -127,7 +123,7 @@ namespace QuantLib {
         // handle when termination date is earlier than
         // bond maturity date
 
-        if (payFixedRate_) {
+        if (payFixedRate) {
             payer_[0]=-1.0;
             payer_[1]=+1.0;
         } else {
@@ -142,7 +138,6 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-        arguments->payFixed = payFixedRate_;
         arguments->nominal = nominal_;
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();

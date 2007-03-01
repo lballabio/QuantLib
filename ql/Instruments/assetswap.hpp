@@ -72,7 +72,6 @@ namespace QuantLib {
       private:
         void setupExpired() const;
         void performCalculations() const;
-        bool payFixedRate_;
         Spread spread_;
         Real nominal_;
         Date upfrontDate_;
@@ -87,10 +86,8 @@ namespace QuantLib {
     //! %Arguments for asset swap calculation
     class AssetSwap::arguments : public virtual PricingEngine::arguments {
       public:
-        arguments() : payFixed(false),
-                      nominal(Null<Real>()),
+        arguments() : nominal(Null<Real>()),
                       currentFloatingCoupon(Null<Real>()) {}
-        bool payFixed;
         Real nominal;
         std::vector<Time> fixedResetTimes;
         std::vector<Time> fixedPayTimes;
@@ -130,7 +127,7 @@ namespace QuantLib {
     }
 
     inline bool AssetSwap::payFixedRate() const {
-        return payFixedRate_;
+        return (payer_[0]==-1.0);
     }
 
 }
