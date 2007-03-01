@@ -207,7 +207,6 @@ namespace QuantLib {
                             FixedRateCoupon(get(nominals,i-1, Null<Real>()), paymentDate,
                                         get(spreads,i-1,0.0), paymentDayCounter,
                                         start, end, start, end)));
-                        // no pricer is needed for a fixed rate coupon
                     }
                 }
                 if (schedule.size() > 2) {
@@ -531,15 +530,15 @@ namespace QuantLib {
 
 
     Leg CmsLeg(const Schedule& schedule,
-               const std::vector<Real>& nominals,
-               const boost::shared_ptr<SwapIndex>& index,
-               const DayCounter& paymentDayCounter,
-               Integer fixingDays,
-               BusinessDayConvention paymentAdjustment,
-               const std::vector<Real>& gearings,
-               const std::vector<Spread>& spreads,
-               const std::vector<Rate>& caps,
-               const std::vector<Rate>& floors) {
+                    const std::vector<Real>& nominals,
+                    const boost::shared_ptr<SwapIndex>& index,
+                    const DayCounter& paymentDayCounter,
+                    Integer fixingDays,
+                    BusinessDayConvention paymentAdjustment,
+                    const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
+                    const std::vector<Rate>& caps,
+                    const std::vector<Rate>& floors) {
 
         Leg leg;
         Calendar calendar = schedule.calendar();
@@ -547,22 +546,19 @@ namespace QuantLib {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
-        boost::shared_ptr<CashFlow> cf;
-
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Date paymentDate = calendar.adjust(end,paymentAdjustment);
         if (schedule.isRegular(1)) {
             if (get(gearings,0,1.0)!=0.0) {
-                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
-                        new CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                start, end, fixingDays, index,
-                                get(gearings,0,1.0),
-                                get(spreads,0,0.0),
-                                get(caps,0,Null<Rate>()),
-                                get(floors,0,Null<Rate>()),
-                                start, end, paymentDayCounter));
-                cf = cmsCoupon;
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
+                                           start, end, fixingDays, index,
+                                           get(gearings,0,1.0),
+                                           get(spreads,0,0.0),
+                                           get(caps,0,Null<Rate>()),
+                                           get(floors,0,Null<Rate>()),
+                                           start, end, paymentDayCounter)));
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
@@ -571,26 +567,23 @@ namespace QuantLib {
                     effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
                 if (get(caps, 0, Null<Rate>())!=Null<Rate>())
                     effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                cf = boost::shared_ptr<CashFlow>(new
+                leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals,0, Null<Real>()), paymentDate,
                                     effectiveRate, paymentDayCounter,
-                                    start, end, start, end));
-                // no pricer is needed for a fixed rate coupon
+                                    start, end, start, end)));
             }
-            leg.push_back(cf);
         } else {
             Date reference = end - schedule.tenor();
             reference = calendar.adjust(reference,paymentAdjustment);
             if (get(gearings,0,1.0)!=0.0) {
-                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
-                        new CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                start, end, fixingDays, index,
-                                get(gearings,0,1.0),
-                                get(spreads,0,0.0),
-                                get(caps,0,Null<Rate>()),
-                                get(floors,0,Null<Rate>()),
-                                reference, end, paymentDayCounter));
-                cf = cmsCoupon;
+               leg.push_back(boost::shared_ptr<CashFlow>(new
+                   CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
+                                          start, end, fixingDays, index,
+                                          get(gearings,0,1.0),
+                                          get(spreads,0,0.0),
+                                          get(caps,0,Null<Rate>()),
+                                          get(floors,0,Null<Rate>()),
+                                          reference, end, paymentDayCounter)));
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
@@ -599,28 +592,25 @@ namespace QuantLib {
                     effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
                 if (get(caps, 0, Null<Rate>())!=Null<Rate>())
                     effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                cf = boost::shared_ptr<CashFlow>(new
+                leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, 0, Null<Real>()), paymentDate,
                                     effectiveRate, paymentDayCounter,
-                                    start, end, reference, end));
-                // no pricer is needed for a fixed rate coupon
+                                    start, end, reference, end)));
             }
-            leg.push_back(cf);
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (get(gearings,i-1,1.0)!=0.0) {
-                boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
-                        new CappedFlooredCmsCoupon(paymentDate, get(nominals, i-1, Null<Real>()),
-                                start, end, fixingDays, index,
-                                get(gearings,i-1,1.0),
-                                get(spreads,i-1,0.0),
-                                get(caps,i-1,Null<Rate>()),
-                                get(floors,i-1,Null<Rate>()),
-                                start, end, paymentDayCounter));
-                cf = cmsCoupon;
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    CappedFlooredCmsCoupon(paymentDate, get(nominals, i-1, Null<Real>()),
+                                           start, end, fixingDays, index,
+                                           get(gearings,i-1,1.0),
+                                           get(spreads,i-1,0.0),
+                                           get(caps,i-1,Null<Rate>()),
+                                           get(floors,i-1,Null<Rate>()),
+                                           start, end, paymentDayCounter)));
             } else {
                 // if gearing is null a fixed rate coupon with rate equal to
                 // Min [caprate, Max[floorrate, spread] ] is constructed
@@ -629,13 +619,11 @@ namespace QuantLib {
                     effectiveRate = std::max(get(floors, i-1, Null<Rate>()), effectiveRate);
                 if (get(caps, i-1, Null<Rate>())!=Null<Rate>())
                     effectiveRate = std::min(get(caps, i-1, Null<Rate>()), effectiveRate);
-                cf = boost::shared_ptr<CashFlow>(new
+                leg.push_back(boost::shared_ptr<CashFlow>(new
                     FixedRateCoupon(get(nominals, i-1, Null<Real>()), paymentDate,
                                     effectiveRate, paymentDayCounter,
-                                    start, end, start, end));
-                // no pricer is needed for a fixed rate coupon
+                                    start, end, start, end)));
             }
-            leg.push_back(cf);
         }
         if (schedule.size() > 2) {
             // last period might be short or long
@@ -643,15 +631,14 @@ namespace QuantLib {
             paymentDate = calendar.adjust(end,paymentAdjustment);
             if (schedule.isRegular(N-1)) {
                 if (get(gearings,N-2,1.0)!=0.0) {
-                    boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
-                            new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                    start, end, fixingDays, index,
-                                    get(gearings,N-2,1.0),
-                                    get(spreads,N-2,0.0),
-                                    get(caps,N-2,Null<Rate>()),
-                                    get(floors,N-2,Null<Rate>()),
-                                    start, end, paymentDayCounter));
-                    cf = cmsCoupon;
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
+                                               start, end, fixingDays, index,
+                                               get(gearings,N-2,1.0),
+                                               get(spreads,N-2,0.0),
+                                               get(caps,N-2,Null<Rate>()),
+                                               get(floors,N-2,Null<Rate>()),
+                                               start, end, paymentDayCounter)));
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to
                     // Min [caprate, Max[floorrate, spread] ] is constructed
@@ -660,26 +647,23 @@ namespace QuantLib {
                         effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
                     if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
                         effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                    cf = boost::shared_ptr<CashFlow>(new
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
                         FixedRateCoupon(get(nominals, N-2, Null<Real>()), paymentDate,
                                         effectiveRate, paymentDayCounter,
-                                        start, end, start, end));
-                    // no pricer is needed for a fixed rate coupon
+                                        start, end, start, end)));
                 }
-                leg.push_back(cf);
             } else {
                 Date reference = start + schedule.tenor();
                 reference = calendar.adjust(reference,paymentAdjustment);
                 if (get(gearings,N-2,1.0)!=0.0) {
-                    boost::shared_ptr<CappedFlooredCmsCoupon> cmsCoupon(
-                            new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                    start, end, fixingDays, index,
-                                    get(gearings,N-2,1.0),
-                                    get(spreads,N-2,0.0),
-                                    get(caps,N-2,Null<Rate>()),
-                                    get(floors,N-2,Null<Rate>()),
-                                    start, reference, paymentDayCounter));
-                    cf = cmsCoupon;
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
+                                               start, end, fixingDays, index,
+                                               get(gearings,N-2,1.0),
+                                               get(spreads,N-2,0.0),
+                                               get(caps,N-2,Null<Rate>()),
+                                               get(floors,N-2,Null<Rate>()),
+                                               start, reference, paymentDayCounter)));
                 } else {
                     // if gearing is null a fixed rate coupon with rate equal to
                     // Min [caprate, Max[floorrate, spread] ] is constructed
@@ -688,18 +672,15 @@ namespace QuantLib {
                         effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
                     if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
                         effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                    cf = boost::shared_ptr<CashFlow>(new
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
                         FixedRateCoupon(get(nominals, N-2, Null<Real>()), paymentDate,
                                         effectiveRate, paymentDayCounter,
-                                        start, end, start, reference));
-                    // no pricer is needed for a fixed rate coupon
+                                        start, end, start, reference)));
                 }
-                leg.push_back(cf);
             }
         }
         return leg;
     }
-
 
     Leg CmsInArrearsLeg(const Schedule& schedule,
                         const std::vector<Real>& nominals,
