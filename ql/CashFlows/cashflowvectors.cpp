@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006, 2007 Cristina Duminuco
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2006 Mario Pucci
@@ -130,15 +131,15 @@ namespace QuantLib {
 
 
     Leg IborLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<IborIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+                const std::vector<Real>& nominals,
+                const boost::shared_ptr<IborIndex>& index,
+                const DayCounter& paymentDayCounter,
+                Integer fixingDays,
+                BusinessDayConvention paymentAdjustment,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                const std::vector<Rate>& caps,
+                const std::vector<Rate>& floors) {
 
             QL_REQUIRE(!nominals.empty(), "no nominal given");
             bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
@@ -392,18 +393,16 @@ namespace QuantLib {
         }
 
 
-
-
     Leg IborInArrearsLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<IborIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+                         const std::vector<Real>& nominals,
+                         const boost::shared_ptr<IborIndex>& index,
+                         const DayCounter& paymentDayCounter,
+                         Integer fixingDays,
+                         BusinessDayConvention paymentAdjustment,
+                         const std::vector<Real>& gearings,
+                         const std::vector<Spread>& spreads,
+                         const std::vector<Rate>& caps,
+                         const std::vector<Rate>& floors) {
 
             QL_REQUIRE(!nominals.empty(), "no nominal given");
             bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
@@ -531,94 +530,16 @@ namespace QuantLib {
         }
 
 
-
-
-    //Leg IborInArrearsLeg(const Schedule& schedule,
-    //                const std::vector<Real>& nominals,
-    //                const boost::shared_ptr<IborIndex>& index,
-    //                const DayCounter& paymentDayCounter,
-    //                Integer fixingDays,
-    //                BusinessDayConvention paymentAdjustment,
-    //                const std::vector<Real>& gearings,
-    //                const std::vector<Spread>& spreads) {
-
-    //  Leg leg;
-    //    Calendar calendar = schedule.calendar();
-    //    Size N = schedule.size();
-
-    //    QL_REQUIRE(!nominals.empty(), "no nominal given");
-
-    //    // first period might be short or long
-    //    Date start = schedule.date(0), end = schedule.date(1);
-    //    Date paymentDate = calendar.adjust(end,paymentAdjustment);
-    //    if (schedule.isRegular(1)) {
-    //        leg.push_back(boost::shared_ptr<CashFlow>(
-    //            new IborCoupon(paymentDate, get(nominals,0, Null<Real>()),
-    //                          start, end, fixingDays, index,
-    //                          get(gearings,0,1.0),
-    //                          get(spreads,0,0.0),
-    //                          start, end, paymentDayCounter,true)));
-
-    //    } else {
-    //        Date reference = end - schedule.tenor();
-    //        reference =
-    //            calendar.adjust(reference,paymentAdjustment);
-    //        leg.push_back(boost::shared_ptr<CashFlow>(
-    //            new IborCoupon(paymentDate, get(nominals,0, Null<Real>()),
-    //                          start, end, fixingDays, index,
-    //                          get(gearings,0,1.0),
-    //                          get(spreads,0,0.0),
-    //                          reference, end, paymentDayCounter,true)));
-    //    }
-    //    // regular periods
-    //    for (Size i=2; i<schedule.size()-1; ++i) {
-    //        start = end; end = schedule.date(i);
-    //        paymentDate = calendar.adjust(end,paymentAdjustment);
-    //        leg.push_back(boost::shared_ptr<CashFlow>(
-    //            new IborCoupon(paymentDate, get(nominals,i-1, Null<Real>()),
-    //                          start, end, fixingDays, index,
-    //                          get(gearings,i-1,1.0),
-    //                          get(spreads,i-1,0.0),
-    //                          start, end,paymentDayCounter, true)));
-    //    }
-    //    if (schedule.size() > 2) {
-    //        // last period might be short or long
-    //        start = end; end = schedule.date(N-1);
-    //        paymentDate = calendar.adjust(end,paymentAdjustment);
-    //        if (schedule.isRegular(N-1)) {
-    //            leg.push_back(boost::shared_ptr<CashFlow>(
-    //                new IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-    //                              start, end, fixingDays, index,
-    //                              get(gearings,N-2,1.0),
-    //                              get(spreads,N-2,0.0),
-    //                              start, end, paymentDayCounter, true)));
-    //        } else {
-    //            Date reference = start + schedule.tenor();
-    //            reference =
-    //                calendar.adjust(reference,paymentAdjustment);
-    //            leg.push_back(boost::shared_ptr<CashFlow>(
-    //                new IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-    //                              start, end, fixingDays, index,
-    //                              get(gearings,N-2,1.0),
-    //                              get(spreads,N-2,0.0),
-    //                              start, reference, paymentDayCounter,true)));
-    //        }
-    //    }
-    //    return leg;
-    //}
-
-
-
     Leg CmsLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+               const std::vector<Real>& nominals,
+               const boost::shared_ptr<SwapIndex>& index,
+               const DayCounter& paymentDayCounter,
+               Integer fixingDays,
+               BusinessDayConvention paymentAdjustment,
+               const std::vector<Real>& gearings,
+               const std::vector<Spread>& spreads,
+               const std::vector<Rate>& caps,
+               const std::vector<Rate>& floors) {
 
         Leg leg;
         Calendar calendar = schedule.calendar();
@@ -781,15 +702,15 @@ namespace QuantLib {
 
 
     Leg CmsInArrearsLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<SwapIndex>& index,
+                        const DayCounter& paymentDayCounter,
+                        Integer fixingDays,
+                        BusinessDayConvention paymentAdjustment,
+                        const std::vector<Real>& gearings,
+                        const std::vector<Spread>& spreads,
+                        const std::vector<Rate>& caps,
+                        const std::vector<Rate>& floors) {
 
         Leg leg;
         Calendar calendar = schedule.calendar();
@@ -957,7 +878,8 @@ namespace QuantLib {
 //                 setPricers methods by CouponSelectorToSetPricer           //
 //===========================================================================//
 
-    void CashFlows::setPricer(const Leg& leg,
+    void CashFlows::setPricer(
+               const Leg& leg,
                const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
          for(Size i=0; i<leg.size(); ++i){
             CouponSelectorToSetPricer selector(pricer);
@@ -965,7 +887,8 @@ namespace QuantLib {
        }
     }
     
-    void CashFlows::setPricers(const Leg& leg,
+    void CashFlows::setPricers(
+            const Leg& leg,
             const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers){
         QL_REQUIRE(leg.size() == pricers.size(), "mismatch between leg and pricers");
         for(QuantLib::Size i=0; i<leg.size(); ++i){
