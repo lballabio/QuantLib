@@ -103,7 +103,7 @@ namespace QuantLib {
 
         if (y == 2007) {
             if (// Lunar New Year
-                ((d >= 17 && d <= 20) && m == January)
+                ((d >= 17 && d <= 20) && m == February)
                 // Buddha's birthday
                 || (d == 24 && m == May)
                 // Tuen NG festival
