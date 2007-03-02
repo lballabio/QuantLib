@@ -126,39 +126,6 @@ namespace QuantLib {
         RateHelper::update();
     }
 
-
-    #ifndef QL_DISABLE_DEPRECATED
-    DepositRateHelper::DepositRateHelper(
-                       const Handle<Quote>& rate,
-                       const Period& tenor,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(
-                      new IborIndex("dummy", tenor, settlementDays,
-                                    Currency(), calendar, convention,
-                                    false, dayCounter, termStructureHandle_));
-        initializeDates();
-    }
-
-    DepositRateHelper::DepositRateHelper(
-                       Rate rate,
-                       const Period& tenor,
-                       Integer settlementDays,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(
-                      new IborIndex("dummy", tenor, settlementDays,
-                                    Currency(), calendar, convention,
-                                    false, dayCounter, termStructureHandle_));
-        initializeDates();
-    }
-    #endif
-
     DepositRateHelper::DepositRateHelper(
                        const Handle<Quote>& rate,
                        const Period& tenor,
@@ -227,42 +194,6 @@ namespace QuantLib {
                                                  -index_->fixingDays(), Days);
     }
 
-
-    #ifndef QL_DISABLE_DEPRECATED
-    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
-                                 Integer monthsToStart, Integer monthsToEnd,
-                                 Integer settlementDays,
-                                 const Calendar& calendar,
-                                 BusinessDayConvention convention,
-                                 const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(
-                      new IborIndex("dummy",
-                                    (monthsToEnd-monthsToStart)*Months,
-                                    settlementDays,
-                                    Currency(), calendar, convention,
-                                    false, dayCounter, termStructureHandle_));
-        initializeDates();
-    }
-
-    FraRateHelper::FraRateHelper(Rate rate,
-                                 Integer monthsToStart, Integer monthsToEnd,
-                                 Integer settlementDays,
-                                 const Calendar& calendar,
-                                 BusinessDayConvention convention,
-                                 const DayCounter& dayCounter)
-    : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
-      settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(
-                      new IborIndex("dummy",
-                                    (monthsToEnd-monthsToStart)*Months,
-                                    settlementDays,
-                                    Currency(), calendar, convention,
-                                    false, dayCounter, termStructureHandle_));
-        initializeDates();
-    }
-    #endif
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Integer monthsToStart, Integer monthsToEnd,

@@ -84,20 +84,6 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over deposit rates
     class DepositRateHelper : public RelativeDateRateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        DepositRateHelper(const Handle<Quote>& rate,
-                          const Period& tenor,
-                          Integer settlementDays,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
-        DepositRateHelper(Rate rate,
-                          const Period& tenor,
-                          Integer settlementDays,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
-                          const DayCounter& dayCounter);
-        #endif
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
                           Integer settlementDays,
@@ -129,20 +115,6 @@ namespace QuantLib {
     //! Rate helper for bootstrapping over %FRA rates
     class FraRateHelper : public RelativeDateRateHelper {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        FraRateHelper(const Handle<Quote>& rate,
-                      Integer monthsToStart, Integer monthsToEnd,
-                      Integer settlementDays,
-                      const Calendar& calendar,
-                      BusinessDayConvention convention,
-                      const DayCounter& dayCounter);
-        FraRateHelper(Rate rate,
-                      Integer monthsToStart, Integer monthsToEnd,
-                      Integer settlementDays,
-                      const Calendar& calendar,
-                      BusinessDayConvention convention,
-                      const DayCounter& dayCounter);
-        #endif
         FraRateHelper(const Handle<Quote>& rate,
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
