@@ -33,6 +33,7 @@
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
