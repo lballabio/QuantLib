@@ -134,8 +134,6 @@ namespace QuantLib {
         virtual Real accruedAmount(Date d = Date()) const;
         bool isExpired() const;
         //@}
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
-        void setPricers(const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers); 
 
       protected:
         void performCalculations() const;

@@ -40,8 +40,6 @@ namespace QuantLib {
             const boost::shared_ptr<SwapIndex>& index,
             const DayCounter& paymentDayCounter,
 
-            const boost::shared_ptr<CmsCouponPricer>& pricer,
-
             Integer fixingDays,
             BusinessDayConvention paymentConvention,
 
@@ -79,8 +77,6 @@ namespace QuantLib {
                             paymentConvention,
                             gearings, spreads,
                             caps, floors);
-
-        CashFlows::setPricer(cashflows_, pricer);
 
         // redemption
         Date redemptionDate =

@@ -230,6 +230,9 @@ void ConvertibleBondTest::testBond() {
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
+    boost::shared_ptr<IborCouponPricer> pricer(new 
+        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+
     FloatingCouponBond floating(
         settlementDays_,
         issueDate_,
@@ -245,8 +248,6 @@ void ConvertibleBondTest::testBond() {
         index,
         dayCounter_,
 
-        Handle<CapletVolatilityStructure>(),
-
         fixingDays,
         Following,
 
@@ -259,6 +260,7 @@ void ConvertibleBondTest::testBond() {
         discountCurve,
 
         redemption_);
+    CashFlows::setPricer(floating.cashflows(),pricer);
 
     tolerance = 2.0e-2 * (faceAmount_/100.0);
 

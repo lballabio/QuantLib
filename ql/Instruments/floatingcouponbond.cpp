@@ -39,8 +39,6 @@ namespace QuantLib {
              const boost::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter,
 
-             const Handle<CapletVolatilityStructure>& vol,
-
              Integer fixingDays,
              BusinessDayConvention paymentConvention,
 
@@ -78,10 +76,6 @@ namespace QuantLib {
                              paymentConvention,
                              gearings, spreads,
                              caps, floors);
-
-        boost::shared_ptr<IborCouponPricer> pricer(new
-            BlackIborCouponPricer(vol));
-        CashFlows::setPricer(cashflows_, pricer);
 
         // redemption
         Date redemptionDate =

@@ -54,9 +54,6 @@ namespace QuantLib {
              const boost::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter,
 
-             const Handle<CapletVolatilityStructure>& vol =
-                Handle<CapletVolatilityStructure>(),
-
              Integer fixingDays = Null<Integer>(),
              BusinessDayConvention paymentConvention = Following,
 

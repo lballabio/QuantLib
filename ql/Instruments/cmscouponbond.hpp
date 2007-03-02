@@ -55,8 +55,6 @@ namespace QuantLib {
             const boost::shared_ptr<SwapIndex>& index,
             const DayCounter& paymentDayCounter,
 
-            const boost::shared_ptr<CmsCouponPricer>& pricer,
-
             Integer fixingDays = Null<Integer>(),
             BusinessDayConvention paymentConvention = Following,
 

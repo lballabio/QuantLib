@@ -615,7 +615,10 @@ void BondTest::testCachedFloating() {
     Integer fixingDays = 1;
 
     Real tolerance = 1.0e-6;
-
+    
+    boost::shared_ptr<IborCouponPricer> pricer(new 
+        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+    
     // plain
 
     FloatingCouponBond bond1(
@@ -633,8 +636,6 @@ void BondTest::testCachedFloating() {
                            index,
                            ActualActual(ActualActual::ISMA),
 
-                           Handle<CapletVolatilityStructure>(),
-
                            fixingDays,
                            ModifiedFollowing,
 
@@ -647,6 +648,7 @@ void BondTest::testCachedFloating() {
                            riskFreeRate,
 
                            100.0);
+    CashFlows::setPricer(bond1.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice1 = 99.874645;
@@ -676,7 +678,6 @@ void BondTest::testCachedFloating() {
                            faceAmount,
                            index,
                            ActualActual(ActualActual::ISMA),
-                           Handle<CapletVolatilityStructure>(),
                            fixingDays,
                            ModifiedFollowing,
                            std::vector<Real>(1, 1.0),
@@ -685,6 +686,7 @@ void BondTest::testCachedFloating() {
                            std::vector<Rate>(),
                            discountCurve,
                            100.0);
+    CashFlows::setPricer(bond2.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice2 = 97.955904;
@@ -719,7 +721,6 @@ void BondTest::testCachedFloating() {
                            faceAmount,
                            index,
                            ActualActual(ActualActual::ISMA),
-                           Handle<CapletVolatilityStructure>(),
                            fixingDays,
                            ModifiedFollowing,
                            std::vector<Real>(1, 1.0),
@@ -729,6 +730,7 @@ void BondTest::testCachedFloating() {
                            discountCurve,
                            100.0);
 
+    CashFlows::setPricer(bond3.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice3 = 98.495458;
