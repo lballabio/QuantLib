@@ -192,15 +192,6 @@ namespace QuantLib {
 
     #endif
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Piecewise flat-forward term structure
-    /*! \ingroup yieldtermstructures
-        \deprecated provide your own typedef if needed
-    */
-    typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
-    #endif
-
-
     // inline definitions
 
     template <class C, class I>
