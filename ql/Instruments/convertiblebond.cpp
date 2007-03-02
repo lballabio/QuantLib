@@ -163,6 +163,9 @@ namespace QuantLib {
                            fixingDays,
                            schedule.businessDayConvention(),
                            std::vector<Real>(1, 1.0), spreads);
+        boost::shared_ptr<IborCouponPricer>
+                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        CashFlows::setPricer(cashflows_,fictitiousPricer);
         // redemption
         // !!!
         redemption *= faceAmount_/100.0;
