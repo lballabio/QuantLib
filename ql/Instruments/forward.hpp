@@ -103,10 +103,10 @@ namespace QuantLib {
                                   Real forwardValue,
                                   Date settlementDate,
                                   Compounding compoundingConvention,
-                                  DayCounter dayCount);
+                                  DayCounter dayCounter);
         //@}
       protected:
-        Forward(const DayCounter& dayCount,
+        Forward(const DayCounter& dayCounter,
                 const Calendar& calendar,
                 BusinessDayConvention businessDayConvention,
                 Integer settlementDays,
@@ -122,7 +122,7 @@ namespace QuantLib {
         /*! derived classes must set this, typically via spotValue() */
         mutable Real underlyingSpotValue_;
 
-        DayCounter dayCount_;
+        DayCounter dayCounter_;
         Calendar calendar_;
         BusinessDayConvention businessDayConvention_;
         Integer settlementDays_;
@@ -172,7 +172,7 @@ namespace QuantLib {
     }
 
     inline const DayCounter& Forward::dayCounter() const {
-        return dayCount_;
+        return dayCounter_;
     }
 
     inline Handle<YieldTermStructure> Forward::discountCurve() const {

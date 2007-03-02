@@ -27,13 +27,13 @@ namespace QuantLib {
                     Position::Type type,
                     Real strike,
                     Integer settlementDays,
-                    const DayCounter& dayCount,
+                    const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
                     const boost::shared_ptr<FixedCouponBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
-    : Forward(dayCount, calendar, businessDayConvention, settlementDays,
+    : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
               boost::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
               valueDate, maturityDate, discountCurve),
       fixedCouponBond_(fixedCouponBond) {

@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    Forward::Forward(const DayCounter& dayCount,
+    Forward::Forward(const DayCounter& dayCounter,
                      const Calendar& calendar,
                      BusinessDayConvention businessDayConvention,
                      Integer settlementDays,
@@ -30,7 +30,7 @@ namespace QuantLib {
                      const Date& valueDate,
                      const Date& maturityDate,
                      const Handle<YieldTermStructure>& discountCurve)
-    : dayCount_(dayCount), calendar_(calendar),
+    : dayCounter_(dayCounter), calendar_(calendar),
       businessDayConvention_(businessDayConvention),
       settlementDays_(settlementDays), payoff_(payoff), valueDate_(valueDate),
       maturityDate_(maturityDate), discountCurve_(discountCurve) {
@@ -70,14 +70,14 @@ namespace QuantLib {
                                        Real forwardValue,
                                        Date settlementDate,
                                        Compounding compoundingConvention,
-                                       DayCounter dayCount) {
+                                       DayCounter dayCounter) {
 
-        Time tenor(dayCount.yearFraction(settlementDate,maturityDate_)) ;
+        Time tenor(dayCounter.yearFraction(settlementDate,maturityDate_)) ;
         Real compoundingFactor = forwardValue/
             (underlyingSpotValue-spotIncome(incomeDiscountCurve_)) ;
         return InterestRate::impliedRate(compoundingFactor,
                                          tenor,
-                                         dayCount,
+                                         dayCounter,
                                          compoundingConvention);
     }
 
