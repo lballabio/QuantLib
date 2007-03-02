@@ -134,6 +134,10 @@ namespace QuantLib {
 //                         CouponSelectorToSetPricer                         //
 //===========================================================================//
 
+    void CouponSelectorToSetPricer::visit(CashFlow& c) {
+        // nothing to do
+    }
+
     void CouponSelectorToSetPricer::visit(Coupon& c) {
         // nothing to do
     }
