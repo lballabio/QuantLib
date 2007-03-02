@@ -133,14 +133,14 @@ namespace QuantLib {
 
 
     Bond::Bond(Real faceAmount,
-               const DayCounter& dayCount, const Calendar& calendar,
+               const DayCounter& dayCounter, const Calendar& calendar,
                BusinessDayConvention paymentConvention,
                Integer settlementDays,
                const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
       //accrualConvention_(accrualConvention),
       paymentConvention_(paymentConvention), faceAmount_(faceAmount),
-      dayCount_(dayCount),
+      dayCounter_(dayCounter),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);
@@ -175,7 +175,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice(),
-                              compounding, dayCount_, frequency_,
+                              compounding, dayCounter_, frequency_,
                               settlementDate());
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
@@ -193,7 +193,7 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = settlementDate();
         return dirtyPriceFromYield(faceAmount_, cashflows_, yield,
-                                   compounding, frequency_, dayCount_,
+                                   compounding, frequency_, dayCounter_,
                                    settlement);
     }
 
@@ -206,7 +206,7 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice,
-                              compounding, dayCount_, frequency_,
+                              compounding, dayCounter_, frequency_,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
@@ -256,7 +256,7 @@ namespace QuantLib {
         arguments->calendar = calendar_;
         //arguments->accrualConvention = accrualConvention_;
         arguments->paymentConvention = paymentConvention_;
-        arguments->dayCounter = dayCount_;
+        arguments->dayCounter = dayCounter_;
         arguments->frequency = frequency_;
     }
 

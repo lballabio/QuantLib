@@ -27,12 +27,11 @@
 #define quantlib_bond_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/cashflow.hpp>
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/cashflow.hpp>
 #include <ql/yieldtermstructure.hpp>
-#include <ql/CashFlows/couponpricer.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -53,7 +52,7 @@ namespace QuantLib {
     class Bond : public Instrument {
       protected:
         Bond(Real faceAmount,
-             const DayCounter& dayCount,
+             const DayCounter& dayCounter,
              const Calendar& calendar,
              BusinessDayConvention paymentConvention,
              Integer settlementDays,
@@ -142,7 +141,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention paymentConvention_;
         Real faceAmount_;
-        DayCounter dayCount_;
+        DayCounter dayCounter_;
 
         Date issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
@@ -199,7 +198,7 @@ namespace QuantLib {
     }
 
     inline const DayCounter& Bond::dayCounter() const {
-        return dayCount_;
+        return dayCounter_;
     }
 
     inline Frequency Bond::frequency() const {

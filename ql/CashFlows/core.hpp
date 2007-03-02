@@ -27,5 +27,4 @@
 #include <ql/CashFlows/dividend.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 
-
 #endif
