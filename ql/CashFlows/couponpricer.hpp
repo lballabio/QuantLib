@@ -25,15 +25,20 @@
 #ifndef quantlib_coupon_pricer_hpp
 #define quantlib_coupon_pricer_hpp
 
-#include <ql/CashFlows/core.hpp>
-#include <ql/option.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/swaptionvolstructure.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
-
+    class CashFlow;
+    class Coupon;
     class FloatingRateCoupon;
+    class IborCoupon;
+    class CmsCoupon;
+    class CappedFlooredIborCoupon;
+    class CappedFlooredCmsCoupon;
+
     //
     //! generic pricer for FloatingRate coupons
     //
@@ -56,7 +61,6 @@ namespace QuantLib {
     };
 
     
-    class IborCoupon;
     //! pricer for cappedFlooredIbor coupons
     class IborCouponPricer: public FloatingRateCouponPricer{
       public:
@@ -109,7 +113,6 @@ namespace QuantLib {
     };   
 
     
-    class CmsCoupon;
     //! pricer for vanilla Cms coupons
     class CmsCouponPricer: public FloatingRateCouponPricer {
       public:
@@ -137,9 +140,6 @@ namespace QuantLib {
     class ConundrumPricer::ConundrumPricerByBlack
     */
 
-    class CappedFlooredIborCoupon;
-    class CappedFlooredCmsCoupon;
-    
     class CouponSelectorToSetPricer : public AcyclicVisitor,
                                     public Visitor<CashFlow>,
                                     public Visitor<Coupon>,
