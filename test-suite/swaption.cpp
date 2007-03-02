@@ -532,10 +532,10 @@ void SwaptionTest::testCashSettledSwaptions() {
                                     floatSchedule,index_,0.0,
                                     index_->dayCounter(),termStructure_));
 
-            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_u360 = swap_u360->fixedLeg();
-            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_a360 = swap_a360->fixedLeg();
-            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_u365 = swap_u365->fixedLeg();
-            const std::vector<boost::shared_ptr<CashFlow> >& swapFixedLeg_a365 = swap_a365->fixedLeg();
+            const Leg& swapFixedLeg_u360 = swap_u360->fixedLeg();
+            const Leg& swapFixedLeg_a360 = swap_a360->fixedLeg();
+            const Leg& swapFixedLeg_u365 = swap_u365->fixedLeg();
+            const Leg& swapFixedLeg_a365 = swap_a365->fixedLeg();
 
             // FlatForward curves
             Handle<YieldTermStructure> termStructure_u360(

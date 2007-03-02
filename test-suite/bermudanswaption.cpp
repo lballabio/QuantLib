@@ -113,7 +113,7 @@ void BermudanSwaptionTest::testCachedValues() {
     boost::shared_ptr<ShortRateModel> model(new HullWhite(termStructure_,
                                                           a, sigma));
     std::vector<Date> exerciseDates;
-    const std::vector<boost::shared_ptr<CashFlow> >& leg = atmSwap->fixedLeg();
+    const Leg& leg = atmSwap->fixedLeg();
     for (Size i=0; i<leg.size(); i++) {
         boost::shared_ptr<Coupon> coupon =
             boost::dynamic_pointer_cast<Coupon>(leg[i]);

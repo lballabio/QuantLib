@@ -26,6 +26,7 @@
 #include <ql/Instruments/makecms.hpp>
 #include <ql/Optimization/armijo.hpp>
 #include <ql/Quotes/simplequote.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
