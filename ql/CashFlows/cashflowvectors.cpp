@@ -150,17 +150,21 @@ namespace QuantLib {
     }
 
 
-    Leg IborLeg(const Schedule& schedule,
-                const std::vector<Real>& nominals,
-                const boost::shared_ptr<IborIndex>& index,
-                const DayCounter& paymentDayCounter,
-                Integer fixingDays,
-                BusinessDayConvention paymentAdj,
-                const std::vector<Real>& gearings,
-                const std::vector<Spread>& spreads,
-                const std::vector<Rate>& caps,
-                const std::vector<Rate>& floors,
-                bool isInArrears) {
+
+    template <typename IndexType,
+              typename FloatingCouponType,
+              typename CappedFlooredCouponType>
+    Leg FloatingLeg(const Schedule& schedule,
+                    const std::vector<Real>& nominals,
+                    const boost::shared_ptr<IndexType>& index,
+                    const DayCounter& paymentDayCounter,
+                    Integer fixingDays,
+                    BusinessDayConvention paymentAdj,
+                    const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
+                    const std::vector<Rate>& caps,
+                    const std::vector<Rate>& floors,
+                    bool isInArrears) {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -203,7 +207,7 @@ namespace QuantLib {
             } else { // floating coupon
                 if (noOption(caps, floors, i))
                     leg.push_back(boost::shared_ptr<CashFlow>(new
-                        IborCoupon(paymentDate,
+                        FloatingCouponType(paymentDate,
                                    get(nominals, i, Null<Real>()),
                                    start, end, fixingDays, index,
                                    get(gearings, i, 1.0),
@@ -212,7 +216,7 @@ namespace QuantLib {
                                    paymentDayCounter, isInArrears)));
                 else {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CappedFlooredIborCoupon(paymentDate,
+                        CappedFlooredCouponType(paymentDate,
                                                 get(nominals, i, Null<Real>()),
                                                 start, end, fixingDays, index,
                                                 get(gearings, i, 1.0),
@@ -227,10 +231,35 @@ namespace QuantLib {
         return leg;
     }
 
+    Leg IborLeg(const Schedule& schedule,
+                const std::vector<Real>& nominals,
+                const boost::shared_ptr<IborIndex>& index,
+                const DayCounter& paymentDayCounter,
+                Integer fixingDays,
+                BusinessDayConvention paymentAdj,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                const std::vector<Rate>& caps,
+                const std::vector<Rate>& floors,
+                bool isInArrears) {
+    
+        return FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+                schedule,
+                nominals,
+                index,
+                paymentDayCounter,
+                fixingDays,
+                paymentAdj,
+                gearings,
+                spreads,
+                caps,
+                floors,
+                isInArrears);
+    }
 
     Leg CmsLeg(const Schedule& schedule,
                const std::vector<Real>& nominals,
-               const boost::shared_ptr<SwapIndex>& index, // diff
+               const boost::shared_ptr<SwapIndex>& index,
                const DayCounter& paymentDayCounter,
                Integer fixingDays,
                BusinessDayConvention paymentAdj,
@@ -239,83 +268,34 @@ namespace QuantLib {
                const std::vector<Rate>& caps,
                const std::vector<Rate>& floors,
                bool isInArrears) {
-
-        QL_REQUIRE(!nominals.empty(), "no nominal given");
-
-        Size n = schedule.size()-1;
-        QL_REQUIRE(nominals.size() <= n,
-                   "too many nominals (" << nominals.size() <<
-                   "), only " << n << " required");
-        QL_REQUIRE(gearings.size()<=n,
-                   "too many gearings (" << gearings.size() <<
-                   "), only " << n << " required");
-        QL_REQUIRE(spreads.size()<=n,
-                   "too many spreads (" << spreads.size() <<
-                   "), only " << n << " required");
-        QL_REQUIRE(caps.size()<=n,
-                   "too many caps (" << caps.size() <<
-                   "), only " << n << " required");
-        QL_REQUIRE(floors.size()<=n,
-                   "too many floors (" << floors.size() <<
-                   "), only " << n << " required");
-
-        Leg leg; leg.reserve(n);
-        Calendar calendar = schedule.calendar();
-        Date refStart, start, refEnd, end;
-        Date paymentDate;
-
-        for (Size i=0; i<n; ++i) {
-            refStart = start = schedule.date(i);
-            refEnd   =   end = schedule.date(i+1);
-            paymentDate = calendar.adjust(end, paymentAdj);
-            if (i==0   && !schedule.isRegular(i+1))
-                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
-            if (i==n-1 && !schedule.isRegular(i+1))
-                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
-            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
-                                    effectiveFixedRate(spreads, caps, floors, i),
-                                    paymentDayCounter,
-                                    start, end, refStart, refEnd)));
-            } else { // floating coupon
-                if (noOption(caps, floors, i))
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CmsCoupon(paymentDate, // diff
-                                  get(nominals, i, Null<Real>()),
-                                  start, end, fixingDays, index,
-                                  get(gearings, i, 1.0), get(spreads, i, 0.0),
-                                  refStart, refEnd,
-                                  paymentDayCounter, isInArrears)));
-                else {
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CappedFlooredCmsCoupon(paymentDate, // diff
-                                               get(nominals, i, Null<Real>()),
-                                               start, end, fixingDays, index,
-                                               get(gearings, i, 1.0), get(spreads, i, 0.0),
-                                               get(caps,   i, Null<Rate>()),
-                                               get(floors, i, Null<Rate>()),
-                                               refStart, refEnd,
-                                               paymentDayCounter, isInArrears)));
-               }
-            }
-        }
-
-        return leg;
+    
+        return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
+               schedule,
+               nominals,
+               index,
+               paymentDayCounter,
+               fixingDays,
+               paymentAdj,
+               gearings,
+               spreads,
+               caps,
+               floors,
+               isInArrears);
     }
 
-
-
-    Leg CmsZeroLeg(const Schedule& schedule,
-                   const std::vector<Real>& nominals,
-                   const boost::shared_ptr<SwapIndex>& index,
-                   const DayCounter& paymentDayCounter,
-                   Integer fixingDays,
-                   BusinessDayConvention paymentAdj,
-                   const std::vector<Real>& gearings,
-                   const std::vector<Spread>& spreads,
-                   const std::vector<Rate>& caps,
-                   const std::vector<Rate>& floors) {
+    template <typename IndexType, 
+              typename FloatingCouponType,
+              typename CappedFlooredFloatingCouponType>
+    Leg FloatingZeroLeg(const Schedule& schedule,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<IndexType>& index,
+                        const DayCounter& paymentDayCounter,
+                        Integer fixingDays,
+                        BusinessDayConvention paymentAdj,
+                        const std::vector<Real>& gearings,
+                        const std::vector<Spread>& spreads,
+                        const std::vector<Rate>& caps,
+                        const std::vector<Rate>& floors) {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
@@ -361,26 +341,73 @@ namespace QuantLib {
             } else { // floating coupon
                 if (noOption(caps, floors, i)) {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CmsCoupon(paymentDate, // diff
-                                  get(nominals, i, Null<Real>()),
-                                  start, end, fixingDays, index,
-                                  get(gearings, i, 1.0), get(spreads, i, 0.0),
-                                  refStart, refEnd,
-                                  paymentDayCounter, isInArrears)));
+                        FloatingCouponType(paymentDate, // diff
+                                           get(nominals, i, Null<Real>()),
+                                           start, end, fixingDays, index,
+                                           get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                           refStart, refEnd,
+                                           paymentDayCounter, isInArrears)));
                 } else {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CappedFlooredCmsCoupon(paymentDate, // diff
-                                               get(nominals, i, Null<Real>()),
-                                               start, end, fixingDays, index,
-                                               get(gearings, i, 1.0), get(spreads, i, 0.0),
-                                               get(caps,   i, Null<Rate>()),
-                                               get(floors, i, Null<Rate>()),
-                                               refStart, refEnd,
-                                               paymentDayCounter, isInArrears)));
+                        CappedFlooredFloatingCouponType(paymentDate, // diff
+                                           get(nominals, i, Null<Real>()),
+                                           start, end, fixingDays, index,
+                                           get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                           get(caps,   i, Null<Rate>()),
+                                           get(floors, i, Null<Rate>()),
+                                           refStart, refEnd,
+                                           paymentDayCounter, isInArrears)));
                 }
             }
         }
          return leg;
     }
 
+    Leg IborZeroLeg(const Schedule& schedule,
+                   const std::vector<Real>& nominals,
+                   const boost::shared_ptr<IborIndex>& index,
+                   const DayCounter& paymentDayCounter,
+                   Integer fixingDays,
+                   BusinessDayConvention paymentAdj,
+                   const std::vector<Real>& gearings,
+                   const std::vector<Spread>& spreads,
+                   const std::vector<Rate>& caps,
+                   const std::vector<Rate>& floors) {
+    
+        return FloatingZeroLeg <IborIndex, IborCoupon, CappedFlooredIborCoupon>(
+                   schedule,
+                   nominals,
+                   index,
+                   paymentDayCounter,
+                   fixingDays,
+                   paymentAdj,
+                   gearings,
+                   spreads,
+                   caps,
+                   floors);
+    }
+
+    Leg CmsZeroLeg(const Schedule& schedule,
+                   const std::vector<Real>& nominals,
+                   const boost::shared_ptr<SwapIndex>& index,
+                   const DayCounter& paymentDayCounter,
+                   Integer fixingDays,
+                   BusinessDayConvention paymentAdj,
+                   const std::vector<Real>& gearings,
+                   const std::vector<Spread>& spreads,
+                   const std::vector<Rate>& caps,
+                   const std::vector<Rate>& floors) {
+
+        return FloatingZeroLeg <SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
+                   schedule,
+                   nominals,
+                   index,
+                   paymentDayCounter,
+                   fixingDays,
+                   paymentAdj,
+                   gearings,
+                   spreads,
+                   caps,
+                   floors);
+    }
 }
