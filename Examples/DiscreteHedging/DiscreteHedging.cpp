@@ -359,18 +359,19 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     // a statistics accumulator for the path-dependant Profit&Loss values
     Statistics statisticsAccumulator;
 
-    // The OneFactorMontecarloModel generates paths using myPathGenerator
+    // The Monte Carlo model generates paths using myPathGenerator
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticsAccumulator
-    OneFactorMonteCarloOption MCSimulation(myPathGenerator,
-                                           myPathPricer,
-                                           statisticsAccumulator,
-                                           false);
+    MonteCarloModel<SingleVariate,PseudoRandom>
+        MCSimulation(myPathGenerator,
+                     myPathPricer,
+                     statisticsAccumulator,
+                     false);
 
     // the model simulates nSamples paths
     MCSimulation.addSamples(nSamples);
 
-    // the sampleAccumulator method of OneFactorMonteCarloOption_old
+    // the sampleAccumulator method
     // gives access to all the methods of statisticsAccumulator
     Real PLMean  = MCSimulation.sampleAccumulator().mean();
     Real PLStDev = MCSimulation.sampleAccumulator().standardDeviation();

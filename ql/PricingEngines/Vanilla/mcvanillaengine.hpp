@@ -32,25 +32,25 @@ namespace QuantLib {
 
     //! Pricing engine for vanilla options using Monte Carlo simulation
     /*! \ingroup vanillaengines */
-    template<class MC, class S = Statistics>
+    template <template <class> class MC, class RNG, class S = Statistics>
     class MCVanillaEngine : public VanillaOption::engine,
-                            public McSimulation<MC, S> {
+                            public McSimulation<MC,RNG,S> {
       public:
         void calculate() const {
-            McSimulation<MC,S>::calculate(requiredTolerance_,
-                                          requiredSamples_,
-                                          maxSamples_);
+            McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
+                                              requiredSamples_,
+                                              maxSamples_);
             results_.value = this->mcModel_->sampleAccumulator().mean();
-            if (MC::allowsErrorEstimate)
+            if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
       protected:
-        typedef typename McSimulation<MC,S>::path_generator_type
+        typedef typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename McSimulation<MC,S>::path_pricer_type
+        typedef typename McSimulation<MC,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<MC,S>::stats_type
+        typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
         MCVanillaEngine(Size timeSteps,
@@ -65,8 +65,6 @@ namespace QuantLib {
         // McSimulation implementation
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
-
-            typedef typename MC::rng_traits RNG;
 
             Size dimensions = arguments_.stochasticProcess->factors();
             TimeGrid grid = this->timeGrid();
@@ -88,24 +86,24 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class MC, class S>
-    inline MCVanillaEngine<MC,S>::MCVanillaEngine(Size timeSteps,
-                                                  Size timeStepsPerYear,
-                                                  bool brownianBridge,
-                                                  bool antitheticVariate,
-                                                  bool controlVariate,
-                                                  Size requiredSamples,
-                                                  Real requiredTolerance,
-                                                  Size maxSamples,
-                                                  BigNatural seed)
-    : McSimulation<MC,S>(antitheticVariate, controlVariate),
+    template <template <class> class MC, class RNG, class S>
+    inline MCVanillaEngine<MC,RNG,S>::MCVanillaEngine(Size timeSteps,
+                                                      Size timeStepsPerYear,
+                                                      bool brownianBridge,
+                                                      bool antitheticVariate,
+                                                      bool controlVariate,
+                                                      Size requiredSamples,
+                                                      Real requiredTolerance,
+                                                      Size maxSamples,
+                                                      BigNatural seed)
+    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {}
 
-    template<class MC, class S>
-    inline Real MCVanillaEngine<MC,S>::controlVariateValue() const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real MCVanillaEngine<MC,RNG,S>::controlVariateValue() const {
 
         boost::shared_ptr<PricingEngine> controlPE =
             this->controlPricingEngine();
@@ -127,8 +125,8 @@ namespace QuantLib {
     }
 
 
-    template <class MC, class S>
-    inline TimeGrid MCVanillaEngine<MC,S>::timeGrid() const {
+    template <template <class> class MC, class RNG, class S>
+    inline TimeGrid MCVanillaEngine<MC,RNG,S>::timeGrid() const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
         Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
         if (this->timeSteps_ != Null<Size>()) {

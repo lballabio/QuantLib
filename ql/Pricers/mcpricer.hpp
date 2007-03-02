@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,8 +37,7 @@ namespace QuantLib {
         Monte Carlo Pricer.  See McEuropean as example of one factor
         pricer, Basket as example of multi factor pricer.
     */
-
-    template <class MC, class S = Statistics>
+    template <template <class> class MC, class RNG, class S = Statistics>
     class McPricer {
       public:
         virtual ~McPricer() {}
@@ -55,15 +54,15 @@ namespace QuantLib {
         const S& sampleAccumulator(void) const;
       protected:
         McPricer() {}
-        mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
+        mutable boost::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
     };
 
 
     // inline definitions
-    template<class MC, class S>
-    inline Real McPricer<MC,S>::value(Real tolerance,
-                                      Size maxSamples,
-                                      Size minSamples) const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McPricer<MC,RNG,S>::value(Real tolerance,
+                                          Size maxSamples,
+                                          Size minSamples) const {
 
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
@@ -99,9 +98,9 @@ namespace QuantLib {
     }
 
 
-    template<class MC, class S>
-    inline Real McPricer<MC,S>::valueWithSamples(Size samples,
-                                                 Size minSamples) const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McPricer<MC,RNG,S>::valueWithSamples(Size samples,
+                                                     Size minSamples) const {
 
         QL_REQUIRE(samples>=minSamples,
                    "number of requested samples (" << samples
@@ -120,13 +119,13 @@ namespace QuantLib {
     }
 
 
-    template<class MC, class S>
-    inline Real McPricer<MC,S>::errorEstimate() const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McPricer<MC,RNG,S>::errorEstimate() const {
         return mcModel_->sampleAccumulator().errorEstimate();
     }
 
-    template<class MC, class S>
-    inline const S& McPricer<MC,S>::sampleAccumulator() const {
+    template <template <class> class MC, class RNG, class S>
+    inline const S& McPricer<MC,RNG,S>::sampleAccumulator() const {
         return mcModel_->sampleAccumulator();
     }
 

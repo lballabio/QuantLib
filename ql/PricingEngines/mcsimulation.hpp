@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,8 +23,8 @@
     \brief framework for Monte Carlo engines
 */
 
-#ifndef quantlib_montecarlo_engine_h
-#define quantlib_montecarlo_engine_h
+#ifndef quantlib_montecarlo_engine_hpp
+#define quantlib_montecarlo_engine_hpp
 
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
@@ -38,14 +39,14 @@ namespace QuantLib {
         See McVanillaEngine as an example.
     */
 
-    template <class MC, class S = Statistics>
+    template <template <class> class MC, class RNG, class S = Statistics>
     class McSimulation {
       public:
-        typedef typename MonteCarloModel<MC,S>::path_generator_type
+        typedef typename MonteCarloModel<MC,RNG,S>::path_generator_type
             path_generator_type;
-        typedef typename MonteCarloModel<MC,S>::path_pricer_type
+        typedef typename MonteCarloModel<MC,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename MonteCarloModel<MC,S>::stats_type
+        typedef typename MonteCarloModel<MC,RNG,S>::stats_type
             stats_type;
 
         virtual ~McSimulation() {}
@@ -81,16 +82,16 @@ namespace QuantLib {
         virtual Real controlVariateValue() const {
             return Null<Real>();
         }
-        mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
+        mutable boost::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
         bool antitheticVariate_, controlVariate_;
     };
 
 
     // inline definitions
-    template<class MC, class S>
-    inline Real McSimulation<MC,S>::value(Real tolerance,
-                                          Size maxSamples,
-                                          Size minSamples) const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McSimulation<MC,RNG,S>::value(Real tolerance,
+                                              Size maxSamples,
+                                              Size minSamples) const {
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
         if (sampleNumber<minSamples) {
@@ -124,8 +125,8 @@ namespace QuantLib {
     }
 
 
-    template<class MC, class S>
-    inline Real McSimulation<MC,S>::valueWithSamples(Size samples) const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McSimulation<MC,RNG,S>::valueWithSamples(Size samples) const {
 
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
@@ -139,10 +140,10 @@ namespace QuantLib {
     }
 
 
-    template<class MC, class S>
-    inline void McSimulation<MC,S>::calculate(Real requiredTolerance,
-                                              Size requiredSamples,
-                                              Size maxSamples) const {
+    template <template <class> class MC, class RNG, class S>
+    inline void McSimulation<MC,RNG,S>::calculate(Real requiredTolerance,
+                                                  Size requiredSamples,
+                                                  Size maxSamples) const {
 
         QL_REQUIRE(requiredTolerance != Null<Real>() ||
                    requiredSamples != Null<Size>(),
@@ -163,16 +164,15 @@ namespace QuantLib {
                        "control-variation path pricer");
 
             this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MC, S> >(
-                    new MonteCarloModel<MC, S>(
+                boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                    new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), stats_type(),
                            this->antitheticVariate_, controlPP,
                            controlVariateValue));
-
         } else {
             this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MC, S> >(
-                    new MonteCarloModel<MC, S>(
+                boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                    new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), S(),
                            this->antitheticVariate_));
         }
@@ -188,14 +188,14 @@ namespace QuantLib {
 
     }
 
-    template<class MC, class S>
-    inline Real McSimulation<MC,S>::errorEstimate() const {
+    template <template <class> class MC, class RNG, class S>
+    inline Real McSimulation<MC,RNG,S>::errorEstimate() const {
         return mcModel_->sampleAccumulator().errorEstimate();
     }
 
-    template<class MC, class S>
-    inline const typename McSimulation<MC,S>::stats_type&
-    McSimulation<MC,S>::sampleAccumulator() const {
+    template <template <class> class MC, class RNG, class S>
+    inline const typename McSimulation<MC,RNG,S>::stats_type&
+    McSimulation<MC,RNG,S>::sampleAccumulator() const {
         return mcModel_->sampleAccumulator();
     }
 

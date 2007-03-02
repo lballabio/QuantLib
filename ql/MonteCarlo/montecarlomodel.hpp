@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,8 +22,8 @@
     \brief General purpose Monte Carlo model
 */
 
-#ifndef quantlib_montecarlo_model_h
-#define quantlib_montecarlo_model_h
+#ifndef quantlib_montecarlo_model_hpp
+#define quantlib_montecarlo_model_hpp
 
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Math/statistics.hpp>
@@ -46,17 +47,16 @@ namespace QuantLib {
 
         \ingroup mcarlo
     */
-    template <class mc_traits,
-              class stats_traits = Statistics>
+    template <template <class> class MC, class RNG, class S = Statistics>
     class MonteCarloModel {
       public:
-        // extract traits
-        typedef typename mc_traits::rsg_type rsg_type;
-        typedef typename mc_traits::path_generator_type path_generator_type;
-        typedef typename mc_traits::path_pricer_type path_pricer_type;
+        typedef MC<RNG> mc_traits;
+        typedef RNG rng_traits;
+        typedef typename MC<RNG>::path_generator_type path_generator_type;
+        typedef typename MC<RNG>::path_pricer_type path_pricer_type;
         typedef typename path_generator_type::sample_type sample_type;
         typedef typename path_pricer_type::result_type result_type;
-        typedef stats_traits stats_type;
+        typedef S stats_type;
         // constructor
         MonteCarloModel(
                   const boost::shared_ptr<path_generator_type>& pathGenerator,
@@ -89,8 +89,8 @@ namespace QuantLib {
 
 
     // inline definitions
-    template<class MC, class S>
-    inline void MonteCarloModel<MC,S>::addSamples(Size samples) {
+    template <template <class> class MC, class RNG, class S>
+    inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
         for(Size j = 1; j <= samples; j++) {
 
             sample_type path = pathGenerator_->next();
@@ -111,9 +111,9 @@ namespace QuantLib {
         }
     }
 
-    template<class MC, class S>
-    inline const typename MonteCarloModel<MC,S>::stats_type&
-    MonteCarloModel<MC,S>::sampleAccumulator() const {
+    template <template <class> class MC, class RNG, class S>
+    inline const typename MonteCarloModel<MC,RNG,S>::stats_type&
+    MonteCarloModel<MC,RNG,S>::sampleAccumulator() const {
         return sampleAccumulator_;
     }
 

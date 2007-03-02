@@ -47,7 +47,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCAmericanEngine
         : public MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                           SingleVariate<RNG>, S>{
+                                           SingleVariate,RNG,S>{
       public:
         MCAmericanEngine(Size timeSteps,
                          Size timeStepsPerYear,
@@ -133,7 +133,7 @@ namespace QuantLib {
         Size polynomOrder, LsmBasisSystem::PolynomType polynomType,
         Size nCalibrationSamples)
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                SingleVariate<RNG>, S>(
+                                SingleVariate,RNG,S>(
         timeSteps, timeStepsPerYear,
         false, antitheticVariate,
         controlVariate, requiredSamples,

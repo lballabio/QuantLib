@@ -103,9 +103,9 @@ namespace QuantLib {
                  new PerformanceOptionPathPricer(type, moneyness, discounts));
 
         // Initialize the one-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate<
-                                          PseudoRandom> > > (
-            new MonteCarloModel<SingleVariate<PseudoRandom> > (
+        mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate,
+                                                     PseudoRandom> > (
+            new MonteCarloModel<SingleVariate,PseudoRandom> (
                 pathGenerator, performancePathPricer,
                 Statistics(), false));
     }

@@ -144,9 +144,9 @@ namespace QuantLib {
                                     new HimalayaPathPricer(strike, discount));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiVariate<
-                                                      PseudoRandom> > > (
-            new MonteCarloModel<MultiVariate<PseudoRandom> > (
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiVariate,
+                                                     PseudoRandom> > (
+            new MonteCarloModel<MultiVariate,PseudoRandom> (
                              pathGenerator, pathPricer, Statistics(), false));
 
     }

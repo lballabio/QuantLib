@@ -144,16 +144,16 @@ namespace QuantLib {
                 underlying, q, r, times, sigma).value();
 
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate<
-                                              PseudoRandom> > > (
-                new MonteCarloModel<SingleVariate<PseudoRandom> >(
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate,
+                                                         PseudoRandom> > (
+                new MonteCarloModel<SingleVariate,PseudoRandom>(
                     pathGenerator, spPricer, Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
         } else {
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate<
-                                              PseudoRandom> > > (
-                new MonteCarloModel<SingleVariate<PseudoRandom> >(
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleVariate,
+                                                         PseudoRandom> > (
+                new MonteCarloModel<SingleVariate,PseudoRandom>(
                     pathGenerator, spPricer, Statistics(), false));
         }
 

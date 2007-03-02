@@ -13,7 +13,6 @@ include_HEADERS = \
 	genericparametricearlyexercise.hpp \
 	longstaffschwartzpathpricer.hpp \
 	lsmbasissystem.hpp \
-	mctypedefs.hpp \
 	mctraits.hpp \
 	montecarlomodel.hpp \
 	multipath.hpp \

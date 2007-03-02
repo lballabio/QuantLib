@@ -72,7 +72,7 @@ class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
 template <class RNG>
 class MCAmericanMaxEngine
    : public MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                      MultiVariate<RNG> >{
+                                      MultiVariate,RNG>{
   public:
     MCAmericanMaxEngine(Size timeSteps,
                         Size timeStepsPerYear,
@@ -85,15 +85,15 @@ class MCAmericanMaxEngine
                         BigNatural seed,
                         Size nCalibrationSamples = Null<Size>())
     : MCLongstaffSchwartzEngine<VanillaOption::engine,
-                                MultiVariate<RNG> >(timeSteps,
-                                                    timeStepsPerYear,
-                                                    brownianbridge,
-                                                    antitheticVariate,
-                                                    controlVariate,
-                                                    requiredSamples,
-                                                    requiredTolerance,
-                                                    maxSamples,
-                                                    seed, nCalibrationSamples)
+                                MultiVariate,RNG>(timeSteps,
+                                                  timeStepsPerYear,
+                                                  brownianbridge,
+                                                  antitheticVariate,
+                                                  controlVariate,
+                                                  requiredSamples,
+                                                  requiredTolerance,
+                                                  maxSamples,
+                                                  seed, nCalibrationSamples)
     { }
 
   protected:

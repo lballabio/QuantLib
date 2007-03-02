@@ -39,16 +39,17 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in web/literature
     */
-    template <class GenericEngine, class MC, class S = Statistics>
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S = Statistics>
     class MCLongstaffSchwartzEngine : public GenericEngine,
-                                      public McSimulation<MC, S> {
+                                      public McSimulation<MC,RNG,S> {
       public:
-        typedef typename MC::path_type path_type;
-        typedef typename McSimulation<MC, S>::stats_type
+        typedef typename MC<RNG>::path_type path_type;
+        typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
-        typedef typename McSimulation<MC, S>::path_pricer_type
+        typedef typename McSimulation<MC,RNG,S>::path_pricer_type
             path_pricer_type;
-        typedef typename McSimulation<MC, S>::path_generator_type
+        typedef typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
 
         MCLongstaffSchwartzEngine(
@@ -86,8 +87,10 @@ namespace QuantLib {
             pathPricer_;
     };
 
-    template <class GenericEngine, class MC, class S> inline
-    MCLongstaffSchwartzEngine<GenericEngine,MC,S>::MCLongstaffSchwartzEngine(
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S>
+    inline
+    MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::MCLongstaffSchwartzEngine(
             Size timeSteps,
             Size timeStepsPerYear,
             bool brownianBridge,
@@ -98,7 +101,7 @@ namespace QuantLib {
             Size maxSamples,
             BigNatural seed,
             Size nCalibrationSamples)
-    : McSimulation<MC, S> (antitheticVariate, controlVariate),
+    : McSimulation<MC,RNG,S> (antitheticVariate, controlVariate),
       timeSteps_          (timeSteps),
       timeStepsPerYear_   (timeStepsPerYear),
       brownianBridge_     (brownianBridge),
@@ -110,38 +113,44 @@ namespace QuantLib {
                             ? 2048 : nCalibrationSamples) {
     }
 
-    template <class GenericEngine, class MC, class S> inline
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S>
+    inline
     boost::shared_ptr<typename
-        MCLongstaffSchwartzEngine<GenericEngine, MC, S>::path_pricer_type>
-        MCLongstaffSchwartzEngine<GenericEngine, MC, S>::pathPricer() const {
+        MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::path_pricer_type>
+        MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::pathPricer() const {
 
         QL_REQUIRE(pathPricer_, "path pricer unknown");
         return pathPricer_;
     }
 
-    template <class GenericEngine, class MC, class S> inline
-    void MCLongstaffSchwartzEngine<GenericEngine, MC, S>::calculate() const {
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S>
+    inline
+    void MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::calculate() const {
         pathPricer_ = this->lsmPathPricer();
-        this->mcModel_ = boost::shared_ptr<MonteCarloModel<MC> >(
-                          new MonteCarloModel<MC>
+        this->mcModel_ = boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                          new MonteCarloModel<MC,RNG,S>
                               (pathGenerator(), pathPricer_,
                                stats_type(), this->antitheticVariate_));
 
         this->mcModel_->addSamples(nCalibrationSamples_);
         this->pathPricer_->calibrate();
 
-        McSimulation<MC,S>::calculate(requiredTolerance_,
-                                      requiredSamples_,
-                                      maxSamples_);
+        McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
+                                          requiredSamples_,
+                                          maxSamples_);
         this->results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (MC::allowsErrorEstimate) {
+        if (RNG::allowsErrorEstimate) {
             this->results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
     }
 
-    template <class GenericEngine, class MC, class S> inline
-    TimeGrid MCLongstaffSchwartzEngine<GenericEngine, MC, S>::timeGrid()
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S>
+    inline
+    TimeGrid MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::timeGrid()
         const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
         Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
@@ -155,11 +164,12 @@ namespace QuantLib {
         }
     }
 
-    template <class GenericEngine, class MC, class S> inline
+    template <class GenericEngine, template <class> class MC,
+              class RNG, class S>
+    inline
     boost::shared_ptr<typename
-        MCLongstaffSchwartzEngine<GenericEngine, MC, S>::path_generator_type>
-    MCLongstaffSchwartzEngine<GenericEngine, MC, S>::pathGenerator() const {
-        typedef typename MC::rng_traits RNG;
+    MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::path_generator_type>
+    MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S>::pathGenerator() const {
 
         Size dimensions = this->arguments_.stochasticProcess->factors();
         TimeGrid grid = this->timeGrid();

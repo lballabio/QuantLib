@@ -45,7 +45,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom>
     class MCAmericanBasketEngine
         : public MCLongstaffSchwartzEngine<BasketOption::engine,
-                                           MultiVariate<RNG> > {
+                                           MultiVariate,RNG> {
       public:
         MCAmericanBasketEngine(Size timeSteps,
                                Size timeStepsPerYear,
@@ -111,16 +111,16 @@ namespace QuantLib {
                                            BigNatural seed,
                                            Size nCalibrationSamples)
         : MCLongstaffSchwartzEngine<BasketOption::engine,
-                                    MultiVariate<RNG> >(timeSteps,
-                                                        timeStepsPerYear,
-                                                        brownianBridge,
-                                                        antitheticVariate,
-                                                        controlVariate,
-                                                        requiredSamples,
-                                                        requiredTolerance,
-                                                        maxSamples,
-                                                        seed,
-                                                        nCalibrationSamples) {
+                                    MultiVariate,RNG>(timeSteps,
+                                                      timeStepsPerYear,
+                                                      brownianBridge,
+                                                      antitheticVariate,
+                                                      controlVariate,
+                                                      requiredSamples,
+                                                      requiredTolerance,
+                                                      maxSamples,
+                                                      seed,
+                                                      nCalibrationSamples) {
     }
 
     template <class RNG> inline
@@ -130,16 +130,16 @@ namespace QuantLib {
                                                     BigNatural seed,
                                                     bool antitheticSampling)
     : MCLongstaffSchwartzEngine<BasketOption::engine,
-                                MultiVariate<RNG> >(timeSteps,
-                                                    Null<Size>(),
-                                                    false,
-                                                    antitheticSampling,
-                                                    false,
-                                                    requiredSamples,
-                                                    Null<Real>(),
-                                                    Null<Size>(),
-                                                    seed,
-                                                    requiredSamples/4) {
+                                MultiVariate,RNG>(timeSteps,
+                                                  Null<Size>(),
+                                                  false,
+                                                  antitheticSampling,
+                                                  false,
+                                                  requiredSamples,
+                                                  Null<Real>(),
+                                                  Null<Size>(),
+                                                  seed,
+                                                  requiredSamples/4) {
     }
 
     template <class RNG>

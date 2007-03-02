@@ -30,12 +30,13 @@
 namespace QuantLib {
 
     //! default choice for one-factor Monte Carlo model.
-    typedef MonteCarloModel<SingleVariate<PseudoRandom> >
+    typedef MonteCarloModel<SingleVariate,PseudoRandom>
                                                   OneFactorMonteCarloOption;
 
     //! default choice for multi-factor Monte Carlo model.
-    typedef MonteCarloModel<MultiVariate<PseudoRandom> >
+    typedef MonteCarloModel<MultiVariate,PseudoRandom>
                                                   MultiFactorMonteCarloOption;
+
 }
 
 

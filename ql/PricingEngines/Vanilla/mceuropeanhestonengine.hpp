@@ -37,9 +37,9 @@ namespace QuantLib {
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCEuropeanHestonEngine
-        : public MCVanillaEngine<MultiVariate<RNG>,S> {
+        : public MCVanillaEngine<MultiVariate,RNG,S> {
       public:
-        typedef typename MCVanillaEngine<MultiVariate<RNG>,S>::path_pricer_type
+        typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
         MCEuropeanHestonEngine(Size timeSteps,
                                Size timeStepsPerYear,
@@ -94,10 +94,10 @@ namespace QuantLib {
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
-    : MCVanillaEngine<MultiVariate<RNG>, S>(timeSteps, timeStepsPerYear,
-                                            false, antitheticVariate, false,
-                                            requiredSamples, requiredTolerance,
-                                            maxSamples, seed) {}
+    : MCVanillaEngine<MultiVariate,RNG,S>(timeSteps, timeStepsPerYear,
+                                          false, antitheticVariate, false,
+                                          requiredSamples, requiredTolerance,
+                                          maxSamples, seed) {}
 
 
     template <class RNG, class S>

@@ -32,7 +32,7 @@ namespace QuantLib {
 
     //! simple example of multi-factor Monte Carlo pricer
     class McMaxBasket
-        : public McPricer<MultiVariate<PseudoRandom> > {
+        : public McPricer<MultiVariate,PseudoRandom> {
       public:
         McMaxBasket(
                const std::vector<Real>& underlyings,

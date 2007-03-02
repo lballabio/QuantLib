@@ -55,10 +55,10 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCHullWhiteCapFloorEngine
         : public CapFloor::engine,
-          public McSimulation<SingleVariate<RNG>, S>,
+          public McSimulation<SingleVariate,RNG,S>,
           public Observer {
       private:
-        typedef McSimulation<SingleVariate<RNG>,S> simulation;
+        typedef McSimulation<SingleVariate,RNG,S> simulation;
         boost::shared_ptr<HullWhite> model_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -76,7 +76,7 @@ namespace QuantLib {
                                   Real requiredTolerance,
                                   Size maxSamples,
                                   BigNatural seed)
-        : McSimulation<SingleVariate<RNG>, S>(antitheticVariate, false),
+        : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
           model_(model), requiredSamples_(requiredSamples),
           maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
           brownianBridge_(brownianBridge), seed_(seed) {
@@ -116,7 +116,6 @@ namespace QuantLib {
         }
 
         boost::shared_ptr<path_generator_type> pathGenerator() const {
-            typedef typename SingleVariate<RNG>::rng_traits rng;
 
             Time forwardMeasureTime = arguments_.endTimes.back();
             Handle<YieldTermStructure> curve = model_->termStructure();
@@ -127,8 +126,8 @@ namespace QuantLib {
             process->setForwardMeasureTime(forwardMeasureTime);
 
             TimeGrid grid = this->timeGrid();
-            typename rng::rsg_type generator =
-                rng::make_sequence_generator(grid.size()-1,seed_);
+            typename RNG::rsg_type generator =
+                RNG::make_sequence_generator(grid.size()-1,seed_);
             return boost::shared_ptr<path_generator_type>(
                              new path_generator_type(process, grid, generator,
                                                      brownianBridge_));

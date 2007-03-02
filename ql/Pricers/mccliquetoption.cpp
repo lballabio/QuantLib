@@ -165,8 +165,8 @@ namespace QuantLib {
 
         // initialize the one-factor Monte Carlo
         mcModel_ =
-            boost::shared_ptr<MonteCarloModel<SingleVariate<PseudoRandom> > >(
-                new MonteCarloModel<SingleVariate<PseudoRandom> >(
+            boost::shared_ptr<MonteCarloModel<SingleVariate,PseudoRandom> >(
+                  new MonteCarloModel<SingleVariate,PseudoRandom>(
                       pathGenerator, cliquetPathPricer, Statistics(), false));
     }
 
