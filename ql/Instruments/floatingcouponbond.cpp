@@ -17,14 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/cappedflooredcouponbond.hpp>
+#include <ql/Instruments/floatingcouponbond.hpp>
 #include <ql/CashFlows/capflooredcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 
 namespace QuantLib {
 
-    CappedFlooredCouponBond::CappedFlooredCouponBond(
+    FloatingCouponBond::FloatingCouponBond(
              Integer settlementDays,    // bond specific
              const Date& issueDate,     // bond specific
 

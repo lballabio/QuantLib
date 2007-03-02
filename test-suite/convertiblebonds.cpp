@@ -22,7 +22,7 @@
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/cappedflooredcouponbond.hpp>
+#include <ql/Instruments/floatingcouponbond.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
@@ -230,7 +230,7 @@ void ConvertibleBondTest::testBond() {
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    CappedFlooredCouponBond floating(
+    FloatingCouponBond floating(
         settlementDays_,
         issueDate_,
 

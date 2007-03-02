@@ -2621,14 +2621,6 @@
 				Name="Bonds"
 				>
 				<File
-					RelativePath=".\ql\Instruments\cappedflooredcouponbond.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\Instruments\cappedflooredcouponbond.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\Instruments\cmscouponbond.cpp"
 					>
 				</File>
@@ -2661,11 +2653,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\Instruments\floatingratebond.cpp"
+					RelativePath=".\ql\Instruments\floatingcouponbond.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\Instruments\floatingratebond.hpp"
+					RelativePath=".\ql\Instruments\floatingcouponbond.hpp"
 					>
 				</File>
 				<File
