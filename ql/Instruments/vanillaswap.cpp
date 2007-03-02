@@ -22,6 +22,7 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 

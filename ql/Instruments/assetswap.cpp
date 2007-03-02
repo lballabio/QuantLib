@@ -24,6 +24,7 @@
 #include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 #include <ql/Instruments/assetswap.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 

@@ -31,6 +31,7 @@
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

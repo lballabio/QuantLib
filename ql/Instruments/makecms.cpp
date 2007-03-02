@@ -20,6 +20,7 @@
 #include <ql/Instruments/makecms.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 

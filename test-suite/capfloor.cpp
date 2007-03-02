@@ -29,6 +29,7 @@
 #include <ql/Math/matrix.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 
 

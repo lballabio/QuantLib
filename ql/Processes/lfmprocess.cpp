@@ -23,6 +23,7 @@
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Processes/eulerdiscretization.hpp>
 #include <ql/Processes/lfmprocess.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 

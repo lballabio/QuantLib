@@ -34,6 +34,7 @@
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/CashFlows/couponpricer.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

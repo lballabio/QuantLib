@@ -23,6 +23,7 @@
 #include <ql/CashFlows/iborcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 

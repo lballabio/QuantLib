@@ -30,6 +30,7 @@
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 #include <ql/Volatilities/swaptionvolcube2.hpp>
 #include <ql/Volatilities/swaptionvolcube1.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

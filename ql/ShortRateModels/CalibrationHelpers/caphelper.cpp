@@ -22,6 +22,7 @@
 #include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/swap.hpp>
+#include <ql/CashFlows/analysis.hpp>
 
 namespace QuantLib {
 
