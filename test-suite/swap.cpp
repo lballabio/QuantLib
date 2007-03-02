@@ -272,20 +272,20 @@ void SwapTest::testInArrears() {
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
-        boost::shared_ptr<CapletVolatilityStructure>(
-                         new CapletConstantVolatility(today_,capletVolatility,
-                                                      dayCounter)));
-    boost::shared_ptr<IborCouponPricer>
-            pricer(new BlackIborCouponPricer(vol));
+        boost::shared_ptr<CapletVolatilityStructure>(new
+            CapletConstantVolatility(today_, capletVolatility, dayCounter)));
+    boost::shared_ptr<IborCouponPricer> pricer(new
+        BlackIborCouponPricer(vol));
 
-    std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-        IborInArrearsLeg(schedule,
-                nominals,
-                index,
-                dayCounter,
-                fixingDays,
-                Following,
-                gearings, spreads);
+    Leg floatingLeg = IborLeg(schedule,
+                              nominals,
+                              index,
+                              dayCounter,
+                              fixingDays,
+                              Following,
+                              gearings, spreads,
+                              std::vector<Rate>(), std::vector<Rate>(),
+                              true);
     CashFlows::setPricer(floatingLeg, pricer);
 
     Swap swap(termStructure_,floatingLeg,fixedLeg);

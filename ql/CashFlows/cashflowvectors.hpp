@@ -55,8 +55,7 @@ namespace QuantLib {
     */
 
     //! helper function building a sequence of capped/floored ibor rate coupons
-    Leg IborLeg(
-                const Schedule& schedule,
+    Leg IborLeg(const Schedule& schedule,
                 const std::vector<Real>& nominals,
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter = DayCounter(),
@@ -65,20 +64,8 @@ namespace QuantLib {
                 const std::vector<Real>& gearings = std::vector<Real>(),
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const std::vector<Rate>& caps = std::vector<Rate>(),
-                const std::vector<Rate>& floors = std::vector<Rate>());
-
-    //! helper function building a sequence of in arrears capped/floored ibor rate coupons
-    Leg IborInArrearsLeg(
-                const Schedule& schedule,
-                const std::vector<Real>& nominals,
-                const boost::shared_ptr<IborIndex>& index,
-                const DayCounter& paymentDayCounter = DayCounter(),
-                Integer fixingDays = Null<Integer>(),
-                const BusinessDayConvention paymentAdjustment = Following,
-                const std::vector<Real>& gearings = std::vector<Real>(),
-                const std::vector<Spread>& spreads = std::vector<Spread>(),
-                const std::vector<Rate>& caps = std::vector<Rate>(),
-                const std::vector<Rate>& floors = std::vector<Rate>());
+                const std::vector<Rate>& floors = std::vector<Rate>(),
+                bool isInArrears = false);
 
     //! helper function building a sequence of capped/floored cms rate coupons
     Leg CmsLeg(const Schedule& schedule,
@@ -90,22 +77,9 @@ namespace QuantLib {
                const std::vector<Real>& gearings = std::vector<Real>(),
                const std::vector<Spread>& spreads = std::vector<Spread>(),
                const std::vector<Rate>& caps = std::vector<Rate>(),
-               const std::vector<Rate>& floors = std::vector<Rate>());
+               const std::vector<Rate>& floors = std::vector<Rate>(),
+               bool isInArrears = false);
     
-    //! helper function building a sequence of in arrears capped/floored cms rate coupons
-    Leg CmsInArrearsLeg(
-                const Schedule& schedule,
-                const std::vector<Real>& nominals,
-                const boost::shared_ptr<SwapIndex>& index,
-                const DayCounter& paymentDayCounter = DayCounter(),
-                Integer fixingDays = Null<Integer>(),
-                BusinessDayConvention paymentAdjustment = Following,
-                const std::vector<Real>& gearings = std::vector<Real>(),
-                const std::vector<Spread>& spreads = std::vector<Spread>(),
-                const std::vector<Rate>& caps = std::vector<Rate>(),
-                const std::vector<Rate>& floors = std::vector<Rate>());
-
-
     //! helper function building a sequence of capped/floored cms zero rate coupons
     Leg CmsZeroLeg(const Schedule& schedule,
                const std::vector<Real>& nominals,

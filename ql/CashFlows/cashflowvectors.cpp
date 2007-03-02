@@ -15,7 +15,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/ref/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -26,12 +26,12 @@
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/capflooredcoupon.hpp>
 
-
 namespace QuantLib {
 
     namespace {
 
-        Real get(const std::vector<Real>& v, Size i,
+        Real get(const std::vector<Real>& v,
+                 Size i,
                  Real defaultValue) {
             if (v.empty()) {
                 return defaultValue;
@@ -42,6 +42,26 @@ namespace QuantLib {
             }
         }
 
+        Rate effectiveFixedRate(const std::vector<Spread>& spreads,
+                                const std::vector<Rate>& caps,
+                                const std::vector<Rate>& floors,
+                                Size i) {
+            Rate result = get(spreads, i, 0.0);
+            Rate floor = get(floors, i, Null<Rate>());
+            if (floor!=Null<Rate>())
+                result = std::max(floor, result);
+            Rate cap = get(caps, i, Null<Rate>());
+            if (cap!=Null<Rate>())
+                result = std::min(cap, result);
+            return result;
+        }
+
+        bool noOption(const std::vector<Rate>& caps,
+                      const std::vector<Rate>& floors,
+                      Size i) {
+            return (get(caps,   i, Null<Rate>()) == Null<Rate>()) &&
+                   (get(floors, i, Null<Rate>()) == Null<Rate>());
+        }
     }
 
 
@@ -49,7 +69,7 @@ namespace QuantLib {
                      const std::vector<Real>& nominals,
                      const std::vector<Rate>& couponRates,
                      const DayCounter& paymentDayCounter,
-                     BusinessDayConvention paymentAdjustment,
+                     BusinessDayConvention paymentAdj,
                      const DayCounter& firstPeriodDayCount) {
 
         QL_REQUIRE(!couponRates.empty(), "coupon rates not specified");
@@ -60,7 +80,7 @@ namespace QuantLib {
 
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.adjust(end,paymentAdjustment);
+        Date paymentDate = calendar.adjust(end, paymentAdj);
         Rate rate = couponRates[0];
         Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
@@ -68,24 +88,24 @@ namespace QuantLib {
                        firstPeriodDayCount == paymentDayCounter,
                        "regular first coupon "
                        "does not allow a first-period day count");
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new FixedRateCoupon(nominal, paymentDate, rate, paymentDayCounter,
-                                    start, end, start, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(nominal, paymentDate, rate, paymentDayCounter,
+                                start, end, start, end)));
         } else {
-            Date reference = end - schedule.tenor();
-            reference = calendar.adjust(reference,
+            Date ref = end - schedule.tenor();
+            ref = calendar.adjust(ref,
                                         schedule.businessDayConvention());
             DayCounter dc = firstPeriodDayCount.empty() ?
                             paymentDayCounter :
                             firstPeriodDayCount;
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new FixedRateCoupon(nominal, paymentDate, rate,
-                                    dc, start, end, reference, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(nominal, paymentDate, rate,
+                                dc, start, end, ref, end)));
         }
         // regular periods
         for (Size i=2; i<schedule.size()-1; ++i) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
+            paymentDate = calendar.adjust(end,paymentAdj);
             if ((i-1) < couponRates.size())
                 rate = couponRates[i-1];
             else
@@ -94,15 +114,15 @@ namespace QuantLib {
                 nominal = nominals[i-1];
             else
                 nominal = nominals.back();
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new FixedRateCoupon(nominal, paymentDate, rate, paymentDayCounter,
-                                    start, end, start, end)));
+            leg.push_back(boost::shared_ptr<CashFlow>(new
+                FixedRateCoupon(nominal, paymentDate, rate, paymentDayCounter,
+                                start, end, start, end)));
         }
         if (schedule.size() > 2) {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
+            paymentDate = calendar.adjust(end,paymentAdj);
             if ((N-2) < couponRates.size())
                 rate = couponRates[N-2];
             else
@@ -112,18 +132,18 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate,
-                                        rate, paymentDayCounter,
-                                        start, end, start, end)));
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(nominal, paymentDate,
+                                    rate, paymentDayCounter,
+                                    start, end, start, end)));
             } else {
-                Date reference = start + schedule.tenor();
-                reference = calendar.adjust(reference,
+                Date ref = start + schedule.tenor();
+                ref = calendar.adjust(ref,
                                             schedule.businessDayConvention());
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate,
-                                        rate, paymentDayCounter,
-                                        start, end, start, reference)));
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(nominal, paymentDate,
+                                    rate, paymentDayCounter,
+                                    start, end, start, ref)));
             }
         }
         return leg;
@@ -135,638 +155,155 @@ namespace QuantLib {
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter,
                 Integer fixingDays,
-                BusinessDayConvention paymentAdjustment,
+                BusinessDayConvention paymentAdj,
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 const std::vector<Rate>& caps,
-                const std::vector<Rate>& floors) {
+                const std::vector<Rate>& floors,
+                bool isInArrears) {
 
-            QL_REQUIRE(!nominals.empty(), "no nominal given");
-            bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
+        QL_REQUIRE(!nominals.empty(), "no nominal given");
 
-            Leg leg;
-            Calendar calendar = schedule.calendar();
-            Size N = schedule.size();
+        Size n = schedule.size()-1;
+        QL_REQUIRE(nominals.size() <= n,
+                   "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings.size()<=n,
+                   "too many gearings (" << gearings.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads.size()<=n,
+                   "too many spreads (" << spreads.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(caps.size()<=n,
+                   "too many caps (" << caps.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(floors.size()<=n,
+                   "too many floors (" << floors.size() <<
+                   "), only " << n << " required");
 
-            if (!hasEmbeddedOption) {
+        Leg leg; leg.reserve(n);
+        Calendar calendar = schedule.calendar();
+        Date refStart, start, refEnd, end;
+        Date paymentDate;
 
-                // first period might be short or long
-                Date start = schedule.date(0), end = schedule.date(1);
-                Date paymentDate = calendar.adjust(end,paymentAdjustment);
-                if (schedule.isRegular(1)) {
-                    if (get(gearings,0,1.0)!=0.0) {
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            IborCoupon(paymentDate,
-                                       get(nominals, 0, Null<Real>()),
-                                       start, end, fixingDays, index,
-                                       get(gearings, 0, 1.0),
-                                       get(spreads, 0, 0.0),
-                                       Date(), Date(), paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // margin is constructed
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals,0, Null<Real>()), paymentDate,
-                                        get(spreads,0,0.0), paymentDayCounter,
-                                        start, end, start, end)));
-                    }
-                } else {
-                    Date reference = end - schedule.tenor();
-                    reference = calendar.adjust(reference,paymentAdjustment);
-                    if (get(gearings,0,1.0)!=0.0) {
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            IborCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                       start, end, fixingDays, index,
-                                       get(gearings,0,1.0),
-                                       get(spreads,0,0.0),
-                                       reference, end, paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // margin is constructed
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals,0, Null<Real>()), paymentDate,
-                                        get(spreads,0,0.0), paymentDayCounter,
-                                        start, end, reference, end)));
-                    }
-                }
-                // regular periods
-                for (Size i=2; i<schedule.size()-1; ++i) {
-                    start = end; end = schedule.date(i);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (get(gearings,i-1,1.0)!=0.0) {
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            IborCoupon(paymentDate, get(nominals,i-1, Null<Real>()),
-                                       start, end, fixingDays, index,
-                                       get(gearings,i-1,1.0),
-                                       get(spreads,i-1,0.0),
-                                       Date(),Date(), paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // margin is constructed
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals,i-1, Null<Real>()), paymentDate,
-                                        get(spreads,i-1,0.0), paymentDayCounter,
-                                        start, end, start, end)));
-                    }
-                }
-                if (schedule.size() > 2) {
-                    // last period might be short or long
-                    start = end; end = schedule.date(N-1);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (schedule.isRegular(N-1)) {
-                        if (get(gearings,N-2,1.0)!=0.0) {
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-                                           start, end, fixingDays, index,
-                                           get(gearings,N-2,1.0),
-                                           get(spreads,N-2,0.0),
-                                           Date(),Date(),
-                                           paymentDayCounter)));
-                        } else {
-                            // if gearing is null a fixed rate coupon with rate equal to
-                            // margin is constructed
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                FixedRateCoupon(get(nominals,N-2, Null<Real>()), paymentDate,
-                                                get(spreads,N-2,0.0), paymentDayCounter,
-                                                start, end, start, end)));
-                        }
-                    } else {
-                        Date reference = start + schedule.tenor();
-                        reference = calendar.adjust(reference,paymentAdjustment);
-                        if (get(gearings,N-2,1.0)!=0.0) {
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-                                           start, end, fixingDays, index,
-                                           get(gearings,N-2,1.0),
-                                           get(spreads,N-2,0.0),
-                                           start, reference,
-                                           paymentDayCounter)));
-                        } else {
-                            // if gearing is null a fixed rate coupon with rate equal to
-                            // margin is constructed
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                FixedRateCoupon(get(nominals,N-2, Null<Real>()), paymentDate,
-                                                get(spreads,N-2,0.0), paymentDayCounter,
-                                                start, end, start, reference)));
-                        }
-                    }
-                }
-            } else {
-                // Not all coupons have embedded options
-
-                // first period might be short or long
-                Date start = schedule.date(0), end = schedule.date(1);
-                Date paymentDate = calendar.adjust(end,paymentAdjustment);
-                if (schedule.isRegular(1)) {
-                    if (get(gearings,0,1.0)!=0.0) {
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                CappedFlooredIborCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                        start, end, fixingDays, index,
-                                        get(gearings,0,1.0),
-                                        get(spreads,0,0.0),
-                                        get(caps,0,Null<Rate>()),
-                                        get(floors,0,Null<Rate>()),
-                                        Date(),Date(), paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // Min [caprate, Max[floorrate, spread] ] is constructed
-                        Rate effectiveRate = get(spreads, 0, 0.0);
-                        if (get(floors, 0, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
-                        if (get(caps, 0, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals,0, Null<Real>()), paymentDate,
-                                            effectiveRate, paymentDayCounter,
-                                            start, end, start, end)));
-                    }
-                } else {
-                    Date reference = end - schedule.tenor();
-                    reference = calendar.adjust(reference,paymentAdjustment);
-                    if (get(gearings,0,1.0)!=0.0) {
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            CappedFlooredIborCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                        start, end, fixingDays, index,
-                                        get(gearings,0,1.0),
-                                        get(spreads,0,0.0),
-                                        get(caps,0,Null<Rate>()),
-                                        get(floors,0,Null<Rate>()),
-                                        reference, end, paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // Min [caprate, Max[floorrate, spread] ] is constructed
-                        Rate effectiveRate = get(spreads, 0, 0.0);
-                        if (get(floors, 0, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
-                        if (get(caps, 0, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals, 0, Null<Real>()), paymentDate,
-                                            effectiveRate, paymentDayCounter,
-                                            start, end, reference, end)));
-                    }
-                }
-                // regular periods
-                for (Size i=2; i<schedule.size()-1; ++i) {
-                    start = end; end = schedule.date(i);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (get(gearings,i-1,1.0)!=0.0) {
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            CappedFlooredIborCoupon(paymentDate, get(nominals,i-1, Null<Real>()),
-                                        start, end, fixingDays, index,
-                                        get(gearings,i-1,1.0),
-                                        get(spreads,i-1,0.0),
-                                        get(caps,i-1,Null<Rate>()),
-                                        get(floors,i-1,Null<Rate>()),
-                                        Date(),Date(), paymentDayCounter)));
-                    } else {
-                        // if gearing is null a fixed rate coupon with rate equal to
-                        // Min [caprate, Max[floorrate, spread] ] is constructed
-                        Rate effectiveRate = get(spreads, i-1, 0.0);
-                        if (get(floors, i-1, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::max(get(floors, i-1, Null<Rate>()), effectiveRate);
-                        if (get(caps, i-1, Null<Rate>())!=Null<Rate>())
-                            effectiveRate = std::min(get(caps, i-1, Null<Rate>()), effectiveRate);
-                        leg.push_back(boost::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(get(nominals,i-1, Null<Real>()), paymentDate,
-                                            effectiveRate, paymentDayCounter,
-                                            start, end, start, end)));
-                    }
-                }
-                if (schedule.size() > 2) {
-                    // last period might be short or long
-                    start = end; end = schedule.date(N-1);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (schedule.isRegular(N-1)) {
-                        if (get(gearings,N-2,1.0)!=0.0) {
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                CappedFlooredIborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-                                            start, end, fixingDays, index,
-                                            get(gearings,N-2,1.0),
-                                            get(spreads,N-2,0.0),
-                                            get(caps,N-2,Null<Rate>()),
-                                            get(floors,N-2,Null<Rate>()),
-                                            Date(),Date(), paymentDayCounter)));
-                        } else {
-                            // if gearing is null a fixed rate coupon with rate equal to
-                            // Min [caprate, Max[floorrate, spread] ] is constructed
-                            Rate effectiveRate = get(spreads, N-2, 0.0);
-                            if (get(floors, N-2, Null<Rate>())!=Null<Rate>())
-                                effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
-                            if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
-                                effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                FixedRateCoupon(get(nominals,N-2, Null<Real>()), paymentDate,
-                                                effectiveRate, paymentDayCounter,
-                                                start, end, start, end)));
-                        }
-                    } else {
-                        Date reference = start + schedule.tenor();
-                        reference = calendar.adjust(reference,paymentAdjustment);
-                        if (get(gearings,N-2,1.0)!=0.0) {
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                CappedFlooredIborCoupon(paymentDate, get(nominals,N-2, Null<Real>()),
-                                            start, end, fixingDays, index,
-                                            get(gearings,N-2,1.0),
-                                            get(spreads,N-2,0.0),
-                                            get(caps,N-2,Null<Rate>()),
-                                            get(floors,N-2,Null<Rate>()),
-                                            start, reference, paymentDayCounter)));
-                        } else {
-                            // if gearing is null a fixed rate coupon with rate equal to
-                            // Min [caprate, Max[floorrate, spread] ] is constructed
-                            Rate effectiveRate = get(spreads, N-2, 0.0);
-                            if (get(floors, N-2, Null<Rate>())!=Null<Rate>())
-                                effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
-                            if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
-                                effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                            leg.push_back(boost::shared_ptr<CashFlow>(new
-                                FixedRateCoupon(get(nominals,N-2, Null<Real>()), paymentDate,
-                                                effectiveRate, paymentDayCounter,
-                                                start, end, start, reference)));
-                        }
-                    }
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule.date(i);
+            refEnd   =   end = schedule.date(i+1);
+            paymentDate = calendar.adjust(end, paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1))
+                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
+            if (i==n-1 && !schedule.isRegular(i+1))
+                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
+                                    effectiveFixedRate(spreads, caps, floors, i),
+                                    paymentDayCounter,
+                                    start, end, refStart, refEnd)));
+            } else { // floating coupon
+                if (noOption(caps, floors, i))
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        IborCoupon(paymentDate,
+                                   get(nominals, i, Null<Real>()),
+                                   start, end, fixingDays, index,
+                                   get(gearings, i, 1.0),
+                                   get(spreads, i, 0.0),
+                                   refStart, refEnd,
+                                   paymentDayCounter, isInArrears)));
+                else {
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CappedFlooredIborCoupon(paymentDate,
+                                                get(nominals, i, Null<Real>()),
+                                                start, end, fixingDays, index,
+                                                get(gearings, i, 1.0),
+                                                get(spreads, i, 0.0),
+                                                get(caps,   i, Null<Rate>()),
+                                                get(floors, i, Null<Rate>()),
+                                                refStart, refEnd,
+                                                paymentDayCounter, isInArrears)));
                 }
             }
-            return leg;
         }
-
-
-    Leg IborInArrearsLeg(const Schedule& schedule,
-                         const std::vector<Real>& nominals,
-                         const boost::shared_ptr<IborIndex>& index,
-                         const DayCounter& paymentDayCounter,
-                         Integer fixingDays,
-                         BusinessDayConvention paymentAdjustment,
-                         const std::vector<Real>& gearings,
-                         const std::vector<Spread>& spreads,
-                         const std::vector<Rate>& caps,
-                         const std::vector<Rate>& floors) {
-
-            QL_REQUIRE(!nominals.empty(), "no nominal given");
-            bool hasEmbeddedOption = ( caps.empty() && floors.empty() ) ? false : true ;
-
-            Leg leg;
-            Calendar calendar = schedule.calendar();
-            Size N = schedule.size();
-
-            if (!hasEmbeddedOption) {
-
-                // first period might be short or long
-                Date start = schedule.date(0), end = schedule.date(1);
-                Date paymentDate = calendar.adjust(end,paymentAdjustment);
-                if (schedule.isRegular(1)) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,0, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                } else {
-                    Date reference = end - schedule.tenor();
-                    reference = calendar.adjust(reference,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,0, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                }
-                // regular periods
-                for (Size i=2; i<schedule.size()-1; ++i) {
-                    start = end; end = schedule.date(i);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new IborCoupon(paymentDate, get(nominals,i-1, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,i-1,1.0),
-                                                    get(spreads,i-1,0.0),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                }
-                if (schedule.size() > 2) {
-                    // last period might be short or long
-                    start = end; end = schedule.date(N-1);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (schedule.isRegular(N-1)) {
-                       leg.push_back(boost::shared_ptr<CashFlow>(
-                            new IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()), start, end,
-                                                        fixingDays, index, get(gearings,N-2,1.0),
-                                                        get(spreads,N-2,0.0),
-                                                        Date(),Date(),paymentDayCounter,true)));
-                    } else {
-                        Date reference = start + schedule.tenor();
-                        reference =
-                            calendar.adjust(reference,paymentAdjustment);
-                           leg.push_back(boost::shared_ptr<CashFlow>(
-                                new IborCoupon(paymentDate, get(nominals,N-2, Null<Real>()), start, end,
-                                                            fixingDays, index, get(gearings,N-2,1.0),
-                                                            get(spreads,N-2,0.0),
-                                                            start,reference,paymentDayCounter,true)));
-                    }
-                }
-            } else {
-
-                // first period might be short or long
-                Date start = schedule.date(0), end = schedule.date(1);
-                Date paymentDate = calendar.adjust(end,paymentAdjustment);
-                if (schedule.isRegular(1)) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,0, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    get(caps,0,Null<Rate>()),
-                                                    get(floors,0,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                } else {
-                    Date reference = end - schedule.tenor();
-                    reference = calendar.adjust(reference,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,0, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,0,1.0),
-                                                    get(spreads,0,0.0),
-                                                    get(caps,0,Null<Rate>()),
-                                                    get(floors,0,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                }
-                // regular periods
-                for (Size i=2; i<schedule.size()-1; ++i) {
-                    start = end; end = schedule.date(i);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    leg.push_back(boost::shared_ptr<CashFlow>(
-                        new CappedFlooredIborCoupon(paymentDate, get(nominals,i-1, Null<Real>()), start, end,
-                                                    fixingDays, index, get(gearings,i-1,1.0),
-                                                    get(spreads,i-1,0.0),
-                                                    get(caps,i-1,Null<Rate>()),
-                                                    get(floors,i-1,Null<Rate>()),
-                                                    Date(),Date(),paymentDayCounter,true)));
-                }
-                if (schedule.size() > 2) {
-                    // last period might be short or long
-                    start = end; end = schedule.date(N-1);
-                    paymentDate = calendar.adjust(end,paymentAdjustment);
-                    if (schedule.isRegular(N-1)) {
-                       leg.push_back(boost::shared_ptr<CashFlow>(
-                            new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2, Null<Real>()), start, end,
-                                                        fixingDays, index, get(gearings,N-2,1.0),
-                                                        get(spreads,N-2,0.0),
-                                                        get(caps,N-2,Null<Rate>()),
-                                                        get(floors,N-2,Null<Rate>()),
-                                                        Date(),Date(),paymentDayCounter,true)));
-                    } else {
-                        Date reference = start + schedule.tenor();
-                        reference =
-                            calendar.adjust(reference,paymentAdjustment);
-                           leg.push_back(boost::shared_ptr<CashFlow>(
-                                new CappedFlooredIborCoupon(paymentDate, get(nominals,N-2, Null<Real>()), start, end,
-                                                            fixingDays, index, get(gearings,N-2,1.0),
-                                                            get(spreads,N-2,0.0),
-                                                            get(caps,N-2,Null<Rate>()),
-                                                            get(floors,N-2,Null<Rate>()),
-                                                            start,reference,paymentDayCounter,true)));
-                    }
-                }
-
-            }
-
-            return leg;
-        }
+        return leg;
+    }
 
 
     Leg CmsLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
-                    const boost::shared_ptr<SwapIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
-                    BusinessDayConvention paymentAdjustment,
-                    const std::vector<Real>& gearings,
-                    const std::vector<Spread>& spreads,
-                    const std::vector<Rate>& caps,
-                    const std::vector<Rate>& floors) {
-
-        Leg leg;
-        Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
+               const std::vector<Real>& nominals,
+               const boost::shared_ptr<SwapIndex>& index, // diff
+               const DayCounter& paymentDayCounter,
+               Integer fixingDays,
+               BusinessDayConvention paymentAdj,
+               const std::vector<Real>& gearings,
+               const std::vector<Spread>& spreads,
+               const std::vector<Rate>& caps,
+               const std::vector<Rate>& floors,
+               bool isInArrears) {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
-        // first period might be short or long
-        Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.adjust(end,paymentAdjustment);
-        if (schedule.isRegular(1)) {
-            if (get(gearings,0,1.0)!=0.0) {
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                           start, end, fixingDays, index,
-                                           get(gearings,0,1.0),
-                                           get(spreads,0,0.0),
-                                           get(caps,0,Null<Rate>()),
-                                           get(floors,0,Null<Rate>()),
-                                           start, end, paymentDayCounter)));
-            } else {
-                // if gearing is null a fixed rate coupon with rate equal to
-                // Min [caprate, Max[floorrate, spread] ] is constructed
-                Rate effectiveRate = get(spreads, 0, 0.0);
-                if (get(floors, 0, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
-                if (get(caps, 0, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(get(nominals,0, Null<Real>()), paymentDate,
-                                    effectiveRate, paymentDayCounter,
-                                    start, end, start, end)));
-            }
-        } else {
-            Date reference = end - schedule.tenor();
-            reference = calendar.adjust(reference,paymentAdjustment);
-            if (get(gearings,0,1.0)!=0.0) {
-               leg.push_back(boost::shared_ptr<CashFlow>(new
-                   CappedFlooredCmsCoupon(paymentDate, get(nominals,0, Null<Real>()),
-                                          start, end, fixingDays, index,
-                                          get(gearings,0,1.0),
-                                          get(spreads,0,0.0),
-                                          get(caps,0,Null<Rate>()),
-                                          get(floors,0,Null<Rate>()),
-                                          reference, end, paymentDayCounter)));
-            } else {
-                // if gearing is null a fixed rate coupon with rate equal to
-                // Min [caprate, Max[floorrate, spread] ] is constructed
-                Rate effectiveRate = get(spreads, 0, 0.0);
-                if (get(floors, 0, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::max(get(floors, 0, Null<Rate>()), effectiveRate);
-                if (get(caps, 0, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::min(get(caps, 0, Null<Rate>()), effectiveRate);
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(get(nominals, 0, Null<Real>()), paymentDate,
-                                    effectiveRate, paymentDayCounter,
-                                    start, end, reference, end)));
-            }
-        }
-        // regular periods
-        for (Size i=2; i<schedule.size()-1; ++i) {
-            start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            if (get(gearings,i-1,1.0)!=0.0) {
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    CappedFlooredCmsCoupon(paymentDate, get(nominals, i-1, Null<Real>()),
-                                           start, end, fixingDays, index,
-                                           get(gearings,i-1,1.0),
-                                           get(spreads,i-1,0.0),
-                                           get(caps,i-1,Null<Rate>()),
-                                           get(floors,i-1,Null<Rate>()),
-                                           start, end, paymentDayCounter)));
-            } else {
-                // if gearing is null a fixed rate coupon with rate equal to
-                // Min [caprate, Max[floorrate, spread] ] is constructed
-                Rate effectiveRate = get(spreads, i-1, 0.0);
-                if (get(floors, i-1, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::max(get(floors, i-1, Null<Rate>()), effectiveRate);
-                if (get(caps, i-1, Null<Rate>())!=Null<Rate>())
-                    effectiveRate = std::min(get(caps, i-1, Null<Rate>()), effectiveRate);
-                leg.push_back(boost::shared_ptr<CashFlow>(new
-                    FixedRateCoupon(get(nominals, i-1, Null<Real>()), paymentDate,
-                                    effectiveRate, paymentDayCounter,
-                                    start, end, start, end)));
-            }
-        }
-        if (schedule.size() > 2) {
-            // last period might be short or long
-            start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            if (schedule.isRegular(N-1)) {
-                if (get(gearings,N-2,1.0)!=0.0) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                               start, end, fixingDays, index,
-                                               get(gearings,N-2,1.0),
-                                               get(spreads,N-2,0.0),
-                                               get(caps,N-2,Null<Rate>()),
-                                               get(floors,N-2,Null<Rate>()),
-                                               start, end, paymentDayCounter)));
-                } else {
-                    // if gearing is null a fixed rate coupon with rate equal to
-                    // Min [caprate, Max[floorrate, spread] ] is constructed
-                    Rate effectiveRate = get(spreads, N-2, 0.0);
-                    if (get(floors, N-2, Null<Rate>())!=Null<Rate>())
-                        effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
-                    if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
-                        effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        FixedRateCoupon(get(nominals, N-2, Null<Real>()), paymentDate,
-                                        effectiveRate, paymentDayCounter,
-                                        start, end, start, end)));
-                }
-            } else {
-                Date reference = start + schedule.tenor();
-                reference = calendar.adjust(reference,paymentAdjustment);
-                if (get(gearings,N-2,1.0)!=0.0) {
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                               start, end, fixingDays, index,
-                                               get(gearings,N-2,1.0),
-                                               get(spreads,N-2,0.0),
-                                               get(caps,N-2,Null<Rate>()),
-                                               get(floors,N-2,Null<Rate>()),
-                                               start, reference, paymentDayCounter)));
-                } else {
-                    // if gearing is null a fixed rate coupon with rate equal to
-                    // Min [caprate, Max[floorrate, spread] ] is constructed
-                    Rate effectiveRate = get(spreads, N-2, 0.0);
-                    if (get(floors, N-2, Null<Rate>())!=Null<Rate>())
-                        effectiveRate = std::max(get(floors, N-2, Null<Rate>()), effectiveRate);
-                    if (get(caps, N-2, Null<Rate>())!=Null<Rate>())
-                        effectiveRate = std::min(get(caps, N-2, Null<Rate>()), effectiveRate);
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
-                        FixedRateCoupon(get(nominals, N-2, Null<Real>()), paymentDate,
-                                        effectiveRate, paymentDayCounter,
-                                        start, end, start, reference)));
-                }
-            }
-        }
-        return leg;
-    }
+        Size n = schedule.size()-1;
+        QL_REQUIRE(nominals.size() <= n,
+                   "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings.size()<=n,
+                   "too many gearings (" << gearings.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads.size()<=n,
+                   "too many spreads (" << spreads.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(caps.size()<=n,
+                   "too many caps (" << caps.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(floors.size()<=n,
+                   "too many floors (" << floors.size() <<
+                   "), only " << n << " required");
 
-    Leg CmsInArrearsLeg(const Schedule& schedule,
-                        const std::vector<Real>& nominals,
-                        const boost::shared_ptr<SwapIndex>& index,
-                        const DayCounter& paymentDayCounter,
-                        Integer fixingDays,
-                        BusinessDayConvention paymentAdjustment,
-                        const std::vector<Real>& gearings,
-                        const std::vector<Spread>& spreads,
-                        const std::vector<Rate>& caps,
-                        const std::vector<Rate>& floors) {
-
-        Leg leg;
+        Leg leg; leg.reserve(n);
         Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
+        Date refStart, start, refEnd, end;
+        Date paymentDate;
 
-        QL_REQUIRE(!nominals.empty(), "no nominal given");
-
-        // first period might be short or long
-        Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.adjust(end,paymentAdjustment);
-        if (schedule.isRegular(1)) {
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, 0, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              start, end, paymentDayCounter,true)));
-
-        } else {
-            Date reference = end - schedule.tenor();
-            reference =
-                calendar.adjust(reference,paymentAdjustment);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, 0, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              reference, end, paymentDayCounter,true)));
-        }
-        // regular periods
-        for (Size i=2; i<schedule.size()-1; ++i) {
-            start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, i-1, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,i-1,1.0),
-                              get(spreads,i-1,0.0),
-                              get(caps,i-1,Null<Rate>()),
-                              get(floors,i-1,Null<Rate>()),
-                              start, end,paymentDayCounter, true)));
-        }
-        if (schedule.size() > 2) {
-            // last period might be short or long
-            start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            if (schedule.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule.date(i);
+            refEnd   =   end = schedule.date(i+1);
+            paymentDate = calendar.adjust(end, paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1))
+                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
+            if (i==n-1 && !schedule.isRegular(i+1))
+                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
+                                    effectiveFixedRate(spreads, caps, floors, i),
+                                    paymentDayCounter,
+                                    start, end, refStart, refEnd)));
+            } else { // floating coupon
+                if (noOption(caps, floors, i))
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CmsCoupon(paymentDate, // diff
+                                  get(nominals, i, Null<Real>()),
                                   start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, end, paymentDayCounter, true)));
-            } else {
-                Date reference = start + schedule.tenor();
-                reference =
-                    calendar.adjust(reference,paymentAdjustment);
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                  start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, reference, paymentDayCounter,true)));
+                                  get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                  refStart, refEnd,
+                                  paymentDayCounter, isInArrears)));
+                else {
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CappedFlooredCmsCoupon(paymentDate, // diff
+                                               get(nominals, i, Null<Real>()),
+                                               start, end, fixingDays, index,
+                                               get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                               get(caps,   i, Null<Rate>()),
+                                               get(floors, i, Null<Rate>()),
+                                               refStart, refEnd,
+                                               paymentDayCounter, isInArrears)));
+               }
             }
         }
+
         return leg;
     }
+
 
 
     Leg CmsZeroLeg(const Schedule& schedule,
@@ -774,84 +311,76 @@ namespace QuantLib {
                    const boost::shared_ptr<SwapIndex>& index,
                    const DayCounter& paymentDayCounter,
                    Integer fixingDays,
-                   BusinessDayConvention paymentAdjustment,
+                   BusinessDayConvention paymentAdj,
                    const std::vector<Real>& gearings,
                    const std::vector<Spread>& spreads,
                    const std::vector<Rate>& caps,
                    const std::vector<Rate>& floors) {
 
-        Leg leg;
-        Calendar calendar = schedule.calendar();
-        Size N = schedule.size();
-
         QL_REQUIRE(!nominals.empty(), "no nominal given");
 
-        // All payment dates at the end
-        Date paymentDate = calendar.adjust(schedule.date(N-1),paymentAdjustment);
+        Size n = schedule.size()-1;
+        QL_REQUIRE(nominals.size() <= n,
+                   "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings.size()<=n,
+                   "too many gearings (" << gearings.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads.size()<=n,
+                   "too many spreads (" << spreads.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(caps.size()<=n,
+                   "too many caps (" << caps.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(floors.size()<=n,
+                   "too many floors (" << floors.size() <<
+                   "), only " << n << " required");
 
-        // first period might be short or long
-        Date start = schedule.date(0), end = schedule.date(1);
-        if (schedule.isRegular(1)) {
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, 0, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              start, end, paymentDayCounter)));
+        Leg leg; leg.reserve(n);
+        Calendar calendar = schedule.calendar();
+        Date refStart, start, refEnd, end;
 
-        } else {
-            Date reference = end - schedule.tenor();
-            reference =
-                calendar.adjust(reference,paymentAdjustment);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, 0, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,0,1.0),
-                              get(spreads,0,0.0),
-                              get(caps,0,Null<Rate>()),
-                              get(floors,0,Null<Rate>()),
-                              reference, end, paymentDayCounter)));
-        }
-        // regular periods
-        for (Size i=2; i<schedule.size()-1; ++i) {
-            start = end; end = schedule.date(i);
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new CappedFlooredCmsCoupon(paymentDate, get(nominals, i-1, Null<Real>()),
-                              start, end, fixingDays, index,
-                              get(gearings,i-1,1.0),
-                              get(spreads,i-1,0.0),
-                              get(caps,i-1,Null<Rate>()),
-                              get(floors,i-1,Null<Rate>()),
-                              start, end, paymentDayCounter)));
-        }
-        if (schedule.size() > 2) {
-            // last period might be short or long
-            start = end; end = schedule.date(N-1);
-            if (schedule.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
+        // All payment dates at the end!! in arrears fixing makes no sense
+        Date paymentDate = calendar.adjust(schedule.date(n+1), paymentAdj);
+        bool isInArrears = false;
+
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule.date(i);
+            refEnd   =   end = schedule.date(i+1);
+            //paymentDate = calendar.adjust(end, paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1))
+                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
+            if (i==n-1 && !schedule.isRegular(i+1))
+                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
+                                    effectiveFixedRate(spreads, caps, floors, i),
+                                    paymentDayCounter,
+                                    start, end, refStart, refEnd)));
+            } else { // floating coupon
+                if (noOption(caps, floors, i)) {
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CmsCoupon(paymentDate, // diff
+                                  get(nominals, i, Null<Real>()),
                                   start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, end, paymentDayCounter)));
-            } else {
-                Date reference = start + schedule.tenor();
-                reference =
-                    calendar.adjust(reference,paymentAdjustment);
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new CappedFlooredCmsCoupon(paymentDate, get(nominals, N-2, Null<Real>()),
-                                  start, end, fixingDays, index,
-                                  get(gearings,N-2,1.0),
-                                  get(spreads,N-2,0.0),
-                                  get(caps,N-2,Null<Rate>()),
-                                  get(floors,N-2,Null<Rate>()),
-                                  start, reference, paymentDayCounter)));
+                                  get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                  refStart, refEnd,
+                                  paymentDayCounter, isInArrears)));
+                } else {
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                        CappedFlooredCmsCoupon(paymentDate, // diff
+                                               get(nominals, i, Null<Real>()),
+                                               start, end, fixingDays, index,
+                                               get(gearings, i, 1.0), get(spreads, i, 0.0),
+                                               get(caps,   i, Null<Rate>()),
+                                               get(floors, i, Null<Rate>()),
+                                               refStart, refEnd,
+                                               paymentDayCounter, isInArrears)));
+                }
             }
         }
          return leg;
     }
+
 }
