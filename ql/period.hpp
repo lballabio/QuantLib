@@ -27,37 +27,12 @@
 #ifndef quantlib_period_hpp
 #define quantlib_period_hpp
 
-#include <ql/errors.hpp>
+#include <ql/frequency.hpp>
+#include <ql/timeunit.hpp>
 #include <ql/types.hpp>
 #include <ostream>
 
 namespace QuantLib {
-
-    //! Frequency of events
-    /*! \ingroup datetime */
-    enum Frequency { NoFrequency = -1,     //!< null frequency
-                     Once = 0,             //!< only once, e.g., a zero-coupon
-                     Annual = 1,           //!< once a year
-                     Semiannual = 2,       //!< twice a year
-                     EveryFourthMonth = 3, //!< every fourth month
-                     Quarterly = 4,        //!< every third month
-                     Bimonthly = 6,        //!< every second month
-                     Monthly = 12,         //!< once a month
-                     Biweekly = 26,        //!< every second week
-                     Weekly = 52,          //!< once a week
-                     Daily = 365           //!< once a day
-    };
-
-    /*! \relates Frequency */
-    std::ostream& operator<<(std::ostream&, Frequency);
-
-    //! Units used to describe time periods
-    /*! \ingroup datetime */
-    enum TimeUnit { Days,
-                    Weeks,
-                    Months,
-                    Years
-    };
 
     //! Time period described by a number of a given time unit
     /*! \ingroup datetime */
@@ -178,6 +153,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
