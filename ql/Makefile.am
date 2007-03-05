@@ -76,6 +76,7 @@ include_HEADERS = \
 	termstructure.hpp \
 	timegrid.hpp \
 	timeseries.hpp \
+	timeunit.hpp \
 	types.hpp \
 	volatilitymodel.hpp \
 	voltermstructure.hpp \
