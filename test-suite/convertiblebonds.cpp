@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,8 +22,8 @@
 #include "utilities.hpp"
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
-#include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/floatingcouponbond.hpp>
+#include <ql/Instruments/fixedratebond.hpp>
+#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
@@ -45,7 +46,7 @@ Date today_, issueDate_, maturityDate_;
 Calendar calendar_;
 DayCounter dayCounter_;
 Frequency frequency_;
-Integer settlementDays_;
+Size settlementDays_;
 
 RelinkableHandle<Quote> underlying_;
 RelinkableHandle<YieldTermStructure> dividendYield_, riskFreeRate_;
@@ -144,9 +145,9 @@ void ConvertibleBondTest::testBond() {
                                      issueDate_, settlementDays_,
                                      dayCounter_, schedule, redemption_);
 
-    ZeroCouponBond zero(100.0, issueDate_, maturityDate_, settlementDays_,
-                        dayCounter_, calendar_, Following,
-                        redemption_, discountCurve);
+    ZeroCouponBond zero(settlementDays_, 100.0, calendar_, maturityDate_,
+                        dayCounter_, Following, redemption_, issueDate_,
+                        discountCurve);
 
     Real tolerance = 1.0e-2 * (faceAmount_/100.0);
 
@@ -188,10 +189,9 @@ void ConvertibleBondTest::testBond() {
                                        coupons, dayCounter_,
                                        schedule, redemption_);
 
-    FixedCouponBond fixed(faceAmount_, issueDate_, issueDate_, maturityDate_,
-                          settlementDays_, coupons, frequency_,
-                          calendar_, dayCounter_, Following, Following,
-                          redemption_, discountCurve);
+    FixedRateBond fixed(settlementDays_, faceAmount_, schedule,
+                        coupons, dayCounter_, Following,
+                        redemption_, issueDate_, discountCurve);
 
     tolerance = 2.0e-2 * (faceAmount_/100.0);
 
@@ -214,7 +214,7 @@ void ConvertibleBondTest::testBond() {
     // floating-rate
 
     boost::shared_ptr<IborIndex> index(new Euribor1Y(discountCurve));
-    Integer fixingDays = 2;
+    Size fixingDays = 2;
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 
@@ -232,36 +232,19 @@ void ConvertibleBondTest::testBond() {
                                            index, fixingDays, spreads,
                                            dayCounter_, schedule, redemption_);
 
-    boost::shared_ptr<IborCouponPricer> pricer(new 
+    boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
 
-    FloatingCouponBond floating(
-        settlementDays_,
-        issueDate_,
+    Schedule floatSchedule(issueDate_, maturityDate_, Period(frequency_),
+                           calendar_, Following, Following, true, false);
 
-        calendar_,
-        issueDate_,
-        frequency_,
-        maturityDate_,
-        Following,
+    FloatingRateBond floating(settlementDays_, faceAmount_, floatSchedule,
+                              index, dayCounter_, Following, fixingDays,
+                              gearings, spreads,
+                              std::vector<Rate>(), std::vector<Rate>(),
+                              false,
+                              redemption_, issueDate_, discountCurve);
 
-        faceAmount_,
-
-        index,
-        dayCounter_,
-
-        fixingDays,
-        Following,
-
-        gearings,
-        spreads,
-
-        std::vector<Rate>(),
-        std::vector<Rate>(),
-
-        discountCurve,
-
-        redemption_);
     CashFlows::setPricer(floating.cashflows(),pricer);
 
     tolerance = 2.0e-2 * (faceAmount_/100.0);

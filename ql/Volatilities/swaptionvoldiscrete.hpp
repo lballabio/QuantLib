@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         SwaptionVolatilityDiscrete(const std::vector<Period>& optionTenors,
                                    const std::vector<Period>& swapTenors,
-                                   Integer settlementDays,
+                                   Size settlementDays,
                                    const Calendar& cal,
                                    const DayCounter& dc,
                                    BusinessDayConvention bdc = Following);

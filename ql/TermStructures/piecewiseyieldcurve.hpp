@@ -143,7 +143,7 @@ namespace QuantLib {
                Real accuracy = 1.0e-12,
                const Interpolator& i = Interpolator());
         PiecewiseYieldCurve(
-               Integer settlementDays,
+               Size settlementDays,
                const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter,
@@ -241,7 +241,8 @@ namespace QuantLib {
 
     template <class C, class I>
     PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
-               Integer settlementDays, const Calendar& calendar,
+               Size settlementDays,
+               const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy,
                const I& interpolator)

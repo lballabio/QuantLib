@@ -33,7 +33,7 @@ namespace QuantLib {
     FloatingRateCoupon::FloatingRateCoupon(
                          const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
-                         const Integer fixingDays,
+                         const Size fixingDays,
                          const boost::shared_ptr<InterestRateIndex>& index,
                          const Real gearing, const Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd,
@@ -42,7 +42,7 @@ namespace QuantLib {
     : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter),
-      fixingDays_(fixingDays==Null<Integer>() ? index->fixingDays() : fixingDays),
+      fixingDays_(fixingDays==Null<Size>() ? index->fixingDays() : fixingDays),
       gearing_(gearing), spread_(spread), 
       isInArrears_(isInArrears)
     {
@@ -84,15 +84,16 @@ namespace QuantLib {
         return index_;
     }
 
-    Integer FloatingRateCoupon::fixingDays() const {
+    Size FloatingRateCoupon::fixingDays() const {
         return fixingDays_;
     }
 
     Date FloatingRateCoupon::fixingDate() const {
         // if isInArrears_ fix at the end of period
         Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
-        return index_->calendar().advance(refDate, -fixingDays_*Days,
-                                          Preceding);
+        return index_->calendar().advance(refDate,
+                                          -static_cast<Integer>(fixingDays_),
+                                          Days, Preceding);
     }
 
     Real FloatingRateCoupon::gearing() const {

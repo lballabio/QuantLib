@@ -47,7 +47,7 @@ std::vector<Real> nominals_;
 BusinessDayConvention convention_;
 Frequency frequency_;
 boost::shared_ptr<IborIndex> index_;
-Integer settlementDays_, fixingDays_;
+Size settlementDays_, fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 std::vector<Rate> caps_;
 std::vector<Rate> floors_;
@@ -79,17 +79,17 @@ void teardown() {
 
 // utilities
 
-std::vector<boost::shared_ptr<CashFlow> > makeFixedLeg(const Date& startDate,
+Leg makeFixedLeg(const Date& startDate,
                                                        Integer length) {
 
     Date endDate = calendar_.advance(startDate, length, Years, convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
     std::vector<Rate> coupons(length, 0.0);
-    return FixedRateLeg(schedule, nominals_, coupons, Thirty360(), Following);
+    return FixedRateLeg(nominals_, schedule, coupons, Thirty360(), Following);
 }
 
-std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
+Leg makeFloatingLeg(const Date& startDate,
                                                           Integer length,
                                                           const Rate gearing = 1.0,
                                                           const Rate spread = 0.0) {
@@ -99,22 +99,21 @@ std::vector<boost::shared_ptr<CashFlow> > makeFloatingLeg(const Date& startDate,
                       convention_,convention_,false,false);
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg =
-        IborLeg(schedule, nominals_, index_, index_->dayCounter(), fixingDays_,
-                   convention_, gearingVector, spreadVector);
-    boost::shared_ptr<IborCouponPricer> 
-                    fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+    Leg floatLeg = IborLeg(nominals_, schedule, index_, index_->dayCounter(),
+                           convention_, fixingDays_, gearingVector, spreadVector);
+    boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
+        BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
     CashFlows::setPricer(floatLeg,fictitiousPricer);
     return floatLeg;
 }
 
-std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDate,
-                                                     Integer length,
-                                                     const std::vector<Rate> caps,
-                                                     const std::vector<Rate> floors,
-                                                     Volatility volatility,
-                                                     const Rate gearing = 1.0,
-                                                     const Rate spread = 0.0) {
+Leg makeCapFlooredLeg(const Date& startDate,
+                      Integer length,
+                      const std::vector<Rate> caps,
+                      const std::vector<Rate> floors,
+                      Volatility volatility,
+                      const Rate gearing = 1.0,
+                      const Rate spread = 0.0) {
 
     Date endDate = calendar_.advance(startDate,length,Years,convention_);
     Schedule schedule(startDate,endDate,Period(frequency_),calendar_,
@@ -128,11 +127,17 @@ std::vector<boost::shared_ptr<CashFlow> > makeCapFlooredLeg(const Date& startDat
     std::vector<Rate> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
 
-    std::vector<boost::shared_ptr<CashFlow> >  iborLeg = 
-        IborLeg(schedule, nominals_, index_,
-                    index_->dayCounter(), fixingDays_,
-                    convention_, gearingVector,
-                    spreadVector, caps, floors);
+    Leg iborLeg = IborLeg(nominals_,
+                          schedule,
+                          index_,
+                          index_->dayCounter(), 
+                          convention_,
+                          fixingDays_,
+                          gearingVector,
+                          spreadVector,
+                          caps,
+                          floors,
+                          false);
      CashFlows::setPricer(iborLeg, pricer);
      return iborLeg;
 }
@@ -143,7 +148,7 @@ boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
 }
 
 boost::shared_ptr<CapFloor> makeCapFloor(CapFloor::Type type,
-                         const std::vector<boost::shared_ptr<CashFlow> >& leg,
+                         const Leg& leg,
                          Rate capstrike, Rate floorstrike,
                          Volatility volatility) {
     switch (type) {
@@ -197,11 +202,11 @@ void CapFlooredCouponTest::testLargeRates() {
     Real tolerance = 1e-10;
 
     // fixed leg with zero rate
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+    Leg fixedLeg =
         makeFixedLeg(startDate_,length_);
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg =
+    Leg floatLeg =
         makeFloatingLeg(startDate_,length_);
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
+    Leg collaredLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
 
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
@@ -241,16 +246,16 @@ void CapFlooredCouponTest::testDecomposition() {
     Rate gearing_n = Rate(-1.5);
     Spread spread_n = Spread(0.12);
     // fixed leg with zero rate
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg  =
+    Leg fixedLeg  =
         makeFixedLeg(startDate_,length_);
     // floating leg with gearing=1 and spread=0
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg  =
+    Leg floatLeg  =
         makeFloatingLeg(startDate_,length_);
     // floating leg with positive gearing (gearing_p) and spread<>0
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg_p =
+    Leg floatLeg_p =
         makeFloatingLeg(startDate_,length_,gearing_p,spread_p);
     // floating leg with negative gearing (gearing_n) and spread<>0
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg_n =
+    Leg floatLeg_n =
         makeFloatingLeg(startDate_,length_,gearing_n,spread_n);
     // Swap with null fixed leg and floating leg with gearing=1 and spread=0
     Swap vanillaLeg(termStructure_,fixedLeg,floatLeg);
@@ -267,7 +272,7 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     // Case gearing = 1 and spread = 0
-    std::vector<boost::shared_ptr<CashFlow> > cappedLeg =
+    Leg cappedLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,volatility_);
     Swap capLeg(termStructure_,fixedLeg,cappedLeg);
     Cap cap(floatLeg, std::vector<Rate>(1, capstrike),
@@ -292,7 +297,7 @@ void CapFlooredCouponTest::testDecomposition() {
               = VanillaFloatingLeg + Put
     */
 
-    std::vector<boost::shared_ptr<CashFlow> > flooredLeg =
+    Leg flooredLeg =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,volatility_);
     Swap floorLeg(termStructure_,fixedLeg,flooredLeg);
     Floor floor(floatLeg, std::vector<Rate>(1, floorstrike),
@@ -314,7 +319,7 @@ void CapFlooredCouponTest::testDecomposition() {
               = VanillaFloatingLeg - Collar
     */
 
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg =
+    Leg collaredLeg =
         makeCapFlooredLeg(startDate_,length_,caps,floors,volatility_);
     Swap collarLeg(termStructure_,fixedLeg,collaredLeg);
     Collar collar(floatLeg,
@@ -346,7 +351,7 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     // Positive gearing
-    std::vector<boost::shared_ptr<CashFlow> > cappedLeg_p =
+    Leg cappedLeg_p =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_p,spread_p);
     Swap capLeg_p(termStructure_,fixedLeg,cappedLeg_p);
@@ -370,7 +375,7 @@ void CapFlooredCouponTest::testDecomposition() {
     }
 
     // Negative gearing
-    std::vector<boost::shared_ptr<CashFlow> > cappedLeg_n =
+    Leg cappedLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps,floors0,
                           volatility_,gearing_n,spread_n);
     Swap capLeg_n(termStructure_,fixedLeg,cappedLeg_n);
@@ -407,7 +412,7 @@ void CapFlooredCouponTest::testDecomposition() {
     */
 
     // Positive gearing
-    std::vector<boost::shared_ptr<CashFlow> > flooredLeg_p1 =
+    Leg flooredLeg_p1 =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_p,spread_p);
     Swap floorLeg_p1(termStructure_,fixedLeg,flooredLeg_p1);
@@ -429,7 +434,7 @@ void CapFlooredCouponTest::testDecomposition() {
                       "  Diff: " << error );
     }
     // Negative gearing
-    std::vector<boost::shared_ptr<CashFlow> > flooredLeg_n =
+    Leg flooredLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps0,floors,
                           volatility_,gearing_n,spread_n);
     Swap floorLeg_n(termStructure_,fixedLeg,flooredLeg_n);
@@ -458,7 +463,7 @@ void CapFlooredCouponTest::testDecomposition() {
            Payoff = VanillaFloatingLeg + Collar(|a|*rate+b, caprate, floorrate)
     */
     // Positive gearing
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg_p =
+    Leg collaredLeg_p =
         makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_p,spread_p);
     Swap collarLeg_p1(termStructure_,fixedLeg,collaredLeg_p);
@@ -485,7 +490,7 @@ void CapFlooredCouponTest::testDecomposition() {
                       "  Diff: " << error );
     }
     // Negative gearing
-    std::vector<boost::shared_ptr<CashFlow> > collaredLeg_n =
+    Leg collaredLeg_n =
         makeCapFlooredLeg(startDate_,length_,caps,floors,
                           volatility_,gearing_n,spread_n);
     Swap collarLeg_n1(termStructure_,fixedLeg,collaredLeg_n);

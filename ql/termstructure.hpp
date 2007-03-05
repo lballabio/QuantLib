@@ -70,7 +70,7 @@ namespace QuantLib {
                       const Calendar& calendar = Calendar(),
                       const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        TermStructure(Integer settlementDays,
+        TermStructure(Size settlementDays,
                       const Calendar&,
                       const DayCounter& dc = Actual365Fixed());
         //@}
@@ -104,7 +104,7 @@ namespace QuantLib {
       private:
         mutable Date referenceDate_;
         mutable bool updated_;
-        Integer settlementDays_;
+        Size settlementDays_;
         Calendar calendar_;
         DayCounter dayCounter_;
     };
@@ -113,16 +113,16 @@ namespace QuantLib {
     // inline definitions
 
     inline TermStructure::TermStructure(const DayCounter& dc)
-    : moving_(false), updated_(true), settlementDays_(Null<Integer>()),
+    : moving_(false), updated_(true), settlementDays_(Null<Size>()),
       dayCounter_(dc) {}
 
     inline TermStructure::TermStructure(const Date& referenceDate,
                                         const Calendar& cal,
                                         const DayCounter& dc)
     : moving_(false), referenceDate_(referenceDate), updated_(true),
-      settlementDays_(Null<Integer>()), calendar_(cal), dayCounter_(dc) {}
+      settlementDays_(Null<Size>()), calendar_(cal), dayCounter_(dc) {}
 
-    inline TermStructure::TermStructure(Integer settlementDays,
+    inline TermStructure::TermStructure(Size settlementDays,
                                         const Calendar& cal,
                                         const DayCounter& dc)
     : moving_(true), updated_(false), settlementDays_(settlementDays),

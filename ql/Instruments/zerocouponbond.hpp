@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -36,14 +37,14 @@ namespace QuantLib {
     */
     class ZeroCouponBond : public Bond {
       public:
-        ZeroCouponBond(Real faceAmount,
-                       const Date& issueDate,
+        ZeroCouponBond(Size settlementDays,
+                       Real faceAmount,
+                       const Calendar& calendar, // trading calender ??
                        const Date& maturityDate,
-                       Integer settlementDays,
-                       const DayCounter& dayCounter,
-                       const Calendar& calendar,
+                       const DayCounter& dayCounter, // yield dayconter ??
                        BusinessDayConvention paymentConvention = Following,
                        Real redemption = 100.0,
+                       const Date& issueDate = Date(),
                        const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
     };

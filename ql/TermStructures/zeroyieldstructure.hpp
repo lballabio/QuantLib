@@ -50,7 +50,7 @@ namespace QuantLib {
         ZeroYieldStructure(const Date& referenceDate,
                            const Calendar& calendar = Calendar(),
                            const DayCounter& dc = Actual365Fixed());
-        ZeroYieldStructure(Integer settlementDays,
+        ZeroYieldStructure(Size settlementDays,
                            const Calendar&,
                            const DayCounter& dc = Actual365Fixed());
         //@}
@@ -77,7 +77,7 @@ namespace QuantLib {
                                                   const DayCounter& dc)
     : YieldTermStructure(refDate, cal, dc) {}
 
-    inline ZeroYieldStructure::ZeroYieldStructure(Integer settlementDays,
+    inline ZeroYieldStructure::ZeroYieldStructure(Size settlementDays,
                                                   const Calendar& cal,
                                                   const DayCounter& dc)
     : YieldTermStructure(settlementDays, cal, dc) {}

@@ -25,7 +25,7 @@ namespace QuantLib {
     Forward::Forward(const DayCounter& dayCounter,
                      const Calendar& calendar,
                      BusinessDayConvention businessDayConvention,
-                     Integer settlementDays,
+                     Size settlementDays,
                      const boost::shared_ptr<Payoff>& payoff,
                      const Date& valueDate,
                      const Date& maturityDate,

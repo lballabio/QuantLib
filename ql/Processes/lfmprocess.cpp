@@ -180,17 +180,17 @@ namespace QuantLib {
         const Date refDate = index_->termStructure()->referenceDate();
 
         Leg floatingLeg = IborLeg(
+                   std::vector<Real>(1, amount),
                    Schedule(refDate,
                             refDate + Period(index_->tenor().length()*size_,
                                              index_->tenor().units()),
                             index_->tenor(), index_->calendar(),
                             index_->businessDayConvention(),
                             index_->businessDayConvention(), false, false),
-                   std::vector<Real>(1, amount),
                    index_,
                    index_->dayCounter(),
-                   index_->fixingDays(),
-                   index_->businessDayConvention());
+                   index_->businessDayConvention(),
+                   index_->fixingDays());
         boost::shared_ptr<IborCouponPricer> 
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(floatingLeg,fictitiousPricer);

@@ -25,7 +25,8 @@
 #define quantlib_bond_helpers_hpp
 
 #include <ql/TermStructures/piecewiseyieldcurve.hpp>
-#include <ql/Instruments/fixedcouponbond.hpp>
+#include <ql/Instruments/fixedratebond.hpp>
+#include <ql/schedule.hpp>
 
 namespace QuantLib {
 
@@ -36,41 +37,30 @@ namespace QuantLib {
     class FixedCouponBondHelper : public RateHelper {
       public:
         FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
-                              const Date& issueDate,
-                              const Date& datedDate,
-                              const Date& maturityDate,
-                              Integer settlementDays,
+                              Size settlementDays,
+                              const Schedule& schedule,
                               const std::vector<Rate>& coupons,
-                              Frequency frequency,
-                              const Calendar& calendar,
-                              const DayCounter& dayCounter,
-                              BusinessDayConvention accrualConvention =
-                                                                    Following,
-                              BusinessDayConvention paymentConvention =
-                                                                    Following,
+                              const DayCounter& paymentDayCounter,
+                              BusinessDayConvention paymentConvention = Following,
                               Real redemption = 100.0,
-                              const Date& stub = Date(),
-                              bool fromEnd = true);
+                              const Date& issueDate = Date());
         Real impliedQuote() const;
-        Date latestDate() const;
         void setTermStructure(YieldTermStructure*);
       protected:
-        Date issueDate_, datedDate_, maturityDate_;
-        Integer settlementDays_;
+        // needed for bond instantiation
+        Size settlementDays_;
+        Schedule schedule_;
         std::vector<Rate> coupons_;
-        Frequency frequency_;
-        DayCounter dayCounter_;
-        Calendar calendar_;
-        BusinessDayConvention accrualConvention_, paymentConvention_;
+        DayCounter paymentDayCounter_;
+        BusinessDayConvention paymentConvention_;
         Real redemption_;
-        Date stub_;
-        bool fromEnd_;
-        Date settlement_, latestDate_;
-        boost::shared_ptr<FixedCouponBond> bond_;
+        Date issueDate_;
+        // other
+        //Date settlement_, latestDate_;
+        boost::shared_ptr<FixedRateBond> bond_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
 }
-
 
 #endif

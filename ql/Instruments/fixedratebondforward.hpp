@@ -21,11 +21,11 @@
     \brief forward contract on a fixed-coupon bond
 */
 
-#ifndef quantlib_fixed_coupon_bond_forward_hpp
-#define quantlib_fixed_coupon_bond_forward_hpp
+#ifndef quantlib_fixed_rate_bond_forward_hpp
+#define quantlib_fixed_rate_bond_forward_hpp
 
 #include <ql/Instruments/forward.hpp>
-#include <ql/Instruments/fixedcouponbond.hpp>
+#include <ql/Instruments/fixedratebond.hpp>
 
 namespace QuantLib {
 
@@ -70,7 +70,7 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class FixedCouponBondForward : public Forward {
+    class FixedRateBondForward : public Forward {
       public:
         //! \name Constructors
         /*! If strike is given in the constructor, can calculate the
@@ -81,16 +81,16 @@ namespace QuantLib {
             constructor is irrelevant and will be ignored.
         */
         //@{
-        FixedCouponBondForward(
+        FixedRateBondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
                     Position::Type type,
                     Real strike,
-                    Integer settlementDays,
+                    Size settlementDays,
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedCouponBond>& fixedCouponBond,
+                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>(),
                     const Handle<YieldTermStructure>& incomeDiscountCurve =
@@ -120,7 +120,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        boost::shared_ptr<FixedCouponBond> fixedCouponBond_;
+        boost::shared_ptr<FixedRateBond> fixedCouponBond_;
         void performCalculations() const;
     };
 

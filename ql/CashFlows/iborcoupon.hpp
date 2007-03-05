@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
 
@@ -30,14 +31,14 @@
 #include <ql/PricingEngines/core.hpp>
 
 namespace QuantLib {
- 
+
     class IborCoupon : public FloatingRateCoupon {
       public:
         IborCoupon(const Date& paymentDate,
                    const Real nominal,
                    const Date& startDate,
                    const Date& endDate,
-                   const Integer fixingDays,
+                   const Size fixingDays,
                    const boost::shared_ptr<InterestRateIndex>& index,
                    const Real gearing = 1.0,
                    const Spread spread = 0.0,
@@ -51,7 +52,7 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
-                
+
     };
 
 }

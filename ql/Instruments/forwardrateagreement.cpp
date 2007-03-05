@@ -41,8 +41,8 @@ namespace QuantLib {
 
         // do I adjust this ?
         // valueDate_ = calendar_.adjust(valueDate_,businessDayConvention_);
-        Date fixingDate =
-            calendar_.advance(valueDate_, -settlementDays_, Days);
+        Date fixingDate = calendar_.advance(valueDate_,
+            -static_cast<Integer>(settlementDays_), Days);
         forwardRate_ = InterestRate(index->fixing(fixingDate),
                                     index->dayCounter(),
                                     Simple, Once);

@@ -51,7 +51,7 @@ namespace QuantLib {
                                const Calendar& cal = Calendar(),
                                const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        CapVolatilityStructure(Integer settlementDays,
+        CapVolatilityStructure(Size settlementDays,
                                const Calendar&,
                                const DayCounter& dc = Actual365Fixed());
         //@}
@@ -106,7 +106,7 @@ namespace QuantLib {
                                   const Calendar& cal = Calendar(),
                                   const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        CapletVolatilityStructure(Integer settlementDays,
+        CapletVolatilityStructure(Size settlementDays,
                                   const Calendar&,
                                   const DayCounter& dc = Actual365Fixed());
         //@}
@@ -166,9 +166,9 @@ namespace QuantLib {
     : TermStructure(refDate, cal, dc) {}
 
     inline CapVolatilityStructure::CapVolatilityStructure(
-                                         Integer settlementDays,
-                                         const Calendar& cal,
-                                         const DayCounter& dc)
+                                                        Size settlementDays,
+                                                        const Calendar& cal,
+                                                        const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}
 
 
@@ -221,7 +221,7 @@ namespace QuantLib {
     : TermStructure(referenceDate, cal, dc) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
-                             Integer settlementDays,
+                             Size settlementDays,
                              const Calendar& cal,
                              const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}

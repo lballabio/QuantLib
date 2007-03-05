@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,8 +20,8 @@
 
 #include "bonds.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/floatingcouponbond.hpp>
+#include <ql/Instruments/fixedratebond.hpp>
+#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/zerocouponbond.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/unitedstates.hpp>
@@ -31,6 +32,7 @@
 #include <ql/Indexes/usdlibor.hpp>
 #include <ql/Quotes/simplequote.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/schedule.hpp>
 #include <ql/CashFlows/couponpricer.hpp>
 #include <ql/CashFlows/analysis.hpp>
 
@@ -68,7 +70,7 @@ void BondTest::testYield() {
 
     Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
     Integer lengths[] = { 3, 5, 10, 15, 20 };
-    Integer settlementDays = 3;
+    Size settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Thirty360();
@@ -89,12 +91,13 @@ void BondTest::testYield() {
               Date issue = dated;
               Date maturity = calendar.advance(issue, lengths[j], Years);
 
-              FixedCouponBond bond(faceAmount, issue, dated, maturity,
-                                   settlementDays,
-                                   std::vector<Rate>(1, coupons[k]),
-                                   frequencies[l], calendar, bondDayCount,
-                                   accrualConvention, paymentConvention,
-                                   redemption);
+              Schedule sch(dated, maturity, Period(frequencies[l]), calendar,
+                           accrualConvention, accrualConvention, true,false);
+
+              FixedRateBond bond(settlementDays, faceAmount, sch,
+                                 std::vector<Rate>(1, coupons[k]),
+                                 bondDayCount, paymentConvention,
+                                 redemption, issue);
 
               for (Size m=0; m<LENGTH(yields); m++) {
 
@@ -143,8 +146,8 @@ void BondTest::testTheoretical() {
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
 
-    Integer lengths[] = { 3, 5, 10, 15, 20 };
-    Integer settlementDays = 3;
+    Size lengths[] = { 3, 5, 10, 15, 20 };
+    Size settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Actual360();
@@ -166,12 +169,13 @@ void BondTest::testTheoretical() {
             Handle<YieldTermStructure> discountCurve(flatRate(today,rate,
                                                               bondDayCount));
 
-            FixedCouponBond bond(faceAmount, issue, dated, maturity,
-                                 settlementDays,
-                                 std::vector<Rate>(1, coupons[k]),
-                                 frequencies[l], calendar, bondDayCount,
-                                 accrualConvention, paymentConvention,
-                                 redemption, discountCurve);
+            Schedule sch(dated, maturity, Period(frequencies[l]), calendar,
+                         accrualConvention, accrualConvention, true,false);
+
+            FixedRateBond bond(settlementDays, faceAmount, sch,
+                               std::vector<Rate>(1, coupons[k]),
+                               bondDayCount, paymentConvention,
+                               redemption, issue, discountCurve);
 
             for (Size m=0; m<LENGTH(yields); m++) {
 
@@ -231,36 +235,32 @@ void BondTest::testCached() {
 
     Calendar bondCalendar = NullCalendar();
     DayCounter bondDayCount = ActualActual(ActualActual::ISMA);
-    Integer settlementDays = 1;
+    Size settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
     // actual market values from the evaluation date
 
-    FixedCouponBond bond1(faceAmount,
-                          Date(1,November,2004),
-                          Date(31,October,2004),
-                          Date(31,October,2006),
-                          settlementDays,
-                          std::vector<Rate>(1, 0.025),
-                          Semiannual,
-                          bondCalendar, bondDayCount,
-                          Unadjusted, ModifiedFollowing,
-                          100.0, discountCurve);
+    Schedule sch1(Date(31,October,2004),
+                  Date(31,October,2006), Period(Semiannual), bondCalendar,
+                  Unadjusted, Unadjusted, true,false);
+
+    FixedRateBond bond1(settlementDays, faceAmount, sch1,
+                        std::vector<Rate>(1, 0.025),
+                        bondDayCount, ModifiedFollowing,
+                        100.0, Date(1,November,2004), discountCurve);
 
     Real marketPrice1 = 99.203125;
     Rate marketYield1 = 0.02925;
 
-    FixedCouponBond bond2(faceAmount,
-                          Date(15,November,2004),
-                          Date(15,November,2004),
-                          Date(15,November,2009),
-                          settlementDays,
-                          std::vector<Rate>(1, 0.035),
-                          Semiannual,
-                          bondCalendar, bondDayCount,
-                          Unadjusted, ModifiedFollowing,
-                          100.0, discountCurve);
+    Schedule sch2(Date(15,November,2004),
+                  Date(15,November,2009), Period(Semiannual), bondCalendar,
+                  Unadjusted, Unadjusted, true,false);
+
+    FixedRateBond bond2(settlementDays, faceAmount, sch2,
+                        std::vector<Rate>(1, 0.035),
+                        bondDayCount, ModifiedFollowing,
+                        100.0, Date(15,November,2004), discountCurve);
 
     Real marketPrice2 = 99.6875;
     Rate marketYield2 = 0.03569;
@@ -370,16 +370,17 @@ void BondTest::testCached() {
 
     // with explicit settlement date:
 
-    FixedCouponBond bond3(faceAmount,
-                          Date(30,November,2004),
-                          Date(30,November,2004),
-                          Date(30,November,2006),
-                          settlementDays,
-                          std::vector<Rate>(1, 0.02875),
-                          Semiannual,
-                          UnitedStates(UnitedStates::GovernmentBond),
-                          ActualActual(ActualActual::ISMA),
-                          Unadjusted, ModifiedFollowing, 100.0);
+
+    Schedule sch3(Date(30,November,2004),
+                  Date(30,November,2006), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond),
+                  Unadjusted, Unadjusted, true,false);
+
+    FixedRateBond bond3(settlementDays, faceAmount, sch3,
+                        std::vector<Rate>(1, 0.02875),
+                        ActualActual(ActualActual::ISMA),
+                        ModifiedFollowing,
+                        100.0, Date(30,November,2004), discountCurve);
 
     Rate marketYield3 = 0.02997;
 
@@ -424,7 +425,7 @@ void BondTest::testCachedZero() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Integer settlementDays = 1;
+    Size settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
@@ -432,14 +433,12 @@ void BondTest::testCachedZero() {
 
     // plain
 
-    ZeroCouponBond bond1(faceAmount,
-                         Date(30,November,2004),
-                         Date(30,November,2008),
-                         settlementDays,
-                         ActualActual(ActualActual::ISMA),
+    ZeroCouponBond bond1(settlementDays, faceAmount,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         ModifiedFollowing, 100.0,
-                         discountCurve);
+                         Date(30,November,2008),
+                         ActualActual(ActualActual::ISMA),
+                         ModifiedFollowing,
+                         100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice1 = 88.551726;
 
@@ -452,14 +451,12 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice1);
     }
 
-    ZeroCouponBond bond2(faceAmount,
-                         Date(30,November,2004),
-                         Date(30,November,2007),
-                         settlementDays,
-                         ActualActual(ActualActual::ISMA),
+    ZeroCouponBond bond2(settlementDays, faceAmount,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         ModifiedFollowing, 100.0,
-                         discountCurve);
+                         Date(30,November,2007),
+                         ActualActual(ActualActual::ISMA),
+                         ModifiedFollowing,
+                         100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice2 = 91.278949;
 
@@ -472,14 +469,12 @@ void BondTest::testCachedZero() {
                     << "    error:      " << price-cachedPrice2);
     }
 
-    ZeroCouponBond bond3(faceAmount,
-                         Date(30,November,2004),
-                         Date(30,November,2006),
-                         settlementDays,
-                         ActualActual(ActualActual::ISMA),
+    ZeroCouponBond bond3(settlementDays, faceAmount,
                          UnitedStates(UnitedStates::GovernmentBond),
-                         ModifiedFollowing, 100.0,
-                         discountCurve);
+                         Date(30,November,2006),
+                         ActualActual(ActualActual::ISMA),
+                         ModifiedFollowing,
+                         100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice3 = 94.098006;
 
@@ -506,7 +501,7 @@ void BondTest::testCachedFixed() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Integer settlementDays = 1;
+    Size settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
@@ -514,17 +509,16 @@ void BondTest::testCachedFixed() {
 
     // plain
 
-    FixedCouponBond bond1(faceAmount,
-                          Date(30,November,2004),
-                          Date(30,November,2004),
-                          Date(30,November,2008),
-                          settlementDays,
+    Schedule sch(Date(30,November,2004),
+                 Date(30,November,2008), Period(Semiannual),
+                 UnitedStates(UnitedStates::GovernmentBond),
+                 Unadjusted, Unadjusted, true,false);
+
+    FixedRateBond bond1(settlementDays, faceAmount, sch,
                           std::vector<Rate>(1, 0.02875),
-                          Semiannual,
-                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
-                          Unadjusted, ModifiedFollowing,
-                          100.0, discountCurve);
+                          ModifiedFollowing,
+                          100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice1 = 99.298100;
 
@@ -545,17 +539,11 @@ void BondTest::testCachedFixed() {
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
 
-    FixedCouponBond bond2(faceAmount,
-                          Date(30,November,2004),
-                          Date(30,November,2004),
-                          Date(30,November,2008),
-                          settlementDays,
+    FixedRateBond bond2(settlementDays, faceAmount, sch,
                           couponRates,
-                          Semiannual,
-                          UnitedStates(UnitedStates::GovernmentBond),
                           ActualActual(ActualActual::ISMA),
-                          Unadjusted, ModifiedFollowing,
-                          100.0, discountCurve);
+                          ModifiedFollowing,
+                          100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice2 = 100.334149;
 
@@ -570,18 +558,16 @@ void BondTest::testCachedFixed() {
 
     // stub date
 
-    FixedCouponBond bond3(faceAmount,
-                          Date(30,November,2004),
-                          Date(30,November,2004),
-                          Date(30,March,2009),
-                          settlementDays,
-                          couponRates,
-                          Semiannual,
-                          UnitedStates(UnitedStates::GovernmentBond),
-                          ActualActual(ActualActual::ISMA),
-                          Unadjusted, ModifiedFollowing,
-                          100.0, discountCurve,
-                          Date(30,November,2008));
+    Schedule sch3(Date(30,November,2004),
+                  Date(30,March,2009), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond),
+                  Unadjusted, Unadjusted, true, false,
+                  Date(), Date(30,November,2008));
+
+    FixedRateBond bond3(settlementDays, faceAmount, sch3,
+                          couponRates, ActualActual(ActualActual::ISMA),
+                          ModifiedFollowing,
+                          100.0, Date(30,November,2004), discountCurve);
 
     Real cachedPrice3 = 100.382794;
 
@@ -608,48 +594,35 @@ void BondTest::testCachedFloating() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Integer settlementDays = 1;
+    Size settlementDays = 1;
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
     boost::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
-    Integer fixingDays = 1;
+    Size fixingDays = 1;
 
     Real tolerance = 1.0e-6;
-    
-    boost::shared_ptr<IborCouponPricer> pricer(new 
+
+    boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
-    
+
     // plain
 
-    FloatingCouponBond bond1(
-                           settlementDays,
-                           Date(30,November,2004),
+    Schedule sch(Date(30,November,2004),
+                 Date(30,November,2008),
+                 Period(Semiannual),
+                 UnitedStates(UnitedStates::GovernmentBond),
+                 ModifiedFollowing, ModifiedFollowing,
+                 true, false);
 
-                           UnitedStates(UnitedStates::GovernmentBond),
-                           Date(30,November,2004),
-                           Semiannual,
-                           Date(30,November,2008),
-                           ModifiedFollowing,
-
-                           faceAmount,
-
-                           index,
-                           ActualActual(ActualActual::ISMA),
-
-                           fixingDays,
-                           ModifiedFollowing,
-
-                           std::vector<Rate>(1, 1.0),
-                           std::vector<Spread>(),
-
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-
-                           riskFreeRate,
-
-                           100.0);
+    FloatingRateBond bond1(settlementDays, faceAmount, sch,
+                             index, ActualActual(ActualActual::ISMA),
+                             ModifiedFollowing, fixingDays,
+                             std::vector<Real>(), std::vector<Spread>(),
+                             std::vector<Rate>(), std::vector<Rate>(),
+                             false,
+                             100.0, Date(30,November,2004), riskFreeRate);
     CashFlows::setPricer(bond1.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
@@ -670,24 +643,13 @@ void BondTest::testCachedFloating() {
 
     // different risk-free and discount curve
 
-    FloatingCouponBond bond2(settlementDays,
-                           Date(30,November,2004),
-                           UnitedStates(UnitedStates::GovernmentBond),
-                           Date(30,November,2004),
-                           Semiannual,
-                           Date(30,November,2008),
-                           ModifiedFollowing,
-                           faceAmount,
-                           index,
-                           ActualActual(ActualActual::ISMA),
-                           fixingDays,
-                           ModifiedFollowing,
-                           std::vector<Real>(1, 1.0),
-                           std::vector<Spread>(),
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-                           discountCurve,
-                           100.0);
+    FloatingRateBond bond2(settlementDays, faceAmount, sch,
+                           index, ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, fixingDays,
+                           std::vector<Rate>(), std::vector<Spread>(),
+                           std::vector<Rate>(), std::vector<Rate>(),
+                           false,
+                           100.0, Date(30,November,2004), discountCurve);
     CashFlows::setPricer(bond2.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
@@ -713,25 +675,13 @@ void BondTest::testCachedFloating() {
     spreads[2] = 0.0014;
     spreads[3] = 0.0016;
 
-    FloatingCouponBond bond3(settlementDays,
-                           Date(30,November,2004),
-                           UnitedStates(UnitedStates::GovernmentBond),
-                           Date(30,November,2004),
-                           Semiannual,
-                           Date(30,November,2008),
-                           ModifiedFollowing,
-                           faceAmount,
-                           index,
-                           ActualActual(ActualActual::ISMA),
-                           fixingDays,
-                           ModifiedFollowing,
-                           std::vector<Real>(1, 1.0),
-                           spreads,
-                           std::vector<Rate>(),
-                           std::vector<Rate>(),
-                           discountCurve,
-                           100.0);
-
+    FloatingRateBond bond3(settlementDays, faceAmount, sch,
+                           index, ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, fixingDays,
+                           std::vector<Real>(), spreads,
+                           std::vector<Rate>(), std::vector<Rate>(),
+                           false,
+                           100.0, Date(30,November,2004), discountCurve);
     CashFlows::setPricer(bond3.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)

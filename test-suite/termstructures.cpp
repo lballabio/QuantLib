@@ -40,7 +40,7 @@ QL_BEGIN_TEST_LOCALS(TermStructureTest)
 // global data
 
 Calendar calendar_;
-Integer settlementDays_;
+Size settlementDays_;
 boost::shared_ptr<YieldTermStructure> termStructure_;
 boost::shared_ptr<YieldTermStructure> dummyTermStructure_;
 

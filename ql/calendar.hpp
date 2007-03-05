@@ -242,6 +242,13 @@ namespace QuantLib {
         return impl_->isWeekend(w);
     }
 
+    inline Date Calendar::advance(const Date & d,
+                                  const Period & p,
+                                  BusinessDayConvention c,
+                                  bool endOfMonth) const {
+        return advance(d, p.length(), p.units(), c, endOfMonth);
+    }
+
     inline bool operator==(const Calendar& c1, const Calendar& c2) {
         return (c1.empty() && c2.empty())
             || (!c1.empty() && !c2.empty() && c1.name() == c2.name());

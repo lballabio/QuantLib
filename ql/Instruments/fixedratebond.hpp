@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005 StatPro Italia srl
@@ -23,12 +24,14 @@
     \brief fixed-coupon bond
 */
 
-#ifndef quantlib_fixed_coupon_bond_hpp
-#define quantlib_fixed_coupon_bond_hpp
+#ifndef quantlib_fixed_rate_bond_hpp
+#define quantlib_fixed_rate_bond_hpp
 
 #include <ql/Instruments/bond.hpp>
 
 namespace QuantLib {
+
+    class Schedule;
 
     //! fixed-coupon bond
     /*! \ingroup instruments
@@ -36,24 +39,18 @@ namespace QuantLib {
         \test calculations are tested by checking results against
               cached values.
     */
-    class FixedCouponBond : public Bond {
+    class FixedRateBond : public Bond {
       public:
-        FixedCouponBond(Real faceAmount,
-                        const Date& issueDate,
-                        const Date& datedDate,
-                        const Date& maturityDate,
-                        Integer settlementDays,
-                        const std::vector<Rate>& coupons,
-                        Frequency couponFrequency,
-                        const Calendar& calendar,
-                        const DayCounter& dayCounter,
-                        BusinessDayConvention accrualConvention = Following,
-                        BusinessDayConvention paymentConvention = Following,
-                        Real redemption = 100.0,
-                        const Handle<YieldTermStructure>& discountCurve
-                                              = Handle<YieldTermStructure>(),
-                        const Date& stub = Date(),
-                        bool fromEnd = true );
+        FixedRateBond(Size settlementDays,
+                      Real faceAmount,
+                      const Schedule& schedule,
+                      const std::vector<Rate>& coupons,
+                      const DayCounter& paymentDayCounter,
+                      BusinessDayConvention paymentConvention = Following,
+                      Real redemption = 100.0,
+                      const Date& issueDate = Date(),
+                      const Handle<YieldTermStructure>& discountCurve
+                                            = Handle<YieldTermStructure>());
     };
 
 }

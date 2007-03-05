@@ -31,8 +31,6 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/CashFlows/analysis.hpp>
 
-
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -46,7 +44,7 @@ BusinessDayConvention convention_;
 Frequency frequency_;
 boost::shared_ptr<IborIndex> index_;
 Calendar calendar_;
-Integer settlementDays_, fixingDays_;
+Size settlementDays_, fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
@@ -55,19 +53,19 @@ bool checkAbsError(Real x1, Real x2, Real tolerance){
     return std::fabs(x1 - x2) < tolerance;
 }
 
-std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
+Leg makeLeg(const Date& startDate,
                                                   Integer length) {
     Date endDate = calendar_.advance(startDate,length*Years,convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
-    std::vector<boost::shared_ptr<CashFlow> > floatLeg =IborLeg(schedule,
-                   nominals_,
-                   index_,
-                   index_->dayCounter(),
-                   fixingDays_,
-                   convention_,
-                   std::vector<Real>(),
-                   std::vector<Spread>());
+    Leg floatLeg =IborLeg(nominals_,
+                          schedule,
+                          index_,
+                          index_->dayCounter(),
+                          convention_,
+                          fixingDays_,
+                          std::vector<Real>(),
+                          std::vector<Spread>());
     boost::shared_ptr<IborCouponPricer> 
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
     CashFlows::setPricer(floatLeg,fictitiousPricer);
@@ -81,7 +79,7 @@ boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
 
 boost::shared_ptr<CapFloor> makeCapFloor(
                          CapFloor::Type type,
-                         const std::vector<boost::shared_ptr<CashFlow> >& leg,
+                         const Leg& leg,
                          Rate strike,
                          Volatility volatility) {
     switch (type) {
@@ -153,7 +151,7 @@ void CapFloorTest::testVega() {
         for (Size j=0; j<LENGTH(vols); j++) {
             for (Size k=0; k<LENGTH(strikes); k++) {
                 for (Size h=0; h<LENGTH(types); h++) {
-                    std::vector<boost::shared_ptr<CashFlow> > leg =
+                    Leg leg =
                         makeLeg(startDate, lengths[i]);
                     boost::shared_ptr<CapFloor> capFloor =
                         makeCapFloor(types[h],leg,
@@ -210,7 +208,7 @@ void CapFloorTest::testStrikeDependency() {
             // store the results for different strikes...
             std::vector<Real> cap_values, floor_values;
             for (Size k=0; k<LENGTH(strikes); k++) {
-                std::vector<boost::shared_ptr<CashFlow> > leg =
+                Leg leg =
                     makeLeg(startDate,lengths[i]);
                 boost::shared_ptr<Instrument> cap =
                     makeCapFloor(CapFloor::Cap,leg,
@@ -277,7 +275,7 @@ void CapFloorTest::testConsistency() {
         for (Size k=0; k<LENGTH(floor_rates); k++) {
           for (Size l=0; l<LENGTH(vols); l++) {
 
-              std::vector<boost::shared_ptr<CashFlow> > leg =
+              Leg leg =
                   makeLeg(startDate,lengths[i]);
               boost::shared_ptr<Instrument> cap =
                   makeCapFloor(CapFloor::Cap,leg,
@@ -325,7 +323,7 @@ void CapFloorTest::testParity() {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(vols); k++) {
 
-            std::vector<boost::shared_ptr<CashFlow> > leg =
+            Leg leg =
                 makeLeg(startDate,lengths[i]);
             boost::shared_ptr<Instrument> cap =
                 makeCapFloor(CapFloor::Cap,leg,
@@ -372,7 +370,7 @@ void CapFloorTest::testATMRate() {
     Date startDate = termStructure_->referenceDate();
 
     for (Size i=0; i<LENGTH(lengths); i++) {
-        std::vector<boost::shared_ptr<CashFlow> > leg =
+        Leg leg =
             makeLeg(startDate,lengths[i]);
         Date maturity = calendar_.advance(startDate,lengths[i],Years,
                                   convention_);
@@ -437,7 +435,7 @@ void CapFloorTest::testImpliedVolatility() {
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
     for (Size k=0; k<LENGTH(lengths); k++) {
-        std::vector<boost::shared_ptr<CashFlow> > leg =
+        Leg leg =
             makeLeg(settlement_, lengths[k]);
 
         for (Size i=0; i<LENGTH(types); i++) {
@@ -514,7 +512,7 @@ void CapFloorTest::testCachedValue() {
     Settings::instance().evaluationDate() = cachedToday;
     termStructure_.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = termStructure_->referenceDate();
-    std::vector<boost::shared_ptr<CashFlow> > leg = makeLeg(startDate,20);
+    Leg leg = makeLeg(startDate,20);
     boost::shared_ptr<Instrument> cap = makeCapFloor(CapFloor::Cap,leg,
                                                      0.07,0.20);
     boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,14 +32,14 @@
 #include <ql/Instruments/bond.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/cliquetoption.hpp>
-#include <ql/Instruments/cmscouponbond.hpp>
+#include <ql/Instruments/cmsratebond.hpp>
 #include <ql/Instruments/compositeinstrument.hpp>
 #include <ql/Instruments/convertiblebond.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
-#include <ql/Instruments/fixedcouponbond.hpp>
-#include <ql/Instruments/fixedcouponbondforward.hpp>
-#include <ql/Instruments/floatingcouponbond.hpp>
+#include <ql/Instruments/fixedratebond.hpp>
+#include <ql/Instruments/fixedratebondforward.hpp>
+#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/forward.hpp>
 #include <ql/Instruments/forwardrateagreement.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>

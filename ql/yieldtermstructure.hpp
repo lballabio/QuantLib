@@ -63,7 +63,7 @@ namespace QuantLib {
                            const Calendar& cal = Calendar(),
                            const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        YieldTermStructure(Integer settlementDays,
+        YieldTermStructure(Size settlementDays,
                            const Calendar&,
                            const DayCounter& dc = Actual365Fixed());
         //@}
@@ -209,7 +209,7 @@ namespace QuantLib {
                                                   const DayCounter& dc)
     : TermStructure(referenceDate, cal, dc) {}
 
-    inline YieldTermStructure::YieldTermStructure(Integer settlementDays,
+    inline YieldTermStructure::YieldTermStructure(Size settlementDays,
                                                   const Calendar& cal,
                                                   const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}

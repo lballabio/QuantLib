@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
@@ -132,15 +133,15 @@ namespace QuantLib {
     }
 
 
-    Bond::Bond(Real faceAmount,
-               const DayCounter& dayCounter, const Calendar& calendar,
+    Bond::Bond(Size settlementDays,
+               Real faceAmount,
+               const Calendar& calendar,
+               const DayCounter& paymentDayCounter,
                BusinessDayConvention paymentConvention,
-               Integer settlementDays,
                const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
-      //accrualConvention_(accrualConvention),
       paymentConvention_(paymentConvention), faceAmount_(faceAmount),
-      dayCounter_(dayCounter),
+      paymentDayCounter_(paymentDayCounter),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);
@@ -175,7 +176,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice(),
-                              compounding, dayCounter_, frequency_,
+                              compounding, paymentDayCounter_, frequency_,
                               settlementDate());
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
@@ -193,7 +194,7 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = settlementDate();
         return dirtyPriceFromYield(faceAmount_, cashflows_, yield,
-                                   compounding, frequency_, dayCounter_,
+                                   compounding, frequency_, paymentDayCounter_,
                                    settlement);
     }
 
@@ -206,7 +207,7 @@ namespace QuantLib {
         solver.setMaxEvaluations(maxEvaluations);
         Real dirtyPrice = cleanPrice + accruedAmount(settlement);
         YieldFinder objective(faceAmount_, cashflows_, dirtyPrice,
-                              compounding, dayCounter_, frequency_,
+                              compounding, paymentDayCounter_, frequency_,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
@@ -254,9 +255,8 @@ namespace QuantLib {
         arguments->settlementDate = settlementDate();
         arguments->cashflows = cashflows_;
         arguments->calendar = calendar_;
-        //arguments->accrualConvention = accrualConvention_;
         arguments->paymentConvention = paymentConvention_;
-        arguments->dayCounter = dayCounter_;
+        arguments->paymentDayCounter = paymentDayCounter_;
         arguments->frequency = frequency_;
     }
 

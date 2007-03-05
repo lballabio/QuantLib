@@ -30,7 +30,7 @@ namespace QuantLib {
                     const Real nominal,
                     const Date& startDate, 
                     const Date& endDate,
-                    const Integer fixingDays,
+                    const Size fixingDays,
                     const boost::shared_ptr<SwapIndex>& index,
                     const Real gearing,
                     const Spread spread,

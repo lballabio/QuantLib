@@ -57,7 +57,8 @@ namespace QuantLib {
                                  const DayCounter&,
                                  const Interpolator& interpolator
                                                             = Interpolator());
-        InterpolatedForwardCurve(Integer settlementDays, const Calendar&,
+        InterpolatedForwardCurve(Size settlementDays,
+                                 const Calendar&,
                                  const DayCounter&,
                                  const Interpolator& interpolator
                                                             = Interpolator());
@@ -125,7 +126,7 @@ namespace QuantLib {
 
     template <class T>
     inline InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                                 Integer settlementDays,
+                                                 Size settlementDays,
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)

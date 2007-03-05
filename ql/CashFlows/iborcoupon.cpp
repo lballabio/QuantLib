@@ -29,7 +29,7 @@ namespace QuantLib {
 
     IborCoupon::IborCoupon(const Date& paymentDate, const Real nominal,
                            const Date& startDate, const Date& endDate,
-                           const Integer fixingDays,
+                           const Size fixingDays,
                            const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing, const Spread spread,
                            const Date& refPeriodStart, const Date& refPeriodEnd,
@@ -77,10 +77,11 @@ namespace QuantLib {
             Date fixingValueDate = index_->calendar().advance(
                                      fixing_date, index_->fixingDays(), Days);
             DiscountFactor startDiscount = termStructure->discount(fixingValueDate);
-            Date temp = index_->calendar().advance(accrualEndDate_,-fixingDays(), Days);
-            DiscountFactor endDiscount =
-                termStructure->discount(index_->calendar().advance(
-                                           temp, index_->fixingDays(), Days));
+            // ???
+            Date temp = index_->calendar().advance(accrualEndDate_,
+                                        -static_cast<Integer>(fixingDays()), Days);
+            DiscountFactor endDiscount = termStructure->discount(
+                index_->calendar().advance(temp, index_->fixingDays(), Days));
             return (startDiscount/endDiscount-1.0)/accrualPeriod();
         }
 #endif

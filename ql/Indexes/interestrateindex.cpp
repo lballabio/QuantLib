@@ -27,7 +27,7 @@ namespace QuantLib {
 
     InterestRateIndex::InterestRateIndex(const std::string& familyName,
                                          const Period& tenor,
-                                         Integer fixingDays,
+                                         Size fixingDays,
                                          const Currency& currency,
                                          const Calendar& calendar,
                                          const DayCounter& dayCounter)
@@ -89,7 +89,8 @@ namespace QuantLib {
     }
 
     Date InterestRateIndex::fixingDate(const Date& valueDate) const {
-        Date fixingDate = calendar_.advance(fixingDate, -fixingDays_, Days);
+        Date fixingDate = calendar_.advance(fixingDate, 
+                            -static_cast<Integer>(fixingDays_), Days);
         QL_ENSURE(isValidFixingDate(fixingDate),
                   "Fixing date " << fixingDate << " is not valid");
         return fixingDate;

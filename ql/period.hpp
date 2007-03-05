@@ -78,6 +78,7 @@ namespace QuantLib {
 
     /*! \relates Period */
     Period operator*(Integer n, TimeUnit units);
+    Period operator*(Size n, TimeUnit units);
     /*! \relates Period */
     Period operator*(TimeUnit units, Integer n);
     /*! \relates Period */
@@ -137,6 +138,9 @@ namespace QuantLib {
         return Period(n,units);
     }
 
+    inline Period operator*(Size n, TimeUnit units) {
+        return Period(static_cast<Integer>(n),units);
+    }
     inline Period operator*(TimeUnit units, Integer n) {
         return Period(n,units);
     }

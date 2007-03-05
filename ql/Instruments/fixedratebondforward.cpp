@@ -17,20 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/fixedcouponbondforward.hpp>
+#include <ql/Instruments/fixedratebondforward.hpp>
 
 namespace QuantLib {
 
-    FixedCouponBondForward::FixedCouponBondForward(
+    FixedRateBondForward::FixedRateBondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
                     Position::Type type,
                     Real strike,
-                    Integer settlementDays,
+                    Size settlementDays,
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedCouponBond>& fixedCouponBond,
+                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
     : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
@@ -43,18 +43,18 @@ namespace QuantLib {
     }
 
 
-    Real FixedCouponBondForward::cleanForwardPrice() const {
+    Real FixedRateBondForward::cleanForwardPrice() const {
         return forwardValue() -
                fixedCouponBond_->accruedAmount(maturityDate_);
     }
 
 
-    Real FixedCouponBondForward::forwardPrice() const {
+    Real FixedRateBondForward::forwardPrice() const {
         return forwardValue();
     }
 
 
-    Real FixedCouponBondForward::spotIncome(const Handle<YieldTermStructure>&
+    Real FixedRateBondForward::spotIncome(const Handle<YieldTermStructure>&
                                                   incomeDiscountCurve) const {
 
         Real income = 0.0;
@@ -83,12 +83,12 @@ namespace QuantLib {
     }
 
 
-    Real FixedCouponBondForward::spotValue() const {
+    Real FixedRateBondForward::spotValue() const {
         return fixedCouponBond_->dirtyPrice();
     }
 
 
-    void FixedCouponBondForward::performCalculations() const {
+    void FixedRateBondForward::performCalculations() const {
 
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = spotIncome(incomeDiscountCurve_);

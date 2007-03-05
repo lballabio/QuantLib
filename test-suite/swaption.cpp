@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2007 StatPro Italia srl
@@ -56,7 +56,7 @@ BusinessDayConvention floatingConvention_;
 Period floatingTenor_;
 boost::shared_ptr<IborIndex> index_;
 
-Integer settlementDays_;
+Size settlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities

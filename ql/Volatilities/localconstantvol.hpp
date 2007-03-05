@@ -43,10 +43,12 @@ namespace QuantLib {
         LocalConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
-        LocalConstantVol(Integer settlementDays, const Calendar&,
+        LocalConstantVol(Size settlementDays,
+                         const Calendar&,
                          Volatility volatility,
                          const DayCounter& dayCounter);
-        LocalConstantVol(Integer settlementDays, const Calendar&,
+        LocalConstantVol(Size settlementDays,
+                         const Calendar&,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
         //! \name LocalVolTermStructure interface
@@ -83,7 +85,7 @@ namespace QuantLib {
         registerWith(volatility_);
     }
 
-    inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
+    inline LocalConstantVol::LocalConstantVol(Size settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
@@ -91,7 +93,7 @@ namespace QuantLib {
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
       dayCounter_(dayCounter) {}
 
-    inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
+    inline LocalConstantVol::LocalConstantVol(Size settlementDays,
                                               const Calendar& calendar,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)

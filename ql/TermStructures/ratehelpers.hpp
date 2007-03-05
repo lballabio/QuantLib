@@ -39,21 +39,21 @@ namespace QuantLib {
       public:
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
-                          Integer nMonths,
+                          Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
                           const Handle<Quote>& convexityAdjustment);
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& immDate,
-                          Integer nMonths,
+                          Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
                           Rate convexityAdjustment = 0.0);
         FuturesRateHelper(Real price,
                           const Date& immDate,
-                          Integer nMonths,
+                          Size nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter,
@@ -86,19 +86,19 @@ namespace QuantLib {
       public:
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
-                          Integer settlementDays,
+                          Size settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Integer fixingDays,
+                          Size fixingDays,
                           const DayCounter& dayCounter);
         DepositRateHelper(Rate rate,
                           const Period& tenor,
-                          Integer settlementDays,
+                          Size settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Integer fixingDays,
+                          Size fixingDays,
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -106,7 +106,7 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Integer settlementDays_;
+        Size settlementDays_;
         boost::shared_ptr<IborIndex> index_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -116,20 +116,22 @@ namespace QuantLib {
     class FraRateHelper : public RelativeDateRateHelper {
       public:
         FraRateHelper(const Handle<Quote>& rate,
-                      Integer monthsToStart, Integer monthsToEnd,
-                      Integer settlementDays,
+                      Size monthsToStart,
+                      Size monthsToEnd,
+                      Size settlementDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Integer fixingDays,
+                      Size fixingDays,
                       const DayCounter& dayCounter);
         FraRateHelper(Rate rate,
-                      Integer monthsToStart, Integer monthsToEnd,
-                      Integer settlementDays,
+                      Size monthsToStart,
+                      Size monthsToEnd,
+                      Size settlementDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Integer fixingDays,
+                      Size fixingDays,
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -137,8 +139,8 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Integer monthsToStart_;
-        Integer settlementDays_;
+        Size monthsToStart_;
+        Size settlementDays_;
         boost::shared_ptr<IborIndex> index_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -148,7 +150,7 @@ namespace QuantLib {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
-                       Integer settlementDays,
+                       Size settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -158,7 +160,7 @@ namespace QuantLib {
                        const boost::shared_ptr<IborIndex>& index);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
-                       Integer settlementDays,
+                       Size settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -173,7 +175,7 @@ namespace QuantLib {
       protected:
         void initializeDates();
         Period tenor_;
-        Integer settlementDays_;
+        Size settlementDays_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;

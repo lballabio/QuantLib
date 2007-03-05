@@ -64,7 +64,7 @@ namespace QuantLib {
                         const CallabilitySchedule& callability,
                         const Handle<Quote>& creditSpread,
                         const Date& issueDate,
-                        Integer settlementDays,
+                        Size settlementDays,
                         const DayCounter& dayCounter,
                         const Schedule& schedule,
                         Real redemption);
@@ -94,7 +94,7 @@ namespace QuantLib {
                     const CallabilitySchedule& callability,
                     const Handle<Quote>& creditSpread,
                     const Date& issueDate,
-                    Integer settlementDays,
+                    Size settlementDays,
                     const DayCounter& dayCounter,
                     const Schedule& schedule,
                     Real redemption = 100);
@@ -118,7 +118,7 @@ namespace QuantLib {
                 const CallabilitySchedule& callability,
                 const Handle<Quote>& creditSpread,
                 const Date& issueDate,
-                Integer settlementDays,
+                Size settlementDays,
                 const std::vector<Rate>& coupons,
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
@@ -143,9 +143,9 @@ namespace QuantLib {
                 const CallabilitySchedule& callability,
                 const Handle<Quote>& creditSpread,
                 const Date& issueDate,
-                Integer settlementDays,
+                Size settlementDays,
                 const boost::shared_ptr<IborIndex>& index,
-                Integer fixingDays,
+                Size fixingDays,
                 const std::vector<Spread>& spreads,
                 const DayCounter& dayCounter,
                 const Schedule& schedule,
@@ -169,7 +169,7 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                const Schedule& schedule,
                const Date& issueDate,
-               Integer settlementDays,
+               Size settlementDays,
                Real redemption);
 
         void setupArguments(PricingEngine::arguments*) const;
@@ -183,7 +183,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Date issueDate_;
         Schedule schedule_;
-        Integer settlementDays_;
+        Size settlementDays_;
         Real redemption_;
     };
 
@@ -192,7 +192,7 @@ namespace QuantLib {
         : public OneAssetStrikedOption::arguments {
       public:
         arguments()
-        : conversionRatio(Null<Real>()), settlementDays(Null<Integer>()),
+        : conversionRatio(Null<Real>()), settlementDays(Null<Size>()),
           redemption(Null<Real>()) {}
         Real conversionRatio;
         Handle<Quote> creditSpread;
@@ -207,7 +207,7 @@ namespace QuantLib {
         DayCounter dayCounter;
         Date issueDate;
         Date settlementDate;
-        Integer settlementDays;
+        Size settlementDays;
         Real redemption;
         void validate() const;
     };

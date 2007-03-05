@@ -103,7 +103,7 @@ BondDatum bondData[] = {
 // test-global variables
 
 Calendar calendar;
-Integer settlementDays;
+Size settlementDays;
 Date today, settlement;
 BusinessDayConvention fixedLegConvention;
 Frequency fixedLegFrequency;
@@ -117,6 +117,7 @@ Size deposits, fras, swaps, bonds;
 std::vector<boost::shared_ptr<SimpleQuote> > rates, fraRates, prices;
 std::vector<boost::shared_ptr<RateHelper> > instruments, fraHelpers,
                                             bondHelpers;
+std::vector<Schedule> schedules;
 boost::shared_ptr<YieldTermStructure> termStructure;
 
 void setup() {
@@ -168,6 +169,7 @@ void setup() {
         std::vector<boost::shared_ptr<RateHelper> >(fras);
     bondHelpers =
         std::vector<boost::shared_ptr<RateHelper> >(bonds);
+    schedules = std::vector<Schedule>(bonds);
 
     boost::shared_ptr<IborIndex> euribor(new Euribor6M);
     for (Size i=0; i<deposits; i++) {
@@ -206,15 +208,18 @@ void setup() {
             calendar.advance(today, bondData[i].n, bondData[i].units);
         Date issue = calendar.advance(maturity, -bondData[i].length, Years);
         std::vector<Rate> coupons(1, bondData[i].coupon/100.0);
-        bondHelpers[i] = boost::shared_ptr<RateHelper>(
-                          new FixedCouponBondHelper(p, issue, issue, maturity,
-                                                    bondSettlementDays,
-                                                    coupons,
-                                                    bondData[i].frequency,
-                                                    calendar, bondDayCounter,
-                                                    bondConvention,
-                                                    bondConvention,
-                                                    bondRedemption));
+        schedules[i] = Schedule(issue, maturity,
+                                Period(bondData[i].frequency),
+                                calendar,
+                                bondConvention, bondConvention,
+                                true, false);
+        bondHelpers[i] = boost::shared_ptr<RateHelper>(new
+            FixedCouponBondHelper(p,
+                                  bondSettlementDays,
+                                  schedules[i],
+                                  coupons, bondDayCounter,
+                                  bondConvention,
+                                  bondRedemption, issue));
     }
 }
 
@@ -295,11 +300,9 @@ void testCurveConsistency(const T&, const I& interpolator) {
         Date issue = calendar.advance(maturity, -bondData[i].length, Years);
         std::vector<Rate> coupons(1, bondData[i].coupon/100.0);
 
-        FixedCouponBond bond(100.0, issue, issue, maturity, bondSettlementDays,
-                             coupons, bondData[i].frequency,
-                             calendar, bondDayCounter,
-                             bondConvention, bondConvention,
-                             bondRedemption, curveHandle);
+        FixedRateBond bond(bondSettlementDays, 100.0, schedules[i],
+                           coupons, bondDayCounter, bondConvention,
+                           bondRedemption, issue, curveHandle);
         Real expectedPrice = bondData[i].price,
              estimatedPrice = bond.cleanPrice();
         Real tolerance = 1.0e-9;
@@ -636,6 +639,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
 
 test_suite* PiecewiseYieldCurveTest::suite() {
+
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
     #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
     suite->add(BOOST_TEST_CASE(

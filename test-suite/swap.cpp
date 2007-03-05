@@ -47,7 +47,7 @@ BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<IborIndex> index_;
-Integer settlementDays_;
+Size settlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
@@ -262,14 +262,12 @@ void SwapTest::testInArrears() {
 
 
     std::vector<Rate> coupons(1, oneYear);
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-        FixedRateLeg(schedule, nominals, coupons,
-                     dayCounter, Following);
-
+    Leg fixedLeg = FixedRateLeg(nominals, schedule, coupons,
+                                dayCounter, Following);
 
     std::vector<Real> gearings;
     std::vector<Rate> spreads;
-    Integer fixingDays = 0;
+    Size fixingDays = 0;
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
@@ -278,12 +276,12 @@ void SwapTest::testInArrears() {
     boost::shared_ptr<IborCouponPricer> pricer(new
         BlackIborCouponPricer(vol));
 
-    Leg floatingLeg = IborLeg(schedule,
-                              nominals,
+    Leg floatingLeg = IborLeg(nominals,
+                              schedule,
                               index,
                               dayCounter,
-                              fixingDays,
                               Following,
+                              fixingDays,
                               gearings, spreads,
                               std::vector<Rate>(), std::vector<Rate>(),
                               true);

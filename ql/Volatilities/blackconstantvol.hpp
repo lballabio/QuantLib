@@ -44,11 +44,11 @@ namespace QuantLib {
         BlackConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
-        BlackConstantVol(Integer settlementDays,
+        BlackConstantVol(Size settlementDays,
                          const Calendar&,
                          Volatility volatility,
                          const DayCounter& dayCounter);
-        BlackConstantVol(Integer settlementDays,
+        BlackConstantVol(Size settlementDays,
                          const Calendar&,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter);
@@ -88,7 +88,7 @@ namespace QuantLib {
         registerWith(volatility_);
     }
 
-    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
+    inline BlackConstantVol::BlackConstantVol(Size settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
@@ -96,7 +96,7 @@ namespace QuantLib {
       volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
       dayCounter_(dayCounter) {}
 
-    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
+    inline BlackConstantVol::BlackConstantVol(Size settlementDays,
                                               const Calendar& calendar,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)

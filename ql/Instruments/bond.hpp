@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
@@ -51,11 +52,11 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       protected:
-        Bond(Real faceAmount,
-             const DayCounter& dayCounter,
+        Bond(Size settlementDays,
+             Real faceAmount,
              const Calendar& calendar,
+             const DayCounter& paymentDayCounter,
              BusinessDayConvention paymentConvention,
-             Integer settlementDays,
              const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>());
       public:
@@ -137,16 +138,16 @@ namespace QuantLib {
       protected:
         void performCalculations() const;
         void setupArguments(PricingEngine::arguments*) const;
-        Integer settlementDays_;
-        Calendar calendar_;
-        BusinessDayConvention paymentConvention_;
+        Size settlementDays_;
         Real faceAmount_;
-        DayCounter dayCounter_;
+        Calendar calendar_;
+        DayCounter paymentDayCounter_;
+        BusinessDayConvention paymentConvention_;
+        Handle<YieldTermStructure> discountCurve_;
 
         Date issueDate_, datedDate_, maturityDate_;
         Frequency frequency_;
         Leg cashflows_;
-        Handle<YieldTermStructure> discountCurve_;
     };
 
     class Bond::arguments : public PricingEngine::arguments {
@@ -155,7 +156,7 @@ namespace QuantLib {
         Leg cashflows;
         Calendar calendar;
         BusinessDayConvention paymentConvention;
-        DayCounter dayCounter;
+        DayCounter paymentDayCounter;
         Frequency frequency;
         void validate() const;
     };
@@ -198,7 +199,7 @@ namespace QuantLib {
     }
 
     inline const DayCounter& Bond::dayCounter() const {
-        return dayCounter_;
+        return paymentDayCounter_;
     }
 
     inline Frequency Bond::frequency() const {

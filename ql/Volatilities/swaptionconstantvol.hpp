@@ -39,11 +39,11 @@ namespace QuantLib {
         SwaptionConstantVolatility(const Date& referenceDate,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dayCounter);
-        SwaptionConstantVolatility(Integer settlementDays,
+        SwaptionConstantVolatility(Size settlementDays,
                                    const Calendar&,
                                    Volatility volatility,
                                    const DayCounter& dayCounter);
-        SwaptionConstantVolatility(Integer settlementDays,
+        SwaptionConstantVolatility(Size settlementDays,
                                    const Calendar&,
                                    const Handle<Quote>& volatility,
                                    const DayCounter& dayCounter);
@@ -96,7 +96,7 @@ namespace QuantLib {
     }
 
     inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Integer settlementDays,
+                                              Size settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
@@ -105,7 +105,7 @@ namespace QuantLib {
       dayCounter_(dayCounter) {}
 
     inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Integer settlementDays,
+                                              Size settlementDays,
                                               const Calendar& calendar,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)

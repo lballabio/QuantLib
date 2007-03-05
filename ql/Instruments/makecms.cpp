@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,7 +74,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = swapIndex_->fixingDays();
+          Size fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
@@ -96,28 +96,26 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        Leg cmsLeg =
-            CmsLeg(cmsSchedule,
-                   std::vector<Real>(1, nominal_),
-                   swapIndex_,
-                   cmsDayCount_,
-                   swapIndex_->fixingDays(),
-                   cmsConvention_,
-                   std::vector<Real>(1, cmsGearing_),
-                   std::vector<Spread>(1, cmsSpread_),
-                   std::vector<Rate>(1, cmsCap_),
-                   std::vector<Rate>(1, cmsFloor_));
+        Leg cmsLeg = CmsLeg(std::vector<Real>(1, nominal_),
+                            cmsSchedule,
+                            swapIndex_,
+                            cmsDayCount_,
+                            cmsConvention_,
+                            swapIndex_->fixingDays(),
+                            std::vector<Real>(1, cmsGearing_),
+                            std::vector<Spread>(1, cmsSpread_),
+                            std::vector<Rate>(1, cmsCap_),
+                            std::vector<Rate>(1, cmsFloor_));
 
-        Leg floatLeg =
-            IborLeg(floatSchedule,
-                     std::vector<Real>(1, nominal_),
-                     iborIndex_,
-                     floatDayCount_,
-                     iborIndex_->fixingDays(),
-                     floatConvention_,
-                     std::vector<Real>(1, 1.0), // gearing
-                     std::vector<Spread>(1, iborSpread_));
-        boost::shared_ptr<IborCouponPricer> 
+        Leg floatLeg = IborLeg(std::vector<Real>(1, nominal_),
+                               floatSchedule,
+                               iborIndex_,
+                               floatDayCount_,
+                               floatConvention_,
+                               iborIndex_->fixingDays(),
+                               std::vector<Real>(1, 1.0), // gearing
+                               std::vector<Spread>(1, iborSpread_));
+        boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(floatLeg,fictitiousPricer);
 
@@ -133,7 +131,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = swapIndex_->fixingDays();
+          Size fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
@@ -155,28 +153,26 @@ namespace QuantLib {
                                floatBackward_, floatEndOfMonth_,
                                floatFirstDate_, floatNextToLastDate_);
 
-        Leg cmsLeg =
-            CmsLeg(cmsSchedule,
-                   std::vector<Real>(1, nominal_),
-                   swapIndex_,
-                   cmsDayCount_,
-                   swapIndex_->fixingDays(),
-                   cmsConvention_,
-                   std::vector<Real>(1, cmsGearing_),
-                   std::vector<Spread>(1, cmsSpread_),
-                   std::vector<Rate>(1, cmsCap_),
-                   std::vector<Rate>(1, cmsFloor_));
+        Leg cmsLeg = CmsLeg(std::vector<Real>(1, nominal_),
+                            cmsSchedule,
+                            swapIndex_,
+                            cmsDayCount_,
+                            cmsConvention_,
+                            swapIndex_->fixingDays(),
+                            std::vector<Real>(1, cmsGearing_),
+                            std::vector<Spread>(1, cmsSpread_),
+                            std::vector<Rate>(1, cmsCap_),
+                            std::vector<Rate>(1, cmsFloor_));
 
-        Leg floatLeg =
-            IborLeg(floatSchedule,
-                     std::vector<Real>(1, nominal_),
-                     iborIndex_,
-                     floatDayCount_,
-                     iborIndex_->fixingDays(),
-                     floatConvention_,
-                     std::vector<Real>(1, 1.0), // gearing
-                     std::vector<Spread>(1, iborSpread_));
-        boost::shared_ptr<IborCouponPricer> 
+        Leg floatLeg = IborLeg(std::vector<Real>(1, nominal_),
+                               floatSchedule,
+                               iborIndex_,
+                               floatDayCount_,
+                               floatConvention_,
+                               iborIndex_->fixingDays(),
+                               std::vector<Real>(1, 1.0), // gearing
+                               std::vector<Spread>(1, iborSpread_));
+        boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(floatLeg,fictitiousPricer);
 

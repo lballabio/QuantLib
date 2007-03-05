@@ -65,17 +65,17 @@ namespace QuantLib {
 
         // might become input parameters
         BusinessDayConvention paymentAdjustment = Following;
-        Integer fixingDays = index->fixingDays();
+        Size fixingDays = index->fixingDays();
         std::vector<Real> nominals(1, nominal_);
         std::vector<Real> gearings(1, 1.0);
         std::vector<Spread> spreads(1, spread);
 
-        legs_[1] = IborLeg(schedule,
-                           nominals,
+        legs_[1] = IborLeg(nominals,
+                           schedule,
                            index,
                            floatingDayCounter,
-                           fixingDays,
                            paymentAdjustment,
+                           fixingDays,
                            gearings, spreads);
 
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new

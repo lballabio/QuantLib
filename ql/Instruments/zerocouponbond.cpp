@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,32 +24,28 @@
 namespace QuantLib {
 
     ZeroCouponBond::ZeroCouponBond(
+                        Size settlementDays,
                         Real faceAmount,
-                        const Date& issueDate,
-                        const Date& maturityDate,
-                        Integer settlementDays,
-                        const DayCounter& dayCounter,
                         const Calendar& calendar,
+                        const Date& maturityDate,
+                        const DayCounter& dayCounter,
                         BusinessDayConvention paymentConvention,
                         Real redemption,
+                        const Date& issueDate,
                         const Handle<YieldTermStructure>& discountCurve)
-    : Bond(faceAmount,dayCounter, calendar, paymentConvention,
-           settlementDays, discountCurve) {
+    : Bond(settlementDays, faceAmount, calendar,
+           dayCounter, paymentConvention, discountCurve) {
 
-        issueDate_ = datedDate_ = issueDate;
         maturityDate_ = maturityDate;
-        frequency_ = Once;
+        frequency_    = Once;
+        issueDate_    = issueDate;
 
-        cashflows_ = Leg();
-        // redemption
-        // !!!
-        Date redemptionDate =
-            calendar.adjust(maturityDate, paymentConvention);
-        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+        Date redemptionDate = calendar_.adjust(maturityDate_,
+                                               paymentConvention);
+        cashflows_ = Leg(1, boost::shared_ptr<CashFlow>(new
             SimpleCashFlow(faceAmount_*redemption/100, redemptionDate)));
 
-        QL_ENSURE(!cashflows().empty(),
-                  "empty bond leg for the zero coupon bond");
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
     }
 
 }

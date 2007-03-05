@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
 
@@ -52,10 +52,10 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = index_->fixingDays();
+          Size fixingDays = index_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
-          Date spotDate =
-              floatCalendar_.advance(referenceDate, fixingDays*Days);
+          Date spotDate = floatCalendar_.advance(referenceDate,
+                                                 fixingDays*Days);
           startDate = spotDate+forwardStart_;
         }
 
@@ -94,7 +94,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Integer fixingDays = index_->fixingDays();
+          Size fixingDays = index_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;

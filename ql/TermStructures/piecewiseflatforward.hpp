@@ -68,7 +68,8 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);
         PiecewiseFlatForward(
-               Integer settlementDays, const Calendar& calendar,
+               Size settlementDays,
+               const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);

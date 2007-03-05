@@ -76,7 +76,7 @@ Spread spread_;
 Date startDate_;
 Date paymentDate_;
 Date endDate_;
-Integer settlementDays_;
+Size settlementDays_;
 DayCounter fixedCmsDayCount_;
 
 // Term Structure
@@ -610,36 +610,32 @@ void CmsTest::testCmsSwap() {
                 for (Size pricerIndex=0; pricerIndex<pricers.size();
                      pricerIndex++) {
 
-                    std::vector<boost::shared_ptr<CashFlow> > cmsLeg =
-                        CmsLeg(fixedSchedule,
-                                        fixedNominals,
+                    Leg cmsLeg = CmsLeg(fixedNominals,
+                                        fixedSchedule,
                                         index_,
                                         fixedCmsDayCount_,
-                                        settlementDays_,
                                         fixedCmsConvention_,
+                                        settlementDays_,
                                         fractions,
                                         baseRate,
                                         caps,
                                         floors);
                     CashFlows::setPricer(cmsLeg, pricers[pricerIndex]);
 
-                    std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-                        IborLeg(floatingSchedule,
-                                                 floatingNominals,
-                                                 iborIndex_,
-                                                 iborIndex_->dayCounter(),
-                                                 settlementDays_,
-                                                 floatingCmsConvention_,
-                                                 std::vector<Real>(),
-                                                 std::vector<Spread>());
+                    Leg floatingLeg = IborLeg(floatingNominals,
+                                              floatingSchedule,
+                                              iborIndex_,
+                                              iborIndex_->dayCounter(),
+                                              floatingCmsConvention_,
+                                              settlementDays_);
                     boost::shared_ptr<IborCouponPricer> 
                       fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
                     CashFlows::setPricer(floatingLeg,fictitiousPricer);
 
-                    boost::shared_ptr<Swap> swap(
-                               new Swap(termStructure_, cmsLeg, floatingLeg));
+                    boost::shared_ptr<Swap> swap(new
+                        Swap(termStructure_, cmsLeg, floatingLeg));
 
-                    const Real price = swap->NPV();
+                    Real price = swap->NPV();
                     prices.push_back(price);
                     priceIndex++;
                 }

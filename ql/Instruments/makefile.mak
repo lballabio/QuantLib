@@ -35,8 +35,8 @@ OBJS = \
     "convertiblebond.obj$(_mt)$(_D)" \
     "dividendvanillaoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
-    "fixedcouponbond.obj$(_mt)$(_D)" \
-    "fixedcouponbondforward.obj$(_mt)$(_D)" \
+    "fixedratebond.obj$(_mt)$(_D)" \
+    "fixedratebondforward.obj$(_mt)$(_D)" \
     "floatingratebond.obj$(_mt)$(_D)" \
     "forward.obj$(_mt)$(_D)" \
     "forwardrateagreement.obj$(_mt)$(_D)" \

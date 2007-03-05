@@ -38,8 +38,8 @@
 namespace QuantLib {
 
     //! helper function building a sequence of fixed rate coupons
-    Leg FixedRateLeg(const Schedule& schedule,
-                     const std::vector<Real>& nominals,
+    Leg FixedRateLeg(const std::vector<Real>& nominals,
+                     const Schedule& schedule,
                      const std::vector<Rate>& couponRates,
                      const DayCounter& paymentDayCounter,
                      BusinessDayConvention paymentAdjustment = Following,
@@ -55,12 +55,12 @@ namespace QuantLib {
     */
 
     //! helper function building a sequence of capped/floored ibor rate coupons
-    Leg IborLeg(const Schedule& schedule,
-                const std::vector<Real>& nominals,
+    Leg IborLeg(const std::vector<Real>& nominals,
+                const Schedule& schedule,
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter = DayCounter(),
-                Integer fixingDays = Null<Integer>(),
-                const BusinessDayConvention paymentAdjustment = Following,
+                const BusinessDayConvention paymentConvention = Following,
+                Size fixingDays = Null<Size>(),
                 const std::vector<Real>& gearings = std::vector<Real>(),
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const std::vector<Rate>& caps = std::vector<Rate>(),
@@ -68,12 +68,12 @@ namespace QuantLib {
                 bool isInArrears = false);
 
     //! helper function building a sequence of capped/floored cms rate coupons
-    Leg CmsLeg(const Schedule& schedule,
-               const std::vector<Real>& nominals,
+    Leg CmsLeg(const std::vector<Real>& nominals,
+               const Schedule& schedule,
                const boost::shared_ptr<SwapIndex>& index,
                const DayCounter& paymentDayCounter = DayCounter(),
-               Integer fixingDays = Null<Integer>(),
-               BusinessDayConvention paymentAdjustment = Following,
+               BusinessDayConvention paymentConvention = Following,
+               Size fixingDays = Null<Size>(),
                const std::vector<Real>& gearings = std::vector<Real>(),
                const std::vector<Spread>& spreads = std::vector<Spread>(),
                const std::vector<Rate>& caps = std::vector<Rate>(),
@@ -81,16 +81,16 @@ namespace QuantLib {
                bool isInArrears = false);
     
     //! helper function building a sequence of capped/floored cms zero rate coupons
-    Leg CmsZeroLeg(const Schedule& schedule,
-               const std::vector<Real>& nominals,
-               const boost::shared_ptr<SwapIndex>& index,
-               const DayCounter& paymentDayCounter = DayCounter(),
-               Integer fixingDays = Null<Integer>(),
-               BusinessDayConvention paymentAdjustment = Following,
-               const std::vector<Real>& gearings = std::vector<Real>(),
-               const std::vector<Spread>& spreads =std::vector<Spread>(),
-               const std::vector<Rate>& caps = std::vector<Rate>(),
-               const std::vector<Rate>& floors = std::vector<Rate>());
+    Leg CmsZeroLeg(const std::vector<Real>& nominals,
+                   const Schedule& schedule,
+                   const boost::shared_ptr<SwapIndex>& index,
+                   const DayCounter& paymentDayCounter = DayCounter(),
+                   BusinessDayConvention paymentConvention = Following,
+                   Size fixingDays = Null<Size>(),
+                   const std::vector<Real>& gearings = std::vector<Real>(),
+                   const std::vector<Spread>& spreads =std::vector<Spread>(),
+                   const std::vector<Rate>& caps = std::vector<Rate>(),
+                   const std::vector<Rate>& floors = std::vector<Rate>());
 
 }
 

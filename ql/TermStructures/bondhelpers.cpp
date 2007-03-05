@@ -26,27 +26,21 @@ namespace QuantLib {
     }
 
     FixedCouponBondHelper::FixedCouponBondHelper(
-                                      const Handle<Quote>& cleanPrice,
-                                      const Date& issueDate,
-                                      const Date& datedDate,
-                                      const Date& maturityDate,
-                                      Integer settlementDays,
-                                      const std::vector<Rate>& coupons,
-                                      Frequency frequency,
-                                      const Calendar& calendar,
-                                      const DayCounter& dayCounter,
-                                      BusinessDayConvention accrualConvention,
-                                      BusinessDayConvention paymentConvention,
-                                      Real redemption,
-                                      const Date& stub, bool fromEnd)
-    : RateHelper(cleanPrice),
-      issueDate_(issueDate), datedDate_(datedDate),
-      maturityDate_(maturityDate), settlementDays_(settlementDays),
-      coupons_(coupons), frequency_(frequency), dayCounter_(dayCounter),
-      calendar_(calendar), accrualConvention_(accrualConvention),
-      paymentConvention_(paymentConvention), redemption_(redemption),
-      stub_(stub), fromEnd_(fromEnd) {
+                                    const Handle<Quote>& cleanPrice,
+                                    Size settlementDays,
+                                    const Schedule& schedule,
+                                    const std::vector<Rate>& coupons,
+                                    const DayCounter& paymentDayCounter,
+                                    BusinessDayConvention paymentConvention,
+                                    Real redemption,
+                                    const Date& issueDate)
+    : RateHelper(cleanPrice), settlementDays_(settlementDays),
+      schedule_(schedule), coupons_(coupons),
+      paymentDayCounter_(paymentDayCounter),
+      paymentConvention_(paymentConvention),
+      redemption_(redemption), issueDate_(issueDate) {
 
+        latestDate_ = schedule.endDate();
         registerWith(Settings::instance().evaluationDate());
     }
 
@@ -57,22 +51,11 @@ namespace QuantLib {
                  boost::shared_ptr<YieldTermStructure>(t,no_deletion), false);
 
         RateHelper::setTermStructure(t);
-        Date today = Settings::instance().evaluationDate();
-        settlement_ = calendar_.advance(today,settlementDays_,Days);
 
-        bond_ = boost::shared_ptr<FixedCouponBond>(
-             new FixedCouponBond(100.0, issueDate_, datedDate_, maturityDate_,
-                                 settlementDays_, coupons_,
-                                 frequency_, calendar_, dayCounter_,
-                                 accrualConvention_, paymentConvention_,
-                                 redemption_, termStructureHandle_,
-                                 stub_, fromEnd_));
-        latestDate_ = maturityDate_;
-    }
-
-    Date FixedCouponBondHelper::latestDate() const {
-        QL_REQUIRE(termStructure_ != 0, "null term structure set");
-        return latestDate_;
+        bond_ = boost::shared_ptr<FixedRateBond>(new
+            FixedRateBond(settlementDays_, 100.0, schedule_,
+                            coupons_, paymentDayCounter_, paymentConvention_,
+                            redemption_, issueDate_, termStructureHandle_));
     }
 
     Real FixedCouponBondHelper::impliedQuote() const {

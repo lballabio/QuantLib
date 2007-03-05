@@ -45,7 +45,7 @@ namespace QuantLib {
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
-                 Integer settlementDays = 2)
+                 Size settlementDays = 2)
         : Libor("NZDLibor", tenor, settlementDays, NZDCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange), NewZealand(),
                 convention, endOfMonth, Actual360(), h) {}

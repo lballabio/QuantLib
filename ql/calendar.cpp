@@ -70,7 +70,8 @@ namespace QuantLib {
         return d1;
     }
 
-    Date Calendar::advance(const Date& d, Integer n, TimeUnit unit,
+    Date Calendar::advance(const Date& d,
+                           Integer n, TimeUnit unit,
                            BusinessDayConvention c,
                            bool endOfMonth) const {
         QL_REQUIRE(d!=Date(), "null date");
@@ -108,13 +109,6 @@ namespace QuantLib {
             return adjust(d1, c);
         }
         QL_DUMMY_RETURN(Date());
-    }
-
-    Date Calendar::advance(const Date & d,
-                           const Period & p,
-                           BusinessDayConvention c,
-                           bool endOfMonth) const {
-        return advance(d, p.length(), p.units(), c, endOfMonth);
     }
 
     BigInteger Calendar::businessDaysBetween(const Date& from,

@@ -36,12 +36,12 @@ namespace QuantLib {
             const CallabilitySchedule& callability,
             const Handle<Quote>& creditSpread,
             const Date& issueDate,
-            Integer settlementDays,
+            Size settlementDays,
             const DayCounter& dayCounter,
             const Schedule& schedule,
             Real)
-    : Bond(100.0, dayCounter, schedule.calendar(),
-           schedule.businessDayConvention(), settlementDays),
+    : Bond(settlementDays, 100.0, schedule.calendar(),
+           dayCounter, schedule.businessDayConvention()),
       conversionRatio_(conversionRatio), callability_(callability),
       dividends_(dividends), creditSpread_(creditSpread) {
 
@@ -72,7 +72,7 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Integer settlementDays,
+                          Size settlementDays,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
                           Real redemption)
@@ -106,7 +106,7 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Integer settlementDays,
+                          Size settlementDays,
                           const std::vector<Rate>& coupons,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
@@ -116,8 +116,8 @@ namespace QuantLib {
                       settlementDays, dayCounter, schedule, redemption) {
 
         // !!!
-        cashflows_ = FixedRateLeg(schedule,
-                                  std::vector<Real>(1, faceAmount_),
+        cashflows_ = FixedRateLeg(std::vector<Real>(1, faceAmount_),
+                                  schedule,
                                   coupons,
                                   dayCounter,
                                   schedule.businessDayConvention());
@@ -146,9 +146,9 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Integer settlementDays,
+                          Size settlementDays,
                           const boost::shared_ptr<IborIndex>& index,
-                          Integer fixingDays,
+                          Size fixingDays,
                           const std::vector<Spread>& spreads,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
@@ -157,18 +157,16 @@ namespace QuantLib {
                       dividends, callability, creditSpread, issueDate,
                       settlementDays, dayCounter, schedule, redemption) {
 
-        // !!!
-        cashflows_ = IborLeg(schedule,
-                           std::vector<Real>(1, faceAmount_),
-                           index,dayCounter,
-                           fixingDays,
-                           schedule.businessDayConvention(),
-                           std::vector<Real>(1, 1.0), spreads);
-        boost::shared_ptr<IborCouponPricer>
-                        fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+        cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
+                             schedule,
+                             index,dayCounter,
+                             schedule.businessDayConvention(),
+                             fixingDays,
+                             std::vector<Real>(1, 1.0), spreads);
+        boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
+            BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(cashflows_,fictitiousPricer);
-        // redemption
-        // !!!
+
         redemption *= faceAmount_/100.0;
         cashflows_.push_back(boost::shared_ptr<CashFlow>(
                               new SimpleCashFlow(redemption, maturityDate_)));
@@ -180,7 +178,6 @@ namespace QuantLib {
                                       schedule, issueDate, settlementDays,
                                       redemption));
     }
-
 
     ConvertibleBond::option::option(
             const ConvertibleBond* bond,
@@ -195,7 +192,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Schedule& schedule,
             const Date& issueDate,
-            Integer settlementDays,
+            Size settlementDays,
             Real redemption)
     : OneAssetStrikedOption(process, boost::shared_ptr<StrikedTypePayoff>(new
           PlainVanillaPayoff(Option::Call,
@@ -321,7 +318,7 @@ namespace QuantLib {
 
         QL_REQUIRE(settlementDate != Date(), "null settlement date");
 
-        QL_REQUIRE(settlementDays != Null<Integer>(), "null settlement days");
+        QL_REQUIRE(settlementDays != Null<Size>(), "null settlement days");
         QL_REQUIRE(settlementDays >= 0,
                    "positive settlement days required: "
                    << settlementDays << " not allowed");

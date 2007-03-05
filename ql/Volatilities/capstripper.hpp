@@ -27,7 +27,7 @@
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/types.hpp>
-#include <ql/calendar.hpp>
+//#include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/quote.hpp>
 #include <ql/Math/matrix.hpp>

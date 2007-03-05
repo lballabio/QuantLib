@@ -1636,10 +1636,10 @@
 				RelativePath="ql\Instruments\cliquetoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cmscouponbond.cpp">
+				RelativePath=".\ql\Instruments\cmsratebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cmscouponbond.hpp">
+				RelativePath=".\ql\Instruments\cmsratebond.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\compositeinstrument.cpp">
@@ -1786,16 +1786,16 @@
 				RelativePath="ql\Instruments\europeanoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedcouponbond.cpp">
+				RelativePath=".\ql\Instruments\fixedratebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedcouponbond.hpp">
+				RelativePath=".\ql\Instruments\fixedratebond.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedcouponbondforward.cpp">
+				RelativePath=".\ql\Instruments\fixedratebondforward.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedcouponbondforward.hpp">
+				RelativePath=".\ql\Instruments\fixedratebondforward.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\Instruments\floatingratebond.cpp">

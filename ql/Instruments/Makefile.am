@@ -12,16 +12,16 @@ include_HEADERS = \
     callabilityschedule.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
-    cmscouponbond.hpp \
+    cmsratebond.hpp \
     compositeinstrument.hpp \
     convertiblebond.hpp \
     core.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
-    fixedcouponbond.hpp \
-    fixedcouponbondforward.hpp \
-    floatingcouponbond.hpp \
+    fixedratebond.hpp \
+    fixedratebondforward.hpp \
+    floatingratebond.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
@@ -51,14 +51,14 @@ libInstruments_la_SOURCES = \
     bond.cpp \
     capfloor.cpp \
     cliquetoption.cpp \
-    cmscouponbond.cpp \
+    cmsratebond.cpp \
     compositeinstrument.cpp \
     convertiblebond.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
-    fixedcouponbond.cpp \
-    fixedcouponbondforward.cpp \
-    floatingcouponbond.cpp \
+    fixedratebond.cpp \
+    fixedratebondforward.cpp \
+    floatingratebond.cpp \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \

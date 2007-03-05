@@ -65,8 +65,8 @@ namespace QuantLib {
     }
 
 
-    Leg FixedRateLeg(const Schedule& schedule,
-                     const std::vector<Real>& nominals,
+    Leg FixedRateLeg(const std::vector<Real>& nominals,
+                     const Schedule& schedule,
                      const std::vector<Rate>& couponRates,
                      const DayCounter& paymentDayCounter,
                      BusinessDayConvention paymentAdj,
@@ -154,12 +154,12 @@ namespace QuantLib {
     template <typename IndexType,
               typename FloatingCouponType,
               typename CappedFlooredCouponType>
-    Leg FloatingLeg(const Schedule& schedule,
-                    const std::vector<Real>& nominals,
+    Leg FloatingLeg(const std::vector<Real>& nominals,
+                    const Schedule& schedule,
                     const boost::shared_ptr<IndexType>& index,
                     const DayCounter& paymentDayCounter,
-                    Integer fixingDays,
                     BusinessDayConvention paymentAdj,
+                    Size fixingDays,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
@@ -231,12 +231,12 @@ namespace QuantLib {
         return leg;
     }
 
-    Leg IborLeg(const Schedule& schedule,
-                const std::vector<Real>& nominals,
+    Leg IborLeg(const std::vector<Real>& nominals,
+                const Schedule& schedule,
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter,
-                Integer fixingDays,
                 BusinessDayConvention paymentAdj,
+                Size fixingDays,
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 const std::vector<Rate>& caps,
@@ -244,12 +244,12 @@ namespace QuantLib {
                 bool isInArrears) {
     
         return FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
-                schedule,
                 nominals,
+                schedule,
                 index,
                 paymentDayCounter,
-                fixingDays,
                 paymentAdj,
+                fixingDays,
                 gearings,
                 spreads,
                 caps,
@@ -257,12 +257,12 @@ namespace QuantLib {
                 isInArrears);
     }
 
-    Leg CmsLeg(const Schedule& schedule,
-               const std::vector<Real>& nominals,
+    Leg CmsLeg(const std::vector<Real>& nominals,
+               const Schedule& schedule,
                const boost::shared_ptr<SwapIndex>& index,
                const DayCounter& paymentDayCounter,
-               Integer fixingDays,
                BusinessDayConvention paymentAdj,
+               Size fixingDays,
                const std::vector<Real>& gearings,
                const std::vector<Spread>& spreads,
                const std::vector<Rate>& caps,
@@ -270,12 +270,12 @@ namespace QuantLib {
                bool isInArrears) {
     
         return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
-               schedule,
                nominals,
+               schedule,
                index,
                paymentDayCounter,
-               fixingDays,
                paymentAdj,
+               fixingDays,
                gearings,
                spreads,
                caps,
@@ -286,12 +286,12 @@ namespace QuantLib {
     template <typename IndexType, 
               typename FloatingCouponType,
               typename CappedFlooredFloatingCouponType>
-    Leg FloatingZeroLeg(const Schedule& schedule,
-                        const std::vector<Real>& nominals,
+    Leg FloatingZeroLeg(const std::vector<Real>& nominals,
+                        const Schedule& schedule,
                         const boost::shared_ptr<IndexType>& index,
                         const DayCounter& paymentDayCounter,
-                        Integer fixingDays,
                         BusinessDayConvention paymentAdj,
+                        Size fixingDays,
                         const std::vector<Real>& gearings,
                         const std::vector<Spread>& spreads,
                         const std::vector<Rate>& caps,
@@ -363,48 +363,48 @@ namespace QuantLib {
          return leg;
     }
 
-    Leg IborZeroLeg(const Schedule& schedule,
-                   const std::vector<Real>& nominals,
-                   const boost::shared_ptr<IborIndex>& index,
-                   const DayCounter& paymentDayCounter,
-                   Integer fixingDays,
-                   BusinessDayConvention paymentAdj,
-                   const std::vector<Real>& gearings,
-                   const std::vector<Spread>& spreads,
-                   const std::vector<Rate>& caps,
-                   const std::vector<Rate>& floors) {
+    Leg IborZeroLeg(const std::vector<Real>& nominals,
+                    const Schedule& schedule,
+                    const boost::shared_ptr<IborIndex>& index,
+                    const DayCounter& paymentDayCounter,
+                    BusinessDayConvention paymentAdj,
+                    Size fixingDays,
+                    const std::vector<Real>& gearings,
+                    const std::vector<Spread>& spreads,
+                    const std::vector<Rate>& caps,
+                    const std::vector<Rate>& floors) {
     
         return FloatingZeroLeg <IborIndex, IborCoupon, CappedFlooredIborCoupon>(
-                   schedule,
                    nominals,
+                   schedule,
                    index,
                    paymentDayCounter,
-                   fixingDays,
                    paymentAdj,
+                   fixingDays,
                    gearings,
                    spreads,
                    caps,
                    floors);
     }
 
-    Leg CmsZeroLeg(const Schedule& schedule,
-                   const std::vector<Real>& nominals,
+    Leg CmsZeroLeg(const std::vector<Real>& nominals,
+                   const Schedule& schedule,
                    const boost::shared_ptr<SwapIndex>& index,
                    const DayCounter& paymentDayCounter,
-                   Integer fixingDays,
                    BusinessDayConvention paymentAdj,
+                   Size fixingDays,
                    const std::vector<Real>& gearings,
                    const std::vector<Spread>& spreads,
                    const std::vector<Rate>& caps,
                    const std::vector<Rate>& floors) {
 
         return FloatingZeroLeg <SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
-                   schedule,
                    nominals,
+                   schedule,
                    index,
                    paymentDayCounter,
-                   fixingDays,
                    paymentAdj,
+                   fixingDays,
                    gearings,
                    spreads,
                    caps,

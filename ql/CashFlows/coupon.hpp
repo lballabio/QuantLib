@@ -26,7 +26,7 @@
 #define quantlib_coupon_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/calendar.hpp>
+//#include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 
 namespace QuantLib {
@@ -146,6 +146,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
