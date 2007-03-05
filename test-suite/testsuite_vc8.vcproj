@@ -2019,7 +2019,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\SwapForwardMappings.cpp"
+				RelativePath=".\swapForwardMappings.cpp"
 				>
 			</File>
 			<File
@@ -2466,7 +2466,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SwapForwardMappings.hpp"
+				RelativePath=".\swapForwardMappings.hpp"
 				>
 			</File>
 			<File
