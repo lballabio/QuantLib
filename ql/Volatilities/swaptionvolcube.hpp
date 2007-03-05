@@ -62,7 +62,7 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        Period maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
+        const Period& maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
         Time maxSwapLength() const { return atmVol_->maxSwapLength(); }
         Rate minStrike() const { return 0.0; }
         Rate maxStrike() const { return 1.0; }

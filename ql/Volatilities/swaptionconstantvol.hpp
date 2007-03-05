@@ -25,10 +25,11 @@
 #define quantlib_swaption_constant_volatility_hpp
 
 #include <ql/swaptionvolstructure.hpp>
-#include <ql/Volatilities/smilesection.hpp>
-#include <ql/quote.hpp>
+#include <ql/period.hpp>
 
 namespace QuantLib {
+
+    class Quote;
 
     //! Constant swaption volatility, no time-strike dependence
     class SwaptionConstantVolatility : public SwaptionVolatilityStructure {
@@ -54,7 +55,7 @@ namespace QuantLib {
         //@}
         //! \name SwaptionConstantVolatility interface
         //@{
-        Period maxSwapTenor() const;
+        const Period& maxSwapTenor() const;
         Time maxSwapLength() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -73,49 +74,14 @@ namespace QuantLib {
       private:
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
+        Period maxSwapTenor_;
     };
 
 
     // inline definitions
 
-    inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              const Date& referenceDate,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(referenceDate),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
-
-    inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter) {
-        registerWith(volatility_);
-    }
-
-    inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Size settlementDays,
-                                              const Calendar& calendar,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays, calendar),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
-
-    inline SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Size settlementDays,
-                                              const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(settlementDays, calendar),
-      volatility_(volatility), dayCounter_(dayCounter) {
-        registerWith(volatility_);
-    }
-
-    inline Period SwaptionConstantVolatility::maxSwapTenor() const {
-        return 100*Years;
+    inline const Period& SwaptionConstantVolatility::maxSwapTenor() const {
+        return maxSwapTenor_;
     }
 
     inline Time SwaptionConstantVolatility::maxSwapLength() const {
@@ -130,35 +96,6 @@ namespace QuantLib {
         return QL_MAX_REAL;
     }
 
-    inline Volatility SwaptionConstantVolatility::volatilityImpl(
-                                                     Time, Time, Rate) const {
-        return volatility_->value();
-    }
-
-    inline Volatility SwaptionConstantVolatility::volatilityImpl(
-                                                            const Date&,
-                                                            const Period&,
-                                                            Rate) const {
-        return volatility_->value();
-    }
-
-    inline boost::shared_ptr<SmileSection>
-    SwaptionConstantVolatility::smileSection(Time optionTime,
-                                             Time) const {
-        Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(optionTime, atmVol));
-    }
-
-    inline boost::shared_ptr<SmileSection>
-    SwaptionConstantVolatility::smileSection(const Date& optionDate,
-                                             const Period&) const {
-        Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(timeFromReference(optionDate), atmVol));
-    }
-
 }
-
 
 #endif

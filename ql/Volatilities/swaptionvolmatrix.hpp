@@ -106,7 +106,7 @@ namespace QuantLib {
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        Period maxSwapTenor() const;
+        const Period& maxSwapTenor() const;
         Time maxSwapLength() const;
         Rate minStrike() const;
         Rate maxStrike() const;
@@ -164,7 +164,7 @@ namespace QuantLib {
         return optionDates_.back();
     }
 
-    inline Period SwaptionVolatilityMatrix::maxSwapTenor() const {
+    inline const Period& SwaptionVolatilityMatrix::maxSwapTenor() const {
         return swapTenors_.back();
     }
 

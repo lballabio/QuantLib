@@ -98,7 +98,7 @@ namespace QuantLib {
         //! \name Limits
         //@{
         //! the largest length for which the term structure can return vols
-        virtual Period maxSwapTenor() const = 0;
+        virtual const Period& maxSwapTenor() const = 0;
         //! the largest swapLength for which the term structure can return vols
         virtual Time maxSwapLength() const;
         //! the minimum strike for which the term structure can return vols
@@ -144,25 +144,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                                    const DayCounter& dc,
-                                                    BusinessDayConvention bdc)
-    : TermStructure(dc), bdc_(bdc) {}
-
-    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                                const Date& referenceDate,
-                                                const Calendar& calendar,
-                                                const DayCounter& dc,
-                                                BusinessDayConvention bdc)
-    : TermStructure(referenceDate, calendar, dc), bdc_(bdc) {}
-
-    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                                Size settlementDays,
-                                                const Calendar& calendar,
-                                                const DayCounter& dc,
-                                                BusinessDayConvention bdc)
-    : TermStructure(settlementDays, calendar, dc), bdc_(bdc) {}
 
     inline BusinessDayConvention SwaptionVolatilityStructure::businessDayConvention() const {
         return bdc_;
@@ -240,21 +221,6 @@ namespace QuantLib {
     }
 
 
-    inline Time SwaptionVolatilityStructure::maxSwapLength() const {
-        return timeFromReference(referenceDate()+maxSwapTenor());
-    }
-
-    inline std::pair<Time,Time>
-    SwaptionVolatilityStructure::convertDates(const Date& optionDate,
-                                              const Period& swapTenor) const {
-        Date end = optionDate + swapTenor;
-        QL_REQUIRE(end>optionDate,
-                   "negative swap tenor (" << swapTenor << ") given");
-        Time optionTime = timeFromReference(optionDate);
-        Time timeLength = dayCounter().yearFraction(optionDate, end);
-        return std::make_pair(optionTime, timeLength);
-    }
-
     inline void SwaptionVolatilityStructure::checkRange(
              Time optionTime, Time swapLength, Rate k, bool extrapolate) const {
         TermStructure::checkRange(optionTime, extrapolate);
@@ -264,23 +230,6 @@ namespace QuantLib {
                    swapLength <= maxSwapLength(),
                    "swapLength (" << swapLength << ") is past max curve swapLength ("
                    << maxSwapLength() << ")");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   (k >= minStrike() && k <= maxStrike()),
-                   "strike (" << k << ") is outside the curve domain ["
-                   << minStrike() << "," << maxStrike()<< "]");
-    }
-
-    inline void SwaptionVolatilityStructure::checkRange(
-             const Date& optionDate, const Period& swapTenor,
-             Rate k, bool extrapolate) const {
-        TermStructure::checkRange(timeFromReference(optionDate),
-                                  extrapolate);
-        QL_REQUIRE(swapTenor.length() > 0,
-                   "negative swap tenor (" << swapTenor << ") given");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
-                   swapTenor <= maxSwapTenor(),
-                   "swap tenor (" << swapTenor << ") is past max tenor ("
-                   << maxSwapTenor() << ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" << k << ") is outside the curve domain ["
