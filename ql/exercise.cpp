@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

@@ -27,6 +27,7 @@
 #define quantlib_interestrateindex_hpp
 
 #include <ql/index.hpp>
+#include <ql/period.hpp>
 #include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
