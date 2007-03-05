@@ -27,10 +27,13 @@
 #define quantlib_calendar_hpp
 
 #include <ql/date.hpp>
+#include <boost/shared_ptr.hpp>
 #include <set>
 #include <vector>
 
 namespace QuantLib {
+
+    class Period;
 
     //! Business Day conventions
     /*! These conventions specify the algorithm used to adjust a date in case
@@ -240,13 +243,6 @@ namespace QuantLib {
 
     inline bool Calendar::isWeekend(Weekday w) const {
         return impl_->isWeekend(w);
-    }
-
-    inline Date Calendar::advance(const Date & d,
-                                  const Period & p,
-                                  BusinessDayConvention c,
-                                  bool endOfMonth) const {
-        return advance(d, p.length(), p.units(), c, endOfMonth);
     }
 
     inline bool operator==(const Calendar& c1, const Calendar& c2) {
