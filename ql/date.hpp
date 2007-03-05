@@ -29,6 +29,7 @@
 #define quantlib_date_hpp
 
 #include <ql/period.hpp>
+#include <ql/types.hpp>
 #include <utility>
 #include <functional>
 
