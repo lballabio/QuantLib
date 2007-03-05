@@ -98,8 +98,8 @@ namespace QuantLib {
     }
 
     void ForwardRateAgreement::performCalculations() const {
-        Date fixingDate =
-            calendar_.advance(valueDate_, -settlementDays_, Days);
+        Date fixingDate = calendar_.advance(valueDate_, 
+            -static_cast<Integer>(settlementDays_), Days);
         forwardRate_ = InterestRate(index_->fixing(fixingDate),
                                     index_->dayCounter(),
                                     Simple, Once);
