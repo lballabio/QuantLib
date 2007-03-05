@@ -44,13 +44,16 @@ namespace QuantLib {
     */
     class LmLinearExponentialCorrelationModel : public LmCorrelationModel {
       public:
-        LmLinearExponentialCorrelationModel(Size size, Real rho, Real beta);
+        LmLinearExponentialCorrelationModel(Size size, Real rho, Real beta,
+                                            Size factors = Null<Size>());
 
         Disposable<Matrix> correlation(
             Time t, const Array& x = Null<Array>()) const;
         Disposable<Matrix> pseudoSqrt(
             Time t, const Array& x = Null<Array>()) const;
         Real correlation(Size i, Size j, Time t, const Array& x) const;
+
+        Size factors() const;
         bool isTimeIndependent() const;
 
       protected:
@@ -58,6 +61,7 @@ namespace QuantLib {
 
       private:
         Matrix corrMatrix_, pseudoSqrt_;
+        const Size factors_;
     };
 
 }

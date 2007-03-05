@@ -23,10 +23,10 @@
 namespace QuantLib {
 
     LmLinearExponentialCorrelationModel::LmLinearExponentialCorrelationModel(
-        Size size, Real rho, Real beta)
+                                  Size size, Real rho, Real beta, Size factors)
    : LmCorrelationModel(size, 2),
      corrMatrix_(size, size),
-     pseudoSqrt_(size, size) {
+     factors_((factors != Null<Size>()) ? factors : size) {
         arguments_[0] = ConstantParameter(rho, BoundaryConstraint(-1.0, 1.0));
         arguments_[1] = ConstantParameter(beta, PositiveConstraint());
         generateArguments();
@@ -47,6 +47,11 @@ namespace QuantLib {
         return true;
     }
 
+    Size LmLinearExponentialCorrelationModel::factors() const {
+        return factors_;
+    }
+
+
     Disposable<Matrix> LmLinearExponentialCorrelationModel::pseudoSqrt(
                                                    Time, const Array&) const {
         Matrix tmp(pseudoSqrt_);
@@ -64,9 +69,10 @@ namespace QuantLib {
             }
         }
 
-        pseudoSqrt_ = QuantLib::pseudoSqrt(corrMatrix_,
-                                           SalvagingAlgorithm::Spectral);
-    }
+        pseudoSqrt_ = rankReducedSqrt(corrMatrix_, factors_, 
+                                      1.0, SalvagingAlgorithm::None);
 
+        corrMatrix_ = pseudoSqrt_ * transpose(pseudoSqrt_);
+    }
 }
 
