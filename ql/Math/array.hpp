@@ -33,6 +33,7 @@
 #include <boost/scoped_array.hpp>
 #include <functional>
 #include <numeric>
+#include <vector>
 #include <iomanip>
 
 namespace QuantLib {
@@ -59,8 +60,13 @@ namespace QuantLib {
         Array(Size size, Real value, Real increment);
         Array(const Array&);
         Array(const Disposable<Array>&);
+        //! creates the array as a copy of a given stl vector
+        explicit Array(const std::vector<Real>&);
+
         Array& operator=(const Array&);
         Array& operator=(const Disposable<Array>&);
+        bool operator==(const Array&) const;
+        bool operator!=(const Array&) const;
         //@}
         /*! \name Vector algebra
 
@@ -103,6 +109,7 @@ namespace QuantLib {
         //! whether the array is empty
         bool empty() const;
         //@}
+        typedef Real value_type;
         typedef Real* iterator;
         typedef const Real* const_iterator;
         typedef boost::reverse_iterator<iterator> reverse_iterator;
@@ -208,11 +215,25 @@ namespace QuantLib {
         swap(const_cast<Disposable<Array>&>(from));
     }
 
+    inline Array::Array(const std::vector<Real>& from)
+    : data_(from.size() ? new Real[from.size()] : (Real*)(0)), 
+      n_(from.size()) {
+        std::copy(from.begin(),from.end(),begin());
+    }
+
     inline Array& Array::operator=(const Array& from) {
         // strong guarantee
         Array temp(from);
         swap(temp);
         return *this;
+    }
+
+    inline bool Array::operator==(const Array& to) const {
+        return (n_ == to.n_) && std::equal(begin(), end(), to.begin());
+    }
+
+    inline bool Array::operator!=(const Array& to) const {
+        return !(this->operator==(to));
     }
 
     inline Array& Array::operator=(const Disposable<Array>& from) {

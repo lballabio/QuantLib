@@ -48,16 +48,17 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename MonteCarloModel<MC,RNG,S>::stats_type
             stats_type;
+        typedef typename MonteCarloModel<MC,RNG,S>::result_type result_type;
 
         virtual ~McSimulation() {}
         //! add samples until the required absolute tolerance is reached
-        Real value(Real tolerance,
-                   Size maxSamples = QL_MAX_INTEGER,
-                   Size minSamples = 1023) const;
+        result_type value(Real tolerance,
+                          Size maxSamples = QL_MAX_INTEGER,
+                          Size minSamples = 1023) const;
         //! simulate a fixed number of samples
-        Real valueWithSamples(Size samples) const;
+        result_type valueWithSamples(Size samples) const;
         //! error estimated using the samples simulated so far
-        Real errorEstimate() const;
+        result_type errorEstimate() const;
         //! access to the sample accumulator for richer statistics
         const stats_type& sampleAccumulator(void) const;
         //! basic calculate method provided to inherited pricing engines
@@ -79,9 +80,17 @@ namespace QuantLib {
         virtual boost::shared_ptr<PricingEngine> controlPricingEngine() const {
             return boost::shared_ptr<PricingEngine>();
         }
-        virtual Real controlVariateValue() const {
-            return Null<Real>();
+        virtual result_type controlVariateValue() const {
+            return Null<result_type>();
         }
+        template <class Sequence>
+        static Real maxError(const Sequence& sequence) {
+            return *std::max_element(sequence.begin(), sequence.end());
+        }
+        static Real maxError(Real error) {
+            return error;
+        }
+        
         mutable boost::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
         bool antitheticVariate_, controlVariate_;
     };
@@ -89,7 +98,8 @@ namespace QuantLib {
 
     // inline definitions
     template <template <class> class MC, class RNG, class S>
-    inline Real McSimulation<MC,RNG,S>::value(Real tolerance,
+    inline typename McSimulation<MC,RNG,S>::result_type
+        McSimulation<MC,RNG,S>::value(Real tolerance,
                                               Size maxSamples,
                                               Size minSamples) const {
         Size sampleNumber =
@@ -101,15 +111,15 @@ namespace QuantLib {
 
         Size nextBatch;
         Real order;
-        Real error = mcModel_->sampleAccumulator().errorEstimate();
-        while (error > tolerance) {
+        result_type error(mcModel_->sampleAccumulator().errorEstimate());
+        while (maxError(error) > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
                        "max number of samples (" << maxSamples
                        << ") reached, while error (" << error
                        << ") is still above tolerance (" << tolerance << ")");
 
             // conservative estimate of how many samples are needed
-            order = error*error/tolerance/tolerance;
+            order = maxError(error*error)/tolerance/tolerance;
             nextBatch =
                 Size(std::max<Real>(sampleNumber*order*0.8-sampleNumber,
                                     minSamples));
@@ -118,15 +128,16 @@ namespace QuantLib {
             nextBatch = std::min(nextBatch, maxSamples-sampleNumber);
             sampleNumber += nextBatch;
             mcModel_->addSamples(nextBatch);
-            error = mcModel_->sampleAccumulator().errorEstimate();
+            error = result_type(mcModel_->sampleAccumulator().errorEstimate());
         }
 
-        return mcModel_->sampleAccumulator().mean();
+        return result_type(mcModel_->sampleAccumulator().mean());
     }
 
 
     template <template <class> class MC, class RNG, class S>
-    inline Real McSimulation<MC,RNG,S>::valueWithSamples(Size samples) const {
+    inline typename McSimulation<MC,RNG,S>::result_type
+        McSimulation<MC,RNG,S>::valueWithSamples(Size samples) const {
 
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
@@ -136,7 +147,7 @@ namespace QuantLib {
 
         mcModel_->addSamples(samples-sampleNumber);
 
-        return mcModel_->sampleAccumulator().mean();
+        return result_type(mcModel_->sampleAccumulator().mean());
     }
 
 
@@ -152,8 +163,8 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (this->controlVariate_) {
 
-            Real controlVariateValue = this->controlVariateValue();
-            QL_REQUIRE(controlVariateValue != Null<Real>(),
+            result_type controlVariateValue = this->controlVariateValue();
+            QL_REQUIRE(controlVariateValue != Null<result_type>(),
                        "engine does not provide "
                        "control-variation price");
 
@@ -189,7 +200,8 @@ namespace QuantLib {
     }
 
     template <template <class> class MC, class RNG, class S>
-    inline Real McSimulation<MC,RNG,S>::errorEstimate() const {
+    inline typename McSimulation<MC,RNG,S>::result_type
+        McSimulation<MC,RNG,S>::errorEstimate() const {
         return mcModel_->sampleAccumulator().errorEstimate();
     }
 

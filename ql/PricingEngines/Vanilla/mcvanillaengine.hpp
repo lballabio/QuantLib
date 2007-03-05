@@ -32,17 +32,18 @@ namespace QuantLib {
 
     //! Pricing engine for vanilla options using Monte Carlo simulation
     /*! \ingroup vanillaengines */
-    template <template <class> class MC, class RNG, class S = Statistics>
-    class MCVanillaEngine : public VanillaOption::engine,
+    template <template <class> class MC, class RNG, 
+              class S = Statistics, class Inst = VanillaOption>
+    class MCVanillaEngine : public Inst::engine,
                             public McSimulation<MC,RNG,S> {
       public:
         void calculate() const {
             McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                               requiredSamples_,
                                               maxSamples_);
-            results_.value = this->mcModel_->sampleAccumulator().mean();
+            this->results_.value = this->mcModel_->sampleAccumulator().mean();
             if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
+            this->results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
       protected:
@@ -52,6 +53,8 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
+        typedef typename McSimulation<MC,RNG,S>::result_type 
+result_type;
         // constructor
         MCVanillaEngine(Size timeSteps,
                         Size timeStepsPerYear,
@@ -66,15 +69,15 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            Size dimensions = arguments_.stochasticProcess->factors();
+            Size dimensions = this->arguments_.stochasticProcess->factors();
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type generator =
                 RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
             return boost::shared_ptr<path_generator_type>(
-                   new path_generator_type(arguments_.stochasticProcess,
+                   new path_generator_type(this->arguments_.stochasticProcess,
                                            grid, generator, brownianBridge_));
         }
-        Real controlVariateValue() const;
+        result_type controlVariateValue() const;
         // data members
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
@@ -86,8 +89,8 @@ namespace QuantLib {
 
     // template definitions
 
-    template <template <class> class MC, class RNG, class S>
-    inline MCVanillaEngine<MC,RNG,S>::MCVanillaEngine(Size timeSteps,
+    template <template <class> class MC, class RNG, class S, class Inst>
+    inline MCVanillaEngine<MC,RNG,S,Inst>::MCVanillaEngine(Size timeSteps,
                                                       Size timeStepsPerYear,
                                                       bool brownianBridge,
                                                       bool antitheticVariate,
@@ -102,8 +105,9 @@ namespace QuantLib {
       requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {}
 
-    template <template <class> class MC, class RNG, class S>
-    inline Real MCVanillaEngine<MC,RNG,S>::controlVariateValue() const {
+    template <template <class> class MC, class RNG, class S, class Inst>
+    inline typename MCVanillaEngine<MC,RNG,S,Inst>::result_type 
+    MCVanillaEngine<MC,RNG,S,Inst>::controlVariateValue() const {
 
         boost::shared_ptr<PricingEngine> controlPE =
             this->controlPricingEngine();
@@ -111,22 +115,22 @@ namespace QuantLib {
                        "engine does not provide "
                        "control variation pricing engine");
 
-            VanillaOption::arguments* controlArguments =
-                dynamic_cast<VanillaOption::arguments*>(
+            typename Inst::arguments* controlArguments =
+                dynamic_cast<typename Inst::arguments*>(
                                                    controlPE->getArguments());
-            *controlArguments = arguments_;
+            *controlArguments = this->arguments_;
             controlPE->calculate();
 
-            const VanillaOption::results* controlResults =
-                dynamic_cast<const VanillaOption::results*>(
+            const typename Inst::results* controlResults =
+                dynamic_cast<const typename Inst::results*>(
                                                      controlPE->getResults());
 
-            return controlResults->value;
+            return result_type(controlResults->value);
     }
 
 
-    template <template <class> class MC, class RNG, class S>
-    inline TimeGrid MCVanillaEngine<MC,RNG,S>::timeGrid() const {
+    template <template <class> class MC, class RNG, class S, class Inst>
+    inline TimeGrid MCVanillaEngine<MC,RNG,S,Inst>::timeGrid() const {
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
         Time t = this->arguments_.stochasticProcess->time(lastExerciseDate);
         if (this->timeSteps_ != Null<Size>()) {
