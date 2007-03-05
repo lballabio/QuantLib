@@ -9233,6 +9233,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\frequency.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\frequency.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\grid.hpp"
 			>
 		</File>
@@ -9362,6 +9370,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\timeseries.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\timeunit.hpp"
 			>
 		</File>
 		<File

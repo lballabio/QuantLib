@@ -30,6 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include <set>
 #include <vector>
+#include <string>
 
 namespace QuantLib {
 
