@@ -34,10 +34,6 @@
 
 namespace QuantLib {
 
-    //! Day number
-    /*! \ingroup datetime */
-    typedef Integer Day;
-
     /*! Day's serial number MOD 7;
         WEEKDAY Excel function is the same except for Sunday = 7.
 
@@ -140,12 +136,6 @@ namespace QuantLib {
                      N =  7, Q =  8, U =  9,
                      V = 10, X = 11, Z = 12 };
     };
-
-
-    //! Year number
-    /*! \ingroup datetime */
-    typedef Integer Year;
-
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
