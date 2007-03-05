@@ -99,6 +99,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -199,6 +200,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -299,6 +301,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -400,6 +403,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
