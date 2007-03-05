@@ -41,12 +41,17 @@ namespace QuantLib {
         Size size() const;
         Disposable<Array> initialValues() const;
         Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
         Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const;
+
+        Disposable<Matrix> diffusion(Time t, const Array& x) const;
+        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
         Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
                                         Time dt) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
+
         Disposable<Array> apply(const Array& x0, const Array& dx) const;
+        Disposable<Array> evolve(Time t0, const Array& x0,
+                                  Time dt, const Array& dw) const;
+
         Time time(const Date&) const;
         // inspectors
         const boost::shared_ptr<StochasticProcess1D>& process(Size i) const;

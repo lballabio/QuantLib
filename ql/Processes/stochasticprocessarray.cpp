@@ -98,6 +98,16 @@ namespace QuantLib {
         return tmp*transpose(tmp);
     }
 
+    Disposable<Array> StochasticProcessArray::evolve(
+                  Time t0, const Array& x0, Time dt, const Array& dw) const {
+        const Array dz = sqrtCorrelation_ * dw;
+
+        Array tmp(size());
+        for (Size i=0; i<size(); ++i)
+            tmp[i] = processes_[i]->evolve(t0, x0[i], dt, dz[i]);
+        return tmp;
+    }
+
     Disposable<Array> StochasticProcessArray::apply(const Array& x0,
                                                     const Array& dx) const {
         Array tmp(size());
