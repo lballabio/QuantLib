@@ -32,6 +32,7 @@
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp>
+#include <ql/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

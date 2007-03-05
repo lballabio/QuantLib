@@ -29,6 +29,7 @@
 #include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/japan.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
+#include <ql/errors.hpp>
 #include <fstream>
 
 using namespace QuantLib;

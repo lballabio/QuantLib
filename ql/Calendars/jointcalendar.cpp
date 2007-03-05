@@ -19,6 +19,8 @@
 */
 
 #include <ql/Calendars/jointcalendar.hpp>
+#include <ql/errors.hpp>
+#include <sstream>
 
 namespace QuantLib {
 

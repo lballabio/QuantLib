@@ -25,6 +25,7 @@
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/business252.hpp>
 #include <ql/Calendars/brazil.hpp>
+#include <ql/period.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

@@ -28,6 +28,7 @@
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/period.hpp>
 #include <map>
 
 using namespace QuantLib;

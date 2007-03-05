@@ -29,7 +29,8 @@
 
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Utilities/null.hpp>
-
+#include <ql/period.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

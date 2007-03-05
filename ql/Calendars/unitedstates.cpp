@@ -20,6 +20,7 @@
 */
 
 #include <ql/Calendars/unitedstates.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

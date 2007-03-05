@@ -18,6 +18,7 @@
 */
 
 #include <ql/VolatilityModels/garch.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
   TimeSeries<Volatility>

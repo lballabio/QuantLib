@@ -33,6 +33,7 @@
 #include <ql/TermStructures/zerocurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Optimization/levenbergmarquardt.hpp>
+#include <ql/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

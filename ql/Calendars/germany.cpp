@@ -18,6 +18,7 @@
 */
 
 #include <ql/Calendars/germany.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
