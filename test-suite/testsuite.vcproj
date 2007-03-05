@@ -2279,6 +2279,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\swapForwardMappings.cpp">
+			</File>
+			<File
 				RelativePath="swaption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2662,6 +2665,9 @@
 			</File>
 			<File
 				RelativePath="swap.hpp">
+			</File>
+			<File
+				RelativePath=".\swapForwardMappings.hpp">
 			</File>
 			<File
 				RelativePath="swaption.hpp">
