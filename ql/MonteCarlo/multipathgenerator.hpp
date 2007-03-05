@@ -28,7 +28,6 @@
 #define quantlib_multi_path_generator_hpp
 
 #include <ql/stochasticprocess.hpp>
-#include <ql/Processes/stochasticprocessarray.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <ql/Math/pseudosqrt.hpp>
