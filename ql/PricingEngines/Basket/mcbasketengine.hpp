@@ -27,6 +27,7 @@
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/Processes/stochasticprocessarray.hpp>
 
 namespace QuantLib {
 
