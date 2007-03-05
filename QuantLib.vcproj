@@ -8628,10 +8628,16 @@
 				RelativePath=".\ql\Volatilities\sabr.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\sabrinterpolatedsmilesection.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\smilesection.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\smilesection.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionconstantvol.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp">
@@ -9157,6 +9163,9 @@
 		</File>
 		<File
 			RelativePath="ql\stochasticprocess.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\swaptionvolstructure.cpp">
 		</File>
 		<File
 			RelativePath="ql\swaptionvolstructure.hpp">

@@ -87,6 +87,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -171,6 +172,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -255,6 +257,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -336,6 +339,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				SuppressStartupBanner="false"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -6365,6 +6369,10 @@
 				RelativePath=".\ql\Volatilities\smilesection.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\Volatilities\swaptionconstantvol.cpp"
+				>
+			</File>
 			<Filter
 				Name="Equity"
 				>
@@ -9330,6 +9338,10 @@
 		</File>
 		<File
 			RelativePath="ql\stochasticprocess.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\swaptionvolstructure.cpp"
 			>
 		</File>
 		<File
