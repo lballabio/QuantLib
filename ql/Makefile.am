@@ -51,6 +51,7 @@ include_HEADERS = \
 	exchangerate.hpp \
 	exercise.hpp \
 	event.hpp \
+	frequency.hpp \
 	grid.hpp \
 	handle.hpp \
 	index.hpp \
@@ -140,6 +141,7 @@ libQuantLib_la_SOURCES = \
 	errors.cpp \
 	exchangerate.cpp \
 	exercise.cpp \
+	frequency.cpp \
     index.cpp \
     interestrate.cpp \
     money.cpp \
@@ -147,5 +149,6 @@ libQuantLib_la_SOURCES = \
     prices.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \
+	swaptionvolstructure.cpp \
 	timegrid.cpp \
     voltermstructure.cpp

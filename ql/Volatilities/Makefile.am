@@ -39,6 +39,7 @@ libVolatilities_la_SOURCES = \
     localvolsurface.cpp \
     sabr.cpp \
     smilesection.cpp \
+    swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
     swaptionvolcube1.cpp \
     swaptionvolcube2.cpp \
