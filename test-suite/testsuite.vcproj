@@ -956,6 +956,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\curvestates.cpp">
+			</File>
+			<File
 				RelativePath="dates.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1322,6 +1325,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\fastfouriertransform.cpp">
+			</File>
+			<File
 				RelativePath=".\forwardoption.cpp">
 			</File>
 			<File
@@ -1647,6 +1653,15 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel.cpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_cms.cpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smm.cpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcapletcalibration.cpp">
 			</File>
 			<File
 				RelativePath="matrices.cpp">
@@ -2544,6 +2559,9 @@
 				RelativePath="covariance.hpp">
 			</File>
 			<File
+				RelativePath=".\curvestates.hpp">
+			</File>
+			<File
 				RelativePath="dates.hpp">
 			</File>
 			<File
@@ -2566,6 +2584,9 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp">
+			</File>
+			<File
+				RelativePath=".\fastfouriertransform.hpp">
 			</File>
 			<File
 				RelativePath=".\forwardoption.hpp">
@@ -2610,6 +2631,15 @@
 				RelativePath=".\marketmodel.hpp">
 			</File>
 			<File
+				RelativePath=".\marketmodel_cms.hpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smm.hpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcapletcalibration.hpp">
+			</File>
+			<File
 				RelativePath="matrices.hpp">
 			</File>
 			<File
@@ -2629,6 +2659,9 @@
 			</File>
 			<File
 				RelativePath=".\pathgenerator.hpp">
+			</File>
+			<File
+				RelativePath=".\piecewiseflatforward.hpp">
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.hpp">

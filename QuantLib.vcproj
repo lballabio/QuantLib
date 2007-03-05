@@ -1588,12 +1588,6 @@
 				RelativePath="ql\Instruments\capfloor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cappedflooredcouponbond.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Instruments\cappedflooredcouponbond.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Instruments\cliquetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
