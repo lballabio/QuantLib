@@ -80,8 +80,8 @@ include_HEADERS = \
 	types.hpp \
 	volatilitymodel.hpp \
 	voltermstructure.hpp \
-	yieldtermstructure.hpp \
-    weekday.hpp
+	weekday.hpp \
+	yieldtermstructure.hpp
 
 
 install-data-hook:

@@ -103,7 +103,7 @@ Real longTermCorrelation, beta;
 Size measureOffset_;
 unsigned long seed_;
 Size paths_, trainingPaths_;
-bool printReport_ = true;
+bool printReport_ = false;
 
 void setup() {
 

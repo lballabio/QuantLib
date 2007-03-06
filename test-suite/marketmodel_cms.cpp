@@ -75,7 +75,7 @@ Real longTermCorrelation, beta;
 Size measureOffset_;
 unsigned long seed_;
 Size paths_, trainingPaths_;
-bool printReport_ = true;
+bool printReport_ = false;
 Size spanningForwards;
 
 void setup() {
@@ -433,7 +433,7 @@ QL_END_TEST_LOCALS(MarketModelTest_cms)
 
 void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
 
-    BOOST_MESSAGE("Repricing multi-step Constant maturity swaps "
+    BOOST_MESSAGE("Repricing multi-step constant maturity swaps "
                   "and swaptions in a CMS market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
