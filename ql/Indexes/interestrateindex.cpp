@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -89,10 +89,11 @@ namespace QuantLib {
     }
 
     Date InterestRateIndex::fixingDate(const Date& valueDate) const {
-        Date fixingDate = calendar_.advance(fixingDate, 
-                            -static_cast<Integer>(fixingDays_), Days);
+        Date fixingDate = calendar_.advance(valueDate,
+                                            -static_cast<Integer>(fixingDays_),
+                                            Days);
         QL_ENSURE(isValidFixingDate(fixingDate),
-                  "Fixing date " << fixingDate << " is not valid");
+                  "fixing date " << fixingDate << " is not valid");
         return fixingDate;
     }
 
