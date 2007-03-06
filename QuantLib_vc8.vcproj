@@ -6567,6 +6567,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\Volatilities\swaptionconstantvol.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp"
 					>
 				</File>
