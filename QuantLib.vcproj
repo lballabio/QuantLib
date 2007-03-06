@@ -3210,6 +3210,9 @@
 			Name="Math"
 			Filter="">
 			<File
+				RelativePath=".\ql\Math\abcdinterpolation.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\Math\all.hpp">
 			</File>
 			<File
@@ -3988,6 +3991,9 @@
 			</File>
 			<File
 				RelativePath="ql\Math\loglinearinterpolation.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Math\matrix.cpp">
 			</File>
 			<File
 				RelativePath="ql\Math\matrix.hpp">
