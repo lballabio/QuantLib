@@ -80,7 +80,8 @@ include_HEADERS = \
 	types.hpp \
 	volatilitymodel.hpp \
 	voltermstructure.hpp \
-	yieldtermstructure.hpp
+	yieldtermstructure.hpp \
+    weekday.hpp
 
 
 install-data-hook:
@@ -152,4 +153,5 @@ libQuantLib_la_SOURCES = \
 	stochasticprocess.cpp \
 	swaptionvolstructure.cpp \
 	timegrid.cpp \
-    voltermstructure.cpp
+    voltermstructure.cpp \
+    weekday.cpp
