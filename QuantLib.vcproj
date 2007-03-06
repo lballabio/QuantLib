@@ -9264,6 +9264,12 @@
 			RelativePath="ql\voltermstructure.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\weekday.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\weekday.hpp">
+		</File>
+		<File
 			RelativePath=".\ql\yieldtermstructure.hpp">
 		</File>
 	</Files>
