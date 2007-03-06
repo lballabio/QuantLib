@@ -59,11 +59,13 @@ namespace QuantLib {
                                          marketModel->evolution().rateTaus(),
                                          numeraires[j],
                                          alive_[j]));
+            /*
             for (Size k=0; k<n_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
                                        A.row_begin(k), 0.0);
             }
+            */
         }
 
         setForwards(marketModel_->initialRates());
@@ -77,7 +79,7 @@ namespace QuantLib {
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<n_; ++i) 
+        for (Size i=0; i<n_; ++i)
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 

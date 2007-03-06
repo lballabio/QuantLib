@@ -139,10 +139,10 @@ namespace QuantLib {
                const DayCounter& paymentDayCounter,
                BusinessDayConvention paymentConvention,
                const Handle<YieldTermStructure>& discountCurve)
-    : settlementDays_(settlementDays), calendar_(calendar),
-      paymentConvention_(paymentConvention), faceAmount_(faceAmount),
-      paymentDayCounter_(paymentDayCounter),
-      frequency_(NoFrequency), discountCurve_(discountCurve) {
+    : settlementDays_(settlementDays),  faceAmount_(faceAmount),
+      calendar_(calendar), paymentDayCounter_(paymentDayCounter),
+      paymentConvention_(paymentConvention), discountCurve_(discountCurve),
+      frequency_(NoFrequency) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);
     }

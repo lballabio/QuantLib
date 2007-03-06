@@ -319,9 +319,9 @@ namespace QuantLib {
         QL_REQUIRE(settlementDate != Date(), "null settlement date");
 
         QL_REQUIRE(settlementDays != Null<Size>(), "null settlement days");
-        QL_REQUIRE(settlementDays >= 0,
+        /*QL_REQUIRE(settlementDays >= 0,
                    "positive settlement days required: "
-                   << settlementDays << " not allowed");
+                   << settlementDays << " not allowed");*/
 
         QL_REQUIRE(callabilityTimes.size() == callabilityTypes.size(),
                    "different number of callability times and types");

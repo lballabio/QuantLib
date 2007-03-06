@@ -135,9 +135,9 @@ namespace QuantLib {
         Rate maxStrike_, minStrike_;
     };
 
-	//! this class is interpolating caplets volatilities linealy in two steps (instead of 
-	// one for the BilinInterpCapletVolStructure
-	
+    //! this class is interpolating caplets volatilities linealy in two steps (instead of
+    // one for the BilinInterpCapletVolStructure
+
     class DecInterpCapletVolStructure:
         public ParametrizedCapletVolStructure{
     public:
@@ -148,12 +148,12 @@ namespace QuantLib {
             const std::vector<Rate>& strikes);
 
         Volatility volatilityImpl(Time length, Rate strike) const;
-        
+
         void setClosestTenors(Time time,
             Time& nextLowerTenor, Time& nextHigherTenor);
 
         Time minTime() const{ return tenorTimes_.front();}
-        
+
         Time maxTime() const{ return tenorTimes_.back();}
 
         Real& volatilityParameter(Size i, Size j) const {
@@ -175,7 +175,7 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         //@}
-         
+
         void update();
 
     private:
@@ -226,8 +226,9 @@ namespace QuantLib {
         Time maxTime() const{ return volatilitiesFromCaps_->maxTime();}
 
         void setClosestTenors(Time time,
-            Time& nextLowerTenor, Time& nextHigherTenor){
-                // to be implemnted ...
+                              Time& nextLowerTenor,
+                              Time& nextHigherTenor) {
+                // to be implemented ...
          };
         void update();
     private:

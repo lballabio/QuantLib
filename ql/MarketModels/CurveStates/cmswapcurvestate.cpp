@@ -55,9 +55,9 @@ namespace QuantLib {
         //discRatios_[nRates_] = 1.0;
         //cmSwapAnnuities_[nRates_-1] = rateTaus_[nRates_-1];
 
-        // assume i+1 and do i 
+        // assume i+1 and do i
         Integer oldAnnuityEndIndex = nRates_;
-        for (Size i=nRates_-1; i>first_; --i) 
+        for (Size i=nRates_-1; i>first_; --i)
         {
             // formula 6.1 Joshi Liesch
             Integer endIndex = std::min(i + spanningFwds_,nRates_);
@@ -69,7 +69,7 @@ namespace QuantLib {
             +discRatios_[i] * rateTaus_[i-1];
 
             if (annuityEndIndex < oldAnnuityEndIndex)
-              cmSwapAnnuities_[i-1]-=discRatios_[oldAnnuityEndIndex] * rateTaus_[oldAnnuityEndIndex-1 ];     
+              cmSwapAnnuities_[i-1]-=discRatios_[oldAnnuityEndIndex] * rateTaus_[oldAnnuityEndIndex-1 ];
 
             oldAnnuityEndIndex = annuityEndIndex;
         }
@@ -118,7 +118,7 @@ namespace QuantLib {
 
     Rate CMSwapCurveState::cmSwapAnnuity(Size numeraire,
                                          Size i,
-                                         Size spanningForwards) const{
+                                         Size) const{
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
                    "invalid numeraire");
@@ -127,7 +127,7 @@ namespace QuantLib {
     }
 
     Rate CMSwapCurveState::cmSwapRate(Size i,
-                                      Size spanningForwards) const {
+                                      Size) const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
         return cmSwapRates_[i];

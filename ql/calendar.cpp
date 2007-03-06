@@ -44,8 +44,7 @@ namespace QuantLib {
     }
 
     Date Calendar::adjust(const Date& d,
-                          BusinessDayConvention c,
-                          const Date& origin) const {
+                          BusinessDayConvention c) const {
         QL_REQUIRE(d != Date(), "null date");
 
         if (c == Unadjusted)

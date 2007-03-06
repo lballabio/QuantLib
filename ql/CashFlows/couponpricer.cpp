@@ -133,11 +133,11 @@ namespace QuantLib {
 //                         CouponSelectorToSetPricer                         //
 //===========================================================================//
 
-    void CouponSelectorToSetPricer::visit(CashFlow& c) {
+    void CouponSelectorToSetPricer::visit(CashFlow&) {
         // nothing to do
     }
 
-    void CouponSelectorToSetPricer::visit(Coupon& c) {
+    void CouponSelectorToSetPricer::visit(Coupon&) {
         // nothing to do
     }
 
@@ -175,6 +175,6 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         else
             QL_FAIL("unexpected error when casting to CmsCouponPricer");
-    }  
+    }
 
 }

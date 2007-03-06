@@ -110,8 +110,8 @@ void setup() {
         todaysForwards[i] = 0.03 + 0.0010*i;
         //todaysForwards[i] = 0.04;
     }
-    LMMCurveState curveState_lmm(rateTimes); 
-    curveState_lmm.setOnForwardRates(todaysForwards); 
+    LMMCurveState curveState_lmm(rateTimes);
+    curveState_lmm.setOnForwardRates(todaysForwards);
     todaysSwaps = curveState_lmm.coterminalSwapRates();
 
     // Discounts
@@ -253,7 +253,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     std::transform(usedRates.begin(), usedRates.end(),
                    bumpedRates.begin(),
                    std::bind1st(std::plus<Rate>(), rateBump));
-                   
+
     std::vector<Volatility> bumpedVols(swaptionDisplacedVols.size());
     std::transform(swaptionDisplacedVols.begin(), swaptionDisplacedVols.end(),
                    bumpedVols.begin(),
@@ -389,11 +389,11 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
                                       const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
                                       const boost::shared_ptr<MarketModel> marketModel,
                                       const std::string& config) {
-    
+
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
     std::vector<Real> discrepancies(todaysForwards.size());
-    
+
     Size N = todaysForwards.size();
 
     // check Swaps
@@ -404,7 +404,7 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     std::vector<Real> expectedNPVs(todaysSwaps.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState_lmm.coterminalSwapAnnuity(i, i) 
+        Real expectedNPV = curveState_lmm.coterminalSwapAnnuity(i, i)
             * (todaysSwaps[i]-fixedRate) * todaysDiscounts[i];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
@@ -423,18 +423,18 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
         }
         BOOST_ERROR("test failed");
     }
-    
+
     // check Swaptions
     maxError = 0;
     std::vector<Rate> expectedSwaptions(N);
     std::vector<Real> stdDevSwaptions(N);
     for (Size i=0; i<N; ++i) {
-        const std::vector<Time>&  taus = curveState_lmm.rateTaus();
-        Real expectedSwaption = BlackCalculator(
-                        displacedPayoff[i],
-                        todaysSwaps[i]+displacement,
-                        swaptionDisplacedVols[i]*std::sqrt(rateTimes[i]),
-                        curveState_lmm.coterminalSwapAnnuity(i,i) * todaysDiscounts[i]).value();
+        Real expectedSwaption =
+            BlackCalculator(displacedPayoff[i],
+                            todaysSwaps[i]+displacement,
+                            swaptionDisplacedVols[i]*std::sqrt(rateTimes[i]),
+                            curveState_lmm.coterminalSwapAnnuity(i,i) *
+                                todaysDiscounts[i]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
@@ -467,7 +467,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     Size numberOfFactors = 3;
     Size numberOfRates = todaysForwards.size();
-    
+
     EvolutionDescription evolution(rateTimes);
 
     LMMCurveState cs(rateTimes);

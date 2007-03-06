@@ -147,8 +147,7 @@ namespace QuantLib {
             with respect to the given convention.
         */
         Date adjust(const Date&,
-                    BusinessDayConvention convention = Following,
-                    const Date& origin = Date()) const;
+                    BusinessDayConvention convention = Following) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.

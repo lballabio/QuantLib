@@ -400,12 +400,12 @@ void checkCMSAndSwaptions(const SequenceStatistics& stats,
     std::vector<Rate> expectedSwaptions(N);
     std::vector<Real> stdDevSwaptions(N);
     for (Size i=0; i<N; ++i) {
-        const std::vector<Time>&  taus = curveState_lmm.rateTaus();
-        Real expectedSwaption = BlackCalculator(
-                        displacedPayoff[i],
-                        todaysCMSwapRates[i]+displacement,
-                        volatilities[i]*std::sqrt(rateTimes[i]),
-                        curveState_lmm.cmSwapAnnuity(i,i, spanningForwards) * todaysDiscounts[i]).value();
+        Real expectedSwaption =
+            BlackCalculator(displacedPayoff[i],
+                            todaysCMSwapRates[i]+displacement,
+                            volatilities[i]*std::sqrt(rateTimes[i]),
+                            curveState_lmm.cmSwapAnnuity(i,i, spanningForwards)
+                                * todaysDiscounts[i]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);

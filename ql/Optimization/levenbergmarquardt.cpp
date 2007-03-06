@@ -36,7 +36,6 @@ namespace QuantLib {
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
-        Integer iterationNumber_=0;
 
         ProblemData::instance().problem() = &P;
         ProblemData::instance().initCostValues()

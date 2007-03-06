@@ -457,16 +457,17 @@ void checkCoterminalSwapsAndSwaptions(const SequenceStatistics& stats,
     std::vector<Real> stdDevSwaptions(N);
         for (Size i=0; i<N; ++i) {
         const Matrix& forwardsCovariance = marketModel->totalCovariance(i);
-        Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
-        Time expiry = rateTimes[i];
+        Matrix cotSwapsCovariance =
+            jacobian * forwardsCovariance * transpose(jacobian);
         boost::shared_ptr<PlainVanillaPayoff> payoff(
             new PlainVanillaPayoff(Option::Call, fixedRate+displacement));
 
-        const std::vector<Time>&  taus = curveState.rateTaus();
-        Real expectedSwaption = BlackCalculator(payoff,
-                        todaysCoterminalSwapRates[i]+displacement,
-                        std::sqrt(cotSwapsCovariance[i][i]),
-                        curveState.coterminalSwapAnnuity(i,i) * todaysDiscounts[0]).value();
+        Real expectedSwaption =
+            BlackCalculator(payoff,
+                            todaysCoterminalSwapRates[i]+displacement,
+                            std::sqrt(cotSwapsCovariance[i][i]),
+                            curveState.coterminalSwapAnnuity(i,i) *
+                                todaysDiscounts[0]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
@@ -675,7 +676,6 @@ void checkCoterminalSwaps(const SequenceStatistics& stats,
     std::vector<Rate> expected(todaysForwards.size());
     Real minError = QL_MAX_REAL;
     Real maxError = QL_MIN_REAL;
-    Real tmp = 0.;
     Size N = expected.size();
     LMMCurveState curveState(rateTimes);
     curveState.setOnForwardRates(todaysForwards);
