@@ -51,13 +51,15 @@ namespace QuantLib {
                      std::vector<Real>& drifts) const;
 
         /*! Computes the drifts without factor reduction as in 
-            eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
+            eqs. 2, 4 of ref. [1], modified for normal forward rates dynamic 
+            (uses the covariance matrix directly). */
         void computePlain(const LMMCurveState& cs,
                           std::vector<Real>& drifts) const;
         void computePlain(const std::vector<Rate>& fwds,
                           std::vector<Real>& drifts) const;
 
-        /*! Computes the drifts with factor reduction as in eq. 7 of ref. [1]
+        /*! Computes the drifts with factor reduction as in 
+            eq. 7 of ref. [1], modified for normal forward rates dynamic
             (uses pseudo square root of the covariance matrix). */
         void computeReduced(const LMMCurveState& cs,
                             std::vector<Real>& drifts) const;

@@ -31,7 +31,7 @@ namespace QuantLib {
 
     class LMMCurveState;
 
-    //! Drift computation for Libor Market Models
+    //! Drift computation for Lognormal Libor Market Models
     /*! \ingroup Market Models */
     class LMMDriftCalculator {
       public:
