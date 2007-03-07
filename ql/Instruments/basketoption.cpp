@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     BasketOption::BasketOption(
-        const BasketType basketType,
+        const boost::shared_ptr<BasketOptionType> & basketType,
         const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
@@ -32,6 +32,26 @@ namespace QuantLib {
     : MultiAssetOption(process, payoff, exercise, engine),
       basketType_(basketType) {}
 
+    BasketOption::BasketOption(
+        BasketType basketType,
+        const boost::shared_ptr<StochasticProcess>& process,
+        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
+    : MultiAssetOption(process, payoff, exercise, engine) {
+        switch(basketType) {
+        case BasketOption::Min:
+            basketType_ = 
+                boost::shared_ptr<MinBasketOptionType>(new MinBasketOptionType());
+            break;
+        case BasketOption::Max:
+            basketType_ = 
+                boost::shared_ptr<MaxBasketOptionType>(new MaxBasketOptionType());
+            break;
+        default:
+            QL_FAIL("unknown basket type");
+        }
+    }
     void BasketOption::setupArguments(PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
 

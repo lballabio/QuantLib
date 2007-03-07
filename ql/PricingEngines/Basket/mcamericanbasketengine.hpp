@@ -73,10 +73,10 @@ namespace QuantLib {
     class AmericanBasketPathPricer
         : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        typedef BasketOption::BasketType BasketType;
+        typedef BasketOption::type BasketType;
 
         AmericanBasketPathPricer(Size assetNumber,
-                                 BasketOption::BasketType basketType,
+                                 BasketOption::type basketType,
                                  const boost::shared_ptr<Payoff>& payoff,
                                  Size polynomOrder = 2,
                                  LsmBasisSystem::PolynomType
@@ -91,7 +91,7 @@ namespace QuantLib {
         Real payoff(const Array& state) const;
 
         const Size assetNumber_;
-        const BasketOption::BasketType basketType_;
+        const BasketOption::type basketType_;
         const boost::shared_ptr<Payoff> payoff_;
 
         Real scalingValue_;

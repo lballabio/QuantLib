@@ -127,6 +127,13 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
+        boost::shared_ptr<MinBasketOptionType> min_basket =
+            boost::dynamic_pointer_cast<MinBasketOptionType>(arguments_.basketType);
+
+        boost::shared_ptr<MaxBasketOptionType> max_basket =
+            boost::dynamic_pointer_cast<MaxBasketOptionType>(arguments_.basketType);
+        QL_REQUIRE(min_basket || max_basket, "unknown basket type");
+
 
         Real strike = payoff->strike();
 
@@ -146,15 +153,12 @@ namespace QuantLib {
         DiscountFactor dividendDiscount2 =
             process2->dividendYield()->discount(exercise->lastDate());
 
-        BasketOption::BasketType basketType = arguments_.basketType;
-
         Real forward1 = process1->stateVariable()->value() *
             dividendDiscount1 / riskFreeDiscount;
         Real forward2 = process2->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
-        switch (basketType) {
-          case BasketOption::Max:
+        if (max_basket) {
             switch (payoff->optionType()) {
               // euro call on a two asset max basket
               case Option::Call:
@@ -178,8 +182,7 @@ namespace QuantLib {
               default:
                 QL_FAIL("unknown option type");
             }
-            break;
-          case BasketOption::Min:
+        } else if (min_basket) {
             switch (payoff->optionType()) {
               // euro call on a two asset min basket
               case Option::Call:
@@ -202,8 +205,7 @@ namespace QuantLib {
               default:
                 QL_FAIL("unknown option type");
             }
-            break;
-          default:
+        } else {
             QL_FAIL("unknown type");
         }
     }

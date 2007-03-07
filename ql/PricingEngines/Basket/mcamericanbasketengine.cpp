@@ -41,11 +41,6 @@ namespace QuantLib {
       v_           (LsmBasisSystem::multiPathBasisSystem(assetNumber_,
                                                          polynomOrder,
                                                          polynomType)) {
-
-        QL_REQUIRE(   basketType_ == BasketOption::Min
-                   || basketType_ == BasketOption::Max,
-                   "unknwon basket option type");
-
         QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
                    || polynomType == LsmBasisSystem::Laguerre
                    || polynomType == LsmBasisSystem::Hermite
@@ -78,18 +73,7 @@ namespace QuantLib {
 
     Real AmericanBasketPathPricer::payoff(const Array& state) const {
 
-        Real value;
-        switch(basketType_) {
-          case BasketOption::Min:
-            value = *std::min_element(state.begin(), state.end());
-            break;
-          case BasketOption::Max:
-            value = *std::max_element(state.begin(), state.end());
-            break;
-          default:
-            QL_FAIL("unknown basket type");
-        }
-
+        Real value = basketType_->pricingFunction(state);
         return (*payoff_)(value/scalingValue_);
     }
 

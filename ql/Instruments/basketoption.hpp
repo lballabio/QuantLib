@@ -31,13 +31,60 @@
 namespace QuantLib {
 
     //! Basket option on a number of assets
-    /*! \ingroup instruments */
+    /*! \ingroup instruments 
+      @TODO: Replace with STL algorithms */
+
+    class BasketOptionType {
+    public:
+        virtual ~BasketOptionType() {};
+        virtual Real pricingFunction(const Array &a) = 0;
+    };
+
+    class MinBasketOptionType : public BasketOptionType {
+    public:
+        MinBasketOptionType() {};
+        Real pricingFunction(const Array &a) {
+            return *std::min_element(a.begin(), a.end());
+        }
+    };
+
+    class MaxBasketOptionType : public BasketOptionType {
+    public:
+        MaxBasketOptionType() {};
+        Real pricingFunction(const Array &a) {
+            return *std::max_element(a.begin(), a.end());
+        }
+    };
+
+    class AverageBasketOptionType : public BasketOptionType {
+    public:
+        AverageBasketOptionType(const Array &a) :
+            weights_(a) {};
+        Real pricingFunction(const Array &a) {
+            Real basketPrice = 0.0;
+            for (Size j = 0; j < weights_.size(); j++) {
+                basketPrice += a[j] * weights_[j];
+            }
+            return basketPrice;
+        }
+    private:
+        Array weights_;
+    };
+
     class BasketOption : public MultiAssetOption {
       public:
         class arguments;
         class engine;
+        typedef boost::shared_ptr<BasketOptionType> type;
         enum BasketType { Min, Max };
-        BasketOption(const BasketType basketType,
+        // Backward compatibility
+        BasketOption(BasketType, 
+                     const boost::shared_ptr<StochasticProcess>&,
+                     const boost::shared_ptr<PlainVanillaPayoff>&,
+                     const boost::shared_ptr<Exercise>&,
+                     const boost::shared_ptr<PricingEngine>& engine =
+                                          boost::shared_ptr<PricingEngine>());
+        BasketOption(const boost::shared_ptr<BasketOptionType>&,
                      const boost::shared_ptr<StochasticProcess>&,
                      const boost::shared_ptr<PlainVanillaPayoff>&,
                      const boost::shared_ptr<Exercise>&,
@@ -45,7 +92,7 @@ namespace QuantLib {
                                           boost::shared_ptr<PricingEngine>());
         void setupArguments(PricingEngine::arguments*) const;
       private:
-        BasketType basketType_;
+        type basketType_;
     };
 
     //! %Arguments for basket option calculation
@@ -53,7 +100,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        BasketType basketType;
+        BasketOption::type basketType;
     };
 
 

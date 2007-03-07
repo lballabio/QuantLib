@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     EuropeanMultiPathPricer::EuropeanMultiPathPricer(
-                                      BasketOption::BasketType basketType,
+                                      BasketOption::type basketType,
                                       Option::Type type,
                                       Real strike,
                                       DiscountFactor discount)
@@ -50,25 +50,7 @@ namespace QuantLib {
             finalPrice[j] = multiPath[j].back();
 
         // this should be a basket payoff
-        Real basketPrice = finalPrice[0];
-        switch (basketType_) {
-          case BasketOption::Max:
-            for (j = 1; j < numAssets; j++) {
-                if (finalPrice[j] > basketPrice) {
-                    basketPrice = finalPrice[j];
-                }
-            }
-          break;
-          case BasketOption::Min:
-            for (j = 1; j < numAssets; j++) {
-                if (finalPrice[j] < basketPrice) {
-                    basketPrice = finalPrice[j];
-                }
-            }
-          break;
-        }
-
-        // return the payoff
+        Real basketPrice = basketType_->pricingFunction(finalPrice);
         return payoff_(basketPrice) * discount_;
     }
 

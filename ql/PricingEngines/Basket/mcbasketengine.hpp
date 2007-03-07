@@ -98,13 +98,13 @@ namespace QuantLib {
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanMultiPathPricer(BasketOption::BasketType basketType,
+        EuropeanMultiPathPricer(BasketOption::type basketType,
                                 Option::Type type,
                                 Real strike,
                                 DiscountFactor discount);
         Real operator()(const MultiPath& multiPath) const;
       private:
-        BasketOption::BasketType basketType_;
+        BasketOption::type basketType_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
     };
