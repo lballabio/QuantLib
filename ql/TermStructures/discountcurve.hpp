@@ -59,7 +59,7 @@ namespace QuantLib {
                                   const DayCounter&,
                                   const Interpolator& interpolator
                                                             = Interpolator());
-        InterpolatedDiscountCurve(Size settlementDays,
+        InterpolatedDiscountCurve(Natural settlementDays,
                                   const Calendar&,
                                   const DayCounter&,
                                   const Interpolator& interpolator
@@ -131,7 +131,7 @@ namespace QuantLib {
 
     template <class T>
     inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
-                                                 Size settlementDays,
+                                                 Natural settlementDays,
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)

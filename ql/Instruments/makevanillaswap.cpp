@@ -52,7 +52,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Size fixingDays = index_->fixingDays();
+          Natural fixingDays = index_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate,
                                                  fixingDays*Days);
@@ -94,7 +94,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Size fixingDays = index_->fixingDays();
+          Natural fixingDays = index_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;

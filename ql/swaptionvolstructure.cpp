@@ -37,7 +37,7 @@ namespace QuantLib {
     : TermStructure(referenceDate, calendar, dc), bdc_(bdc) {}
 
     SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                                Size settlementDays,
+                                                Natural settlementDays,
                                                 const Calendar& calendar,
                                                 const DayCounter& dc,
                                                 BusinessDayConvention bdc)

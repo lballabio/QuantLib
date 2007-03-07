@@ -129,28 +129,28 @@ namespace QuantLib {
     DepositRateHelper::DepositRateHelper(
                        const Handle<Quote>& rate,
                        const Period& tenor,
-                       Size settlementDays,
+                       Natural settlementDays,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        bool endOfMonth,
-                       Size fixingDays,
+                       Natural fixingDays,
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
-        index_ = boost::shared_ptr<IborIndex>(
-                 new IborIndex("dummy", tenor, fixingDays,
-                               Currency(), calendar, convention,
-                               endOfMonth, dayCounter, termStructureHandle_));
+        index_ = boost::shared_ptr<IborIndex>(new
+            IborIndex("dummy", tenor, fixingDays,
+                      Currency(), calendar, convention,
+                      endOfMonth, dayCounter, termStructureHandle_));
         initializeDates();
     }
 
     DepositRateHelper::DepositRateHelper(
                        Rate rate,
                        const Period& tenor,
-                       Size settlementDays,
+                       Natural settlementDays,
                        const Calendar& calendar,
                        BusinessDayConvention convention,
                        bool endOfMonth,
-                       Size fixingDays,
+                       Natural fixingDays,
                        const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays) {
         index_ = boost::shared_ptr<IborIndex>(
@@ -196,13 +196,13 @@ namespace QuantLib {
 
 
     FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
-                                 Size monthsToStart,
-                                 Size monthsToEnd,
-                                 Size settlementDays,
+                                 Natural monthsToStart,
+                                 Natural monthsToEnd,
+                                 Natural settlementDays,
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
-                                 Size fixingDays,
+                                 Natural fixingDays,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
       settlementDays_(settlementDays) {
@@ -218,13 +218,13 @@ namespace QuantLib {
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
-                                 Size monthsToStart,
-                                 Size monthsToEnd,
-                                 Size settlementDays,
+                                 Natural monthsToStart,
+                                 Natural monthsToEnd,
+                                 Natural settlementDays,
                                  const Calendar& calendar,
                                  BusinessDayConvention convention,
                                  bool endOfMonth,
-                                 Size fixingDays,
+                                 Natural fixingDays,
                                  const DayCounter& dayCounter)
     : RelativeDateRateHelper(rate), monthsToStart_(monthsToStart),
       settlementDays_(settlementDays) {
@@ -275,7 +275,7 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const Period& tenor,
-                                   Size settlementDays,
+                                   Natural settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
@@ -293,7 +293,7 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(Rate rate,
                                    const Period& tenor,
-                                   Size settlementDays,
+                                   Natural settlementDays,
                                    const Calendar& calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,

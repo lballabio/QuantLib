@@ -56,7 +56,7 @@ namespace QuantLib {
                                     const DayCounter& dc = Actual365Fixed(),
                                     BusinessDayConvention bdc = Following);
         //! calculate the reference date based on the global evaluation date
-        SwaptionVolatilityStructure(Size settlementDays,
+        SwaptionVolatilityStructure(Natural settlementDays,
                                     const Calendar&,
                                     const DayCounter& dc = Actual365Fixed(),
                                     BusinessDayConvention bdc = Following);

@@ -109,7 +109,7 @@ namespace QuantLib {
         Forward(const DayCounter& dayCounter,
                 const Calendar& calendar,
                 BusinessDayConvention businessDayConvention,
-                Size settlementDays,
+                Natural settlementDays,
                 const boost::shared_ptr<Payoff>& payoff,
                 const Date& valueDate,
                 const Date& maturityDate,
@@ -125,7 +125,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Calendar calendar_;
         BusinessDayConvention businessDayConvention_;
-        Size settlementDays_;
+        Natural settlementDays_;
         boost::shared_ptr<Payoff> payoff_;
         /*! valueDate = settlement date (date the fwd contract starts
             accruing)

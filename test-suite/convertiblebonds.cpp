@@ -46,7 +46,7 @@ Date today_, issueDate_, maturityDate_;
 Calendar calendar_;
 DayCounter dayCounter_;
 Frequency frequency_;
-Size settlementDays_;
+Natural settlementDays_;
 
 RelinkableHandle<Quote> underlying_;
 RelinkableHandle<YieldTermStructure> dividendYield_, riskFreeRate_;
@@ -214,7 +214,7 @@ void ConvertibleBondTest::testBond() {
     // floating-rate
 
     boost::shared_ptr<IborIndex> index(new Euribor1Y(discountCurve));
-    Size fixingDays = 2;
+    Natural fixingDays = 2;
     std::vector<Real> gearings(1, 1.0);
     std::vector<Rate> spreads;
 

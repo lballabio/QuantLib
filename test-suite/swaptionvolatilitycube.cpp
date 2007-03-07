@@ -52,7 +52,7 @@ std::vector<Period> swapTenors_;
 std::vector<Spread> strikeSpreads_;
 Matrix volSpreadsMatrix_;
 std::vector<std::vector<Handle<Quote> > > volSpreads_;
-Integer swapSettlementDays_;
+Natural swapSettlementDays_;
 Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
 DayCounter fixedLegDayCounter_;

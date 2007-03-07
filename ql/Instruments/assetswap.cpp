@@ -65,7 +65,7 @@ namespace QuantLib {
 
         // might become input parameters
         BusinessDayConvention paymentAdjustment = Following;
-        Size fixingDays = index->fixingDays();
+        Natural fixingDays = index->fixingDays();
         std::vector<Real> nominals(1, nominal_);
         std::vector<Real> gearings(1, 1.0);
         std::vector<Spread> spreads(1, spread);

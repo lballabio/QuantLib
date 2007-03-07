@@ -23,14 +23,14 @@
 namespace QuantLib {
 
     IborIndex::IborIndex(const std::string& familyName,
-                 const Period& tenor,
-                 Size settlementDays,
-                 const Currency& currency,
-                 const Calendar& calendar,
-                 BusinessDayConvention convention,
-                 bool endOfMonth,
-                 const DayCounter& dayCounter,
-                 const Handle<YieldTermStructure>& h)
+                         const Period& tenor,
+                         Natural settlementDays,
+                         const Currency& currency,
+                         const Calendar& calendar,
+                         BusinessDayConvention convention,
+                         bool endOfMonth,
+                         const DayCounter& dayCounter,
+                         const Handle<YieldTermStructure>& h)
     : InterestRateIndex(familyName, tenor, settlementDays, currency,
                         calendar, dayCounter),
       convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {

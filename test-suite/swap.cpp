@@ -47,7 +47,7 @@ BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<IborIndex> index_;
-Size settlementDays_;
+Natural settlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities
@@ -267,7 +267,7 @@ void SwapTest::testInArrears() {
 
     std::vector<Real> gearings;
     std::vector<Rate> spreads;
-    Size fixingDays = 0;
+    Natural fixingDays = 0;
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(

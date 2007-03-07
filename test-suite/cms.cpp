@@ -61,7 +61,7 @@ std::vector<std::vector<Handle<Quote> > > volSpreads_;
 
 DayCounter dayCounter_;
 BusinessDayConvention optionBDC_;
-Integer swapSettlementDays_;
+Natural swapSettlementDays_;
 bool vegaWeightedSmileFit_;
 
 // Cms Schedules conventions
@@ -76,7 +76,7 @@ Spread spread_;
 Date startDate_;
 Date paymentDate_;
 Date endDate_;
-Size settlementDays_;
+Natural settlementDays_;
 DayCounter fixedCmsDayCount_;
 
 // Term Structure

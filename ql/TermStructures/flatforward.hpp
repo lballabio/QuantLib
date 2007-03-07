@@ -45,13 +45,13 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
-        FlatForward(Size settlementDays,
+        FlatForward(Natural settlementDays,
                     const Calendar& calendar,
                     const Handle<Quote>& forward,
                     const DayCounter& dayCounter,
                     Compounding compounding = Continuous,
                     Frequency frequency = Annual);
-        FlatForward(Size settlementDays,
+        FlatForward(Natural settlementDays,
                     const Calendar& calendar,
                     Rate forward,
                     const DayCounter& dayCounter,
@@ -95,7 +95,7 @@ namespace QuantLib {
         updateRate();
     }
 
-    inline FlatForward::FlatForward(Size settlementDays,
+    inline FlatForward::FlatForward(Natural settlementDays,
                                     const Calendar& calendar,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter,
@@ -107,7 +107,7 @@ namespace QuantLib {
         updateRate();
     }
 
-    inline FlatForward::FlatForward(Size settlementDays,
+    inline FlatForward::FlatForward(Natural settlementDays,
                                     const Calendar& calendar,
                                     Rate forward,
                                     const DayCounter& dayCounter,

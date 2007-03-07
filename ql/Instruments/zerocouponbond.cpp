@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     ZeroCouponBond::ZeroCouponBond(
-                        Size settlementDays,
+                        Natural settlementDays,
                         Real faceAmount,
                         const Calendar& calendar,
                         const Date& maturityDate,

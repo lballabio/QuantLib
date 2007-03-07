@@ -33,7 +33,7 @@ namespace QuantLib {
     FloatingRateCoupon::FloatingRateCoupon(
                          const Date& paymentDate, const Real nominal,
                          const Date& startDate, const Date& endDate,
-                         const Size fixingDays,
+                         const Natural fixingDays,
                          const boost::shared_ptr<InterestRateIndex>& index,
                          const Real gearing, const Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd,
@@ -84,7 +84,7 @@ namespace QuantLib {
         return index_;
     }
 
-    Size FloatingRateCoupon::fixingDays() const {
+    Natural FloatingRateCoupon::fixingDays() const {
         return fixingDays_;
     }
 

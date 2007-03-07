@@ -49,7 +49,7 @@ namespace QuantLib {
                             const std::vector<Period>& lengths,
                             const std::vector<Volatility>& volatilities,
                             const DayCounter& dayCounter);
-        CapVolatilityVector(Size settlementDays,
+        CapVolatilityVector(Natural settlementDays,
                             const Calendar& calendar,
                             const std::vector<Period>& lengths,
                             const std::vector<Volatility>& volatilities,
@@ -91,7 +91,7 @@ namespace QuantLib {
     }
 
     inline CapVolatilityVector::CapVolatilityVector(
-                                          Size settlementDays,
+                                          Natural settlementDays,
                                           const Calendar& calendar,
                                           const std::vector<Period>& lengths,
                                           const std::vector<Volatility>& vols,

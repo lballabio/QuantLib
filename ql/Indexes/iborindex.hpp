@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         IborIndex(const std::string& familyName,
                   const Period& tenor,
-                  Size settlementDays,
+                  Natural settlementDays,
                   const Currency& currency,
                   const Calendar& calendar,
                   BusinessDayConvention convention,

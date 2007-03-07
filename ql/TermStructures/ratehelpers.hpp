@@ -86,19 +86,19 @@ namespace QuantLib {
       public:
         DepositRateHelper(const Handle<Quote>& rate,
                           const Period& tenor,
-                          Size settlementDays,
+                          Natural settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Size fixingDays,
+                          Natural fixingDays,
                           const DayCounter& dayCounter);
         DepositRateHelper(Rate rate,
                           const Period& tenor,
-                          Size settlementDays,
+                          Natural settlementDays,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           bool endOfMonth,
-                          Size fixingDays,
+                          Natural fixingDays,
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -106,7 +106,7 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Size settlementDays_;
+        Natural settlementDays_;
         boost::shared_ptr<IborIndex> index_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -116,22 +116,22 @@ namespace QuantLib {
     class FraRateHelper : public RelativeDateRateHelper {
       public:
         FraRateHelper(const Handle<Quote>& rate,
-                      Size monthsToStart,
-                      Size monthsToEnd,
-                      Size settlementDays,
+                      Natural monthsToStart,
+                      Natural monthsToEnd,
+                      Natural settlementDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Size fixingDays,
+                      Natural fixingDays,
                       const DayCounter& dayCounter);
         FraRateHelper(Rate rate,
-                      Size monthsToStart,
-                      Size monthsToEnd,
-                      Size settlementDays,
+                      Natural monthsToStart,
+                      Natural monthsToEnd,
+                      Natural settlementDays,
                       const Calendar& calendar,
                       BusinessDayConvention convention,
                       bool endOfMonth,
-                      Size fixingDays,
+                      Natural fixingDays,
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -139,8 +139,8 @@ namespace QuantLib {
       private:
         void initializeDates();
         Date fixingDate_;
-        Size monthsToStart_;
-        Size settlementDays_;
+        Natural monthsToStart_;
+        Natural settlementDays_;
         boost::shared_ptr<IborIndex> index_;
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -150,7 +150,7 @@ namespace QuantLib {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
-                       Size settlementDays,
+                       Natural settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -160,7 +160,7 @@ namespace QuantLib {
                        const boost::shared_ptr<IborIndex>& index);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
-                       Size settlementDays,
+                       Natural settlementDays,
                        const Calendar& calendar,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -175,7 +175,7 @@ namespace QuantLib {
       protected:
         void initializeDates();
         Period tenor_;
-        Size settlementDays_;
+        Natural settlementDays_;
         Calendar calendar_;
         BusinessDayConvention fixedConvention_;
         Frequency fixedFrequency_;

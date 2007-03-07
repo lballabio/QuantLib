@@ -52,7 +52,7 @@ namespace QuantLib {
     */
     class Bond : public Instrument {
       protected:
-        Bond(Size settlementDays,
+        Bond(Natural settlementDays,
              Real faceAmount,
              const Calendar& calendar,
              const DayCounter& paymentDayCounter,
@@ -138,7 +138,7 @@ namespace QuantLib {
       protected:
         void performCalculations() const;
         void setupArguments(PricingEngine::arguments*) const;
-        Size settlementDays_;
+        Natural settlementDays_;
         Real faceAmount_;
         Calendar calendar_;
         DayCounter paymentDayCounter_;

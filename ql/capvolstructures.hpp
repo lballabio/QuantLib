@@ -51,7 +51,7 @@ namespace QuantLib {
                                const Calendar& cal = Calendar(),
                                const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        CapVolatilityStructure(Size settlementDays,
+        CapVolatilityStructure(Natural settlementDays,
                                const Calendar&,
                                const DayCounter& dc = Actual365Fixed());
         //@}
@@ -106,7 +106,7 @@ namespace QuantLib {
                                   const Calendar& cal = Calendar(),
                                   const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        CapletVolatilityStructure(Size settlementDays,
+        CapletVolatilityStructure(Natural settlementDays,
                                   const Calendar&,
                                   const DayCounter& dc = Actual365Fixed());
         //@}
@@ -166,7 +166,7 @@ namespace QuantLib {
     : TermStructure(refDate, cal, dc) {}
 
     inline CapVolatilityStructure::CapVolatilityStructure(
-                                                        Size settlementDays,
+                                                        Natural settlementDays,
                                                         const Calendar& cal,
                                                         const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}
@@ -221,7 +221,7 @@ namespace QuantLib {
     : TermStructure(referenceDate, cal, dc) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
-                             Size settlementDays,
+                             Natural settlementDays,
                              const Calendar& cal,
                              const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}

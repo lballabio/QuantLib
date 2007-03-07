@@ -103,12 +103,12 @@ BondDatum bondData[] = {
 // test-global variables
 
 Calendar calendar;
-Size settlementDays;
+Natural settlementDays;
 Date today, settlement;
 BusinessDayConvention fixedLegConvention;
 Frequency fixedLegFrequency;
 DayCounter fixedLegDayCounter;
-Integer bondSettlementDays;
+Natural bondSettlementDays;
 DayCounter bondDayCounter;
 BusinessDayConvention bondConvention;
 Real bondRedemption;

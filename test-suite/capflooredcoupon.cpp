@@ -47,7 +47,7 @@ std::vector<Real> nominals_;
 BusinessDayConvention convention_;
 Frequency frequency_;
 boost::shared_ptr<IborIndex> index_;
-Size settlementDays_, fixingDays_;
+Natural settlementDays_, fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 std::vector<Rate> caps_;
 std::vector<Rate> floors_;

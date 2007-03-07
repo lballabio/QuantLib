@@ -39,7 +39,7 @@ namespace QuantLib {
 
         Calendar calendar = index->calendar();
         Period indexTenor = index->tenor();
-        Size fixingDays = index->fixingDays();
+        Natural fixingDays = index->fixingDays();
         Date exerciseDate = calendar.advance(termStructure->referenceDate(),
                                              maturity,
                                              index->businessDayConvention());

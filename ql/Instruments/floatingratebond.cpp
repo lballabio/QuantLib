@@ -25,13 +25,13 @@
 namespace QuantLib {
 
     FloatingRateBond::FloatingRateBond(
-                           Size settlementDays,
+                           Natural settlementDays,
                            Real faceAmount,
                            const Schedule& schedule,
                            const boost::shared_ptr<IborIndex>& index,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
-                           Size fixingDays,
+                           Natural fixingDays,
                            const std::vector<Real>& gearings,
                            const std::vector<Spread>& spreads,
                            const std::vector<Rate>& caps,

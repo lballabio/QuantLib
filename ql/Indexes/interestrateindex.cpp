@@ -27,7 +27,7 @@ namespace QuantLib {
 
     InterestRateIndex::InterestRateIndex(const std::string& familyName,
                                          const Period& tenor,
-                                         Size fixingDays,
+                                         Natural fixingDays,
                                          const Currency& currency,
                                          const Calendar& calendar,
                                          const DayCounter& dayCounter)

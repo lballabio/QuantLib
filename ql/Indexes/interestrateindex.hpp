@@ -39,7 +39,7 @@ namespace QuantLib {
         InterestRateIndex(
               const std::string& familyName,
               const Period& tenor,
-              Size settlementDays,
+              Natural settlementDays,
               const Currency& currency,
               const Calendar& calendar,
               const DayCounter& dayCounter);
@@ -58,7 +58,7 @@ namespace QuantLib {
         //@{
         std::string familyName() const;
         Period tenor() const;
-        Size fixingDays() const;
+        Natural fixingDays() const;
         const Currency& currency() const;
         Calendar calendar() const;
         const DayCounter& dayCounter() const;
@@ -79,7 +79,7 @@ namespace QuantLib {
       protected:
         std::string familyName_;
         Period tenor_;
-        Size fixingDays_;
+        Natural fixingDays_;
         Currency currency_;
         Calendar calendar_;
         DayCounter dayCounter_;
@@ -100,7 +100,7 @@ namespace QuantLib {
         return tenor_;
     }
 
-    inline Size InterestRateIndex::fixingDays() const {
+    inline Natural InterestRateIndex::fixingDays() const {
         return fixingDays_;
     }
 

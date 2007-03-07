@@ -40,7 +40,7 @@ namespace QuantLib {
     }
 
     SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Size settlementDays,
+                                              Natural settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
@@ -49,7 +49,7 @@ namespace QuantLib {
       dayCounter_(dayCounter), maxSwapTenor_(100*Years) {}
 
     SwaptionConstantVolatility::SwaptionConstantVolatility(
-                                              Size settlementDays,
+                                              Natural settlementDays,
                                               const Calendar& calendar,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)

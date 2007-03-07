@@ -40,14 +40,14 @@ namespace QuantLib {
     */
     class FloatingRateBond : public Bond {
       public:
-        FloatingRateBond(Size settlementDays,
+        FloatingRateBond(Natural settlementDays,
                          Real faceAmount,
                          const Schedule& schedule,
                          const boost::shared_ptr<IborIndex>& index,
                          const DayCounter& paymentDayCounter,
                          BusinessDayConvention paymentConvention
                                              = Following,
-                         Size fixingDays = Null<Size>(),
+                         Natural fixingDays = Null<Natural>(),
                          const std::vector<Real>& gearings
                                              = std::vector<Real>(1, 1.0),
                          const std::vector<Spread>& spreads

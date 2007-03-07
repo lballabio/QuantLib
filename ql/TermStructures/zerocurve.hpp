@@ -57,7 +57,7 @@ namespace QuantLib {
                               const DayCounter&,
                               const Interpolator& interpolator
                                                             = Interpolator());
-        InterpolatedZeroCurve(Size settlementDays,
+        InterpolatedZeroCurve(Natural settlementDays,
                               const Calendar&,
                               const DayCounter&,
                               const Interpolator& interpolator
@@ -123,7 +123,7 @@ namespace QuantLib {
 
     template <class T>
     inline InterpolatedZeroCurve<T>::InterpolatedZeroCurve(
-                                                 Size settlementDays,
+                                                 Natural settlementDays,
                                                  const Calendar& calendar,
                                                  const DayCounter& dayCounter,
                                                  const T& interpolator)

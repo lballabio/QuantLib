@@ -29,7 +29,7 @@ namespace QuantLib {
 
     IborCoupon::IborCoupon(const Date& paymentDate, const Real nominal,
                            const Date& startDate, const Date& endDate,
-                           const Size fixingDays,
+                           const Natural fixingDays,
                            const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing, const Spread spread,
                            const Date& refPeriodStart, const Date& refPeriodEnd,

@@ -36,7 +36,7 @@ namespace QuantLib {
             const CallabilitySchedule& callability,
             const Handle<Quote>& creditSpread,
             const Date& issueDate,
-            Size settlementDays,
+            Natural settlementDays,
             const DayCounter& dayCounter,
             const Schedule& schedule,
             Real)
@@ -72,7 +72,7 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Size settlementDays,
+                          Natural settlementDays,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
                           Real redemption)
@@ -106,7 +106,7 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Size settlementDays,
+                          Natural settlementDays,
                           const std::vector<Rate>& coupons,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
@@ -146,9 +146,9 @@ namespace QuantLib {
                           const CallabilitySchedule& callability,
                           const Handle<Quote>& creditSpread,
                           const Date& issueDate,
-                          Size settlementDays,
+                          Natural settlementDays,
                           const boost::shared_ptr<IborIndex>& index,
-                          Size fixingDays,
+                          Natural fixingDays,
                           const std::vector<Spread>& spreads,
                           const DayCounter& dayCounter,
                           const Schedule& schedule,
@@ -192,7 +192,7 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const Schedule& schedule,
             const Date& issueDate,
-            Size settlementDays,
+            Natural settlementDays,
             Real redemption)
     : OneAssetStrikedOption(process, boost::shared_ptr<StrikedTypePayoff>(new
           PlainVanillaPayoff(Option::Call,
@@ -318,10 +318,7 @@ namespace QuantLib {
 
         QL_REQUIRE(settlementDate != Date(), "null settlement date");
 
-        QL_REQUIRE(settlementDays != Null<Size>(), "null settlement days");
-        /*QL_REQUIRE(settlementDays >= 0,
-                   "positive settlement days required: "
-                   << settlementDays << " not allowed");*/
+        QL_REQUIRE(settlementDays != Null<Natural>(), "null settlement days");
 
         QL_REQUIRE(callabilityTimes.size() == callabilityTypes.size(),
                    "different number of callability times and types");

@@ -41,7 +41,7 @@
 //              const Real nominal,
 //              const Date& startDate,
 //              const Date& endDate,
-//              const Size fixingDays,
+//              const Natural fixingDays,
 //              const boost::shared_ptr<IndexType>& index,
 //              const Real gearing = 1.0,
 //              const Spread spread = 0.0,

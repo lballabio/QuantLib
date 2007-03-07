@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class FixedRateBond : public Bond {
       public:
-        FixedRateBond(Size settlementDays,
+        FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
                       const std::vector<Rate>& coupons,

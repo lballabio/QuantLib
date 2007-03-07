@@ -58,14 +58,14 @@ namespace QuantLib {
         // FIXME use a familyName-based index factory
         iborIndex_ = boost::shared_ptr<IborIndex>(new
             IborIndex(baseIndex->familyName(),
-                  floatTenor_,
-                  baseIndex->fixingDays(),
-                  baseIndex->currency(),
-                  baseIndex->calendar(),
-                  baseIndex->businessDayConvention(),
-                  baseIndex->endOfMonth(),
-                  baseIndex->dayCounter(),
-                  baseIndex->termStructure()));
+                      floatTenor_,
+                      baseIndex->fixingDays(),
+                      baseIndex->currency(),
+                      baseIndex->calendar(),
+                      baseIndex->businessDayConvention(),
+                      baseIndex->endOfMonth(),
+                      baseIndex->dayCounter(),
+                      baseIndex->termStructure()));
       }
 
     MakeCms::operator Swap() const {
@@ -74,7 +74,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Size fixingDays = swapIndex_->fixingDays();
+          Natural fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;
@@ -131,7 +131,7 @@ namespace QuantLib {
         if (effectiveDate_ != Date())
             startDate=effectiveDate_;
         else {
-          Size fixingDays = swapIndex_->fixingDays();
+          Natural fixingDays = swapIndex_->fixingDays();
           Date referenceDate = Settings::instance().evaluationDate();
           Date spotDate = floatCalendar_.advance(referenceDate, fixingDays*Days);
           startDate = spotDate+forwardStart_;

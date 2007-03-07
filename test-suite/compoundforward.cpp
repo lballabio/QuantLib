@@ -64,7 +64,7 @@ Datum swapData[] = {
 // test-global variables
 
 Calendar calendar;
-Size settlementDays;
+Natural settlementDays;
 Date today, settlement;
 BusinessDayConvention convention;
 DayCounter dayCounter;

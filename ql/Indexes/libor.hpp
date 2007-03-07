@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         Libor(const std::string& familyName,
               const Period& tenor,
-              Size settlementDays,
+              Natural settlementDays,
               const Currency& currency,
               const Calendar& localCalendar,
               const Calendar& currencyCalendar,

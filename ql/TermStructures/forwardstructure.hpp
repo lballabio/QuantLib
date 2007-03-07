@@ -50,7 +50,7 @@ namespace QuantLib {
         ForwardRateStructure(const Date& referenceDate,
                              const Calendar& cal = Calendar(),
                              const DayCounter& dayCounter =Actual365Fixed());
-        ForwardRateStructure(Size settlementDays,
+        ForwardRateStructure(Natural settlementDays,
                              const Calendar&,
                              const DayCounter& dayCounter =Actual365Fixed());
         //@}
@@ -86,7 +86,7 @@ namespace QuantLib {
                                                       const DayCounter& dc)
     : YieldTermStructure(refDate, cal, dc) {}
 
-    inline ForwardRateStructure::ForwardRateStructure(Size settlDays,
+    inline ForwardRateStructure::ForwardRateStructure(Natural settlDays,
                                                       const Calendar& cal,
                                                       const DayCounter& dc)
     : YieldTermStructure(settlDays, cal, dc) {}

@@ -40,14 +40,14 @@ namespace QuantLib {
     */
     class CmsRateBond : public Bond {
       public:
-        CmsRateBond(Size settlementDays,
+        CmsRateBond(Natural settlementDays,
                     Real faceAmount,
                     const Schedule& schedule,
                     const boost::shared_ptr<SwapIndex>& index,
                     const DayCounter& paymentDayCounter,
                     BusinessDayConvention paymentConvention
                                     = Following,
-                    Size fixingDays = Null<Size>(),
+                    Natural fixingDays = Null<Natural>(),
                     const std::vector<Real>& gearings
                                     = std::vector<Real>(1, 1.0),
                     const std::vector<Spread>& spreads

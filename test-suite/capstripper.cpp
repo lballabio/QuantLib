@@ -47,7 +47,7 @@ boost::shared_ptr<Quote> forwardRate;
 RelinkableHandle<Quote> forwardRateQuote;
 RelinkableHandle<YieldTermStructure> rhTermStructure;
 boost::shared_ptr<IborIndex> xiborIndex;
-int fixingDays;
+Natural fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
 Rate flatForwardRate;
@@ -181,7 +181,7 @@ void setup(Real impliedVolatilityPrecision = 1e-5) {
     calendar = TARGET();
     fixingDays = 2;
     businessDayConvention = Unadjusted;
-    Size settlementDays = 2;
+    Natural settlementDays = 2;
     flatForwardRate = 0.04;
     Integer maxIterations = 100;
     forwardRate = boost::shared_ptr<Quote>(new SimpleQuote(flatForwardRate));

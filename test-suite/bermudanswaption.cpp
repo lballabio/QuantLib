@@ -43,7 +43,7 @@ BusinessDayConvention fixedConvention_, floatingConvention_;
 Frequency fixedFrequency_, floatingFrequency_;
 DayCounter fixedDayCount_;
 boost::shared_ptr<IborIndex> index_;
-Size settlementDays_;
+Natural settlementDays_;
 
 RelinkableHandle<YieldTermStructure> termStructure_;
 

@@ -133,7 +133,7 @@ namespace QuantLib {
     }
 
 
-    Bond::Bond(Size settlementDays,
+    Bond::Bond(Natural settlementDays,
                Real faceAmount,
                const Calendar& calendar,
                const DayCounter& paymentDayCounter,

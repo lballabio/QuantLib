@@ -55,7 +55,7 @@ namespace QuantLib {
                               const Calendar& cal = Calendar(),
                               const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        BlackVolTermStructure(Size settlementDays,
+        BlackVolTermStructure(Natural settlementDays,
                               const Calendar&,
                               const DayCounter& dc = Actual365Fixed());
         //@}
@@ -156,7 +156,7 @@ namespace QuantLib {
                                      const Calendar& cal = Calendar(),
                                      const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        BlackVolatilityTermStructure(Size settlementDays,
+        BlackVolatilityTermStructure(Natural settlementDays,
                                      const Calendar&,
                                      const DayCounter& dc = Actual365Fixed());
         //@}
@@ -198,7 +198,7 @@ namespace QuantLib {
                                    const Calendar& cal = Calendar(),
                                    const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        BlackVarianceTermStructure(Size settlementDays,
+        BlackVarianceTermStructure(Natural settlementDays,
                                    const Calendar&,
                                    const DayCounter& dc = Actual365Fixed());
         //@}
@@ -239,7 +239,7 @@ namespace QuantLib {
                               const Calendar& cal = Calendar(),
                               const DayCounter& dc = Actual365Fixed());
         //! calculate the reference date based on the global evaluation date
-        LocalVolTermStructure(Size settlementDays,
+        LocalVolTermStructure(Natural settlementDays,
                               const Calendar&,
                               const DayCounter& dc = Actual365Fixed());
         //@}
@@ -292,7 +292,7 @@ namespace QuantLib {
                                                         const DayCounter& dc)
     : TermStructure(refDate, cal, dc) {}
 
-    inline BlackVolTermStructure::BlackVolTermStructure(Size settlDays,
+    inline BlackVolTermStructure::BlackVolTermStructure(Natural settlDays,
                                                         const Calendar& cal,
                                                         const DayCounter& dc)
     : TermStructure(settlDays, cal, dc) {}
@@ -358,7 +358,7 @@ namespace QuantLib {
     : BlackVolTermStructure(refDate, cal, dc) {}
 
     inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                             Size settlementDays,
+                             Natural settlementDays,
                              const Calendar& cal,
                              const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, dc) {}
@@ -390,7 +390,7 @@ namespace QuantLib {
     : BlackVolTermStructure(referenceDate, cal, dc) {}
 
     inline BlackVarianceTermStructure::BlackVarianceTermStructure(
-                             Size settlementDays,
+                             Natural settlementDays,
                              const Calendar& cal,
                              const DayCounter& dc)
     : BlackVolTermStructure(settlementDays, cal, dc) {}
@@ -423,7 +423,7 @@ namespace QuantLib {
     : TermStructure(referenceDate, cal, dc) {}
 
     inline LocalVolTermStructure::LocalVolTermStructure(
-                             Size settlementDays,
+                             Natural settlementDays,
                              const Calendar& cal,
                              const DayCounter& dc)
     : TermStructure(settlementDays, cal, dc) {}

@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
-                  Size settlementDays,
+                  Natural settlementDays,
                   Currency currency,
                   const Calendar& calendar,
                   const Period& fixedLegTenor,

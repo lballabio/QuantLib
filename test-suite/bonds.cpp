@@ -70,7 +70,7 @@ void BondTest::testYield() {
 
     Integer issueMonths[] = { -24, -18, -12, -6, 0, 6, 12, 18, 24 };
     Integer lengths[] = { 3, 5, 10, 15, 20 };
-    Size settlementDays = 3;
+    Natural settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Thirty360();
@@ -147,7 +147,7 @@ void BondTest::testTheoretical() {
     Size maxEvaluations = 100;
 
     Size lengths[] = { 3, 5, 10, 15, 20 };
-    Size settlementDays = 3;
+    Natural settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
     DayCounter bondDayCount = Actual360();
@@ -235,7 +235,7 @@ void BondTest::testCached() {
 
     Calendar bondCalendar = NullCalendar();
     DayCounter bondDayCount = ActualActual(ActualActual::ISMA);
-    Size settlementDays = 1;
+    Natural settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
@@ -425,7 +425,7 @@ void BondTest::testCachedZero() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Size settlementDays = 1;
+    Natural settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
@@ -501,7 +501,7 @@ void BondTest::testCachedFixed() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Size settlementDays = 1;
+    Natural settlementDays = 1;
 
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
@@ -594,13 +594,13 @@ void BondTest::testCachedFloating() {
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
 
-    Size settlementDays = 1;
+    Natural settlementDays = 1;
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today,0.025,Actual360()));
     Handle<YieldTermStructure> discountCurve(flatRate(today,0.03,Actual360()));
 
     boost::shared_ptr<IborIndex> index(new USDLibor(6*Months, riskFreeRate));
-    Size fixingDays = 1;
+    Natural fixingDays = 1;
 
     Real tolerance = 1.0e-6;
 

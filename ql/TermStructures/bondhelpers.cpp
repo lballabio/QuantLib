@@ -27,7 +27,7 @@ namespace QuantLib {
 
     FixedCouponBondHelper::FixedCouponBondHelper(
                                     const Handle<Quote>& cleanPrice,
-                                    Size settlementDays,
+                                    Natural settlementDays,
                                     const Schedule& schedule,
                                     const std::vector<Rate>& coupons,
                                     const DayCounter& paymentDayCounter,

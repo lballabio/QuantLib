@@ -45,7 +45,7 @@ namespace QuantLib {
                            const Real nominal,
                            const Date& startDate,
                            const Date& endDate,
-                           const Size fixingDays,
+                           const Natural fixingDays,
                            const boost::shared_ptr<InterestRateIndex>& index,
                            const Real gearing = 1.0,
                            const Spread spread = 0.0,
@@ -70,7 +70,7 @@ namespace QuantLib {
         //! floating index
         const boost::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
-        Size fixingDays() const;
+        Natural fixingDays() const;
         //! fixing date
         virtual Date fixingDate() const;
         //! index gearing, i.e. multiplicative coefficient for the index
@@ -111,7 +111,7 @@ namespace QuantLib {
         Rate convexityAdjustmentImpl(Rate fixing) const;
         boost::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
-        Size fixingDays_;
+        Natural fixingDays_;
         Real gearing_;
         Spread spread_;
         bool isInArrears_; 

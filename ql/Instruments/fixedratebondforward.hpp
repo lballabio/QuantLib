@@ -86,7 +86,7 @@ namespace QuantLib {
                     const Date& maturityDate,
                     Position::Type type,
                     Real strike,
-                    Size settlementDays,
+                    Natural settlementDays,
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,

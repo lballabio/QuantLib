@@ -56,7 +56,7 @@ BusinessDayConvention floatingConvention_;
 Period floatingTenor_;
 boost::shared_ptr<IborIndex> index_;
 
-Size settlementDays_;
+Natural settlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 // utilities

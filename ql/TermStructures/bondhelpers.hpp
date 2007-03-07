@@ -37,7 +37,7 @@ namespace QuantLib {
     class FixedCouponBondHelper : public RateHelper {
       public:
         FixedCouponBondHelper(const Handle<Quote>& cleanPrice,
-                              Size settlementDays,
+                              Natural settlementDays,
                               const Schedule& schedule,
                               const std::vector<Rate>& coupons,
                               const DayCounter& paymentDayCounter,
@@ -48,7 +48,7 @@ namespace QuantLib {
         void setTermStructure(YieldTermStructure*);
       protected:
         // needed for bond instantiation
-        Size settlementDays_;
+        Natural settlementDays_;
         Schedule schedule_;
         std::vector<Rate> coupons_;
         DayCounter paymentDayCounter_;
