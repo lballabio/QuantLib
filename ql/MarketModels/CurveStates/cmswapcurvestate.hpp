@@ -29,7 +29,7 @@ namespace QuantLib {
     class CMSwapCurveState : public CurveState {
       public:
         explicit CMSwapCurveState(const std::vector<Time>& rateTimes,
-                         Size spanningForwards);
+                                  Size spanningForwards);
 
         //! \name Modifiers
         //@{
@@ -60,8 +60,10 @@ namespace QuantLib {
         Size first_;
         std::vector<DiscountFactor> discRatios_;
         mutable std::vector<Rate> forwardRates_;
+        // fixed number of spanning forwards
         std::vector<Rate> cmSwapRates_;
         std::vector<Real> cmSwapAnnuities_;
+        // irregular number of spanning forwards
         mutable std::vector<Rate> irrCMSwapRates_;
         mutable std::vector<Real> irrCMSwapAnnuities_;
         mutable std::vector<Rate> cotSwapRates_;

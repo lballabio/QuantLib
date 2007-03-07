@@ -118,19 +118,35 @@ namespace QuantLib {
 
     Rate CMSwapCurveState::cmSwapAnnuity(Size numeraire,
                                          Size i,
-                                         Size) const{
+                                         Size spanningForwards) const{
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
                    "invalid numeraire");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
-        return cmSwapAnnuities_[i]/discRatios_[numeraire];
+        if (spanningForwards==spanningFwds_)
+            return cmSwapAnnuities_[i]/discRatios_[numeraire];
+        else {
+            constantMaturityFromDiscountRatios(spanningForwards, first_,
+                                               discRatios_, rateTaus_,
+                                               irrCMSwapRates_,
+                                               irrCMSwapAnnuities_);
+            return irrCMSwapAnnuities_[i]/discRatios_[numeraire];
+        }
     }
 
     Rate CMSwapCurveState::cmSwapRate(Size i,
-                                      Size) const {
+                                      Size spanningForwards) const {
         QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
         QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
-        return cmSwapRates_[i];
+        if (spanningForwards==spanningFwds_)
+            return cmSwapRates_[i];
+        else {
+            constantMaturityFromDiscountRatios(spanningForwards, first_,
+                                               discRatios_, rateTaus_,
+                                               irrCMSwapRates_,
+                                               irrCMSwapAnnuities_);
+            return irrCMSwapRates_[i];
+        }
     }
 
     const std::vector<Rate>& CMSwapCurveState::forwardRates() const {
