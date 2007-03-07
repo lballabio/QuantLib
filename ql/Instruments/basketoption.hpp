@@ -60,12 +60,12 @@ namespace QuantLib {
     public:
         AverageBasketOptionType(const Array &a) :
             weights_(a) {};
+        AverageBasketOptionType(Size n) :
+            weights_(n, 1.0/static_cast<Real>(n)) {};
         Real pricingFunction(const Array &a) {
-            Real basketPrice = 0.0;
-            for (Size j = 0; j < weights_.size(); j++) {
-                basketPrice += a[j] * weights_[j];
-            }
-            return basketPrice;
+            return std::inner_product(weights_.begin(),
+                                      weights_.end(),
+                                      a.begin(), 0.0);
         }
     private:
         Array weights_;
