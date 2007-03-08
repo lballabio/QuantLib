@@ -25,6 +25,7 @@
 #ifndef quantlib_ibor_index_hpp
 #define quantlib_ibor_index_hpp
 
+#include <ql/yieldtermstructure.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
 
 namespace QuantLib {
