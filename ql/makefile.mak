@@ -26,6 +26,7 @@ OUTPUT_DIR     = ..\lib
 
 # Object files
 CORE_OBJS = \
+    "businessdayconvention.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
     "currency.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \

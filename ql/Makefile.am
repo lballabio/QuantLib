@@ -39,6 +39,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	core.hpp \
 	auto_link.hpp \
+	businessdayconvention.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \
@@ -136,6 +137,7 @@ libQuantLib_la_LIBADD = \
     VolatilityModels/libVolatilityModels.la
 
 libQuantLib_la_SOURCES = \
+	businessdayconvention.cpp \
     calendar.cpp \
     currency.cpp \
     date.cpp \
