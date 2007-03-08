@@ -35,10 +35,9 @@
 #include <ql/handle.hpp>
 #include <ql/cashflow.hpp>
 #include <vector>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
-
-    class YieldTermStructure;
 
     //! Base bond class
     /*! Derived classes must fill the unitialized data members.
