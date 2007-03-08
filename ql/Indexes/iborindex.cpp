@@ -19,6 +19,7 @@
 */
 
 #include <ql/Indexes/iborindex.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

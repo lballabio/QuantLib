@@ -28,10 +28,14 @@
 #include <ql/position.hpp>
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/interestrate.hpp>
+#include <ql/types.hpp>
+#include <ql/handle.hpp>
 #include <ql/payoff.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! Abstract base forward class
     /*! Derived classes must implement the virtual functions

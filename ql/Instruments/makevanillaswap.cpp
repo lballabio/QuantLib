@@ -21,6 +21,7 @@
 
 #include <ql/Instruments/makevanillaswap.hpp>
 #include <ql/DayCounters/thirty360.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 

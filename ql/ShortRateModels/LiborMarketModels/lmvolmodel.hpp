@@ -25,6 +25,7 @@
 #define quantlib_libor_market_volatility_model_hpp
 
 #include <ql/ShortRateModels/parameter.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

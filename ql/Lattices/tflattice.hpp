@@ -27,8 +27,6 @@
 
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/PricingEngines/Hybrid/discretizedconvertible.hpp>
-//#include <ql/daycounter.hpp>
-//#include <ql/calendar.hpp>
 
 namespace QuantLib {
 

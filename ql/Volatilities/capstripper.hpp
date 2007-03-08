@@ -26,16 +26,15 @@
 
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/capvolstructures.hpp>
-#include <ql/types.hpp>
-//#include <ql/calendar.hpp>
-#include <ql/daycounter.hpp>
-#include <ql/quote.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #include <ql/Indexes/iborindex.hpp>
-#include <ql/schedule.hpp>
 #include <ql/Volatilities/capletvolatilitiesstructures.hpp>
+#include <ql/schedule.hpp>
+#include <ql/types.hpp>
+#include <ql/daycounter.hpp>
+#include <ql/quote.hpp>
 
 
 namespace QuantLib {

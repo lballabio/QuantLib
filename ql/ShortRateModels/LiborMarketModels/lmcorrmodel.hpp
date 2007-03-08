@@ -27,6 +27,7 @@
 #include <ql/Math/array.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/ShortRateModels/parameter.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

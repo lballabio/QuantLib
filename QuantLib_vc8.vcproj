@@ -8911,6 +8911,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\businessdayconvention.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\businessdayconvention.hpp"
+			>
+		</File>
+		<File
 			RelativePath="ql\calendar.cpp"
 			>
 			<FileConfiguration

@@ -27,10 +27,13 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
+#include <ql/Utilities/null.hpp>
 #include <vector>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! duration type
     struct Duration {
@@ -180,6 +183,5 @@ namespace QuantLib {
 
     
 }
-
 
 #endif

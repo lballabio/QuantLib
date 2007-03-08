@@ -31,11 +31,14 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/types.hpp>
+#include <ql/handle.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/yieldtermstructure.hpp>
 #include <vector>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! Base bond class
     /*! Derived classes must fill the unitialized data members.

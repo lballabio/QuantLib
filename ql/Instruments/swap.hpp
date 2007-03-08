@@ -26,10 +26,12 @@
 #define quantlib_swap_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 #include <ql/cashflow.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! Interest rate swap
     /*! The cash flows belonging to the first leg are paid;

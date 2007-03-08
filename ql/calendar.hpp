@@ -27,6 +27,7 @@
 #define quantlib_calendar_hpp
 
 #include <ql/date.hpp>
+#include <ql/businessdayconvention.hpp>
 #include <boost/shared_ptr.hpp>
 #include <set>
 #include <vector>
@@ -35,37 +36,6 @@
 namespace QuantLib {
 
     class Period;
-
-    //! Business Day conventions
-    /*! These conventions specify the algorithm used to adjust a date in case
-        it is not a valid business day.
-
-        \ingroup datetime
-    */
-    enum BusinessDayConvention {
-        // ISDA
-        Following,          /*!< Choose the first business day after
-                                 the given holiday. */
-        ModifiedFollowing,  /*!< Choose the first business day after
-                                 the given holiday unless it belongs
-                                 to a different month, in which case
-                                 choose the first business day before
-                                 the holiday. */
-        Preceding,          /*!< Choose the first business day before
-                                 the given holiday. */
-        // NON ISDA
-        ModifiedPreceding,  /*!< Choose the first business day before
-                                 the given holiday unless it belongs
-                                 to a different month, in which case
-                                 choose the first business day after
-                                 the holiday. */
-        Unadjusted          /*!< Do not adjust. */
-    };
-
-    /*! \relates BusinessDayConvention */
-    std::ostream& operator<<(std::ostream&,
-                             BusinessDayConvention);
-
 
     //! %calendar class
     /*! This class provides methods for determining whether a date is a

@@ -25,11 +25,13 @@
 #define quantlib_interest_rate_modelling_parameter_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <vector>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! Base class for model arguments
     class Parameter {

@@ -27,10 +27,15 @@
 #define quantlib_interestrateindex_hpp
 
 #include <ql/index.hpp>
+#include <ql/calendar.hpp>
+#include <ql/currency.hpp>
+#include <ql/daycounter.hpp>
 #include <ql/period.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
+
+    class YieldTermStructure;
 
     //! base class for interest rate indexes
     /*! \todo add methods returning InterestRate */

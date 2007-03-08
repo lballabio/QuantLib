@@ -25,9 +25,9 @@
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
-#include <ql/calendar.hpp>
-#include <ql/currency.hpp>
-#include <ql/daycounter.hpp>
+//#include <ql/calendar.hpp>
+//#include <ql/currency.hpp>
+//#include <ql/daycounter.hpp>
 #include <ql/Indexes/indexmanager.hpp>
 
 namespace QuantLib {

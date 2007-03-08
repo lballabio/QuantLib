@@ -26,6 +26,7 @@
 #include <ql/DayCounters/all.hpp>
 #include <ql/CashFlows/analysis.hpp>
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

@@ -18,6 +18,7 @@
 */
 
 #include <ql/Instruments/fixedratebondforward.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
