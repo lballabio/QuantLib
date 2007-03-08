@@ -97,7 +97,6 @@ tex-files:: tex-config
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
            -e "/include{config}/d" \
-           -e "/input{faq}/d" \
            -e "/include{group}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \

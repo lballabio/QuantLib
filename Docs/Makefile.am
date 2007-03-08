@@ -131,7 +131,6 @@ tex-files: .time-stamp-tex
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
            -e "/include{config}/d" \
-           -e "/include{faq}/d" \
            -e "/input{group}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \

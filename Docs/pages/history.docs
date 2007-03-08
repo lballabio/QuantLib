@@ -343,7 +343,7 @@
     - Boost version 1.31.0 or later is now required.
 
     DOCUMENTATION
-    - Documentation now includes a \link faq FAQ \endlink page.
+    - Documentation now includes a FAQ page.
 
     GLOBAL FEATURES
     - Global evaluation date added through Settings class.  Used for
