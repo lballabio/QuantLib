@@ -117,9 +117,9 @@ namespace QuantLib {
     inline Period operator*(Size n, TimeUnit units) {
         return Period(static_cast<Integer>(n),units);
     }
-    inline Period operator*(Natural n, TimeUnit units) {
+   /* inline Period operator*(Natural n, TimeUnit units) {
         return Period(static_cast<Integer>(n),units);
-    }
+    }*/
     inline Period operator*(TimeUnit units, Integer n) {
         return Period(n,units);
     }
