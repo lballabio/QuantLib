@@ -50,26 +50,27 @@ namespace QuantLib {
         //! \name LazyObject interface
         //@{
         void update() { LazyObject::update();}
-        void performCalculations() const;
         //@}
-        void registerWithMarketData();
-        void createForwardStartingCms();
+
+        // call during calibration procedure 
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                      Real meanReversion);
-        Real weightedError(const Matrix& weights);
+		
+		//inspectors ...
+		Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
-        
-        const std::vector<Period>& swapTenors() const {
-                return swapTenors_;
-            }
+        const std::vector<Period>& swapTenors() const {return swapTenors_;}
         Matrix meanReversions(){return meanReversions_;};
         Matrix impliedCmsSpreads(){return modelCmsSpreads_;};
         Matrix spreadErrors(){return spreadErrors_;};
         Matrix browse() const;
  
       private:
-
+		void performCalculations() const;
+		void registerWithMarketData();
+		void createForwardStartingCms();
+		void priceForwardStartingCms() const;
         std::vector<Period> expiries_;
         std::vector<Period> swapTenors_;
         Size nExercise_;
@@ -99,6 +100,7 @@ namespace QuantLib {
         // Differences between modelCmsLegValue and marketMidCmsLegValue_ 
         mutable Matrix priceErrors_;
 
+		mutable Matrix swapFloatingLegsPrices_,swapFloatingLegsBps_;
 
         // market prices of Forward Cms Leg corrisponding to bid spreads
         mutable Matrix marketBidForwardCmsLegValues_; 
