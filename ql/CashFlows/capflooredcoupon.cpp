@@ -22,7 +22,6 @@
 
 
 #include <ql/CashFlows/capflooredcoupon.hpp>
-#include <ql/PricingEngines/core.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {

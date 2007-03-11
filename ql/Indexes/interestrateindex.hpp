@@ -32,6 +32,7 @@
 #include <ql/daycounter.hpp>
 #include <ql/period.hpp>
 #include <ql/handle.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

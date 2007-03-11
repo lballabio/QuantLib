@@ -22,6 +22,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/yieldtermstructure.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 
 namespace QuantLib {

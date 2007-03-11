@@ -34,7 +34,6 @@
 #include <ql/Utilities/null.hpp>
 #include <ql/Indexes/interestrateindex.hpp>
 #include <ql/capvolstructures.hpp>
-#include <ql/PricingEngines/core.hpp>
 
 namespace QuantLib {
     

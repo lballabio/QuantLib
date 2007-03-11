@@ -21,6 +21,7 @@
 
 #include <ql/CashFlows/couponpricer.hpp>
 #include <ql/CashFlows/capflooredcoupon.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 

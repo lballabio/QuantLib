@@ -54,7 +54,7 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         typedef typename McSimulation<MC,RNG,S>::result_type 
-result_type;
+            result_type;
         // constructor
         MCVanillaEngine(Size timeSteps,
                         Size timeStepsPerYear,

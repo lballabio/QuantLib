@@ -28,7 +28,6 @@
 
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/capvolstructures.hpp>
-#include <ql/PricingEngines/core.hpp>
 
 namespace QuantLib {
 
