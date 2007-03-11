@@ -31,7 +31,9 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine), stochasticProcess_(process) {}
+    : Option(payoff, exercise, engine), stochasticProcess_(process) {
+        registerWith(stochasticProcess_);
+    }
 
     bool MultiAssetOption::isExpired() const {
         return exercise_->lastDate() < Settings::instance().evaluationDate();
