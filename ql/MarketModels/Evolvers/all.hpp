@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,8 +22,13 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
+#include <ql/MarketModels/Evolvers/cmswapratepcevolver.hpp>
+#include <ql/MarketModels/Evolvers/coterminalswapratepcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateconstrainedeuler.hpp>
+#include <ql/MarketModels/Evolvers/forwardrateeulerevolver.hpp>
 #include <ql/MarketModels/Evolvers/forwardrateipcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardratenormalpcevolver.hpp>
+#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
 
 
 #endif

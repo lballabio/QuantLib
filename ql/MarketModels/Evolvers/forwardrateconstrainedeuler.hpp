@@ -24,11 +24,11 @@
 
 #include <ql/MarketModels/marketmodelconstrainedevolver.hpp>
 #include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
+#include <ql/MarketModels/DriftComputation/lmmdriftcalculator.hpp>
 
 namespace QuantLib {
 
     class MarketModel;
-    class LMMDriftCalculator;
     class BrownianGenerator;
     class BrownianGeneratorFactory;
 
