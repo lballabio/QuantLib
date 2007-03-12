@@ -129,6 +129,8 @@ namespace QuantLib {
 
                 const boost::shared_ptr<ConundrumPricer> pricer =
                     boost::dynamic_pointer_cast<ConundrumPricer>(pricers_[j]);
+                meanReversions_[i][j] = pricer->meanReversion();
+
                 CashFlows::setPricer(swaps_[i][j]->leg(cmsIndex), pricer);
                 CashFlows::setPricer(forwardSwaps_[i][j]->leg(cmsIndex), pricer);
 
@@ -164,6 +166,7 @@ namespace QuantLib {
                 }
             }
         priceForwardStartingCms();
+        priceSpotFromForwardStartingCms();
     }
 
     void CmsMarket::createForwardStartingCms(){
@@ -193,7 +196,7 @@ namespace QuantLib {
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                              Real meanReversion){
         Handle<Quote> meanReversionQuote = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(meanReversion)));
+                SimpleQuote(meanReversion))); 
         for (Size j=0; j<nSwapTenors_ ; j++) {
             // set new volatility structure and new mean reversion
             pricers_[j]->setSwaptionVolatility(volStructure);
@@ -205,24 +208,38 @@ namespace QuantLib {
       priceForwardStartingCms();
     }
 
-    void CmsMarket::priceForwardStartingCms()const {
+    void CmsMarket::priceForwardStartingCms() const {
           for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nSwapTenors_ ; j++) {
                 Real modelForwardCmsLegValue = forwardSwaps_[i][j]->legNPV(0);
                 modelForwardCmsLegValues_[i][j] = modelForwardCmsLegValue;
                 forwardPriceErrors_[i][j]= modelForwardCmsLegValue
                                             - marketMidForwardCmsLegValues_[i][j];
+            }
+        }
+    }
+    
+    void CmsMarket::priceSpotFromForwardStartingCms() const {
+          for (Size i=0; i<nExercise_; i++) {
+            for (Size j=0; j<nSwapTenors_ ; j++) {
                 modelCmsLegValues_[i][j] = modelForwardCmsLegValues_[i][j];
                 if (i>0)
                     modelCmsLegValues_[i][j] += modelCmsLegValues_[i-1][j];
                 priceErrors_[i][j] = modelCmsLegValues_[i][j]
                                      - marketMidCmsLegValues_[i][j];
+                 
+                // Spread errors valuation
+                prices_[i][j]= swapFloatingLegsPrices_[i][j]+ modelCmsLegValues_[i][j];
+                Real PV01 = swapFloatingLegsBps_[i][j];
+                modelCmsSpreads_[i][j] = -(prices_[i][j]/PV01)/10000;
+
+                spreadErrors_[i][j] = modelCmsSpreads_[i][j]-mids_[i][j];
             }
         }
     }
 
     Real CmsMarket::weightedError(const Matrix& weights){
-        calculate();
+        priceSpotFromForwardStartingCms();
         Real error=0.;
         Size count=0;
         for(Size i=0;i<nExercise_;i++){
@@ -236,7 +253,7 @@ namespace QuantLib {
     }
 
     Real CmsMarket::weightedPriceError(const Matrix& weights){
-        calculate();
+        priceSpotFromForwardStartingCms();
         Real error=0.;
         Size count=0;
         for(Size i=0;i<nExercise_;i++){

@@ -56,21 +56,25 @@ namespace QuantLib {
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                      Real meanReversion);
 		
-		//inspectors ...
-		Real weightedError(const Matrix& weights);
-        Real weightedPriceError(const Matrix& weights);
-        Real weightedForwardPriceError(const Matrix& weights);
+        //inspectors ...
         const std::vector<Period>& swapTenors() const {return swapTenors_;}
         Matrix meanReversions(){return meanReversions_;};
         Matrix impliedCmsSpreads(){return modelCmsSpreads_;};
         Matrix spreadErrors(){return spreadErrors_;};
         Matrix browse() const;
+
+        //cms market calibration methods (they haven't Lazyness behaviour)
+		Real weightedError(const Matrix& weights);
+        Real weightedPriceError(const Matrix& weights);
+        Real weightedForwardPriceError(const Matrix& weights);
  
       private:
 		void performCalculations() const;
 		void registerWithMarketData();
 		void createForwardStartingCms();
 		void priceForwardStartingCms() const;
+        void priceSpotFromForwardStartingCms() const;
+
         std::vector<Period> expiries_;
         std::vector<Period> swapTenors_;
         Size nExercise_;
