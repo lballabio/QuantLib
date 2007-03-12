@@ -195,10 +195,12 @@ namespace QuantLib {
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
         const Handle<Quote>& meanReversion,
         Real lowerLimit,
-        Real upperLimit)
+        Real upperLimit,
+        Real precision)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
-       lowerLimit_(lowerLimit) {
+       lowerLimit_(lowerLimit),
+       precision_(precision){
     }
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
@@ -208,7 +210,7 @@ namespace QuantLib {
         //const Size n = 25;
         //GaussLegendre Integral(n);
 
-        const KronrodIntegral integral(1.e-6, 1000000);
+        const KronrodIntegral integral(precision_, 1000000);
         return integral(integrand,a , b);
     }
 

@@ -234,7 +234,8 @@ namespace QuantLib {
 			GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
 			const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
-            Rate upperLimit = 1.0);
+            Rate upperLimit = 1.0,
+            Real precision = 1.0e-6);
       private:
         class Function : public std::unary_function<Real, Real> {
           public:
@@ -283,7 +284,7 @@ namespace QuantLib {
                                     Rate strike) const;
         virtual Real swapletPrice() const;
 
-        const Real upperLimit_, lowerLimit_;
+        const Real upperLimit_, lowerLimit_, precision_;
     };
 
     class ConundrumPricerByBlack : public ConundrumPricer {

@@ -57,7 +57,8 @@ namespace QuantLib {
                 return -(*this)(f,b,a);
 
             functionEvaluations_ = 0;
-            return GaussKronrod(f, a, b, tolerance_);
+            Real result = GaussKronrod(f, a, b, tolerance_);
+            return result;
         }
 
         Size functionEvaluations() { return functionEvaluations_; }
