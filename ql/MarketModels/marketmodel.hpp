@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,14 +25,16 @@
 
 #include <ql/Math/matrix.hpp>
 #include <ql/Utilities/null.hpp>
+#include <ql/Patterns/observable.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     class EvolutionDescription;
 
-    /* For each time step, generates the pseudo-square root of the covariance
-       matrix for that time step.
+    //! base class for market models
+    /*! For each time step, generates the pseudo-square root of the covariance
+        matrix for that time step.
     */
     class MarketModel {
       public:
@@ -45,6 +48,15 @@ namespace QuantLib {
         virtual const Matrix& pseudoRoot(Size i) const = 0;
         virtual const Matrix& covariance(Size i) const = 0;
         virtual const Matrix& totalCovariance(Size endIndex) const = 0;
+    };
+
+    //! base class for market-model factories
+    class MarketModelFactory : public Observable {
+      public:
+        virtual ~MarketModelFactory() {}
+        virtual boost::shared_ptr<MarketModel> create(
+                                              const EvolutionDescription&,
+                                              Size numberOfFactors) const = 0;
     };
 
 }

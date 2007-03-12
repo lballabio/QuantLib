@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #ifndef quantlib_forward_to_coterminal_adapter_hpp
 #define quantlib_forward_to_coterminal_adapter_hpp
 
@@ -30,7 +30,8 @@ namespace QuantLib {
 
     class ForwardToCoterminalAdapter : public MarketModel {
       public:
-        ForwardToCoterminalAdapter(const boost::shared_ptr<MarketModel>& fwdModel);
+        ForwardToCoterminalAdapter(
+                          const boost::shared_ptr<MarketModel>& forwardModel);
         //! \name MarketModel interface
         //@{
         const std::vector<Rate>& initialRates() const;
@@ -50,17 +51,34 @@ namespace QuantLib {
         std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
     };
 
-    // inline
 
-    inline const std::vector<Rate>& ForwardToCoterminalAdapter::initialRates() const {
+    class ForwardToCoterminalAdapterFactory : public MarketModelFactory,
+                                              public Observer {
+      public:
+        ForwardToCoterminalAdapterFactory(
+              const boost::shared_ptr<MarketModelFactory>& forwardFactory);
+        boost::shared_ptr<MarketModel> create(const EvolutionDescription&,
+                                              Size numberOfFactors) const;
+        void update();
+      private:
+        boost::shared_ptr<MarketModelFactory> forwardFactory_;
+    };
+
+
+    // inline definitions
+
+    inline const std::vector<Rate>&
+    ForwardToCoterminalAdapter::initialRates() const {
         return initialRates_;
     }
 
-    inline const std::vector<Spread>& ForwardToCoterminalAdapter::displacements() const {
+    inline const std::vector<Spread>&
+    ForwardToCoterminalAdapter::displacements() const {
         return fwdModel_->displacements();
     }
 
-    inline const EvolutionDescription& ForwardToCoterminalAdapter::evolution() const {
+    inline const EvolutionDescription&
+    ForwardToCoterminalAdapter::evolution() const {
         return fwdModel_->evolution();
     }
 
@@ -84,7 +102,8 @@ namespace QuantLib {
         return covariance_[i];
     }
 
-    inline const Matrix& ForwardToCoterminalAdapter::totalCovariance(Size endIndex) const {
+    inline const Matrix&
+    ForwardToCoterminalAdapter::totalCovariance(Size endIndex) const {
         return totalCovariance_[endIndex];
     }
 

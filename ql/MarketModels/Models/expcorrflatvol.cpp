@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,16 +21,16 @@
 
 #include <ql/MarketModels/Models/expcorrflatvol.hpp>
 #include <ql/Math/pseudosqrt.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 
+namespace QuantLib {
 
-namespace QuantLib
-{
     ExpCorrFlatVol::ExpCorrFlatVol(
-            const Real longTermCorr,
-            const Real beta,
+            Real longTermCorr,
+            Real beta,
             const std::vector<Volatility>& volatilities,
             const EvolutionDescription& evolution,
-            const Size numberOfFactors,
+            Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
     : numberOfFactors_(numberOfFactors),
@@ -54,7 +55,7 @@ namespace QuantLib
                    ") and volatilities (" << volatilities.size() << ")");
         QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
                    "number of rates (" << numberOfRates_ <<
-                   ") greater than number of factors (" << numberOfFactors_ 
+                   ") greater than number of factors (" << numberOfFactors_
                    << ") times number of steps (" << numberOfSteps_ << ")");
 
         std::vector<Volatility> stdDev(numberOfRates_);
@@ -98,6 +99,56 @@ namespace QuantLib
                       << pseudoRoots_[k].columns()
                       << " instead of " << numberOfFactors_);
         }
+    }
+
+
+    ExpCorrFlatVolFactory::ExpCorrFlatVolFactory(
+                                 Real longTermCorr,
+                                 Real beta,
+                                 const std::vector<Time>& times,
+                                 const std::vector<Volatility>& vols,
+                                 const Handle<YieldTermStructure>& yieldCurve,
+                                 Spread displacement)
+    : longTermCorr_(longTermCorr), beta_(beta), times_(times),
+      vols_(vols), yieldCurve_(yieldCurve), displacement_(displacement) {
+        volatility_ = LinearInterpolation(times_.begin(),times_.end(),
+                                          vols_.begin());
+        registerWith(yieldCurve_);
+    }
+
+    boost::shared_ptr<MarketModel>
+    ExpCorrFlatVolFactory::create(const EvolutionDescription& evolution,
+                                  Size numberOfFactors) const {
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+        Size numberOfRates = rateTimes.size()-1;
+
+        std::vector<Rate> initialRates(numberOfRates);
+        for (Size i=0; i<numberOfRates; ++i)
+            initialRates[i] = yieldCurve_->forwardRate(rateTimes[i],
+                                                       rateTimes[i+1],
+                                                       Simple);
+
+        std::vector<Volatility> displacedVolatilities(numberOfRates);
+        for (Size i=0; i<numberOfRates; ++i) {
+            Volatility vol = // to be changes
+                volatility_(rateTimes[i]);
+            displacedVolatilities[i] =
+                initialRates[i]*vol/(initialRates[i]+displacement_);
+        }
+
+        std::vector<Spread> displacements(numberOfRates, displacement_);
+
+        return boost::shared_ptr<MarketModel>(
+                                      new ExpCorrFlatVol(longTermCorr_, beta_,
+                                                         displacedVolatilities,
+                                                         evolution,
+                                                         numberOfFactors,
+                                                         initialRates,
+                                                         displacements));
+    }
+
+    void ExpCorrFlatVolFactory::update() {
+        notifyObservers();
     }
 
 }

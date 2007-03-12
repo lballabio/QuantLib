@@ -3,9 +3,8 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Chiara Fornarola
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Katiuscia Manzoni
-
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,18 +27,21 @@
 #include <ql/MarketModels/marketmodel.hpp>
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/Math/matrix.hpp>
+#include <ql/Math/interpolation.hpp>
+#include <ql/yieldtermstructure.hpp>
+#include <ql/handle.hpp>
 #include <vector>
 
-namespace QuantLib
-{
+namespace QuantLib {
+
     class ExpCorrFlatVol : public MarketModel {
       public:
         ExpCorrFlatVol(
-            const Real longTermCorr,
-            const Real beta,
+            Real longTermCorr,
+            Real beta,
             const std::vector<Volatility>& volatilities,
             const EvolutionDescription& evolution,
-            const Size numberOfFactors,
+            Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements);
         //! \name MarketModel interface
@@ -62,7 +64,37 @@ namespace QuantLib
         std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
     };
 
-    // inline
+    class ExpCorrFlatVolFactory : public MarketModelFactory,
+                                  public Observer {
+      public:
+        ExpCorrFlatVolFactory(Real longTermCorr,
+                              Real beta,
+                              // this is just to make it work---it
+                              // should be replaced with something
+                              // else (such as some kind of volatility
+                              // structure)
+                              const std::vector<Time>& times,
+                              const std::vector<Volatility>& vols,
+                              // this is OK
+                              const Handle<YieldTermStructure>& yieldCurve,
+                              // this might have a structure
+                              Spread displacement);
+        boost::shared_ptr<MarketModel> create(const EvolutionDescription&,
+                                              Size numberOfFactors) const;
+        void update();
+      private:
+        Real longTermCorr_, beta_;
+        // <to be changed>
+        std::vector<Time> times_;
+        std::vector<Volatility> vols_;
+        Interpolation volatility_;
+        // </to be changed>
+        Handle<YieldTermStructure> yieldCurve_;
+        Spread displacement_;
+    };
+
+
+    // inline definitions
 
     inline const std::vector<Rate>& ExpCorrFlatVol::initialRates() const {
         return initialRates_;

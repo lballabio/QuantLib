@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,14 +25,14 @@
 #include <ql/MarketModels/evolutiondescription.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
+namespace QuantLib {
 
-namespace QuantLib
-{
-    CoterminalToForwardAdapter::CoterminalToForwardAdapter(const boost::shared_ptr<MarketModel>& fwdModel)
-    : coterminalModel_(fwdModel),
-      numberOfFactors_(fwdModel->numberOfFactors()),
-      numberOfRates_(fwdModel->numberOfRates()),
-      numberOfSteps_(fwdModel->numberOfSteps()),
+    CoterminalToForwardAdapter::CoterminalToForwardAdapter(
+                               const boost::shared_ptr<MarketModel>& ctModel)
+    : coterminalModel_(ctModel),
+      numberOfFactors_(ctModel->numberOfFactors()),
+      numberOfRates_(ctModel->numberOfRates()),
+      numberOfSteps_(ctModel->numberOfSteps()),
       pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
       covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
       totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
@@ -60,13 +61,33 @@ namespace QuantLib
 
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=invertedZedMatrix*coterminalModel_->pseudoRoot(k);
-            // FIXME what's wrong ? 
+            // FIXME what's wrong ?
             covariance_[k]=pseudoRoots_[k]*transpose(pseudoRoots_[k]);
             totalCovariance_[k] = covariance_[k];
             if (k>0)
                 totalCovariance_[k] += totalCovariance_[k-1];
         }
+    }
 
+
+    CoterminalToForwardAdapterFactory::CoterminalToForwardAdapterFactory(
+             const boost::shared_ptr<MarketModelFactory>& coterminalFactory)
+    : coterminalFactory_(coterminalFactory) {
+        registerWith(coterminalFactory);
+    }
+
+    boost::shared_ptr<MarketModel>
+    CoterminalToForwardAdapterFactory::create(
+                                        const EvolutionDescription& evolution,
+                                        Size numberOfFactors) const {
+        boost::shared_ptr<MarketModel> coterminalModel =
+            coterminalFactory_->create(evolution,numberOfFactors);
+        return boost::shared_ptr<MarketModel>(
+                             new CoterminalToForwardAdapter(coterminalModel));
+    }
+
+    void CoterminalToForwardAdapterFactory::update() {
+        notifyObservers();
     }
 
 }

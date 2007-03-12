@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,10 +25,10 @@
 #include <ql/MarketModels/swapforwardmappings.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 
+namespace QuantLib {
 
-namespace QuantLib
-{
-    ForwardToCoterminalAdapter::ForwardToCoterminalAdapter(const boost::shared_ptr<MarketModel>& fwdModel)
+    ForwardToCoterminalAdapter::ForwardToCoterminalAdapter(
+                               const boost::shared_ptr<MarketModel>& fwdModel)
     : fwdModel_(fwdModel),
       numberOfFactors_(fwdModel->numberOfFactors()),
       numberOfRates_(fwdModel->numberOfRates()),
@@ -50,7 +51,8 @@ namespace QuantLib
             fwdModel_->evolution().rateTimes();
         const std::vector<Time>& evolutionTimes =
             fwdModel_->evolution().evolutionTimes();
-        for (Size i = 0; i<rateTimes.size() && rateTimes[i]<=evolutionTimes.back(); ++i) {
+        for (Size i = 0;
+             i<rateTimes.size() && rateTimes[i]<=evolutionTimes.back(); ++i) {
             QL_REQUIRE(std::find(evolutionTimes.begin(), evolutionTimes.end(),
                                  rateTimes[i])!=evolutionTimes.end(),
                                  "skipping " << io::ordinal(i) << " rate time");
@@ -63,7 +65,8 @@ namespace QuantLib
 
         Matrix zMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
             cs, displacements[0]);
-        const std::vector<Size>& alive = fwdModel_->evolution().firstAliveRate();
+        const std::vector<Size>& alive =
+            fwdModel_->evolution().firstAliveRate();
 
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=zMatrix*fwdModel_->pseudoRoot(k);
@@ -77,7 +80,27 @@ namespace QuantLib
             if (k>0)
                 totalCovariance_[k] += totalCovariance_[k-1];
         }
+    }
 
+
+    ForwardToCoterminalAdapterFactory::ForwardToCoterminalAdapterFactory(
+                  const boost::shared_ptr<MarketModelFactory>& forwardFactory)
+    : forwardFactory_(forwardFactory) {
+        registerWith(forwardFactory);
+    }
+
+    boost::shared_ptr<MarketModel>
+    ForwardToCoterminalAdapterFactory::create(
+                                        const EvolutionDescription& evolution,
+                                        Size numberOfFactors) const {
+        boost::shared_ptr<MarketModel> forwardModel =
+            forwardFactory_->create(evolution,numberOfFactors);
+        return boost::shared_ptr<MarketModel>(
+                                new ForwardToCoterminalAdapter(forwardModel));
+    }
+
+    void ForwardToCoterminalAdapterFactory::update() {
+        notifyObservers();
     }
 
 }

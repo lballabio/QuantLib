@@ -5,8 +5,10 @@ includedir = $(prefix)/include/ql/MarketModels/Models
 include_HEADERS = \
 	all.hpp \
 	capletcoterminalcalibration.hpp \
+	coterminaltoforwardadapter.hpp \
 	expcorrabcdvol.hpp \
 	expcorrflatvol.hpp \
+	forwardtocoterminaladapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
 	swapfromfracorrelationstructure.hpp \
@@ -14,8 +16,10 @@ include_HEADERS = \
 
 libMarketModelsModels_la_SOURCES = \
 	capletcoterminalcalibration.cpp \
+	coterminaltoforwardadapter.cpp \
 	expcorrabcdvol.cpp \
 	expcorrflatvol.cpp \
+	forwardtocoterminaladapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	swapfromfracorrelationstructure.cpp
 
