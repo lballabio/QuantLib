@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 RiskMap srl
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,26 +17,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_cap_floor_hpp
-#define quantlib_test_cap_floor_hpp
+/*! \file marketmodelcapfloorengine.hpp
+    \brief Market-model cap/floor engine
+*/
 
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_market_model_cap_floor_engine_hpp
+#define quantlib_market_model_cap_floor_engine_hpp
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/MarketModels/marketmodel.hpp>
 
-class CapFloorTest {
-  public:
-    static void testStrikeDependency();
-    static void testConsistency();
-    static void testParity();
-    static void testVega();
-    static void testATMRate();
-    static void testImpliedVolatility();
-    static void testMarketModel();
-    static void testCachedValue();
-    static boost::unit_test_framework::test_suite* suite();
-};
+namespace QuantLib {
 
+    //! Market-model cap/floor engine
+    /*! \ingroup capfloorengines */
+    class MarketModelCapFloorEngine : public CapFloor::engine,
+                                      public Observer {
+      public:
+        MarketModelCapFloorEngine(const boost::shared_ptr<MarketModelFactory>&);
+        void calculate() const;
+        void update();
+      private:
+        boost::shared_ptr<MarketModelFactory> factory_;
+    };
+
+}
 
 #endif

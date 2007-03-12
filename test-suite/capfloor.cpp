@@ -26,6 +26,8 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
+#include <ql/PricingEngines/CapFloor/marketmodelcapfloorengine.hpp>
+#include <ql/MarketModels/Models/expcorrflatvol.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -66,7 +68,7 @@ Leg makeLeg(const Date& startDate,
                           fixingDays_,
                           std::vector<Real>(),
                           std::vector<Spread>());
-    boost::shared_ptr<IborCouponPricer> 
+    boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
     CashFlows::setPricer(floatLeg,fictitiousPricer);
     return floatLeg;
@@ -500,6 +502,63 @@ void CapFloorTest::testImpliedVolatility() {
     QL_TEST_TEARDOWN
 }
 
+void CapFloorTest::testMarketModel() {
+
+    BOOST_MESSAGE("Testing cap/floor pricing with market-model engine...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Date cachedToday(12,March,2007),
+         cachedSettlement(14,March,2007);
+    Settings::instance().evaluationDate() = cachedToday;
+    termStructure_.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
+    Date startDate = calendar_.advance(cachedSettlement,1,Months);
+    Leg leg = makeLeg(startDate,10);
+    boost::shared_ptr<Instrument> cap = makeCapFloor(CapFloor::Cap,leg,
+                                                     0.07,0.20);
+    boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
+                                                       0.03,0.20);
+
+    Real longTermCorrelation = 0.5;
+    Real beta = 0.2;
+    Spread displacement = 0.0;
+
+    std::vector<Time> times(2);
+    std::vector<Volatility> vols(2);
+    times[0] = 0.0;  vols[0] = 0.20;
+    times[1] = 30.0;  vols[1] = 0.20;
+
+    boost::shared_ptr<MarketModelFactory> factory(
+                          new ExpCorrFlatVolFactory(longTermCorrelation, beta,
+                                                    times, vols,
+                                                    termStructure_,
+                                                    displacement));
+    boost::shared_ptr<PricingEngine> lmmEngine(
+                                      new MarketModelCapFloorEngine(factory));
+    cap->setPricingEngine(lmmEngine);
+    floor->setPricingEngine(lmmEngine);
+
+    Real cachedCapNPV   = 6.87570026732,
+         cachedFloorNPV = 2.65812927959;
+
+    if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached cap value:\n"
+            << std::setprecision(12)
+            << "    calculated: " << cap->NPV() << "\n"
+            << "    expected:   " << cachedCapNPV);
+
+    if (std::fabs(floor->NPV()-cachedFloorNPV) > 1.0e-11)
+        BOOST_ERROR(
+            "failed to reproduce cached floor value:\n"
+            << std::setprecision(12)
+            << "    calculated: " << floor->NPV() << "\n"
+            << "    expected:   " <<cachedFloorNPV);
+
+    QL_TEST_TEARDOWN
+}
+
 void CapFloorTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing cap/floor value against cached values...");
@@ -551,6 +610,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testVega));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testMarketModel));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
     return suite;
 }

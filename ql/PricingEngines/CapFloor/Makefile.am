@@ -7,6 +7,7 @@ include_HEADERS = \
     analyticcapfloorengine.hpp \
     blackcapfloorengine.hpp \
     discretizedcapfloor.hpp \
+    marketmodelcapfloorengine.hpp \
     mchullwhiteengine.hpp \
     treecapfloorengine.hpp
 
@@ -14,6 +15,7 @@ libCapFloorEngines_la_SOURCES = \
     analyticcapfloorengine.cpp \
     blackcapfloorengine.cpp \
     discretizedcapfloor.cpp \
+    marketmodelcapfloorengine.cpp \
     mchullwhiteengine.cpp \
     treecapfloorengine.cpp
 
