@@ -509,12 +509,12 @@ void CapFloorTest::testMarketModel() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    Date cachedToday(12,March,2007),
-         cachedSettlement(14,March,2007);
+    Date cachedToday(14,March,2002),
+         cachedSettlement(18,March,2002);
     Settings::instance().evaluationDate() = cachedToday;
     termStructure_.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = calendar_.advance(cachedSettlement,1,Months);
-    Leg leg = makeLeg(startDate,10);
+    Leg leg = makeLeg(startDate,20);
     boost::shared_ptr<Instrument> cap = makeCapFloor(CapFloor::Cap,leg,
                                                      0.07,0.20);
     boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
