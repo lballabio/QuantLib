@@ -23,15 +23,9 @@
 
 namespace QuantLib {
 
-    EuropeanMultiPathPricer::EuropeanMultiPathPricer(
-                                      BasketOption::type basketType,
-                                      Option::Type type,
-                                      Real strike,
-                                      DiscountFactor discount)
-    : basketType_(basketType), payoff_(type, strike), discount_(discount) {
-
-        QL_REQUIRE(strike>=0.0,
-                   "strike less than zero not allowed");
+    EuropeanMultiPathPricer::EuropeanMultiPathPricer(boost::shared_ptr<BasketPayoff> payoff,
+                                                     DiscountFactor discount)
+    :  payoff_(payoff), discount_(discount) {
     }
 
     Real EuropeanMultiPathPricer::operator()(const MultiPath& multiPath)
@@ -48,10 +42,7 @@ namespace QuantLib {
         Array finalPrice(numAssets, 0.0);
         for (j = 0; j < numAssets; j++)
             finalPrice[j] = multiPath[j].back();
-
-        // this should be a basket payoff
-        Real basketPrice = basketType_->pricingFunction(finalPrice);
-        return payoff_(basketPrice) * discount_;
+        return (*payoff_)(finalPrice) * discount_;
     }
 
 }

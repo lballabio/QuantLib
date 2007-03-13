@@ -30,12 +30,10 @@ namespace QuantLib {
 
     AmericanBasketPathPricer::AmericanBasketPathPricer(
         Size assetNumber,
-        AmericanBasketPathPricer::BasketType basketType,
         const boost::shared_ptr<Payoff>& payoff,
         Size polynomOrder,
         LsmBasisSystem::PolynomType polynomType)
     : assetNumber_ (assetNumber),
-      basketType_  (basketType),
       payoff_      (payoff),
       scalingValue_(1.0),
       v_           (LsmBasisSystem::multiPathBasisSystem(assetNumber_,
@@ -47,9 +45,13 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Hyperbolic
                    || polynomType == LsmBasisSystem::Chebyshev2th,
                    "insufficient polynom type");
+        const boost::shared_ptr<BasketPayoff> basketPayoff
+            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
         const boost::shared_ptr<StrikedTypePayoff> strikePayoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            = boost::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
+        QL_REQUIRE(basketPayoff, "payoff not a basket strike payoff");
 
         if (strikePayoff) {
             scalingValue_/=strikePayoff->strike();
@@ -72,8 +74,11 @@ namespace QuantLib {
     }
 
     Real AmericanBasketPathPricer::payoff(const Array& state) const {
+        const boost::shared_ptr<BasketPayoff> basketPayoff
+            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
-        Real value = basketType_->pricingFunction(state);
+        Real value = basketPayoff->accumulate(state);
         return (*payoff_)(value/scalingValue_);
     }
 

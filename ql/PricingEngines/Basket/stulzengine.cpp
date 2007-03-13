@@ -123,17 +123,19 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
+        boost::shared_ptr<BasketPayoff> basket_payoff =
+            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MinBasketOptionType> min_basket =
-            boost::dynamic_pointer_cast<MinBasketOptionType>(arguments_.basketType);
+        boost::shared_ptr<MinBasketPayoff> min_basket =
+            boost::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MaxBasketOptionType> max_basket =
-            boost::dynamic_pointer_cast<MaxBasketOptionType>(arguments_.basketType);
+        boost::shared_ptr<MaxBasketPayoff> max_basket =
+            boost::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(min_basket || max_basket, "unknown basket type");
 
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
+        QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();
 

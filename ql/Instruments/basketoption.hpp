@@ -34,35 +34,52 @@ namespace QuantLib {
     /*! \ingroup instruments 
       @TODO: Replace with STL algorithms */
 
-    class BasketOptionType {
+    class BasketPayoff : public Payoff {
+    private:
+        boost::shared_ptr<Payoff> basePayoff_;
     public:
-        virtual ~BasketOptionType() {};
-        virtual Real pricingFunction(const Array &a) = 0;
+        BasketPayoff(const boost::shared_ptr<Payoff> &p) :
+            basePayoff_(p) {};
+        std::string name() const { return basePayoff_->name();};
+        std::string description() const { return basePayoff_->description();};
+        Real operator()(Real price) const { return (*basePayoff_)(price);};
+        virtual ~BasketPayoff() {};
+        virtual Real operator()(const Array &a) const { 
+            return (*basePayoff_)(accumulate(a));
+        }
+        virtual Real accumulate(const Array &a) const = 0;
+        const boost::shared_ptr<Payoff> basePayoff() {
+            return basePayoff_;
+        }
     };
 
-    class MinBasketOptionType : public BasketOptionType {
+    class MinBasketPayoff : public BasketPayoff {
     public:
-        MinBasketOptionType() {};
-        Real pricingFunction(const Array &a) {
+        MinBasketPayoff(const boost::shared_ptr<Payoff> &p)  :
+            BasketPayoff(p) {};
+        Real accumulate (const Array &a) const {
             return *std::min_element(a.begin(), a.end());
         }
     };
 
-    class MaxBasketOptionType : public BasketOptionType {
+    class MaxBasketPayoff : public BasketPayoff {
     public:
-        MaxBasketOptionType() {};
-        Real pricingFunction(const Array &a) {
+        MaxBasketPayoff(const boost::shared_ptr<Payoff> &p)  :
+            BasketPayoff(p) {};
+        Real accumulate (const Array &a) const {
             return *std::max_element(a.begin(), a.end());
         }
     };
 
-    class AverageBasketOptionType : public BasketOptionType {
+    class AverageBasketPayoff : public BasketPayoff {
     public:
-        AverageBasketOptionType(const Array &a) :
-            weights_(a) {};
-        AverageBasketOptionType(Size n) :
-            weights_(n, 1.0/static_cast<Real>(n)) {};
-        Real pricingFunction(const Array &a) {
+        AverageBasketPayoff(const boost::shared_ptr<Payoff> &p,
+                            const Array &a) :
+            BasketPayoff(p), weights_(a) {};
+        AverageBasketPayoff(const boost::shared_ptr<Payoff> &p,
+                            Size n) :
+            BasketPayoff(p), weights_(n, 1.0/static_cast<Real>(n)) {};
+        Real accumulate (const Array &a) const {
             return std::inner_product(weights_.begin(),
                                       weights_.end(),
                                       a.begin(), 0.0);
@@ -75,24 +92,21 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        typedef boost::shared_ptr<BasketOptionType> type;
+
         enum BasketType { Min, Max };
         // Backward compatibility
-        BasketOption(BasketType, 
+        BasketOption(BasketType,
                      const boost::shared_ptr<StochasticProcess>&,
                      const boost::shared_ptr<PlainVanillaPayoff>&,
                      const boost::shared_ptr<Exercise>&,
                      const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
-        BasketOption(const boost::shared_ptr<BasketOptionType>&,
-                     const boost::shared_ptr<StochasticProcess>&,
-                     const boost::shared_ptr<PlainVanillaPayoff>&,
+        BasketOption(const boost::shared_ptr<StochasticProcess>&,
+                     const boost::shared_ptr<BasketPayoff>&,
                      const boost::shared_ptr<Exercise>&,
                      const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
         void setupArguments(PricingEngine::arguments*) const;
-      private:
-        type basketType_;
     };
 
     //! %Arguments for basket option calculation
@@ -100,7 +114,6 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        BasketOption::type basketType;
     };
 
 

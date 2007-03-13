@@ -24,13 +24,11 @@
 namespace QuantLib {
 
     BasketOption::BasketOption(
-        const boost::shared_ptr<BasketOptionType> & basketType,
         const boost::shared_ptr<StochasticProcess>& process,
-        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+        const boost::shared_ptr<BasketPayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : MultiAssetOption(process, payoff, exercise, engine),
-      basketType_(basketType) {}
+    : MultiAssetOption(process, payoff, exercise, engine) {}
 
     BasketOption::BasketOption(
         BasketType basketType,
@@ -39,14 +37,14 @@ namespace QuantLib {
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
     : MultiAssetOption(process, payoff, exercise, engine) {
-        switch(basketType) {
+        switch (basketType) {
         case BasketOption::Min:
-            basketType_ = 
-                boost::shared_ptr<MinBasketOptionType>(new MinBasketOptionType());
+            payoff_ = 
+                boost::shared_ptr<MinBasketPayoff>(new MinBasketPayoff(payoff_));
             break;
         case BasketOption::Max:
-            basketType_ = 
-                boost::shared_ptr<MaxBasketOptionType>(new MaxBasketOptionType());
+            payoff_ = 
+                boost::shared_ptr<MaxBasketPayoff>(new MaxBasketPayoff(payoff_));
             break;
         default:
             QL_FAIL("unknown basket type");
@@ -58,8 +56,6 @@ namespace QuantLib {
         BasketOption::arguments* arguments =
             dynamic_cast<BasketOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
-
-        arguments->basketType = basketType_;
     }
 
     void BasketOption::arguments::validate() const {

@@ -70,10 +70,10 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const {
 
-            boost::shared_ptr<PlainVanillaPayoff> payoff =
-                boost::dynamic_pointer_cast<PlainVanillaPayoff>(
-                                                           arguments_.payoff);
-            QL_REQUIRE(payoff, "non-plain payoff given");
+            boost::shared_ptr<BasketPayoff> payoff =
+                boost::dynamic_pointer_cast<BasketPayoff>(
+                                                          arguments_.payoff);
+            QL_REQUIRE(payoff, "non-basket payoff given");
 
             Size numAssets = arguments_.stochasticProcess->size();
 
@@ -98,14 +98,11 @@ namespace QuantLib {
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanMultiPathPricer(BasketOption::type basketType,
-                                Option::Type type,
-                                Real strike,
+        EuropeanMultiPathPricer(boost::shared_ptr<BasketPayoff> payoff,
                                 DiscountFactor discount);
         Real operator()(const MultiPath& multiPath) const;
       private:
-        BasketOption::type basketType_;
-        PlainVanillaPayoff payoff_;
+        boost::shared_ptr<BasketPayoff> payoff_;
         DiscountFactor discount_;
     };
 
@@ -141,9 +138,9 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
     MCBasketEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
+        boost::shared_ptr<BasketPayoff> payoff =
+            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-basket payoff given");
 
         boost::shared_ptr<StochasticProcessArray> processes =
             boost::dynamic_pointer_cast<StochasticProcessArray>(
@@ -157,11 +154,9 @@ namespace QuantLib {
         return boost::shared_ptr<
                          QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>(
             new EuropeanMultiPathPricer(
-                arguments_.basketType,
-                payoff->optionType(),
-                payoff->strike(),
-                process->riskFreeRate()->discount(
-                                           arguments_.exercise->lastDate())));
+                                        payoff,
+                                        process->riskFreeRate()->discount(
+                                                                          arguments_.exercise->lastDate())));
     }
 
     /*
