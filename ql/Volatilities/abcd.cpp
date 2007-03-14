@@ -105,7 +105,7 @@ namespace QuantLib {
         boost::shared_ptr<EndCriteria> endCriteria = endCr;
         if (!endCriteria) {
             endCriteria = boost::shared_ptr<EndCriteria>(new
-                EndCriteria(100000, 0.3e-4));
+                EndCriteria(100000, 0.3e-4, 0.3e-4, 100));
         }
 
         Array guess(4);

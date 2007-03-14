@@ -58,7 +58,6 @@ namespace QuantLib {
         Integer iterationNumber_=0;
 
         bool end = false;
-
         Size n = x_.size(), i;
 
         vertices_ = std::vector<Array>(n+1, x_);
@@ -70,14 +69,11 @@ namespace QuantLib {
         values_ = Array(n+1, 0.0);
         for (i=0; i<=n; i++)
             values_[i] = P.value(vertices_[i]);
-
-
         do {
             sum_ = Array(n, 0.0);
             Size i;
             for (i=0; i<=n; i++)
                 sum_ += vertices_[i];
-
             //Determine best, worst and 2nd worst vertices
             Size iLowest = 0;
             Size iHighest, iNextHighest;
@@ -100,7 +96,6 @@ namespace QuantLib {
                     iLowest = i;
             }
             Real low = values_[iLowest], high = values_[iHighest];
-
             Real rtol = 2.0*std::fabs(high - low)/
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             ++iterationNumber_;
@@ -109,7 +104,6 @@ namespace QuantLib {
 				endCriteria.checkAccuracyValue(QL_EPSILON, true, ecType); 
 				endCriteria.checkIterationNumber(iterationNumber_, ecType);
                 x_ = vertices_[iLowest];
-
 				P.setFunctionValue(low);
                 P.setCurrentValue(x_);
                 return ecType;
@@ -140,5 +134,4 @@ namespace QuantLib {
 
         QL_FAIL("optimization failed: unexpected behaviour");
     }
-
 }

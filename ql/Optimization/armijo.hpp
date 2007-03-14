@@ -41,8 +41,8 @@ namespace QuantLib {
         \f[ f(x+\frac{t}{\beta} \cdot d) - f(x) > -\frac{\alpha}{\beta}
             t f'(x+t \cdot d) \f]
 
-        (see Polak. Algorithms and consistent approximations, Optimization,
-        volume 124 of Applied Mathematical Sciences. Springer-verlag, N-Y,
+        (see Polak, Algorithms and consistent approximations, Optimization,
+        volume 124 of Applied Mathematical Sciences, Springer-Verlag, NY,
         1997)
     */
     class ArmijoLineSearch : public LineSearch {
@@ -54,7 +54,7 @@ namespace QuantLib {
         : LineSearch(eps), alpha_(alpha), beta_(beta) {}
 
         //! Perform line search
-        Real operator()(Problem& P, // Optimization problem
+        Real operator()(Problem& P,             // Optimization problem
                         EndCriteria::Type& ecType,
                         const EndCriteria&,
                         const Real t_ini);      // initial value of line-search step
@@ -63,6 +63,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

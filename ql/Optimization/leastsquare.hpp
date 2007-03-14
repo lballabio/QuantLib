@@ -96,38 +96,38 @@ namespace QuantLib {
     class NonLinearLeastSquare {
       public:
         //! Default constructor
-        inline NonLinearLeastSquare(Constraint& c,
-                                    Real accuracy = 1e-4,
-                                    Size maxiter = 100);
+        NonLinearLeastSquare(Constraint& c,
+                             Real accuracy = 1e-4,
+                             Size maxiter = 100);
         //! Default constructor
-        inline NonLinearLeastSquare(Constraint& c,
-                                    Real accuracy,
-                                    Size maxiter,
-                                    boost::shared_ptr<OptimizationMethod> om);
+        NonLinearLeastSquare(Constraint& c,
+                             Real accuracy,
+                             Size maxiter,
+                             boost::shared_ptr<OptimizationMethod> om);
         //! Destructor
-        inline ~NonLinearLeastSquare() {}
+        ~NonLinearLeastSquare() {}
 
         //! Solve least square problem using numerix solver
-        inline Array& perform(LeastSquareProblem& lsProblem);
+        Array& perform(LeastSquareProblem& lsProblem);
 
-        inline void setInitialValue(const Array& initialValue) {
+        void setInitialValue(const Array& initialValue) {
             initialValue_ = initialValue;
         }
 
         //! return the results
-        inline Array& results() { return results_; }
+        Array& results() { return results_; }
 
         //! return the least square residual norm
-        inline Real residualNorm() { return resnorm_; }
+        Real residualNorm() { return resnorm_; }
 
         //! return last function value
-        inline Real lastValue() { return bestAccuracy_; }
+        Real lastValue() { return bestAccuracy_; }
 
         //! return exit flag
-        inline Integer exitFlag() { return exitFlag_; }
+        Integer exitFlag() { return exitFlag_; }
 
         //! return the performed number of iterations
-        inline Integer iterationsNumber() { return nbIterations_; }
+        Integer iterationsNumber() { return nbIterations_; }
       private:
         //! solution vector
         Array results_, initialValue_;

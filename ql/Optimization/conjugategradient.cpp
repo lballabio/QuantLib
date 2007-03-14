@@ -2,6 +2,8 @@
 
  /*
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Marco Bianchetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +25,10 @@
 
 namespace QuantLib {
 
+    /*! Multi-dimensional Conjugate Gradient 
+        (Fletcher-Reeves-Polak-Ribiere algorithm 
+        adapted from Numerical Recipes in C, 2nd edition).
+    */
     EndCriteria::Type ConjugateGradient::minimize(Problem &P,
                                                   const EndCriteria& endCriteria) {
         EndCriteria::Type ecType = EndCriteria::None;
@@ -39,15 +45,14 @@ namespace QuantLib {
         Real normdiff;
         // classical initial value for line-search step
         Real t = 1.0;
-
-        // Set g at the size of the optimization problem search direction
+        // Set gradient g at the size of the optimization problem search direction
         Size sz = lineSearch_->searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
-
+        // Initialize cost function and gradient g 
         P.setFunctionValue(P.valueAndGradient(g, x_));
         lineSearch_->searchDirection() = -g;
         P.setGradientNormValue(DotProduct(g, g));
-
+        // Loop over iterations
         do {
             // Linesearch
             t = (*lineSearch_)(P, ecType, endCriteria, t);
@@ -71,8 +76,7 @@ namespace QuantLib {
                 // conjugate gradient search direction
                 sddiff = (-g + c * d) - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));
-                lineSearch_->searchDirection() = -g + c * d;
-                
+                lineSearch_->searchDirection() = -g + c * d;              
                 // End criteria
                 done = endCriteria(iterationNumber_,
                                    stationaryStateIterationNumber_,
@@ -91,10 +95,8 @@ namespace QuantLib {
                 done=true;
             }
         } while (!done);
-
         P.setCurrentValue(x_);
         return ecType;
-
 	}
 
 }

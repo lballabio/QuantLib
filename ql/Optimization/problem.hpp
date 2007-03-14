@@ -20,7 +20,7 @@
 */
 
 /*! \file problem.hpp
-    \brief Abstract optimization class
+    \brief Abstract optimization problem class
 */
 
 #ifndef quantlib_optimization_problem_h
@@ -82,10 +82,8 @@ namespace QuantLib {
         void setGradientNormValue(Real squaredNorm) {
             squaredNorm_=squaredNorm;
         }
-
         //! value of cost function gradient norm
         Real gradientNormValue() const { return squaredNorm_; }
-
 
         //! number of evaluation of cost function
         Integer functionEvaluation() const { return functionEvaluation_; }
@@ -94,7 +92,6 @@ namespace QuantLib {
         Integer gradientEvaluation() const { return gradientEvaluation_; }
 
       protected:
-
         //! Unconstrained cost function
         CostFunction& costFunction_;
         //! Constraint
@@ -103,14 +100,11 @@ namespace QuantLib {
         Array currentValue_;
         //! function and gradient norm values at the curentValue_ (i.e. the last step)
         Real functionValue_, squaredNorm_;
-
         //! number of evaluation of cost function and its gradient
         Integer functionEvaluation_, gradientEvaluation_;
     };
 
-
     // inline definitions
-
     inline Real Problem::value(const Array& x) {
         ++functionEvaluation_;
         return costFunction_.value(x);

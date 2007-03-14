@@ -369,7 +369,7 @@ namespace QuantLib {
 
                 if (!endCriteria_) {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
-                        EndCriteria(60000, 1e-8));
+                        EndCriteria(60000, 1e-8, 1e-8, 100));
                 }
 
                 if (compute)

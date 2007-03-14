@@ -37,11 +37,9 @@ namespace QuantLib {
                 QL_FAIL("can't update parameter vector");
             diff *= 0.5;
             icount ++;
-
             newParams = params + diff*direction;
             valid = test(newParams);
         }
-
         params += diff*direction;
         return diff;
     }

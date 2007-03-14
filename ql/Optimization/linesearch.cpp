@@ -29,7 +29,6 @@ namespace QuantLib {
                             const Constraint& constraint) {
 
         Real diff=beta;
-
         Array newParams = params + diff*direction;
         bool valid = constraint.test(newParams);
         Integer icount = 0;
@@ -38,11 +37,9 @@ namespace QuantLib {
                 QL_FAIL("can't update linesearch");
             diff *= 0.5;
             icount ++;
-
             newParams = params + diff*direction;
             valid = constraint.test(newParams);
         }
-
         params += diff*direction;
         return diff;
     }

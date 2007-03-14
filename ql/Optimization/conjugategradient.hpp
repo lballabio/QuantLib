@@ -29,11 +29,10 @@
 
 namespace QuantLib {
 
-    //! Multi-dimensional Conjugate Gradient class
+    //! Multi-dimensional Conjugate Gradient class.
     /*! User has to provide line-search method and
-        optimization end criteria
-
-        search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
+        optimization end criteria.
+        Search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
         where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
         and \f$ d_1 = - f'(x_1) \f$
     */
@@ -42,7 +41,7 @@ namespace QuantLib {
         ConjugateGradient(const boost::shared_ptr<LineSearch>& lineSearch =
                                             boost::shared_ptr<LineSearch>())
         : LineSearchBasedMethod(lineSearch) {}
-        //! minimize the optimization problem P
+        //! solve the optimization problem P
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria //= EndCriteria()
                                            );

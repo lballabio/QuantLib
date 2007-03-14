@@ -33,8 +33,8 @@ namespace QuantLib {
       maxStationaryStateIterations_(maxStationaryStateIterations) {
 
         if (maxStationaryStateIterations_ == Null<Size>())
-            maxStationaryStateIterations_ = std::min(Size(maxIterations/10.0),
-                                                     Size(1000));
+            maxStationaryStateIterations_ = std::min(static_cast<Size>(maxIterations/2),
+                                                     static_cast<Size>(100));
 
         if (gradientEpsilon_ == Null<Real>())
             gradientEpsilon_ = functionEpsilon_;

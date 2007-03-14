@@ -126,7 +126,6 @@ namespace QuantLib {
                                      new CompositeConstraint::Impl(c1,c2))) {}
     };
 
-
 }
 
 #endif

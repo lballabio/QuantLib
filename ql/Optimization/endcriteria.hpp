@@ -47,10 +47,10 @@ namespace QuantLib {
                     Unknown };
 
         //! initialization constructor
-        EndCriteria(Size maxIteration = 1000,
-                    Real functionEpsilon = 1e-8,
-                    Real gradientEpsilon = Null<Real>(),
-                    Size maxStationaryStateIterations = Null<Size>());
+        EndCriteria(Size maxIteration,
+                    Real functionEpsilon,
+                    Real gradientEpsilon,
+                    Size maxStationaryStateIterations);
 
         Size maxIterations() const;
         Real functionEpsilon() const;
@@ -72,7 +72,7 @@ namespace QuantLib {
                                   EndCriteria::Type& ecType) const;
         bool checkStationaryValue(const Real fold,
                                   const Real fnew,
-                                  Size& statState,
+                                  Size& statStateIterations,
                                   EndCriteria::Type& ecType) const;
         bool checkAccuracyValue(const Real f,
                                 const bool positiveOptimization,
@@ -153,7 +153,7 @@ namespace QuantLib {
     }
 
     inline bool EndCriteria::operator()(const Size iteration,
-                                        Size& statState,
+                                        Size& statStateIterations,
                                         const bool positiveOptimization,
                                         const Real fold,
                                         const Real normgold,
@@ -162,7 +162,7 @@ namespace QuantLib {
                                         EndCriteria::Type& ecType) const {
         return
             checkIterationNumber(iteration, ecType) ||
-            checkStationaryValue(fold, fnew, statState, ecType) ||
+            checkStationaryValue(fold, fnew, statStateIterations, ecType) ||
             checkAccuracyValue(fnew, positiveOptimization, ecType) ||
             checkAccuracyValue(fold, positiveOptimization, ecType) ||
             checkAccuracyGradientNorm(normgnew, ecType) ||
