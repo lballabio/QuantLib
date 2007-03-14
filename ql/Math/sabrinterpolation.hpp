@@ -285,17 +285,25 @@ namespace QuantLib {
               public:
                 SABRError(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
+
                 Real value(const Array& x) const {
-
                     const Array y = sabr_->tranformation_->direct(x);
-
                     sabr_->alpha_ = y[0];
                     sabr_->beta_  = y[1];
                     sabr_->nu_    = y[2];
                     sabr_->rho_   = y[3];
-
                     return sabr_->interpolationSquaredError();
                 }
+
+                Disposable<Array> values(const Array& x) const{
+                    const Array y = sabr_->tranformation_->direct(x);
+                    sabr_->alpha_ = y[0];
+                    sabr_->beta_  = y[1];
+                    sabr_->nu_    = y[2];
+                    sabr_->rho_   = y[3];
+                    return sabr_->interpolationErrors(x);
+                }
+
               private:
                 SABRInterpolationImpl* sabr_;
             };
@@ -306,15 +314,24 @@ namespace QuantLib {
               public:
                 SABRErrorWithFixedBeta(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
+
                 Real value(const Array& x) const {
-
                     const Array y = sabr_->tranformation_->direct(x);
-
                     sabr_->alpha_ = y[0];
                     sabr_->nu_    = y[1];
                     sabr_->rho_   = y[2];
                     return sabr_->interpolationSquaredError();
                 }
+
+                Disposable<Array> values(const Array& x) const{
+                    const Array y = sabr_->tranformation_->direct(x);
+                    sabr_->alpha_ = y[0];
+                    sabr_->beta_  = y[1];
+                    sabr_->nu_    = y[2];
+                    sabr_->rho_   = y[3];
+                    return sabr_->interpolationErrors(x);
+                }
+
               private:
                 SABRInterpolationImpl* sabr_;
             };
@@ -469,6 +486,18 @@ namespace QuantLib {
                     totalError += error*error * (*w);
                 }
                 return totalError;
+            }
+
+            Disposable<Array> interpolationErrors(const Array& sabrValues)const {
+                Array results(this->xEnd_ - this->xBegin_);
+                std::vector<Real>::const_iterator x = this->xBegin_;
+                Array::iterator r = results.begin();
+                std::vector<Real>::const_iterator y = this->yBegin_;
+                std::vector<Real>::const_iterator w = weights_.begin();
+                for (; x != this->xEnd_; ++x, ++r, ++w, ++y) {
+                    *r = (value(*x) - *y)* std::sqrt(*w);
+                }
+                return results;
             }
 
             Real interpolationError() const {
