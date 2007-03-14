@@ -38,8 +38,7 @@ namespace QuantLib {
         Array x_ = P.currentValue();
 
         ProblemData::instance().problem() = &P;
-        ProblemData::instance().initCostValues()
-            = P.costFunction().values(x_);
+        ProblemData::instance().initCostValues() = P.costFunction().values(x_);
 
         int m = ProblemData::instance().initCostValues().size();
         int n = x_.size();
@@ -73,7 +72,7 @@ namespace QuantLib {
                                  ldfjac, ipvt.get(), qtf.get(),
                                  wa1.get(), wa2.get(), wa3.get(), wa4.get());
         info_ = info;
-
+        // check requirements
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
         QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
                                        "reached or exceeded maxfev.");
