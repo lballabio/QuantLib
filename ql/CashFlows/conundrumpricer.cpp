@@ -200,7 +200,8 @@ namespace QuantLib {
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
-       precision_(precision){
+       precision_(precision),
+       numberOfStdDeviationsForUpperLimit_(8.){
     }
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
@@ -216,6 +217,7 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
+        resetUpperLimit();
         Real a, b;
         if (optionType==Option::Call) {
             a = strike;
@@ -252,6 +254,14 @@ namespace QuantLib {
                              + atmCapletPrice - atmFloorletPrice)
                    + spreadLegValue_;
         }
+    }
+
+    void ConundrumPricerByNumericalIntegration::resetUpperLimit() const {
+        Real variance = 
+            swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
+        upperLimit_ = swapRateValue_ * 
+            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance));   
+
     }
 
 //===========================================================================//

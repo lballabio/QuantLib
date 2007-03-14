@@ -283,8 +283,10 @@ namespace QuantLib {
         virtual Real optionletPrice(Option::Type optionType,
                                     Rate strike) const;
         virtual Real swapletPrice() const;
-
-        const Real upperLimit_, lowerLimit_, precision_;
+        void resetUpperLimit() const;
+    
+        mutable Real upperLimit_;
+        const Real lowerLimit_, precision_, numberOfStdDeviationsForUpperLimit_;
     };
 
     class ConundrumPricerByBlack : public ConundrumPricer {
