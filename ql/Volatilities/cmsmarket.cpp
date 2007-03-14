@@ -356,6 +356,9 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             error_ = problem.functionValue();
             result = problem.currentValue();
+            sparseSabrParameters_ = costFunction.sparseSabrParameters();
+            denseSabrParameters_ = costFunction.denseSabrParameters();
+            browseCmsMarket_ = costFunction.browseCmsMarket();
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
@@ -364,6 +367,9 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             error_ = problem.functionValue();
             result = problem.currentValue();
+            sparseSabrParameters_ = costFunction.sparseSabrParameters();
+            denseSabrParameters_ = costFunction.denseSabrParameters();
+            browseCmsMarket_ = costFunction.browseCmsMarket();
         }
         return result;
     }
@@ -399,6 +405,25 @@ namespace QuantLib {
         }
     }
 
+    Matrix 
+    SmileAndCmsCalibrationBySabr::ObjectiveFunction::sparseSabrParameters() const{
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        return volCubeBySabr->sparseSabrParameters();
+	}
+    
+    Matrix 
+    SmileAndCmsCalibrationBySabr::ObjectiveFunction::denseSabrParameters() const{
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        return volCubeBySabr->denseSabrParameters();
+	}
+
+    Matrix 
+    SmileAndCmsCalibrationBySabr::ObjectiveFunction::browseCmsMarket() const{
+        return cmsMarket_->browse();
+	}
+
     //===========================================================================//
     //   SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion   //
     //===========================================================================//
@@ -430,6 +455,5 @@ namespace QuantLib {
                 QL_FAIL("unknown/illegal calibration type");
         }
     }
-
 
 }

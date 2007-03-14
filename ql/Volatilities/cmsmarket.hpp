@@ -144,6 +144,7 @@ namespace QuantLib {
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         CalibrationType calibrationType_;
+        Matrix sparseSabrParameters_, denseSabrParameters_, browseCmsMarket_;
 
         Array calibration(const boost::shared_ptr<EndCriteria>& endCriteria,
                           const boost::shared_ptr<OptimizationMethod>& method,
@@ -186,7 +187,10 @@ namespace QuantLib {
                 calibrationType_(smileAndCms->calibrationType_){};
 
                 Real value(const Array& x) const;
-          private:
+                Matrix sparseSabrParameters() const;
+                Matrix denseSabrParameters() const;
+                Matrix browseCmsMarket() const;
+          protected:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
@@ -217,32 +221,21 @@ namespace QuantLib {
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
         };
 
-        class ObjectiveFunctionWithFixedMeanReversion : public CostFunction {
+        class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
           public:
             ObjectiveFunctionWithFixedMeanReversion(SmileAndCmsCalibrationBySabr* smileAndCms,
                                                     Real fixedMeanReversion)
-                :smileAndCms_(smileAndCms),
-                volCube_(smileAndCms->volCube_),
-                cmsMarket_(smileAndCms->cmsMarket_),
-                weights_(smileAndCms->weights_),
-                calibrationType_(smileAndCms->calibrationType_),
+                :ObjectiveFunction(smileAndCms),
                 fixedMeanReversion_(fixedMeanReversion){};
 
                 Real value(const Array& x) const;
           private:
-            SmileAndCmsCalibrationBySabr* smileAndCms_;
-            Handle<SwaptionVolatilityStructure> volCube_;
-            boost::shared_ptr<CmsMarket> cmsMarket_;
-            Matrix weights_;
-            CalibrationType calibrationType_;
             Real fixedMeanReversion_;
         };
-
-
         
         Real error_; 
 		EndCriteria::Type endCriteria_;
-  
+          
     };
 
 }
