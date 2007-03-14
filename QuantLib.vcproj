@@ -650,6 +650,12 @@
 				RelativePath=".\ql\CashFlows\couponpricer.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\digitalcoupon.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\CashFlows\digitalcoupon.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\CashFlows\dividend.cpp">
 			</File>
 			<File
