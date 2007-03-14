@@ -1653,23 +1653,18 @@ void MarketModelTest::testCallableSwapAnderson() {
                                        Terminal };
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
-
                 bool logNormal = true;
                 boost::shared_ptr<MarketModel> marketModel =
                     makeMarketModel(logNormal, evolution, factors, marketModels[j]);
-
-
                 EvolverType evolvers[] = { Pc, Ipc };
                 boost::shared_ptr<MarketModelEvolver> evolver;
                 Size stop =
                     isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
                 for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(
                             SobolBrownianGenerator::Diagonal);
-
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          generatorFactory,
@@ -1683,24 +1678,19 @@ void MarketModelTest::testCallableSwapAnderson() {
                             "MT BGF";
                         if (printReport_)
                             BOOST_MESSAGE("    " << config.str());
-
-                        // calculate the exercise strategy
+                        // 1. calculate the exercise strategy
                         collectNodeData(*evolver,
                             receiverSwap, parametricForm, nullRebate,
                             control, trainingPaths_, collectedData);
-
                         Simplex om(0.01);
-                        EndCriteria ec;
-
+                        EndCriteria ec(1000, 1e-8, 1-8, 100);
                         Size initialNumeraire = evolver->numeraires().front();
                         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
                         Real firstPassValue = genericEarlyExerciseOptimization(
                             collectedData, parametricForm, parameters, ec, om) *
                             initialNumeraireValue;
-
                         if (printReport_)
                             BOOST_MESSAGE("    initial estimate:  " << io::rate(firstPassValue));
-
                         ParametricExerciseAdapter exerciseStrategy(parametricForm, parameters);
 
                         // 2. bermudan swaption to enter into the payer swap
@@ -1714,7 +1704,6 @@ void MarketModelTest::testCallableSwapAnderson() {
                             CallSpecifiedMultiProduct(
                                                receiverSwap, exerciseStrategy,
                                                ExerciseAdapter(nullRebate));
-
                         // lower bound: evolve all 4 products togheter
                         MultiProductComposite allProducts;
                         allProducts.add(payerSwap);
@@ -1722,14 +1711,11 @@ void MarketModelTest::testCallableSwapAnderson() {
                         allProducts.add(bermudanProduct);
                         allProducts.add(callableProduct);
                         allProducts.finalize();
-
                         boost::shared_ptr<SequenceStatistics> stats =
                             simulate(evolver, allProducts);
                         checkCallableSwap(*stats, config.str());
 
-
                         // upper bound
-
                         //MTBrownianGeneratorFactory uFactory(seed_+142);
                         SobolBrownianGeneratorFactory uFactory(
                             SobolBrownianGenerator::Diagonal);
@@ -1737,10 +1723,8 @@ void MarketModelTest::testCallableSwapAnderson() {
                                                          numeraires,
                                                          uFactory,
                                                          evolvers[i]);
-
                         std::vector<boost::shared_ptr<MarketModelEvolver> >
                             innerEvolvers;
-
                         std::vector<bool> isExerciseTime =
                             isInSubset(evolution.evolutionTimes(),
                                        exerciseStrategy.exerciseTimes());
@@ -1756,7 +1740,6 @@ void MarketModelTest::testCallableSwapAnderson() {
                                 innerEvolvers.push_back(e);
                             }
                         }
-
                         UpperBoundEngine uEngine(evolver, innerEvolvers,
                                                  receiverSwap, nullRebate,
                                                  receiverSwap, nullRebate,

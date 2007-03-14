@@ -89,7 +89,7 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     Real lambda = 0.5;
     Simplex simplex(lambda);
-    model->calibrate(swaptions, simplex, EndCriteria(10000, 1e-9));
+    model->calibrate(swaptions, simplex, EndCriteria(10000, 1e-9, 1e-9, 100));
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedA = 0.0484570, cachedSigma = 0.00591646;
