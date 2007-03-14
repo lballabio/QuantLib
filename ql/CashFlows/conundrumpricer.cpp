@@ -217,7 +217,7 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
-        resetUpperLimit();
+        //resetUpperLimit();
         Real a, b;
         if (optionType==Option::Call) {
             a = strike;
