@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 François du Vignaud
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
@@ -68,23 +70,18 @@ namespace QuantLib {
             {
                 QL_REQUIRE(t>0.0, "expiry time must be positive: "
                                   << t << " not allowed");
-
                 if (alpha_ != Null<Real>())
                     alphaIsFixed_ = alphaIsFixed;
                 else alpha_ = std::sqrt(0.2);
-
                 if (beta_ != Null<Real>())
                     betaIsFixed_ = betaIsFixed;
                 else beta_ = 0.5;
-
                 if (nu_ != Null<Real>())
                     nuIsFixed_ = nuIsFixed;
                 else nu_ = std::sqrt(0.4);
-
                 if (rho_ != Null<Real>())
                     rhoIsFixed_ = rhoIsFixed;
                 else rho_ = 0.0;
-
                 validateSabrParameters(alpha_, beta_, nu_, rho_);
             }
             virtual ~SABRCoefficientHolder() {}
@@ -140,14 +137,12 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
         }
-
         Real expiry()  const { return coeffs_->t_; }
         Real forward() const { return coeffs_->forward_; }
         Real alpha()   const { return coeffs_->alpha_; }
         Real beta()    const { return coeffs_->beta_; }
         Real nu()      const { return coeffs_->nu_; }
         Real rho()     const { return coeffs_->rho_; }
-
         Real interpolationError() const { return coeffs_->error_; }
         Real interpolationMaxError() const { return coeffs_->maxError_; }
         //const std::vector<Real>& interpolationWeights() const {
@@ -157,7 +152,6 @@ namespace QuantLib {
       private:
         boost::shared_ptr<detail::SABRCoefficientHolder> coeffs_;
     };
-
 
     //! %SABR interpolation factory
     class SABR {
@@ -220,33 +214,34 @@ namespace QuantLib {
                      const Real eps1_, eps2_;
              public:
 
-                    SabrParametersTransformation() : y_(Array(4)),
-                        eps1_(.0000001),
-                        eps2_(.9999) {
-                    }
+                SabrParametersTransformation() : y_(Array(4)),
+                    eps1_(.0000001),
+                    eps2_(.9999) {
+                }
 
-                    Array direct(const Array& x) const {
-                        y_[0] = x[0]*x[0] + eps1_;
-                        //y_[1] = std::abs(eps2 * std::sin(x[1]));
-                        y_[1] = std::exp(-(x[1]*x[1]));
-                        y_[2] = x[2]*x[2] + eps1_;
-                        y_[3] = eps2_ * std::sin(x[3]);
-                        return y_;
+                Array direct(const Array& x) const {
+                    y_[0] = x[0]*x[0] + eps1_;
+                    //y_[1] = std::abs(eps2 * std::sin(x[1]));
+                    y_[1] = std::exp(-(x[1]*x[1]));
+                    y_[2] = x[2]*x[2] + eps1_;
+                    y_[3] = eps2_ * std::sin(x[3]);
+                    return y_;
+                }
+
+                Array inverse(const Array& x) const {
+                    y_[0] = std::sqrt(x[0] - eps1_);
+                    y_[1] = std::sqrt(-std::log(x[1]));
+                    y_[2] = std::sqrt(x[2] - eps1_);
+                    {
+                        //arcsin expansion
+                        const Real z = x[3]/eps2_;
+                        const Real z3 = z*z*z;
+                        const Real z5 = z3*z*z;
+                        y_[3] = z + z3/6 + 3*z5/40;
                     }
-                    Array inverse(const Array& x) const {
-                     y_[0] = std::sqrt(x[0] - eps1_);
-                     y_[1] = std::sqrt(-std::log(x[1]));
-                     y_[2] = std::sqrt(x[2] - eps1_);
-                     {
-                         //arcsin expansion
-                         const Real z = x[3]/eps2_;
-                         const Real z3 = z*z*z;
-                         const Real z5 = z3*z*z;
-                         y_[3] = z+z3/6 +3*z5/40;
-                     }
-                     return y_;
-                    }
-             };
+                    return y_;
+                }
+            };
 
              class SabrParametersTransformationWithFixedBeta :
                  public Transformation {
@@ -255,30 +250,30 @@ namespace QuantLib {
              public:
 
                  SabrParametersTransformationWithFixedBeta() : y_(Array(3)),
-                     eps1_(.0000001),
-                     eps2_(.9999) {
+                    eps1_(.0000001),
+                    eps2_(.9999) {
                  }
                  Array direct(const Array& x) const {
-                     y_[0] = x[0]*x[0] + eps1_;
-                     y_[1] = x[1]*x[1] + eps1_;
-                     y_[2] = eps2_ * std::sin(x[2]);
-                     return y_;
+                    y_[0] = x[0]*x[0] + eps1_;
+                    y_[1] = x[1]*x[1] + eps1_;
+                    y_[2] = eps2_ * std::sin(x[2]);
+                    return y_;
                  }
-                Array inverse(const Array& x) const {
+                 Array inverse(const Array& x) const {
                     y_[0] = std::sqrt(x[0] - eps1_);
                     y_[1] = std::sqrt(x[1] - eps1_);
                     {
-                        //arcsin expansion
-                        const Real z = x[2]/eps2_;
-                        const Real z3 = z*z*z;
-                        const Real z5 = z3*z*z;
-                        y_[2] = z+z3/6 +3*z5/40;
+                    //arcsin expansion
+                    const Real z = x[2]/eps2_;
+                    const Real z3 = z*z*z;
+                    const Real z5 = z3*z*z;
+                    y_[2] = z+z3/6 +3*z5/40;
                     }
                     return y_;
                 }
             };
 
-            // function to minimize
+            // functions to minimize
             class SABRError;
             friend class SABRError;
             class SABRError : public CostFunction {
@@ -326,9 +321,8 @@ namespace QuantLib {
                 Disposable<Array> values(const Array& x) const{
                     const Array y = sabr_->tranformation_->direct(x);
                     sabr_->alpha_ = y[0];
-                    sabr_->beta_  = y[1];
-                    sabr_->nu_    = y[2];
-                    sabr_->rho_   = y[3];
+                    sabr_->nu_    = y[1];
+                    sabr_->rho_   = y[2];
                     return sabr_->interpolationErrors(x);
                 }
 
@@ -378,24 +372,19 @@ namespace QuantLib {
                 std::vector<Real>::iterator w = weights_.begin();
                 for ( ; w!=weights_.end(); ++w)
                     *w /= weightsSum;
-
                 // if no method is provided we provide one
                 if (!method_)
                     method_ = boost::shared_ptr<OptimizationMethod>(new
                         Simplex(0.01));
-
                 if (!endCriteria_) {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
                         EndCriteria(60000, 1e-8, 1e-8, 100));
                 }
-
                 if (compute)
                     calculate();
             }
-
             void calculate()
             {
-
                 QL_REQUIRE(forward_>0.0, "forward must be positive: "
                     << io::rate(forward_) << " not allowed");
                 
@@ -410,42 +399,32 @@ namespace QuantLib {
                         SabrParametersTransformationWithFixedBeta);
                     NoConstraint constraint;
                     SABRErrorWithFixedBeta costFunction(this);
-
                     Array guess(3);
                     guess[0] = alpha_;  
                     guess[1] = nu_; 
                     guess[2] = rho_;
-                  
                     guess = tranformation_->inverse(guess);
-
                     Problem problem(costFunction, constraint, guess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
 				    Array result = problem.currentValue();
-
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     nu_    = y[1];
                     rho_   = y[2]; 
-
                 } else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
-
                     tranformation_ = boost::shared_ptr<Transformation>(new
                         SabrParametersTransformation);
                     NoConstraint constraint;
                     SABRError costFunction(this);
-
                     Array guess(4); 
                     guess[0] = alpha_;  
                     guess[1] = beta_; 
                     guess[2] = nu_;
                     guess[3] = rho_;
-
                     guess = tranformation_->inverse(guess);
-
                     Problem problem(costFunction, constraint, guess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
 				    Array result = problem.currentValue();
-
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     beta_  = y[1];
@@ -454,7 +433,6 @@ namespace QuantLib {
                 } else {
                     QL_REQUIRE(false, "Selected Sabr calibration not implemented");
                 }
-     
                 error_ = interpolationError();
                 maxError_ = interpolationMaxError();
 
@@ -475,7 +453,7 @@ namespace QuantLib {
             Real secondDerivative(Real) const {
                 QL_FAIL("SABR secondDerivative not implemented");
             }
-
+            // calculate total squared weighted difference (L2 norm)
             Real interpolationSquaredError() const {
                 Real error, totalError = 0.0;
                 std::vector<Real>::const_iterator x = this->xBegin_;
@@ -487,7 +465,7 @@ namespace QuantLib {
                 }
                 return totalError;
             }
-
+            // calculate weighted differences
             Disposable<Array> interpolationErrors(const Array& sabrValues)const {
                 Array results(this->xEnd_ - this->xBegin_);
                 std::vector<Real>::const_iterator x = this->xBegin_;

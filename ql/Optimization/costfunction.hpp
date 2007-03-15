@@ -34,6 +34,8 @@ namespace QuantLib {
         virtual ~CostFunction() {}
         //! method to overload to compute the cost functon value in x
         virtual Real value(const Array& x) const = 0;
+
+        // IT MUST BE FIXED: the following default implementation is wrong
         //! const function value for least square optimization
         virtual Disposable<Array> values(const Array& x) const {
             Array tmp(1, value(x));
