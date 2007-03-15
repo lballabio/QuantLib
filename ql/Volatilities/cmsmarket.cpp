@@ -356,9 +356,7 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             error_ = problem.functionValue();
             result = problem.currentValue();
-            sparseSabrParameters_ = costFunction.sparseSabrParameters();
-            denseSabrParameters_ = costFunction.denseSabrParameters();
-            browseCmsMarket_ = costFunction.browseCmsMarket();
+            Real recalculatedError = costFunction.value(result);
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
@@ -367,10 +365,14 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             error_ = problem.functionValue();
             result = problem.currentValue();
-            sparseSabrParameters_ = costFunction.sparseSabrParameters();
-            denseSabrParameters_ = costFunction.denseSabrParameters();
-            browseCmsMarket_ = costFunction.browseCmsMarket();
+            Real recalculatedError = costFunction.value(result);
         }
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
+        denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
+        browseCmsMarket_ = cmsMarket_->browse();
+
         return result;
     }
 
@@ -405,24 +407,6 @@ namespace QuantLib {
         }
     }
 
-    Matrix 
-    SmileAndCmsCalibrationBySabr::ObjectiveFunction::sparseSabrParameters() const{
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        return volCubeBySabr->sparseSabrParameters();
-	}
-    
-    Matrix 
-    SmileAndCmsCalibrationBySabr::ObjectiveFunction::denseSabrParameters() const{
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        return volCubeBySabr->denseSabrParameters();
-	}
-
-    Matrix 
-    SmileAndCmsCalibrationBySabr::ObjectiveFunction::browseCmsMarket() const{
-        return cmsMarket_->browse();
-	}
 
     //===========================================================================//
     //   SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion   //

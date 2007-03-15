@@ -187,9 +187,6 @@ namespace QuantLib {
                 calibrationType_(smileAndCms->calibrationType_){};
 
                 Real value(const Array& x) const;
-                Matrix sparseSabrParameters() const;
-                Matrix denseSabrParameters() const;
-                Matrix browseCmsMarket() const;
           protected:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
