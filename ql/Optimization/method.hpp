@@ -26,6 +26,7 @@
 #ifndef quantlib_optimization_method_h
 #define quantlib_optimization_method_h
 
+#include <boost/timer.hpp>
 #include <ql/Utilities/null.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
@@ -44,6 +45,25 @@ namespace QuantLib {
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria //= EndCriteria()
                                            ) = 0;
+        std::vector<Real> performance(){return performance_;}
+
+      protected:
+        void startTimer() { timer_.restart(); }
+        void stopTimer() {
+            performance_ = std::vector<Real>(3,0.);
+            Real seconds = timer_.elapsed();
+            int hours = int(seconds/3600);
+            seconds -= hours * 3600;
+            int minutes = int(seconds/60);
+            seconds -= minutes * 60;
+            performance_[0] = hours;
+            performance_[1] = minutes;
+            performance_[2] = seconds;
+        }
+
+        std::vector<Real> performance_;
+        boost::timer timer_;
+        
     };
 
 }

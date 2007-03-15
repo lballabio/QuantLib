@@ -357,6 +357,7 @@ namespace QuantLib {
             error_ = problem.functionValue();
             result = problem.currentValue();
             Real recalculatedError = costFunction.value(result);
+            performance_ = method->performance();
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
@@ -366,6 +367,7 @@ namespace QuantLib {
             error_ = problem.functionValue();
             result = problem.currentValue();
             Real recalculatedError = costFunction.value(result);
+            performance_ = method->performance();
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());

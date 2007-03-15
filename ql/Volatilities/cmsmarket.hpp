@@ -150,7 +150,8 @@ namespace QuantLib {
                           const boost::shared_ptr<OptimizationMethod>& method,
                           const Array& guess,
                           bool isMeanReversionFixed);
-        Real error(){return error_;};
+        Real error(){return error_;}
+        std::vector<Real> performance(){return performance_;}
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 
       private:
@@ -232,6 +233,7 @@ namespace QuantLib {
         
         Real error_; 
 		EndCriteria::Type endCriteria_;
+        std::vector<Real> performance_;
           
     };
 

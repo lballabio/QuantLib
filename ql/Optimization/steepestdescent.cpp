@@ -25,6 +25,7 @@ namespace QuantLib {
 
     EndCriteria::Type SteepestDescent::minimize(Problem& P,
                                                 const EndCriteria& endCriteria) {
+        startTimer();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -83,6 +84,7 @@ namespace QuantLib {
         } while (end == false);
 
         P.setCurrentValue(x_);
+        stopTimer();
         return ecType;
 
     }

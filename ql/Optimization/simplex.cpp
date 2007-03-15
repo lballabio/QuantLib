@@ -52,6 +52,7 @@ namespace QuantLib {
 
     EndCriteria::Type Simplex::minimize(Problem& P,
                                         const EndCriteria& endCriteria) {
+        startTimer();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -106,6 +107,7 @@ namespace QuantLib {
                 x_ = vertices_[iLowest];
 				P.setFunctionValue(low);
                 P.setCurrentValue(x_);
+                stopTimer();
                 return ecType;
             }
 
@@ -131,7 +133,7 @@ namespace QuantLib {
                 }
             }
         } while (end == false);
-
+        stopTimer();
         QL_FAIL("optimization failed: unexpected behaviour");
     }
 }
