@@ -158,7 +158,6 @@ namespace QuantLib {
     }
 
 
-
     // Helper class used by unit tests
     struct AbcdSquared : public std::unary_function<Real,Real> {
         boost::shared_ptr<AbcdFunction> abcdFunction_;
@@ -169,8 +168,6 @@ namespace QuantLib {
             return abcdFunction_->covariance(t, T_, S_);
         }
     };
-
-
 
     class OptimizationMethod;
 
@@ -291,6 +288,9 @@ namespace QuantLib {
                 if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
                 if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
                 return abcd_->error(blackVols_, t_);
+            }
+            Disposable<Array> values(const Array& x) const {
+                QL_FAIL("values method not implemented");
             }
           private:
             Abcd* abcd_;

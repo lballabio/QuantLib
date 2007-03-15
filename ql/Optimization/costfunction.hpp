@@ -32,22 +32,16 @@ namespace QuantLib {
     class CostFunction {
       public:
         virtual ~CostFunction() {}
-        //! method to overload to compute the cost functon value in x
+        //! method to overload to compute the cost function value in x
         virtual Real value(const Array& x) const = 0;
-
-        // IT MUST BE FIXED: the following default implementation is wrong
-        //! const function value for least square optimization
-        virtual Disposable<Array> values(const Array& x) const {
-            Array tmp(1, value(x));
-            return tmp;
-        }
+        //! method to overload to compute the cost function values in x
+        virtual Disposable<Array> values(const Array& x) const =0;
 
         //! method to overload to compute grad_f, the first derivative of
         //  the cost function with respect to x
         virtual void gradient(Array& grad, const Array& x) const {
             Real eps = finiteDifferenceEpsilon(), fp, fm;
             Array xx(x);
-
             for (Size i=0; i<x.size(); i++) {
                 xx[i] += eps;
                 fp = value(xx);

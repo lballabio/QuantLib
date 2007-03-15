@@ -44,6 +44,9 @@ namespace QuantLib {
               targetMatrix_(targetMatrix), targetVariance_(targetVariance),
               currentRoot_(size_, size_), tempMatrix_(size_, size_),
               currentMatrix_(size_, size_) {}
+            Disposable<Array> values(const Array& x) const {
+                QL_FAIL("values method not implemented");
+            }
             Real value(const Array& x) const {
                 Size i,j,k;
                 std::fill(currentRoot_.begin(), currentRoot_.end(), 1.0);

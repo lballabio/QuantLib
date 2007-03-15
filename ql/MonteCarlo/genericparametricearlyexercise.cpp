@@ -30,7 +30,10 @@ namespace QuantLib {
                           const ParametricExercise& exercise,
                           Size exerciseIndex);
             Real value(const Array& parameters) const;
-          private:
+            Disposable<Array> values(const Array& x) const {
+                QL_FAIL("values method not implemented");
+            }
+        private:
             const std::vector<NodeData>& simulationData_;
             const ParametricExercise& exercise_;
             Size exerciseIndex_;
