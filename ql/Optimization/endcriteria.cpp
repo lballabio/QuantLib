@@ -36,6 +36,17 @@ namespace QuantLib {
             maxStationaryStateIterations_ = std::min(static_cast<Size>(maxIterations/2),
                                                      static_cast<Size>(100));
 
+        QL_REQUIRE(maxStationaryStateIterations_>1,
+                   "maxStationaryStateIterations_ (" <<
+                   maxStationaryStateIterations_ <<
+                   ") must be greater than one");
+
+        QL_REQUIRE(maxStationaryStateIterations_<maxIterations_,
+                   "maxStationaryStateIterations_ (" <<
+                   maxStationaryStateIterations_ <<
+                   ") must be less than maxIterations_ (" <<
+                   maxIterations_ << ")");
+
         if (gradientEpsilon_ == Null<Real>())
             gradientEpsilon_ = functionEpsilon_;
     }

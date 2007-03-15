@@ -52,6 +52,7 @@ namespace QuantLib {
                     Real gradientEpsilon,
                     Size maxStationaryStateIterations);
 
+        // Inspectors
         Size maxIterations() const;
         Real functionEpsilon() const;
         Real gradientEpsilon() const;
@@ -99,7 +100,6 @@ namespace QuantLib {
                                                   EndCriteria::Type& ecType) const{
         if (iteration < maxIterations_)
             return false;
-
         ecType = MaxIterations;
         return true;
     }
@@ -112,11 +112,9 @@ namespace QuantLib {
             statStateIterations = 0;
             return false;
         }
-
         ++statStateIterations;
         if (statStateIterations <= maxStationaryStateIterations_)
             return false;
-
         ecType = StationaryPoint;
         return true;
     }
@@ -126,10 +124,8 @@ namespace QuantLib {
                                                 EndCriteria::Type& ecType) const {
         if (!positiveOptimization)
             return false;
-
         if (f >= functionEpsilon_)
             return false;
-
         ecType = StationaryPoint;
         return true;
     }
@@ -138,7 +134,6 @@ namespace QuantLib {
                                                          EndCriteria::Type& ecType) const {
         if (normDiff >= gradientEpsilon_)
             return false;
-
         ecType = StationaryGradient;
         return true;
     }
@@ -147,7 +142,6 @@ namespace QuantLib {
                                                        EndCriteria::Type& ecType) const {
         if (norm >= gradientEpsilon_)
             return false;
-
         ecType = StationaryGradient;
         return true;
     }
@@ -169,6 +163,7 @@ namespace QuantLib {
             checkAccuracyGradientNorm(normgold, ecType);
     }
 
+    // Inspectors
     inline Size EndCriteria::maxIterations() const {
         return maxIterations_;
     }
