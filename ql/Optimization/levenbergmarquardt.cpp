@@ -36,7 +36,6 @@ namespace QuantLib {
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
-
         ProblemData::instance().problem() = &P;
         ProblemData::instance().initCostValues() = P.costFunction().values(x_);
 
@@ -64,7 +63,8 @@ namespace QuantLib {
         boost::scoped_array<double> wa2(new double[n]);
         boost::scoped_array<double> wa3(new double[n]);
         boost::scoped_array<double> wa4(new double[m]);
-
+        // call lmdif to minimize the sum of the squares of m functions 
+        // in n variables by the Levenberg-Marquardt algorithm.
         QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(), ftol,
                                  xtol, gtol, maxfev, epsfcn,
                                  diag.get(), mode, factor,
@@ -72,34 +72,32 @@ namespace QuantLib {
                                  ldfjac, ipvt.get(), qtf.get(),
                                  wa1.get(), wa2.get(), wa3.get(), wa4.get());
         info_ = info;
-        // check requirements
+        // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
-        QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
-                                       "reached or exceeded maxfev.");
-        QL_REQUIRE(info != 6, "MINPACK: ftol is too small. no further "
-                                       "reduction in the sum of squares "
-                                       "is possible.");
+        //QL_REQUIRE(info != 6, "MINPACK: ftol is too small. no further "
+        //                               "reduction in the sum of squares "
+        //                               "is possible.");
+        if (info != 6) ecType = QuantLib::EndCriteria::StationaryPoint;
+        //QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
+        //                               "reached or exceeded maxfev.");
+		endCriteria.checkIterationNumber(nfev, ecType);
         QL_REQUIRE(info != 7, "MINPACK: xtol is too small. no further "
                                        "improvement in the approximate "
                                        "solution x is possible.");
         QL_REQUIRE(info != 8, "MINPACK: gtol is too small. fvec is "
                                        "orthogonal to the columns of the "
                                        "jacobian to machine precision.");
-
+        // set problem
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
-        // endCriteria should be evaluated here
-        ecType = QuantLib::EndCriteria::Unknown;
         return ecType;
     }
 
-    void LevenbergMarquardt::fcn(int, int n,
-                                 double* x, double* fvec, int*) {
+    void LevenbergMarquardt::fcn(int, int n, double* x, double* fvec, int*) {
         Array xt(n);
         std::copy(x, x+n, xt.begin());
-
-        // constraint handling needs some improvement in the future
-        // starting point shouldn't be close to a constraint violation
+        // constraint handling needs some improvement in the future:
+        // starting point should not be close to a constraint violation
         if (ProblemData::instance().problem()->constraint().test(xt)) {
             const Array& tmp = ProblemData::instance().problem()->values(xt);
             std::copy(tmp.begin(), tmp.end(), fvec);

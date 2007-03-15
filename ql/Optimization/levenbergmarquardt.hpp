@@ -60,9 +60,7 @@ namespace QuantLib {
             Problem* thisP_;
             Array initCostValues_;
         };
-
         mutable Integer info_;
-
         const Real epsfcn_, xtol_, gtol_;
     };
 
