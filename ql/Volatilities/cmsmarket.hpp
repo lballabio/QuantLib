@@ -78,6 +78,8 @@ namespace QuantLib {
 		void createForwardStartingCms();
 		void priceForwardStartingCms() const;
         void priceSpotFromForwardStartingCms() const;
+        Real weightedMean(const Matrix& var, const Matrix& weights);
+        Disposable<Array> weightedMeansByExpiry(const Matrix& var, const Matrix& weights);
 
         std::vector<Period> expiries_;
         std::vector<Period> swapTenors_;
@@ -157,7 +159,7 @@ namespace QuantLib {
         EndCriteria::Type endCriteria(){ return endCriteria_; };
 
       private:
-        
+
         class ParametersConstraint : public Constraint {
               private:
                 class Impl : public Constraint::Impl {
@@ -192,12 +194,17 @@ namespace QuantLib {
                 Real value(const Array& x) const;
                 Disposable<Array> values(const Array& x) const;
 
-        protected:
+          protected:
+            Real switchErrorFunctionOnCalibrationType() const;
+            Disposable<Array> switchErrorsFunctionOnCalibrationType() const;
+
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
             CalibrationType calibrationType_;
+          private:
+            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
         };
  
         class ParametersConstraintWithFixedMeanReversion : public Constraint {
@@ -228,12 +235,12 @@ namespace QuantLib {
                 :ObjectiveFunction(smileAndCms),
                 fixedMeanReversion_(fixedMeanReversion){};
 
-                Real value(const Array& x) const;
-                Disposable<Array> values(const Array& x) const;
           private:
+            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
             Real fixedMeanReversion_;
         };
 
+        
         Real error_; 
 		EndCriteria::Type endCriteria_;
         std::vector<Real> performance_;

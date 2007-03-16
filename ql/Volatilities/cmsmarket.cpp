@@ -115,7 +115,6 @@ namespace QuantLib {
         Size cmsIndex = 0;
         Size floatIndex = 1;
 
-        // add by fdv
         for (Size i = 0; i< nExercise_;++i)
             for (Size j = 0; j< nSwapTenors_;++j){
 
@@ -233,46 +232,29 @@ namespace QuantLib {
         }
     }
 
-    Real CmsMarket::weightedError(const Matrix& weights){
-        priceSpotFromForwardStartingCms();
-        Real error=0.;
-        Size count=0;
+    Real CmsMarket::weightedMean(const Matrix& var, const Matrix& weights){
+        Real mean=0.;
         for(Size i=0;i<nExercise_;i++){
             for(Size j=0;j<nSwapTenors_;j++){
-                count++;
-                error+=10000.*weights[i][j]*spreadErrors_[i][j]*spreadErrors_[i][j];
+                mean += weights[i][j]*var[i][j]*var[i][j];
             }
         }
-        error=std::sqrt(error/count);
-        return error;
+        mean=std::sqrt(mean/(nExercise_*nSwapTenors_));
+        return mean;
+    }
+
+    Real CmsMarket::weightedError(const Matrix& weights){
+        priceSpotFromForwardStartingCms();
+        return weightedMean(spreadErrors_,weights);
     }
 
     Real CmsMarket::weightedPriceError(const Matrix& weights){
         priceSpotFromForwardStartingCms();
-        Real error=0.;
-        Size count=0;
-        for(Size i=0;i<nExercise_;i++){
-            for(Size j=0;j<nSwapTenors_;j++){
-                count++;
-                error+=weights[i][j]*priceErrors_[i][j]*priceErrors_[i][j];
-            }
-        }
-        error=std::sqrt(error/count);
-        return error;
+        return weightedMean(priceErrors_,weights);
     }
 
     Real CmsMarket::weightedForwardPriceError(const Matrix& weights){
-        Real error = 0.;
-        Size count = 0;
-        for(Size i=0; i<nExercise_; i++) {
-            for(Size j=0; j<nSwapTenors_; j++) {
-                count++;
-                error += weights[i][j]*forwardPriceErrors_[i][j]
-                       *forwardPriceErrors_[i][j];
-            }
-        }
-        error=std::sqrt(error/count);
-        return error;
+        return weightedMean(forwardPriceErrors_,weights);
     }
 
     
@@ -280,48 +262,34 @@ namespace QuantLib {
     // to be used for Levenberg-Marquardt optimization.
     // (note that the reverse - one error for each tenor - is not reccomended
     // when a 1D cms market section is given in input)
+    
+    Disposable<Array> CmsMarket::weightedMeansByExpiry(const Matrix& var, 
+                                                       const Matrix& weights){
+        Array  means(nExercise_);
+        for(Size i=0; i<nExercise_; i++) {
+            means[i] = 0.0;
+            for(Size j=0; j<nSwapTenors_; j++) {
+                means[i] += weights[i][j]*var[i][j]*var[i][j];
+            } 
+            means[i] = std::sqrt(means[i]/nSwapTenors_);
+        }        
+        return means;
+    }
 
     Disposable<Array> CmsMarket::weightedErrorsByExpiry(const Matrix& weights){
         priceSpotFromForwardStartingCms();
-        Array  error(nExercise_);
-        for(Size i=0; i<nExercise_; i++) {
-            error[i] = 0.0;
-            for(Size j=0; j<nSwapTenors_; j++) {
-                error[i] += weights[i][j]*spreadErrors_[i][j]
-                       *spreadErrors_[i][j];
-            } 
-            error[i] = std::sqrt(error[i]/nSwapTenors_);
-        }        
-        return error;
+        return weightedMeansByExpiry(spreadErrors_,weights);
     }
 
 
     Disposable<Array> CmsMarket::weightedPriceErrorsByExpiry(const Matrix& weights){
         priceSpotFromForwardStartingCms();
-        Array  error(nExercise_);
-        for(Size i=0; i<nExercise_; i++) {
-            error[i] = 0.0;
-            for(Size j=0; j<nSwapTenors_; j++) {
-                error[i] += weights[i][j]*priceErrors_[i][j]
-                       *priceErrors_[i][j];
-            } 
-            error[i] = std::sqrt(error[i]/nSwapTenors_);
-        }        
-        return error;
+        return weightedMeansByExpiry(priceErrors_,weights);
     }
 
     Disposable<Array> CmsMarket::weightedForwardPriceErrorsByExpiry(
                                                         const Matrix& weights){
-        Array  error(nExercise_);
-        for(Size i=0; i<nExercise_; i++) {
-            error[i] = 0.0;
-            for(Size j=0; j<nSwapTenors_; j++) {
-                error[i] += weights[i][j]*forwardPriceErrors_[i][j]
-                       *forwardPriceErrors_[i][j];
-            } 
-            error[i] = std::sqrt(error[i]/nSwapTenors_);
-        }        
-        return error;
+        return weightedMeansByExpiry(forwardPriceErrors_,weights);
     }
 
     Matrix CmsMarket::browse() const{
@@ -428,6 +396,17 @@ namespace QuantLib {
     //===========================================================================//
 
     Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::value(const Array& x) const {
+        updateVolatilityCubeAndCmsMarket(x);
+        return switchErrorFunctionOnCalibrationType();
+    }
+
+    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunction::values(const Array& x) const {
+        updateVolatilityCubeAndCmsMarket(x);
+        return switchErrorsFunctionOnCalibrationType();
+    }
+        
+    void SmileAndCmsCalibrationBySabr::ObjectiveFunction::
+                    updateVolatilityCubeAndCmsMarket(const Array& x) const {
         const Array y = x;
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
         Size nSwapTenors = swapTenors.size();
@@ -440,6 +419,9 @@ namespace QuantLib {
         }
         Real meanReversion = y[nSwapTenors];
         cmsMarket_->reprice(volCube_, meanReversion);
+    }
+
+    Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::switchErrorFunctionOnCalibrationType() const {
         switch (calibrationType_) {
             case OnSpread:
                 return cmsMarket_->weightedError(weights_);
@@ -452,19 +434,8 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunction::values(const Array& x) const {
-        const Array y = x;
-        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
-        Size nSwapTenors = swapTenors.size();
-        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        for (Size i=0; i<nSwapTenors; i++){
-            Real beta = y[i];
-            volCubeBySabr->recalibration(beta, swapTenors[i]);
-        }
-        Real meanReversion = y[nSwapTenors];
-        cmsMarket_->reprice(volCube_, meanReversion);
+    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunction::
+                                    switchErrorsFunctionOnCalibrationType() const {
         switch (calibrationType_) {
             case OnSpread:
                 return cmsMarket_->weightedErrorsByExpiry(weights_);
@@ -481,8 +452,8 @@ namespace QuantLib {
     //   SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion   //
     //===========================================================================//
 
-    Real SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion::value(
-                                                                    const Array& x) const {
+    void SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion::
+                                updateVolatilityCubeAndCmsMarket(const Array& x) const {
         const Array y = x;
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
         Size nSwapTenors = swapTenors.size();
@@ -494,41 +465,7 @@ namespace QuantLib {
             volCubeBySabr->recalibration(beta, swapTenors[i]);
         }
         cmsMarket_->reprice(volCube_, fixedMeanReversion_);
-        switch (calibrationType_) {
-            case OnSpread:
-                return cmsMarket_->weightedError(weights_);
-            case OnPrice:
-                return cmsMarket_->weightedPriceError(weights_);
-            case OnForwardCmsPrice:
-                return cmsMarket_->weightedForwardPriceError(weights_);
-            default:
-                QL_FAIL("unknown/illegal calibration type");
-        }
     }
 
-    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion::values(
-                                                                    const Array& x) const {
-        const Array y = x;
-        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
-        Size nSwapTenors = swapTenors.size();
-        QL_REQUIRE(nSwapTenors == x.size(),"bad calibration guess nSwapTenors != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        for (Size i=0; i<nSwapTenors; i++){
-            Real beta = y[i];
-            volCubeBySabr->recalibration(beta, swapTenors[i]);
-        }
-        cmsMarket_->reprice(volCube_, fixedMeanReversion_);
-        switch (calibrationType_) {
-            case OnSpread:
-                return cmsMarket_->weightedErrorsByExpiry(weights_);
-            case OnPrice:
-                return cmsMarket_->weightedPriceErrorsByExpiry(weights_);
-            case OnForwardCmsPrice:
-                return cmsMarket_->weightedForwardPriceErrorsByExpiry(weights_);
-            default:
-                QL_FAIL("unknown/illegal calibration type");
-        }
-    }
 
 }
