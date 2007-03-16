@@ -188,6 +188,9 @@ namespace QuantLib {
                 calibrationType_(smileAndCms->calibrationType_){};
 
                 Real value(const Array& x) const;
+                Disposable<Array> values(const Array& x) const {
+                   QL_FAIL("values method not implemented");
+                }
           protected:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
