@@ -232,16 +232,6 @@ namespace QuantLib {
         }
     }
 
-    Real CmsMarket::weightedMean(const Matrix& var, const Matrix& weights){
-        Real mean=0.;
-        for(Size i=0;i<nExercise_;i++){
-            for(Size j=0;j<nSwapTenors_;j++){
-                mean += weights[i][j]*var[i][j]*var[i][j];
-            }
-        }
-        mean=std::sqrt(mean/(nExercise_*nSwapTenors_));
-        return mean;
-    }
 
     Real CmsMarket::weightedError(const Matrix& weights){
         priceSpotFromForwardStartingCms();
@@ -257,39 +247,43 @@ namespace QuantLib {
         return weightedMean(forwardPriceErrors_,weights);
     }
 
-    
-    // returns an array of errors, one for each expiry, 
-    // to be used for Levenberg-Marquardt optimization.
-    // (note that the reverse - one error for each tenor - is not reccomended
-    // when a 1D cms market section is given in input)
-    
-    Disposable<Array> CmsMarket::weightedMeansByExpiry(const Matrix& var, 
-                                                       const Matrix& weights){
-        Array  means(nExercise_);
-        for(Size i=0; i<nExercise_; i++) {
-            means[i] = 0.0;
-            for(Size j=0; j<nSwapTenors_; j++) {
-                means[i] += weights[i][j]*var[i][j]*var[i][j];
-            } 
-            means[i] = std::sqrt(means[i]/nSwapTenors_);
-        }        
-        return means;
-    }
+    // return an array of errors to be used for Levenberg-Marquardt optimization.
 
-    Disposable<Array> CmsMarket::weightedErrorsByExpiry(const Matrix& weights){
+    Disposable<Array> CmsMarket::weightedErrors(const Matrix& weights){
         priceSpotFromForwardStartingCms();
-        return weightedMeansByExpiry(spreadErrors_,weights);
+        return weightedMeans(spreadErrors_,weights);
     }
 
-
-    Disposable<Array> CmsMarket::weightedPriceErrorsByExpiry(const Matrix& weights){
+    Disposable<Array> CmsMarket::weightedPriceErrors(const Matrix& weights){
         priceSpotFromForwardStartingCms();
-        return weightedMeansByExpiry(priceErrors_,weights);
+        return weightedMeans(priceErrors_,weights);
     }
 
-    Disposable<Array> CmsMarket::weightedForwardPriceErrorsByExpiry(
+    Disposable<Array> CmsMarket::weightedForwardPriceErrors(
                                                         const Matrix& weights){
-        return weightedMeansByExpiry(forwardPriceErrors_,weights);
+        return weightedMeans(forwardPriceErrors_,weights);
+    }
+
+    Real CmsMarket::weightedMean(const Matrix& var, const Matrix& weights){
+        Real mean=0.;
+        for(Size i=0;i<nExercise_;i++){
+            for(Size j=0;j<nSwapTenors_;j++){
+                mean += weights[i][j]*var[i][j]*var[i][j];
+            }
+        }
+        mean=std::sqrt(mean/(nExercise_*nSwapTenors_));
+        return mean;
+    }
+        
+    Disposable<Array> CmsMarket::weightedMeans(const Matrix& var, 
+                                                       const Matrix& weights){
+        Array  weightedVars(nExercise_*nSwapTenors_);
+        for(Size i=0; i<nExercise_; i++) {
+            for(Size j=0; j<nSwapTenors_; j++) {
+                weightedVars[i*nSwapTenors_+j] = std::sqrt(weights[i][j])*var[i][j];
+            }             
+        }        
+        return weightedVars;
     }
 
     Matrix CmsMarket::browse() const{
@@ -438,11 +432,11 @@ namespace QuantLib {
                                     switchErrorsFunctionOnCalibrationType() const {
         switch (calibrationType_) {
             case OnSpread:
-                return cmsMarket_->weightedErrorsByExpiry(weights_);
+                return cmsMarket_->weightedErrors(weights_);
             case OnPrice:
-                return cmsMarket_->weightedPriceErrorsByExpiry(weights_);
+                return cmsMarket_->weightedPriceErrors(weights_);
             case OnForwardCmsPrice:
-                return cmsMarket_->weightedForwardPriceErrorsByExpiry(weights_);
+                return cmsMarket_->weightedForwardPriceErrors(weights_);
             default:
                 QL_FAIL("unknown/illegal calibration type");
         }

@@ -68,9 +68,9 @@ namespace QuantLib {
 		Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
-        Disposable<Array> weightedErrorsByExpiry(const Matrix& weights);
-        Disposable<Array> weightedPriceErrorsByExpiry(const Matrix& weights);
-        Disposable<Array> weightedForwardPriceErrorsByExpiry(const Matrix& weights);
+        Disposable<Array> weightedErrors(const Matrix& weights);
+        Disposable<Array> weightedPriceErrors(const Matrix& weights);
+        Disposable<Array> weightedForwardPriceErrors(const Matrix& weights);
  
       private:
 		void performCalculations() const;
@@ -79,7 +79,7 @@ namespace QuantLib {
 		void priceForwardStartingCms() const;
         void priceSpotFromForwardStartingCms() const;
         Real weightedMean(const Matrix& var, const Matrix& weights);
-        Disposable<Array> weightedMeansByExpiry(const Matrix& var, const Matrix& weights);
+        Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights);
 
         std::vector<Period> expiries_;
         std::vector<Period> swapTenors_;
