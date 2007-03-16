@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2006 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,6 +68,9 @@ namespace QuantLib {
 		Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
+        Disposable<Array> weightedErrorsByExpiry(const Matrix& weights);
+        Disposable<Array> weightedPriceErrorsByExpiry(const Matrix& weights);
+        Disposable<Array> weightedForwardPriceErrorsByExpiry(const Matrix& weights);
  
       private:
 		void performCalculations() const;
@@ -121,10 +125,8 @@ namespace QuantLib {
         std::vector< boost::shared_ptr<CmsCouponPricer> > pricers_;
         std::vector< boost::shared_ptr<SwapIndex> > swapIndices_;
         const std::vector<std::vector<Handle<Quote> > > bidAskSpreads_;
-
         std::vector< std::vector< boost::shared_ptr<Swap> > > swaps_;
         std::vector< std::vector< boost::shared_ptr<Swap> > > forwardSwaps_;
-
         Handle<YieldTermStructure> yieldTermStructure_;
      };
 
@@ -188,18 +190,15 @@ namespace QuantLib {
                 calibrationType_(smileAndCms->calibrationType_){};
 
                 Real value(const Array& x) const;
-                Disposable<Array> values(const Array& x) const {
-                   QL_FAIL("values method not implemented");
-                }
-          protected:
+                Disposable<Array> values(const Array& x) const;
+
+        protected:
             SmileAndCmsCalibrationBySabr* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
             CalibrationType calibrationType_;
         };
-
-
  
         class ParametersConstraintWithFixedMeanReversion : public Constraint {
               private:
@@ -230,14 +229,14 @@ namespace QuantLib {
                 fixedMeanReversion_(fixedMeanReversion){};
 
                 Real value(const Array& x) const;
+                Disposable<Array> values(const Array& x) const;
           private:
             Real fixedMeanReversion_;
         };
-        
+
         Real error_; 
 		EndCriteria::Type endCriteria_;
         std::vector<Real> performance_;
-          
     };
 
 }
