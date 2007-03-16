@@ -361,9 +361,8 @@ namespace QuantLib {
             ObjectiveFunctionWithFixedMeanReversion costFunction(this, fixedMeanReversion);
             Problem problem(costFunction, constraint,betasGuess);
             endCriteria_ = method->minimize(problem, *endCriteria);
-            error_ = problem.functionValue();
             result = problem.currentValue();
-            Real recalculatedError = costFunction.value(result);
+            error_ = costFunction.value(result);
             performance_ = method->performance();
         }
         else {
@@ -371,9 +370,8 @@ namespace QuantLib {
             ObjectiveFunction costFunction(this);
             Problem problem(costFunction, constraint,guess);
             endCriteria_ = method->minimize(problem, *endCriteria);
-            error_ = problem.functionValue();
             result = problem.currentValue();
-            Real recalculatedError = costFunction.value(result);
+            error_ = costFunction.value(result);
             performance_ = method->performance();
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
