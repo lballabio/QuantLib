@@ -35,6 +35,7 @@ include_HEADERS = \
     payoffs.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
+    stickyratchet.hpp \
     stock.hpp \
     swap.hpp \
     swaption.hpp \
@@ -72,6 +73,7 @@ libInstruments_la_SOURCES = \
     payoffs.cpp \
     quantoforwardvanillaoption.cpp \
     quantovanillaoption.cpp \
+    stickyratchet.cpp \
     stock.cpp \
     swap.cpp \
     swaption.cpp \
