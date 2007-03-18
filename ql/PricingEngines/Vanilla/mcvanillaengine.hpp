@@ -111,21 +111,26 @@ namespace QuantLib {
 
         boost::shared_ptr<PricingEngine> controlPE =
             this->controlPricingEngine();
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control variation pricing engine");
+        QL_REQUIRE(controlPE,
+                   "engine does not provide "
+                   "control variation pricing engine");
 
-            typename Inst::arguments* controlArguments =
+        typename Inst::arguments* controlArguments =
                 dynamic_cast<typename Inst::arguments*>(
                                                    controlPE->getArguments());
-            *controlArguments = this->arguments_;
-            controlPE->calculate();
 
-            const typename Inst::results* controlResults =
+        QL_REQUIRE(controlArguments, "engine is using inconsistent arguments");
+
+        *controlArguments = this->arguments_;
+        controlPE->calculate();
+
+        const typename Inst::results* controlResults =
                 dynamic_cast<const typename Inst::results*>(
                                                      controlPE->getResults());
+        QL_REQUIRE(controlResults, 
+                   "engine returns an inconsistent result type");
 
-            return result_type(controlResults->value);
+        return result_type(controlResults->value);
     }
 
 
