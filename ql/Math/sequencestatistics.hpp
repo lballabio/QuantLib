@@ -52,6 +52,7 @@ namespace QuantLib {
         typedef StatisticsType statistics_type;
         typedef std::vector<typename StatisticsType::value_type> value_type;
         // constructor
+        GenericSequenceStatistics();
         GenericSequenceStatistics(Size dimension);
         //! \name inspectors
         //@{
@@ -119,6 +120,11 @@ namespace QuantLib {
         void add(Iterator begin,
                  Iterator end,
                  Real weight = 1.0) {
+            if (dimension_ == 0) {
+                // stat wasn't initialized yet
+                reset(Size(std::distance(begin, end)));
+            }
+
             QL_REQUIRE(std::distance(begin, end) == Integer(dimension_),
                        "sample size mismatch");
 
@@ -152,13 +158,18 @@ namespace QuantLib {
     }
 
     template <class Stat>
+    inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics()
+    : dimension_(0) {
+    }
+
+    template <class Stat>
     inline Size GenericSequenceStatistics<Stat>::samples() const {
-        return stats_[0].samples();
+        return (stats_.size() == 0) ? 0 : stats_[0].samples();
     }
 
     template <class Stat>
     inline Real GenericSequenceStatistics<Stat>::weightSum() const {
-        return stats_[0].weightSum();
+        return (stats_.size() == 0) ? 0.0 : stats_[0].weightSum();
     }
 
 
