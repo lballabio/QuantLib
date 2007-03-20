@@ -81,9 +81,9 @@ namespace QuantLib {
             // if asset-or-nothing
             Rate assetRate = 0.;
             if(!isCashOrNothing_){
-                boost::shared_ptr<CappedFlooredCoupon> asset(
+                boost::shared_ptr<CappedFlooredCoupon> cappedCoupon(
                         new CappedFlooredCoupon(underlying_, lowerStrike_+eps_, Null<Rate>()));
-                assetRate = asset->rate();
+                assetRate = underlying_->rate()- cappedCoupon->rate();
                 lowerDigitalRate = lowerDigitalRate*(lowerStrike_+eps_)/cashRate_;
             }
             lowerDigitalRate += assetRate;
@@ -102,9 +102,9 @@ namespace QuantLib {
             // if asset-or-nothing
             Rate assetRate = 0.;
             if(!isCashOrNothing_){
-                boost::shared_ptr<CappedFlooredCoupon> asset(
+                boost::shared_ptr<CappedFlooredCoupon> cappedCoupon(
                         new CappedFlooredCoupon(underlying_, upperStrike_+eps_, Null<Rate>()));
-                assetRate = asset->rate();
+                assetRate = underlying_->rate()- cappedCoupon->rate();
                 upperDigitalRate = upperDigitalRate*(upperStrike_+eps_)/cashRate_;
             }
             upperDigitalRate += assetRate;
