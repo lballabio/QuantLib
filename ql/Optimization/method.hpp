@@ -45,25 +45,21 @@ namespace QuantLib {
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria //= EndCriteria()
                                            ) = 0;
-        std::vector<Real> performance(){return performance_;}
-
+        std::vector<Real> performance() {
+            std::vector<Real> performance_(3, 0.0);
+            Real seconds = elapsed_;
+            performance_[0] = Integer(seconds/3600);
+            seconds -= performance_[0] * 3600;
+            performance_[1] = Integer(seconds/60);
+            performance_[2] = seconds - performance_[1] * 60;
+            return performance_;
+        }
       protected:
         void startTimer() { timer_.restart(); }
-        void stopTimer() {
-            performance_ = std::vector<Real>(3,0.);
-            Real seconds = timer_.elapsed();
-            int hours = int(seconds/3600);
-            seconds -= hours * 3600;
-            int minutes = int(seconds/60);
-            seconds -= minutes * 60;
-            performance_[0] = hours;
-            performance_[1] = minutes;
-            performance_[2] = seconds;
-        }
+        void stopTimer() { elapsed_ = timer_.elapsed(); }
 
-        std::vector<Real> performance_;
         boost::timer timer_;
-        
+        Real elapsed_;
     };
 
 }
