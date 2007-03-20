@@ -219,7 +219,7 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
-        if(numberOfStdDeviationsForUpperLimit_ != Null<Real>()) 
+        if(numberOfStdDeviationsForUpperLimit_ != Null<Real>())
             resetUpperLimit();
         Real a, b;
         if (optionType==Option::Call) {
@@ -261,17 +261,17 @@ namespace QuantLib {
     }
 
     void ConundrumPricerByNumericalIntegration::resetUpperLimit() const {
-        Real variance = 
+        Real variance =
             swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
-        upperLimit_ = swapRateValue_ * 
-            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance)); 
+        upperLimit_ = swapRateValue_ *
+            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance));
     }
     Real ConundrumPricerByNumericalIntegration::performance(){
         boost::timer timer;
-        timer.restart(); 
+        timer.restart();
         Real price = swapletPrice();
         return timer.elapsed();
-    };
+    }
 
 //===========================================================================//
 //                              ConundrumIntegrand                           //
