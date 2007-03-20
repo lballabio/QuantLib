@@ -21,12 +21,26 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/Math/comparison.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
 #include <ql/Optimization/problem.hpp>
 
 namespace QuantLib {
 
     namespace {
+
+        void checkSymmetry(const Matrix& matrix) {
+            Size size = matrix.rows();
+            QL_REQUIRE(size == matrix.columns(),
+                       "non square matrix: " << size << " rows, " <<
+                       matrix.columns() << " columns");
+            for (Size i=0; i<size; ++i)
+                for (Size j=0; j<i; ++j)
+                    QL_REQUIRE(close(matrix[i][j], matrix[j][i]),
+                               "non symmetric matrix: " <<
+                               "[" << i << "][" << j << "]=" << matrix[i][j] <<
+                               ", [" << j << "][" << i << "]=" << matrix[j][i]);
+        }
 
         //cost function for hypersphere and lower-diagonal algorithm
         class HypersphereCostFunction : public CostFunction {
@@ -97,8 +111,9 @@ namespace QuantLib {
 
         // Optimization function for hypersphere and lower-diagonal algorithm
         const Disposable <Matrix> hypersphereOptimize(
-                        const Matrix& targetMatrix, const Matrix& currentRoot,
-                        const bool lowerDiagonal) {
+                                                const Matrix& targetMatrix,
+                                                const Matrix& currentRoot,
+                                                const bool lowerDiagonal) {
             Size i,j,k,size = targetMatrix.rows();
             Matrix result(currentRoot);
             Array variance(size, 0);
@@ -227,15 +242,14 @@ namespace QuantLib {
     const Disposable<Matrix> pseudoSqrt(const Matrix& matrix,
                                         SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
-        QL_REQUIRE(size == matrix.columns(),
-                   "matrix not square");
-        Size i, j;
-        bool negative;
+
+        checkSymmetry(matrix);
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        for (i=0; i<size; i++)
-            for (j=0; j<i; j++)
-                QL_REQUIRE(matrix[i][j] == matrix[j][i],
-                           "matrix not symmetric");
+        checkSymmetry(matrix);
+        #else
+        QL_REQUIRE(size == matrix.columns(),
+                   "non square matrix: " << size << " rows, " <<
+                   matrix.columns() << " columns");
         #endif
 
         // spectral (a.k.a Principal Component) analysis
@@ -244,6 +258,7 @@ namespace QuantLib {
 
         // salvaging algorithm
         Matrix result(size, size);
+        bool negative;
         switch (sa) {
           case SalvagingAlgorithm::None:
             // eigenvalues are sorted in decreasing order
@@ -255,19 +270,19 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
-            for (i=0; i<size; i++)
+            for (Size i=0; i<size; i++)
                 diagonal[i][i] =
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
             // row normalization
-            for (i = 0; i < size;i++) {
+            for (Size i=0; i<size; ++i) {
                 Real norm = 0.0;
-                for (j = 0; j < size; j++)
+                for (Size j=0; j<size; ++j)
                     norm += result[i][j]*result[i][j];
                 if (norm>0.0) {
                     norm = std::sqrt(matrix[i][i]/norm);
-                    for (j = 0; j < size; j++)
+                    for (Size j=0; j<size; ++j)
                         result[i][j] *= norm;
                 }
             }
@@ -275,20 +290,20 @@ namespace QuantLib {
           case SalvagingAlgorithm::Hypersphere:
             // negative eigenvalues set to zero
             negative=false;
-            for (i=0; i<size; i++){
+            for (Size i=0; i<size; ++i){
                 diagonal[i][i] =
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
                 if (jd.eigenvalues()[i]<0.0) negative=true;
             }
             result = jd.eigenvectors() * diagonal;
             // row normalization
-            for (i = 0; i < size; i++) {
+            for (Size i=0; i<size; ++i) {
                 Real norm = 0.0;
-                for (j = 0; j < size; j++)
+                for (Size j=0; j<size; ++j)
                     norm += result[i][j]*result[i][j];
                 if (norm>0.0) {
                     norm = std::sqrt(matrix[i][i]/norm);
-                    for (j = 0; j < size; j++)
+                    for (Size j=0; j<size; ++j)
                         result[i][j] *= norm;
                 }
             }
@@ -300,7 +315,7 @@ namespace QuantLib {
           case SalvagingAlgorithm::LowerDiagonal:
             // negative eigenvalues set to zero
             negative=false;
-            for (i=0; i<size; i++){
+            for (Size i=0; i<size; ++i){
                 diagonal[i][i] =
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
                 if (jd.eigenvalues()[i]<0.0) negative=true;
@@ -308,13 +323,13 @@ namespace QuantLib {
             result = jd.eigenvectors() * diagonal;
 
             // row normalization
-            for (i = 0; i < size; i++) {
+            for (Size i=0; i<size; ++i) {
                 Real norm = 0.0;
-                for (j = 0; j < size; j++)
+                for (Size j=0; j<size; ++j)
                     norm += result[i][j]*result[i][j];
                 if (norm>0.0) {
                     norm = std::sqrt(matrix[i][i]/norm);
-                    for (j = 0; j < size; j++)
+                    for (Size j=0; j<size; ++j)
                         result[i][j] *= norm;
                 }
             }
@@ -336,14 +351,14 @@ namespace QuantLib {
                                              Real componentRetainedPercentage,
                                              SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
-        QL_REQUIRE(size == matrix.columns(),
-                   "matrix not square");
-        Size i, j;
+
+        checkSymmetry(matrix);
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-        for (i=0; i<size; i++)
-            for (j=0; j<i; j++)
-                QL_REQUIRE(matrix[i][j] == matrix[j][i],
-                           "matrix not symmetric");
+        checkSymmetry(matrix);
+        #else
+        QL_REQUIRE(size == matrix.columns(),
+                   "non square matrix: " << size << " rows, " <<
+                   matrix.columns() << " columns");
         #endif
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
@@ -370,7 +385,7 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Spectral:
             // negative eigenvalues set to zero
-            for (i=0; i<size; i++)
+            for (Size i=0; i<size; ++i)
                 eigenValues[i] = std::max<Real>(eigenValues[i], 0.0);
             break;
           default:
@@ -388,7 +403,7 @@ namespace QuantLib {
         // retain at least one factor
         Real components = eigenValues[0];
         Size retainedFactors = 1;
-        for (i=1; components<enough && i<size; i++) {
+        for (Size i=1; components<enough && i<size; ++i) {
             components += eigenValues[i];
             retainedFactors++;
         }
@@ -396,18 +411,18 @@ namespace QuantLib {
         retainedFactors=std::min(retainedFactors, maxRank);
 
         Matrix diagonal(size, retainedFactors, 0.0);
-        for (i=0; i<retainedFactors; i++)
+        for (Size i=0; i<retainedFactors; ++i)
             diagonal[i][i] = std::sqrt(eigenValues[i]);
         Matrix result = jd.eigenvectors() * diagonal;
 
         // row normalization
-        for (i = 0; i < size;i++) {
+        for (Size i=0; i<size; ++i) {
             Real norm = 0.0;
-            for (j = 0; j < retainedFactors; j++)
+            for (Size j=0; j<retainedFactors; ++j)
                 norm += result[i][j]*result[i][j];
             if (norm>0.0) {
                 norm = std::sqrt(matrix[i][i]/norm);
-                for(j = 0; j < retainedFactors; j++)
+                for( Size j=0; j<retainedFactors; ++j)
                     result[i][j] *= norm;
             }
         }
