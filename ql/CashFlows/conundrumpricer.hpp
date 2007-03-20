@@ -235,7 +235,12 @@ namespace QuantLib {
 			const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0,
-            Real precision = 1.0e-6);
+            Real precision = 1.0e-6,
+            Real numberOfStdDeviationsForUpperLimit = Null<Real>());
+
+       Real performance();
+       Real upperLimit(){return upperLimit_;}
+
       private:
         class Function : public std::unary_function<Real, Real> {
           public:

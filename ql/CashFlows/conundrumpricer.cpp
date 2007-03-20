@@ -29,6 +29,7 @@
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/Volatilities/smilesection.hpp>
 #include <ql/Quotes/simplequote.hpp>
+#include <boost/timer.hpp>
 
 
 namespace QuantLib {
@@ -196,12 +197,13 @@ namespace QuantLib {
         const Handle<Quote>& meanReversion,
         Real lowerLimit,
         Real upperLimit,
-        Real precision)
+        Real precision,
+        Real numberOfStdDeviationsForUpperLimit)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
        precision_(precision),
-       numberOfStdDeviationsForUpperLimit_(8.){
+       numberOfStdDeviationsForUpperLimit_(numberOfStdDeviationsForUpperLimit){
     }
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
@@ -217,7 +219,8 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
-        //resetUpperLimit();
+        if(numberOfStdDeviationsForUpperLimit_ != Null<Real>()) 
+            resetUpperLimit();
         Real a, b;
         if (optionType==Option::Call) {
             a = strike;
@@ -241,6 +244,7 @@ namespace QuantLib {
     }
 
     Real ConundrumPricerByNumericalIntegration::swapletPrice() const {
+
         Date today = Settings::instance().evaluationDate();
         if (fixingDate_ <= today) {
             // the fixing is determined
@@ -260,9 +264,14 @@ namespace QuantLib {
         Real variance = 
             swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
         upperLimit_ = swapRateValue_ * 
-            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance));   
-
+            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance)); 
     }
+    Real ConundrumPricerByNumericalIntegration::performance(){
+        boost::timer timer;
+        timer.restart(); 
+        Real price = swapletPrice();
+        return timer.elapsed();
+    };
 
 //===========================================================================//
 //                              ConundrumIntegrand                           //
