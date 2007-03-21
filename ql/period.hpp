@@ -4,7 +4,7 @@
  Copyright (C) 2004, 2005, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,12 +52,13 @@ namespace QuantLib {
     };
 
     /*! \relates Period */
-    Period operator*(Integer n, TimeUnit units);
-    Period operator*(Natural n, TimeUnit units);
+    template <typename T> Period operator*(T n, TimeUnit units);
     /*! \relates Period */
-    Period operator*(TimeUnit units, Integer n);
+    template <typename T> Period operator*(TimeUnit units, T n);
+
     /*! \relates Period */
     Period operator-(const Period&);
+
     /*! \relates Period */
     Period operator*(Integer n, const Period&);
     /*! \relates Period */
@@ -109,16 +110,14 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Period operator*(Integer n, TimeUnit units) {
-        return Period(n,units);
+    template <typename T>
+    inline Period operator*(T n, TimeUnit units) {
+        return Period(Integer(n),units);
     }
 
-    inline Period operator*(Natural n, TimeUnit units) {
-        return Period(static_cast<Integer>(n),units);
-    }
-
-    inline Period operator*(TimeUnit units, Integer n) {
-        return Period(n,units);
+    template <typename T>
+    inline Period operator*(TimeUnit units, T n) {
+        return Period(Integer(n),units);
     }
 
     inline Period operator-(const Period& p) {
