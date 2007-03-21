@@ -266,7 +266,7 @@ namespace QuantLib {
         upperLimit_ = swapRateValue_ *
             std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance));
     }
-    Real ConundrumPricerByNumericalIntegration::performance(){
+    Real ConundrumPricerByNumericalIntegration::elapsed(){
         boost::timer timer;
         timer.restart();
         Real price = swapletPrice();

@@ -363,7 +363,7 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
-            performance_ = method->performance();
+            elapsed_ = method->elapsed();
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
@@ -372,7 +372,7 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
-            performance_ = method->performance();
+            elapsed_ = method->elapsed();
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());

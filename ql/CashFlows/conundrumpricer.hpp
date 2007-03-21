@@ -238,7 +238,7 @@ namespace QuantLib {
             Real precision = 1.0e-6,
             Real numberOfStdDeviationsForUpperLimit = Null<Real>());
 
-       Real performance();
+       Real elapsed();
        Real upperLimit(){return upperLimit_;}
 
       private:

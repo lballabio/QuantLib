@@ -36,6 +36,17 @@ namespace QuantLib {
 
     class Problem;
 
+    inline std::string secondsToString(Real elapsed) {
+            Integer seconds = static_cast<Integer>(elapsed);
+            Integer hours = seconds/3600;
+            seconds -= hours * 3600;
+            Integer minutes = seconds/60;
+            seconds -= minutes * 60;
+            std::ostringstream out;
+            out << hours << ":" << minutes << ":" << seconds;
+            return out.str();
+    }
+
     //! Abstract class for constrained optimization method
     class OptimizationMethod {
       public:
@@ -45,15 +56,7 @@ namespace QuantLib {
         virtual EndCriteria::Type minimize(Problem& P,
                                            const EndCriteria& endCriteria //= EndCriteria()
                                            ) = 0;
-        std::vector<Real> performance() {
-            std::vector<Real> performance_(3, 0.0);
-            Real seconds = elapsed_;
-            performance_[0] = Integer(seconds/3600);
-            seconds -= performance_[0] * 3600;
-            performance_[1] = Integer(seconds/60);
-            performance_[2] = seconds - performance_[1] * 60;
-            return performance_;
-        }
+        Real elapsed() { return elapsed_; }
       protected:
         void startTimer() { timer_.restart(); }
         void stopTimer() { elapsed_ = timer_.elapsed(); }
