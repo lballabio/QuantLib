@@ -29,6 +29,11 @@
 #include <ql/types.hpp>
 #include <ql/Utilities/null.hpp>
 
+#ifndef boost_function_hpp
+#define boost_function_hpp
+    #include <boost/function.hpp>
+#endif
+
 namespace QuantLib {
 
     //! Integral of a 1-dimensional function using the Gauss-Kronrod method
@@ -43,8 +48,36 @@ namespace QuantLib {
         \test the correctness of the result is tested by checking it
               against known good values.
     */
+
+    typedef boost::function<Real (Real)> Integrand;
+
+    /*! 
+        f: integrand
+        a:lower limit of integration
+        b: upper limit of integration
+        epsAbs: absolute accuracy requested
+        epsRel: epsRel relative accuracy requested
+        result: approximation to the integral i
+                    result is obtained by applying the 21-point
+                    gauss-kronrod rule (res21) obtained by optimal
+                    addition of abscissae to the 10-point gauss rule
+                    (res10), or by applying the 43-point rule (res43)
+                    obtained by optimal addition of abscissae to the
+                    21-point gauss-kronrod rule, or by applying the
+                    87-point rule (res87) obtained by optimal addition
+                    of abscissae to the 43-point rule.
+        abserr: estimate of the modulus of the absolute error,
+                    which should equal or exceed abs(i-result)
+        neval: number of integrand evaluations
+        This function returns true if the requested accuracy has been achieved.
+    */
+    bool qng (const Integrand& f, Real a, Real b, Real epsAbs, Real epsRel,
+              Real& result, Real& abserr, Integer& neval);
+
+
     class KronrodIntegral {
       public:
+        
         KronrodIntegral(Real tolerance,
                         Size maxFunctionEvaluations = Null<Size>());
 
