@@ -3637,6 +3637,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\Math\kronrodintegral.cpp"
+					>
+				</File>
+				<File
 					RelativePath="ql\Math\kronrodintegral.hpp"
 					>
 				</File>
