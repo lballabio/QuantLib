@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/Math/pseudosqrt.hpp>
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/Processes/hestonprocess.hpp>
 #include <ql/Processes/eulerdiscretization.hpp>
-#include <ql/Math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -27,16 +28,25 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& riskFreeRate,
                               const Handle<YieldTermStructure>& dividendYield,
                               const Handle<Quote>& s0,
-                              Real v0, Real kappa, Real theta,
-                              Real sigma, Real rho)
+                              double v0, double kappa, 
+                              double theta, double sigma, double rho)
     : StochasticProcess(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
-      v0_(v0), kappa_(kappa), theta_(theta), sigma_(sigma), rho_  (rho) {
+      v0_   (boost::shared_ptr<Quote>(new SimpleQuote(v0))), 
+      kappa_(boost::shared_ptr<Quote>(new SimpleQuote(kappa))), 
+      theta_(boost::shared_ptr<Quote>(new SimpleQuote(theta))),
+      sigma_(boost::shared_ptr<Quote>(new SimpleQuote(sigma))), 
+      rho_  (boost::shared_ptr<Quote>(new SimpleQuote(rho))) {
 
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
         registerWith(s0_);
+        registerWith(v0_);
+        registerWith(kappa_);
+        registerWith(theta_);
+        registerWith(sigma_);
+        registerWith(rho_);
     }
 
     Size HestonProcess::size() const {
@@ -46,13 +56,13 @@ namespace QuantLib {
     Disposable<Array> HestonProcess::initialValues() const {
         Array tmp(2);
         tmp[0] = s0_->value();
-        tmp[1] = v0_;
+        tmp[1] = v0_->value();
         return tmp;
     }
 
     Disposable<Array> HestonProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
-        const Real vol = x[1] > 0 ? std::sqrt(x[1]) : 0.0;
+        const Real vol = (x[1] > 0.0) ? std::sqrt(x[1]) : 0.0;
         tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
                - dividendYield_->forwardRate(t, t, Continuous)
                - 0.5 * vol * vol;
@@ -62,7 +72,7 @@ namespace QuantLib {
         // See Lord, R., R. Koekkoek and D. van Dijk (2006),
         // "A Comparison of biased simulation schemes for
         //  stochastic volatility models", Working Paper, Tinbergen Institute
-        tmp[1] = kappa_*(theta_ - vol*vol);
+        tmp[1] = kappa_->value()*(theta_->value() - vol*vol);
         return tmp;
     }
 
@@ -75,10 +85,11 @@ namespace QuantLib {
            | rho   sqrt(1-rho^2) |
         */
         Matrix tmp(2,2);
-        Real sigma1 = x[1] > 0 ? std::sqrt(x[1]) : 0.0;
-        Real sigma2 = sigma_ * sigma1;
-        tmp[0][0] = sigma1;       tmp[0][1] = 0.0;
-        tmp[1][0] = rho_*sigma2;  tmp[1][1] = std::sqrt(1.0-rho_*rho_)*sigma2;
+        const Real rho = rho_->value();
+        const Real sigma1 = (x[1] > 0.0) ? std::sqrt(x[1]) : 0.0;
+        const Real sigma2 = sigma_->value() * sigma1;
+        tmp[0][0] = sigma1;      tmp[0][1] = 0.0;
+        tmp[1][0] = rho*sigma2;  tmp[1][1] = std::sqrt(1.0-rho*rho)*sigma2;
         return tmp;
     }
 
@@ -90,28 +101,28 @@ namespace QuantLib {
         return tmp;
     }
 
-    Real HestonProcess::s0() const {
-        return s0_->value();
-    }
-
-    Real HestonProcess::v0() const {
+    const RelinkableHandle<Quote>& HestonProcess::v0() const {
         return v0_;
     }
 
-    Real HestonProcess::rho() const {
+    const RelinkableHandle<Quote>& HestonProcess::rho() const {
         return rho_;
     }
 
-    Real HestonProcess::kappa() const {
+    const RelinkableHandle<Quote>& HestonProcess::kappa() const {
         return kappa_;
     }
 
-    Real HestonProcess::theta() const {
+    const RelinkableHandle<Quote>& HestonProcess::theta() const {
         return theta_;
     }
 
-    Real HestonProcess::sigma() const {
+    const RelinkableHandle<Quote>& HestonProcess::sigma() const {
         return sigma_;
+    }
+
+    const Handle<Quote>& HestonProcess::s0() const {
+        return s0_;
     }
 
     const Handle<YieldTermStructure>& HestonProcess::dividendYield() const {

@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/Quotes/simplequote.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
 
 namespace QuantLib {
@@ -40,17 +41,30 @@ namespace QuantLib {
     };
 
     HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
-    : CalibratedModel(5) {
-        arguments_[0] = ConstantParameter(process->theta(),
+    : CalibratedModel(5),
+      v0_   (process->v0()),
+      kappa_(process->kappa()),
+      theta_(process->theta()),
+      sigma_(process->sigma()),
+      rho_  (process->rho()) {
+        arguments_[0] = ConstantParameter(process->theta()->value(),
                                           PositiveConstraint());
-        arguments_[1] = ConstantParameter(process->kappa(),
+        arguments_[1] = ConstantParameter(process->kappa()->value(),
                                           PositiveConstraint());
-        arguments_[2] = ConstantParameter(process->sigma(),
+        arguments_[2] = ConstantParameter(process->sigma()->value(),
                                           PositiveConstraint());
-        arguments_[3] = ConstantParameter(process->rho(),
+        arguments_[3] = ConstantParameter(process->rho()->value(),
                                           BoundaryConstraint(-1.0, 1.0));
-        arguments_[4] = ConstantParameter(process->v0(), PositiveConstraint());
+        arguments_[4] = ConstantParameter(process->v0()->value(), 
+                                          PositiveConstraint());
 	}
 
+    void HestonModel::generateArguments() {
+        v0_.linkTo   (boost::shared_ptr<Quote>(new SimpleQuote(v0())));
+        kappa_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(kappa())));
+        theta_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(theta())));
+        sigma_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(sigma())));
+        rho_.linkTo  (boost::shared_ptr<Quote>(new SimpleQuote(rho())));
+    }
 }
 

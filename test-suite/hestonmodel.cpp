@@ -101,10 +101,14 @@ void HestonModelTest::testBlackCalibration() {
     }
 
     for (Real sigma = 0.1; sigma < 0.7; sigma += 0.2) {
+        const Real v0=0.01;
+        const Real kappa=0.2;
+        const Real theta=0.02;
+        const Real rho=-0.75;
+
         boost::shared_ptr<HestonProcess> process(
-                                     new HestonProcess(riskFreeTS, dividendTS,
-                                                       s0, 0.01, 0.2, 0.02,
-                                                       sigma, -0.75));
+            new HestonProcess(riskFreeTS, dividendTS,
+                              s0, v0, kappa, theta, sigma, rho));
 
         boost::shared_ptr<HestonModel> model(new HestonModel(process));
         boost::shared_ptr<PricingEngine> engine(
@@ -218,8 +222,14 @@ void HestonModelTest::testDAXCalibration() {
         }
     }
 
+    const Real v0=0.1;
+    const Real kappa=1.0;
+    const Real theta=0.1;
+    const Real sigma=0.5;
+    const Real rho=-0.5;
+
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                         riskFreeTS, dividendTS, s0, 0.1, 1, 0.1, 0.5, -0.5));
+              riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
     boost::shared_ptr<HestonModel> model(new HestonModel(process));
 
@@ -268,11 +278,12 @@ void HestonModelTest::testAnalyticVsBlack() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
 
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
-    Real v0 = 0.05;
-    Real kappa = 5.0;
-    Real theta = 0.05;
-    Real sigma = 1.0e-4;
-    Real rho = 0.0;
+
+    const Real v0=0.05;
+    const Real kappa=5.0;
+    const Real theta=0.05;
+    const Real sigma=1.0e-4;
+    const Real rho=0.0;
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
@@ -324,11 +335,11 @@ void HestonModelTest::testAnalyticVsCached() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
 
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
-    Real v0 = 0.1;
-    Real kappa = 3.16;
-    Real theta = 0.09;
-    Real sigma = 0.4;
-    Real rho = -0.2;
+    const Real v0 = 0.1;
+    const Real kappa = 3.16;
+    const Real theta = 0.09;
+    const Real sigma = 0.4;
+    const Real rho = -0.2;
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
@@ -372,14 +383,9 @@ void HestonModelTest::testAnalyticVsCached() {
 
         Real s = riskFreeTS->discount(0.7)/dividendTS->discount(0.7);
         Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(s)));
-        Real v0 = 0.09;
-        Real kappa = 1.2;
-        Real theta = 0.08;
-        Real sigma = 1.8;
-        Real rho = -0.45;
 
         boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+                   riskFreeTS, dividendTS, s0, 0.09, 1.2, 0.08, 1.8, -0.45));
 
         VanillaOption option(process, payoff, exercise);
 
@@ -432,14 +438,9 @@ void HestonModelTest::testMcVsCached() {
     Handle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
 
     Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
-    Real v0 = 0.3;
-    Real kappa = 1.16;
-    Real theta = 0.2;
-    Real sigma = 0.8;
-    Real rho = 0.8;
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
-                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
 
     VanillaOption option(process, payoff, exercise);
 
@@ -497,9 +498,9 @@ void HestonModelTest::testEngines() {
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
 
-    Real v0 = 0.8;
-    Real theta = 0.4;
-    Real rho = -0.8;
+    const Real v0 = 0.8;
+    const Real theta = 0.4;
+    const Real rho = -0.8;
 
     for (Real s0 = 0.5; s0 < 1.6; s0 += 0.5) {
         for (Real kappa = 1.0; kappa < 8.0; kappa += 2.0) {

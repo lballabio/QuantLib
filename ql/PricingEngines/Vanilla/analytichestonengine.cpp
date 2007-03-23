@@ -68,7 +68,7 @@ namespace QuantLib {
       sigma_(model->sigma()), v0_(model->v0()),
       term_(term),
       x_(std::log(boost::dynamic_pointer_cast<HestonProcess>
-                  (arg_.stochasticProcess)->s0())),
+                  (arg_.stochasticProcess)->s0()->value())),
       sx_(std::log(boost::dynamic_pointer_cast<StrikedTypePayoff>
                    (arg_.payoff)->strike())),
       dd_(x_-std::log(ratio)),
@@ -173,7 +173,7 @@ namespace QuantLib {
                                             arguments_.exercise->lastDate());
         const Real ratio = riskFreeDiscount/dividendDiscount;
 
-        const Real spotPrice = process->s0();
+        const Real spotPrice = process->s0()->value();
         const Real strikePrice = payoff->strike();
         const Real term = process->time(arguments_.exercise->lastDate());
 

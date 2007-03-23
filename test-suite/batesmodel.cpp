@@ -80,11 +80,11 @@ void BatesModelTest::testAnalyticVsBlack() {
     Real expected = blackFormula(payoff->optionType(), payoff->strike(),
         forwardPrice, std::sqrt(0.05*yearFraction)) *
                                             std::exp(-0.1*yearFraction);
-    Real v0 = 0.05;
-    Real kappa = 5.0;
-    Real theta = 0.05;
-    Real sigma = 1.0e-4;
-    Real rho = 0.0;
+    const Real v0 = 0.05;
+    const Real kappa = 5.0;
+    const Real theta = 0.05;
+    const Real sigma = 1.0e-4;
+    const Real rho = 0.0;
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
@@ -191,10 +191,10 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
 
-    Real kappa = 0.5;
-    Real theta = v0;
-    Real sigma = 1.0e-4;
-    Real rho = 0.0;
+    const Real kappa = 0.5;
+    const Real theta = v0;
+    const Real sigma = 1.0e-4;
+    const Real rho = 0.0;
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
@@ -315,18 +315,18 @@ void BatesModelTest::testDAXCalibration() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
 
-    Real kappa = 1.0;
-    Real theta = v0;
-    Real sigma = 1.0;
-    Real rho = 0.0;
+    const Real kappa = 1.0;
+    const Real theta = v0;
+    const Real sigma = 1.0;
+    const Real rho = 0.0;
 
-   boost::shared_ptr<HestonProcess> process(new HestonProcess(
+    boost::shared_ptr<HestonProcess> process(new HestonProcess(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-   boost::shared_ptr<BatesModel> batesModel(
+    boost::shared_ptr<BatesModel> batesModel(
         new BatesModel(process,1.1098, -0.1285, 0.1702));
 
-   boost::shared_ptr<PricingEngine> batesEngine(
+    boost::shared_ptr<PricingEngine> batesEngine(
        new BatesEngine(batesModel));
 
     std::vector<boost::shared_ptr<CalibrationHelper> > options;
@@ -360,6 +360,11 @@ void BatesModelTest::testDAXCalibration() {
                     << "\n    expected:   " << expected);
 
     //check pricing of derived engines
+
+    // reset process
+    process = boost::shared_ptr<HestonProcess>(new HestonProcess(
+        riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+
     std::vector<boost::shared_ptr<PricingEngine> > pricingEngines;
 
     pricingEngines.push_back(boost::shared_ptr<PricingEngine>(

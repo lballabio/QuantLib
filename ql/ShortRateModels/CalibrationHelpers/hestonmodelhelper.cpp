@@ -47,14 +47,13 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise(
                                          new EuropeanExercise(exerciseDate_));
 
-        Handle<Quote> underlying(boost::shared_ptr<Quote>(
-                                                       new SimpleQuote(s0_)));
-        boost::shared_ptr<StochasticProcess> process(
+        Handle<Quote> uly  (boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
+        boost::shared_ptr<StochasticProcess> dummyProcess(
                       new HestonProcess(riskFreeRate, dividendYield,
-                                        underlying, 1.0, 0.1, 1.0, 0.3, 0.0));
+                                        uly, 1.0, 0.1, 1.0, 0.3, 0.0));
 
         option_ = boost::shared_ptr<VanillaOption>(
-                                new VanillaOption(process, payoff, exercise));
+                           new VanillaOption(dummyProcess, payoff, exercise));
 
         marketValue_ = blackPrice(volatility->value());
     }

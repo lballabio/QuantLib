@@ -54,9 +54,11 @@ namespace QuantLib {
         // spot variance
         Real v0()    const { return arguments_[4](0.0); }
 
-        boost::shared_ptr<NumericalMethod> tree(const TimeGrid&) const;
-
         class VolatilityConstraint;
+      protected:        
+        void generateArguments();
+        
+        RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
     };
 
 }

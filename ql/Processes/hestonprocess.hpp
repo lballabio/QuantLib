@@ -48,8 +48,8 @@ namespace QuantLib {
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
                       const Handle<Quote>& s0,
-                      Real v0, Real kappa,
-                      Real theta, Real sigma, Real rho);
+                      double v0, double kappa, 
+                      double theta, double sigma, double rho);
 
         Size size() const;
         Disposable<Array> initialValues() const;
@@ -57,13 +57,13 @@ namespace QuantLib {
         Disposable<Matrix> diffusion(Time t, const Array& x) const;
         Disposable<Array> apply(const Array& x0, const Array& dx) const;
 
-        Real s0()    const;
-        Real v0()    const;
-        Real rho()   const;
-        Real kappa() const;
-        Real theta() const;
-        Real sigma() const;
+        const RelinkableHandle<Quote>& v0()    const;
+        const RelinkableHandle<Quote>& rho()   const;
+        const RelinkableHandle<Quote>& kappa() const;
+        const RelinkableHandle<Quote>& theta() const;
+        const RelinkableHandle<Quote>& sigma() const;
 
+        const Handle<Quote>& s0()    const;
         const Handle<YieldTermStructure>& dividendYield() const;
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
@@ -71,7 +71,7 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
-        Real v0_, kappa_, theta_, sigma_, rho_;
+        RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
     };
 
 }
