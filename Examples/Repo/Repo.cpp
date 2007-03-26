@@ -17,14 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/* a Repo calculation done using the FixedCouponBondForward class
+/* a Repo calculation done using the FixedRateBondForward class
    cf. aaBondFwd() repo example at
    http://www.fincad.com/support/developerFunc/mathref/BFWD.htm
 
    This repo is set up to use the repo rate to do all discounting
    (including the underlying bond income). Forward delivery price is
    also obtained using this repo rate. All this is done by supplying
-   the FixedCouponBondForward constructor with a flat repo
+   the FixedRateBondForward constructor with a flat repo
    YieldTermStructure.
 */
 
@@ -101,9 +101,9 @@ int main(int, char* []) {
                                                        Compounded,
                                                        bondCouponFrequency)));
 
-
-        boost::shared_ptr<FixedCouponBond> bond(
-                     new FixedCouponBond(faceAmount,
+        /*
+        boost::shared_ptr<FixedRateBond> bond(
+                       new FixedRateBond(faceAmount,
                                          bondIssueDate,
                                          bondDatedDate,
                                          bondMaturityDate,
@@ -116,7 +116,22 @@ int main(int, char* []) {
                                          bondBusinessDayConvention,
                                          bondRedemption,
                                          bondCurve));
+        */
 
+        Schedule bondSchedule(bondDatedDate, bondMaturityDate,
+                              Period(bondCouponFrequency),
+                              bondCalendar,bondBusinessDayConvention,
+                              bondBusinessDayConvention,true,false);
+        boost::shared_ptr<FixedRateBond> bond(
+                       new FixedRateBond(bondSettlementDays,
+                                         faceAmount,
+                                         bondSchedule,
+                                         std::vector<Rate>(1,bondCoupon),
+                                         bondDayCountConvention,
+                                         bondBusinessDayConvention,
+                                         bondRedemption,
+                                         bondIssueDate,
+                                         bondCurve));
 
         bondCurve.linkTo(boost::shared_ptr<YieldTermStructure> (
                    new FlatForward(repoSettlementDate,
@@ -137,17 +152,17 @@ int main(int, char* []) {
                                                        repoCompoundFreq)));
 
 
-        FixedCouponBondForward bondFwd(repoSettlementDate,
-                                       repoDeliveryDate,
-                                       fwdType,
-                                       dummyStrike,
-                                       repoSettlementDays,
-                                       repoDayCountConvention,
-                                       bondCalendar,
-                                       bondBusinessDayConvention,
-                                       bond,
-                                       repoCurve,
-                                       repoCurve);
+        FixedRateBondForward bondFwd(repoSettlementDate,
+                                     repoDeliveryDate,
+                                     fwdType,
+                                     dummyStrike,
+                                     repoSettlementDays,
+                                     repoDayCountConvention,
+                                     bondCalendar,
+                                     bondBusinessDayConvention,
+                                     bond,
+                                     repoCurve,
+                                     repoCurve);
 
 
         cout << "Underlying bond clean price: "
