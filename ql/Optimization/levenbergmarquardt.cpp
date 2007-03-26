@@ -45,11 +45,6 @@ namespace QuantLib {
         boost::scoped_array<double> xx(new double[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
         boost::scoped_array<double> fvec(new double[m]);
-        double ftol = endCriteria.functionEpsilon();
-        double xtol = xtol_;
-        double gtol = gtol_;
-        int maxfev = endCriteria.maxIterations();
-        double epsfcn = epsfcn_;
         boost::scoped_array<double> diag(new double[n]);
         int mode = 1;
         double factor = 1;
@@ -66,8 +61,12 @@ namespace QuantLib {
         boost::scoped_array<double> wa4(new double[m]);
         // call lmdif to minimize the sum of the squares of m functions 
         // in n variables by the Levenberg-Marquardt algorithm.
-        QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(), ftol,
-                                 xtol, gtol, maxfev, epsfcn,
+        QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(),
+                                 static_cast<double>(endCriteria.functionEpsilon()),
+                                 static_cast<double>(xtol_),
+                                 static_cast<double>(gtol_),
+                                 static_cast<int>(endCriteria.maxIterations()),
+                                 static_cast<double>(epsfcn_),
                                  diag.get(), mode, factor,
                                  nprint, &info, &nfev, fjac.get(),
                                  ldfjac, ipvt.get(), qtf.get(),
