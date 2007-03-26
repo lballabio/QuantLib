@@ -42,7 +42,7 @@ namespace QuantLib {
         DiscretizedSwap swap(arguments_);
         std::vector<Time> times = swap.mandatoryTimes();
 
-        boost::shared_ptr<NumericalMethod> lattice;
+        boost::shared_ptr<Lattice> lattice;
         if (lattice_) {
             lattice = lattice_;
         } else {
@@ -76,7 +76,7 @@ namespace QuantLib {
         QL_REQUIRE(model_, "no model specified");
 
         DiscretizedSwaption swaption(arguments_);
-        boost::shared_ptr<NumericalMethod> lattice;
+        boost::shared_ptr<Lattice> lattice;
 
         if (lattice_) {
             lattice = lattice_;

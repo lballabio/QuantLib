@@ -69,7 +69,7 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<NumericalMethod>
+    boost::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());

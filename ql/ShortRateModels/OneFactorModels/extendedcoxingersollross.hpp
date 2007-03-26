@@ -54,7 +54,7 @@ namespace QuantLib {
                               Real sigma = 0.1,
                               Real x0 = 0.05);
 
-        boost::shared_ptr<NumericalMethod> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 

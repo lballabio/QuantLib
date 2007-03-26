@@ -50,7 +50,7 @@ namespace QuantLib {
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
-        boost::shared_ptr<NumericalMethod> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
     };
 
     //! Base class describing the short-rate dynamics
@@ -77,7 +77,7 @@ namespace QuantLib {
 
     //! Recombining trinomial tree discretizing the state variable
     class OneFactorModel::ShortRateTree
-        : public Lattice1D<OneFactorModel::ShortRateTree> {
+        : public TreeLattice1D<OneFactorModel::ShortRateTree> {
       public:
         //! Plain tree build-up from short-rate dynamics
         ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree,

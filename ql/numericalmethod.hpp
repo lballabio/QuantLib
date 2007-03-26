@@ -22,8 +22,8 @@
     \brief Numerical method class
 */
 
-#ifndef quantlib_numerical_method_hpp
-#define quantlib_numerical_method_hpp
+#ifndef quantlib_lattice_hpp
+#define quantlib_lattice_hpp
 
 #include <ql/timegrid.hpp>
 #include <ql/Math/array.hpp>
@@ -32,11 +32,11 @@ namespace QuantLib {
 
     class DiscretizedAsset;
 
-    //! Numerical method (tree, finite-differences) base class
-    class NumericalMethod {
+    //! Lattice (tree, finite-differences) base class
+    class Lattice {
       public:
-        NumericalMethod(const TimeGrid& timeGrid) : t_(timeGrid) {}
-        virtual ~NumericalMethod() {}
+        Lattice(const TimeGrid& timeGrid) : t_(timeGrid) {}
+        virtual ~Lattice() {}
 
         //!\name Inspectors
         //{

@@ -19,11 +19,11 @@
 */
 
 /*! \file lattice.hpp
-    \brief Lattice method class
+    \brief Tree-based lattice-method class
 */
 
-#ifndef quantlib_lattice_hpp
-#define quantlib_lattice_hpp
+#ifndef quantlib_tree_based_lattice_hpp
+#define quantlib_tree_based_lattice_hpp
 
 #include <ql/numericalmethod.hpp>
 #include <ql/discretizedasset.hpp>
@@ -31,10 +31,10 @@
 
 namespace QuantLib {
 
-    //! Lattice-method base class
+    //! Tree-based lattice-method base class
     /*! This class defines a lattice method that is able to rollback
-        (with discount) a discretized asset object. It will usually be
-        based on one or more trees.
+        (with discount) a discretized asset object. It will be based
+        on one or more trees.
 
         Derived classes must implement the following interface:
         \code
@@ -54,18 +54,18 @@ namespace QuantLib {
         \ingroup lattices
     */
     template <class Impl>
-    class Lattice : public NumericalMethod,
-                    public CuriouslyRecurringTemplate<Impl> {
+    class TreeLattice : public Lattice,
+                        public CuriouslyRecurringTemplate<Impl> {
       public:
-        Lattice(const TimeGrid& timeGrid,
-                Size n)
-        : NumericalMethod(timeGrid), n_(n) {
+        TreeLattice(const TimeGrid& timeGrid,
+                    Size n)
+        : Lattice(timeGrid), n_(n) {
             QL_REQUIRE(n>0, "there is no zeronomial lattice!");
             statePrices_ = std::vector<Array>(1, Array(1, 1.0));
             statePricesLimit_ = 0;
         }
 
-        //! \name NumericalMethod interface
+        //! \name Lattice interface
         //@{
         void initialize(DiscretizedAsset&, Time t) const;
         void rollback(DiscretizedAsset&, Time to) const;
@@ -95,7 +95,7 @@ namespace QuantLib {
     // template definitions
 
     template <class Impl>
-    void Lattice<Impl>::computeStatePrices(Size until) const {
+    void TreeLattice<Impl>::computeStatePrices(Size until) const {
         for (Size i=statePricesLimit_; i<until; i++) {
             statePrices_.push_back(Array(this->impl().size(i+1), 0.0));
             for (Size j=0; j<this->impl().size(i); j++) {
@@ -111,34 +111,34 @@ namespace QuantLib {
     }
 
     template <class Impl>
-    const Array& Lattice<Impl>::statePrices(Size i) const {
+    const Array& TreeLattice<Impl>::statePrices(Size i) const {
         if (i>statePricesLimit_)
             computeStatePrices(i);
         return statePrices_[i];
     }
 
     template <class Impl>
-    Real Lattice<Impl>::presentValue(DiscretizedAsset& asset) const {
+    Real TreeLattice<Impl>::presentValue(DiscretizedAsset& asset) const {
         Size i = t_.index(asset.time());
         return DotProduct(asset.values(), statePrices(i));
     }
 
     template <class Impl>
-    void Lattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
+    void TreeLattice<Impl>::initialize(DiscretizedAsset& asset, Time t) const {
         Size i = t_.index(t);
         asset.time() = t;
         asset.reset(this->impl().size(i));
     }
 
     template <class Impl>
-    void Lattice<Impl>::rollback(DiscretizedAsset& asset, Time to) const {
+    void TreeLattice<Impl>::rollback(DiscretizedAsset& asset, Time to) const {
         partialRollback(asset,to);
         asset.adjustValues();
     }
 
     template <class Impl>
-    void Lattice<Impl>::partialRollback(DiscretizedAsset& asset,
-                                        Time to) const {
+    void TreeLattice<Impl>::partialRollback(DiscretizedAsset& asset,
+                                            Time to) const {
 
         Time from = asset.time();
 
@@ -164,8 +164,8 @@ namespace QuantLib {
     }
 
     template <class Impl>
-    void Lattice<Impl>::stepback(Size i, const Array& values,
-                                 Array& newValues) const {
+    void TreeLattice<Impl>::stepback(Size i, const Array& values,
+                                     Array& newValues) const {
         for (Size j=0; j<this->impl().size(i); j++) {
             Real value = 0.0;
             for (Size l=0; l<n_; l++) {

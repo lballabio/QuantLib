@@ -111,7 +111,7 @@ namespace QuantLib {
 
         Real creditSpread = arguments_.creditSpread->value();
 
-        boost::shared_ptr<NumericalMethod> lattice(
+        boost::shared_ptr<Lattice> lattice(
               new TsiveriotisFernandesLattice<T>(tree,riskFreeRate,maturity,
                                                  timeSteps_,creditSpread,v,q));
 

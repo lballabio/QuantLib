@@ -22,8 +22,8 @@
     \brief Two-dimensional lattice class
 */
 
-#ifndef quantlib_lattice2d_hpp
-#define quantlib_lattice2d_hpp
+#ifndef quantlib_tree_lattice_2d_hpp
+#define quantlib_tree_lattice_2d_hpp
 
 #include <ql/Lattices/lattice.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
@@ -31,18 +31,18 @@
 
 namespace QuantLib {
 
-    //! Two-dimensional lattice.
+    //! Two-dimensional tree-based lattice.
     /*! This lattice is based on two trinomial trees and primarily used
         for the G2 short-rate model.
 
         \ingroup lattices
     */
     template <class Impl, class T = TrinomialTree>
-    class Lattice2D : public Lattice<Impl> {
+    class TreeLattice2D : public TreeLattice<Impl> {
       public:
-        Lattice2D(const boost::shared_ptr<T>& tree1,
-                  const boost::shared_ptr<T>& tree2,
-                  Real correlation);
+        TreeLattice2D(const boost::shared_ptr<T>& tree1,
+                      const boost::shared_ptr<T>& tree2,
+                      Real correlation);
 
         Size size(Size i) const;
         Size descendant(Size i, Size index, Size branch) const;
@@ -60,7 +60,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class Impl, class T>
-    inline Size Lattice2D<Impl,T>::size(Size i) const {
+    inline Size TreeLattice2D<Impl,T>::size(Size i) const {
         return tree1_->size(i)*tree2_->size(i);
     }
 
@@ -68,10 +68,10 @@ namespace QuantLib {
     // template definitions
 
     template <class Impl, class T>
-    Lattice2D<Impl,T>::Lattice2D(const boost::shared_ptr<T>& tree1,
-                                 const boost::shared_ptr<T>& tree2,
-                                 Real correlation)
-    : Lattice<Impl>(tree1->timeGrid(), T::branches*T::branches),
+    TreeLattice2D<Impl,T>::TreeLattice2D(const boost::shared_ptr<T>& tree1,
+                                         const boost::shared_ptr<T>& tree2,
+                                         Real correlation)
+    : TreeLattice<Impl>(tree1->timeGrid(), T::branches*T::branches),
       tree1_(tree1), tree2_(tree2), m_(T::branches,T::branches),
       rho_(std::fabs(correlation)) {
 
@@ -101,8 +101,8 @@ namespace QuantLib {
 
 
     template <class Impl, class T>
-    Size Lattice2D<Impl,T>::descendant(Size i, Size index,
-                                       Size branch) const {
+    Size TreeLattice2D<Impl,T>::descendant(Size i, Size index,
+                                           Size branch) const {
         Size modulo = tree1_->size(i);
 
         Size index1 = index % modulo;
@@ -116,8 +116,8 @@ namespace QuantLib {
     }
 
     template <class Impl, class T>
-    Real Lattice2D<Impl,T>::probability(Size i, Size index,
-                                        Size branch) const {
+    Real TreeLattice2D<Impl,T>::probability(Size i, Size index,
+                                            Size branch) const {
         Size modulo = tree1_->size(i);
 
         Size index1 = index % modulo;

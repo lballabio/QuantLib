@@ -33,7 +33,7 @@ namespace QuantLib {
     //! Simple binomial lattice approximating the Black-Scholes model
     /*! \ingroup lattices */
     template <class T>
-    class BlackScholesLattice : public Lattice1D<BlackScholesLattice<T> > {
+    class BlackScholesLattice : public TreeLattice1D<BlackScholesLattice<T> > {
       public:
         BlackScholesLattice(const boost::shared_ptr<T>& tree,
                             Rate riskFreeRate,
@@ -67,7 +67,7 @@ namespace QuantLib {
     BlackScholesLattice<T>::BlackScholesLattice(
                               const boost::shared_ptr<T>& tree,
                               Rate riskFreeRate, Time end, Size steps)
-    : Lattice1D<BlackScholesLattice<T> >(TimeGrid(end, steps), 2),
+    : TreeLattice1D<BlackScholesLattice<T> >(TimeGrid(end, steps), 2),
       tree_(tree), discount_(std::exp(-riskFreeRate*(end/steps))) {
         pd_ = tree->probability(0,0,0);
         pu_ = tree->probability(0,0,1);

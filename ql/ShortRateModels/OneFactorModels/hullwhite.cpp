@@ -40,8 +40,7 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<NumericalMethod> HullWhite::tree(
-                                                 const TimeGrid& grid) const {
+    boost::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
         boost::shared_ptr<ShortRateDynamics> numericDynamics(

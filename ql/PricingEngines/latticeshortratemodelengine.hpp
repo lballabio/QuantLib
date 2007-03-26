@@ -49,7 +49,7 @@ namespace QuantLib {
       protected:
         TimeGrid timeGrid_;
         Size timeSteps_;
-        boost::shared_ptr<NumericalMethod> lattice_;
+        boost::shared_ptr<Lattice> lattice_;
     };
 
     template <class Arguments, class Results>

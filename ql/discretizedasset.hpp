@@ -47,7 +47,7 @@ namespace QuantLib {
         const Array& values() const { return values_; }
         Array& values() { return values_; }
 
-        const boost::shared_ptr<NumericalMethod>& method() const {
+        const boost::shared_ptr<Lattice>& method() const {
             return method_;
         }
         //@}
@@ -57,12 +57,12 @@ namespace QuantLib {
             Users of discretized assets should use these methods in
             order to initialize, evolve and take the present value of
             the assets.  They call the corresponding methods in the
-            NumericalMethod interface, to which we refer for
+            Lattice interface, to which we refer for
             documentation.
 
             @{
         */
-        void initialize(const boost::shared_ptr<NumericalMethod>&,
+        void initialize(const boost::shared_ptr<Lattice>&,
                         Time t);
         void rollback(Time to);
         void partialRollback(Time to);
@@ -135,7 +135,7 @@ namespace QuantLib {
         Time latestPreAdjustment_, latestPostAdjustment_;
         Array values_;
       private:
-        boost::shared_ptr<NumericalMethod> method_;
+        boost::shared_ptr<Lattice> method_;
     };
 
 
@@ -180,7 +180,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void DiscretizedAsset::initialize(
-                             const boost::shared_ptr<NumericalMethod>& method,
+                             const boost::shared_ptr<Lattice>& method,
                              Time t) {
         method_ = method;
         method_->initialize(*this, t);

@@ -118,8 +118,7 @@ namespace QuantLib {
     class ShortRateModel : public CalibratedModel {
       public:
         ShortRateModel(Size nArguments);
-        virtual boost::shared_ptr<NumericalMethod> tree(
-                                                   const TimeGrid&) const = 0;
+        virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
     };
 
     // inline definitions

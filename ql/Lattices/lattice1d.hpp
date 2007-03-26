@@ -21,14 +21,14 @@
     \brief One-dimensional lattice class
 */
 
-#ifndef quantlib_lattice1d_hpp
-#define quantlib_lattice1d_hpp
+#ifndef quantlib_tree_lattice_1d_hpp
+#define quantlib_tree_lattice_1d_hpp
 
 #include <ql/Lattices/lattice.hpp>
 
 namespace QuantLib {
 
-    //! One-dimensional lattice.
+    //! One-dimensional tree-based lattice.
     /*! Derived classes must implement the following interface:
         \code
         Real underlying(Size i, Size index) const;
@@ -36,10 +36,10 @@ namespace QuantLib {
 
         \ingroup lattices */
     template <class Impl>
-    class Lattice1D : public Lattice<Impl> {
+    class TreeLattice1D : public TreeLattice<Impl> {
       public:
-        Lattice1D(const TimeGrid& timeGrid, Size n)
-        : Lattice<Impl>(timeGrid,n) {}
+        TreeLattice1D(const TimeGrid& timeGrid, Size n)
+        : TreeLattice<Impl>(timeGrid,n) {}
         Disposable<Array> grid(Time t) const {
             Size i = this->timeGrid().index(t);
             Array grid(this->impl().size(i));
