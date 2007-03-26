@@ -74,6 +74,7 @@ libMath_la_SOURCES = \
 	generalstatistics.cpp \
 	incompletegamma.cpp \
 	incrementalstatistics.cpp \
+	kronrodintegral.cpp \
 	matrix.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \

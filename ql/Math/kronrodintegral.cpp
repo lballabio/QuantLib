@@ -17,13 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file kronrodintegral.cpp
-    \brief 1D non-adaptive automatic integrator method from quadpack
-
-    /*! References:
-    <http://www.netlib.org/quadpack/dqng.f>
-
-*/
 #include <ql/Math/kronrodintegral.hpp>
 #include <ql/types.hpp>
 
@@ -36,12 +29,12 @@ namespace QuantLib {
             Real scale = pow((200 * err / resultAsc), 1.5) ;
             if (scale < 1)
                 err = resultAsc * scale ;
-            else 
+            else
                 err = resultAsc ;
             }
         if (resultAbs > QL_MIN_REAL / (50 * QL_EPSILON )){
             Real min_err = 50 * QL_EPSILON  * resultAbs ;
-            if (min_err > err) 
+            if (min_err > err)
                 err = min_err ;
             }
         return err ;
@@ -232,7 +225,7 @@ namespace QuantLib {
         Real fv1[5], fv2[5], fv3[5], fv4[5];
         Real savfun[21];  /* array of function values which have been computed */
         Real res10, res21, res43, res87;    /* 10, 21, 43 and 87 point results */
-        Real err ; 
+        Real err ;
         Real resAbs; /* approximation to the integral of abs(f) */
         Real resasc; /* approximation to the integral of abs(f-i/(b-a)) */
         int k ;
@@ -280,9 +273,9 @@ namespace QuantLib {
         resasc = w21b[5] * std::fabs(fCenter - mean);
 
         for (k = 0; k < 5; k++)
-            resasc += (w21a[k] * (std::fabs(fv1[k] - mean) 
+            resasc += (w21a[k] * (std::fabs(fv1[k] - mean)
                         + std::fabs(fv2[k] - mean))
-                        + w21b[k] * (std::fabs(fv3[k] - mean) 
+                        + w21b[k] * (std::fabs(fv3[k] - mean)
                         + std::fabs(fv4[k] - mean)));
 
         err = rescaleError ((res21 - res10) * halfLength, resAbs, resasc) ;
@@ -304,7 +297,7 @@ namespace QuantLib {
 
         for (k = 0; k < 11; k++){
             Real abscissa = halfLength * x3[k];
-            Real fval = (f(center + abscissa) 
+            Real fval = (f(center + abscissa)
                 + f(center - abscissa));
             res43 += fval * w43b[k];
             savfun[k + 10] = fval;
@@ -331,17 +324,18 @@ namespace QuantLib {
 
         for (k = 0; k < 22; k++){
             Real abscissa = halfLength * x4[k];
-            res87 += w87b[k] * (f(center + abscissa) 
+            res87 += w87b[k] * (f(center + abscissa)
                 + f(center - abscissa));
             }
 
         // test for convergence.
         result = res87 * halfLength ;
         err = rescaleError ((res87 - res43) * halfLength, resAbs, resasc);
-   
+
         result = result ;
         abserr = err ;
         neval = 87;
         return (err < epsAbs || err < epsRel * std::fabs(result));
     }
 }
+
