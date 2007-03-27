@@ -22,14 +22,12 @@
 
 #include <boost/test/unit_test.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
+/*! To do: test against known good values
+*/
 
 class CapsStripperTest {
   public:
     static void FlatVolatilityStripping();
-    static void constantVolatilityConsistency();
-    static void cachedValues();
     static void highPrecisionTest();
     static boost::unit_test_framework::test_suite* suite();
 };
