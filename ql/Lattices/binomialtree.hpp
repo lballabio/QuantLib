@@ -188,6 +188,28 @@ namespace QuantLib {
         Real up_, down_, pu_, pd_;
     };
 
+
+	 class Joshi4 : public BinomialTree<Joshi4> {
+      public:
+        Joshi4(const boost::shared_ptr<StochasticProcess1D>&,
+                     Time end,
+                     Size steps,
+                     Real strike);
+        Real underlying(Size i, Size index) const {
+            return x0_ * std::pow(down_, Real(BigInteger(i)-BigInteger(index)))
+                       * std::pow(up_, Real(index));
+        }
+        Real probability(Size, Size, Size branch) const {
+            return (branch == 1 ? pu_ : pd_);
+        }
+      protected:
+
+		  Real ComputeUpProb(Real k, Real dj) const;
+
+        Real up_, down_, pu_, pd_;
+    };
+
+
 }
 
 

@@ -114,6 +114,48 @@ namespace QuantLib {
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
 
     }
+  
+	Real Joshi4::ComputeUpProb(Real k, Real dj) const
+	{
+		Real alpha = dj/(sqrt(8.0));
+		Real alpha2 = alpha*alpha;
+		Real alpha3 = alpha*alpha2;
+		Real alpha5 = alpha3*alpha2;
+		Real alpha7 = alpha5*alpha2;
+		Real beta = -0.375*alpha-alpha3;
+		Real gamma = (5.0/6.0)*alpha5 + (13.0/12.0)*alpha3
+			+(25.0/128.0)*alpha;
+		Real delta = -0.1025 *alpha- 0.9285 *alpha3
+			-1.43 *alpha5 -0.5 *alpha7;
+		Real p =0.5;
+		Real rootk= sqrt(k);
+		p+= alpha/rootk;
+		p+= beta /(k*rootk);
+		p+= gamma/(k*k*rootk);
+		// delete next line to get results for j three tree
+		p+= delta/(k*k*k*rootk);
+		return p;
+	}
+
+	Joshi4::Joshi4(
+                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        Time end, Size steps, Real strike)
+    : BinomialTree<Joshi4>(process, end, (steps%2 ? steps : steps+1)) 
+	{
+
+        QL_REQUIRE(strike>0.0, "strike must be positive");
+        Size oddSteps = (steps%2 ? steps : steps+1);
+        Real variance = process->variance(0.0, x0_, end);
+        Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
+        Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
+                                                          std::sqrt(variance);
+        pu_ = ComputeUpProb((oddSteps-1.0)/2.0,d2 );
+        pd_ = 1.0 - pu_;
+        Real pdash = ComputeUpProb((oddSteps-1.0)/2.0,d2+std::sqrt(variance));
+        up_ = ermqdt * pdash / pu_;
+        down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
+
+    }
 
 }
 
