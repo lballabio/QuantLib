@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Francois du Vignaud
  Copyright (C) 2003 Niels Elken Sønderby
-
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -52,6 +53,20 @@ namespace QuantLib {
     typedef boost::function<Real (Real)> Integrand;
 
     /*! 
+        The gaussKronrodNonAdaptative free function is a non-adaptive 
+        integration procedure which uses fixed Gauss-Kronrod abscissae 
+        to sample the integrand at a maximum of 87 points. 
+        It is provided for fast integration of smooth functions.
+        This function applies the Gauss-Kronrod 10-point, 21-point, 43-point 
+        and 87-point integration rules in succession until an estimate of the 
+        integral of f over (a, b) is achieved within the desired absolute and 
+        relative error limits, epsabs and epsrel. The function returns the 
+        final approximation, result, an estimate of the absolute error, 
+        abserr and the number of function evaluations used, neval. The 
+        Gauss-Kronrod rules are designed in such a way that each rule uses 
+        all the results of its predecessors, in order to minimize the total 
+        number of function evaluations. 
+        
         f: integrand
         a:lower limit of integration
         b: upper limit of integration
@@ -71,9 +86,10 @@ namespace QuantLib {
         neval: number of integrand evaluations
         This function returns true if the requested accuracy has been achieved.
     */
-    bool qng (const Integrand& f, Real a, Real b, Real epsAbs, Real epsRel,
-              Real& result, Real& abserr, Integer& neval);
-
+    bool gaussKronrodNonAdaptative(const Integrand& f, Real a, Real b, 
+                                    Real epsAbs, Real epsRel,
+                                    Real& result, Real& absErr, 
+                                    Integer& nEval);
 
     class KronrodIntegral {
       public:

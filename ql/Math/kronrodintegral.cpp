@@ -218,9 +218,9 @@ namespace QuantLib {
 
 
 
-    bool qng(const Integrand& f, Real a, Real b,
-                Real epsAbs, Real epsRel,
-                Real& result, Real& abserr, Integer& neval){
+    bool gaussKronrodNonAdaptative(const Integrand& f, Real a, Real b,
+                                    Real epsAbs, Real epsRel,
+                                    Real& result, Real& abserr, Integer& neval){
 
         Real fv1[5], fv2[5], fv3[5], fv4[5];
         Real savfun[21];  /* array of function values which have been computed */
@@ -338,4 +338,3 @@ namespace QuantLib {
         return (err < epsAbs || err < epsRel * std::fabs(result));
     }
 }
-
