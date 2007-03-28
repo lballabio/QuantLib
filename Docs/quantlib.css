@@ -95,6 +95,14 @@ li.navlink {
     margin: 0;
 }
 
+.navsearch {
+    font-weight: normal;
+    font-size: 80%;
+    text-align: left;
+    padding-left: 1.25em;
+    margin: 0;
+}
+
 .navbartitle {
     text-align: center;
 }

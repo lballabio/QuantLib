@@ -56,6 +56,7 @@ docs-online: .time-stamp-online
 .time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
 	$(SED) -e "s/quantlibheader\.html/quantlibheaderonline\.html/" \
            -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
+           -e "s/SEARCHENGINE           = NO/SEARCHENGINE           = YES/" \
            -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = html-online/" \
            -e "s|ql_basepath|${BASEPATH}/|" \
            -e "s|ql_version|$(VERSION)|" \
