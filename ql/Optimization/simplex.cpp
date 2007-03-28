@@ -101,9 +101,9 @@ namespace QuantLib {
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             ++iterationNumber_;
             if (rtol < endCriteria.functionEpsilon() ||
-                endCriteria.checkIterationNumber(iterationNumber_, ecType)) {
-				endCriteria.checkAccuracyValue(QL_EPSILON, true, ecType); 
-				endCriteria.checkIterationNumber(iterationNumber_, ecType);
+                endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
+				endCriteria.checkStationaryFunctionAccuracy(QL_EPSILON, true, ecType); 
+				endCriteria.checkMaxIterations(iterationNumber_, ecType); // WARNING: A CHE COSA SERVE ???
                 x_ = vertices_[iLowest];
 				P.setFunctionValue(low);
                 P.setCurrentValue(x_);

@@ -65,7 +65,7 @@ namespace QuantLib {
                 qt_ = P.value (xtd_);
                 P.gradient (gradient_, xtd_);
                 // and it squared norm
-                maxIter = endCriteria.checkIterationNumber(loopNumber, ecType);
+                maxIter = endCriteria.checkMaxIterations(loopNumber, ecType);
             } while (
                      (((qt_ - q0) > (-alpha_ * t * qpt_)) ||
                       ((qtold - q0) <= (-alpha_ * t * qpt_ / beta_))) &&

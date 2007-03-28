@@ -43,8 +43,7 @@ namespace QuantLib {
         : LineSearchBasedMethod(lineSearch) {}
         //! solve the optimization problem P
         virtual EndCriteria::Type minimize(Problem& P,
-                                           const EndCriteria& endCriteria //= EndCriteria()
-                                           );
+                                           const EndCriteria& endCriteria);
     };
 
 }

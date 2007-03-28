@@ -259,7 +259,7 @@ namespace QuantLib {
                         guess[2] = std::sqrt(c_);
                         guess[3] = std::sqrt(d_);
 
-                        EndCriteria endCriteria(60000, 1e-8);
+                        EndCriteria endCriteria(60000, 100, 1e-8, 1e-8, 1e-8);
 
                         //boost::shared_ptr<LineSearch> lineSearch(new
                         //    ArmijoLineSearch(1e-12, 0.15, 0.55));

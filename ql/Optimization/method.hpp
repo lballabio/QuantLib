@@ -54,8 +54,7 @@ namespace QuantLib {
 
         //! minimize the optimization problem P
         virtual EndCriteria::Type minimize(Problem& P,
-                                           const EndCriteria& endCriteria //= EndCriteria()
-                                           ) = 0;
+                                           const EndCriteria& endCriteria) = 0;
         Real elapsed() { return elapsed_; }
       protected:
         void startTimer() { timer_.restart(); }

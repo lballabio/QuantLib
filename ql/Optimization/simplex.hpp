@@ -41,8 +41,7 @@ namespace QuantLib {
         /*! Constructor taking as input the characteristic length */
         Simplex(Real lambda) : lambda_(lambda) {}
         virtual EndCriteria::Type minimize(Problem& P,
-                                           const EndCriteria& endCriteria //= EndCriteria()
-                                           );
+                                           const EndCriteria& endCriteria);
       private:
         Real extrapolate(Problem& P,
                          Size iHighest,

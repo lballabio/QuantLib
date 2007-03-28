@@ -137,7 +137,7 @@ namespace QuantLib {
             }
 
             ConjugateGradient optimize;
-            EndCriteria endCriteria(100, 1e-8, 1e-8, 10);
+            EndCriteria endCriteria(100, 10, 1e-8, 1e-8, 1e-8);
             HypersphereCostFunction costFunction(targetMatrix, variance,
                                                  lowerDiagonal);
             NoConstraint constraint;

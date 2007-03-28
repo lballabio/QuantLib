@@ -329,7 +329,7 @@ void LiborMarketModelTest::testCalibration() {
     }
 
     LevenbergMarquardt om(1e-6, 1e-6, 1e-6);
-    model->calibrate(calibrationHelper, om, EndCriteria(2000, 1e-6, 1e-6, 100));
+    model->calibrate(calibrationHelper, om, EndCriteria(2000, 100, 1e-6, 1e-6, 1e-6));
 
     // measure the calibration error
     Real calculated = 0.0;

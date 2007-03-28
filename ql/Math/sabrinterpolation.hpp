@@ -378,7 +378,7 @@ namespace QuantLib {
                         Simplex(0.01));
                 if (!endCriteria_) {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
-                        EndCriteria(60000, 1e-8, 1e-8, 100));
+                        EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
                 }
                 if (compute)
                     calculate();

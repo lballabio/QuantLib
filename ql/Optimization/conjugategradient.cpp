@@ -81,14 +81,14 @@ namespace QuantLib {
                 // End criteria
                 done = endCriteria(iterationNumber_,
                                    stationaryStateIterationNumber_,
-                                   true, //FIXME: it should be in the problem
+                                   true,  //FIXME: it should be in the problem
                                    fold,
                                    std::sqrt(gold2),
                                    P.functionValue(),
                                    std::sqrt(P.gradientNormValue()),
                                    ecType
-                                   // FIXME: it's never been used!
-                                   //, normdiff
+                                   // FIXME: it's never been used! ???
+                                   // , normdiff
                                    );
 			    // Increase interation number
                 ++iterationNumber_;

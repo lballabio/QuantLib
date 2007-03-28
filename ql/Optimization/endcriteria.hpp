@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,35 +32,38 @@
 
 namespace QuantLib {
 
-
-    //! Criteria to end optimization process
-    /*!   - stationary point
-          - stationary gradient
-          - maximum number of iterations
-          ....
+    //! Criteria to end optimization process:
+    /*! - maximum number of iterations AND minimum number of iterations around stationary point
+        - x (independent variable) stationary point
+        - y=f(x) (dependent variable) stationary point
+        - stationary gradient
     */
     class EndCriteria {
       public:
-        enum Type { None,
-                    MaxIterations,
-                    StationaryPoint,
-                    StationaryGradient,
-                    Unknown };
+        enum Type {None,
+                   MaxIterations,
+                   StationaryPoint,
+                   StationaryFunctionValue,
+                   StationaryFunctionAccuracy,
+                   ZeroGradientNorm,
+                   Unknown};
 
-        //! initialization constructor
-        EndCriteria(Size maxIteration,
+        //! Initialization constructor
+        EndCriteria(Size maxIterations,
+                    Size maxStationaryStateIterations,
+                    Real rootEpsilon,
                     Real functionEpsilon,
-                    Real gradientEpsilon,
-                    Size maxStationaryStateIterations);
+                    Real gradientNormEpsilon);
 
         // Inspectors
         Size maxIterations() const;
-        Real functionEpsilon() const;
-        Real gradientEpsilon() const;
         Size maxStationaryStateIterations() const;
+        Real rootEpsilon() const;
+        Real functionEpsilon() const;
+        Real gradientNormEpsilon() const;
 
-        /*! test if the number of iteration is not too big and if we don't
-            raise a stationary point */
+        /*! Test if the number of iterations is not too big 
+            and if a minimum point is not reached */
         bool operator()(const Size iteration,
                         Size& statState,
                         const bool positiveOptimization,
@@ -69,116 +73,44 @@ namespace QuantLib {
                         const Real normgnew,
                         EndCriteria::Type& ecType) const;
 
-        bool checkIterationNumber(const Size iteration,
+        /*! Test if the number of iteration is below MaxIterations */
+        bool checkMaxIterations(const Size iteration,
                                   EndCriteria::Type& ecType) const;
-        bool checkStationaryValue(const Real fold,
-                                  const Real fnew,
+        /*! Test if the root variation is below rootEpsilon */
+        bool checkStationaryPoint(const Real xOld,
+                                  const Real xNew,
                                   Size& statStateIterations,
                                   EndCriteria::Type& ecType) const;
-        bool checkAccuracyValue(const Real f,
-                                const bool positiveOptimization,
-                                EndCriteria::Type& ecType) const;
-        bool checkStationaryGradientNorm(const Real normDiff,
-                                         EndCriteria::Type& ecType) const;
-        bool checkAccuracyGradientNorm(const Real norm,
-                                       EndCriteria::Type& ecType) const;
+        /*! Test if the function variation is below functionEpsilon */
+        bool checkStationaryFunctionValue(const Real fxOld,
+                                          const Real fxNew,
+                                          Size& statStateIterations,
+                                          EndCriteria::Type& ecType) const;
+        /*! Test if the function value is below functionEpsilon */
+        bool checkStationaryFunctionAccuracy(const Real f,
+                                             const bool positiveOptimization,
+                                             EndCriteria::Type& ecType) const;
+        /*! Test if the gradient norm variation is below gradientNormEpsilon */
+        //bool checkZerGradientNormValue(const Real gNormOld, 
+        //                               const Real gNormNew,
+        //                               EndCriteria::Type& ecType) const;
+        /*! Test if the gradient norm value is below gradientNormEpsilon */
+        bool checkZeroGradientNorm(const Real gNorm,
+                                           EndCriteria::Type& ecType) const;
 
       protected:
         //! Maximum number of iterations
         Size maxIterations_;
-        //! function and gradient epsilons
-        Real functionEpsilon_, gradientEpsilon_;
         //! Maximun number of iterations in stationary state
         mutable Size maxStationaryStateIterations_;
+        //! root, function and gradient epsilons
+        Real rootEpsilon_, functionEpsilon_, gradientNormEpsilon_;
 
     };
 
     std::ostream& operator<<(std::ostream& out,
                              EndCriteria::Type ecType);
 
-    inline bool EndCriteria::checkIterationNumber(const Size iteration,
-                                                  EndCriteria::Type& ecType) const{
-        if (iteration < maxIterations_)
-            return false;
-        ecType = MaxIterations;
-        return true;
-    }
-
-    inline bool EndCriteria::checkStationaryValue(const Real fold,
-                                                  const Real fnew,
-                                                  Size& statStateIterations,
-                                                  EndCriteria::Type& ecType) const {
-        if (std::fabs(fold - fnew) >= functionEpsilon_) {
-            statStateIterations = 0;
-            return false;
-        }
-        ++statStateIterations;
-        if (statStateIterations <= maxStationaryStateIterations_)
-            return false;
-        ecType = StationaryPoint;
-        return true;
-    }
-
-    inline bool EndCriteria::checkAccuracyValue(const Real f,
-                                                const bool positiveOptimization,
-                                                EndCriteria::Type& ecType) const {
-        if (!positiveOptimization)
-            return false;
-        if (f >= functionEpsilon_)
-            return false;
-        ecType = StationaryPoint;
-        return true;
-    }
-
-    inline bool EndCriteria::checkStationaryGradientNorm(const Real normDiff,
-                                                         EndCriteria::Type& ecType) const {
-        if (normDiff >= gradientEpsilon_)
-            return false;
-        ecType = StationaryGradient;
-        return true;
-    }
-
-    inline bool EndCriteria::checkAccuracyGradientNorm(const Real norm,
-                                                       EndCriteria::Type& ecType) const {
-        if (norm >= gradientEpsilon_)
-            return false;
-        ecType = StationaryGradient;
-        return true;
-    }
-
-    inline bool EndCriteria::operator()(const Size iteration,
-                                        Size& statStateIterations,
-                                        const bool positiveOptimization,
-                                        const Real fold,
-                                        const Real normgold,
-                                        const Real fnew,
-                                        const Real normgnew,
-                                        EndCriteria::Type& ecType) const {
-        return
-            checkIterationNumber(iteration, ecType) ||
-            checkStationaryValue(fold, fnew, statStateIterations, ecType) ||
-            checkAccuracyValue(fnew, positiveOptimization, ecType) ||
-            checkAccuracyValue(fold, positiveOptimization, ecType) ||
-            checkAccuracyGradientNorm(normgnew, ecType) ||
-            checkAccuracyGradientNorm(normgold, ecType);
-    }
-
-    // Inspectors
-    inline Size EndCriteria::maxIterations() const {
-        return maxIterations_;
-    }
-
-    inline Size EndCriteria::maxStationaryStateIterations() const {
-        return maxStationaryStateIterations_;
-    }
-
-    inline Real EndCriteria::functionEpsilon() const {
-        return functionEpsilon_;
-    }
-
-    inline Real EndCriteria::gradientEpsilon() const {
-        return gradientEpsilon_;
-    }
 }
 
 #endif

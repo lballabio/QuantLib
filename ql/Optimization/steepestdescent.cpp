@@ -31,14 +31,12 @@ namespace QuantLib {
         Array x_ = P.currentValue();
         Size iterationNumber_=0, stationaryStateIterationNumber_=0;
         lineSearch_->searchDirection() = Array(x_.size());
-
         bool end;
 
         // function and squared norm of gradient values;
         Real normdiff;
         // classical initial value for line-search step
         Real t = 1.0;
-
         // Set gold at the size of the optimization problem search direction
         Array gold(lineSearch_->searchDirection().size());
         Array gdiff(lineSearch_->searchDirection().size());
@@ -51,19 +49,18 @@ namespace QuantLib {
         do {
             // Linesearch
             t = (*lineSearch_)(P, ecType, endCriteria, t);
-
             QL_REQUIRE(lineSearch_->succeed(), "line-search failed!");
             // End criteria
             end = endCriteria(iterationNumber_,
                               stationaryStateIterationNumber_,
-                              true, //FIXME: it should be in the problem
+                              true,  //FIXME: it should be in the problem
                               P.functionValue(),
                               std::sqrt(P.gradientNormValue()),
                               lineSearch_->lastFunctionValue(),
                               std::sqrt(lineSearch_->lastGradientNorm2()),
                               ecType
-                              // FIXME: it's never been used!
-                              //, normdiff
+                              // FIXME: it's never been used! ???
+                              // , normdiff
                               );
 
             // Updates

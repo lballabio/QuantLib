@@ -3984,6 +3984,9 @@
 				RelativePath="ql\Math\interpolation2D.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\kronrodintegral.cpp">
+			</File>
+			<File
 				RelativePath="ql\Math\kronrodintegral.hpp">
 			</File>
 			<File
