@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file floatingratecoupon.hpp
-    \brief Coupon paying a variable index-based rate
+/*! \file iborcoupon.hpp
+    \brief Coupon paying a Libor-type index
 */
 
 #ifndef quantlib_ibor_coupon_hpp
@@ -31,6 +31,7 @@
 
 namespace QuantLib {
 
+    //! %Coupon paying a Libor-type index
     class IborCoupon : public FloatingRateCoupon {
       public:
         IborCoupon(const Date& paymentDate,

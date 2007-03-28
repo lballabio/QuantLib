@@ -19,7 +19,7 @@
 */
 
 /*! \file digitalcoupon.hpp
-    \brief Floating rate coupon with additional cap/floor
+    \brief Floating-rate coupon with digital cap/floor
 */
 
 #ifndef quantlib_digital_coupon_hpp
@@ -30,16 +30,12 @@
 
 namespace QuantLib {
 
-    /*! \file digital.hpp
-
-    */
-
-
+    //! Floating-rate coupon with digital cap/floor
     class DigitalCoupon : public FloatingRateCoupon {
       public:
         //! \name Constructors
         //@{
-        //! General constructor (collar)
+        //! general constructor (collar)
         DigitalCoupon(
                   const boost::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate callStrike = Null<Rate>(),
@@ -55,12 +51,12 @@ namespace QuantLib {
         //@}
         //! \name Digital inspectors
         //@{
-        //! Returns the call strike 
+        //! Returns the call strike
         Rate callStrike() const;
-        //! Returns the put strike 
+        //! Returns the put strike
         Rate putStrike() const;
         //!
-        bool isPut() const { return (hasUpperStrike_ && !hasLowerStrike_); } 
+        bool isPut() const { return (hasUpperStrike_ && !hasLowerStrike_); }
         bool isCall() const {return (hasLowerStrike_ && !hasUpperStrike_); }
         bool isCollar() const {return (hasLowerStrike_ && hasUpperStrike_); }
         //@}
@@ -71,31 +67,32 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
- 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-			if(pricer_)
+
+        void setPricer(
+                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            if(pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
             QL_REQUIRE(pricer_, "no adequate pricer given");
             registerWith(pricer_);
             update();
             underlying_->setPricer(pricer);
-		}
+        }
 
-    protected:        
-        //! \name Member data
+    protected:
+        //! \name Data members
         //@{
         //!
         boost::shared_ptr<FloatingRateCoupon> underlying_;
-        //! the strike rate for the the call option 
+        //! the strike rate for the the call option
         Rate lowerStrike_;
-        //! the strike rate for the the put option 
+        //! the strike rate for the the put option
         Rate upperStrike_;
         //! the rate paid if the cash-or-nothing option is in-the-money
         Rate cashRate_;
         //! the gap between strikes in payoff replication
         Real eps_;
-        //! 
+        //!
         bool hasUpperStrike_, hasLowerStrike_;
         //! Digital option type: if true, cash-or-nothing, if false asset-or-nothing
         bool isCashOrNothing_;

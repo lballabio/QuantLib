@@ -31,9 +31,9 @@
 namespace QuantLib {
 
     //! Basket option on a number of assets
-    /*! \ingroup instruments 
-      @TODO: Replace with STL algorithms */
-
+    /*! \ingroup instruments
+        \todo Replace with STL algorithms
+    */
     class BasketPayoff : public Payoff {
     private:
         boost::shared_ptr<Payoff> basePayoff_;
@@ -44,7 +44,7 @@ namespace QuantLib {
         std::string description() const { return basePayoff_->description();};
         Real operator()(Real price) const { return (*basePayoff_)(price);};
         virtual ~BasketPayoff() {};
-        virtual Real operator()(const Array &a) const { 
+        virtual Real operator()(const Array &a) const {
             return (*basePayoff_)(accumulate(a));
         }
         virtual Real accumulate(const Array &a) const = 0;

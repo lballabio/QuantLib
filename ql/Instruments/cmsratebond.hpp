@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cmscouponbond.hpp
-    \brief cms-coupon bond
+/*! \file cmsratebond.hpp
+    \brief cms-rate bond
 */
 
 #ifndef quantlib_cms_rate_bond_hpp
@@ -32,7 +32,7 @@ namespace QuantLib {
     class Schedule;
     class SwapIndex;
 
-    //! cms-coupon bond
+    //! cms-rate bond
     /*! \ingroup instruments
 
         \test calculations are tested by checking results against

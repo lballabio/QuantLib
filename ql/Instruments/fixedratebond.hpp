@@ -20,8 +20,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fixedcouponbond.hpp
-    \brief fixed-coupon bond
+/*! \file fixedratebond.hpp
+    \brief fixed-rate bond
 */
 
 #ifndef quantlib_fixed_rate_bond_hpp
@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class Schedule;
 
-    //! fixed-coupon bond
+    //! fixed-rate bond
     /*! \ingroup instruments
 
         \test calculations are tested by checking results against

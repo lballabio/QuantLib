@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file driftcalculator.hpp
-    \brief Drift computation for Coterminal Swap Market Model
+/*! \file smmdriftcalculator.hpp
+    \brief Drift computation for coterminal-swap market model
 */
 
 #ifndef quantlib_smm_drift_calculator_hpp
@@ -33,13 +33,12 @@ namespace QuantLib {
     class CoterminalSwapCurveState;
 
     //! Drift computation for Coterminal Swap Market Models
-    /*! \ingroup Market Models */
+    /*! Returns the drift \f$ \mu \Delta t \f$.
+        See Mark Joshi, Lorenzo Liesch, <i>Effective
+        Implementation Of Generic Market Models</i>.
+    */
     class SMMDriftCalculator {
       public:
-        /*! Returns the drift \f$ \mu \Delta t \f$.
-            See Mark Joshi, Lorenzo Liesch, "\it {Effective
-            Implementation Of Generic Market Models}".
-        */
         SMMDriftCalculator(const Matrix& pseudo,
                            const std::vector<Spread>& displacements,
                            const std::vector<Time>& taus,

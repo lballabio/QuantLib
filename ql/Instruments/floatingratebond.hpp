@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cappedflooredcouponbond.hpp
-    \brief reverse floater capped-floored coupon bond
+/*! \file floatingratebond.hpp
+    \brief floating-rate bond
 */
 
 #ifndef quantlib_floating_rate_bond_hpp
@@ -32,7 +32,7 @@ namespace QuantLib {
     class Schedule;
     class IborIndex;
 
-    //! capped & floored coupon bond
+    //! floating-rate bond (possibly capped and/or floored)
     /*! \ingroup instruments
 
         \test calculations are tested by checking results against

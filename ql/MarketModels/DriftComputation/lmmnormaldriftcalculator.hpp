@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file driftcalculator.hpp
-    \brief Drift computation for Libor Market Model with forwards evolving normally
+/*! \file lmmnormaldriftcalculator.hpp
+    \brief Drift computation for normal Libor market model
 */
 
 #ifndef quantlib_lmm_normal_drift_calculator_hpp
@@ -31,15 +31,14 @@
 
 namespace QuantLib {
 
-    //! Drift computation for Normal Libor Market Models
-    /*! \ingroup Market Models */
+    //! Drift computation for normal Libor market models
+    /*! Returns the drift \f$ \mu \Delta t \f$.
+        See Mark Joshi, <i>Rapid Computation of Drifts in a
+        Reduced Factor Libor Market Model</i>, Wilmott Magazine,
+        May 2003.
+    */
     class LMMNormalDriftCalculator {
       public:
-        /*! Returns the drift \f$ \mu \Delta t \f$.
-            See Mark Joshi, "\it {Rapid Computation of Drifts in a 
-            Reduced Factor Libor Market Model}", Wilmott Magazine, 
-            May 2003.
-        */
         LMMNormalDriftCalculator(const Matrix& pseudo,
                                  const std::vector<Time>& taus,
                                  Size numeraire,
@@ -50,15 +49,15 @@ namespace QuantLib {
         void compute(const std::vector<Rate>& fwds,
                      std::vector<Real>& drifts) const;
 
-        /*! Computes the drifts without factor reduction as in 
-            eqs. 2, 4 of ref. [1], modified for normal forward rates dynamic 
+        /*! Computes the drifts without factor reduction as in
+            eqs. 2, 4 of ref. [1], modified for normal forward rates dynamic
             (uses the covariance matrix directly). */
         void computePlain(const LMMCurveState& cs,
                           std::vector<Real>& drifts) const;
         void computePlain(const std::vector<Rate>& fwds,
                           std::vector<Real>& drifts) const;
 
-        /*! Computes the drifts with factor reduction as in 
+        /*! Computes the drifts with factor reduction as in
             eq. 7 of ref. [1], modified for normal forward rates dynamic
             (uses pseudo square root of the covariance matrix). */
         void computeReduced(const LMMCurveState& cs,

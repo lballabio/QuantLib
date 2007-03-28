@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file criteria.hpp
+/*! \file endcriteria.hpp
     \brief Optimization criteria class
 */
 
@@ -93,7 +93,7 @@ namespace QuantLib {
 
     };
 
-	std::ostream& operator<<(std::ostream& out,
+    std::ostream& operator<<(std::ostream& out,
                              EndCriteria::Type ecType);
 
     inline bool EndCriteria::checkIterationNumber(const Size iteration,

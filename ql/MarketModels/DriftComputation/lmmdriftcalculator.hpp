@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file driftcalculator.hpp
-    \brief Drift computation for Libor Market Model
+/*! \file lmmdriftcalculator.hpp
+    \brief Drift computation for Libor market model
 */
 
 #ifndef quantlib_lmm_drift_calculator_hpp
@@ -32,14 +32,13 @@ namespace QuantLib {
     class LMMCurveState;
 
     //! Drift computation for Lognormal Libor Market Models
-    /*! \ingroup Market Models */
+    /*! Returns the drift \f$ \mu \Delta t \f$.
+        See Mark Joshi, <i>Rapid Computation of Drifts in a
+        Reduced Factor Libor Market Model</i>, Wilmott Magazine,
+        May 2003.
+    */
     class LMMDriftCalculator {
       public:
-        /*! Returns the drift \f$ \mu \Delta t \f$.
-            See Mark Joshi, "\it {Rapid Computation of Drifts in a 
-            Reduced Factor Libor Market Model}", Wilmott Magazine, 
-            May 2003.
-        */
         LMMDriftCalculator(const Matrix& pseudo,
                            const std::vector<Spread>& displacements,
                            const std::vector<Time>& taus,
@@ -51,7 +50,7 @@ namespace QuantLib {
         void compute(const std::vector<Rate>& fwds,
                      std::vector<Real>& drifts) const;
 
-        /*! Computes the drifts without factor reduction as in 
+        /*! Computes the drifts without factor reduction as in
             eqs. 2, 4 of ref. [1] (uses the covariance matrix directly). */
         void computePlain(const LMMCurveState& cs,
                           std::vector<Real>& drifts) const;

@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fixedcouponbondforward.hpp
-    \brief forward contract on a fixed-coupon bond
+/*! \file fixedratebondforward.hpp
+    \brief forward contract on a fixed-rate bond
 */
 
 #ifndef quantlib_fixed_rate_bond_forward_hpp
@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! forward contract on a fixed-coupon bond
+    //! forward contract on a fixed-rate bond
     /*! 1. valueDate refers to the settlement date of the bond forward
            contract.  maturityDate is the delivery (or repurchase)
            date for the underlying bond (not the bond's maturity
@@ -54,7 +54,7 @@ namespace QuantLib {
 
         <b>Example: </b>
         \link Repo.cpp
-        valuation of a repo on a fixed-coupon bond
+        valuation of a repo on a fixed-rate bond
         \endlink
 
         \todo Add preconditions and tests

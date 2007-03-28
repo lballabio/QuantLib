@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file driftcalculator.hpp
-    \brief Drift computation for Market Model
+/*! \file cmsmmdriftcalculator.hpp
+    \brief Drift computation for CMS market model
 */
 
 #ifndef quantlib_cms_drift_calculator_hpp
@@ -33,15 +33,14 @@ namespace QuantLib {
 
     class CMSwapCurveState;
 
-    //! Drift computation for Market Models
-    /*! \ingroup Market Models */
+    //! Drift computation for CMS market models
+    /*! Returns the drift \f$ \mu \Delta t \f$.
+        See Mark Joshi, <i>Rapid Computation of Drifts in a
+        Reduced Factor Libor Market Model</i>, Wilmott Magazine,
+        May 2003.
+    */
     class CMSMMDriftCalculator {
       public:
-        /*! Returns the drift \f$ \mu \Delta t \f$.
-            See Mark Joshi, "\it {Rapid Computation of Drifts in a 
-            Reduced Factor Libor Market Model}", Wilmott Magazine, 
-            May 2003.
-        */
         CMSMMDriftCalculator(const Matrix& pseudo,
                              const std::vector<Spread>& displacements,
                              const std::vector<Time>& taus,
@@ -63,7 +62,7 @@ namespace QuantLib {
         mutable Matrix PjPnWk_; // < Wk, P_{j}/P_n> (k, j)
         mutable Matrix wkaj_;    // < Wk , Aj/Pn> (k, j)
         mutable Matrix wkajN_;    // < Wk , Aj/PN> (k, j)
-      
+
         std::vector<Size> downs_, ups_;
         Size spanningFwds_;
     };

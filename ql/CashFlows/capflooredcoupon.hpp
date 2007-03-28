@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
@@ -30,32 +30,29 @@
 
 namespace QuantLib {
 
-    /*! \file capflooredcoupon.hpp
-        \brief Capped or/and floored floating rate coupon
+    //! Capped and/or floored floating-rate coupon
+    /*! The payoff \f$ P \f$ of a capped floating-rate coupon is:
+        \f[ P = N \times T \times \min(a L + b, C). \f]
+        The payoff of a floored floating-rate coupon is:
+        \f[ P = N \times T \times \max(a L + b, F). \f]
+        The payoff of a collared floating-rate coupon is:
+        \f[ P = N \times T \times \min(\max(a L + b, F), C). \f]
 
-        The payoff of a capped floating rate coupon is:
-        \f[ Payoff = Nominal accrual min(a L + b, C). \f]
-        The payoff of a floored floating rate coupon is:
-        \f[ Payoff = Nominal accrual max(a L + b, F). \f]
-        The payoff of a collared floating rate coupon is:
-        \f[ Payoff = Nominal accrual min(max(a L + b, F), C). \f]
-
-        where \f$ L \f$ is the floating rate, \f$ a \f$ is its 
-        gearing, \f$ b \f$ is the spread and \f$ C \f$ and \f$ F \f$
+        where \f$ N \f$ is the notional, \f$ T \f$ is the accrual
+        time, \f$ L \f$ is the floating rate, \f$ a \f$ is its
+        gearing, \f$ b \f$ is the spread, and \f$ C \f$ and \f$ F \f$
         the strikes.
 
         They can be decomposed in the following manner.
         Decomposition of a capped floating rate coupon:
         \f[
-        Payoff = min(a L + b, C) = //
-               = (a L + b) + min(C - b - \csi |a| L, 0)
-        \f] 
-        where \f$ csi = sgn(a) \f$. Then:
-        Payoff = (a L + b) + |a| min(\frac{C - b}{|a|} - \csi L, 0) //
+        R = \min(a L + b, C) = (a L + b) + \min(C - b - \xi |a| L, 0)
+        \f]
+        where \f$ \xi = sgn(a) \f$. Then:
+        \f[
+        R = (a L + b) + |a| \min(\frac{C - b}{|a|} - \xi L, 0)
         \f]
     */
-
-
     class CappedFlooredCoupon : public FloatingRateCoupon {
       public:
         CappedFlooredCoupon(
@@ -67,9 +64,9 @@ namespace QuantLib {
         Rate rate() const;
         Rate convexityAdjustment() const;
         //@}
-        //! cap 
+        //! cap
         Rate cap() const;
-        //! floor 
+        //! floor
         Rate floor() const;
         //! effective cap of fixing
         Rate effectiveCap() const;
@@ -83,19 +80,20 @@ namespace QuantLib {
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
-        
-        bool isCapped() const {return isCapped_;} 
+
+        bool isCapped() const {return isCapped_;}
         bool isFloored() const {return isFloored_;}
 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-			if(pricer_)
+        void setPricer(
+                   const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
+            if(pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
             QL_REQUIRE(pricer_, "no adequate pricer given");
             registerWith(pricer_);
             update();
             underlying_->setPricer(pricer);
-		}
+        }
 
     protected:
         // data
@@ -109,7 +107,7 @@ namespace QuantLib {
         CappedFlooredIborCoupon(
                   const Date& paymentDate,
                   const Real nominal,
-                  const Date& startDate, 
+                  const Date& startDate,
                   const Date& endDate,
                   const Natural fixingDays,
                   const boost::shared_ptr<InterestRateIndex>& index,
@@ -141,7 +139,7 @@ namespace QuantLib {
         CappedFlooredCmsCoupon(
                   const Date& paymentDate,
                   const Real nominal,
-                  const Date& startDate, 
+                  const Date& startDate,
                   const Date& endDate,
                   const Natural fixingDays,
                   const boost::shared_ptr<SwapIndex>& index,
