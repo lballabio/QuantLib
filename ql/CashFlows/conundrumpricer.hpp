@@ -150,13 +150,14 @@ namespace QuantLib {
             class ObjectiveFunction : public std::unary_function<Real, Real> {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
-              public:
-                virtual ~ObjectiveFunction() {}
+                public:
+              virtual ~ObjectiveFunction() {}
                 ObjectiveFunction(const GFunctionWithShifts& o,
                                   const Real Rs)
                 : o_(o), Rs_(Rs) {}
                 virtual Real operator()(const Real& x) const;
                 void setSwapRateValue(Real x);
+                const GFunctionWithShifts& gFunctionWithShifts() const {return o_;}
             };
 
             boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
@@ -241,7 +242,7 @@ namespace QuantLib {
        Real elapsed();
        Real upperLimit(){return upperLimit_;}
 
-      private:
+      //private:
         class Function : public std::unary_function<Real, Real> {
           public:
             virtual ~Function() {};

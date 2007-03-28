@@ -751,22 +751,19 @@ namespace QuantLib {
     Real GFunctionFactory::GFunctionWithShifts::calibrationOfShift(Real Rs){
 
         if(Rs!=tmpRs_){
-            Real initialGuess;
-            //{
-            //  initialGuess=calibratedShift_;
-            //}
-            {
-                Real N=0, D=0;
-                for(Size i=0; i<accruals_.size(); i++) {
-                    N+=accruals_[i]*swapPaymentDiscounts_[i];
-                    D+=accruals_[i]*shapedSwapPaymentTimes_[i]*swapPaymentDiscounts_[i];
-                }
-                N*=Rs;
-                D*=Rs;
-                N+=swapPaymentDiscounts_.back()-swapPaymentDiscounts_[0];
-                D+=swapPaymentDiscounts_.back()*(shapedSwapPaymentTimes_.back());
-                initialGuess = N/D;
+            Real initialGuess, N=0, D=0;
+            for(Size i=0; i<accruals_.size(); i++) {
+                N+=accruals_[i]*swapPaymentDiscounts_[i];
+                D+=accruals_[i]*swapPaymentDiscounts_[i]*shapedSwapPaymentTimes_[i];
             }
+            N *= Rs;
+            D *= Rs;
+            N += accruals_.back() * swapPaymentDiscounts_.back() 
+                - objectiveFunction_->gFunctionWithShifts().discountAtStart_;
+            D += accruals_.back() * swapPaymentDiscounts_.back()*
+                            shapedSwapPaymentTimes_.back();
+            initialGuess = N/D;
+
             objectiveFunction_->setSwapRateValue(Rs);
             Brent solver;
             solver.setMaxEvaluations(1000);
