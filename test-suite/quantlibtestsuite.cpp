@@ -43,6 +43,7 @@
 #include "americanoption.hpp"
 #include "array.hpp"
 #include "asianoptions.hpp"
+#include "assetswap.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
@@ -174,6 +175,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
+    test->add(AssetSwapTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
