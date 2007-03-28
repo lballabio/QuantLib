@@ -4,7 +4,7 @@
 .autodepend
 #.silent
 
-MAKE = $(MAKE) -fmakefile.mak -DVERSION=0.9.0 -DVERSION_STRING=0_9_0
+MAKE = $(MAKE) -fmakefile.mak -DVERSION=0.8.0 -DVERSION_STRING=0_8_0
 
 # MAKE Options
 !ifdef __MT__
