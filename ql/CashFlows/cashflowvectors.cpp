@@ -76,6 +76,8 @@ namespace QuantLib {
         QL_REQUIRE(!nominals.empty(), "nominals not specified");
 
         Leg leg;
+
+        // the following is not always correct
         Calendar calendar = schedule.calendar();
 
         // first period might be short or long
@@ -186,7 +188,10 @@ namespace QuantLib {
                    "), only " << n << " required");
 
         Leg leg; leg.reserve(n);
+
+        // the following is not always correct
         Calendar calendar = schedule.calendar();
+
         Date refStart, start, refEnd, end;
         Date paymentDate;
 
@@ -317,7 +322,10 @@ namespace QuantLib {
                    "), only " << n << " required");
 
         Leg leg; leg.reserve(n);
+
+        // the following is not always correct
         Calendar calendar = schedule.calendar();
+
         Date refStart, start, refEnd, end;
 
         // All payment dates at the end!! in arrears fixing makes no sense
