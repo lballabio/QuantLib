@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         DoubleStickyRatchetPayoff(Real type1, Real type2,
                             Real gearing1, Real gearing2, Real gearing3,
-                            Spread spread1, Spread spread2, Spread spread3,
+                            Real spread1, Real spread2, Real spread3,
                             Real initialValue1, Real initialValue2, 
                             Real accrualFactor) 
         : type1_(type1), type2_(type2), 
@@ -53,7 +53,7 @@ namespace QuantLib {
       protected:
         Real type1_ ,type2_;
         Real gearing1_, gearing2_, gearing3_;
-        Spread spread1_, spread2_, spread3_;
+        Real spread1_, spread2_, spread3_;
         Real initialValue1_, initialValue2_, accrualFactor_;
     };
 
@@ -61,7 +61,7 @@ namespace QuantLib {
     class RatchetPayoff : public DoubleStickyRatchetPayoff {
       public:
          RatchetPayoff(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
+                       Real spread1, Real spread2,
                        Real initialValue, Real accrualFactor)
         : DoubleStickyRatchetPayoff(-1.0, 0.0,
                             gearing1, 0.0, gearing2,
@@ -78,7 +78,7 @@ namespace QuantLib {
     class StickyPayoff : public DoubleStickyRatchetPayoff {
       public:
          StickyPayoff(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
+                       Real spread1, Real spread2,
                        Real initialValue, Real accrualFactor)
         : DoubleStickyRatchetPayoff(+1.0, 0.0,
                             gearing1, 0.0, gearing2,
@@ -95,7 +95,7 @@ namespace QuantLib {
     class RatchetMaxPayoff : public DoubleStickyRatchetPayoff {
       public:
          RatchetMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
+                          Real spread1, Real spread2, Real spread3,
                           Real initialValue1, Real initialValue2, 
                           Real accrualFactor)
         : DoubleStickyRatchetPayoff(-1.0, -1.0,
@@ -113,7 +113,7 @@ namespace QuantLib {
     class RatchetMinPayoff : public DoubleStickyRatchetPayoff {
       public:
          RatchetMinPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
+                          Real spread1, Real spread2, Real spread3,
                           Real initialValue1, Real initialValue2, 
                           Real accrualFactor)
         : DoubleStickyRatchetPayoff(-1.0, +1.0,
@@ -131,7 +131,7 @@ namespace QuantLib {
     class StickyMaxPayoff : public DoubleStickyRatchetPayoff {
       public:
          StickyMaxPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
+                          Real spread1, Real spread2, Real spread3,
                           Real initialValue1, Real initialValue2, 
                           Real accrualFactor)
         : DoubleStickyRatchetPayoff(+1.0, -1.0,
@@ -149,7 +149,7 @@ namespace QuantLib {
     class StickyMinPayoff : public DoubleStickyRatchetPayoff {
       public:
          StickyMinPayoff(Real gearing1, Real gearing2, Real gearing3,
-                          Spread spread1, Spread spread2, Spread spread3,
+                          Real spread1, Real spread2, Real spread3,
                           Real initialValue1, Real initialValue2, 
                           Real accrualFactor)
         : DoubleStickyRatchetPayoff(+1.0, +1.0,
@@ -173,7 +173,7 @@ namespace QuantLib {
       public:
         StickyRatchetPayoff(Real type,
                             Real gearing1, Real gearing2,
-                            Spread spread1, Spread spread2,
+                            Real spread1, Real spread2,
                             Real initialValue, Real accrualFactor) 
         : type_(type), gearing1_(gearing1), gearing2_(gearing2), 
           spread1_(spread1), spread2_(spread2), initialValue_(initialValue),
@@ -187,7 +187,7 @@ namespace QuantLib {
       protected:
         Real type_;
         Real gearing1_, gearing2_;
-        Spread spread1_, spread2_;
+        Real spread1_, spread2_;
         Real initialValue_, accrualFactor_;
     };
 
@@ -195,7 +195,7 @@ namespace QuantLib {
     class RatchetPayoff_2 : public StickyRatchetPayoff {
       public:
          RatchetPayoff_2(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
+                       Real spread1, Real spread2,
                        Real initialValue, Real accrualFactor)
         : StickyRatchetPayoff(-1,
                               gearing1, gearing2,
@@ -211,7 +211,7 @@ namespace QuantLib {
     class StickyPayoff_2 : public StickyRatchetPayoff {
       public:
          StickyPayoff_2(Real gearing1, Real gearing2,
-                       Spread spread1, Spread spread2,
+                       Real spread1, Real spread2,
                        Real initialValue, Real accrualFactor) 
         : StickyRatchetPayoff(+1,
                               gearing1, gearing2,
