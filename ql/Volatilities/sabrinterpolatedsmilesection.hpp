@@ -117,15 +117,15 @@ namespace QuantLib {
         return sabrInterpolation_.endCriteria();
     }
 
-    inline Real SabrInterpolatedSmileSection::minStrike () const {
+    inline Real SabrInterpolatedSmileSection::minStrike() const {
         calculate();
         return strikes_.front();
-    };
+    }
 
-    inline Real SabrInterpolatedSmileSection::maxStrike () const {
+    inline Real SabrInterpolatedSmileSection::maxStrike() const {
         calculate();
         return strikes_.back();
-    };
+    }
 
 }
 
