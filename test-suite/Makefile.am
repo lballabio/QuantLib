@@ -4,6 +4,7 @@ QL_TESTS = \
 	americanoption.hpp americanoption.cpp \
 	array.hpp array.cpp \
 	asianoptions.hpp asianoptions.cpp \
+	assetswap.hpp assetswap.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
 	batesmodel.hpp batesmodel.cpp \
