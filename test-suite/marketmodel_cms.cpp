@@ -358,7 +358,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 void checkCMSAndSwaptions(const SequenceStatistics& stats,
                           const Rate fixedRate,
                           const std::vector<boost::shared_ptr<StrikedTypePayoff> >& displacedPayoff,
-                          const boost::shared_ptr<MarketModel> marketModel,
+                          const boost::shared_ptr<MarketModel>, // marketModel,
                           const std::string& config) {
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();

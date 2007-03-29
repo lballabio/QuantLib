@@ -113,7 +113,6 @@ void setup() {
     EvolutionDescription evolution(rateTimes,evolutionTimes);
     std::vector<Real> rateTaus = evolution.rateTaus();
     std::vector<Size> alive = evolution.firstAliveRate();
-    Size numberOfSteps = evolutionTimes.size();
 }
 
 QL_END_TEST_LOCALS(CurveStatesTest)
@@ -150,12 +149,12 @@ void CurveStatesTest::testCMSwapCurveState() {
 
     for (Size i = 0; i < forwards.size(); ++i){
         forwards[i] = static_cast<Time>(i)*.001+.04;
-        
+
     }
-    
+
     for (Size i = 0; i < rateTimes.size(); ++i){
         rateTimes[i] = static_cast<Time>(i)*.5;
-       
+
     }
 
     //BOOST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
@@ -163,8 +162,8 @@ void CurveStatesTest::testCMSwapCurveState() {
     //    std::cout << rateTimes[i+1] << "\t"<<io::rate(forwards[i]) << std::endl;
     //}
 
-    Size numeraire = nbRates; 
-    Size alive = 0; 
+    Size numeraire = nbRates;
+    Size alive = 0;
 
     Size spanningFwds = 1;
 
@@ -182,7 +181,7 @@ void CurveStatesTest::testCMSwapCurveState() {
     lmmCs.setOnForwardRates(forwards);
     std::vector<Real> lmmDrifts(nbRates);
 
-   
+
  /*   std::cout << "drifts:"<< std::endl;
     std::cout << "LMM\t\tCMS"<< std::endl;
     for (Size i = 0; i<nbRates; ++i){

@@ -58,7 +58,7 @@ namespace QuantLib {
               targetMatrix_(targetMatrix), targetVariance_(targetVariance),
               currentRoot_(size_, size_), tempMatrix_(size_, size_),
               currentMatrix_(size_, size_) {}
-            Disposable<Array> values(const Array& x) const {
+            Disposable<Array> values(const Array&) const {
                 QL_FAIL("values method not implemented");
             }
             Real value(const Array& x) const {

@@ -387,12 +387,12 @@ namespace QuantLib {
             {
                 QL_REQUIRE(forward_>0.0, "forward must be positive: "
                     << io::rate(forward_) << " not allowed");
-                
+
                 // there is nothing to optimize
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {
                     error_ = interpolationError();
                     maxError_ = interpolationMaxError();
-				    SABREndCriteria_ = EndCriteria::None;
+                    SABREndCriteria_ = EndCriteria::None;
                     return;
                 } else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
                     tranformation_ = boost::shared_ptr<Transformation>(new
@@ -400,36 +400,36 @@ namespace QuantLib {
                     NoConstraint constraint;
                     SABRErrorWithFixedBeta costFunction(this);
                     Array guess(3);
-                    guess[0] = alpha_;  
-                    guess[1] = nu_; 
+                    guess[0] = alpha_;
+                    guess[1] = nu_;
                     guess[2] = rho_;
                     guess = tranformation_->inverse(guess);
                     Problem problem(costFunction, constraint, guess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
-				    Array result = problem.currentValue();
+                    Array result = problem.currentValue();
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     nu_    = y[1];
-                    rho_   = y[2]; 
+                    rho_   = y[2];
                 } else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
                     tranformation_ = boost::shared_ptr<Transformation>(new
                         SabrParametersTransformation);
                     NoConstraint constraint;
                     SABRError costFunction(this);
-                    Array guess(4); 
-                    guess[0] = alpha_;  
-                    guess[1] = beta_; 
+                    Array guess(4);
+                    guess[0] = alpha_;
+                    guess[1] = beta_;
                     guess[2] = nu_;
                     guess[3] = rho_;
                     guess = tranformation_->inverse(guess);
                     Problem problem(costFunction, constraint, guess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
-				    Array result = problem.currentValue();
+                    Array result = problem.currentValue();
                     Array y = tranformation_->direct(result);
                     alpha_ = y[0];
                     beta_  = y[1];
                     nu_    = y[2];
-                    rho_   = y[3]; 
+                    rho_   = y[3];
                 } else {
                     QL_REQUIRE(false, "Selected Sabr calibration not implemented");
                 }
@@ -466,7 +466,7 @@ namespace QuantLib {
                 return totalError;
             }
             // calculate weighted differences
-            Disposable<Array> interpolationErrors(const Array& sabrValues)const {
+            Disposable<Array> interpolationErrors(const Array&) const {
                 Array results(this->xEnd_ - this->xBegin_);
                 std::vector<Real>::const_iterator x = this->xBegin_;
                 Array::iterator r = results.begin();

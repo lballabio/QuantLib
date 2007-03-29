@@ -289,7 +289,7 @@ namespace QuantLib {
                 if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
                 return abcd_->error(blackVols_, t_);
             }
-            Disposable<Array> values(const Array& x) const {
+            Disposable<Array> values(const Array&) const {
                 QL_FAIL("values method not implemented");
             }
           private:

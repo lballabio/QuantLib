@@ -269,7 +269,7 @@ namespace QuantLib {
     Real ConundrumPricerByNumericalIntegration::elapsed(){
         boost::timer timer;
         timer.restart();
-        Real price = swapletPrice();
+        swapletPrice();
         return timer.elapsed();
     }
 
@@ -758,7 +758,7 @@ namespace QuantLib {
             }
             N *= Rs;
             D *= Rs;
-            N += accruals_.back() * swapPaymentDiscounts_.back() 
+            N += accruals_.back() * swapPaymentDiscounts_.back()
                 - objectiveFunction_->gFunctionWithShifts().discountAtStart_;
             D += accruals_.back() * swapPaymentDiscounts_.back()*
                             shapedSwapPaymentTimes_.back();

@@ -30,7 +30,7 @@ namespace QuantLib {
                           const ParametricExercise& exercise,
                           Size exerciseIndex);
             Real value(const Array& parameters) const;
-            Disposable<Array> values(const Array& x) const {
+            Disposable<Array> values(const Array&) const {
                 QL_FAIL("values method not implemented");
             }
         private:
@@ -39,7 +39,7 @@ namespace QuantLib {
             Size exerciseIndex_;
             mutable std::vector<Real> parameters_;
         };
- 
+
         ValueEstimate::ValueEstimate(
                                  const std::vector<NodeData>& simulationData,
                                  const ParametricExercise& exercise,
@@ -76,7 +76,7 @@ namespace QuantLib {
     }
 
 
-    
+
     Real genericEarlyExerciseOptimization(
                           std::vector<std::vector<NodeData> >& simulationData,
                           const ParametricExercise& exercise,
@@ -91,7 +91,7 @@ namespace QuantLib {
             const std::vector<NodeData>& exerciseData = simulationData[i];
 
             parameters[i-1].resize(exercise.numberOfParameters()[i-1]);
-            
+
 
             // optimize
             ValueEstimate f(exerciseData, exercise, i-1);

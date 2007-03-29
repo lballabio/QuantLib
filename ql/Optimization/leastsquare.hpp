@@ -66,7 +66,7 @@ namespace QuantLib {
 
         //! compute value of the least square function
         virtual Real value(const Array& x) const;
-        virtual Disposable<Array> values(const Array& x) const {
+        virtual Disposable<Array> values(const Array&) const {
             QL_FAIL("values method not implemented");
         }
         //! compute vector of derivatives of the least square function

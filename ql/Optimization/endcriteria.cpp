@@ -103,7 +103,7 @@ namespace QuantLib {
     }
 
     //bool EndCriteria::checkZerGradientNormValue(
-    //                                        const Real gNormOld, 
+    //                                        const Real gNormOld,
     //                                        const Real gNormNew,
     //                                        EndCriteria::Type& ecType) const {
     //    if (std::fabs(gNormNew-gNormOld) >= gradientNormEpsilon_)
@@ -124,7 +124,7 @@ namespace QuantLib {
                                  Size& statStateIterations,
                                  const bool positiveOptimization,
                                  const Real fold,
-                                 const Real normgold,
+                                 const Real, //normgold,
                                  const Real fnew,
                                  const Real normgnew,
                                  EndCriteria::Type& ecType) const {

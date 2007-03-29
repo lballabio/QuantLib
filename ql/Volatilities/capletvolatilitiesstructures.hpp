@@ -225,9 +225,9 @@ namespace QuantLib {
 
         Time maxTime() const{ return volatilitiesFromCaps_->maxTime();}
 
-        void setClosestTenors(Time time,
-                              Time& nextLowerTenor,
-                              Time& nextHigherTenor) {
+        void setClosestTenors(Time, //time,
+                              Time&, //nextLowerTenor,
+                              Time&) { //nextHigherTenor) {
                 // to be implemented ...
          };
         void update();
