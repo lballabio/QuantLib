@@ -30,10 +30,7 @@
 #include <ql/types.hpp>
 #include <ql/Utilities/null.hpp>
 
-#ifndef boost_function_hpp
-#define boost_function_hpp
-    #include <boost/function.hpp>
-#endif
+#include <boost/function.hpp>
 
 namespace QuantLib {
 
@@ -86,11 +83,14 @@ namespace QuantLib {
         neval: number of integrand evaluations
         This function returns true if the requested accuracy has been achieved.
     */
-    bool gaussKronrodNonAdaptative(const Integrand& f, Real a, Real b, 
-                                    Real epsAbs, Real epsRel,
-                                    Real& result, Real& absErr, 
-                                    Integer& nEval);
-
+    bool gaussKronrodNonAdaptative(const Integrand& f,
+                                   Real a,
+                                   Real b, 
+                                   Real epsAbs,
+                                   Real epsRel,
+                                   Real& result,
+                                   Real& absErr, 
+                                   Integer& nEval);
     class KronrodIntegral {
       public:
         
