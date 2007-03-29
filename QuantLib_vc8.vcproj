@@ -6362,6 +6362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\Volatilities\sabrinterpolatedsmilesection.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\Volatilities\sabrinterpolatedsmilesection.hpp"
 				>
 			</File>

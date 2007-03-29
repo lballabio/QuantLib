@@ -55,23 +55,18 @@ namespace QuantLib {
                             = boost::shared_ptr<OptimizationMethod>(),
                            const DayCounter& dc = Actual365Fixed()
                            );
-
-
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
-        Real alpha() const {return sabrInterpolation_.alpha(); }
-        Real beta() const {return sabrInterpolation_.beta(); }
-        Real nu() const {return sabrInterpolation_.nu(); }
-        Real rho() const {return sabrInterpolation_.rho(); }
-        Real interpolationError() const {
-            return sabrInterpolation_.interpolationError(); }
-        Real interpolationMaxError() const {
-            return sabrInterpolation_.interpolationMaxError(); }
-        EndCriteria::Type endCriteria() const {
-            return sabrInterpolation_.endCriteria(); }
-        Real minStrike () const { return strikes_.front(); };
-        Real maxStrike () const { return strikes_.back(); };
+        Real alpha() const;
+        Real beta() const;
+        Real nu() const;
+        Real rho() const;
+        Real interpolationError() const;
+        Real interpolationMaxError() const;
+        EndCriteria::Type endCriteria() const;
+        Real minStrike () const;
+        Real maxStrike () const;
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
@@ -82,59 +77,55 @@ namespace QuantLib {
         mutable SABRInterpolation sabrInterpolation_;
     };
 
-    inline SabrInterpolatedSmileSection::SabrInterpolatedSmileSection(
-                       const Date& optionDate,
-                       const std::vector<Rate>& strikes,
-                       const std::vector<Handle<Quote> >& stdDevHandles,
-                       const Handle<Quote>& forward,
-                       Real alpha,
-                       Real beta,
-                       Real nu,
-                       Real rho,
-                       bool isAlphaFixed,
-                       bool isBetaFixed,
-                       bool isNuFixed,
-                       bool isRhoFixed,
-                       bool vegaWeighted,
-                       const boost::shared_ptr<EndCriteria>& endCriteria,
-                       const boost::shared_ptr<OptimizationMethod>& method,
-                       const DayCounter& dc)
-    : SmileSection(optionDate, dc),
-      exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
-      stdDevHandles_(stdDevHandles), forward_(forward),
-      vols_(stdDevHandles.size()),
-      sabrInterpolation_(strikes_.begin(), strikes_.end(), vols_.begin(),
-                        exerciseTime(), forwardValue_, alpha, beta, nu, rho,
-                        isAlphaFixed, isBetaFixed,
-                        isNuFixed, isRhoFixed, vegaWeighted,
-                        endCriteria, method, false)
-    {
-        registerWith(forward_);
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            registerWith(stdDevHandles_[i]);
-    }
-
-
-    inline void SabrInterpolatedSmileSection::performCalculations()
-                                                                      const {
-        forwardValue_ = 1-forward_->value()/100;
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot_;
-        sabrInterpolation_.update();
-    }
-
-    #ifndef __DOXYGEN__
-    inline Real SabrInterpolatedSmileSection::variance(Real strike) const {
-        calculate();
-        Real v = sabrInterpolation_(strike, true);
-        return v*v*exerciseTime();
-    }
-
     inline Real SabrInterpolatedSmileSection::volatility(Real strike) const {
         calculate();
         return sabrInterpolation_(strike, true);
     }
-    #endif
+
+    inline Real SabrInterpolatedSmileSection::alpha() const {
+        calculate();
+        return sabrInterpolation_.alpha();
+    }
+
+    inline Real SabrInterpolatedSmileSection::beta() const {
+        calculate();
+        return sabrInterpolation_.beta();
+    }
+
+    inline Real SabrInterpolatedSmileSection::nu() const {
+        calculate();
+        return sabrInterpolation_.nu();
+    }
+
+    inline Real SabrInterpolatedSmileSection::rho() const {
+        calculate();
+        return sabrInterpolation_.rho();
+    }
+
+    inline Real SabrInterpolatedSmileSection::interpolationError() const {
+        calculate();
+        return sabrInterpolation_.interpolationError();
+    }
+
+    inline Real SabrInterpolatedSmileSection::interpolationMaxError() const {
+        calculate();
+        return sabrInterpolation_.interpolationMaxError();
+    }
+
+    inline EndCriteria::Type SabrInterpolatedSmileSection::endCriteria() const {
+        calculate();
+        return sabrInterpolation_.endCriteria();
+    }
+
+    inline Real SabrInterpolatedSmileSection::minStrike () const {
+        calculate();
+        return strikes_.front();
+    };
+
+    inline Real SabrInterpolatedSmileSection::maxStrike () const {
+        calculate();
+        return strikes_.back();
+    };
 
 }
 
