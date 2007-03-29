@@ -52,6 +52,8 @@ namespace QuantLib {
                                 true,
                                 index->endOfMonth());
 
+        // what if this date is not a business day??
+        // we are assuming it is a business day!
         upfrontDate_ = schedule.startDate();
         Real dirtyPrice = bondCleanPrice_ +
                           bond->accruedAmount(upfrontDate_);
@@ -63,12 +65,14 @@ namespace QuantLib {
         if (parSwap) nominal_ = bond->faceAmount();
         else         nominal_ = dirtyPrice/100*bond->faceAmount();
 
-        // might become input parameters
+        // the following should/might be input parameters
+        // -------------------------------------------------
         BusinessDayConvention paymentAdjustment = Following;
         Natural fixingDays = index->fixingDays();
         std::vector<Real> nominals(1, nominal_);
         std::vector<Real> gearings(1, 1.0);
         std::vector<Spread> spreads(1, spread);
+        // -------------------------------------------------
 
         legs_[1] = IborLeg(nominals,
                            schedule,
@@ -94,27 +98,34 @@ namespace QuantLib {
         QL_REQUIRE(!legs_[0].empty(),
                    "empty bond leg to start with");
 
-        // review what happen if floatSchedule.endDate() < bond->maturityDate()
+        // what happen if floatSchedule.endDate() < bond->maturityDate() ??
 
         // special flows
         if (parSwap) {
             // upfront on the floating leg
-            Real upfront=(dirtyPrice-100.0)/100.0*nominal_;
+            Real upfront = (dirtyPrice-100.0)/100.0*nominal_;
+            // we are assuming upfrontDate_ is a business day
+            // see above!
             boost::shared_ptr<CashFlow> upfrontCashFlow (new
                 SimpleCashFlow(upfront, upfrontDate_));
             legs_[1].insert(legs_[1].begin(), upfrontCashFlow);
             // backpayment on the floating leg
             // (accounts for non-par redemption, if any)
-            Real backpayment=nominal_;
-            boost::shared_ptr<CashFlow> backpaymentCashFlow (new
-                SimpleCashFlow(backpayment, schedule.endDate()));
-            legs_[1].push_back(backpaymentCashFlow);
+            Real backPayment = nominal_;
+            Date backPaymentDate = schedule.calendar().adjust(
+                schedule.endDate(), paymentAdjustment);
+            boost::shared_ptr<CashFlow> backPaymentCashFlow (new
+                SimpleCashFlow(backPayment, backPaymentDate));
+            legs_[1].push_back(backPaymentCashFlow);
         } else {
             // final nominal exchange
             Real finalFlow = (dirtyPrice)/100.0*bond->faceAmount();
+            // we are assuming bond->maturityDate() == schedule.endDate()
+            Date finalDate = schedule.calendar().adjust(
+                schedule.endDate(), paymentAdjustment);
+                //bond->maturityDate(), paymentAdjustment);
             boost::shared_ptr<CashFlow> finalCashFlow (new
-                SimpleCashFlow(finalFlow, schedule.endDate()));
-                //SimpleCashFlow(finalFlow, bond->maturityDate()));
+                SimpleCashFlow(finalFlow, finalDate));
             legs_[1].push_back(finalCashFlow);
         }
 

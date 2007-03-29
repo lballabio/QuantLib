@@ -84,7 +84,7 @@ QL_END_TEST_LOCALS(AssetSwapTest)
 
 void AssetSwapTest::testImpliedValue() {
 
-    BOOST_MESSAGE("Testing assetswap calculation of bond implied value...");
+    BOOST_MESSAGE("Testing asset swap bond price...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -93,41 +93,38 @@ void AssetSwapTest::testImpliedValue() {
     DayCounter bondDayCount = ActualActual(ActualActual::ISDA);
     Natural settlementDays = 3;
 
-// Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
+    bool payFixedRate = true;
+    bool parAssetSwap = true;
 
-    Schedule bondsch(Date(4,January,2005),
-                     Date(4,January,2037), Period(Annual), bondCalendar,
-                     Unadjusted, Unadjusted, true,false);
+    // Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
+    Schedule fixedBondSchedule(Date(4,January,2005),
+                               Date(4,January,2037),
+                               Period(Annual), bondCalendar,
+                               Unadjusted, Unadjusted, true, false);
+    boost::shared_ptr<Bond> fixedBond(new
+        FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule,
+                      std::vector<Rate>(1, 0.04), bondDayCount, Following,
+                      100.0, Date(4,January,2005), termStructure_));
+    Real fixedBondPrice = fixedBond->cleanPrice();
+    AssetSwap fixedBondAssetSwap(payFixedRate, 
+                                 fixedBond, fixedBondPrice,
+                                 index_, spread_, termStructure_,
+                                 Schedule(),
+                                 floatingDayCounter_, parAssetSwap);
+    Real fixedBondAssetSwapPrice = fixedBondAssetSwap.fairPrice();
 
-    boost::shared_ptr<Bond> bond1(new FixedRateBond(settlementDays, faceAmount_, bondsch,
-                                  std::vector<Rate>(1, 0.04),bondDayCount, Following,
-                                  100.0, Date(4,January,2005), termStructure_));
+    Real tolerance = 1.0e-13;
+    Real error = std::fabs(fixedBondAssetSwapPrice-fixedBondPrice);
 
-    Real calculatedPrice1 = bond1->cleanPrice();
-
- //Par AssetSwap
-
-   Schedule floatSch(bond1->settlementDate(),
-                     bond1->maturityDate(),index_->tenor(),index_->calendar(),
-                     index_->businessDayConvention(),
-                     Unadjusted,true, index_->endOfMonth());
-
-
-   AssetSwap assetswap1(true, 
-                        bond1,calculatedPrice1,index_,spread_,termStructure_,floatSch,
-                        floatingDayCounter_,true);
-   Real delta1= assetswap1.fairPrice()-calculatedPrice1;
-
-// AssetSwap with spread =0 should return a fair price equal to the bond's theoretical clean price
-
-            if (std::fabs(assetswap1.fairPrice()-calculatedPrice1) > 1.0e-3) {
-                BOOST_ERROR("recalculating with zero spread:"
-                            << std::setprecision(6)
-                            << "\n  bond clean price: " << calculatedPrice1
-                            << "\n  asset swap fair price: " << assetswap1.fairPrice()
-                            << "\n  difference: " << delta1);
-            }
-
+    if (error>tolerance) {
+        BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond clean price:      " << fixedBondPrice
+                    << "\n  asset swap fair price: " << fixedBondAssetSwapPrice
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error
+                    << "\n  tolerance:             " << tolerance);
+    }
 
     QL_TEST_TEARDOWN
 }

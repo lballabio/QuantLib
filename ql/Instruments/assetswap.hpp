@@ -52,7 +52,7 @@ namespace QuantLib {
                   const Handle<YieldTermStructure>& discountCurve,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
-                  bool parSwap = true);
+                  bool parAssetSwap = true);
         // results
         Spread fairSpread() const;
         Real floatingLegBPS() const;
