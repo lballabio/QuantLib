@@ -27,7 +27,6 @@
 #include <ql/CashFlows/cmscoupon.hpp>
 #include <ql/Indexes/swapindex.hpp>
 #include <ql/Instruments/swap.hpp>
-#include <ql/CashFlows/conundrumpricer.hpp>
 
 namespace QuantLib {
 

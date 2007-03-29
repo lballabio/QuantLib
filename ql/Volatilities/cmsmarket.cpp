@@ -18,13 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
+#include <ql/Instruments/makecms.hpp>
+#include <ql/CashFlows/conundrumpricer.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Volatilities/cmsmarket.hpp>
 #include <ql/Volatilities/swaptionvolcube.hpp>
 #include <ql/Indexes/euriborswapfixa.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/Instruments/makecms.hpp>
 #include <ql/Optimization/armijo.hpp>
 #include <ql/Quotes/simplequote.hpp>
 #include <ql/CashFlows/analysis.hpp>
