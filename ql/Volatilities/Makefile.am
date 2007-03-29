@@ -38,6 +38,7 @@ libVolatilities_la_SOURCES = \
     cmsmarket.cpp \
     localvolsurface.cpp \
     sabr.cpp \
+    sabrinterpolatedsmilesection.cpp \
     smilesection.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
