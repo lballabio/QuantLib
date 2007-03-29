@@ -11,7 +11,6 @@ include_HEADERS = \
     americanpayoffathit.hpp \
     blackcalculator.hpp \
     blackformula.hpp \
-    blackmodel.hpp \
     blackscholescalculator.hpp \
     core.hpp \
     genericmodelengine.hpp \
