@@ -3004,14 +3004,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp"
-				>
-			</File>
-			<File
 				RelativePath="ql\Math\incompletegamma.cpp"
 				>
 				<FileConfiguration
@@ -3628,6 +3620,14 @@
 			<Filter
 				Name="Integrals"
 				>
+				<File
+					RelativePath=".\ql\Math\gaussianorthogonalpolynomial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp"
+					>
+				</File>
 				<File
 					RelativePath=".\ql\Math\gaussianquadratures.cpp"
 					>
