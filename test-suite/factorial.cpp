@@ -19,8 +19,8 @@
 
 #include "factorial.hpp"
 #include "utilities.hpp"
-#include <ql/Math/factorial.hpp>
-#include <ql/Math/gammadistribution.hpp>
+#include <ql/math/factorial.hpp>
+#include <ql/math/gammadistribution.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

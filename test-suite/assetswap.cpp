@@ -20,22 +20,22 @@
 #include "assetswap.hpp"
 #include "utilities.hpp"
 #include <ql/schedule.hpp>
-#include <ql/Instruments/assetswap.hpp>
-#include <ql/Instruments/fixedratebond.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/CashFlows/iborcoupon.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/Volatilities/capletconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/instruments/assetswap.hpp>
+#include <ql/instruments/fixedratebond.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/volatilities/capletconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

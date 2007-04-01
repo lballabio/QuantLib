@@ -20,10 +20,10 @@
 #include "interestrates.hpp"
 #include "utilities.hpp"
 #include <ql/interestrate.hpp>
-#include <ql/Math/rounding.hpp>
-#include <ql/Math/comparison.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/rounding.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

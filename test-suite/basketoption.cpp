@@ -21,16 +21,16 @@
 
 #include "basketoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/basketoption.hpp>
-#include <ql/PricingEngines/Basket/stulzengine.hpp>
-#include <ql/PricingEngines/Basket/mcbasketengine.hpp>
-#include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/Processes/stochasticprocessarray.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/basketoption.hpp>
+#include <ql/pricingengines/basket/stulzengine.hpp>
+#include <ql/pricingengines/basket/mcbasketengine.hpp>
+#include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 
 using namespace QuantLib;

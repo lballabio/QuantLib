@@ -19,12 +19,12 @@
 
 #include "bermudanswaption.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/swaption.hpp>
-#include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
-#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
-#include <ql/CashFlows/coupon.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/Indexes/euribor.hpp>
+#include <ql/instruments/swaption.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
+#include <ql/cashflows/coupon.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/indexes/euribor.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

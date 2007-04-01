@@ -19,7 +19,7 @@
 
 #include "tracing.hpp"
 #include "utilities.hpp"
-#include <ql/Utilities/tracing.hpp>
+#include <ql/utilities/tracing.hpp>
 #include <sstream>
 #include <iostream>
 

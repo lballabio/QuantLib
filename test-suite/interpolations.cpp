@@ -20,17 +20,17 @@
 
 #include "interpolations.hpp"
 #include "utilities.hpp"
-#include <ql/Utilities/null.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Math/backwardflatinterpolation.hpp>
-#include <ql/Math/forwardflatinterpolation.hpp>
-#include <ql/Math/cubicspline.hpp>
-#include <ql/Math/multicubicspline.hpp>
-#include <ql/Math/simpsonintegral.hpp>
-#include <ql/Math/functional.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/Math/sabrinterpolation.hpp>
+#include <ql/utilities/null.hpp>
+#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/backwardflatinterpolation.hpp>
+#include <ql/math/forwardflatinterpolation.hpp>
+#include <ql/math/cubicspline.hpp>
+#include <ql/math/multicubicspline.hpp>
+#include <ql/math/simpsonintegral.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/randomnumbers/sobolrsg.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/math/sabrinterpolation.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

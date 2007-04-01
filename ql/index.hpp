@@ -28,7 +28,7 @@
 //#include <ql/calendar.hpp>
 //#include <ql/currency.hpp>
 //#include <ql/daycounter.hpp>
-#include <ql/Indexes/indexmanager.hpp>
+#include <ql/indexes/indexmanager.hpp>
 
 namespace QuantLib {
 

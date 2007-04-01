@@ -19,14 +19,14 @@
 
 #include "forwardoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/forwardvanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/Forward/forwardengine.hpp>
-#include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/pricingengines/forward/forwardperformanceengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;

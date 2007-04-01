@@ -19,15 +19,14 @@
 
 #include "mclongstaffschwartzengine.hpp"
 #include "utilities.hpp"
-
-#include <ql/Instruments/vanillaoption.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Processes/stochasticprocessarray.hpp>
-#include <ql/MonteCarlo/lsmbasissystem.hpp>
-#include <ql/PricingEngines/mclongstaffschwartzengine.hpp>
-#include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
-#include <ql/PricingEngines/Vanilla/mcamericanengine.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/montecarlo/lsmbasissystem.hpp>
+#include <ql/pricingengines/mclongstaffschwartzengine.hpp>
+#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

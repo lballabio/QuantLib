@@ -19,16 +19,16 @@
 
 #include "varianceswaps.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/Instruments/varianceswap.hpp>
-#include <ql/PricingEngines/Forward/replicatingvarianceswapengine.hpp>
-#include <ql/PricingEngines/Forward/mcvarianceswapengine.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackvariancecurve.hpp>
-#include <ql/Volatilities/blackvariancesurface.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/instruments/varianceswap.hpp>
+#include <ql/pricingengines/forward/replicatingvarianceswapengine.hpp>
+#include <ql/pricingengines/forward/mcvarianceswapengine.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackvariancecurve.hpp>
+#include <ql/volatilities/blackvariancesurface.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

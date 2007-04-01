@@ -18,22 +18,20 @@
 */
 
 #include "swapforwardmappings.hpp"
-
 #include "utilities.hpp"
-#include <ql/MarketModels/CurveStates/lmmcurvestate.hpp>
-#include <ql/MarketModels/evolutiondescription.hpp>
-#include <ql/MarketModels/Evolvers/forwardratepcevolver.hpp>
-#include <ql/MarketModels/Models/expcorrflatvol.hpp> 
-#include <ql/MarketModels/BrownianGenerators/sobolbrowniangenerator.hpp> 
-#include <ql/MarketModels/Products/MultiStep/multistepcoterminalswaptions.hpp>
-#include <ql/MarketModels/accountingengine.hpp>
+#include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
+#include <ql/marketmodels/evolutiondescription.hpp>
+#include <ql/marketmodels/evolvers/forwardratepcevolver.hpp>
+#include <ql/marketmodels/models/expcorrflatvol.hpp> 
+#include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp> 
+#include <ql/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
+#include <ql/marketmodels/accountingengine.hpp>
 #include <ql/schedule.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/PricingEngines/blackcalculator.hpp>
-#include <ql/MarketModels/Models/coterminaltoforwardadapter.hpp>
-#include <ql/MarketModels/CurveStates/coterminalswapcurvestate.hpp>
-
+#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/math/sequencestatistics.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <iostream>
 #include <sstream>
 

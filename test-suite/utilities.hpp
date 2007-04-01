@@ -20,13 +20,13 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
-#include <ql/Instruments/payoffs.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/quote.hpp>
-#include <ql/Patterns/observable.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/patterns/observable.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
 #include <vector>
 #include <string>
 #include <numeric>

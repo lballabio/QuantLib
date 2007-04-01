@@ -19,8 +19,8 @@
 
 #include "sampledcurve.hpp"
 #include "utilities.hpp"
-#include <ql/Math/sampledcurve.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/sampledcurve.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/grid.hpp>
 
 using namespace QuantLib;

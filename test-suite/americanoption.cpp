@@ -21,16 +21,16 @@
 
 #include "americanoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
-#include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
-#include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
-#include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
-#include <ql/PricingEngines/Vanilla/fdshoutengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
+#include <ql/pricingengines/vanilla/juquadraticengine.hpp>
+#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdshoutengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;

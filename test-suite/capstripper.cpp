@@ -19,16 +19,16 @@
 
 #include "capstripper.hpp"
 #include "utilities.hpp"
-#include <ql/Calendars/target.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Instruments/makecapfloor.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Utilities/dataparsers.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/Volatilities/capstripper.hpp>
-#include <ql/Volatilities/interpolatedsmilesection.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/instruments/makecapfloor.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/utilities/dataparsers.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/volatilities/capstripper.hpp>
+#include <ql/volatilities/interpolatedsmilesection.hpp>
 
 #include <iostream>
 

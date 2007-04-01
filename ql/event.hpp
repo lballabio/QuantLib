@@ -25,8 +25,8 @@
 #define quantlib_event_hpp
 
 #include <ql/date.hpp>
-#include <ql/Patterns/observable.hpp>
-#include <ql/Patterns/visitor.hpp>
+#include <ql/patterns/observable.hpp>
+#include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
 

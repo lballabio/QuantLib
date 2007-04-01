@@ -21,10 +21,10 @@
 
 #include "distributions.hpp"
 #include "utilities.hpp"
-#include <ql/Math/normaldistribution.hpp>
-#include <ql/Math/bivariatenormaldistribution.hpp>
-#include <ql/Math/poissondistribution.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/math/normaldistribution.hpp>
+#include <ql/math/bivariatenormaldistribution.hpp>
+#include <ql/math/poissondistribution.hpp>
+#include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

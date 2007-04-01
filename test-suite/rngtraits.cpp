@@ -19,8 +19,8 @@
 */
 
 #include "rngtraits.hpp"
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

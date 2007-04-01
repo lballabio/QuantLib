@@ -21,14 +21,14 @@
 
 #include "calendars.hpp"
 #include <ql/calendar.hpp>
-#include <ql/Calendars/brazil.hpp>
-#include <ql/Calendars/germany.hpp>
-#include <ql/Calendars/italy.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/Calendars/unitedkingdom.hpp>
-#include <ql/Calendars/unitedstates.hpp>
-#include <ql/Calendars/japan.hpp>
-#include <ql/Calendars/jointcalendar.hpp>
+#include <ql/calendars/brazil.hpp>
+#include <ql/calendars/germany.hpp>
+#include <ql/calendars/italy.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/calendars/unitedkingdom.hpp>
+#include <ql/calendars/unitedstates.hpp>
+#include <ql/calendars/japan.hpp>
+#include <ql/calendars/jointcalendar.hpp>
 #include <ql/errors.hpp>
 #include <fstream>
 

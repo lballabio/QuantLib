@@ -1,0 +1,17 @@
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+includedir = $(prefix)/include/ql/volatilitymodels
+
+include_HEADERS = \
+    all.hpp \
+    constantestimator.hpp \
+    simplelocalestimator.hpp \
+    garmanklass.hpp \
+    garch.hpp
+
+libVolatilityModels_la_SOURCES = \
+    constantestimator.cpp \
+    garch.cpp
+
+noinst_LTLIBRARIES = libVolatilityModels.la
+

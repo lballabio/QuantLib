@@ -27,6 +27,8 @@
 #ifndef quantlib_timeunit_hpp
 #define quantlib_timeunit_hpp
 
+#include <ql/qldefines.hpp>
+
 namespace QuantLib {
 
     //! Units used to describe time periods

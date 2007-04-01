@@ -20,22 +20,22 @@
 
 #include "convertiblebonds.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/convertiblebond.hpp>
-#include <ql/Instruments/zerocouponbond.hpp>
-#include <ql/Instruments/fixedratebond.hpp>
-#include <ql/Instruments/floatingratebond.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/Hybrid/binomialconvertibleengine.hpp>
-#include <ql/PricingEngines/Vanilla/binomialengine.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/TermStructures/forwardspreadedtermstructure.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/CashFlows/couponpricer.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/instruments/convertiblebond.hpp>
+#include <ql/instruments/zerocouponbond.hpp>
+#include <ql/instruments/fixedratebond.hpp>
+#include <ql/instruments/floatingratebond.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/hybrid/binomialconvertibleengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/termstructures/forwardspreadedtermstructure.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

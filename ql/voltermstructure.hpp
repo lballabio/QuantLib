@@ -26,7 +26,7 @@
 #define quantlib_vol_term_structures_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/Patterns/visitor.hpp>
+#include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
 

@@ -21,7 +21,7 @@
 
 #include "dates.hpp"
 #include <ql/date.hpp>
-#include <ql/Utilities/dataparsers.hpp>
+#include <ql/utilities/dataparsers.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

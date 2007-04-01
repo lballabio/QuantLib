@@ -20,7 +20,6 @@
 #ifndef quantlib_test_swaps_forward_mappings_hpp
 #define quantlib_test_swaps_forward_mappings_hpp
 
-#include <ql/MarketModels/swapforwardmappings.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen

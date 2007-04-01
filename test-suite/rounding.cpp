@@ -19,8 +19,8 @@
 
 #include "rounding.hpp"
 #include "utilities.hpp"
-#include <ql/Math/rounding.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/math/rounding.hpp>
+#include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

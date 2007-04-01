@@ -20,18 +20,18 @@
 
 #include "capfloor.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/capfloor.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/PricingEngines/CapFloor/marketmodelcapfloorengine.hpp>
-#include <ql/MarketModels/Models/expcorrflatvol.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
+#include <ql/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

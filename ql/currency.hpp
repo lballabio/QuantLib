@@ -25,7 +25,7 @@
 #ifndef quantlib_currency_hpp
 #define quantlib_currency_hpp
 
-#include <ql/Math/rounding.hpp>
+#include <ql/math/rounding.hpp>
 #include <ql/errors.hpp>
 #include <ostream>
 

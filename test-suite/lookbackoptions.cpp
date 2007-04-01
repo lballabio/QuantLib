@@ -21,14 +21,14 @@
 
 #include "lookbackoptions.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/lookbackoption.hpp>
-#include <ql/PricingEngines/Lookback/analyticcontinuousfloatinglookback.hpp>
-#include <ql/PricingEngines/Lookback/analyticcontinuousfixedlookback.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/lookbackoption.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

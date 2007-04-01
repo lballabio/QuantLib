@@ -20,14 +20,14 @@
 
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
-#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
-#include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/PricingEngines/Swaption/all.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Indexes/indexmanager.hpp>
-#include <ql/DayCounters/all.hpp>
-#include <ql/Optimization/simplex.hpp>
-#include <ql/TermStructures/discountcurve.hpp>
+#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
+#include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/pricingengines/swaption/all.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/indexmanager.hpp>
+#include <ql/daycounters/all.hpp>
+#include <ql/optimization/simplex.hpp>
+#include <ql/termstructures/discountcurve.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

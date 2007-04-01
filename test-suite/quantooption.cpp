@@ -20,15 +20,15 @@
 
 #include "quantooption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/quantovanillaoption.hpp>
-#include <ql/Instruments/quantoforwardvanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/Quanto/quantoengine.hpp>
-#include <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/quantovanillaoption.hpp>
+#include <ql/instruments/quantoforwardvanillaoption.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/quanto/quantoengine.hpp>
+#include <ql/pricingengines/forward/forwardperformanceengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;

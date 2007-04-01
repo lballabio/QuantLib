@@ -19,8 +19,8 @@
 
 #include "array.hpp"
 #include "utilities.hpp"
-#include <ql/Math/array.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/array.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

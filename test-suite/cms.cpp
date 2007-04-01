@@ -18,19 +18,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/all.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/CashFlows/capflooredcoupon.hpp>
-#include <ql/CashFlows/conundrumpricer.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/TermStructures/all.hpp>
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Volatilities/swaptionvolcube2.hpp>
-#include <ql/Volatilities/swaptionvolcube1.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/daycounters/all.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/all.hpp>
+#include <ql/volatilities/swaptionvolmatrix.hpp>
+#include <ql/volatilities/swaptionvolcube2.hpp>
+#include <ql/volatilities/swaptionvolcube1.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

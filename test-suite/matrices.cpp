@@ -20,10 +20,10 @@
 
 #include "matrices.hpp"
 #include "utilities.hpp"
-#include <ql/Math/matrix.hpp>
-#include <ql/Math/pseudosqrt.hpp>
-#include <ql/Math/svd.hpp>
-#include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/math/pseudosqrt.hpp>
+#include <ql/math/svd.hpp>
+#include <ql/math/symmetricschurdecomposition.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

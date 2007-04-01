@@ -24,7 +24,7 @@
 #ifndef quantlib_grid_hpp
 #define quantlib_grid_hpp
 
-#include <ql/Math/array.hpp>
+#include <ql/math/array.hpp>
 
 namespace QuantLib {
 

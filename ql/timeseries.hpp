@@ -25,7 +25,7 @@
 #define quantlib_timeseries_hpp
 
 #include <ql/date.hpp>
-#include <ql/Utilities/null.hpp>
+#include <ql/utilities/null.hpp>
 #include <map>
 #include <vector>
 

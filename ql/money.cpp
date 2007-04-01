@@ -19,8 +19,8 @@
 */
 
 #include <ql/money.hpp>
-#include <ql/Currencies/exchangeratemanager.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/math/comparison.hpp>
 #include <sstream>
 #if !defined(QL_PATCH_BORLAND) || BOOST_VERSION < 103200
 #include <assert.h>

@@ -19,13 +19,13 @@
 
 #include "quotes.hpp"
 #include "utilities.hpp"
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Quotes/derivedquote.hpp>
-#include <ql/Quotes/compositequote.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/quotes/derivedquote.hpp>
+#include <ql/quotes/compositequote.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -21,7 +21,6 @@
 #ifndef quantlib_test_curve_states_hpp
 #define quantlib_test_curve_states_hpp
 
-#include <ql/MarketModels/DriftComputation/cmsmmdriftcalculator.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen

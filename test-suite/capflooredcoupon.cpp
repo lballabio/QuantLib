@@ -17,21 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #include "capflooredcoupon.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/capfloor.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/Volatilities/capletconstantvol.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/volatilities/capletconstantvol.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

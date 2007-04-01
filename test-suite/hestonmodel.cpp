@@ -19,20 +19,20 @@
 
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
-#include <ql/Processes/hestonprocess.hpp>
-#include <ql/ShortRateModels/TwoFactorModels/hestonmodel.hpp>
-#include <ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp>
-#include <ql/PricingEngines/Vanilla/analytichestonengine.hpp>
-#include <ql/PricingEngines/Vanilla/mceuropeanhestonengine.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/TermStructures/zerocurve.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Optimization/levenbergmarquardt.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/shortratemodels/twofactormodels/hestonmodel.hpp>
+#include <ql/shortratemodels/calibrationhelpers/hestonmodelhelper.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/termstructures/zerocurve.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/optimization/levenbergmarquardt.hpp>
 #include <ql/period.hpp>
 
 using namespace QuantLib;

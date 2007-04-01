@@ -19,14 +19,14 @@
 
 #include "brownianbridge.hpp"
 #include "utilities.hpp"
-#include <ql/MonteCarlo/brownianbridge.hpp>
-#include <ql/MonteCarlo/pathgenerator.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/RandomNumbers/inversecumulativersg.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/montecarlo/brownianbridge.hpp>
+#include <ql/montecarlo/pathgenerator.hpp>
+#include <ql/randomnumbers/sobolrsg.hpp>
+#include <ql/randomnumbers/inversecumulativersg.hpp>
+#include <ql/math/sequencestatistics.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

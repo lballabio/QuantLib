@@ -19,17 +19,16 @@
 
 #include "libormarketmodelprocess.hpp"
 #include "utilities.hpp"
-
 #include <ql/timegrid.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/MonteCarlo/multipathgenerator.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Math/generalstatistics.hpp>
-#include <ql/TermStructures/zerocurve.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/Volatilities/capletconstantvol.hpp>
-#include <ql/Volatilities/capletvariancecurve.hpp>
-#include <ql/Processes/lfmhullwhiteparam.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/montecarlo/multipathgenerator.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/math/generalstatistics.hpp>
+#include <ql/termstructures/zerocurve.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/volatilities/capletconstantvol.hpp>
+#include <ql/volatilities/capletvariancecurve.hpp>
+#include <ql/processes/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

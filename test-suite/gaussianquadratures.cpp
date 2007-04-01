@@ -20,9 +20,9 @@
 #include "gaussianquadratures.hpp"
 #include "utilities.hpp"
 #include <ql/types.hpp>
-#include <ql/Math/functional.hpp>
-#include <ql/Math/normaldistribution.hpp>
-#include <ql/Math/gaussianquadratures.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/normaldistribution.hpp>
+#include <ql/math/gaussianquadratures.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

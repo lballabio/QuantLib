@@ -23,7 +23,7 @@
 
 #include <ql/date.hpp>
 #include <ql/settings.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/lexical_cast.hpp>

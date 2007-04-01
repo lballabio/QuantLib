@@ -19,11 +19,11 @@
 
 #include "compoundforward.hpp"
 #include "utilities.hpp"
-#include <ql/TermStructures/compoundforward.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/Instruments/vanillaswap.hpp>
-#include <ql/Indexes/jibar.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/termstructures/compoundforward.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/indexes/jibar.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

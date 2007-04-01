@@ -20,21 +20,21 @@
 
 #include "bonds.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/fixedratebond.hpp>
-#include <ql/Instruments/floatingratebond.hpp>
-#include <ql/Instruments/zerocouponbond.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/Calendars/unitedstates.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/Indexes/usdlibor.hpp>
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/instruments/fixedratebond.hpp>
+#include <ql/instruments/floatingratebond.hpp>
+#include <ql/instruments/zerocouponbond.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/calendars/unitedstates.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/indexes/usdlibor.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/schedule.hpp>
-#include <ql/CashFlows/couponpricer.hpp>
-#include <ql/CashFlows/analysis.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

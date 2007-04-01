@@ -19,15 +19,15 @@
 
 #include "old_pricers.hpp"
 #include "utilities.hpp"
-#include <ql/Pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/Pricers/mceverest.hpp>
-#include <ql/Pricers/mcmaxbasket.hpp>
-#include <ql/Pricers/mcpagoda.hpp>
-#include <ql/Pricers/mchimalaya.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/DayCounters/actual360.hpp>
+#include <ql/pricers/mcdiscretearithmeticaso.hpp>
+#include <ql/pricers/mceverest.hpp>
+#include <ql/pricers/mcmaxbasket.hpp>
+#include <ql/pricers/mcpagoda.hpp>
+#include <ql/pricers/mchimalaya.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/montecarlo/getcovariance.hpp>
+#include <ql/daycounters/actual360.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

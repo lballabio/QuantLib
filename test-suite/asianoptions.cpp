@@ -20,15 +20,15 @@
 
 #include "asianoptions.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/asianoption.hpp>
-#include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
-#include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
-#include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
-#include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_arith_av_price.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

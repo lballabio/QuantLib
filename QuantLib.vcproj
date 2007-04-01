@@ -391,349 +391,349 @@
 			Name="Calendars"
 			Filter="">
 			<File
-				RelativePath=".\ql\Calendars\all.hpp">
+				RelativePath=".\ql\calendars\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\argentina.cpp">
+				RelativePath=".\ql\calendars\argentina.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\argentina.hpp">
+				RelativePath=".\ql\calendars\argentina.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\australia.cpp">
+				RelativePath=".\ql\calendars\australia.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\australia.hpp">
+				RelativePath=".\ql\calendars\australia.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\brazil.cpp">
+				RelativePath=".\ql\calendars\brazil.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\brazil.hpp">
+				RelativePath=".\ql\calendars\brazil.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\canada.cpp">
+				RelativePath=".\ql\calendars\canada.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\canada.hpp">
+				RelativePath=".\ql\calendars\canada.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\china.cpp">
+				RelativePath=".\ql\calendars\china.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\china.hpp">
+				RelativePath=".\ql\calendars\china.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\czechrepublic.cpp">
+				RelativePath=".\ql\calendars\czechrepublic.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\czechrepublic.hpp">
+				RelativePath=".\ql\calendars\czechrepublic.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\denmark.cpp">
+				RelativePath=".\ql\calendars\denmark.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\denmark.hpp">
+				RelativePath=".\ql\calendars\denmark.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\finland.cpp">
+				RelativePath=".\ql\calendars\finland.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\finland.hpp">
+				RelativePath=".\ql\calendars\finland.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\germany.cpp">
+				RelativePath=".\ql\calendars\germany.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\germany.hpp">
+				RelativePath=".\ql\calendars\germany.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\hongkong.cpp">
+				RelativePath=".\ql\calendars\hongkong.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\hongkong.hpp">
+				RelativePath=".\ql\calendars\hongkong.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\hungary.cpp">
+				RelativePath=".\ql\calendars\hungary.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\hungary.hpp">
+				RelativePath=".\ql\calendars\hungary.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\iceland.cpp">
+				RelativePath=".\ql\calendars\iceland.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\iceland.hpp">
+				RelativePath=".\ql\calendars\iceland.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\india.cpp">
+				RelativePath=".\ql\calendars\india.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\india.hpp">
+				RelativePath=".\ql\calendars\india.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\indonesia.cpp">
+				RelativePath=".\ql\calendars\indonesia.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\indonesia.hpp">
+				RelativePath=".\ql\calendars\indonesia.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\italy.cpp">
+				RelativePath=".\ql\calendars\italy.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\italy.hpp">
+				RelativePath=".\ql\calendars\italy.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\japan.cpp">
+				RelativePath=".\ql\calendars\japan.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\japan.hpp">
+				RelativePath=".\ql\calendars\japan.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\jointcalendar.cpp">
+				RelativePath=".\ql\calendars\jointcalendar.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\jointcalendar.hpp">
+				RelativePath=".\ql\calendars\jointcalendar.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\mexico.cpp">
+				RelativePath=".\ql\calendars\mexico.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\mexico.hpp">
+				RelativePath=".\ql\calendars\mexico.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\newzealand.cpp">
+				RelativePath=".\ql\calendars\newzealand.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\newzealand.hpp">
+				RelativePath=".\ql\calendars\newzealand.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\norway.cpp">
+				RelativePath=".\ql\calendars\norway.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\norway.hpp">
+				RelativePath=".\ql\calendars\norway.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\nullcalendar.hpp">
+				RelativePath=".\ql\calendars\nullcalendar.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\poland.cpp">
+				RelativePath=".\ql\calendars\poland.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\poland.hpp">
+				RelativePath=".\ql\calendars\poland.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\saudiarabia.cpp">
+				RelativePath=".\ql\calendars\saudiarabia.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\saudiarabia.hpp">
+				RelativePath=".\ql\calendars\saudiarabia.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\singapore.cpp">
+				RelativePath=".\ql\calendars\singapore.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\singapore.hpp">
+				RelativePath=".\ql\calendars\singapore.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\slovakia.cpp">
+				RelativePath=".\ql\calendars\slovakia.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\slovakia.hpp">
+				RelativePath=".\ql\calendars\slovakia.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\southafrica.cpp">
+				RelativePath=".\ql\calendars\southafrica.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\southafrica.hpp">
+				RelativePath=".\ql\calendars\southafrica.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\southkorea.cpp">
+				RelativePath=".\ql\calendars\southkorea.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\southkorea.hpp">
+				RelativePath=".\ql\calendars\southkorea.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\sweden.cpp">
+				RelativePath=".\ql\calendars\sweden.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\sweden.hpp">
+				RelativePath=".\ql\calendars\sweden.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\switzerland.cpp">
+				RelativePath=".\ql\calendars\switzerland.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\switzerland.hpp">
+				RelativePath=".\ql\calendars\switzerland.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\taiwan.cpp">
+				RelativePath=".\ql\calendars\taiwan.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\taiwan.hpp">
+				RelativePath=".\ql\calendars\taiwan.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\target.cpp">
+				RelativePath=".\ql\calendars\target.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\target.hpp">
+				RelativePath=".\ql\calendars\target.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\turkey.cpp">
+				RelativePath=".\ql\calendars\turkey.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\turkey.hpp">
+				RelativePath=".\ql\calendars\turkey.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\ukraine.cpp">
+				RelativePath=".\ql\calendars\ukraine.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\ukraine.hpp">
+				RelativePath=".\ql\calendars\ukraine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\unitedkingdom.cpp">
+				RelativePath=".\ql\calendars\unitedkingdom.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\unitedkingdom.hpp">
+				RelativePath=".\ql\calendars\unitedkingdom.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\unitedstates.cpp">
+				RelativePath=".\ql\calendars\unitedstates.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\unitedstates.hpp">
+				RelativePath=".\ql\calendars\unitedstates.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="CashFlows"
 			Filter="">
 			<File
-				RelativePath=".\ql\CashFlows\all.hpp">
+				RelativePath=".\ql\cashflows\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\analysis.cpp">
+				RelativePath=".\ql\cashflows\analysis.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\analysis.hpp">
+				RelativePath=".\ql\cashflows\analysis.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\capflooredcoupon.cpp">
+				RelativePath=".\ql\cashflows\capflooredcoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\capflooredcoupon.hpp">
+				RelativePath=".\ql\cashflows\capflooredcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\cashflowvectors.cpp">
+				RelativePath=".\ql\cashflows\cashflowvectors.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\cashflowvectors.hpp">
+				RelativePath=".\ql\cashflows\cashflowvectors.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\cmscoupon.cpp">
+				RelativePath=".\ql\cashflows\cmscoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\cmscoupon.hpp">
+				RelativePath=".\ql\cashflows\cmscoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\conundrumpricer.cpp">
+				RelativePath=".\ql\cashflows\conundrumpricer.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\conundrumpricer.hpp">
+				RelativePath=".\ql\cashflows\conundrumpricer.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\core.hpp">
+				RelativePath=".\ql\cashflows\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\coupon.hpp">
+				RelativePath=".\ql\cashflows\coupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\couponpricer.cpp">
+				RelativePath=".\ql\cashflows\couponpricer.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\couponpricer.hpp">
+				RelativePath=".\ql\cashflows\couponpricer.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\digitalcoupon.cpp">
+				RelativePath=".\ql\cashflows\digitalcoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\digitalcoupon.hpp">
+				RelativePath=".\ql\cashflows\digitalcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\dividend.cpp">
+				RelativePath=".\ql\cashflows\dividend.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\dividend.hpp">
+				RelativePath=".\ql\cashflows\dividend.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\fixedratecoupon.hpp">
+				RelativePath=".\ql\cashflows\fixedratecoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\floatingratecoupon.cpp">
+				RelativePath=".\ql\cashflows\floatingratecoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\floatingratecoupon.hpp">
+				RelativePath=".\ql\cashflows\floatingratecoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\iborcoupon.cpp">
+				RelativePath=".\ql\cashflows\iborcoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\iborcoupon.hpp">
+				RelativePath=".\ql\cashflows\iborcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\shortfloatingcoupon.cpp">
+				RelativePath=".\ql\cashflows\shortfloatingcoupon.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\shortfloatingcoupon.hpp">
+				RelativePath=".\ql\cashflows\shortfloatingcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\shortindexedcoupon.hpp">
+				RelativePath=".\ql\cashflows\shortindexedcoupon.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\simplecashflow.hpp">
+				RelativePath=".\ql\cashflows\simplecashflow.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\timebasket.cpp">
+				RelativePath=".\ql\cashflows\timebasket.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\CashFlows\timebasket.hpp">
+				RelativePath=".\ql\cashflows\timebasket.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Currencies"
 			Filter="">
 			<File
-				RelativePath=".\ql\Currencies\africa.hpp">
+				RelativePath=".\ql\currencies\africa.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\all.hpp">
+				RelativePath=".\ql\currencies\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\america.hpp">
+				RelativePath=".\ql\currencies\america.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\asia.hpp">
+				RelativePath=".\ql\currencies\asia.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\europe.hpp">
+				RelativePath=".\ql\currencies\europe.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\exchangeratemanager.cpp">
+				RelativePath=".\ql\currencies\exchangeratemanager.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\exchangeratemanager.hpp">
+				RelativePath=".\ql\currencies\exchangeratemanager.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Currencies\oceania.hpp">
+				RelativePath=".\ql\currencies\oceania.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="DayCounters"
 			Filter="">
 			<File
-				RelativePath="ql\DayCounters\actual360.hpp">
+				RelativePath="ql\daycounters\actual360.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\DayCounters\actual365fixed.hpp">
+				RelativePath=".\ql\daycounters\actual365fixed.hpp">
 			</File>
 			<File
-				RelativePath="ql\DayCounters\actualactual.cpp">
+				RelativePath="ql\daycounters\actualactual.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -793,19 +793,19 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\DayCounters\actualactual.hpp">
+				RelativePath="ql\daycounters\actualactual.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\DayCounters\all.hpp">
+				RelativePath=".\ql\daycounters\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\DayCounters\business252.hpp">
+				RelativePath=".\ql\daycounters\business252.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\DayCounters\one.hpp">
+				RelativePath=".\ql\daycounters\one.hpp">
 			</File>
 			<File
-				RelativePath="ql\DayCounters\simpledaycounter.cpp">
+				RelativePath="ql\daycounters\simpledaycounter.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -865,10 +865,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\DayCounters\simpledaycounter.hpp">
+				RelativePath="ql\daycounters\simpledaycounter.hpp">
 			</File>
 			<File
-				RelativePath="ql\DayCounters\thirty360.cpp">
+				RelativePath="ql\daycounters\thirty360.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -928,20 +928,20 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\DayCounters\thirty360.hpp">
+				RelativePath="ql\daycounters\thirty360.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="FiniteDifferences"
 			Filter="">
 			<File
-				RelativePath=".\ql\FiniteDifferences\all.hpp">
+				RelativePath=".\ql\finitedifferences\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\americancondition.hpp">
+				RelativePath="ql\finitedifferences\americancondition.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\boundarycondition.cpp">
+				RelativePath="ql\finitedifferences\boundarycondition.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1001,10 +1001,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\boundarycondition.hpp">
+				RelativePath="ql\finitedifferences\boundarycondition.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\bsmoperator.cpp">
+				RelativePath="ql\finitedifferences\bsmoperator.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1064,73 +1064,73 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\bsmoperator.hpp">
+				RelativePath="ql\finitedifferences\bsmoperator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\bsmtermoperator.hpp">
+				RelativePath=".\ql\finitedifferences\bsmtermoperator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\core.hpp">
+				RelativePath=".\ql\finitedifferences\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\cranknicolson.hpp">
+				RelativePath="ql\finitedifferences\cranknicolson.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\dminus.hpp">
+				RelativePath="ql\finitedifferences\dminus.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\dplus.hpp">
+				RelativePath="ql\finitedifferences\dplus.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\dplusdminus.hpp">
+				RelativePath="ql\finitedifferences\dplusdminus.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\dzero.hpp">
+				RelativePath="ql\finitedifferences\dzero.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\expliciteuler.hpp">
+				RelativePath="ql\finitedifferences\expliciteuler.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\fdtypedefs.hpp">
+				RelativePath="ql\finitedifferences\fdtypedefs.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\finitedifferencemodel.hpp">
+				RelativePath="ql\finitedifferences\finitedifferencemodel.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\impliciteuler.hpp">
+				RelativePath="ql\finitedifferences\impliciteuler.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\mixedscheme.hpp">
+				RelativePath="ql\finitedifferences\mixedscheme.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\onefactoroperator.hpp">
+				RelativePath="ql\finitedifferences\onefactoroperator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\operatorfactory.hpp">
+				RelativePath=".\ql\finitedifferences\operatorfactory.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\operatortraits.hpp">
+				RelativePath=".\ql\finitedifferences\operatortraits.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\parallelevolver.hpp">
+				RelativePath=".\ql\finitedifferences\parallelevolver.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\pde.hpp">
+				RelativePath=".\ql\finitedifferences\pde.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\pdebsm.hpp">
+				RelativePath=".\ql\finitedifferences\pdebsm.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\pdeshortrate.hpp">
+				RelativePath=".\ql\finitedifferences\pdeshortrate.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\shoutcondition.hpp">
+				RelativePath="ql\finitedifferences\shoutcondition.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\stepcondition.hpp">
+				RelativePath="ql\finitedifferences\stepcondition.hpp">
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\tridiagonaloperator.cpp">
+				RelativePath="ql\finitedifferences\tridiagonaloperator.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1190,144 +1190,144 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\FiniteDifferences\tridiagonaloperator.hpp">
+				RelativePath="ql\finitedifferences\tridiagonaloperator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\FiniteDifferences\zerocondition.hpp">
+				RelativePath=".\ql\finitedifferences\zerocondition.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Indexes"
 			Filter="">
 			<File
-				RelativePath=".\ql\Indexes\all.hpp">
+				RelativePath=".\ql\indexes\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\audlibor.hpp">
+				RelativePath="ql\indexes\audlibor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\cadlibor.hpp">
+				RelativePath="ql\indexes\cadlibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\cdor.hpp">
+				RelativePath=".\ql\indexes\cdor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\chflibor.hpp">
+				RelativePath="ql\indexes\chflibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\core.hpp">
+				RelativePath=".\ql\indexes\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\dkklibor.hpp">
+				RelativePath=".\ql\indexes\dkklibor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\euribor.hpp">
+				RelativePath="ql\indexes\euribor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixa.cpp">
+				RelativePath=".\ql\indexes\euriborswapfixa.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixa.hpp">
+				RelativePath=".\ql\indexes\euriborswapfixa.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixb.cpp">
+				RelativePath=".\ql\indexes\euriborswapfixb.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixb.hpp">
+				RelativePath=".\ql\indexes\euriborswapfixb.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixifr.cpp">
+				RelativePath=".\ql\indexes\euriborswapfixifr.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\euriborswapfixifr.hpp">
+				RelativePath=".\ql\indexes\euriborswapfixifr.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurlibor.hpp">
+				RelativePath=".\ql\indexes\eurlibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixa.cpp">
+				RelativePath=".\ql\indexes\eurliborswapfixa.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixa.hpp">
+				RelativePath=".\ql\indexes\eurliborswapfixa.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixb.cpp">
+				RelativePath=".\ql\indexes\eurliborswapfixb.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixb.hpp">
+				RelativePath=".\ql\indexes\eurliborswapfixb.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixifr.cpp">
+				RelativePath=".\ql\indexes\eurliborswapfixifr.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\eurliborswapfixifr.hpp">
+				RelativePath=".\ql\indexes\eurliborswapfixifr.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\gbplibor.hpp">
+				RelativePath="ql\indexes\gbplibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\iborindex.cpp">
+				RelativePath=".\ql\indexes\iborindex.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\iborindex.hpp">
+				RelativePath=".\ql\indexes\iborindex.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\indexmanager.cpp">
+				RelativePath=".\ql\indexes\indexmanager.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\indexmanager.hpp">
+				RelativePath=".\ql\indexes\indexmanager.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\interestrateindex.cpp">
+				RelativePath=".\ql\indexes\interestrateindex.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\interestrateindex.hpp">
+				RelativePath=".\ql\indexes\interestrateindex.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\jibar.hpp">
+				RelativePath=".\ql\indexes\jibar.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\jpylibor.hpp">
+				RelativePath="ql\indexes\jpylibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\libor.cpp">
+				RelativePath=".\ql\indexes\libor.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\libor.hpp">
+				RelativePath=".\ql\indexes\libor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\nzdlibor.hpp">
+				RelativePath=".\ql\indexes\nzdlibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\swapindex.cpp">
+				RelativePath=".\ql\indexes\swapindex.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\swapindex.hpp">
+				RelativePath=".\ql\indexes\swapindex.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\tibor.hpp">
+				RelativePath=".\ql\indexes\tibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\trlibor.hpp">
+				RelativePath=".\ql\indexes\trlibor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\usdlibor.hpp">
+				RelativePath="ql\indexes\usdlibor.hpp">
 			</File>
 			<File
-				RelativePath="ql\Indexes\xibor.hpp">
+				RelativePath="ql\indexes\xibor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Indexes\zibor.hpp">
+				RelativePath=".\ql\indexes\zibor.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Instruments"
 			Filter="">
 			<File
-				RelativePath="ql\Instruments\all.hpp">
+				RelativePath="ql\instruments\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\asianoption.cpp">
+				RelativePath="ql\instruments\asianoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1387,16 +1387,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\asianoption.hpp">
+				RelativePath="ql\instruments\asianoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\assetswap.cpp">
+				RelativePath=".\ql\instruments\assetswap.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\assetswap.hpp">
+				RelativePath=".\ql\instruments\assetswap.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\barrieroption.cpp">
+				RelativePath="ql\instruments\barrieroption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1456,10 +1456,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\barrieroption.hpp">
+				RelativePath="ql\instruments\barrieroption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\basketoption.cpp">
+				RelativePath="ql\instruments\basketoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1519,19 +1519,19 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\basketoption.hpp">
+				RelativePath="ql\instruments\basketoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\bond.cpp">
+				RelativePath=".\ql\instruments\bond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\bond.hpp">
+				RelativePath=".\ql\instruments\bond.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\callabilityschedule.hpp">
+				RelativePath=".\ql\instruments\callabilityschedule.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\capfloor.cpp">
+				RelativePath="ql\instruments\capfloor.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1591,10 +1591,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\capfloor.hpp">
+				RelativePath="ql\instruments\capfloor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cliquetoption.cpp">
+				RelativePath=".\ql\instruments\cliquetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1633,34 +1633,34 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\cliquetoption.hpp">
+				RelativePath="ql\instruments\cliquetoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cmsratebond.cpp">
+				RelativePath=".\ql\instruments\cmsratebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\cmsratebond.hpp">
+				RelativePath=".\ql\instruments\cmsratebond.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\compositeinstrument.cpp">
+				RelativePath=".\ql\instruments\compositeinstrument.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\compositeinstrument.hpp">
+				RelativePath=".\ql\instruments\compositeinstrument.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\convertiblebond.cpp">
+				RelativePath=".\ql\instruments\convertiblebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\convertiblebond.hpp">
+				RelativePath=".\ql\instruments\convertiblebond.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\core.hpp">
+				RelativePath="ql\instruments\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\dividendschedule.hpp">
+				RelativePath=".\ql\instruments\dividendschedule.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\dividendvanillaoption.cpp">
+				RelativePath="ql\instruments\dividendvanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1720,10 +1720,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\dividendvanillaoption.hpp">
+				RelativePath="ql\instruments\dividendvanillaoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\europeanoption.cpp">
+				RelativePath="ql\instruments\europeanoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1783,40 +1783,40 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\europeanoption.hpp">
+				RelativePath="ql\instruments\europeanoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedratebond.cpp">
+				RelativePath=".\ql\instruments\fixedratebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedratebond.hpp">
+				RelativePath=".\ql\instruments\fixedratebond.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedratebondforward.cpp">
+				RelativePath=".\ql\instruments\fixedratebondforward.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\fixedratebondforward.hpp">
+				RelativePath=".\ql\instruments\fixedratebondforward.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\floatingratebond.cpp">
+				RelativePath=".\ql\instruments\floatingratebond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\floatingratebond.hpp">
+				RelativePath=".\ql\instruments\floatingratebond.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\forward.cpp">
+				RelativePath=".\ql\instruments\forward.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\forward.hpp">
+				RelativePath=".\ql\instruments\forward.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\forwardrateagreement.cpp">
+				RelativePath=".\ql\instruments\forwardrateagreement.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\forwardrateagreement.hpp">
+				RelativePath=".\ql\instruments\forwardrateagreement.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\forwardvanillaoption.cpp">
+				RelativePath="ql\instruments\forwardvanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1876,34 +1876,34 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\forwardvanillaoption.hpp">
+				RelativePath="ql\instruments\forwardvanillaoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\lookbackoption.cpp">
+				RelativePath=".\ql\instruments\lookbackoption.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\lookbackoption.hpp">
+				RelativePath=".\ql\instruments\lookbackoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makecapfloor.cpp">
+				RelativePath=".\ql\instruments\makecapfloor.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makecapfloor.hpp">
+				RelativePath=".\ql\instruments\makecapfloor.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makecms.cpp">
+				RelativePath=".\ql\instruments\makecms.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makecms.hpp">
+				RelativePath=".\ql\instruments\makecms.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makevanillaswap.cpp">
+				RelativePath=".\ql\instruments\makevanillaswap.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\makevanillaswap.hpp">
+				RelativePath=".\ql\instruments\makevanillaswap.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\multiassetoption.cpp">
+				RelativePath="ql\instruments\multiassetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -1963,10 +1963,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\multiassetoption.hpp">
+				RelativePath="ql\instruments\multiassetoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\oneassetoption.cpp">
+				RelativePath="ql\instruments\oneassetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2026,10 +2026,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\oneassetoption.hpp">
+				RelativePath="ql\instruments\oneassetoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\oneassetstrikedoption.cpp">
+				RelativePath="ql\instruments\oneassetstrikedoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2089,16 +2089,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\oneassetstrikedoption.hpp">
+				RelativePath="ql\instruments\oneassetstrikedoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\payoffs.cpp">
+				RelativePath=".\ql\instruments\payoffs.cpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\payoffs.hpp">
+				RelativePath="ql\instruments\payoffs.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\quantoforwardvanillaoption.cpp">
+				RelativePath="ql\instruments\quantoforwardvanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2158,10 +2158,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\quantoforwardvanillaoption.hpp">
+				RelativePath="ql\instruments\quantoforwardvanillaoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\quantovanillaoption.cpp">
+				RelativePath="ql\instruments\quantovanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2221,16 +2221,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\quantovanillaoption.hpp">
+				RelativePath="ql\instruments\quantovanillaoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\stickyratchet.cpp">
+				RelativePath=".\ql\instruments\stickyratchet.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\stickyratchet.hpp">
+				RelativePath=".\ql\instruments\stickyratchet.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\stock.cpp">
+				RelativePath="ql\instruments\stock.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2290,10 +2290,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\stock.hpp">
+				RelativePath="ql\instruments\stock.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\swap.cpp">
+				RelativePath="ql\instruments\swap.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2353,10 +2353,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\swap.hpp">
+				RelativePath="ql\instruments\swap.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\swaption.cpp">
+				RelativePath="ql\instruments\swaption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2416,10 +2416,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\swaption.hpp">
+				RelativePath="ql\instruments\swaption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Instruments\vanillaoption.cpp">
+				RelativePath="ql\instruments\vanillaoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2479,35 +2479,35 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Instruments\vanillaoption.hpp">
+				RelativePath="ql\instruments\vanillaoption.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\vanillaswap.cpp">
+				RelativePath=".\ql\instruments\vanillaswap.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\vanillaswap.hpp">
+				RelativePath=".\ql\instruments\vanillaswap.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\varianceswap.cpp">
+				RelativePath=".\ql\instruments\varianceswap.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\varianceswap.hpp">
+				RelativePath=".\ql\instruments\varianceswap.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\zerocouponbond.cpp">
+				RelativePath=".\ql\instruments\zerocouponbond.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Instruments\zerocouponbond.hpp">
+				RelativePath=".\ql\instruments\zerocouponbond.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Lattices"
 			Filter="">
 			<File
-				RelativePath=".\ql\Lattices\all.hpp">
+				RelativePath=".\ql\lattices\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\binomialtree.cpp">
+				RelativePath="ql\lattices\binomialtree.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2567,31 +2567,31 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Lattices\binomialtree.hpp">
+				RelativePath="ql\lattices\binomialtree.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\bsmlattice.hpp">
+				RelativePath="ql\lattices\bsmlattice.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Lattices\core.hpp">
+				RelativePath=".\ql\lattices\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\lattice.hpp">
+				RelativePath="ql\lattices\lattice.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Lattices\lattice1d.hpp">
+				RelativePath=".\ql\lattices\lattice1d.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\lattice2d.hpp">
+				RelativePath="ql\lattices\lattice2d.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Lattices\tflattice.hpp">
+				RelativePath=".\ql\lattices\tflattice.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\tree.hpp">
+				RelativePath="ql\lattices\tree.hpp">
 			</File>
 			<File
-				RelativePath="ql\Lattices\trinomialtree.cpp">
+				RelativePath="ql\lattices\trinomialtree.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -2651,267 +2651,267 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Lattices\trinomialtree.hpp">
+				RelativePath="ql\lattices\trinomialtree.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="MarketModels"
 			Filter="">
 			<File
-				RelativePath=".\ql\MarketModels\accountingengine.cpp">
+				RelativePath=".\ql\marketmodels\accountingengine.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\accountingengine.hpp">
+				RelativePath=".\ql\marketmodels\accountingengine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\all.hpp">
+				RelativePath=".\ql\marketmodels\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\browniangenerator.hpp">
+				RelativePath=".\ql\marketmodels\browniangenerator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\core.hpp">
+				RelativePath=".\ql\marketmodels\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\curvestate.cpp">
+				RelativePath=".\ql\marketmodels\curvestate.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\curvestate.hpp">
+				RelativePath=".\ql\marketmodels\curvestate.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\duffsdeviceinnerproduct.hpp">
+				RelativePath=".\ql\marketmodels\duffsdeviceinnerproduct.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\evolutiondescription.cpp">
+				RelativePath=".\ql\marketmodels\evolutiondescription.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\evolutiondescription.hpp">
+				RelativePath=".\ql\marketmodels\evolutiondescription.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\exercisevalue.hpp">
+				RelativePath=".\ql\marketmodels\exercisevalue.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\lsbasisfunctions.hpp">
+				RelativePath=".\ql\marketmodels\lsbasisfunctions.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\lsdatacollector.cpp">
+				RelativePath=".\ql\marketmodels\lsdatacollector.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\lsdatacollector.hpp">
+				RelativePath=".\ql\marketmodels\lsdatacollector.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodel.hpp">
+				RelativePath=".\ql\marketmodels\marketmodel.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodelconstrainedevolver.hpp">
+				RelativePath=".\ql\marketmodels\marketmodelconstrainedevolver.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodeldiscounter.cpp">
+				RelativePath=".\ql\marketmodels\marketmodeldiscounter.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodeldiscounter.hpp">
+				RelativePath=".\ql\marketmodels\marketmodeldiscounter.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodelevolver.hpp">
+				RelativePath=".\ql\marketmodels\marketmodelevolver.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\marketmodelproduct.hpp">
+				RelativePath=".\ql\marketmodels\marketmodelproduct.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\nodedataprovider.hpp">
+				RelativePath=".\ql\marketmodels\nodedataprovider.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\parametricexercise.hpp">
+				RelativePath=".\ql\marketmodels\parametricexercise.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\parametricexerciseadapter.cpp">
+				RelativePath=".\ql\marketmodels\parametricexerciseadapter.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\parametricexerciseadapter.hpp">
+				RelativePath=".\ql\marketmodels\parametricexerciseadapter.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\parametricswapexercise.cpp">
+				RelativePath=".\ql\marketmodels\parametricswapexercise.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\parametricswapexercise.hpp">
+				RelativePath=".\ql\marketmodels\parametricswapexercise.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\proxygreekengine.cpp">
+				RelativePath=".\ql\marketmodels\proxygreekengine.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\proxygreekengine.hpp">
+				RelativePath=".\ql\marketmodels\proxygreekengine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapbasissystem.cpp">
+				RelativePath=".\ql\marketmodels\swapbasissystem.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapbasissystem.hpp">
+				RelativePath=".\ql\marketmodels\swapbasissystem.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.cpp">
+				RelativePath=".\ql\marketmodels\swapforwardconversionmatrix.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapforwardconversionmatrix.hpp">
+				RelativePath=".\ql\marketmodels\swapforwardconversionmatrix.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapforwardmappings.cpp">
+				RelativePath=".\ql\marketmodels\swapforwardmappings.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\swapforwardmappings.hpp">
+				RelativePath=".\ql\marketmodels\swapforwardmappings.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\upperboundengine.cpp">
+				RelativePath=".\ql\marketmodels\upperboundengine.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\upperboundengine.hpp">
+				RelativePath=".\ql\marketmodels\upperboundengine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\utilities.cpp">
+				RelativePath=".\ql\marketmodels\utilities.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MarketModels\utilities.hpp">
+				RelativePath=".\ql\marketmodels\utilities.hpp">
 			</File>
 			<Filter
 				Name="Products"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\Products\all.hpp">
+					RelativePath=".\ql\marketmodels\products\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\compositeproduct.cpp">
+					RelativePath=".\ql\marketmodels\products\compositeproduct.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\compositeproduct.hpp">
+					RelativePath=".\ql\marketmodels\products\compositeproduct.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductcomposite.cpp">
+					RelativePath=".\ql\marketmodels\products\multiproductcomposite.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductcomposite.hpp">
+					RelativePath=".\ql\marketmodels\products\multiproductcomposite.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductmultistep.cpp">
+					RelativePath=".\ql\marketmodels\products\multiproductmultistep.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductmultistep.hpp">
+					RelativePath=".\ql\marketmodels\products\multiproductmultistep.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductonestep.cpp">
+					RelativePath=".\ql\marketmodels\products\multiproductonestep.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\multiproductonestep.hpp">
+					RelativePath=".\ql\marketmodels\products\multiproductonestep.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.cpp">
+					RelativePath=".\ql\marketmodels\products\singleproductcomposite.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Products\singleproductcomposite.hpp">
+					RelativePath=".\ql\marketmodels\products\singleproductcomposite.hpp">
 				</File>
 				<Filter
 					Name="OneStep"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\all.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcaplets.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepcaplets.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcoinitialswaps.cpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepcoinitialswaps.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcoinitialswaps.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepcoinitialswaps.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcoterminalswaps.cpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepcoterminalswaps.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepcoterminalswaps.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepcoterminalswaps.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepforwards.cpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepforwards.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepforwards.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepforwards.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.cpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepoptionlets.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\OneStep\onestepoptionlets.hpp">
+						RelativePath=".\ql\marketmodels\products\onestep\onestepoptionlets.hpp">
 					</File>
 				</Filter>
 				<Filter
 					Name="MultiStep"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\all.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\callspecifiedmultiproduct.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\callspecifiedmultiproduct.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\callspecifiedmultiproduct.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\cashrebate.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\cashrebate.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\cashrebate.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\exerciseadapter.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\exerciseadapter.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\exerciseadapter.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoinitialswaps.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoinitialswaps.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoinitialswaps.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaps.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaps.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaps.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaps.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaptions.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaptions.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepcoterminalswaptions.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaptions.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepforwards.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepforwards.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepforwards.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepnothing.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepnothing.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepnothing.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepoptionlets.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepoptionlets.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepoptionlets.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepratchet.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepratchet.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepratchet.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepratchet.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.cpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepswap.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Products\MultiStep\multistepswap.hpp">
+						RelativePath=".\ql\marketmodels\products\multistep\multistepswap.hpp">
 					</File>
 				</Filter>
 			</Filter>
@@ -2922,58 +2922,58 @@
 					Name="LogNormalCMSwapRate"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\cmswapratepcevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\cmswapratepcevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\cmswapratepcevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\cmswapratepcevolver.hpp">
 					</File>
 				</Filter>
 				<Filter
 					Name="LogNormalForwardRate"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateconstrainedeuler.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateconstrainedeuler.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateconstrainedeuler.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateeulerevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateeulerevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateeulerevolver.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateipcevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardrateipcevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardrateipcevolver.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardratepcevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardratepcevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardratepcevolver.hpp">
 					</File>
 				</Filter>
 				<Filter
 					Name="LogNormalSwapRate"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\coterminalswapratepcevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\coterminalswapratepcevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\coterminalswapratepcevolver.hpp">
 					</File>
 				</Filter>
 				<Filter
 					Name="NormalForwardRate"
 					Filter="">
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.cpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardratenormalpcevolver.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\MarketModels\Evolvers\forwardratenormalpcevolver.hpp">
+						RelativePath=".\ql\marketmodels\evolvers\forwardratenormalpcevolver.hpp">
 					</File>
 				</Filter>
 			</Filter>
@@ -2981,47 +2981,47 @@
 				Name="BrownianGenerators"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\BrownianGenerators\all.hpp">
+					RelativePath=".\ql\marketmodels\browniangenerators\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.cpp">
+					RelativePath=".\ql\marketmodels\browniangenerators\mtbrowniangenerator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\BrownianGenerators\mtbrowniangenerator.hpp">
+					RelativePath=".\ql\marketmodels\browniangenerators\mtbrowniangenerator.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.cpp">
+					RelativePath=".\ql\marketmodels\browniangenerators\sobolbrowniangenerator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\BrownianGenerators\sobolbrowniangenerator.hpp">
+					RelativePath=".\ql\marketmodels\browniangenerators\sobolbrowniangenerator.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Models"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\Models\all.hpp">
+					RelativePath=".\ql\marketmodels\models\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.cpp">
+					RelativePath=".\ql\marketmodels\models\calibratedmarketmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\calibratedmarketmodel.hpp">
+					RelativePath=".\ql\marketmodels\models\calibratedmarketmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\capletcoterminalcalibration.cpp">
+					RelativePath=".\ql\marketmodels\models\capletcoterminalcalibration.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\capletcoterminalcalibration.hpp">
+					RelativePath=".\ql\marketmodels\models\capletcoterminalcalibration.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.cpp">
+					RelativePath=".\ql\marketmodels\models\coterminaltoforwardadapter.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\coterminaltoforwardadapter.hpp">
+					RelativePath=".\ql\marketmodels\models\coterminaltoforwardadapter.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.cpp">
+					RelativePath=".\ql\marketmodels\models\expcorrabcdvol.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -3060,10 +3060,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\expcorrabcdvol.hpp">
+					RelativePath=".\ql\marketmodels\models\expcorrabcdvol.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.cpp">
+					RelativePath=".\ql\marketmodels\models\expcorrflatvol.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -3102,113 +3102,113 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\expcorrflatvol.hpp">
+					RelativePath=".\ql\marketmodels\models\expcorrflatvol.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\forwardtocoterminaladapter.cpp">
+					RelativePath=".\ql\marketmodels\models\forwardtocoterminaladapter.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\forwardtocoterminaladapter.hpp">
+					RelativePath=".\ql\marketmodels\models\forwardtocoterminaladapter.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\piecewiseconstantabcdvariance.cpp">
+					RelativePath=".\ql\marketmodels\models\piecewiseconstantabcdvariance.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\piecewiseconstantabcdvariance.hpp">
+					RelativePath=".\ql\marketmodels\models\piecewiseconstantabcdvariance.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\piecewiseconstantvariance.hpp">
+					RelativePath=".\ql\marketmodels\models\piecewiseconstantvariance.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\swapfromfracorrelationstructure.cpp">
+					RelativePath=".\ql\marketmodels\models\swapfromfracorrelationstructure.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\swapfromfracorrelationstructure.hpp">
+					RelativePath=".\ql\marketmodels\models\swapfromfracorrelationstructure.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\Models\timedependantcorrelationstructure.hpp">
+					RelativePath=".\ql\marketmodels\models\timedependantcorrelationstructure.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="ExerciseValues"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.cpp">
+					RelativePath=".\ql\marketmodels\exercisevalues\bermudanswaptionexercisevalue.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseValues\bermudanswaptionexercisevalue.hpp">
+					RelativePath=".\ql\marketmodels\exercisevalues\bermudanswaptionexercisevalue.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.cpp">
+					RelativePath=".\ql\marketmodels\exercisevalues\nothingexercisevalue.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseValues\nothingexercisevalue.hpp">
+					RelativePath=".\ql\marketmodels\exercisevalues\nothingexercisevalue.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="ExerciseStrategies"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.cpp">
+					RelativePath=".\ql\marketmodels\exercisestrategies\lsstrategy.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseStrategies\lsstrategy.hpp">
+					RelativePath=".\ql\marketmodels\exercisestrategies\lsstrategy.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.cpp">
+					RelativePath=".\ql\marketmodels\exercisestrategies\swapratetrigger.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\ExerciseStrategies\swapratetrigger.hpp">
+					RelativePath=".\ql\marketmodels\exercisestrategies\swapratetrigger.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="CurveStates"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.cpp">
+					RelativePath=".\ql\marketmodels\curvestates\cmswapcurvestate.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\cmswapcurvestate.hpp">
+					RelativePath=".\ql\marketmodels\curvestates\cmswapcurvestate.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.cpp">
+					RelativePath=".\ql\marketmodels\curvestates\coterminalswapcurvestate.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\coterminalswapcurvestate.hpp">
+					RelativePath=".\ql\marketmodels\curvestates\coterminalswapcurvestate.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.cpp">
+					RelativePath=".\ql\marketmodels\curvestates\lmmcurvestate.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\CurveStates\lmmcurvestate.hpp">
+					RelativePath=".\ql\marketmodels\curvestates\lmmcurvestate.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="DriftComputation"
 				Filter="">
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.cpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\cmsmmdriftcalculator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\cmsmmdriftcalculator.hpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\cmsmmdriftcalculator.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.cpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\lmmdriftcalculator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\lmmdriftcalculator.hpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\lmmdriftcalculator.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.cpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\lmmnormaldriftcalculator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\lmmnormaldriftcalculator.hpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\lmmnormaldriftcalculator.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.cpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\smmdriftcalculator.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\MarketModels\DriftComputation\smmdriftcalculator.hpp">
+					RelativePath=".\ql\marketmodels\driftcomputation\smmdriftcalculator.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -3216,19 +3216,19 @@
 			Name="Math"
 			Filter="">
 			<File
-				RelativePath=".\ql\Math\abcdinterpolation.hpp">
+				RelativePath=".\ql\math\abcdinterpolation.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\all.hpp">
+				RelativePath=".\ql\math\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\array.hpp">
+				RelativePath="ql\math\array.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\backwardflatinterpolation.hpp">
+				RelativePath=".\ql\math\backwardflatinterpolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\beta.cpp">
+				RelativePath="ql\math\beta.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3288,19 +3288,19 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\beta.hpp">
+				RelativePath="ql\math\beta.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\bicubicsplineinterpolation.hpp">
+				RelativePath="ql\math\bicubicsplineinterpolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\bilinearinterpolation.hpp">
+				RelativePath="ql\math\bilinearinterpolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\binomialdistribution.hpp">
+				RelativePath="ql\math\binomialdistribution.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\bivariatenormaldistribution.cpp">
+				RelativePath="ql\math\bivariatenormaldistribution.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3360,10 +3360,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\bivariatenormaldistribution.hpp">
+				RelativePath="ql\math\bivariatenormaldistribution.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\chisquaredistribution.cpp">
+				RelativePath="ql\math\chisquaredistribution.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3423,10 +3423,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\chisquaredistribution.hpp">
+				RelativePath="ql\math\chisquaredistribution.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\choleskydecomposition.cpp">
+				RelativePath="ql\math\choleskydecomposition.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3486,28 +3486,28 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\choleskydecomposition.hpp">
+				RelativePath="ql\math\choleskydecomposition.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\comparison.hpp">
+				RelativePath="ql\math\comparison.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\complexarray.hpp">
+				RelativePath=".\ql\math\complexarray.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\convergencestatistics.hpp">
+				RelativePath=".\ql\math\convergencestatistics.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\core.hpp">
+				RelativePath=".\ql\math\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\cubicspline.hpp">
+				RelativePath="ql\math\cubicspline.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\curve.hpp">
+				RelativePath=".\ql\math\curve.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\discrepancystatistics.cpp">
+				RelativePath="ql\math\discrepancystatistics.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3567,13 +3567,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\discrepancystatistics.hpp">
+				RelativePath="ql\math\discrepancystatistics.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\domain.hpp">
+				RelativePath=".\ql\math\domain.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\errorfunction.cpp">
+				RelativePath="ql\math\errorfunction.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3633,13 +3633,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\errorfunction.hpp">
+				RelativePath="ql\math\errorfunction.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\extrapolation.hpp">
+				RelativePath=".\ql\math\extrapolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\factorial.cpp">
+				RelativePath="ql\math\factorial.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3699,19 +3699,19 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\factorial.hpp">
+				RelativePath="ql\math\factorial.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\fastfouriertransform.hpp">
+				RelativePath=".\ql\math\fastfouriertransform.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\forwardflatinterpolation.hpp">
+				RelativePath=".\ql\math\forwardflatinterpolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\functional.hpp">
+				RelativePath="ql\math\functional.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\gammadistribution.cpp">
+				RelativePath="ql\math\gammadistribution.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3771,25 +3771,25 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\gammadistribution.hpp">
+				RelativePath="ql\math\gammadistribution.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.cpp">
+				RelativePath=".\ql\math\gaussianorthogonalpolynomial.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\gaussianorthogonalpolynomial.hpp">
+				RelativePath=".\ql\math\gaussianorthogonalpolynomial.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\gaussianquadratures.cpp">
+				RelativePath=".\ql\math\gaussianquadratures.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\gaussianquadratures.hpp">
+				RelativePath=".\ql\math\gaussianquadratures.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\gaussianstatistics.hpp">
+				RelativePath="ql\math\gaussianstatistics.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\generalstatistics.cpp">
+				RelativePath="ql\math\generalstatistics.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3849,10 +3849,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\generalstatistics.hpp">
+				RelativePath="ql\math\generalstatistics.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\incompletegamma.cpp">
+				RelativePath="ql\math\incompletegamma.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3912,10 +3912,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\incompletegamma.hpp">
+				RelativePath="ql\math\incompletegamma.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\incrementalstatistics.cpp">
+				RelativePath="ql\math\incrementalstatistics.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -3975,43 +3975,43 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\incrementalstatistics.hpp">
+				RelativePath="ql\math\incrementalstatistics.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\interpolation.hpp">
+				RelativePath="ql\math\interpolation.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\interpolation2D.hpp">
+				RelativePath="ql\math\interpolation2D.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\kronrodintegral.cpp">
+				RelativePath=".\ql\math\kronrodintegral.cpp">
 			</File>
 			<File
-				RelativePath="ql\Math\kronrodintegral.hpp">
+				RelativePath="ql\math\kronrodintegral.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\lexicographicalview.hpp">
+				RelativePath="ql\math\lexicographicalview.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\linearinterpolation.hpp">
+				RelativePath="ql\math\linearinterpolation.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\linearleastsquaresregression.hpp">
+				RelativePath=".\ql\math\linearleastsquaresregression.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\loglinearinterpolation.hpp">
+				RelativePath="ql\math\loglinearinterpolation.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\matrix.cpp">
+				RelativePath=".\ql\math\matrix.cpp">
 			</File>
 			<File
-				RelativePath="ql\Math\matrix.hpp">
+				RelativePath="ql\math\matrix.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\multicubicspline.hpp">
+				RelativePath=".\ql\math\multicubicspline.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\normaldistribution.cpp">
+				RelativePath="ql\math\normaldistribution.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4071,13 +4071,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\normaldistribution.hpp">
+				RelativePath="ql\math\normaldistribution.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\poissondistribution.hpp">
+				RelativePath="ql\math\poissondistribution.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\primenumbers.cpp">
+				RelativePath="ql\math\primenumbers.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4137,10 +4137,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\primenumbers.hpp">
+				RelativePath="ql\math\primenumbers.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\pseudosqrt.cpp">
+				RelativePath="ql\math\pseudosqrt.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4200,46 +4200,46 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\pseudosqrt.hpp">
+				RelativePath="ql\math\pseudosqrt.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\riskstatistics.hpp">
+				RelativePath="ql\math\riskstatistics.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\rounding.cpp">
+				RelativePath=".\ql\math\rounding.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\rounding.hpp">
+				RelativePath=".\ql\math\rounding.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\sabrinterpolation.hpp">
+				RelativePath=".\ql\math\sabrinterpolation.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\sampledcurve.cpp">
+				RelativePath=".\ql\math\sampledcurve.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\sampledcurve.hpp">
+				RelativePath=".\ql\math\sampledcurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\segmentintegral.hpp">
+				RelativePath="ql\math\segmentintegral.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\sequencestatistics.hpp">
+				RelativePath="ql\math\sequencestatistics.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\simpsonintegral.hpp">
+				RelativePath="ql\math\simpsonintegral.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\statistics.hpp">
+				RelativePath="ql\math\statistics.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\surface.cpp">
+				RelativePath=".\ql\math\surface.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\surface.hpp">
+				RelativePath=".\ql\math\surface.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\svd.cpp">
+				RelativePath="ql\math\svd.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4299,10 +4299,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\svd.hpp">
+				RelativePath="ql\math\svd.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\symmetricschurdecomposition.cpp">
+				RelativePath="ql\math\symmetricschurdecomposition.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4362,108 +4362,108 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Math\symmetricschurdecomposition.hpp">
+				RelativePath="ql\math\symmetricschurdecomposition.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\tqreigendecomposition.cpp">
+				RelativePath=".\ql\math\tqreigendecomposition.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\tqreigendecomposition.hpp">
+				RelativePath=".\ql\math\tqreigendecomposition.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Math\transformedgrid.hpp">
+				RelativePath=".\ql\math\transformedgrid.hpp">
 			</File>
 			<File
-				RelativePath="ql\Math\trapezoidintegral.hpp">
+				RelativePath="ql\math\trapezoidintegral.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="MonteCarlo"
 			Filter="">
 			<File
-				RelativePath=".\ql\MonteCarlo\all.hpp">
+				RelativePath=".\ql\montecarlo\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\brownianbridge.cpp">
+				RelativePath=".\ql\montecarlo\brownianbridge.cpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\brownianbridge.hpp">
+				RelativePath="ql\montecarlo\brownianbridge.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\core.hpp">
+				RelativePath=".\ql\montecarlo\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\earlyexercisepathpricer.hpp">
+				RelativePath=".\ql\montecarlo\earlyexercisepathpricer.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\exercisestrategy.hpp">
+				RelativePath=".\ql\montecarlo\exercisestrategy.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\genericlsregression.cpp">
+				RelativePath=".\ql\montecarlo\genericlsregression.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\genericlsregression.hpp">
+				RelativePath=".\ql\montecarlo\genericlsregression.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\genericparametricearlyexercise.cpp">
+				RelativePath=".\ql\montecarlo\genericparametricearlyexercise.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\genericparametricearlyexercise.hpp">
+				RelativePath=".\ql\montecarlo\genericparametricearlyexercise.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\getcovariance.cpp">
+				RelativePath=".\ql\montecarlo\getcovariance.cpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\getcovariance.hpp">
+				RelativePath="ql\montecarlo\getcovariance.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\longstaffschwartzpathpricer.hpp">
+				RelativePath=".\ql\montecarlo\longstaffschwartzpathpricer.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\lsmbasissystem.cpp">
+				RelativePath=".\ql\montecarlo\lsmbasissystem.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\lsmbasissystem.hpp">
+				RelativePath=".\ql\montecarlo\lsmbasissystem.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\mctraits.hpp">
+				RelativePath="ql\montecarlo\mctraits.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\mctypedefs.hpp">
+				RelativePath="ql\montecarlo\mctypedefs.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\montecarlomodel.hpp">
+				RelativePath="ql\montecarlo\montecarlomodel.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\multipath.hpp">
+				RelativePath="ql\montecarlo\multipath.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\multipathgenerator.hpp">
+				RelativePath="ql\montecarlo\multipathgenerator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\MonteCarlo\nodedata.hpp">
+				RelativePath=".\ql\montecarlo\nodedata.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\path.hpp">
+				RelativePath="ql\montecarlo\path.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\pathgenerator.hpp">
+				RelativePath="ql\montecarlo\pathgenerator.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\pathpricer.hpp">
+				RelativePath="ql\montecarlo\pathpricer.hpp">
 			</File>
 			<File
-				RelativePath="ql\MonteCarlo\sample.hpp">
+				RelativePath="ql\montecarlo\sample.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Optimization"
 			Filter="">
 			<File
-				RelativePath=".\ql\Optimization\all.hpp">
+				RelativePath=".\ql\optimization\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\armijo.cpp">
+				RelativePath="ql\optimization\armijo.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4523,10 +4523,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Optimization\armijo.hpp">
+				RelativePath="ql\optimization\armijo.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\conjugategradient.cpp">
+				RelativePath="ql\optimization\conjugategradient.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4586,64 +4586,64 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Optimization\conjugategradient.hpp">
+				RelativePath="ql\optimization\conjugategradient.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\constraint.cpp">
+				RelativePath=".\ql\optimization\constraint.cpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\constraint.hpp">
+				RelativePath="ql\optimization\constraint.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\core.hpp">
+				RelativePath=".\ql\optimization\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\costfunction.hpp">
+				RelativePath="ql\optimization\costfunction.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\endcriteria.cpp">
+				RelativePath=".\ql\optimization\endcriteria.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\endcriteria.hpp">
+				RelativePath=".\ql\optimization\endcriteria.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\leastsquare.cpp">
+				RelativePath=".\ql\optimization\leastsquare.cpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\leastsquare.hpp">
+				RelativePath="ql\optimization\leastsquare.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\levenbergmarquardt.cpp">
+				RelativePath=".\ql\optimization\levenbergmarquardt.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\levenbergmarquardt.hpp">
+				RelativePath=".\ql\optimization\levenbergmarquardt.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\linesearch.cpp">
+				RelativePath=".\ql\optimization\linesearch.cpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\linesearch.hpp">
+				RelativePath="ql\optimization\linesearch.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\linesearchbasedmethod.cpp">
+				RelativePath=".\ql\optimization\linesearchbasedmethod.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\linesearchbasedmethod.hpp">
+				RelativePath=".\ql\optimization\linesearchbasedmethod.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\lmdif.cpp">
+				RelativePath=".\ql\optimization\lmdif.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Optimization\lmdif.hpp">
+				RelativePath=".\ql\optimization\lmdif.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\method.hpp">
+				RelativePath="ql\optimization\method.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\problem.hpp">
+				RelativePath="ql\optimization\problem.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\simplex.cpp">
+				RelativePath="ql\optimization\simplex.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4703,10 +4703,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Optimization\simplex.hpp">
+				RelativePath="ql\optimization\simplex.hpp">
 			</File>
 			<File
-				RelativePath="ql\Optimization\steepestdescent.cpp">
+				RelativePath="ql\optimization\steepestdescent.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4766,48 +4766,48 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Optimization\steepestdescent.hpp">
+				RelativePath="ql\optimization\steepestdescent.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Patterns"
 			Filter="">
 			<File
-				RelativePath=".\ql\Patterns\all.hpp">
+				RelativePath=".\ql\patterns\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Patterns\bridge.hpp">
+				RelativePath="ql\patterns\bridge.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Patterns\composite.hpp">
+				RelativePath=".\ql\patterns\composite.hpp">
 			</File>
 			<File
-				RelativePath="ql\Patterns\curiouslyrecurring.hpp">
+				RelativePath="ql\patterns\curiouslyrecurring.hpp">
 			</File>
 			<File
-				RelativePath="ql\Patterns\lazyobject.hpp">
+				RelativePath="ql\patterns\lazyobject.hpp">
 			</File>
 			<File
-				RelativePath="ql\Patterns\observable.hpp">
+				RelativePath="ql\patterns\observable.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Patterns\singleton.hpp">
+				RelativePath=".\ql\patterns\singleton.hpp">
 			</File>
 			<File
-				RelativePath="ql\Patterns\visitor.hpp">
+				RelativePath="ql\patterns\visitor.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Pricers"
 			Filter="">
 			<File
-				RelativePath=".\ql\Pricers\all.hpp">
+				RelativePath=".\ql\pricers\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Pricers\core.hpp">
+				RelativePath=".\ql\pricers\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\discretegeometricaso.cpp">
+				RelativePath="ql\pricers\discretegeometricaso.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4867,10 +4867,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\discretegeometricaso.hpp">
+				RelativePath="ql\pricers\discretegeometricaso.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mccliquetoption.cpp">
+				RelativePath="ql\pricers\mccliquetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4930,10 +4930,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mccliquetoption.hpp">
+				RelativePath="ql\pricers\mccliquetoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcdiscretearithmeticaso.cpp">
+				RelativePath="ql\pricers\mcdiscretearithmeticaso.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -4993,10 +4993,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcdiscretearithmeticaso.hpp">
+				RelativePath="ql\pricers\mcdiscretearithmeticaso.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mceverest.cpp">
+				RelativePath="ql\pricers\mceverest.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5056,10 +5056,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mceverest.hpp">
+				RelativePath="ql\pricers\mceverest.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mchimalaya.cpp">
+				RelativePath="ql\pricers\mchimalaya.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5119,10 +5119,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mchimalaya.hpp">
+				RelativePath="ql\pricers\mchimalaya.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcmaxbasket.cpp">
+				RelativePath="ql\pricers\mcmaxbasket.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5182,10 +5182,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcmaxbasket.hpp">
+				RelativePath="ql\pricers\mcmaxbasket.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcpagoda.cpp">
+				RelativePath="ql\pricers\mcpagoda.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5245,10 +5245,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcpagoda.hpp">
+				RelativePath="ql\pricers\mcpagoda.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcperformanceoption.cpp">
+				RelativePath="ql\pricers\mcperformanceoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5308,13 +5308,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcperformanceoption.hpp">
+				RelativePath="ql\pricers\mcperformanceoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcpricer.hpp">
+				RelativePath="ql\pricers\mcpricer.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\singleassetoption.cpp">
+				RelativePath="ql\pricers\singleassetoption.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5374,35 +5374,35 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Pricers\singleassetoption.hpp">
+				RelativePath="ql\pricers\singleassetoption.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="PricingEngines"
 			Filter="">
 			<File
-				RelativePath=".\ql\PricingEngines\all.hpp">
+				RelativePath=".\ql\pricingengines\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\americanpayoffatexpiry.cpp">
+				RelativePath=".\ql\pricingengines\americanpayoffatexpiry.cpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\americanpayoffatexpiry.hpp">
+				RelativePath="ql\pricingengines\americanpayoffatexpiry.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\americanpayoffathit.cpp">
+				RelativePath=".\ql\pricingengines\americanpayoffathit.cpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\americanpayoffathit.hpp">
+				RelativePath="ql\pricingengines\americanpayoffathit.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackcalculator.cpp">
+				RelativePath=".\ql\pricingengines\blackcalculator.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackcalculator.hpp">
+				RelativePath=".\ql\pricingengines\blackcalculator.hpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\blackformula.cpp">
+				RelativePath="ql\pricingengines\blackformula.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -5462,83 +5462,83 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\blackformula.hpp">
+				RelativePath="ql\pricingengines\blackformula.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackmodel.cpp">
+				RelativePath=".\ql\pricingengines\blackmodel.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackmodel.hpp">
+				RelativePath=".\ql\pricingengines\blackmodel.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackscholescalculator.cpp">
+				RelativePath=".\ql\pricingengines\blackscholescalculator.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\blackscholescalculator.hpp">
+				RelativePath=".\ql\pricingengines\blackscholescalculator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\core.hpp">
+				RelativePath=".\ql\pricingengines\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\genericmodelengine.hpp">
+				RelativePath="ql\pricingengines\genericmodelengine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\greeks.cpp">
+				RelativePath=".\ql\pricingengines\greeks.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\greeks.hpp">
+				RelativePath=".\ql\pricingengines\greeks.hpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\latticeshortratemodelengine.hpp">
+				RelativePath="ql\pricingengines\latticeshortratemodelengine.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\PricingEngines\mclongstaffschwartzengine.hpp">
+				RelativePath=".\ql\pricingengines\mclongstaffschwartzengine.hpp">
 			</File>
 			<File
-				RelativePath="ql\PricingEngines\mcsimulation.hpp">
+				RelativePath="ql\pricingengines\mcsimulation.hpp">
 			</File>
 			<Filter
 				Name="Asian"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\all.hpp">
+					RelativePath=".\ql\pricingengines\asian\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analytic_cont_geom_av_price.cpp">
+					RelativePath=".\ql\pricingengines\asian\analytic_cont_geom_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analytic_cont_geom_av_price.hpp">
+					RelativePath=".\ql\pricingengines\asian\analytic_cont_geom_av_price.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analytic_discr_geom_av_price.cpp">
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analytic_discr_geom_av_price.hpp">
+					RelativePath=".\ql\pricingengines\asian\analytic_discr_geom_av_price.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\mc_discr_arith_av_price.cpp">
+					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\mc_discr_arith_av_price.hpp">
+					RelativePath=".\ql\pricingengines\asian\mc_discr_arith_av_price.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\mc_discr_geom_av_price.cpp">
+					RelativePath=".\ql\pricingengines\asian\mc_discr_geom_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\mc_discr_geom_av_price.hpp">
+					RelativePath=".\ql\pricingengines\asian\mc_discr_geom_av_price.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\mcdiscreteasianengine.hpp">
+					RelativePath=".\ql\pricingengines\asian\mcdiscreteasianengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Barrier"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Barrier\all.hpp">
+					RelativePath=".\ql\pricingengines\barrier\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Barrier\analyticbarrierengine.cpp">
+					RelativePath="ql\pricingengines\barrier\analyticbarrierengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5598,10 +5598,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Barrier\analyticbarrierengine.hpp">
+					RelativePath="ql\pricingengines\barrier\analyticbarrierengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Barrier\mcbarrierengine.cpp">
+					RelativePath="ql\pricingengines\barrier\mcbarrierengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5661,17 +5661,17 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Barrier\mcbarrierengine.hpp">
+					RelativePath="ql\pricingengines\barrier\mcbarrierengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Basket"
 				Filter="">
 				<File
-					RelativePath="ql\PricingEngines\Basket\all.hpp">
+					RelativePath="ql\pricingengines\basket\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\mcamericanbasketengine.cpp">
+					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5731,10 +5731,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\mcamericanbasketengine.hpp">
+					RelativePath="ql\pricingengines\basket\mcamericanbasketengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\mcbasketengine.cpp">
+					RelativePath="ql\pricingengines\basket\mcbasketengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5794,10 +5794,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\mcbasketengine.hpp">
+					RelativePath="ql\pricingengines\basket\mcbasketengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\stulzengine.cpp">
+					RelativePath="ql\pricingengines\basket\stulzengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5857,46 +5857,46 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Basket\stulzengine.hpp">
+					RelativePath="ql\pricingengines\basket\stulzengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Forward"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Forward\all.hpp">
+					RelativePath=".\ql\pricingengines\forward\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Forward\forwardengine.hpp">
+					RelativePath="ql\pricingengines\forward\forwardengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Forward\forwardperformanceengine.hpp">
+					RelativePath="ql\pricingengines\forward\forwardperformanceengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Forward\mcvarianceswapengine.hpp">
+					RelativePath=".\ql\pricingengines\forward\mcvarianceswapengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Forward\replicatingvarianceswapengine.hpp">
+					RelativePath=".\ql\pricingengines\forward\replicatingvarianceswapengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Quanto"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Quanto\all.hpp">
+					RelativePath=".\ql\pricingengines\quanto\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Quanto\quantoengine.hpp">
+					RelativePath="ql\pricingengines\quanto\quantoengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Vanilla"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\all.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -5956,10 +5956,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticdigitalamericanengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\analyticdigitalamericanengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\analyticdividendeuropeanengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6019,10 +6019,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\analyticdividendeuropeanengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\analyticeuropeanengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6082,16 +6082,16 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\analyticeuropeanengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\analyticeuropeanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\analytichestonengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6151,19 +6151,19 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\batesengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\batesengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\batesengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\binomialengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\binomialengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\bjerksundstenslandengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\bjerksundstenslandengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6223,10 +6223,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\bjerksundstenslandengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\bjerksundstenslandengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp">
+					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6286,61 +6286,61 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp">
+					RelativePath="ql\pricingengines\vanilla\discretizedvanillaoption.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdamericanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdamericanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdbermudanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdbermudanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdconditions.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdconditions.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fddividendamericanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fddividendengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fddividendengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fddividendeuropeanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fddividendeuropeanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fddividendshoutengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fddividendshoutengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdeuropeanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdeuropeanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdmultiperiodengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdmultiperiodengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdshoutengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdshoutengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdstepconditionengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdstepconditionengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdstepconditionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdvanillaengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\fdvanillaengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\fdvanillaengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\integralengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\integralengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6400,10 +6400,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\integralengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\integralengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\jumpdiffusionengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6463,22 +6463,22 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\jumpdiffusionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\juquadraticengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\juquadraticengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\juquadraticengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\juquadraticengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\mcamericanengine.cpp">
+					RelativePath=".\ql\pricingengines\vanilla\mcamericanengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\mcamericanengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\mcamericanengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\mcdigitalengine.cpp">
+					RelativePath="ql\pricingengines\vanilla\mcdigitalengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -6538,156 +6538,156 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\mcdigitalengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\mcdigitalengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\mceuropeanengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\mceuropeanengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\mceuropeanhestonengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\mceuropeanhestonengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Vanilla\mchestonengine.hpp">
+					RelativePath=".\ql\pricingengines\vanilla\mchestonengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Vanilla\mcvanillaengine.hpp">
+					RelativePath="ql\pricingengines\vanilla\mcvanillaengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="CapFloor"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\all.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\analyticcapfloorengine.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\analyticcapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\analyticcapfloorengine.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\analyticcapfloorengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\blackcapfloorengine.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\blackcapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\blackcapfloorengine.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\blackcapfloorengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\discretizedcapfloor.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\discretizedcapfloor.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\discretizedcapfloor.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\discretizedcapfloor.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\marketmodelcapfloorengine.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\marketmodelcapfloorengine.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\marketmodelcapfloorengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\mchullwhiteengine.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\mchullwhiteengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\mchullwhiteengine.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\mchullwhiteengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\treecapfloorengine.cpp">
+					RelativePath=".\ql\pricingengines\capfloor\treecapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\CapFloor\treecapfloorengine.hpp">
+					RelativePath=".\ql\pricingengines\capfloor\treecapfloorengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Swaption"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\all.hpp">
+					RelativePath=".\ql\pricingengines\swaption\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\blackswaptionengine.cpp">
+					RelativePath=".\ql\pricingengines\swaption\blackswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\blackswaptionengine.hpp">
+					RelativePath=".\ql\pricingengines\swaption\blackswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\discretizedswaption.cpp">
+					RelativePath=".\ql\pricingengines\swaption\discretizedswaption.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\discretizedswaption.hpp">
+					RelativePath=".\ql\pricingengines\swaption\discretizedswaption.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\g2swaptionengine.hpp">
+					RelativePath=".\ql\pricingengines\swaption\g2swaptionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp">
+					RelativePath=".\ql\pricingengines\swaption\jamshidianswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp">
+					RelativePath=".\ql\pricingengines\swaption\jamshidianswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.cpp">
+					RelativePath=".\ql\pricingengines\swaption\lfmswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\lfmswaptionengine.hpp">
+					RelativePath=".\ql\pricingengines\swaption\lfmswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.cpp">
+					RelativePath=".\ql\pricingengines\swaption\treeswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.hpp">
+					RelativePath=".\ql\pricingengines\swaption\treeswaptionengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Cliquet"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\all.hpp">
+					RelativePath=".\ql\pricingengines\cliquet\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\analyticcliquetengine.cpp">
+					RelativePath=".\ql\pricingengines\cliquet\analyticcliquetengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\analyticcliquetengine.hpp">
+					RelativePath=".\ql\pricingengines\cliquet\analyticcliquetengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp">
+					RelativePath=".\ql\pricingengines\cliquet\analyticperformanceengine.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp">
+					RelativePath=".\ql\pricingengines\cliquet\analyticperformanceengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Hybrid"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Hybrid\all.hpp">
+					RelativePath=".\ql\pricingengines\hybrid\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Hybrid\binomialconvertibleengine.hpp">
+					RelativePath=".\ql\pricingengines\hybrid\binomialconvertibleengine.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.cpp">
+					RelativePath=".\ql\pricingengines\hybrid\discretizedconvertible.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Hybrid\discretizedconvertible.hpp">
+					RelativePath=".\ql\pricingengines\hybrid\discretizedconvertible.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Lookback"
 				Filter="">
 				<File
-					RelativePath=".\ql\PricingEngines\Lookback\all.hpp">
+					RelativePath=".\ql\pricingengines\lookback\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.cpp">
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfixedlookback.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfixedlookback.hpp">
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfixedlookback.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.cpp">
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Lookback\analyticcontinuousfloatinglookback.hpp">
+					RelativePath=".\ql\pricingengines\lookback\analyticcontinuousfloatinglookback.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -6695,116 +6695,116 @@
 			Name="Processes"
 			Filter="">
 			<File
-				RelativePath=".\ql\Processes\all.hpp">
+				RelativePath=".\ql\processes\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\blackscholesprocess.cpp">
+				RelativePath=".\ql\processes\blackscholesprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\blackscholesprocess.hpp">
+				RelativePath=".\ql\processes\blackscholesprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\eulerdiscretization.cpp">
+				RelativePath=".\ql\processes\eulerdiscretization.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\eulerdiscretization.hpp">
+				RelativePath=".\ql\processes\eulerdiscretization.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\forwardmeasureprocess.cpp">
+				RelativePath=".\ql\processes\forwardmeasureprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\forwardmeasureprocess.hpp">
+				RelativePath=".\ql\processes\forwardmeasureprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\g2process.cpp">
+				RelativePath=".\ql\processes\g2process.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\g2process.hpp">
+				RelativePath=".\ql\processes\g2process.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\geometricbrownianprocess.cpp">
+				RelativePath=".\ql\processes\geometricbrownianprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\geometricbrownianprocess.hpp">
+				RelativePath=".\ql\processes\geometricbrownianprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\hestonprocess.cpp">
+				RelativePath=".\ql\processes\hestonprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\hestonprocess.hpp">
+				RelativePath=".\ql\processes\hestonprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\hullwhiteprocess.cpp">
+				RelativePath=".\ql\processes\hullwhiteprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\hullwhiteprocess.hpp">
+				RelativePath=".\ql\processes\hullwhiteprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmcovarparam.cpp">
+				RelativePath=".\ql\processes\lfmcovarparam.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmcovarparam.hpp">
+				RelativePath=".\ql\processes\lfmcovarparam.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmhullwhiteparam.cpp">
+				RelativePath=".\ql\processes\lfmhullwhiteparam.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmhullwhiteparam.hpp">
+				RelativePath=".\ql\processes\lfmhullwhiteparam.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmprocess.cpp">
+				RelativePath=".\ql\processes\lfmprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\lfmprocess.hpp">
+				RelativePath=".\ql\processes\lfmprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\merton76process.cpp">
+				RelativePath=".\ql\processes\merton76process.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\merton76process.hpp">
+				RelativePath=".\ql\processes\merton76process.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.cpp">
+				RelativePath=".\ql\processes\ornsteinuhlenbeckprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\ornsteinuhlenbeckprocess.hpp">
+				RelativePath=".\ql\processes\ornsteinuhlenbeckprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\squarerootprocess.cpp">
+				RelativePath=".\ql\processes\squarerootprocess.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\squarerootprocess.hpp">
+				RelativePath=".\ql\processes\squarerootprocess.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\stochasticprocessarray.cpp">
+				RelativePath=".\ql\processes\stochasticprocessarray.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Processes\stochasticprocessarray.hpp">
+				RelativePath=".\ql\processes\stochasticprocessarray.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="RandomNumbers"
 			Filter="">
 			<File
-				RelativePath=".\ql\RandomNumbers\all.hpp">
+				RelativePath=".\ql\randomnumbers\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\boxmullergaussianrng.hpp">
+				RelativePath="ql\randomnumbers\boxmullergaussianrng.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\centrallimitgaussianrng.hpp">
+				RelativePath="ql\randomnumbers\centrallimitgaussianrng.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\core.hpp">
+				RelativePath=".\ql\randomnumbers\core.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\faurersg.cpp">
+				RelativePath=".\ql\randomnumbers\faurersg.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\faurersg.hpp">
+				RelativePath=".\ql\randomnumbers\faurersg.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\haltonrsg.cpp">
+				RelativePath="ql\randomnumbers\haltonrsg.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6864,16 +6864,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\haltonrsg.hpp">
+				RelativePath="ql\randomnumbers\haltonrsg.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\inversecumulativerng.hpp">
+				RelativePath=".\ql\randomnumbers\inversecumulativerng.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\inversecumulativersg.hpp">
+				RelativePath=".\ql\randomnumbers\inversecumulativersg.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\knuthuniformrng.cpp">
+				RelativePath="ql\randomnumbers\knuthuniformrng.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6933,10 +6933,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\knuthuniformrng.hpp">
+				RelativePath="ql\randomnumbers\knuthuniformrng.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\lecuyeruniformrng.cpp">
+				RelativePath="ql\randomnumbers\lecuyeruniformrng.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -6996,10 +6996,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\lecuyeruniformrng.hpp">
+				RelativePath="ql\randomnumbers\lecuyeruniformrng.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\mt19937uniformrng.cpp">
+				RelativePath="ql\randomnumbers\mt19937uniformrng.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7059,10 +7059,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\mt19937uniformrng.hpp">
+				RelativePath="ql\randomnumbers\mt19937uniformrng.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\primitivepolynomials.c">
+				RelativePath="ql\randomnumbers\primitivepolynomials.c">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7122,25 +7122,25 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\primitivepolynomials.h">
+				RelativePath="ql\randomnumbers\primitivepolynomials.h">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\randomizedlds.hpp">
+				RelativePath=".\ql\randomnumbers\randomizedlds.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\randomsequencegenerator.hpp">
+				RelativePath="ql\randomnumbers\randomsequencegenerator.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\rngtraits.hpp">
+				RelativePath="ql\randomnumbers\rngtraits.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\seedgenerator.cpp">
+				RelativePath=".\ql\randomnumbers\seedgenerator.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\RandomNumbers\seedgenerator.hpp">
+				RelativePath=".\ql\randomnumbers\seedgenerator.hpp">
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\sobolrsg.cpp">
+				RelativePath="ql\randomnumbers\sobolrsg.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7200,17 +7200,17 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\RandomNumbers\sobolrsg.hpp">
+				RelativePath="ql\randomnumbers\sobolrsg.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="ShortRateModels"
 			Filter="">
 			<File
-				RelativePath=".\ql\ShortRateModels\all.hpp">
+				RelativePath=".\ql\shortratemodels\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\calibrationhelper.cpp">
+				RelativePath="ql\shortratemodels\calibrationhelper.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7270,13 +7270,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\calibrationhelper.hpp">
+				RelativePath="ql\shortratemodels\calibrationhelper.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\ShortRateModels\core.hpp">
+				RelativePath=".\ql\shortratemodels\core.hpp">
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\model.cpp">
+				RelativePath="ql\shortratemodels\model.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7336,10 +7336,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\model.hpp">
+				RelativePath="ql\shortratemodels\model.hpp">
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\onefactormodel.cpp">
+				RelativePath="ql\shortratemodels\onefactormodel.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7399,13 +7399,13 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\onefactormodel.hpp">
+				RelativePath="ql\shortratemodels\onefactormodel.hpp">
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\parameter.hpp">
+				RelativePath="ql\shortratemodels\parameter.hpp">
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\twofactormodel.cpp">
+				RelativePath="ql\shortratemodels\twofactormodel.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -7465,16 +7465,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\ShortRateModels\twofactormodel.hpp">
+				RelativePath="ql\shortratemodels\twofactormodel.hpp">
 			</File>
 			<Filter
 				Name="CalibrationHelpers"
 				Filter="">
 				<File
-					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\all.hpp">
+					RelativePath=".\ql\shortratemodels\calibrationhelpers\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\CalibrationHelpers\caphelper.cpp">
+					RelativePath="ql\shortratemodels\calibrationhelpers\caphelper.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7534,16 +7534,16 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\CalibrationHelpers\caphelper.hpp">
+					RelativePath="ql\shortratemodels\calibrationhelpers\caphelper.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.cpp">
+					RelativePath=".\ql\shortratemodels\calibrationhelpers\hestonmodelhelper.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\CalibrationHelpers\hestonmodelhelper.hpp">
+					RelativePath=".\ql\shortratemodels\calibrationhelpers\hestonmodelhelper.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp">
+					RelativePath="ql\shortratemodels\calibrationhelpers\swaptionhelper.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7603,17 +7603,17 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp">
+					RelativePath="ql\shortratemodels\calibrationhelpers\swaptionhelper.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="OneFactorModels"
 				Filter="">
 				<File
-					RelativePath=".\ql\ShortRateModels\OneFactorModels\all.hpp">
+					RelativePath=".\ql\shortratemodels\onefactormodels\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp">
+					RelativePath="ql\shortratemodels\onefactormodels\blackkarasinski.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7673,10 +7673,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\blackkarasinski.hpp">
+					RelativePath="ql\shortratemodels\onefactormodels\blackkarasinski.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\coxingersollross.cpp">
+					RelativePath="ql\shortratemodels\onefactormodels\coxingersollross.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7736,10 +7736,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\coxingersollross.hpp">
+					RelativePath="ql\shortratemodels\onefactormodels\coxingersollross.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp">
+					RelativePath="ql\shortratemodels\onefactormodels\extendedcoxingersollross.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7799,10 +7799,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.hpp">
+					RelativePath="ql\shortratemodels\onefactormodels\extendedcoxingersollross.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\hullwhite.cpp">
+					RelativePath="ql\shortratemodels\onefactormodels\hullwhite.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7862,10 +7862,10 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\hullwhite.hpp">
+					RelativePath="ql\shortratemodels\onefactormodels\hullwhite.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\vasicek.cpp">
+					RelativePath="ql\shortratemodels\onefactormodels\vasicek.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -7925,23 +7925,23 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\OneFactorModels\vasicek.hpp">
+					RelativePath="ql\shortratemodels\onefactormodels\vasicek.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="TwoFactorModels"
 				Filter="">
 				<File
-					RelativePath=".\ql\ShortRateModels\TwoFactorModels\all.hpp">
+					RelativePath=".\ql\shortratemodels\twofactormodels\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.cpp">
+					RelativePath=".\ql\shortratemodels\twofactormodels\batesmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\TwoFactorModels\batesmodel.hpp">
+					RelativePath=".\ql\shortratemodels\twofactormodels\batesmodel.hpp">
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.cpp">
+					RelativePath="ql\shortratemodels\twofactormodels\g2.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
 						<Tool
@@ -8001,80 +8001,80 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\ShortRateModels\TwoFactorModels\g2.hpp">
+					RelativePath="ql\shortratemodels\twofactormodels\g2.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.cpp">
+					RelativePath=".\ql\shortratemodels\twofactormodels\hestonmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\TwoFactorModels\hestonmodel.hpp">
+					RelativePath=".\ql\shortratemodels\twofactormodels\hestonmodel.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="LiborMarketModels"
 				Filter="">
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\all.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lfmcovarproxy.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lfmcovarproxy.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lfmcovarproxy.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\liborforwardmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\liborforwardmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\liborforwardmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmconstwrappercorrmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmconstwrappercorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmconstwrappervolmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmconstwrappervolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmcorrmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmexpcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmexpcorrmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmexpcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmextlinexpvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmextlinexpvolmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmextlinexpvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmfixedvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmfixedvolmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmfixedvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmlinexpcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpcorrmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmlinexpcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmlinexpvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmlinexpvolmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmlinexpvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.cpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\ShortRateModels\LiborMarketModels\lmvolmodel.hpp">
+					RelativePath=".\ql\shortratemodels\libormarketmodels\lmvolmodel.hpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -8082,47 +8082,47 @@
 			Name="Solvers1D"
 			Filter="">
 			<File
-				RelativePath=".\ql\Solvers1D\all.hpp">
+				RelativePath=".\ql\solvers1d\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\bisection.hpp">
+				RelativePath="ql\solvers1d\bisection.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\brent.hpp">
+				RelativePath="ql\solvers1d\brent.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\falseposition.hpp">
+				RelativePath="ql\solvers1d\falseposition.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\newton.hpp">
+				RelativePath="ql\solvers1d\newton.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\newtonsafe.hpp">
+				RelativePath="ql\solvers1d\newtonsafe.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\ridder.hpp">
+				RelativePath="ql\solvers1d\ridder.hpp">
 			</File>
 			<File
-				RelativePath="ql\Solvers1D\secant.hpp">
+				RelativePath="ql\solvers1d\secant.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="TermStructures"
 			Filter="">
 			<File
-				RelativePath=".\ql\TermStructures\all.hpp">
+				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\bondhelpers.cpp">
+				RelativePath=".\ql\termstructures\bondhelpers.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\bondhelpers.hpp">
+				RelativePath=".\ql\termstructures\bondhelpers.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\bootstraptraits.hpp">
+				RelativePath=".\ql\termstructures\bootstraptraits.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\compoundforward.cpp">
+				RelativePath="ql\termstructures\compoundforward.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8182,16 +8182,16 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\TermStructures\compoundforward.hpp">
+				RelativePath="ql\termstructures\compoundforward.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\discountcurve.hpp">
+				RelativePath="ql\termstructures\discountcurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\drifttermstructure.hpp">
+				RelativePath="ql\termstructures\drifttermstructure.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\extendeddiscountcurve.cpp">
+				RelativePath="ql\termstructures\extendeddiscountcurve.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8251,43 +8251,43 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\TermStructures\extendeddiscountcurve.hpp">
+				RelativePath="ql\termstructures\extendeddiscountcurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\flatforward.hpp">
+				RelativePath="ql\termstructures\flatforward.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\forwardcurve.hpp">
+				RelativePath=".\ql\termstructures\forwardcurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\forwardspreadedtermstructure.hpp">
+				RelativePath="ql\termstructures\forwardspreadedtermstructure.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\forwardstructure.hpp">
+				RelativePath=".\ql\termstructures\forwardstructure.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\impliedtermstructure.hpp">
+				RelativePath="ql\termstructures\impliedtermstructure.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\piecewiseflatforward.cpp">
+				RelativePath=".\ql\termstructures\piecewiseflatforward.cpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\piecewiseflatforward.hpp">
+				RelativePath="ql\termstructures\piecewiseflatforward.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\piecewiseyieldcurve.cpp">
+				RelativePath=".\ql\termstructures\piecewiseyieldcurve.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\piecewiseyieldcurve.hpp">
+				RelativePath=".\ql\termstructures\piecewiseyieldcurve.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\piecewisezerospreadedtermstructure.hpp">
+				RelativePath=".\ql\termstructures\piecewisezerospreadedtermstructure.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\quantotermstructure.hpp">
+				RelativePath="ql\termstructures\quantotermstructure.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\ratehelpers.cpp">
+				RelativePath="ql\termstructures\ratehelpers.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8347,78 +8347,78 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\TermStructures\ratehelpers.hpp">
+				RelativePath="ql\termstructures\ratehelpers.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\zerocurve.hpp">
+				RelativePath="ql\termstructures\zerocurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\TermStructures\zerospreadedtermstructure.hpp">
+				RelativePath="ql\termstructures\zerospreadedtermstructure.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\TermStructures\zeroyieldstructure.hpp">
+				RelativePath=".\ql\termstructures\zeroyieldstructure.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Utilities"
 			Filter="">
 			<File
-				RelativePath=".\ql\Utilities\all.hpp">
+				RelativePath=".\ql\utilities\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\clone.hpp">
+				RelativePath=".\ql\utilities\clone.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\dataformatters.cpp">
+				RelativePath=".\ql\utilities\dataformatters.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\dataformatters.hpp">
+				RelativePath=".\ql\utilities\dataformatters.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\dataparsers.cpp">
+				RelativePath=".\ql\utilities\dataparsers.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\dataparsers.hpp">
+				RelativePath=".\ql\utilities\dataparsers.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\disposable.hpp">
+				RelativePath=".\ql\utilities\disposable.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\null.hpp">
+				RelativePath=".\ql\utilities\null.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\observablevalue.hpp">
+				RelativePath=".\ql\utilities\observablevalue.hpp">
 			</File>
 			<File
-				RelativePath="ql\Utilities\steppingiterator.hpp">
+				RelativePath="ql\utilities\steppingiterator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\strings.hpp">
+				RelativePath=".\ql\utilities\strings.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\tracing.cpp">
+				RelativePath=".\ql\utilities\tracing.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Utilities\tracing.hpp">
+				RelativePath=".\ql\utilities\tracing.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Volatilities"
 			Filter="">
 			<File
-				RelativePath=".\ql\Volatilities\abcd.cpp">
+				RelativePath=".\ql\volatilities\abcd.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\abcd.hpp">
+				RelativePath=".\ql\volatilities\abcd.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\all.hpp">
+				RelativePath=".\ql\volatilities\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\blackconstantvol.hpp">
+				RelativePath="ql\volatilities\blackconstantvol.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\blackvariancecurve.cpp">
+				RelativePath="ql\volatilities\blackvariancecurve.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8478,10 +8478,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Volatilities\blackvariancecurve.hpp">
+				RelativePath="ql\volatilities\blackvariancecurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\blackvariancesurface.cpp">
+				RelativePath="ql\volatilities\blackvariancesurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8541,49 +8541,49 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Volatilities\blackvariancesurface.hpp">
+				RelativePath="ql\volatilities\blackvariancesurface.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\capflatvolvector.hpp">
+				RelativePath="ql\volatilities\capflatvolvector.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capletconstantvol.hpp">
+				RelativePath=".\ql\volatilities\capletconstantvol.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capletvariancecurve.hpp">
+				RelativePath=".\ql\volatilities\capletvariancecurve.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.cpp">
+				RelativePath=".\ql\volatilities\capletvolatilitiesstructures.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capletvolatilitiesstructures.hpp">
+				RelativePath=".\ql\volatilities\capletvolatilitiesstructures.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capstripper.cpp">
+				RelativePath=".\ql\volatilities\capstripper.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\capstripper.hpp">
+				RelativePath=".\ql\volatilities\capstripper.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\cmsmarket.cpp">
+				RelativePath=".\ql\volatilities\cmsmarket.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\cmsmarket.hpp">
+				RelativePath=".\ql\volatilities\cmsmarket.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\impliedvoltermstructure.hpp">
+				RelativePath="ql\volatilities\impliedvoltermstructure.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\interpolatedsmilesection.hpp">
+				RelativePath=".\ql\volatilities\interpolatedsmilesection.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\localconstantvol.hpp">
+				RelativePath="ql\volatilities\localconstantvol.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\localvolcurve.hpp">
+				RelativePath="ql\volatilities\localvolcurve.hpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\localvolsurface.cpp">
+				RelativePath="ql\volatilities\localvolsurface.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
 					<Tool
@@ -8643,108 +8643,108 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="ql\Volatilities\localvolsurface.hpp">
+				RelativePath="ql\volatilities\localvolsurface.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\sabr.cpp">
+				RelativePath=".\ql\volatilities\sabr.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\sabr.hpp">
+				RelativePath=".\ql\volatilities\sabr.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\sabrinterpolatedsmilesection.hpp">
+				RelativePath=".\ql\volatilities\sabrinterpolatedsmilesection.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\smilesection.cpp">
+				RelativePath=".\ql\volatilities\smilesection.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\smilesection.hpp">
+				RelativePath=".\ql\volatilities\smilesection.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionconstantvol.cpp">
+				RelativePath=".\ql\volatilities\swaptionconstantvol.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionconstantvol.hpp">
+				RelativePath=".\ql\volatilities\swaptionconstantvol.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube.cpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube.hpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube1.cpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube1.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube1.hpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube1.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube2.cpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube2.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolcube2.hpp">
+				RelativePath=".\ql\volatilities\swaptionvolcube2.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvoldiscrete.cpp">
+				RelativePath=".\ql\volatilities\swaptionvoldiscrete.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvoldiscrete.hpp">
+				RelativePath=".\ql\volatilities\swaptionvoldiscrete.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Volatilities\swaptionvolmatrix.cpp">
+				RelativePath=".\ql\volatilities\swaptionvolmatrix.cpp">
 			</File>
 			<File
-				RelativePath="ql\Volatilities\swaptionvolmatrix.hpp">
+				RelativePath="ql\volatilities\swaptionvolmatrix.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="VolatilityModels"
 			Filter="">
 			<File
-				RelativePath=".\ql\VolatilityModels\all.hpp">
+				RelativePath=".\ql\volatilitymodels\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\constantestimator.cpp">
+				RelativePath=".\ql\volatilitymodels\constantestimator.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\constantestimator.hpp">
+				RelativePath=".\ql\volatilitymodels\constantestimator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\garch.cpp">
+				RelativePath=".\ql\volatilitymodels\garch.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\garch.hpp">
+				RelativePath=".\ql\volatilitymodels\garch.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\garmanklass.hpp">
+				RelativePath=".\ql\volatilitymodels\garmanklass.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\VolatilityModels\simplelocalestimator.hpp">
+				RelativePath=".\ql\volatilitymodels\simplelocalestimator.hpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Quotes"
 			Filter="">
 			<File
-				RelativePath=".\ql\Quotes\all.hpp">
+				RelativePath=".\ql\quotes\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\compositequote.hpp">
+				RelativePath=".\ql\quotes\compositequote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\derivedquote.cpp">
+				RelativePath=".\ql\quotes\derivedquote.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\derivedquote.hpp">
+				RelativePath=".\ql\quotes\derivedquote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\futuresconvadjustmentquote.cpp">
+				RelativePath=".\ql\quotes\futuresconvadjustmentquote.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\futuresconvadjustmentquote.hpp">
+				RelativePath=".\ql\quotes\futuresconvadjustmentquote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Quotes\simplequote.hpp">
+				RelativePath=".\ql\quotes\simplequote.hpp">
 			</File>
 		</Filter>
 		<File

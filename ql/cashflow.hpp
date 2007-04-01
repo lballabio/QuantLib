@@ -26,7 +26,7 @@
 #define quantlib_cash_flow_hpp
 
 #include <ql/event.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/math/comparison.hpp>
 #include <vector>
 
 namespace QuantLib {

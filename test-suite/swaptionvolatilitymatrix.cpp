@@ -20,13 +20,12 @@
 
 #include "swaptionvolatilitymatrix.hpp"
 #include "utilities.hpp"
-#include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
-
+#include <ql/calendars/target.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/volatilities/swaptionvolmatrix.hpp>
 #include <iostream>
 #include <string>
 

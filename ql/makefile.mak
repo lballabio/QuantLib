@@ -44,27 +44,27 @@ CORE_OBJS = \
     "timegrid.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
-CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
-CASHFLOWS_LIB        = "CashFlows\CashFlows$(_mt)$(_D).lib"
-CURRENCIES_LIB       = "Currencies\Currencies$(_mt)$(_D).lib"
-DAYCOUNTER_LIB       = "DayCounters\DayCounters$(_mt)$(_D).lib"
-FDM_LIB              = "FiniteDifferences\FiniteDifferences$(_mt)$(_D).lib"
-INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
-INSTRUMENTS_LIB      = "Instruments\Instruments$(_mt)$(_D).lib"
-LATTICES_LIB         = "Lattices\Lattices$(_mt)$(_D).lib"
-MARKETMODELS_LIB     = "MarketModels\MarketModels$(_mt)$(_D).lib"
-MATH_LIB             = "Math\Math$(_mt)$(_D).lib"
-MONTECARLO_LIB       = "MonteCarlo\MonteCarlo$(_mt)$(_D).lib"
-OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
-PRICER_LIB           = "Pricers\Pricers$(_mt)$(_D).lib"
-PRICING_ENGINES_LIB  = "PricingEngines\PricingEngines$(_mt)$(_D).lib"
-PROCESSES_LIB        = "Processes\Processes$(_mt)$(_D).lib"
-RNG_LIB              = "RandomNumbers\RandomNumbers$(_mt)$(_D).lib"
-SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
-TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
-UTILITIES_LIB        = "Utilities\Utilities$(_mt)$(_D).lib"
-VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
-VOLMODELS_LIB        = "VolatilityModels\VolatilityModels$(_mt)$(_D).lib"
+CALENDAR_LIB         = "calendars\Calendars$(_mt)$(_D).lib"
+CASHFLOWS_LIB        = "cashflows\CashFlows$(_mt)$(_D).lib"
+CURRENCIES_LIB       = "currencies\Currencies$(_mt)$(_D).lib"
+DAYCOUNTER_LIB       = "daycounters\DayCounters$(_mt)$(_D).lib"
+FDM_LIB              = "finitedifferences\FiniteDifferences$(_mt)$(_D).lib"
+INDEXES_LIB          = "indexes\Indexes$(_mt)$(_D).lib"
+INSTRUMENTS_LIB      = "instruments\Instruments$(_mt)$(_D).lib"
+LATTICES_LIB         = "lattices\Lattices$(_mt)$(_D).lib"
+MARKETMODELS_LIB     = "marketmodels\MarketModels$(_mt)$(_D).lib"
+MATH_LIB             = "math\Math$(_mt)$(_D).lib"
+MONTECARLO_LIB       = "montecarlo\MonteCarlo$(_mt)$(_D).lib"
+OPTIMIZATION_LIB     = "optimization\Optimization$(_mt)$(_D).lib"
+PRICER_LIB           = "pricers\Pricers$(_mt)$(_D).lib"
+PRICING_ENGINES_LIB  = "pricingengines\PricingEngines$(_mt)$(_D).lib"
+PROCESSES_LIB        = "processes\Processes$(_mt)$(_D).lib"
+RNG_LIB              = "randomnumbers\RandomNumbers$(_mt)$(_D).lib"
+SHORTRATEMODELS_LIB  = "shortratemodels\ShortRateModels$(_mt)$(_D).lib"
+TERMSTRUCT_LIB       = "termstructures\TermStructures$(_mt)$(_D).lib"
+UTILITIES_LIB        = "utilities\Utilities$(_mt)$(_D).lib"
+VOLATILITY_LIB       = "volatilities\Volatilities$(_mt)$(_D).lib"
+VOLMODELS_LIB        = "volatilitymodels\VolatilityModels$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
@@ -157,94 +157,94 @@ $(OUTPUT_DIR):
     if not exist ..\lib md ..\lib
 
 SubLibraries:
-    cd Calendars
+    cd calendars
     $(MAKE)
-    cd ..\CashFlows
+    cd ..\cashflows
     $(MAKE)
-    cd ..\Currencies
+    cd ..\currencies
     $(MAKE)
-    cd ..\DayCounters
+    cd ..\daycounters
     $(MAKE)
-    cd ..\FiniteDifferences
+    cd ..\finitedifferences
     $(MAKE)
-    cd ..\Indexes
+    cd ..\indexes
     $(MAKE)
-    cd ..\Instruments
+    cd ..\instruments
     $(MAKE)
-    cd ..\Lattices
+    cd ..\lattices
     $(MAKE)
-    cd ..\MarketModels
+    cd ..\marketmodels
     $(MAKE)
-    cd ..\Math
+    cd ..\math
     $(MAKE)
-    cd ..\MonteCarlo
+    cd ..\montecarlo
     $(MAKE)
-    cd ..\Optimization
+    cd ..\optimization
     $(MAKE)
-    cd ..\Pricers
+    cd ..\pricers
     $(MAKE)
-    cd ..\PricingEngines
+    cd ..\pricingengines
     $(MAKE)
-    cd ..\Processes
+    cd ..\processes
     $(MAKE)
-    cd ..\RandomNumbers
+    cd ..\randomnumbers
     $(MAKE)
-    cd ..\ShortRateModels
+    cd ..\shortratemodels
     $(MAKE)
-    cd ..\TermStructures
+    cd ..\termstructures
     $(MAKE)
-    cd ..\Utilities
+    cd ..\utilities
     $(MAKE)
-    cd ..\Volatilities
+    cd ..\volatilities
     $(MAKE)
-    cd ..\VolatilityModels
+    cd ..\volatilitymodels
     $(MAKE)
     cd ..
 
 
 # Clean up
 clean::
-    cd Calendars
+    cd calendars
     $(MAKE) clean
-    cd ..\CashFlows
+    cd ..\cashflows
     $(MAKE) clean
-    cd ..\Currencies
+    cd ..\currencies
     $(MAKE) clean
-    cd ..\DayCounters
+    cd ..\daycounters
     $(MAKE) clean
-    cd ..\FiniteDifferences
+    cd ..\finitedifferences
     $(MAKE) clean
-    cd ..\Indexes
+    cd ..\indexes
     $(MAKE) clean
-    cd ..\Instruments
+    cd ..\instruments
     $(MAKE) clean
-    cd ..\Lattices
+    cd ..\lattices
     $(MAKE) clean
-    cd ..\MarketModels
+    cd ..\marketmodels
     $(MAKE) clean
-    cd ..\Math
+    cd ..\math
     $(MAKE) clean
-    cd ..\MonteCarlo
+    cd ..\montecarlo
     $(MAKE) clean
-    cd ..\Optimization
+    cd ..\optimization
     $(MAKE) clean
-    cd ..\Pricers
+    cd ..\pricers
     $(MAKE) clean
-    cd ..\PricingEngines
+    cd ..\pricingengines
     $(MAKE) clean
-    cd ..\Processes
+    cd ..\processes
     $(MAKE) clean
-    cd ..\RandomNumbers
+    cd ..\randomnumbers
     $(MAKE) clean
-    cd ..\ShortRateModels
+    cd ..\shortratemodels
     $(MAKE) clean
-    cd ..\TermStructures
+    cd ..\termstructures
     $(MAKE) clean
-    cd ..\Utilities
+    cd ..\utilities
     $(MAKE) clean
-    cd ..\Volatilities
+    cd ..\volatilities
     $(MAKE) clean
-    cd ..\VolatilityModels
+    cd ..\volatilitymodels
     $(MAKE) clean
     cd ..
     if exist *.obj*                    del /q *.obj*

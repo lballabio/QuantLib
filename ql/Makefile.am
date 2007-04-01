@@ -3,30 +3,30 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql
 
 SUBDIRS = \
-    Calendars \
-    CashFlows \
-    Currencies \
-    DayCounters \
-    FiniteDifferences \
-    Indexes \
-    Instruments \
-    Lattices \
-    MarketModels \
-    Math \
-    MonteCarlo \
-    Optimization \
-    Patterns \
-    Pricers \
-    PricingEngines \
-    Processes \
-    Quotes \
-    RandomNumbers \
-    ShortRateModels \
-    Solvers1D \
-    TermStructures \
-    Utilities \
-    Volatilities \
-    VolatilityModels
+    calendars \
+    cashflows \
+    currencies \
+    daycounters \
+    finitedifferences \
+    indexes \
+    instruments \
+    lattices \
+    marketmodels \
+    math \
+    montecarlo \
+    optimization \
+    patterns \
+    pricers \
+    pricingengines \
+    processes \
+    quotes \
+    randomnumbers \
+    shortratemodels \
+    solvers1d \
+    termstructures \
+    utilities \
+    volatilities \
+    volatilitymodels
 
 EXTRA_DIST= \
 	config.ansi.hpp \
@@ -113,28 +113,28 @@ lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLib_la_LIBADD = \
-    Calendars/libCalendars.la \
-    CashFlows/libCashFlows.la \
-    Currencies/libCurrencies.la \
-    DayCounters/libDayCounters.la \
-    FiniteDifferences/libFiniteDifferences.la \
-    Indexes/libIndexes.la \
-    Instruments/libInstruments.la \
-    Lattices/libLattices.la \
-    Math/libMath.la \
-    MarketModels/libMarketModels.la \
-    MonteCarlo/libMonteCarlo.la \
-    Optimization/libOptimization.la \
-    Pricers/libPricers.la \
-    PricingEngines/libPricingEngines.la \
-    Processes/libProcesses.la \
-    Quotes/libQuotes.la \
-    RandomNumbers/libRandomNumbers.la \
-    ShortRateModels/libShortRateModels.la \
-    TermStructures/libTermStructures.la \
-    Utilities/libUtilities.la \
-    Volatilities/libVolatilities.la \
-    VolatilityModels/libVolatilityModels.la
+    calendars/libCalendars.la \
+    cashflows/libCashFlows.la \
+    currencies/libCurrencies.la \
+    daycounters/libDayCounters.la \
+    finitedifferences/libFiniteDifferences.la \
+    indexes/libIndexes.la \
+    instruments/libInstruments.la \
+    lattices/libLattices.la \
+    math/libMath.la \
+    marketmodels/libMarketModels.la \
+    montecarlo/libMonteCarlo.la \
+    optimization/libOptimization.la \
+    pricers/libPricers.la \
+    pricingengines/libPricingEngines.la \
+    processes/libProcesses.la \
+    quotes/libQuotes.la \
+    randomnumbers/libRandomNumbers.la \
+    shortratemodels/libShortRateModels.la \
+    termstructures/libTermStructures.la \
+    utilities/libUtilities.la \
+    volatilities/libVolatilities.la \
+    volatilitymodels/libVolatilityModels.la
 
 libQuantLib_la_SOURCES = \
 	businessdayconvention.cpp \

@@ -25,11 +25,11 @@
 #define quantlib_term_structure_hpp
 
 #include <ql/calendar.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
 #include <ql/settings.hpp>
 #include <ql/handle.hpp>
-#include <ql/Math/extrapolation.hpp>
-#include <ql/Utilities/null.hpp>
+#include <ql/math/extrapolation.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 

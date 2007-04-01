@@ -19,8 +19,8 @@
 
 #include "instruments.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/stock.hpp>
-#include <ql/Quotes/simplequote.hpp>
+#include <ql/instruments/stock.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

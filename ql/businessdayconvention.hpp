@@ -26,6 +26,7 @@
 #ifndef quantlib_business_day_convention_hpp
 #define quantlib_business_day_convention_hpp
 
+#include <ql/qldefines.hpp>
 #include <ostream>
 
 namespace QuantLib {

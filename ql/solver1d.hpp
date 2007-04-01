@@ -24,8 +24,8 @@
 #ifndef quantlib_solver1d_hpp
 #define quantlib_solver1d_hpp
 
-#include <ql/Utilities/null.hpp>
-#include <ql/Patterns/curiouslyrecurring.hpp>
+#include <ql/utilities/null.hpp>
+#include <ql/patterns/curiouslyrecurring.hpp>
 #include <ql/errors.hpp>
 #include <iomanip>
 

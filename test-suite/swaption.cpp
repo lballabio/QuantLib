@@ -23,15 +23,14 @@
 
 #include "swaption.hpp"
 #include "utilities.hpp"
-#include <ql/Instruments/swaption.hpp>
-#include <ql/Instruments/makevanillaswap.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
-#include <ql/Utilities/dataformatters.hpp>
-
+#include <ql/instruments/swaption.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

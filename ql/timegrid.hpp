@@ -27,7 +27,7 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <ql/Math/comparison.hpp>
+#include <ql/math/comparison.hpp>
 #include <vector>
 #include <numeric>
 

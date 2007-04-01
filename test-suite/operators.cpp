@@ -19,14 +19,14 @@
 
 #include "operators.hpp"
 #include "utilities.hpp"
-#include <ql/Math/normaldistribution.hpp>
-#include <ql/FiniteDifferences/dzero.hpp>
-#include <ql/FiniteDifferences/dplusdminus.hpp>
-#include <ql/FiniteDifferences/bsmoperator.hpp>
-#include <ql/FiniteDifferences/bsmtermoperator.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/normaldistribution.hpp>
+#include <ql/finitedifferences/dzero.hpp>
+#include <ql/finitedifferences/dplusdminus.hpp>
+#include <ql/finitedifferences/bsmoperator.hpp>
+#include <ql/finitedifferences/bsmtermoperator.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

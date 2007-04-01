@@ -19,19 +19,19 @@
 
 #include "batesmodel.hpp"
 #include "utilities.hpp"
-#include <ql/Calendars/target.hpp>
-#include <ql/Processes/merton76process.hpp>
-#include <ql/Instruments/europeanoption.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/TermStructures/zerocurve.hpp>
-#include <ql/PricingEngines/blackformula.hpp>
-#include <ql/Optimization/levenbergmarquardt.hpp>
-#include <ql/PricingEngines/Vanilla/batesengine.hpp>
-#include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/ShortRateModels/TwoFactorModels/batesmodel.hpp>
-#include <ql/ShortRateModels/CalibrationHelpers/hestonmodelhelper.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/processes/merton76process.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/termstructures/zerocurve.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/optimization/levenbergmarquardt.hpp>
+#include <ql/pricingengines/vanilla/batesengine.hpp>
+#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/shortratemodels/twofactormodels/batesmodel.hpp>
+#include <ql/shortratemodels/calibrationhelpers/hestonmodelhelper.hpp>
 #include <ql/period.hpp>
 
 using namespace QuantLib;

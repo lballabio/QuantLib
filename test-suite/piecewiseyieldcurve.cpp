@@ -19,22 +19,22 @@
 
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
-#include <ql/TermStructures/piecewiseyieldcurve.hpp>
-#include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/TermStructures/bondhelpers.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Indexes/indexmanager.hpp>
-#include <ql/Instruments/forwardrateagreement.hpp>
-#include <ql/Instruments/makevanillaswap.hpp>
-#include <ql/Math/linearinterpolation.hpp>
-#include <ql/Math/loglinearinterpolation.hpp>
-#include <ql/Math/cubicspline.hpp>
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/termstructures/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/ratehelpers.hpp>
+#include <ql/termstructures/bondhelpers.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/indexmanager.hpp>
+#include <ql/instruments/forwardrateagreement.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/loglinearinterpolation.hpp>
+#include <ql/math/cubicspline.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

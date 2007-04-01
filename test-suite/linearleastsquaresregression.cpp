@@ -19,10 +19,9 @@
 
 #include "linearleastsquaresregression.hpp"
 #include "utilities.hpp"
-
-#include <ql/Math/functional.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/Math/linearleastsquaresregression.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/math/linearleastsquaresregression.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

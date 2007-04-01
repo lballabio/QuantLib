@@ -19,18 +19,18 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
-#include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/TermStructures/piecewiseyieldcurve.hpp>
-#include <ql/TermStructures/impliedtermstructure.hpp>
-#include <ql/TermStructures/forwardspreadedtermstructure.hpp>
-#include <ql/TermStructures/zerospreadedtermstructure.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/Math/comparison.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/termstructures/ratehelpers.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/termstructures/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/impliedtermstructure.hpp>
+#include <ql/termstructures/forwardspreadedtermstructure.hpp>
+#include <ql/termstructures/zerospreadedtermstructure.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -19,14 +19,13 @@
 
 #include "integrals.hpp"
 #include "utilities.hpp"
-#include <ql/Math/segmentintegral.hpp>
-#include <ql/Math/simpsonintegral.hpp>
-#include <ql/Math/trapezoidintegral.hpp>
-#include <ql/Math/kronrodintegral.hpp>
-#include <ql/Math/normaldistribution.hpp>
-#include <ql/Math/functional.hpp>
-
-#include <ql/Volatilities/abcd.hpp>
+#include <ql/math/segmentintegral.hpp>
+#include <ql/math/simpsonintegral.hpp>
+#include <ql/math/trapezoidintegral.hpp>
+#include <ql/math/kronrodintegral.hpp>
+#include <ql/math/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/volatilities/abcd.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

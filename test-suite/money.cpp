@@ -19,7 +19,7 @@
 
 #include "money.hpp"
 #include <ql/money.hpp>
-#include <ql/Currencies/all.hpp>
+#include <ql/currencies/all.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

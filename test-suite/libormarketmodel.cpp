@@ -20,30 +20,30 @@
 #include "libormarketmodel.hpp"
 #include "utilities.hpp"
 
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Instruments/capfloor.hpp>
-#include <ql/TermStructures/zerocurve.hpp>
-#include <ql/Volatilities/capletvariancecurve.hpp>
-#include <ql/Processes/lfmhullwhiteparam.hpp>
-#include <ql/Optimization/levenbergmarquardt.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/termstructures/zerocurve.hpp>
+#include <ql/volatilities/capletvariancecurve.hpp>
+#include <ql/processes/lfmhullwhiteparam.hpp>
+#include <ql/optimization/levenbergmarquardt.hpp>
 
-#include <ql/Math/generalstatistics.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/MonteCarlo/multipathgenerator.hpp>
+#include <ql/math/generalstatistics.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/montecarlo/multipathgenerator.hpp>
 
-#include <ql/PricingEngines/Swaption/lfmswaptionengine.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
-#include <ql/PricingEngines/CapFloor/analyticcapfloorengine.hpp>
+#include <ql/pricingengines/swaption/lfmswaptionengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 
-#include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
-#include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
+#include <ql/shortratemodels/calibrationhelpers/caphelper.hpp>
+#include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
 
-#include <ql/ShortRateModels/LiborMarketModels/lfmcovarproxy.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmexpcorrmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmlinexpcorrmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmfixedvolmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/lmextlinexpvolmodel.hpp>
-#include <ql/ShortRateModels/LiborMarketModels/liborforwardmodel.hpp>
+#include <ql/shortratemodels/libormarketmodels/lfmcovarproxy.hpp>
+#include <ql/shortratemodels/libormarketmodels/lmexpcorrmodel.hpp>
+#include <ql/shortratemodels/libormarketmodels/lmlinexpcorrmodel.hpp>
+#include <ql/shortratemodels/libormarketmodels/lmfixedvolmodel.hpp>
+#include <ql/shortratemodels/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/shortratemodels/libormarketmodels/liborforwardmodel.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

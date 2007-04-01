@@ -26,9 +26,8 @@
 #ifndef quantlib_schedule_hpp
 #define quantlib_schedule_hpp
 
-
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Utilities/null.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/utilities/null.hpp>
 #include <ql/period.hpp>
 #include <ql/errors.hpp>
 

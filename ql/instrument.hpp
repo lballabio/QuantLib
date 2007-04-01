@@ -25,10 +25,10 @@
 #ifndef quantlib_instrument_hpp
 #define quantlib_instrument_hpp
 
-#include <ql/Patterns/lazyobject.hpp>
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/errors.hpp>
-#include <ql/Utilities/null.hpp>
+#include <ql/utilities/null.hpp>
 #include <boost/any.hpp>
 #include <map>
 #include <string>

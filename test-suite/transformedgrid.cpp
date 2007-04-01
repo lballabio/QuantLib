@@ -19,8 +19,8 @@
 
 #include "transformedgrid.hpp"
 #include "utilities.hpp"
-#include <ql/Math/transformedgrid.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/transformedgrid.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/grid.hpp>
 
 using namespace QuantLib;

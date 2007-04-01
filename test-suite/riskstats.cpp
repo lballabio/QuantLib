@@ -20,10 +20,10 @@
 
 #include "riskstats.hpp"
 #include "utilities.hpp"
-#include <ql/Math/riskstatistics.hpp>
-#include <ql/Math/incrementalstatistics.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
+#include <ql/math/riskstatistics.hpp>
+#include <ql/math/incrementalstatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
+#include <ql/randomnumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

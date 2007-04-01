@@ -27,7 +27,7 @@
 #include <ql/instrument.hpp>
 #include <ql/payoff.hpp>
 #include <ql/exercise.hpp>
-#include <ql/Math/sampledcurve.hpp>
+#include <ql/math/sampledcurve.hpp>
 
 namespace QuantLib {
 

@@ -19,13 +19,13 @@
 
 #include "solvers.hpp"
 #include "utilities.hpp"
-#include <ql/Solvers1D/brent.hpp>
-#include <ql/Solvers1D/bisection.hpp>
-#include <ql/Solvers1D/falseposition.hpp>
-#include <ql/Solvers1D/ridder.hpp>
-#include <ql/Solvers1D/secant.hpp>
-#include <ql/Solvers1D/newton.hpp>
-#include <ql/Solvers1D/newtonsafe.hpp>
+#include <ql/solvers1d/brent.hpp>
+#include <ql/solvers1d/bisection.hpp>
+#include <ql/solvers1d/falseposition.hpp>
+#include <ql/solvers1d/ridder.hpp>
+#include <ql/solvers1d/secant.hpp>
+#include <ql/solvers1d/newton.hpp>
+#include <ql/solvers1d/newtonsafe.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

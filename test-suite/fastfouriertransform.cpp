@@ -19,7 +19,7 @@
 
 #include "fastfouriertransform.hpp"
 #include "utilities.hpp"
-#include <ql/Math/fastfouriertransform.hpp>
+#include <ql/math/fastfouriertransform.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

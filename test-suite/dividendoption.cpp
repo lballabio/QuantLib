@@ -25,17 +25,17 @@
 
 #include "dividendoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/dividendvanillaoption.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
-#include <ql/PricingEngines/Vanilla/fddividendshoutengine.hpp>
-#include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/dividendvanillaoption.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/fddividendamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
+#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <map>
 #include <iostream>
 

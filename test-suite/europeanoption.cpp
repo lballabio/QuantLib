@@ -20,17 +20,17 @@
 
 #include "europeanoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/europeanoption.hpp>
-#include <ql/RandomNumbers/rngtraits.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/binomialengine.hpp>
-#include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/integralengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/integralengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

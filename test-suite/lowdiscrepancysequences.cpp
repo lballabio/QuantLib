@@ -19,17 +19,17 @@
 
 #include "lowdiscrepancysequences.hpp"
 #include "utilities.hpp"
-#include <ql/Math/discrepancystatistics.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/RandomNumbers/faurersg.hpp>
-#include <ql/RandomNumbers/haltonrsg.hpp>
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/seedgenerator.hpp>
-#include <ql/RandomNumbers/primitivepolynomials.h>
-#include <ql/RandomNumbers/randomizedlds.hpp>
-#include <ql/RandomNumbers/randomsequencegenerator.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/discrepancystatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
+#include <ql/randomnumbers/faurersg.hpp>
+#include <ql/randomnumbers/haltonrsg.hpp>
+#include <ql/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/randomnumbers/seedgenerator.hpp>
+#include <ql/randomnumbers/primitivepolynomials.h>
+#include <ql/randomnumbers/randomizedlds.hpp>
+#include <ql/randomnumbers/randomsequencegenerator.hpp>
+#include <ql/randomnumbers/sobolrsg.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 
 //#define PRINT_ONLY

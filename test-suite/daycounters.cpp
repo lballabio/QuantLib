@@ -20,11 +20,11 @@
 
 #include "daycounters.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/DayCounters/one.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/DayCounters/business252.hpp>
-#include <ql/Calendars/brazil.hpp>
+#include <ql/daycounters/actualactual.hpp>
+#include <ql/daycounters/one.hpp>
+#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/daycounters/business252.hpp>
+#include <ql/calendars/brazil.hpp>
 #include <ql/period.hpp>
 #include <iomanip>
 

@@ -19,15 +19,15 @@
 
 #include "cliquetoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/cliquetoption.hpp>
-#include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
-#include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/cliquetoption.hpp>
+#include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
+#include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <ql/period.hpp>
 #include <map>
 

@@ -21,12 +21,12 @@
 
 #include "stats.hpp"
 #include "utilities.hpp"
-#include <ql/Math/statistics.hpp>
-#include <ql/Math/incrementalstatistics.hpp>
-#include <ql/Math/gaussianstatistics.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/Math/convergencestatistics.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/math/statistics.hpp>
+#include <ql/math/incrementalstatistics.hpp>
+#include <ql/math/gaussianstatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/convergencestatistics.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

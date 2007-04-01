@@ -19,8 +19,8 @@
 
 #include "surface.hpp"
 #include "utilities.hpp"
-#include <ql/Math/surface.hpp>
-#include <ql/Math/domain.hpp>
+#include <ql/math/surface.hpp>
+#include <ql/math/domain.hpp>
 #include <sstream>
 #include <iostream>
 

@@ -20,15 +20,15 @@
 
 #include "swaptionvolatilitycube.hpp"
 #include "utilities.hpp"
-#include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/DayCounters/thirty360.hpp>
-#include <ql/Indexes/euribor.hpp>
-#include <ql/Quotes/simplequote.hpp>
-#include <ql/Volatilities/swaptionvolmatrix.hpp>
-#include <ql/Volatilities/swaptionvolcube2.hpp>
-#include <ql/Volatilities/swaptionvolcube1.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/calendars/target.hpp>
+#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/daycounters/thirty360.hpp>
+#include <ql/indexes/euribor.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/volatilities/swaptionvolmatrix.hpp>
+#include <ql/volatilities/swaptionvolcube2.hpp>
+#include <ql/volatilities/swaptionvolcube1.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

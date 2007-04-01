@@ -28,6 +28,7 @@
 #ifndef quantlib_weekday_hpp
 #define quantlib_weekday_hpp
 
+#include <ql/qldefines.hpp>
 #include <ostream>
 
 namespace QuantLib {

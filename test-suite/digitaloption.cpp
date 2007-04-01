@@ -21,15 +21,15 @@
 
 #include "digitaloption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
-#include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
-#include <ql/Processes/blackscholesprocess.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticdigitalamericanengine.hpp>
+#include <ql/pricingengines/vanilla/mcdigitalengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

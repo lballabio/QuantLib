@@ -21,14 +21,14 @@
 
 #include "barrieroption.hpp"
 #include "utilities.hpp"
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/Instruments/barrieroption.hpp>
-#include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
-#include <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
-#include <ql/TermStructures/flatforward.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Utilities/dataformatters.hpp>
+#include <ql/calendars/nullcalendar.hpp>
+#include <ql/daycounters/actual360.hpp>
+#include <ql/instruments/barrieroption.hpp>
+#include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/barrier/mcbarrierengine.hpp>
+#include <ql/termstructures/flatforward.hpp>
+#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
