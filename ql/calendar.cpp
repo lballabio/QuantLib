@@ -20,7 +20,6 @@
 */
 
 #include <ql/calendar.hpp>
-#include <ql/period.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
