@@ -27,7 +27,7 @@
 
 #include <ql/voltermstructure.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/interpolation2D.hpp>
+#include <ql/math/interpolation2d.hpp>
 #include <ql/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {

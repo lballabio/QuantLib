@@ -51,7 +51,7 @@
 #include <ql/math/incompletegamma.hpp>
 #include <ql/math/incrementalstatistics.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/math/interpolation2D.hpp>
+#include <ql/math/interpolation2d.hpp>
 #include <ql/math/kronrodintegral.hpp>
 #include <ql/math/lexicographicalview.hpp>
 #include <ql/math/linearinterpolation.hpp>

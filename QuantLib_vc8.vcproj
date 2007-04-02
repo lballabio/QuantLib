@@ -3183,7 +3183,7 @@
 					>
 				</File>
 				<File
-					RelativePath="ql\math\interpolation2D.hpp"
+					RelativePath="ql\math\interpolation2d.hpp"
 					>
 				</File>
 				<File

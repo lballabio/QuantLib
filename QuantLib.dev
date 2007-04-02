@@ -2608,7 +2608,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit257]
-FileName=ql\math\interpolation2D.hpp
+FileName=ql\math\interpolation2d.hpp
 CompileCpp=1
 Folder=math
 Compile=1

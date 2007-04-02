@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file interpolation2D.hpp
+/*! \file interpolation2d.hpp
     \brief abstract base classes for 2-D interpolations
 */
 

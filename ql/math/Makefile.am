@@ -33,7 +33,7 @@ include_HEADERS = \
 	incompletegamma.hpp \
 	incrementalstatistics.hpp \
 	interpolation.hpp \
-	interpolation2D.hpp \
+	interpolation2d.hpp \
 	kronrodintegral.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \

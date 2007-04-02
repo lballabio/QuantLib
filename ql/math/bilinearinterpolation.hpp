@@ -25,7 +25,7 @@
 #ifndef quantlib_bilinear_interpolation_hpp
 #define quantlib_bilinear_interpolation_hpp
 
-#include <ql/math/interpolation2D.hpp>
+#include <ql/math/interpolation2d.hpp>
 #ifdef QL_PATCH_MSVC6
 #include <ql/math/matrix.hpp>
 #endif
