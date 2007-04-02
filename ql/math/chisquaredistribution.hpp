@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,6 +48,20 @@ namespace QuantLib {
         Real df_, ncp_;
     };
 
+    class InverseNonCentralChiSquareDistribution
+        : public std::unary_function<Real,Real> {
+      public:
+        InverseNonCentralChiSquareDistribution(Real df, Real ncp,
+                                               Size maxEvaluations=10,
+                                               Real accuracy = 1e-8);
+        Real operator()(Real x) const;
+
+    private:
+        NonCentralChiSquareDistribution nonCentralDist_;
+        const Real guess_;
+        const Size maxEvaluations_;
+        const Real accuracy_;
+    };
 }
 
 

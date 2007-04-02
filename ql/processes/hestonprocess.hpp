@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,17 +45,24 @@ namespace QuantLib {
     */
     class HestonProcess : public StochasticProcess {
       public:
+        enum Discretization { PartialTruncation, FullTruncation, 
+                              Reflection, ExactVariance };
+
         HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
                       const Handle<Quote>& s0,
                       double v0, double kappa, 
-                      double theta, double sigma, double rho);
+                      double theta, double sigma, double rho,
+                      Discretization d = FullTruncation);
+
 
         Size size() const;
         Disposable<Array> initialValues() const;
         Disposable<Array> drift(Time t, const Array& x) const;
         Disposable<Matrix> diffusion(Time t, const Array& x) const;
         Disposable<Array> apply(const Array& x0, const Array& dx) const;
+        Disposable<Array> evolve(Time t0, const Array& x0,
+                                 Time dt, const Array& dw) const;
 
         const RelinkableHandle<Quote>& v0()    const;
         const RelinkableHandle<Quote>& rho()   const;
@@ -67,13 +74,17 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& dividendYield() const;
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
+        void update();
         Time time(const Date&) const;
       private:
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
         RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
-    };
 
+        const Discretization discretization_;
+
+        Real s0v_, v0v_, kappav_, thetav_, sigmav_, rhov_, sqrhov_;
+    };
 }
 
 

@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,6 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/chisquaredistribution.hpp>
 #include <ql/math/gammadistribution.hpp>
 #include <ql/math/normaldistribution.hpp>
@@ -87,4 +90,33 @@ namespace QuantLib {
 
     }
 
+    InverseNonCentralChiSquareDistribution::
+      InverseNonCentralChiSquareDistribution(Real df, Real ncp, 
+                                             Size maxEvaluations, 
+                                             Real accuracy)
+    : nonCentralDist_(df, ncp),
+      guess_(df+ncp),
+      maxEvaluations_(maxEvaluations),
+      accuracy_(accuracy) {
+    }
+
+    Real InverseNonCentralChiSquareDistribution::operator()(Real x) const {
+
+        // first find the right side of the interval
+        Real upper = guess_;
+        Size evaluations = maxEvaluations_;
+        while (nonCentralDist_(upper) < x && evaluations > 0) {
+            upper*=2.0;
+            --evaluations;
+        }
+
+        // use a brent solver for the rest
+        Brent solver;
+        solver.setMaxEvaluations(evaluations);
+        return solver.solve(compose(std::bind2nd(std::minus<Real>(),x), 
+                                    nonCentralDist_),
+                            accuracy_, 0.75*upper, 
+                            (evaluations == maxEvaluations_)? 0.0: 0.5*upper,
+                            upper);
+    }
 }

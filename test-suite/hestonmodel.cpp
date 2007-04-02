@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Klaus Spanderen
+ Copyright (C) 2005, 2007 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,8 +48,6 @@ QL_END_TEST_LOCALS(HestonModelTest)
 
 
 void HestonModelTest::testBlackCalibration() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE(
        "Testing Heston model calibration using a flat volatility surface...");
 
@@ -144,13 +142,10 @@ void HestonModelTest::testBlackCalibration() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 void HestonModelTest::testDAXCalibration() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
        with Stochstic Volatility: Applications of Fourier Transform
@@ -255,12 +250,9 @@ void HestonModelTest::testDAXCalibration() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 void HestonModelTest::testAnalyticVsBlack() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing analytic Heston engine against Black formula...");
 
     QL_TEST_BEGIN
@@ -311,13 +303,10 @@ void HestonModelTest::testAnalyticVsBlack() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 void HestonModelTest::testAnalyticVsCached() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing analytic Heston engine against cached values...");
 
     QL_TEST_BEGIN
@@ -412,13 +401,10 @@ void HestonModelTest::testAnalyticVsCached() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 void HestonModelTest::testMcVsCached() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE(
                 "Testing Monte Carlo Heston engine against cached values...");
 
@@ -472,13 +458,75 @@ void HestonModelTest::testMcVsCached() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
+}
+
+
+void HestonModelTest::testKahlJaeckelCase() {
+    BOOST_MESSAGE(
+                "Testing Monte Carlo Heston engine for the Kahl-Jaeckel "
+                "example");
+
+    /* Example taken from Wilmott mag (Sept. 2005). 
+       "Not-so-complex logarithms in the Heston model",
+       Example was also discussed within the Wilmott thread
+       "QuantLib code is very high quatlity"
+    */
+
+    QL_TEST_BEGIN
+
+    Date settlementDate(30, March, 2007);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    DayCounter dayCounter = ActualActual();
+    Date exerciseDate(30, March, 2017);
+
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                   new PlainVanillaPayoff(Option::Call, 200));
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.0, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
+
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
+
+    boost::shared_ptr<HestonProcess> process(new HestonProcess(
+                   riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
+                   HestonProcess::ExactVariance));
+
+    VanillaOption option(process, payoff, exercise);
+
+    const Real tolerance = 0.1;
+
+    boost::shared_ptr<PricingEngine> engine
+        = MakeMCEuropeanHestonEngine<PseudoRandom>().withSteps(10)
+                                                    .withAntitheticVariate()
+                                                    .withTolerance(tolerance)
+                                                    .withSeed(1234);
+    
+    option.setPricingEngine(engine);
+
+    const Real expected = 4.95212;
+    const Real calculated = option.NPV();
+    const Real errorEstimate = option.errorEstimate();
+
+    if (std::fabs(calculated - expected) > 0*2.34*errorEstimate) {
+        BOOST_ERROR("Failed to reproduce cached price"
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected
+                    << " +/- " << errorEstimate);
+    }
+
+    if (errorEstimate > tolerance) {
+        BOOST_ERROR("failed to reproduce error estimate"
+                    << "\n    calculated: " << errorEstimate
+                    << "\n    expected:   " << tolerance);
+    }
+
+    QL_TEST_TEARDOWN
 }
 
 
 void HestonModelTest::testEngines() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE(
        "Testing Monte Carlo Heston engine against analytic Heston engine...");
 
@@ -551,22 +599,19 @@ void HestonModelTest::testEngines() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 test_suite* HestonModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Heston model tests");
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
+
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testBlackCalibration));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testDAXCalibration));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
+    suite->add(BOOST_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
     // this passes but takes way too long
     // suite->add(BOOST_TEST_CASE(&HestonModelTest::testEngines));
-    #endif
-    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&HestonModelTest::testMcVsCached));
-    #endif
     return suite;
 }
 
