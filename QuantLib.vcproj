@@ -5465,12 +5465,6 @@
 				RelativePath="ql\pricingengines\blackformula.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\pricingengines\blackmodel.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\pricingengines\blackmodel.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\pricingengines\blackscholescalculator.cpp">
 			</File>
 			<File
@@ -8650,6 +8644,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\volatilities\sabr.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\volatilities\sabrinterpolatedsmilesection.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\volatilities\sabrinterpolatedsmilesection.hpp">

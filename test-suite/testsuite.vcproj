@@ -569,6 +569,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\assetswap.cpp">
+			</File>
+			<File
 				RelativePath="barrieroption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2514,6 +2517,9 @@
 				RelativePath="asianoptions.hpp">
 			</File>
 			<File
+				RelativePath=".\assetswap.hpp">
+			</File>
+			<File
 				RelativePath="barrieroption.hpp">
 			</File>
 			<File
@@ -2659,9 +2665,6 @@
 			</File>
 			<File
 				RelativePath=".\pathgenerator.hpp">
-			</File>
-			<File
-				RelativePath=".\piecewiseflatforward.hpp">
 			</File>
 			<File
 				RelativePath=".\piecewiseyieldcurve.hpp">
