@@ -25,9 +25,9 @@
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class SwapForwardmappingsTest {
+class SwapForwardMappingsTest {
   public:
-    static void testForwardCoTerminalMappings();
+    static void testForwardCoterminalMappings();
     static boost::unit_test_framework::test_suite* suite();
 };
 

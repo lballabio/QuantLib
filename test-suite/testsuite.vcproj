@@ -2294,7 +2294,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\swapForwardMappings.cpp">
+				RelativePath=".\swapforwardmappings.cpp">
 			</File>
 			<File
 				RelativePath="swaption.cpp">
@@ -2700,7 +2700,7 @@
 				RelativePath="swap.hpp">
 			</File>
 			<File
-				RelativePath=".\swapForwardMappings.hpp">
+				RelativePath=".\swapforwardmappings.hpp">
 			</File>
 			<File
 				RelativePath="swaption.hpp">

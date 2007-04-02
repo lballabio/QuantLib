@@ -64,6 +64,7 @@ QL_TESTS = \
 	stats.hpp stats.cpp \
 	surface.hpp surface.cpp \
 	swap.hpp swap.cpp \
+	swapforwardmappings.hpp swapforwardmappings.cpp \
 	swaption.hpp swaption.cpp \
 	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
 	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \

@@ -19,21 +19,20 @@
 
 #include "swapforwardmappings.hpp"
 #include "utilities.hpp"
+#include <ql/marketmodels/swapforwardmappings.hpp>
 #include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
 #include <ql/marketmodels/evolvers/forwardratepcevolver.hpp>
-#include <ql/marketmodels/models/expcorrflatvol.hpp> 
-#include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp> 
+#include <ql/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/marketmodels/accountingengine.hpp>
+#include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <ql/schedule.hpp>
 #include <ql/daycounters/simpledaycounter.hpp>
 #include <ql/math/sequencestatistics.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
-#include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
-#include <iostream>
-#include <sstream>
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -43,12 +42,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+QL_BEGIN_TEST_LOCALS(SwapForwardMappingsTest)
 
 #define BEGIN(x) (x+0)
 #define END(x) (x+LENGTH(x))
 
 class MarketModelData{
-public:
+  public:
     MarketModelData();
     const std::vector<Time>& rateTimes(){return rateTimes_;}
     const std::vector<Rate>& forwards(){return forwards_;}
@@ -56,7 +56,7 @@ public:
     const std::vector<Rate>& displacements(){return displacements_;}
     const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
     const Size nbRates(){return nbRates_;}
-private:   
+  private:
     std::vector<Time> rateTimes_, accruals_;
     std::vector<Rate> forwards_;
     std::vector<Spread> displacements_;
@@ -140,7 +140,7 @@ const boost::shared_ptr<SequenceStatistics> simulate(
 MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
     const std::vector<Time>& rateTimes, Real strike ){
     std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-    std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size()); 
+    std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
     for (Size i = 0; i < payoffs.size(); ++i){
         payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
             PlainVanillaPayoff(Option::Call, strike));
@@ -150,23 +150,24 @@ MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
 
 }
 
+QL_END_TEST_LOCALS(SwapForwardMappingsTest)
 
 
-void SwapForwardmappingsTest::testForwardCoTerminalMappings() {
+void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 
-    BOOST_MESSAGE("Testing Forward CoTerminal Mappings class"
-                  "in a Swap market model...");
+    BOOST_MESSAGE("Testing forward-coterminal mappings "
+                  "in a swap market model...");
     MarketModelData marketData;
     const std::vector<Time>& rateTimes = marketData.rateTimes();
     const std::vector<Rate>& forwards = marketData.forwards();
     const Size nbRates = marketData.nbRates();
     LMMCurveState lmmCurveState(rateTimes);
     lmmCurveState.setOnForwardRates(forwards);
-   
-    const Real longTermCorr=0.5; 
+
+    const Real longTermCorr=0.5;
     const Real beta = .2;
     Real strike = .03;
-    MultiStepCoterminalSwaptions product 
+    MultiStepCoterminalSwaptions product
         = makeMultiStepCoterminalSwaptions(rateTimes, strike);
 
     const EvolutionDescription evolution = product.evolution();
@@ -175,25 +176,25 @@ void SwapForwardmappingsTest::testForwardCoTerminalMappings() {
     Matrix jacobian =
         SwapForwardMappings::coterminalSwapZedMatrix(
         lmmCurveState, displacement);
-    
-    boost::shared_ptr<MarketModel> smmMarketModel(new ExpCorrFlatVol(longTermCorr, beta, 
+
+    boost::shared_ptr<MarketModel> smmMarketModel(new ExpCorrFlatVol(longTermCorr, beta,
          marketData.volatilities(), evolution, numberOfFactors,
          lmmCurveState.coterminalSwapRates(), marketData.displacements()));
 
-    boost::shared_ptr<MarketModel> 
+    boost::shared_ptr<MarketModel>
         lmmMarketModel(new CoterminalToForwardAdapter(smmMarketModel));
-    
+
     SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
-    std::vector<Size> numeraires(nbRates, 
+    std::vector<Size> numeraires(nbRates,
                                  nbRates);
-    boost::shared_ptr<MarketModelEvolver> evolver(new ForwardRatePcEvolver 
+    boost::shared_ptr<MarketModelEvolver> evolver(new ForwardRatePcEvolver
         (lmmMarketModel, generatorFactory, numeraires));
 
     boost::shared_ptr<SequenceStatistics> stats =
                             simulate(marketData.discountFactors(), evolver, product);
     std::vector<Real> results = stats->mean();
     std::vector<Real> errors = stats->errorEstimate();
-      
+
     const std::vector<DiscountFactor>& todaysDiscounts = marketData.discountFactors();
     const std::vector<Rate>& todaysCoterminalSwapRates = lmmCurveState.coterminalSwapRates();
     for (Size i=0; i<nbRates; ++i) {
@@ -206,16 +207,22 @@ void SwapForwardmappingsTest::testForwardCoTerminalMappings() {
         Real expectedSwaption = BlackCalculator(payoff,
                         todaysCoterminalSwapRates[i]+displacement,
                         std::sqrt(cotSwapsCovariance[i][i]),
-                        lmmCurveState.coterminalSwapAnnuity(i,i) * 
+                        lmmCurveState.coterminalSwapAnnuity(i,i) *
                         todaysDiscounts[i]).value();
-       /* std::cout << "expected\t" << expectedSwaption << "\tLMM\t" << results[i] << "\tstdev:\t" 
-            << errors[i] << "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i] << std::endl;*/
+        /*
+        BOOST_MESSAGE("expected\t" << expectedSwaption <<
+                      "\tLMM\t" << results[i]
+                      << "\tstdev:\t" << errors[i] <<
+                      "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
+        */
     }
 }
 
-// --- Call the desired tests
-test_suite* SwapForwardmappingsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swap forward mappings tests");
-    suite->add(BOOST_TEST_CASE(&SwapForwardmappingsTest::testForwardCoTerminalMappings));
+
+test_suite* SwapForwardMappingsTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
+    suite->add(BOOST_TEST_CASE(
+                    &SwapForwardMappingsTest::testForwardCoterminalMappings));
     return suite;
 }
+
