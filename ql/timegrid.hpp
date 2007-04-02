@@ -25,7 +25,6 @@
 #ifndef quantlib_time_grid_hpp
 #define quantlib_time_grid_hpp
 
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <vector>

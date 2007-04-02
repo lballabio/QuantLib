@@ -19,7 +19,6 @@
 */
 
 #include <ql/timegrid.hpp>
-#include <ql/errors.hpp>
 #include <iomanip>
 
 namespace QuantLib {

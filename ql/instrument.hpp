@@ -27,7 +27,6 @@
 
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
-#include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/any.hpp>
 #include <map>

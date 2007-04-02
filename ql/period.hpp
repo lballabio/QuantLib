@@ -30,7 +30,7 @@
 #include <ql/frequency.hpp>
 #include <ql/timeunit.hpp>
 #include <ql/types.hpp>
-#include <ostream>
+
 
 namespace QuantLib {
 

@@ -24,7 +24,6 @@
 #ifndef quantlib_quote_hpp
 #define quantlib_quote_hpp
 
-#include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/errors.hpp>
 #include <ql/utilities/null.hpp>

@@ -27,7 +27,7 @@
 #include <ql/timeseries.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/utilities/observablevalue.hpp>
-#include <map>
+
 
 namespace QuantLib {
 
