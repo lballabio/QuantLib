@@ -509,7 +509,7 @@ void HestonModelTest::testKahlJaeckelCase() {
     const Real calculated = option.NPV();
     const Real errorEstimate = option.errorEstimate();
 
-    if (std::fabs(calculated - expected) > 0*2.34*errorEstimate) {
+    if (std::fabs(calculated - expected) > 2.34*errorEstimate) {
         BOOST_ERROR("Failed to reproduce cached price"
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
