@@ -719,6 +719,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     CubicSpline::SecondDerivative, -2.0,
                     CubicSpline::SecondDerivative, -2.0,
                     true);
+    interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_ERROR("MC SecondDerivative spline"
                     << " interpolation failed at x = " << zero
