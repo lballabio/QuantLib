@@ -319,6 +319,7 @@ namespace QuantLib {
                                                     this->data_.begin());
                     }
                 }
+                this->interpolation_.update();
                 boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
                 Real guess;
                 if (iteration > 0) {

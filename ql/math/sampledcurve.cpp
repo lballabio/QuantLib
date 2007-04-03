@@ -67,6 +67,7 @@ namespace QuantLib {
     void SampledCurve::regrid(const Array &new_grid) {
         NaturalCubicSpline priceSpline(grid_.begin(), grid_.end(),
                                        values_.begin());
+        priceSpline.update();
         Array newValues(new_grid.size());
         Array::iterator val;
         Array::const_iterator grid;

@@ -38,10 +38,8 @@ namespace QuantLib {
             ForwardFlatInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                          const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
-              primitive_(xEnd-xBegin), n_(xEnd-xBegin) {
-                calculate();
-            }
-            void calculate() {
+              primitive_(xEnd-xBegin), n_(xEnd-xBegin) {}
+            void update() {
                 primitive_[0] = 0.0;
                 for (Size i=1; i<n_; i++) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];

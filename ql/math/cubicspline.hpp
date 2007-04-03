@@ -213,11 +213,9 @@ namespace QuantLib {
               monotone_(false), constrained_(monotonicityConstraint),
               leftType_(leftCondition), rightType_(rightCondition),
               leftValue_(leftConditionValue),
-              rightValue_(rightConditionValue) {
-                calculate();
-            }
+              rightValue_(rightConditionValue) {}
 
-            void calculate() {
+            void update() {
 
                 TridiagonalOperator L(n_);
                 Array tmp(n_);

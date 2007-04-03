@@ -147,6 +147,7 @@ using namespace QuantLib;
         // the interpolator will be used for shorter maturities
         firstRowInterpolator_ = LinearInterpolation(strikes_.begin(),
             strikes_.end(), volatilities_.row_begin(0));
+        firstRowInterpolator_.update();
         bilinearInterpolation_ = boost::shared_ptr<BilinearInterpolation>(
             new BilinearInterpolation(strikes_.begin(), strikes_.end(),
             tenorTimes_.begin(),tenorTimes_.end(), volatilities_));
@@ -204,6 +205,7 @@ using namespace QuantLib;
             boost::shared_ptr<Interpolation> newInterpolation(
                 new LinearInterpolation(strikes_.begin(), 
                     strikes_.end(), volatilities_[i]));
+            newInterpolation->update();
             strikeInterpolations_.push_back(newInterpolation);
         }
         // the interpolator will be used for shorter maturities

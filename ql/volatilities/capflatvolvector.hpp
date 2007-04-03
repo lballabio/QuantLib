@@ -134,6 +134,7 @@ namespace QuantLib {
             LinearInterpolation(timeLengths_.begin(),
                                 timeLengths_.end(),
                                 volatilities_.begin());
+        interpolation_.update();
     }
 
     inline Volatility CapVolatilityVector::volatilityImpl(

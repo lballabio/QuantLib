@@ -45,7 +45,7 @@ namespace QuantLib {
         class Impl {
           public:
             virtual ~Impl() {}
-            virtual void calculate() = 0;
+            virtual void update() = 0;
             virtual Real xMin() const = 0;
             virtual Real xMax() const = 0;
             virtual std::vector<Real> xValues() const = 0;
@@ -131,7 +131,7 @@ namespace QuantLib {
             return impl_->isInRange(x);
         }
         void update() {
-            impl_->calculate();
+            impl_->update();
         }
       protected:
         void checkRange(Real x, bool extrapolate) const {

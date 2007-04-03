@@ -43,10 +43,10 @@ namespace QuantLib {
       stdDevHandles_(stdDevHandles), forward_(forward),
       vols_(stdDevHandles.size()),
       sabrInterpolation_(strikes_.begin(), strikes_.end(), vols_.begin(),
-                        exerciseTime(), forwardValue_, alpha, beta, nu, rho,
-                        isAlphaFixed, isBetaFixed,
-                        isNuFixed, isRhoFixed, vegaWeighted,
-                        endCriteria, method, false) {
+                         exerciseTime(), forwardValue_, alpha, beta, nu, rho,
+                         isAlphaFixed, isBetaFixed,
+                         isNuFixed, isRhoFixed, vegaWeighted,
+                         endCriteria, method) {
         registerWith(forward_);
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             registerWith(stdDevHandles_[i]);

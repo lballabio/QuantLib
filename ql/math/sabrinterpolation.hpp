@@ -120,8 +120,7 @@ namespace QuantLib {
                           const boost::shared_ptr<EndCriteria>& endCriteria
                                   = boost::shared_ptr<EndCriteria>(),
                           const boost::shared_ptr<OptimizationMethod>& method
-                                  = boost::shared_ptr<OptimizationMethod>(),
-                          bool calculate = true) {
+                                  = boost::shared_ptr<OptimizationMethod>()) {
 
             impl_ = boost::shared_ptr<Interpolation::Impl>(new
                 detail::SABRInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
@@ -131,8 +130,7 @@ namespace QuantLib {
                                                      nuIsFixed, rhoIsFixed,
                                                      vegaWeighted,
                                                      endCriteria,
-                                                     method,
-                                                     calculate));
+                                                     method));
             coeffs_ =
                 boost::dynamic_pointer_cast<detail::SABRCoefficientHolder>(
                                                                        impl_);
@@ -184,6 +182,7 @@ namespace QuantLib {
                                      nuIsFixed_, rhoIsFixed_,
                                      vegaWeighted_, endCriteria_, method_);
         }
+        enum { global = 1 };
       private:
         Time t_;
         Real forward_;
@@ -332,16 +331,18 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<EndCriteria> endCriteria_;
             boost::shared_ptr<OptimizationMethod> method_;
-            boost::shared_ptr<Transformation> tranformation_;
             std::vector<Real> weights_;
             const Real& forward_;
+            bool vegaWeighted_;
+            boost::shared_ptr<Transformation> tranformation_;
             NoConstraint constraint_;
 
           public:
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
-                Time t, const Real& forward,
+                Time t,
+                const Real& forward,
                 Real alpha, Real beta, Real nu, Real rho,
                 bool alphaIsFixed,
                 bool betaIsFixed,
@@ -349,29 +350,15 @@ namespace QuantLib {
                 bool rhoIsFixed,
                 bool vegaWeighted,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
-                const boost::shared_ptr<OptimizationMethod>& method,
-                bool compute)
+                const boost::shared_ptr<OptimizationMethod>& method)
             : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
               SABRCoefficientHolder(t, forward, alpha, beta, nu, rho,
-                                    alphaIsFixed, betaIsFixed, nuIsFixed,
-                                    rhoIsFixed),
-              endCriteria_(endCriteria), method_(method), weights_(xEnd-xBegin, 1.0), forward_(forward) {
-                Real weightsSum = this->xEnd_-this->xBegin_;
-                if (vegaWeighted) {
-                    std::vector<Real>::const_iterator x = this->xBegin_;
-                    std::vector<Real>::const_iterator y = this->yBegin_;
-                    std::vector<Real>::iterator w = weights_.begin();
-                    weightsSum = 0.0;
-                    for ( ; x!=this->xEnd_; ++x, ++y, ++w) {
-                        Real stdDev = std::sqrt((*y)*(*y)*t);
-                        *w = blackStdDevDerivative(*x, forward, stdDev);
-                        weightsSum += *w;
-                    }
-                }
-                // weight normalization
-                std::vector<Real>::iterator w = weights_.begin();
-                for ( ; w!=weights_.end(); ++w)
-                    *w /= weightsSum;
+                                    alphaIsFixed, betaIsFixed,
+                                    nuIsFixed, rhoIsFixed),
+              endCriteria_(endCriteria), method_(method),
+              weights_(xEnd-xBegin, 1.0/(xEnd-xBegin)), forward_(forward),
+              vegaWeighted_(vegaWeighted)
+            {
                 // if no method is provided we provide one
                 if (!method_)
                     method_ = boost::shared_ptr<OptimizationMethod>(new
@@ -380,13 +367,31 @@ namespace QuantLib {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
                         EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
                 }
-                if (compute)
-                    calculate();
             }
-            void calculate()
-            {
-                QL_REQUIRE(forward_>0.0, "forward must be positive: "
-                    << io::rate(forward_) << " not allowed");
+
+            void update() {
+                // forward_ might have changed
+                QL_REQUIRE(forward_>0.0, "forward must be positive: " <<
+                           io::rate(forward_) << " not allowed");
+
+                // we should also check that y contains positive values only
+
+                // we must update weights if it is vegaWeighted
+                if (vegaWeighted_) {
+                    std::vector<Real>::const_iterator x = this->xBegin_;
+                    std::vector<Real>::const_iterator y = this->yBegin_;
+                    std::vector<Real>::iterator w = weights_.begin();
+                    Real weightsSum = 0.0;
+                    for ( ; x!=this->xEnd_; ++x, ++y, ++w) {
+                        Real stdDev = std::sqrt((*y)*(*y)*t_);
+                        *w = blackStdDevDerivative(*x, forward_, stdDev);
+                        weightsSum += *w;
+                    }
+                    // weight normalization
+                    w = weights_.begin();
+                    for ( ; w!=weights_.end(); ++w)
+                        *w /= weightsSum;
+                }
 
                 // there is nothing to optimize
                 if (alphaIsFixed_ && betaIsFixed_ && nuIsFixed_ && rhoIsFixed_) {

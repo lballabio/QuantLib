@@ -64,6 +64,7 @@ namespace QuantLib {
 
         interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
                                                 data_.begin());
+        interpolation_.update();
     }
 
     boost::shared_ptr<CompoundForward>

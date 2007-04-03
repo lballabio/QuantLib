@@ -144,7 +144,7 @@ namespace QuantLib {
 
                 const std::vector<Real>& guess = parametersGuess_.operator()(
                     optionTimes[j], swapLengths[k]);
-
+                
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                     boost::shared_ptr<SABRInterpolation>(new
                         SABRInterpolation(strikes.begin(), strikes.end(),
@@ -159,6 +159,7 @@ namespace QuantLib {
                                           vegaWeightedSmileFit_,
                                           endCriteria_,
                                           boost::shared_ptr<OptimizationMethod>()));
+                sabrInterpolation->update();
 
                 Real interpolationError =
                     sabrInterpolation->interpolationError();
@@ -232,18 +233,19 @@ namespace QuantLib {
             const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                 boost::shared_ptr<SABRInterpolation>(new
                     SABRInterpolation(strikes.begin(), strikes.end(),
-                                        volatilities.begin(),
-                                        optionTimes[j], atmForward,
-                                        guess[0], guess[1],
-                                        guess[2], guess[3],
-                                        isParameterFixed_[0],
-                                        isParameterFixed_[1],
-                                        isParameterFixed_[2],
-                                        isParameterFixed_[3],
-                                        vegaWeightedSmileFit_,
-                                        endCriteria_,
-                                        boost::shared_ptr<OptimizationMethod>()));
+                                      volatilities.begin(),
+                                      optionTimes[j], atmForward,
+                                      guess[0], guess[1],
+                                      guess[2], guess[3],
+                                      isParameterFixed_[0],
+                                      isParameterFixed_[1],
+                                      isParameterFixed_[2],
+                                      isParameterFixed_[3],
+                                      vegaWeightedSmileFit_,
+                                      endCriteria_,
+                                      boost::shared_ptr<OptimizationMethod>()));
 
+            sabrInterpolation->update();
             Real interpolationError =
                 sabrInterpolation->interpolationError();
             calibrationResult[0]=sabrInterpolation->alpha();
@@ -465,9 +467,8 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionVolCube1::smileSection(
-                                    Time optionTime, Time swapLength,
-                                    const Cube& sabrParametersCube) const {
+    SwaptionVolCube1::smileSection(Time optionTime, Time swapLength,
+                                   const Cube& sabrParametersCube) const {
 
         calculate();
         const std::vector<Real> sabrParameters =

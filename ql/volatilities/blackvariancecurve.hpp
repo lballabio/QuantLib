@@ -67,9 +67,9 @@ namespace QuantLib {
                               = Interpolator()
                     #endif
                               ) {
-            varianceCurve_ =
-                i.interpolate(times_.begin(), times_.end(),
-                              variances_.begin());
+            varianceCurve_ = i.interpolate(times_.begin(), times_.end(),
+                                           variances_.begin());
+            varianceCurve_.update();
             notifyObservers();
         }
         //@}

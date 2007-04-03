@@ -48,6 +48,7 @@ namespace QuantLib {
             times_[i] = dayCounter().yearFraction(referenceDate(),dates_[i]);
         fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
                                          forwards_.begin());
+        fwdinterp_.update();
 
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
@@ -82,6 +83,7 @@ namespace QuantLib {
 
         fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
                                          forwards_.begin());
+        fwdinterp_.update();
     }
 
     boost::shared_ptr<YieldTermStructure> CompoundForward::bootstrap() const {

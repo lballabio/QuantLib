@@ -39,10 +39,8 @@ namespace QuantLib {
             LinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
-              primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
-                calculate();
-            }
-            void calculate() {
+              primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {}
+            void update() {
                 primitiveConst_[0] = 0.0;
                 for (Size i=1; i<Size(this->xEnd_-this->xBegin_); i++) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];

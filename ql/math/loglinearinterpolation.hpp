@@ -39,11 +39,9 @@ namespace QuantLib {
             LogLinearInterpolationImpl(const I1& xBegin, const I1& xEnd,
                                        const I2& yBegin)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
-              logY_(xEnd-xBegin) {
-                calculate();
-            }
-            void calculate() {
-                for (Size i=0; i<logY_.size(); i++) {
+              logY_(xEnd-xBegin) {}
+            void update() {
+                for (Size i=0; i<logY_.size(); ++i) {
                     QL_REQUIRE(this->yBegin_[i]>0.0,
                                "negative or null value (" << this->yBegin_[i]
                                << ") at " << io::ordinal(i) << " position");
@@ -52,6 +50,7 @@ namespace QuantLib {
                 linearInterpolation_ = LinearInterpolation(this->xBegin_,
                                                            this->xEnd_,
                                                            logY_.begin());
+                linearInterpolation_.update();
             }
             Real value(Real x) const {
                 return std::exp(linearInterpolation_(x,true));

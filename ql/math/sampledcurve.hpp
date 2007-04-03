@@ -109,6 +109,7 @@ namespace QuantLib {
             NaturalCubicSpline priceSpline(transformed_grid.begin(),
                                            transformed_grid.end(),
                                            values_.begin());
+            priceSpline.update();
 
             Array newValues = new_grid;
             std::transform(newValues.begin(), newValues.end(),

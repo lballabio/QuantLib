@@ -177,6 +177,7 @@ namespace QuantLib {
         interpolation_ = interpolator_.interpolate(times_.begin(),
                                                    times_.end(),
                                                    data_.begin());
+        interpolation_.update();
     }
 
 }

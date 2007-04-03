@@ -48,6 +48,7 @@ namespace QuantLib {
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
                                                  optionDatesAsReal_.begin());
+        optionInterpolator_.update();
         optionInterpolator_.enableExtrapolation();
     }
 
@@ -76,6 +77,7 @@ namespace QuantLib {
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
                                                  optionDatesAsReal_.begin());
+        optionInterpolator_.update();
         optionInterpolator_.enableExtrapolation();
     }
 
@@ -104,6 +106,7 @@ namespace QuantLib {
         optionInterpolator_= LinearInterpolation(optionTimes_.begin(),
                                                  optionTimes_.end(),
                                                  optionDatesAsReal_.begin());
+        optionInterpolator_.update();
         optionInterpolator_.enableExtrapolation();
     }
 

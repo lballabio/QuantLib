@@ -113,6 +113,7 @@ namespace QuantLib {
       vols_(vols), yieldCurve_(yieldCurve), displacement_(displacement) {
         volatility_ = LinearInterpolation(times_.begin(),times_.end(),
                                           vols_.begin());
+        volatility_.update();
         registerWith(yieldCurve_);
     }
 
