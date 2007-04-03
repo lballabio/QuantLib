@@ -114,8 +114,7 @@ namespace QuantLib {
     }
 
     SwaptionVolCube1::Cube
-    SwaptionVolCube1::sabrCalibration(
-                                            const Cube& marketVolCube) const {
+    SwaptionVolCube1::sabrCalibration(const Cube& marketVolCube) const {
 
         const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
         const std::vector<Time>& swapLengths = marketVolCube.swapLengths();
@@ -173,11 +172,14 @@ namespace QuantLib {
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
 				
                 QL_ENSURE(endCriteria[j][k]!=EndCriteria::MaxIterations,
+                          "global calibration failed: "
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
-                          ": max iteration");
+                          ": max iteration (" <<
+                          endCriteria_->maxIterations() << ")");
 
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
+                          "global calibration failed: "
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max error " << io::rate(maxErrors[j][k]));
@@ -254,11 +256,14 @@ namespace QuantLib {
             calibrationResult[7]=sabrInterpolation->endCriteria();
             
             QL_ENSURE(calibrationResult[7]!=EndCriteria::MaxIterations,
+                      "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
-                      ": max iteration");
+                      ": max iteration (" <<
+                      endCriteria_->maxIterations() << ")");
 
             QL_ENSURE(calibrationResult[6]< maxErrorTolerance_,
+                      "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max error " << calibrationResult[6]);
