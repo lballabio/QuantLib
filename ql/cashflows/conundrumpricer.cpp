@@ -27,9 +27,11 @@
 #include <ql/math/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/solvers1d/brent.hpp>
+#include <ql/solvers1d/newtonsafe.hpp>
 #include <ql/volatilities/smilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <boost/timer.hpp>
+
 
 namespace QuantLib {
 
@@ -721,15 +723,25 @@ namespace QuantLib {
 
     Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::operator ()(const Real& x) const {
         Real result = 0;
+        derivative_ = 0;
         for(Size i=0; i<o_.accruals_.size(); i++) {
-            result += o_.accruals_[i]*o_.swapPaymentDiscounts_[i]
+            Real temp = o_.accruals_[i]*o_.swapPaymentDiscounts_[i]
                 *std::exp(-o_.shapedSwapPaymentTimes_[i]*x);
+            result += temp;
+            derivative_ -= o_.shapedSwapPaymentTimes_[i] * temp;
         }
         result *= Rs_;
-
-        result += o_.swapPaymentDiscounts_.back()*std::exp(-o_.shapedSwapPaymentTimes_.back()*x)
-            -o_.discountAtStart_;
+        derivative_ *= Rs_;
+        Real temp = o_.swapPaymentDiscounts_.back()
+            * std::exp(-o_.shapedSwapPaymentTimes_.back()*x);
+            
+        result += temp-o_.discountAtStart_;
+        derivative_ -= o_.shapedSwapPaymentTimes_.back()*temp;
         return result;
+    }
+
+    Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::derivative(const Real& x) const {
+        return derivative_;
     }
 
     void GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::setSwapRateValue(Real x) {
@@ -764,11 +776,11 @@ namespace QuantLib {
             initialGuess = N/D;
 
             objectiveFunction_->setSwapRateValue(Rs);
-            Brent solver;
-            solver.setMaxEvaluations(1000);
-
+            //Brent solver;
+            NewtonSafe newtonSafeSolver;
+            newtonSafeSolver.setMaxEvaluations(1000);
             const Real lower = -20, upper = 20.;
-            calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_,
+            calibratedShift_ = newtonSafeSolver.solve(*objectiveFunction_, accuracy_,
                 std::max( std::min(initialGuess, upper*.99), lower*.99),
                 lower, upper);
             tmpRs_=Rs;

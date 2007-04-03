@@ -23,9 +23,9 @@
 #ifndef quantlib_conundrum_pricer_hpp
 #define quantlib_conundrum_pricer_hpp
 
-#include <ql/cashflows/cmscoupon.hpp>
-#include <ql/cashflows/couponpricer.hpp>
-#include <ql/volatilities/swaptionvolcube.hpp>
+#include <ql/CashFlows/cmscoupon.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
+#include <ql/Volatilities/swaptionvolcube.hpp>
 
 namespace QuantLib {
 
@@ -150,12 +150,14 @@ namespace QuantLib {
             class ObjectiveFunction : public std::unary_function<Real, Real> {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
+                mutable Real derivative_;
                 public:
               virtual ~ObjectiveFunction() {}
                 ObjectiveFunction(const GFunctionWithShifts& o,
                                   const Real Rs)
                 : o_(o), Rs_(Rs) {}
                 virtual Real operator()(const Real& x) const;
+                Real derivative (const Real& x) const;
                 void setSwapRateValue(Real x);
                 const GFunctionWithShifts& gFunctionWithShifts() const {return o_;}
             };
