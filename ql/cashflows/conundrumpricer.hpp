@@ -23,12 +23,15 @@
 #ifndef quantlib_conundrum_pricer_hpp
 #define quantlib_conundrum_pricer_hpp
 
-#include <ql/cashflows/cmscoupon.hpp>
-#include <ql/cashflows/couponpricer.hpp>
-#include <ql/volatilities/swaptionvolcube.hpp>
+#include <ql/CashFlows/couponpricer.hpp> 
+#include <ql/Instruments/payoffs.hpp>
+
 
 namespace QuantLib {
 
+    class YieldTermStructure;
+    class Quote;
+ 
     class VanillaOptionPricer {
       public:
         virtual ~VanillaOptionPricer() {};
@@ -189,7 +192,7 @@ namespace QuantLib {
         virtual Real floorletPrice(Rate effectiveFloor) const;
         virtual Rate floorletRate(Rate effectiveFloor) const;
         /* */
-        Real meanReversion() const { return meanReversion_->value(); }
+        Real meanReversion() const;
         void setMeanReversion(const Handle<Quote>& meanReversion) {
             unregisterWith(meanReversion_);
             meanReversion_ = meanReversion;
@@ -240,7 +243,6 @@ namespace QuantLib {
             Rate upperLimit = 1.0,
             Real precision = 1.0e-6);
 
-       Real elapsed();
        Real upperLimit(){return upperLimit_;}
        Real stdDeviations(){return stdDeviationsForUpperLimit_;}
 

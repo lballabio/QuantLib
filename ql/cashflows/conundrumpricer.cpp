@@ -26,12 +26,11 @@
 #include <ql/math/kronrodintegral.hpp>
 #include <ql/math/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/solvers1d/brent.hpp>
 #include <ql/solvers1d/newton.hpp>
 #include <ql/volatilities/smilesection.hpp>
+#include <ql/cashflows/cmscoupon.hpp>
+#include <ql/yieldtermstructure.hpp> 
 #include <ql/quotes/simplequote.hpp>
-#include <boost/timer.hpp>
-
 
 namespace QuantLib {
 
@@ -135,6 +134,8 @@ namespace QuantLib {
                                         swaptionVolatility().currentLink()));
          }
     }
+
+    Real ConundrumPricer::meanReversion() const { return meanReversion_->value();}
 
     Rate ConundrumPricer::swapletRate() const {
         return swapletPrice()/(coupon_->accrualPeriod()*discount_);
@@ -291,13 +292,7 @@ namespace QuantLib {
             std::exp(stdDeviationsForUpperLimit*std::sqrt(variance));
     }
 
-    Real ConundrumPricerByNumericalIntegration::elapsed(){
-        boost::timer timer;
-        timer.restart();
-        swapletPrice();
-        return timer.elapsed();
-    }
-
+  
 //===========================================================================//
 //                              ConundrumIntegrand                           //
 //===========================================================================//
