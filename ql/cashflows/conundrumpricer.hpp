@@ -238,11 +238,11 @@ namespace QuantLib {
 			const Handle<Quote>& meanReversion,
             Rate lowerLimit = 0.0,
             Rate upperLimit = 1.0,
-            Real precision = 1.0e-6,
-            Real numberOfStdDeviationsForUpperLimit = Null<Real>());
+            Real precision = 1.0e-6);
 
        Real elapsed();
        Real upperLimit(){return upperLimit_;}
+       Real stdDeviations(){return stdDeviationsForUpperLimit_;}
 
       //private:
         class Function : public std::unary_function<Real, Real> {
@@ -291,10 +291,11 @@ namespace QuantLib {
         virtual Real optionletPrice(Option::Type optionType,
                                     Rate strike) const;
         virtual Real swapletPrice() const;
-        void resetUpperLimit() const;
+        Real resetUpperLimit(Real stdDeviationsForUpperLimit) const;
+        Real refineIntegration(Real integralValue, const ConundrumIntegrand& integrand) const;
     
-        mutable Real upperLimit_;
-        const Real lowerLimit_, precision_, numberOfStdDeviationsForUpperLimit_;
+        mutable Real upperLimit_, stdDeviationsForUpperLimit_;
+        const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
     };
 
     class ConundrumPricerByBlack : public ConundrumPricer {

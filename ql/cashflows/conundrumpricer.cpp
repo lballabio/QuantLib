@@ -198,13 +198,14 @@ namespace QuantLib {
         const Handle<Quote>& meanReversion,
         Real lowerLimit,
         Real upperLimit,
-        Real precision,
-        Real numberOfStdDeviationsForUpperLimit)
+        Real precision)
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
        precision_(precision),
-       numberOfStdDeviationsForUpperLimit_(numberOfStdDeviationsForUpperLimit){
+       requiredStdDeviations_(8),
+       refiningIntegrationTolerance_(.0001){
+
     }
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
@@ -220,28 +221,34 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
-        if(numberOfStdDeviationsForUpperLimit_ != Null<Real>())
-            resetUpperLimit();
-        Real a, b;
-        if (optionType==Option::Call) {
-            a = strike;
-            b = std::max(strike, upperLimit_);
-        } else {
-            a = std::min(strike, lowerLimit_);
-            b = strike;
-        }
+         
         boost::shared_ptr<ConundrumIntegrand> integrand(new
             ConundrumIntegrand(vanillaOptionPricer_, rateCurve_, gFunction_,
                                fixingDate_, paymentDate_, annuity_,
                                swapRateValue_, strike, optionType));
-        Real integralValue = optionType*integrate(a, b, *integrand);
+        stdDeviationsForUpperLimit_= requiredStdDeviations_;
+        Real a, b, integralValue;
+        if (optionType==Option::Call) {
+            upperLimit_ = resetUpperLimit(stdDeviationsForUpperLimit_);
+        //    while(upperLimit_ <= strike){
+        //        stdDeviationsForUpperLimit_ += 1.;
+        //        upperLimit_ = resetUpperLimit(stdDeviationsForUpperLimit_);
+        //    }
+            integralValue = integrate(strike, upperLimit_, *integrand);
+            //refineIntegration(integralValue, *integrand);
+        } else {
+            a = std::min(strike, lowerLimit_);
+            b = strike;
+            integralValue = integrate(a, b, *integrand);
+        }
+
         Real dFdK = integrand->firstDerivativeOfF(strike);
         Real swaptionPrice =
             (*vanillaOptionPricer_)(strike, optionType, annuity_);
 
         // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
         return coupon_->accrualPeriod() * (discount_/annuity_) *
-            ((1 + dFdK) * swaptionPrice + integralValue);
+            ((1 + dFdK) * swaptionPrice + optionType*integralValue);
     }
 
     Real ConundrumPricerByNumericalIntegration::swapletPrice() const {
@@ -261,16 +268,33 @@ namespace QuantLib {
         }
     }
 
-    void ConundrumPricerByNumericalIntegration::resetUpperLimit() const {
-        Real variance =
-            swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
-        upperLimit_ = swapRateValue_ *
-            std::exp(numberOfStdDeviationsForUpperLimit_*std::sqrt(variance));
+    Real ConundrumPricerByNumericalIntegration::refineIntegration(Real integralValue,
+                                                const ConundrumIntegrand& integrand) const {
+        Real percDiff = 1000.;
+        while(std::fabs(percDiff) < refiningIntegrationTolerance_){
+            stdDeviationsForUpperLimit_ += 1.;
+            Real lowerLimit = upperLimit_;
+            upperLimit_ = resetUpperLimit(stdDeviationsForUpperLimit_);
+            Real diff = integrate(lowerLimit, upperLimit_,integrand);
+            percDiff = diff/integralValue;
+            integralValue += diff;
+        }
+        return integralValue;
     }
+
+    Real ConundrumPricerByNumericalIntegration::resetUpperLimit(
+                        Real stdDeviationsForUpperLimit) const {
+        //return 1.0;
+        Real variance = 
+            swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
+        return swapRateValue_ * 
+            std::exp(stdDeviationsForUpperLimit*std::sqrt(variance)); 
+    }
+
     Real ConundrumPricerByNumericalIntegration::elapsed(){
         boost::timer timer;
         timer.restart();
-        swapletPrice();
+        Real price = swapletPrice();
         return timer.elapsed();
     }
 
@@ -348,7 +372,7 @@ namespace QuantLib {
       { }
 
     //Hagan, 3.5b, 3.5c
-      Real ConundrumPricerByBlack::optionletPrice(Option::Type optionType,
+    Real ConundrumPricerByBlack::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
         Real variance = swaptionVolatility()->blackVariance(fixingDate_,
                                                            swapTenor_,
@@ -769,7 +793,7 @@ namespace QuantLib {
             }
             N *= Rs;
             D *= Rs;
-            N += accruals_.back() * swapPaymentDiscounts_.back()
+            N += accruals_.back() * swapPaymentDiscounts_.back() 
                 - objectiveFunction_->gFunctionWithShifts().discountAtStart_;
             D += accruals_.back() * swapPaymentDiscounts_.back()*
                             shapedSwapPaymentTimes_.back();
