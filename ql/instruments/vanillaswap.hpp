@@ -30,6 +30,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/schedule.hpp>
 
+
 namespace QuantLib {
 
     //! Plain-vanilla swap
@@ -49,6 +50,9 @@ namespace QuantLib {
         - the correctness of the returned value is tested by checking
           it against a known good value.
     */
+
+    class IborCouponPricer;
+
     class VanillaSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };

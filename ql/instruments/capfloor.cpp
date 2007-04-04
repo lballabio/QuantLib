@@ -20,13 +20,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/swap.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/solvers1d/brent.hpp>
-#include <ql/solvers1d/newtonsafe.hpp>
 #include <ql/cashflows/analysis.hpp>
+#include <ql/yieldtermstructure.hpp> 
 
 namespace QuantLib {
 

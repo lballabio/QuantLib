@@ -31,6 +31,7 @@
 #include <ql/yieldtermstructure.hpp> 
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/Indexes/interestrateindex.hpp> 
 
 namespace QuantLib {
 

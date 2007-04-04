@@ -21,7 +21,7 @@
 */
 
 #include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -69,6 +69,17 @@ namespace QuantLib {
 
         registerWith(underlying);
     }
+
+    void CappedFlooredCoupon::setPricer(
+                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            if(pricer_)
+                unregisterWith(pricer_);
+            pricer_ = pricer;
+            QL_REQUIRE(pricer_, "no adequate pricer given");
+            registerWith(pricer_);
+            update();
+            underlying_->setPricer(pricer);
+        }
 
     Rate CappedFlooredCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");

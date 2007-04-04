@@ -22,8 +22,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/yieldtermstructure.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/indexes/interestrateindex.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -56,6 +57,16 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+
+    void FloatingRateCoupon::setPricer(
+                const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            if(pricer_)
+                unregisterWith(pricer_);
+            pricer_ = pricer;
+            QL_REQUIRE(pricer_, "no adequate pricer given");
+            registerWith(pricer_);
+            update();
+    }
 
     Real FloatingRateCoupon::amount() const {
         return rate() * accrualPeriod() * nominal();

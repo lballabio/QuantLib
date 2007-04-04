@@ -27,9 +27,10 @@
 
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
+#include <ql/Utilities/null.hpp> 
 
 namespace QuantLib {
-
+    class Date;
     //! Capped and/or floored floating-rate coupon
     /*! The payoff \f$ P \f$ of a capped floating-rate coupon is:
         \f[ P = N \times T \times \min(a L + b, C). \f]
@@ -85,15 +86,7 @@ namespace QuantLib {
         bool isFloored() const {return isFloored_;}
 
         void setPricer(
-                   const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-            if(pricer_)
-                unregisterWith(pricer_);
-            pricer_ = pricer;
-            QL_REQUIRE(pricer_, "no adequate pricer given");
-            registerWith(pricer_);
-            update();
-            underlying_->setPricer(pricer);
-        }
+                   const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
 
     protected:
         // data

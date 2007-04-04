@@ -30,13 +30,14 @@
 #define quantlib_floating_rate_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
-#include <ql/cashflows/couponpricer.hpp>
-#include <ql/utilities/null.hpp>
-#include <ql/indexes/interestrateindex.hpp>
-#include <ql/capvolstructures.hpp>
+#include <ql/handle.hpp> 
 
 namespace QuantLib {
-    
+
+    class InterestRateIndex;
+    class YieldTermStructure;
+    class FloatingRateCouponPricer;
+
     class FloatingRateCoupon : public Coupon,
                                public Observer {
       public:
@@ -94,14 +95,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
         //@}
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-            if(pricer_)
-                unregisterWith(pricer_);
-            pricer_ = pricer;
-            QL_REQUIRE(pricer_, "no adequate pricer given");
-            registerWith(pricer_);
-            update();
-		}
+        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
         boost::shared_ptr<FloatingRateCouponPricer> pricer() const{
 			return pricer_;
 	    }

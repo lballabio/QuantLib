@@ -25,6 +25,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/assetswap.hpp>
 #include <ql/cashflows/analysis.hpp>
+#include <ql/CashFlows/couponpricer.hpp>
 
 namespace QuantLib {
 

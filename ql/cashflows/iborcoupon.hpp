@@ -27,7 +27,6 @@
 #define quantlib_ibor_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
 

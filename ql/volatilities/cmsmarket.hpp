@@ -37,6 +37,8 @@
 namespace QuantLib {
 
      typedef Leg Leg;
+     
+     class CmsCouponPricer;
 
      class CmsMarket: public LazyObject{
       public:

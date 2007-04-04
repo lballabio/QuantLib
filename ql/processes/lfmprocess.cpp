@@ -24,6 +24,7 @@
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/processes/lfmprocess.hpp>
 #include <ql/cashflows/analysis.hpp>
+#include <ql/CashFlows/couponpricer.hpp> 
 
 namespace QuantLib {
 
