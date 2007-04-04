@@ -32,6 +32,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/Indexes/interestrateindex.hpp> 
+#include <boost/bind.hpp>
 
 namespace QuantLib {
 
@@ -210,15 +211,87 @@ namespace QuantLib {
 
     }
 
+    class VariableChange{
+    public:
+        VariableChange(Integrand& f,Real a, Real b, Size k)
+            : f_(f), a_(a), b_(b), k_(k),width_(b-a){};
+        Real value(Real x) const {
+            Real newVar;
+			Real temp = width_;
+			for (Size i = 1; i < k_ ; ++i){
+				temp *= x;
+			}
+            newVar = a_ + x* temp;
+            return f_(newVar) * k_* temp;
+            }
+
+    private:
+        Real a_, b_, width_;
+        Integrand f_;
+		Size k_;
+        };
+    
+    class Spy{
+    public:
+        Spy(Integrand f):f_(f){};
+        Real value(Real x){
+            abssicas.push_back(x);
+            Real value = f_(x);
+            functionValues.push_back(value);
+            return value;
+        }
+    private:
+        Integrand f_;
+        std::vector<Real> abssicas;
+        std::vector<Real> functionValues;
+    };
+
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
-        // grado polinomi di Legendre - Questa variabile serve soltanto in
-        // caso di GaussLegendreQuadrature
-        //const Size n = 25;
-        //GaussLegendre Integral(n);
+        double result =.0, abserr =.0;
+        double alpha = 1.0;
 
-        const KronrodIntegral integral(precision_, 1000000);
-        return integral(integrand,a , b);
+     
+        double epsabs = precision_;
+        double epsrel = 1.0; // we are interested only in absolut precision
+        size_t neval =0;
+
+		// we use gaussKronrodNonAdaptive only for semi infinite interval
+        if (a>0){
+              Real upperBoundary = 2*a;
+              while(integrand(upperBoundary)>precision_)
+                    upperBoundary *=2.0;
+              upperBoundary = std::min(upperBoundary, b);
+             
+              // we estimate the actual boudary
+                   bool integrationSuccess;
+                   Integer neval, nevalChangeVariable;
+                   Real qngResult = 0;
+                   Integrand f = boost::ref(integrand);
+                   if (upperBoundary > 2*a){
+					    Size k = 3;
+						VariableChange variableChange(f, a, upperBoundary, k);
+						integrationSuccess = gaussKronrodNonAdaptative(
+							boost::bind(&VariableChange::value, &variableChange, _1), 
+							0, 1.0,epsabs, epsrel, qngResult, abserr, nevalChangeVariable);
+				   } else {
+						integrationSuccess = gaussKronrodNonAdaptative(f, 
+							a, upperBoundary, epsabs, epsrel, qngResult, abserr, neval);
+				   }
+					// if the expected precision has not been reached we use the old algorithm
+				   if (!integrationSuccess){
+						const KronrodIntegral integral(precision_, 1000000);
+						result = integral(integrand,a , b);
+				   }else{
+						result = qngResult;			
+				   }
+								 
+        }else{
+            // if a ==0 we use the old algorithm
+            const KronrodIntegral integral(precision_, 1000000);
+            result = integral(integrand,a , b);
+        }
+        return result;
     }
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
