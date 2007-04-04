@@ -27,9 +27,6 @@
 
 #include <ql/math/interpolation2d.hpp>
 #include <ql/math/cubicspline.hpp>
-#ifdef QL_PATCH_MSVC6
-#include <ql/math/matrix.hpp>
-#endif
 
 namespace QuantLib {
 
@@ -74,7 +71,6 @@ namespace QuantLib {
     class BicubicSpline : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
-        #ifndef QL_PATCH_MSVC6
         template <class I1, class I2, class M>
         BicubicSpline(const I1& xBegin, const I1& xEnd,
                       const I2& yBegin, const I2& yEnd,
@@ -83,17 +79,6 @@ namespace QuantLib {
                   new detail::BicubicSplineImpl<I1,I2,M>(xBegin, xEnd,
                                                          yBegin, yEnd, zData));
         }
-        #else
-        template <class I1, class I2>
-        BicubicSpline(const I1& xBegin, const I1& xEnd,
-                      const I2& yBegin, const I2& yEnd,
-                      const Matrix& zData) {
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new detail::BicubicSplineImpl<I1,I2,Matrix>(xBegin, xEnd,
-                                                              yBegin, yEnd,
-                                                              zData));
-        }
-        #endif
     };
 
     //! bicubic-spline interpolation factory

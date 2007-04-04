@@ -114,12 +114,8 @@ namespace QuantLib {
 
 
     void MultiAssetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        Option::arguments copy = *this;
-        copy.validate();
-        #else
+
         Option::arguments::validate();
-        #endif
 
         QL_REQUIRE(stochasticProcess, "no process given");
     }

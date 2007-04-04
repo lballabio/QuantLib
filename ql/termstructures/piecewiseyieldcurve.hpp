@@ -104,8 +104,6 @@ namespace QuantLib {
 
     }
 
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
-
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
         rate instruments which are passed as a vector of handles to
@@ -378,8 +376,6 @@ namespace QuantLib {
         curve_->interpolation_.update();
         return rateHelper_->quoteError();
     }
-
-    #endif
 
     #endif
 

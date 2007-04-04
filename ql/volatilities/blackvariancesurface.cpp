@@ -62,11 +62,7 @@ namespace QuantLib {
             }
         }
         // default: bilinear interpolation
-        #if defined(QL_PATCH_MSVC6) || defined(QL_PATCH_BORLAND)
-        setInterpolation(Bilinear());
-        #else
         setInterpolation<Bilinear>();
-        #endif
     }
 
     Real BlackVarianceSurface::blackVarianceImpl(Time t, Real strike) const {

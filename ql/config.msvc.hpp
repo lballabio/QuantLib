@@ -145,23 +145,8 @@
 #define QL_PATCH_MSVC  // more granularity below
 
 // select toolset:
-#if (_MSC_VER < 1200)
+#if (_MSC_VER < 1310)
 #  error "unsupported Microsoft compiler"
-#elif (_MSC_VER == 1200)
-// move inside here configs specific to VC++ 6.0
-#  define QL_PATCH_MSVC6
-#  define CHOKES_ON_TYPENAME
-#  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
-#  define REQUIRES_DUMMY_RETURN
-// decorated name length exceeded, name was truncated in debug info
-#  pragma warning(disable: 4786)
-#  pragma warning(disable: 4503)
-#elif (_MSC_VER == 1300)
-// move inside here configs specific to VC++ 7.0
-// Warning: QuantLib was never been compiled with VC++ 7.0,
-// the settings are just borrowed from 7.1
-#  define QL_PATCH_MSVC70
-#  define QL_PATCH_MSVC71
 #elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ 7.1 (.Net 2003)
 #  define QL_PATCH_MSVC71

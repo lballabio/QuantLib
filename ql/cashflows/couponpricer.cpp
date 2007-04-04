@@ -98,11 +98,7 @@ namespace QuantLib {
                               effStrike,
                               adjustedFixing(),
                               std::sqrt(capletVolatility()->blackVariance(fixingDate,effStrike)));
-            #if defined(QL_PATCH_MSVC6)
-            return std::max(fixing,0.0)* coupon_->accrualPeriod()*discount_;
-            #else
             return fixing* coupon_->accrualPeriod()*discount_; ;
-            #endif
         }
     }
 

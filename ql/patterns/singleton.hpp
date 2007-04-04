@@ -56,10 +56,6 @@ namespace QuantLib {
         static T& instance();
       protected:
         Singleton() {}
-    #ifdef QL_PATCH_MSVC6
-      private:
-        static std::map<Integer, boost::shared_ptr<T> > instances_;
-    #endif
     };
 
     #if defined(QL_ENABLE_SESSIONS)
@@ -69,16 +65,9 @@ namespace QuantLib {
 
     // template definitions
 
-    #ifdef QL_PATCH_MSVC6
-    template <class T>
-    std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
-    #endif
-
     template <class T>
     T& Singleton<T>::instance() {
-        #ifndef QL_PATCH_MSVC6
         static std::map<Integer, boost::shared_ptr<T> > instances_;
-        #endif
         #if defined(QL_ENABLE_SESSIONS)
         Integer id = sessionId();
         #else

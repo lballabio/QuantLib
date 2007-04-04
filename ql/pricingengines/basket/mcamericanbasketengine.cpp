@@ -19,7 +19,6 @@
 */
 
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/math/functional.hpp>
 #include <ql/montecarlo/lsmbasissystem.hpp>
 #include <boost/bind.hpp>
@@ -93,5 +92,3 @@ namespace QuantLib {
     }
 
 }
-
-#endif

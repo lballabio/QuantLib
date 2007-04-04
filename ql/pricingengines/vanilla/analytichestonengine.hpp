@@ -26,8 +26,6 @@
 
 #include <ql/qldefines.hpp>
 
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/shortratemodels/twofactormodels/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -77,7 +75,5 @@ namespace QuantLib {
     };
 
 }
-
-#endif
 
 #endif

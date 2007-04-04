@@ -62,11 +62,7 @@ namespace QuantLib {
         //! \name Modifiers
         //@{
         template <class Interpolator>
-        void setInterpolation(const Interpolator& i
-                    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-                              = Interpolator()
-                    #endif
-                              ) {
+        void setInterpolation(const Interpolator& i = Interpolator()) {
             varianceCurve_ = i.interpolate(times_.begin(), times_.end(),
                                            variances_.begin());
             varianceCurve_.update();

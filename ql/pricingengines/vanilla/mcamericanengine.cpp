@@ -22,7 +22,6 @@
 */
 
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/errors.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
@@ -79,6 +78,3 @@ namespace QuantLib {
     }
 
 }
-
-#endif
-

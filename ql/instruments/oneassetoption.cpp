@@ -181,12 +181,7 @@ namespace QuantLib {
 
 
     void OneAssetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        Option::arguments copy = *this;
-        copy.validate();
-        #else
         Option::arguments::validate();
-        #endif
         // we assume the underlying value to be the first state variable
         QL_REQUIRE(stochasticProcess->initialValues()[0] > 0.0,
                    "negative or zero underlying given");

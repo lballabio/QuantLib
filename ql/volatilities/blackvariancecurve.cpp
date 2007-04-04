@@ -58,11 +58,7 @@ namespace QuantLib {
         }
 
         // default: linear interpolation
-        #if defined(QL_PATCH_MSVC6) || defined(QL_PATCH_BORLAND)
-        setInterpolation(Linear());
-        #else
         setInterpolation<Linear>();
-        #endif
     }
 
     Real BlackVarianceCurve::blackVarianceImpl(Time t, Real) const {

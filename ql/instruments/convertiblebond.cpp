@@ -299,12 +299,7 @@ namespace QuantLib {
 
     void ConvertibleBond::option::arguments::validate() const {
 
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         QL_REQUIRE(conversionRatio != Null<Real>(), "null conversion ratio");
         QL_REQUIRE(conversionRatio > 0.0,

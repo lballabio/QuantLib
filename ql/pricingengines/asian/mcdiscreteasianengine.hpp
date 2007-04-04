@@ -110,12 +110,7 @@ namespace QuantLib {
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
-
-        #if defined(QL_PATCH_MSVC6)
-        this->controlVariate_ = false;
-        #endif
-    }
+      brownianBridge_(brownianBridge), seed_(seed) {}
 
     template <class RNG, class S>
     inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {

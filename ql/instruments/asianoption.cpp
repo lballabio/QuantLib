@@ -53,12 +53,7 @@ namespace QuantLib {
 
     void DiscreteAveragingAsianOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
         QL_REQUIRE(pastFixings != Null<Size>(), "null past-fixing number");
@@ -106,12 +101,7 @@ namespace QuantLib {
 
     void ContinuousAveragingAsianOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
     }

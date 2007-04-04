@@ -25,9 +25,6 @@
 #define quantlib_bates_engine_hpp
 
 #include <ql/qldefines.hpp>
-
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
 #include <ql/shortratemodels/twofactormodels/batesmodel.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
@@ -147,8 +144,5 @@ namespace QuantLib {
     };
 
 }
-
-
-#endif
 
 #endif

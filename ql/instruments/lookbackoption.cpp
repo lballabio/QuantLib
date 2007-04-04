@@ -45,12 +45,7 @@ namespace QuantLib {
 
     void ContinuousFloatingLookbackOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetOption::arguments::validate();
-        #endif
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "
@@ -80,12 +75,7 @@ namespace QuantLib {
 
     void ContinuousFixedLookbackOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         QL_REQUIRE(minmax != Null<Real>(), "null prior extremum");
         QL_REQUIRE(minmax >= 0.0, "nonnegative prior extremum required: "

@@ -25,8 +25,6 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/instruments/payoffs.hpp>
 
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
 namespace QuantLib {
 
     // helper class for integration
@@ -196,6 +194,3 @@ namespace QuantLib {
         }
     }
 }
-
-#endif
-

@@ -40,11 +40,7 @@ namespace QuantLib {
         Real minStrike() const;
         Real maxStrike() const;
         template <class Interpolator>
-        void setInterpolation(const Interpolator& i
-                    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-                              = Interpolator()
-                    #endif
-                              ) {
+        void setInterpolation(const Interpolator& i = Interpolator()) {
             blackCurve_.setInterpolation(i);
             notifyObservers();
         }

@@ -26,7 +26,6 @@
 #define quantlib_american_basket_montecarlo_engine_hpp
 
 #include <ql/qldefines.hpp>
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/instruments/basketoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
@@ -173,7 +172,5 @@ namespace QuantLib {
     }
 
 }
-
-#endif
 
 #endif

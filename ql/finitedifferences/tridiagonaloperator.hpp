@@ -65,14 +65,6 @@ namespace QuantLib {
         explicit TridiagonalOperator(Size size = 0);
         TridiagonalOperator(const Array& low, const Array& mid,
                             const Array& high);
-        #if defined(QL_PATCH_MSVC6)
-        /* This copy constructor and assignment operator are here
-           because somehow Visual C++ is not able to generate working
-           ones. They are _not_ to be defined for other compilers
-           which are able to generate correct ones.   */
-        TridiagonalOperator(const TridiagonalOperator&);
-        TridiagonalOperator& operator=(const TridiagonalOperator&);
-        #endif
         TridiagonalOperator(const Disposable<TridiagonalOperator>&);
         TridiagonalOperator& operator=(const Disposable<TridiagonalOperator>&);
         //! \name Operator interface

@@ -91,12 +91,7 @@ namespace QuantLib {
     }
 
     void Swaption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        VanillaSwap::arguments copy = *this;
-        copy.validate();
-        #else
         VanillaSwap::arguments::validate();
-        #endif
         QL_REQUIRE(fixedRate != Null<Real>(),
                    "fixed swap rate null or not set");
         QL_REQUIRE(fairRate != Null<Real>(),

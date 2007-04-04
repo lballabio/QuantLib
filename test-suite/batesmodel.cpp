@@ -56,7 +56,6 @@ void teardown() {
 QL_END_TEST_LOCALS(BatesModelTest)
 
 void BatesModelTest::testAnalyticVsBlack() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
@@ -165,12 +164,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 void BatesModelTest::testAnalyticVsJumpDiffusion() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 
     BOOST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
 
@@ -248,12 +245,9 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 void BatesModelTest::testDAXCalibration() {
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
-
     /* this example is taken from A. Sepp
        Pricing European-Style Options under Jump Diffusion Processes
        with Stochstic Volatility: Applications of Fourier Transform
@@ -400,16 +394,13 @@ void BatesModelTest::testDAXCalibration() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 test_suite* BatesModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testAnalyticVsJumpDiffusion));
     suite->add(BOOST_TEST_CASE(&BatesModelTest::testDAXCalibration));
-    #endif
     return suite;
 }
 

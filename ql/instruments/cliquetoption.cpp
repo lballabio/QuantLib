@@ -42,12 +42,7 @@ namespace QuantLib {
     }
 
     void CliquetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         boost::shared_ptr<PercentageStrikePayoff> moneyness =
             boost::dynamic_pointer_cast<PercentageStrikePayoff>(payoff);

@@ -228,8 +228,6 @@ void teardown() {
     IndexManager::instance().clearHistories();
 }
 
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
-
 template <class T, class I>
 void testCurveConsistency(const T&, const I& interpolator) {
 
@@ -351,14 +349,10 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
 }
 
-#endif
-
 QL_END_TEST_LOCALS(PiecewiseYieldCurveTest)
 
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
@@ -369,13 +363,9 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     testCurveConsistency(Discount(), LogLinear());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
@@ -386,13 +376,9 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     testCurveConsistency(Discount(), Linear());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
@@ -403,13 +389,9 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
     testCurveConsistency(ZeroYield(), LogLinear());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
@@ -420,13 +402,9 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     testCurveConsistency(ZeroYield(), Linear());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline zero-yield curve...");
@@ -440,13 +418,9 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
                                true));
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
@@ -457,13 +431,9 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     testCurveConsistency(ForwardRate(), Linear());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
@@ -474,13 +444,9 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     testCurveConsistency(ForwardRate(), BackwardFlat());
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline forward-rate curve...");
@@ -494,13 +460,9 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
                                true));
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 void PiecewiseYieldCurveTest::testObservability() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE("Testing observability of piecewise yield curve...");
 
@@ -532,14 +494,10 @@ void PiecewiseYieldCurveTest::testObservability() {
         BOOST_FAIL("Observer was not notified of date change");
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 
 void PiecewiseYieldCurveTest::testLiborFixing() {
-
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
 
     BOOST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
@@ -633,15 +591,12 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     }
 
     QL_TEST_TEARDOWN
-
-    #endif
 }
 
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_MSVC70)
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
@@ -663,7 +618,6 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     //              &PiecewiseYieldCurveTest::testSplineForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
-    #endif
     return suite;
 }
 

@@ -26,7 +26,6 @@
 #define quantlib_mc_american_engine_hpp
 
 #include <ql/qldefines.hpp>
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/payoff.hpp>
 #include <ql/montecarlo/lsmbasissystem.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -338,7 +337,5 @@ namespace QuantLib {
     }
 
 }
-
-#endif
 
 #endif

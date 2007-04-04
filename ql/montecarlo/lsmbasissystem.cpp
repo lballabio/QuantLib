@@ -22,7 +22,6 @@
 */
 
 #include <ql/montecarlo/lsmbasissystem.hpp>
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 #include <ql/math/functional.hpp>
 #include <ql/math/gaussianorthogonalpolynomial.hpp>
 #include <ql/randomnumbers/mt19937uniformrng.hpp>
@@ -212,5 +211,3 @@ namespace QuantLib {
     }
 
 }
-
-#endif

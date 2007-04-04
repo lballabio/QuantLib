@@ -60,12 +60,7 @@ namespace QuantLib {
     }
 
     void BarrierOption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        OneAssetStrikedOption::arguments copy = *this;
-        copy.validate();
-        #else
         OneAssetStrikedOption::arguments::validate();
-        #endif
 
         // assuming, as always, that the underlying is the first of
         // the state variables...

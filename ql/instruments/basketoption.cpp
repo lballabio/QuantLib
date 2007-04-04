@@ -59,13 +59,7 @@ namespace QuantLib {
     }
 
     void BasketOption::arguments::validate() const {
-        #if defined(QL_PATCH_MSVC6)
-        MultiAssetOption::arguments copy = *this;
-        copy.validate();
-        #else
         MultiAssetOption::arguments::validate();
-        #endif
-
     }
 }
 

@@ -309,7 +309,6 @@ void BasketOptionTest::testEuroTwoValues() {
     }
 }
 
-#if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
 void BasketOptionTest::testBarraquandThreeValues() {
 
     BOOST_MESSAGE("Testing three-asset basket options "
@@ -824,18 +823,13 @@ void BasketOptionTest::testOddSamples() {
 
     }
 }
-#endif
-
 
 test_suite* BasketOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
-    #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
     suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOddSamples));
-    #endif
     return suite;
 }
-
