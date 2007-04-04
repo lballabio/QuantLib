@@ -27,6 +27,7 @@
 
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
