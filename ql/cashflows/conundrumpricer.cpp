@@ -202,8 +202,8 @@ namespace QuantLib {
     : ConundrumPricer(swaptionVol, modelOfYieldCurve, meanReversion),
        upperLimit_(upperLimit),
        lowerLimit_(lowerLimit),
-       precision_(precision),
        requiredStdDeviations_(8),
+       precision_(precision),
        refiningIntegrationTolerance_(.0001){
 
     }
@@ -221,7 +221,7 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::optionletPrice(
                                 Option::Type optionType, Real strike) const {
-         
+
         boost::shared_ptr<ConundrumIntegrand> integrand(new
             ConundrumIntegrand(vanillaOptionPricer_, rateCurve_, gFunction_,
                                fixingDate_, paymentDate_, annuity_,
@@ -285,16 +285,16 @@ namespace QuantLib {
     Real ConundrumPricerByNumericalIntegration::resetUpperLimit(
                         Real stdDeviationsForUpperLimit) const {
         //return 1.0;
-        Real variance = 
+        Real variance =
             swaptionVolatility()->blackVariance(fixingDate_,swapTenor_,swapRateValue_);
-        return swapRateValue_ * 
-            std::exp(stdDeviationsForUpperLimit*std::sqrt(variance)); 
+        return swapRateValue_ *
+            std::exp(stdDeviationsForUpperLimit*std::sqrt(variance));
     }
 
     Real ConundrumPricerByNumericalIntegration::elapsed(){
         boost::timer timer;
         timer.restart();
-        Real price = swapletPrice();
+        swapletPrice();
         return timer.elapsed();
     }
 
@@ -758,13 +758,13 @@ namespace QuantLib {
         derivative_ *= Rs_;
         Real temp = o_.swapPaymentDiscounts_.back()
             * std::exp(-o_.shapedSwapPaymentTimes_.back()*x);
-            
+
         result += temp-o_.discountAtStart_;
         derivative_ -= o_.shapedSwapPaymentTimes_.back()*temp;
         return result;
     }
 
-    Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::derivative(const Real& x) const {
+    Real GFunctionFactory::GFunctionWithShifts::ObjectiveFunction::derivative(const Real&) const {
         return derivative_;
     }
 
@@ -793,7 +793,7 @@ namespace QuantLib {
             }
             N *= Rs;
             D *= Rs;
-            N += accruals_.back() * swapPaymentDiscounts_.back() 
+            N += accruals_.back() * swapPaymentDiscounts_.back()
                 - objectiveFunction_->gFunctionWithShifts().discountAtStart_;
             D += accruals_.back() * swapPaymentDiscounts_.back()*
                             shapedSwapPaymentTimes_.back();
