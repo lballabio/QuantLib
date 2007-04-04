@@ -27,7 +27,7 @@
 #include <ql/math/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/solvers1d/brent.hpp>
-#include <ql/solvers1d/newtonsafe.hpp>
+#include <ql/solvers1d/newton.hpp>
 #include <ql/volatilities/smilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <boost/timer.hpp>
@@ -800,11 +800,11 @@ namespace QuantLib {
             initialGuess = N/D;
 
             objectiveFunction_->setSwapRateValue(Rs);
-            //Brent solver;
-            NewtonSafe newtonSafeSolver;
-            newtonSafeSolver.setMaxEvaluations(1000);
+            //Newton solver;
+            Newton newtonSolver;
+            newtonSolver.setMaxEvaluations(1000);
             const Real lower = -20, upper = 20.;
-            calibratedShift_ = newtonSafeSolver.solve(*objectiveFunction_, accuracy_,
+            calibratedShift_ = newtonSolver.solve(*objectiveFunction_, accuracy_,
                 std::max( std::min(initialGuess, upper*.99), lower*.99),
                 lower, upper);
             tmpRs_=Rs;
