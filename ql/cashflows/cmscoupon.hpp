@@ -25,9 +25,7 @@
 #ifndef quantlib_cms_coupon_hpp
 #define quantlib_cms_coupon_hpp
 
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 
 namespace QuantLib {
 
@@ -36,6 +34,7 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
+    class SwapIndex;
     class CmsCoupon : public FloatingRateCoupon {
       public:
         CmsCoupon(const Date& paymentDate,

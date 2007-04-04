@@ -19,10 +19,7 @@
 */
 
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/math/normaldistribution.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/option.hpp> 
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/indexes/swapindex.hpp>
 
 namespace QuantLib {
 

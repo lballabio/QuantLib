@@ -22,7 +22,6 @@
 */
 
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/math/gaussianquadratures.hpp>
 #include <ql/math/kronrodintegral.hpp>
 #include <ql/math/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -31,6 +30,7 @@
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/yieldtermstructure.hpp> 
 #include <ql/quotes/simplequote.hpp>
+#include <ql/indexes/swapindex.hpp>
 
 namespace QuantLib {
 
