@@ -24,7 +24,7 @@
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/processes/lfmprocess.hpp>
 #include <ql/cashflows/analysis.hpp>
-#include <ql/CashFlows/couponpricer.hpp> 
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -192,7 +192,7 @@ namespace QuantLib {
                    index_->dayCounter(),
                    index_->businessDayConvention(),
                    index_->fixingDays());
-        boost::shared_ptr<IborCouponPricer> 
+        boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(floatingLeg,fictitiousPricer);
         return floatingLeg;

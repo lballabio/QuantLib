@@ -25,7 +25,7 @@
 #ifndef quantlib_cms_coupon_hpp
 #define quantlib_cms_coupon_hpp
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 
 namespace QuantLib {
 
@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         CmsCoupon(const Date& paymentDate,
                   const Real nominal,
-                  const Date& startDate, 
+                  const Date& startDate,
                   const Date& endDate,
                   const Natural fixingDays,
                   const boost::shared_ptr<SwapIndex>& index,

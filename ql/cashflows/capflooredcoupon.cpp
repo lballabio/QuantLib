@@ -21,7 +21,7 @@
 */
 
 #include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/CashFlows/couponpricer.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +42,7 @@ namespace QuantLib {
                          underlying->isInArrears()),
       underlying_(underlying),
       isCapped_(false), isFloored_(false) {
-        
+
         if (gearing_ > 0) {
             if (cap != Null<Rate>()) {
                 isCapped_ = true;
@@ -54,7 +54,7 @@ namespace QuantLib {
             }
         } else {
               if (cap != Null<Rate>()){
-                floor_ = cap;  
+                floor_ = cap;
                 isFloored_ = true;
               }
               if (floor != Null<Rate>()){
@@ -98,24 +98,24 @@ namespace QuantLib {
     }
 
     Rate CappedFlooredCoupon::cap() const {
-        if ( (gearing_ > 0) && isCapped_) 
+        if ( (gearing_ > 0) && isCapped_)
                 return cap_;
         if ( (gearing_ < 0) && isFloored_)
             return floor_;
         return Null<Rate>();
-    } 
+    }
 
     Rate CappedFlooredCoupon::floor() const {
-        if ( (gearing_ > 0) && isFloored_) 
+        if ( (gearing_ > 0) && isFloored_)
             return floor_;
-        if ( (gearing_ < 0) && isCapped_) 
+        if ( (gearing_ < 0) && isCapped_)
             return cap_;
         return Null<Rate>();
     }
 
     Rate CappedFlooredCoupon::effectiveCap() const {
         return (cap_ - spread())/gearing();
-    } 
+    }
 
     Rate CappedFlooredCoupon::effectiveFloor() const {
         return (floor_ - spread())/gearing();

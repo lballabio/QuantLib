@@ -19,7 +19,7 @@
 */
 
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/Indexes/interestrateindex.hpp>
+#include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {
 

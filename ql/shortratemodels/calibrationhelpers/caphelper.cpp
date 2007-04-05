@@ -22,7 +22,7 @@
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/analysis.hpp>
-#include <ql/CashFlows/couponpricer.hpp> 
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
                                   DayCounter(),
                                   index->businessDayConvention(),
                                   0);
-        boost::shared_ptr<IborCouponPricer> 
+        boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         CashFlows::setPricer(floatingLeg,fictitiousPricer);
 

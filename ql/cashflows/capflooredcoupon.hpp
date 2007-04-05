@@ -27,7 +27,7 @@
 
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/Utilities/null.hpp> 
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
     class Date;

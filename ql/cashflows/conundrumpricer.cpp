@@ -28,10 +28,10 @@
 #include <ql/solvers1d/newton.hpp>
 #include <ql/volatilities/smilesection.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/yieldtermstructure.hpp> 
+#include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/Indexes/interestrateindex.hpp> 
+#include <ql/indexes/interestrateindex.hpp>
 #include <boost/bind.hpp>
 
 namespace QuantLib {
@@ -214,13 +214,13 @@ namespace QuantLib {
     class VariableChange{
     public:
         VariableChange(Integrand& f,Real a, Real b, Size k)
-            : f_(f), a_(a), b_(b), k_(k),width_(b-a){};
+        : a_(a), b_(b), width_(b-a), f_(f), k_(k) {};
         Real value(Real x) const {
             Real newVar;
-			Real temp = width_;
-			for (Size i = 1; i < k_ ; ++i){
-				temp *= x;
-			}
+            Real temp = width_;
+            for (Size i = 1; i < k_ ; ++i){
+                temp *= x;
+            }
             newVar = a_ + x* temp;
             return f_(newVar) * k_* temp;
             }
@@ -228,9 +228,9 @@ namespace QuantLib {
     private:
         Real a_, b_, width_;
         Integrand f_;
-		Size k_;
+        Size k_;
         };
-    
+
     class Spy{
     public:
         Spy(Integrand f):f_(f){};
@@ -251,41 +251,41 @@ namespace QuantLib {
         double result =.0, abserr =.0;
         double alpha = 1.0;
 
-     
+
         double epsabs = precision_;
         double epsrel = 1.0; // we are interested only in absolut precision
         size_t neval =0;
 
-		// we use gaussKronrodNonAdaptive only for semi infinite interval
+        // we use gaussKronrodNonAdaptive only for semi infinite interval
         if (a>0){
               Real upperBoundary = 2*a;
               while(integrand(upperBoundary)>precision_)
                     upperBoundary *=2.0;
               upperBoundary = std::min(upperBoundary, b);
-             
+
               // we estimate the actual boudary
                    bool integrationSuccess;
                    Integer neval, nevalChangeVariable;
                    Real qngResult = 0;
                    Integrand f = boost::ref(integrand);
                    if (upperBoundary > 2*a){
-					    Size k = 3;
-						VariableChange variableChange(f, a, upperBoundary, k);
-						integrationSuccess = gaussKronrodNonAdaptative(
-							boost::bind(&VariableChange::value, &variableChange, _1), 
-							0, 1.0,epsabs, epsrel, qngResult, abserr, nevalChangeVariable);
-				   } else {
-						integrationSuccess = gaussKronrodNonAdaptative(f, 
-							a, upperBoundary, epsabs, epsrel, qngResult, abserr, neval);
-				   }
-					// if the expected precision has not been reached we use the old algorithm
-				   if (!integrationSuccess){
-						const KronrodIntegral integral(precision_, 1000000);
-						result = integral(integrand,a , b);
-				   }else{
-						result = qngResult;			
-				   }
-								 
+                        Size k = 3;
+                        VariableChange variableChange(f, a, upperBoundary, k);
+                        integrationSuccess = gaussKronrodNonAdaptative(
+                            boost::bind(&VariableChange::value, &variableChange, _1),
+                            0, 1.0,epsabs, epsrel, qngResult, abserr, nevalChangeVariable);
+                   } else {
+                        integrationSuccess = gaussKronrodNonAdaptative(f,
+                            a, upperBoundary, epsabs, epsrel, qngResult, abserr, neval);
+                   }
+                    // if the expected precision has not been reached we use the old algorithm
+                   if (!integrationSuccess){
+                        const KronrodIntegral integral(precision_, 1000000);
+                        result = integral(integrand,a , b);
+                   }else{
+                        result = qngResult;
+                   }
+
         }else{
             // if a ==0 we use the old algorithm
             const KronrodIntegral integral(precision_, 1000000);
@@ -366,7 +366,7 @@ namespace QuantLib {
             std::exp(stdDeviationsForUpperLimit*std::sqrt(variance));
     }
 
-  
+
 //===========================================================================//
 //                              ConundrumIntegrand                           //
 //===========================================================================//

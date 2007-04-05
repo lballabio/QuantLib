@@ -21,10 +21,10 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/daycounters/actual360.hpp>
 #include <ql/cashflows/analysis.hpp>
-#include <ql/CashFlows/couponpricer.hpp> 
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
-    
+
     MakeCms::MakeCms(const Period& swapTenor,
                      const boost::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,

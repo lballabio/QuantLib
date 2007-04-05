@@ -20,7 +20,7 @@
 
 #include <ql/instruments/convertiblebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/CashFlows/couponpricer.hpp> 
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/cashflows/analysis.hpp>

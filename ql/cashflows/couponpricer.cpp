@@ -22,7 +22,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/Indexes/interestrateindex.hpp> 
+#include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {
 

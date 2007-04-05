@@ -24,7 +24,7 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/interestrateindex.hpp>
-#include <ql/CashFlows/couponpricer.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {
 
@@ -45,11 +45,11 @@ namespace QuantLib {
              startDate, endDate, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter),
       fixingDays_(fixingDays==Null<Size>() ? index->fixingDays() : fixingDays),
-      gearing_(gearing), spread_(spread), 
+      gearing_(gearing), spread_(spread),
       isInArrears_(isInArrears)
     {
         QL_REQUIRE(gearing_!=0, "Null gearing: degenerate Floating Rate Coupon not admitted");
-        
+
         if (dayCounter_.empty())
             dayCounter_ = index_->dayCounter();
 
@@ -83,7 +83,7 @@ namespace QuantLib {
         }
     }
 
-  
+
     Real FloatingRateCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
         return amount()*discountingCurve->discount(date());
     }

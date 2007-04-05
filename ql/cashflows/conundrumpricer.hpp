@@ -23,15 +23,14 @@
 #ifndef quantlib_conundrum_pricer_hpp
 #define quantlib_conundrum_pricer_hpp
 
-#include <ql/CashFlows/couponpricer.hpp> 
-#include <ql/Instruments/payoffs.hpp>
-
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
 
     class YieldTermStructure;
     class Quote;
- 
+
     class VanillaOptionPricer {
       public:
         virtual ~VanillaOptionPricer() {};
