@@ -25,7 +25,7 @@
 #include <ql/randomnumbers/inversecumulativersg.hpp>
 #include <ql/randomnumbers/sobolrsg.hpp>
 #include <ql/montecarlo/brownianbridge.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <vector>
 
 namespace QuantLib {

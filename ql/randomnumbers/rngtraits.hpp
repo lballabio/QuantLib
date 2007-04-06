@@ -32,8 +32,8 @@
 #include <ql/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/randomnumbers/sobolrsg.hpp>
 #include <ql/randomnumbers/inversecumulativersg.hpp>
-#include <ql/math/normaldistribution.hpp>
-#include <ql/math/poissondistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
 
 namespace QuantLib {
 

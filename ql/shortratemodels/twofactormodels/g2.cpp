@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/shortratemodels/twofactormodels/g2.hpp>

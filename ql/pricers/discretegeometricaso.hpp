@@ -25,7 +25,7 @@
 #define quantlib_discrete_geometric_average_strike_option_h
 
 #include <ql/pricers/singleassetoption.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

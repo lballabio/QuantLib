@@ -24,7 +24,7 @@
 #include <ql/marketmodels/browniangenerator.hpp>
 #include <ql/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

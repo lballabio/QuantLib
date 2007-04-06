@@ -23,7 +23,7 @@
 
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/solvers1d/newton.hpp>
 #include <ql/volatilities/smilesection.hpp>

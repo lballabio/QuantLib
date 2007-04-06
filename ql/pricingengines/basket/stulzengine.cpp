@@ -23,8 +23,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/math/bivariatenormaldistribution.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

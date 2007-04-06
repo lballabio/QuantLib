@@ -25,7 +25,7 @@
 #define quantlib_analytic_continuous_fixed_lookback_engine_hpp
 
 #include <ql/instruments/lookbackoption.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

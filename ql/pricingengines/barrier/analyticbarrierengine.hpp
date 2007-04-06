@@ -28,7 +28,7 @@
 #define quantlib_analytic_barrier_engine_hpp
 
 #include <ql/instruments/barrieroption.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

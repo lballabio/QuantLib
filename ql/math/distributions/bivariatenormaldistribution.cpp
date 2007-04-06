@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 
 namespace QuantLib {

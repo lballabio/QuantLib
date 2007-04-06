@@ -22,7 +22,7 @@
 */
 
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
-#include <ql/math/gammadistribution.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/errors.hpp>
 #include <cmath>
 

@@ -24,7 +24,7 @@
 
 #include <ql/marketmodels/products/multiproductcomposite.hpp>
 #include <ql/montecarlo/exercisestrategy.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/utilities/clone.hpp>
 #include <utility>
 

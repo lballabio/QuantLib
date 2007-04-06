@@ -25,7 +25,7 @@
 // to be removed using forward declaration
 #include <ql/marketmodels/marketmodelproduct.hpp>
 #include <ql/marketmodels/marketmodeldiscounter.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 
 #include <ql/utilities/clone.hpp>
 #include <ql/types.hpp>

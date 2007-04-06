@@ -20,9 +20,9 @@
 
 #include <ql/solvers1d/brent.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/chisquaredistribution.hpp>
-#include <ql/math/gammadistribution.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/chisquaredistribution.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

@@ -28,9 +28,9 @@
 #include <ql/math/beta.hpp>
 #include <ql/math/bicubicsplineinterpolation.hpp>
 #include <ql/math/bilinearinterpolation.hpp>
-#include <ql/math/binomialdistribution.hpp>
-#include <ql/math/bivariatenormaldistribution.hpp>
-#include <ql/math/chisquaredistribution.hpp>
+#include <ql/math/distributions/binomialdistribution.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/choleskydecomposition.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/convergencestatistics.hpp>
@@ -43,7 +43,7 @@
 #include <ql/math/factorial.hpp>
 #include <ql/math/forwardflatinterpolation.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/gammadistribution.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/gaussianstatistics.hpp>
@@ -58,8 +58,8 @@
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/math/loglinearinterpolation.hpp>
 #include <ql/math/multicubicspline.hpp>
-#include <ql/math/normaldistribution.hpp>
-#include <ql/math/poissondistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/primenumbers.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/riskstatistics.hpp>

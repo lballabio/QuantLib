@@ -3389,231 +3389,47 @@
 				Name="Distributions"
 				>
 				<File
-					RelativePath="ql\math\binomialdistribution.hpp"
+					RelativePath=".\ql\math\distributions\binomialdistribution.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\bivariatenormaldistribution.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\bivariatenormaldistribution.hpp"
+					RelativePath=".\ql\math\distributions\bivariatenormaldistribution.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\chisquaredistribution.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\chisquaredistribution.hpp"
+					RelativePath=".\ql\math\distributions\bivariatenormaldistribution.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\gammadistribution.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\gammadistribution.hpp"
+					RelativePath=".\ql\math\distributions\chisquaredistribution.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\normaldistribution.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\normaldistribution.hpp"
+					RelativePath=".\ql\math\distributions\chisquaredistribution.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\poissondistribution.hpp"
+					RelativePath=".\ql\math\distributions\gammadistribution.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\sequencestatistics.hpp"
+					RelativePath=".\ql\math\distributions\gammadistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\normaldistribution.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\normaldistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\poissondistribution.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\distributions\sequencestatistics.hpp"
 					>
 				</File>
 			</Filter>

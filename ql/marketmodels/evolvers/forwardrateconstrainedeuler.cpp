@@ -24,7 +24,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/marketmodels/browniangenerator.hpp>
 #include <ql/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 #include <ql/marketmodels/duffsdeviceinnerproduct.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

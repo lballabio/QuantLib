@@ -20,7 +20,7 @@
 */
 
 #include <ql/lattices/binomialtree.hpp>
-#include <ql/math/binomialdistribution.hpp>
+#include <ql/math/distributions/binomialdistribution.hpp>
 
 namespace QuantLib {
 

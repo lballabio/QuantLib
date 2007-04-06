@@ -18,7 +18,7 @@
 */
 
 #include <ql/pricingengines/americanpayoffathit.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

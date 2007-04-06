@@ -25,7 +25,7 @@
 #ifndef quantlib_bivariatenormal_distribution_hpp
 #define quantlib_bivariatenormal_distribution_hpp
 
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 

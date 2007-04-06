@@ -24,7 +24,7 @@
 */
 
 #include <ql/math/incompletegamma.hpp>
-#include <ql/math/gammadistribution.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
 
 namespace QuantLib {
 

@@ -27,7 +27,7 @@
 
 #include <ql/daycounters/actual365fixed.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/capvolstructures.hpp>
 
 namespace QuantLib {

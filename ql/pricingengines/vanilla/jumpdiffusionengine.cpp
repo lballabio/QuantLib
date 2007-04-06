@@ -20,7 +20,7 @@
 
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/processes/merton76process.hpp>
-#include <ql/math/poissondistribution.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/termstructures/flatforward.hpp>
 #include <ql/volatilities/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>

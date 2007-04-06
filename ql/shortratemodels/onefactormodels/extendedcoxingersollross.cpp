@@ -23,7 +23,7 @@
 
 #include <ql/shortratemodels/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/lattices/trinomialtree.hpp>
-#include <ql/math/chisquaredistribution.hpp>
+#include <ql/math/distributions/chisquaredistribution.hpp>
 
 namespace QuantLib {
 

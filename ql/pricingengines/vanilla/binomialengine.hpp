@@ -28,7 +28,7 @@
 
 #include <ql/lattices/binomialtree.hpp>
 #include <ql/lattices/bsmlattice.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/flatforward.hpp>

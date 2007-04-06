@@ -18,7 +18,7 @@
 */
 
 #include <ql/math/factorial.hpp>
-#include <ql/math/gammadistribution.hpp>
+#include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {

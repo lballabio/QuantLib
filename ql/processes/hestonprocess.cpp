@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/normaldistribution.hpp>
-#include <ql/math/chisquaredistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/eulerdiscretization.hpp>

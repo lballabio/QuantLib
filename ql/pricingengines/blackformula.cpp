@@ -22,7 +22,7 @@
 
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/solvers1d/newtonsafe.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {
 
