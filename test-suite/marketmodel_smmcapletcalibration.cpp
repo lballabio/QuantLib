@@ -50,7 +50,7 @@
 #include <ql/math/convergencestatistics.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/optimization/simplex.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)

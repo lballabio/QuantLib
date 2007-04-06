@@ -22,7 +22,7 @@
 #include "utilities.hpp"
 #include <ql/math/riskstatistics.hpp>
 #include <ql/math/incrementalstatistics.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/randomnumbers/sobolrsg.hpp>
 
 using namespace QuantLib;

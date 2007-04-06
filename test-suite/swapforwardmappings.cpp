@@ -31,7 +31,7 @@
 #include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <ql/schedule.hpp>
 #include <ql/daycounters/simpledaycounter.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 
 #if defined(BOOST_MSVC)

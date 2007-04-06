@@ -20,7 +20,7 @@
 #include "lowdiscrepancysequences.hpp"
 #include "utilities.hpp"
 #include <ql/math/discrepancystatistics.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/randomnumbers/faurersg.hpp>
 #include <ql/randomnumbers/haltonrsg.hpp>
 #include <ql/randomnumbers/mt19937uniformrng.hpp>

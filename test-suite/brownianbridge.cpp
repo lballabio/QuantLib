@@ -23,7 +23,7 @@
 #include <ql/montecarlo/pathgenerator.hpp>
 #include <ql/randomnumbers/sobolrsg.hpp>
 #include <ql/randomnumbers/inversecumulativersg.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/flatforward.hpp>
 #include <ql/volatilities/blackconstantvol.hpp>
