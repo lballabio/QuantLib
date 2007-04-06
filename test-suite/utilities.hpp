@@ -26,7 +26,7 @@
 #include <ql/voltermstructure.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/observable.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <vector>
 #include <string>
 #include <numeric>

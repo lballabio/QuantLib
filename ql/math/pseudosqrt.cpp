@@ -22,8 +22,8 @@
 #include <ql/math/choleskydecomposition.hpp>
 #include <ql/math/symmetricschurdecomposition.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/optimization/conjugategradient.hpp>
-#include <ql/optimization/problem.hpp>
+#include <ql/math/optimization/conjugategradient.hpp>
+#include <ql/math/optimization/problem.hpp>
 
 namespace QuantLib {
 

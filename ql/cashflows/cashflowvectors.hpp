@@ -30,7 +30,7 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/indexes/swapindex.hpp>

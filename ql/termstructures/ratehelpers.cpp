@@ -20,7 +20,7 @@
 
 #include <ql/termstructures/ratehelpers.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/quotes/simplequote.hpp>
 

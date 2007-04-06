@@ -18,7 +18,7 @@
 */
 
 #include <ql/indexes/libor.hpp>
-#include <ql/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 
 namespace QuantLib {
 

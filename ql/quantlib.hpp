@@ -33,29 +33,29 @@
 
 #include <ql/core.hpp>
 
-#include <ql/calendars/all.hpp>
+#include <ql/time/calendars/all.hpp>
 #include <ql/cashflows/all.hpp>
 #include <ql/currencies/all.hpp>
-#include <ql/daycounters/all.hpp>
-#include <ql/finitedifferences/all.hpp>
+#include <ql/time/daycounters/all.hpp>
+#include <ql/methods/finitedifferences/all.hpp>
 #include <ql/indexes/all.hpp>
 #include <ql/instruments/all.hpp>
-#include <ql/lattices/all.hpp>
+#include <ql/methods/lattices/all.hpp>
 #include <ql/marketmodels/all.hpp>
 #include <ql/math/all.hpp>
-#include <ql/montecarlo/all.hpp>
-#include <ql/optimization/all.hpp>
+#include <ql/methods/montecarlo/all.hpp>
+#include <ql/math/optimization/all.hpp>
 #include <ql/patterns/all.hpp>
 #include <ql/pricers/all.hpp>
 #include <ql/pricingengines/all.hpp>
 #include <ql/processes/all.hpp>
 #include <ql/quotes/all.hpp>
-#include <ql/randomnumbers/all.hpp>
+#include <ql/math/randomnumbers/all.hpp>
 #include <ql/shortratemodels/all.hpp>
-#include <ql/solvers1d/all.hpp>
-#include <ql/termstructures/all.hpp>
+#include <ql/math/solvers1d/all.hpp>
+#include <ql/termstructures/yieldcurves/all.hpp>
 #include <ql/utilities/all.hpp>
-#include <ql/volatilities/all.hpp>
+#include <ql/termstructures/volatilities/all.hpp>
 #include <ql/volatilitymodels/all.hpp>
 
 

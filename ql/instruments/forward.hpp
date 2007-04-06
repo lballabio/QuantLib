@@ -26,7 +26,7 @@
 
 #include <ql/instrument.hpp>
 #include <ql/position.hpp>
-#include <ql/calendar.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/types.hpp>

@@ -35,9 +35,9 @@
 #include <ql/marketmodels/products/multiproductcomposite.hpp>
 #include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/marketmodels/swapforwardmappings.hpp>
-#include <ql/schedule.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>

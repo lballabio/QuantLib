@@ -26,7 +26,7 @@
 #define quantlib_discretized_vanilla_option_h
 
 #include <ql/discretizedasset.hpp>
-#include <ql/lattices/bsmlattice.hpp>
+#include <ql/methods/lattices/bsmlattice.hpp>
 #include <ql/pricers/singleassetoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 

@@ -25,8 +25,8 @@
 #define quantlib_cdor_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/calendars/canada.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/canada.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/america.hpp>
 
 namespace QuantLib {

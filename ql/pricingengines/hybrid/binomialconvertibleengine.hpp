@@ -25,11 +25,11 @@
 #ifndef quantlib_binomial_convertible_engine_hpp
 #define quantlib_binomial_convertible_engine_hpp
 
-#include <ql/lattices/tflattice.hpp>
+#include <ql/methods/lattices/tflattice.hpp>
 #include <ql/pricingengines/hybrid/discretizedconvertible.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 #include <ql/instruments/convertiblebond.hpp>
 
 namespace QuantLib {

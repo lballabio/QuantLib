@@ -20,7 +20,7 @@
 
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/utilities/null.hpp>
-#include <ql/period.hpp>
+#include <ql/time/period.hpp>
 #include <ql/errors.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>

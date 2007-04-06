@@ -27,7 +27,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/pricingengines/vanilla/fddividendengine.hpp>
 #include <ql/pricingengines/vanilla/fdconditions.hpp>
-#include <ql/finitedifferences/shoutcondition.hpp>
+#include <ql/methods/finitedifferences/shoutcondition.hpp>
 
 namespace QuantLib {
 

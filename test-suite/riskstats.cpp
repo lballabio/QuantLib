@@ -23,7 +23,7 @@
 #include <ql/math/riskstatistics.hpp>
 #include <ql/math/incrementalstatistics.hpp>
 #include <ql/math/distributions/sequencestatistics.hpp>
-#include <ql/randomnumbers/sobolrsg.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

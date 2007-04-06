@@ -21,8 +21,8 @@
 
 #include <ql/instruments/multiassetoption.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 

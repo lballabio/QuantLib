@@ -20,14 +20,14 @@
 
 #include "swaptionvolatilitycube.hpp"
 #include "utilities.hpp"
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
-#include <ql/daycounters/thirty360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/volatilities/swaptionvolmatrix.hpp>
-#include <ql/volatilities/swaptionvolcube2.hpp>
-#include <ql/volatilities/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

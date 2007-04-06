@@ -21,15 +21,15 @@
 
 #include "americanoption.hpp"
 #include "utilities.hpp"
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fdshoutengine.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 

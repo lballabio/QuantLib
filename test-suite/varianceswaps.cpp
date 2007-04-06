@@ -19,14 +19,14 @@
 
 #include "varianceswaps.hpp"
 #include "utilities.hpp"
-#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/pricingengines/forward/replicatingvarianceswapengine.hpp>
 #include <ql/pricingengines/forward/mcvarianceswapengine.hpp>
-#include <ql/randomnumbers/rngtraits.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackvariancecurve.hpp>
-#include <ql/volatilities/blackvariancesurface.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackvariancecurve.hpp>
+#include <ql/termstructures/volatilities/blackvariancesurface.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 

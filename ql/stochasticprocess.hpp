@@ -26,7 +26,7 @@
 #ifndef quantlib_stochastic_process_hpp
 #define quantlib_stochastic_process_hpp
 
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/math/matrix.hpp>
 

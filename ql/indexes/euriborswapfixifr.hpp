@@ -27,8 +27,8 @@
 
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/thirty360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/currencies/europe.hpp>
 
 namespace QuantLib {

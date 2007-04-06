@@ -25,7 +25,7 @@
 #define quantlib_settings_hpp
 
 #include <ql/patterns/singleton.hpp>
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
 
 namespace QuantLib {

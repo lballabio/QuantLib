@@ -18,8 +18,8 @@
 */
 
 #include <ql/instruments/forwardrateagreement.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/calendars/nullcalendar.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 

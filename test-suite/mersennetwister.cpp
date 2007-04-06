@@ -18,7 +18,7 @@
 */
 
 #include "mersennetwister.hpp"
-#include <ql/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -27,7 +27,7 @@
 #define quantlib_cubic_spline_hpp
 
 #include <ql/math/interpolation.hpp>
-#include <ql/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/utilities/null.hpp>
 #include <vector>
 

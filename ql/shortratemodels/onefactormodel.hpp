@@ -31,8 +31,8 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/shortratemodels/model.hpp>
-#include <ql/lattices/lattice1d.hpp>
-#include <ql/lattices/trinomialtree.hpp>
+#include <ql/methods/lattices/lattice1d.hpp>
+#include <ql/methods/lattices/trinomialtree.hpp>
 
 namespace QuantLib {
 

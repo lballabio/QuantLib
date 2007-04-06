@@ -19,13 +19,13 @@
 
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/ratehelpers.hpp>
 #include <ql/termstructures/bondhelpers.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/actual360.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/daycounters/thirty360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>

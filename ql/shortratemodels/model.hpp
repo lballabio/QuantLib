@@ -26,7 +26,7 @@
 #define quantlib_interest_rate_model_hpp
 
 #include <ql/option.hpp>
-#include <ql/lattices/lattice.hpp>
+#include <ql/methods/lattices/lattice.hpp>
 #include <ql/shortratemodels/parameter.hpp>
 #include <ql/shortratemodels/calibrationhelper.hpp>
 

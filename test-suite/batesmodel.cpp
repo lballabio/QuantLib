@@ -19,20 +19,20 @@
 
 #include "batesmodel.hpp"
 #include "utilities.hpp"
-#include <ql/calendars/target.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/processes/merton76process.hpp>
 #include <ql/instruments/europeanoption.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/termstructures/zerocurve.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/pricingengines/vanilla/batesengine.hpp>
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/shortratemodels/twofactormodels/batesmodel.hpp>
 #include <ql/shortratemodels/calibrationhelpers/hestonmodelhelper.hpp>
-#include <ql/period.hpp>
+#include <ql/time/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

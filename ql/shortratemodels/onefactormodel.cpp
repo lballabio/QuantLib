@@ -22,8 +22,8 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/shortratemodels/onefactormodel.hpp>
-#include <ql/lattices/trinomialtree.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 

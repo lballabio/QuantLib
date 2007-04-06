@@ -30,7 +30,7 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

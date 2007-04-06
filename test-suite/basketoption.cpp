@@ -21,15 +21,15 @@
 
 #include "basketoption.hpp"
 #include "utilities.hpp"
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/basket/mcbasketengine.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 

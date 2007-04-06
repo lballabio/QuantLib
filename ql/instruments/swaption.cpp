@@ -22,8 +22,8 @@
 
 #include <ql/instruments/swaption.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/solvers1d/brent.hpp>
-#include <ql/daycounters/all.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/time/daycounters/all.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/yieldtermstructure.hpp>

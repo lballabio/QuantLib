@@ -20,7 +20,7 @@
 */
 
 #include <ql/marketmodels/models/expcorrabcdvol.hpp>
-#include <ql/volatilities/abcd.hpp>
+#include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/pseudosqrt.hpp>
 
 namespace QuantLib {

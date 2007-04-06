@@ -22,7 +22,7 @@
 
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 

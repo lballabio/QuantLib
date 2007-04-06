@@ -20,7 +20,7 @@
 
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/fdstepconditionengine.hpp>
-#include <ql/finitedifferences/fdtypedefs.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 
 namespace QuantLib {

@@ -23,7 +23,7 @@
 
 #include <ql/marketmodels/evolutiondescription.hpp>
 #include <ql/marketmodels/marketmodelproduct.hpp>
-#include <ql/montecarlo/exercisestrategy.hpp>
+#include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
 
 namespace QuantLib {

@@ -22,14 +22,14 @@
 
 #include <ql/indexes/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
-#include <ql/termstructures/zerocurve.hpp>
-#include <ql/volatilities/capletvariancecurve.hpp>
+#include <ql/termstructures/yieldcurves/zerocurve.hpp>
+#include <ql/termstructures/volatilities/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
-#include <ql/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 
 #include <ql/math/generalstatistics.hpp>
-#include <ql/randomnumbers/rngtraits.hpp>
-#include <ql/montecarlo/multipathgenerator.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/montecarlo/multipathgenerator.hpp>
 
 #include <ql/pricingengines/swaption/lfmswaptionengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>

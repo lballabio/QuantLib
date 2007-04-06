@@ -27,10 +27,10 @@
 #define quantlib_interestrateindex_hpp
 
 #include <ql/index.hpp>
-#include <ql/calendar.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
-#include <ql/period.hpp>
+#include <ql/time/period.hpp>
 #include <ql/handle.hpp>
 #include <ql/yieldtermstructure.hpp>
 

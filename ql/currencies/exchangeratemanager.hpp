@@ -26,7 +26,7 @@
 #define quantlib_exchange_rate_manager_hpp
 
 #include <ql/exchangerate.hpp>
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <list>
 #include <map>

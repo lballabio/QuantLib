@@ -18,7 +18,7 @@
 */
 
 #include <ql/shortratemodels/model.hpp>
-#include <ql/optimization/problem.hpp>
+#include <ql/math/optimization/problem.hpp>
 
 namespace QuantLib {
 

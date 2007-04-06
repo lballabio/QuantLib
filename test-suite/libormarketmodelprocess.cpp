@@ -20,14 +20,14 @@
 #include "libormarketmodelprocess.hpp"
 #include "utilities.hpp"
 #include <ql/timegrid.hpp>
-#include <ql/randomnumbers/rngtraits.hpp>
-#include <ql/montecarlo/multipathgenerator.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/montecarlo/multipathgenerator.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/math/generalstatistics.hpp>
-#include <ql/termstructures/zerocurve.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/volatilities/capletconstantvol.hpp>
-#include <ql/volatilities/capletvariancecurve.hpp>
+#include <ql/termstructures/yieldcurves/zerocurve.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;

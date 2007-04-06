@@ -25,10 +25,10 @@
 #include "utilities.hpp"
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/termstructures/flatforward.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
-#include <ql/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

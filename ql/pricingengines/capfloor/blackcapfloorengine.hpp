@@ -25,7 +25,7 @@
 #ifndef quantlib_pricers_black_capfloor_hpp
 #define quantlib_pricers_black_capfloor_hpp
 
-#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/capvolstructures.hpp>

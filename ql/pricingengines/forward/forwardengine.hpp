@@ -27,8 +27,8 @@
 
 #include <ql/pricingengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/volatilities/impliedvoltermstructure.hpp>
-#include <ql/termstructures/impliedtermstructure.hpp>
+#include <ql/termstructures/volatilities/impliedvoltermstructure.hpp>
+#include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
 #include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {

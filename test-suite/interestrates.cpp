@@ -22,7 +22,7 @@
 #include <ql/interestrate.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
 

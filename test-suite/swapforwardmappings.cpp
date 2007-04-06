@@ -29,8 +29,8 @@
 #include <ql/marketmodels/accountingengine.hpp>
 #include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
 #include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
-#include <ql/schedule.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/math/distributions/sequencestatistics.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 

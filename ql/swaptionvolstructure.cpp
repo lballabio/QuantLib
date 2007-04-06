@@ -20,7 +20,7 @@
 */
 
 #include <ql/swaptionvolstructure.hpp>
-#include <ql/period.hpp>
+#include <ql/time/period.hpp>
 
 namespace QuantLib {
 

@@ -27,8 +27,8 @@
 #define quantlib_eur_libor_hpp
 
 #include <ql/indexes/libor.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 
 namespace QuantLib {

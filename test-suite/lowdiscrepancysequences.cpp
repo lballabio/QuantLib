@@ -21,14 +21,14 @@
 #include "utilities.hpp"
 #include <ql/math/discrepancystatistics.hpp>
 #include <ql/math/distributions/sequencestatistics.hpp>
-#include <ql/randomnumbers/faurersg.hpp>
-#include <ql/randomnumbers/haltonrsg.hpp>
-#include <ql/randomnumbers/mt19937uniformrng.hpp>
-#include <ql/randomnumbers/seedgenerator.hpp>
-#include <ql/randomnumbers/primitivepolynomials.h>
-#include <ql/randomnumbers/randomizedlds.hpp>
-#include <ql/randomnumbers/randomsequencegenerator.hpp>
-#include <ql/randomnumbers/sobolrsg.hpp>
+#include <ql/math/randomnumbers/faurersg.hpp>
+#include <ql/math/randomnumbers/haltonrsg.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/seedgenerator.hpp>
+#include <ql/math/randomnumbers/primitivepolynomials.h>
+#include <ql/math/randomnumbers/randomizedlds.hpp>
+#include <ql/math/randomnumbers/randomsequencegenerator.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <boost/progress.hpp>
 

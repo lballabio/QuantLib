@@ -25,8 +25,8 @@
 #define quantlib_zibor_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/calendars/switzerland.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/switzerland.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 
 namespace QuantLib {

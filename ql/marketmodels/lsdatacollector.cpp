@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/montecarlo/nodedata.hpp>
+#include <ql/methods/montecarlo/nodedata.hpp>
 #include <ql/marketmodels/lsdatacollector.hpp>
 #include <ql/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/marketmodels/utilities.hpp>

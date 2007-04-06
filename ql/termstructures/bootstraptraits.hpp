@@ -24,9 +24,9 @@
 #ifndef ql_bootstrap_traits_hpp
 #define ql_bootstrap_traits_hpp
 
-#include <ql/termstructures/discountcurve.hpp>
-#include <ql/termstructures/zerocurve.hpp>
-#include <ql/termstructures/forwardcurve.hpp>
+#include <ql/termstructures/yieldcurves/discountcurve.hpp>
+#include <ql/termstructures/yieldcurves/zerocurve.hpp>
+#include <ql/termstructures/yieldcurves/forwardcurve.hpp>
 
 namespace QuantLib {
 

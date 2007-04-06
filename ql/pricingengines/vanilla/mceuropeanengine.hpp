@@ -27,8 +27,8 @@
 
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
-#include <ql/volatilities/blackvariancecurve.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/blackvariancecurve.hpp>
 
 namespace QuantLib {
 

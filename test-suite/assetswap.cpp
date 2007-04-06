@@ -19,21 +19,21 @@
 
 #include "assetswap.hpp"
 #include "utilities.hpp"
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/instruments/assetswap.hpp>
 #include <ql/instruments/fixedratebond.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/thirty360.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
-#include <ql/daycounters/actual360.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/volatilities/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/capletconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/analysis.hpp>
 

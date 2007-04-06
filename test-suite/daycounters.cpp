@@ -20,12 +20,12 @@
 
 #include "daycounters.hpp"
 #include "utilities.hpp"
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/daycounters/one.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
-#include <ql/daycounters/business252.hpp>
-#include <ql/calendars/brazil.hpp>
-#include <ql/period.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/one.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
+#include <ql/time/daycounters/business252.hpp>
+#include <ql/time/calendars/brazil.hpp>
+#include <ql/time/period.hpp>
 #include <iomanip>
 
 using namespace QuantLib;

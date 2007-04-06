@@ -22,8 +22,8 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/quotes/derivedquote.hpp>
 #include <ql/quotes/compositequote.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/termstructures/flatforward.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 

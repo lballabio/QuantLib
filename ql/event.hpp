@@ -24,7 +24,7 @@
 #ifndef quantlib_event_hpp
 #define quantlib_event_hpp
 
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/patterns/visitor.hpp>
 

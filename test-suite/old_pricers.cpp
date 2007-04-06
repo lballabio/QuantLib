@@ -25,9 +25,9 @@
 #include <ql/pricers/mcpagoda.hpp>
 #include <ql/pricers/mchimalaya.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/randomnumbers/rngtraits.hpp>
-#include <ql/montecarlo/getcovariance.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/methods/montecarlo/getcovariance.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <boost/progress.hpp>
 #include <map>
 

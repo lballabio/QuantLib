@@ -26,9 +26,9 @@
 #define quantlib_jpy_libor_hpp
 
 #include <ql/indexes/libor.hpp>
-#include <ql/calendars/unitedkingdom.hpp>
-#include <ql/calendars/japan.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/calendars/japan.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/asia.hpp>
 
 namespace QuantLib {

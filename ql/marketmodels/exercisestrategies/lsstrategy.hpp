@@ -20,7 +20,7 @@
 #ifndef quantlib_longstaff_schwartz_exercise_strategy_hpp
 #define quantlib_longstaff_schwartz_exercise_strategy_hpp
 
-#include <ql/montecarlo/exercisestrategy.hpp>
+#include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/marketmodels/lsbasisfunctions.hpp>
 #include <ql/marketmodels/exercisevalue.hpp>
 #include <ql/utilities/clone.hpp>

@@ -26,7 +26,7 @@
 #define quantlib_fd_multi_period_engine_hpp
 
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
-#include <ql/finitedifferences/fdtypedefs.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/event.hpp>
 

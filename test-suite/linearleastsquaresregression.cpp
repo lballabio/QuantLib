@@ -20,7 +20,7 @@
 #include "linearleastsquaresregression.hpp"
 #include "utilities.hpp"
 #include <ql/math/functional.hpp>
-#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
 
 using namespace QuantLib;

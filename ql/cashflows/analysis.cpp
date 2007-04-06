@@ -20,8 +20,8 @@
 
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/coupon.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 
 namespace QuantLib {

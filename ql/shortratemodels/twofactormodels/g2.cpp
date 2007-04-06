@@ -22,7 +22,7 @@
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/shortratemodels/twofactormodels/g2.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 

@@ -20,15 +20,15 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/daycounters/all.hpp>
+#include <ql/time/daycounters/all.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/all.hpp>
-#include <ql/volatilities/swaptionvolmatrix.hpp>
-#include <ql/volatilities/swaptionvolcube2.hpp>
-#include <ql/volatilities/swaptionvolcube1.hpp>
+#include <ql/termstructures/yieldcurves/all.hpp>
+#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;

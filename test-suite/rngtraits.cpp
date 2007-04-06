@@ -19,7 +19,7 @@
 */
 
 #include "rngtraits.hpp"
-#include <ql/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/comparison.hpp>
 
 using namespace QuantLib;

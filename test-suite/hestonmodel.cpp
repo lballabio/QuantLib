@@ -25,15 +25,15 @@
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
-#include <ql/daycounters/actual360.hpp>
-#include <ql/daycounters/actualactual.hpp>
-#include <ql/termstructures/zerocurve.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/optimization/levenbergmarquardt.hpp>
-#include <ql/period.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/termstructures/yieldcurves/zerocurve.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/time/period.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

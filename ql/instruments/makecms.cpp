@@ -19,7 +19,7 @@
 
 #include <ql/instruments/makecms.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 

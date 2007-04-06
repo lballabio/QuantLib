@@ -19,9 +19,9 @@
 
 #include "utilities.hpp"
 #include <ql/instruments/payoffs.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
-#include <ql/calendars/nullcalendar.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 #define CHECK_DOWNCAST(Derived,Description) { \
     boost::shared_ptr<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \

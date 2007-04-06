@@ -22,7 +22,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 

@@ -22,13 +22,13 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/flatforward.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/volatilities/capletconstantvol.hpp>
-#include <ql/daycounters/thirty360.hpp>
-#include <ql/daycounters/actualactual.hpp>
+#include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>

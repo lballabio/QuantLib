@@ -20,12 +20,12 @@
 */
 
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/volatilities/localvolsurface.hpp>
-#include <ql/volatilities/localvolcurve.hpp>
-#include <ql/volatilities/localconstantvol.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/termstructures/volatilities/localvolsurface.hpp>
+#include <ql/termstructures/volatilities/localvolcurve.hpp>
+#include <ql/termstructures/volatilities/localconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 

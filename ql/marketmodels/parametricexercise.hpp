@@ -22,7 +22,7 @@
 #define quantlib_market_model_parametric_exercise_hpp
 
 #include <ql/marketmodels/nodedataprovider.hpp>
-#include <ql/montecarlo/genericparametricearlyexercise.hpp>
+#include <ql/methods/montecarlo/genericparametricearlyexercise.hpp>
 #include <memory>
 
 namespace QuantLib {

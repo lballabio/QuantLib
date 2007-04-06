@@ -26,7 +26,7 @@
 #ifndef quantlib_exercise_type_h
 #define quantlib_exercise_type_h
 
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <vector>
 
 namespace QuantLib {

@@ -26,13 +26,13 @@
 #ifndef quantlib_binomial_engine_hpp
 #define quantlib_binomial_engine_hpp
 
-#include <ql/lattices/binomialtree.hpp>
-#include <ql/lattices/bsmlattice.hpp>
+#include <ql/methods/lattices/binomialtree.hpp>
+#include <ql/methods/lattices/bsmlattice.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 

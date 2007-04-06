@@ -20,7 +20,7 @@
 */
 
 #include "dates.hpp"
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
 using namespace QuantLib;

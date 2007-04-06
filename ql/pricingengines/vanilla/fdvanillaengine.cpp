@@ -23,7 +23,7 @@
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/grid.hpp>
-#include <ql/finitedifferences/operatorfactory.hpp>
+#include <ql/methods/finitedifferences/operatorfactory.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 
 namespace QuantLib {

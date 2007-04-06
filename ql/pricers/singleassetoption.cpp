@@ -18,7 +18,7 @@
 */
 
 #include <ql/pricers/singleassetoption.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
 

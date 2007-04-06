@@ -26,7 +26,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/handle.hpp>
-#include <ql/optimization/constraint.hpp>
+#include <ql/math/optimization/constraint.hpp>
 #include <vector>
 
 namespace QuantLib {

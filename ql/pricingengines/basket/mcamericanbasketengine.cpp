@@ -20,7 +20,7 @@
 
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/montecarlo/lsmbasissystem.hpp>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <boost/bind.hpp>
 
 using boost::bind;

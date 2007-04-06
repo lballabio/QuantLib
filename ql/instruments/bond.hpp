@@ -28,7 +28,7 @@
 #define quantlib_bond_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/calendar.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/types.hpp>

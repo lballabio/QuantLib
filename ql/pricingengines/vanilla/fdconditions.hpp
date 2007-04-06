@@ -24,9 +24,9 @@
 #ifndef quantlib_fd_conditions_hpp
 #define quantlib_fd_conditions_hpp
 
-#include <ql/finitedifferences/fdtypedefs.hpp>
-#include <ql/finitedifferences/americancondition.hpp>
-#include <ql/finitedifferences/shoutcondition.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
+#include <ql/methods/finitedifferences/americancondition.hpp>
+#include <ql/methods/finitedifferences/shoutcondition.hpp>
 #include <ql/interestrate.hpp>
 
 namespace QuantLib {

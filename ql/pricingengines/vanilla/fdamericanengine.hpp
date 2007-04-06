@@ -27,7 +27,7 @@
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/pricingengines/vanilla/fdstepconditionengine.hpp>
 #include <ql/pricingengines/vanilla/fdconditions.hpp>
-#include <ql/finitedifferences/fdtypedefs.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
 
 
 

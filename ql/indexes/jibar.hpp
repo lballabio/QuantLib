@@ -26,8 +26,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #define quantlib_jibar_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/calendars/southafrica.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/southafrica.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/currencies/africa.hpp>
 
 namespace QuantLib {

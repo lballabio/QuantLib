@@ -20,8 +20,8 @@
 
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/volatilities/capletconstantvol.hpp>
-#include <ql/calendars/nullcalendar.hpp>
+#include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 

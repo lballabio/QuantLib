@@ -21,8 +21,8 @@
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/processes/merton76process.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {

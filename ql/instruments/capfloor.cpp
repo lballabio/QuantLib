@@ -21,7 +21,7 @@
 */
 
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/solvers1d/brent.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/yieldtermstructure.hpp> 
 

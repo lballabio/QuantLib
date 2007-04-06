@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>

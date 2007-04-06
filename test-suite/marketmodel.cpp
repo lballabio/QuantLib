@@ -58,20 +58,20 @@
 #include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/marketmodels/swapforwardmappings.hpp>
 #include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/montecarlo/genericlsregression.hpp>
+#include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/shortratemodels/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/shortratemodels/libormarketmodels/lmextlinexpvolmodel.hpp>
-#include <ql/schedule.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/convergencestatistics.hpp>
-#include <ql/volatilities/abcd.hpp>
+#include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/optimization/simplex.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)

@@ -25,7 +25,7 @@
 #ifndef quantlib_convertible_bond_hpp
 #define quantlib_convertible_bond_hpp
 
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/exercise.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/payoff.hpp>

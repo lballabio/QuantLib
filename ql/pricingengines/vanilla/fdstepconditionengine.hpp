@@ -26,8 +26,8 @@
 #define quantlib_fd_step_condition_engine_hpp
 
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
-#include <ql/finitedifferences/fdtypedefs.hpp>
-#include <ql/finitedifferences/boundarycondition.hpp>
+#include <ql/methods/finitedifferences/fdtypedefs.hpp>
+#include <ql/methods/finitedifferences/boundarycondition.hpp>
 
 namespace QuantLib {
 

@@ -27,7 +27,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/payoff.hpp>
-#include <ql/montecarlo/lsmbasissystem.hpp>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanengine.hpp>

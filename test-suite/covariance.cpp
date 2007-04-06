@@ -20,7 +20,7 @@
 
 #include "covariance.hpp"
 #include "utilities.hpp"
-#include <ql/montecarlo/getcovariance.hpp>
+#include <ql/methods/montecarlo/getcovariance.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/distributions/sequencestatistics.hpp>
 

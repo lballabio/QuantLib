@@ -19,9 +19,9 @@
 
 #include "pathgenerator.hpp"
 #include "utilities.hpp"
-#include <ql/montecarlo/mctraits.hpp>
+#include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/processes/all.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

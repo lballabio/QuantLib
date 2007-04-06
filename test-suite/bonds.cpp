@@ -23,16 +23,16 @@
 #include <ql/instruments/fixedratebond.hpp>
 #include <ql/instruments/floatingratebond.hpp>
 #include <ql/instruments/zerocouponbond.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/calendars/unitedstates.hpp>
-#include <ql/calendars/nullcalendar.hpp>
-#include <ql/daycounters/thirty360.hpp>
-#include <ql/daycounters/actual360.hpp>
-#include <ql/daycounters/actualactual.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <ql/indexes/usdlibor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/analysis.hpp>
 

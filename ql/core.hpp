@@ -22,11 +22,11 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/calendar.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>
@@ -42,12 +42,12 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/payoff.hpp>
-#include <ql/period.hpp>
+#include <ql/time/period.hpp>
 #include <ql/position.hpp>
 #include <ql/prices.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/quote.hpp>
-#include <ql/schedule.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/settings.hpp>
 #include <ql/solver1d.hpp>
 #include <ql/stochasticprocess.hpp>

@@ -30,8 +30,8 @@
 #include <ql/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/schedule.hpp>
-#include <ql/daycounters/simpledaycounter.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/time/daycounters/simpledaycounter.hpp>
 //#include <iostream>
 #include <sstream>
 

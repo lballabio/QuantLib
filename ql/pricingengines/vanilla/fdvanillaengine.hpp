@@ -28,8 +28,8 @@
 #define quantlib_fd_vanilla_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/finitedifferences/boundarycondition.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/sampledcurve.hpp>
 #include <ql/payoff.hpp>

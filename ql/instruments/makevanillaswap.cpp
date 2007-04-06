@@ -20,7 +20,7 @@
 */
 
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/settings.hpp>
 
 namespace QuantLib {

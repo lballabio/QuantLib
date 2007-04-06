@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/montecarlo/montecarlomodel.hpp>
+#include <ql/methods/montecarlo/montecarlomodel.hpp>
 #include <ql/pricers/mchimalaya.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>

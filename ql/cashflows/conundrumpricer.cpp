@@ -25,8 +25,8 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/solvers1d/newton.hpp>
-#include <ql/volatilities/smilesection.hpp>
+#include <ql/math/solvers1d/newton.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>

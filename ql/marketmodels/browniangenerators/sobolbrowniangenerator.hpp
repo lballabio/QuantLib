@@ -22,9 +22,9 @@
 #define quantlib_sobol_brownian_generator_hpp
 
 #include <ql/marketmodels/browniangenerator.hpp>
-#include <ql/randomnumbers/inversecumulativersg.hpp>
-#include <ql/randomnumbers/sobolrsg.hpp>
-#include <ql/montecarlo/brownianbridge.hpp>
+#include <ql/math/randomnumbers/inversecumulativersg.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <vector>
 

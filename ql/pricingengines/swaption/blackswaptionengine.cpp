@@ -21,9 +21,9 @@
 
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/volatilities/swaptionconstantvol.hpp>
-#include <ql/daycounters/actual365fixed.hpp>
-#include <ql/calendars/nullcalendar.hpp>
+#include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
 

@@ -23,7 +23,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
-#include <ql/lattices/trinomialtree.hpp>
+#include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
 namespace QuantLib {

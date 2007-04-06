@@ -25,9 +25,9 @@
 #include <ql/pricingengines/swaption/all.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
-#include <ql/daycounters/all.hpp>
-#include <ql/optimization/simplex.hpp>
-#include <ql/termstructures/discountcurve.hpp>
+#include <ql/time/daycounters/all.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/termstructures/yieldcurves/discountcurve.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -27,12 +27,12 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/hybrid/binomialconvertibleengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
-#include <ql/calendars/target.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/termstructures/flatforward.hpp>
-#include <ql/termstructures/forwardspreadedtermstructure.hpp>
-#include <ql/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldcurves/forwardspreadedtermstructure.hpp>
+#include <ql/termstructures/volatilities/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/analysis.hpp>

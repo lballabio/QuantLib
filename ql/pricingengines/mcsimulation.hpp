@@ -27,7 +27,7 @@
 #define quantlib_montecarlo_engine_hpp
 
 #include <ql/grid.hpp>
-#include <ql/montecarlo/montecarlomodel.hpp>
+#include <ql/methods/montecarlo/montecarlomodel.hpp>
 
 namespace QuantLib {
 

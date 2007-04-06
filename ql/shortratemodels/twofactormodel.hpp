@@ -27,7 +27,7 @@
 
 #include <ql/stochasticprocess.hpp>
 #include <ql/shortratemodels/model.hpp>
-#include <ql/lattices/lattice2d.hpp>
+#include <ql/methods/lattices/lattice2d.hpp>
 
 namespace QuantLib {
 

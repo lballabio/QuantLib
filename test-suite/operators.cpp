@@ -20,11 +20,11 @@
 #include "operators.hpp"
 #include "utilities.hpp"
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/finitedifferences/dzero.hpp>
-#include <ql/finitedifferences/dplusdminus.hpp>
-#include <ql/finitedifferences/bsmoperator.hpp>
-#include <ql/finitedifferences/bsmtermoperator.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/methods/finitedifferences/dzero.hpp>
+#include <ql/methods/finitedifferences/dplusdminus.hpp>
+#include <ql/methods/finitedifferences/bsmoperator.hpp>
+#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

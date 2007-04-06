@@ -25,7 +25,7 @@
 #ifndef quantlib_data_parsers_hpp
 #define quantlib_data_parsers_hpp
 
-#include <ql/date.hpp>
+#include <ql/time/date.hpp>
 #include <vector>
 
 namespace QuantLib {

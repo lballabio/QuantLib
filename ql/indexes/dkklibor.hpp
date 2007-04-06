@@ -26,9 +26,9 @@
 #define quantlib_dkk_libor_hpp
 
 #include <ql/indexes/libor.hpp>
-#include <ql/calendars/unitedkingdom.hpp>
-#include <ql/calendars/denmark.hpp>
-#include <ql/daycounters/actual360.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/calendars/denmark.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
