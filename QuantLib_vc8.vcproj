@@ -3621,47 +3621,47 @@
 				Name="Integrals"
 				>
 				<File
-					RelativePath=".\ql\math\gaussianorthogonalpolynomial.cpp"
+					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\gaussianorthogonalpolynomial.hpp"
+					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\gaussianquadratures.cpp"
+					RelativePath=".\ql\math\integrals\gaussianquadratures.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\gaussianquadratures.hpp"
+					RelativePath=".\ql\math\integrals\gaussianquadratures.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\integral.cpp"
+					RelativePath=".\ql\math\integrals\integral.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\integral.hpp"
+					RelativePath=".\ql\math\integrals\integral.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\kronrodintegral.cpp"
+					RelativePath=".\ql\math\integrals\kronrodintegral.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\kronrodintegral.hpp"
+					RelativePath=".\ql\math\integrals\kronrodintegral.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\segmentintegral.hpp"
+					RelativePath=".\ql\math\integrals\segmentintegral.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\simpsonintegral.hpp"
+					RelativePath=".\ql\math\integrals\simpsonintegral.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\trapezoidintegral.hpp"
+					RelativePath=".\ql\math\integrals\trapezoidintegral.hpp"
 					>
 				</File>
 			</Filter>

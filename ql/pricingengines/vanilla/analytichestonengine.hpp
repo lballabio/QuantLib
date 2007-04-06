@@ -29,7 +29,7 @@
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/shortratemodels/twofactormodels/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <complex>
 
 namespace QuantLib {

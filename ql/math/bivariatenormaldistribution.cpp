@@ -21,7 +21,7 @@
 */
 
 #include <ql/math/bivariatenormaldistribution.hpp>
-#include <ql/math/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 
 namespace QuantLib {
 

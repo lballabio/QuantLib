@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/kronrodintegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/shortratemodels/libormarketmodels/lfmcovarproxy.hpp>
 
 namespace QuantLib {

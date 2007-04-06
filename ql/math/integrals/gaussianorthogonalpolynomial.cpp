@@ -21,7 +21,7 @@
     \brief Integral of a 1-dimensional function using the Gauss quadratures
 */
 
-#include <ql/math/gaussianorthogonalpolynomial.hpp>
+#include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
 #include <ql/math/gammadistribution.hpp>
 #include <ql/errors.hpp>
 #include <cmath>

@@ -23,7 +23,7 @@
 
 #include <ql/montecarlo/lsmbasissystem.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/gaussianorthogonalpolynomial.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/randomnumbers/mt19937uniformrng.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/bind.hpp>

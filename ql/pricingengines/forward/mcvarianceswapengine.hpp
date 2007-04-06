@@ -25,7 +25,7 @@
 #define quantlib_mc_varianceswap_engine_hpp
 
 #include <ql/pricingengines/mcsimulation.hpp>
-#include <ql/math/segmentintegral.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 

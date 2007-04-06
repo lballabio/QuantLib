@@ -17,9 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-//#include <ql/math/integral.hpp>
+#include <ql/math/integrals/integral.hpp>
 
 namespace QuantLib {
 
-    
+    void Integrator::setAccuracy(Real accuracy) { accuracy_ = accuracy; }
+
+    void Integrator::setMaxEvaluations(Size maxEvaluations) { 
+        maxEvaluations_ = maxEvaluations;
+    }
+
+    Real Integrator::accuracy() const { return accuracy_; }
+
+    Size Integrator::maxEvaluations() const { return maxEvaluations_; }
 }

@@ -44,15 +44,15 @@
 #include <ql/math/forwardflatinterpolation.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/gammadistribution.hpp>
-#include <ql/math/gaussianorthogonalpolynomial.hpp>
-#include <ql/math/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/gaussianstatistics.hpp>
 #include <ql/math/generalstatistics.hpp>
 #include <ql/math/incompletegamma.hpp>
 #include <ql/math/incrementalstatistics.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/interpolation2d.hpp>
-#include <ql/math/kronrodintegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/lexicographicalview.hpp>
 #include <ql/math/linearinterpolation.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
@@ -66,7 +66,7 @@
 #include <ql/math/rounding.hpp>
 #include <ql/math/sabrinterpolation.hpp>
 #include <ql/math/sampledcurve.hpp>
-#include <ql/math/segmentintegral.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/simpsonintegral.hpp>
 #include <ql/math/surface.hpp>
 #include <ql/math/svd.hpp>

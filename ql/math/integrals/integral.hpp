@@ -1,5 +1,3 @@
-/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-
 /*
  Copyright (C) 2007 François du Vignaud
 
@@ -17,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file beta.hpp
-    \brief Integrators base class definition
+/*! \file integrator.hpp
+\brief Integrators base class definition
 */
 
 #ifndef quantlib_math_Integrator_h
@@ -28,49 +26,39 @@
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/function.hpp>
-
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
     class Integrator{
     public:
-Real operator()(const F& f, Real a, Real b) const {
 
-            if (a == b)
-                return 0.0;
-            if (a > b)
-                return -(*this)(f,b,a);
+        Real operator()(const boost::function<Real (Real)>& f, 
+                        Real a, Real b) const;
+        
+        //! \Modifiers
+        //@{
+        void setAccuracy(Real);
+        void setMaxEvaluations(Size);
+        //@}
 
-            functionEvaluations_ = 0;
-            Real result = GaussKronrod(f, a, b, tolerance_);
-            return result;
-        }
-    void setIntegrand(const boost::function<Real (Real)>& f);
-    void setUpperBoundary(Real );
-    void setLowerBoundary(Real );
-    void setAccuracy(Real);
-    void setMaxEvaluations(Size);
-
-    void setIntegrand(const boost::function<Real (Real)>& f);
-    Real upperBoundary() const;
-    Real lowerBoundary() const;
-    Real accuracy() const;
-    Size maxEvaluations() const;
+        //! \Inspectors
+        //@{
+        Real accuracy() const;
+        Size maxEvaluations() const;
+        //@}
 
     private:
-        boost::function<Real (Real)>& f_;
-        Real upperBoundary_;
-        Real lowerBoundary_;
         Real accuracy_;
         Size maxEvaluations_;
     };
 
     /*! 
-    \brief This class allow to delegate the choice of the integration method
+    \brief This class allows to delegate the choice of the integration method
     */
 
     class IntegratorFactory{
-    
+        boost::shared_ptr<Integrator> operator()() const;
     };
 
 }

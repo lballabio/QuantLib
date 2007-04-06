@@ -26,9 +26,10 @@
 #define quantlib_gaussian_quadratures_hpp
 
 #include <ql/math/array.hpp>
-#include <ql/math/gaussianorthogonalpolynomial.hpp>
+#include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
 
 namespace QuantLib {
+    class GaussianOrthogonalPolynomial;
 
     //! Integral of a 1-dimensional function using the Gauss quadratures method
     /*! References:

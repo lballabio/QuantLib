@@ -22,7 +22,7 @@
     \brief Integral of a 1-dimensional function using the Gauss quadratures
 */
 
-#include <ql/math/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/tqreigendecomposition.hpp>
 #include <ql/math/symmetricschurdecomposition.hpp>
 

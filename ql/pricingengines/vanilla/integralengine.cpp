@@ -19,7 +19,7 @@
 
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/math/segmentintegral.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
 
 namespace QuantLib {
 
