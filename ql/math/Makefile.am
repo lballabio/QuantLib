@@ -2,81 +2,53 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/math
 
+SUBDIRS = optimization randomnumbers \
+	interpolations distributions integrals solvers1d
+
 include_HEADERS = \
 	all.hpp \
 	core.hpp \
 	array.hpp \
-	backwardflatinterpolation.hpp \
 	beta.hpp \
-	bicubicsplineinterpolation.hpp \
-	bilinearinterpolation.hpp \
-	binomialdistribution.hpp \
-	bivariatenormaldistribution.hpp \
-	chisquaredistribution.hpp \
 	choleskydecomposition.hpp \
 	comparison.hpp \
 	convergencestatistics.hpp \
-	cubicspline.hpp \
 	curve.hpp \
 	discrepancystatistics.hpp \
 	domain.hpp \
 	errorfunction.hpp \
-	extrapolation.hpp \
 	factorial.hpp \
-	forwardflatinterpolation.hpp \
 	functional.hpp \
-	gammadistribution.hpp \
-	gaussianorthogonalpolynomial.hpp \
-	gaussianquadratures.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
 	incompletegamma.hpp \
 	incrementalstatistics.hpp \
 	interpolation.hpp \
-	interpolation2d.hpp \
-	kronrodintegral.hpp \
 	lexicographicalview.hpp \
-	linearinterpolation.hpp \
 	linearleastsquaresregression.hpp \
-	loglinearinterpolation.hpp \
 	matrix.hpp \
-	multicubicspline.hpp \
-	normaldistribution.hpp \
-	poissondistribution.hpp \
 	primenumbers.hpp \
 	pseudosqrt.hpp \
 	riskstatistics.hpp \
 	rounding.hpp \
-	sabrinterpolation.hpp \
 	sampledcurve.hpp \
-	segmentintegral.hpp \
-	sequencestatistics.hpp \
-	simpsonintegral.hpp \
 	statistics.hpp \
 	surface.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
 	tqreigendecomposition.hpp \
-	transformedgrid.hpp \
-	trapezoidintegral.hpp
+	transformedgrid.hpp 
 
 libMath_la_SOURCES = \
 	beta.cpp \
-	bivariatenormaldistribution.cpp \
-	chisquaredistribution.cpp \
 	choleskydecomposition.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
 	factorial.cpp \
-	gammadistribution.cpp \
-	gaussianorthogonalpolynomial.cpp \
-	gaussianquadratures.cpp \
 	generalstatistics.cpp \
 	incompletegamma.cpp \
 	incrementalstatistics.cpp \
-	kronrodintegral.cpp \
 	matrix.cpp \
-	normaldistribution.cpp \
 	primenumbers.cpp \
 	pseudosqrt.cpp \
 	rounding.cpp \
@@ -86,6 +58,11 @@ libMath_la_SOURCES = \
 	symmetricschurdecomposition.cpp \
 	tqreigendecomposition.cpp
 
+libMath_la_LIBADD = \
+    distributions/libDistributions.la \
+    integrals/libIntegrals.la \
+    optimization/libOptimization.la \
+    randomnumbers/libRandomNumbers.la
 
 noinst_LTLIBRARIES = libMath.la
 

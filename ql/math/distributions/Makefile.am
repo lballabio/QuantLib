@@ -1,0 +1,21 @@
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+includedir = $(prefix)/include/ql/distributions
+
+include_HEADERS = \
+	binomialdistribution.hpp \
+	bivariatenormaldistribution.hpp \
+	chisquaredistribution.hpp \
+	gammadistribution.hpp \
+	normaldistribution.hpp \
+	poissondistribution.hpp \
+	sequencestatistics.hpp
+
+libDistributions_la_SOURCES = \
+	bivariatenormaldistribution.cpp \
+	chisquaredistribution.cpp \
+	gammadistribution.cpp \
+	normaldistribution.cpp 
+
+noinst_LTLIBRARIES = libDistributions.la
+

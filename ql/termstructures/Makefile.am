@@ -2,33 +2,22 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/termstructures
 
+SUBDIRS = volatilities yieldcurves
+
 include_HEADERS = \
-    all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
-    compoundforward.hpp \
-    discountcurve.hpp \
     drifttermstructure.hpp \
-    extendeddiscountcurve.hpp \
-    flatforward.hpp \
-    forwardcurve.hpp \
-    forwardspreadedtermstructure.hpp \
-    forwardstructure.hpp \
-    impliedtermstructure.hpp \
-    piecewiseyieldcurve.hpp \
-    piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
-    ratehelpers.hpp \
-    zerocurve.hpp \
-    zerospreadedtermstructure.hpp \
-    zeroyieldstructure.hpp
+    ratehelpers.hpp 
 
 libTermStructures_la_SOURCES = \
     bondhelpers.cpp \
-    compoundforward.cpp \
-    extendeddiscountcurve.cpp \
-    piecewiseyieldcurve.cpp \
     ratehelpers.cpp
+
+libTermStructures_la_LIBADD = \
+    volatilities/libVolatilities.la \
+    yieldcurves/libYieldCurves.la
 
 noinst_LTLIBRARIES = libTermStructures.la
 
