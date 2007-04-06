@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/daycounters
+includedir = $(prefix)/include/ql/time/daycounters
 
 include_HEADERS = \
 	all.hpp \

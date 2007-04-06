@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/finitedifferences
+includedir = $(prefix)/include/ql/methods/finitedifferences
 
 include_HEADERS = \
 	all.hpp \

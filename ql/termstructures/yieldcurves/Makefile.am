@@ -1,12 +1,13 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/yieldcurves
+includedir = $(prefix)/include/ql/termstructures/yieldcurves
 
 include_HEADERS = \
     all.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
     extendeddiscountcurve.hpp \
+    flatforward.hpp \
     forwardcurve.hpp \
     forwardspreadedtermstructure.hpp \
     forwardstructure.hpp \

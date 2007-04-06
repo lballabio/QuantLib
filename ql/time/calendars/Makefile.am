@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/calendars
+includedir = $(prefix)/include/ql/time/calendars
 
 include_HEADERS = \
 	all.hpp \

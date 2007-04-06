@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/distributions
+includedir = $(prefix)/include/ql/math/distributions
 
 include_HEADERS = \
 	binomialdistribution.hpp \

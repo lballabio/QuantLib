@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/volatilities
+includedir = $(prefix)/include/ql/termstructures/volatilities
 
 include_HEADERS = \
     all.hpp \

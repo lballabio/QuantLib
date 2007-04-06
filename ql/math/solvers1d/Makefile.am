@@ -1,6 +1,6 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/solvers1d
+includedir = $(prefix)/include/ql/math/solvers1d
 
 include_HEADERS = \
 	all.hpp \
