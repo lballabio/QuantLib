@@ -14,7 +14,8 @@ include_HEADERS = \
 libIntegrals_la_SOURCES = \
 	gaussianorthogonalpolynomial.cpp \
 	gaussianquadratures.cpp \
-	kronrodintegral.cpp 
+	kronrodintegral.cpp \
+	integral.cpp
 
 noinst_LTLIBRARIES = libIntegrals.la
 
