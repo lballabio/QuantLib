@@ -19,10 +19,10 @@
 
 #include "integrals.hpp"
 #include "utilities.hpp"
-#include <ql/math/segmentintegral.hpp>
-#include <ql/math/simpsonintegral.hpp>
-#include <ql/math/trapezoidintegral.hpp>
-#include <ql/math/kronrodintegral.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/volatilities/abcd.hpp>

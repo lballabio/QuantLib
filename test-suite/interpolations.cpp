@@ -26,7 +26,7 @@
 #include <ql/math/forwardflatinterpolation.hpp>
 #include <ql/math/cubicspline.hpp>
 #include <ql/math/multicubicspline.hpp>
-#include <ql/math/simpsonintegral.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>

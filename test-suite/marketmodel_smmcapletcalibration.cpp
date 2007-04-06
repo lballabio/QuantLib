@@ -46,7 +46,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/math/segmentintegral.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/convergencestatistics.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/optimization/simplex.hpp>

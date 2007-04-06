@@ -67,13 +67,13 @@
 #include <ql/math/sabrinterpolation.hpp>
 #include <ql/math/sampledcurve.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/math/simpsonintegral.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/surface.hpp>
 #include <ql/math/svd.hpp>
 #include <ql/math/symmetricschurdecomposition.hpp>
 #include <ql/math/tqreigendecomposition.hpp>
 #include <ql/math/transformedgrid.hpp>
-#include <ql/math/trapezoidintegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
 
 
 #endif

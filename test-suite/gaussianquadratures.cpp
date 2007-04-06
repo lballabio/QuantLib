@@ -22,7 +22,7 @@
 #include <ql/types.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/normaldistribution.hpp>
-#include <ql/math/gaussianquadratures.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
