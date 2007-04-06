@@ -29,7 +29,7 @@
 #include <ql/volatilities/swaptionvoldiscrete.hpp>
 #include <ql/daycounters/actual365fixed.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <boost/noncopyable.hpp>

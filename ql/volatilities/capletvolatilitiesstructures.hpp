@@ -26,8 +26,8 @@
 
 #include <ql/capvolstructures.hpp>
 #include <ql/volatilities/smilesection.hpp>
-#include <ql/math/bilinearinterpolation.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 

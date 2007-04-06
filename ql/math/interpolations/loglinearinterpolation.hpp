@@ -25,7 +25,7 @@
 #ifndef quantlib_loglinear_interpolation_hpp
 #define quantlib_loglinear_interpolation_hpp
 
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {

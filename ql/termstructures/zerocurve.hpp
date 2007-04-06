@@ -25,7 +25,7 @@
 #define quantlib_zero_curve_hpp
 
 #include <ql/termstructures/zeroyieldstructure.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <vector>
 #include <utility>
 

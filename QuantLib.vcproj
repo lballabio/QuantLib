@@ -3216,9 +3216,6 @@
 			Name="Math"
 			Filter="">
 			<File
-				RelativePath=".\ql\math\abcdinterpolation.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\math\all.hpp">
 			</File>
 			<File
@@ -3289,12 +3286,6 @@
 			</File>
 			<File
 				RelativePath="ql\math\beta.hpp">
-			</File>
-			<File
-				RelativePath="ql\math\bicubicsplineinterpolation.hpp">
-			</File>
-			<File
-				RelativePath="ql\math\bilinearinterpolation.hpp">
 			</File>
 			<File
 				RelativePath="ql\math\choleskydecomposition.cpp">
@@ -3370,9 +3361,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\core.hpp">
-			</File>
-			<File
-				RelativePath="ql\math\cubicspline.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\curve.hpp">
@@ -3507,9 +3495,6 @@
 				RelativePath="ql\math\errorfunction.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\math\extrapolation.hpp">
-			</File>
-			<File
 				RelativePath="ql\math\factorial.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
@@ -3574,9 +3559,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\fastfouriertransform.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\forwardflatinterpolation.hpp">
 			</File>
 			<File
 				RelativePath="ql\math\functional.hpp">
@@ -3774,31 +3756,16 @@
 				RelativePath="ql\math\incrementalstatistics.hpp">
 			</File>
 			<File
-				RelativePath="ql\math\interpolation.hpp">
-			</File>
-			<File
-				RelativePath="ql\math\interpolation2d.hpp">
-			</File>
-			<File
 				RelativePath="ql\math\lexicographicalview.hpp">
 			</File>
 			<File
-				RelativePath="ql\math\linearinterpolation.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\math\linearleastsquaresregression.hpp">
-			</File>
-			<File
-				RelativePath="ql\math\loglinearinterpolation.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\matrix.cpp">
 			</File>
 			<File
 				RelativePath="ql\math\matrix.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\multicubicspline.hpp">
 			</File>
 			<File
 				RelativePath="ql\math\primenumbers.cpp">
@@ -3934,9 +3901,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\rounding.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\sabrinterpolation.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\sampledcurve.cpp">
@@ -4160,6 +4124,46 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\integrals\trapezoidintegral.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="interpolations"
+				Filter="">
+				<File
+					RelativePath=".\ql\math\interpolations\abcdinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\backwardflatinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\bicubicsplineinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\bilinearinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\cubicspline.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\extrapolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\forwardflatinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\interpolation2d.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\loglinearinterpolation.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\multicubicspline.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\interpolations\sabrinterpolation.hpp">
 				</File>
 			</Filter>
 		</Filter>

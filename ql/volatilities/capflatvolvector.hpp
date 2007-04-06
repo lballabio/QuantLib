@@ -26,7 +26,7 @@
 #define quantlib_cap_volatility_vector_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/daycounters/thirty360.hpp>
 #include <vector>
 

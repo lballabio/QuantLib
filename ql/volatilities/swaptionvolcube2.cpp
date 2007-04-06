@@ -20,7 +20,7 @@
 
 #include <ql/volatilities/swaptionvolcube2.hpp>
 #include <ql/volatilities/interpolatedsmilesection.hpp>
-#include <ql/math/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 

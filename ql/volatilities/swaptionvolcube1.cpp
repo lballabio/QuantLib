@@ -18,7 +18,7 @@
 */
 
 #include <ql/volatilities/swaptionvolcube1.hpp>
-#include <ql/math/sabrinterpolation.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/volatilities/swaptionvolmatrix.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL

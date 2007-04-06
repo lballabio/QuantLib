@@ -19,7 +19,7 @@
 */
 
 #include <ql/volatilities/blackvariancesurface.hpp>
-#include <ql/math/bilinearinterpolation.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 

@@ -28,7 +28,7 @@
 #include <ql/daycounters/actual365fixed.hpp>
 #include <ql/settings.hpp>
 #include <ql/handle.hpp>
-#include <ql/math/extrapolation.hpp>
+#include <ql/math/interpolations/extrapolation.hpp>
 #include <ql/utilities/null.hpp>
 
 namespace QuantLib {

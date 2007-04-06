@@ -30,9 +30,9 @@
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
-#include <ql/math/linearinterpolation.hpp>
-#include <ql/math/loglinearinterpolation.hpp>
-#include <ql/math/cubicspline.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/loglinearinterpolation.hpp>
+#include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <iomanip>

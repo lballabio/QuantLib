@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 
 using namespace QuantLib;

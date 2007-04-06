@@ -26,7 +26,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/grid.hpp>
-#include <ql/math/cubicspline.hpp>
+#include <ql/math/interpolations/cubicspline.hpp>
 
 namespace QuantLib {
 

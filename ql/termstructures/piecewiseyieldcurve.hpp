@@ -27,7 +27,7 @@
 #include <ql/quote.hpp>
 #include <ql/termstructures/discountcurve.hpp>
 #include <ql/termstructures/bootstraptraits.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/solvers1d/brent.hpp>
 

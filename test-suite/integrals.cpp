@@ -23,7 +23,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/volatilities/abcd.hpp>
 

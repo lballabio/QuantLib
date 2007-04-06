@@ -25,8 +25,8 @@
 #ifndef quantlib_bicubic_spline_interpolation_hpp
 #define quantlib_bicubic_spline_interpolation_hpp
 
-#include <ql/math/interpolation2d.hpp>
-#include <ql/math/cubicspline.hpp>
+#include <ql/math/interpolations/interpolation2d.hpp>
+#include <ql/math/interpolations/cubicspline.hpp>
 
 namespace QuantLib {
 

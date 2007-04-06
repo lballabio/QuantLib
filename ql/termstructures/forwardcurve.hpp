@@ -25,7 +25,7 @@
 #define quantlib_forward_curve_hpp
 
 #include <ql/termstructures/forwardstructure.hpp>
-#include <ql/math/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <vector>
 #include <utility>
 

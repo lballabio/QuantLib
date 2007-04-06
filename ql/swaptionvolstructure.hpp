@@ -27,7 +27,7 @@
 #define quantlib_swaption_volatility_structure_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/volatilities/smilesection.hpp>
 
 namespace QuantLib {

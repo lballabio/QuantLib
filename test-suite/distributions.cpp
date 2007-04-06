@@ -21,9 +21,9 @@
 
 #include "distributions.hpp"
 #include "utilities.hpp"
-#include <ql/math/normaldistribution.hpp>
-#include <ql/math/bivariatenormaldistribution.hpp>
-#include <ql/math/poissondistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/comparison.hpp>
 
 using namespace QuantLib;

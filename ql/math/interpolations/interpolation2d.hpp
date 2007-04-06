@@ -25,7 +25,7 @@
 #ifndef quantlib_interpolation2D_hpp
 #define quantlib_interpolation2D_hpp
 
-#include <ql/math/extrapolation.hpp>
+#include <ql/math/interpolations/extrapolation.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/errors.hpp>

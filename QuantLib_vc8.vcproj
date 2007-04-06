@@ -3155,51 +3155,51 @@
 				Name="Interpolations"
 				>
 				<File
-					RelativePath=".\ql\math\backwardflatinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\abcdinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\bicubicsplineinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\backwardflatinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\bilinearinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\bicubicsplineinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\cubicspline.hpp"
+					RelativePath=".\ql\math\interpolations\bilinearinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\extrapolation.hpp"
+					RelativePath=".\ql\math\interpolations\cubicspline.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\forwardflatinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\extrapolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\interpolation.hpp"
+					RelativePath=".\ql\math\interpolations\forwardflatinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\interpolation2d.hpp"
+					RelativePath=".\ql\math\interpolations\interpolation2d.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\linearinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\linearinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\loglinearinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\loglinearinterpolation.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\multicubicspline.hpp"
+					RelativePath=".\ql\math\interpolations\multicubicspline.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\sabrinterpolation.hpp"
+					RelativePath=".\ql\math\interpolations\sabrinterpolation.hpp"
 					>
 				</File>
 			</Filter>

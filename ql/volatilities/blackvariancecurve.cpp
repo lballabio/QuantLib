@@ -19,7 +19,7 @@
 */
 
 #include <ql/volatilities/blackvariancecurve.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 

@@ -19,7 +19,7 @@
 
 #include "operators.hpp"
 #include "utilities.hpp"
-#include <ql/math/normaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/finitedifferences/dzero.hpp>
 #include <ql/finitedifferences/dplusdminus.hpp>
 #include <ql/finitedifferences/bsmoperator.hpp>

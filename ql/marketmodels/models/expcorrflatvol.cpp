@@ -21,7 +21,7 @@
 
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/math/pseudosqrt.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 

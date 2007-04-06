@@ -28,7 +28,7 @@
 #include <ql/termstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/math/linearinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/volatilities/smilesection.hpp>
 
 namespace QuantLib {
