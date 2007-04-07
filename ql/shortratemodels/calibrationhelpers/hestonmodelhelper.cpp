@@ -25,14 +25,14 @@
 namespace QuantLib {
 
     HestonModelHelper::HestonModelHelper(
-                              const Period& maturity,
-                              const Calendar& calendar,
-                              const Real s0,
-                              const Real strikePrice,
-                              const Handle<Quote>& volatility,
-                              const Handle<YieldTermStructure>& riskFreeRate,
-                              const Handle<YieldTermStructure>& dividendYield,
-                              bool calibrateVolatility)
+                 const Period& maturity,
+                 const Calendar& calendar,
+                 const Real s0,
+                 const Real strikePrice,
+                 const Handle<Quote>& volatility,
+                 const RelinkableHandle<YieldTermStructure>& riskFreeRate,
+                 const RelinkableHandle<YieldTermStructure>& dividendYield,
+                 bool calibrateVolatility)
     : CalibrationHelper(volatility, riskFreeRate, calibrateVolatility),
       dividendYield_(dividendYield),
       exerciseDate_(calendar.advance(riskFreeRate->referenceDate(),
@@ -47,7 +47,8 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise(
                                          new EuropeanExercise(exerciseDate_));
 
-        Handle<Quote> uly  (boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
+        RelinkableHandle<Quote> uly(
+                              boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
         boost::shared_ptr<StochasticProcess> dummyProcess(
                       new HestonProcess(riskFreeRate, dividendYield,
                                         uly, 1.0, 0.1, 1.0, 0.3, 0.0));
