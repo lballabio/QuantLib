@@ -48,9 +48,9 @@ namespace QuantLib {
         enum Discretization { PartialTruncation, FullTruncation, 
                               Reflection, ExactVariance };
 
-        HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
-                      const Handle<YieldTermStructure>& dividendYield,
-                      const Handle<Quote>& s0,
+        HestonProcess(const RelinkableHandle<YieldTermStructure>& riskFreeRate,
+                      const RelinkableHandle<YieldTermStructure>& divYield,
+                      const RelinkableHandle<Quote>& s0,
                       double v0, double kappa, 
                       double theta, double sigma, double rho,
                       Discretization d = FullTruncation);
@@ -64,22 +64,21 @@ namespace QuantLib {
         Disposable<Array> evolve(Time t0, const Array& x0,
                                  Time dt, const Array& dw) const;
 
-        const RelinkableHandle<Quote>& v0()    const;
-        const RelinkableHandle<Quote>& rho()   const;
-        const RelinkableHandle<Quote>& kappa() const;
-        const RelinkableHandle<Quote>& theta() const;
-        const RelinkableHandle<Quote>& sigma() const;
+        RelinkableHandle<Quote> v0()    const;
+        RelinkableHandle<Quote> rho()   const;
+        RelinkableHandle<Quote> kappa() const;
+        RelinkableHandle<Quote> theta() const;
+        RelinkableHandle<Quote> sigma() const;
 
-        const Handle<Quote>& s0()    const;
-        const Handle<YieldTermStructure>& dividendYield() const;
-        const Handle<YieldTermStructure>& riskFreeRate() const;
+        RelinkableHandle<Quote> s0()    const;
+        RelinkableHandle<YieldTermStructure> dividendYield() const;
+        RelinkableHandle<YieldTermStructure> riskFreeRate() const;
 
         void update();
         Time time(const Date&) const;
       private:
-        Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
-        Handle<Quote> s0_;
-        RelinkableHandle<Quote> v0_, kappa_, theta_, sigma_, rho_;
+        RelinkableHandle<YieldTermStructure> riskFreeRate_, dividendYield_;
+        RelinkableHandle<Quote> s0_, v0_, kappa_, theta_, sigma_, rho_;
 
         const Discretization discretization_;
 
