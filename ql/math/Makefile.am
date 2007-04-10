@@ -2,8 +2,8 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/math
 
-SUBDIRS = optimization randomnumbers \
-	interpolations distributions integrals solvers1d
+SUBDIRS = distributions integrals interpolations \
+          optimization randomnumbers solvers1d
 
 include_HEADERS = \
 	all.hpp \

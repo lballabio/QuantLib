@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/math/distributions
 
 include_HEADERS = \
+	all.hpp \
 	binomialdistribution.hpp \
 	bivariatenormaldistribution.hpp \
 	chisquaredistribution.hpp \

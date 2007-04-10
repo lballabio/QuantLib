@@ -24,56 +24,41 @@
 
 #include <ql/math/core.hpp>
 
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/beta.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/math/distributions/binomialdistribution.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
-#include <ql/math/distributions/chisquaredistribution.hpp>
 #include <ql/math/choleskydecomposition.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/convergencestatistics.hpp>
-#include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/math/curve.hpp>
 #include <ql/math/discrepancystatistics.hpp>
 #include <ql/math/domain.hpp>
 #include <ql/math/errorfunction.hpp>
-#include <ql/math/interpolations/extrapolation.hpp>
 #include <ql/math/factorial.hpp>
-#include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/distributions/gammadistribution.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/gaussianstatistics.hpp>
 #include <ql/math/generalstatistics.hpp>
 #include <ql/math/incompletegamma.hpp>
 #include <ql/math/incrementalstatistics.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/lexicographicalview.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
-#include <ql/math/interpolations/loglinearinterpolation.hpp>
-#include <ql/math/interpolations/multicubicspline.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/primenumbers.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/riskstatistics.hpp>
 #include <ql/math/rounding.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/sampledcurve.hpp>
-#include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/surface.hpp>
 #include <ql/math/svd.hpp>
 #include <ql/math/symmetricschurdecomposition.hpp>
 #include <ql/math/tqreigendecomposition.hpp>
 #include <ql/math/transformedgrid.hpp>
-#include <ql/math/integrals/trapezoidintegral.hpp>
+
+#include <ql/math/distributions/all.hpp>
+#include <ql/math/integrals/all.hpp>
+#include <ql/math/interpolations/all.hpp>
+#include <ql/math/optimization/all.hpp>
+#include <ql/math/randomnumbers/all.hpp>
+#include <ql/math/solvers1d/all.hpp>
 
 
 #endif

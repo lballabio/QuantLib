@@ -17,16 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_term_structures_all_hpp
-#define quantlib_term_structures_all_hpp
+#ifndef quantlib_yield_curves_all_hpp
+#define quantlib_yield_curves_all_hpp
 
 #include <ql/qldefines.hpp>
 
-#include <ql/termstructures/bondhelpers.hpp>
-#include <ql/termstructures/bootstraptraits.hpp>
 #include <ql/termstructures/yieldcurves/compoundforward.hpp>
 #include <ql/termstructures/yieldcurves/discountcurve.hpp>
-#include <ql/termstructures/drifttermstructure.hpp>
 #include <ql/termstructures/yieldcurves/extendeddiscountcurve.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/yieldcurves/forwardcurve.hpp>
@@ -35,8 +32,6 @@
 #include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yieldcurves/piecewisezerospreadedtermstructure.hpp>
-#include <ql/termstructures/quantotermstructure.hpp>
-#include <ql/termstructures/ratehelpers.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/zeroyieldstructure.hpp>

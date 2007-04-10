@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/math/integrals
 
 include_HEADERS = \
+	all.hpp \
 	gaussianorthogonalpolynomial.hpp \
 	gaussianquadratures.hpp \
 	integral.hpp \

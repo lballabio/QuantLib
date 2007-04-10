@@ -344,8 +344,8 @@ AC_CONFIG_FILES([
     ql/marketmodels/products/multistep/Makefile
     ql/math/Makefile
     ql/math/distributions/Makefile
-    ql/math/interpolations/Makefile
     ql/math/integrals/Makefile
+    ql/math/interpolations/Makefile
     ql/math/optimization/Makefile
     ql/math/randomnumbers/Makefile
     ql/math/solvers1d/Makefile

@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/time
 SUBDIRS = calendars daycounters
 
 include_HEADERS = \
+    all.hpp \
     businessdayconvention.hpp \
     calendar.hpp \
     date.hpp \

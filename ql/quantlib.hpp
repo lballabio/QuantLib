@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,29 +33,22 @@
 
 #include <ql/core.hpp>
 
-#include <ql/time/calendars/all.hpp>
 #include <ql/cashflows/all.hpp>
 #include <ql/currencies/all.hpp>
-#include <ql/time/daycounters/all.hpp>
-#include <ql/methods/finitedifferences/all.hpp>
 #include <ql/indexes/all.hpp>
 #include <ql/instruments/all.hpp>
-#include <ql/methods/lattices/all.hpp>
 #include <ql/marketmodels/all.hpp>
 #include <ql/math/all.hpp>
-#include <ql/methods/montecarlo/all.hpp>
-#include <ql/math/optimization/all.hpp>
+#include <ql/methods/all.hpp>
 #include <ql/patterns/all.hpp>
 #include <ql/pricers/all.hpp>
 #include <ql/pricingengines/all.hpp>
 #include <ql/processes/all.hpp>
 #include <ql/quotes/all.hpp>
-#include <ql/math/randomnumbers/all.hpp>
 #include <ql/shortratemodels/all.hpp>
-#include <ql/math/solvers1d/all.hpp>
-#include <ql/termstructures/yieldcurves/all.hpp>
+#include <ql/termstructures/all.hpp>
+#include <ql/time/all.hpp>
 #include <ql/utilities/all.hpp>
-#include <ql/termstructures/volatilities/all.hpp>
 #include <ql/volatilitymodels/all.hpp>
 
 

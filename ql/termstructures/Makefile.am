@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/termstructures
 SUBDIRS = volatilities yieldcurves
 
 include_HEADERS = \
+    all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
     drifttermstructure.hpp \

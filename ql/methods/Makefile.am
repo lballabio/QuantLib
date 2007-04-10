@@ -4,6 +4,9 @@ includedir = $(prefix)/include/ql/methods
 
 SUBDIRS = finitedifferences lattices montecarlo
 
+include_HEADERS = \
+	all.hpp
+
 libMethods_la_SOURCES =
 
 libMethods_la_LIBADD = \
