@@ -7100,12 +7100,6 @@
 					RelativePath=".\ql\termstructures\yieldcurves\impliedtermstructure.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\yieldcurves\piecewiseflatforward.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\termstructures\yieldcurves\piecewiseflatforward.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\yieldcurves\piecewiseyieldcurve.cpp">
 				</File>
 				<File

@@ -8027,26 +8027,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit800]
-FileName=ql\termstructures\yieldcurves\piecewiseflatforward.cpp
-CompileCpp=1
-Folder=termstructures/yieldcurves
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit801]
-FileName=ql\termstructures\yieldcurves\piecewiseflatforward.hpp
-CompileCpp=1
-Folder=termstructures/yieldcurves
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit803]
 FileName=ql\termstructures\yieldcurves\piecewiseyieldcurve.hpp
 CompileCpp=1
