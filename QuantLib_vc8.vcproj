@@ -4616,11 +4616,11 @@
 			Name="TermStructures"
 			>
 			<File
-				RelativePath=".\ql\termstructures\bondhelpers.cpp"
+				RelativePath=".\ql\termstructures\yieldcurves\bondhelpers.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\bondhelpers.hpp"
+				RelativePath=".\ql\termstructures\yieldcurves\bondhelpers.hpp"
 				>
 			</File>
 			<File
@@ -4636,11 +4636,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\ratehelpers.cpp"
+				RelativePath=".\ql\termstructures\yieldcurves\ratehelpers.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\termstructures\ratehelpers.hpp"
+				RelativePath=".\ql\termstructures\yieldcurves\ratehelpers.hpp"
 				>
 			</File>
 			<Filter
