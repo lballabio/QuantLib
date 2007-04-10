@@ -2241,23 +2241,23 @@ test_suite* MarketModelTest::suite() {
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
 
     return suite;
 }

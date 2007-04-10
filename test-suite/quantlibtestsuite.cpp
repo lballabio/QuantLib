@@ -89,6 +89,7 @@
 #include "mersennetwister.hpp"
 #include "money.hpp"
 #include "operators.hpp"
+#include "optimizers.hpp"
 #include "pathgenerator.hpp"
 #include "piecewiseyieldcurve.hpp"
 #include "quantooption.hpp"
@@ -223,6 +224,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());
+    test->add(OptimizersTest::suite());
     test->add(PathGeneratorTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
     test->add(QuantoOptionTest::suite());

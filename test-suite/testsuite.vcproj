@@ -1912,6 +1912,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\optimizers.cpp">
+			</File>
+			<File
 				RelativePath=".\pathgenerator.cpp">
 			</File>
 			<File
@@ -2658,6 +2661,9 @@
 			</File>
 			<File
 				RelativePath="operators.hpp">
+			</File>
+			<File
+				RelativePath=".\optimizers.hpp">
 			</File>
 			<File
 				RelativePath=".\pathgenerator.hpp">

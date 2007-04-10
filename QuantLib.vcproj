@@ -3303,6 +3303,12 @@
 					RelativePath=".\ql\marketmodels\models\capletcoterminalcalibration.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\marketmodels\models\correlations.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\marketmodels\models\correlations.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\marketmodels\models\coterminaltoforwardadapter.cpp">
 				</File>
 				<File
