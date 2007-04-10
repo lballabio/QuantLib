@@ -247,7 +247,7 @@ namespace QuantLib {
                       const std::vector<Real>::const_iterator& t) const;
 
         //! calibration
-        EndCriteria::Type capletCalibration(
+        EndCriteria::Type calibration(
             const std::vector<Real>& blackVols,
             const std::vector<Real>::const_iterator& t,
             const boost::shared_ptr<EndCriteria>& endCriteria

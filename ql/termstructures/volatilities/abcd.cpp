@@ -90,7 +90,7 @@ namespace QuantLib {
         return maxError;
     }
 
-    EndCriteria::Type Abcd::capletCalibration(
+    EndCriteria::Type Abcd::calibration(
                 const std::vector<Real>& blackVols,
                 const std::vector<Real>::const_iterator& t,
                 const boost::shared_ptr<EndCriteria>& endCr,
