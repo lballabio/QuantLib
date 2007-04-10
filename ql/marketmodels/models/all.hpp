@@ -25,6 +25,7 @@
 #include <ql/marketmodels/models/capletcoterminalcalibration.hpp>
 #include <ql/marketmodels/models/expcorrabcdvol.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/marketmodels/models/correlations.hpp>
 #include <ql/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/marketmodels/models/swapfromfracorrelationstructure.hpp>
