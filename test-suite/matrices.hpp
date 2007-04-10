@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Neil Firth
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2004, 2007 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +30,7 @@ class MatricesTest {
   public:
     static void testEigenvectors();
     static void testSqrt();
+    static void testHighamSqrt();
     static void testSVD();
     static void testInverse();
     static boost::unit_test_framework::test_suite* suite();

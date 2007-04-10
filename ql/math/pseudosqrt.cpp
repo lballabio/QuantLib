@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2006 Yiping Chen
+ Copyright (C) 2007 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -236,6 +237,100 @@ namespace QuantLib {
             return result;
         }
 
+        // Matrix infinity norm. See Golub and van Loan (2.3.10) or
+        // <http://en.wikipedia.org/wiki/Matrix_norm>
+        const double normInf(const Matrix& M)
+        {
+            Size rows = M.rows();
+            Size cols = M.columns();
+            double norm = 0.0;
+            for (Size i=0; i<rows; ++i)
+            {
+                double colSum = 0.0;
+                for (Size j=0; j<cols; ++j)
+                {
+                    colSum += std::fabs(M[i][j]);
+                }
+                norm = std::max(norm, colSum);
+            }
+            return norm;
+        }
+
+        // Take a matrix and make all the diagonal entries 1.
+        const Disposable <Matrix> projectToUnitDiagonalMatrix(const Matrix& M)
+        {
+            Size size = M.rows();
+            QL_REQUIRE(size == M.columns(),
+                   "matrix not square");
+
+            Matrix result(M);
+            for (Size i=0; i<size; i++){
+                result[i][i] = 1.0;
+            }
+
+            return result;
+        }
+
+        // Take a matrix and make all the eigenvalues non-negative
+        const Disposable <Matrix> projectToPositiveSemidefiniteMatrix(Matrix& M)
+        {
+            Size size = M.rows();
+            QL_REQUIRE(size == M.columns(),
+                   "matrix not square");
+
+            Matrix result(M);
+            Matrix diagonal(size, size, 0.0);
+            SymmetricSchurDecomposition jd(M);
+            for (Size i=0; i<size; ++i)
+                diagonal[i][i] = std::max<Real>(jd.eigenvalues()[i], 0.0);
+
+            result = jd.eigenvectors()*diagonal*transpose(jd.eigenvectors());
+
+            return result;
+        }
+
+        // implementation of the Higham algorithm to find the nearest
+        // correlation matrix.
+        const Disposable <Matrix> highamImplementation(
+                        const Matrix& A,
+                        const Size maxIterations,
+                        const double& tolerance) {
+
+            Size size = A.rows();
+            Matrix Y(A);
+            Matrix X(A);
+            Matrix R(A);
+            Matrix deltaS(size, size, 0.0);
+
+            Matrix lastX(X);
+            Matrix lastY(Y);
+
+            for (Size i=0; i<maxIterations; ++i) {
+                R = Y - deltaS;
+                X = projectToPositiveSemidefiniteMatrix(R);
+                deltaS = X - R;
+                Y = projectToUnitDiagonalMatrix(X);
+
+                // convergence test
+                if (std::max(normInf(X-lastX)/normInf(X),
+                        std::max(normInf(Y-lastY)/normInf(Y),
+                                normInf(Y-X)/normInf(Y)))
+                        <= tolerance)
+                {
+                    break;
+                }
+                lastX = X;
+                lastY = Y;
+            }
+
+            // ensure we return a symmetric matrix
+            for (Size i=0; i<size; ++i)
+                for (Size j=0; j<i; ++j)
+                    Y[i][j] = Y[j][i];
+
+            return Y;
+        }
+
     }
 
 
@@ -243,7 +338,6 @@ namespace QuantLib {
                                         SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
 
-        checkSymmetry(matrix);
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         checkSymmetry(matrix);
         #else
@@ -338,6 +432,13 @@ namespace QuantLib {
                 result=hypersphereOptimize(matrix, result, true);
             }
             break;
+          case SalvagingAlgorithm::Higham: {
+              int maxIterations = 40;
+              double tolerance = 1e-6;
+              result = highamImplementation(matrix, maxIterations, tolerance);
+              result = CholeskyDecomposition(result, true);
+            }
+            break;
           default:
             QL_FAIL("unknown salvaging algorithm");
         }
@@ -352,7 +453,6 @@ namespace QuantLib {
                                              SalvagingAlgorithm::Type sa) {
         Size size = matrix.rows();
 
-        checkSymmetry(matrix);
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         checkSymmetry(matrix);
         #else
@@ -388,6 +488,15 @@ namespace QuantLib {
             for (Size i=0; i<size; ++i)
                 eigenValues[i] = std::max<Real>(eigenValues[i], 0.0);
             break;
+          case SalvagingAlgorithm::Higham:
+              {
+                  int maxIterations = 40;
+                  double tolerance = 1e-6;
+                  Matrix adjustedMatrix = highamImplementation(matrix, maxIterations, tolerance);
+                  jd = SymmetricSchurDecomposition(adjustedMatrix);
+                  eigenValues = jd.eigenvalues();
+              }
+              break;
           default:
             QL_FAIL("unknown or invalid salvaging algorithm");
         }

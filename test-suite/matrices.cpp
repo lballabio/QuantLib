@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2007 Klaus Spanderen
+ Copyright (C) 2007 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,7 +32,7 @@ using namespace boost::unit_test_framework;
 QL_BEGIN_TEST_LOCALS(MatricesTest)
 
 Size N;
-Matrix M1, M2, M3, M4, I;
+Matrix M1, M2, M3, M4, M5, M6, I;
 
 Real norm(const Array& v) {
     return std::sqrt(DotProduct(v,v));
@@ -51,6 +52,8 @@ void setup() {
     M1 = M2 = I = Matrix(N,N);
     M3 = Matrix(3,4);
     M4 = Matrix(4,3);
+    M5 = Matrix(4, 4, 0.0);
+    M6 = Matrix(4, 4, 0.0);
 
     M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
     M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
@@ -68,10 +71,23 @@ void setup() {
     M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 2; M3[1][3] = 1;
     M3[2][0] = 0; M3[2][1] = 1; M3[2][2] = 0; M3[2][3] = 0;
 
-    M4[0][0] = 1; M4[0][1] = 2; M4[0][2] = 400;
-    M4[1][0] = 2; M4[1][1] = 0; M4[1][2] = 1;
-    M4[2][0] = 30; M4[2][1] = 2; M4[2][2] = 0;
-    M4[3][0] = 2; M4[3][1] = 0; M4[3][2] = 1.05;
+    M4[0][0] = 1;  M4[0][1] = 2;  M4[0][2] = 400;
+    M4[1][0] = 2;  M4[1][1] = 0;  M4[1][2] = 1;
+    M4[2][0] = 30; M4[2][1] = 2;  M4[2][2] = 0;
+    M4[3][0] = 2;  M4[3][1] = 0;  M4[3][2] = 1.05;
+
+    // from Higham - nearest correlation matrix
+    M5[0][0] = 2;   M5[0][1] = -1;  M5[0][2] = 0.0; M5[0][3] = 0.0;
+    M5[1][0] = M5[0][1];  M5[1][1] = 2;   M5[1][2] = -1;  M5[1][3] = 0.0;
+    M5[2][0] = M5[0][2]; M5[2][1] = M5[1][2];  M5[2][2] = 2;   M5[2][3] = -1;
+    M5[3][0] = M5[0][3]; M5[3][1] = M5[1][3]; M5[3][2] = M5[2][3];  M5[3][3] = 2;
+
+    // from Higham - nearest correlation matrix to M5
+    M6[0][0] = 1;        M6[0][1] = -0.8084124981;  M6[0][2] = 0.1915875019;   M6[0][3] = 0.106775049;
+    M6[1][0] = M6[0][1]; M6[1][1] = 1;        M6[1][2] = -0.6562326948;  M6[1][3] = M6[0][2];
+    M6[2][0] = M6[0][2]; M6[2][1] = M6[1][2]; M6[2][2] = 1;        M6[2][3] = M6[0][1];
+    M6[3][0] = M6[0][3]; M6[3][1] = M6[1][3]; M6[3][2] = M6[2][3]; M6[3][3] = 1;
+
 }
 
 QL_END_TEST_LOCALS(MatricesTest)
@@ -135,6 +151,28 @@ void MatricesTest::testSqrt() {
                    << "original matrix:\n" << M1
                    << "pseudoSqrt:\n" << m
                    << "pseudoSqrt*pseudoSqrt:\n" << temp
+                   << "\nerror:     " << error
+                   << "\ntolerance: " << tolerance);
+    }
+
+    QL_TEST_END
+}
+
+void MatricesTest::testHighamSqrt() {
+    BOOST_MESSAGE("Testing Higham matricial square root...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    Matrix tempSqrt = pseudoSqrt(M5, SalvagingAlgorithm::Higham);
+    Matrix ansSqrt = pseudoSqrt(M6, SalvagingAlgorithm::None);
+    Real error = norm(ansSqrt - tempSqrt);
+    Real tolerance = 1.0e-4;
+    if (error>tolerance) {
+        BOOST_FAIL("Higham matrix correction failed\n"
+                   << "original matrix:\n" << M5
+                   << "pseudoSqrt:\n" << tempSqrt
+                   << "should be:\n" << ansSqrt
                    << "\nerror:     " << error
                    << "\ntolerance: " << tolerance);
     }
@@ -225,6 +263,7 @@ test_suite* MatricesTest::suite() {
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSqrt));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testSVD));
     suite->add(BOOST_TEST_CASE(&MatricesTest::testInverse));
+    suite->add(BOOST_TEST_CASE(&MatricesTest::testHighamSqrt));
     return suite;
 }
 

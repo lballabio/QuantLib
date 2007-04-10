@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! algorithm used for matricial pseudo square root
     struct SalvagingAlgorithm {
-        enum Type { None, Spectral, Hypersphere,LowerDiagonal };
+        enum Type { None, Spectral, Hypersphere, LowerDiagonal, Higham };
     };
 
     //! Returns the pseudo square root of a real symmetric matrix
