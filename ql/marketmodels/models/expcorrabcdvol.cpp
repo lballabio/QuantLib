@@ -31,8 +31,7 @@ namespace QuantLib {
             Real c,
             Real d,
             const std::vector<Real>& ks,
-            Real longTermCorr,
-            Real beta,
+            const Matrix& correlations,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -63,20 +62,18 @@ namespace QuantLib {
                    << ") times number of steps (" << numberOfSteps_ << ")");
 
         Time effStartTime;
-        Real correlation, covar;
+        Real covar;
         Abcd abcd(a, b, c, d);
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         for (Size k=0; k<numberOfSteps_; ++k) {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    correlation = longTermCorr + (1.0-longTermCorr) *
-                        std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
                     effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
                     covar = abcd.covariance(effStartTime,
                                             effectiveStopTime[k][i],
                                             rateTimes[i], rateTimes[j]);
                     covariance_[k][j][i] = covariance_[k][i][j] =
-                        ks[i] * ks[j] * covar * correlation ;
+                        ks[i] * ks[j] * covar * correlations[i][j];
                  }
              }
 

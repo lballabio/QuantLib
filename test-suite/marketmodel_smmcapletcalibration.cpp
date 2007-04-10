@@ -31,6 +31,7 @@
 #include <ql/marketmodels/utilities.hpp>
 #include <ql/marketmodels/evolvers/coterminalswapratepcevolver.hpp>
 #include <ql/marketmodels/evolvers/forwardratepcevolver.hpp>
+#include <ql/marketmodels/models/correlations.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/marketmodels/models/expcorrabcdvol.hpp>
 #include <ql/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
@@ -267,14 +268,18 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                bumpedRates,
                                std::vector<Spread>(bumpedRates.size(), displacement)));
         case ExponentialCorrelationAbcdVolatility:
+            {
+            Matrix correlations = exponentialCorrelations(longTermCorrelation,
+                                                          beta, evolution);
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
-                               longTermCorrelation, beta,
+                               correlations,
                                evolution,
                                numberOfFactors,
                                bumpedRates,
                                std::vector<Spread>(bumpedRates.size(), displacement)));
+            }
         //case CalibratedMM:
         //    return boost::shared_ptr<MarketModel>(new
         //        CalibratedMarketModel(volModel, corrModel,

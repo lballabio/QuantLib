@@ -25,11 +25,11 @@
 
 #include <ql/marketmodels/marketmodel.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
-#include <ql/math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib
 {
+    class Matrix;
     class ExpCorrAbcdVol : public MarketModel {
       public:
         ExpCorrAbcdVol(
@@ -38,8 +38,7 @@ namespace QuantLib
             Real c,
             Real d,
             const std::vector<Real>& ks,
-            Real longTermCorr,
-            Real beta,
+            const Matrix& correlations,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
