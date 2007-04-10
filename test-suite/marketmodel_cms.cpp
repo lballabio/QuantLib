@@ -25,8 +25,8 @@
 #include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/marketmodels/curvestates/cmswapcurvestate.hpp>
 #include <ql/marketmodels/evolvers/cmswapratepcevolver.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmlinexpcorrmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/marketmodels/models/expcorrabcdvol.hpp>
 #include <ql/marketmodels/accountingengine.hpp>

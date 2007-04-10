@@ -19,11 +19,11 @@
 
 #include "old_pricers.hpp"
 #include "utilities.hpp"
-#include <ql/pricers/mcdiscretearithmeticaso.hpp>
-#include <ql/pricers/mceverest.hpp>
-#include <ql/pricers/mcmaxbasket.hpp>
-#include <ql/pricers/mcpagoda.hpp>
-#include <ql/pricers/mchimalaya.hpp>
+#include <ql/legacy/pricers/mcdiscretearithmeticaso.hpp>
+#include <ql/legacy/pricers/mceverest.hpp>
+#include <ql/legacy/pricers/mcmaxbasket.hpp>
+#include <ql/legacy/pricers/mcpagoda.hpp>
+#include <ql/legacy/pricers/mchimalaya.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/getcovariance.hpp>

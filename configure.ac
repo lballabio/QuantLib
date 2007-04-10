@@ -331,6 +331,9 @@ AC_CONFIG_FILES([
     ql/currencies/Makefile
     ql/indexes/Makefile
     ql/instruments/Makefile
+    ql/legacy/Makefile
+    ql/legacy/pricers/Makefile
+    ql/legacy/libormarketmodels/Makefile
     ql/marketmodels/Makefile
     ql/marketmodels/browniangenerators/Makefile
     ql/marketmodels/curvestates/Makefile
@@ -354,7 +357,6 @@ AC_CONFIG_FILES([
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/patterns/Makefile
-    ql/pricers/Makefile
     ql/pricingengines/Makefile
     ql/pricingengines/asian/Makefile
     ql/pricingengines/barrier/Makefile
@@ -373,7 +375,6 @@ AC_CONFIG_FILES([
     ql/shortratemodels/calibrationhelpers/Makefile
     ql/shortratemodels/onefactormodels/Makefile
     ql/shortratemodels/twofactormodels/Makefile
-    ql/shortratemodels/libormarketmodels/Makefile
     ql/time/Makefile
     ql/time/calendars/Makefile
     ql/time/daycounters/Makefile

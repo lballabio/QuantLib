@@ -7,11 +7,11 @@ SUBDIRS = \
     currencies \
     indexes \
     instruments \
+    legacy \
     marketmodels \
     math \
     methods \
     patterns \
-    pricers \
     pricingengines \
     processes \
     quotes \
@@ -101,10 +101,10 @@ libQuantLib_la_LIBADD = \
     currencies/libCurrencies.la \
     indexes/libIndexes.la \
     instruments/libInstruments.la \
+    legacy/libLegacy.la \
     math/libMath.la \
     marketmodels/libMarketModels.la \
     methods/libMethods.la \
-    pricers/libPricers.la \
     pricingengines/libPricingEngines.la \
     processes/libProcesses.la \
     quotes/libQuotes.la \

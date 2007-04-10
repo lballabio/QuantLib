@@ -26,7 +26,7 @@
 
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/shortratemodels/libormarketmodels/liborforwardmodel.hpp>
+#include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
 
 namespace QuantLib {
 

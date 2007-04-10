@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,16 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_short_rate_all_hpp
-#define quantlib_short_rate_all_hpp
+#ifndef quantlib_pricers_core_hpp
+#define quantlib_pricers_core_hpp
 
 #include <ql/qldefines.hpp>
 
-#include <ql/shortratemodels/core.hpp>
-
-#include <ql/shortratemodels/calibrationhelpers/all.hpp>
-#include <ql/shortratemodels/onefactormodels/all.hpp>
-#include <ql/shortratemodels/twofactormodels/all.hpp>
+#include <ql/legacy/pricers/mcpricer.hpp>
+#include <ql/legacy/pricers/singleassetoption.hpp>
 
 
 #endif

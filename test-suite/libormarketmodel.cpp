@@ -38,12 +38,12 @@
 #include <ql/shortratemodels/calibrationhelpers/caphelper.hpp>
 #include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
 
-#include <ql/shortratemodels/libormarketmodels/lfmcovarproxy.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmexpcorrmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmlinexpcorrmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmfixedvolmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmextlinexpvolmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/liborforwardmodel.hpp>
+#include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
+#include <ql/legacy/libormarketmodels/lmexpcorrmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmfixedvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

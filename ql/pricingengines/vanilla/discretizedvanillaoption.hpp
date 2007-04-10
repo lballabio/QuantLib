@@ -27,7 +27,6 @@
 
 #include <ql/discretizedasset.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/pricers/singleassetoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 
 namespace QuantLib {

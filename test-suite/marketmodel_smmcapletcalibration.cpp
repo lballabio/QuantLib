@@ -38,8 +38,8 @@
 #include <ql/marketmodels/swapforwardmappings.hpp>
 #include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmlinexpcorrmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
+#include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>

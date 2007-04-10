@@ -2,7 +2,7 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/shortratemodels
 
-SUBDIRS = calibrationhelpers onefactormodels twofactormodels libormarketmodels
+SUBDIRS = calibrationhelpers onefactormodels twofactormodels
 
 include_HEADERS = \
     all.hpp \
@@ -24,6 +24,5 @@ noinst_LTLIBRARIES = libShortRateModels.la
 libShortRateModels_la_LIBADD = \
     calibrationhelpers/libCalibrationHelpers.la \
     onefactormodels/libOneFactorModels.la \
-    twofactormodels/libTwoFactorModels.la \
-    libormarketmodels/libLiborMarketModels.la
+    twofactormodels/libTwoFactorModels.la
 

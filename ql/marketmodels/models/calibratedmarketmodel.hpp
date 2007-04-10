@@ -25,9 +25,6 @@
 #define quantlib_calibrated_market_model_hpp
 
 #include <ql/shortratemodels/model.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmvolmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lmcorrmodel.hpp>
-#include <ql/shortratemodels/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/marketmodels/marketmodel.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
 
@@ -54,7 +51,7 @@ namespace QuantLib {
     //    const std::vector<Rate>& initialRates() const;
     //    const std::vector<Rate>& displacements() const;
     //    Size numberOfRates() const;
-    //    Size numberOfFactors() const; 
+    //    Size numberOfFactors() const;
     //    const Matrix& pseudoRoot(Size i) const;
     //    //@}
     //  protected:
