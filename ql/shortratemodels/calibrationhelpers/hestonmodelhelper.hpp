@@ -38,8 +38,8 @@ namespace QuantLib {
                           const Real s0,
                           const Real strikePrice,
                           const Handle<Quote>& volatility,
-                          const RelinkableHandle<YieldTermStructure>& ,
-                          const RelinkableHandle<YieldTermStructure>& ,
+                          const Handle<YieldTermStructure>& riskFreeRate,
+                          const Handle<YieldTermStructure>& dividendYield,
                           bool calibrateVolatility = false);
 
         void addTimesTo(std::list<Time>&) const {}
@@ -47,7 +47,7 @@ namespace QuantLib {
         Real blackPrice(Real volatility) const;
         Time maturity() const  { return tau_; }
       private:
-        RelinkableHandle<YieldTermStructure> dividendYield_;
+        Handle<YieldTermStructure> dividendYield_;
         boost::shared_ptr<VanillaOption> option_;
         const Date exerciseDate_;
         const Time tau_;

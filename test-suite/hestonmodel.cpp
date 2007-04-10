@@ -63,8 +63,8 @@ void HestonModelTest::testBlackCalibration() {
     DayCounter dayCounter = Actual360();
     Calendar calendar = NullCalendar();
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.04,dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.50,dayCounter));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.04, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.50, dayCounter));
 
     std::vector<Period> optionMaturities;
     optionMaturities.push_back(Period(1, Months));
@@ -76,7 +76,7 @@ void HestonModelTest::testBlackCalibration() {
     optionMaturities.push_back(Period(2, Years));
 
     std::vector<boost::shared_ptr<CalibrationHelper> > options;
-    RelinkableHandle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
     Handle<Quote> vol(boost::shared_ptr<Quote>(new SimpleQuote(0.1)));
     Volatility volatility = vol->value();
 
@@ -116,8 +116,7 @@ void HestonModelTest::testBlackCalibration() {
             options[i]->setPricingEngine(engine);
 
         LevenbergMarquardt om(1e-8, 1e-8, 1e-8);
-        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 
-                                                  1.0e-8, 1.0e-8));
+        model->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
         Real tolerance = 3.0e-3;
 
@@ -177,11 +176,11 @@ void HestonModelTest::testDAXCalibration() {
         rates.push_back(r[i]);
     }
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(
+    Handle<YieldTermStructure> riskFreeTS(
                        boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
-    RelinkableHandle<YieldTermStructure> dividendTS(
+    Handle<YieldTermStructure> dividendTS(
                                    flatRate(settlementDate, 0.0, dayCounter));
 
     Volatility v[] =
@@ -199,8 +198,7 @@ void HestonModelTest::testDAXCalibration() {
         0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
         0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
 
-    RelinkableHandle<Quote> s0(
-                          boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
     Real strike[] = { 3400,3600,3800,4000,4200,4400,
                       4500,4600,4800,5000,5200,5400,5600 };
 
@@ -268,11 +266,10 @@ void HestonModelTest::testAnalyticVsBlack() {
                                      new PlainVanillaPayoff(Option::Put, 30));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.04,dayCounter));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
 
-    RelinkableHandle<Quote> s0(
-                            boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
 
     const Real v0=0.05;
     const Real kappa=5.0;
@@ -323,12 +320,10 @@ void HestonModelTest::testAnalyticVsCached() {
                                   new PlainVanillaPayoff(Option::Call, 1.05));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(
-                                                flatRate(0.0225, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(
-                                                flatRate(0.02, dayCounter));
-    RelinkableHandle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.0225, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
 
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
     const Real v0 = 0.1;
     const Real kappa = 3.16;
     const Real theta = 0.09;
@@ -372,14 +367,11 @@ void HestonModelTest::testAnalyticVsCached() {
         boost::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
 
-        RelinkableHandle<YieldTermStructure> riskFreeTS(
-                                                   flatRate(0.05, dayCounter));
-        RelinkableHandle<YieldTermStructure> dividendTS(
-                                                   flatRate(0.02, dayCounter));
+        Handle<YieldTermStructure> riskFreeTS(flatRate(0.05, dayCounter));
+        Handle<YieldTermStructure> dividendTS(flatRate(0.02, dayCounter));
 
         Real s = riskFreeTS->discount(0.7)/dividendTS->discount(0.7);
-        RelinkableHandle<Quote> s0(
-                                boost::shared_ptr<Quote>(new SimpleQuote(s)));
+        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(s)));
 
         boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.09, 1.2, 0.08, 1.8, -0.45));
@@ -428,11 +420,10 @@ void HestonModelTest::testMcVsCached() {
                                    new PlainVanillaPayoff(Option::Put, 1.05));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
 
-    RelinkableHandle<Quote> s0(
-                             boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(1.05)));
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
@@ -493,10 +484,10 @@ void HestonModelTest::testKahlJaeckelCase() {
                                    new PlainVanillaPayoff(Option::Call, 200));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.0, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.0, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.0, dayCounter));
 
-    RelinkableHandle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
 
     boost::shared_ptr<HestonProcess> process(new HestonProcess(
                    riskFreeTS, dividendTS, s0, 0.16, 1.0, 0.16, 2.0, -0.8,
@@ -552,8 +543,8 @@ void HestonModelTest::testEngines() {
                                    new PlainVanillaPayoff(Option::Put, 1.05));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.7, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.4, dayCounter));
 
     const Real v0 = 0.8;
     const Real theta = 0.4;
@@ -567,8 +558,7 @@ void HestonModelTest::testEngines() {
                               << ", kappa = " << kappa
                               << ", sigma = " << sigma);
 
-                RelinkableHandle<Quote> q(
-                                boost::shared_ptr<Quote>(new SimpleQuote(s0)));
+                Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
                 boost::shared_ptr<HestonProcess> process(new HestonProcess(
                     riskFreeTS, dividendTS, q, v0, kappa, theta, sigma, rho));
 

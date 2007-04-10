@@ -70,10 +70,9 @@ void BatesModelTest::testAnalyticVsBlack() {
                                      new PlainVanillaPayoff(Option::Put, 30));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.04,dayCounter));
-    RelinkableHandle<Quote> s0(
-                             boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
 
     Real yearFraction = dayCounter.yearFraction(settlementDate, exerciseDate);
     Real forwardPrice = s0->value()*std::exp((0.1-0.04)*yearFraction);
@@ -180,9 +179,9 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Put, 95));
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
-    RelinkableHandle<YieldTermStructure> dividendTS(flatRate(0.04,dayCounter));
-    RelinkableHandle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
+    Handle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
+    Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
 
     Real v0 = 0.0433;
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
@@ -278,11 +277,11 @@ void BatesModelTest::testDAXCalibration() {
         rates.push_back(r[i]);
     }
 
-    RelinkableHandle<YieldTermStructure> riskFreeTS(
+    Handle<YieldTermStructure> riskFreeTS(
                        boost::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
-    RelinkableHandle<YieldTermStructure> dividendTS(
+    Handle<YieldTermStructure> dividendTS(
                                    flatRate(settlementDate, 0.0, dayCounter));
 
     Volatility v[] =
@@ -300,8 +299,7 @@ void BatesModelTest::testDAXCalibration() {
         0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
         0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
 
-    RelinkableHandle<Quote> s0(
-                          boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
     Real strike[] = { 3400,3600,3800,4000,4200,4400,
                       4500,4600,4800,5000,5200,5400,5600 };
 
@@ -345,8 +343,7 @@ void BatesModelTest::testDAXCalibration() {
 
     // check calibration engine
     LevenbergMarquardt om;
-    batesModel->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 
-                                                   1.0e-8, 1.0e-8));
+    batesModel->calibrate(options, om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real expected = 36.6;
     Real calculated = getCalibrationError(options);

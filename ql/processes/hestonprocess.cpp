@@ -26,12 +26,12 @@
 namespace QuantLib {
 
     HestonProcess::HestonProcess(
-                     const RelinkableHandle<YieldTermStructure>& riskFreeRate,
-                     const RelinkableHandle<YieldTermStructure>& dividendYield,
-                     const RelinkableHandle<Quote>& s0,
-                     double v0, double kappa, 
-                     double theta, double sigma, double rho,
-                     Discretization d)
+                              const Handle<YieldTermStructure>& riskFreeRate,
+                              const Handle<YieldTermStructure>& dividendYield,
+                              const Handle<Quote>& s0,
+                              double v0, double kappa, 
+                              double theta, double sigma, double rho,
+                              Discretization d)
     : StochasticProcess(boost::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
@@ -204,35 +204,35 @@ namespace QuantLib {
         return retVal;
     }
 
-    RelinkableHandle<Quote> HestonProcess::v0() const {
+    const RelinkableHandle<Quote>& HestonProcess::v0() const {
         return v0_;
     }
 
-    RelinkableHandle<Quote> HestonProcess::rho() const {
+    const RelinkableHandle<Quote>& HestonProcess::rho() const {
         return rho_;
     }
 
-    RelinkableHandle<Quote> HestonProcess::kappa() const {
+    const RelinkableHandle<Quote>& HestonProcess::kappa() const {
         return kappa_;
     }
 
-    RelinkableHandle<Quote> HestonProcess::theta() const {
+    const RelinkableHandle<Quote>& HestonProcess::theta() const {
         return theta_;
     }
 
-    RelinkableHandle<Quote> HestonProcess::sigma() const {
+    const RelinkableHandle<Quote>& HestonProcess::sigma() const {
         return sigma_;
     }
 
-    RelinkableHandle<Quote> HestonProcess::s0() const {
+    const Handle<Quote>& HestonProcess::s0() const {
         return s0_;
     }
 
-    RelinkableHandle<YieldTermStructure> HestonProcess::dividendYield() const {
+    const Handle<YieldTermStructure>& HestonProcess::dividendYield() const {
         return dividendYield_;
     }
 
-    RelinkableHandle<YieldTermStructure> HestonProcess::riskFreeRate() const {
+    const Handle<YieldTermStructure>& HestonProcess::riskFreeRate() const {
         return riskFreeRate_;
     }
 
