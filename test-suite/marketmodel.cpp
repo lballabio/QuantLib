@@ -2119,7 +2119,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
     Real d0 = instVol.d();
     Real error0 = instVol.error(blackVols, rateTimes.begin());
 
-    EndCriteria::Type ec = instVol.capletCalibration(blackVols, rateTimes.begin());
+    EndCriteria::Type ec = instVol.calibration(blackVols, rateTimes.begin());
     Real a1 = instVol.a();
     Real b1 = instVol.b();
     Real c1 = instVol.c();
