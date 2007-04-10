@@ -32,6 +32,7 @@ include_HEADERS = \
 	riskstatistics.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
+	sequencestatistics.hpp \
 	statistics.hpp \
 	surface.hpp \
 	svd.hpp \

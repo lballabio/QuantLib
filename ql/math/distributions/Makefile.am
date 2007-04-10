@@ -8,8 +8,7 @@ include_HEADERS = \
 	chisquaredistribution.hpp \
 	gammadistribution.hpp \
 	normaldistribution.hpp \
-	poissondistribution.hpp \
-	sequencestatistics.hpp
+	poissondistribution.hpp
 
 libDistributions_la_SOURCES = \
 	bivariatenormaldistribution.cpp \

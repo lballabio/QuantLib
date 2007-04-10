@@ -2697,6 +2697,10 @@
 					>
 				</File>
 				<File
+				   RelativePath=".\ql\math\sequencestatistics.hpp"
+				   >
+				</File>
+				<File
 					RelativePath="ql\math\statistics.hpp"
 					>
 				</File>
@@ -2742,10 +2746,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\distributions\poissondistribution.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\math\distributions\sequencestatistics.hpp"
 					>
 				</File>
 			</Filter>

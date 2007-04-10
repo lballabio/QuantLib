@@ -8498,9 +8498,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit849]
-FileName=ql\math\distributions\sequencestatistics.hpp
+FileName=ql\math\sequencestatistics.hpp
 CompileCpp=1
-Folder=math/distributions
+Folder=math
 Compile=1
 Link=1
 Priority=1000

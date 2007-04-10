@@ -24,7 +24,7 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/distributions/sequencestatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
 #include <ql/math/statistics.hpp>
 
 

@@ -18,7 +18,7 @@
 */
 
 #include <ql/methods/montecarlo/genericlsregression.hpp>
-#include <ql/math/distributions/sequencestatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
 #include <ql/math/svd.hpp>
 
 namespace QuantLib {
@@ -39,7 +39,7 @@ namespace QuantLib {
             Size N = exerciseData.front().values.size();
             std::vector<Real> temp(N+1);
             SequenceStatistics stats(N+1);
-            
+
             Size j;
             for (j=0; j<exerciseData.size(); ++j) {
                 if (exerciseData[j].isValid) {
@@ -55,7 +55,7 @@ namespace QuantLib {
 
             std::vector<Real> means = stats.mean();
             Matrix covariance = stats.covariance();
-            
+
             Matrix C(N,N);
             Array target(N);
             for (Size k=0; k<N; ++k) {

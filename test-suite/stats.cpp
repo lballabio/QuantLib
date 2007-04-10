@@ -24,7 +24,7 @@
 #include <ql/math/statistics.hpp>
 #include <ql/math/incrementalstatistics.hpp>
 #include <ql/math/gaussianstatistics.hpp>
-#include <ql/math/distributions/sequencestatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
 #include <ql/math/convergencestatistics.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

@@ -22,7 +22,7 @@
 #include "utilities.hpp"
 #include <ql/methods/montecarlo/getcovariance.hpp>
 #include <ql/math/pseudosqrt.hpp>
-#include <ql/math/distributions/sequencestatistics.hpp>
+#include <ql/math/sequencestatistics.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
