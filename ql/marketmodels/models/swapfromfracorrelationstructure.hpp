@@ -31,8 +31,7 @@ namespace QuantLib {
     class SwapFromFRACorrelationStructure : public TimeDependantCorrelationStructure {
       public:
         SwapFromFRACorrelationStructure(
-            const Real longTermCorr,
-            const Real beta,
+            const Matrix& correlations,
             const CurveState& curveState,
             const EvolutionDescription& evolution,
             const Size numberOfFactors);

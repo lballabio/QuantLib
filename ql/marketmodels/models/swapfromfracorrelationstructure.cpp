@@ -29,8 +29,7 @@
 namespace QuantLib {
 
     SwapFromFRACorrelationStructure::SwapFromFRACorrelationStructure(
-            const Real longTermCorr,
-            const Real beta,
+            const Matrix& fraCorrelation,
             const CurveState& curveState,
             const EvolutionDescription& evolution,
             const Size numberOfFactors) :
@@ -38,15 +37,15 @@ namespace QuantLib {
     pseudoRoots_(evolution.numberOfRates()),
     numberOfFactors_(numberOfFactors), evolution_(evolution) {
 
-        //1. creating Fra Correlation Matrices
         Size nbRates = evolution.numberOfRates();
-        Matrix fraCorrelation(nbRates, nbRates);
-        const std::vector<Time>& rateTimes = curveState.rateTimes();
-         for (Size i = 0; i< nbRates; ++i)
-                for (Size j = 0; j< nbRates; ++j)
-                    fraCorrelation[i][j] = longTermCorr + (1.0-longTermCorr) *
-                    std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
-        //2.Reduced-factor pseudo-root matrices for each time step
+        QL_REQUIRE(nbRates==fraCorrelation.rows(),
+                   "mismatch between number of rates (" << nbRates <<
+                   ") and fraCorrelation rows (" << fraCorrelation.rows() << ")");
+        QL_REQUIRE(nbRates==fraCorrelation.columns(),
+                   "mismatch between number of rates (" << nbRates <<
+                   ") and fraCorrelation columns (" << fraCorrelation.columns() << ")");
+
+        //1.Reduced-factor pseudo-root matrices for each time step
         const Spread displacement = 0;
         Real componentRetainedPercentage = 1.0;
         Matrix jacobian =

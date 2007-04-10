@@ -273,20 +273,19 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                        bumpedVols.begin(),
                        std::bind1st(std::plus<Rate>(), volBump));
 
-
+    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+                                                  longTermCorrelation,
+                                                  beta);
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrFlatVol(longTermCorrelation, beta,
-                               bumpedVols,
+                ExpCorrFlatVol(bumpedVols,
+                               correlations,
                                evolution,
                                numberOfFactors,
                                bumpedForwards,
                                std::vector<Spread>(bumpedForwards.size(), displacement)));
         case ExponentialCorrelationAbcdVolatility:
-            {
-            Matrix correlations = exponentialCorrelations(longTermCorrelation,
-                                                          beta, evolution);
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
@@ -295,7 +294,6 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                numberOfFactors,
                                bumpedForwards,
                                std::vector<Spread>(bumpedForwards.size(), displacement)));
-            }
         //case CalibratedMM:
         //    return boost::shared_ptr<MarketModel>(new
         //        CalibratedMarketModel(volModel, corrModel,

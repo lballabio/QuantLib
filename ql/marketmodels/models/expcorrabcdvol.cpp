@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2005, 2006 Klaus Spanderen
 
@@ -60,6 +60,12 @@ namespace QuantLib {
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_ 
                    << ") times number of steps (" << numberOfSteps_ << ")");
+        QL_REQUIRE(numberOfRates_==correlations.rows(),
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and correlation rows (" << correlations.rows() << ")");
+        QL_REQUIRE(numberOfRates_==correlations.columns(),
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and correlation columns (" << correlations.columns() << ")");
 
         Time effStartTime;
         Real covar;

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -33,10 +34,10 @@ namespace QuantLib {
                                       const EvolutionDescription& evolution);
         const EvolutionDescription& evolution() const;
         const std::vector<Real>& variances() const;
-        const std::vector<Real>& piecewiseConstantVolatilities() const;
+        const std::vector<Real>& volatilities() const;
       private:
         std::vector<Real> variances_;
-        std::vector<Real> piecewiseConstantInstantaneousVolatilities_;
+        std::vector<Real> volatilities_;
         const EvolutionDescription evolution_;
 
     };

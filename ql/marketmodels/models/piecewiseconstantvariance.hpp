@@ -35,6 +35,7 @@ namespace QuantLib {
         virtual ~PiecewiseConstantVariance() {}
         virtual const EvolutionDescription& evolution() const = 0;
         virtual const std::vector<Real>& variances() const = 0;
+        virtual const std::vector<Real>& volatilities() const = 0;
     };
 
 }

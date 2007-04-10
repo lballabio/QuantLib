@@ -24,6 +24,7 @@
 #include <ql/marketmodels/evolutiondescription.hpp>
 #include <ql/marketmodels/evolvers/forwardratepcevolver.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/marketmodels/models/correlations.hpp>
 #include <ql/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/marketmodels/accountingengine.hpp>
@@ -177,9 +178,16 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
         SwapForwardMappings::coterminalSwapZedMatrix(
         lmmCurveState, displacement);
 
-    boost::shared_ptr<MarketModel> smmMarketModel(new ExpCorrFlatVol(longTermCorr, beta,
-         marketData.volatilities(), evolution, numberOfFactors,
-         lmmCurveState.coterminalSwapRates(), marketData.displacements()));
+    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+                                                  longTermCorr,
+                                                  beta);
+    boost::shared_ptr<MarketModel> smmMarketModel(new
+        ExpCorrFlatVol(marketData.volatilities(),
+                       correlations,
+                       evolution,
+                       numberOfFactors,
+                       lmmCurveState.coterminalSwapRates(),
+                       marketData.displacements()));
 
     boost::shared_ptr<MarketModel>
         lmmMarketModel(new CoterminalToForwardAdapter(smmMarketModel));

@@ -1,9 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
- Copyright (C) 2005, 2006 Klaus Spanderen
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,18 +21,20 @@
 #include <ql/marketmodels/models/correlations.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
 
-
 namespace QuantLib {
-    Disposable<Matrix> exponentialCorrelations(Real longTermCorr,
-                                   Real beta,
-                                   const EvolutionDescription& evolution){
-        const std::vector<Rate>& rateTimes = evolution.rateTimes();
-        Size nbRates = rateTimes.size();
-        Matrix correlations(nbRates, nbRates);
-        for (Size i = 0; i < nbRates; ++i)
-            for (Size j = 0; j < nbRates; ++j)
-                correlations[i][j] = longTermCorr + (1.0-longTermCorr) *
-                    std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
+    Disposable<Matrix> exponentialCorrelations(
+                                        const std::vector<Rate>& rateTimes,
+                                        Real longTermCorr,
+                                        Real beta) {
+        Size nbRows = rateTimes.size()-1;
+        Matrix correlations(nbRows, nbRows);
+        for (Size i=0; i<nbRows; ++i) {
+            correlations[i][i] = 1.0;
+            for (Size j=0; j<i; ++j)
+                correlations[i][j] = correlations[j][i] =
+                    longTermCorr + (1.0-longTermCorr) *
+                        std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
+        }
         return correlations;
     }
 }

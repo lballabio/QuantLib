@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Chiara Fornarola
  Copyright (C) 2006, 2007 StatPro Italia srl
  Copyright (C) 2006 Katiuscia Manzoni
@@ -37,9 +37,8 @@ namespace QuantLib {
     class ExpCorrFlatVol : public MarketModel {
       public:
         ExpCorrFlatVol(
-            Real longTermCorr,
-            Real beta,
             const std::vector<Volatility>& volatilities,
+            const Matrix& correlations,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,

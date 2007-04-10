@@ -257,20 +257,19 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     std::transform(swaptionDisplacedVols.begin(), swaptionDisplacedVols.end(),
                    bumpedVols.begin(),
                    std::bind1st(std::plus<Rate>(), volBump));
-
+    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+                                                  longTermCorrelation,
+                                                  beta);
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrFlatVol(longTermCorrelation, beta,
-                               bumpedVols,
+                ExpCorrFlatVol(bumpedVols,
+                               correlations,
                                evolution,
                                numberOfFactors,
                                bumpedRates,
                                std::vector<Spread>(bumpedRates.size(), displacement)));
         case ExponentialCorrelationAbcdVolatility:
-            {
-            Matrix correlations = exponentialCorrelations(longTermCorrelation,
-                                                          beta, evolution);
             return boost::shared_ptr<MarketModel>(new
                 ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
@@ -279,7 +278,6 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                numberOfFactors,
                                bumpedRates,
                                std::vector<Spread>(bumpedRates.size(), displacement)));
-            }
         //case CalibratedMM:
         //    return boost::shared_ptr<MarketModel>(new
         //        CalibratedMarketModel(volModel, corrModel,
@@ -472,16 +470,17 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Size numberOfRates = todaysForwards.size();
 
     EvolutionDescription evolution(rateTimes);
+    Size numberOfSteps = evolution.numberOfSteps();
 
     LMMCurveState cs(rateTimes);
     cs.setOnForwardRates(todaysForwards);
-
-    SwapFromFRACorrelationStructure corr(
-            longTermCorrelation,
-            beta,
-            cs,
-            evolution,
-            numberOfFactors);
+    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+                                                  longTermCorrelation,
+                                                  beta);
+    SwapFromFRACorrelationStructure corr(correlations,
+                                         cs,
+                                         evolution,
+                                         numberOfFactors);
 
     std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
@@ -493,15 +492,29 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     Spread displacement = 0.02;
     std::vector<Real> alpha(numberOfRates, 0.01);
-    std::vector<Matrix> pseudoRoots;
-    capletCoterminalCalibration(
+    std::vector<Matrix> capletPseudoRoots;
+    bool result = capletCoterminalCalibration(
             corr,
             swapVariances,
             capletDisplacedVols,
             cs,
             displacement,
             alpha,
-            pseudoRoots);
+            capletPseudoRoots);
+    if (!result)
+        BOOST_MESSAGE("failed");
+
+    Array modelCapletDisplacedVols(numberOfRates, 0.0);
+    for (Size j=0; j<numberOfRates; ++j) {
+        for (Size i=0; i<numberOfSteps; ++i) {
+            for (Size k=0; k<numberOfFactors; ++k) {
+                Real stdDev = capletPseudoRoots[i][j][k];
+                modelCapletDisplacedVols[j] += stdDev*stdDev;
+            }
+        }
+        modelCapletDisplacedVols[j] = std::sqrt(modelCapletDisplacedVols[j]/rateTimes[j]);
+    }
+    BOOST_MESSAGE("" << modelCapletDisplacedVols);
 
     QL_TEST_END
 }

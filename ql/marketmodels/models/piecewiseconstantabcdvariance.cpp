@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,20 +27,23 @@ namespace QuantLib {
         Real a, Real b, Real c, Real d,
         const Size resetIndex, const EvolutionDescription& evolution) 
         : variances_(evolution.numberOfRates()),
-          piecewiseConstantInstantaneousVolatilities_(evolution.numberOfRates()),
+          volatilities_(evolution.numberOfRates()),
           evolution_(evolution)
     {
+        QL_REQUIRE(resetIndex<evolution.numberOfRates(),
+                   "resetIndex (" << resetIndex <<
+                   ") must be less than numberOfRates (" <<
+                   evolution.numberOfRates() << ")");
         AbcdFunction abcdFunction(a,b,c,d); 
         const std::vector<Time> rateTimes = evolution.rateTimes();
-        for (Size i=0; i<resetIndex; ++i) {
+        for (Size i=0; i<=resetIndex; ++i) {
+            Time startTime = (i==0 ? 0.0 : rateTimes[i-1]);
             variances_[i] = abcdFunction.variance(rateTimes[resetIndex],
-                                                  rateTimes[i+1],
-                                                  rateTimes[i]);
-            piecewiseConstantInstantaneousVolatilities_[i+1] =
-                std::sqrt(variances_[i]/evolution.rateTaus()[i]);
+                                                  rateTimes[i],
+                                                  startTime);
+            Time totTime = rateTimes[i]-startTime;
+            volatilities_[i] = std::sqrt(variances_[i]/totTime);
         } 
-        piecewiseConstantInstantaneousVolatilities_[0] =
-                piecewiseConstantInstantaneousVolatilities_[1];
     }
 
     const EvolutionDescription& PiecewiseConstantAbcdVariance::evolution() const {
@@ -51,10 +55,8 @@ namespace QuantLib {
     }
 
     const std::vector<Real>&
-        PiecewiseConstantAbcdVariance::piecewiseConstantVolatilities() const {
-        return piecewiseConstantInstantaneousVolatilities_;       
+        PiecewiseConstantAbcdVariance::volatilities() const {
+        return volatilities_;       
     }
 
-
 }
-

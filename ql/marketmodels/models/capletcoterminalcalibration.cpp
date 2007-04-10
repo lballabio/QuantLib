@@ -61,7 +61,7 @@ namespace QuantLib {
 
         QL_REQUIRE(numberOfRates_==alpha.size(),
                    "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and ks (" << alpha.size() << ")");
+                   ") and alphas (" << alpha.size() << ")");
 
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         QL_REQUIRE(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)==evolutionTimes,
@@ -145,7 +145,6 @@ namespace QuantLib {
             Real constantPart = sr0w0*sr0w0*totVariance[i-1]-f0v1t1;
             Real linearPart = -2*sr0w0*sr1w1*(a[i-1]*almostTotCovariance[i]
                                               +b[i-1]*leftCovariance[i]);
-
             Real quadraticPart = sr1w1*sr1w1*almostTotCovariance[i];
 
             Real disc = linearPart*linearPart-4*constantPart*quadraticPart;
@@ -154,6 +153,10 @@ namespace QuantLib {
                 return false;
 
             Real root = (-linearPart -sqrt(disc))/(2*quadraticPart);
+            if (root<0.0) {
+                QL_FAIL("negative root -- it should have not happened");
+                root = (-linearPart +sqrt(disc))/(2*quadraticPart);
+            }
                           
             a[i]=root;
 
