@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/bondhelpers.hpp>
+#include <ql/termstructures/yieldcurves/bondhelpers.hpp>
 
 namespace QuantLib {
 

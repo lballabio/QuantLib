@@ -19,7 +19,7 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
-#include <ql/termstructures/ratehelpers.hpp>
+#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>

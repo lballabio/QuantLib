@@ -22,8 +22,11 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/termstructures/yieldcurves/bondhelpers.hpp>
+#include <ql/termstructures/yieldcurves/bootstraptraits.hpp>
 #include <ql/termstructures/yieldcurves/compoundforward.hpp>
 #include <ql/termstructures/yieldcurves/discountcurve.hpp>
+#include <ql/termstructures/yieldcurves/drifttermstructure.hpp>
 #include <ql/termstructures/yieldcurves/extendeddiscountcurve.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/yieldcurves/forwardcurve.hpp>
@@ -32,6 +35,8 @@
 #include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yieldcurves/piecewisezerospreadedtermstructure.hpp>
+#include <ql/termstructures/yieldcurves/quantotermstructure.hpp>
+#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/zeroyieldstructure.hpp>

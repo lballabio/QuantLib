@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/ratehelpers.hpp>
+#include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/makevanillaswap.hpp>

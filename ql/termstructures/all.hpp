@@ -22,12 +22,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/termstructures/bondhelpers.hpp>
-#include <ql/termstructures/bootstraptraits.hpp>
-#include <ql/termstructures/drifttermstructure.hpp>
-#include <ql/termstructures/quantotermstructure.hpp>
-#include <ql/termstructures/ratehelpers.hpp>
-
 #include <ql/termstructures/volatilities/all.hpp>
 #include <ql/termstructures/yieldcurves/all.hpp>
 

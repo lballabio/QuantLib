@@ -5,16 +5,9 @@ includedir = $(prefix)/include/ql/termstructures
 SUBDIRS = volatilities yieldcurves
 
 include_HEADERS = \
-    all.hpp \
-    bondhelpers.hpp \
-    bootstraptraits.hpp \
-    drifttermstructure.hpp \
-    quantotermstructure.hpp \
-    ratehelpers.hpp 
+    all.hpp
 
-libTermStructures_la_SOURCES = \
-    bondhelpers.cpp \
-    ratehelpers.cpp
+libTermStructures_la_SOURCES =
 
 libTermStructures_la_LIBADD = \
     volatilities/libVolatilities.la \
