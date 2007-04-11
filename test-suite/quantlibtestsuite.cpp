@@ -217,7 +217,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LowDiscrepancyTest::suite());
     test->add(MarketModelCmsTest::suite());
     test->add(MarketModelSmmTest::suite());
-    //test->add(MarketModelSmmCapletCalibrationTest::suite());
+    test->add(MarketModelSmmCapletCalibrationTest::suite());
     test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
