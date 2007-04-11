@@ -261,7 +261,8 @@ namespace QuantLib {
               Real upperBoundary = 2*a;
               while(integrand(upperBoundary)>precision_)
                     upperBoundary *=2.0;
-              upperBoundary = std::min(upperBoundary, b);
+              if (b > a)
+                upperBoundary = std::min(upperBoundary, b);
 
               // we estimate the actual boudary
                    bool integrationSuccess;
