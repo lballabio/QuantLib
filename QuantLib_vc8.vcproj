@@ -4650,6 +4650,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\marketmodels\marketmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\marketmodels\marketmodel.hpp"
 				>
 			</File>

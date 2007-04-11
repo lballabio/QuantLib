@@ -38,6 +38,7 @@ libMarketModels_la_SOURCES = \
     evolutiondescription.cpp \
     lsdatacollector.cpp \
     marketmodeldiscounter.cpp \
+    marketmodel.cpp \
     parametricexerciseadapter.cpp \
     parametricswapexercise.cpp \
     proxygreekengine.cpp \

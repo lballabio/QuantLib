@@ -60,7 +60,7 @@ namespace QuantLib {
         std::vector<Rate> initialRates_;
         std::vector<Spread> displacements_;
         EvolutionDescription evolution_;
-        std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
+        //std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
     };
 
     class ExpCorrFlatVolFactory : public MarketModelFactory,

@@ -33,15 +33,15 @@ namespace QuantLib {
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : numberOfFactors_(numberOfFactors),
+    : MarketModel(initialRates.size(), 
+                  numberOfFactors, 
+                  evolution.evolutionTimes().size()),
+      numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
       initialRates_(initialRates),
       displacements_(displacements),
-      evolution_(evolution),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
-      covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
-      totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
+      evolution_(evolution)
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,

@@ -2988,6 +2988,9 @@
 				RelativePath=".\ql\marketmodels\lsdatacollector.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\marketmodels\marketmodel.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\marketmodels\marketmodel.hpp">
 			</File>
 			<File

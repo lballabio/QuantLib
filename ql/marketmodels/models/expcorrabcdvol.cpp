@@ -36,15 +36,15 @@ namespace QuantLib {
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : numberOfFactors_(numberOfFactors),
+    : MarketModel(initialRates.size(), 
+                  numberOfFactors, 
+                  evolution.evolutionTimes().size()),
+      numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
       initialRates_(initialRates),
       displacements_(displacements),
-      evolution_(evolution),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
-      covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
-      totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
+      evolution_(evolution)
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
@@ -71,6 +71,7 @@ namespace QuantLib {
         Real covar;
         Abcd abcd(a, b, c, d);
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
+        Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size l=0; l<numberOfRates_; ++l) {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
@@ -83,15 +84,17 @@ namespace QuantLib {
                         correlation = correlations[i-l][j-l];
                     else
                         correlation = 0;
-                    covariance_[l][j][i] = covariance_[l][i][j] = 
+                    covariance[j][i] = covariance[i][j] = 
                             ks[i] * ks[j] * covar * correlation;
                  }
              }
 
             pseudoRoots_[l] =
-                rankReducedSqrt(covariance_[l], numberOfFactors, 1.0,
+                rankReducedSqrt(covariance, numberOfFactors, 1.0,
                                  SalvagingAlgorithm::None);
 
+            covariance_[l] = pseudoRoots_[l] *transpose(pseudoRoots_[l]);
+            
             totalCovariance_[l] = covariance_[l];
             if (l>0)
                 totalCovariance_[l] += totalCovariance_[l-1];
