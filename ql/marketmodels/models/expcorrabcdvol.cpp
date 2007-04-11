@@ -70,7 +70,7 @@ namespace QuantLib {
         Abcd abcd(a, b, c, d);
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         Matrix covariance(numberOfRates_, numberOfRates_);
-        for (Size l=0; l<numberOfRates_; ++l) {
+        for (Size l=0; l<numberOfSteps_; ++l) {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                     effStartTime = l>0 ? effectiveStopTime[l-1][i] : 0.0;
