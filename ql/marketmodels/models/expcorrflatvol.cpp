@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/marketmodels/models/correlations.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
@@ -33,13 +32,13 @@ namespace QuantLib {
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : pseudoRoots_(evolution.evolutionTimes().size()),
-      numberOfFactors_(numberOfFactors),
+    : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
       initialRates_(initialRates),
       displacements_(displacements),
-      evolution_(evolution)
+      evolution_(evolution),
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
@@ -55,12 +54,6 @@ namespace QuantLib {
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_
                    << ") times number of steps (" << numberOfSteps_ << ")");
-        QL_REQUIRE(numberOfRates_==correlations.rows(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and correlation rows (" << correlations.rows() << ")");
-        QL_REQUIRE(numberOfRates_==correlations.columns(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and correlation columns (" << correlations.columns() << ")");
 
         std::vector<Volatility> stdDev(numberOfRates_);
 
@@ -82,9 +75,9 @@ namespace QuantLib {
                  }
             }
 
-            pseudoRoots_[k] =
-                rankReducedSqrt(covariance, numberOfFactors, 1.0,
-                                SalvagingAlgorithm::None);
+            pseudoRoots_[k] = rankReducedSqrt(covariance,
+                                              numberOfFactors, 1.0,
+                                              SalvagingAlgorithm::None);
 
             QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
                       "step " << k
@@ -101,15 +94,14 @@ namespace QuantLib {
 
 
     ExpCorrFlatVolFactory::ExpCorrFlatVolFactory(
-                                 Real longTermCorr,
-                                 Real beta,
-                                 const std::vector<Time>& times,
-                                 const std::vector<Volatility>& vols,
-                                 const Handle<YieldTermStructure>& yieldCurve,
-                                 Spread displacement)
-    : longTermCorr_(longTermCorr), beta_(beta), times_(times),
+                                const Matrix& correlations,
+                                const std::vector<Time>& times,
+                                const std::vector<Volatility>& vols,
+                                const Handle<YieldTermStructure>& yieldCurve,
+                                Spread displacement)
+    : correlations_(correlations), times_(times),
       vols_(vols), yieldCurve_(yieldCurve), displacement_(displacement) {
-        volatility_ = LinearInterpolation(times_.begin(),times_.end(),
+        volatility_ = LinearInterpolation(times_.begin(), times_.end(),
                                           vols_.begin());
         volatility_.update();
         registerWith(yieldCurve_);
@@ -129,21 +121,17 @@ namespace QuantLib {
 
         std::vector<Volatility> displacedVolatilities(numberOfRates);
         for (Size i=0; i<numberOfRates; ++i) {
-            Volatility vol = // to be changed
+            Volatility vol = // to be changes
                 volatility_(rateTimes[i]);
             displacedVolatilities[i] =
                 initialRates[i]*vol/(initialRates[i]+displacement_);
         }
 
         std::vector<Spread> displacements(numberOfRates, displacement_);
-        Matrix correlations;
-        correlations = exponentialCorrelations(evolution.rateTimes(),
-                                               longTermCorr_,
-                                               beta_);
 
         return boost::shared_ptr<MarketModel>(new
             ExpCorrFlatVol(displacedVolatilities,
-                           correlations,
+                           correlations_,
                            evolution,
                            numberOfFactors,
                            initialRates,

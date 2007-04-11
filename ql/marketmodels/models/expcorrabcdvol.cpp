@@ -36,13 +36,13 @@ namespace QuantLib {
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : pseudoRoots_(evolution.evolutionTimes().size()),
-      numberOfFactors_(numberOfFactors),
+    : numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
       initialRates_(initialRates),
       displacements_(displacements),
-      evolution_(evolution)
+      evolution_(evolution),
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
@@ -58,48 +58,37 @@ namespace QuantLib {
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_ 
                    << ") times number of steps (" << numberOfSteps_ << ")");
-        QL_REQUIRE(numberOfRates_==correlations.rows(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and correlation rows (" << correlations.rows() << ")");
-        QL_REQUIRE(numberOfRates_==correlations.columns(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and correlation columns (" << correlations.columns() << ")");
 
         Time effStartTime;
         Real covar;
         Abcd abcd(a, b, c, d);
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         Matrix covariance(numberOfRates_, numberOfRates_);
-        for (Size l=0; l<numberOfSteps_; ++l) {
+        for (Size k=0; k<numberOfSteps_; ++k) {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    effStartTime = l>0 ? effectiveStopTime[l-1][i] : 0.0;
+                    effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
                     covar = abcd.covariance(effStartTime,
-                                            effectiveStopTime[l][i],
+                                            effectiveStopTime[k][i],
                                             rateTimes[i], rateTimes[j]);
-                    Real correlation;
-                    if (i>=l && j >=l)
-                        correlation = correlations[i-l][j-l];
-                    else
-                        correlation = 0;
-                    covariance[j][i] = covariance[i][j] = 
-                            ks[i] * ks[j] * covar * correlation;
+                    covariance[j][i] = covariance[i][j] =
+                        ks[i] * ks[j] * covar * correlations[i][j];
                  }
              }
 
-            pseudoRoots_[l] =
-                rankReducedSqrt(covariance, numberOfFactors, 1.0,
-                                 SalvagingAlgorithm::None);
+            pseudoRoots_[k] = rankReducedSqrt(covariance,
+                                              numberOfFactors, 1.0,
+                                              SalvagingAlgorithm::None);
 
-            QL_ENSURE(pseudoRoots_[l].rows()==numberOfRates_,
-                      "step " << l
+            QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
+                      "step " << k
                       << " abcd vol wrong number of rows: "
-                      << pseudoRoots_[l].rows()
+                      << pseudoRoots_[k].rows()
                       << " instead of " << numberOfRates_);
-            QL_ENSURE(pseudoRoots_[l].columns()==numberOfFactors,
-                      "step " << l
+            QL_ENSURE(pseudoRoots_[k].columns()==numberOfFactors,
+                      "step " << k
                       << " abcd vol wrong number of columns: "
-                      << pseudoRoots_[l].columns()
+                      << pseudoRoots_[k].columns()
                       << " instead of " << numberOfFactors);
         }
     }

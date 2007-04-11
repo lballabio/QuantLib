@@ -28,6 +28,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/marketmodels/models/correlations.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -530,11 +531,14 @@ void CapFloorTest::testMarketModel() {
     times[0] = 0.0;  vols[0] = 0.20;
     times[1] = 30.0;  vols[1] = 0.20;
 
-    boost::shared_ptr<MarketModelFactory> factory(
-                          new ExpCorrFlatVolFactory(longTermCorrelation, beta,
-                                                    times, vols,
-                                                    termStructure_,
-                                                    displacement));
+    Matrix correlations = exponentialCorrelations(times, // rateTimes
+                                                  longTermCorrelation,
+                                                  beta);
+    boost::shared_ptr<MarketModelFactory> factory(new
+        ExpCorrFlatVolFactory(correlations,
+                              times, vols,
+                              termStructure_,
+                              displacement));
     boost::shared_ptr<PricingEngine> lmmEngine(
                                       new MarketModelCapFloorEngine(factory));
     cap->setPricingEngine(lmmEngine);

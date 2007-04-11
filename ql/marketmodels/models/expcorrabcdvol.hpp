@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2005, 2006 Klaus Spanderen
 
@@ -25,11 +25,11 @@
 
 #include <ql/marketmodels/marketmodel.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
+#include <ql/math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib
 {
-    class Matrix;
     class ExpCorrAbcdVol : public MarketModel {
       public:
         ExpCorrAbcdVol(
@@ -50,15 +50,15 @@ namespace QuantLib
         const EvolutionDescription& evolution() const;
         Size numberOfRates() const;
         Size numberOfFactors() const;
-        Size numberOfSteps() const;
+        Size numberOfSteps() const; 
         const Matrix& pseudoRoot(Size i) const;
         //@}
       private:
-        std::vector<Matrix> pseudoRoots_;
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
         std::vector<Spread> displacements_;
         EvolutionDescription evolution_;
+        std::vector<Matrix> pseudoRoots_;
     };
 
     // inline
@@ -88,10 +88,11 @@ namespace QuantLib
     }
 
     inline const Matrix& ExpCorrAbcdVol::pseudoRoot(Size i) const {
-        QL_REQUIRE(i<pseudoRoots_.size(), "i<pseudoRoots_.size()");
+        QL_REQUIRE(i<numberOfSteps_,
+                   "the index " << i << " is invalid: it must be less than "
+                   "number of steps (" << numberOfSteps_ << ")");
         return pseudoRoots_[i];
     }
-
 }
 
 #endif

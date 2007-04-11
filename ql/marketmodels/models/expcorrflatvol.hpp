@@ -54,18 +54,17 @@ namespace QuantLib {
         const Matrix& pseudoRoot(Size i) const;
         //@}
       private:
-        std::vector<Matrix> pseudoRoots_;
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
         std::vector<Spread> displacements_;
         EvolutionDescription evolution_;
+        std::vector<Matrix> pseudoRoots_;
     };
 
     class ExpCorrFlatVolFactory : public MarketModelFactory,
                                   public Observer {
       public:
-        ExpCorrFlatVolFactory(Real longTermCorr,
-                              Real beta,
+        ExpCorrFlatVolFactory(const Matrix& correlations,
                               // this is just to make it work---it
                               // should be replaced with something
                               // else (such as some kind of volatility
@@ -80,7 +79,7 @@ namespace QuantLib {
                                               Size numberOfFactors) const;
         void update();
       private:
-        Real longTermCorr_, beta_;
+        Matrix correlations_;
         // <to be changed>
         std::vector<Time> times_;
         std::vector<Volatility> vols_;
@@ -118,10 +117,11 @@ namespace QuantLib {
     }
 
     inline const Matrix& ExpCorrFlatVol::pseudoRoot(Size i) const {
-        QL_REQUIRE(i<pseudoRoots_.size(), "i<pseudoRoots_.size()");
+        QL_REQUIRE(i<numberOfSteps_,
+                   "the index " << i << " is invalid: it must be less than "
+                   "number of steps (" << numberOfSteps_ << ")");
         return pseudoRoots_[i];
     }
-
 }
 
 #endif
