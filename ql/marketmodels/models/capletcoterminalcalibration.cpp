@@ -149,13 +149,16 @@ namespace QuantLib {
 
             Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
-            if (disc <0)
-                return false;
+            if (disc <0.0)
+                //return false;
+                disc = 0.0; // pick up the minimum vol for the caplet
 
-            Real root = (-linearPart -sqrt(disc))/(2*quadraticPart);
+            Real root = (-linearPart -sqrt(disc))/(2.0*quadraticPart);
             if (root<0.0) {
                 QL_FAIL("negative root -- it should have not happened");
                 root = (-linearPart +sqrt(disc))/(2.0*quadraticPart);
+                QL_REQUIRE(root>=0.0,
+                           "negative root again -- it should have not happened");
             }
                           
             a[i]=root;
@@ -163,7 +166,9 @@ namespace QuantLib {
             Real varianceFound = root*root*almostTotVariance[i];
             Real varianceToFind = totVariance[i]-varianceFound;
             Real mult = varianceToFind/swapTimeInhomogeneousVariances[i][i];
-            b[i]=sqrt(mult);
+            if (mult<0.0)
+                return false;
+            b[i]=std::sqrt(mult);
         }
 
         {
