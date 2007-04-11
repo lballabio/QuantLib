@@ -501,20 +501,21 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
             displacement,
             alpha,
             capletPseudoRoots);
-    if (!result)
-        BOOST_MESSAGE("failed");
 
-    Array modelCapletDisplacedVols(numberOfRates, 0.0);
-    for (Size j=0; j<numberOfRates; ++j) {
-        for (Size i=0; i<numberOfSteps; ++i) {
-            for (Size k=0; k<numberOfFactors; ++k) {
-                Real stdDev = capletPseudoRoots[i][j][k];
-                modelCapletDisplacedVols[j] += stdDev*stdDev;
-            }
-        }
-        modelCapletDisplacedVols[j] = std::sqrt(modelCapletDisplacedVols[j]/rateTimes[j]);
-    }
-    BOOST_MESSAGE("" << modelCapletDisplacedVols);
+    //if (!result)
+    //    BOOST_MESSAGE("failed");
+
+    //Array modelCapletDisplacedVols(numberOfRates, 0.0);
+    //for (Size j=0; j<numberOfRates; ++j) {
+    //    for (Size i=0; i<numberOfSteps; ++i) {
+    //        for (Size k=0; k<numberOfFactors; ++k) {
+    //            Real stdDev = capletPseudoRoots[i][j][k];
+    //            modelCapletDisplacedVols[j] += stdDev*stdDev;
+    //        }
+    //    }
+    //    modelCapletDisplacedVols[j] = std::sqrt(modelCapletDisplacedVols[j]/rateTimes[j]);
+    //}
+    //BOOST_MESSAGE("" << modelCapletDisplacedVols);
 
     QL_TEST_END
 }
@@ -523,6 +524,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
-    //suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
+    suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
+
     return suite;
 }

@@ -534,6 +534,5 @@ test_suite* MarketModelCmsTest::suite() {
 
     suite->add(BOOST_TEST_CASE(&MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions));
 
-
     return suite;
 }

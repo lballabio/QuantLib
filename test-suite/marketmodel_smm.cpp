@@ -517,5 +517,6 @@ test_suite* MarketModelSmmTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Market-model tests");
 
     suite->add(BOOST_TEST_CASE(&MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions));
+
     return suite;
 }
