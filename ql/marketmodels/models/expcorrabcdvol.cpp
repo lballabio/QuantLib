@@ -71,35 +71,40 @@ namespace QuantLib {
         Real covar;
         Abcd abcd(a, b, c, d);
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
-        for (Size k=0; k<numberOfSteps_; ++k) {
+        for (Size l=0; l<numberOfRates_; ++l) {
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
+                    effStartTime = l>0 ? effectiveStopTime[l-1][i] : 0.0;
                     covar = abcd.covariance(effStartTime,
-                                            effectiveStopTime[k][i],
+                                            effectiveStopTime[l][i],
                                             rateTimes[i], rateTimes[j]);
-                    covariance_[k][j][i] = covariance_[k][i][j] =
-                        ks[i] * ks[j] * covar * correlations[i][j];
+                    Real correlation;
+                    if (i>=l && j >=l)
+                        correlation = correlations[i-l][j-l];
+                    else
+                        correlation = 0;
+                    covariance_[l][j][i] = covariance_[l][i][j] = 
+                            ks[i] * ks[j] * covar * correlation;
                  }
              }
 
-            pseudoRoots_[k] =
-                rankReducedSqrt(covariance_[k], numberOfFactors, 1.0,
-                                SalvagingAlgorithm::None);
+            pseudoRoots_[l] =
+                rankReducedSqrt(covariance_[l], numberOfFactors, 1.0,
+                                 SalvagingAlgorithm::None);
 
-            totalCovariance_[k] = covariance_[k];
-            if (k>0)
-                totalCovariance_[k] += totalCovariance_[k-1];
+            totalCovariance_[l] = covariance_[l];
+            if (l>0)
+                totalCovariance_[l] += totalCovariance_[l-1];
 
-            QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
-                      "step " << k
+            QL_ENSURE(pseudoRoots_[l].rows()==numberOfRates_,
+                      "step " << l
                       << " abcd vol wrong number of rows: "
-                      << pseudoRoots_[k].rows()
+                      << pseudoRoots_[l].rows()
                       << " instead of " << numberOfRates_);
-            QL_ENSURE(pseudoRoots_[k].columns()==numberOfFactors,
-                      "step " << k
+            QL_ENSURE(pseudoRoots_[l].columns()==numberOfFactors,
+                      "step " << l
                       << " abcd vol wrong number of columns: "
-                      << pseudoRoots_[k].columns()
+                      << pseudoRoots_[l].columns()
                       << " instead of " << numberOfFactors);
         }
     }
