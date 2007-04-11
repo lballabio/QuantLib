@@ -1,10 +1,10 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/methods
-
 SUBDIRS = finitedifferences lattices montecarlo
 
-include_HEADERS = \
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
 	all.hpp
 
 libMethods_la_SOURCES =

@@ -1,8 +1,8 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/termstructures/yieldcurves
 
-include_HEADERS = \
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
     all.hpp \
     bondhelpers.hpp \
     bootstraptraits.hpp \
@@ -29,6 +29,5 @@ libYieldCurves_la_SOURCES = \
     extendeddiscountcurve.cpp \
     piecewiseyieldcurve.cpp \
     ratehelpers.cpp
-
 
 noinst_LTLIBRARIES = libYieldCurves.la

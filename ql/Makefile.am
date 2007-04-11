@@ -1,7 +1,4 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql
-
 SUBDIRS = \
     cashflows \
     currencies \
@@ -21,15 +18,10 @@ SUBDIRS = \
     utilities \
     volatilitymodels
 
-EXTRA_DIST= \
-	config.ansi.hpp \
-	config.bcc.hpp \
-	config.msvc.hpp \
-	config.mwcw.hpp \
-	config.mingw.hpp \
-	userconfig.hpp
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
-include_HEADERS = \
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
 	core.hpp \
 	auto_link.hpp \
 	capvolstructures.hpp \
@@ -69,29 +61,20 @@ include_HEADERS = \
 	voltermstructure.hpp \
 	yieldtermstructure.hpp
 
-install-data-hook:
-	$(SED) -e "s,HAVE_CONFIG_H,QL_HAVE_CONFIG_H," \
-           -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
-           $(DESTDIR)/$(includedir)/qldefines.hpp > .qldefines.hpp
-	$(INSTALL_DATA) .qldefines.hpp $(DESTDIR)/$(includedir)/qldefines.hpp
-	rm .qldefines.hpp
-	$(SED) -e "s,PACKAGE,QL_PACKAGE," \
-           -e "s,STDC,QL_STDC," \
-           -e "s, HAVE, QL_HAVE," \
-           -e "s, VERSION, QL_AC_VERSION," \
-           $(DESTDIR)/$(includedir)/config.hpp > .config.hpp
-	$(INSTALL_DATA) .config.hpp $(DESTDIR)/$(includedir)/config.hpp
-	rm .config.hpp
-depend:
-	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
-
-if ENABLE_STATIC
-
-install-exec-hook:
-	mv $(DESTDIR)/$(libdir)/libQuantLib.a $(DESTDIR)/$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
-	$(LN_S) libQuantLib-$(PACKAGE_VERSION).a $(DESTDIR)/$(libdir)/libQuantLib.a
-endif
-
+libQuantLib_la_SOURCES = \
+    currency.cpp \
+	discretizedasset.cpp \
+	errors.cpp \
+	exchangerate.cpp \
+	exercise.cpp \
+    index.cpp \
+    interestrate.cpp \
+    money.cpp \
+    prices.cpp \
+	stochasticprocess.cpp \
+	swaptionvolstructure.cpp \
+	timegrid.cpp \
+    voltermstructure.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
@@ -114,19 +97,35 @@ libQuantLib_la_LIBADD = \
     utilities/libUtilities.la \
     volatilitymodels/libVolatilityModels.la
 
-libQuantLib_la_SOURCES = \
-    currency.cpp \
-	discretizedasset.cpp \
-	errors.cpp \
-	exchangerate.cpp \
-	exercise.cpp \
-    index.cpp \
-    interestrate.cpp \
-    money.cpp \
-    prices.cpp \
-	stochasticprocess.cpp \
-	swaptionvolstructure.cpp \
-	timegrid.cpp \
-    voltermstructure.cpp
+EXTRA_DIST= \
+	config.ansi.hpp \
+	config.bcc.hpp \
+	config.msvc.hpp \
+	config.mwcw.hpp \
+	config.mingw.hpp \
+	userconfig.hpp
+
+install-data-hook:
+	$(SED) -e "s,HAVE_CONFIG_H,QL_HAVE_CONFIG_H," \
+           -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
+           $(DESTDIR)/$(this_includedir)/qldefines.hpp > .qldefines.hpp
+	$(INSTALL_DATA) .qldefines.hpp $(DESTDIR)/$(this_includedir)/qldefines.hpp
+	rm .qldefines.hpp
+	$(SED) -e "s,PACKAGE,QL_PACKAGE," \
+           -e "s,STDC,QL_STDC," \
+           -e "s, HAVE, QL_HAVE," \
+           -e "s, VERSION, QL_AC_VERSION," \
+           $(DESTDIR)/$(this_includedir)/config.hpp > .config.hpp
+	$(INSTALL_DATA) .config.hpp $(DESTDIR)/$(this_includedir)/config.hpp
+	rm .config.hpp
+depend:
+	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
+
+if ENABLE_STATIC
+
+install-exec-hook:
+	mv $(DESTDIR)/$(libdir)/libQuantLib.a $(DESTDIR)/$(libdir)/libQuantLib-$(PACKAGE_VERSION).a
+	$(LN_S) libQuantLib-$(PACKAGE_VERSION).a $(DESTDIR)/$(libdir)/libQuantLib.a
+endif
 
 

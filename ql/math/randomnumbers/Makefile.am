@@ -1,8 +1,8 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/math/randomnumbers
 
-include_HEADERS = \
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
 	all.hpp \
 	core.hpp \
 	boxmullergaussianrng.hpp \

@@ -1,8 +1,8 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/legacy/libormarketmodels
 
-include_HEADERS = \
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
 	all.hpp \
 	lfmcovarproxy.hpp \
 	liborforwardmodel.hpp \
@@ -26,7 +26,6 @@ libLiborMarketModels_la_SOURCES = \
 	lmlinexpcorrmodel.cpp \
 	lmlinexpvolmodel.cpp \
 	lmvolmodel.cpp
-
 
 noinst_LTLIBRARIES = libLiborMarketModels.la
 

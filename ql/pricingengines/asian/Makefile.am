@@ -1,8 +1,8 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/pricingengines/asian
 
-include_HEADERS = \
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
 	all.hpp \
 	analytic_cont_geom_av_price.hpp \
 	analytic_discr_geom_av_price.hpp \

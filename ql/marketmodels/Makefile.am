@@ -1,11 +1,11 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/marketmodels
-
 SUBDIRS = browniangenerators curvestates driftcomputation evolvers \
           exercisestrategies exercisevalues models products
 
-include_HEADERS = \
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
     all.hpp \
     core.hpp \
     accountingengine.hpp \
@@ -47,7 +47,6 @@ libMarketModels_la_SOURCES = \
     swapforwardmappings.cpp \
     upperboundengine.cpp \
     utilities.cpp
-
 
 noinst_LTLIBRARIES = libMarketModels.la
 

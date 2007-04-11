@@ -1,10 +1,10 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/time
-
 SUBDIRS = calendars daycounters
 
-include_HEADERS = \
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+
+this_includedir=${includedir}/${subdir}
+this_include_HEADERS = \
     all.hpp \
     businessdayconvention.hpp \
     calendar.hpp \
