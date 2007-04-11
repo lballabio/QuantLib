@@ -38,12 +38,21 @@ namespace QuantLib {
     numberOfFactors_(numberOfFactors), evolution_(evolution) {
 
         Size nbRates = evolution.numberOfRates();
+        QL_REQUIRE(nbRates==curveState.numberOfRates(),
+                   "mismatch between number of rates in evolution (" << nbRates <<
+                   ") and curveState (" << curveState.numberOfRates() << ")");
         QL_REQUIRE(nbRates==fraCorrelation.rows(),
                    "mismatch between number of rates (" << nbRates <<
                    ") and fraCorrelation rows (" << fraCorrelation.rows() << ")");
         QL_REQUIRE(nbRates==fraCorrelation.columns(),
                    "mismatch between number of rates (" << nbRates <<
                    ") and fraCorrelation columns (" << fraCorrelation.columns() << ")");
+        QL_REQUIRE(numberOfFactors<=fraCorrelation.rows(),
+                   "number of factors (" << numberOfFactors <<
+                   ") must be less than correlation rows (" << fraCorrelation.rows() << ")");
+        QL_REQUIRE(fraCorrelation.rows()==fraCorrelation.columns(),
+            "correlation matrix is not square: " << fraCorrelation.rows() <<
+                   " rows and " << fraCorrelation.columns() << " columns");
 
         //1.Reduced-factor pseudo-root matrices for each time step
         const Spread displacement = 0;
@@ -80,12 +89,21 @@ namespace QuantLib {
     //3.Compute Z matrix
     //4.Normalize 2.*3.
 
-    const EvolutionDescription& SwapFromFRACorrelationStructure::evolution()
-        const {return evolution_;}
-    Size SwapFromFRACorrelationStructure::numberOfFactors()
-        const {return numberOfFactors_;}
-    const Matrix& SwapFromFRACorrelationStructure::pseudoRoot(Size i)
-        const {return pseudoRoots_[i];}
+    const EvolutionDescription&
+    SwapFromFRACorrelationStructure::evolution() const {
+        return evolution_;
+    }
+
+    Size SwapFromFRACorrelationStructure::numberOfFactors() const {
+        return numberOfFactors_;
+    }
+
+    const Matrix& SwapFromFRACorrelationStructure::pseudoRoot(Size i) const {
+        QL_REQUIRE(i<pseudoRoots_.size(),
+                   "index (" << i << ") must be less than pseudoRoots size ("
+                   << pseudoRoots_.size() << ")");
+        return pseudoRoots_[i];
+    }
 
 }
 

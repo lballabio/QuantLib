@@ -35,7 +35,7 @@ namespace QuantLib {
         const CurveState& cs,
         const Spread displacement,
         const std::vector<Real>& alpha,
-        std::vector<Matrix>& pseudoRoots) {
+        std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         const EvolutionDescription& evolution = corr.evolution();
         //for (Size i=0; i<displacedSwapVariances.size(); ++i)
@@ -113,7 +113,7 @@ namespace QuantLib {
                 Real correlation = 0.0;
                 for (Size k=0; k<numberOfFactors; ++k)
                     correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
-                leftCovariance[j] = correlation*
+                leftCovariance[i] = correlation*
                                     sqrt(swapTimeInhomogeneousVariances[j][i]
                                          *swapTimeInhomogeneousVariances[j][i-1]);
 
@@ -127,11 +127,11 @@ namespace QuantLib {
         // multiplier afterward
         std::vector<Real> b(numberOfSteps);
         b[0]=displacedSwapVariances[0]->variances()[0]/swapTimeInhomogeneousVariances[0][0];
-        for (Size i=1; i<numberOfSteps-1; ++i) 
-        {
-            int j=0;
-            for (; j < static_cast<int>(i) -2; j++)
+        for (Size i=1; i<numberOfSteps; ++i) {
+            Integer j=0;
+            for (; j <= static_cast<Integer>(i)-2; j++) {
                 swapTimeInhomogeneousVariances[j][i-1]*= a[i-1]*a[i-1];
+            }
             swapTimeInhomogeneousVariances[j][i-1]*= b[i-1]*b[i-1];
 
             Real sr0w0 = (cs.coterminalSwapRates()[i-1]+displacement)*
@@ -140,12 +140,12 @@ namespace QuantLib {
                          cs.coterminalSwapAnnuity(i, i)/taus[i-1];
             Real f0v1t1 = (cs.forwardRates()[i-1]+displacement)*
                           (cs.forwardRates()[i-1]+displacement)*
-                capletVols[i]*capletVols[i]*rateTimes[i];
+                capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
 
             Real constantPart = sr0w0*sr0w0*totVariance[i-1]-f0v1t1;
             Real linearPart = -2*sr0w0*sr1w1*(a[i-1]*almostTotCovariance[i]
                                               +b[i-1]*leftCovariance[i]);
-            Real quadraticPart = sr1w1*sr1w1*almostTotCovariance[i];
+            Real quadraticPart = sr1w1*sr1w1*almostTotVariance[i];
 
             Real disc = linearPart*linearPart-4*constantPart*quadraticPart;
 
@@ -166,26 +166,34 @@ namespace QuantLib {
             b[i]=sqrt(mult);
         }
 
+        {
+            Integer i = numberOfSteps;
+            Integer j=0;
 
-        pseudoRoots.resize(numberOfSteps);
+            for (; j <= static_cast<Integer>(i)-2; j++) {
+                swapTimeInhomogeneousVariances[j][i-1]*= a[i-1]*a[i-1];
+            }
+            swapTimeInhomogeneousVariances[j][i-1]*= b[i-1]*b[i-1];
+        }
+
+        swapCovariancePseudoRoots.resize(numberOfSteps);
         for (Size k=0; k<numberOfSteps; ++k) {
-            pseudoRoots[k] = corr.pseudoRoot(k);
+            swapCovariancePseudoRoots[k] = corr.pseudoRoot(k);
             for (Size j=0; j<numberOfRates_; ++j) {
                 Real coeff = std::sqrt(swapTimeInhomogeneousVariances[k][j]);
-                coeff *= (j<k ? a[j] : b[j]);
-                for (Size i=0; i<numberOfFactors; ++i) {
-                    pseudoRoots[k][j][i]*=coeff;
+                 for (Size i=0; i<numberOfFactors; ++i) {
+                    swapCovariancePseudoRoots[k][j][i]*=coeff;
                 }
             }
-            QL_ENSURE(pseudoRoots[k].rows()==numberOfRates_,
+            QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates_,
                       "step " << k
                       << " abcd vol wrong number of rows: "
-                      << pseudoRoots[k].rows()
+                      << swapCovariancePseudoRoots[k].rows()
                       << " instead of " << numberOfRates_);
-            QL_ENSURE(pseudoRoots[k].columns()==numberOfFactors,
+            QL_ENSURE(swapCovariancePseudoRoots[k].columns()==numberOfFactors,
                       "step " << k
                       << " abcd vol wrong number of columns: "
-                      << pseudoRoots[k].columns()
+                      << swapCovariancePseudoRoots[k].columns()
                       << " instead of " << numberOfFactors);
         }
 

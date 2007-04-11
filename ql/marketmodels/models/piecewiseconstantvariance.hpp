@@ -36,7 +36,21 @@ namespace QuantLib {
         virtual const EvolutionDescription& evolution() const = 0;
         virtual const std::vector<Real>& variances() const = 0;
         virtual const std::vector<Real>& volatilities() const = 0;
+        virtual Real variance(Size i) const;
+        virtual Real volatility(Size i) const;
     };
+
+    inline Real PiecewiseConstantVariance::variance(Size i) const {
+        //QL_REQUIRE(i<evolution.numberOfRates(),
+        //           "invalid index");
+        return variances()[i];
+    }
+
+    inline Real PiecewiseConstantVariance::volatility(Size i) const {
+        //QL_REQUIRE(i<evolution.numberOfRates(),
+        //           "invalid index");
+        return volatilities()[i];
+    }
 
 }
 
