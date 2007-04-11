@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integrator.hpp
+/*! \file integral.hpp
 \brief Integrators base class definition
 */
 
-#ifndef quantlib_math_Integrator_h
-#define quantlib_math_Integrator_h
+#ifndef quantlib_math_integrator_hpp
+#define quantlib_math_integrator_hpp
 
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
@@ -33,16 +33,16 @@ namespace QuantLib {
     class Integrator{
     public:
 
-        Real operator()(const boost::function<Real (Real)>& f, 
+        Real operator()(const boost::function<Real (Real)>& f,
                         Real a, Real b) const;
-        
-        //! \Modifiers
+
+        //! \name Modifiers
         //@{
         void setAccuracy(Real);
         void setMaxEvaluations(Size);
         //@}
 
-        //! \Inspectors
+        //! \name Inspectors
         //@{
         Real accuracy() const;
         Size maxEvaluations() const;
@@ -53,10 +53,9 @@ namespace QuantLib {
         Size maxEvaluations_;
     };
 
-    /*! 
+    /*!
     \brief This class allows to delegate the choice of the integration method
     */
-
     class IntegratorFactory{
         boost::shared_ptr<Integrator> operator()() const;
     };

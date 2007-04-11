@@ -40,8 +40,6 @@ namespace QuantLib {
         /*! \warning This method is used for output and comparison
                      between indexes. It is <b>not</b> meant to be
                      used for writing switch-on-type code.
-
-            \todo add methods returning InterestRate
         */
         virtual std::string name() const = 0;
         //! returns TRUE if the fixing date is a valid one
@@ -57,7 +55,7 @@ namespace QuantLib {
             date of the fixing; no settlement days must be used.
         */
         void addFixing(const Date& fixingDate,
-			           Real fixing);
+                       Real fixing);
         //! stores historical fixings at the given dates
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.

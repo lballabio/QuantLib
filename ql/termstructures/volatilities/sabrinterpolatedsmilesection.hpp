@@ -77,7 +77,7 @@ namespace QuantLib {
         mutable SABRInterpolation sabrInterpolation_;
     };
 
-    inline Real SabrInterpolatedSmileSection::volatility(Real strike) const {
+    inline Real SabrInterpolatedSmileSection::volatility(Rate strike) const {
         calculate();
         return sabrInterpolation_(strike, true);
     }
