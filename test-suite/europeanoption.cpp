@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2007 Ferdinando Ametrano
  Copyright (C) 2003, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -71,7 +71,7 @@ struct EuropeanOptionData {
 };
 
 enum EngineType { Analytic,
-                  JR, CRR, EQP, TGEO, TIAN, LR,
+                  JR, CRR, EQP, TGEO, TIAN, LR, JOSHI,
                   FiniteDifferences,
                   Integral,
                   PseudoMonteCarlo, QuasiMonteCarlo };
@@ -115,6 +115,10 @@ makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
       case LR:
         engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
+        break;
+      case JOSHI:
+        engine = boost::shared_ptr<PricingEngine>(
+                new BinomialVanillaEngine<Joshi4>(binomialSteps));
         break;
       case FiniteDifferences:
         engine = boost::shared_ptr<PricingEngine>(
@@ -163,6 +167,8 @@ std::string engineTypeToString(EngineType type) {
         return "Tian";
       case LR:
         return "LeisenReimer";
+      case JOSHI:
+        return "Joshi";
       case FiniteDifferences:
         return "FiniteDifferences";
     case Integral:
@@ -1100,6 +1106,18 @@ void EuropeanOptionTest::testLRBinomialEngines() {
     testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
+void EuropeanOptionTest::testJOSHIBinomialEngines() {
+
+    BOOST_MESSAGE("Testing Joshi binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { JOSHI };
+    Size steps = 251;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+}
+
 void EuropeanOptionTest::testFdEngines() {
 
     BOOST_MESSAGE("Testing finite-difference European engines "
@@ -1367,6 +1385,7 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTGEOBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTIANBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testJOSHIBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdGreeks));
@@ -1376,4 +1395,3 @@ test_suite* EuropeanOptionTest::suite() {
 
     return suite;
 }
-

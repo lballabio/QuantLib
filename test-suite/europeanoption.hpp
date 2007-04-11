@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +39,7 @@ class EuropeanOptionTest {
     static void testTGEOBinomialEngines();
     static void testTIANBinomialEngines();
     static void testLRBinomialEngines();
+    static void testJOSHIBinomialEngines();
     static void testFdEngines();
     static void testIntegralEngines();
     static void testFdGreeks();

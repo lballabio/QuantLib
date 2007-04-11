@@ -292,6 +292,20 @@ int main(int, char* [])
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
 
+        method = "Binomial Joshi";
+        europeanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new BinomialVanillaEngine<Joshi4>(timeSteps)));
+        bermudanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new BinomialVanillaEngine<Joshi4>(timeSteps)));
+        americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new BinomialVanillaEngine<Joshi4>(timeSteps)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << europeanOption.NPV()
+                  << std::setw(widths[2]) << std::left << bermudanOption.NPV()
+                  << std::setw(widths[3]) << std::left << americanOption.NPV()
+                  << std::endl;
+
         // Monte Carlo Method
 
         timeSteps = 1;
