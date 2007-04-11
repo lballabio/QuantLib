@@ -23,6 +23,7 @@ libMarketModelsModels_la_SOURCES = \
 	expcorrflatvol.cpp \
 	forwardtocoterminaladapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
+	piecewiseconstantvariance.cpp \
 	swapfromfracorrelationstructure.cpp
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
