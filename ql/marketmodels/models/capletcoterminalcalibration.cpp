@@ -75,7 +75,7 @@ namespace QuantLib {
             Real s = (i==0 ? 0.0 : evolutionTimes[i-1]);
             for (Size j=i; j<numberOfRates_; ++j) {
                 const std::vector<Real>& var = displacedSwapVariances[j]->variances();
-                swapTimeInhomogeneousVariances[i][j] = var[j]/
+                swapTimeInhomogeneousVariances[i][j] = var[i]/
                     ((1.0+alpha[j]*s)*(1.0+alpha[j]*s));
             }
         }
