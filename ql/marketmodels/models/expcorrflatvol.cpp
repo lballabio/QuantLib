@@ -33,9 +33,7 @@ namespace QuantLib {
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : MarketModel(initialRates.size(), 
-                  numberOfFactors, 
-                  evolution.evolutionTimes().size()),
+    : pseudoRoots_(evolution.evolutionTimes().size()),
       numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
@@ -68,6 +66,7 @@ namespace QuantLib {
 
         Time effStartTime;
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
+        Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0; k<numberOfSteps_; ++k) {
             Size i;
             for (i=0; i<numberOfRates_; ++i) {
@@ -78,18 +77,14 @@ namespace QuantLib {
 
             for (i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                     covariance_[k][i][j] =  covariance_[k][j][i] =
+                     covariance[i][j] =  covariance[j][i] =
                          stdDev[j] * correlations[i][j] * stdDev[i];
                  }
             }
 
             pseudoRoots_[k] =
-                rankReducedSqrt(covariance_[k], numberOfFactors, 1.0,
+                rankReducedSqrt(covariance, numberOfFactors, 1.0,
                                 SalvagingAlgorithm::None);
-
-            totalCovariance_[k] = covariance_[k];
-            if (k>0)
-                totalCovariance_[k] += totalCovariance_[k-1];
 
             QL_ENSURE(pseudoRoots_[k].rows()==numberOfRates_,
                       "step " << k

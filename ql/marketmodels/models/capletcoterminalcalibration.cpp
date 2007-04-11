@@ -140,14 +140,14 @@ namespace QuantLib {
                          cs.coterminalSwapAnnuity(i, i)/taus[i-1];
             Real f0v1t1 = (cs.forwardRates()[i-1]+displacement)*
                           (cs.forwardRates()[i-1]+displacement)*
-                capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
+                          capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
 
             Real constantPart = sr0w0*sr0w0*totVariance[i-1]-f0v1t1;
             Real linearPart = -2*sr0w0*sr1w1*(a[i-1]*almostTotCovariance[i]
                                               +b[i-1]*leftCovariance[i]);
             Real quadraticPart = sr1w1*sr1w1*almostTotVariance[i];
 
-            Real disc = linearPart*linearPart-4*constantPart*quadraticPart;
+            Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
             if (disc <0)
                 return false;
@@ -155,7 +155,7 @@ namespace QuantLib {
             Real root = (-linearPart -sqrt(disc))/(2*quadraticPart);
             if (root<0.0) {
                 QL_FAIL("negative root -- it should have not happened");
-                root = (-linearPart +sqrt(disc))/(2*quadraticPart);
+                root = (-linearPart +sqrt(disc))/(2.0*quadraticPart);
             }
                           
             a[i]=root;

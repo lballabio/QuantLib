@@ -24,30 +24,30 @@
 namespace QuantLib {
 
     PiecewiseConstantAbcdVariance::PiecewiseConstantAbcdVariance(
-        Real a, Real b, Real c, Real d,
-        const Size resetIndex, const EvolutionDescription& evolution) 
-        : variances_(evolution.numberOfRates()),
-          volatilities_(evolution.numberOfRates()),
-          evolution_(evolution)
+                                    Real a, Real b, Real c, Real d,
+                                    const Size resetIndex,
+                                    const std::vector<Time>& rateTimes) 
+        : variances_(rateTimes.size()),
+          volatilities_(rateTimes.size()),
+          rateTimes_(rateTimes)
     {
-        QL_REQUIRE(resetIndex<evolution.numberOfRates(),
+        QL_REQUIRE(resetIndex<rateTimes_.size(),
                    "resetIndex (" << resetIndex <<
-                   ") must be less than numberOfRates (" <<
-                   evolution.numberOfRates() << ")");
+                   ") must be less than rateTimes.size() (" <<
+                   rateTimes_.size() << ")");
         AbcdFunction abcdFunction(a,b,c,d); 
-        const std::vector<Time> rateTimes = evolution.rateTimes();
         for (Size i=0; i<=resetIndex; ++i) {
-            Time startTime = (i==0 ? 0.0 : rateTimes[i-1]);
-            variances_[i] = abcdFunction.variance(rateTimes[resetIndex],
-                                                  rateTimes[i],
+            Time startTime = (i==0 ? 0.0 : rateTimes_[i-1]);
+            variances_[i] = abcdFunction.variance(rateTimes_[resetIndex],
+                                                  rateTimes_[i],
                                                   startTime);
-            Time totTime = rateTimes[i]-startTime;
+            Time totTime = rateTimes_[i]-startTime;
             volatilities_[i] = std::sqrt(variances_[i]/totTime);
         } 
     }
 
-    const EvolutionDescription& PiecewiseConstantAbcdVariance::evolution() const {
-        return evolution_;
+    const std::vector<Real>& PiecewiseConstantAbcdVariance::rateTimes() const {
+        return rateTimes_;
     }
 
     const std::vector<Real>& PiecewiseConstantAbcdVariance::variances() const {

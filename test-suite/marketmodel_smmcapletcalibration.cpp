@@ -487,7 +487,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     for (Size i=0; i<numberOfRates; ++i) {
         swapVariances[i] = boost::shared_ptr<PiecewiseConstantVariance>(new
             PiecewiseConstantAbcdVariance(a, b, c, d,
-                                          i, evolution));
+                                          i, rateTimes));
     }
 
     Spread displacement = 0.02;

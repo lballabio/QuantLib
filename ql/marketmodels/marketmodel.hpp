@@ -38,10 +38,6 @@ namespace QuantLib {
     */
     class MarketModel {
       public:
-        MarketModel(){};
-        MarketModel(Size numberOfRates, 
-                    Size numberOfFactors, 
-                    Size numberOfSteps);
         virtual ~MarketModel() {}
         virtual const std::vector<Rate>& initialRates() const = 0;
         virtual const std::vector<Spread>& displacements() const = 0;
@@ -49,12 +45,11 @@ namespace QuantLib {
         virtual Size numberOfRates() const = 0;
         virtual Size numberOfFactors() const = 0;
         virtual Size numberOfSteps() const = 0;
-        virtual const Matrix& pseudoRoot(Size i) const;
+        virtual const Matrix& pseudoRoot(Size i) const = 0;
         virtual const Matrix& covariance(Size i) const;
         virtual const Matrix& totalCovariance(Size endIndex) const;
-
-      protected:
-        std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
+      private:
+        mutable std::vector<Matrix> covariance_, totalCovariance_;
     };
 
     //! base class for market-model factories
@@ -66,18 +61,6 @@ namespace QuantLib {
                                               Size numberOfFactors) const = 0;
     };
     
-    inline const Matrix& MarketModel::pseudoRoot(Size i) const {
-        return pseudoRoots_[i];
-    }
-     
-    inline const Matrix& MarketModel::covariance(Size i) const {
-        return covariance_[i];
-    }
-
-    inline const Matrix& MarketModel::totalCovariance(Size endIndex) const {
-        return totalCovariance_[endIndex];
-    }
-
 }
 
 #endif

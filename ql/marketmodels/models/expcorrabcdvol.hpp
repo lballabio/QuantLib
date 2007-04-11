@@ -50,12 +50,11 @@ namespace QuantLib
         const EvolutionDescription& evolution() const;
         Size numberOfRates() const;
         Size numberOfFactors() const;
-        Size numberOfSteps() const; 
-       /* const Matrix& pseudoRoot(Size i) const;
-        const Matrix& covariance(Size i) const;
-        const Matrix& totalCovariance(Size endIndex) const;*/
+        Size numberOfSteps() const;
+        const Matrix& pseudoRoot(Size i) const;
         //@}
       private:
+        std::vector<Matrix> pseudoRoots_;
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
         std::vector<Spread> displacements_;
@@ -88,17 +87,10 @@ namespace QuantLib
         return numberOfSteps_;
     }
 
-   /* inline const Matrix& ExpCorrAbcdVol::pseudoRoot(Size i) const {
+    inline const Matrix& ExpCorrAbcdVol::pseudoRoot(Size i) const {
+        QL_REQUIRE(i<pseudoRoots_.size(), "i<pseudoRoots_.size()");
         return pseudoRoots_[i];
-    }*/
-
-    /*inline const Matrix& ExpCorrAbcdVol::covariance(Size i) const {
-        return covariance_[i];
-    }*/
-
-  /*  inline const Matrix& ExpCorrAbcdVol::totalCovariance(Size endIndex) const {
-        return totalCovariance_[endIndex];
-    }*/
+    }
 
 }
 

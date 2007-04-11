@@ -5165,6 +5165,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\marketmodels\models\piecewiseconstantvariance.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\marketmodels\models\piecewiseconstantvariance.hpp"
 					>
 				</File>

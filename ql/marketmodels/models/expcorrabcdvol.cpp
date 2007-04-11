@@ -36,9 +36,7 @@ namespace QuantLib {
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements)
-    : MarketModel(initialRates.size(), 
-                  numberOfFactors, 
-                  evolution.evolutionTimes().size()),
+    : pseudoRoots_(evolution.evolutionTimes().size()),
       numberOfFactors_(numberOfFactors),
       numberOfRates_(initialRates.size()),
       numberOfSteps_(evolution.evolutionTimes().size()),
@@ -92,12 +90,6 @@ namespace QuantLib {
             pseudoRoots_[l] =
                 rankReducedSqrt(covariance, numberOfFactors, 1.0,
                                  SalvagingAlgorithm::None);
-
-            covariance_[l] = pseudoRoots_[l] *transpose(pseudoRoots_[l]);
-            
-            totalCovariance_[l] = covariance_[l];
-            if (l>0)
-                totalCovariance_[l] += totalCovariance_[l-1];
 
             QL_ENSURE(pseudoRoots_[l].rows()==numberOfRates_,
                       "step " << l
