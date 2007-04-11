@@ -523,6 +523,6 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
-    suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
+    //suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
     return suite;
 }
