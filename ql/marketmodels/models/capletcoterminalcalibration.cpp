@@ -35,6 +35,7 @@ namespace QuantLib {
         const CurveState& cs,
         const Spread displacement,
         const std::vector<Real>& alpha,
+        bool lowestRoot,
         std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         const EvolutionDescription& evolution = corr.evolution();
@@ -50,7 +51,8 @@ namespace QuantLib {
 
         QL_REQUIRE(numberOfRates_==capletVols.size(),
                    "mismatch between number of rates (" << numberOfRates_ <<
-                   ") and capletVols");
+                   ") and capletVols (" << capletVols.size() <<
+                   ")");
 
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(rateTimes==cs.rateTimes(),
@@ -149,25 +151,42 @@ namespace QuantLib {
 
             Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
-            if (disc <0.0)
+            Real root;
+            bool rightUsed = false;
+            if (disc <0.0) {
                 //return false;
-                disc = 0.0; // pick up the minimum vol for the caplet
-
-            Real root = (-linearPart -sqrt(disc))/(2.0*quadraticPart);
-            if (root<0.0) {
-                QL_FAIL("negative root -- it should have not happened");
-                root = (-linearPart +sqrt(disc))/(2.0*quadraticPart);
-                QL_REQUIRE(root>=0.0,
-                           "negative root again -- it should have not happened");
+                // pick up the minimum vol for the caplet
+                root = -linearPart/(2.0*quadraticPart);
+            } else if (lowestRoot) {
+                root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
+            } else {
+                Real minimum = -linearPart/(2.0*quadraticPart);
+                if (minimum>1.0)
+                    root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
+                else {
+                    rightUsed = true;
+                    root = (-linearPart+sqrt(disc))/(2.0*quadraticPart);
+                }
             }
-                          
-            a[i]=root;
 
             Real varianceFound = root*root*almostTotVariance[i];
             Real varianceToFind = totVariance[i]-varianceFound;
             Real mult = varianceToFind/swapTimeInhomogeneousVariances[i][i];
-            if (mult<0.0)
-                return false;
+
+            if (mult<=0.0 && rightUsed) {
+                root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
+                varianceFound = root*root*almostTotVariance[i];
+                varianceToFind = totVariance[i]-varianceFound;
+                mult = varianceToFind/swapTimeInhomogeneousVariances[i][i];
+            }
+
+
+            if (mult<0.0) return false;
+
+            QL_ENSURE(root>=0.0,
+                      "negative root -- it should have not happened");
+
+            a[i]=root;
             b[i]=std::sqrt(mult);
         }
 

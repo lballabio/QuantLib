@@ -33,8 +33,9 @@ namespace QuantLib {
         SwapFromFRACorrelationStructure(
             const Matrix& correlations,
             const CurveState& curveState,
+            Real displacement,
             const EvolutionDescription& evolution,
-            const Size numberOfFactors);
+            Size numberOfFactors);
         const EvolutionDescription& evolution() const;
         Size numberOfFactors() const;
         const Matrix& pseudoRoot(Size i) const;

@@ -31,8 +31,9 @@ namespace QuantLib {
     SwapFromFRACorrelationStructure::SwapFromFRACorrelationStructure(
             const Matrix& fraCorrelation,
             const CurveState& curveState,
+            Real displacement,
             const EvolutionDescription& evolution,
-            const Size numberOfFactors) :
+            Size numberOfFactors) :
     fraCorrelationMatrix_(evolution.numberOfRates()),
     pseudoRoots_(evolution.numberOfRates()),
     numberOfFactors_(numberOfFactors), evolution_(evolution) {
@@ -55,17 +56,15 @@ namespace QuantLib {
                    " rows and " << fraCorrelation.columns() << " columns");
 
         //1.Reduced-factor pseudo-root matrices for each time step
-        const Spread displacement = 0;
         Real componentRetainedPercentage = 1.0;
         Matrix jacobian =
                 SwapForwardMappings::coterminalSwapZedMatrix(
                     curveState, displacement);
         for (Size k=0; k<fraCorrelationMatrix_.size();++k){
             //reducing rank
-            Disposable<Matrix> fraPseudoRoot = rankReducedSqrt(fraCorrelation,
-                                                numberOfFactors_,
-                                                componentRetainedPercentage,
-                                                SalvagingAlgorithm::None);
+            Disposable<Matrix> fraPseudoRoot = rankReducedSqrt(
+                fraCorrelation, numberOfFactors_, componentRetainedPercentage,
+                SalvagingAlgorithm::None);
             // converting to swap correlation
             Disposable<Matrix> swapPseudoRoot = jacobian*fraPseudoRoot;
             // rescaling swapPseudoRoot
@@ -106,20 +105,3 @@ namespace QuantLib {
     }
 
 }
-
-
-/*Matrix swapCorrelation;
-            swapCorrelation = jacobian*fraCorrelationMatrix_[k]*transpose(jacobian);
-            Real componentRetainedPercentage = 1.0;
-            Matrix& pseudoRoot = pseudoRoots_[k];
-            pseudoRoot = rankReducedSqrt(  swapCorrelation,
-                                                numberOfFactors_,
-                                                componentRetainedPercentage,
-                                                SalvagingAlgorithm::None);
-            for (Size i = 0; i< pseudoRoots_.rows(); ++i){
-                Real sum = 0;
-                for (Size j = 0; j< pseudoRoots_.columns(); ++j){
-                    sum+= pseudoRoot[i][j]*pseudoRoot[i][j];
-                }
-                pseudoRoot[i] /= std::sqrt(sum);
-             }*/
