@@ -462,8 +462,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
     // the last caplet vol has not been used in calibration as it is assumed
-    // it is equal to the last swaption vol
-    // so it makes no sense to check...
+    // to be equal to the last swaption vol. So it makes no sense to check...
     for (Size i=0; i<numberOfRates-1; ++i) {
         Volatility capletVol = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(capletVol-capletVols_[i]);
