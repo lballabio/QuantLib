@@ -22,6 +22,7 @@
 #include <ql/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/marketmodels/models/correlations.hpp>
 
 namespace QuantLib {
 
@@ -94,13 +95,15 @@ namespace QuantLib {
 
 
     ExpCorrFlatVolFactory::ExpCorrFlatVolFactory(
-                                const Matrix& correlations,
+                                Real longTermCorrelation,
+                                Real beta,
                                 const std::vector<Time>& times,
                                 const std::vector<Volatility>& vols,
                                 const Handle<YieldTermStructure>& yieldCurve,
                                 Spread displacement)
-    : correlations_(correlations), times_(times),
-      vols_(vols), yieldCurve_(yieldCurve), displacement_(displacement) {
+    : longTermCorrelation_(longTermCorrelation), beta_(beta),
+      times_(times), vols_(vols), yieldCurve_(yieldCurve),
+      displacement_(displacement) {
         volatility_ = LinearInterpolation(times_.begin(), times_.end(),
                                           vols_.begin());
         volatility_.update();
@@ -129,9 +132,12 @@ namespace QuantLib {
 
         std::vector<Spread> displacements(numberOfRates, displacement_);
 
+        Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
+                                                      longTermCorrelation_,
+                                                      beta_);
         return boost::shared_ptr<MarketModel>(new
             ExpCorrFlatVol(displacedVolatilities,
-                           correlations_,
+                           correlations,
                            evolution,
                            numberOfFactors,
                            initialRates,

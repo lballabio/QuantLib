@@ -76,8 +76,8 @@ namespace QuantLib {
             payoffs[i] = boost::shared_ptr<Payoff>(
                               new PlainVanillaPayoff(optionType, strikes[i]));
 
-        OneStepOptionlets caplets(rateTimes, accruals, paymentTimes, payoffs);
-        EvolutionDescription evolution = caplets.evolution();
+        OneStepOptionlets optionlets(rateTimes, accruals, paymentTimes, payoffs);
+        EvolutionDescription evolution = optionlets.evolution();
         std::vector<Size> measure = terminalMeasure(evolution);
 
         boost::shared_ptr<MarketModel> model =
@@ -91,12 +91,17 @@ namespace QuantLib {
         // maybe discounts should be retrieved from the factory?
         Real initialNumeraireValue = arguments_.discounts.back();
 
-        AccountingEngine engine(evolver, caplets, initialNumeraireValue);
-        SequenceStatistics stats(caplets.numberOfProducts());
-        engine.multiplePathValues(stats, 32767);
-        std::vector<Real> npvs = stats.mean();
-        results_.value = std::accumulate(npvs.begin(),npvs.end(),0.0);
-        // additional results might be reported
+        AccountingEngine engine(evolver, optionlets, initialNumeraireValue);
+        SequenceStatistics stats(optionlets.numberOfProducts());
+        engine.multiplePathValues(stats, 262143/*32767*/);
+        std::vector<Real> optionletsNpv = stats.mean();
+        // Cap/floor total NPV
+        results_.value = std::accumulate(optionletsNpv.begin(),optionletsNpv.end(),0.0);
+        results_.additionalResults["optionletsPrice"] = optionletsNpv;
+        // optionlets errors
+        std::vector<Real> errors = stats.errorEstimate();
+        results_.errorEstimate= std::accumulate(errors.begin(),errors.end(),0.0);
+        results_.additionalResults["optionletsError"] = errors;
     }
 
 }

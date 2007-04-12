@@ -64,7 +64,8 @@ namespace QuantLib {
     class ExpCorrFlatVolFactory : public MarketModelFactory,
                                   public Observer {
       public:
-        ExpCorrFlatVolFactory(const Matrix& correlations,
+        ExpCorrFlatVolFactory(Real longTermCorrelation,
+                              Real beta,
                               // this is just to make it work---it
                               // should be replaced with something
                               // else (such as some kind of volatility
@@ -79,7 +80,7 @@ namespace QuantLib {
                                               Size numberOfFactors) const;
         void update();
       private:
-        Matrix correlations_;
+        Real longTermCorrelation_, beta_;
         // <to be changed>
         std::vector<Time> times_;
         std::vector<Volatility> vols_;

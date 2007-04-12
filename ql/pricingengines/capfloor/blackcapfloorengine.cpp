@@ -46,6 +46,7 @@ namespace QuantLib {
     {
         Real value = 0.0;
         Real vega = 0.0;
+        std::vector<Real> optionletsPrice;
         CapFloor::Type type = arguments_.type;
         DayCounter volatilityDayCounter = volatility_->dayCounter();
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
@@ -70,8 +71,10 @@ namespace QuantLib {
                     } else {
                         stdDev = 0;
                     }
-                    value += q * accrualTime * nominal * gearing *
+                    Real caplet = q * accrualTime * nominal * gearing *
                         blackFormula(Option::Call, strike, forward, stdDev);
+                    optionletsPrice.push_back(caplet);
+                    value += caplet;
                     // vega is set to 0 if fixinf is at a past date
                     if (arguments_.fixingTimes[i] > 0) {
                         vega += nominal * gearing * accrualTime * q
@@ -93,6 +96,7 @@ namespace QuantLib {
                         blackFormula(Option::Put, strike, forward, stdDev);
                     if (type == CapFloor::Floor) {
                         value += temp;
+                        optionletsPrice.push_back(temp);
                         //vega is set to 0 if fixing is at a past date
                         if (arguments_.fixingTimes[i] > 0) {
                             vega += nominal * gearing * accrualTime * q
@@ -113,6 +117,7 @@ namespace QuantLib {
             }
         }
         results_.value = value;
+        results_.additionalResults["optionletsPrice"] = optionletsPrice;
         results_.additionalResults["vega"] = vega;
     }
 
