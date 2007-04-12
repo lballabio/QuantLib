@@ -23,6 +23,8 @@
 #include <ql/marketmodels/models/swapfromfracorrelationstructure.hpp>
 #include <ql/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/marketmodels/models/capletcoterminalcalibration.hpp>
+#include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
 #include <ql/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/marketmodels/products/multistep/multistepswap.hpp>
@@ -104,7 +106,7 @@ void setup() {
 
     // Rates & displacement
     todaysForwards_ = std::vector<Rate>(accruals_.size());
-    displacement_ = 0.02;
+    displacement_ = 0.0;
     for (Size i=0; i<todaysForwards_.size(); ++i) {
         todaysForwards_[i] = 0.03 + 0.0010*i;
         todaysForwards_[i] = 0.03;
@@ -163,7 +165,7 @@ void setup() {
                             0.1640,
                             0.1540,
                             0.1440,
-                            0.1340 // not used??
+                            0.1340
     };
 
     //swaptionDisplacedVols = std::vector<Volatility>(todaysSwaps.size());
@@ -420,7 +422,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     }
 
     std::vector<Real> alpha(numberOfRates, 0.0);
-    std::vector<Matrix> swaptionPseudoRoots;
+    std::vector<Matrix> swapPseudoRoots;
     bool result = capletCoterminalCalibration(evolution,
                                               corr,
                                               swapVariances,
@@ -429,16 +431,16 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                               displacement_,
                                               alpha,
                                               true,
-                                              swaptionPseudoRoots);
+                                              swapPseudoRoots);
 
     if (!result)
         BOOST_ERROR("calibration failed");
 
-    Real error, tolerance = 1e-6;
+    Real error, tolerance = 1e-13;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
     for (Size i=0; i<numberOfRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
-        swapTerminalCovariance += swaptionPseudoRoots[i] * transpose(swaptionPseudoRoots[i]);
+        swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>tolerance)
@@ -450,116 +452,32 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                        "\n tolerance: " << tolerance);
     }
 
-    //Array modelCapletDisplacedVols(numberOfRates, 0.0);
-    //for (Size j=0; j<numberOfRates; ++j) {
-    //    for (Size i=0; i<numberOfSteps; ++i) {
-    //        for (Size k=0; k<numberOfFactors; ++k) {
-    //            Real stdDev = capletPseudoRoots[i][j][k];
-    //            modelCapletDisplacedVols[j] += stdDev*stdDev;
-    //        }
-    //    }
-    //    modelCapletDisplacedVols[j] = std::sqrt(modelCapletDisplacedVols[j]/rateTimes[j]);
-    //}
-    //BOOST_MESSAGE("" << modelCapletDisplacedVols);
+    boost::shared_ptr<MarketModel> smm(new
+        PseudoRootFacade(swapPseudoRoots,
+                         rateTimes_,
+                         cs.coterminalSwapRates(),
+                         std::vector<Spread>(numberOfRates, displacement_)));
+
+    CoterminalToForwardAdapter flmm(smm);
+    Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+
+    // the last caplet vol has not been used in calibration as it is assumed
+    // it is equal to the last swaption vol
+    // so it makes no sense to check...
+    for (Size i=0; i<numberOfRates-1; ++i) {
+        Volatility capletVol = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
+        error = std::fabs(capletVol-capletVols_[i]);
+        if (error>tolerance)
+            BOOST_FAIL("\n failed to reproduce "
+                       << io::ordinal(i) << " caplet vol:"
+                       "\n expected:  " << capletVols_[i] <<
+                       "\n realized:  " << capletVol <<
+                       "\n error:     " << error <<
+                       "\n tolerance: " << tolerance);
+    }
 
     QL_TEST_END
 }
-
-//void MarketModelTest::testMultiStepForwardsAndOptionlets() {
-//
-//    BOOST_MESSAGE("Repricing multi-step forwards and optionlets "
-//                  "in a Swap market model...");
-//
-//    QL_TEST_SETUP
-//
-//    std::vector<Rate> forwardStrikes(todaysForwards.size());
-//    std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
-//    std::vector<boost::shared_ptr<StrikedTypePayoff> >
-//        displacedPayoffs(todaysForwards.size());
-//
-//    for (Size i=0; i<todaysForwards.size(); ++i) {
-//        forwardStrikes[i] = todaysForwards[i] + 0.01;
-//        optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
-//            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
-//        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-//            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
-//    }
-//
-//    MultiStepForwards forwards(rateTimes, accruals,
-//                               paymentTimes, forwardStrikes);
-//    MultiStepOptionlets optionlets(rateTimes, accruals,
-//                                   paymentTimes, optionletPayoffs);
-//
-//    MultiProductComposite product;
-//    product.add(forwards);
-//    product.add(optionlets);
-//    product.finalize();
-//
-//    EvolutionDescription evolution = product.evolution();
-//
-//    MarketModelType marketModels[] = {
-//        // CalibratedMM,
-//        ExponentialCorrelationFlatVolatility,
-//        ExponentialCorrelationAbcdVolatility };
-//    for (Size j=0; j<LENGTH(marketModels); j++) {
-//
-//        Size testedFactors[] = { 4, 8,
-//                                 todaysForwards.size()};
-//        for (Size m=0; m<LENGTH(testedFactors); ++m) {
-//            Size factors = testedFactors[m];
-//
-//            // Composite's ProductSuggested is the Terminal one
-//            MeasureType measures[] = { // ProductSuggested,
-//                                        Terminal,
-//                                        MoneyMarketPlus,
-//                                        MoneyMarket};
-//        for (Size k=0; k<LENGTH(measures); k++) {
-//                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
-//
-//                bool logNormal = true;
-//                boost::shared_ptr<MarketModel> marketModel =
-//                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
-//
-//
-//                EvolverType evolvers[] = { Pc, Ipc };
-//                boost::shared_ptr<MarketModelEvolver> evolver;
-//                Size stop =
-//                    isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
-//                for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
-//
-//                    for (Size n=0; n<1; n++) {
-//                        //MTBrownianGeneratorFactory generatorFactory(seed_);
-//                        SobolBrownianGeneratorFactory generatorFactory(
-//                            SobolBrownianGenerator::Diagonal);
-//
-//                        evolver = makeMarketModelEvolver(marketModel,
-//                                                         numeraires,
-//                                                         generatorFactory,
-//                                                         evolvers[i]);
-//                        std::ostringstream config;
-//                        config <<
-//                            marketModelTypeToString(marketModels[j]) << ", " <<
-//                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
-//                            measureTypeToString(measures[k]) << ", " <<
-//                            evolverTypeToString(evolvers[i]) << ", " <<
-//                            "MT BGF";
-//                        if (printReport_)
-//                            BOOST_MESSAGE("    " << config.str());
-//
-//                        boost::shared_ptr<SequenceStatistics> stats =
-//                            simulate(evolver, product);
-//                        checkForwardsAndOptionlets(*stats,
-//                                                   forwardStrikes,
-//                                                   displacedPayoffs,
-//                                                   config.str());
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
-
 
 
 // --- Call the desired tests
