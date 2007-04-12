@@ -405,8 +405,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,
                                                   beta_);
-    SwapFromFRACorrelationStructure corr(evolution,
-                                         correlations,
+    SwapFromFRACorrelationStructure corr(correlations,
                                          cs,
                                          displacement_,
                                          evolution,
@@ -422,7 +421,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     std::vector<Real> alpha(numberOfRates, 0.0);
     std::vector<Matrix> swaptionPseudoRoots;
-    bool result = capletCoterminalCalibration(corr,
+    bool result = capletCoterminalCalibration(evolution,
+                                              corr,
                                               swapVariances,
                                               capletVols_,
                                               cs,

@@ -5105,14 +5105,6 @@
 				Name="Models"
 				>
 				<File
-					RelativePath=".\ql\marketmodels\models\abcdmarketmodel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\abcdmarketmodel.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\marketmodels\models\all.hpp"
 					>
 				</File>
@@ -5181,6 +5173,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\marketmodels\models\pseudorootfacade.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\marketmodels\models\pseudorootfacade.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\marketmodels\models\swapfromfracorrelationstructure.cpp"
 					>
 				</File>
@@ -5190,6 +5190,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\marketmodels\models\timedependantcorrelationstructure.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\marketmodels\models\timehomogeneousforwardcorrelation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\marketmodels\models\timehomogeneousforwardcorrelation.hpp"
 					>
 				</File>
 			</Filter>

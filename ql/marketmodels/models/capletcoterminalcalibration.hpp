@@ -27,13 +27,14 @@
 
 namespace QuantLib {
 
+    class EvolutionDescription;
     class TimeDependantCorrelationStructure;
     class PiecewiseConstantVariance;
     class CurveState;
-    class MarketModel;
     class Matrix;
 
     bool capletCoterminalCalibration(
+            const EvolutionDescription& evolution,
             const TimeDependantCorrelationStructure& corr,
             const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& displacedCapletVols,
