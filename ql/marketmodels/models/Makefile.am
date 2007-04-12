@@ -12,6 +12,7 @@ this_include_HEADERS = \
 	forwardtocoterminaladapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
+	pseudorootfacade.hpp \
 	swapfromfracorrelationstructure.hpp \
 	timedependantcorrelationstructure.hpp
 
@@ -24,6 +25,7 @@ libMarketModelsModels_la_SOURCES = \
 	forwardtocoterminaladapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \
+	pseudorootfacade.cpp \
 	swapfromfracorrelationstructure.cpp
 
 noinst_LTLIBRARIES = libMarketModelsModels.la

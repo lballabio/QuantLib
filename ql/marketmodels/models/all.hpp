@@ -9,6 +9,7 @@
 #include <ql/marketmodels/models/forwardtocoterminaladapter.hpp>
 #include <ql/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/marketmodels/models/piecewiseconstantvariance.hpp>
+#include <ql/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/marketmodels/models/swapfromfracorrelationstructure.hpp>
 #include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
 
