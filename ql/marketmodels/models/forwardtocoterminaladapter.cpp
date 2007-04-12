@@ -33,9 +33,7 @@ namespace QuantLib {
       numberOfFactors_(fwdModel->numberOfFactors()),
       numberOfRates_(fwdModel->numberOfRates()),
       numberOfSteps_(fwdModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
-      covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
-      totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
 
         const std::vector<Spread>& displacements =
@@ -49,6 +47,7 @@ namespace QuantLib {
 
         const std::vector<Time>& rateTimes =
             fwdModel_->evolution().rateTimes();
+        // we must ensure we step through all rateTimes
         const std::vector<Time>& evolutionTimes =
             fwdModel_->evolution().evolutionTimes();
         for (Size i = 0;
@@ -59,26 +58,23 @@ namespace QuantLib {
         }
 
         LMMCurveState cs(rateTimes);
-        const std::vector<Rate>& initialFwdRates = fwdModel_->initialRates();
+        const std::vector<Rate>& initialFwdRates =
+            fwdModel_->initialRates();
         cs.setOnForwardRates(initialFwdRates);
         initialRates_ = cs.coterminalSwapRates();
 
-        Matrix zMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
+        Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
             cs, displacements[0]);
+
+
         const std::vector<Size>& alive =
             fwdModel_->evolution().firstAliveRate();
-
         for (Size k = 0; k<numberOfSteps_; ++k) {
-            pseudoRoots_[k]=zMatrix*fwdModel_->pseudoRoot(k);
+            pseudoRoots_[k]=zedMatrix*fwdModel_->pseudoRoot(k);
             for (Size i=0; i<alive[k]; ++i)
                 std::fill(pseudoRoots_[k].row_begin(i),
                           pseudoRoots_[k].row_end(i),
                           0.0);
-            // FIXME
-            covariance_[k]=pseudoRoots_[k]*transpose(pseudoRoots_[k]);
-            totalCovariance_[k] = covariance_[k];
-            if (k>0)
-                totalCovariance_[k] += totalCovariance_[k-1];
         }
     }
 

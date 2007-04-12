@@ -41,14 +41,12 @@ namespace QuantLib {
         Size numberOfFactors() const;
         Size numberOfSteps() const;
         const Matrix& pseudoRoot(Size i) const;
-        const Matrix& covariance(Size i) const;
-        const Matrix& totalCovariance(Size endIndex) const;
         //@}
       private:
         boost::shared_ptr<MarketModel> fwdModel_;
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
         std::vector<Rate> initialRates_;
-        std::vector<Matrix> pseudoRoots_, covariance_, totalCovariance_;
+        std::vector<Matrix> pseudoRoots_;
     };
 
 
@@ -96,15 +94,6 @@ namespace QuantLib {
 
     inline const Matrix& ForwardToCoterminalAdapter::pseudoRoot(Size i) const {
         return pseudoRoots_[i];
-    }
-
-    inline const Matrix& ForwardToCoterminalAdapter::covariance(Size i) const {
-        return covariance_[i];
-    }
-
-    inline const Matrix&
-    ForwardToCoterminalAdapter::totalCovariance(Size endIndex) const {
-        return totalCovariance_[endIndex];
     }
 
 }
