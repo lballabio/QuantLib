@@ -33,9 +33,7 @@ namespace QuantLib {
       numberOfFactors_(ctModel->numberOfFactors()),
       numberOfRates_(ctModel->numberOfRates()),
       numberOfSteps_(ctModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
-      covariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_)),
-      totalCovariance_(numberOfSteps_, Matrix(numberOfRates_, numberOfRates_))
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_))
     {
 
         const std::vector<Spread>& displacements =
@@ -49,6 +47,16 @@ namespace QuantLib {
 
         const std::vector<Time>& rateTimes =
             coterminalModel_->evolution().rateTimes();
+        // we must ensure we step through all rateTimes
+        const std::vector<Time>& evolutionTimes =
+            coterminalModel_->evolution().evolutionTimes();
+        for (Size i = 0;
+             i<rateTimes.size() && rateTimes[i]<=evolutionTimes.back(); ++i) {
+            QL_REQUIRE(std::find(evolutionTimes.begin(), evolutionTimes.end(),
+                                 rateTimes[i])!=evolutionTimes.end(),
+                                 "skipping " << io::ordinal(i) << " rate time");
+        }
+
         CoterminalSwapCurveState cs(rateTimes);
         const std::vector<Rate>& initialCoterminalSwapRates =
             coterminalModel_->initialRates();
@@ -57,15 +65,16 @@ namespace QuantLib {
 
         Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
             cs, displacements[0]);
-        Matrix invertedZedMatrix = inverse(zedMatrix); //FIXME -> fixed :-)
+        Matrix invertedZedMatrix = inverse(zedMatrix);
 
+        const std::vector<Size>& alive =
+            coterminalModel_->evolution().firstAliveRate();
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=invertedZedMatrix*coterminalModel_->pseudoRoot(k);
-            // FIXME what's wrong ?
-            covariance_[k]=pseudoRoots_[k]*transpose(pseudoRoots_[k]);
-            totalCovariance_[k] = covariance_[k];
-            if (k>0)
-                totalCovariance_[k] += totalCovariance_[k-1];
+            for (Size i=0; i<alive[k]; ++i)
+                std::fill(pseudoRoots_[k].row_begin(i),
+                          pseudoRoots_[k].row_end(i),
+                          0.0);
         }
     }
 
