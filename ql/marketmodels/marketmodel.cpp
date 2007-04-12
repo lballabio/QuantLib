@@ -29,7 +29,8 @@ namespace QuantLib {
                 covariance_[j] = pseudoRoot(j) * transpose(pseudoRoot(j));
         }
         QL_REQUIRE(i<covariance_.size(),
-                   "invalid index i<covariance_.size()")
+                   "i (" << i <<
+                   ") must be less than covariance_.size() (" << covariance_.size() << ")")
         return covariance_[i];
     }
 
@@ -43,7 +44,8 @@ namespace QuantLib {
                 totalCovariance_[j] = totalCovariance_[j-1] + covariance_[j];
         }
         QL_REQUIRE(endIndex<covariance_.size(),
-                   "invalid index endIndex<covariance_.size()")
+                   "endIndex (" << endIndex <<
+                   ") must be less than covariance_.size() (" << covariance_.size() << ")")
         return totalCovariance_[endIndex];
     }
 
