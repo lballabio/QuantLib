@@ -5105,6 +5105,14 @@
 				Name="Models"
 				>
 				<File
+					RelativePath=".\ql\marketmodels\models\abcdmarketmodel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\marketmodels\models\abcdmarketmodel.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\marketmodels\models\all.hpp"
 					>
 				</File>
