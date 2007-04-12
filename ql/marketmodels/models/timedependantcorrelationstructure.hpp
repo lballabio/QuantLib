@@ -22,18 +22,21 @@
 #define quantlib_time_dep_corr_struct_hpp
 
 #include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
     class EvolutionDescription;
     class Matrix;
 
+    // piecewise constant in time
     class TimeDependantCorrelationStructure {
       public:
         virtual ~TimeDependantCorrelationStructure() {}
-        virtual const EvolutionDescription& evolution() const = 0;
-        virtual Size numberOfFactors() const = 0;
+        virtual const std::vector<Time>& times() const = 0;
         virtual const Matrix& pseudoRoot(Size i) const = 0;
+        virtual Size numberOfFactors() const = 0;
+        virtual Size numberOfRates() const = 0;
     };
 
 }

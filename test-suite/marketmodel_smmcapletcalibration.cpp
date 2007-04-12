@@ -405,7 +405,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,
                                                   beta_);
-    SwapFromFRACorrelationStructure corr(correlations,
+    SwapFromFRACorrelationStructure corr(evolution,
+                                         correlations,
                                          cs,
                                          displacement_,
                                          evolution,
@@ -463,6 +464,103 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     QL_TEST_END
 }
+
+//void MarketModelTest::testMultiStepForwardsAndOptionlets() {
+//
+//    BOOST_MESSAGE("Repricing multi-step forwards and optionlets "
+//                  "in a Swap market model...");
+//
+//    QL_TEST_SETUP
+//
+//    std::vector<Rate> forwardStrikes(todaysForwards.size());
+//    std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
+//    std::vector<boost::shared_ptr<StrikedTypePayoff> >
+//        displacedPayoffs(todaysForwards.size());
+//
+//    for (Size i=0; i<todaysForwards.size(); ++i) {
+//        forwardStrikes[i] = todaysForwards[i] + 0.01;
+//        optionletPayoffs[i] = boost::shared_ptr<Payoff>(new
+//            PlainVanillaPayoff(Option::Call, todaysForwards[i]));
+//        displacedPayoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
+//            PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
+//    }
+//
+//    MultiStepForwards forwards(rateTimes, accruals,
+//                               paymentTimes, forwardStrikes);
+//    MultiStepOptionlets optionlets(rateTimes, accruals,
+//                                   paymentTimes, optionletPayoffs);
+//
+//    MultiProductComposite product;
+//    product.add(forwards);
+//    product.add(optionlets);
+//    product.finalize();
+//
+//    EvolutionDescription evolution = product.evolution();
+//
+//    MarketModelType marketModels[] = {
+//        // CalibratedMM,
+//        ExponentialCorrelationFlatVolatility,
+//        ExponentialCorrelationAbcdVolatility };
+//    for (Size j=0; j<LENGTH(marketModels); j++) {
+//
+//        Size testedFactors[] = { 4, 8,
+//                                 todaysForwards.size()};
+//        for (Size m=0; m<LENGTH(testedFactors); ++m) {
+//            Size factors = testedFactors[m];
+//
+//            // Composite's ProductSuggested is the Terminal one
+//            MeasureType measures[] = { // ProductSuggested,
+//                                        Terminal,
+//                                        MoneyMarketPlus,
+//                                        MoneyMarket};
+//        for (Size k=0; k<LENGTH(measures); k++) {
+//                std::vector<Size> numeraires = makeMeasure(product, measures[k]);
+//
+//                bool logNormal = true;
+//                boost::shared_ptr<MarketModel> marketModel =
+//                    makeMarketModel(logNormal, evolution, factors, marketModels[j]);
+//
+//
+//                EvolverType evolvers[] = { Pc, Ipc };
+//                boost::shared_ptr<MarketModelEvolver> evolver;
+//                Size stop =
+//                    isInTerminalMeasure(evolution, numeraires) ? 0 : 1;
+//                for (Size i=0; i<LENGTH(evolvers)-stop; i++) {
+//
+//                    for (Size n=0; n<1; n++) {
+//                        //MTBrownianGeneratorFactory generatorFactory(seed_);
+//                        SobolBrownianGeneratorFactory generatorFactory(
+//                            SobolBrownianGenerator::Diagonal);
+//
+//                        evolver = makeMarketModelEvolver(marketModel,
+//                                                         numeraires,
+//                                                         generatorFactory,
+//                                                         evolvers[i]);
+//                        std::ostringstream config;
+//                        config <<
+//                            marketModelTypeToString(marketModels[j]) << ", " <<
+//                            factors << (factors>1 ? (factors==todaysForwards.size() ? " (full) factors, " : " factors, ") : " factor,") <<
+//                            measureTypeToString(measures[k]) << ", " <<
+//                            evolverTypeToString(evolvers[i]) << ", " <<
+//                            "MT BGF";
+//                        if (printReport_)
+//                            BOOST_MESSAGE("    " << config.str());
+//
+//                        boost::shared_ptr<SequenceStatistics> stats =
+//                            simulate(evolver, product);
+//                        checkForwardsAndOptionlets(*stats,
+//                                                   forwardStrikes,
+//                                                   displacedPayoffs,
+//                                                   config.str());
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+
+
+
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {

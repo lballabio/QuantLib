@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     bool capletCoterminalCalibration(
+        const EvolutionDescription& evolution,
         const TimeDependantCorrelationStructure& corr,
         const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
@@ -38,10 +39,8 @@ namespace QuantLib {
         bool lowestRoot,
         std::vector<Matrix>& swapCovariancePseudoRoots) {
 
-        const EvolutionDescription& evolution = corr.evolution();
-        //for (Size i=0; i<displacedSwapVariances.size(); ++i)
-        //    QL_REQUIRE(evolution==displacedSwapVariances[i]->evolution(),
-        //               "mismatched evolutions");
+        QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
+                   "evolutionTimes not equal to correlation times");
 
         Size numberOfRates_ = evolution.numberOfRates();
 

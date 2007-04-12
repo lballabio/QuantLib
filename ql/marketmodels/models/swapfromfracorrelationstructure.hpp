@@ -22,6 +22,7 @@
 #define quantlib_fra_time_dep_corr_struct_hpp
 
 #include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/marketmodels/evolutiondescription.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -36,14 +37,16 @@ namespace QuantLib {
             Real displacement,
             const EvolutionDescription& evolution,
             Size numberOfFactors);
-        const EvolutionDescription& evolution() const;
-        Size numberOfFactors() const;
+        //const EvolutionDescription& evolution() const;
+        const std::vector<Time>& times() const;
         const Matrix& pseudoRoot(Size i) const;
+        Size numberOfFactors() const;
+        Size numberOfRates() const;
     private:
         std::vector<Matrix> fraCorrelationMatrix_;
         std::vector<Matrix> pseudoRoots_;
-        Size numberOfFactors_;
-        const EvolutionDescription& evolution_;
+        Size numberOfFactors_, numberOfRates_;
+        EvolutionDescription evolution_;
     };
 
 }

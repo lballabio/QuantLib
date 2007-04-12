@@ -36,7 +36,9 @@ namespace QuantLib {
             Size numberOfFactors) :
     fraCorrelationMatrix_(evolution.numberOfRates()),
     pseudoRoots_(evolution.numberOfRates()),
-    numberOfFactors_(numberOfFactors), evolution_(evolution) {
+    numberOfFactors_(numberOfFactors),
+    numberOfRates_(evolution.numberOfRates()),
+    evolution_(evolution) {
 
         Size nbRates = evolution.numberOfRates();
         QL_REQUIRE(nbRates==curveState.numberOfRates(),
@@ -88,10 +90,18 @@ namespace QuantLib {
     //3.Compute Z matrix
     //4.Normalize 2.*3.
 
-    const EvolutionDescription&
-    SwapFromFRACorrelationStructure::evolution() const {
-        return evolution_;
+    const std::vector<Time>& SwapFromFRACorrelationStructure::times() const {
+        return evolution_.evolutionTimes();
     }
+
+    Size SwapFromFRACorrelationStructure::numberOfRates() const {
+        return numberOfRates_;
+    }
+
+    //const EvolutionDescription&
+    //SwapFromFRACorrelationStructure::evolution() const {
+    //    return evolution_;
+    //}
 
     Size SwapFromFRACorrelationStructure::numberOfFactors() const {
         return numberOfFactors_;
