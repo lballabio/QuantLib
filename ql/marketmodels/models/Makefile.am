@@ -4,7 +4,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
-	abcdmarketmodel.hpp \
 	capletcoterminalcalibration.hpp \
 	correlations.hpp \
 	coterminaltoforwardadapter.hpp \
@@ -19,7 +18,6 @@ this_include_HEADERS = \
 	timehomogeneousforwardcorrelation.hpp
 
 libMarketModelsModels_la_SOURCES = \
-	abcdmarketmodel.cpp \
 	capletcoterminalcalibration.cpp \
 	coterminaltoforwardadapter.cpp \
 	correlations.cpp \
