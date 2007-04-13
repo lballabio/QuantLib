@@ -51,14 +51,13 @@ Calendar calendar_;
 Natural settlementDays_, fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
-// utilities
+// utilities 
 
 bool checkAbsError(Real x1, Real x2, Real tolerance){
     return std::fabs(x1 - x2) < tolerance;
 }
 
-Leg makeLeg(const Date& startDate,
-                                                  Integer length) {
+Leg makeLeg(const Date& startDate, Integer length) {
     Date endDate = calendar_.advance(startDate,length*Years,convention_);
     Schedule schedule(startDate, endDate, Period(frequency_), calendar_,
                       convention_, convention_, false, false);
@@ -114,7 +113,7 @@ std::string typeToString(CapFloor::Type type) {
 }
 
 void setup() {
-    nominals_ = std::vector<Real>(1,1);
+    nominals_ = std::vector<Real>(1,100);
     frequency_ = Semiannual;
     index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
     calendar_ = index_->calendar();
@@ -541,7 +540,6 @@ void CapFloorTest::testMarketModel() {
     std::vector<Volatility> vols(2);
     times[0] = 0.0;  vols[0] = volatility;
     times[1] = 30.0;  vols[1] = volatility;
-
     boost::shared_ptr<MarketModelFactory> factory(new
         ExpCorrFlatVolFactory(longTermCorrelation, beta,
                               times, vols,
@@ -551,6 +549,7 @@ void CapFloorTest::testMarketModel() {
                                       new MarketModelCapFloorEngine(factory));
     cap->setPricingEngine(lmmEngine);
     floor->setPricingEngine(lmmEngine);
+
     // LMM cap/floor price
     Real lmmCapNPV = cap->NPV();
     Real lmmFloorNPV = floor->NPV();
@@ -558,28 +557,27 @@ void CapFloorTest::testMarketModel() {
     std::vector<Real> lmmFloorletsNpv = floor->result<std::vector<Real> >("optionletsPrice");
     std::vector<Real> capletsError = cap->result<std::vector<Real> >("optionletsError");
     std::vector<Real> floorletsError = floor->result<std::vector<Real> >("optionletsError");
-
     QL_REQUIRE(lmmCapletsNpv.size() == blackCapletsNpv.size(),"lmmCapletsNpv.size() != blackCapletsNpv.size()");
+
     // check results for optionlets
     Real errorThreshold = 1;
     for (Size i=0; i<lmmCapletsNpv.size(); ++i){
         if (std::fabs(lmmCapletsNpv[i]-blackCapletsNpv[i]) > errorThreshold * capletsError[i])
             BOOST_ERROR(
-                "failed to reproduce black caplet value:\n"
+                "failed to reproduce black caplet value: \n"
                 << std::setprecision(12)
                 << "    caplet #: " << i << "\n"
                 << "    calculated: " << lmmCapletsNpv[i] << "\n"
-                << "    expected:   " << blackCapletsNpv[i]<< "\n"
-                << "    stdev:   " << capletsError[i]);
-
+                << "    stdev:   " << capletsError[i] << "\n"
+                << "    expected:   " << blackCapletsNpv[i] );
         if (std::fabs(lmmFloorletsNpv[i]-blackFloorletsNpv[i]) > errorThreshold * floorletsError[i])
             BOOST_ERROR(
                 "failed to reproduce black floorlet value:\n"
                 << std::setprecision(12)
                 << "    floorlet #: " << i << "\n"
                 << "    calculated: " << lmmFloorletsNpv[i] << "\n"
-                << "    expected:   " << blackFloorletsNpv[i]<< "\n"
-                << "    stdev:   " << floorletsError[i]);
+                 << "    stdev:   " << floorletsError[i] << "\n"
+               << "    expected:   " << blackFloorletsNpv[i]);
     }
 
     // check results for options
@@ -588,15 +586,15 @@ void CapFloorTest::testMarketModel() {
             "failed to reproduce black cap value:\n"
             << std::setprecision(12)
             << "    calculated: " << lmmCapNPV << "\n"
-            << "    expected:   " << blackCapNPV<< "\n"
-            << "    stdev:   " << cap->errorEstimate());
+            << "    stdev:   " << cap->errorEstimate() << "\n"
+            << "    expected:   " << blackCapNPV);
     if (std::fabs(lmmFloorNPV-blackFloorNPV) > errorThreshold * floor->errorEstimate())
         BOOST_ERROR(
             "failed to reproduce black floor value:\n"
             << std::setprecision(12)
             << "    calculated: " << lmmFloorNPV << "\n"
-            << "    expected:   " <<blackFloorNPV<< "\n"
-            << "    stdev:   " << floor->errorEstimate());
+            << "    stdev:   " << floor->errorEstimate() << "\n"
+            << "    expected:   " <<blackFloorNPV);
 
     QL_TEST_TEARDOWN
 }

@@ -93,7 +93,7 @@ namespace QuantLib {
 
         AccountingEngine engine(evolver, optionlets, initialNumeraireValue);
         SequenceStatistics stats(optionlets.numberOfProducts());
-        engine.multiplePathValues(stats, 262143/*32767*/);
+        engine.multiplePathValues(stats, /*262143*/32767);
         std::vector<Real> optionletsNpv = stats.mean();
         // Cap/floor total NPV
         results_.value = std::accumulate(optionletsNpv.begin(),optionletsNpv.end(),0.0);
