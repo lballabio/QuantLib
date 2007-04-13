@@ -64,11 +64,11 @@ namespace QuantLib {
     }
 
 
-    Real blackImpliedStdDevApproximation(Option::Type optionType,
-                                         Real strike,
-                                         Real forward,
-                                         Real blackPrice,
-                                         Real discount) {
+    Real blackFormulaImpliedStdDevApproximation(Option::Type optionType,
+                                                Real strike,
+                                                Real forward,
+                                                Real blackPrice,
+                                                Real discount) {
         QL_REQUIRE(strike>=0.0,
                 "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -103,12 +103,12 @@ namespace QuantLib {
         return stdDev;
     }
 
-    Real blackImpliedStdDevApproximation(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
-                        Real forward,
-                        Real blackPrice,
-                        Real) {
-        return blackImpliedStdDevApproximation(payoff->optionType(),
+    Real blackFormulaImpliedStdDevApproximation(
+                      const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                      Real forward,
+                      Real blackPrice,
+                      Real) {
+        return blackFormulaImpliedStdDevApproximation(payoff->optionType(),
             payoff->strike(), forward, blackPrice);
     }
 
@@ -164,7 +164,7 @@ namespace QuantLib {
         CumulativeNormalDistribution N_;
     };
 
-    Real blackImpliedStdDev(Option::Type optionType,
+    Real blackFormulaImpliedStdDev(Option::Type optionType,
                             Real strike,
                             Real forward,
                             Real blackPrice,
@@ -180,7 +180,7 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
         if (guess==Null<Real>())
-            guess = blackImpliedStdDevApproximation(
+            guess = blackFormulaImpliedStdDevApproximation(
                 optionType, strike, forward, blackPrice, discount);
         else
             QL_REQUIRE(guess>=0.0,
@@ -197,22 +197,22 @@ namespace QuantLib {
         return stdDev;
     }
 
-    Real blackImpliedStdDev(
+    Real blackFormulaImpliedStdDev(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
                         Real discount,
                         Real guess,
                         Real accuracy) {
-        return blackImpliedStdDev(payoff->optionType(), payoff->strike(),
+        return blackFormulaImpliedStdDev(payoff->optionType(), payoff->strike(),
             forward, blackPrice, discount, guess, accuracy);
     }
 
 
-    Real blackCashItmProbability(Option::Type optionType,
-                                 Real strike,
-                                 Real forward,
-                                 Real stdDev) {
+    Real blackFormulaCashItmProbability(Option::Type optionType,
+                                        Real strike,
+                                        Real forward,
+                                        Real stdDev) {
         if (stdDev==0.0)
             return (forward*optionType > strike*optionType ? 1.0 : 0.0);
         if (strike==0.0)
@@ -223,16 +223,16 @@ namespace QuantLib {
         return phi(optionType*d2);
     }
 
-    Real blackCashItmProbability(
+    Real blackFormulaCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev) {
-        return blackCashItmProbability(payoff->optionType(),
+        return blackFormulaCashItmProbability(payoff->optionType(),
             payoff->strike(), forward, stdDev);
     }
 
-    Real blackStdDevDerivative(Rate strike, Rate forward, Real stdDev,
-                               Real discount) {
+    Real blackFormulaStdDevDerivative(Rate strike, Rate forward, Real stdDev,
+                                      Real discount) {
         QL_REQUIRE(strike>=0.0,
                    "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -246,12 +246,12 @@ namespace QuantLib {
             CumulativeNormalDistribution().derivative(d1);
     }
 
-    Real blackStdDevDerivative(
+    Real blackFormulaStdDevDerivative(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real discount) {
-        return blackStdDevDerivative(payoff->strike(), forward,
+        return blackFormulaStdDevDerivative(payoff->strike(), forward,
                                      stdDev, discount);
     }
 
