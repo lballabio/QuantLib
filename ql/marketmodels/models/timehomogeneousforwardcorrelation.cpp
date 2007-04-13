@@ -53,15 +53,15 @@ namespace QuantLib {
                     for (Size k=0; k < thisCorrelationMatrix.rows(); ++k)
                         thisCorrelationMatrix[j][k] =  fwdCorrelation[j][k];
 
-            Matrix smallPseudo(rankReducedSqrt(thisCorrelationMatrix,
-                                               numberOfFactors, 1.0,
-                                               SalvagingAlgorithm::None));
+            Matrix smallPseudo = rankReducedSqrt(thisCorrelationMatrix,
+                                                 numberOfFactors, 1.0,
+                                                 SalvagingAlgorithm::None);
             
             for (Size j=0; j<smallPseudo.rows(); ++j) {
-                std::copy(smallPseudo.row_begin(j),smallPseudo.row_end(j),
+                std::copy(smallPseudo.row_begin(j), smallPseudo.row_end(j),
                           pseudoRoots_[i].row_begin(i+j));
             }
-            for (Size j=0; j < i; ++j)
+            for (Size j=0; j<i; ++j)
                 pseudoRoots_[i][j][0] = 1.0;
 
         }
