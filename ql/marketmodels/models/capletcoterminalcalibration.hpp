@@ -41,8 +41,9 @@ namespace QuantLib {
             const CurveState& cs,
             const Spread displacement,
             const std::vector<Real>& alpha,
-            bool lowestRoot,
-            std::vector<Matrix>& swapCovariancePseudoRoots);
+            const bool lowestRoot,
+            std::vector<Matrix>& swapCovariancePseudoRoots,
+            Size& negativeDiscriminants);
 
 }
 

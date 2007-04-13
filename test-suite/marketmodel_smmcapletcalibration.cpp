@@ -1,8 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -108,8 +110,8 @@ void setup() {
     todaysForwards_ = std::vector<Rate>(accruals_.size());
     displacement_ = 0.0;
     for (Size i=0; i<todaysForwards_.size(); ++i) {
-        todaysForwards_[i] = 0.03 + 0.0010*i;
-        todaysForwards_[i] = 0.03;
+        todaysForwards_[i] = 0.03 + 0.0025*i;
+        //todaysForwards_[i] = 0.03;
     }
     LMMCurveState curveState_lmm(rateTimes_);
     curveState_lmm.setOnForwardRates(todaysForwards_);
@@ -421,8 +423,10 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                           i, rateTimes_));
     }
 
-    std::vector<Real> alpha(numberOfRates, 0.0);
+    Real alpha_ = 0.02;
+    std::vector<Real> alpha(numberOfRates, alpha_);
     std::vector<Matrix> swapPseudoRoots;
+    Size negativeDiscriminants;
     bool result = capletCoterminalCalibration(evolution,
                                               corr,
                                               swapVariances,
@@ -431,12 +435,15 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                               displacement_,
                                               alpha,
                                               true,
-                                              swapPseudoRoots);
+                                              swapPseudoRoots,
+                                              negativeDiscriminants);
 
+    BOOST_MESSAGE("alpha: " << alpha_);
+    BOOST_MESSAGE("number of negative discriminants: " << negativeDiscriminants);
     if (!result)
-        BOOST_ERROR("calibration failed");
+        BOOST_FAIL("calibration failed");
 
-    Real error, tolerance = 1e-13;
+    Real error, tolerance = 1e-14;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
     for (Size i=0; i<numberOfRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
@@ -446,8 +453,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         if (error>tolerance)
             BOOST_FAIL("\n failed to reproduce "
                        << io::ordinal(i) << " swaption vol:"
-                       "\n expected:  " << expSwaptionVol <<
-                       "\n realized:  " << swaptionVol <<
+                       "\n expected:  " << io::rate(expSwaptionVol) <<
+                       "\n realized:  " << io::rate(swaptionVol) <<
                        "\n error:     " << error <<
                        "\n tolerance: " << tolerance);
     }
@@ -461,18 +468,25 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     CoterminalToForwardAdapter flmm(smm);
     Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
+    std::vector<Volatility> capletVols(numberOfRates);
+    for (Size i=0; i<numberOfRates; ++i) {
+        capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
+    }
+    BOOST_MESSAGE("smm implied vols: " << QL_FIXED << std::setprecision(4) << Array(capletVols));
+    BOOST_MESSAGE("market vols:      " << QL_FIXED << std::setprecision(4) << Array(capletVols_));
+
     // the last caplet vol has not been used in calibration as it is assumed
     // to be equal to the last swaption vol. So it makes no sense to check...
     for (Size i=0; i<numberOfRates-1; ++i) {
-        Volatility capletVol = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
-        error = std::fabs(capletVol-capletVols_[i]);
+        error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>tolerance)
             BOOST_FAIL("\n failed to reproduce "
                        << io::ordinal(i) << " caplet vol:"
-                       "\n expected:  " << capletVols_[i] <<
-                       "\n realized:  " << capletVol <<
-                       "\n error:     " << error <<
-                       "\n tolerance: " << tolerance);
+                       "\n expected:         " << io::rate(capletVols_[i]) <<
+                       "\n realized:         " << io::rate(capletVols[i]) <<
+                       "\n percentage error: " << error/capletVols_[i] <<
+                       "\n error:            " << error <<
+                       "\n tolerance:        " << tolerance);
     }
 
     QL_TEST_END

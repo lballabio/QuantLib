@@ -21,6 +21,7 @@
 #include <ql/marketmodels/models/capletcoterminalcalibration.hpp>
 #include <ql/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/marketmodels/swapforwardmappings.hpp>
 #include <ql/marketmodels/curvestate.hpp>
 #include <ql/marketmodels/evolutiondescription.hpp>
 #include <ql/marketmodels/marketmodel.hpp>
@@ -36,9 +37,11 @@ namespace QuantLib {
         const CurveState& cs,
         const Spread displacement,
         const std::vector<Real>& alpha,
-        bool lowestRoot,
-        std::vector<Matrix>& swapCovariancePseudoRoots) {
+        const bool lowestRoot,
+        std::vector<Matrix>& swapCovariancePseudoRoots,
+        Size& negativeDiscriminants) {
 
+        negativeDiscriminants = 0;
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
                    "evolutionTimes not equal to correlation times");
 
@@ -72,12 +75,27 @@ namespace QuantLib {
         Size numberOfFactors = corr.numberOfFactors();
 
        Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates_, 0.0);
+       std::vector<Real> originalVariances(numberOfRates_, 0.0);
+       std::vector<Real> modifiedVariances(numberOfRates_, 0.0);
+
         for (Size i=0; i<numberOfSteps; ++i) {
             Real s = (i==0 ? 0.0 : evolutionTimes[i-1]);
             for (Size j=i; j<numberOfRates_; ++j) {
                 const std::vector<Real>& var = displacedSwapVariances[j]->variances();
+                originalVariances[j]+=var[i];
+            
                 swapTimeInhomogeneousVariances[i][j] = var[i]/
                     ((1.0+alpha[j]*s)*(1.0+alpha[j]*s));
+                    
+                modifiedVariances[j]+=swapTimeInhomogeneousVariances[i][j];
+
+            }
+        }
+   
+        for (Size i=0; i<numberOfSteps; ++i) {
+            for (Size j=i; j<numberOfRates_; ++j) {
+                swapTimeInhomogeneousVariances[i][j] *= originalVariances[j]/
+                                                        modifiedVariances[j];
             }
         }
 
@@ -121,6 +139,10 @@ namespace QuantLib {
             }
         }
 
+        Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
+            cs, displacement);
+        Matrix invertedZedMatrix = inverse(zedMatrix);
+
         // multiplier up to rate reset previous time
         // the first element is not used
         std::vector<Real> a(numberOfSteps, 1.0);
@@ -135,10 +157,24 @@ namespace QuantLib {
             }
             swapTimeInhomogeneousVariances[j][i-1]*= b[i-1]*b[i-1];
 
-            Real sr0w0 = (cs.coterminalSwapRates()[i-1]+displacement)*
-                cs.coterminalSwapAnnuity(i, i-1)/taus[i-1];
-            Real sr1w1 = (cs.coterminalSwapRates()[i]+displacement)*
-                         cs.coterminalSwapAnnuity(i, i)/taus[i-1];
+            Real sr0 = cs.coterminalSwapRates()[i-1]+displacement;
+            Real w0old = cs.coterminalSwapAnnuity(i, i-1)/taus[i-1];
+            Real w0new = invertedZedMatrix[i-1][i-1];
+            Real w0 = w0new;
+            Real sr0w0 = sr0*w0;
+
+            Real sr1 = cs.coterminalSwapRates()[i]+displacement;
+            Real w1old = cs.coterminalSwapAnnuity(i, i)/taus[i-1];
+            Real w1new = -invertedZedMatrix[i-1][i];
+            Real w1veryNew = w1new;
+            for (Size j= i+1; j <invertedZedMatrix.columns(); ++j)
+                w1veryNew-=invertedZedMatrix[i-1][j];
+
+            Real w1 = w1new;
+      
+            
+            Real sr1w1 = sr1*w1;
+
             Real f0v1t1 = (cs.forwardRates()[i-1]+displacement)*
                           (cs.forwardRates()[i-1]+displacement)*
                           capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
@@ -150,16 +186,15 @@ namespace QuantLib {
 
             Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
-            Real root;
+            Real root, minimum = -linearPart/(2.0*quadraticPart);
             bool rightUsed = false;
             if (disc <0.0) {
-                //return false;
+                ++negativeDiscriminants;
                 // pick up the minimum vol for the caplet
-                root = -linearPart/(2.0*quadraticPart);
+                root = minimum;
             } else if (lowestRoot) {
                 root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
             } else {
-                Real minimum = -linearPart/(2.0*quadraticPart);
                 if (minimum>1.0)
                     root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
                 else {
@@ -180,7 +215,8 @@ namespace QuantLib {
             }
 
 
-            if (mult<0.0) return false;
+            if (mult<0.0)
+                return false;
 
             QL_ENSURE(root>=0.0,
                       "negative root -- it should have not happened");
@@ -221,7 +257,6 @@ namespace QuantLib {
         }
 
         return true;
-
     }
 
 }
