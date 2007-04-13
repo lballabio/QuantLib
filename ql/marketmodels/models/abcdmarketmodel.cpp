@@ -17,16 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/marketmodels/models/AbcdMarketModel.hpp>
+#include <ql/marketmodels/models/abcdmarketmodel.hpp>
 #include <ql/marketmodels/utilities.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/pseudosqrt.hpp>
 
-
 namespace QuantLib {
 
     // to be moved in utilities ...
-     bool isIncluded(const std::vector<Time>& subSet, 
+     bool isIncluded(const std::vector<Time>& subSet,
                      const std::vector<Time>& set) {
         // we assume the vectors to be sorted
         Size j = 0;
@@ -76,7 +75,7 @@ namespace QuantLib {
                        ") and ks (" << ks.size() << ")");
             QL_REQUIRE(numberOfRates_<=numberOfFactors_*numberOfSteps_,
                        "number of rates (" << numberOfRates_ <<
-                       ") greater than number of factors (" << numberOfFactors_ 
+                       ") greater than number of factors (" << numberOfFactors_
                        << ") times number of steps (" << numberOfSteps_ << ")");
             QL_REQUIRE(numberOfRates_==correlations.rows(),
                        "mismatch between number of rates (" << numberOfRates_ <<
@@ -107,7 +106,7 @@ namespace QuantLib {
                             correlation = correlations[i-m][j-m];
                         else
                             correlation = 0;
-                        covariance[j][i] = covariance[i][j] = 
+                        covariance[j][i] = covariance[i][j] =
                             ks[i] * ks[j] * covar * correlation;
                     }
                 }
@@ -129,7 +128,7 @@ namespace QuantLib {
                           << " instead of " << numberOfFactors);
             }
         }
-        
+
         else // rate times are not included in evolution times
         {
             // we add rateTimes to evolutionTimes
@@ -141,8 +140,8 @@ namespace QuantLib {
             mergeTimes(timesToMerge, extendedEvolutionTimes, isPresent);
             // create a temporary AbcdMarketModel full factors
             AbcdMarketModel abcdMarketModelTemp(
-                    a, b, c, d, ks, correlations, numberOfRates_, 
-                    initialRates, displacements, rateTimes, 
+                    a, b, c, d, ks, correlations, numberOfRates_,
+                    initialRates, displacements, rateTimes,
                     extendedEvolutionTimes);
             // we iterate over the evolutionTimes and add covariance matrices
             Size i = 0;
