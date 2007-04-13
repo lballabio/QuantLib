@@ -78,8 +78,9 @@ namespace QuantLib {
                     // vega is set to 0 if fixinf is at a past date
                     if (arguments_.fixingTimes[i] > 0) {
                         vega += nominal * gearing * accrualTime * q
-                                * blackStdDevDerivative(strike, forward, stdDev)
-                                * std::sqrt(timeToMaturity);
+                              * blackFormulaStdDevDerivative(strike, forward,
+                                                             stdDev)
+                              * std::sqrt(timeToMaturity);
                     }
                 }
                 if ((type == CapFloor::Floor) ||
@@ -100,8 +101,10 @@ namespace QuantLib {
                         //vega is set to 0 if fixing is at a past date
                         if (arguments_.fixingTimes[i] > 0) {
                             vega += nominal * gearing * accrualTime * q
-                                    * blackStdDevDerivative(strike, forward, stdDev)
-                                    * std::sqrt(timeToMaturity);
+                                  * blackFormulaStdDevDerivative(strike,
+                                                                 forward,
+                                                                 stdDev)
+                                  * std::sqrt(timeToMaturity);
                         }
                     } else {
                         // a collar is long a cap and short a floor
@@ -109,8 +112,10 @@ namespace QuantLib {
                         // vega is set to 0 if fixing is at a past date
                         if (arguments_.fixingTimes[i] > 0) {
                             vega -= nominal * gearing * accrualTime * q
-                                    * blackStdDevDerivative(strike, forward, stdDev)
-                                    * std::sqrt(timeToMaturity);
+                                  * blackFormulaStdDevDerivative(strike,
+                                                                 forward,
+                                                                 stdDev)
+                                  * std::sqrt(timeToMaturity);
                         }
                     }
                 }

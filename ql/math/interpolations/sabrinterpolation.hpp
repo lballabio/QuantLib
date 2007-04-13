@@ -384,7 +384,7 @@ namespace QuantLib {
                     Real weightsSum = 0.0;
                     for ( ; x!=this->xEnd_; ++x, ++y, ++w) {
                         Real stdDev = std::sqrt((*y)*(*y)*t_);
-                        *w = blackStdDevDerivative(*x, forward_, stdDev);
+                        *w = blackFormulaStdDevDerivative(*x, forward_, stdDev);
                         weightsSum += *w;
                     }
                     // weight normalization

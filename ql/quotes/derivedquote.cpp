@@ -51,9 +51,11 @@ namespace QuantLib {
         static const Real discount_ = 1.0;
         Real blackPrice = price_->value();
         try {
-            impliedStdev_ = blackImpliedStdDev(optionType_, strike_,
-                forward_->value(), blackPrice, discount_, impliedStdev_,
-                accuracy_);
+            impliedStdev_ =
+                blackFormulaImpliedStdDev(optionType_, strike_,
+                                          forward_->value(), blackPrice,
+                                          discount_, impliedStdev_,
+                                          accuracy_);
         } catch(QuantLib::Error&) {
             impliedStdev_ = 0.0;
         }
@@ -83,13 +85,15 @@ namespace QuantLib {
         static const Real discount_ = 1.0;
         Real forwardValue = 100.0-forward_->value();
         if (strike_>forwardValue) {
-            impliedStdev_ = blackImpliedStdDev(Option::Call, strike_,
-                forwardValue, putPrice_->value(), discount_,
-                impliedStdev_, accuracy_);
+            impliedStdev_ =
+                blackFormulaImpliedStdDev(Option::Call, strike_,
+                                          forwardValue, putPrice_->value(),
+                                          discount_, impliedStdev_, accuracy_);
         } else {
-            impliedStdev_ = blackImpliedStdDev(Option::Put, strike_,
-                forwardValue, callPrice_->value(), discount_,
-                impliedStdev_, accuracy_);
+            impliedStdev_ =
+                blackFormulaImpliedStdDev(Option::Put, strike_,
+                                          forwardValue, callPrice_->value(),
+                                          discount_, impliedStdev_, accuracy_);
         }
     }
 

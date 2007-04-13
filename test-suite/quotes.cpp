@@ -169,9 +169,10 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
         ImpliedStdDevQuote(optionType, forwardHandle, priceHandle,
                            strike, guess, accuracy));
     Real impliedStdev = impliedStdevQuote->value();
-    Real expectedImpliedStdev = blackImpliedStdDev(optionType,
-                            strike, forwardQuote->value(),
-                            price, 1.0, guess, accuracy = 1.0e-6);
+    Real expectedImpliedStdev =
+        blackFormulaImpliedStdDev(optionType, strike,
+                                  forwardQuote->value(), price,
+                                  1.0, guess, 1.0e-6);
     if (std::fabs(impliedStdev-expectedImpliedStdev) > 1.0e-15)
         BOOST_FAIL("impliedStdevQuote yields " << impliedStdev << "\n"
                 << "expected result is " << expectedImpliedStdev);

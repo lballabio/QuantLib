@@ -77,6 +77,6 @@ namespace QuantLib {
         Rate forward = arguments_.fairRate;
         Rate strike = arguments_.fixedRate;
         results_.additionalResults["vega"] =  std::sqrt(exercise) *
-            blackStdDevDerivative(strike, forward, stdDev, annuity);
+            blackFormulaStdDevDerivative(strike, forward, stdDev, annuity);
     }
 }
