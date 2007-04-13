@@ -22,10 +22,7 @@
 #include <ql/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
-#include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
 #include <ql/marketmodels/swapforwardmappings.hpp>
-#include <ql/marketmodels/curvestate.hpp>
-#include <ql/marketmodels/evolutiondescription.hpp>
 #include <ql/marketmodels/marketmodel.hpp>
 #include <ql/math/matrix.hpp>
 
@@ -309,6 +306,90 @@ namespace QuantLib {
             error = std::sqrt(error/(numberOfRates-1));
         }
         return success;
+    }
+
+    IterativeCapletCoterminalCalibration::IterativeCapletCoterminalCalibration(
+                            const EvolutionDescription& evolution,
+                            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+                            const std::vector<boost::shared_ptr<
+                                        PiecewiseConstantVariance> >&
+                                                displacedSwapVariances,
+                            const std::vector<Volatility>& mktCapletVols,
+                            const boost::shared_ptr<CurveState>& cs,
+                            Spread displacement)
+    : evolution_(evolution),  corr_(corr),
+      displacedSwapVariances_(displacedSwapVariances),
+      mktCapletVols_(mktCapletVols),
+      cs_(cs), displacement_(displacement), calibrated_(false) {}
+
+    bool IterativeCapletCoterminalCalibration::calibrate(
+                            const std::vector<Real>& alpha,
+                            bool lowestRoot,
+                            Size maxIterations,
+                            Real tolerance) {
+
+        const std::vector<Time>& rateTimes = evolution_.rateTimes();
+        Size numberOfRates = evolution_.numberOfRates();
+        Size negDiscr_ = 0;
+        Real error_ = 987654321; // a positive large number
+        bool success = true;
+        std::vector<Volatility> targetCapletVols(mktCapletVols_);
+        for (Size iterCounter=1;
+             iterCounter<=maxIterations && success && negDiscr_==0 && error_>tolerance;
+             ++iterCounter) {
+            success = capletCoterminalCalibration(evolution_,
+                                                  *corr_,
+                                                  displacedSwapVariances_,
+                                                  targetCapletVols,
+                                                  *cs_,
+                                                  displacement_,
+                                                  alpha,
+                                                  lowestRoot,
+                                                  swapCovariancePseudoRoots_,
+                                                  negDiscr_);
+            boost::shared_ptr<MarketModel> smm(new
+                PseudoRootFacade(swapCovariancePseudoRoots_,
+                                 rateTimes,
+                                 cs_->coterminalSwapRates(),
+                                 std::vector<Spread>(numberOfRates, displacement_)));
+            CoterminalToForwardAdapter flmm(smm);
+            // avoid this copy
+            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+            error_ = 0.0;
+            for (Size i=0; i<numberOfRates-1; ++i) {
+                Real capletVol = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real diff = mktCapletVols_[i]-capletVol;
+                error_ += diff*diff;
+                targetCapletVols[i] *= mktCapletVols_[i]/capletVol;
+            }
+            error_ = std::sqrt(error_/(numberOfRates-1));
+        }
+        calibrated_ = true;
+        return success;
+    }
+
+    Size IterativeCapletCoterminalCalibration::negativeDiscriminants() {
+        QL_REQUIRE(calibrated_, "not calibrated yet");
+        return negDiscr_;
+    }
+
+    Real IterativeCapletCoterminalCalibration::error() {
+        QL_REQUIRE(calibrated_, "not calibrated yet");
+        return error_;
+    }
+
+    const std::vector<Matrix>&
+    IterativeCapletCoterminalCalibration::swapCovariancePseudoRoots() {
+        QL_REQUIRE(calibrated_, "not calibrated yet");
+        return swapCovariancePseudoRoots_;
+    }
+
+    const Matrix&
+    IterativeCapletCoterminalCalibration::swapCovariancePseudoRoot(Size i) {
+        QL_REQUIRE(calibrated_, "not calibrated yet");
+        QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
+                   "invalid index");
+        return swapCovariancePseudoRoots_[i];
     }
 
 }

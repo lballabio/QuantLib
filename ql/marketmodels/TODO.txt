@@ -11,6 +11,8 @@ Lower bounds
 Calibration
 - (2) orthogonal combination of inst vol models and corr models
 - (3) calibrator to produce abcd form from market data, with displacements
+- correlation models/folder
+- vol models/folder
 
 Framework
 - (2) Get LMM code in the same use format as other code via instrument classes

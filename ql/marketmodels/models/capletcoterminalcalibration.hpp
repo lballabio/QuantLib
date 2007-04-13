@@ -21,29 +21,30 @@
 #ifndef quantlib_caplet_coterminal_calibration_hpp
 #define quantlib_caplet_coterminal_calibration_hpp
 
-#include <ql/types.hpp>
+#include <ql/marketmodels/curvestate.hpp>
+#include <ql/marketmodels/evolutiondescription.hpp>
+#include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    class EvolutionDescription;
-    class TimeDependantCorrelationStructure;
     class PiecewiseConstantVariance;
-    class CurveState;
     class Matrix;
 
     bool capletCoterminalCalibration(
-            const EvolutionDescription& evolution,
-            const TimeDependantCorrelationStructure& corr,
-            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
-            const std::vector<Volatility>& displacedCapletVols,
-            const CurveState& cs,
-            const Spread displacement,
-            const std::vector<Real>& alpha,
-            const bool lowestRoot,
-            std::vector<Matrix>& swapCovariancePseudoRoots,
-            Size& negativeDiscriminants);
+                            const EvolutionDescription& evolution,
+                            const TimeDependantCorrelationStructure& corr,
+                            const std::vector<boost::shared_ptr<
+                                PiecewiseConstantVariance> >&
+                                    displacedSwapVariances,
+                            const std::vector<Volatility>& capletVols,
+                            const CurveState& cs,
+                            const Spread displacement,
+                            const std::vector<Real>& alpha,
+                            const bool lowestRoot,
+                            std::vector<Matrix>& swapCovariancePseudoRoots,
+                            Size& negativeDiscriminants);
 
     bool iterativeCapletCoterminalCalibration(
             const EvolutionDescription& evolution,
@@ -57,6 +58,44 @@ namespace QuantLib {
             std::vector<Matrix>& swapCovariancePseudoRoots,
             const Size maxIterations,
             const Real tolerance);
+
+
+    class IterativeCapletCoterminalCalibration {
+      public:
+        IterativeCapletCoterminalCalibration(
+            const EvolutionDescription& evolution,
+            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const std::vector<boost::shared_ptr<
+                        PiecewiseConstantVariance> >&
+                                    displacedSwapVariances,
+            const std::vector<Volatility>& capletVols,
+            const boost::shared_ptr<CurveState>& cs,
+            Spread displacement);
+        // modifiers
+        bool calibrate(const std::vector<Real>& alpha,
+                       bool lowestRoot,
+                       Size maxIterations,
+                       Real tolerance);
+        // inspectors
+        Size negativeDiscriminants();
+        Real error();
+        const std::vector<Matrix>& swapCovariancePseudoRoots();
+        const Matrix& swapCovariancePseudoRoot(Size i);
+      private:
+        // input
+        EvolutionDescription evolution_;
+        boost::shared_ptr<TimeDependantCorrelationStructure> corr_;
+        std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
+                                                displacedSwapVariances_;
+        std::vector<Volatility> mktCapletVols_;
+        boost::shared_ptr<CurveState> cs_;
+        Spread displacement_;
+        // results
+        bool calibrated_;
+        Size negDiscr_;
+        Real error_;
+        std::vector<Matrix> swapCovariancePseudoRoots_;
+    };
 
 }
 
