@@ -160,8 +160,9 @@ namespace QuantLib {
             Real sr0 = cs.coterminalSwapRates()[i-1]+displacement;
             Real w0old = cs.coterminalSwapAnnuity(i, i-1)/taus[i-1];
             Real w0new = invertedZedMatrix[i-1][i-1];
-            Real w0 = w0new;
-            Real sr0w0 = sr0*w0;
+            Real w0 = w0old;
+      //      Real sr0w0 = sr0*w0;
+            Real sr0w0 = w0new;
 
             Real sr1 = cs.coterminalSwapRates()[i]+displacement;
             Real w1old = cs.coterminalSwapAnnuity(i, i)/taus[i-1];
@@ -170,14 +171,10 @@ namespace QuantLib {
             for (Size j= i+1; j <invertedZedMatrix.columns(); ++j)
                 w1veryNew-=invertedZedMatrix[i-1][j];
 
-            Real w1 = w1new;
-      
-            
-            Real sr1w1 = sr1*w1;
+             Real sr1w1 = w1new;
 
-            Real f0v1t1 = (cs.forwardRates()[i-1]+displacement)*
-                          (cs.forwardRates()[i-1]+displacement)*
-                          capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
+     
+            Real f0v1t1 = capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
 
             Real constantPart = sr0w0*sr0w0*totVariance[i-1]-f0v1t1;
             Real linearPart = -2*sr0w0*sr1w1*(a[i-1]*almostTotCovariance[i]
