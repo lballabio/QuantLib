@@ -22,12 +22,13 @@
 #include "utilities.hpp"
 #include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
 #include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
-#include <ql/pricingengines/swaption/all.hpp>
+#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
-#include <ql/time/daycounters/all.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/termstructures/yieldcurves/discountcurve.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

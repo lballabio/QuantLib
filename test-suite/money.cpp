@@ -19,7 +19,9 @@
 
 #include "money.hpp"
 #include <ql/money.hpp>
-#include <ql/currencies/all.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/currencies/america.hpp>
+#include <ql/currencies/exchangeratemanager.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

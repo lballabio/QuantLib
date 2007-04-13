@@ -20,7 +20,11 @@
 #include "pathgenerator.hpp"
 #include "utilities.hpp"
 #include <ql/methods/montecarlo/mctraits.hpp>
-#include <ql/processes/all.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/geometricbrownianprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/processes/squarerootprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>

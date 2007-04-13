@@ -20,16 +20,17 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/all.hpp>
 #include <ql/indexes/euribor.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yieldcurves/all.hpp>
+#include <ql/cashflows/analysis.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -389,46 +390,46 @@ void CmsTest::testFairRate()  {
                     Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
     for(Size h=0; h<modelOfYieldCurves_.size(); h++) {
 
-    boost::shared_ptr<CmsCouponPricer> numericalPricer(new
-        ConundrumPricerByNumericalIntegration(atmVol_,
-                                              modelOfYieldCurves_[h],
-                                              nullMeanReversionQuote,
-                                              0., 1.));
-    boost::shared_ptr<CmsCouponPricer> analyticPricer(new
-        ConundrumPricerByBlack(atmVol_,
-                               modelOfYieldCurves_[h],
-                               nullMeanReversionQuote));
+        boost::shared_ptr<CmsCouponPricer> numericalPricer(new
+            ConundrumPricerByNumericalIntegration(atmVol_,
+                                                  modelOfYieldCurves_[h],
+                                                  nullMeanReversionQuote,
+                                                  0., 1.));
+        boost::shared_ptr<CmsCouponPricer> analyticPricer(new
+            ConundrumPricerByBlack(atmVol_,
+                                   modelOfYieldCurves_[h],
+                                   nullMeanReversionQuote));
 
-    //Coupons
-    CappedFlooredCmsCoupon coupon1(
-        paymentDate_,1, startDate_, endDate_, settlementDays_,
-        index_, gearing_, spread_,
-        infiniteCap_, infiniteFloor_,
-        startDate_, endDate_,
-        iborIndex_->dayCounter());
-    coupon1.setPricer(numericalPricer);
+        //Coupons
+        CappedFlooredCmsCoupon coupon1(
+            paymentDate_,1, startDate_, endDate_, settlementDays_,
+            index_, gearing_, spread_,
+            infiniteCap_, infiniteFloor_,
+            startDate_, endDate_,
+            iborIndex_->dayCounter());
+        coupon1.setPricer(numericalPricer);
 
-    CappedFlooredCmsCoupon coupon2(
-        paymentDate_,1, startDate_, endDate_, settlementDays_,
-         index_, gearing_, spread_,
-         infiniteCap_, infiniteFloor_,
-         startDate_, endDate_,
-         iborIndex_->dayCounter());
-    coupon2.setPricer(analyticPricer);
+        CappedFlooredCmsCoupon coupon2(
+            paymentDate_,1, startDate_, endDate_, settlementDays_,
+            index_, gearing_, spread_,
+            infiniteCap_, infiniteFloor_,
+            startDate_, endDate_,
+            iborIndex_->dayCounter());
+        coupon2.setPricer(analyticPricer);
 
-    //Computation
-    const double rate1 = coupon1.rate();
-    const double rate2 = coupon2.rate();
-    const double difference =  rate2-rate1;
+        //Computation
+        const double rate1 = coupon1.rate();
+        const double rate2 = coupon2.rate();
+        const double difference =  rate2-rate1;
 
-    if (std::fabs(difference) > rateTolerance_) {
+        if (std::fabs(difference) > rateTolerance_) {
             BOOST_ERROR("\n" <<
-                "startDate:\t" << startDate_ << "\n"
+                        "startDate:\t" << startDate_ << "\n"
                         "rate1:\t" << io::rate(rate1) << "\n"
                         "rate2:\t" << io::rate(rate2) << "\n"
                         "difference:\t" << io::rate(difference) << "\n"
                         "tolerance: \t" << io::rate(rateTolerance_));
-    }
+        }
     }
 
     QL_TEST_TEARDOWN
@@ -627,7 +628,7 @@ void CmsTest::testCmsSwap() {
                                               iborIndex_->dayCounter(),
                                               floatingCmsConvention_,
                                               settlementDays_);
-                    boost::shared_ptr<IborCouponPricer> 
+                    boost::shared_ptr<IborCouponPricer>
                       fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
                     CashFlows::setPricer(floatingLeg,fictitiousPricer);
 
