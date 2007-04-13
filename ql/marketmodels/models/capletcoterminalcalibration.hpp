@@ -45,6 +45,19 @@ namespace QuantLib {
             std::vector<Matrix>& swapCovariancePseudoRoots,
             Size& negativeDiscriminants);
 
+    bool iterativeCapletCoterminalCalibration(
+            const EvolutionDescription& evolution,
+            const TimeDependantCorrelationStructure& corr,
+            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+            const std::vector<Volatility>& displacedCapletVols,
+            const CurveState& cs,
+            const Spread displacement,
+            const std::vector<Real>& alpha,
+            const bool lowestRoot,
+            std::vector<Matrix>& swapCovariancePseudoRoots,
+            const Size maxIterations,
+            const Real tolerance);
+
 }
 
 #endif

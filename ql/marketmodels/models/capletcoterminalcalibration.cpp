@@ -20,6 +20,8 @@
 
 #include <ql/marketmodels/models/capletcoterminalcalibration.hpp>
 #include <ql/marketmodels/models/piecewiseconstantvariance.hpp>
+#include <ql/marketmodels/models/pseudorootfacade.hpp>
+#include <ql/marketmodels/models/coterminaltoforwardadapter.hpp>
 #include <ql/marketmodels/models/timedependantcorrelationstructure.hpp>
 #include <ql/marketmodels/swapforwardmappings.hpp>
 #include <ql/marketmodels/curvestate.hpp>
@@ -254,6 +256,58 @@ namespace QuantLib {
         }
 
         return true;
+    }
+
+
+    bool iterativeCapletCoterminalCalibration(
+            const EvolutionDescription& evolution,
+            const TimeDependantCorrelationStructure& corr,
+            const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+            const std::vector<Volatility>& displacedCapletVols,
+            const CurveState& cs,
+            const Spread displacement,
+            const std::vector<Real>& alpha,
+            const bool lowestRoot,
+            std::vector<Matrix>& swapCovariancePseudoRoots,
+            const Size maxIterations,
+            const Real tolerance) {
+
+        const std::vector<Time> rateTimes = evolution.rateTimes();
+        Size numberOfRates = evolution.numberOfRates();
+        Size negDiscr=0;
+        Real error = 987654321; // a positive large number
+        std::vector<Volatility> targetCapletVols(displacedCapletVols);
+        bool success = true;
+        for (Size iterCounter=1;
+             iterCounter<=maxIterations && success && negDiscr==0 && error>tolerance;
+             ++iterCounter) {
+            success = capletCoterminalCalibration(evolution,
+                                                  corr,
+                                                  displacedSwapVariances,
+                                                  targetCapletVols,
+                                                  cs,
+                                                  displacement,
+                                                  alpha,
+                                                  lowestRoot,
+                                                  swapCovariancePseudoRoots,
+                                                  negDiscr);
+            boost::shared_ptr<MarketModel> smm(new
+                PseudoRootFacade(swapCovariancePseudoRoots,
+                                 rateTimes,
+                                 cs.coterminalSwapRates(),
+                                 std::vector<Spread>(numberOfRates, displacement)));
+            CoterminalToForwardAdapter flmm(smm);
+            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+            error = 0.0;
+            for (Size i=0; i<numberOfRates-1; ++i) {
+                Real caplet = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real diff = displacedCapletVols[i]-caplet;
+                error += diff*diff;
+                targetCapletVols[i] *= displacedCapletVols[i]/caplet;
+            }
+            error = std::sqrt(error/(numberOfRates-1));
+        }
+        return success;
     }
 
 }
