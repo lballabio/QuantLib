@@ -32,16 +32,18 @@
 namespace QuantLib {
 
     bool capletCoterminalCalibration(
-        const EvolutionDescription& evolution,
-        const TimeDependantCorrelationStructure& corr,
-        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
-        const std::vector<Volatility>& capletVols,
-        const CurveState& cs,
-        const Spread displacement,
-        const std::vector<Real>& alpha,
-        const bool lowestRoot,
-        std::vector<Matrix>& swapCovariancePseudoRoots,
-        Size& negativeDiscriminants) {
+                            const EvolutionDescription& evolution,
+                            const TimeDependantCorrelationStructure& corr,
+                            const std::vector<boost::shared_ptr<
+                                PiecewiseConstantVariance> >&
+                                    displacedSwapVariances,
+                            const std::vector<Volatility>& capletVols,
+                            const CurveState& cs,
+                            const Spread displacement,
+                            const std::vector<Real>& alpha,
+                            const bool lowestRoot,
+                            std::vector<Matrix>& swapCovariancePseudoRoots,
+                            Size& negativeDiscriminants) {
 
         negativeDiscriminants = 0;
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
@@ -76,40 +78,57 @@ namespace QuantLib {
         Size numberOfSteps = evolution.numberOfSteps();
         Size numberOfFactors = corr.numberOfFactors();
 
-       Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates_, 0.0);
-       std::vector<Real> originalVariances(numberOfRates_, 0.0);
-       std::vector<Real> modifiedVariances(numberOfRates_, 0.0);
-
+        // do alpha part
+        // first modify variances to take account of alpha
+        // then rescale so total variance is unchanged
+        Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates_, 0.0);
+        std::vector<Real> originalVariances(numberOfRates_, 0.0);
+        std::vector<Real> modifiedVariances(numberOfRates_, 0.0);
         for (Size i=0; i<numberOfSteps; ++i) {
             Real s = (i==0 ? 0.0 : evolutionTimes[i-1]);
             for (Size j=i; j<numberOfRates_; ++j) {
                 const std::vector<Real>& var = displacedSwapVariances[j]->variances();
                 originalVariances[j]+=var[i];
-            
                 swapTimeInhomogeneousVariances[i][j] = var[i]/
                     ((1.0+alpha[j]*s)*(1.0+alpha[j]*s));
-                    
                 modifiedVariances[j]+=swapTimeInhomogeneousVariances[i][j];
-
             }
         }
    
-        for (Size i=0; i<numberOfSteps; ++i) {
-            for (Size j=i; j<numberOfRates_; ++j) {
+        for (Size i=0; i<numberOfSteps; ++i)
+            for (Size j=i; j<numberOfRates_; ++j)
                 swapTimeInhomogeneousVariances[i][j] *= originalVariances[j]/
                                                         modifiedVariances[j];
-            }
+
+        Matrix zedMatrix =
+            SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
+        Matrix invertedZedMatrix = inverse(zedMatrix);
+
+
+        // compute swap covariances for caplet approximation formula
+        // without taking into account A and B
+        std::vector<Matrix> CovarianceSwapPseudos(numberOfSteps);
+        std::vector<Matrix> CovarianceSwapCovs(numberOfSteps);
+     
+        for (Size i=0; i<numberOfSteps; ++i) {
+            CovarianceSwapPseudos[i] =  corr.pseudoRoot(i);
+            for (Size j=0; j<numberOfRates_; ++j) 
+                for (Size k=0; k < CovarianceSwapPseudos[i].columns();  ++k)
+                    CovarianceSwapPseudos[i][j][k] *= 
+                            sqrt(swapTimeInhomogeneousVariances[i][j]);
+
+            CovarianceSwapCovs[i] = CovarianceSwapPseudos[i] *
+                                    transpose(CovarianceSwapPseudos[i]);
+            if (i>0)
+                CovarianceSwapCovs[i]+= CovarianceSwapCovs[i-1];
         }
 
+        // compute partial variances and covariances which will take A and B coefficients
         const std::vector<Time>& taus = evolution.rateTaus();
-
         std::vector<Real> totVariance(numberOfRates_, 0.0);
         std::vector<Real> almostTotVariance(numberOfRates_, 0.0);
-        
         std::vector<Real> almostTotCovariance(numberOfRates_, 0.0);
         std::vector<Real> leftCovariance(numberOfRates_, 0.0);
-
-
         for (Size i=0; i<numberOfRates_; ++i) {
             for (Size j=0; j<=i; ++j)
                 totVariance[i] += displacedSwapVariances[i]->variances()[j];
@@ -117,72 +136,59 @@ namespace QuantLib {
                 almostTotVariance[i] += swapTimeInhomogeneousVariances[j][i];
             Integer j=0;
             for (; j<=static_cast<Integer>(i)-2; ++j) {
-                 const Matrix& thisPseudo = corr.pseudoRoot(j);
-                 Real correlation = 0.0;
-
-                 for (Size k=0; k<numberOfFactors; ++k)
-                     correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
-                 
-                 almostTotCovariance[i] += correlation*
-                                            sqrt(swapTimeInhomogeneousVariances[j][i]
-                                                *swapTimeInhomogeneousVariances[j][i-1]);
-
+                const Matrix& thisPseudo = corr.pseudoRoot(j);
+                Real correlation = 0.0;
+                for (Size k=0; k<numberOfFactors; ++k)
+                    correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
+                almostTotCovariance[i] += correlation *
+                    sqrt(swapTimeInhomogeneousVariances[j][i] *
+                    swapTimeInhomogeneousVariances[j][i-1]);
             }
-
             if (i>0) {
                 const Matrix& thisPseudo = corr.pseudoRoot(j);
                 Real correlation = 0.0;
                 for (Size k=0; k<numberOfFactors; ++k)
                     correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
-                leftCovariance[i] = correlation*
-                                    sqrt(swapTimeInhomogeneousVariances[j][i]
-                                         *swapTimeInhomogeneousVariances[j][i-1]);
-
+                leftCovariance[i] = correlation *
+                    sqrt(swapTimeInhomogeneousVariances[j][i] *
+                    swapTimeInhomogeneousVariances[j][i-1]);
             }
         }
 
-        Matrix zedMatrix = SwapForwardMappings::coterminalSwapZedMatrix(
-            cs, displacement);
-        Matrix invertedZedMatrix = inverse(zedMatrix);
-
+     
         // multiplier up to rate reset previous time
         // the first element is not used
         std::vector<Real> a(numberOfSteps, 1.0);
-
         // multiplier afterward
         std::vector<Real> b(numberOfSteps);
+
         b[0]=displacedSwapVariances[0]->variances()[0]/swapTimeInhomogeneousVariances[0][0];
+        // main loop where work is done
         for (Size i=1; i<numberOfSteps; ++i) {
             Integer j=0;
-            for (; j <= static_cast<Integer>(i)-2; j++) {
+            // up date variances to take account of last a and b computed
+            for (; j <= static_cast<Integer>(i)-2; j++)
                 swapTimeInhomogeneousVariances[j][i-1]*= a[i-1]*a[i-1];
-            }
             swapTimeInhomogeneousVariances[j][i-1]*= b[i-1]*b[i-1];
 
-            Real sr0 = cs.coterminalSwapRates()[i-1]+displacement;
-            Real w0old = cs.coterminalSwapAnnuity(i, i-1)/taus[i-1];
-            Real w0new = invertedZedMatrix[i-1][i-1];
-            Real w0 = w0old;
-      //      Real sr0w0 = sr0*w0;
-            Real sr0w0 = w0new;
+            Real w0 = invertedZedMatrix[i-1][i-1];
+            Real w1 = -invertedZedMatrix[i-1][i];
+            Real v1t1 = capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
 
-            Real sr1 = cs.coterminalSwapRates()[i]+displacement;
-            Real w1old = cs.coterminalSwapAnnuity(i, i)/taus[i-1];
-            Real w1new = -invertedZedMatrix[i-1][i];
-            Real w1veryNew = w1new;
-            for (Size j= i+1; j <invertedZedMatrix.columns(); ++j)
-                w1veryNew-=invertedZedMatrix[i-1][j];
+            // now compute contribution from lower right corner
+            Real extraConstantPart =0.0;
+            // part of caplet approximation formula coming from later rates
+            for (Size k = i+1; k < numberOfSteps; ++k)
+                for (Size l = i+1; l < numberOfSteps; ++l)
+                    extraConstantPart+=invertedZedMatrix[i-1][k] *
+                                         CovarianceSwapCovs[i-1][k][l] *
+                                         invertedZedMatrix[i-1][l];
 
-             Real sr1w1 = w1new;
-
-     
-            Real f0v1t1 = capletVols[i-1]*capletVols[i-1]*rateTimes[i-1];
-
-            Real constantPart = sr0w0*sr0w0*totVariance[i-1]-f0v1t1;
-            Real linearPart = -2*sr0w0*sr1w1*(a[i-1]*almostTotCovariance[i]
-                                              +b[i-1]*leftCovariance[i]);
-            Real quadraticPart = sr1w1*sr1w1*almostTotVariance[i];
-
+            Real constantPart = w0*w0*totVariance[i-1] +
+                                                    extraConstantPart-v1t1;
+            Real linearPart = -2*w0*w1*(a[i-1]*almostTotCovariance[i] +
+                                                b[i-1]*leftCovariance[i]);
+            Real quadraticPart = w1*w1*almostTotVariance[i];
             Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
             Real root, minimum = -linearPart/(2.0*quadraticPart);
@@ -205,7 +211,6 @@ namespace QuantLib {
             Real varianceFound = root*root*almostTotVariance[i];
             Real varianceToFind = totVariance[i]-varianceFound;
             Real mult = varianceToFind/swapTimeInhomogeneousVariances[i][i];
-
             if (mult<=0.0 && rightUsed) {
                 root = (-linearPart-sqrt(disc))/(2.0*quadraticPart);
                 varianceFound = root*root*almostTotVariance[i];
@@ -213,8 +218,7 @@ namespace QuantLib {
                 mult = varianceToFind/swapTimeInhomogeneousVariances[i][i];
             }
 
-
-            if (mult<0.0)
+            if (mult<0.0) // no solution...
                 return false;
 
             QL_ENSURE(root>=0.0,
@@ -227,21 +231,19 @@ namespace QuantLib {
         {
             Integer i = numberOfSteps;
             Integer j=0;
-
-            for (; j <= static_cast<Integer>(i)-2; j++) {
+            for (; j <= static_cast<Integer>(i)-2; j++)
                 swapTimeInhomogeneousVariances[j][i-1]*= a[i-1]*a[i-1];
-            }
             swapTimeInhomogeneousVariances[j][i-1]*= b[i-1]*b[i-1];
         }
 
+        // compute the results
         swapCovariancePseudoRoots.resize(numberOfSteps);
         for (Size k=0; k<numberOfSteps; ++k) {
             swapCovariancePseudoRoots[k] = corr.pseudoRoot(k);
             for (Size j=0; j<numberOfRates_; ++j) {
                 Real coeff = std::sqrt(swapTimeInhomogeneousVariances[k][j]);
-                 for (Size i=0; i<numberOfFactors; ++i) {
+                 for (Size i=0; i<numberOfFactors; ++i)
                     swapCovariancePseudoRoots[k][j][i]*=coeff;
-                }
             }
             QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates_,
                       "step " << k
@@ -257,7 +259,6 @@ namespace QuantLib {
 
         return true;
     }
-
 
     bool iterativeCapletCoterminalCalibration(
             const EvolutionDescription& evolution,

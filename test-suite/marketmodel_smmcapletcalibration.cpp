@@ -89,7 +89,7 @@ Real longTermCorrelation_, beta_;
 Size measureOffset_;
 unsigned long seed_;
 Size paths_, trainingPaths_;
-bool printReport_ = true;
+bool printReport_ = false;
 
 void setup() {
 
@@ -429,7 +429,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     std::vector<Real> alpha(numberOfRates, alpha_);
     std::vector<Matrix> swapPseudoRoots;
     Size negativeDiscriminants;
-    Real error, swapTolerance = 1e-14, capletTolerance = 0.0001;
+    Real error, swapTolerance = 1e-14, capletTolerance = 0.0032;
     bool result = capletCoterminalCalibration(evolution,
                                               corr,
                                               swapVariances,
@@ -441,8 +441,11 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                               swapPseudoRoots,
                                               negativeDiscriminants);
 
-    BOOST_MESSAGE("alpha: " << alpha_);
-    BOOST_MESSAGE("number of negative discriminants: " << negativeDiscriminants);
+    if (printReport_) {
+        BOOST_MESSAGE("alpha: " << alpha_);
+        BOOST_MESSAGE("number of negative discriminants: " <<
+                      negativeDiscriminants);
+    }
     if (!result)
         BOOST_FAIL("calibration failed");
 
@@ -474,8 +477,12 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     for (Size i=0; i<numberOfRates; ++i) {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
-    BOOST_MESSAGE("smm implied vols: " << QL_FIXED << std::setprecision(4) << Array(capletVols));
-    BOOST_MESSAGE("market vols:      " << QL_FIXED << std::setprecision(4) << Array(capletVols_));
+    if (printReport_) {
+        BOOST_MESSAGE("smm implied vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols));
+        BOOST_MESSAGE("market vols:      " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
+    }
 
     // the last caplet vol has not been used in calibration as it is assumed
     // to be equal to the last swaption vol. So it makes no sense to check...
@@ -538,7 +545,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction2() {
                                               swapPseudoRoots,
                                               4, capletTolerance/10);
 
-    BOOST_MESSAGE("alpha: " << alpha_);
+    if (printReport_)
+        BOOST_MESSAGE("alpha: " << alpha_);
     if (!result)
         BOOST_FAIL("calibration failed");
 
@@ -570,8 +578,12 @@ void MarketModelSmmCapletCalibrationTest::testFunction2() {
     for (Size i=0; i<numberOfRates; ++i) {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
-    BOOST_MESSAGE("smm implied vols: " << QL_FIXED << std::setprecision(4) << Array(capletVols));
-    BOOST_MESSAGE("market vols:      " << QL_FIXED << std::setprecision(4) << Array(capletVols_));
+    if (printReport_) {
+        BOOST_MESSAGE("smm implied vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols));
+        BOOST_MESSAGE("market vols:      " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
+    }
 
     // the last caplet vol has not been used in calibration as it is assumed
     // to be equal to the last swaption vol. So it makes no sense to check...
