@@ -54,6 +54,9 @@ namespace QuantLib {
         const std::vector<Rate>& forwardRates() const;
         const std::vector<Rate>& coterminalSwapRates() const;
         const std::vector<Rate>& cmSwapRates(Size spanningForwards) const;
+        std::auto_ptr<CurveState> clone() const {
+            return std::auto_ptr<CurveState>(new CMSwapCurveState(*this));
+        }
         //@}
       private:
         Size spanningFwds_;

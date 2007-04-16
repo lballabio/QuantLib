@@ -24,6 +24,7 @@
 
 #include <ql/math/array.hpp>
 #include <vector>
+#include <memory>
 
 namespace QuantLib {
 
@@ -75,6 +76,8 @@ namespace QuantLib {
         virtual const std::vector<Rate>& cmSwapRates(Size spanningForwards) const = 0;
         Rate swapRate(Size begin,
                       Size end) const;
+
+        virtual std::auto_ptr<CurveState> clone() const = 0;
         //@}
       protected:
         std::vector<Time> rateTimes_, rateTaus_;

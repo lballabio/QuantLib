@@ -23,7 +23,7 @@
 #include <ql/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/marketmodels/products/multistep/exerciseadapter.hpp>
 #include <ql/marketmodels/utilities.hpp>
-#include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
+#include <ql/marketmodels/curvestate.hpp>
 #include <ql/marketmodels/marketmodelproduct.hpp>
 #include <ql/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/marketmodels/marketmodelevolver.hpp>
@@ -55,7 +55,7 @@ namespace QuantLib {
                 disableCallability();
                 for (Size i=0; i<lastSavedStep_; ++i)
                     CallSpecifiedMultiProduct::nextTimeStep(
-                                                     savedStates_[i],
+                                                     *savedStates_[i],
                                                      numberCashFlowsThisStep_,
                                                      cashFlowsGenerated_);
                 enableCallability();
@@ -65,13 +65,8 @@ namespace QuantLib {
                     const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
-                if (recording_){
-                    const LMMCurveState* lmmCurrentState = 
-                        dynamic_cast<const LMMCurveState*> (&currentState);
-                    QL_REQUIRE(lmmCurrentState,
-                            "Unable to cast the given curveState in LMMCurveState");
-                    savedStates_.push_back(*lmmCurrentState);
-                }
+                if (recording_)
+                    savedStates_.push_back(currentState);
                 return CallSpecifiedMultiProduct::nextTimeStep(
                                                      currentState,
                                                      numberCashFlowsThisStep,
@@ -101,8 +96,7 @@ namespace QuantLib {
                 recording_ = false;
             }
           private:
-            // FIXME
-            std::vector<LMMCurveState> savedStates_;
+            std::vector<Clone<CurveState> > savedStates_;
             Size lastSavedStep_;
             bool recording_;
             std::vector<Size> numberCashFlowsThisStep_;
