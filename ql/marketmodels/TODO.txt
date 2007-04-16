@@ -1,4 +1,9 @@
-
+- refactor expcorrflatvol and expcorrabcdvol into genericcorrxxxvol
+- split up marktmodel.xlm, qlo\marktmodel.hpp, qlo\marktmodel.cpp
+- move corr models into their own folder
+- test cotS->fwd and fwd->cotS adapter: inverse, etc
+- sabr with fixed parameters
+- Higham cov bug + review rank reduction
 
 Greeks
 - (1) greeks for swap rate
@@ -23,6 +28,7 @@ Improvement
 - (2) RQMC
 - (2) swaption calibration using Z matrix with displacements
 - (2) different correlation structures (Schoenmakers and Coffey, Rapisarda, longTermCorr+beta+gamma)
+- (2) corr hist extimation
 - (2) alignment with covariance structures in legacy code
 - (2) ratchet
 - (3) verify efficiency of rapid algorithm for reduced factor models
