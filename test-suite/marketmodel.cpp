@@ -2245,14 +2245,10 @@ test_suite* MarketModelTest::suite() {
     // the next one fails
     // suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
 
-    // where are the following 2 tests?
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaps));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwaptions));
-
-    // the next 4 crashes
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    // this test still crashes
     //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));

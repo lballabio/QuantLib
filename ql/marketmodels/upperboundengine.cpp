@@ -62,11 +62,16 @@ namespace QuantLib {
             }
 
             bool nextTimeStep(
-                    const LMMCurveState& currentState,
+                    const CurveState& currentState,
                     std::vector<Size>& numberCashFlowsThisStep,
                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated) {
-                if (recording_)
-                    savedStates_.push_back(currentState);
+                if (recording_){
+                    const LMMCurveState* lmmCurrentState = 
+                        dynamic_cast<const LMMCurveState*> (&currentState);
+                    QL_REQUIRE(lmmCurrentState,
+                            "Unable to cast the given curveState in LMMCurveState");
+                    savedStates_.push_back(*lmmCurrentState);
+                }
                 return CallSpecifiedMultiProduct::nextTimeStep(
                                                      currentState,
                                                      numberCashFlowsThisStep,
