@@ -431,7 +431,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     }
 
     // create calibrator
-    IterativeCapletCoterminalSwaptionCalibration calibrator(evolution,
+    CapletCoterminalSwaptionCalibration calibrator(evolution,
                                                     corr,
                                                     swapVariances,
                                                     capletVols_,
