@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2003, 2004, 2005, 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
@@ -26,11 +28,13 @@
 
 namespace QuantLib {
 
+    
     Real blackFormula(Option::Type optionType,
                       Real strike,
                       Real forward,
                       Real stdDev,
-                      Real discount) {
+                      Real discount,
+                      Real displacement) {
         QL_REQUIRE(strike>=0.0,
                    "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -39,9 +43,14 @@ namespace QuantLib {
                    "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
+        QL_REQUIRE(displacement>=0.0,
+                   "displacement (" << displacement << ") must be non-negative");
+
+        forward = forward + displacement;
+        strike = strike + displacement;
         if (stdDev==0.0)
             return std::max((forward-strike)*optionType, Real(0.0))*discount;
-        if (strike==0.0)
+        if (strike==0.0) // strike=0 iff displacement=0
             return (optionType==Option::Call ? forward*discount : 0.0);
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         Real d2 = d1 - stdDev;
@@ -55,20 +64,27 @@ namespace QuantLib {
         return result;
     }
 
+
+
+   
     Real blackFormula(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real stdDev,
-                      Real discount) {
+                      Real discount,
+                      Real displacement) {
         return blackFormula(payoff->optionType(),
-            payoff->strike(), forward, stdDev, discount);
+            payoff->strike(), forward, stdDev, discount, displacement);
     }
+
+
 
 
     Real blackFormulaImpliedStdDevApproximation(Option::Type optionType,
                                                 Real strike,
                                                 Real forward,
                                                 Real blackPrice,
-                                                Real discount) {
+                                                Real discount,
+                                                Real displacement) {
         QL_REQUIRE(strike>=0.0,
                 "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -77,7 +93,12 @@ namespace QuantLib {
                 "blackPrice (" << blackPrice << ") must be non-negative");
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
+        QL_REQUIRE(displacement>=0.0,
+                   "displacement (" << displacement << ") must be non-negative");
+
         Real stdDev;
+        forward = forward + displacement;
+        strike = strike + displacement;
         if (strike==forward)
             // Brenner-Subrahmanyan (1988) and Feinstein (1988) ATM approx.
             stdDev = blackPrice/discount*std::sqrt(2.0 * M_PI)/forward;
@@ -107,9 +128,10 @@ namespace QuantLib {
                       const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                       Real forward,
                       Real blackPrice,
-                      Real) {
+                      Real discount,
+                      Real displacement) {
         return blackFormulaImpliedStdDevApproximation(payoff->optionType(),
-            payoff->strike(), forward, blackPrice);
+            payoff->strike(), forward, blackPrice, discount, displacement);
     }
 
 
@@ -118,9 +140,10 @@ namespace QuantLib {
         BlackImpliedStdDevHelper(Option::Type optionType,
                                  Real strike,
                                  Real forward,
-                                 Real undiscountedBlackPrice)
-        : halfOptionType_(0.5*optionType), signedStrike_(optionType*strike),
-          signedForward_(optionType*forward),
+                                 Real undiscountedBlackPrice,
+                                 Real displacement = 0.0)
+        : halfOptionType_(0.5*optionType), signedStrike_(optionType*(strike+displacement)),
+          signedForward_(optionType*(forward+displacement)),
           undiscountedBlackPrice_(undiscountedBlackPrice)
         {
             QL_REQUIRE(strike>=0.0,
@@ -130,7 +153,7 @@ namespace QuantLib {
             QL_REQUIRE(undiscountedBlackPrice>=0.0,
                        "undiscounted Black price (" <<
                        undiscountedBlackPrice << ") must be non-negative");
-            signedMoneyness_ = optionType*std::log(forward/strike);
+            signedMoneyness_ = optionType*std::log((forward+displacement)/(strike+displacement));
         }
         Real operator()(Real stdDev) const {
             #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -164,13 +187,15 @@ namespace QuantLib {
         CumulativeNormalDistribution N_;
     };
 
+   
     Real blackFormulaImpliedStdDev(Option::Type optionType,
                             Real strike,
                             Real forward,
                             Real blackPrice,
                             Real discount,
                             Real guess,
-                            Real accuracy) {
+                            Real accuracy,
+                            Real displacement) {
         QL_REQUIRE(strike>=0.0,
                 "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -179,9 +204,14 @@ namespace QuantLib {
                 "blackPrice (" << blackPrice << ") must be non-negative");
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
+        QL_REQUIRE(displacement>=0.0,
+                   "displacement (" << displacement << ") must be non-negative");
+
+        strike = strike + displacement;
+        forward = forward + displacement;
         if (guess==Null<Real>())
             guess = blackFormulaImpliedStdDevApproximation(
-                optionType, strike, forward, blackPrice, discount);
+                optionType, strike, forward, blackPrice, discount, displacement);
         else
             QL_REQUIRE(guess>=0.0,
                        "stdDev guess (" << guess << ") must be non-negative");
@@ -197,42 +227,49 @@ namespace QuantLib {
         return stdDev;
     }
 
+ 
     Real blackFormulaImpliedStdDev(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real blackPrice,
                         Real discount,
                         Real guess,
-                        Real accuracy) {
+                        Real accuracy,
+                        Real displacement) {
         return blackFormulaImpliedStdDev(payoff->optionType(), payoff->strike(),
-            forward, blackPrice, discount, guess, accuracy);
+            forward, blackPrice, discount, guess, accuracy, displacement);
     }
+
 
 
     Real blackFormulaCashItmProbability(Option::Type optionType,
                                         Real strike,
                                         Real forward,
-                                        Real stdDev) {
+                                        Real stdDev,
+                                        Real displacement) {
         if (stdDev==0.0)
             return (forward*optionType > strike*optionType ? 1.0 : 0.0);
         if (strike==0.0)
             return (optionType==Option::Call ? 1.0 : 0.0);
-        Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
+        Real d1 = std::log((forward+displacement)/(strike+displacement))/stdDev + 0.5*stdDev;
         Real d2 = d1 - stdDev;
         CumulativeNormalDistribution phi;
         return phi(optionType*d2);
     }
 
+   
     Real blackFormulaCashItmProbability(
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
-                        Real stdDev) {
+                        Real stdDev,
+                        Real displacement) {
         return blackFormulaCashItmProbability(payoff->optionType(),
-            payoff->strike(), forward, stdDev);
+            payoff->strike(), forward, stdDev , displacement);
     }
 
+
     Real blackFormulaStdDevDerivative(Rate strike, Rate forward, Real stdDev,
-                                      Real discount) {
+                                      Real discount, Real displacement) {
         QL_REQUIRE(strike>=0.0,
                    "strike (" << strike << ") must be non-negative");
         QL_REQUIRE(forward>0.0,
@@ -241,6 +278,12 @@ namespace QuantLib {
                    "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0, "positive discount required: " <<
                    discount << " not allowed");
+        QL_REQUIRE(displacement>=0.0,
+                   "displacement (" << displacement << ") must be non-negative");
+
+        forward = forward + displacement;
+        strike = strike + displacement;
+
         Real d1 = std::log(forward/strike)/stdDev + .5*stdDev;
         return discount * forward *
             CumulativeNormalDistribution().derivative(d1);
@@ -250,10 +293,12 @@ namespace QuantLib {
                         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
-                        Real discount) {
+                        Real discount,
+                        Real displacement) {
         return blackFormulaStdDevDerivative(payoff->strike(), forward,
-                                     stdDev, discount);
+                                     stdDev, discount, displacement);
     }
+
 
     /* Bachelier model */
     Real bachelierBlackFormula(Option::Type optionType,
