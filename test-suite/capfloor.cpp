@@ -563,7 +563,7 @@ void CapFloorTest::testMarketModel() {
     Real errorThreshold = 1;
     for (Size i=0; i<lmmCapletsNpv.size(); ++i){
         if (std::fabs(lmmCapletsNpv[i]-blackCapletsNpv[i]) > errorThreshold * capletsError[i])
-            BOOST_ERROR(
+            BOOST_FAIL(
                 "failed to reproduce black caplet value: \n"
                 << std::setprecision(12)
                 << "    caplet #: " << i << "\n"
@@ -571,7 +571,7 @@ void CapFloorTest::testMarketModel() {
                 << "    stdev:   " << capletsError[i] << "\n"
                 << "    expected:   " << blackCapletsNpv[i] );
         if (std::fabs(lmmFloorletsNpv[i]-blackFloorletsNpv[i]) > errorThreshold * floorletsError[i])
-            BOOST_ERROR(
+            BOOST_FAIL(
                 "failed to reproduce black floorlet value:\n"
                 << std::setprecision(12)
                 << "    floorlet #: " << i << "\n"
