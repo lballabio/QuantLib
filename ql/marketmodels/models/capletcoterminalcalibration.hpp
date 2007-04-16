@@ -32,7 +32,7 @@ namespace QuantLib {
     class PiecewiseConstantVariance;
     class Matrix;
 
-    bool capletCoterminalCalibration(
+    bool capletCoterminalSwaptionCalibration(
                             const EvolutionDescription& evolution,
                             const TimeDependantCorrelationStructure& corr,
                             const std::vector<boost::shared_ptr<
@@ -60,9 +60,9 @@ namespace QuantLib {
             const Real tolerance);
 
 
-    class IterativeCapletCoterminalCalibration {
+    class IterativeCapletCoterminalSwaptionCalibration {
       public:
-        IterativeCapletCoterminalCalibration(
+        IterativeCapletCoterminalSwaptionCalibration(
             const EvolutionDescription& evolution,
             const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
             const std::vector<boost::shared_ptr<
@@ -77,10 +77,10 @@ namespace QuantLib {
                        Size maxIterations,
                        Real tolerance);
         // inspectors
-        Size negativeDiscriminants();
-        Real error();
-        const std::vector<Matrix>& swapCovariancePseudoRoots();
-        const Matrix& swapCovariancePseudoRoot(Size i);
+        Size negativeDiscriminants() const;
+        Real rmsError() const;
+        const std::vector<Matrix>& swapPseudoRoots() const;
+        const Matrix& swapPseudoRoot(Size i) const;
       private:
         // input
         EvolutionDescription evolution_;

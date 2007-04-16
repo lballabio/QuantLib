@@ -396,9 +396,11 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
 
 QL_END_TEST_LOCALS(MarketModelTest_smm)
 
+
+
 void MarketModelSmmCapletCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Run coterminal swap + caplet calibration function ...");
+    BOOST_MESSAGE("Run coterminal swap + caplet calibration ...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
@@ -407,16 +409,18 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     EvolutionDescription evolution(rateTimes_);
     Size numberOfSteps = evolution.numberOfSteps();
 
-    LMMCurveState cs(rateTimes_);
-    cs.setOnForwardRates(todaysForwards_);
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,
                                                   beta_);
-    SwapFromFRACorrelationStructure corr(correlations,
-                                         cs,
-                                         displacement_,
-                                         evolution,
-                                         numberOfFactors_);
+    boost::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    cs->setOnForwardRates(todaysForwards_);
+
+    boost::shared_ptr<SwapFromFRACorrelationStructure> corr(new
+        SwapFromFRACorrelationStructure(correlations,
+                                        *cs,
+                                        displacement_,
+                                        evolution,
+                                        numberOfFactors_));
 
     std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
@@ -426,29 +430,58 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                                           i, rateTimes_));
     }
 
-    std::vector<Real> alpha(numberOfRates, alpha_);
-    std::vector<Matrix> swapPseudoRoots;
-    Size negativeDiscriminants;
-    Real error, swapTolerance = 1e-14, capletTolerance = 0.0032;
-    bool result = capletCoterminalCalibration(evolution,
-                                              corr,
-                                              swapVariances,
-                                              capletVols_,
-                                              cs,
-                                              displacement_,
-                                              alpha,
-                                              true,
-                                              swapPseudoRoots,
-                                              negativeDiscriminants);
+    // create calibrator
+    IterativeCapletCoterminalSwaptionCalibration calibrator(evolution,
+                                                    corr,
+                                                    swapVariances,
+                                                    capletVols_,
+                                                    cs,
+                                                    displacement_);
 
+    // calibrate
+    std::vector<Real> alpha(numberOfRates, alpha_);
+    bool lowestRoot = true;
+    Size maxIterations = 2;
+    Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
     if (printReport_) {
         BOOST_MESSAGE("alpha: " << alpha_);
-        BOOST_MESSAGE("number of negative discriminants: " <<
-                      negativeDiscriminants);
+        BOOST_MESSAGE("lowestRoot: " << lowestRoot);
+        BOOST_MESSAGE("maxIterations: " << maxIterations);
+        BOOST_MESSAGE("capletTolerance: " << io::rate(capletTolerance));
+        BOOST_MESSAGE("caplet market vols:      " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
     }
+    bool result = calibrator.calibrate(alpha,
+                                       lowestRoot,
+                                       maxIterations,
+                                       capletTolerance/10);
+
     if (!result)
         BOOST_FAIL("calibration failed");
 
+    const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
+    boost::shared_ptr<MarketModel> smm(new
+        PseudoRootFacade(swapPseudoRoots,
+                         rateTimes_,
+                         cs->coterminalSwapRates(),
+                         std::vector<Spread>(numberOfRates, displacement_)));
+
+    CoterminalToForwardAdapter flmm(smm);
+    Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+
+    std::vector<Volatility> capletVols(numberOfRates);
+    for (Size i=0; i<numberOfRates; ++i) {
+        capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
+    }
+    if (printReport_) {
+        BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols));
+        BOOST_MESSAGE("rmsError: " << calibrator.rmsError());
+        BOOST_MESSAGE("negativeDiscriminants: " << calibrator.negativeDiscriminants());
+    }
+
+    // check perfect swaption fit
+    Real error, swapTolerance = 1e-14;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
     for (Size i=0; i<numberOfRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
@@ -464,26 +497,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                        "\n tolerance: " << swapTolerance);
     }
 
-    boost::shared_ptr<MarketModel> smm(new
-        PseudoRootFacade(swapPseudoRoots,
-                         rateTimes_,
-                         cs.coterminalSwapRates(),
-                         std::vector<Spread>(numberOfRates, displacement_)));
-
-    CoterminalToForwardAdapter flmm(smm);
-    Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
-
-    std::vector<Volatility> capletVols(numberOfRates);
-    for (Size i=0; i<numberOfRates; ++i) {
-        capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
-    }
-    if (printReport_) {
-        BOOST_MESSAGE("smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols));
-        BOOST_MESSAGE("market vols:      " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
-    }
-
+    // check caplet fit
     // the last caplet vol has not been used in calibration as it is assumed
     // to be equal to the last swaption vol. So it makes no sense to check...
     for (Size i=0; i<numberOfRates-1; ++i) {
@@ -501,113 +515,12 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     QL_TEST_END
 }
 
-void MarketModelSmmCapletCalibrationTest::testFunction2() {
-
-    BOOST_MESSAGE("Run coterminal swap + caplet iterative calibration function ...");
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
-
-    Size numberOfRates = todaysForwards_.size();
-
-    EvolutionDescription evolution(rateTimes_);
-    Size numberOfSteps = evolution.numberOfSteps();
-
-    LMMCurveState cs(rateTimes_);
-    cs.setOnForwardRates(todaysForwards_);
-    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
-                                                  longTermCorrelation_,
-                                                  beta_);
-    SwapFromFRACorrelationStructure corr(correlations,
-                                         cs,
-                                         displacement_,
-                                         evolution,
-                                         numberOfFactors_);
-
-    std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
-                                    swapVariances(numberOfRates);
-    for (Size i=0; i<numberOfRates; ++i) {
-        swapVariances[i] = boost::shared_ptr<PiecewiseConstantVariance>(new
-            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
-                                          i, rateTimes_));
-    }
-
-    std::vector<Real> alpha(numberOfRates, alpha_);
-    std::vector<Matrix> swapPseudoRoots;
-    Real error, swapTolerance = 1e-14, capletTolerance = 0.0001;
-    bool result = iterativeCapletCoterminalCalibration(evolution,
-                                              corr,
-                                              swapVariances,
-                                              capletVols_,
-                                              cs,
-                                              displacement_,
-                                              alpha,
-                                              true,
-                                              swapPseudoRoots,
-                                              4, capletTolerance/10);
-
-    if (printReport_)
-        BOOST_MESSAGE("alpha: " << alpha_);
-    if (!result)
-        BOOST_FAIL("calibration failed");
-
-    Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
-    for (Size i=0; i<numberOfRates; ++i) {
-        Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
-        swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
-        Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
-        error = std::fabs(swaptionVol-expSwaptionVol);
-        if (error>swapTolerance)
-            BOOST_FAIL("\n failed to reproduce "
-                       << io::ordinal(i) << " swaption vol:"
-                       "\n expected:  " << io::rate(expSwaptionVol) <<
-                       "\n realized:  " << io::rate(swaptionVol) <<
-                       "\n error:     " << error <<
-                       "\n tolerance: " << swapTolerance);
-    }
-
-    boost::shared_ptr<MarketModel> smm(new
-        PseudoRootFacade(swapPseudoRoots,
-                         rateTimes_,
-                         cs.coterminalSwapRates(),
-                         std::vector<Spread>(numberOfRates, displacement_)));
-
-    CoterminalToForwardAdapter flmm(smm);
-    Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
-
-    std::vector<Volatility> capletVols(numberOfRates);
-    for (Size i=0; i<numberOfRates; ++i) {
-        capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
-    }
-    if (printReport_) {
-        BOOST_MESSAGE("smm implied vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols));
-        BOOST_MESSAGE("market vols:      " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
-    }
-
-    // the last caplet vol has not been used in calibration as it is assumed
-    // to be equal to the last swaption vol. So it makes no sense to check...
-    for (Size i=0; i<numberOfRates-1; ++i) {
-        error = std::fabs(capletVols[i]-capletVols_[i]);
-        if (error>capletTolerance)
-            BOOST_FAIL("\n failed to reproduce "
-                       << io::ordinal(i) << " caplet vol:"
-                       "\n expected:         " << io::rate(capletVols_[i]) <<
-                       "\n realized:         " << io::rate(capletVols[i]) <<
-                       "\n percentage error: " << error/capletVols_[i] <<
-                       "\n error:            " << error <<
-                       "\n tolerance:        " << capletTolerance);
-    }
-
-    QL_TEST_END
-}
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
-    suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction2));
 
     return suite;
 }

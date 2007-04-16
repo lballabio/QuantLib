@@ -6688,6 +6688,10 @@
 			Name="time"
 			>
 			<File
+				RelativePath=".\ql\time\all.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\businessdayconvention.cpp"
 				>
 				<FileConfiguration
@@ -6814,6 +6818,10 @@
 						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\date.hpp"
+				>
 			</File>
 			<File
 				RelativePath=".\ql\time\frequency.cpp"

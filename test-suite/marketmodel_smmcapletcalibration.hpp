@@ -27,8 +27,9 @@
 
 class MarketModelSmmCapletCalibrationTest {
   public:
-    static void testFunction();
+    static void testFunction1();
     static void testFunction2();
+    static void testFunction();
     static boost::unit_test_framework::test_suite* suite();
 };
 
