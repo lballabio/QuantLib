@@ -5,9 +5,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-	all.hpp
+	all.hpp \
+	calibrationhelper.hpp \
+	model.hpp \
+	parameter.hpp
 
-libModels_la_SOURCES =
+libModels_la_SOURCES = \
+	calibrationhelper.cpp \
+	model.cpp
 
 libModels_la_LIBADD = \
     equity/libEquityModels.la \

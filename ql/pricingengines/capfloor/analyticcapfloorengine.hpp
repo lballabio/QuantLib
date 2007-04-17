@@ -26,7 +26,7 @@
 
 #include <ql/instruments/capfloor.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 
 namespace QuantLib {
 

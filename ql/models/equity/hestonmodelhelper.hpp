@@ -24,7 +24,7 @@
 #ifndef quantlib_heston_option_helper_hpp
 #define quantlib_heston_option_helper_hpp
 
-#include <ql/models/shortrate/calibrationhelper.hpp>
+#include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 
 namespace QuantLib {

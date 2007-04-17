@@ -24,7 +24,7 @@
 #ifndef quantlib_calibrated_market_model_hpp
 #define quantlib_calibrated_market_model_hpp
 
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 

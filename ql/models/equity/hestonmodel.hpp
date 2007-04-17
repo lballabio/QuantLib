@@ -24,7 +24,7 @@
 #ifndef quantlib_heston_model_hpp
 #define quantlib_heston_model_hpp
 
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/processes/hestonprocess.hpp>
 
 namespace QuantLib {

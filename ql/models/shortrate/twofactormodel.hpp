@@ -26,7 +26,7 @@
 #define quantlib_two_factor_model_hpp
 
 #include <ql/stochasticprocess.hpp>
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice2d.hpp>
 
 namespace QuantLib {

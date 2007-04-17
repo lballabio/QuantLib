@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/calibrationhelper.hpp>
+#include <ql/models/calibrationhelper.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {

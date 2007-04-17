@@ -24,7 +24,7 @@
 #ifndef quantlib_cap_calibration_helper_hpp
 #define quantlib_cap_calibration_helper_hpp
 
-#include <ql/models/shortrate/calibrationhelper.hpp>
+#include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/indexes/iborindex.hpp>
 

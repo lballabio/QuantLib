@@ -27,8 +27,8 @@
 
 #include <ql/option.hpp>
 #include <ql/methods/lattices/lattice.hpp>
-#include <ql/models/shortrate/parameter.hpp>
-#include <ql/models/shortrate/calibrationhelper.hpp>
+#include <ql/models/parameter.hpp>
+#include <ql/models/calibrationhelper.hpp>
 
 namespace QuantLib {
 

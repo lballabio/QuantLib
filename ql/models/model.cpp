@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/math/optimization/problem.hpp>
 
 namespace QuantLib {

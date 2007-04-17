@@ -30,7 +30,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/stochasticprocess.hpp>
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice1d.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 

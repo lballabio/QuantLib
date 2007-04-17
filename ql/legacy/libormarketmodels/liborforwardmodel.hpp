@@ -28,7 +28,7 @@
 #include <ql/processes/lfmprocess.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/capletvariancecurve.hpp>
-#include <ql/models/shortrate/model.hpp>
+#include <ql/models/model.hpp>
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 
 namespace QuantLib {

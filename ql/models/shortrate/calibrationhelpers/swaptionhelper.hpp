@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_calibration_helper_hpp
 #define quantlib_swaption_calibration_helper_hpp
 
-#include <ql/models/shortrate/calibrationhelper.hpp>
+#include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 
