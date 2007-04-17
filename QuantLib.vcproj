@@ -388,667 +388,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="time"
-			Filter="">
-			<File
-				RelativePath=".\ql\time\businessdayconvention.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\businessdayconvention.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\calendar.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\calendar.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\date.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\date.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\frequency.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\frequency.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\period.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\period.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\schedule.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\schedule.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\timeunit.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\time\weekday.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ql\time\weekday.hpp">
-			</File>
-			<Filter
-				Name="calendars"
-				Filter="">
-				<File
-					RelativePath=".\ql\time\calendars\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\argentina.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\argentina.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\australia.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\australia.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\brazil.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\brazil.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\canada.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\canada.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\china.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\china.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\czechrepublic.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\czechrepublic.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\denmark.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\denmark.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\finland.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\finland.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\germany.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\germany.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\hongkong.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\hongkong.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\hungary.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\hungary.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\iceland.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\iceland.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\india.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\india.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\indonesia.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\indonesia.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\italy.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\italy.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\japan.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\japan.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\jointcalendar.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\jointcalendar.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\mexico.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\mexico.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\newzealand.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\newzealand.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\norway.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\norway.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\nullcalendar.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\poland.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\poland.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\saudiarabia.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\saudiarabia.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\singapore.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\singapore.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\slovakia.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\slovakia.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\southafrica.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\southafrica.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\southkorea.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\southkorea.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\sweden.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\sweden.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\switzerland.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\switzerland.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\taiwan.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\taiwan.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\target.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\target.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\turkey.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\turkey.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\ukraine.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\ukraine.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\unitedkingdom.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\unitedkingdom.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\unitedstates.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\calendars\unitedstates.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="daycounters"
-				Filter="">
-				<File
-					RelativePath=".\ql\time\daycounters\actual360.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\actual365fixed.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\actualactual.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\actualactual.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\business252.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\one.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\simpledaycounter.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\simpledaycounter.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\thirty360.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\time\daycounters\thirty360.hpp">
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="CashFlows"
+			Name="cashflows"
 			Filter="">
 			<File
 				RelativePath=".\ql\cashflows\all.hpp">
@@ -1082,9 +422,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\conundrumpricer.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\coupon.hpp">
@@ -1142,7 +479,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Currencies"
+			Name="currencies"
 			Filter="">
 			<File
 				RelativePath=".\ql\currencies\africa.hpp">
@@ -1170,476 +507,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="methods"
-			Filter="">
-			<Filter
-				Name="finitedifferences"
-				Filter="">
-				<File
-					RelativePath=".\ql\methods\finitedifferences\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\americancondition.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\boundarycondition.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\boundarycondition.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\bsmoperator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\bsmoperator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\bsmtermoperator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\core.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\cranknicolson.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\dminus.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\dplus.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\dplusdminus.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\dzero.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\expliciteuler.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\fdtypedefs.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\finitedifferencemodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\impliciteuler.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\mixedscheme.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\onefactoroperator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\operatorfactory.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\operatortraits.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\parallelevolver.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\pde.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\pdebsm.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\pdeshortrate.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\shoutcondition.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\stepcondition.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\tridiagonaloperator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\tridiagonaloperator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\finitedifferences\zerocondition.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="lattices"
-				Filter="">
-				<File
-					RelativePath=".\ql\methods\lattices\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\binomialtree.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\binomialtree.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\bsmlattice.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\core.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\lattice.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\lattice1d.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\lattice2d.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\tflattice.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\tree.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\trinomialtree.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\lattices\trinomialtree.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="montecarlo"
-				Filter="">
-				<File
-					RelativePath=".\ql\methods\montecarlo\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\brownianbridge.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\brownianbridge.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\core.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\earlyexercisepathpricer.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\exercisestrategy.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericlsregression.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericlsregression.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\getcovariance.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\getcovariance.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\longstaffschwartzpathpricer.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\lsmbasissystem.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\lsmbasissystem.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\mctraits.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\mctypedefs.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\montecarlomodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\multipath.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\multipathgenerator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\nodedata.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\path.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\pathgenerator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\pathpricer.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\sample.hpp">
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Indexes"
+			Name="indexes"
 			Filter="">
 			<File
 				RelativePath=".\ql\indexes\all.hpp">
@@ -1655,9 +523,6 @@
 			</File>
 			<File
 				RelativePath="ql\indexes\chflibor.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\indexes\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\indexes\dkklibor.hpp">
@@ -1763,7 +628,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Instruments"
+			Name="instruments"
 			Filter="">
 			<File
 				RelativePath="ql\instruments\all.hpp">
@@ -2094,9 +959,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\instruments\convertiblebond.hpp">
-			</File>
-			<File
-				RelativePath="ql\instruments\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\instruments\dividendschedule.hpp">
@@ -2943,589 +1805,145 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="MarketModels"
+			Name="legacy"
 			Filter="">
 			<File
-				RelativePath=".\ql\marketmodels\accountingengine.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\accountingengine.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\all.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\browniangenerator.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\core.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\curvestate.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\curvestate.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\duffsdeviceinnerproduct.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\evolutiondescription.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\evolutiondescription.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\exercisevalue.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\lsbasisfunctions.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\lsdatacollector.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\lsdatacollector.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodel.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodel.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodelconstrainedevolver.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodeldiscounter.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodeldiscounter.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodelevolver.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\marketmodelproduct.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\nodedataprovider.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\parametricexercise.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\parametricexerciseadapter.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\parametricexerciseadapter.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\parametricswapexercise.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\parametricswapexercise.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\proxygreekengine.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\proxygreekengine.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapbasissystem.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapbasissystem.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapforwardconversionmatrix.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapforwardconversionmatrix.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapforwardmappings.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\swapforwardmappings.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\upperboundengine.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\upperboundengine.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\utilities.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\marketmodels\utilities.hpp">
+				RelativePath=".\ql\legacy\all.hpp">
 			</File>
 			<Filter
-				Name="Products"
+				Name="pricers"
 				Filter="">
 				<File
-					RelativePath=".\ql\marketmodels\products\all.hpp">
+					RelativePath=".\ql\legacy\pricers\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\compositeproduct.cpp">
+					RelativePath=".\ql\legacy\pricers\discretegeometricaso.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\compositeproduct.hpp">
+					RelativePath=".\ql\legacy\pricers\discretegeometricaso.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductcomposite.cpp">
+					RelativePath=".\ql\legacy\pricers\mccliquetoption.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductcomposite.hpp">
+					RelativePath=".\ql\legacy\pricers\mccliquetoption.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductmultistep.cpp">
+					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductmultistep.hpp">
+					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductonestep.cpp">
+					RelativePath=".\ql\legacy\pricers\mceverest.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\multiproductonestep.hpp">
+					RelativePath=".\ql\legacy\pricers\mceverest.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\singleproductcomposite.cpp">
+					RelativePath=".\ql\legacy\pricers\mchimalaya.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\products\singleproductcomposite.hpp">
-				</File>
-				<Filter
-					Name="OneStep"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\all.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepcaplets.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepcoinitialswaps.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepcoinitialswaps.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepcoterminalswaps.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepcoterminalswaps.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepforwards.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepforwards.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepoptionlets.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\onestep\onestepoptionlets.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="MultiStep"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\all.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\callspecifiedmultiproduct.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\callspecifiedmultiproduct.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\cashrebate.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\cashrebate.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\exerciseadapter.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\exerciseadapter.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoinitialswaps.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoinitialswaps.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaps.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaps.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaptions.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepcoterminalswaptions.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepforwards.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepforwards.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepnothing.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepnothing.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepoptionlets.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepoptionlets.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepratchet.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepratchet.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepswap.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\products\multistep\multistepswap.hpp">
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="Evolvers"
-				Filter="">
-				<Filter
-					Name="LogNormalCMSwapRate"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\cmswapratepcevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\cmswapratepcevolver.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="LogNormalForwardRate"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateconstrainedeuler.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateconstrainedeuler.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateeulerevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateeulerevolver.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateipcevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardrateipcevolver.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardratepcevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardratepcevolver.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="LogNormalSwapRate"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\coterminalswapratepcevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\coterminalswapratepcevolver.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="NormalForwardRate"
-					Filter="">
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardratenormalpcevolver.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\marketmodels\evolvers\forwardratenormalpcevolver.hpp">
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="BrownianGenerators"
-				Filter="">
-				<File
-					RelativePath=".\ql\marketmodels\browniangenerators\all.hpp">
+					RelativePath=".\ql\legacy\pricers\mchimalaya.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\browniangenerators\mtbrowniangenerator.cpp">
+					RelativePath=".\ql\legacy\pricers\mcmaxbasket.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\browniangenerators\mtbrowniangenerator.hpp">
+					RelativePath=".\ql\legacy\pricers\mcmaxbasket.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\browniangenerators\sobolbrowniangenerator.cpp">
+					RelativePath=".\ql\legacy\pricers\mcpagoda.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\browniangenerators\sobolbrowniangenerator.hpp">
+					RelativePath=".\ql\legacy\pricers\mcpagoda.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\pricers\mcperformanceoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\pricers\mcperformanceoption.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\pricers\mcpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\pricers\singleassetoption.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\legacy\pricers\singleassetoption.hpp">
 				</File>
 			</Filter>
 			<Filter
-				Name="Models"
+				Name="libormarketmodels"
 				Filter="">
 				<File
-					RelativePath=".\ql\marketmodels\models\all.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\calibratedmarketmodel.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\calibratedmarketmodel.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\capletcoterminalcalibration.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\liborforwardmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\capletcoterminalcalibration.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\liborforwardmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\correlations.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmconstwrappercorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\correlations.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmconstwrappervolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\coterminaltoforwardadapter.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\coterminaltoforwardadapter.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\expcorrabcdvol.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
+					RelativePath=".\ql\legacy\libormarketmodels\lmexpcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\expcorrabcdvol.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmexpcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\expcorrflatvol.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
+					RelativePath=".\ql\legacy\libormarketmodels\lmextlinexpvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\expcorrflatvol.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmextlinexpvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\forwardtocoterminaladapter.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmfixedvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\forwardtocoterminaladapter.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmfixedvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\piecewiseconstantabcdvariance.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpcorrmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\piecewiseconstantabcdvariance.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpcorrmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\piecewiseconstantvariance.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\piecewiseconstantvariance.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpvolmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\pseudorootfacade.cpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\marketmodels\models\pseudorootfacade.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\swapfromfracorrelationstructure.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\swapfromfracorrelationstructure.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\timedependantcorrelationstructure.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\timehomogeneousforwardcorrelation.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\models\timehomogeneousforwardcorrelation.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="ExerciseValues"
-				Filter="">
-				<File
-					RelativePath=".\ql\marketmodels\exercisevalues\bermudanswaptionexercisevalue.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisevalues\bermudanswaptionexercisevalue.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisevalues\nothingexercisevalue.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisevalues\nothingexercisevalue.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="ExerciseStrategies"
-				Filter="">
-				<File
-					RelativePath=".\ql\marketmodels\exercisestrategies\lsstrategy.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisestrategies\lsstrategy.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisestrategies\swapratetrigger.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\exercisestrategies\swapratetrigger.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="CurveStates"
-				Filter="">
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\cmswapcurvestate.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\cmswapcurvestate.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\coterminalswapcurvestate.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\coterminalswapcurvestate.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\lmmcurvestate.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\curvestates\lmmcurvestate.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="DriftComputation"
-				Filter="">
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\cmsmmdriftcalculator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\cmsmmdriftcalculator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\lmmdriftcalculator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\lmmdriftcalculator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\lmmnormaldriftcalculator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\lmmnormaldriftcalculator.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\smmdriftcalculator.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\marketmodels\driftcomputation\smmdriftcalculator.hpp">
+					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp">
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Math"
+			Name="math"
 			Filter="">
 			<File
 				RelativePath=".\ql\math\all.hpp">
@@ -3670,9 +2088,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\convergencestatistics.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\math\core.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\curve.hpp">
@@ -4531,9 +2946,6 @@
 					RelativePath=".\ql\math\optimization\constraint.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\math\optimization\core.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\math\optimization\costfunction.hpp">
 				</File>
 				<File
@@ -4604,9 +3016,6 @@
 					RelativePath=".\ql\math\randomnumbers\centrallimitgaussianrng.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\math\randomnumbers\core.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\math\randomnumbers\faurersg.cpp">
 				</File>
 				<File
@@ -4672,7 +3081,1956 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Patterns"
+			Name="methods"
+			Filter="">
+			<Filter
+				Name="finitedifferences"
+				Filter="">
+				<File
+					RelativePath=".\ql\methods\finitedifferences\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\americancondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\boundarycondition.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\boundarycondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\bsmoperator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\bsmoperator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\bsmtermoperator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\cranknicolson.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\dminus.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\dplus.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\dplusdminus.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\dzero.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\expliciteuler.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\fdtypedefs.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\finitedifferencemodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\impliciteuler.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\mixedscheme.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\onefactoroperator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\operatorfactory.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\operatortraits.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\parallelevolver.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\pde.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\pdebsm.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\pdeshortrate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\shoutcondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\stepcondition.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\tridiagonaloperator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\tridiagonaloperator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\finitedifferences\zerocondition.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="lattices"
+				Filter="">
+				<File
+					RelativePath=".\ql\methods\lattices\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\binomialtree.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\binomialtree.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\bsmlattice.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\lattice.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\lattice1d.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\lattice2d.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\tflattice.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\tree.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\trinomialtree.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\lattices\trinomialtree.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="montecarlo"
+				Filter="">
+				<File
+					RelativePath=".\ql\methods\montecarlo\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\brownianbridge.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\brownianbridge.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\earlyexercisepathpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\exercisestrategy.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\genericlsregression.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\genericlsregression.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\getcovariance.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\getcovariance.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\longstaffschwartzpathpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\lsmbasissystem.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\lsmbasissystem.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\mctraits.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\mctypedefs.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\montecarlomodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\multipath.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\multipathgenerator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\nodedata.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\path.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\pathgenerator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\pathpricer.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\sample.hpp">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="models"
+			Filter="">
+			<File
+				RelativePath=".\ql\models\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\models\calibrationhelper.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\models\calibrationhelper.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\models\model.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\models\model.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\models\parameter.hpp">
+			</File>
+			<Filter
+				Name="equity"
+				Filter="">
+				<File
+					RelativePath=".\ql\models\equity\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\batesmodel.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\batesmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\hestonmodel.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\hestonmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\hestonmodelhelper.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\models\equity\hestonmodelhelper.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="marketmodels"
+				Filter="">
+				<File
+					RelativePath=".\ql\models\marketmodels\accountingengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\accountingengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\browniangenerator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\curvestate.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\curvestate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\duffsdeviceinnerproduct.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\evolutiondescription.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\evolutiondescription.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\exercisevalue.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\lsbasisfunctions.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\lsdatacollector.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\lsdatacollector.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodel.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodel.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodelconstrainedevolver.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodelevolver.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodelproduct.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\nodedataprovider.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\parametricexercise.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\parametricexerciseadapter.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\parametricexerciseadapter.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\parametricswapexercise.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\parametricswapexercise.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\proxygreekengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\proxygreekengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapbasissystem.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapbasissystem.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapforwardmappings.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\upperboundengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\upperboundengine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\utilities.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\utilities.hpp">
+				</File>
+				<Filter
+					Name="products"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\products\all.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\compositeproduct.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\compositeproduct.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductcomposite.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductcomposite.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductmultistep.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductmultistep.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductonestep.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\multiproductonestep.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\singleproductcomposite.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\products\singleproductcomposite.hpp">
+					</File>
+					<Filter
+						Name="onestep"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\all.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcaplets.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcoinitialswaps.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcoinitialswaps.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcoterminalswaps.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepcoterminalswaps.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepforwards.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepforwards.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepoptionlets.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\onestep\onestepoptionlets.hpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="multistep"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\all.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\callspecifiedmultiproduct.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\callspecifiedmultiproduct.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\cashrebate.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\cashrebate.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\exerciseadapter.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\exerciseadapter.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoinitialswaps.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoinitialswaps.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoterminalswaps.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoterminalswaps.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoterminalswaptions.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepcoterminalswaptions.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepforwards.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepforwards.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepnothing.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepnothing.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepoptionlets.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepoptionlets.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepratchet.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepratchet.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswap.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\products\multistep\multistepswap.hpp">
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="evolvers"
+					Filter="">
+					<Filter
+						Name="LogNormalCMSwapRate"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\cmswapratepcevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\cmswapratepcevolver.hpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="LogNormalForwardRate"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateconstrainedeuler.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateconstrainedeuler.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateeulerevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateeulerevolver.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateipcevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardrateipcevolver.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardratepcevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardratepcevolver.hpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="LogNormalSwapRate"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\coterminalswapratepcevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\coterminalswapratepcevolver.hpp">
+						</File>
+					</Filter>
+					<Filter
+						Name="NormalForwardRate"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardratenormalpcevolver.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\evolvers\forwardratenormalpcevolver.hpp">
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="browniangenerators"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\browniangenerators\all.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\browniangenerators\mtbrowniangenerator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\browniangenerators\mtbrowniangenerator.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\browniangenerators\sobolbrowniangenerator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\browniangenerators\sobolbrowniangenerator.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="models"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\models\all.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\correlations.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\correlations.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\piecewiseconstantabcdvariance.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\piecewiseconstantabcdvariance.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\piecewiseconstantvariance.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\piecewiseconstantvariance.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="exercisevalues"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="exercisestrategies"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="curvestates"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\cmswapcurvestate.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\cmswapcurvestate.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\coterminalswapcurvestate.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\coterminalswapcurvestate.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\lmmcurvestate.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\curvestates\lmmcurvestate.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="driftcomputation"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\cmsmmdriftcalculator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\cmsmmdriftcalculator.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\lmmdriftcalculator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\lmmdriftcalculator.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\lmmnormaldriftcalculator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\lmmnormaldriftcalculator.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\smmdriftcalculator.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\driftcomputation\smmdriftcalculator.hpp">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="shortrate"
+				Filter="">
+				<File
+					RelativePath=".\ql\models\shortrate\all.hpp">
+				</File>
+				<File
+					RelativePath="ql\models\shortrate\onefactormodel.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\models\shortrate\onefactormodel.hpp">
+				</File>
+				<File
+					RelativePath="ql\models\shortrate\twofactormodel.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="2"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							Optimization="0"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+							BasicRuntimeChecks="3"
+							BrowseInformation="1"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="ql\models\shortrate\twofactormodel.hpp">
+				</File>
+				<Filter
+					Name="calibrationhelpers"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\shortrate\calibrationhelpers\all.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\calibrationhelpers\caphelper.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\calibrationhelpers\caphelper.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\calibrationhelpers\swaptionhelper.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\calibrationhelpers\swaptionhelper.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="onefactormodels"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\shortrate\onefactormodels\all.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\blackkarasinski.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\blackkarasinski.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\coxingersollross.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\coxingersollross.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\extendedcoxingersollross.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\extendedcoxingersollross.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\hullwhite.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\hullwhite.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\vasicek.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\onefactormodels\vasicek.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="twofactormodels"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\shortrate\twofactormodels\all.hpp">
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\twofactormodels\g2.cpp">
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="2"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug SingleThread|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								Optimization="0"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+								BasicRuntimeChecks="3"
+								BrowseInformation="1"/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="ql\models\shortrate\twofactormodels\g2.hpp">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="volatility"
+				Filter="">
+				<File
+					RelativePath=".\ql\models\volatility\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\constantestimator.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\constantestimator.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\garch.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\garch.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\garmanklass.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\volatility\simplelocalestimator.hpp">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="patterns"
 			Filter="">
 			<File
 				RelativePath=".\ql\patterns\all.hpp">
@@ -4700,7 +5058,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="PricingEngines"
+			Name="pricingengines"
 			Filter="">
 			<File
 				RelativePath=".\ql\pricingengines\all.hpp">
@@ -4793,9 +5151,6 @@
 				RelativePath=".\ql\pricingengines\blackscholescalculator.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\pricingengines\core.hpp">
-			</File>
-			<File
 				RelativePath="ql\pricingengines\genericmodelengine.hpp">
 			</File>
 			<File
@@ -4814,7 +5169,7 @@
 				RelativePath="ql\pricingengines\mcsimulation.hpp">
 			</File>
 			<Filter
-				Name="Asian"
+				Name="asian"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\asian\all.hpp">
@@ -4848,7 +5203,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Barrier"
+				Name="barrier"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\barrier\all.hpp">
@@ -4981,7 +5336,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Basket"
+				Name="basket"
 				Filter="">
 				<File
 					RelativePath="ql\pricingengines\basket\all.hpp">
@@ -5177,7 +5532,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Forward"
+				Name="forward"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\forward\all.hpp">
@@ -5196,7 +5551,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Quanto"
+				Name="quanto"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\quanto\all.hpp">
@@ -5206,7 +5561,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Vanilla"
+				Name="vanilla"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\all.hpp">
@@ -5870,7 +6225,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="CapFloor"
+				Name="capfloor"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\capfloor\all.hpp">
@@ -5913,7 +6268,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Swaption"
+				Name="swaption"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\swaption\all.hpp">
@@ -5953,7 +6308,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Cliquet"
+				Name="cliquet"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\cliquet\all.hpp">
@@ -5972,7 +6327,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Hybrid"
+				Name="hybrid"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\hybrid\all.hpp">
@@ -5988,7 +6343,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Lookback"
+				Name="lookback"
 				Filter="">
 				<File
 					RelativePath=".\ql\pricingengines\lookback\all.hpp">
@@ -6008,7 +6363,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Processes"
+			Name="processes"
 			Filter="">
 			<File
 				RelativePath=".\ql\processes\all.hpp">
@@ -6099,815 +6454,32 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ShortRateModels"
+			Name="quotes"
 			Filter="">
 			<File
-				RelativePath=".\ql\shortratemodels\all.hpp">
+				RelativePath=".\ql\quotes\all.hpp">
 			</File>
 			<File
-				RelativePath="ql\shortratemodels\calibrationhelper.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\ql\quotes\compositequote.hpp">
 			</File>
 			<File
-				RelativePath="ql\shortratemodels\calibrationhelper.hpp">
+				RelativePath=".\ql\quotes\derivedquote.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\shortratemodels\core.hpp">
+				RelativePath=".\ql\quotes\derivedquote.hpp">
 			</File>
 			<File
-				RelativePath="ql\shortratemodels\model.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\ql\quotes\futuresconvadjustmentquote.cpp">
 			</File>
 			<File
-				RelativePath="ql\shortratemodels\model.hpp">
+				RelativePath=".\ql\quotes\futuresconvadjustmentquote.hpp">
 			</File>
 			<File
-				RelativePath="ql\shortratemodels\onefactormodel.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\ql\quotes\simplequote.hpp">
 			</File>
-			<File
-				RelativePath="ql\shortratemodels\onefactormodel.hpp">
-			</File>
-			<File
-				RelativePath="ql\shortratemodels\parameter.hpp">
-			</File>
-			<File
-				RelativePath="ql\shortratemodels\twofactormodel.cpp">
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\shortratemodels\twofactormodel.hpp">
-			</File>
-			<Filter
-				Name="CalibrationHelpers"
-				Filter="">
-				<File
-					RelativePath=".\ql\shortratemodels\calibrationhelpers\all.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\calibrationhelpers\caphelper.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\calibrationhelpers\caphelper.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\calibrationhelpers\hestonmodelhelper.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\calibrationhelpers\hestonmodelhelper.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\calibrationhelpers\swaptionhelper.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\calibrationhelpers\swaptionhelper.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="OneFactorModels"
-				Filter="">
-				<File
-					RelativePath=".\ql\shortratemodels\onefactormodels\all.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\blackkarasinski.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\blackkarasinski.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\coxingersollross.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\coxingersollross.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\extendedcoxingersollross.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\extendedcoxingersollross.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\hullwhite.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\hullwhite.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\vasicek.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\onefactormodels\vasicek.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="TwoFactorModels"
-				Filter="">
-				<File
-					RelativePath=".\ql\shortratemodels\twofactormodels\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\twofactormodels\batesmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\twofactormodels\batesmodel.hpp">
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\twofactormodels\g2.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\shortratemodels\twofactormodels\g2.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\twofactormodels\hestonmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\shortratemodels\twofactormodels\hestonmodel.hpp">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
-			Name="TermStructures"
+			Name="termstructures"
 			Filter="">
 			<File
 				RelativePath=".\ql\termstructures\all.hpp">
@@ -7189,7 +6761,667 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Utilities"
+			Name="time"
+			Filter="">
+			<File
+				RelativePath=".\ql\time\businessdayconvention.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\businessdayconvention.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\calendar.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\calendar.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\date.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\date.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\frequency.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\frequency.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\period.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\period.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\schedule.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\schedule.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\timeunit.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\weekday.cpp">
+				<FileConfiguration
+					Name="Debug CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release CRTDLL|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ql\time\weekday.hpp">
+			</File>
+			<Filter
+				Name="calendars"
+				Filter="">
+				<File
+					RelativePath=".\ql\time\calendars\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\argentina.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\argentina.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\australia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\australia.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\brazil.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\brazil.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\canada.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\canada.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\china.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\china.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\czechrepublic.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\czechrepublic.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\denmark.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\denmark.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\finland.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\finland.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\germany.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\germany.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\hongkong.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\hongkong.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\hungary.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\hungary.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\iceland.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\iceland.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\india.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\india.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\indonesia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\indonesia.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\italy.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\italy.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\japan.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\japan.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\jointcalendar.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\jointcalendar.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\mexico.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\mexico.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\newzealand.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\newzealand.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\norway.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\norway.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\nullcalendar.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\poland.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\poland.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\saudiarabia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\saudiarabia.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\singapore.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\singapore.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\slovakia.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\slovakia.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\southafrica.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\southafrica.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\southkorea.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\southkorea.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\sweden.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\sweden.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\switzerland.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\switzerland.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\taiwan.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\taiwan.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\target.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\target.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\turkey.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\turkey.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\ukraine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\ukraine.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\unitedkingdom.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\unitedkingdom.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\unitedstates.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\calendars\unitedstates.hpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="daycounters"
+				Filter="">
+				<File
+					RelativePath=".\ql\time\daycounters\actual360.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actual365fixed.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actualactual.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\actualactual.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\all.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\business252.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\one.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\simpledaycounter.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\simpledaycounter.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\thirty360.cpp">
+					<FileConfiguration
+						Name="Debug CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release CRTDLL|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug SingleThread|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ql\time\daycounters\thirty360.hpp">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="utilities"
 			Filter="">
 			<File
 				RelativePath=".\ql\utilities\all.hpp">
@@ -7231,197 +7463,6 @@
 				RelativePath=".\ql\utilities\tracing.hpp">
 			</File>
 		</Filter>
-		<Filter
-			Name="VolatilityModels"
-			Filter="">
-			<File
-				RelativePath=".\ql\volatilitymodels\all.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\constantestimator.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\constantestimator.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\garch.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\garch.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\garmanklass.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\volatilitymodels\simplelocalestimator.hpp">
-			</File>
-		</Filter>
-		<Filter
-			Name="Quotes"
-			Filter="">
-			<File
-				RelativePath=".\ql\quotes\all.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\compositequote.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\derivedquote.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\derivedquote.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\futuresconvadjustmentquote.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\futuresconvadjustmentquote.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\quotes\simplequote.hpp">
-			</File>
-		</Filter>
-		<Filter
-			Name="legacy"
-			Filter="">
-			<File
-				RelativePath=".\ql\legacy\all.hpp">
-			</File>
-			<Filter
-				Name="pricers"
-				Filter="">
-				<File
-					RelativePath=".\ql\legacy\pricers\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\core.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\discretegeometricaso.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mccliquetoption.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mccliquetoption.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcdiscretearithmeticaso.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mceverest.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mchimalaya.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mchimalaya.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcmaxbasket.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcpagoda.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcpagoda.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcperformanceoption.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcperformanceoption.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\mcpricer.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\pricers\singleassetoption.hpp">
-				</File>
-			</Filter>
-			<Filter
-				Name="libormarketmodels"
-				Filter="">
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\all.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lfmcovarproxy.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\liborforwardmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\liborforwardmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmconstwrappercorrmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmconstwrappervolmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmcorrmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmcorrmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmexpcorrmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmexpcorrmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmextlinexpvolmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmextlinexpvolmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmfixedvolmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmfixedvolmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpcorrmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpcorrmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpvolmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmlinexpvolmodel.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\legacy\libormarketmodels\lmvolmodel.hpp">
-				</File>
-			</Filter>
-		</Filter>
 		<File
 			RelativePath=".\ql\auto_link.hpp">
 		</File>
@@ -7445,9 +7486,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\config.mwcw.hpp">
-		</File>
-		<File
-			RelativePath="ql\core.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\currency.cpp">

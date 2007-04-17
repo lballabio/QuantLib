@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=157
+UnitCount=159
 Type=1
 Ver=1
 ObjFiles=
@@ -1608,7 +1608,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit158]
-FileName=swapforwardmappings.hpp
+FileName=optimizers.hpp
 Folder=QuantLib-test-suite
 Compile=1
 Link=1
@@ -1618,7 +1618,7 @@ BuildCmd=
 CompileCpp=1
 
 [Unit159]
-FileName=swapforwardmappings.cpp
+FileName=optimizers.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
