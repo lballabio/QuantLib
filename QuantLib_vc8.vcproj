@@ -4711,7 +4711,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="pricingEngines"
+			Name="pricingengines"
 			>
 			<File
 				RelativePath=".\ql\pricingengines\all.hpp"
