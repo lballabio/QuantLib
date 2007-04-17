@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/calibrationhelpers/hestonmodelhelper.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/instruments/payoffs.hpp>

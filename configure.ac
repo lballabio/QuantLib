@@ -346,6 +346,7 @@ AC_CONFIG_FILES([
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
     ql/models/Makefile
+    ql/models/equity/Makefile
     ql/models/marketmodels/Makefile
     ql/models/marketmodels/browniangenerators/Makefile
     ql/models/marketmodels/curvestates/Makefile

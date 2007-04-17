@@ -20,8 +20,8 @@
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/models/shortrate/twofactormodels/hestonmodel.hpp>
-#include <ql/models/shortrate/calibrationhelpers/hestonmodelhelper.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>

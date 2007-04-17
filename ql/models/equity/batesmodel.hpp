@@ -24,7 +24,7 @@
 #ifndef quantlib_bates_model_hpp
 #define quantlib_bates_model_hpp
 
-#include <ql/models/shortrate/twofactormodels/hestonmodel.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 
 namespace QuantLib {
 

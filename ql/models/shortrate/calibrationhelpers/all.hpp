@@ -2,6 +2,5 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
-#include <ql/models/shortrate/calibrationhelpers/hestonmodelhelper.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 

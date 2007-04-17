@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 
+#include <ql/models/equity/all.hpp>
 #include <ql/models/marketmodels/all.hpp>
 #include <ql/models/shortrate/all.hpp>
 #include <ql/models/volatility/all.hpp>

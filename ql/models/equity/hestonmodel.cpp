@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/models/shortrate/twofactormodels/hestonmodel.hpp>
 
 namespace QuantLib {
 

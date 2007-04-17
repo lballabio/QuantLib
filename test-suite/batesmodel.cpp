@@ -30,8 +30,8 @@
 #include <ql/pricingengines/vanilla/batesengine.hpp>
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/models/shortrate/twofactormodels/batesmodel.hpp>
-#include <ql/models/shortrate/calibrationhelpers/hestonmodelhelper.hpp>
+#include <ql/models/equity/batesmodel.hpp>
+#include <ql/models/equity/hestonmodelhelper.hpp>
 #include <ql/time/period.hpp>
 
 using namespace QuantLib;

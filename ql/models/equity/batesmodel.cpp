@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/twofactormodels/batesmodel.hpp>
+#include <ql/models/equity/batesmodel.hpp>
 
 namespace QuantLib {
 

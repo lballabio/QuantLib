@@ -25,7 +25,7 @@
 #define quantlib_analytic_heston_engine_hpp
 
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/models/shortrate/twofactormodels/hestonmodel.hpp>
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <complex>
