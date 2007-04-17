@@ -3985,19 +3985,19 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\shortrate\calibrationhelper.cpp"
+					RelativePath=".\ql\models\calibrationhelper.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\shortrate\calibrationhelper.hpp"
+					RelativePath=".\ql\models\calibrationhelper.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\shortrate\model.cpp"
+					RelativePath=".\ql\models\model.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\shortrate\model.hpp"
+					RelativePath=".\ql\models\model.hpp"
 					>
 				</File>
 				<File
