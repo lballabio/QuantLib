@@ -356,7 +356,7 @@
 			Name="methods"
 			>
 			<Filter
-				Name="MonteCarlo"
+				Name="montecarlo"
 				>
 				<File
 					RelativePath=".\ql\methods\montecarlo\all.hpp"
@@ -460,7 +460,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="FiniteDifferences"
+				Name="finitedifferences"
 				>
 				<File
 					RelativePath=".\ql\methods\finitedifferences\all.hpp"
@@ -584,7 +584,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Lattices"
+				Name="lattices"
 				>
 				<File
 					RelativePath=".\ql\methods\lattices\all.hpp"
@@ -637,7 +637,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="CashFlows"
+			Name="cashFlows"
 			>
 			<File
 				RelativePath=".\ql\cashflows\all.hpp"
@@ -891,7 +891,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Indexes"
+			Name="indexes"
 			>
 			<File
 				RelativePath=".\ql\indexes\all.hpp"
@@ -1055,7 +1055,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Instruments"
+			Name="instruments"
 			>
 			<File
 				RelativePath="ql\instruments\all.hpp"
@@ -2135,7 +2135,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Math"
+			Name="math"
 			>
 			<File
 				RelativePath=".\ql\math\all.hpp"
@@ -2468,7 +2468,7 @@
 				>
 			</File>
 			<Filter
-				Name="Interpolations"
+				Name="interpolations"
 				>
 				<File
 					RelativePath=".\ql\math\interpolations\abcdinterpolation.hpp"
@@ -2520,7 +2520,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Statistics"
+				Name="statistics"
 				>
 				<File
 					RelativePath=".\ql\math\convergencestatistics.hpp"
@@ -2706,7 +2706,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Distributions"
+				Name="distributions"
 				>
 				<File
 					RelativePath=".\ql\math\distributions\binomialdistribution.hpp"
@@ -2750,7 +2750,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Integrals"
+				Name="integrals"
 				>
 				<File
 					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.cpp"
@@ -2798,7 +2798,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="MatrixUtilities"
+				Name="matrixUtilities"
 				>
 				<File
 					RelativePath="ql\math\choleskydecomposition.cpp"
@@ -3026,7 +3026,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="RandomNumbers"
+				Name="randomNumbers"
 				>
 				<File
 					RelativePath=".\ql\math\randomnumbers\all.hpp"
@@ -3130,7 +3130,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Solvers1D"
+				Name="solvers1D"
 				>
 				<File
 					RelativePath=".\ql\math\solvers1d\all.hpp"
@@ -3166,7 +3166,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Optimization"
+				Name="optimization"
 				>
 				<File
 					RelativePath=".\ql\math\optimization\all.hpp"
@@ -3279,7 +3279,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Patterns"
+			Name="patterns"
 			>
 			<File
 				RelativePath=".\ql\patterns\all.hpp"
@@ -4175,14 +4175,14 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="TermStructures"
+			Name="termStructures"
 			>
 			<File
 				RelativePath=".\ql\termstructures\all.hpp"
 				>
 			</File>
 			<Filter
-				Name="Volatilities"
+				Name="volatilities"
 				>
 				<File
 					RelativePath=".\ql\termstructures\volatilities\abcd.cpp"
@@ -4499,7 +4499,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Utilities"
+			Name="utilities"
 			>
 			<File
 				RelativePath=".\ql\utilities\all.hpp"
@@ -4555,7 +4555,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Currencies"
+			Name="currencies"
 			>
 			<File
 				RelativePath=".\ql\currencies\africa.hpp"
@@ -4591,7 +4591,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Processes"
+			Name="processes"
 			>
 			<File
 				RelativePath=".\ql\processes\all.hpp"
@@ -4711,7 +4711,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="PricingEngines"
+			Name="pricingEngines"
 			>
 			<File
 				RelativePath=".\ql\pricingengines\all.hpp"
@@ -4832,7 +4832,7 @@
 				>
 			</File>
 			<Filter
-				Name="Asian"
+				Name="asian"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\asian\all.hpp"
@@ -4876,7 +4876,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Barrier"
+				Name="barrier"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\barrier\all.hpp"
@@ -4992,7 +4992,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Basket"
+				Name="basket"
 				>
 				<File
 					RelativePath="ql\pricingengines\basket\all.hpp"
@@ -5162,7 +5162,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Forward"
+				Name="forward"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\forward\all.hpp"
@@ -5186,7 +5186,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Quanto"
+				Name="quanto"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\quanto\all.hpp"
@@ -5198,7 +5198,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Vanilla"
+				Name="vanilla"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\all.hpp"
@@ -5812,7 +5812,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="CapFloor"
+				Name="capFloor"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\capfloor\all.hpp"
@@ -5868,7 +5868,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Swaption"
+				Name="swaption"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\swaption\all.hpp"
@@ -5920,7 +5920,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Cliquet"
+				Name="cliquet"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\cliquet\all.hpp"
@@ -5944,7 +5944,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Hybrid"
+				Name="hybrid"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\hybrid\all.hpp"
@@ -5964,7 +5964,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Lookback"
+				Name="lookback"
 				>
 				<File
 					RelativePath=".\ql\pricingengines\lookback\all.hpp"
@@ -5989,7 +5989,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Quotes"
+			Name="quotes"
 			>
 			<File
 				RelativePath=".\ql\quotes\compositequote.hpp"
@@ -6264,7 +6264,7 @@
 				>
 			</File>
 			<Filter
-				Name="Calendars"
+				Name="calendars"
 				>
 				<File
 					RelativePath=".\ql\time\calendars\all.hpp"
@@ -6548,7 +6548,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="DayCounters"
+				Name="daycounters"
 				>
 				<File
 					RelativePath=".\ql\time\daycounters\actual360.hpp"
