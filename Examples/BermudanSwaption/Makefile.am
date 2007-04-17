@@ -13,7 +13,7 @@ BermudanSwaption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     BermudanSwaption.dev \
-    BermudanSwaption.vcproj \
+    BermudanSwaption_vc7.vcproj \
     BermudanSwaption_vc8.vcproj \
     ReadMe.txt
 

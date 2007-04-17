@@ -13,7 +13,7 @@ EquityOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     EquityOption.dev \
-    EquityOption.vcproj \
+    EquityOption_vc7.vcproj \
     EquityOption_vc8.vcproj \
     ReadMe.txt
 

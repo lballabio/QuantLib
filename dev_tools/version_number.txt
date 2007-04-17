@@ -17,13 +17,11 @@ This version number is in:
     QuantLib/dev_tools/version_number.txt,
     QuantLib/configure.ac,
     QuantLib/QuantLib.nsi,
-    QuantLib/QuantLib.vcproj,
+    QuantLib/QuantLib_vc7.vcproj,
     QuantLib/QuantLib_vc8.vcproj,
-    QuantLib/QuantLib.dsp,
     QuantLib/QuantLib.dev,
-    QuantLib/makefile.mak,
     QuantLib/ql/qldefines.hpp,
-    QuantLib/test-suite/testsuite.vcproj
+    QuantLib/test-suite/testsuite_vc7.vcproj
     QuantLib/test-suite/testsuite_vc8.vcproj
     QuantLib/test-suite/testsuite.dsp
     QuantLib/test-suite/testsuite.dev

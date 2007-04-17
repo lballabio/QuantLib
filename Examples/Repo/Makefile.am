@@ -13,7 +13,7 @@ Repo_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Repo.dev \
-    Repo.vcproj \
+    Repo_vc7.vcproj \
     Repo_vc8.vcproj \
     ReadMe.txt
 

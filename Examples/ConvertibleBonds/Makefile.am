@@ -13,7 +13,7 @@ ConvertibleBonds_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     ConvertibleBonds.dev \
-    ConvertibleBonds.vcproj \
+    ConvertibleBonds_vc7.vcproj \
     ConvertibleBonds_vc8.vcproj \
     ReadMe.txt
 
