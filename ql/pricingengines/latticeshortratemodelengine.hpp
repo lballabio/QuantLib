@@ -25,7 +25,7 @@
 #ifndef quantlib_short_rate_model_engine_hpp
 #define quantlib_short_rate_model_engine_hpp
 
-#include <ql/shortratemodels/model.hpp>
+#include <ql/models/shortrate/model.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 
 namespace QuantLib {

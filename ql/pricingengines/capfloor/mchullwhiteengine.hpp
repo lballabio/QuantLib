@@ -32,7 +32,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
-#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 
 namespace QuantLib {
 

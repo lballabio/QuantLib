@@ -29,7 +29,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/shortratemodels/onefactormodel.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/math/transformedgrid.hpp>
 #include <ql/methods/finitedifferences/pdeshortrate.hpp>
 

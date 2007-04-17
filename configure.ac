@@ -334,17 +334,6 @@ AC_CONFIG_FILES([
     ql/legacy/Makefile
     ql/legacy/pricers/Makefile
     ql/legacy/libormarketmodels/Makefile
-    ql/marketmodels/Makefile
-    ql/marketmodels/browniangenerators/Makefile
-    ql/marketmodels/curvestates/Makefile
-    ql/marketmodels/driftcomputation/Makefile
-    ql/marketmodels/evolvers/Makefile
-    ql/marketmodels/exercisestrategies/Makefile
-    ql/marketmodels/exercisevalues/Makefile
-    ql/marketmodels/models/Makefile
-    ql/marketmodels/products/Makefile
-    ql/marketmodels/products/onestep/Makefile
-    ql/marketmodels/products/multistep/Makefile
     ql/math/Makefile
     ql/math/distributions/Makefile
     ql/math/integrals/Makefile
@@ -356,6 +345,23 @@ AC_CONFIG_FILES([
     ql/methods/finitedifferences/Makefile
     ql/methods/lattices/Makefile
     ql/methods/montecarlo/Makefile
+    ql/models/Makefile
+    ql/models/marketmodels/Makefile
+    ql/models/marketmodels/browniangenerators/Makefile
+    ql/models/marketmodels/curvestates/Makefile
+    ql/models/marketmodels/driftcomputation/Makefile
+    ql/models/marketmodels/evolvers/Makefile
+    ql/models/marketmodels/exercisestrategies/Makefile
+    ql/models/marketmodels/exercisevalues/Makefile
+    ql/models/marketmodels/models/Makefile
+    ql/models/marketmodels/products/Makefile
+    ql/models/marketmodels/products/onestep/Makefile
+    ql/models/marketmodels/products/multistep/Makefile
+    ql/models/shortrate/Makefile
+    ql/models/shortrate/calibrationhelpers/Makefile
+    ql/models/shortrate/onefactormodels/Makefile
+    ql/models/shortrate/twofactormodels/Makefile
+    ql/models/volatility/Makefile
     ql/patterns/Makefile
     ql/pricingengines/Makefile
     ql/pricingengines/asian/Makefile
@@ -371,10 +377,6 @@ AC_CONFIG_FILES([
     ql/pricingengines/vanilla/Makefile
     ql/processes/Makefile
     ql/quotes/Makefile
-    ql/shortratemodels/Makefile
-    ql/shortratemodels/calibrationhelpers/Makefile
-    ql/shortratemodels/onefactormodels/Makefile
-    ql/shortratemodels/twofactormodels/Makefile
     ql/time/Makefile
     ql/time/calendars/Makefile
     ql/time/daycounters/Makefile
@@ -382,7 +384,6 @@ AC_CONFIG_FILES([
     ql/termstructures/volatilities/Makefile
     ql/termstructures/yieldcurves/Makefile
     ql/utilities/Makefile
-    ql/volatilitymodels/Makefile
     man/Makefile
     Docs/Makefile
     Examples/Makefile

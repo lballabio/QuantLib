@@ -22,12 +22,12 @@
 
 #include "curvestates.hpp"
 #include "utilities.hpp"
-#include <ql/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/marketmodels/curvestates/coterminalswapcurvestate.hpp>
-#include <ql/marketmodels/curvestates/cmswapcurvestate.hpp>
-#include <ql/marketmodels/evolutiondescription.hpp>
-#include <ql/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
-#include <ql/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
+#include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
+#include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
+#include <ql/models/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/schedule.hpp>

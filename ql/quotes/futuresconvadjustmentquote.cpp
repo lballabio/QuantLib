@@ -18,7 +18,7 @@
 */
 
 #include <ql/quotes/futuresconvadjustmentquote.hpp>
-#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 
 namespace QuantLib {
 

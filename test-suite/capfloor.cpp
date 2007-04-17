@@ -27,8 +27,8 @@
 #include <ql/indexes/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
-#include <ql/marketmodels/models/expcorrflatvol.hpp>
-#include <ql/marketmodels/models/correlations.hpp>
+#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/models/marketmodels/models/correlations.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -51,7 +51,7 @@ Calendar calendar_;
 Natural settlementDays_, fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
-// utilities 
+// utilities
 
 bool checkAbsError(Real x1, Real x2, Real tolerance){
     return std::fabs(x1 - x2) < tolerance;
@@ -531,7 +531,7 @@ void CapFloorTest::testMarketModel() {
     Real blackFloorNPV = floor->NPV();
     std::vector<Real> blackCapletsNpv = cap->result<std::vector<Real> >("optionletsPrice");
     std::vector<Real> blackFloorletsNpv = floor->result<std::vector<Real> >("optionletsPrice");
-   
+
     // Build market model
     Real longTermCorrelation = 0.5;
     Real beta = 0.2;

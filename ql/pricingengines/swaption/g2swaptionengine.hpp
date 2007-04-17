@@ -25,7 +25,7 @@
 #define quantlib_pricers_G2_swaption_hpp
 
 #include <ql/pricingengines/genericmodelengine.hpp>
-#include <ql/shortratemodels/twofactormodels/g2.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
 
 namespace QuantLib {
 

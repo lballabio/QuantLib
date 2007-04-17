@@ -35,8 +35,8 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/analyticcapfloorengine.hpp>
 
-#include <ql/shortratemodels/calibrationhelpers/caphelper.hpp>
-#include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 
 #include <ql/legacy/libormarketmodels/lfmcovarproxy.hpp>
 #include <ql/legacy/libormarketmodels/lmexpcorrmodel.hpp>

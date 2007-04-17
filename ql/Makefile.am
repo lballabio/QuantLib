@@ -5,18 +5,16 @@ SUBDIRS = \
     indexes \
     instruments \
     legacy \
-    marketmodels \
     math \
     methods \
+    models \
     patterns \
     pricingengines \
     processes \
     quotes \
-    shortratemodels \
     termstructures \
     time \
-    utilities \
-    volatilitymodels
+    utilities
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -85,16 +83,14 @@ libQuantLib_la_LIBADD = \
     instruments/libInstruments.la \
     legacy/libLegacy.la \
     math/libMath.la \
-    marketmodels/libMarketModels.la \
     methods/libMethods.la \
+    models/libModels.la \
     pricingengines/libPricingEngines.la \
     processes/libProcesses.la \
     quotes/libQuotes.la \
-    shortratemodels/libShortRateModels.la \
     termstructures/libTermStructures.la \
     time/libTime.la \
-    utilities/libUtilities.la \
-    volatilitymodels/libVolatilityModels.la
+    utilities/libUtilities.la
 
 EXTRA_DIST= \
 	config.ansi.hpp \

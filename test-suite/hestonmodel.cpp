@@ -20,8 +20,8 @@
 #include "hestonmodel.hpp"
 #include "utilities.hpp"
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/shortratemodels/twofactormodels/hestonmodel.hpp>
-#include <ql/shortratemodels/calibrationhelpers/hestonmodelhelper.hpp>
+#include <ql/models/shortrate/twofactormodels/hestonmodel.hpp>
+#include <ql/models/shortrate/calibrationhelpers/hestonmodelhelper.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -466,7 +466,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                 "Testing Monte Carlo Heston engine for the Kahl-Jaeckel "
                 "example");
 
-    /* Example taken from Wilmott mag (Sept. 2005). 
+    /* Example taken from Wilmott mag (Sept. 2005).
        "Not-so-complex logarithms in the Heston model",
        Example was also discussed within the Wilmott thread
        "QuantLib code is very high quatlity"
@@ -502,7 +502,7 @@ void HestonModelTest::testKahlJaeckelCase() {
                                                     .withAntitheticVariate()
                                                     .withTolerance(tolerance)
                                                     .withSeed(1234);
-    
+
     option.setPricingEngine(engine);
 
     const Real expected = 4.95212;

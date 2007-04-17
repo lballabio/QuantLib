@@ -29,7 +29,7 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/methods/finitedifferences/pde.hpp>
-#include <ql/shortratemodels/onefactormodel.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 
 namespace QuantLib {
     class PdeShortRate : public PdeSecondOrderParabolic {

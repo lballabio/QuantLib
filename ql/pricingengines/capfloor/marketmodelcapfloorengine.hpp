@@ -25,7 +25,7 @@
 #define quantlib_market_model_cap_floor_engine_hpp
 
 #include <ql/instruments/capfloor.hpp>
-#include <ql/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
 
 namespace QuantLib {
 

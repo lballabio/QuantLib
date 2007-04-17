@@ -29,13 +29,13 @@
 #if !defined(QL_PATCH_BORLAND)
 
 #include <ql/instruments/swaption.hpp>
-#include <ql/shortratemodels/onefactormodel.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 
 namespace QuantLib {
 
     //! Jamshidian swaption engine
-    /*! \ingroup swaptionengines 
+    /*! \ingroup swaptionengines
 
         \warning The engine assumes that the exercise date equals the
                  start date of the passed swap.

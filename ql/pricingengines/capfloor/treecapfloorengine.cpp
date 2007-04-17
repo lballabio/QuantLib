@@ -19,7 +19,7 @@
 
 #include <ql/pricingengines/capfloor/treecapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
-#include <ql/shortratemodels/onefactormodel.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 
 namespace QuantLib {
 

@@ -21,7 +21,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/swaption.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
-#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/euribor.hpp>

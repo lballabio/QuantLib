@@ -20,8 +20,8 @@
 
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
-#include <ql/shortratemodels/onefactormodels/hullwhite.hpp>
-#include <ql/shortratemodels/calibrationhelpers/swaptionhelper.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <ql/indexes/euribor.hpp>

@@ -19,10 +19,10 @@
 
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/marketmodels/accountingengine.hpp>
-#include <ql/marketmodels/evolvers/forwardratepcevolver.hpp>
-#include <ql/marketmodels/products/onestep/onestepoptionlets.hpp>
-#include <ql/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/evolvers/forwardratepcevolver.hpp>
+#include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
+#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 
 namespace QuantLib {
 
