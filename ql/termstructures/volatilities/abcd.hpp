@@ -21,13 +21,11 @@
 #ifndef quantlib_abcd_hpp
 #define quantlib_abcd_hpp
 
-#include <ql/types.hpp>
+
 #include <ql/math/optimization/endcriteria.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
-#include <boost/shared_ptr.hpp>
-#include <functional>
-#include <vector>
+
 
 namespace QuantLib {
 

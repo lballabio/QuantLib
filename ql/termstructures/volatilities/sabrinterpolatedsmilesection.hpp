@@ -24,14 +24,13 @@
 #ifndef quantlib_sabr_interpolated_smile_section_hpp
 #define quantlib_sabr_interpolated_smile_section_hpp
 
-#include <ql/termstructure.hpp>
-#include <ql/quote.hpp>
+#include <ql/handle.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 
 namespace QuantLib {
-
+    class Quote;
     class SabrInterpolatedSmileSection : public SmileSection,
                                          public LazyObject {
       public:

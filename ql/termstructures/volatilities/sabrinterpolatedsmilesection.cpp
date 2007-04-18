@@ -18,6 +18,7 @@
 */
 
 #include <ql/termstructures/volatilities/sabrinterpolatedsmilesection.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
