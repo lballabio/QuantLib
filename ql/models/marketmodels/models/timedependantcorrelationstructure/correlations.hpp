@@ -25,11 +25,12 @@
 #include <ql/math/matrix.hpp>
 #include <ql/utilities/disposable.hpp>
 
-namespace QuantLib
-{
+namespace QuantLib {
+
     Disposable<Matrix> exponentialCorrelations(
                                         const std::vector<Rate>& rateTimes,
                                         Real longTermCorr,
                                         Real beta);
 }
+
 #endif

@@ -22,6 +22,7 @@
 
 #include "marketmodel.hpp"
 #include "utilities.hpp"
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
@@ -52,9 +53,9 @@
 #include <ql/models/marketmodels/exercisestrategies/swapratetrigger.hpp>
 #include <ql/models/marketmodels/exercisestrategies/lsstrategy.hpp>
 #include <ql/models/marketmodels/exercisevalues/nothingexercisevalue.hpp>
-#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
-#include <ql/models/marketmodels/models/expcorrabcdvol.hpp>
-#include <ql/models/marketmodels/models/correlations.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/abcdvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
@@ -276,20 +277,24 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation,
                                                   beta);
+    boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+        TimeHomogeneousForwardCorrelation(correlations,
+                                          evolution.rateTimes(),
+                                          numberOfFactors));       
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrFlatVol(bumpedVols,
-                               correlations,
+                FlatVol(bumpedVols,
+                               corr,
                                evolution,
                                numberOfFactors,
                                bumpedForwards,
                                std::vector<Spread>(bumpedForwards.size(), displacement)));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
+                AbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
-                               correlations,
+                               corr,
                                evolution,
                                numberOfFactors,
                                bumpedForwards,

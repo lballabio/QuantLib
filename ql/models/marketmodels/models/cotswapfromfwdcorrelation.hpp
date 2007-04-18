@@ -29,9 +29,9 @@ namespace QuantLib {
 
     class CurveState;
 
-    class SwapFromFRACorrelationStructure : public TimeDependantCorrelationStructure {
+    class CotSwapFromFwdCorrelation : public TimeDependantCorrelationStructure {
       public:
-        SwapFromFRACorrelationStructure(
+        CotSwapFromFwdCorrelation(
             const Matrix& correlations,
             const CurveState& curveState,
             Real displacement,

@@ -27,8 +27,8 @@
 #include <ql/indexes/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
-#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
-#include <ql/models/marketmodels/models/correlations.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -541,7 +541,7 @@ void CapFloorTest::testMarketModel() {
     times[0] = 0.0;  vols[0] = volatility;
     times[1] = 30.0;  vols[1] = volatility;
     boost::shared_ptr<MarketModelFactory> factory(new
-        ExpCorrFlatVolFactory(longTermCorrelation, beta,
+        FlatVolFactory(longTermCorrelation, beta,
                               times, vols,
                               termStructure_,
                               displacement));

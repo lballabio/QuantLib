@@ -28,9 +28,9 @@ namespace QuantLib {
 
     class EvolutionDescription;
 
-    class ForwardToCoterminalAdapter : public MarketModel {
+    class FwdToCotSwapAdapter : public MarketModel {
       public:
-        ForwardToCoterminalAdapter(
+        FwdToCotSwapAdapter(
                           const boost::shared_ptr<MarketModel>& forwardModel);
         //! \name MarketModel interface
         //@{
@@ -50,10 +50,10 @@ namespace QuantLib {
     };
 
 
-    class ForwardToCoterminalAdapterFactory : public MarketModelFactory,
+    class FwdToCotSwapAdapterFactory : public MarketModelFactory,
                                               public Observer {
       public:
-        ForwardToCoterminalAdapterFactory(
+        FwdToCotSwapAdapterFactory(
               const boost::shared_ptr<MarketModelFactory>& forwardFactory);
         boost::shared_ptr<MarketModel> create(const EvolutionDescription&,
                                               Size numberOfFactors) const;
@@ -66,33 +66,33 @@ namespace QuantLib {
     // inline definitions
 
     inline const std::vector<Rate>&
-    ForwardToCoterminalAdapter::initialRates() const {
+    FwdToCotSwapAdapter::initialRates() const {
         return initialRates_;
     }
 
     inline const std::vector<Spread>&
-    ForwardToCoterminalAdapter::displacements() const {
+    FwdToCotSwapAdapter::displacements() const {
         return fwdModel_->displacements();
     }
 
     inline const EvolutionDescription&
-    ForwardToCoterminalAdapter::evolution() const {
+    FwdToCotSwapAdapter::evolution() const {
         return fwdModel_->evolution();
     }
 
-    inline Size ForwardToCoterminalAdapter::numberOfRates() const {
+    inline Size FwdToCotSwapAdapter::numberOfRates() const {
         return fwdModel_->numberOfRates();
     }
 
-    inline Size ForwardToCoterminalAdapter::numberOfFactors() const {
+    inline Size FwdToCotSwapAdapter::numberOfFactors() const {
         return fwdModel_->numberOfFactors();
     }
 
-    inline Size ForwardToCoterminalAdapter::numberOfSteps() const {
+    inline Size FwdToCotSwapAdapter::numberOfSteps() const {
         return fwdModel_->numberOfSteps();
     }
 
-    inline const Matrix& ForwardToCoterminalAdapter::pseudoRoot(Size i) const {
+    inline const Matrix& FwdToCotSwapAdapter::pseudoRoot(Size i) const {
         return pseudoRoots_[i];
     }
 

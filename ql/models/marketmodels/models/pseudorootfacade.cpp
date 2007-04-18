@@ -50,8 +50,8 @@ namespace QuantLib {
         // evolutionTimes are not given for the time being
         QL_REQUIRE(numberOfRates_==covariancePseudoRoots.size(),
                    "number of rates (" << numberOfRates_ <<
-                   ") greater than number of factors (" << numberOfFactors_
-                   << ") times number of steps (" << numberOfSteps_ << ")");
+                   ") must be equal to covariancePseudoRoots.size() (" <<
+                   covariancePseudoRoots.size() << ")");
 
         for (Size k=0; k<numberOfSteps_; ++k) {
             QL_REQUIRE(covariancePseudoRoots_[k].rows()==numberOfRates_,

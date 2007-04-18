@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Francois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,15 +21,16 @@
 #include "swapforwardmappings.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
-#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
-#include <ql/models/marketmodels/models/correlations.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
@@ -181,16 +183,20 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorr,
                                                   beta);
+    boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+        TimeHomogeneousForwardCorrelation(correlations,
+                                          rateTimes,
+                                          numberOfFactors));       
     boost::shared_ptr<MarketModel> smmMarketModel(new
-        ExpCorrFlatVol(marketData.volatilities(),
-                       correlations,
+        FlatVol(marketData.volatilities(),
+                       corr,
                        evolution,
                        numberOfFactors,
                        lmmCurveState.coterminalSwapRates(),
                        marketData.displacements()));
 
     boost::shared_ptr<MarketModel>
-        lmmMarketModel(new CoterminalToForwardAdapter(smmMarketModel));
+        lmmMarketModel(new CotSwapToFwdAdapter(smmMarketModel));
 
     SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
     std::vector<Size> numeraires(nbRates,

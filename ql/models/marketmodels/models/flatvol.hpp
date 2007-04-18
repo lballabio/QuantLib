@@ -34,11 +34,13 @@
 
 namespace QuantLib {
 
-    class ExpCorrFlatVol : public MarketModel {
+    class TimeDependantCorrelationStructure;
+
+    class FlatVol : public MarketModel {
       public:
-        ExpCorrFlatVol(
+        FlatVol(
             const std::vector<Volatility>& volatilities,
-            const Matrix& correlations,
+            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -61,10 +63,10 @@ namespace QuantLib {
         std::vector<Matrix> pseudoRoots_;
     };
 
-    class ExpCorrFlatVolFactory : public MarketModelFactory,
+    class FlatVolFactory : public MarketModelFactory,
                                   public Observer {
       public:
-        ExpCorrFlatVolFactory(Real longTermCorrelation,
+        FlatVolFactory(Real longTermCorrelation,
                               Real beta,
                               // this is just to make it work---it
                               // should be replaced with something
@@ -93,31 +95,31 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline const std::vector<Rate>& ExpCorrFlatVol::initialRates() const {
+    inline const std::vector<Rate>& FlatVol::initialRates() const {
         return initialRates_;
     }
 
-    inline const std::vector<Spread>& ExpCorrFlatVol::displacements() const {
+    inline const std::vector<Spread>& FlatVol::displacements() const {
         return displacements_;
     }
 
-    inline const EvolutionDescription& ExpCorrFlatVol::evolution() const {
+    inline const EvolutionDescription& FlatVol::evolution() const {
         return evolution_;
     }
 
-    inline Size ExpCorrFlatVol::numberOfRates() const {
+    inline Size FlatVol::numberOfRates() const {
         return initialRates_.size();
     }
 
-    inline Size ExpCorrFlatVol::numberOfFactors() const {
+    inline Size FlatVol::numberOfFactors() const {
         return numberOfFactors_;
     }
 
-    inline Size ExpCorrFlatVol::numberOfSteps() const {
+    inline Size FlatVol::numberOfSteps() const {
         return numberOfSteps_;
     }
 
-    inline const Matrix& ExpCorrFlatVol::pseudoRoot(Size i) const {
+    inline const Matrix& FlatVol::pseudoRoot(Size i) const {
         QL_REQUIRE(i<numberOfSteps_,
                    "the index " << i << " is invalid: it must be less than "
                    "number of steps (" << numberOfSteps_ << ")");

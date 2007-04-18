@@ -3437,14 +3437,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.cpp"
 					>
 				</File>
@@ -3712,63 +3704,47 @@
 					Name="models"
 					>
 					<File
+						RelativePath=".\ql\models\marketmodels\models\abcdvol.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\abcdvol.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\all.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.cpp"
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.hpp"
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.cpp"
+						RelativePath=".\ql\models\marketmodels\models\cotswaptofwdadapter.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.hpp"
+						RelativePath=".\ql\models\marketmodels\models\cotswaptofwdadapter.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\correlations.cpp"
+						RelativePath=".\ql\models\marketmodels\models\flatvol.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\correlations.hpp"
+						RelativePath=".\ql\models\marketmodels\models\flatvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.cpp"
+						RelativePath=".\ql\models\marketmodels\models\fwdtocotswapadapter.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.hpp"
+						RelativePath=".\ql\models\marketmodels\models\fwdtocotswapadapter.hpp"
 						>
 					</File>
 					<File
@@ -3796,25 +3772,37 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure.hpp"
 						>
 					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.cpp"
+					<Filter
+						Name="timedependantcorrelationstructures"
 						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.hpp"
-						>
-					</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.hpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.hpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="products"

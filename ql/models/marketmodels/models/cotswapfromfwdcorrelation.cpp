@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/swapfromfracorrelationstructure.hpp>
+#include <ql/models/marketmodels/models/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/utilities/disposable.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    SwapFromFRACorrelationStructure::SwapFromFRACorrelationStructure(
+    CotSwapFromFwdCorrelation::CotSwapFromFwdCorrelation(
             const Matrix& fraCorrelation,
             const CurveState& curveState,
             Real displacement,
@@ -90,24 +90,24 @@ namespace QuantLib {
     //3.Compute Z matrix
     //4.Normalize 2.*3.
 
-    const std::vector<Time>& SwapFromFRACorrelationStructure::times() const {
+    const std::vector<Time>& CotSwapFromFwdCorrelation::times() const {
         return evolution_.evolutionTimes();
     }
 
-    Size SwapFromFRACorrelationStructure::numberOfRates() const {
+    Size CotSwapFromFwdCorrelation::numberOfRates() const {
         return numberOfRates_;
     }
 
     //const EvolutionDescription&
-    //SwapFromFRACorrelationStructure::evolution() const {
+    //CotSwapFromFwdCorrelation::evolution() const {
     //    return evolution_;
     //}
 
-    Size SwapFromFRACorrelationStructure::numberOfFactors() const {
+    Size CotSwapFromFwdCorrelation::numberOfFactors() const {
         return numberOfFactors_;
     }
 
-    const Matrix& SwapFromFRACorrelationStructure::pseudoRoot(Size i) const {
+    const Matrix& CotSwapFromFwdCorrelation::pseudoRoot(Size i) const {
         QL_REQUIRE(i<pseudoRoots_.size(),
                    "index (" << i << ") must be less than pseudoRoots size ("
                    << pseudoRoots_.size() << ")");

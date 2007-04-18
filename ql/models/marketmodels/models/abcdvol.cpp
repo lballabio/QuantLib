@@ -19,19 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/expcorrabcdvol.hpp>
+#include <ql/models/marketmodels/models/abcdvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
-    ExpCorrAbcdVol::ExpCorrAbcdVol(
+    AbcdVol::AbcdVol(
             Real a,
             Real b,
             Real c,
             Real d,
             const std::vector<Real>& ks,
-            const Matrix& correlations,
+            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -65,6 +66,8 @@ namespace QuantLib {
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0; k<numberOfSteps_; ++k) {
+            // to be fixed with a simpler algorithm
+            const Matrix& correlations = corr->pseudoRoot(k)*transpose(corr->pseudoRoot(k));
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                     effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;

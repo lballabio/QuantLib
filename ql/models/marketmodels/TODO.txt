@@ -28,11 +28,17 @@ Vol Models
 
 Correlation Models
 - move corr models into their own folder
+- dummy time-constant matrix
 - hist extimation
 - Higham cov bug + review rank reduction
 - Rapisarda
 - longTermCorr+beta+gamma
 - Schoenmakers and Coffey (?)
+
+Models
+- implement SwapForwardMappings::cmSwapForwardJacobian
+  and SwapForwardMappings::cmSwapZedMatrix
+- implement cmswaptofwdadapter
 
 Drift
 - verify efficiency of rapid algorithm for reduced factor models

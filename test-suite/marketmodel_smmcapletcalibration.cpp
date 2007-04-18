@@ -22,10 +22,11 @@
 
 #include "marketmodel_smmcapletcalibration.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/models/swapfromfracorrelationstructure.hpp>
+#include <ql/models/marketmodels/models/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
-#include <ql/models/marketmodels/models/capletcoterminalcalibration.hpp>
-#include <ql/models/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
+#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
@@ -35,9 +36,9 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/evolvers/cotswaprates/lognormal/coterminalswapratepcevolver.hpp>
 #include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
-#include <ql/models/marketmodels/models/correlations.hpp>
-#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
-#include <ql/models/marketmodels/models/expcorrabcdvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
@@ -267,11 +268,15 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,
                                                   beta_);
+    boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+        TimeHomogeneousForwardCorrelation(correlations,
+                                          evolution.rateTimes(),
+                                          numberOfFactors));       
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrFlatVol(bumpedVols,
-                               correlations,
+                FlatVol(bumpedVols,
+                               corr,
                                evolution,
                                numberOfFactors,
                                bumpedRates,
@@ -279,9 +284,9 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                displacement_)));
         case ExponentialCorrelationAbcdVolatility:
             return boost::shared_ptr<MarketModel>(new
-                ExpCorrAbcdVol(0.0,0.0,1.0,1.0,
+                AbcdVol(0.0,0.0,1.0,1.0,
                                bumpedVols,
-                               correlations,
+                               corr,
                                evolution,
                                numberOfFactors,
                                bumpedRates,
@@ -400,7 +405,7 @@ QL_END_TEST_LOCALS(MarketModelTest_smm)
 
 void MarketModelSmmCapletCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Run coterminal swap + caplet calibration ...");
+    BOOST_MESSAGE("Testing coterminal swap + caplet calibration ...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
@@ -415,8 +420,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     boost::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
     cs->setOnForwardRates(todaysForwards_);
 
-    boost::shared_ptr<SwapFromFRACorrelationStructure> corr(new
-        SwapFromFRACorrelationStructure(correlations,
+    boost::shared_ptr<CotSwapFromFwdCorrelation> corr(new
+        CotSwapFromFwdCorrelation(correlations,
                                         *cs,
                                         displacement_,
                                         evolution,
@@ -466,7 +471,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                          cs->coterminalSwapRates(),
                          std::vector<Spread>(numberOfRates, displacement_)));
 
-    CoterminalToForwardAdapter flmm(smm);
+    CotSwapToFwdAdapter flmm(smm);
     Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
     std::vector<Volatility> capletVols(numberOfRates);

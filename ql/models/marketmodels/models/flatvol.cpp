@@ -19,16 +19,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/expcorrflatvol.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/models/marketmodels/models/correlations.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
 
 namespace QuantLib {
 
-    ExpCorrFlatVol::ExpCorrFlatVol(
+    FlatVol::FlatVol(
             const std::vector<Volatility>& volatilities,
-            const Matrix& correlations,
+            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -62,14 +64,14 @@ namespace QuantLib {
         const Matrix& effectiveStopTime = evolution.effectiveStopTime();
         Matrix covariance(numberOfRates_, numberOfRates_);
         for (Size k=0; k<numberOfSteps_; ++k) {
-            Size i;
-            for (i=0; i<numberOfRates_; ++i) {
+            for (Size i=0; i<numberOfRates_; ++i) {
                 effStartTime = (k>0 ? effectiveStopTime[k-1][i] : 0.0);
                 stdDev[i] = volatilities[i] *
                     std::sqrt(effectiveStopTime[k][i]-effStartTime);
             }
-
-            for (i=0; i<numberOfRates_; ++i) {
+            // to be fixed with a simpler algorithm
+            const Matrix& correlations = corr->pseudoRoot(k)*transpose(corr->pseudoRoot(k));
+            for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                      covariance[i][j] =  covariance[j][i] =
                          stdDev[j] * correlations[i][j] * stdDev[i];
@@ -94,7 +96,7 @@ namespace QuantLib {
     }
 
 
-    ExpCorrFlatVolFactory::ExpCorrFlatVolFactory(
+    FlatVolFactory::FlatVolFactory(
                                 Real longTermCorrelation,
                                 Real beta,
                                 const std::vector<Time>& times,
@@ -111,7 +113,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<MarketModel>
-    ExpCorrFlatVolFactory::create(const EvolutionDescription& evolution,
+    FlatVolFactory::create(const EvolutionDescription& evolution,
                                   Size numberOfFactors) const {
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         Size numberOfRates = rateTimes.size()-1;
@@ -135,16 +137,20 @@ namespace QuantLib {
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation_,
                                                       beta_);
+        boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+            TimeHomogeneousForwardCorrelation(correlations,
+                                              rateTimes,
+                                              numberOfFactors));       
         return boost::shared_ptr<MarketModel>(new
-            ExpCorrFlatVol(displacedVolatilities,
-                           correlations,
+            FlatVol(displacedVolatilities,
+                           corr,
                            evolution,
                            numberOfFactors,
                            initialRates,
                            displacements));
     }
 
-    void ExpCorrFlatVolFactory::update() {
+    void FlatVolFactory::update() {
         notifyObservers();
     }
 

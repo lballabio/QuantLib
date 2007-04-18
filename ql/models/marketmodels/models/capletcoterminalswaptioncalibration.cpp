@@ -18,10 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/capletcoterminalcalibration.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/models/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/math/matrix.hpp>
@@ -301,7 +301,7 @@ namespace QuantLib {
                                  rateTimes,
                                  cs_->coterminalSwapRates(),
                                  std::vector<Spread>(numberOfRates, displacement_)));
-            CoterminalToForwardAdapter flmm(smm);
+            CotSwapToFwdAdapter flmm(smm);
             // avoid this copy
             Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
             error_ = 0.0;

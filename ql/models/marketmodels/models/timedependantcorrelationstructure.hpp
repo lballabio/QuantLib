@@ -26,7 +26,6 @@
 
 namespace QuantLib {
 
-    class EvolutionDescription;
     class Matrix;
 
     // piecewise constant in time

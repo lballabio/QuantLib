@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/coterminaltoforwardadapter.hpp>
+#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    CoterminalToForwardAdapter::CoterminalToForwardAdapter(
+    CotSwapToFwdAdapter::CotSwapToFwdAdapter(
                                const boost::shared_ptr<MarketModel>& ctModel)
     : coterminalModel_(ctModel),
       numberOfFactors_(ctModel->numberOfFactors()),
@@ -79,23 +79,23 @@ namespace QuantLib {
     }
 
 
-    CoterminalToForwardAdapterFactory::CoterminalToForwardAdapterFactory(
+    CotSwapToFwdAdapterFactory::CotSwapToFwdAdapterFactory(
              const boost::shared_ptr<MarketModelFactory>& coterminalFactory)
     : coterminalFactory_(coterminalFactory) {
         registerWith(coterminalFactory);
     }
 
     boost::shared_ptr<MarketModel>
-    CoterminalToForwardAdapterFactory::create(
+    CotSwapToFwdAdapterFactory::create(
                                         const EvolutionDescription& evolution,
                                         Size numberOfFactors) const {
         boost::shared_ptr<MarketModel> coterminalModel =
             coterminalFactory_->create(evolution,numberOfFactors);
         return boost::shared_ptr<MarketModel>(
-                             new CoterminalToForwardAdapter(coterminalModel));
+                             new CotSwapToFwdAdapter(coterminalModel));
     }
 
-    void CoterminalToForwardAdapterFactory::update() {
+    void CotSwapToFwdAdapterFactory::update() {
         notifyObservers();
     }
 

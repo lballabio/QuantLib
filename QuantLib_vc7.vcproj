@@ -4132,121 +4132,37 @@
 					Name="models"
 					Filter="">
 					<File
+						RelativePath=".\ql\models\marketmodels\models\abcdvol.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\abcdvol.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.cpp">
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\calibratedmarketmodel.hpp">
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.cpp">
+						RelativePath=".\ql\models\marketmodels\models\cotswaptofwdadapter.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\capletcoterminalcalibration.hpp">
+						RelativePath=".\ql\models\marketmodels\models\cotswaptofwdadapter.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\correlations.cpp">
+						RelativePath=".\ql\models\marketmodels\models\flatvol.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\correlations.hpp">
+						RelativePath=".\ql\models\marketmodels\models\flatvol.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.cpp">
+						RelativePath=".\ql\models\marketmodels\models\fwdtocotswapadapter.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\coterminaltoforwardadapter.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.cpp">
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrabcdvol.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.cpp">
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\expcorrflatvol.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\forwardtocoterminaladapter.hpp">
+						RelativePath=".\ql\models\marketmodels\models\fwdtocotswapadapter.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\piecewiseconstantabcdvariance.cpp">
@@ -4267,20 +4183,30 @@
 						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\swapfromfracorrelationstructure.hpp">
-					</File>
-					<File
 						RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure.hpp">
 					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timehomogeneousforwardcorrelation.hpp">
-					</File>
+					<Filter
+						Name="timedependantcorrelationstructures"
+						Filter="">
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.hpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.cpp">
+						</File>
+						<File
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.hpp">
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="exercisevalues"
