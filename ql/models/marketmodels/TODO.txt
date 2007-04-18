@@ -1,78 +1,77 @@
-- refactor expcorrflatvol and expcorrabcdvol into genericcorrxxxvol
+
+GENERAL refactoring/review
+- Get LMM code in the same use format as other code via instrument classes,
+  from LMM -> QL::INSTRUMENT -> EXCEL
+- check for null vectors
+- check for increasing times
+- define equality for evolution description
 - split up marktmodel.xlm, qlo\marktmodel.hpp, qlo\marktmodel.cpp
-- move corr models into their own folder
-- test cotS->fwd and fwd->cotS adapter: inverse, etc
-- sabr with fixed parameters
-- Higham cov bug + review rank reduction
-
-Greeks
-- (1) greeks for swap rate
-- (1) greeks for one-step pure-libor non-callable product
-
-Lower bounds
-- (1) Jackel method for Bermudan swaptions (time consuming but not hard)
-- (1) Anderson method for Bermudan swaptions (time consuming but not hard)
-
-Calibration
-- (2) orthogonal combination of inst vol models and corr models
-- (3) calibrator to produce abcd form from market data, with displacements
-- correlation models/folder
-- vol models/folder
-
-Framework
-- (2) Get LMM code in the same use format as other code via instrument classes
-  creating objects from new hierarchy as necessary
-- (?) relevantRates
-
-Improvement
-- (2) RQMC
-- (2) swaption calibration using Z matrix with displacements
-- (2) different correlation structures (Schoenmakers and Coffey, Rapisarda, longTermCorr+beta+gamma)
-- (2) corr hist extimation
-- (2) alignment with covariance structures in legacy code
-- (2) ratchet
-- (3) verify efficiency of rapid algorithm for reduced factor models
-
-
-
-Path generation:
-- (4) antithetic sampling (EASY)
-- (4) moment matching (EASY)
-
-Statistics
-- (2) Reuse convergence tables for RQMC
-
-Drift
-- (1) verify efficiency of rapid algorithm for reduced factor models
-- (4) Glasserman Zhao spot measure approximation
-- (4) capc, cani, and PPR terminal measure approximations
-
-Termination criteria
-- (3) ability to terminate on time passed and select termination criterion
-
-
-Products
-- (1) coterminal European swaptions in MC LMM
-- (1) coterminal European swaptions using Z matrix
-- (4) floorlets with one or many steps.
-
-Lower Bound
-- Fries bias removal
-
-Upper bounds
-- (2) Rogers\anderson-Broadie\Joshi methods for upper bounds
-- (4) Jamshidian method for upper bounds (MEDIUM )
-
+- refactor expcorrflatvol and expcorrabcdvol into genericcorrxxxvol
+- RQMC
+- swaption calibration using Z matrix with displacements
+- verify efficiency of rapid algorithm for reduced factor models
+- linear combination of bonds as numeraire
+- relevantRates (?)
+- ability to terminate simulation on time passed and select termination criterion
 
 TEST
-- (1) payment date different from reset dates
+- clean up tests (common market data)
+- dedicated drift test
+- cotS->fwd and fwd->cotS adapters: inverse, etc
+- payment date different from reset dates
+
+Calibration
+- calibrator to produce abcd form from market data, with displacements
+- caplet cot_swaption calibration
+
+Vol Models
+- vol folder
+- piecewise abcd adapter
+
+Correlation Models
+- move corr models into their own folder
+- hist extimation
+- Higham cov bug + review rank reduction
+- Rapisarda
+- longTermCorr+beta+gamma
+- Schoenmakers and Coffey (?)
+
+Drift
+- verify efficiency of rapid algorithm for reduced factor models
+- Glasserman Zhao spot measure approximation
+- capc, cani, and PPR terminal measure approximations
 
 Evolvers
 - the missing one
 
-Scripting
-- Ability to specify new pay-offs and price them without code recompilation.
-  (HARD)
+Products
+- ratchet
+- coterminal European swaptions in MC LMM
+- coterminal European swaptions using Z matrix
+- floorlets with one or many steps.
+
+Greeks
+- greeks for swap rate
+- greeks for one-step pure-libor non-callable product
+
+Lower bounds
+- Fries bias removal
+- Jackel method for Bermudan swaptions (time consuming but not hard)
+- Anderson method for Bermudan swaptions (time consuming but not hard)
+
+Upper bounds
+- Rogers\anderson-Broadie\Joshi methods for upper bounds
+- Jamshidian method for upper bounds
 
 Variance reduction
 - Control variates, importance sampling (MEDIUM)
+
+Scripting
+- Ability to specify new pay-offs and price them without code recompilation.
+
+Statistics
+- convergence tables
+
+Path generation:
+- antithetic sampling
+- moment matching
