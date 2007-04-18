@@ -4,31 +4,31 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
-	capletcoterminalcalibration.hpp \
-	correlations.hpp \
-	coterminaltoforwardadapter.hpp \
-	expcorrabcdvol.hpp \
-	expcorrflatvol.hpp \
-	forwardtocoterminaladapter.hpp \
+	abcdvol.hpp \
+	capletcoterminalswaptioncalibration.hpp \
+	cotswaptofwdadapter.hpp \
+	flatvol.hpp \
+	fwdtocotswapadapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
 	pseudorootfacade.hpp \
-	swapfromfracorrelationstructure.hpp \
 	timedependantcorrelationstructure.hpp \
-	timehomogeneousforwardcorrelation.hpp
+	timedependantcorrelationstructures/correlations.hpp \
+	timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp \
+	timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp
 
 libMarketModelsModels_la_SOURCES = \
-	capletcoterminalcalibration.cpp \
-	coterminaltoforwardadapter.cpp \
-	correlations.cpp \
-	expcorrabcdvol.cpp \
-	expcorrflatvol.cpp \
-	forwardtocoterminaladapter.cpp \
+	abcdvol.cpp \
+	capletcoterminalswaptioncalibration.cpp \
+	cotswaptofwdadapter.cpp \
+	flatvol.cpp \
+	fwdtocotswapadapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \
 	pseudorootfacade.cpp \
-	swapfromfracorrelationstructure.cpp \
-	timehomogeneousforwardcorrelation.cpp
+	timedependantcorrelationstructures/correlations.cpp \
+	timedependantcorrelationstructures/cotswapfromfwdcorrelation.cpp \
+	timedependantcorrelationstructures/timehomogeneousforwardcorrelation.cpp
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
 

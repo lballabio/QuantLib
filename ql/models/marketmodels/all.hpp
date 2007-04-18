@@ -20,7 +20,6 @@
 #include <ql/models/marketmodels/parametricswapexercise.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>
 #include <ql/models/marketmodels/swapbasissystem.hpp>
-#include <ql/models/marketmodels/swapforwardconversionmatrix.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/upperboundengine.hpp>
 #include <ql/models/marketmodels/utilities.hpp>

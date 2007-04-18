@@ -26,7 +26,6 @@ this_include_HEADERS = \
     parametricswapexercise.hpp \
     proxygreekengine.hpp \
     swapbasissystem.hpp \
-    swapforwardconversionmatrix.hpp \
     swapforwardmappings.hpp \
     upperboundengine.hpp \
     utilities.hpp
