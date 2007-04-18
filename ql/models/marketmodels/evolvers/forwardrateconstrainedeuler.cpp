@@ -110,8 +110,7 @@ namespace QuantLib {
         covariances_.clear();
         covariances_.reserve(startIndexOfSwapRate_.size());
 
-        std::vector<Real> covariances;
-        covariances.reserve(n_);
+        std::vector<Real> covariances(n_);
 
         for (Size i=0; i < startIndexOfSwapRate_.size(); ++i) {
                 QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],

@@ -2248,8 +2248,7 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
-    // this test still crashes
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
