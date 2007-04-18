@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="QuantLib"
 	ProjectGUID="{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 	RootNamespace="QuantLib"
@@ -3567,66 +3567,98 @@
 				<Filter
 					Name="evolvers"
 					>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\all.hpp"
+					<Filter
+						Name="cmswaprates"
 						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\cmswapratepcevolver.cpp"
+						<Filter
+							Name="normal"
+							>
+						</Filter>
+						<Filter
+							Name="lognormal"
+							>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\cmswaprates\lognormal\cmswapratepcevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\cmswaprates\lognormal\cmswapratepcevolver.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="cotswaprates"
 						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\cmswapratepcevolver.hpp"
+						<Filter
+							Name="normal"
+							>
+						</Filter>
+						<Filter
+							Name="lognormal"
+							>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\cotswaprates\lognormal\coterminalswapratepcevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\cotswaprates\lognormal\coterminalswapratepcevolver.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
+					<Filter
+						Name="fwdrates"
 						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\coterminalswapratepcevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\coterminalswapratepcevolver.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateconstrainedeuler.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateconstrainedeuler.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateeulerevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateeulerevolver.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateipcevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardrateipcevolver.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardratenormalpcevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardratenormalpcevolver.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardratepcevolver.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\forwardratepcevolver.hpp"
-						>
-					</File>
+						<Filter
+							Name="normal"
+							>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\normal\forwardratenormalpcevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\normal\forwardratenormalpcevolver.hpp"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="lognormal"
+							>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateconstrainedeuler.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateconstrainedeuler.hpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateeulerevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateeulerevolver.hpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateipcevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardrateipcevolver.hpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardratepcevolver.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\ql\models\marketmodels\evolvers\fwdrates\lognormal\forwardratepcevolver.hpp"
+								>
+							</File>
+						</Filter>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="exercisestrategies"

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/forwardrateipcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardrateipcevolver.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>

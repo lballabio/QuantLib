@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/forwardrateeulerevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    ForwardRateEulerEvolver::ForwardRateEulerEvolver(
+    ForwardRatePcEvolver::ForwardRatePcEvolver(
                            const boost::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
@@ -39,7 +39,8 @@ namespace QuantLib {
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
-      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
+      logForwards_(n_), initialLogForwards_(n_),
+      drifts1_(n_), drifts2_(n_),
       initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(marketModel->evolution().firstAliveRate())
     {
@@ -55,11 +56,12 @@ namespace QuantLib {
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(LMMDriftCalculator(A,
-                                                   displacements_,
-                                                   marketModel->evolution().rateTaus(),
-                                                   numeraires[j],
-                                                   alive_[j]));
+            calculators_.push_back(
+                LMMDriftCalculator(A,
+                                   displacements_,
+                                   marketModel->evolution().rateTaus(),
+                                   numeraires[j],
+                                   alive_[j]));
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
                 Real variance =
@@ -73,32 +75,32 @@ namespace QuantLib {
         setForwards(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& ForwardRateEulerEvolver::numeraires() const {
+    const std::vector<Size>& ForwardRatePcEvolver::numeraires() const {
         return numeraires_;
     }
 
-    void ForwardRateEulerEvolver::setForwards(const std::vector<Real>& forwards)
+    void ForwardRatePcEvolver::setForwards(const std::vector<Real>& forwards)
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
         for (Size i=0; i<n_; ++i)
-            initialLogForwards_[i] = std::log(forwards[i] +
-                                              displacements_[i]);
+             initialLogForwards_[i] = std::log(forwards[i] +
+                                               displacements_[i]);
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
-    void ForwardRateEulerEvolver::setInitialState(const CurveState& cs) {
+    void ForwardRatePcEvolver::setInitialState(const CurveState& cs) {
         setForwards(cs.forwardRates());
     }
 
-    Real ForwardRateEulerEvolver::startNewPath() {
+    Real ForwardRatePcEvolver::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real ForwardRateEulerEvolver::advanceStep()
+    Real ForwardRatePcEvolver::advanceStep()
     {
         // we're going from T1 to T2
 
@@ -115,8 +117,8 @@ namespace QuantLib {
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
-        Size alive = alive_[currentStep_];
-        for (Size i=alive; i<n_; i++) {
+        Size i, alive = alive_[currentStep_];
+        for (i=alive; i<n_; ++i) {
             logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
@@ -124,9 +126,16 @@ namespace QuantLib {
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 
-        // same as PC evolver with two steps dropped
+        // c) recompute drifts D2 using the predicted forwards;
+        calculators_[currentStep_].compute(forwards_, drifts2_);
 
-        // c) update curve state
+        // d) correct forwards using both drifts
+        for (i=alive; i<n_; ++i) {
+            logForwards_[i] += (drifts2_[i]-drifts1_[i])/2.0;
+            forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
+        }
+
+        // e) update curve state
         curveState_.setOnForwardRates(forwards_);
 
         ++currentStep_;
@@ -134,11 +143,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size ForwardRateEulerEvolver::currentStep() const {
+    Size ForwardRatePcEvolver::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& ForwardRateEulerEvolver::currentState() const {
+    const CurveState& ForwardRatePcEvolver::currentState() const {
         return curveState_;
     }
 

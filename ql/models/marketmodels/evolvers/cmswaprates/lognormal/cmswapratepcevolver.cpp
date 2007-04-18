@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/cmswapratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/cmswaprates/lognormal/cmswapratepcevolver.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>

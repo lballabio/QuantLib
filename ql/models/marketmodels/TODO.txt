@@ -7,12 +7,10 @@ GENERAL refactoring/review
 - define equality for evolution description
 - split up marktmodel.xlm, qlo\marktmodel.hpp, qlo\marktmodel.cpp
 - refactor expcorrflatvol and expcorrabcdvol into genericcorrxxxvol
-- RQMC
 - swaption calibration using Z matrix with displacements
 - verify efficiency of rapid algorithm for reduced factor models
 - linear combination of bonds as numeraire
 - relevantRates (?)
-- ability to terminate simulation on time passed and select termination criterion
 
 TEST
 - clean up tests (common market data)
@@ -39,10 +37,14 @@ Correlation Models
 Drift
 - verify efficiency of rapid algorithm for reduced factor models
 - Glasserman Zhao spot measure approximation
-- capc, cani, and PPR terminal measure approximations
 
 Evolvers
-- the missing one
+- log normal cot swap rate:     ipc, euler, capc, cani, and PPR terminal measure
+- log normal  cm swap rate:     ipc, euler, capc, cani, and PPR terminal measure
+- log normal      fwd rate:                 capc, cani, and PPR terminal measure
+-     normal cot swap rate: pc, ipc, euler, capc, cani, and PPR terminal measure
+-     normal  cm swap rate: pc, ipc, euler, capc, cani, and PPR terminal measure
+-     normal      fwd rate:     ipc, euler, capc, cani, and PPR terminal measure
 
 Products
 - ratchet
@@ -50,21 +52,25 @@ Products
 - coterminal European swaptions using Z matrix
 - floorlets with one or many steps.
 
+Simulation
+- RQMC
+- ability to terminate on time passed and select termination criterion
+
 Greeks
 - greeks for swap rate
 - greeks for one-step pure-libor non-callable product
 
 Lower bounds
 - Fries bias removal
-- Jackel method for Bermudan swaptions (time consuming but not hard)
-- Anderson method for Bermudan swaptions (time consuming but not hard)
+- Jackel method for Bermudan swaptions
+- Anderson method for Bermudan swaptions
 
 Upper bounds
 - Rogers\anderson-Broadie\Joshi methods for upper bounds
 - Jamshidian method for upper bounds
 
 Variance reduction
-- Control variates, importance sampling (MEDIUM)
+- Control variates, importance sampling
 
 Scripting
 - Ability to specify new pay-offs and price them without code recompilation.

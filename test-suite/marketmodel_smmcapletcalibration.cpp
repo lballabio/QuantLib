@@ -33,8 +33,8 @@
 #include <ql/models/marketmodels/products/multiproductcomposite.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/models/marketmodels/evolvers/coterminalswapratepcevolver.hpp>
-#include <ql/models/marketmodels/evolvers/forwardratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/cotswaprates/lognormal/coterminalswapratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
 #include <ql/models/marketmodels/models/correlations.hpp>
 #include <ql/models/marketmodels/models/expcorrflatvol.hpp>
 #include <ql/models/marketmodels/models/expcorrabcdvol.hpp>
