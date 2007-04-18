@@ -113,19 +113,19 @@ namespace QuantLib {
         std::vector<Real> covariances(n_);
 
         for (Size i=0; i < startIndexOfSwapRate_.size(); ++i) {
-                QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],
-                                        "constrained euler currently only implemented for forward rates");
+            QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],
+                "constrained euler currently only implemented for forward rates");
 
-                const Matrix& A = marketModel_->pseudoRoot(currentStep_);
+            const Matrix& A = marketModel_->pseudoRoot(currentStep_);
 
-                for (Size j=0; j < n_; ++j) {
-                    double cov=0.0;
-                    for (Size k=0; k < F_; ++k)
-                        cov += A[startIndexOfSwapRate_[i]][k]*A[j][k];
-                    covariances[j] = cov;
+            for (Size j=0; j < n_; ++j) {
+                Real cov=0.0;
+                for (Size k=0; k < F_; ++k)
+                    cov += A[startIndexOfSwapRate_[i]][k]*A[j][k];
+                covariances[j] = cov;
 
-                }
-                covariances_.push_back(covariances);
+            }
+            covariances_.push_back(covariances);
         }
 
     }
