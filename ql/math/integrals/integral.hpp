@@ -55,7 +55,7 @@ namespace QuantLib {
 			void setNumberOfEvalutions(Size nbEvalutions) const;
 
 			virtual bool integrationSuccess() const; 
-
+	                virtual ~Integrator() {};
 		private:
 			Real absoluteAccuracy_;
 			mutable Real absoluteError_;
