@@ -22,6 +22,9 @@
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/assetswap.hpp>
 #include <ql/instruments/fixedratebond.hpp>
+#include <ql/instruments/floatingratebond.hpp>
+#include <ql/instruments/cmsratebond.hpp>
+#include <ql/index.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -31,11 +34,17 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashFlows/iborcoupon.hpp>
+#include <ql/cashFlows/cashflowvectors.hpp>
+#include <ql/cashFlows/couponpricer.hpp>
+#include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashFlows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -45,30 +54,37 @@ QL_BEGIN_TEST_LOCALS(AssetSwapTest)
 // global data
 
 Date today_, settlement_;
-boost::shared_ptr<IborIndex> index_;
+boost::shared_ptr<IborIndex> iborindex_;
+boost::shared_ptr<SwapIndex> swapindex_;
 Spread spread_;
 DayCounter floatingDayCounter_;
 Real faceAmount_;
 Calendar calendar_;
 //Compounding compounding_ ;
-//BusinessDayConvention fixedConvention_, floatingConvention_;
-Frequency floatingFrequency_ ; //fixedFrequency_;
-Natural settlementDays_;
+BusinessDayConvention fixedConvention_; //, floatingConvention_;
+Frequency floatingFrequency_ , fixedFrequency_;
+Natural settlementDays_ , swapSettlementDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
 
 
 void setup() {
     settlementDays_ = 3;
+    swapSettlementDays_ = 2;
     faceAmount_ = 100.0;
-    //fixedConvention_ = Unadjusted;
+    fixedConvention_ = Unadjusted;
     //floatingConvention_ = ModifiedFollowing;
-    //fixedFrequency_ = Annual;
+    fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
     floatingDayCounter_= Actual360();
-    index_ = boost::shared_ptr<IborIndex>(new
+    iborindex_ = boost::shared_ptr<IborIndex>(new
         Euribor(Period(floatingFrequency_), termStructure_));
-    spread_=0.0;
-    calendar_ = index_->calendar();
+    calendar_ = iborindex_->calendar();
+    swapindex_= boost::shared_ptr<SwapIndex>(new
+           SwapIndex("EuriborSwapFixA", 10*Years,swapSettlementDays_,
+                iborindex_->currency(), calendar_,
+                Period(fixedFrequency_), fixedConvention_,
+                iborindex_->dayCounter(), iborindex_));
+    spread_=0.0;  
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     //settlement_ = calendar_.advance(today_,settlementDays_,Days);
@@ -90,95 +106,82 @@ void AssetSwapTest::testImpliedValue() {
     QL_TEST_SETUP
 
     Calendar bondCalendar = TARGET();
-    DayCounter bondDayCount = ActualActual(ActualActual::ISDA);
     Natural settlementDays = 3;
-
+    Natural fixingDays = 2;
+   
     bool payFixedRate = true;
     bool parAssetSwap = true;
 
-    // Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
+    // Fixed Underlying bond (Isin: DE0001135275 DBR 4 01/04/37)
     Schedule fixedBondSchedule(Date(4,January,2005),
                                Date(4,January,2037),
                                Period(Annual), bondCalendar,
                                Unadjusted, Unadjusted, true, false);
     boost::shared_ptr<Bond> fixedBond(new
         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule,
-                      std::vector<Rate>(1, 0.04), bondDayCount, Following,
+                      std::vector<Rate>(1, 0.04), ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005), termStructure_));
     Real fixedBondPrice = fixedBond->cleanPrice();
     AssetSwap fixedBondAssetSwap(payFixedRate, 
                                  fixedBond, fixedBondPrice,
-                                 index_, spread_, termStructure_,
+                                 iborindex_, spread_, termStructure_,
                                  Schedule(),
                                  floatingDayCounter_, parAssetSwap);
     Real fixedBondAssetSwapPrice = fixedBondAssetSwap.fairPrice();
-
     Real tolerance = 1.0e-13;
-    Real error = std::fabs(fixedBondAssetSwapPrice-fixedBondPrice);
+    Real error1 = std::fabs(fixedBondAssetSwapPrice-fixedBondPrice);
 
-    if (error>tolerance) {
+    if (error1>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  bond clean price:      " << fixedBondPrice
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error
+                    << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
 
-    QL_TEST_TEARDOWN
+
+    // FRN Underlying bond (Isin: XS0090566539 COE 0 09/24/18)
+
+    Schedule floatingBondSchedule(Date(24,September,2004),
+                                  Date(24,September,2018),
+                                  Period(Semiannual), bondCalendar,
+                                  ModifiedFollowing, ModifiedFollowing, 
+                                  true, false);
+    boost::shared_ptr<IborCouponPricer> pricer(new
+    BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
+    bool inArrears = false;
+    boost::shared_ptr<Bond> floatingBond(new
+        FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule,
+                         iborindex_, Actual360(), 
+                         ModifiedFollowing,fixingDays,
+                         std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
+                         std::vector<Rate>(), std::vector<Rate>(),
+                         inArrears,
+                         100.0, Date(24,September,2004), termStructure_));
+    CashFlows::setPricer(floatingBond->cashflows(),pricer);
+    iborindex_->addFixing(Date(22,March,2007), 0.04013);
+    Real floatingBondPrice = floatingBond->cleanPrice();
+    AssetSwap floatingBondAssetSwap(payFixedRate, 
+                                 floatingBond, floatingBondPrice,
+                                 iborindex_, spread_, termStructure_,
+                                 Schedule(),
+                                 floatingDayCounter_, parAssetSwap);
+    Real floatingBondAssetSwapPrice = floatingBondAssetSwap.fairPrice();
+    Real error2 = std::fabs(floatingBondAssetSwapPrice-floatingBondPrice);
+
+    if (error2>tolerance) {
+        BOOST_ERROR("wrong zero spread asset swap price for floating bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond clean price:      " << floatingBondPrice
+                    << "\n  asset swap fair price: " << floatingBondAssetSwapPrice
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error2
+                    << "\n  tolerance:             " << tolerance);
+    }
+      QL_TEST_TEARDOWN
 }
-
-//void AssetSwapTest::testMarketASWSpread() {
-//
-//    BOOST_MESSAGE("Testing marketassetswap spread= 100*parassetswapspread/bondfullprice...");
-//
-//    QL_TEST_BEGIN
-//    QL_TEST_SETUP
-//
-//    Calendar bondCalendar = NullCalendar();
-//    DayCounter bondDayCount = ActualActual(ActualActual::ISMA);
-//    Natural settlementDays = 3;
-//
-//// Underlying bond
-//
-//    Schedule bondsch2(Date(31,October,2004),
-//                      Date(31,October,2024), Period(Annual), bondCalendar,
-//                      Unadjusted, Unadjusted, true,false);
-//
-//    boost::shared_ptr<Bond> bond2(new FixedRateBond(settlementDays, faceAmount_, bondsch,
-//                                  std::vector<Rate>(1, 0.05),bondDayCount, ModifiedFollowing,
-//                                  100.0, Date(1,November,2004), termStructure_));
-//
-//
-// //AssetSwap
-//
-//   Schedule floatSch2(bond2->settlementDate(),
-//                     bond2->maturityDate(),index_->tenor(),index_->calendar(),
-//                     index_->businessDayConvention(),
-//                     Unadjusted,true, index_->endOfMonth());
-//
-//   upfrontDate_ = floatSch2.startDate();
-//
-//
-//   AssetSwap assetswap2(true, 
-//                        bond1,calculatedPrice1,index_,spread_,termStructure_,floatSch,
-//                        floatingDayCounter_,true);
-//   Real delta1= assetswap1.fairPrice()-calculatedPrice1;
-//
-//// AssetSwap with spread =0 should return a fair price equal to the bond's theoretical clean price
-//
-//            if (std::fabs(assetswap1.fairPrice()-calculatedPrice1) > 1.0e-4) {
-//                BOOST_ERROR("recalculating with zero spread:\n"
-//                            << std::setprecision(7)
-//                            << "    difference: " << delta1);
-//            }
-//
-//
-//    QL_TEST_TEARDOWN
-//}
-
-
 
 test_suite* AssetSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
