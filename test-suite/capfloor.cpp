@@ -28,7 +28,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/utilities/dataformatters.hpp>

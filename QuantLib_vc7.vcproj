@@ -4189,22 +4189,22 @@
 						Name="timedependantcorrelationstructures"
 						Filter="">
 						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.cpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.cpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\correlations.hpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.hpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.cpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.cpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\models\cotswapfromfwdcorrelation.hpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.hpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.cpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.cpp">
 						</File>
 						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure\timehomogeneousforwardcorrelation.hpp">
+							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.hpp">
 						</File>
 					</Filter>
 				</Filter>

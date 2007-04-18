@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/utilities/disposable.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>

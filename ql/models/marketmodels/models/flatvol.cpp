@@ -21,10 +21,10 @@
 
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
 #include <ql/math/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
 
 namespace QuantLib {
 

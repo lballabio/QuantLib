@@ -22,7 +22,7 @@
 
 #include "marketmodel.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
@@ -55,7 +55,7 @@
 #include <ql/models/marketmodels/exercisevalues/nothingexercisevalue.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure/correlations.hpp>
+#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
