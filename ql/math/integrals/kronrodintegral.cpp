@@ -213,18 +213,24 @@ namespace QuantLib {
         0.037361073762679023410321241766599
         } ;
 
+	Real GaussKronrodNonAdaptive::relativeAccuracy() const { 
+		return relativeAccuracy_; 
+	}
 
+	GaussKronrodNonAdaptive::GaussKronrodNonAdaptive (Real absoluteAccuracy, 
+								Size maxEvaluations, Real relativeAccuracy):
+						Integrator(absoluteAccuracy, maxEvaluations), 
+							relativeAccuracy_(relativeAccuracy){}
 
-
-
-    bool gaussKronrodNonAdaptative(const Integrand& f, Real a, Real b,
-                                    Real epsAbs, Real epsRel,
-                                    Real& result, Real& abserr, Integer& neval){
-
+	Real GaussKronrodNonAdaptive::operator()(
+									const boost::function<Real (Real)>& f,
+									Real a, Real b) const {
+		Real result;
+		//Size neval;
         Real fv1[5], fv2[5], fv3[5], fv4[5];
         Real savfun[21];  /* array of function values which have been computed */
         Real res10, res21, res43, res87;    /* 10, 21, 43 and 87 point results */
-        Real err ;
+        Real err;
         Real resAbs; /* approximation to the integral of abs(f) */
         Real resasc; /* approximation to the integral of abs(f-i/(b-a)) */
         int k ;
@@ -281,11 +287,11 @@ namespace QuantLib {
         resasc *= halfLength ;
 
         // test for convergence.
-        if (err < epsAbs || err < epsRel * std::fabs(result)){
-            abserr = err ;
-            neval = 21;
-            return true;
-            }
+        if (err < absoluteAccuracy() || err < relativeAccuracy() * std::fabs(result)){
+            setAbsoluteError(err);
+            setNumberOfEvalutions(21);
+            return result;
+        }
 
         /* compute the integral using the 43-point formula. */
 
@@ -307,12 +313,11 @@ namespace QuantLib {
         result = res43 * halfLength;
         err = rescaleError ((res43 - res21) * halfLength, resAbs, resasc);
 
-        if (err < epsAbs || err < epsRel * std::fabs(result)){
-            result = result ;
-            abserr = err ;
-            neval = 43;
-            return true;
-            }
+       if (err < absoluteAccuracy() || err < relativeAccuracy() * std::fabs(result)){
+            setAbsoluteError(err);
+            setNumberOfEvalutions(43);
+            return result;
+        }
 
         /* compute the integral using the 87-point formula. */
 
@@ -331,9 +336,9 @@ namespace QuantLib {
         result = res87 * halfLength ;
         err = rescaleError ((res87 - res43) * halfLength, resAbs, resasc);
 
-        result = result ;
-        abserr = err ;
-        neval = 87;
-        return (err < epsAbs || err < epsRel * std::fabs(result));
+        setAbsoluteError(err);
+        setNumberOfEvalutions(87);
+        return result;
     }
 }
+

@@ -30,6 +30,7 @@
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/function.hpp>
+#include <ql/math/integrals/integral.hpp>
 
 namespace QuantLib {
 
@@ -46,7 +47,7 @@ namespace QuantLib {
               against known good values.
     */
 
-    typedef boost::function<Real (Real)> Integrand;
+    //typedef boost::function<Real (Real)> Integrand;
 
     /*! 
         The gaussKronrodNonAdaptative free function is a non-adaptive 
@@ -82,14 +83,29 @@ namespace QuantLib {
         neval: number of integrand evaluations
         This function returns true if the requested accuracy has been achieved.
     */
-    bool gaussKronrodNonAdaptative(const Integrand& f,
-                                   Real a,
-                                   Real b, 
-                                   Real epsAbs,
-                                   Real epsRel,
-                                   Real& result,
-                                   Real& absErr, 
-                                   Integer& nEval);
+
+	class GaussKronrodNonAdaptive : public Integrator {
+		public:
+			GaussKronrodNonAdaptive(Real absoluteAccuracy, Size maxEvaluations,
+								Real relativeAccuracy);
+		Real operator()(const boost::function<Real (Real)>& f,
+                        Real a, Real b) const;
+		void setRelativeAccuracy(Real);	
+		Real relativeAccuracy() const;
+
+		private:
+			Real relativeAccuracy_;
+	};
+
+
+    //bool gaussKronrodNonAdaptative(const Integrand& f,
+    //                               Real a,
+    //                               Real b, 
+    //                               Real epsAbs,
+    //                               Real epsRel,
+    //                               Real& result,
+    //                               Real& absErr, 
+    //                               Integer& nEval);
     class KronrodIntegral {
       public:
         

@@ -30,35 +30,45 @@
 
 namespace QuantLib {
 
-    class Integrator{
-    public:
+	class Integrator{
+		public:
+			Integrator(Real absoluteAccuracy, Size maxEvaluations);
+			virtual Real operator()(const boost::function<Real (Real)>& f,
+				Real a, Real b) const = 0;
 
-        Real operator()(const boost::function<Real (Real)>& f,
-                        Real a, Real b) const;
+			//! \name Modifiers
+			//@{
+			void setAbsoluteAccuracy(Real);
+			void setMaxEvaluations(Size);
+			//@}
 
-        //! \name Modifiers
-        //@{
-        void setAccuracy(Real);
-        void setMaxEvaluations(Size);
-        //@}
+			//! \name Inspectors
+			//@{
+			Real absoluteAccuracy() const;
+			Size maxEvaluations() const;
+			//@}
 
-        //! \name Inspectors
-        //@{
-        Real accuracy() const;
-        Size maxEvaluations() const;
-        //@}
+			Real absoluteError() const ;
+			void setAbsoluteError(Real error) const;
 
-    private:
-        Real accuracy_;
-        Size maxEvaluations_;
-    };
+			Size numberOfEvalutions() const;
+			void setNumberOfEvalutions(Size nbEvalutions) const;
 
-    /*!
-    \brief This class allows to delegate the choice of the integration method
-    */
-    class IntegratorFactory{
-        boost::shared_ptr<Integrator> operator()() const;
-    };
+			virtual bool integrationSuccess() const; 
+
+		private:
+			Real absoluteAccuracy_;
+			mutable Real absoluteError_;
+			Size maxEvaluations_;
+			mutable Size nbEvalutions_;
+	};
+
+	/*!
+	\brief This class allows to delegate the choice of the integration method
+	*/
+	class IntegratorFactory{
+		boost::shared_ptr<Integrator> operator()() const;
+	};
 
 }
 
