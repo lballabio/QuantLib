@@ -34,9 +34,9 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/cashFlows/iborcoupon.hpp>
-#include <ql/cashFlows/cashflowvectors.hpp>
-#include <ql/cashFlows/couponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
@@ -44,7 +44,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashFlows/analysis.hpp>
+#include <ql/cashflows/analysis.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
