@@ -239,14 +239,14 @@ namespace QuantLib {
 
         // Matrix infinity norm. See Golub and van Loan (2.3.10) or
         // <http://en.wikipedia.org/wiki/Matrix_norm>
-        const double normInf(const Matrix& M)
+        Real normInf(const Matrix& M)
         {
             Size rows = M.rows();
             Size cols = M.columns();
-            double norm = 0.0;
+            Real norm = 0.0;
             for (Size i=0; i<rows; ++i)
             {
-                double colSum = 0.0;
+                Real colSum = 0.0;
                 for (Size j=0; j<cols; ++j)
                 {
                     colSum += std::fabs(M[i][j]);
@@ -294,7 +294,7 @@ namespace QuantLib {
         const Disposable <Matrix> highamImplementation(
                         const Matrix& A,
                         const Size maxIterations,
-                        const double& tolerance) {
+                        const Real& tolerance) {
 
             Size size = A.rows();
             Matrix Y(A);
@@ -434,7 +434,7 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Higham: {
               int maxIterations = 40;
-              double tolerance = 1e-6;
+              Real tolerance = 1e-6;
               result = highamImplementation(matrix, maxIterations, tolerance);
               result = CholeskyDecomposition(result, true);
             }
@@ -491,7 +491,7 @@ namespace QuantLib {
           case SalvagingAlgorithm::Higham:
               {
                   int maxIterations = 40;
-                  double tolerance = 1e-6;
+                  Real tolerance = 1e-6;
                   Matrix adjustedMatrix = highamImplementation(matrix, maxIterations, tolerance);
                   jd = SymmetricSchurDecomposition(adjustedMatrix);
                   eigenValues = jd.eigenvalues();
