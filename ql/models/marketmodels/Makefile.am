@@ -41,7 +41,6 @@ libMarketModels_la_SOURCES = \
     parametricswapexercise.cpp \
     proxygreekengine.cpp \
     swapbasissystem.cpp \
-    swapforwardconversionmatrix.cpp \
     swapforwardmappings.cpp \
     upperboundengine.cpp \
     utilities.cpp
