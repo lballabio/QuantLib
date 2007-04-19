@@ -59,25 +59,32 @@ namespace QuantLib {
             fwds[i] = (ds[i]-ds[i+1])/(ds[i+1]*taus[i]);
     }
 
-    void coterminalFromDiscountRatios(const Size firstValidIndex,
-                                      const std::vector<DiscountFactor>& ds,
-                                      const std::vector<Time>& taus,
-                                      std::vector<Rate>& cotSwapRates,
-                                      std::vector<Real>& cotSwapAnnuities) {
+    void coterminalFromDiscountRatios(
+                    const Size firstValidIndex,
+                    const std::vector<DiscountFactor>& discountFactors,
+                    const std::vector<Time>& taus,
+                    std::vector<Rate>& cotSwapRates,
+                    std::vector<Real>& cotSwapAnnuities) 
+    {
         Size nCotSwapRates = cotSwapRates.size();
         QL_REQUIRE(taus.size()==nCotSwapRates,
                    "taus.size()!=cotSwapRates.size()");
         QL_REQUIRE(cotSwapAnnuities.size()==nCotSwapRates,
                    "cotSwapAnnuities.size()!=cotSwapRates.size()");
-        QL_REQUIRE(ds.size()==nCotSwapRates+1,
-                   "ds.size()!=cotSwapRates.size()+1");
+        QL_REQUIRE(discountFactors.size()==nCotSwapRates+1,
+                   "discountFactors.size()!=cotSwapRates.size()+1");
 
-        cotSwapAnnuities[nCotSwapRates-1] = taus[nCotSwapRates-1]*ds[nCotSwapRates];
-        cotSwapRates[nCotSwapRates-1] = (ds[nCotSwapRates-1]-ds[nCotSwapRates])/cotSwapAnnuities[nCotSwapRates-1];
+        cotSwapAnnuities[nCotSwapRates-1] = 
+            taus[nCotSwapRates-1]*discountFactors[nCotSwapRates];
+        cotSwapRates[nCotSwapRates-1] = 
+            (discountFactors[nCotSwapRates-1]-discountFactors[nCotSwapRates])
+                /cotSwapAnnuities[nCotSwapRates-1];
 
         for (Size i=nCotSwapRates-1; i>firstValidIndex; --i) {
-            cotSwapAnnuities[i-1] = cotSwapAnnuities[i] + taus[i-1] * ds[i];
-            cotSwapRates[i-1] = (ds[i-1]-ds[nCotSwapRates])/cotSwapAnnuities[i-1];
+            cotSwapAnnuities[i-1] = cotSwapAnnuities[i] + taus[i-1] * discountFactors[i];
+            cotSwapRates[i-1] = 
+                (discountFactors[i-1]-discountFactors[nCotSwapRates])
+                /cotSwapAnnuities[i-1];
         }
     }
 
