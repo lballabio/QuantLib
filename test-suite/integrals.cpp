@@ -35,9 +35,10 @@ QL_BEGIN_TEST_LOCALS(IntegralTest)
 Real tolerance = 1.0e-4;
 
 
-template <class T, class F>
+template <class T>
 void testSingle(const T& I, const std::string& tag,
-                const F& f, Real xMin, Real xMax, Real expected) {
+                const boost::function<Real (Real)>& f, 
+                Real xMin, Real xMax, Real expected) {
     Real calculated = I(f,xMin,xMax);
     if (std::fabs(calculated-expected) > tolerance) {
 
@@ -96,6 +97,16 @@ void IntegralTest::testSimpson() {
 void IntegralTest::testKronrod() {
     BOOST_MESSAGE("Testing Gauss-Kronrod integration...");
     testSeveral(KronrodIntegral(tolerance));
+}
+
+void IntegralTest::testKronrodNonAdaptive() {
+    BOOST_MESSAGE("Testing non adaptive Gauss-Kronrod integration...");
+    Real precision = tolerance;
+    Size maxEvaluations = 87;
+    Real relativeAccuracy = 1.0; // not really tested
+    GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
+                                                    relativeAccuracy);
+    testSeveral(gaussKronrodNonAdaptive);
 }
 
 
