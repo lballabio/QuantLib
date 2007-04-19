@@ -21,36 +21,35 @@
 
 namespace QuantLib {
 
-	Integrator::Integrator(Real absoluteAccuracy, Size maxEvaluations):
-		absoluteAccuracy_(absoluteAccuracy), 
-		maxEvaluations_(maxEvaluations){}
+    Integrator::Integrator(Real absoluteAccuracy, Size maxEvaluations):
+        absoluteAccuracy_(absoluteAccuracy),
+        maxEvaluations_(maxEvaluations){}
 
-    void Integrator::setAbsoluteAccuracy(Real accuracy) { 
-		absoluteAccuracy_= accuracy; 
-	}
+    void Integrator::setAbsoluteAccuracy(Real accuracy) {
+        absoluteAccuracy_= accuracy;
+    }
 
-    void Integrator::setMaxEvaluations(Size maxEvaluations) { 
+    void Integrator::setMaxEvaluations(Size maxEvaluations) {
         maxEvaluations_ = maxEvaluations;
     }
 
-	Real Integrator::absoluteAccuracy() const {return absoluteAccuracy_;}
+    Real Integrator::absoluteAccuracy() const {return absoluteAccuracy_;}
 
-	Size Integrator::maxEvaluations() const { return maxEvaluations_; }
+    Size Integrator::maxEvaluations() const { return maxEvaluations_; }
 
     Real Integrator::absoluteError() const { return absoluteError_; }
 
-	void Integrator::setAbsoluteError(Real error) const { absoluteError_ = error; }
+    void Integrator::setAbsoluteError(Real error) const { absoluteError_ = error; }
 
-	Size Integrator::numberOfEvalutions() const { return maxEvaluations_;}
+    Size Integrator::numberOfEvalutions() const { return maxEvaluations_;}
 
-	void Integrator::setNumberOfEvalutions(Size nbEvalutions) const { 
-		nbEvalutions_ = nbEvalutions;
-	}
+    void Integrator::setNumberOfEvalutions(Size nbEvalutions) const {
+        nbEvalutions_ = nbEvalutions;
+    }
 
-	bool Integrator::integrationSuccess() const {
-		return 	(nbEvalutions_ <= maxEvaluations_ 
-					&& absoluteError_ <= absoluteAccuracy_);
-	}; 
-		
-	
+    bool Integrator::integrationSuccess() const {
+        return  (nbEvalutions_ <= maxEvaluations_
+                    && absoluteError_ <= absoluteAccuracy_);
+    }
+
 }
