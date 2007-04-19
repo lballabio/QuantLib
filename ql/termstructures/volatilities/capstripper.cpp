@@ -24,9 +24,8 @@
 #include <ql/termstructures/volatilities/capstripper.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/makecapfloor.hpp>
-#include <ql/termstructures/volatilities/capletvolatilitiesstructures.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/types.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 
 namespace QuantLib {
 

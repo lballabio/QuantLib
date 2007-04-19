@@ -26,7 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/timeseries.hpp>
-#include <vector>
+
 
 namespace QuantLib {
 

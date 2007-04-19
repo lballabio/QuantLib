@@ -25,19 +25,13 @@
 #define quantlib_interpolated_caplet_variance_curve_hpp
 
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/capvolstructures.hpp>
-#include <ql/math/matrix.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/termstructures/volatilities/capletvolatilitiesstructures.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/types.hpp>
-#include <ql/daycounter.hpp>
-#include <ql/quote.hpp>
 
 
 namespace QuantLib {
+    class IborIndex;
+    class YieldTermStructure;
+    class Quote;
 
     typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapMatrix;
 
@@ -62,7 +56,7 @@ namespace QuantLib {
         //@{
         void performCalculations () const;
         void update() {
-            TermStructure::update();
+            //TermStructure::update();
             LazyObject::update();
         };
         //@}

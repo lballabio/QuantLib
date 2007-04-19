@@ -26,7 +26,6 @@
 
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/time/period.hpp>
-#include <vector>
 
 namespace QuantLib {
 

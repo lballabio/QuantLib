@@ -25,12 +25,9 @@
 #define quantlib_cms_market_h
 
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/simplex.hpp>
 

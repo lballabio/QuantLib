@@ -25,6 +25,8 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
+#include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 using namespace QuantLib;
 

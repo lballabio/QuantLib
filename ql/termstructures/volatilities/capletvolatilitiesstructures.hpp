@@ -25,14 +25,15 @@
 #define caplet_volatilities_structures_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/termstructures/volatilities/smilesection.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 
     class CapFloor;
-
+    class Matrix;
+    class BilinearInterpolation;
+    class SmileSection;
 
     typedef std::vector<boost::shared_ptr<SmileSection> > \
         SmileSectionInterfaceVector;
