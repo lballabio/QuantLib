@@ -3860,12 +3860,6 @@
 					RelativePath=".\ql\models\marketmodels\swapbasissystem.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\swapforwardconversionmatrix.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.cpp">
 				</File>
 				<File
