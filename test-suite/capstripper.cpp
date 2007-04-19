@@ -29,6 +29,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/volatilities/capstripper.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 
 #include <iostream>
 
