@@ -42,7 +42,6 @@ class EuropeanOptionTest {
     static void testJOSHIBinomialEngines();
     static void testFdEngines();
     static void testIntegralEngines();
-    static void testFdGreeks();
     static void testQmcEngines();
     static void testMcEngines();
     static void testPriceCurve();

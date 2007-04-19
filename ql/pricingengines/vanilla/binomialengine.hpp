@@ -4,6 +4,7 @@
  Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
+ Copyright (C) 2007 Affine Group Limited
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,8 +40,16 @@ namespace QuantLib {
     //! Pricing engine for vanilla options using binomial trees
     /*! \ingroup vanillaengines
 
-        \test the correctness of the returned value is tested by
+        \test the correctness of the returned values is tested by
               checking it against analytic results.
+
+        \warning the calculated theta is currently not accurate.
+                 Investigation is required.
+
+        \todo Greeks could be made more accurate by building a tree so
+              that it has three points at the current time. The value
+              would be fetched from the middle one, while the two side
+              points would be used for estimating partial derivatives.
     */
     template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
@@ -109,14 +118,46 @@ namespace QuantLib {
         boost::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
                                         payoff->strike()));
 
-        boost::shared_ptr<Lattice> lattice(
+        boost::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, timeSteps_));
 
         DiscretizedVanillaOption option(arguments_);
 
         option.initialize(lattice, maturity);
+
+        // Partial derivatives calculated from various points in the
+        // binomial tree (Odegaard)
+
+        // Rollback to third-last step, and get underlying price (s2) &
+        // option values (p2) at this point
+        option.rollback(grid[2]);
+        Array va2(option.values());
+        QL_ENSURE(va2.size() == 3, "Expect 3 nodes in grid at second step");
+        Real p2h = va2[2]; // high-price
+        Real p2m = va2[1]; // mid-price
+        Real s2 = lattice->underlying(2, 2); // high price
+
+        // Rollback to second-last step, and get option value (p1) at
+        // this point
+        option.rollback(grid[1]);
+        Array va(option.values());
+        QL_ENSURE(va.size() == 2, "Expect 2 nodes in grid at first step");
+        Real p1 = va[1];
+
+        // Finally, rollback to t=0
         option.rollback(0.0);
-        results_.value = option.presentValue();
+        Real p0 = option.presentValue();
+        Real s1 = lattice->underlying(1, 1);
+
+        // Calculate partial derivatives
+        Real delta0 = (p1-p0)/(s1-s0);   // dp/ds
+        Real delta1 = (p2h-p1)/(s2-s1);  // dp/ds
+
+        // Store results
+        results_.value = p0;
+        results_.delta = delta0;
+        results_.gamma = 2.0*(delta1-delta0)/(s2-s0);    //d(delta)/ds
+        results_.theta = (p2m-p0)/grid[2];               //dp/dT
     }
 
 }

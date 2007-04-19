@@ -49,7 +49,7 @@ using namespace boost::unit_test_framework;
                << "    reference date:   " << today << "\n" \
                << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
-               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    expected " << greekName << ":   " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
                << "    error:            " << error << "\n" \
                << "    tolerance:        " << tolerance);
@@ -574,7 +574,7 @@ void EuropeanOptionTest::testGreekValues() {
 
 void EuropeanOptionTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing European option greeks...");
+    BOOST_MESSAGE("Testing analytic European option greeks...");
 
     QL_TEST_BEGIN
 
@@ -929,13 +929,15 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
 QL_BEGIN_TEST_LOCALS(EuropeanOptionTest)
 
-void testEngineConsistency(EngineType *engines,
-                           Size N,
+void testEngineConsistency(EngineType engine,
                            Size binomialSteps,
                            Size samples,
-                           Real tolerance) {
+                           std::map<std::string,Real> tolerance,
+                           bool testGreeks = false) {
 
     QL_TEST_START_TIMING
+
+    std::map<std::string,Real> calculated, expected;
 
     // test options
     Option::Type types[] = { Option::Call, Option::Put };
@@ -971,14 +973,10 @@ void testEngineConsistency(EngineType *engines,
               boost::shared_ptr<VanillaOption> refOption =
                   makeOption(payoff, exercise, spot, qTS, rTS, volTS,
                              Analytic, Null<Size>(), Null<Size>());
-              // options to check
-              std::map<EngineType,boost::shared_ptr<VanillaOption> > options;
-              for (Size ii=0; ii<N; ii++) {
-                  options[engines[ii]] =
-                      makeOption(payoff, exercise, spot,
-                                 qTS, rTS, volTS, engines[ii],
-                                 binomialSteps, samples);
-              }
+              // option to check
+              boost::shared_ptr<VanillaOption> option =
+                  makeOption(payoff, exercise, spot, qTS, rTS, volTS,
+                             engine, binomialSteps, samples);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
                 for (Size m=0; m<LENGTH(qRates); m++) {
@@ -993,33 +991,32 @@ void testEngineConsistency(EngineType *engines,
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      Real refValue = refOption->NPV();
-                      for (Size ii=0; ii<N; ii++) {
-                          Real value = options[engines[ii]]->NPV();
-                          Real relErr = relativeError(value,refValue,u);
-                          if (relErr > tolerance) {
-                              BOOST_ERROR(
-                                  "European " << types[i] << " option :\n"
-                                  << "    spot value: " << u << "\n"
-                                  << "    strike:           "
-                                  << strikes[j] << "\n"
-                                  << "    dividend yield:   "
-                                  << io::rate(q) << "\n"
-                                  << "    risk-free rate:   "
-                                  << io::rate(r) << "\n"
-                                  << "    reference date:   " << today << "\n"
-                                  << "    maturity:         " << exDate << "\n"
-                                  << "    volatility:       "
-                                  << io::volatility(v) << "\n\n"
-                                  << "    analytic value: "
-                                  << refValue << "\n"
-                                  << "    "
-                                  << engineTypeToString(engines[ii]) << ":  "
-                                  << value << "\n"
-                                  << "    relative error: " \
-                                  << relErr << "\n"
-                                  << "         tolerance: " \
-                                  << tolerance);
+                      expected.clear();
+                      calculated.clear();
+
+                      expected["value"] = refOption->NPV();
+                      calculated["value"] = option->NPV();
+
+                      if (testGreeks && option->NPV() > spot->value()*1.0e-5) {
+                           expected["delta"] = refOption->delta();
+                           expected["gamma"] = refOption->gamma();
+                           expected["theta"] = refOption->theta();
+                           calculated["delta"] = option->delta();
+                           calculated["gamma"] = option->gamma();
+                           calculated["theta"] = option->theta();
+                      }
+                      std::map<std::string,Real>::iterator it;
+                      for (it = calculated.begin();
+                           it != calculated.end(); ++it) {
+                          std::string greek = it->first;
+                          Real expct = expected  [greek],
+                               calcl = calculated[greek],
+                               tol   = tolerance [greek];
+                          Real error = relativeError(expct,calcl,u);
+                          if (error > tol) {
+                              REPORT_FAILURE(greek, payoff, exercise,
+                                             u, q, r, today, v,
+                                             expct, calcl, error, tol);
                           }
                       }
                     }
@@ -1039,11 +1036,15 @@ void EuropeanOptionTest::testJRBinomialEngines() {
     BOOST_MESSAGE("Testing JR binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { JR };
+    EngineType engine = JR;
     Size steps = 251;
     Size samples = Null<Size>();
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.002;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 1.0;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testCRRBinomialEngines() {
@@ -1051,11 +1052,15 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
     BOOST_MESSAGE("Testing CRR binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { CRR };
+    EngineType engine = CRR;
     Size steps = 501;
     Size samples = Null<Size>();
-    Real relativeTol = 0.02;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.02;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 1.0;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testEQPBinomialEngines() {
@@ -1063,11 +1068,15 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
     BOOST_MESSAGE("Testing EQP binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { EQP };
+    EngineType engine = EQP;
     Size steps = 501;
     Size samples = Null<Size>();
-    Real relativeTol = 0.02;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.02;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 1.0;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testTGEOBinomialEngines() {
@@ -1075,11 +1084,15 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
     BOOST_MESSAGE("Testing TGEO binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { TGEO };
+    EngineType engine = TGEO;
     Size steps = 251;
     Size samples = Null<Size>();
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.002;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 1.0e-2;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testTIANBinomialEngines() {
@@ -1087,11 +1100,15 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
     BOOST_MESSAGE("Testing TIAN binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { TIAN };
+    EngineType engine = TIAN;
     Size steps = 251;
     Size samples = Null<Size>();
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.002;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 1.5;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testLRBinomialEngines() {
@@ -1099,11 +1116,15 @@ void EuropeanOptionTest::testLRBinomialEngines() {
     BOOST_MESSAGE("Testing LR binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { LR };
+    EngineType engine = LR;
     Size steps = 251;
     Size samples = Null<Size>();
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 1.0e-6;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 0.3;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testJOSHIBinomialEngines() {
@@ -1111,11 +1132,15 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
     BOOST_MESSAGE("Testing Joshi binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { JOSHI };
+    EngineType engine = JOSHI;
     Size steps = 251;
     Size samples = Null<Size>();
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 1.0e-7;
+    relativeTol["delta"] = 1.0e-3;
+    relativeTol["gamma"] = 1.0e-4;
+    relativeTol["theta"] = 0.3;
+    testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
 void EuropeanOptionTest::testFdEngines() {
@@ -1123,12 +1148,15 @@ void EuropeanOptionTest::testFdEngines() {
     BOOST_MESSAGE("Testing finite-difference European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { FiniteDifferences };
+    EngineType engine = FiniteDifferences;
     Size timeSteps = 300;
     Size gridPoints = 300;
-    Real relativeTol = 0.0001;
-    testEngineConsistency(engines,LENGTH(engines),
-                          timeSteps,gridPoints,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 1.0e-4;
+    relativeTol["delta"] = 1.0e-6;
+    relativeTol["gamma"] = 1.0e-6;
+    relativeTol["theta"] = 1.0e-4;
+    testEngineConsistency(engine,timeSteps,gridPoints,relativeTol,true);
 }
 
 void EuropeanOptionTest::testIntegralEngines() {
@@ -1136,12 +1164,12 @@ void EuropeanOptionTest::testIntegralEngines() {
     BOOST_MESSAGE("Testing integral engines "
                   "against analytic results...");
 
-    EngineType engines[] = { Integral };
+    EngineType engine = Integral;
     Size timeSteps = 300;
     Size gridPoints = 300;
-    Real relativeTol = 0.0001;
-    testEngineConsistency(engines,LENGTH(engines),
-                          timeSteps,gridPoints,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.0001;
+    testEngineConsistency(engine,timeSteps,gridPoints,relativeTol);
 }
 
 void EuropeanOptionTest::testMcEngines() {
@@ -1149,11 +1177,12 @@ void EuropeanOptionTest::testMcEngines() {
     BOOST_MESSAGE("Testing Monte Carlo European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { PseudoMonteCarlo };
+    EngineType engine = PseudoMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 40000;
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.01;
+    testEngineConsistency(engine,steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testQmcEngines() {
@@ -1161,125 +1190,12 @@ void EuropeanOptionTest::testQmcEngines() {
     BOOST_MESSAGE("Testing Quasi Monte Carlo European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { QuasiMonteCarlo };
+    EngineType engine = QuasiMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
-    Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
-}
-
-void EuropeanOptionTest::testFdGreeks() {
-
-    BOOST_MESSAGE("Testing finite-difference European option greeks...");
-
-    QL_TEST_BEGIN
-
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"]  = 1.0e-3;
-    tolerance["gamma"]  = 1.0e-5;
-    tolerance["theta"]  = 2.0e-3;
-
-    Option::Type types[] = { Option::Call, Option::Put };
-    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Time residualTimes[] = { 1.0, 2.0 };
-    Volatility vols[] = { 0.11, 0.50, 1.20 };
-
-    DayCounter dc = Actual360();
-    Date today = Date::todaysDate();
-    Settings::instance().evaluationDate() = today;
-
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
-
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(strikes); j++) {
-        for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today + timeToDays(residualTimes[k]);
-          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-
-          boost::shared_ptr<StrikedTypePayoff> payoff(
-                                new PlainVanillaPayoff(types[i], strikes[j]));
-
-          boost::shared_ptr<StochasticProcess> stochProcess(
-                            new BlackScholesMertonProcess(Handle<Quote>(spot),
-                                                          qTS, rTS, volTS));
-
-          boost::shared_ptr<PricingEngine> engine(new FDEuropeanEngine);
-          EuropeanOption option(stochProcess, payoff, exercise, engine);
-
-          for (Size l=0; l<LENGTH(underlyings); l++) {
-            for (Size m=0; m<LENGTH(qRates); m++) {
-              for (Size n=0; n<LENGTH(rRates); n++) {
-                for (Size p=0; p<LENGTH(vols); p++) {
-                    Real u = underlyings[l];
-                    Rate q = qRates[m],
-                         r = rRates[n];
-                    Volatility v = vols[p];
-                    spot->setValue(u);
-                    qRate->setValue(q);
-                    rRate->setValue(r);
-                    vol->setValue(v);
-
-                    Real value = option.NPV();
-                    calculated["delta"]  = option.delta();
-                    calculated["gamma"]  = option.gamma();
-                    calculated["theta"]  = option.theta();
-
-                    if (value > spot->value()*1.0e-5) {
-                        // perturb spot and get delta and gamma
-                        Real du = u*1.0e-4;
-                        spot->setValue(u+du);
-                        Real value_p = option.NPV(),
-                             delta_p = option.delta();
-                        spot->setValue(u-du);
-                        Real value_m = option.NPV(),
-                             delta_m = option.delta();
-                        spot->setValue(u);
-                        expected["delta"] = (value_p - value_m)/(2*du);
-                        expected["gamma"] = (delta_p - delta_m)/(2*du);
-
-                        // perturb date and get theta
-                        Time dT = dc.yearFraction(today-1, today+1);
-                        Settings::instance().evaluationDate() = today-1;
-                        value_m = option.NPV();
-                        Settings::instance().evaluationDate() = today+1;
-                        value_p = option.NPV();
-                        Settings::instance().evaluationDate() = today;
-                        expected["theta"] = (value_p - value_m)/dT;
-
-                        // compare
-                        std::map<std::string,Real>::iterator it;
-                        for (it = calculated.begin();
-                             it != calculated.end(); ++it) {
-                            std::string greek = it->first;
-                            Real expct = expected  [greek],
-                                 calcl = calculated[greek],
-                                 tol   = tolerance [greek];
-                            Real error = relativeError(expct,calcl,u);
-                            if (error>tol) {
-                                REPORT_FAILURE(greek, payoff, exercise,
-                                               u, q, r, today, v,
-                                               expct, calcl, error, tol);
-                            }
-                        }
-                    }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    QL_TEST_TEARDOWN
+    std::map<std::string,Real> relativeTol;
+    relativeTol["value"] = 0.01;
+    testEngineConsistency(engine,steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testPriceCurve() {
@@ -1388,7 +1304,6 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testJOSHIBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testIntegralEngines));
-    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdGreeks));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testPriceCurve));
