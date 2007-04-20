@@ -102,8 +102,8 @@ void IntegralTest::testKronrod() {
 void IntegralTest::testKronrodNonAdaptive() {
     BOOST_MESSAGE("Testing non adaptive Gauss-Kronrod integration...");
     Real precision = tolerance;
-    Size maxEvaluations = 87;
-    Real relativeAccuracy = 1.0; // not really tested
+    Size maxEvaluations = 100;
+    Real relativeAccuracy = tolerance;
     GaussKronrodNonAdaptive gaussKronrodNonAdaptive(precision, maxEvaluations,
                                                     relativeAccuracy);
     testSeveral(gaussKronrodNonAdaptive);
@@ -117,6 +117,7 @@ test_suite* IntegralTest::suite() {
     suite->add(BOOST_TEST_CASE(&IntegralTest::testMidPointTrapezoid));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testSimpson));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testKronrod));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testKronrodNonAdaptive));
     return suite;
 }
 
