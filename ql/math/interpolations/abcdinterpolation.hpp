@@ -27,8 +27,8 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/math/optimization/method.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/armijo.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
+//#include <ql/math/optimization/armijo.hpp>
+//#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/utilities/null.hpp>
