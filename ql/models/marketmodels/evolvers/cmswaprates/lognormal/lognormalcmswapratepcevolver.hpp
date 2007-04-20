@@ -33,9 +33,9 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! Predictor-Corrector
-    class CmSwapRatePcEvolver : public MarketModelEvolver {
+    class LogNormalCmSwapRatePcEvolver : public MarketModelEvolver {
       public:
-        CmSwapRatePcEvolver(const Size spanningForwards,
+        LogNormalCmSwapRatePcEvolver(const Size spanningForwards,
                             const boost::shared_ptr<MarketModel>&,
                             const BrownianGeneratorFactory&,
                             const std::vector<Size>& numeraires,

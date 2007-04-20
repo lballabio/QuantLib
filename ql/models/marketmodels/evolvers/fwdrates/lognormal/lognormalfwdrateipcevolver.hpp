@@ -32,9 +32,9 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! Iterative Predictor-Corrector
-    class ForwardRateIpcEvolver : public MarketModelEvolver {
+    class LogNormalFwdRateIpcEvolver : public MarketModelEvolver {
       public:
-        ForwardRateIpcEvolver(const boost::shared_ptr<MarketModel>&,
+        LogNormalFwdRateIpcEvolver(const boost::shared_ptr<MarketModel>&,
                               const BrownianGeneratorFactory&,
                               const std::vector<Size>& numeraires,
                               Size initialStep = 0);

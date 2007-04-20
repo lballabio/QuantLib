@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardrateipcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdrateeulerevolver.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    ForwardRateIpcEvolver::ForwardRateIpcEvolver(
+    LogNormalFwdRateEulerEvolver::LogNormalFwdRateEulerEvolver(
                            const boost::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
@@ -35,18 +35,15 @@ namespace QuantLib {
     : marketModel_(marketModel),
       numeraires_(numeraires),
       initialStep_(initialStep),
-      n_(marketModel->numberOfRates()), F_(marketModel->numberOfFactors()),
+      n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
       logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
-      initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
-      rateTaus_(marketModel->evolution().rateTaus()),
+      initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
       alive_(marketModel->evolution().firstAliveRate())
     {
         checkCompatibility(marketModel->evolution(), numeraires);
-        QL_REQUIRE(isInTerminalMeasure(marketModel->evolution(), numeraires),
-                   "terminal measure required for ipc ");
 
         Size steps = marketModel->evolution().numberOfSteps();
 
@@ -57,16 +54,17 @@ namespace QuantLib {
         calculators_.reserve(steps);
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
-            const Matrix& A = marketModel->pseudoRoot(j);
+            const Matrix& A = marketModel_->pseudoRoot(j);
             calculators_.push_back(LMMDriftCalculator(A,
                                                    displacements_,
                                                    marketModel->evolution().rateTaus(),
                                                    numeraires[j],
                                                    alive_[j]));
-            const Matrix& C = marketModel->covariance(j);
             std::vector<Real> fixed(n_);
             for (Size k=0; k<n_; ++k) {
-                Real variance = C[k][k];
+                Real variance =
+                    std::inner_product(A.row_begin(k), A.row_end(k),
+                                       A.row_begin(k), 0.0);
                 fixed[k] = -0.5*variance;
             }
             fixedDrifts_.push_back(fixed);
@@ -75,11 +73,11 @@ namespace QuantLib {
         setForwards(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& ForwardRateIpcEvolver::numeraires() const {
+    const std::vector<Size>& LogNormalFwdRateEulerEvolver::numeraires() const {
         return numeraires_;
     }
 
-    void ForwardRateIpcEvolver::setForwards(const std::vector<Real>& forwards)
+    void LogNormalFwdRateEulerEvolver::setForwards(const std::vector<Real>& forwards)
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
@@ -89,51 +87,46 @@ namespace QuantLib {
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
-    void ForwardRateIpcEvolver::setInitialState(const CurveState& cs) {
+    void LogNormalFwdRateEulerEvolver::setInitialState(const CurveState& cs) {
         setForwards(cs.forwardRates());
     }
 
-    Real ForwardRateIpcEvolver::startNewPath() {
+    Real LogNormalFwdRateEulerEvolver::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real ForwardRateIpcEvolver::advanceStep()
+    Real LogNormalFwdRateEulerEvolver::advanceStep()
     {
-        // we're going from T1 to T2:
+        // we're going from T1 to T2
 
         // a) compute drifts D1 at T1;
         if (currentStep_ > initialStep_) {
-            calculators_[currentStep_].computePlain(forwards_, drifts1_);
+            calculators_[currentStep_].compute(forwards_, drifts1_);
         } else {
             std::copy(initialDrifts_.begin(), initialDrifts_.end(),
                       drifts1_.begin());
         }
 
+        // b) evolve forwards up to T2 using D1;
         Real weight = generator_->nextStep(brownians_);
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
-        const Matrix& C = marketModel_->covariance(currentStep_);
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
-        Integer alive = alive_[currentStep_];
-        Real drifts2;
-        for (Integer i=n_-1; i>=alive; --i) {
-            drifts2 = 0.0;
-            for (Size j=i+1; j<n_; ++j) {
-                drifts2 -= g_[j]*C[i][j];
-            }
-            logForwards_[i] += 0.5*(drifts1_[i]+drifts2) + fixedDrift[i];
+        Size alive = alive_[currentStep_];
+        for (Size i=alive; i<n_; i++) {
+            logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
                                    brownians_.begin(), 0.0);
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
-            g_[i] = rateTaus_[i]*(forwards_[i]+displacements_[i])/
-                (1.0+rateTaus_[i]*forwards_[i]);
         }
 
-        // update curve state
+        // same as PC evolver with two steps dropped
+
+        // c) update curve state
         curveState_.setOnForwardRates(forwards_);
 
         ++currentStep_;
@@ -141,11 +134,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size ForwardRateIpcEvolver::currentStep() const {
+    Size LogNormalFwdRateEulerEvolver::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& ForwardRateIpcEvolver::currentState() const {
+    const CurveState& LogNormalFwdRateEulerEvolver::currentState() const {
         return curveState_;
     }
 

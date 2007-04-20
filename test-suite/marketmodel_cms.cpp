@@ -25,7 +25,7 @@
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
-#include <ql/models/marketmodels/evolvers/cmswaprates/lognormal/cmswapratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/cmswaprates/lognormal/lognormalcmswapratepcevolver.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
@@ -351,7 +351,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     switch (evolverType) {
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                CmSwapRatePcEvolver(spanningForwards,
+                LogNormalCmSwapRatePcEvolver(spanningForwards,
                                     marketModel, generatorFactory,
                                     numeraires,
                                     initialStep));

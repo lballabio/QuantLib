@@ -45,11 +45,11 @@
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/parametricexerciseadapter.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/normal/forwardratenormalpcevolver.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardrateipcevolver.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardrateeulerevolver.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardrateconstrainedeuler.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/normal/normalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdrateipcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdrateeulerevolver.hpp>
+#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdrateconstrainedeulerevolver.hpp>
 #include <ql/models/marketmodels/exercisestrategies/swapratetrigger.hpp>
 #include <ql/models/marketmodels/exercisestrategies/lsstrategy.hpp>
 #include <ql/models/marketmodels/exercisevalues/nothingexercisevalue.hpp>
@@ -397,15 +397,15 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     switch (evolverType) {
         case Ipc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRateIpcEvolver(marketModel, generatorFactory,
+                LogNormalFwdRateIpcEvolver(marketModel, generatorFactory,
                                       numeraires, initialStep));
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRatePcEvolver(marketModel, generatorFactory,
+                LogNormalFwdRatePcEvolver(marketModel, generatorFactory,
                                      numeraires, initialStep));
         case NormalPc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                ForwardRateNormalPcEvolver(marketModel, generatorFactory,
+                NormalFwdRatePcEvolver(marketModel, generatorFactory,
                                      numeraires, initialStep));
         default:
             QL_FAIL("unknown MarketModelEvolver type");
@@ -1821,7 +1821,7 @@ void MarketModelTest::testGreeks() {
                                         marketModels[j]);
 
                     boost::shared_ptr<MarketModelEvolver> evolver(new
-                                 ForwardRateEulerEvolver(marketModel,
+                                 LogNormalFwdRateEulerEvolver(marketModel,
                                                          generatorFactory,
                                                          numeraires));
                     SequenceStatistics stats(product.numberOfProducts());
@@ -1855,7 +1855,7 @@ void MarketModelTest::testGreeks() {
                                         marketModels[j], -forwardBump);
                     deltaGammaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
-                            ForwardRateConstrainedEuler(marketModel,
+                            LogNormalFwdRateConstrainedEulerEvolver(marketModel,
                                                         generatorFactory,
                                                         numeraires)));
                     deltaGammaEvolvers.back()->setConstraintType(
@@ -1865,7 +1865,7 @@ void MarketModelTest::testGreeks() {
                                         marketModels[j], forwardBump);
                     deltaGammaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
-                            ForwardRateConstrainedEuler(marketModel,
+                            LogNormalFwdRateConstrainedEulerEvolver(marketModel,
                                                         generatorFactory,
                                                         numeraires)));
                     deltaGammaEvolvers.back()->setConstraintType(
@@ -1892,7 +1892,7 @@ void MarketModelTest::testGreeks() {
                                         marketModels[j], 0.0, -volBump);
                     vegaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
-                            ForwardRateConstrainedEuler(marketModel,
+                            LogNormalFwdRateConstrainedEulerEvolver(marketModel,
                                                         generatorFactory,
                                                         numeraires)));
                     vegaEvolvers.back()->setConstraintType(
@@ -1902,7 +1902,7 @@ void MarketModelTest::testGreeks() {
                                         marketModels[j], 0.0, volBump);
                     vegaEvolvers.push_back(
                         boost::shared_ptr<ConstrainedEvolver>(new
-                            ForwardRateConstrainedEuler(marketModel,
+                            LogNormalFwdRateConstrainedEulerEvolver(marketModel,
                                                         generatorFactory,
                                                         numeraires)));
                     vegaEvolvers.back()->setConstraintType(

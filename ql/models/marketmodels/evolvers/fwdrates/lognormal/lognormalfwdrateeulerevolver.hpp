@@ -32,9 +32,9 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! Euler
-    class ForwardRateEulerEvolver : public MarketModelEvolver {
+    class LogNormalFwdRateEulerEvolver : public MarketModelEvolver {
       public:
-        ForwardRateEulerEvolver(const boost::shared_ptr<MarketModel>&,
+        LogNormalFwdRateEulerEvolver(const boost::shared_ptr<MarketModel>&,
                                 const BrownianGeneratorFactory&,
                                 const std::vector<Size>& numeraires,
                                 Size initialStep = 0);

@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,13 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#ifndef quantlib_coterminalswap_rate_pc_evolver_hpp
+#define quantlib_coterminalswap_rate_pc_evolver_hpp
 
-#ifndef quantlib_forward_rate_euler_constrained_evolver_hpp
-#define quantlib_forward_rate_euler_constrained_evolver_hpp
-
-#include <ql/models/marketmodels/marketmodelconstrainedevolver.hpp>
-#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
+#include <ql/models/marketmodels/marketmodelevolver.hpp>
+#include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
+#include <ql/models/marketmodels/driftcomputation/smmdriftcalculator.hpp>
 
 namespace QuantLib {
 
@@ -32,23 +31,13 @@ namespace QuantLib {
     class BrownianGenerator;
     class BrownianGeneratorFactory;
 
-    //! euler stepping
-    class ForwardRateConstrainedEuler : public ConstrainedEvolver
-        {
+    //! Predictor-Corrector
+    class LogNormalCotSwapRatePcEvolver : public MarketModelEvolver {
       public:
-        ForwardRateConstrainedEuler(const boost::shared_ptr<MarketModel>&,
+        LogNormalCotSwapRatePcEvolver(const boost::shared_ptr<MarketModel>&,
                                     const BrownianGeneratorFactory&,
                                     const std::vector<Size>& numeraires,
                                     Size initialStep = 0);
-        //! \name MarketModelConstrainedEvolver interface
-        //@{
-        virtual void setConstraintType(
-            const std::vector<Size>& startIndexOfSwapRate,
-            const std::vector<Size>& endIndexOfSwapRate);
-        virtual void setThisConstraint(
-            const std::vector<Rate>& rateConstraints,
-            const std::vector<bool>& isConstraintActive);
-        //@}
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -59,36 +48,24 @@ namespace QuantLib {
         void setInitialState(const CurveState&);
         //@}
       private:
-        void setForwards(const std::vector<Real>& forwards);
+        void setCoterminalSwapRates(const std::vector<Real>& swapRates);
         // inputs
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
-
-        std::vector<Size> startIndexOfSwapRate_;
-        std::vector<Size> endIndexOfSwapRate_;
-
-        //often changing inputs
-        std::vector<Rate> rateConstraints_;
-        std::vector<bool> isConstraintActive_;
-
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
-        std::vector<std::vector<Real> > variances_;
-
-        // working variables
-        std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
-                                                                                          // step first index
+         // working variables
         Size n_, F_;
-        LMMCurveState curveState_;
+        CoterminalSwapCurveState curveState_;
         Size currentStep_;
-        std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
-        std::vector<Real> drifts1_, initialDrifts_;
+        std::vector<Rate> swapRates_, displacements_, logSwapRates_, initialLogSwapRates_;
+        std::vector<Real> drifts1_, drifts2_, initialDrifts_;
         std::vector<Real> brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
-         // helper classes
-        std::vector<LMMDriftCalculator> calculators_;
+        // helper classes
+        std::vector<SMMDriftCalculator> calculators_;
     };
 
 }

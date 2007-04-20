@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_forward_rate_normal_pc_evolver_hpp
-#define quantlib_forward_rate_normal_pc_evolver_hpp
+#ifndef quantlib_forward_rate_pc_evolver_hpp
+#define quantlib_forward_rate_pc_evolver_hpp
 
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/models/marketmodels/driftcomputation/lmmnormaldriftcalculator.hpp>
+#include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 
 namespace QuantLib {
 
@@ -32,12 +32,12 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! Predictor-Corrector
-    class ForwardRateNormalPcEvolver : public MarketModelEvolver {
+    class LogNormalFwdRatePcEvolver : public MarketModelEvolver {
       public:
-        ForwardRateNormalPcEvolver(const boost::shared_ptr<MarketModel>&,
-                                   const BrownianGeneratorFactory&,
-                                   const std::vector<Size>& numeraires,
-                                   Size initialStep = 0);
+        LogNormalFwdRatePcEvolver(const boost::shared_ptr<MarketModel>&,
+                             const BrownianGeneratorFactory&,
+                             const std::vector<Size>& numeraires,
+                             Size initialStep = 0);
         //! \name MarketModelEvolver interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -54,16 +54,18 @@ namespace QuantLib {
         std::vector<Size> numeraires_;
         Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
+        // fixed variables
+        std::vector<std::vector<Real> > fixedDrifts_;
          // working variables
         Size n_, F_;
         LMMCurveState curveState_;
         Size currentStep_;
-        std::vector<Rate> forwards_, initialForwards_;
+        std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
         std::vector<Real> drifts1_, drifts2_, initialDrifts_;
         std::vector<Real> brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
-        std::vector<LMMNormalDriftCalculator> calculators_;
+        std::vector<LMMDriftCalculator> calculators_;
     };
 
 }

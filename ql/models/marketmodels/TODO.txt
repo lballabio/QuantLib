@@ -1,5 +1,6 @@
 
 GENERAL refactoring/review
+- export all evolvers to Excel
 - Get LMM code in the same use format as other code via instrument classes,
   from LMM -> QL::INSTRUMENT -> EXCEL
 - check for null vectors
