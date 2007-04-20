@@ -336,6 +336,7 @@ AC_CONFIG_FILES([
     ql/legacy/libormarketmodels/Makefile
     ql/math/Makefile
     ql/math/distributions/Makefile
+    ql/math/matrixutilities/Makefile
     ql/math/integrals/Makefile
     ql/math/interpolations/Makefile
     ql/math/optimization/Makefile
