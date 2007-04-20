@@ -10,7 +10,7 @@ nobase_this_include_HEADERS = \
 	lognormalfwdrateeulerconstrained.hpp \
 	lognormalfwdrateipc.hpp \
 	lognormalfwdratepc.hpp \
-	normalfwdratenormalpc.hpp
+	normalfwdratepc.hpp
 
 libMarketModelsEvolvers_la_SOURCES = \
 	lognormalcmswapratepc.cpp \
@@ -19,7 +19,7 @@ libMarketModelsEvolvers_la_SOURCES = \
 	lognormalfwdrateeulerconstrained.cpp \
 	lognormalfwdrateipc.cpp \
 	lognormalfwdratepc.cpp \
-	normalfwdratenormalpc.cpp
+	normalfwdratepc.cpp
 
 noinst_LTLIBRARIES = libMarketModelsEvolvers.la
 
