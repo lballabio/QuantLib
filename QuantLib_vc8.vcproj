@@ -3420,59 +3420,59 @@
 					Name="evolvers"
 					>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepcevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepc.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepcevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcmswapratepc.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcotswapratepcevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcotswapratepc.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcotswapratepcevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalcotswapratepc.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeulerevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeuler.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeulerevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeuler.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeulerevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeulerevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateipcevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateipc.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateipcevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateipc.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdratepcevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdratepc.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdratepcevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdratepc.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepcevolver.cpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepc.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepcevolver.hpp"
+						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepc.hpp"
 						>
 					</File>
 				</Filter>

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/lognormalcmswapratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalcmswapratepc.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    LogNormalCmSwapRatePcEvolver::LogNormalCmSwapRatePcEvolver(
+    LogNormalCmSwapRatePc::LogNormalCmSwapRatePc(
                            const Size spanningForwards,
                            const boost::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
@@ -75,11 +75,11 @@ namespace QuantLib {
         setCMSwapRates(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& LogNormalCmSwapRatePcEvolver::numeraires() const {
+    const std::vector<Size>& LogNormalCmSwapRatePc::numeraires() const {
         return numeraires_;
     }
 
-    void LogNormalCmSwapRatePcEvolver::setCMSwapRates(const std::vector<Real>& swapRates)
+    void LogNormalCmSwapRatePc::setCMSwapRates(const std::vector<Real>& swapRates)
     {
         QL_REQUIRE(swapRates.size()==n_,
                    "mismatch between swapRates and rateTimes");
@@ -90,20 +90,20 @@ namespace QuantLib {
         calculators_[initialStep_].compute(curveState_, initialDrifts_);
     }
 
-    void LogNormalCmSwapRatePcEvolver::setInitialState(const CurveState& cs) {
+    void LogNormalCmSwapRatePc::setInitialState(const CurveState& cs) {
         const CMSwapCurveState* cotcs = dynamic_cast<const CMSwapCurveState*>(&cs);
         const std::vector<Real>& swapRates = cotcs->cmSwapRates(spanningForwards_);
         setCMSwapRates(swapRates);
     }
 
-    Real LogNormalCmSwapRatePcEvolver::startNewPath() {
+    Real LogNormalCmSwapRatePc::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogSwapRates_.begin(), initialLogSwapRates_.end(),
                   logSwapRates_.begin());
         return generator_->nextPath();
     }
 
-    Real LogNormalCmSwapRatePcEvolver::advanceStep()
+    Real LogNormalCmSwapRatePc::advanceStep()
     {
         // we're going from T1 to T2
 
@@ -149,11 +149,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size LogNormalCmSwapRatePcEvolver::currentStep() const {
+    Size LogNormalCmSwapRatePc::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& LogNormalCmSwapRatePcEvolver::currentState() const {
+    const CurveState& LogNormalCmSwapRatePc::currentState() const {
         return curveState_;
     }
 

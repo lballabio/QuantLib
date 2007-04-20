@@ -33,14 +33,14 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! euler stepping
-    class LogNormalFwdRateConstrainedEulerEvolver : public ConstrainedEvolver
+    class LogNormalFwdRateEulerConstrained : public ConstrainedEvolver
         {
       public:
-        LogNormalFwdRateConstrainedEulerEvolver(const boost::shared_ptr<MarketModel>&,
+        LogNormalFwdRateEulerConstrained(const boost::shared_ptr<MarketModel>&,
                                     const BrownianGeneratorFactory&,
                                     const std::vector<Size>& numeraires,
                                     Size initialStep = 0);
-        //! \name MarketModelConstrainedEvolver interface
+        //! \name MarketModelConstrained interface
         //@{
         virtual void setConstraintType(
             const std::vector<Size>& startIndexOfSwapRate,
@@ -49,7 +49,7 @@ namespace QuantLib {
             const std::vector<Rate>& rateConstraints,
             const std::vector<bool>& isConstraintActive);
         //@}
-        //! \name MarketModelEvolver interface
+        //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
         Real startNewPath();

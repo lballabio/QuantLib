@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2006, 2007 Mark Joshi
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,13 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
-#ifndef quantlib_swap_rate_pc_evolver_hpp
-#define quantlib_swap_rate_pc_evolver_hpp
+#ifndef quantlib_coterminalswap_rate_pc_evolver_hpp
+#define quantlib_coterminalswap_rate_pc_evolver_hpp
 
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
-#include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
-#include <ql/models/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
+#include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
+#include <ql/models/marketmodels/driftcomputation/smmdriftcalculator.hpp>
 
 namespace QuantLib {
 
@@ -33,14 +32,13 @@ namespace QuantLib {
     class BrownianGeneratorFactory;
 
     //! Predictor-Corrector
-    class LogNormalCmSwapRatePcEvolver : public MarketModelEvolver {
+    class LogNormalCotSwapRatePc : public MarketModelEvolver {
       public:
-        LogNormalCmSwapRatePcEvolver(const Size spanningForwards,
-                            const boost::shared_ptr<MarketModel>&,
-                            const BrownianGeneratorFactory&,
-                            const std::vector<Size>& numeraires,
-                            Size initialStep = 0);
-        //! \name MarketModelEvolver interface
+        LogNormalCotSwapRatePc(const boost::shared_ptr<MarketModel>&,
+                                    const BrownianGeneratorFactory&,
+                                    const std::vector<Size>& numeraires,
+                                    Size initialStep = 0);
+        //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
         Real startNewPath();
@@ -50,9 +48,8 @@ namespace QuantLib {
         void setInitialState(const CurveState&);
         //@}
       private:
-        void setCMSwapRates(const std::vector<Real>& swapRates);
+        void setCoterminalSwapRates(const std::vector<Real>& swapRates);
         // inputs
-        Size spanningForwards_;
         boost::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
@@ -61,14 +58,14 @@ namespace QuantLib {
         std::vector<std::vector<Real> > fixedDrifts_;
          // working variables
         Size n_, F_;
-        CMSwapCurveState curveState_;
+        CoterminalSwapCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> swapRates_, displacements_, logSwapRates_, initialLogSwapRates_;
         std::vector<Real> drifts1_, drifts2_, initialDrifts_;
         std::vector<Real> brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
-        std::vector<CMSMMDriftCalculator> calculators_;
+        std::vector<SMMDriftCalculator> calculators_;
     };
 
 }

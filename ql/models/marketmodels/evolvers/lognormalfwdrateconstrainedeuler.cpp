@@ -18,7 +18,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateconstrainedeulerevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateconstrainedeuler.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -29,7 +29,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
 
-    LogNormalFwdRateConstrainedEulerEvolver::LogNormalFwdRateConstrainedEulerEvolver(
+    LogNormalFwdRateEulerConstrained::LogNormalFwdRateEulerConstrained(
         const boost::shared_ptr<MarketModel>& marketModel,
         const BrownianGeneratorFactory& factory,
         const std::vector<Size>& numeraires,
@@ -78,11 +78,11 @@ namespace QuantLib {
         setForwards(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& LogNormalFwdRateConstrainedEulerEvolver::numeraires() const {
+    const std::vector<Size>& LogNormalFwdRateEulerConstrained::numeraires() const {
         return numeraires_;
     }
 
-    void LogNormalFwdRateConstrainedEulerEvolver::setForwards(const std::vector<Real>& forwards)
+    void LogNormalFwdRateEulerConstrained::setForwards(const std::vector<Real>& forwards)
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
@@ -92,11 +92,11 @@ namespace QuantLib {
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
-    void LogNormalFwdRateConstrainedEulerEvolver::setInitialState(const CurveState& cs) {
+    void LogNormalFwdRateEulerConstrained::setInitialState(const CurveState& cs) {
         setForwards(cs.forwardRates());
     }
 
-    void LogNormalFwdRateConstrainedEulerEvolver::setConstraintType(
+    void LogNormalFwdRateEulerConstrained::setConstraintType(
         const std::vector<Size>& startIndexOfSwapRate,
         const std::vector<Size>& endIndexOfSwapRate)
     {
@@ -130,7 +130,7 @@ namespace QuantLib {
 
     }
 
-    void LogNormalFwdRateConstrainedEulerEvolver::setThisConstraint(
+    void LogNormalFwdRateEulerConstrained::setThisConstraint(
                                 const std::vector<Rate>& rateConstraints,
                                 const std::vector<bool>& isConstraintActive)
     {
@@ -148,14 +148,14 @@ namespace QuantLib {
     }
 
 
-    Real LogNormalFwdRateConstrainedEulerEvolver::startNewPath() {
+    Real LogNormalFwdRateEulerConstrained::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real LogNormalFwdRateConstrainedEulerEvolver::advanceStep()
+    Real LogNormalFwdRateEulerConstrained::advanceStep()
     {
         // we're going from T1 to T2
 
@@ -224,11 +224,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size LogNormalFwdRateConstrainedEulerEvolver::currentStep() const {
+    Size LogNormalFwdRateEulerConstrained::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& LogNormalFwdRateConstrainedEulerEvolver::currentState() const {
+    const CurveState& LogNormalFwdRateEulerConstrained::currentState() const {
         return curveState_;
     }
 

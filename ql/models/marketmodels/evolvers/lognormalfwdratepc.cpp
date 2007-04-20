@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/lognormalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    LogNormalFwdRatePcEvolver::LogNormalFwdRatePcEvolver(
+    LogNormalFwdRatePc::LogNormalFwdRatePc(
                            const boost::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
@@ -75,11 +75,11 @@ namespace QuantLib {
         setForwards(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& LogNormalFwdRatePcEvolver::numeraires() const {
+    const std::vector<Size>& LogNormalFwdRatePc::numeraires() const {
         return numeraires_;
     }
 
-    void LogNormalFwdRatePcEvolver::setForwards(const std::vector<Real>& forwards)
+    void LogNormalFwdRatePc::setForwards(const std::vector<Real>& forwards)
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
@@ -89,18 +89,18 @@ namespace QuantLib {
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
-    void LogNormalFwdRatePcEvolver::setInitialState(const CurveState& cs) {
+    void LogNormalFwdRatePc::setInitialState(const CurveState& cs) {
         setForwards(cs.forwardRates());
     }
 
-    Real LogNormalFwdRatePcEvolver::startNewPath() {
+    Real LogNormalFwdRatePc::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real LogNormalFwdRatePcEvolver::advanceStep()
+    Real LogNormalFwdRatePc::advanceStep()
     {
         // we're going from T1 to T2
 
@@ -143,11 +143,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size LogNormalFwdRatePcEvolver::currentStep() const {
+    Size LogNormalFwdRatePc::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& LogNormalFwdRatePcEvolver::currentState() const {
+    const CurveState& LogNormalFwdRatePc::currentState() const {
         return curveState_;
     }
 

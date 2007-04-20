@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_forward_rate_normal_pc_evolver_hpp
-#define quantlib_forward_rate_normal_pc_evolver_hpp
+#ifndef quantlib_forward_rate_ipc_evolver_hpp
+#define quantlib_forward_rate_ipc_evolver_hpp
 
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
-#include <ql/models/marketmodels/driftcomputation/lmmnormaldriftcalculator.hpp>
+#include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 
 namespace QuantLib {
 
@@ -31,14 +31,14 @@ namespace QuantLib {
     class BrownianGenerator;
     class BrownianGeneratorFactory;
 
-    //! Predictor-Corrector
-    class NormalFwdRatePcEvolver : public MarketModelEvolver {
+    //! Iterative Predictor-Corrector
+    class LogNormalFwdRateIpc : public MarketModelEvolver {
       public:
-        NormalFwdRatePcEvolver(const boost::shared_ptr<MarketModel>&,
-                                   const BrownianGeneratorFactory&,
-                                   const std::vector<Size>& numeraires,
-                                   Size initialStep = 0);
-        //! \name MarketModelEvolver interface
+        LogNormalFwdRateIpc(const boost::shared_ptr<MarketModel>&,
+                              const BrownianGeneratorFactory&,
+                              const std::vector<Size>& numeraires,
+                              Size initialStep = 0);
+        //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
         Real startNewPath();
@@ -54,16 +54,20 @@ namespace QuantLib {
         std::vector<Size> numeraires_;
         Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
+        // fixed variables
+        std::vector<std::vector<Real> > fixedDrifts_;
          // working variables
         Size n_, F_;
         LMMCurveState curveState_;
         Size currentStep_;
-        std::vector<Rate> forwards_, initialForwards_;
-        std::vector<Real> drifts1_, drifts2_, initialDrifts_;
+        std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
+        std::vector<Real> drifts1_, initialDrifts_, g_;
         std::vector<Real> brownians_, correlatedBrownians_;
+        std::vector<Time> rateTaus_;
         std::vector<Size> alive_;
+        //std::vector<Matrix> C_;
         // helper classes
-        std::vector<LMMNormalDriftCalculator> calculators_;
+        std::vector<LMMDriftCalculator> calculators_;
     };
 
 }

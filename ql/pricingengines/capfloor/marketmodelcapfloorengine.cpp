@@ -20,7 +20,7 @@
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepoptionlets.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 
@@ -86,7 +86,7 @@ namespace QuantLib {
         // all the hard-coded choices below should be left to the user
         MTBrownianGeneratorFactory generatorFactory(42);
         boost::shared_ptr<MarketModelEvolver> evolver(
-                  new LogNormalFwdRatePcEvolver(model, generatorFactory, measure));
+                  new LogNormalFwdRatePc(model, generatorFactory, measure));
 
         // maybe discounts should be retrieved from the factory?
         Real initialNumeraireValue = arguments_.discounts.back();

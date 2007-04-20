@@ -34,8 +34,8 @@
 #include <ql/models/marketmodels/products/multiproductcomposite.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalcotswapratepcevolver.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalcotswapratepc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
@@ -390,7 +390,7 @@ boost::shared_ptr<MarketModelEvolver> makeMarketModelEvolver(
     switch (evolverType) {
         case Pc:
             return boost::shared_ptr<MarketModelEvolver>(new
-                LogNormalCotSwapRatePcEvolver(marketModel, generatorFactory,
+                LogNormalCotSwapRatePc(marketModel, generatorFactory,
                                             numeraires,
                                             initialStep));
         default:

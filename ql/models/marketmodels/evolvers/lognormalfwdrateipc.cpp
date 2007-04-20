@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateipcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    LogNormalFwdRateIpcEvolver::LogNormalFwdRateIpcEvolver(
+    LogNormalFwdRateIpc::LogNormalFwdRateIpc(
                            const boost::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
@@ -75,11 +75,11 @@ namespace QuantLib {
         setForwards(marketModel_->initialRates());
     }
 
-    const std::vector<Size>& LogNormalFwdRateIpcEvolver::numeraires() const {
+    const std::vector<Size>& LogNormalFwdRateIpc::numeraires() const {
         return numeraires_;
     }
 
-    void LogNormalFwdRateIpcEvolver::setForwards(const std::vector<Real>& forwards)
+    void LogNormalFwdRateIpc::setForwards(const std::vector<Real>& forwards)
     {
         QL_REQUIRE(forwards.size()==n_,
                    "mismatch between forwards and rateTimes");
@@ -89,18 +89,18 @@ namespace QuantLib {
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
-    void LogNormalFwdRateIpcEvolver::setInitialState(const CurveState& cs) {
+    void LogNormalFwdRateIpc::setInitialState(const CurveState& cs) {
         setForwards(cs.forwardRates());
     }
 
-    Real LogNormalFwdRateIpcEvolver::startNewPath() {
+    Real LogNormalFwdRateIpc::startNewPath() {
         currentStep_ = initialStep_;
         std::copy(initialLogForwards_.begin(), initialLogForwards_.end(),
                   logForwards_.begin());
         return generator_->nextPath();
     }
 
-    Real LogNormalFwdRateIpcEvolver::advanceStep()
+    Real LogNormalFwdRateIpc::advanceStep()
     {
         // we're going from T1 to T2:
 
@@ -141,11 +141,11 @@ namespace QuantLib {
         return weight;
     }
 
-    Size LogNormalFwdRateIpcEvolver::currentStep() const {
+    Size LogNormalFwdRateIpc::currentStep() const {
         return currentStep_;
     }
 
-    const CurveState& LogNormalFwdRateIpcEvolver::currentState() const {
+    const CurveState& LogNormalFwdRateIpc::currentState() const {
         return curveState_;
     }
 

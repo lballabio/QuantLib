@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_forward_rate_euler_evolver_hpp
-#define quantlib_forward_rate_euler_evolver_hpp
+#ifndef quantlib_forward_rate_pc_evolver_hpp
+#define quantlib_forward_rate_pc_evolver_hpp
 
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
@@ -31,14 +31,14 @@ namespace QuantLib {
     class BrownianGenerator;
     class BrownianGeneratorFactory;
 
-    //! Euler
-    class LogNormalFwdRateEulerEvolver : public MarketModelEvolver {
+    //! Predictor-Corrector
+    class LogNormalFwdRatePc : public MarketModelEvolver {
       public:
-        LogNormalFwdRateEulerEvolver(const boost::shared_ptr<MarketModel>&,
-                                const BrownianGeneratorFactory&,
-                                const std::vector<Size>& numeraires,
-                                Size initialStep = 0);
-        //! \name MarketModelEvolver interface
+        LogNormalFwdRatePc(const boost::shared_ptr<MarketModel>&,
+                             const BrownianGeneratorFactory&,
+                             const std::vector<Size>& numeraires,
+                             Size initialStep = 0);
+        //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
         Real startNewPath();
@@ -61,7 +61,7 @@ namespace QuantLib {
         LMMCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;
-        std::vector<Real> drifts1_, initialDrifts_;
+        std::vector<Real> drifts1_, drifts2_, initialDrifts_;
         std::vector<Real> brownians_, correlatedBrownians_;
         std::vector<Size> alive_;
         // helper classes
