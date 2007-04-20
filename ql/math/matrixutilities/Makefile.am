@@ -8,7 +8,7 @@ this_include_HEADERS = \
 	getcovariance.hpp \
 	pseudosqrt.hpp \
 	svd.hpp \
-	symmetricshurdecomposition.hpp \
+	symmetricschurdecomposition.hpp \
 	tqreigendecomposition.hpp
 
 libMatrixUtilities_la_SOURCES = \
@@ -16,7 +16,7 @@ libMatrixUtilities_la_SOURCES = \
 	getcovariance.cpp \
 	pseudosqrt.cpp \
 	svd.cpp \
-	symmetricshurdecomposition.cpp \
+	symmetricschurdecomposition.cpp \
 	tqreigendecomposition.cpp
 
 noinst_LTLIBRARIES = libMatrixUtilities.la
