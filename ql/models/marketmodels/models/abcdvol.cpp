@@ -20,7 +20,7 @@
 */
 
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/timedependantcorrelationstructures/correlations.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {

@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {

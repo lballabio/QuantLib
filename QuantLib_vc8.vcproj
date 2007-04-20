@@ -3277,6 +3277,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelation.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\proxygreekengine.cpp"
 					>
 				</File>
@@ -3298,10 +3302,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructure.hpp"
 					>
 				</File>
 				<File
@@ -3825,30 +3825,30 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="timedependantcorrelationstructures"
+					Name="piecewiseconstantcorrelations"
 					>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\correlations.cpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\correlations.hpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\cotswapfromfwdcorrelation.cpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\cotswapfromfwdcorrelation.hpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.cpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.hpp"
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.hpp"
 						>
 					</File>
 				</Filter>

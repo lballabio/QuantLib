@@ -21,7 +21,7 @@
 #ifndef quantlib_fra_time_dep_corr_struct_hpp
 #define quantlib_fra_time_dep_corr_struct_hpp
 
-#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <vector>
 

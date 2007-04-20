@@ -23,7 +23,7 @@
 
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 

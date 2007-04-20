@@ -21,12 +21,12 @@
 #include "swapforwardmappings.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/timedependantcorrelationstructures/correlations.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
