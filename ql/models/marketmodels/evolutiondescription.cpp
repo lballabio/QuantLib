@@ -98,7 +98,7 @@ namespace QuantLib {
         return evolutionTimes_;
     }
 
-    const Matrix& EvolutionDescription::effectiveStopTime() const {
+    const Matrix& EvolutionDescription::effectiveStopTimes() const {
         return effStopTime_;
     }
 

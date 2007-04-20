@@ -158,8 +158,7 @@ QL_END_TEST_LOCALS(SwapForwardMappingsTest)
 
 void SwapForwardMappingsTest::testForwardCoterminalMappings() {
 
-    BOOST_MESSAGE("Testing forward-coterminal mappings "
-                  "in a swap market model...");
+    BOOST_MESSAGE("Testing forward-rate coterminal-swap mappings...");
     MarketModelData marketData;
     const std::vector<Time>& rateTimes = marketData.rateTimes();
     const std::vector<Rate>& forwards = marketData.forwards();
@@ -185,8 +184,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
                                                   beta);
     boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          rateTimes,
-                                          numberOfFactors));       
+                                          rateTimes));       
     boost::shared_ptr<MarketModel> smmMarketModel(new
         FlatVol(marketData.volatilities(),
                        corr,

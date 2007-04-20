@@ -279,8 +279,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta);
     boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes(),
-                                          numberOfFactors));       
+                                          evolution.rateTimes()));       
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
@@ -2250,9 +2249,12 @@ test_suite* MarketModelTest::suite() {
     // the next one fails
     // suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    // just one of the tests below is run in order to reduce running times...
+    // uncomment as much as you prefer...
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));

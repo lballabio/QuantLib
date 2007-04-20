@@ -28,6 +28,19 @@
 
 namespace QuantLib {
 
+    Real flatVolCovariance(Time t1, Time t2, Time T, Time S, Volatility v1, Volatility v2) {
+        QL_REQUIRE(t1<=t2,
+                   "integrations bounds (" << t1 <<
+                   "," << t2 << ") are in reverse order");
+        Time cutOff = std::min(S,T);
+        if (t1>=cutOff) {
+            return 0.0;
+        } else {
+            cutOff = std::min(t2, cutOff);
+            return (cutOff - t1)*v1*v2;
+        }
+    }
+
     FlatVol::FlatVol(
             const std::vector<Volatility>& volatilities,
             const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
@@ -57,24 +70,66 @@ namespace QuantLib {
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_
                    << ") times number of steps (" << numberOfSteps_ << ")");
+        QL_REQUIRE(numberOfFactors<=numberOfRates_,
+                   "number of factors (" << numberOfFactors <<
+                   ") cannot be greater than numberOfRates (" <<
+                   numberOfRates_ << ")");
+        QL_REQUIRE(numberOfFactors>0,
+                   "number of factors (" << numberOfFactors <<
+                   ") must be greater than zero");
 
         std::vector<Volatility> stdDev(numberOfRates_);
 
-        Time effStartTime;
-        const Matrix& effectiveStopTime = evolution.effectiveStopTime();
-        Matrix covariance(numberOfRates_, numberOfRates_);
-        for (Size k=0; k<numberOfSteps_; ++k) {
-            for (Size i=0; i<numberOfRates_; ++i) {
-                effStartTime = (k>0 ? effectiveStopTime[k-1][i] : 0.0);
-                stdDev[i] = volatilities[i] *
-                    std::sqrt(effectiveStopTime[k][i]-effStartTime);
+        Real covar;
+        Time effStartTime, effStopTime;
+        Real correlation;
+        const std::vector<Time>& corrTimes = corr->times();
+        const std::vector<Time>& evolTimes = evolution.evolutionTimes();
+        for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
+            // one covariance per evolution step
+            Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
+
+            // there might be more than one correlation matrix
+            // in a single evolution step
+            Matrix correlations;
+
+            for (; corrTimes[kk]<evolTimes[k]; ++kk) {
+                effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                effStopTime = corrTimes[kk];
+                correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+                for (Size i=0; i<numberOfRates_; ++i) {
+                    for (Size j=i; j<numberOfRates_; ++j) {
+                        covar = flatVolCovariance(effStartTime,
+                                                  effStopTime,
+                                                  rateTimes[i], rateTimes[j],
+                                                  volatilities[i], volatilities[j]);
+                        correlation = correlations[i][j];
+                        covariance[i][j] += covar * correlations[i][j];
+                     }
+                }
             }
-            // to be fixed with a simpler algorithm
-            const Matrix& correlations = corr->pseudoRoot(k)*transpose(corr->pseudoRoot(k));
+            // last part in the evolution step
+            effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            effStopTime = evolTimes[k];
+            correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                     covariance[i][j] =  covariance[j][i] =
-                         stdDev[j] * correlations[i][j] * stdDev[i];
+                    covar = flatVolCovariance(effStartTime,
+                                              effStopTime,
+                                              rateTimes[i], rateTimes[j],
+                                              volatilities[i], volatilities[j]);
+                    correlation = correlations[i][j];
+                    covariance[i][j] += covar * correlation;
+                 }
+            }
+            // no more use for the kk-th correlation matrix
+            while (kk<corrTimes.size() && corrTimes[kk]<=evolTimes[k])
+                ++kk;
+
+            // make it symmetric
+            for (Size i=0; i<numberOfRates_; ++i) {
+                for (Size j=i+1; j<numberOfRates_; ++j) {
+                     covariance[j][i] = covariance[i][j];
                  }
             }
 
@@ -139,8 +194,7 @@ namespace QuantLib {
                                                       beta_);
         boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
-                                              rateTimes,
-                                              numberOfFactors));       
+                                              rateTimes));       
         return boost::shared_ptr<MarketModel>(new
             FlatVol(displacedVolatilities,
                            corr,

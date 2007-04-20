@@ -44,7 +44,8 @@ namespace QuantLib {
             const boost::shared_ptr<CurveState>& cs,
             Spread displacement);
         // modifiers
-        bool calibrate(const std::vector<Real>& alpha,
+        bool calibrate(Size numberOfFactors,
+                       const std::vector<Real>& alpha,
                        bool lowestRoot,
                        Size maxIterations,
                        Real tolerance);
@@ -63,6 +64,7 @@ namespace QuantLib {
                             const std::vector<Volatility>& capletVols,
                             const CurveState& cs,
                             const Spread displacement,
+                            const Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             const bool lowestRoot,
                             std::vector<Matrix>& swapCovariancePseudoRoots,

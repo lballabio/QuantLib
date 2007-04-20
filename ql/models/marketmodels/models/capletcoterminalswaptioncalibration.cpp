@@ -24,7 +24,7 @@
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
-#include <ql/math/matrix.hpp>
+#include <ql/math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -51,6 +51,7 @@ namespace QuantLib {
                             const std::vector<Volatility>& capletVols,
                             const CurveState& cs,
                             const Spread displacement,
+                            const Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             const bool lowestRoot,
                             std::vector<Matrix>& swapCovariancePseudoRoots,
@@ -60,26 +61,33 @@ namespace QuantLib {
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
                    "evolutionTimes not equal to correlation times");
 
-        Size numberOfRates_ = evolution.numberOfRates();
+        Size numberOfRates = evolution.numberOfRates();
+        QL_REQUIRE(numberOfFactors<=numberOfRates,
+                   "number of factors (" << numberOfFactors <<
+                   ") cannot be greater than numberOfRates (" <<
+                   numberOfRates << ")");
+        QL_REQUIRE(numberOfFactors>0,
+                   "number of factors (" << numberOfFactors <<
+                   ") must be greater than zero");
 
-        QL_REQUIRE(numberOfRates_==displacedSwapVariances.size(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
+        QL_REQUIRE(numberOfRates==displacedSwapVariances.size(),
+                   "mismatch between number of rates (" << numberOfRates <<
                    ") and displacedSwapVariances");
 
-        QL_REQUIRE(numberOfRates_==capletVols.size(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
+        QL_REQUIRE(numberOfRates==capletVols.size(),
+                   "mismatch between number of rates (" << numberOfRates <<
                    ") and capletVols (" << capletVols.size() <<
                    ")");
 
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(rateTimes==cs.rateTimes(),
                    "mismatch between EvolutionDescriptionand CurveState rate times ");
-        QL_REQUIRE(numberOfRates_==cs.numberOfRates(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
+        QL_REQUIRE(numberOfRates==cs.numberOfRates(),
+                   "mismatch between number of rates (" << numberOfRates <<
                    ") and CurveState");
 
-        QL_REQUIRE(numberOfRates_==alpha.size(),
-                   "mismatch between number of rates (" << numberOfRates_ <<
+        QL_REQUIRE(numberOfRates==alpha.size(),
+                   "mismatch between number of rates (" << numberOfRates <<
                    ") and alphas (" << alpha.size() << ")");
 
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
@@ -87,17 +95,25 @@ namespace QuantLib {
                    "mismatch between evolutionTimes and rateTimes");
 
         Size numberOfSteps = evolution.numberOfSteps();
-        Size numberOfFactors = corr.numberOfFactors();
+
+        // factor reduction
+        std::vector<Matrix> corrPseudo(corr.times().size());
+        for (Size i=0; i<corrPseudo.size(); ++i) {
+            Matrix correlations = corr.pseudoRoot(i)*transpose(corr.pseudoRoot(i));
+            corrPseudo[i] = rankReducedSqrt(correlations,
+                                            numberOfFactors, 1.0,
+                                            SalvagingAlgorithm::None);
+        }
 
         // do alpha part
         // first modify variances to take account of alpha
         // then rescale so total variance is unchanged
-        Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates_, 0.0);
-        std::vector<Real> originalVariances(numberOfRates_, 0.0);
-        std::vector<Real> modifiedVariances(numberOfRates_, 0.0);
+        Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates, 0.0);
+        std::vector<Real> originalVariances(numberOfRates, 0.0);
+        std::vector<Real> modifiedVariances(numberOfRates, 0.0);
         for (Size i=0; i<numberOfSteps; ++i) {
             Real s = (i==0 ? 0.0 : evolutionTimes[i-1]);
-            for (Size j=i; j<numberOfRates_; ++j) {
+            for (Size j=i; j<numberOfRates; ++j) {
                 const std::vector<Real>& var = displacedSwapVariances[j]->variances();
                 originalVariances[j]+=var[i];
                 swapTimeInhomogeneousVariances[i][j] = var[i]/
@@ -107,7 +123,7 @@ namespace QuantLib {
         }
 
         for (Size i=0; i<numberOfSteps; ++i)
-            for (Size j=i; j<numberOfRates_; ++j)
+            for (Size j=i; j<numberOfRates; ++j)
                 swapTimeInhomogeneousVariances[i][j] *= originalVariances[j]/
                                                         modifiedVariances[j];
 
@@ -122,8 +138,8 @@ namespace QuantLib {
         std::vector<Matrix> CovarianceSwapCovs(numberOfSteps);
 
         for (Size i=0; i<numberOfSteps; ++i) {
-            CovarianceSwapPseudos[i] =  corr.pseudoRoot(i);
-            for (Size j=0; j<numberOfRates_; ++j)
+            CovarianceSwapPseudos[i] =  corrPseudo[i];
+            for (Size j=0; j<numberOfRates; ++j)
                 for (Size k=0; k < CovarianceSwapPseudos[i].columns();  ++k)
                     CovarianceSwapPseudos[i][j][k] *=
                             sqrt(swapTimeInhomogeneousVariances[i][j]);
@@ -136,18 +152,18 @@ namespace QuantLib {
 
         // compute partial variances and covariances which will take A and B coefficients
         const std::vector<Time>& taus = evolution.rateTaus();
-        std::vector<Real> totVariance(numberOfRates_, 0.0);
-        std::vector<Real> almostTotVariance(numberOfRates_, 0.0);
-        std::vector<Real> almostTotCovariance(numberOfRates_, 0.0);
-        std::vector<Real> leftCovariance(numberOfRates_, 0.0);
-        for (Size i=0; i<numberOfRates_; ++i) {
+        std::vector<Real> totVariance(numberOfRates, 0.0);
+        std::vector<Real> almostTotVariance(numberOfRates, 0.0);
+        std::vector<Real> almostTotCovariance(numberOfRates, 0.0);
+        std::vector<Real> leftCovariance(numberOfRates, 0.0);
+        for (Size i=0; i<numberOfRates; ++i) {
             for (Size j=0; j<=i; ++j)
                 totVariance[i] += displacedSwapVariances[i]->variances()[j];
             for (Integer j=0; j<=static_cast<Integer>(i)-1; ++j)
                 almostTotVariance[i] += swapTimeInhomogeneousVariances[j][i];
             Integer j=0;
             for (; j<=static_cast<Integer>(i)-2; ++j) {
-                const Matrix& thisPseudo = corr.pseudoRoot(j);
+                const Matrix& thisPseudo = corrPseudo[j];
                 Real correlation = 0.0;
                 for (Size k=0; k<numberOfFactors; ++k)
                     correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
@@ -156,7 +172,7 @@ namespace QuantLib {
                     swapTimeInhomogeneousVariances[j][i-1]);
             }
             if (i>0) {
-                const Matrix& thisPseudo = corr.pseudoRoot(j);
+                const Matrix& thisPseudo = corrPseudo[j];
                 Real correlation = 0.0;
                 for (Size k=0; k<numberOfFactors; ++k)
                     correlation += thisPseudo[i-1][k]*thisPseudo[i][k];
@@ -250,17 +266,17 @@ namespace QuantLib {
         // compute the results
         swapCovariancePseudoRoots.resize(numberOfSteps);
         for (Size k=0; k<numberOfSteps; ++k) {
-            swapCovariancePseudoRoots[k] = corr.pseudoRoot(k);
-            for (Size j=0; j<numberOfRates_; ++j) {
+            swapCovariancePseudoRoots[k] = corrPseudo[k];
+            for (Size j=0; j<numberOfRates; ++j) {
                 Real coeff = std::sqrt(swapTimeInhomogeneousVariances[k][j]);
                  for (Size i=0; i<numberOfFactors; ++i)
                     swapCovariancePseudoRoots[k][j][i]*=coeff;
             }
-            QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates_,
+            QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates,
                       "step " << k
                       << " abcd vol wrong number of rows: "
                       << swapCovariancePseudoRoots[k].rows()
-                      << " instead of " << numberOfRates_);
+                      << " instead of " << numberOfRates);
             QL_ENSURE(swapCovariancePseudoRoots[k].columns()==numberOfFactors,
                       "step " << k
                       << " abcd vol wrong number of columns: "
@@ -272,6 +288,7 @@ namespace QuantLib {
     }
 
     bool CapletCoterminalSwaptionCalibration::calibrate(
+                            Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
                             Size maxIterations,
@@ -281,6 +298,7 @@ namespace QuantLib {
         Size numberOfRates = evolution_.numberOfRates();
         negDiscr_ = 0;
         error_ = 987654321; // a positive large number
+        calibrated_ = false;
         bool success = true;
         std::vector<Volatility> targetCapletVols(mktCapletVols_);
         for (Size iterCounter=1;
@@ -292,10 +310,13 @@ namespace QuantLib {
                                           targetCapletVols,
                                           *cs_,
                                           displacement_,
+                                          numberOfFactors,
                                           alpha,
                                           lowestRoot,
                                           swapCovariancePseudoRoots_,
                                           negDiscr_);
+            if (!success)
+                return success;
             boost::shared_ptr<MarketModel> smm(new
                 PseudoRootFacade(swapCovariancePseudoRoots_,
                                  rateTimes,

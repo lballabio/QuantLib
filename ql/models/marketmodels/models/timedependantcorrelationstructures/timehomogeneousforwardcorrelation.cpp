@@ -26,15 +26,13 @@ namespace QuantLib {
 
     TimeHomogeneousForwardCorrelation::TimeHomogeneousForwardCorrelation(
                         const Matrix& fwdCorrelation,
-                        const std::vector<Time>& rateTimes,
-                        Size numberOfFactors)
+                        const std::vector<Time>& rateTimes)
     : fwdCorrelation_(fwdCorrelation),
       rateTimes_(rateTimes),
       times_(rateTimes.begin(), rateTimes.end()-1),
-      numberOfFactors_(numberOfFactors),
       numberOfRates_(rateTimes.size()-1),
       pseudoRoots_(rateTimes.size()-1, Matrix(numberOfRates_,
-                                              numberOfFactors_,
+                                              numberOfRates_,
                                               0.0)) {
 
         QL_REQUIRE(numberOfRates_==fwdCorrelation.rows(),
@@ -43,9 +41,6 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==fwdCorrelation.columns(),
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
-        QL_REQUIRE(numberOfFactors<=fwdCorrelation.rows(),
-                   "number of factors (" << numberOfFactors <<
-                   ") must be less than correlation rows (" << fwdCorrelation.rows() << ")");
 
         for (Size i=0; i<pseudoRoots_.size(); ++i) {
             Matrix thisCorrelationMatrix(numberOfRates_-i,numberOfRates_-i);
@@ -54,7 +49,7 @@ namespace QuantLib {
                         thisCorrelationMatrix[j][k] =  fwdCorrelation[j][k];
 
             Matrix smallPseudo = rankReducedSqrt(thisCorrelationMatrix,
-                                                 numberOfFactors, 1.0,
+                                                 numberOfRates_, 1.0,
                                                  SalvagingAlgorithm::None);
 
             for (Size j=0; j<smallPseudo.rows(); ++j) {
@@ -72,15 +67,9 @@ namespace QuantLib {
         return times_;
     }
 
-    const Matrix& TimeHomogeneousForwardCorrelation::pseudoRoot(Size i) const {
-        QL_REQUIRE(i<pseudoRoots_.size(),
-                   "index (" << i << ") must be less than pseudoRoots size ("
-                   << pseudoRoots_.size() << ")");
-        return pseudoRoots_[i];
-    }
-
-    Size TimeHomogeneousForwardCorrelation::numberOfFactors() const {
-        return numberOfFactors_;
+    const std::vector<Matrix>&
+    TimeHomogeneousForwardCorrelation::pseudoRoots() const {
+        return pseudoRoots_;
     }
 
     Size TimeHomogeneousForwardCorrelation::numberOfRates() const {

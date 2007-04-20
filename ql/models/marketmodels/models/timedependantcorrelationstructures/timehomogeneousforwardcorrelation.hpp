@@ -31,16 +31,14 @@ namespace QuantLib {
       public:
         TimeHomogeneousForwardCorrelation(
                         const Matrix& fwdCorrelation,
-                        const std::vector<Time>& rateTimes,
-                        Size numberOfFactors);
+                        const std::vector<Time>& rateTimes);
         const std::vector<Time>& times() const;
-        const Matrix& pseudoRoot(Size i) const;
-        Size numberOfFactors() const;
+        const std::vector<Matrix>& pseudoRoots() const;
         Size numberOfRates() const;
     private:
         Matrix fwdCorrelation_;
         std::vector<Time> rateTimes_, times_;
-        Size numberOfFactors_, numberOfRates_;
+        Size numberOfRates_;
         std::vector<Matrix> pseudoRoots_;
     };
 

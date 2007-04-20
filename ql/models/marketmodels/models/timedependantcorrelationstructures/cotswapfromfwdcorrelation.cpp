@@ -32,11 +32,9 @@ namespace QuantLib {
             const Matrix& fraCorrelation,
             const CurveState& curveState,
             Real displacement,
-            const EvolutionDescription& evolution,
-            Size numberOfFactors) :
+            const EvolutionDescription& evolution) :
     fraCorrelationMatrix_(evolution.numberOfRates()),
     pseudoRoots_(evolution.numberOfRates()),
-    numberOfFactors_(numberOfFactors),
     numberOfRates_(evolution.numberOfRates()),
     evolution_(evolution) {
 
@@ -50,9 +48,6 @@ namespace QuantLib {
         QL_REQUIRE(nbRates==fraCorrelation.columns(),
                    "mismatch between number of rates (" << nbRates <<
                    ") and fraCorrelation columns (" << fraCorrelation.columns() << ")");
-        QL_REQUIRE(numberOfFactors<=fraCorrelation.rows(),
-                   "number of factors (" << numberOfFactors <<
-                   ") must be less than correlation rows (" << fraCorrelation.rows() << ")");
         QL_REQUIRE(fraCorrelation.rows()==fraCorrelation.columns(),
             "correlation matrix is not square: " << fraCorrelation.rows() <<
                    " rows and " << fraCorrelation.columns() << " columns");
@@ -62,10 +57,10 @@ namespace QuantLib {
         Matrix jacobian =
                 SwapForwardMappings::coterminalSwapZedMatrix(
                     curveState, displacement);
-        for (Size k=0; k<fraCorrelationMatrix_.size();++k){
+        for (Size k=0; k<fraCorrelationMatrix_.size(); ++k){
             //reducing rank
             Disposable<Matrix> fraPseudoRoot = rankReducedSqrt(
-                fraCorrelation, numberOfFactors_, componentRetainedPercentage,
+                fraCorrelation, numberOfRates_, componentRetainedPercentage,
                 SalvagingAlgorithm::None);
             // converting to swap correlation
             Disposable<Matrix> swapPseudoRoot = jacobian*fraPseudoRoot;
@@ -84,12 +79,6 @@ namespace QuantLib {
         }
     }
 
-    //0.add yield curve and displacements in the costructor
-    //1.FRA correlation matrix (todo: later)
-    //2.Reduced-factor pseudo-root matrices for each time step
-    //3.Compute Z matrix
-    //4.Normalize 2.*3.
-
     const std::vector<Time>& CotSwapFromFwdCorrelation::times() const {
         return evolution_.evolutionTimes();
     }
@@ -98,20 +87,9 @@ namespace QuantLib {
         return numberOfRates_;
     }
 
-    //const EvolutionDescription&
-    //CotSwapFromFwdCorrelation::evolution() const {
-    //    return evolution_;
-    //}
-
-    Size CotSwapFromFwdCorrelation::numberOfFactors() const {
-        return numberOfFactors_;
-    }
-
-    const Matrix& CotSwapFromFwdCorrelation::pseudoRoot(Size i) const {
-        QL_REQUIRE(i<pseudoRoots_.size(),
-                   "index (" << i << ") must be less than pseudoRoots size ("
-                   << pseudoRoots_.size() << ")");
-        return pseudoRoots_[i];
+    const std::vector<Matrix>&
+    CotSwapFromFwdCorrelation::pseudoRoots() const {
+        return pseudoRoots_;
     }
 
 }

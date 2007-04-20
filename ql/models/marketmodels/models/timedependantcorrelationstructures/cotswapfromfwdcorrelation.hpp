@@ -35,17 +35,14 @@ namespace QuantLib {
             const Matrix& correlations,
             const CurveState& curveState,
             Real displacement,
-            const EvolutionDescription& evolution,
-            Size numberOfFactors);
-        //const EvolutionDescription& evolution() const;
+            const EvolutionDescription& evolution);
         const std::vector<Time>& times() const;
-        const Matrix& pseudoRoot(Size i) const;
-        Size numberOfFactors() const;
+        const std::vector<Matrix>& pseudoRoots() const;
         Size numberOfRates() const;
     private:
         std::vector<Matrix> fraCorrelationMatrix_;
         std::vector<Matrix> pseudoRoots_;
-        Size numberOfFactors_, numberOfRates_;
+        Size numberOfRates_;
         EvolutionDescription evolution_;
     };
 

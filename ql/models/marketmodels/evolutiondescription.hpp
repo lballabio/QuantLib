@@ -65,7 +65,7 @@ namespace QuantLib {
         const std::vector<Time>& rateTimes() const;
         const std::vector<Time>& rateTaus() const;
         const std::vector<Time>& evolutionTimes() const;
-        const Matrix& effectiveStopTime() const;
+        const Matrix& effectiveStopTimes() const;
         const std::vector<Size>& firstAliveRate() const;
         const std::vector<std::pair<Size,Size> >& relevanceRates() const;
         Size numberOfRates() const;

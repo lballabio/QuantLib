@@ -22,6 +22,7 @@
 #define quantlib_time_dep_corr_struct_hpp
 
 #include <ql/types.hpp>
+#include <ql/errors.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -33,10 +34,20 @@ namespace QuantLib {
       public:
         virtual ~TimeDependantCorrelationStructure() {}
         virtual const std::vector<Time>& times() const = 0;
-        virtual const Matrix& pseudoRoot(Size i) const = 0;
-        virtual Size numberOfFactors() const = 0;
+        virtual const std::vector<Matrix>& pseudoRoots() const = 0;
+        virtual const Matrix& pseudoRoot(Size i) const;
         virtual Size numberOfRates() const = 0;
     };
+
+    inline const Matrix&
+    TimeDependantCorrelationStructure::pseudoRoot(Size i) const {
+        const std::vector<Matrix>& pseudo = pseudoRoots();
+        QL_REQUIRE(i<pseudo.size(),
+                   "index (" << i <<
+                   ") must be less than pseudoRoots size (" <<
+                   pseudo.size() << ")");
+        return pseudo[i];
+    }
 
 }
 

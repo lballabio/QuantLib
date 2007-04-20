@@ -59,25 +59,67 @@ namespace QuantLib {
                    "number of rates (" << numberOfRates_ <<
                    ") greater than number of factors (" << numberOfFactors_
                    << ") times number of steps (" << numberOfSteps_ << ")");
+        QL_REQUIRE(numberOfFactors<=numberOfRates_,
+                   "number of factors (" << numberOfFactors <<
+                   ") cannot be greater than numberOfRates (" <<
+                   numberOfRates_ << ")");
+        QL_REQUIRE(numberOfFactors>0,
+                   "number of factors (" << numberOfFactors <<
+                   ") must be greater than zero");
 
-        Time effStartTime;
-        Real covar;
         Abcd abcd(a, b, c, d);
-        const Matrix& effectiveStopTime = evolution.effectiveStopTime();
-        Matrix covariance(numberOfRates_, numberOfRates_);
-        for (Size k=0; k<numberOfSteps_; ++k) {
-            // to be fixed with a simpler algorithm
-            const Matrix& correlations = corr->pseudoRoot(k)*transpose(corr->pseudoRoot(k));
+        Real covar;
+        Time effStartTime, effStopTime;
+        Real correlation;
+        const std::vector<Time>& corrTimes = corr->times();
+        const std::vector<Time>& evolTimes = evolution.evolutionTimes();
+        for (Size k=0, kk=0; k<numberOfSteps_; ++k) {
+            // one covariance per evolution step
+            Matrix covariance(numberOfRates_, numberOfRates_, 0.0);
+
+            // there might be more than one correlation matrix
+            // in a single evolution step
+            Matrix correlations;
+
+            for (; corrTimes[kk]<evolTimes[k]; ++kk) {
+                effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+                effStopTime = corrTimes[kk];
+                correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+                for (Size i=0; i<numberOfRates_; ++i) {
+                    for (Size j=i; j<numberOfRates_; ++j) {
+                        covar = ks[i] * ks[j] * abcd.covariance(effStartTime,
+                                                                effStopTime,
+                                                                rateTimes[i],
+                                                                rateTimes[j]);
+                        correlation = correlations[i][j];
+                        covariance[i][j] += covar * correlation;
+                    }
+                }
+            }
+            // last part in the evolution step
+            effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
+            effStopTime = evolTimes[k];
+            correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
-                    effStartTime = k>0 ? effectiveStopTime[k-1][i] : 0.0;
-                    covar = abcd.covariance(effStartTime,
-                                            effectiveStopTime[k][i],
-                                            rateTimes[i], rateTimes[j]);
-                    covariance[j][i] = covariance[i][j] =
-                        ks[i] * ks[j] * covar * correlations[i][j];
+                    covar = ks[i] * ks[j] * abcd.covariance(effStartTime,
+                                                            effStopTime,
+                                                            rateTimes[i],
+                                                            rateTimes[j]);
+                    correlation = correlations[i][j];
+                    covariance[i][j] += covar * correlation;
+                }
+            }
+            // no more use for the kk-th correlation matrix
+            while (kk<corrTimes.size() && corrTimes[kk]<=evolTimes[k])
+                ++kk;
+
+            // make it symmetric
+            for (Size i=0; i<numberOfRates_; ++i) {
+                for (Size j=i+1; j<numberOfRates_; ++j) {
+                     covariance[j][i] = covariance[i][j];
                  }
-             }
+            }
 
             pseudoRoots_[k] = rankReducedSqrt(covariance,
                                               numberOfFactors, 1.0,

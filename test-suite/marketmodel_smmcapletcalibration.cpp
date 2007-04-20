@@ -270,8 +270,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta_);
     boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes(),
-                                          numberOfFactors));       
+                                          evolution.rateTimes()));       
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
@@ -424,8 +423,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         CotSwapFromFwdCorrelation(correlations,
                                         *cs,
                                         displacement_,
-                                        evolution,
-                                        numberOfFactors_));
+                                        evolution));
 
     std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
@@ -437,11 +435,11 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     // create calibrator
     CapletCoterminalSwaptionCalibration calibrator(evolution,
-                                                    corr,
-                                                    swapVariances,
-                                                    capletVols_,
-                                                    cs,
-                                                    displacement_);
+                                                   corr,
+                                                   swapVariances,
+                                                   capletVols_,
+                                                   cs,
+                                                   displacement_);
 
     // calibrate
     std::vector<Real> alpha(numberOfRates, alpha_);
@@ -449,6 +447,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Size maxIterations = 2;
     Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
     if (printReport_) {
+        BOOST_MESSAGE("numberOfFactors: " << numberOfFactors_);
         BOOST_MESSAGE("alpha: " << alpha_);
         BOOST_MESSAGE("lowestRoot: " << lowestRoot);
         BOOST_MESSAGE("maxIterations: " << maxIterations);
@@ -456,7 +455,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         BOOST_MESSAGE("caplet market vols:      " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols_));
     }
-    bool result = calibrator.calibrate(alpha,
+    bool result = calibrator.calibrate(numberOfFactors_,
+                                       alpha,
                                        lowestRoot,
                                        maxIterations,
                                        capletTolerance/10);

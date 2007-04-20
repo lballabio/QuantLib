@@ -232,8 +232,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta);
     boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes(),
-                                          numberOfFactors));       
+                                          evolution.rateTimes()));       
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
