@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file constrainedcostfunction.hpp
-    \brief Constrained cost function
+/*! \file projectedcostfunction.hpp
+    \brief Cost function utility
 */
 
 #ifndef quantlib_math_projectedcostfunction_h
@@ -29,33 +29,33 @@
 
 
 namespace QuantLib {
-    /*! This class allows to restrict the number of parameters used 
-        by a cost function. This should be used if one wants to calibrate
-        with respect to a subset of parameters (the other being fixed)
+    /*! This class creates a proxy cost function which can depend
+        on any arbitrary subset of parameters (the other being fixed)
     */
     class ProjectedCostFunction : public CostFunction {
         public:
             ProjectedCostFunction(const CostFunction& costFunction,
-                const Array& x,
-                const std::vector<bool>& parametersFreedoms);
+                                 const Array& parametersValues,
+                                 const std::vector<bool>& parametersFreedoms);
 
             //! \name CostFunction interface
             //@{
             virtual Real value(const Array& freeParameters) const;
-            virtual Disposable<Array> values(const Array& freeParameters) const;
+            virtual Disposable<Array> 
+                                   values(const Array& freeParameters) const;
             //@}
 
             //! returns the subset of free parameters corresponding 
-            // to set of parameters x
+            // to set of parameters
             virtual Disposable<Array> project(const Array& parameters) const;
 
-            //! returns set of parameters x corresponding to the subset of 
-            // free parameters
-            virtual Disposable<Array> include(
-                                        const Array& projectedParameters) const;
+            //! returns whole set of parameters corresponding to the set 
+            // of projected parameters
+            virtual Disposable<Array> 
+                             include(const Array& projectedParameters) const;
 
         private:
-            void mapFreeParamters(const Array& x) const; 
+            void mapFreeParameters(const Array& parametersValues) const; 
             Size numberOfFreeParameters_;
             const Array fixedParameters_;
             mutable Array actualParameters_;
