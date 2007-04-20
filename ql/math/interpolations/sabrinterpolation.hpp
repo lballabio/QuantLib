@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Mario Pucci
  Copyright (C) 2006 StatPro Italia srl
@@ -38,6 +39,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/volatilities/sabr.hpp>
+#include <ql/math/optimization/constrainedcostfunction.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -200,15 +202,9 @@ namespace QuantLib {
         class SABRInterpolationImpl : public Interpolation::templateImpl<I1,I2>,
                                       public SABRCoefficientHolder {
           private:
-            class Transformation {
-              public:
-                  virtual ~Transformation() {}
-                  virtual Array direct(const Array& x) const = 0;
-                  virtual Array inverse(const Array& x) const = 0;
-              };
 
             class SabrParametersTransformation :
-                  public Transformation {
+                  public ParametersTransformation {
                      mutable Array y_;
                      const Real eps1_, eps2_;
              public:
@@ -242,75 +238,14 @@ namespace QuantLib {
                 }
             };
 
-            class SabrParametersTransformationWithFixedBeta :
-                 public Transformation {
-                    mutable Array y_;
-                    const Real eps1_, eps2_;
-             public:
 
-                 SabrParametersTransformationWithFixedBeta() : y_(Array(3)),
-                    eps1_(.0000001),
-                    eps2_(.9999) {
-                 }
-                 Array direct(const Array& x) const {
-                    y_[0] = x[0]*x[0] + eps1_;
-                    y_[1] = x[1]*x[1] + eps1_;
-                    y_[2] = eps2_ * std::sin(x[2]);
-                    return y_;
-                 }
-                 Array inverse(const Array& x) const {
-                    y_[0] = std::sqrt(x[0] - eps1_);
-                    y_[1] = std::sqrt(x[1] - eps1_);
-                    {
-                    //arcsin expansion
-                    const Real z = x[2]/eps2_;
-                    const Real z3 = z*z*z;
-                    const Real z5 = z3*z*z;
-                    y_[2] = z+z3/6 +3*z5/40;
-                    }
-                    return y_;
-                }
-            };
-
-            class SabrParametersTransformationWithFixedBetaAndNu :
-                 public Transformation {
-                    mutable Array y_;
-                    const Real eps1_, eps2_;
-             public:
-
-                 SabrParametersTransformationWithFixedBetaAndNu() : y_(Array(2)),
-                    eps1_(.0000001),
-                    eps2_(.9999) {
-                 }
-                 Array direct(const Array& x) const {
-                    QL_REQUIRE(x.size()==2,"x.size()!=2");
-                    y_[0] = x[0]*x[0] + eps1_;      //alpha
-                    y_[1] = eps2_ * std::sin(x[1]); //rho
-                    return y_;
-                 }
-                 Array inverse(const Array& x) const {
-                    QL_REQUIRE(x.size()==2,"x.size()!=2");
-                    y_[0] = std::sqrt(x[0] - eps1_); //alpha
-                    {
-                    //arcsin expansion
-                    const Real z = x[1]/eps2_;
-                    const Real z3 = z*z*z;
-                    const Real z5 = z3*z*z;
-                    y_[1] = z+z3/6 +3*z5/40;        //rho
-                    }
-                    return y_;
-                }
-            };
-            // functions to minimize
-            class SABRError;
-            friend class SABRError;
             class SABRError : public CostFunction {
               public:
                 SABRError(SABRInterpolationImpl* sabr)
                 : sabr_(sabr) {}
 
                 Real value(const Array& x) const {
-                    const Array y = sabr_->tranformation_->direct(x);
+                    const Array y = sabr_->transformation_->direct(x);
                     sabr_->alpha_ = y[0];
                     sabr_->beta_  = y[1];
                     sabr_->nu_    = y[2];
@@ -319,7 +254,7 @@ namespace QuantLib {
                 }
 
                 Disposable<Array> values(const Array& x) const{
-                    const Array y = sabr_->tranformation_->direct(x);
+                    const Array y = sabr_->transformation_->direct(x);
                     sabr_->alpha_ = y[0];
                     sabr_->beta_  = y[1];
                     sabr_->nu_    = y[2];
@@ -331,62 +266,13 @@ namespace QuantLib {
                 SABRInterpolationImpl* sabr_;
             };
 
-            class SABRErrorWithFixedBeta;
-            friend class SABRErrorWithFixedBeta;
-            class SABRErrorWithFixedBeta : public CostFunction {
-              public:
-                SABRErrorWithFixedBeta(SABRInterpolationImpl* sabr)
-                : sabr_(sabr) {}
-
-                Real value(const Array& x) const {
-                    const Array y = sabr_->tranformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->nu_    = y[1];
-                    sabr_->rho_   = y[2];
-                    return sabr_->interpolationSquaredError();
-                }
-
-                Disposable<Array> values(const Array& x) const{
-                    const Array y = sabr_->tranformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->nu_    = y[1];
-                    sabr_->rho_   = y[2];
-                    return sabr_->interpolationErrors(x);
-                }
-
-              private:
-                SABRInterpolationImpl* sabr_;
-            };
-            friend class SABRErrorWithFixedBetaAndNu;
-            class SABRErrorWithFixedBetaAndNu : public CostFunction {
-              public:
-                SABRErrorWithFixedBetaAndNu(SABRInterpolationImpl* sabr)
-                : sabr_(sabr) {}
-
-                Real value(const Array& x) const {
-                    const Array y = sabr_->tranformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->rho_   = y[1];
-                    return sabr_->interpolationSquaredError();
-                }
-
-                Disposable<Array> values(const Array& x) const{
-                    const Array y = sabr_->tranformation_->direct(x);
-                    sabr_->alpha_ = y[0];
-                    sabr_->rho_   = y[1];
-                    return sabr_->interpolationErrors(x);
-                }
-
-              private:
-                SABRInterpolationImpl* sabr_;
-            };
             // optimization method used for fitting
             boost::shared_ptr<EndCriteria> endCriteria_;
             boost::shared_ptr<OptimizationMethod> method_;
             std::vector<Real> weights_;
             const Real& forward_;
             bool vegaWeighted_;
-            boost::shared_ptr<Transformation> tranformation_;
+            boost::shared_ptr<ParametersTransformation> transformation_;
             NoConstraint constraint_;
 
           public:
@@ -451,59 +337,41 @@ namespace QuantLib {
                     maxError_ = interpolationMaxError();
                     SABREndCriteria_ = EndCriteria::None;
                     return;
-                } else if (betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
-                    tranformation_ = boost::shared_ptr<Transformation>(new
-                        SabrParametersTransformationWithFixedBeta);
-                    NoConstraint constraint;
-                    SABRErrorWithFixedBeta costFunction(this);
-                    Array guess(3);
-                    guess[0] = alpha_;
-                    guess[1] = nu_;
-                    guess[2] = rho_;
-                    guess = tranformation_->inverse(guess);
-                    Problem problem(costFunction, constraint, guess);
-                    SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
-                    Array result = problem.currentValue();
-                    Array y = tranformation_->direct(result);
-                    alpha_ = y[0];
-                    nu_    = y[1];
-                    rho_   = y[2];
-                } else if (!betaIsFixed_ && !alphaIsFixed_ && !nuIsFixed_ && !rhoIsFixed_) {
-                    tranformation_ = boost::shared_ptr<Transformation>(new
-                        SabrParametersTransformation);
-                    NoConstraint constraint;
+                
+                } else {
+
                     SABRError costFunction(this);
+                    transformation_ = boost::shared_ptr<ParametersTransformation>(new
+                        SabrParametersTransformation);
+
                     Array guess(4);
                     guess[0] = alpha_;
                     guess[1] = beta_;
                     guess[2] = nu_;
                     guess[3] = rho_;
-                    guess = tranformation_->inverse(guess);
-                    Problem problem(costFunction, constraint, guess);
-                    SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
-                    Array result = problem.currentValue();
-                    Array y = tranformation_->direct(result);
-                    alpha_ = y[0];
-                    beta_  = y[1];
-                    nu_    = y[2];
-                    rho_   = y[3];
-                } else if (betaIsFixed_ && !alphaIsFixed_ && nuIsFixed_ && !rhoIsFixed_) {
-                    tranformation_ = boost::shared_ptr<Transformation>(new
-                        SabrParametersTransformationWithFixedBetaAndNu);
+
+                    std::vector<bool> parameterAreFixed(4);
+                    parameterAreFixed[0] = alphaIsFixed_;
+                    parameterAreFixed[1] = betaIsFixed_;
+                    parameterAreFixed[2] = nuIsFixed_;
+                    parameterAreFixed[3] = rhoIsFixed_;
+
+                    Array transfGuess(transformation_->inverse(guess));
+                    ConstrainedCostFunction constrainedSABRError(costFunction,
+                                            transfGuess, parameterAreFixed);
+                    Array projectedGuess(constrainedSABRError.project(transfGuess));
                     NoConstraint constraint;
-                    SABRErrorWithFixedBetaAndNu costFunction(this);
-                    Array guess(2);
-                    guess[0] = alpha_;
-                    guess[1] = rho_;
-                    guess = tranformation_->inverse(guess);
-                    Problem problem(costFunction, constraint, guess);
+                    Problem problem(constrainedSABRError, constraint, projectedGuess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
-                    Array result = problem.currentValue();
-                    Array y = tranformation_->direct(result);
-                    alpha_ = y[0];
-                    rho_   = y[1];
-                } else {
-                    QL_REQUIRE(false, "Selected Sabr calibration not implemented");
+                    Array projectedResult(problem.currentValue());
+                    Array transfResult(constrainedSABRError.include(projectedResult));
+
+                    Array result = transformation_->direct(transfResult);
+                    alpha_ = result[0];
+                    beta_  = result[1];
+                    nu_    = result[2];
+                    rho_   = result[3];
+
                 }
                 error_ = interpolationError();
                 maxError_ = interpolationMaxError();

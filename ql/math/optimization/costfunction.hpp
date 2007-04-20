@@ -64,6 +64,12 @@ namespace QuantLib {
         virtual Real finiteDifferenceEpsilon() const { return 1e-8; }
     };
 
+    class ParametersTransformation {
+      public:
+        virtual ~ParametersTransformation() {}
+        virtual Array direct(const Array& x) const = 0;
+        virtual Array inverse(const Array& x) const = 0;
+    };
 }
 
 #endif

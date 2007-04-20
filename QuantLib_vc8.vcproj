@@ -3189,6 +3189,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\constrainedcostfunction.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\constrainedcostfunction.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\constraint.cpp"
 					>
 				</File>
