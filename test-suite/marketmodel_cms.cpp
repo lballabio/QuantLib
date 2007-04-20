@@ -22,7 +22,7 @@
 
 #include "marketmodel_cms.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
 #include <ql/models/marketmodels/evolvers/cmswaprates/lognormal/cmswapratepcevolver.hpp>
@@ -30,7 +30,7 @@
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/correlations.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
@@ -230,7 +230,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation,
                                                   beta);
-    boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
                                           evolution.rateTimes()));       
     switch (marketModelType) {

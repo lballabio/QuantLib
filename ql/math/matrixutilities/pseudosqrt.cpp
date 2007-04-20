@@ -19,9 +19,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/pseudosqrt.hpp>
-#include <ql/math/choleskydecomposition.hpp>
-#include <ql/math/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/problem.hpp>

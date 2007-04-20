@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    class TimeDependantCorrelationStructure;
+    class PiecewiseConstantCorrelation;
 
     class AbcdVol : public MarketModel {
       public:
@@ -40,7 +40,7 @@ namespace QuantLib {
             Real c,
             Real d,
             const std::vector<Real>& ks,
-            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,

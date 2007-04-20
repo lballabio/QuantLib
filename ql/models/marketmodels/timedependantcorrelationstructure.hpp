@@ -18,33 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_fra_time_dep_corr_struct_hpp
-#define quantlib_fra_time_dep_corr_struct_hpp
+#ifndef quantlib_time_dep_corr_struct_hpp
+#define quantlib_time_dep_corr_struct_hpp
 
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    class CurveState;
+    class Matrix;
 
-    class CotSwapFromFwdCorrelation : public TimeDependantCorrelationStructure {
+    // piecewise constant in time
+    class PiecewiseConstantCorrelation {
       public:
-        CotSwapFromFwdCorrelation(
-            const Matrix& correlations,
-            const CurveState& curveState,
-            Real displacement,
-            const EvolutionDescription& evolution);
-        const std::vector<Time>& times() const;
-        const std::vector<Matrix>& pseudoRoots() const;
-        Size numberOfRates() const;
-    private:
-        std::vector<Matrix> fraCorrelationMatrix_;
-        std::vector<Matrix> pseudoRoots_;
-        Size numberOfRates_;
-        EvolutionDescription evolution_;
+        virtual ~PiecewiseConstantCorrelation() {}
+        virtual const std::vector<Time>& times() const = 0;
+        virtual const std::vector<Matrix>& correlations() const = 0;
+        virtual const Matrix& correlation(Size i) const;
+        virtual Size numberOfRates() const = 0;
     };
+
+    inline const Matrix&
+    PiecewiseConstantCorrelation::correlation(Size i) const {
+        const std::vector<Matrix>& results = correlations();
+        QL_REQUIRE(i<results.size(),
+                   "index (" << i <<
+                   ") must be less than correlations vector size (" <<
+                   results.size() << ")");
+        return results[i];
+    }
 
 }
 

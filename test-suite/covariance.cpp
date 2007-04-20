@@ -20,8 +20,8 @@
 
 #include "covariance.hpp"
 #include "utilities.hpp"
-#include <ql/methods/montecarlo/getcovariance.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/getcovariance.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/sequencestatistics.hpp>
 
 using namespace QuantLib;

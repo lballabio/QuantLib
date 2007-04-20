@@ -399,14 +399,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\methods\montecarlo\getcovariance.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\getcovariance.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\methods\montecarlo\longstaffschwartzpathpricer.hpp"
 					>
 				</File>
@@ -2798,21 +2790,26 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="matrixUtilities"
+				Name="matrixutilities"
 				>
 				<File
-					RelativePath="ql\math\choleskydecomposition.cpp"
+					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\getcovariance.cpp"
 					>
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -2820,10 +2817,8 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -2831,10 +2826,8 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 					<FileConfiguration
@@ -2842,186 +2835,45 @@
 						>
 						<Tool
 							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="ql\math\choleskydecomposition.hpp"
+					RelativePath=".\ql\math\matrixutilities\getcovariance.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\pseudosqrt.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\pseudosqrt.hpp"
+					RelativePath=".\ql\math\matrixutilities\pseudosqrt.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\svd.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\svd.hpp"
+					RelativePath=".\ql\math\matrixutilities\pseudosqrt.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\symmetricschurdecomposition.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\symmetricschurdecomposition.hpp"
+					RelativePath=".\ql\math\matrixutilities\svd.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\tqreigendecomposition.cpp"
+					RelativePath=".\ql\math\matrixutilities\svd.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\tqreigendecomposition.hpp"
+					RelativePath=".\ql\math\matrixutilities\symmetricschurdecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\symmetricschurdecomposition.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\tqreigendecomposition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\tqreigendecomposition.hpp"
 					>
 				</File>
 			</Filter>
@@ -3449,6 +3301,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructure.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\upperboundengine.cpp"
 					>
 				</File>
@@ -3775,38 +3631,6 @@
 						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp"
 						>
 					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure.hpp"
-						>
-					</File>
-					<Filter
-						Name="timedependantcorrelationstructures"
-						>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.hpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.hpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.hpp"
-							>
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="products"
@@ -3999,6 +3823,34 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="timedependantcorrelationstructures"
+					>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\correlations.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\correlations.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\cotswapfromfwdcorrelation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\cotswapfromfwdcorrelation.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.hpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

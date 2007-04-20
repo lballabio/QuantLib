@@ -18,36 +18,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_time_dep_corr_struct_hpp
-#define quantlib_time_dep_corr_struct_hpp
+#ifndef quantlib_fra_time_dep_corr_struct_hpp
+#define quantlib_fra_time_dep_corr_struct_hpp
 
-#include <ql/types.hpp>
-#include <ql/errors.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    class Matrix;
+    class CurveState;
 
-    // piecewise constant in time
-    class TimeDependantCorrelationStructure {
+    class CotSwapFromFwdCorrelation : public PiecewiseConstantCorrelation {
       public:
-        virtual ~TimeDependantCorrelationStructure() {}
-        virtual const std::vector<Time>& times() const = 0;
-        virtual const std::vector<Matrix>& pseudoRoots() const = 0;
-        virtual const Matrix& pseudoRoot(Size i) const;
-        virtual Size numberOfRates() const = 0;
+        CotSwapFromFwdCorrelation(
+            const Matrix& correlations,
+            const CurveState& curveState,
+            Real displacement,
+            const EvolutionDescription& evolution);
+        const std::vector<Time>& times() const;
+        const std::vector<Matrix>& correlations() const;
+        Size numberOfRates() const;
+    private:
+        std::vector<Matrix> fraCorrelationMatrix_;
+        std::vector<Matrix> correlations_;
+        Size numberOfRates_;
+        EvolutionDescription evolution_;
     };
-
-    inline const Matrix&
-    TimeDependantCorrelationStructure::pseudoRoot(Size i) const {
-        const std::vector<Matrix>& pseudo = pseudoRoots();
-        QL_REQUIRE(i<pseudo.size(),
-                   "index (" << i <<
-                   ") must be less than pseudoRoots size (" <<
-                   pseudo.size() << ")");
-        return pseudo[i];
-    }
 
 }
 

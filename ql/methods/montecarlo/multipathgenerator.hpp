@@ -30,7 +30,6 @@
 #include <ql/stochasticprocess.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
-#include <ql/math/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -152,6 +151,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

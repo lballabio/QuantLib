@@ -9,7 +9,6 @@ this_include_HEADERS = \
 	all.hpp \
 	array.hpp \
 	beta.hpp \
-	choleskydecomposition.hpp \
 	comparison.hpp \
 	convergencestatistics.hpp \
 	curve.hpp \
@@ -27,21 +26,16 @@ this_include_HEADERS = \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
 	primenumbers.hpp \
-	pseudosqrt.hpp \
 	riskstatistics.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
 	sequencestatistics.hpp \
 	statistics.hpp \
 	surface.hpp \
-	svd.hpp \
-	symmetricschurdecomposition.hpp \
-	tqreigendecomposition.hpp \
-	transformedgrid.hpp 
+	transformedgrid.hpp
 
 libMath_la_SOURCES = \
 	beta.cpp \
-	choleskydecomposition.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
 	factorial.cpp \
@@ -50,17 +44,14 @@ libMath_la_SOURCES = \
 	incrementalstatistics.cpp \
 	matrix.cpp \
 	primenumbers.cpp \
-	pseudosqrt.cpp \
 	rounding.cpp \
 	sampledcurve.cpp \
-	surface.cpp \
-	svd.cpp \
-	symmetricschurdecomposition.cpp \
-	tqreigendecomposition.cpp
+	surface.cpp
 
 libMath_la_LIBADD = \
     distributions/libDistributions.la \
     integrals/libIntegrals.la \
+    matrixutilities/libMatrixUtilities.la \
     optimization/libOptimization.la \
     randomnumbers/libRandomNumbers.la
 

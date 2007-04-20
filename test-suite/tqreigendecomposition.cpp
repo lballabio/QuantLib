@@ -19,7 +19,7 @@
 
 #include "tqreigendecomposition.hpp"
 #include "utilities.hpp"
-#include <ql/math/tqreigendecomposition.hpp>
+#include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

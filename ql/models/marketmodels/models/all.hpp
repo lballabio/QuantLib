@@ -9,7 +9,7 @@
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
 #include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
 #include <ql/models/marketmodels/models/timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>

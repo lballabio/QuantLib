@@ -20,9 +20,9 @@
 */
 
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +32,7 @@ namespace QuantLib {
             Real c,
             Real d,
             const std::vector<Real>& ks,
-            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             const Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -84,7 +84,7 @@ namespace QuantLib {
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
                 effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
                 effStopTime = corrTimes[kk];
-                correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+                correlations = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
                     for (Size j=i; j<numberOfRates_; ++j) {
                         covar = ks[i] * ks[j] * abcd.covariance(effStartTime,
@@ -99,7 +99,7 @@ namespace QuantLib {
             // last part in the evolution step
             effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
             effStopTime = evolTimes[k];
-            correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+            correlations = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                     covar = ks[i] * ks[j] * abcd.covariance(effStartTime,

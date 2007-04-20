@@ -19,8 +19,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 
@@ -31,9 +31,9 @@ namespace QuantLib {
       rateTimes_(rateTimes),
       times_(rateTimes.begin(), rateTimes.end()-1),
       numberOfRates_(rateTimes.size()-1),
-      pseudoRoots_(rateTimes.size()-1, Matrix(numberOfRates_,
-                                              numberOfRates_,
-                                              0.0)) {
+      correlations_(rateTimes.size()-1, Matrix(numberOfRates_,
+                                               numberOfRates_,
+                                               0.0)) {
 
         QL_REQUIRE(numberOfRates_==fwdCorrelation.rows(),
                    "mismatch between number of rates (" << numberOfRates_ <<
@@ -42,24 +42,19 @@ namespace QuantLib {
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
 
-        for (Size i=0; i<pseudoRoots_.size(); ++i) {
-            Matrix thisCorrelationMatrix(numberOfRates_-i,numberOfRates_-i);
-            for (Size j=0; j < thisCorrelationMatrix.rows(); ++j)
-                    for (Size k=0; k < thisCorrelationMatrix.rows(); ++k)
-                        thisCorrelationMatrix[j][k] =  fwdCorrelation[j][k];
-
-            Matrix smallPseudo = rankReducedSqrt(thisCorrelationMatrix,
-                                                 numberOfRates_, 1.0,
-                                                 SalvagingAlgorithm::None);
-
-            for (Size j=0; j<smallPseudo.rows(); ++j) {
-                std::copy(smallPseudo.row_begin(j), smallPseudo.row_end(j),
-                          pseudoRoots_[i].row_begin(i+j));
+        for (Size k=0; k<correlations_.size(); ++k) {
+            // proper diagonal values
+            for (Size i=0; i<numberOfRates_; ++i)
+                correlations_[k][i][i] = 1.0;
+            // copy only time hogeneous values
+            for (Size i=k; i<numberOfRates_; ++i) {
+                for (Size j=k; j<i; ++j) {
+                    correlations_[k][i][j] = correlations_[k][j][i] = 
+                        fwdCorrelation_[i-k][j-k];
+                }
             }
-            for (Size j=0; j<i; ++j)
-                pseudoRoots_[i][j][0] = 1.0;
-
         }
+
 
     }
 
@@ -68,8 +63,8 @@ namespace QuantLib {
     }
 
     const std::vector<Matrix>&
-    TimeHomogeneousForwardCorrelation::pseudoRoots() const {
-        return pseudoRoots_;
+    TimeHomogeneousForwardCorrelation::correlations() const {
+        return correlations_;
     }
 
     Size TimeHomogeneousForwardCorrelation::numberOfRates() const {

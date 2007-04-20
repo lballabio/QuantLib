@@ -24,13 +24,13 @@
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 
     CapletCoterminalSwaptionCalibration::CapletCoterminalSwaptionCalibration(
                             const EvolutionDescription& evolution,
-                            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+                            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
                             const std::vector<boost::shared_ptr<
                                         PiecewiseConstantVariance> >&
                                                 displacedSwapVariances,
@@ -44,7 +44,7 @@ namespace QuantLib {
 
     bool CapletCoterminalSwaptionCalibration::calibrationFunction(
                             const EvolutionDescription& evolution,
-                            const TimeDependantCorrelationStructure& corr,
+                            const PiecewiseConstantCorrelation& corr,
                             const std::vector<boost::shared_ptr<
                                 PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
@@ -98,12 +98,10 @@ namespace QuantLib {
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
-        for (Size i=0; i<corrPseudo.size(); ++i) {
-            Matrix correlations = corr.pseudoRoot(i)*transpose(corr.pseudoRoot(i));
-            corrPseudo[i] = rankReducedSqrt(correlations,
+        for (Size i=0; i<corrPseudo.size(); ++i)
+            corrPseudo[i] = rankReducedSqrt(corr.correlation(i),
                                             numberOfFactors, 1.0,
                                             SalvagingAlgorithm::None);
-        }
 
         // do alpha part
         // first modify variances to take account of alpha

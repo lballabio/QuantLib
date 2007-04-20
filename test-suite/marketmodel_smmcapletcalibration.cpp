@@ -22,8 +22,8 @@
 
 #include "marketmodel_smmcapletcalibration.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
@@ -36,7 +36,7 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/evolvers/cotswaprates/lognormal/coterminalswapratepcevolver.hpp>
 #include <ql/models/marketmodels/evolvers/fwdrates/lognormal/forwardratepcevolver.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/correlations.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
@@ -268,7 +268,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,
                                                   beta_);
-    boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
                                           evolution.rateTimes()));       
     switch (marketModelType) {

@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <vector>
 
 namespace QuantLib {

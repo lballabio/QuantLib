@@ -19,7 +19,7 @@
 */
 
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 

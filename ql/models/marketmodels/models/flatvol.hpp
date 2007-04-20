@@ -34,13 +34,13 @@
 
 namespace QuantLib {
 
-    class TimeDependantCorrelationStructure;
+    class PiecewiseConstantCorrelation;
 
     class FlatVol : public MarketModel {
       public:
         FlatVol(
             const std::vector<Volatility>& volatilities,
-            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,

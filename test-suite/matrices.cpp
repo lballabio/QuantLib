@@ -22,9 +22,9 @@
 #include "matrices.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrix.hpp>
-#include <ql/math/pseudosqrt.hpp>
-#include <ql/math/svd.hpp>
-#include <ql/math/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

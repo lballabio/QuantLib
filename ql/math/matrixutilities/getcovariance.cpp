@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,31 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/methods/montecarlo/getcovariance.hpp>
+#include <ql/math/matrixutilities/getcovariance.hpp>
 
 namespace QuantLib {
 
     CovarianceDecomposition::CovarianceDecomposition(const Matrix& cov,
                                                      Real tolerance)
-    : variances_(cov.diagonal()), standardDeviations_(Array(cov.rows())),
+    : variances_(cov.diagonal()), stdDevs_(Array(cov.rows())),
       correlationMatrix_(Matrix(cov.rows(), cov.rows())) {
 
         Size size = cov.rows();
         QL_REQUIRE(size==cov.columns(),
                    "input covariance matrix must be square");
 
-        Size i, j;
-        for (i=0; i<size; i++) {
-            standardDeviations_[i] = std::sqrt(variances_[i]);
+        for (Size i=0; i<size; ++i) {
+            stdDevs_[i] = std::sqrt(variances_[i]);
             correlationMatrix_[i][i] = 1.0;
-            for (j=0; j<i; j++){
+            for (Size j=0; j<i; ++j){
                 QL_REQUIRE(std::fabs(cov[i][j]-cov[j][i]) <= tolerance,
                            "invalid covariance matrix:"
                            << "\nc[" << i << ", " << j << "] = " << cov[i][j]
                            << "\nc[" << j << ", " << i << "] = " << cov[j][i]);
-                correlationMatrix_[i][j] = cov[i][j]/
-                    (standardDeviations_[i]*standardDeviations_[j]);
-                correlationMatrix_[j][i] = correlationMatrix_[i][j];
+                correlationMatrix_[i][j] = correlationMatrix_[j][i] =
+                                        cov[i][j]/(stdDevs_[i]*stdDevs_[j]);
             }
         }
     }

@@ -20,11 +20,11 @@
 */
 
 #include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
-#include <ql/math/pseudosqrt.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructures/correlations.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructures/correlations.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +43,7 @@ namespace QuantLib {
 
     FlatVol::FlatVol(
             const std::vector<Volatility>& volatilities,
-            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
@@ -96,7 +96,7 @@ namespace QuantLib {
             for (; corrTimes[kk]<evolTimes[k]; ++kk) {
                 effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
                 effStopTime = corrTimes[kk];
-                correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+                correlations = corr->correlation(kk);
                 for (Size i=0; i<numberOfRates_; ++i) {
                     for (Size j=i; j<numberOfRates_; ++j) {
                         covar = flatVolCovariance(effStartTime,
@@ -111,7 +111,7 @@ namespace QuantLib {
             // last part in the evolution step
             effStartTime = kk==0 ? 0.0 : corrTimes[kk-1];
             effStopTime = evolTimes[k];
-            correlations = corr->pseudoRoot(kk)*transpose(corr->pseudoRoot(kk));
+            correlations = corr->correlation(kk);
             for (Size i=0; i<numberOfRates_; ++i) {
                 for (Size j=i; j<numberOfRates_; ++j) {
                     covar = flatVolCovariance(effStartTime,
@@ -192,7 +192,7 @@ namespace QuantLib {
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                       longTermCorrelation_,
                                                       beta_);
-        boost::shared_ptr<TimeDependantCorrelationStructure> corr(new
+        boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
                                               rateTimes));       
         return boost::shared_ptr<MarketModel>(new

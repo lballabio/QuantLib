@@ -23,8 +23,8 @@
 */
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/tqreigendecomposition.hpp>
-#include <ql/math/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/tqreigendecomposition.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 
 namespace QuantLib {
 

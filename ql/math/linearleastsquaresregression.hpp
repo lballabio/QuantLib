@@ -25,7 +25,7 @@
 #define quantlib_linear_least_squares_regression_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/math/svd.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/array.hpp>
 #include <boost/function.hpp>
 #include <vector>

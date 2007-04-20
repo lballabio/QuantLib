@@ -23,7 +23,7 @@
 
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/models/timedependantcorrelationstructure.hpp>
+#include <ql/models/marketmodels/timedependantcorrelationstructure.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         CapletCoterminalSwaptionCalibration(
             const EvolutionDescription& evolution,
-            const boost::shared_ptr<TimeDependantCorrelationStructure>& corr,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const std::vector<boost::shared_ptr<
                         PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
@@ -57,7 +57,7 @@ namespace QuantLib {
         // actual calibration function
         static bool calibrationFunction(
                             const EvolutionDescription& evolution,
-                            const TimeDependantCorrelationStructure& corr,
+                            const PiecewiseConstantCorrelation& corr,
                             const std::vector<boost::shared_ptr<
                                 PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
@@ -72,7 +72,7 @@ namespace QuantLib {
       private:
         // input
         EvolutionDescription evolution_;
-        boost::shared_ptr<TimeDependantCorrelationStructure> corr_;
+        boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
         std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                                 displacedSwapVariances_;
         std::vector<Volatility> mktCapletVols_;
