@@ -85,7 +85,8 @@ void setup() {
                 Period(fixedFrequency_), fixedConvention_,
                 iborindex_->dayCounter(), iborindex_));
     spread_=0.0;  
-    today_ = calendar_.adjust(Date::todaysDate());
+    //today_ = calendar_.adjust(Date::todaysDate());
+    Date today_(20,September,2004);
     Settings::instance().evaluationDate() = today_;
     //settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(flatRate(today_,0.05,Actual365Fixed()));
@@ -104,7 +105,9 @@ void AssetSwapTest::testImpliedValue() {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-
+    
+ /*   Date today_(20,September,2004);
+    Settings::instance().evaluationDate() = today_;*/
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
     Natural fixingDays = 2;
@@ -161,7 +164,7 @@ void AssetSwapTest::testImpliedValue() {
                          inArrears,
                          100.0, Date(24,September,2004), termStructure_));
     CashFlows::setPricer(floatingBond->cashflows(),pricer);
-    iborindex_->addFixing(Date(22,March,2007), 0.04013);
+    //iborindex_->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondPrice = floatingBond->cleanPrice();
     AssetSwap floatingBondAssetSwap(payFixedRate, 
                                  floatingBond, floatingBondPrice,
