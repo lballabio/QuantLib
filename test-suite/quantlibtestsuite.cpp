@@ -174,12 +174,6 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
-    test->add(SwapForwardMappingsTest::suite());
-    test->add(MarketModelSmmCapletCalibrationTest::suite());
-    test->add(MarketModelSmmTest::suite());
-    test->add(MarketModelCmsTest::suite());
-    test->add(MarketModelTest::suite());
-
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
@@ -216,8 +210,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
-    test->add(LiborMarketModelTest::suite());
-    test->add(LiborMarketModelProcessTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
     test->add(LowDiscrepancyTest::suite());
@@ -255,7 +247,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TransformedGridTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
+
     //tests for deprecated (or generally old-style) classes
+    test->add(LiborMarketModelTest::suite());
+    test->add(LiborMarketModelProcessTest::suite());
     test->add(OldPricerTest::suite());
 
     test->add(BOOST_TEST_CASE(stopTimer));
