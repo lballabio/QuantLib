@@ -25,7 +25,7 @@
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
-#include <ql/models/marketmodels/evolvers/cmswaprates/lognormal/lognormalcmswapratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalcmswapratepcevolver.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>

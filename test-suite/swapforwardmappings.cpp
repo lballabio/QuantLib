@@ -24,7 +24,7 @@
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdratepcevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepcevolver.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>

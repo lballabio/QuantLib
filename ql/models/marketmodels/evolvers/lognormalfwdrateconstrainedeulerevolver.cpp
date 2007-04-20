@@ -18,7 +18,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/fwdrates/lognormal/lognormalfwdrateconstrainedeulerevolver.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateconstrainedeulerevolver.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
