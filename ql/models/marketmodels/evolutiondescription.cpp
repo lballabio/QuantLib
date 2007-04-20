@@ -39,7 +39,7 @@ namespace QuantLib {
                       evolutionTimes),
       relevanceRates_(relevanceRates),
       rateTaus_(rateTimes_.size()-1),
-      effStopTime_(evolutionTimes_.size(), rateTimes_.size()-1),
+      //effStopTime_(evolutionTimes_.size(), rateTimes_.size()-1),
       firstAliveRate_(evolutionTimes_.size())
     {
 
@@ -70,11 +70,11 @@ namespace QuantLib {
             QL_REQUIRE(relevanceRates.size() == steps_,
                        "relevanceRates / evolutionTimes mismatch");
 
-        for (Size j=0; j<steps_; ++j) {
-            for (Size i=0; i<nRates_; ++i)
-                effStopTime_[j][i] =
-                    std::min(evolutionTimes_[j], rateTimes_[i]);
-        }
+        //for (Size j=0; j<steps_; ++j) {
+        //    for (Size i=0; i<nRates_; ++i)
+        //        effStopTime_[j][i] =
+        //            std::min(evolutionTimes_[j], rateTimes_[i]);
+        //}
 
         Time currentEvolutionTime = 0.0;
         Size firstAliveRate = 0;
@@ -98,9 +98,9 @@ namespace QuantLib {
         return evolutionTimes_;
     }
 
-    const Matrix& EvolutionDescription::effectiveStopTimes() const {
-        return effStopTime_;
-    }
+    //const Matrix& EvolutionDescription::effectiveStopTimes() const {
+    //    return effStopTime_;
+    //}
 
     const std::vector<Size>& EvolutionDescription::firstAliveRate() const {
         return firstAliveRate_;
