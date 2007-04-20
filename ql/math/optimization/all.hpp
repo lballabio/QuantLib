@@ -3,7 +3,6 @@
 
 #include <ql/math/optimization/armijo.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/constrainedcostfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
