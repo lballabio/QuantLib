@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     armijo.hpp \
     conjugategradient.hpp \
+    constrainedcostfunction.hpp \
     constraint.hpp \
     costfunction.hpp \
     endcriteria.hpp \
@@ -22,6 +23,7 @@ this_include_HEADERS = \
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
+    constrainedcostfunction.cpp \
     constraint.cpp \
     endcriteria.cpp \
     leastsquare.cpp \
