@@ -4,22 +4,22 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 nobase_this_include_HEADERS = \
 	all.hpp \
-	cmswaprates/lognormal/cmswapratepcevolver.hpp \
-	cotswaprates/lognormal/coterminalswapratepcevolver.hpp \
-	fwdrates/lognormal/forwardrateconstrainedeuler.hpp \
-	fwdrates/lognormal/forwardrateeulerevolver.hpp \
-	fwdrates/lognormal/forwardrateipcevolver.hpp \
-	fwdrates/normal/forwardratenormalpcevolver.hpp \
-	fwdrates/lognormal/forwardratepcevolver.hpp
+	lognormalcmswapratepc.hpp \
+	lognormalcotswapratepc.hpp \
+	lognormalfwdrateeuler.hpp \
+	lognormalfwdrateeulerconstrained.hpp \
+	lognormalfwdrateipc.hpp \
+	lognormalfwdratepc.hpp \
+	normalfwdratenormalpc.hpp
 
 libMarketModelsEvolvers_la_SOURCES = \
-	cmswaprates/lognormal/cmswapratepcevolver.cpp \
-	cotswaprates/lognormal/coterminalswapratepcevolver.cpp \
-	fwdrates/lognormal/forwardrateconstrainedeuler.cpp \
-	fwdrates/lognormal/forwardrateeulerevolver.cpp \
-	fwdrates/lognormal/forwardrateipcevolver.cpp \
-	fwdrates/normal/forwardratenormalpcevolver.cpp \
-	fwdrates/lognormal/forwardratepcevolver.cpp
+	lognormalcmswapratepc.cpp \
+	lognormalcotswapratepc.cpp \
+	lognormalfwdrateeuler.cpp \
+	lognormalfwdrateeulerconstrained.cpp \
+	lognormalfwdrateipc.cpp \
+	lognormalfwdratepc.cpp \
+	normalfwdratenormalpc.cpp
 
 noinst_LTLIBRARIES = libMarketModelsEvolvers.la
 

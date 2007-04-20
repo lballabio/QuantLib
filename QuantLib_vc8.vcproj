@@ -3436,19 +3436,19 @@
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeuler.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateconstrainedeuler.hpp"
-						>
-					</File>
-					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeuler.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeulerconstrained.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\evolvers\lognormalfwdrateeulerconstrained.hpp"
 						>
 					</File>
 					<File

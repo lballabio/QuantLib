@@ -49,7 +49,7 @@
 #include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
-#include <ql/models/marketmodels/evolvers/lognormalfwdrateconstrainedeuler.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateeulerconstrained.hpp>
 #include <ql/models/marketmodels/exercisestrategies/swapratetrigger.hpp>
 #include <ql/models/marketmodels/exercisestrategies/lsstrategy.hpp>
 #include <ql/models/marketmodels/exercisevalues/nothingexercisevalue.hpp>
