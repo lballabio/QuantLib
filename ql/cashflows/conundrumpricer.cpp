@@ -873,12 +873,21 @@ namespace QuantLib {
 
             objectiveFunction_->setSwapRateValue(Rs);
             //Newton solver;
-            Newton newtonSolver;
-            newtonSolver.setMaxEvaluations(1000);
+            Newton solver;
+            solver.setMaxEvaluations(1000);
             const Real lower = -20, upper = 20.;
-            calibratedShift_ = newtonSolver.solve(*objectiveFunction_, accuracy_,
-                std::max( std::min(initialGuess, upper*.99), lower*.99),
-                lower, upper);
+
+            try {
+				calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_,
+					std::max( std::min(initialGuess, upper*.99), lower*.99),
+					lower, upper);
+            } catch (std::exception& e) {
+				QL_FAIL("meanReversion: " << meanReversion_->value() <<
+					    ", swapRateValue: " << swapRateValue_ <<
+					    ", swapStartTime: " << swapStartTime_ <<
+					    ", shapedPaymentTime: " << shapedPaymentTime_ <<
+						"\n error message: " << e.what());
+            }
             tmpRs_=Rs;
         }
         return calibratedShift_;
