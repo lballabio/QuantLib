@@ -177,13 +177,24 @@ namespace QuantLib {
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
                           ": max iteration (" <<
-                          endCriteria_->maxIterations() << ")");
+                          endCriteria_->maxIterations() <<
+						  ", alpha " <<  alphas[j][k]<<
+						  ", beta "  <<  betas[j][k] <<
+						  ", nu "    <<  nus[j][k]   <<
+						  ", rho "   <<  rhos[j][k]  <<
+						  ", error " <<  errors[j][k]<<
+						  ")");
 
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
                           "global calibration failed: "
                           "option tenor " << optionDates[j] <<
                           ", swap tenor " << swapTenors[k] <<
-                          ": max error " << io::rate(maxErrors[j][k]));
+                          ": max error " << io::rate(maxErrors[j][k]) <<
+						  ", alpha " <<  alphas[j][k]<<
+						  ", beta "  <<  betas[j][k] <<
+						  ", nu "    <<  nus[j][k]   <<
+						  ", rho "   <<  rhos[j][k]  <<
+						  ", error " <<  errors[j][k]);
             }
         }
         Cube sabrParametersCube(optionDates, swapTenors,
@@ -262,13 +273,25 @@ namespace QuantLib {
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration (" <<
-                      endCriteria_->maxIterations() << ")");
+                      endCriteria_->maxIterations() << ")" <<
+						  ", alpha " <<  calibrationResult[0]<<
+						  ", beta "  <<  calibrationResult[1] <<
+						  ", nu "    <<  calibrationResult[2]   <<
+						  ", rho "   <<  calibrationResult[3]  <<
+						  ", error " <<  calibrationResult[5]
+						  );
 
             QL_ENSURE(calibrationResult[6]< maxErrorTolerance_,
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
-                      ": max error " << calibrationResult[6]);
+                      ": max error " << calibrationResult[6]  <<
+						  ", alpha " <<  calibrationResult[0] <<
+						  ", beta "  <<  calibrationResult[1] <<
+						  ", nu "    <<  calibrationResult[2] <<
+						  ", rho "   <<  calibrationResult[3] <<
+						  ", error " <<  calibrationResult[5]
+						  );
 
             parametersCube.setPoint(optionDates[j], swapTenors[k],
                                     optionTimes[j], swapLengths[k],
