@@ -820,8 +820,9 @@ QL_END_TEST_LOCALS(MarketModelTest)
 
 void MarketModelTest::testOneStepForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Repricing one-step forwards and optionlets "
-                  "in a LIBOR market model...");
+    BOOST_MESSAGE("Testing exact repricing of "
+                  "one-step forwards and optionlets "
+                  "in a lognormal forward rate market model...");
 
     QL_TEST_SETUP
 
@@ -912,8 +913,9 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
 
 void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Repricing one-step forwards and optionlets "
-                  "in a Normal LIBOR market model...");
+    BOOST_MESSAGE("Testing exact repricing of "
+                  "one-step forwards and optionlets "
+                  "in a normal forward rate market model...");
 
     QL_TEST_SETUP
 
@@ -1004,8 +1006,9 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
 
 void MarketModelTest::testMultiStepForwardsAndOptionlets() {
 
-    BOOST_MESSAGE("Repricing multi-step forwards and optionlets "
-                  "in a LIBOR market model...");
+    BOOST_MESSAGE("Testing exact repricing of "
+                  "multi-step forwards and optionlets "
+                  "in a lognormal forward rate market model...");
 
     QL_TEST_SETUP
 
@@ -1103,8 +1106,9 @@ void MarketModelTest::testMultiStepForwardsAndOptionlets() {
 
 void MarketModelTest::testMultiStepCoinitialSwaps() {
 
-    BOOST_MESSAGE("Repricing multi-step coinitial swaps "
-                  "in a LIBOR market model...");
+    BOOST_MESSAGE("Testing exact repricing of "
+                  "multi-step coinitial swaps "
+                  "in a lognormal forward rate market model...");
 
     QL_TEST_SETUP
 
@@ -1175,8 +1179,9 @@ void MarketModelTest::testMultiStepCoinitialSwaps() {
 
 void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
 
-    BOOST_MESSAGE("Repricing multi-step coterminal swaps "
-                  "and swaptions in a LIBOR market model...");
+    BOOST_MESSAGE("Testing exact repricing of "
+                  "multi-step coterminal swaps and swaptions "
+                  "in a lognormal forward rate market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
     Real fixedRate = 0.04;
@@ -1771,7 +1776,7 @@ void MarketModelTest::testCallableSwapAnderson() {
 
 void MarketModelTest::testGreeks() {
 
-    BOOST_MESSAGE("Testing caplets greeks in a LIBOR market model...");
+    BOOST_MESSAGE("Testing caplets greeks in a lognormal forward rate market model...");
 
     QL_TEST_SETUP
 
@@ -2219,7 +2224,7 @@ void MarketModelTest::testIsInSubset() {
 
     // Performance test for isInSubset function (temporary)
 
-    BOOST_MESSAGE("Testing isInSubset ...");
+    BOOST_MESSAGE("Testing isInSubset...");
     QL_TEST_SETUP
 
     Size dim = 100;

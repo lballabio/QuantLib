@@ -411,7 +411,7 @@ void SwaptionTest::testCachedValue() {
 
 void SwaptionTest::testVega() {
 
-    BOOST_MESSAGE("Testing swaption vega ...");
+    BOOST_MESSAGE("Testing swaption vega...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP

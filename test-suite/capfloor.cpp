@@ -361,7 +361,7 @@ void CapFloorTest::testParity() {
 
 void CapFloorTest::testATMRate() {
 
-    BOOST_MESSAGE("Testing ATM rate ...");
+    BOOST_MESSAGE("Testing ATM rate...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP

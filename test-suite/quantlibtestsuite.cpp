@@ -174,6 +174,12 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(BOOST_TEST_CASE(startTimer));
 
+    test->add(SwapForwardMappingsTest::suite());
+    test->add(MarketModelSmmCapletCalibrationTest::suite());
+    test->add(MarketModelSmmTest::suite());
+    test->add(MarketModelCmsTest::suite());
+    test->add(MarketModelTest::suite());
+
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());

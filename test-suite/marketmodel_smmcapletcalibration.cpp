@@ -404,7 +404,8 @@ QL_END_TEST_LOCALS(MarketModelTest_smm)
 
 void MarketModelSmmCapletCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Testing coterminal swap + caplet calibration ...");
+    BOOST_MESSAGE("Testing coterminal swap & caplet calibration "
+                  "in a lognormal coterminal swap market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
