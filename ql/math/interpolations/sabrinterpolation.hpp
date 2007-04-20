@@ -31,21 +31,18 @@
 
 #include <ql/math/interpolation.hpp>
 #include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/armijo.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/volatilities/sabr.hpp>
-#include <ql/math/optimization/constrainedcostfunction.hpp>
-#include <vector>
+#include <ql/math/optimization/projectedcostfunction.hpp>
+
 
 namespace QuantLib {
 
     namespace detail {
-
+        
         template <class I1, class I2> class SABRInterpolationImpl;
 
         class SABRCoefficientHolder {
@@ -356,10 +353,14 @@ namespace QuantLib {
                     parameterAreFixed[2] = nuIsFixed_;
                     parameterAreFixed[3] = rhoIsFixed_;
 
-                    Array transfGuess(transformation_->inverse(guess));
-                    ConstrainedCostFunction constrainedSABRError(costFunction,
-                                            transfGuess, parameterAreFixed);
-                    Array projectedGuess(constrainedSABRError.project(transfGuess));
+                    Array inversedTransformatedGuess(transformation_->inverse(guess));
+
+                    ProjectedCostFunction constrainedSABRError(costFunction,
+                                    inversedTransformatedGuess, parameterAreFixed);
+
+                    Array projectedGuess
+                        (constrainedSABRError.project(inversedTransformatedGuess));
+
                     NoConstraint constraint;
                     Problem problem(constrainedSABRError, constraint, projectedGuess);
                     SABREndCriteria_ = method_->minimize(problem, *endCriteria_);
