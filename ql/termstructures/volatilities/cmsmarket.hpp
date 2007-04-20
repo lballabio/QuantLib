@@ -131,13 +131,13 @@ namespace QuantLib {
         Handle<YieldTermStructure> yieldTermStructure_;
      };
 
-     class SmileAndCmsCalibrationBySabr{
+     class CmsMarketCalibration{
         
       public:
         
         enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
 
-        SmileAndCmsCalibrationBySabr(
+        CmsMarketCalibration(
             Handle<SwaptionVolatilityStructure>& volCube,
             boost::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights,
@@ -149,10 +149,10 @@ namespace QuantLib {
         CalibrationType calibrationType_;
         Matrix sparseSabrParameters_, denseSabrParameters_, browseCmsMarket_;
 
-        Array calibration(const boost::shared_ptr<EndCriteria>& endCriteria,
-                          const boost::shared_ptr<OptimizationMethod>& method,
-                          const Array& guess,
-                          bool isMeanReversionFixed);
+        Array compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+                      const boost::shared_ptr<OptimizationMethod>& method,
+                      const Array& guess,
+                      bool isMeanReversionFixed);
         Real error(){return error_;}
         Real elapsed() {return elapsed_;}
         EndCriteria::Type endCriteria() { return endCriteria_; };
@@ -183,7 +183,7 @@ namespace QuantLib {
 
         class ObjectiveFunction : public CostFunction {
           public:
-            ObjectiveFunction(SmileAndCmsCalibrationBySabr* smileAndCms)
+            ObjectiveFunction(CmsMarketCalibration* smileAndCms)
                 :smileAndCms_(smileAndCms),
                 volCube_(smileAndCms->volCube_),
                 cmsMarket_(smileAndCms->cmsMarket_),
@@ -197,7 +197,7 @@ namespace QuantLib {
             Real switchErrorFunctionOnCalibrationType() const;
             Disposable<Array> switchErrorsFunctionOnCalibrationType() const;
 
-            SmileAndCmsCalibrationBySabr* smileAndCms_;
+            CmsMarketCalibration* smileAndCms_;
             Handle<SwaptionVolatilityStructure> volCube_;
             boost::shared_ptr<CmsMarket> cmsMarket_;
             Matrix weights_;
@@ -229,7 +229,7 @@ namespace QuantLib {
 
         class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
           public:
-            ObjectiveFunctionWithFixedMeanReversion(SmileAndCmsCalibrationBySabr* smileAndCms,
+            ObjectiveFunctionWithFixedMeanReversion(CmsMarketCalibration* smileAndCms,
                                                     Real fixedMeanReversion)
                 :ObjectiveFunction(smileAndCms),
                 fixedMeanReversion_(fixedMeanReversion){};

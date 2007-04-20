@@ -329,10 +329,10 @@ namespace QuantLib {
     }
 
     //===========================================================================//
-    //                       SmileAndCmsCalibrationBySabr                        //
+    //                       CmsMarketCalibration                                //
     //===========================================================================//
 
-    SmileAndCmsCalibrationBySabr::SmileAndCmsCalibrationBySabr(
+    CmsMarketCalibration::CmsMarketCalibration(
         Handle<SwaptionVolatilityStructure>& volCube,
         boost::shared_ptr<CmsMarket>& cmsMarket,
         const Matrix& weights,
@@ -343,7 +343,7 @@ namespace QuantLib {
     calibrationType_(calibrationType){
     }
 
-    Array SmileAndCmsCalibrationBySabr::calibration(
+    Array CmsMarketCalibration::compute(
             const boost::shared_ptr<EndCriteria>& endCriteria,
             const boost::shared_ptr<OptimizationMethod>& method,
             const Array& guess,
@@ -382,20 +382,20 @@ namespace QuantLib {
     }
 
     //===========================================================================//
-    //           SmileAndCmsCalibrationBySabr::ObjectiveFunction                 //
+    //                   CmsMarketCalibration::ObjectiveFunction                 //
     //===========================================================================//
 
-    Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::value(const Array& x) const {
+    Real CmsMarketCalibration::ObjectiveFunction::value(const Array& x) const {
         updateVolatilityCubeAndCmsMarket(x);
         return switchErrorFunctionOnCalibrationType();
     }
 
-    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunction::values(const Array& x) const {
+    Disposable<Array> CmsMarketCalibration::ObjectiveFunction::values(const Array& x) const {
         updateVolatilityCubeAndCmsMarket(x);
         return switchErrorsFunctionOnCalibrationType();
     }
         
-    void SmileAndCmsCalibrationBySabr::ObjectiveFunction::
+    void CmsMarketCalibration::ObjectiveFunction::
                     updateVolatilityCubeAndCmsMarket(const Array& x) const {
         const Array y = x;
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
@@ -411,7 +411,7 @@ namespace QuantLib {
         cmsMarket_->reprice(volCube_, meanReversion);
     }
 
-    Real SmileAndCmsCalibrationBySabr::ObjectiveFunction::switchErrorFunctionOnCalibrationType() const {
+    Real CmsMarketCalibration::ObjectiveFunction::switchErrorFunctionOnCalibrationType() const {
         switch (calibrationType_) {
             case OnSpread:
                 return cmsMarket_->weightedError(weights_);
@@ -424,7 +424,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> SmileAndCmsCalibrationBySabr::ObjectiveFunction::
+    Disposable<Array> CmsMarketCalibration::ObjectiveFunction::
                                     switchErrorsFunctionOnCalibrationType() const {
         switch (calibrationType_) {
             case OnSpread:
@@ -439,10 +439,10 @@ namespace QuantLib {
     }
 
     //===========================================================================//
-    //   SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion   //
+    //       CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion       //
     //===========================================================================//
 
-    void SmileAndCmsCalibrationBySabr::ObjectiveFunctionWithFixedMeanReversion::
+    void CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion::
                                 updateVolatilityCubeAndCmsMarket(const Array& x) const {
         const Array y = x;
         const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
