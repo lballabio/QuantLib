@@ -3,7 +3,6 @@
 
 #include <ql/math/array.hpp>
 #include <ql/math/beta.hpp>
-#include <ql/math/choleskydecomposition.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/convergencestatistics.hpp>
 #include <ql/math/curve.hpp>
@@ -21,16 +20,12 @@
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/primenumbers.hpp>
-#include <ql/math/pseudosqrt.hpp>
 #include <ql/math/riskstatistics.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/math/sampledcurve.hpp>
 #include <ql/math/sequencestatistics.hpp>
 #include <ql/math/statistics.hpp>
 #include <ql/math/surface.hpp>
-#include <ql/math/svd.hpp>
-#include <ql/math/symmetricschurdecomposition.hpp>
-#include <ql/math/tqreigendecomposition.hpp>
 #include <ql/math/transformedgrid.hpp>
 
 #include <ql/math/distributions/all.hpp>

@@ -356,6 +356,7 @@ AC_CONFIG_FILES([
     ql/models/marketmodels/exercisestrategies/Makefile
     ql/models/marketmodels/exercisevalues/Makefile
     ql/models/marketmodels/models/Makefile
+    ql/models/marketmodels/piecewiseconstantcorrelations/Makefile
     ql/models/marketmodels/products/Makefile
     ql/models/marketmodels/products/onestep/Makefile
     ql/models/marketmodels/products/multistep/Makefile

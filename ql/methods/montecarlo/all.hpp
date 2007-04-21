@@ -4,7 +4,6 @@
 #include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
-#include <ql/methods/montecarlo/getcovariance.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/methods/montecarlo/genericparametricearlyexercise.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>

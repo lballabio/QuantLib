@@ -1,6 +1,7 @@
 
 SUBDIRS = browniangenerators curvestates driftcomputation evolvers \
-          exercisestrategies exercisevalues models products
+          exercisestrategies exercisevalues models products \
+	  piecewiseconstantcorrelations
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -24,6 +25,7 @@ this_include_HEADERS = \
     parametricexercise.hpp \
     parametricexerciseadapter.hpp \
     parametricswapexercise.hpp \
+    piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
     swapbasissystem.hpp \
     swapforwardmappings.hpp \
@@ -55,6 +57,7 @@ libMarketModels_la_LIBADD = \
     exercisevalues/libMarketModelsExerciseValues.la \
     exercisestrategies/libMarketModelsExerciseStrategies.la \
     models/libMarketModelsModels.la \
+    piecewiseconstantcorrelations/libMarketModelsPiecewiseConstantCorrelations.la \
     products/libMarketModelsProducts.la
 
 all.hpp: Makefile.am

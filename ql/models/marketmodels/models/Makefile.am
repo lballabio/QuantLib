@@ -3,7 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 
-nobase_this_include_HEADERS = \
+this_include_HEADERS = \
 	all.hpp \
 	abcdvol.hpp \
 	capletcoterminalswaptioncalibration.hpp \
@@ -12,11 +12,7 @@ nobase_this_include_HEADERS = \
 	fwdtocotswapadapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
-	pseudorootfacade.hpp \
-	timedependantcorrelationstructure.hpp \
-	timedependantcorrelationstructures/correlations.hpp \
-	timedependantcorrelationstructures/cotswapfromfwdcorrelation.hpp \
-	timedependantcorrelationstructures/timehomogeneousforwardcorrelation.hpp
+	pseudorootfacade.hpp
 
 libMarketModelsModels_la_SOURCES = \
 	abcdvol.cpp \
@@ -26,10 +22,7 @@ libMarketModelsModels_la_SOURCES = \
 	fwdtocotswapadapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \
-	pseudorootfacade.cpp \
-	timedependantcorrelationstructures/correlations.cpp \
-	timedependantcorrelationstructures/cotswapfromfwdcorrelation.cpp \
-	timedependantcorrelationstructures/timehomogeneousforwardcorrelation.cpp
+	pseudorootfacade.cpp
 
 noinst_LTLIBRARIES = libMarketModelsModels.la
 
