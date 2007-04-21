@@ -33,4 +33,3 @@
 #include <ql/models/marketmodels/exercisevalues/all.hpp>
 #include <ql/models/marketmodels/models/all.hpp>
 #include <ql/models/marketmodels/products/all.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/all.hpp>
