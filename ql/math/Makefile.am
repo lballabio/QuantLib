@@ -1,6 +1,6 @@
 
 SUBDIRS = distributions integrals interpolations \
-          optimization randomnumbers solvers1d
+          optimization randomnumbers solvers1d matrixutilities
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
