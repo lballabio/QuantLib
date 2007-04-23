@@ -10,40 +10,40 @@ this_include_HEADERS = \
     all.hpp \
     accountingengine.hpp \
     browniangenerator.hpp \
+    collectnodedata.hpp \
+    constrainedevolver.hpp \
     curvestate.hpp \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
-    exercisevalue.hpp \
-    lsbasisfunctions.hpp \
-    lsdatacollector.hpp \
-    marketmodelconstrainedevolver.hpp \
+    marketmodelbasissystem.hpp \
     marketmodeldiscounter.hpp \
     marketmodelevolver.hpp \
-    marketmodelproduct.hpp \
+    marketmodelexercisevalue.hpp \
+    marketmodelmultiproduct.hpp \
+    marketmodelnodedataprovider.hpp \
+    marketmodelparametricexercise.hpp \
     marketmodel.hpp \
-    nodedataprovider.hpp \
-    parametricexercise.hpp \
     parametricexerciseadapter.hpp \
-    parametricswapexercise.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
     swapbasissystem.hpp \
     swapforwardmappings.hpp \
+    triggeredswapexercise.hpp \
     upperboundengine.hpp \
     utilities.hpp
 
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
+    collectnodedata.cpp \
     curvestate.cpp \
     evolutiondescription.cpp \
-    lsdatacollector.cpp \
     marketmodeldiscounter.cpp \
     marketmodel.cpp \
     parametricexerciseadapter.cpp \
-    parametricswapexercise.cpp \
     proxygreekengine.cpp \
     swapbasissystem.cpp \
     swapforwardmappings.cpp \
+    triggeredswapexercise.cpp \
     upperboundengine.cpp \
     utilities.cpp
 

@@ -16,6 +16,7 @@ this_include_HEADERS = \
     fixedratecoupon.hpp \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
+    rangeaccrual.hpp \
     shortfloatingcoupon.hpp \
     shortindexedcoupon.hpp \
     simplecashflow.hpp \
@@ -32,6 +33,7 @@ libCashFlows_la_SOURCES = \
     dividend.cpp \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
+    rangeaccrual.cpp \
     shortfloatingcoupon.cpp \
     timebasket.cpp
 

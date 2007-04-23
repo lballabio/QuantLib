@@ -8,7 +8,6 @@ this_include_HEADERS = \
 	earlyexercisepathpricer.hpp \
 	exercisestrategy.hpp \
 	genericlsregression.hpp \
-	genericparametricearlyexercise.hpp \
 	longstaffschwartzpathpricer.hpp \
 	lsmbasissystem.hpp \
 	mctraits.hpp \
@@ -16,6 +15,7 @@ this_include_HEADERS = \
 	multipath.hpp \
 	multipathgenerator.hpp \
 	nodedata.hpp \
+	parametricexercise.hpp \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
@@ -24,8 +24,8 @@ this_include_HEADERS = \
 libMonteCarlo_la_SOURCES = \
 	brownianbridge.cpp \
 	genericlsregression.cpp \
-	genericparametricearlyexercise.cpp \
-	lsmbasissystem.cpp
+	lsmbasissystem.cpp \
+	parametricexercise.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la
 

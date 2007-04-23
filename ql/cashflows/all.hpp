@@ -13,6 +13,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/shortindexedcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>

@@ -23,11 +23,12 @@
 */
 
 #ifndef quantlib_range_accrual_h
-#define quantlib_range_accrual_h 
+#define quantlib_range_accrual_h
 
-#include <ql/TermStructures/Volatilities/smilesection.hpp>
-#include <ql/Indexes/iborindex.hpp>
-#include <ql/CashFlows/all.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/time/schedule.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -41,45 +42,45 @@ namespace QuantLib {
      class RangeAccrualFloatersCoupon: public IborCoupon{
 
       public:
-          
+
           RangeAccrualFloatersCoupon(
                 const Real nominal,
                 const Date& paymentDate,
                 const boost::shared_ptr<InterestRateIndex>& index,
-                const Date& startDate,                                  
-                const Date& endDate,                                    
+                const Date& startDate,
+                const Date& endDate,
                 Integer fixingDays,
                 const DayCounter& dayCounter,
                 Real gearing,
                 Rate spread,
                 const Date& refPeriodStart,
-                const Date& refPeriodEnd,    
+                const Date& refPeriodEnd,
                 const boost::shared_ptr<Schedule>&  observationsSchedule,
-                double lowerTrigger,                                    
+                double lowerTrigger,
                 double upperTrigger,
                 const boost::shared_ptr<RangeAccrualPricer>& Pricer);
 
         double startTime_;                               // S
         double endTime_;                                 // T
 
-        const boost::shared_ptr<Schedule> observationsSchedule_; 
-        std::vector<Date> observationDates_;                    
-        std::vector<double> observationTimes_;                  
+        const boost::shared_ptr<Schedule> observationsSchedule_;
+        std::vector<Date> observationDates_;
+        std::vector<double> observationTimes_;
         int observationsNo_;
-        
+
         double lowerTrigger_;
         double upperTrigger_;
 
-        double rate() const; 
+        double rate() const;
         double price(const Handle<YieldTermStructure>& discountingCurve) const;
         double priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const;
 
       private:
 
         const boost::shared_ptr<RangeAccrualPricer> pricer_;
- 
+
      };
-     
+
     //! VanillaRangeAccrualCouponPricer
     /*!
 
@@ -92,11 +93,11 @@ namespace QuantLib {
         virtual Real rate() const = 0;
         virtual void initialize(const RangeAccrualFloatersCoupon& coupon) = 0;
     };
-    
+
     //! RangeAccrualPricerByBgm
     /*!
 
-    */ 
+    */
     class RangeAccrualPricerByBgm: public RangeAccrualPricer {
 
      public:
@@ -117,7 +118,7 @@ namespace QuantLib {
         double drift(double U, double lambdaS, double lambdaT, double correlation) const;
         double derDriftDerLambdaS(double U, double lambdaS, double lambdaT, double correlation) const;
         double derDriftDerLambdaT(double U, double lambdaS, double lambdaT, double correlation) const;
-        
+
         double lambda(double U, double lambdaS, double lambdaT) const;
         double derLambdaDerLambdaS(double U, double lambdaS, double lambdaT) const;
         double derLambdaDerLambdaT(double U, double lambdaS, double lambdaT) const;
@@ -169,9 +170,9 @@ namespace QuantLib {
         std::vector<double> initialValues_;
         int observationsNo_;
         double lowerTrigger_;
-        double upperTrigger_; 
+        double upperTrigger_;
         double discount_;
-        
+
         double correlation_;                                // correlation between L(S) and L(T)
         bool withSmile_;
         bool byCallSpread_;
