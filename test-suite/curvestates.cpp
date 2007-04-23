@@ -147,7 +147,7 @@ void CurveStatesTest::testCMSwapCurveState() {
         forwards[i] = static_cast<Rate>(i)*.001+.04;
 
     for (Size i = 0; i < rateTimes.size(); ++i)
-        rateTimes[i] = static_cast<Time>(i)*.5;
+        rateTimes[i] = static_cast<Time>(i+1)*.5;
 
     //BOOST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
     //for (Size i = 0; i < rateTimes.size()-1; ++i){
