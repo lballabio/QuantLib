@@ -31,7 +31,7 @@
 #include <ql/math/distributions/all.hpp>
 #include <ql/math/integrals/all.hpp>
 #include <ql/math/interpolations/all.hpp>
+#include <ql/math/matrixutilities/all.hpp>
 #include <ql/math/optimization/all.hpp>
 #include <ql/math/randomnumbers/all.hpp>
 #include <ql/math/solvers1d/all.hpp>
-#include <ql/math/matrixutilities/all.hpp>

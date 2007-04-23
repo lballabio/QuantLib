@@ -1,7 +1,7 @@
 
 SUBDIRS = browniangenerators curvestates driftcomputation evolvers \
-          exercisestrategies exercisevalues models products \
-          piecewiseconstantcorrelations
+          exercisestrategies exercisevalues models \
+          piecewiseconstantcorrelations products
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -57,7 +57,7 @@ libMarketModels_la_LIBADD = \
     exercisevalues/libMarketModelsExerciseValues.la \
     exercisestrategies/libMarketModelsExerciseStrategies.la \
     models/libMarketModelsModels.la \
-    piecewiseconstantcorrelations/libMarketModelsPiecewiseConstantCorrelations.la \
+    piecewiseconstantcorrelations/libMarketModelsCorrelations.la \
     products/libMarketModelsProducts.la
 
 all.hpp: Makefile.am
