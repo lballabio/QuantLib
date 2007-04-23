@@ -279,7 +279,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta);
     boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes()));       
+                                          evolution.rateTimes()));
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
@@ -1308,16 +1308,17 @@ void MarketModelTest::testCallableSwapNaif() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        Size testedFactors[] = { 4, 8,
+        Size testedFactors[] = { 4, // 8,
                                  todaysForwards.size()};
         for (Size m=0; m<LENGTH(testedFactors); ++m) {
             Size factors = testedFactors[m];
 
             // Composite's ProductSuggested is the Terminal one
             MeasureType measures[] = { // ProductSuggested,
-                                       MoneyMarketPlus,
-                                       MoneyMarket,
-                                       Terminal };
+                                       MoneyMarketPlus
+                                       // MoneyMarket,
+                                       // Terminal
+            };
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
@@ -1476,16 +1477,17 @@ void MarketModelTest::testCallableSwapLS() {
         ExponentialCorrelationAbcdVolatility };
     for (Size j=0; j<LENGTH(marketModels); j++) {
 
-        Size testedFactors[] = { 4, 8,
+        Size testedFactors[] = { 4, // 8,
                                  todaysForwards.size()};
         for (Size m=0; m<LENGTH(testedFactors); ++m) {
             Size factors = testedFactors[m];
 
             // Composite's ProductSuggested is the Terminal one
             MeasureType measures[] = { // ProductSuggested,
-                                       MoneyMarketPlus,
-                                       MoneyMarket,
-                                       Terminal };
+                                       // MoneyMarketPlus,
+                                       MoneyMarket
+                                       //Terminal
+            };
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
 
@@ -1661,9 +1663,10 @@ void MarketModelTest::testCallableSwapAnderson() {
 
             // Composite's ProductSuggested is the Terminal one
             MeasureType measures[] = { // ProductSuggested,
-                                       MoneyMarketPlus,
-                                       MoneyMarket,
-                                       Terminal };
+                                       // MoneyMarketPlus,
+                                       // MoneyMarket,
+                                       Terminal
+            };
             for (Size k=0; k<LENGTH(measures); k++) {
                 std::vector<Size> numeraires = makeMeasure(dummyProduct, measures[k]);
                 bool logNormal = true;
@@ -2256,10 +2259,10 @@ test_suite* MarketModelTest::suite() {
 
     // just one of the tests below is run in order to reduce running times...
     // uncomment as much as you prefer...
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
-    
+
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
