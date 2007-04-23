@@ -15,20 +15,15 @@ this_include_HEADERS = \
     curvestate.hpp \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
-    marketmodelbasissystem.hpp \
     marketmodeldiscounter.hpp \
     marketmodelevolver.hpp \
     marketmodelexercisevalue.hpp \
     marketmodelmultiproduct.hpp \
     marketmodelnodedataprovider.hpp \
-    marketmodelparametricexercise.hpp \
     marketmodel.hpp \
-    parametricexerciseadapter.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
-    swapbasissystem.hpp \
     swapforwardmappings.hpp \
-    triggeredswapexercise.hpp \
     upperboundengine.hpp \
     utilities.hpp
 
@@ -39,11 +34,8 @@ libMarketModels_la_SOURCES = \
     evolutiondescription.cpp \
     marketmodeldiscounter.cpp \
     marketmodel.cpp \
-    parametricexerciseadapter.cpp \
     proxygreekengine.cpp \
-    swapbasissystem.cpp \
     swapforwardmappings.cpp \
-    triggeredswapexercise.cpp \
     upperboundengine.cpp \
     utilities.cpp
 

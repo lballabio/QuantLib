@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/parametricexerciseadapter.hpp>
-#include <ql/models/marketmodels/marketmodelparametricexercise.hpp>
+#include <ql/models/marketmodels/exercisestrategies/parametricexerciseadapter.hpp>
+#include <ql/models/marketmodels/nodedataproviders/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {

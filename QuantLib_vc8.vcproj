@@ -629,7 +629,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="cashFlows"
+			Name="cashflows"
 			>
 			<File
 				RelativePath=".\ql\cashflows\all.hpp"
@@ -2082,7 +2082,7 @@
 				>
 			</File>
 			<Filter
-				Name="Bonds"
+				Name="bonds"
 				>
 				<File
 					RelativePath=".\ql\instruments\cmsratebond.cpp"
@@ -2890,7 +2890,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="randomNumbers"
+				Name="randomnumbers"
 				>
 				<File
 					RelativePath=".\ql\math\randomnumbers\all.hpp"
@@ -3233,19 +3233,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\maketmodelnodedataprovider.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelbasissystem.hpp"
 					>
 				</File>
 				<File
@@ -3273,18 +3265,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelparametricexercise.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\parametricexerciseadapter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\parametricexerciseadapter.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelation.hpp"
 					>
 				</File>
@@ -3297,27 +3277,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\swapbasissystem.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\swapbasissystem.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\triggeredswapexercise.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\triggeredswapexercise.hpp"
 					>
 				</File>
 				<File
@@ -3505,6 +3469,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.hpp"
 						>
 					</File>
 					<File
@@ -3832,6 +3804,110 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="basissystems"
+					>
+					<File
+						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.hpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="nodedataproviders"
+					>
+					<File
+						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelbasissystem.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelparametricexercise.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.hpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="shortrate"
@@ -4031,7 +4107,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="termStructures"
+			Name="termstructures"
 			>
 			<File
 				RelativePath=".\ql\termstructures\all.hpp"
@@ -4081,7 +4157,7 @@
 					>
 				</File>
 				<Filter
-					Name="Equity"
+					Name="equity"
 					>
 					<File
 						RelativePath=".\ql\termstructures\volatilities\blackconstantvol.hpp"
@@ -4125,7 +4201,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="SwaptionVol"
+					Name="swaptionvol"
 					>
 					<File
 						RelativePath=".\ql\termstructures\volatilities\cmsmarket.cpp"
@@ -4221,7 +4297,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="CapletVol"
+					Name="capletvol"
 					>
 					<File
 						RelativePath=".\ql\termstructures\volatilities\capflatvolvector.hpp"
@@ -6460,7 +6536,7 @@
 				>
 			</File>
 			<Filter
-				Name="Pricers"
+				Name="pricers"
 				>
 				<File
 					RelativePath=".\ql\legacy\pricers\all.hpp"
@@ -6548,7 +6624,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="LiborMarketModels"
+				Name="libormarketmodels"
 				>
 				<File
 					RelativePath=".\ql\legacy\libormarketmodels\all.hpp"

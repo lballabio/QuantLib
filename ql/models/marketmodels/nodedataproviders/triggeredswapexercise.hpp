@@ -20,7 +20,7 @@
 #ifndef quantlib_triggered_swap_exercise_hpp
 #define quantlib_triggered_swap_exercise_hpp
 
-#include <ql/models/marketmodels/marketmodelparametricexercise.hpp>
+#include <ql/models/marketmodels/nodedataproviders/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {

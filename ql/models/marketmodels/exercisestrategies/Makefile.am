@@ -5,10 +5,12 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	lsstrategy.hpp \
+    parametricexerciseadapter.hpp \
 	swapratetrigger.hpp
 
 libMarketModelsExerciseStrategies_la_SOURCES = \
 	lsstrategy.cpp \
+    parametricexerciseadapter.cpp \
 	swapratetrigger.cpp
 
 noinst_LTLIBRARIES = libMarketModelsExerciseStrategies.la
