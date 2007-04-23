@@ -56,24 +56,24 @@ namespace QuantLib {
                 const Date& refPeriodStart,
                 const Date& refPeriodEnd,
                 const boost::shared_ptr<Schedule>&  observationsSchedule,
-                double lowerTrigger,
-                double upperTrigger,
+                Real lowerTrigger,
+                Real upperTrigger,
                 const boost::shared_ptr<RangeAccrualPricer>& Pricer);
 
-        double startTime_;                               // S
-        double endTime_;                                 // T
+        Real startTime_;                               // S
+        Real endTime_;                                 // T
 
         const boost::shared_ptr<Schedule> observationsSchedule_;
         std::vector<Date> observationDates_;
-        std::vector<double> observationTimes_;
+        std::vector<Real> observationTimes_;
         int observationsNo_;
 
-        double lowerTrigger_;
-        double upperTrigger_;
+        Real lowerTrigger_;
+        Real upperTrigger_;
 
-        double rate() const;
-        double price(const Handle<YieldTermStructure>& discountingCurve) const;
-        double priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const;
+        Real rate() const;
+        Real price(const Handle<YieldTermStructure>& discountingCurve) const;
+        Real priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const;
 
       private:
 
@@ -102,78 +102,78 @@ namespace QuantLib {
 
      public:
         RangeAccrualPricerByBgm(
-            double correlation,
+            Real correlation,
             const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
             const  boost::shared_ptr<SmileSection>& smilesOnPayment,
             bool withSmile,
             bool byCallSpread);
 
-        double price() const;
-        double rate() const;
+        Real price() const;
+        Real rate() const;
 
      protected:
 
         void initialize(const RangeAccrualFloatersCoupon& coupon);
 
-        double drift(double U, double lambdaS, double lambdaT, double correlation) const;
-        double derDriftDerLambdaS(double U, double lambdaS, double lambdaT, double correlation) const;
-        double derDriftDerLambdaT(double U, double lambdaS, double lambdaT, double correlation) const;
+        Real drift(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
+        Real derDriftDerLambdaS(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
+        Real derDriftDerLambdaT(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
 
-        double lambda(double U, double lambdaS, double lambdaT) const;
-        double derLambdaDerLambdaS(double U, double lambdaS, double lambdaT) const;
-        double derLambdaDerLambdaT(double U, double lambdaS, double lambdaT) const;
+        Real lambda(Real U, Real lambdaS, Real lambdaT) const;
+        Real derLambdaDerLambdaS(Real U, Real lambdaS, Real lambdaT) const;
+        Real derLambdaDerLambdaT(Real U, Real lambdaS, Real lambdaT) const;
 
-        std::vector<double> driftsOverPeriod(double U, double lambdaS, double lambdaT, double correlation) const;
-        std::vector<double> lambdasOverPeriod(double U, double lambdaS, double lambdaT) const;
+        std::vector<Real> driftsOverPeriod(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
+        std::vector<Real> lambdasOverPeriod(Real U, Real lambdaS, Real lambdaT) const;
 
-        double digitalRangePrice(double lowerTrigger,
-                                double upperTrigger,
-                                double initialValue,
-                                double expiry,
-                                double deflator) const;
+        Real digitalRangePrice(Real lowerTrigger,
+                                Real upperTrigger,
+                                Real initialValue,
+                                Real expiry,
+                                Real deflator) const;
 
-        double digitalPrice(double strike,
-                    double initialValue,
-                    double expiry,
-                    double deflator) const;
+        Real digitalPrice(Real strike,
+                    Real initialValue,
+                    Real expiry,
+                    Real deflator) const;
 
-        double digitalPriceWithoutSmile(double strike,
-                    double initialValue,
-                    double expiry,
-                    double deflator) const;
+        Real digitalPriceWithoutSmile(Real strike,
+                    Real initialValue,
+                    Real expiry,
+                    Real deflator) const;
 
-        double digitalPriceWithSmile(double strike,
-                    double initialValue,
-                    double expiry,
-                    double deflator) const;
+        Real digitalPriceWithSmile(Real strike,
+                    Real initialValue,
+                    Real expiry,
+                    Real deflator) const;
 
-        double callSpreadPrice(double previousInitialValue,
-                            double nextInitialValue,
-                            double previousStrike,
-                            double nextStrike,
-                            double deflator,
-                            double previousVariance,
-                            double nextVariance) const;
+        Real callSpreadPrice(Real previousInitialValue,
+                            Real nextInitialValue,
+                            Real previousStrike,
+                            Real nextStrike,
+                            Real deflator,
+                            Real previousVariance,
+                            Real nextVariance) const;
 
-        double smileCorrection(double strike,
-                               double initialValue,
-                               double expiry,
-                               double deflator) const;
+        Real smileCorrection(Real strike,
+                               Real initialValue,
+                               Real expiry,
+                               Real deflator) const;
 
      private:
 
-        double startTime_;                                   // S
-        double endTime_;                                     // T
-        double accrualFactor_;                               // T-S
-        std::vector<double> observationTimeLags_;            // d
-        std::vector<double> observationTimes_;               // U
-        std::vector<double> initialValues_;
+        Real startTime_;                                   // S
+        Real endTime_;                                     // T
+        Real accrualFactor_;                               // T-S
+        std::vector<Real> observationTimeLags_;            // d
+        std::vector<Real> observationTimes_;               // U
+        std::vector<Real> initialValues_;
         int observationsNo_;
-        double lowerTrigger_;
-        double upperTrigger_;
-        double discount_;
+        Real lowerTrigger_;
+        Real upperTrigger_;
+        Real discount_;
 
-        double correlation_;                                // correlation between L(S) and L(T)
+        Real correlation_;                                // correlation between L(S) and L(T)
         bool withSmile_;
         bool byCallSpread_;
 

@@ -43,8 +43,8 @@ namespace QuantLib {
                 const Date& refPeriodStart,
                 const Date& refPeriodEnd,
                 const boost::shared_ptr<Schedule>&  observationsSchedule,
-                double lowerTrigger,                                    // l
-                double upperTrigger,                                    // u
+                Real lowerTrigger,                                    // l
+                Real upperTrigger,                                    // u
                 const boost::shared_ptr<RangeAccrualPricer>& pricer
         )
     : IborCoupon(paymentDate, nominal, startDate, endDate,
@@ -76,14 +76,14 @@ namespace QuantLib {
 
      }
 
-    double RangeAccrualFloatersCoupon::rate() const {
+    Real RangeAccrualFloatersCoupon::rate() const {
             pricer_->initialize(*this);
             return gearing_*pricer_->rate()+spread_;
     }
-    double RangeAccrualFloatersCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
+    Real RangeAccrualFloatersCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
         return rate()*accrualPeriod()* nominal()*discountingCurve->discount(date());
     }
-    double RangeAccrualFloatersCoupon::priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const {
+    Real RangeAccrualFloatersCoupon::priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const {
         return accrualPeriod() * (gearing_*indexFixing()+spread_) *
                nominal() * discountingCurve->discount(date());
     }
@@ -92,7 +92,7 @@ namespace QuantLib {
     //                          RangeAccrualPricerByBgm                          //
     //===========================================================================//
     RangeAccrualPricerByBgm::RangeAccrualPricerByBgm(
-            double correlation,
+            Real correlation,
             const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
             const  boost::shared_ptr<SmileSection>& smilesOnPayment,
             bool withSmile,
@@ -122,7 +122,7 @@ namespace QuantLib {
 
         const std::vector<Date> &observationDates = coupon.observationsSchedule_->dates();
         QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
-        initialValues_= std::vector<double>(observationDates.size(),0.);
+        initialValues_= std::vector<Real>(observationDates.size(),0.);
 
         Calendar calendar = index->calendar();
         for(Size i=0; i<observationDates.size(); i++) {
@@ -134,21 +134,21 @@ namespace QuantLib {
 
       }
 
-    std::vector<double> RangeAccrualPricerByBgm::driftsOverPeriod(double U,
-                                                                double lambdaS,
-                                                                double lambdaT,
-                                                                double correlation) const{
-        std::vector<double> result;
+    std::vector<Real> RangeAccrualPricerByBgm::driftsOverPeriod(Real U,
+                                                                Real lambdaS,
+                                                                Real lambdaT,
+                                                                Real correlation) const{
+        std::vector<Real> result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
-        const double L0T = initialValues_.back();
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
+        const Real L0T = initialValues_.back();
 
-        const double driftBeforeFixing =
+        const Real driftBeforeFixing =
                 p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)*(p*lambdaT*lambdaT + q*lambdaS*lambdaT*correlation) +
                 q*lambdaS*lambdaS + p*lambdaS*lambdaT*correlation
                 -0.5*lambda(U,lambdaS,lambdaT)*lambda(U,lambdaS,lambdaT);
-        const double driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*lambdaT*lambdaT;
+        const Real driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*lambdaT*lambdaT;
 
         result.push_back(driftBeforeFixing);
         result.push_back(driftAfterFixing);
@@ -156,36 +156,36 @@ namespace QuantLib {
         return result;
     }
 
-    std::vector<double> RangeAccrualPricerByBgm::lambdasOverPeriod(double U,
-                                                                   double lambdaS,
-                                                                   double lambdaT) const{
-        std::vector<double> result;
+    std::vector<Real> RangeAccrualPricerByBgm::lambdasOverPeriod(Real U,
+                                                                   Real lambdaS,
+                                                                   Real lambdaT) const{
+        std::vector<Real> result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
 
-        const double lambdaBeforeFixing = q*lambdaS + p*lambdaT;
-        const double lambdaAfterFixing = lambdaT;
+        const Real lambdaBeforeFixing = q*lambdaS + p*lambdaT;
+        const Real lambdaAfterFixing = lambdaT;
 
         result.push_back(lambdaBeforeFixing);
         result.push_back(lambdaAfterFixing);
 
         return result;
     }
-    double RangeAccrualPricerByBgm::drift(double U,
-                                          double lambdaS,
-                                          double lambdaT,
-                                          double correlation) const{
-        double result;
+    Real RangeAccrualPricerByBgm::drift(Real U,
+                                          Real lambdaS,
+                                          Real lambdaT,
+                                          Real correlation) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
-        const double L0T = initialValues_.back();
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
+        const Real L0T = initialValues_.back();
 
-        const double driftBeforeFixing =
+        const Real driftBeforeFixing =
                 p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)*(p*lambdaT*lambdaT + q*lambdaS*lambdaT*correlation) +
                 q*lambdaS*lambdaS + p*lambdaS*lambdaT*correlation;
-        const double driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*lambdaT*lambdaT;
+        const Real driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*lambdaT*lambdaT;
 
         if(startTime_ > 0){result = driftBeforeFixing;}
         else {result = driftAfterFixing;}
@@ -193,13 +193,13 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::lambda(double U,
-                                           double lambdaS,
-                                           double lambdaT) const{
-        double result;
+    Real RangeAccrualPricerByBgm::lambda(Real U,
+                                           Real lambdaS,
+                                           Real lambdaT) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
 
         if(startTime_ > 0){result = q*lambdaS + p*lambdaT;}
         else {result = lambdaT;}
@@ -208,20 +208,20 @@ namespace QuantLib {
     }
 
 
-    double RangeAccrualPricerByBgm::derDriftDerLambdaS(double U,
-                                                        double lambdaS,
-                                                        double lambdaT,
-                                                        double correlation) const{
-        double result;
+    Real RangeAccrualPricerByBgm::derDriftDerLambdaS(Real U,
+                                                        Real lambdaS,
+                                                        Real lambdaT,
+                                                        Real correlation) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
-        const double L0T = initialValues_.back();
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
+        const Real L0T = initialValues_.back();
 
-        const double driftBeforeFixing =
+        const Real driftBeforeFixing =
                 p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)*(q*lambdaT*correlation) +
                 2*q*lambdaS + p*lambdaT*correlation;
-        const double driftAfterFixing = 0.;
+        const Real driftAfterFixing = 0.;
 
         if(startTime_ > 0){result = driftBeforeFixing;}
         else {result = driftAfterFixing;}
@@ -229,13 +229,13 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::derLambdaDerLambdaS(double U,
-                                                        double lambdaS,
-                                                        double lambdaT) const{
-        double result;
+    Real RangeAccrualPricerByBgm::derLambdaDerLambdaS(Real U,
+                                                        Real lambdaS,
+                                                        Real lambdaT) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
 
         if(startTime_ > 0){result = q;}
         else {result = 0.;}
@@ -243,20 +243,20 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::derDriftDerLambdaT(double U,
-                                                        double lambdaS,
-                                                        double lambdaT,
-                                                        double correlation) const{
-        double result;
+    Real RangeAccrualPricerByBgm::derDriftDerLambdaT(Real U,
+                                                        Real lambdaS,
+                                                        Real lambdaT,
+                                                        Real correlation) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
-        const double L0T = initialValues_.back();
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
+        const Real L0T = initialValues_.back();
 
-        const double driftBeforeFixing =
+        const Real driftBeforeFixing =
                 p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)*(2*p*lambdaT + q*lambdaS*correlation) +
                 + p*lambdaS*correlation;
-        const double driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*2*lambdaT;
+        const Real driftAfterFixing = (p*accrualFactor_*L0T/(1.+L0T*accrualFactor_)-0.5)*2*lambdaT;
 
         if(startTime_ > 0){result = driftBeforeFixing;}
         else {result = driftAfterFixing;}
@@ -264,13 +264,13 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::derLambdaDerLambdaT(double U,
-                                                        double lambdaS,
-                                                        double lambdaT) const{
-        double result;
+    Real RangeAccrualPricerByBgm::derLambdaDerLambdaT(Real U,
+                                                        Real lambdaS,
+                                                        Real lambdaT) const{
+        Real result;
 
-        const double p = (U-startTime_)/accrualFactor_;
-        const double q = (endTime_-U)/accrualFactor_;
+        const Real p = (U-startTime_)/accrualFactor_;
+        const Real q = (endTime_-U)/accrualFactor_;
 
         if(startTime_ > 0){result = p;}
         else {result = 1.;}
@@ -278,13 +278,13 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::price() const{
+    Real RangeAccrualPricerByBgm::price() const{
 
-        double result = 0.;
-        const double deflator = discount_*initialValues_[0];
+        Real result = 0.;
+        const Real deflator = discount_*initialValues_[0];
 
         for(int i=0;i<observationsNo_;i++){
-            double digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
+            Real digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
                                                      observationTimes_[i], deflator);
             result += digitalFloater;
         }
@@ -293,27 +293,27 @@ namespace QuantLib {
     }
 
 
-    double RangeAccrualPricerByBgm::rate() const {
+    Real RangeAccrualPricerByBgm::rate() const {
         return price()/(accrualFactor_*discount_);
     }
 
-    double RangeAccrualPricerByBgm::digitalRangePrice(double lowerTrigger,
-                                                      double upperTrigger,
-                                                      double initialValue,
-                                                      double expiry,
-                                                      double deflator) const{
-            const double result =  digitalPrice(lowerTrigger, initialValue, expiry, deflator)-
+    Real RangeAccrualPricerByBgm::digitalRangePrice(Real lowerTrigger,
+                                                      Real upperTrigger,
+                                                      Real initialValue,
+                                                      Real expiry,
+                                                      Real deflator) const{
+            const Real result =  digitalPrice(lowerTrigger, initialValue, expiry, deflator)-
                                    digitalPrice(upperTrigger, initialValue, expiry, deflator);
             QL_REQUIRE(result >0.,
                 "RangeAccrualPricerByBgm::digitalRangePrice: digitalPrice(upper) >  digitalPrice(lower)");
             return result;
 
     }
-    double RangeAccrualPricerByBgm::digitalPrice(double strike,
-                                        double initialValue,
-                                        double expiry,
-                                        double deflator) const {
-        double result;
+    Real RangeAccrualPricerByBgm::digitalPrice(Real strike,
+                                        Real initialValue,
+                                        Real expiry,
+                                        Real deflator) const {
+        Real result;
         if(withSmile_)
             result = digitalPriceWithSmile(strike, initialValue, expiry, deflator);
         else
@@ -321,31 +321,31 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::digitalPriceWithoutSmile(double strike,
-                                        double initialValue,
-                                        double expiry,
-                                        double deflator) const {
+    Real RangeAccrualPricerByBgm::digitalPriceWithoutSmile(Real strike,
+                                        Real initialValue,
+                                        Real expiry,
+                                        Real deflator) const {
 
-        double lambdaS = smilesOnExpiry_->volatility(strike);
-        double lambdaT = smilesOnPayment_->volatility(strike);
+        Real lambdaS = smilesOnExpiry_->volatility(strike);
+        Real lambdaT = smilesOnPayment_->volatility(strike);
 
-        std::vector<double> lambdaU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
-        const double variance =
+        std::vector<Real> lambdaU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
+        const Real variance =
             startTime_*lambdaU[0]*lambdaU[0]+(expiry-startTime_)*lambdaU[1]*lambdaU[1];
 
-        double lambdaSATM = smilesOnExpiry_->volatility(initialValue);
-        double lambdaTATM = smilesOnPayment_->volatility(initialValue);
+        Real lambdaSATM = smilesOnExpiry_->volatility(initialValue);
+        Real lambdaTATM = smilesOnPayment_->volatility(initialValue);
         //drift of Lognormal process (of Libor) "a_U()" nel paper
-        std::vector<double> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
-        const double adjustment = (startTime_*muU[0]+(expiry-startTime_)*muU[1]);
+        std::vector<Real> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
+        const Real adjustment = (startTime_*muU[0]+(expiry-startTime_)*muU[1]);
 
 
-       double d2 = (std::log(initialValue/strike) + adjustment - 0.5*variance)/std::sqrt(variance);
+       Real d2 = (std::log(initialValue/strike) + adjustment - 0.5*variance)/std::sqrt(variance);
 
        CumulativeNormalDistribution phi;
-       const double result = deflator*phi(d2);
+       const Real result = deflator*phi(d2);
 
-      QL_REQUIRE(result > 0.,
+       QL_REQUIRE(result > 0.,
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result< 0.");
        QL_REQUIRE(result/deflator <= 1.,
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result/deflator > 1. Ratio: "
@@ -354,45 +354,45 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::digitalPriceWithSmile(double strike,
-                                        double initialValue,
-                                        double expiry,
-                                        double deflator) const {
-        double result;
+    Real RangeAccrualPricerByBgm::digitalPriceWithSmile(Real strike,
+                                        Real initialValue,
+                                        Real expiry,
+                                        Real deflator) const {
+        Real result;
         if(byCallSpread_){
 
-            const double eps = std::min(strike*1e-1, 1e-10);
+            const Real eps = std::min(strike*1e-1, 1e-10);
 
             // Previous strike
-            const double previousStrike = strike - eps/2;
-            double lambdaS = smilesOnExpiry_->volatility(previousStrike);
-            double lambdaT = smilesOnPayment_->volatility(previousStrike);
+            const Real previousStrike = strike - eps/2;
+            Real lambdaS = smilesOnExpiry_->volatility(previousStrike);
+            Real lambdaT = smilesOnPayment_->volatility(previousStrike);
 
             //drift of Lognormal process (of Libor) "a_U()" nel paper
-            std::vector<double> lambdaU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
-            const double previousVariance = std::max(startTime_, 0.)*lambdaU[0]*lambdaU[0]+
+            std::vector<Real> lambdaU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
+            const Real previousVariance = std::max(startTime_, 0.)*lambdaU[0]*lambdaU[0]+
                          std::min(expiry-startTime_, expiry)*lambdaU[1]*lambdaU[1];
 
-            double lambdaSATM = smilesOnExpiry_->volatility(initialValue);
-            double lambdaTATM = smilesOnPayment_->volatility(initialValue);
-            std::vector<double> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
-            const double previousAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
+            Real lambdaSATM = smilesOnExpiry_->volatility(initialValue);
+            Real lambdaTATM = smilesOnPayment_->volatility(initialValue);
+            std::vector<Real> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
+            const Real previousAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
                                          std::min(expiry-startTime_, expiry)*muU[1]);
-            const double previousForward = initialValue * previousAdjustment ;
+            const Real previousForward = initialValue * previousAdjustment ;
 
             // Next strike
-            const double nextStrike = strike + eps/2;
+            const Real nextStrike = strike + eps/2;
             lambdaS = smilesOnExpiry_->volatility(nextStrike);
             lambdaT = smilesOnPayment_->volatility(nextStrike);
 
             lambdaU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
-            const double nextVariance = std::max(startTime_, 0.)*lambdaU[0]*lambdaU[0]+
+            const Real nextVariance = std::max(startTime_, 0.)*lambdaU[0]*lambdaU[0]+
                          std::min(expiry-startTime_, expiry)*lambdaU[1]*lambdaU[1];
             //drift of Lognormal process (of Libor) "a_U()" nel paper
             muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
-            const double nextAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
+            const Real nextAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
                                          std::min(expiry-startTime_, expiry)*muU[1]);
-            const double nextForward = initialValue * nextAdjustment ;
+            const Real nextForward = initialValue * nextAdjustment ;
 
             result = callSpreadPrice(previousForward,nextForward,previousStrike, nextStrike,
                                                     deflator, previousVariance, nextVariance);
@@ -412,52 +412,52 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::smileCorrection(double strike,
-                                        double forward,
-                                        double expiry,
-                                        double deflator) const {
+    Real RangeAccrualPricerByBgm::smileCorrection(Real strike,
+                                        Real forward,
+                                        Real expiry,
+                                        Real deflator) const {
 
-        const double eps = std::min(strike*1e-1, 1e-10);
-        const double previousStrike = strike - eps/2;
-        const double nextStrike = strike + eps/2;
+        const Real eps = std::min(strike*1e-1, 1e-10);
+        const Real previousStrike = strike - eps/2;
+        const Real nextStrike = strike + eps/2;
 
-        const double derSmileS = (smilesOnExpiry_->volatility(nextStrike)-
+        const Real derSmileS = (smilesOnExpiry_->volatility(nextStrike)-
                                  smilesOnExpiry_->volatility(previousStrike))/eps;
-        const double derSmileT = (smilesOnPayment_->volatility(nextStrike)-
+        const Real derSmileT = (smilesOnPayment_->volatility(nextStrike)-
                                  smilesOnPayment_->volatility(previousStrike))/eps;
 
-        double lambdaS = smilesOnExpiry_->volatility(strike);
-        double lambdaT = smilesOnPayment_->volatility(strike);
-        double lambdaU = lambda(expiry, lambdaS, lambdaT);
+        Real lambdaS = smilesOnExpiry_->volatility(strike);
+        Real lambdaT = smilesOnPayment_->volatility(strike);
+        Real lambdaU = lambda(expiry, lambdaS, lambdaT);
 
-        double derLambdaDerK = derLambdaDerLambdaS(expiry, lambdaS, lambdaT)*derSmileS +
+        Real derLambdaDerK = derLambdaDerLambdaS(expiry, lambdaS, lambdaT)*derSmileS +
                                derLambdaDerLambdaT(expiry, lambdaS, lambdaT)*derSmileT;
-        double derDriftDerK = derDriftDerLambdaS(expiry, lambdaS, lambdaT, correlation_)*derSmileS +
+        Real derDriftDerK = derDriftDerLambdaS(expiry, lambdaS, lambdaT, correlation_)*derSmileS +
                               derDriftDerLambdaT(expiry, lambdaS, lambdaT, correlation_)*derSmileT +
                               lambdaU * derLambdaDerK;
 
-        double lambdaSATM = smilesOnExpiry_->volatility(forward);
-        double lambdaTATM = smilesOnPayment_->volatility(forward);
-        std::vector<double> lambdasOverPeriodU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
+        Real lambdaSATM = smilesOnExpiry_->volatility(forward);
+        Real lambdaTATM = smilesOnPayment_->volatility(forward);
+        std::vector<Real> lambdasOverPeriodU = lambdasOverPeriod(expiry, lambdaS, lambdaT);
         //drift of Lognormal process (of Libor) "a_U()" nel paper
-        std::vector<double> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
+        std::vector<Real> muU = driftsOverPeriod(expiry, lambdaSATM, lambdaTATM, correlation_);
 
-        const double variance = std::max(startTime_, 0.)*lambdasOverPeriodU[0]*lambdasOverPeriodU[0] +
+        const Real variance = std::max(startTime_, 0.)*lambdasOverPeriodU[0]*lambdasOverPeriodU[0] +
                        std::min(expiry-startTime_, expiry)*lambdasOverPeriodU[1]*lambdasOverPeriodU[1];
 
-        const double forwardAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
+        const Real forwardAdjustment = std::exp(std::max(startTime_, 0.)*muU[0] +
                                          std::min(expiry-startTime_, expiry)*muU[1]);
-        const double forwardAdjusted = forward * forwardAdjustment;
+        const Real forwardAdjusted = forward * forwardAdjustment;
 
-        const double d1 = (std::log(forwardAdjusted/strike)+0.5*variance)/std::sqrt(variance);
+        const Real d1 = (std::log(forwardAdjusted/strike)+0.5*variance)/std::sqrt(variance);
 
-        const double sqrtOfTimeToExpiry = (std::max(startTime_, 0.)*lambdasOverPeriodU[0] +
+        const Real sqrtOfTimeToExpiry = (std::max(startTime_, 0.)*lambdasOverPeriodU[0] +
                                 std::min(expiry-startTime_, expiry)*lambdasOverPeriodU[1])*
                                 (1./std::sqrt(variance));
 
         CumulativeNormalDistribution phi;
         NormalDistribution psi;
-        double result = - forwardAdjusted*psi(d1)*sqrtOfTimeToExpiry*derLambdaDerK ;
+        Real result = - forwardAdjusted*psi(d1)*sqrtOfTimeToExpiry*derLambdaDerK ;
                        // - forwardAdjusted*phi(d1)*expiry*derDriftDerK;
 
         result *= deflator;
@@ -469,17 +469,17 @@ namespace QuantLib {
         return result;
     }
 
-    double RangeAccrualPricerByBgm::callSpreadPrice(
-                                            double previousForward,
-                                            double nextForward,
-                                            double previousStrike,
-                                            double nextStrike,
-                                            double deflator,
-                                            double previousVariance,
-                                            double nextVariance) const{
-         const double nextCall =
+    Real RangeAccrualPricerByBgm::callSpreadPrice(
+                                            Real previousForward,
+                                            Real nextForward,
+                                            Real previousStrike,
+                                            Real nextStrike,
+                                            Real deflator,
+                                            Real previousVariance,
+                                            Real nextVariance) const{
+         const Real nextCall =
             blackFormula(Option::Call, nextStrike, nextForward, std::sqrt(nextVariance), deflator);
-         const double previousCall =
+         const Real previousCall =
             blackFormula(Option::Call, previousStrike, previousForward, std::sqrt(previousVariance), deflator);
 
          QL_ENSURE(nextCall <previousCall,"RangeAccrualPricerByBgm::callSpreadPrice: nextCall > previousCall"
@@ -488,7 +488,7 @@ namespace QuantLib {
             "\n previousCall: strike :" << previousStrike << "; variance: " << previousVariance <<
             " adjusted initial value " << previousForward );
 
-         const double result = (previousCall - nextCall)/(nextStrike-previousStrike);
+         const Real result = (previousCall - nextCall)/(nextStrike-previousStrike);
 
          return result;
     }
