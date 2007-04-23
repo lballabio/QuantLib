@@ -2733,6 +2733,12 @@
 					RelativePath=".\ql\math\optimization\problem.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\projectedcostfunction.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\projectedcostfunction.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\simplex.cpp">
 				</File>
 				<File
@@ -3768,6 +3774,9 @@
 					RelativePath=".\ql\models\marketmodels\parametricswapexercise.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelation.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\proxygreekengine.cpp">
 				</File>
 				<File
@@ -4060,31 +4069,6 @@
 					<File
 						RelativePath=".\ql\models\marketmodels\models\pseudorootfacade.hpp">
 					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructure.hpp">
-					</File>
-					<Filter
-						Name="timedependantcorrelationstructures"
-						Filter="">
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.cpp">
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\correlations.hpp">
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.cpp">
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\cotswapfromfwdcorrelation.hpp">
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.cpp">
-						</File>
-						<File
-							RelativePath=".\ql\models\marketmodels\models\timedependantcorrelationstructures\timehomogeneousforwardcorrelation.hpp">
-						</File>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="exercisevalues"
@@ -4166,6 +4150,28 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\driftcomputation\smmdriftcalculator.hpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="piecewiseconstantcorrelations"
+					Filter="">
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.hpp">
 					</File>
 				</Filter>
 			</Filter>
