@@ -47,7 +47,6 @@ this_include_HEADERS = \
 	quantlib.hpp \
 	quote.hpp \
 	settings.hpp \
-	solver1d.hpp \
 	stochasticprocess.hpp \
 	swaptionvolstructure.hpp \
 	termstructure.hpp \

@@ -29,7 +29,6 @@
 #include <ql/pricingengine.hpp>
 #include <ql/quote.hpp>
 #include <ql/settings.hpp>
-#include <ql/math/solver1d.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/termstructure.hpp>

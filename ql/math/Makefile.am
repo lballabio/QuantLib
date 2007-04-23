@@ -30,6 +30,7 @@ this_include_HEADERS = \
 	rounding.hpp \
 	sampledcurve.hpp \
 	sequencestatistics.hpp \
+	solver1d.hpp \
 	statistics.hpp \
 	surface.hpp \
 	transformedgrid.hpp
