@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/onestep/onestepcoinitialswaps.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -31,7 +32,9 @@ namespace QuantLib {
     : MultiProductOneStep(rateTimes),
       fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
       paymentTimes_(paymentTimes), fixedRate_(fixedRate) {
-        // data checks
+
+        checkIncreasingTimes(paymentTimes);
+
         lastIndex_ = rateTimes.size()-1;
     }
 

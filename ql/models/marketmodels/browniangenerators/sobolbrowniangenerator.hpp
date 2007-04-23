@@ -51,7 +51,7 @@ namespace QuantLib {
                            Ordering ordering,
                            unsigned long seed = 0,
                            SobolRsg::DirectionIntegers directionIntegers
-                                                         = SobolRsg::Jaeckel);
+                                                        = SobolRsg::Jaeckel);
 
         Real nextPath();
         Real nextStep(std::vector<Real>&);

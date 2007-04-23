@@ -21,7 +21,8 @@
 
 namespace QuantLib {
 
-    MTBrownianGenerator::MTBrownianGenerator(Size factors, Size steps,
+    MTBrownianGenerator::MTBrownianGenerator(Size factors,
+                                             Size steps,
                                              unsigned long seed)
     : factors_(factors), steps_(steps), lastStep_(0),
       generator_(factors*steps, MersenneTwisterUniformRng(seed)) {}

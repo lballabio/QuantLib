@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/marketmodelratchet.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +33,9 @@ namespace QuantLib {
     : rateTimes_(rateTimes), fixedAccruals_(fixedAccruals),
       floatingAccruals_(floatingAccruals), floatingSpreads_(floatingSpreads),
       paymentTimes_(paymentTimes), initialCoupon_(initialCoupon) {
-        // data checks
+
+        checkIncreasingTimes(paymentTimes);
+
         lastIndex_ = rateTimes.size()-1;
         std::vector<Time> evolutionTimes(rateTimes_.size()-1);
         std::vector<Size> numeraires(evolutionTimes.size());

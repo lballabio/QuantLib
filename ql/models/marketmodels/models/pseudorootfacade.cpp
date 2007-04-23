@@ -19,6 +19,7 @@
 */
 
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
@@ -36,6 +37,9 @@ namespace QuantLib {
       evolution_(rateTimes),
       covariancePseudoRoots_(covariancePseudoRoots)
     {
+        checkIncreasingTimes(rateTimes);
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
         QL_REQUIRE(numberOfRates_==rateTimes.size()-1,
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and rate times");

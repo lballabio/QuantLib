@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2006 Mark Joshi
 
@@ -29,8 +30,7 @@ namespace QuantLib {
                     std::vector<std::vector<bool> >& isPresent) {
 
         std::vector<Time> allTimes;
-        Size i;
-        for (i=0; i<times.size(); i++) {
+        for (Size i=0; i<times.size(); i++) {
             allTimes.insert(allTimes.end(),
                             times[i].begin(),
                             times[i].end());
@@ -45,7 +45,7 @@ namespace QuantLib {
                            allTimes.begin(), end);
 
         isPresent.resize(times.size());
-        for (i=0; i<times.size(); i++) {
+        for (Size i=0; i<times.size(); i++) {
             isPresent[i].resize(allTimes.size());
             for (Size j=0; j<allTimes.size(); j++) {
                 isPresent[i][j] = std::binary_search(times[i].begin(),
@@ -88,5 +88,39 @@ namespace QuantLib {
         }
         return result;
     }
+
+    void checkIncreasingTimes(const std::vector<Time>& times) {
+        Size nTimes = times.size();
+        QL_REQUIRE(nTimes>0,
+                   "at least one time is required");
+        QL_REQUIRE(times[0]>0.0,
+                   "first time (" << times[0] <<
+                   ") must be greater than zero");
+        for (Size i=0; i<nTimes-1; ++i)
+            QL_REQUIRE(times[i+1]-times[i]>0,
+                       "non increasing rate times: "
+                       "times[" << i   << "]=" << times[i] << ", "
+                       "times[" << i+1 << "]=" << times[i+1]);
+    }
+
+    void checkIncreasingTimesAndCalculateTaus(const std::vector<Time>& times,
+                                              std::vector<Time>& taus) {
+        Size nTimes = times.size();
+        QL_REQUIRE(nTimes>1,
+                   "at least two times are required, " << nTimes << " provided");
+        QL_REQUIRE(times[0]>0.0,
+                   "first time (" << times[0] <<
+                   ") must be greater than zero");
+        if (taus.size()!=nTimes-1)
+            taus.resize(nTimes-1);
+        for (Size i=0; i<nTimes-1; ++i) {
+            taus[i]=times[i+1]-times[i];
+            QL_REQUIRE(taus[i]>0,
+                       "non increasing rate times: "
+                       "times[" << i   << "]=" << times[i] << ", "
+                       "times[" << i+1 << "]=" << times[i+1]);
+        }
+    }
+
 
 }

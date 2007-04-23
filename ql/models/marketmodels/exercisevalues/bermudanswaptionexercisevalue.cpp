@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/exercisevalues/bermudanswaptionexercisevalue.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/payoff.hpp>
 
@@ -30,6 +31,7 @@ namespace QuantLib {
       rateTimes_(rateTimes),
       payoffs_(payoffs), currentIndex_(0) {
 
+        checkIncreasingTimes(rateTimes);
         QL_REQUIRE(numberOfExercises_>0,
                    "Rate times must contain at least two values");
         std::vector<Time> evolveTimes(rateTimes_);

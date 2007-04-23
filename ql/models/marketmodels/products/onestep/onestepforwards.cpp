@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -27,7 +28,9 @@ namespace QuantLib {
                                      const std::vector<Time>& paymentTimes,
                                      const std::vector<Rate>& strikes)
     : MultiProductOneStep(rateTimes), accruals_(accruals),
-      paymentTimes_(paymentTimes), strikes_(strikes) {}
+      paymentTimes_(paymentTimes), strikes_(strikes) {
+        checkIncreasingTimes(paymentTimes);
+    }
 
     bool OneStepForwards::nextTimeStep(
             const CurveState& currentState,

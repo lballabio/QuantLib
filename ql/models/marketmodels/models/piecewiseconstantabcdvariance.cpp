@@ -19,6 +19,7 @@
 */
 
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
 
 namespace QuantLib {
@@ -31,6 +32,9 @@ namespace QuantLib {
       volatilities_(rateTimes.size()),
       rateTimes_(rateTimes) {
 
+        checkIncreasingTimes(rateTimes);
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
         QL_REQUIRE(resetIndex<rateTimes_.size(),
                    "resetIndex (" << resetIndex <<
                    ") must be less than rateTimes.size() (" <<

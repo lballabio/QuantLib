@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/exercisestrategies/swapratetrigger.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -27,6 +28,12 @@ namespace QuantLib {
                                      const std::vector<Time>& exerciseTimes)
     : rateTimes_(rateTimes), swapTriggers_(swapTriggers),
       exerciseTimes_(exerciseTimes), rateIndex_(exerciseTimes.size()) {
+
+        checkIncreasingTimes(rateTimes);
+        QL_REQUIRE(rateTimes.size()>1,
+                   "Rate times must contain at least two values");
+
+        checkIncreasingTimes(exerciseTimes);
 
         QL_REQUIRE(swapTriggers_.size()==exerciseTimes_.size(),
                    "swapTriggers/exerciseTimes mismatch");

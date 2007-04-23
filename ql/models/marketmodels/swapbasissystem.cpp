@@ -19,22 +19,21 @@
 
 #include <ql/models/marketmodels/swapbasissystem.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
     SwapBasisSystem::SwapBasisSystem(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& exerciseTimes)
     : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes),
-      rateIndex_(exerciseTimes.size()) {
-        QL_REQUIRE(rateTimes.size()>1,
-                   "Rate times must contain at least two values");
+      rateIndex_(exerciseTimes.size()),
+      evolution_(rateTimes, exerciseTimes) {
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
                 ++j;
             rateIndex_[i] = j;
         }
-        evolution_ = EvolutionDescription(rateTimes_, exerciseTimes_);
     }
 
     Size SwapBasisSystem::numberOfExercises() const {

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,6 +40,9 @@ namespace QuantLib {
     std::vector<bool> isInSubset(const std::vector<Time>& set,
                                  const std::vector<Time>& subset);
 
+    void checkIncreasingTimes(const std::vector<Time>& times);
+    void checkIncreasingTimesAndCalculateTaus(const std::vector<Time>& times,
+                                              std::vector<Time>& taus);
 }
 
 #endif

@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/instruments/payoffs.hpp>
 
 namespace QuantLib {
@@ -29,7 +30,8 @@ namespace QuantLib {
                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& payoffs)
     : MultiProductMultiStep(rateTimes),
       paymentTimes_(paymentTimes), payoffs_(payoffs) {
-        // data checks
+        checkIncreasingTimes(paymentTimes);
+
         lastIndex_ = rateTimes.size()-1;
     }
 

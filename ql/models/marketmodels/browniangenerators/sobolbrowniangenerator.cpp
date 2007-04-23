@@ -108,10 +108,11 @@ namespace QuantLib {
 
 
     SobolBrownianGenerator::SobolBrownianGenerator(
-                                         Size factors, Size steps,
-                                         Ordering ordering,
-                                         unsigned long seed,
-                                         SobolRsg::DirectionIntegers integers)
+                                        Size factors,
+                                        Size steps,
+                                        Ordering ordering,
+                                        unsigned long seed,
+                                        SobolRsg::DirectionIntegers integers)
     : factors_(factors), steps_(steps), ordering_(ordering),
       generator_(SobolRsg(factors*steps, seed, integers),
                  InverseCumulativeNormal()),

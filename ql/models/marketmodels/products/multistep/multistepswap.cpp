@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -31,7 +32,9 @@ namespace QuantLib {
     : MultiProductMultiStep(rateTimes),
       fixedAccruals_(fixedAccruals), floatingAccruals_(floatingAccruals),
       paymentTimes_(paymentTimes), fixedRate_(fixedRate), payer_(payer),
-      multiplier_(payer ? 1.0 : -1.0), lastIndex_(rateTimes.size()-1) {}
+      multiplier_(payer ? 1.0 : -1.0), lastIndex_(rateTimes.size()-1) {
+        checkIncreasingTimes(paymentTimes);
+    }
 
     bool MultiStepSwap::nextTimeStep(
             const CurveState& currentState,

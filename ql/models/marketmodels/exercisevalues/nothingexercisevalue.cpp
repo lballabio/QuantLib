@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/exercisevalues/nothingexercisevalue.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -27,6 +28,7 @@ namespace QuantLib {
       rateTimes_(rateTimes),
       currentIndex_(0) {
 
+        checkIncreasingTimes(rateTimes);
         QL_REQUIRE(numberOfExercises_>0,
                    "Rate times must contain at least two values");
         cf_.amount = 0.0;

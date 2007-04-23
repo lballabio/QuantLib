@@ -20,6 +20,7 @@
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -27,6 +28,7 @@ namespace QuantLib {
                                         const std::vector<Rate>& rateTimes,
                                         Real longTermCorr,
                                         Real beta) {
+        checkIncreasingTimes(rateTimes);
         Size nbRows = rateTimes.size()-1;
         Matrix correlations(nbRows, nbRows);
         for (Size i=0; i<nbRows; ++i) {

@@ -19,18 +19,14 @@
 */
 
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
     CurveState::CurveState(const std::vector<Time>& rateTimes)
     : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
       rateTimes_(rateTimes), rateTaus_(numberOfRates_) {
-        QL_REQUIRE(numberOfRates_>0,
-                   "Rate times must contain at least two values");
-        for (Size i=0; i<numberOfRates_; ++i) {
-            rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
-            QL_REQUIRE(rateTaus_[i]>0, "non increasing rate times");
-        }
+        checkIncreasingTimesAndCalculateTaus(rateTimes_, rateTaus_);
     }
 
     Rate CurveState::swapRate(Size begin,

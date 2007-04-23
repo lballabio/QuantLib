@@ -23,7 +23,8 @@
 
 namespace QuantLib {
 
-    CoterminalSwapCurveState::CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
+    CoterminalSwapCurveState::CoterminalSwapCurveState(
+                                        const std::vector<Time>& rateTimes)
     : CurveState(rateTimes),
       first_(numberOfRates_),
       discRatios_(numberOfRates_+1, 1.0),

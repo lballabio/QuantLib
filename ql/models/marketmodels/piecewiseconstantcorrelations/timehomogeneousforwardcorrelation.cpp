@@ -20,6 +20,7 @@
 */
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
@@ -35,7 +36,8 @@ namespace QuantLib {
                                            numberOfRates_,
                                            0.0)) {
 
-        QL_REQUIRE(numberOfRates_>0,
+        checkIncreasingTimes(rateTimes);
+        QL_REQUIRE(numberOfRates_>1,
                    "Rate times must contain at least two values");
         QL_REQUIRE(numberOfRates_==fwdCorrelation.rows(),
                    "mismatch between number of rates (" << numberOfRates_ <<

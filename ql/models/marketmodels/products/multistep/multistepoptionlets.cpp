@@ -20,6 +20,7 @@
 
 #include <ql/models/marketmodels/products/multistep/multistepoptionlets.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/payoff.hpp>
 
 namespace QuantLib {
@@ -30,7 +31,9 @@ namespace QuantLib {
                       const std::vector<Time>& paymentTimes,
                       const std::vector<boost::shared_ptr<Payoff> >& payoffs)
     : MultiProductMultiStep(rateTimes), accruals_(accruals),
-      paymentTimes_(paymentTimes), payoffs_(payoffs) {}
+      paymentTimes_(paymentTimes), payoffs_(payoffs) {
+        checkIncreasingTimes(paymentTimes);
+    }
 
     bool MultiStepOptionlets::nextTimeStep(
             const CurveState& currentState,

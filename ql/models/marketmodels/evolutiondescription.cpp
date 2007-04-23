@@ -22,6 +22,7 @@
 */
 
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
@@ -44,32 +45,24 @@ namespace QuantLib {
       firstAliveRate_(evolutionTimes_.size())
     {
 
-        QL_REQUIRE(numberOfRates_>0,
-                   "Rate times must contain at least two values");
-        QL_REQUIRE(rateTimes_[0]>=0.0,
-                   "first rate time must be non negative");
-        for (Size i=0; i<numberOfRates_; ++i) {
-            rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
-            QL_REQUIRE(rateTaus_[i]>0, "non increasing rate times");
-        }
+        checkIncreasingTimesAndCalculateTaus(rateTimes_, rateTaus_);
 
-        Size steps_ = evolutionTimes_.size();
-        QL_REQUIRE(steps_>0,
-                   "Evolution times must have 1 elements at least");
-        for (Size i = 1; i<steps_; ++i)
-            QL_REQUIRE(evolutionTimes_[i]>evolutionTimes_[i-1],
-                       "Evolution times must be strictly increasing");
-        QL_REQUIRE(rateTimes.back() >= evolutionTimes_.back(),
-                   "The last evolution time is past the last rate time");
+        checkIncreasingTimes(evolutionTimes_);
+        Size numberOfSteps = evolutionTimes_.size();
+
+        QL_REQUIRE(evolutionTimes_.back()<=rateTimes[rateTimes.size()-2],
+                   "The last evolution time (" << evolutionTimes_.back() <<
+                   ") is past the last fixing time (" <<
+                   rateTimes[numberOfRates_-2] << ")");
 
         if (relevanceRates.empty())
             relevanceRates_ = std::vector<std::pair<Size,Size> >(
-                                steps_, std::make_pair(0,numberOfRates_));
+                                numberOfSteps, std::make_pair(0,numberOfRates_));
         else
-            QL_REQUIRE(relevanceRates.size() == steps_,
+            QL_REQUIRE(relevanceRates.size() == numberOfSteps,
                        "relevanceRates / evolutionTimes mismatch");
 
-        //for (Size j=0; j<steps_; ++j) {
+        //for (Size j=0; j<numberOfSteps; ++j) {
         //    for (Size i=0; i<numberOfRates_; ++i)
         //        effStopTime_[j][i] =
         //            std::min(evolutionTimes_[j], rateTimes_[i]);
@@ -77,7 +70,7 @@ namespace QuantLib {
 
         Time currentEvolutionTime = 0.0;
         Size firstAliveRate = 0;
-        for (Size j=0; j<steps_; ++j) {
+        for (Size j=0; j<numberOfSteps; ++j) {
             while (rateTimes_[firstAliveRate] <= currentEvolutionTime)
                 ++firstAliveRate;
             firstAliveRate_[j] = firstAliveRate;

@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <algorithm>
 
 namespace QuantLib {
@@ -26,8 +27,7 @@ namespace QuantLib {
     MarketModelDiscounter::MarketModelDiscounter(
                                         Time paymentTime,
                                         const std::vector<Time>& rateTimes) {
-        QL_REQUIRE(rateTimes.size()>1,
-                   "Rate times must contain at least two values");
+        checkIncreasingTimes(rateTimes);
         before_ = std::lower_bound(rateTimes.begin(), rateTimes.end(),
                                    paymentTime) - rateTimes.begin();
 

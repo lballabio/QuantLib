@@ -19,6 +19,7 @@
 
 #include <ql/models/marketmodels/products/multistep/multistepratchet.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <cmath>
 
 namespace QuantLib {
@@ -38,7 +39,9 @@ namespace QuantLib {
       spreadOfFloor_(spreadOfFloor), spreadOfFixing_(spreadOfFixing),
       payer_(payer), multiplier_(payer ? 1.0 : -1.0),
       lastIndex_(rateTimes.size()-1),
-      floor_(initialFloor) {}
+      floor_(initialFloor) {
+        checkIncreasingTimes(paymentTimes);
+    }
 
     bool MultiStepRatchet::nextTimeStep(
             const CurveState& currentState,

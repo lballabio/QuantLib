@@ -45,14 +45,17 @@ namespace QuantLib {
         // Check requirements
         QL_REQUIRE(numberOfRates_>0, "Dim out of range");
         QL_REQUIRE(displacements.size() == numberOfRates_,
-            "Displacements out of range");
+                   "Displacements out of range");
         QL_REQUIRE(pseudo.rows()==numberOfRates_,
-            "pseudo.rows() not consistent with dim");
+                   "pseudo.rows() not consistent with dim");
         QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=numberOfRates_,
-            "pseudo.rows() not consistent with pseudo.columns()");
-        QL_REQUIRE(alive<numberOfRates_, "Alive out of bounds");
-        QL_REQUIRE(numeraire_<=numberOfRates_, "Numeraire larger than dim");
-        QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
+                   "pseudo.rows() not consistent with pseudo.columns()");
+        QL_REQUIRE(alive<numberOfRates_,
+                   "Alive out of bounds");
+        QL_REQUIRE(numeraire_<=numberOfRates_,
+                   "Numeraire larger than dim");
+        QL_REQUIRE(numeraire_>=alive,
+                   "Numeraire smaller than alive");
 
         // Precompute 1/taus
         for (Size i=0; i<taus.size(); ++i)

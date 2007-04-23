@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/products/multistep/cashrebate.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
 
@@ -28,6 +29,9 @@ namespace QuantLib {
                               Size numberOfProducts)
     : evolution_(evolution), paymentTimes_(paymentTimes),
       amounts_(amounts), numberOfProducts_(numberOfProducts) {
+
+        checkIncreasingTimes(paymentTimes);
+
         QL_REQUIRE(amounts_.rows() == numberOfProducts_,
                    "the number of rows in the matrix must equal "
                    "the number of products");
