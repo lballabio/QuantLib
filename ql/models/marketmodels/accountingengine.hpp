@@ -23,7 +23,7 @@
 #define quantlib_accounting_engine_hpp
 
 // to be removed using forward declaration
-#include <ql/models/marketmodels/marketmodelproduct.hpp>
+#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/math/sequencestatistics.hpp>
 

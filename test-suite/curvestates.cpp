@@ -118,23 +118,20 @@ QL_END_TEST_LOCALS(CurveStatesTest)
 
 void CurveStatesTest::testLMMCurveState() {
 
-    BOOST_MESSAGE("Testing LMMCurveState class"
-                  "in a LIBOR market model...");
+    BOOST_MESSAGE("Testing LMMCurveState class...");
     QL_TEST_SETUP
 }
 
 void CurveStatesTest::testCoterminalSwapCurveState() {
 
-    BOOST_MESSAGE("Testing CoterminalSwapCurveState class"
-                  "in a Swap market model...");
+    BOOST_MESSAGE("Testing CoterminalSwapCurveState class...");
     QL_TEST_SETUP
 }
 
 
 void CurveStatesTest::testCMSwapCurveState() {
 
-    BOOST_MESSAGE("Testing CoterminalSwapCurveState class"
-                  "in a Swap market model...");
+    BOOST_MESSAGE("Testing CMSwapCurveState class...");
     QL_TEST_SETUP
     Size nbRates = todaysForwards.size();
     Size factors = nbRates;
@@ -146,15 +143,11 @@ void CurveStatesTest::testCMSwapCurveState() {
 
     //std::cout << "rate value:"<< std::endl;
 
-    for (Size i = 0; i < forwards.size(); ++i){
-        forwards[i] = static_cast<Time>(i)*.001+.04;
+    for (Size i = 0; i < forwards.size(); ++i)
+        forwards[i] = static_cast<Rate>(i)*.001+.04;
 
-    }
-
-    for (Size i = 0; i < rateTimes.size(); ++i){
+    for (Size i = 0; i < rateTimes.size(); ++i)
         rateTimes[i] = static_cast<Time>(i)*.5;
-
-    }
 
     //BOOST_MESSAGE( << "Rates\nTime\tValue:"<< std::endl;)
     //for (Size i = 0; i < rateTimes.size()-1; ++i){
@@ -166,16 +159,16 @@ void CurveStatesTest::testCMSwapCurveState() {
 
     Size spanningFwds = 1;
 
-    CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus, numeraire,
-                                        alive, spanningFwds);
+    CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus,
+                                           numeraire, alive, spanningFwds);
 
     CMSwapCurveState cmsCs(rateTimes, spanningFwds);
     cmsCs.setOnCMSwapRates(forwards);
     std::vector<Real> cmsDrifts(nbRates);
     cmsDriftcalulator.compute(cmsCs,cmsDrifts);
 
-    LMMDriftCalculator  lmmDriftcalulator(pseudo, displacements, taus, numeraire,
-                                        alive);
+    LMMDriftCalculator lmmDriftcalulator(pseudo, displacements, taus,
+                                         numeraire, alive);
     LMMCurveState lmmCs(rateTimes);
     lmmCs.setOnForwardRates(forwards);
     std::vector<Real> lmmDrifts(nbRates);

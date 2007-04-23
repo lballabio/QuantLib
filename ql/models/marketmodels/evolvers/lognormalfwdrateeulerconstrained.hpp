@@ -22,7 +22,7 @@
 #ifndef quantlib_forward_rate_euler_constrained_evolver_hpp
 #define quantlib_forward_rate_euler_constrained_evolver_hpp
 
-#include <ql/models/marketmodels/marketmodelconstrainedevolver.hpp>
+#include <ql/models/marketmodels/constrainedevolver.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
 

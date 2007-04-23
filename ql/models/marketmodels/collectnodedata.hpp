@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_longstaff_schwartz_data_collector_hpp
-#define quantlib_longstaff_schwartz_data_collector_hpp
+#ifndef quantlib_collect_node_data_hpp
+#define quantlib_collect_node_data_hpp
 
 #include <ql/types.hpp>
 #include <vector>

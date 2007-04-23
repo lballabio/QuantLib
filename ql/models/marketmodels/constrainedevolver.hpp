@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_market_model_constrained_evolver_hpp
-#define quantlib_market_model_constrained_evolver_hpp
+#ifndef quantlib_constrained_evolver_hpp
+#define quantlib_constrained_evolver_hpp
 
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
 

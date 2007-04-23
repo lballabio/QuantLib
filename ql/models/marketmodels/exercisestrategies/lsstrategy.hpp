@@ -21,8 +21,8 @@
 #define quantlib_longstaff_schwartz_exercise_strategy_hpp
 
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
-#include <ql/models/marketmodels/lsbasisfunctions.hpp>
-#include <ql/models/marketmodels/exercisevalue.hpp>
+#include <ql/models/marketmodels/marketmodelbasissystem.hpp>
+#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
 #include <ql/utilities/clone.hpp>
 
 namespace QuantLib {

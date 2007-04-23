@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_generic_parametric_early_exercise_hpp
-#define quantlib_generic_parametric_early_exercise_hpp
+#ifndef quantlib_parametric_exercise_hpp
+#define quantlib_parametric_exercise_hpp
 
 #include <ql/methods/montecarlo/nodedata.hpp>
 #include <ql/math/optimization/method.hpp>

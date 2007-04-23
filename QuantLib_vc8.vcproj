@@ -391,14 +391,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\methods\montecarlo\longstaffschwartzpathpricer.hpp"
 					>
 				</File>
@@ -432,6 +424,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\nodedata.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\parametricexercise.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\parametricexercise.hpp"
 					>
 				</File>
 				<File
@@ -3201,6 +3201,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\collectnodedata.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\collectnodedata.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\constrainedevolver.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\curvestate.cpp"
 					>
 				</File>
@@ -3221,19 +3233,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\exercisevalue.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\lsbasisfunctions.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\lsdatacollector.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\lsdatacollector.hpp"
+					RelativePath=".\ql\models\marketmodels\maketmodelnodedataprovider.hpp"
 					>
 				</File>
 				<File
@@ -3245,7 +3245,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelconstrainedevolver.hpp"
+					RelativePath=".\ql\models\marketmodels\marketmodelbasissystem.hpp"
 					>
 				</File>
 				<File
@@ -3261,15 +3261,19 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelproduct.hpp"
+					RelativePath=".\ql\models\marketmodels\marketmodelexercisevalue.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\nodedataprovider.hpp"
+					RelativePath=".\ql\models\marketmodels\marketmodelmultiproduct.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\parametricexercise.hpp"
+					RelativePath=".\ql\models\marketmodels\marketmodelnodedataprovider.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\marketmodelparametricexercise.hpp"
 					>
 				</File>
 				<File
@@ -3278,14 +3282,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\parametricexerciseadapter.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\parametricswapexercise.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\parametricswapexercise.hpp"
 					>
 				</File>
 				<File
@@ -3314,6 +3310,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\triggeredswapexercise.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\triggeredswapexercise.hpp"
 					>
 				</File>
 				<File

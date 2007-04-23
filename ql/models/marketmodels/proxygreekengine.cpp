@@ -21,7 +21,7 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
-#include <ql/models/marketmodels/marketmodelconstrainedevolver.hpp>
+#include <ql/models/marketmodels/constrainedevolver.hpp>
 #include <algorithm>
 
 namespace QuantLib {

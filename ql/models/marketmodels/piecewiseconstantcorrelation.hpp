@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_time_dep_corr_struct_hpp
-#define quantlib_time_dep_corr_struct_hpp
+#ifndef quantlib_piecewise_constant_correlation_hpp
+#define quantlib_piecewise_constant_correlation_hpp
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>

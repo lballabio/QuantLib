@@ -17,10 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_market_model_parametric_swap_exercise_hpp
-#define quantlib_market_model_parametric_swap_exercise_hpp
+#ifndef quantlib_triggered_swap_exercise_hpp
+#define quantlib_triggered_swap_exercise_hpp
 
-#include <ql/models/marketmodels/parametricexercise.hpp>
+#include <ql/models/marketmodels/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {

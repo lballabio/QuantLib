@@ -24,10 +24,10 @@
 #include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/marketmodelproduct.hpp>
+#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
-#include <ql/models/marketmodels/exercisevalue.hpp>
+#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
 #include <algorithm>
 
 namespace QuantLib {

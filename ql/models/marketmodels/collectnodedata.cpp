@@ -18,13 +18,13 @@
 */
 
 #include <ql/methods/montecarlo/nodedata.hpp>
-#include <ql/models/marketmodels/lsdatacollector.hpp>
+#include <ql/models/marketmodels/collectnodedata.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/models/marketmodels/marketmodelproduct.hpp>
+#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
-#include <ql/models/marketmodels/nodedataprovider.hpp>
-#include <ql/models/marketmodels/exercisevalue.hpp>
+#include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
+#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/errors.hpp>

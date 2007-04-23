@@ -22,7 +22,7 @@
 #define quantlib_proxy_greek_engine_hpp
 
 // to be removed using forward declaration
-#include <ql/models/marketmodels/marketmodelproduct.hpp>
+#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 
 #include <ql/math/sequencestatistics.hpp>
 #include <ql/utilities/clone.hpp>

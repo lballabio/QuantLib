@@ -36,12 +36,12 @@
 #include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
 #include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
 #include <ql/models/marketmodels/products/multiproductcomposite.hpp>
-#include <ql/models/marketmodels/parametricswapexercise.hpp>
+#include <ql/models/marketmodels/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/upperboundengine.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>
 #include <ql/models/marketmodels/swapbasissystem.hpp>
-#include <ql/models/marketmodels/lsdatacollector.hpp>
+#include <ql/models/marketmodels/collectnodedata.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/parametricexerciseadapter.hpp>

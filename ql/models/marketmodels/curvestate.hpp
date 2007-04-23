@@ -19,8 +19,8 @@
 */
 
 
-#ifndef quantlib_newcurvestate_hpp
-#define quantlib_newcurvestate_hpp
+#ifndef quantlib_curve_state_hpp
+#define quantlib_curve_state_hpp
 
 #include <ql/math/array.hpp>
 #include <vector>

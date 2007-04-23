@@ -22,7 +22,7 @@
 #define quantlib_market_model_exercise_value_hpp
 
 // to be removed using forward declaration
-#include <ql/models/marketmodels/marketmodelproduct.hpp>
+#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <memory>
 
 namespace QuantLib {

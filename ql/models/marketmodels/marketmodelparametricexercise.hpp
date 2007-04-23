@@ -18,24 +18,25 @@
 */
 
 
-#ifndef quantlib_market_model_basis_functions_hpp
-#define quantlib_market_model_basis_functions_hpp
+#ifndef quantlib_market_model_parametric_exercise_hpp
+#define quantlib_market_model_parametric_exercise_hpp
 
-#include <ql/models/marketmodels/nodedataprovider.hpp>
+#include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
+#include <ql/methods/montecarlo/parametricexercise.hpp>
 #include <memory>
 
 namespace QuantLib {
 
-    class MarketModelBasisSystem : public MarketModelNodeDataProvider {
+    class MarketModelParametricExercise : public MarketModelNodeDataProvider,
+                                          public ParametricExercise {
       public:
-        // possibly different for each exercise
-        virtual std::vector<Size> numberOfFunctions() const = 0;
         std::vector<Size> numberOfData() const {
-            return numberOfFunctions();
+            return numberOfVariables();
         }
-        virtual std::auto_ptr<MarketModelBasisSystem> clone() const = 0;
+        virtual std::auto_ptr<MarketModelParametricExercise> clone() const = 0;
     };
 
 }
+
 
 #endif

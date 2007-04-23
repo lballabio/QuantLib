@@ -18,8 +18,8 @@
 */
 
 
-#ifndef quantlib_marketmodelmultiproduct_hpp
-#define quantlib_marketmodelmultiproduct_hpp
+#ifndef quantlib_market_model_multi_product_hpp
+#define quantlib_market_model_multi_product_hpp
 
 #include <ql/types.hpp>
 #include <vector>

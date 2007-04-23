@@ -5,7 +5,7 @@
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
-#include <ql/methods/montecarlo/genericparametricearlyexercise.hpp>
+#include <ql/methods/montecarlo/parametricexercise.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>

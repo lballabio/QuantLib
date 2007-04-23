@@ -1,5 +1,7 @@
 
 GENERAL refactoring/review
+- review/implement CurveState tests
+- setOnDiscoutnRatio in the CurveState base class
 - export all evolvers to Excel
 - Get LMM code in the same use format as other code via instrument classes,
   from LMM -> QL::INSTRUMENT -> EXCEL
