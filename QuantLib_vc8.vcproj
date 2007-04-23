@@ -2452,6 +2452,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\solver1d.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\surface.cpp"
 				>
 			</File>
@@ -6920,10 +6924,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\settings.hpp"
-			>
-		</File>
-		<File
-			RelativePath="ql\solver1d.hpp"
 			>
 		</File>
 		<File

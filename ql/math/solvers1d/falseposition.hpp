@@ -24,7 +24,7 @@
 #ifndef quantlib_solver1d_falseposition_h
 #define quantlib_solver1d_falseposition_h
 
-#include <ql/solver1d.hpp>
+#include <ql/math/solver1d.hpp>
 
 namespace QuantLib {
 
