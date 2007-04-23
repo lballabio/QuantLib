@@ -542,11 +542,11 @@ void CapFloorTest::testMarketModel() {
     times[1] = 30.0;  vols[1] = volatility;
     boost::shared_ptr<MarketModelFactory> factory(new
         FlatVolFactory(longTermCorrelation, beta,
-                              times, vols,
-                              termStructure_,
-                              displacement));
-    boost::shared_ptr<PricingEngine> lmmEngine(
-                                      new MarketModelCapFloorEngine(factory));
+                       times, vols,
+                       termStructure_,
+                       displacement));
+    boost::shared_ptr<PricingEngine> lmmEngine(new
+        MarketModelCapFloorEngine(factory));
     cap->setPricingEngine(lmmEngine);
     floor->setPricingEngine(lmmEngine);
 
