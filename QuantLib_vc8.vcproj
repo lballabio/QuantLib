@@ -766,6 +766,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\rangeaccrual.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\rangeaccrual.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\cashflows\shortfloatingcoupon.cpp"
 				>
 				<FileConfiguration
