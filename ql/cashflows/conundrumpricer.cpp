@@ -223,7 +223,7 @@ namespace QuantLib {
             }
             newVar = a_ + x* temp;
             return f_(newVar) * k_* temp;
-            }
+        }
 
     private:
         Real a_, b_, width_;
@@ -285,14 +285,14 @@ namespace QuantLib {
 
                 // if the expected precision has not been reached we use the old algorithm
                 if (!gaussKronrodNonAdaptive.integrationSuccess()){
-                    const KronrodIntegral integral(precision_, 1000000);
-                    result = integral(integrand,a , b);
+                    const GaussKronrodAdaptive integrator(precision_, 1000000);
+                    result = integrator(integrand,a , b);
                 }
 
             } else {   // if a < b we use the old algorithm
 
-                const KronrodIntegral integral(precision_, 1000000);
-                result = integral(integrand,a , b);
+                const GaussKronrodAdaptive integrator(precision_, 1000000);
+                result = integrator(integrand,a , b);
             }
             return result;
     }

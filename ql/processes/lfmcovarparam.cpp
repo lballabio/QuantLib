@@ -65,10 +65,11 @@ namespace QuantLib {
             for (Size j=0; j<=i;++j) {
                 Var_Helper helper(this, i, j);
 
-                //don't run away immediately
+                Size maxEvalutions = 10000; // we choose this arbitrary large value
+                                            // because we were using Null<Size> before
+                GaussKronrodAdaptive integrator(1e-10, 10000);
                 for (Size k=0; k < 64; ++k) {
-                    tmp[i][j]+=
-                        KronrodIntegral(1e-10)(helper, k*t/64.,(k+1)*t/64.);
+                    tmp[i][j]+=integrator(helper, k*t/64.,(k+1)*t/64.);
                 }
                 tmp[j][i]=tmp[i][j];
             }

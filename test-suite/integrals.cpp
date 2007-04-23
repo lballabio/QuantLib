@@ -32,8 +32,8 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(IntegralTest)
 
-Real tolerance = 1.0e-4;
-
+Real tolerance = 1.0e-6;
+bool verbose = true;
 
 template <class T>
 void testSingle(const T& I, const std::string& tag,
@@ -41,13 +41,22 @@ void testSingle(const T& I, const std::string& tag,
                 Real xMin, Real xMax, Real expected) {
     Real calculated = I(f,xMin,xMax);
     if (std::fabs(calculated-expected) > tolerance) {
-
         BOOST_FAIL(std::setprecision(10)
                    << "integrating " << tag 
                    << "    calculated: " << calculated
                    << "    expected:   " << expected);
+    } 
+    // this will be uncommented later...
+    /*else {
+        if (verbose) 
+            BOOST_MESSAGE("integrating " << tag
+                            << "    calculated: " << calculated
+                            << "    expected: " << expected
+                            << "    nb of evaluations: " << I.numberOfEvalutions() 
+                            << "    precision: " << std::setprecision(3) 
+                            << std::fabs(calculated- expected));
+    }*/
 
-    }
 
 }
 
@@ -94,12 +103,13 @@ void IntegralTest::testSimpson() {
     testSeveral(SimpsonIntegral(tolerance));
 }
 
-void IntegralTest::testKronrod() {
-    BOOST_MESSAGE("Testing Gauss-Kronrod integration...");
-    testSeveral(KronrodIntegral(tolerance));
+void IntegralTest::testGaussKronrodAdaptive() {
+    BOOST_MESSAGE("Testing adaptive Gauss-Kronrod integration...");
+    Size maxEvaluations = 1000;
+    testSeveral(GaussKronrodAdaptive(tolerance, maxEvaluations));
 }
 
-void IntegralTest::testKronrodNonAdaptive() {
+void IntegralTest::testGaussKronrodNonAdaptive() {
     BOOST_MESSAGE("Testing non adaptive Gauss-Kronrod integration...");
     Real precision = tolerance;
     Size maxEvaluations = 100;
@@ -116,8 +126,8 @@ test_suite* IntegralTest::suite() {
     suite->add(BOOST_TEST_CASE(&IntegralTest::testTrapezoid));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testMidPointTrapezoid));
     suite->add(BOOST_TEST_CASE(&IntegralTest::testSimpson));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testKronrod));
-    suite->add(BOOST_TEST_CASE(&IntegralTest::testKronrodNonAdaptive));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
     return suite;
 }
 

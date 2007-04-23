@@ -31,8 +31,8 @@ class IntegralTest {
     static void testTrapezoid();
     static void testMidPointTrapezoid();
     static void testSimpson();
-    static void testKronrod();
-    static void testKronrodNonAdaptive();
+    static void testGaussKronrodAdaptive();
+    static void testGaussKronrodNonAdaptive();
     static boost::unit_test_framework::test_suite* suite();
 };
 
