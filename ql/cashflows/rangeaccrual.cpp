@@ -129,7 +129,9 @@ namespace QuantLib {
         Calendar calendar = index->calendar();
         for(Size i=0; i<observationDates.size(); i++) {
             initialValues_[i]=index->fixing(
-                calendar.advance(observationDates[i],-coupon.fixingDays(), Days,Preceding));
+                calendar.advance(observationDates[i],
+                                 -static_cast<Integer>(coupon.fixingDays()),
+                                 Days));
         }
         
       }
