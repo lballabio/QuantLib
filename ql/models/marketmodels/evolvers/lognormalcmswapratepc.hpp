@@ -36,10 +36,10 @@ namespace QuantLib {
     class LogNormalCmSwapRatePc : public MarketModelEvolver {
       public:
         LogNormalCmSwapRatePc(const Size spanningForwards,
-                            const boost::shared_ptr<MarketModel>&,
-                            const BrownianGeneratorFactory&,
-                            const std::vector<Size>& numeraires,
-                            Size initialStep = 0);
+                              const boost::shared_ptr<MarketModel>&,
+                              const BrownianGeneratorFactory&,
+                              const std::vector<Size>& numeraires,
+                              Size initialStep = 0);
         //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -60,7 +60,7 @@ namespace QuantLib {
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
          // working variables
-        Size n_, F_;
+        Size numberOfRates_, numberOfFactors_;
         CMSwapCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> swapRates_, displacements_, logSwapRates_, initialLogSwapRates_;

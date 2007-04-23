@@ -33,23 +33,22 @@ namespace QuantLib {
                      const std::vector<Time>& rateTimes,
                      const std::vector<Time>& evolutionTimes,
                      const std::vector<std::pair<Size,Size> >& relevanceRates)
-    : rateTimes_(rateTimes),
+    : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
+      rateTimes_(rateTimes),
       evolutionTimes_(evolutionTimes.empty() && !rateTimes.empty() ?
                       std::vector<Time>(rateTimes.begin(), rateTimes.end()-1) :
                       evolutionTimes),
       relevanceRates_(relevanceRates),
-      rateTaus_(rateTimes_.size()-1),
+      rateTaus_(numberOfRates_),
       //effStopTime_(evolutionTimes_.size(), rateTimes_.size()-1),
       firstAliveRate_(evolutionTimes_.size())
     {
 
-        Size nRates_ = rateTimes_.size() - 1;
-
-        QL_REQUIRE(nRates_>0,
+        QL_REQUIRE(numberOfRates_>0,
                    "Rate times must contain at least two values");
         QL_REQUIRE(rateTimes_[0]>=0.0,
                    "first rate time must be non negative");
-        for (Size i=0; i<nRates_; ++i) {
+        for (Size i=0; i<numberOfRates_; ++i) {
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
             QL_REQUIRE(rateTaus_[i]>0, "non increasing rate times");
         }
@@ -65,13 +64,13 @@ namespace QuantLib {
 
         if (relevanceRates.empty())
             relevanceRates_ = std::vector<std::pair<Size,Size> >(
-                                steps_, std::make_pair(0,nRates_));
+                                steps_, std::make_pair(0,numberOfRates_));
         else
             QL_REQUIRE(relevanceRates.size() == steps_,
                        "relevanceRates / evolutionTimes mismatch");
 
         //for (Size j=0; j<steps_; ++j) {
-        //    for (Size i=0; i<nRates_; ++i)
+        //    for (Size i=0; i<numberOfRates_; ++i)
         //        effStopTime_[j][i] =
         //            std::min(evolutionTimes_[j], rateTimes_[i]);
         //}
@@ -111,7 +110,7 @@ namespace QuantLib {
     }
 
     Size EvolutionDescription::numberOfRates() const {
-        return rateTimes_.size() - 1;
+        return numberOfRates_;
     }
 
     Size EvolutionDescription::numberOfSteps() const {

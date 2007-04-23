@@ -54,7 +54,7 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Size numberOfRates() const { return nRates_; }
+        Size numberOfRates() const { return numberOfRates_; }
 
         const std::vector<Time>& rateTimes() const { return rateTimes_; }
         const std::vector<Time>& rateTaus() const { return rateTaus_; }
@@ -80,8 +80,8 @@ namespace QuantLib {
         virtual std::auto_ptr<CurveState> clone() const = 0;
         //@}
       protected:
+        Size numberOfRates_;
         std::vector<Time> rateTimes_, rateTaus_;
-        Size nRates_;
     };
 
     void forwardsFromDiscountRatios(const Size firstValidIndex,

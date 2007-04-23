@@ -67,7 +67,7 @@ namespace QuantLib {
 
 
       private:
-        Size dim_, factors_;
+        Size numberOfRates_, numberOfFactors_;
         bool isFullFactor_;
         Size numeraire_, alive_;
         std::vector<Real> oneOverTaus_;

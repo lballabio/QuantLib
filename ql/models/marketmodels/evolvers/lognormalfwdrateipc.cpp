@@ -35,12 +35,15 @@ namespace QuantLib {
     : marketModel_(marketModel),
       numeraires_(numeraires),
       initialStep_(initialStep),
-      n_(marketModel->numberOfRates()), F_(marketModel->numberOfFactors()),
+      numberOfRates_(marketModel->numberOfRates()),
+      numberOfFactors_(marketModel->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
-      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
-      initialDrifts_(n_), g_(n_), brownians_(F_), correlatedBrownians_(n_),
+      logForwards_(numberOfRates_), initialLogForwards_(numberOfRates_),
+      drifts1_(numberOfRates_), initialDrifts_(numberOfRates_),
+      g_(numberOfRates_), brownians_(numberOfFactors_),
+      correlatedBrownians_(numberOfRates_),
       rateTaus_(marketModel->evolution().rateTaus()),
       alive_(marketModel->evolution().firstAliveRate())
     {
@@ -50,7 +53,7 @@ namespace QuantLib {
 
         Size steps = marketModel->evolution().numberOfSteps();
 
-        generator_ = factory.create(F_, steps-initialStep_);
+        generator_ = factory.create(numberOfFactors_, steps-initialStep_);
 
         currentStep_ = initialStep_;
 
@@ -64,8 +67,8 @@ namespace QuantLib {
                                                    numeraires[j],
                                                    alive_[j]));
             const Matrix& C = marketModel->covariance(j);
-            std::vector<Real> fixed(n_);
-            for (Size k=0; k<n_; ++k) {
+            std::vector<Real> fixed(numberOfRates_);
+            for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance = C[k][k];
                 fixed[k] = -0.5*variance;
             }
@@ -81,9 +84,9 @@ namespace QuantLib {
 
     void LogNormalFwdRateIpc::setForwards(const std::vector<Real>& forwards)
     {
-        QL_REQUIRE(forwards.size()==n_,
+        QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<n_; ++i)
+        for (Size i=0; i<numberOfRates_; ++i)
             initialLogForwards_[i] = std::log(forwards[i] +
                                               displacements_[i]);
         calculators_[initialStep_].compute(forwards, initialDrifts_);
@@ -119,9 +122,9 @@ namespace QuantLib {
 
         Integer alive = alive_[currentStep_];
         Real drifts2;
-        for (Integer i=n_-1; i>=alive; --i) {
+        for (Integer i=numberOfRates_-1; i>=alive; --i) {
             drifts2 = 0.0;
-            for (Size j=i+1; j<n_; ++j) {
+            for (Size j=i+1; j<numberOfRates_; ++j) {
                 drifts2 -= g_[j]*C[i][j];
             }
             logForwards_[i] += 0.5*(drifts1_[i]+drifts2) + fixedDrift[i];

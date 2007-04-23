@@ -28,13 +28,13 @@
 namespace QuantLib {
 
     LMMDriftCalculator::LMMDriftCalculator(
-                                     const Matrix& pseudo,
-                                     const std::vector<Spread>& displacements,
-                                     const std::vector<Time>& taus,
-                                     Size numeraire,
-                                     Size alive)
-    : dim_(taus.size()), factors_(pseudo.columns()),
-      isFullFactor_(factors_==dim_ ? true : false),
+                                    const Matrix& pseudo,
+                                    const std::vector<Spread>& displacements,
+                                    const std::vector<Time>& taus,
+                                    Size numeraire,
+                                    Size alive)
+    : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
+      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo), tmp_(taus.size(), 0.0),
@@ -42,15 +42,15 @@ namespace QuantLib {
       downs_(taus.size()), ups_(taus.size()) {
 
         // Check requirements
-        QL_REQUIRE(dim_>0, "Dim out of range");
-        QL_REQUIRE(displacements.size() == dim_,
+        QL_REQUIRE(numberOfRates_>0, "Dim out of range");
+        QL_REQUIRE(displacements.size() == numberOfRates_,
             "Displacements out of range");
-        QL_REQUIRE(pseudo.rows()==dim_,
+        QL_REQUIRE(pseudo.rows()==numberOfRates_,
             "pseudo.rows() not consistent with dim");
-        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=dim_,
+        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=numberOfRates_,
             "pseudo.rows() not consistent with pseudo.columns()");
-        QL_REQUIRE(alive<dim_, "Alive out of bounds");
-        QL_REQUIRE(numeraire_<=dim_, "Numeraire larger than dim");
+        QL_REQUIRE(alive<numberOfRates_, "Alive out of bounds");
+        QL_REQUIRE(numeraire_<=numberOfRates_, "Numeraire larger than dim");
         QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
 
         // Precompute 1/taus
@@ -62,7 +62,7 @@ namespace QuantLib {
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation
-        for (Size i=alive_; i<dim_; ++i) {
+        for (Size i=alive_; i<numberOfRates_; ++i) {
             downs_[i] = std::min(i+1, numeraire_);
             ups_[i]   = std::max(i+1, numeraire_);
         }
@@ -76,8 +76,8 @@ namespace QuantLib {
     void LMMDriftCalculator::compute(const std::vector<Rate>& fwds,
                                      std::vector<Real>& drifts) const {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
-            QL_REQUIRE(fwds.size()==dim_, "numberOfRates <> dim");
-            QL_REQUIRE(drifts.size()==dim_, "drifts.size() <> dim");
+            QL_REQUIRE(fwds.size()==numberOfRates_, "numberOfRates <> dim");
+            QL_REQUIRE(drifts.size()==numberOfRates_, "drifts.size() <> dim");
         #endif
 
         if (isFullFactor_)
@@ -99,12 +99,12 @@ namespace QuantLib {
 
         // Precompute forwards factor
         Size i;
-        for(i=alive_; i<dim_; ++i)
+        for(i=alive_; i<numberOfRates_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                       (oneOverTaus_[i]+forwards[i]);
 
         // Compute drifts
-        for (i=alive_; i<dim_; ++i) {
+        for (i=alive_; i<numberOfRates_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
                                            C_.row_begin(i)+downs_[i], 0.0);
@@ -125,12 +125,12 @@ namespace QuantLib {
         // using the pseudo square root of the covariance matrix.
 
         // Precompute forwards factor
-        for (Size i=alive_; i<dim_; ++i)
+        for (Size i=alive_; i<numberOfRates_; ++i)
             tmp_[i] = (forwards[i]+displacements_[i]) /
                 (oneOverTaus_[i]+forwards[i]);
 
         // Enforce initialization
-        for (Size r=0; r<factors_; ++r)
+        for (Size r=0; r<numberOfFactors_; ++r)
             e_[r][std::max(0,static_cast<Integer>(numeraire_)-1)] = 0.0;
 
         // Now compute drifts: take the numeraire P_N (numeraire_=N)
@@ -138,17 +138,17 @@ namespace QuantLib {
         // et impera:
 
         // 1st step: the drift corresponding to the numeraire P_N is zero.
-        // (if N=0 no drift is null, if N=dim_ the last drift is null).
+        // (if N=0 no drift is null, if N=numberOfRates_ the last drift is null).
         if (numeraire_>0) drifts[numeraire_-1] = 0.0;
 
         // 2nd step: then, move backward from N-2 (included) back to
-        // alive (included) (if N=0 jumps to 3rd step, if N=dim_ the
+        // alive (included) (if N=0 jumps to 3rd step, if N=numberOfRates_ the
         // e_[r][N-1] are correctly initialized):
 
         for (Integer i=static_cast<Integer>(numeraire_)-2;
              i>=static_cast<Integer>(alive_); --i) {
             drifts[i] = 0.0;
-            for (Size r=0; r<factors_; ++r) {
+            for (Size r=0; r<numberOfFactors_; ++r) {
                 e_[r][i] = e_[r][i+1] + tmp_[i+1] * pseudo_[i+1][r];
                 drifts[i] -= e_[r][i]*pseudo_[i][r];
             }
@@ -170,9 +170,9 @@ namespace QuantLib {
 
         // 3rd step: now, move forward from N (included) up to n (excluded)
         // (if N=0 this is the only relevant computation):
-        for (Size i=numeraire_; i<dim_; ++i) {
+        for (Size i=numeraire_; i<numberOfRates_; ++i) {
             drifts[i] = 0.0;
-            for (Size r=0; r<factors_; ++r) {
+            for (Size r=0; r<numberOfFactors_; ++r) {
                 if (i==0)
                     e_[r][i] = tmp_[i] * pseudo_[i][r];
                 else

@@ -36,19 +36,22 @@ namespace QuantLib {
       marketModel_(marketModel),
       numeraires_(numeraires),
       initialStep_(initialStep),
-      n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
+      numberOfRates_(marketModel->numberOfRates()),
+      numberOfFactors_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes(), spanningForwards),
       swapRates_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
-      logSwapRates_(n_), initialLogSwapRates_(n_), drifts1_(n_), drifts2_(n_),
-      initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
+      logSwapRates_(numberOfRates_), initialLogSwapRates_(numberOfRates_),
+      drifts1_(numberOfRates_), drifts2_(numberOfRates_),
+      initialDrifts_(numberOfRates_), brownians_(numberOfFactors_),
+      correlatedBrownians_(numberOfRates_),
       alive_(marketModel->evolution().firstAliveRate())
     {
         checkCompatibility(marketModel->evolution(), numeraires);
 
         Size steps = marketModel->evolution().numberOfSteps();
 
-        generator_ = factory.create(F_, steps-initialStep_);
+        generator_ = factory.create(numberOfFactors_, steps-initialStep_);
 
         currentStep_ = initialStep_;
 
@@ -62,8 +65,8 @@ namespace QuantLib {
                                                         numeraires[j],
                                                         alive_[j],
                                                         spanningForwards));
-            std::vector<Real> fixed(n_);
-            for (Size k=0; k<n_; ++k) {
+            std::vector<Real> fixed(numberOfRates_);
+            for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
                                        A.row_begin(k), 0.0);
@@ -81,9 +84,9 @@ namespace QuantLib {
 
     void LogNormalCmSwapRatePc::setCMSwapRates(const std::vector<Real>& swapRates)
     {
-        QL_REQUIRE(swapRates.size()==n_,
+        QL_REQUIRE(swapRates.size()==numberOfRates_,
                    "mismatch between swapRates and rateTimes");
-        for (Size i=0; i<n_; ++i)
+        for (Size i=0; i<numberOfRates_; ++i)
             initialLogSwapRates_[i] = std::log(swapRates[i] +
                                                displacements_[i]);
         curveState_.setOnCMSwapRates(swapRates);
@@ -120,7 +123,7 @@ namespace QuantLib {
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size i, alive = alive_[currentStep_];
-        for (i=alive; i<n_; ++i) {
+        for (i=alive; i<numberOfRates_; ++i) {
             logSwapRates_[i] += drifts1_[i] + fixedDrift[i];
             logSwapRates_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
@@ -135,7 +138,7 @@ namespace QuantLib {
         calculators_[currentStep_].compute(curveState_, drifts2_);
 
         // d) correct forwards using both drifts
-        for (i=alive; i<n_; ++i) {
+        for (i=alive; i<numberOfRates_; ++i) {
             logSwapRates_[i] += (drifts2_[i]-drifts1_[i])/2.0;
             swapRates_[i] = std::exp(logSwapRates_[i]) - displacements_[i];
         }

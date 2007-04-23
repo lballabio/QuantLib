@@ -35,9 +35,9 @@ namespace QuantLib {
     class NormalFwdRatePc : public MarketModelEvolver {
       public:
         NormalFwdRatePc(const boost::shared_ptr<MarketModel>&,
-                                   const BrownianGeneratorFactory&,
-                                   const std::vector<Size>& numeraires,
-                                   Size initialStep = 0);
+                        const BrownianGeneratorFactory&,
+                        const std::vector<Size>& numeraires,
+                        Size initialStep = 0);
         //! \name MarketModel interface
         //@{
         const std::vector<Size>& numeraires() const;
@@ -55,7 +55,7 @@ namespace QuantLib {
         Size initialStep_;
         boost::shared_ptr<BrownianGenerator> generator_;
          // working variables
-        Size n_, F_;
+        Size numberOfRates_, numberOfFactors_;
         LMMCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> forwards_, initialForwards_;

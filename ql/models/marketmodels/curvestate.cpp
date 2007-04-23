@@ -23,11 +23,11 @@
 namespace QuantLib {
 
     CurveState::CurveState(const std::vector<Time>& rateTimes)
-    : rateTimes_(rateTimes.begin(), rateTimes.end()),
-      rateTaus_(rateTimes_.size()-1),
-      nRates_(rateTimes_.empty() ? 0 : rateTimes_.size()-1) {
-        QL_REQUIRE(nRates_>0, "Rate times must contain at least two values");
-        for (Size i=0; i<nRates_; ++i) {
+    : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
+      rateTimes_(rateTimes), rateTaus_(numberOfRates_) {
+        QL_REQUIRE(numberOfRates_>0,
+                   "Rate times must contain at least two values");
+        for (Size i=0; i<numberOfRates_; ++i) {
             rateTaus_[i] = rateTimes_[i+1] - rateTimes_[i];
             QL_REQUIRE(rateTaus_[i]>0, "non increasing rate times");
         }
@@ -37,13 +37,13 @@ namespace QuantLib {
                               Size end) const {
 
         QL_REQUIRE(end > begin, "empty range specified");
-        QL_REQUIRE(end <= nRates_, "taus/end mismatch");
+        QL_REQUIRE(end <= numberOfRates_, "taus/end mismatch");
 
         Real sum = 0.0;
         for (Size i=begin; i<end; ++i)
-            sum += rateTaus_[i]*discountRatio(i+1, nRates_);
+            sum += rateTaus_[i]*discountRatio(i+1, numberOfRates_);
 
-        return (discountRatio(begin, nRates_)-discountRatio(end, nRates_))/sum;
+        return (discountRatio(begin, numberOfRates_)-discountRatio(end, numberOfRates_))/sum;
     }
 
     void forwardsFromDiscountRatios(const Size firstValidIndex,

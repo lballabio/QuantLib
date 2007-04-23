@@ -25,12 +25,12 @@ namespace QuantLib {
 
     PiecewiseConstantAbcdVariance::PiecewiseConstantAbcdVariance(
                                     Real a, Real b, Real c, Real d,
-                                    const Size resetIndex,
+                                    Size resetIndex,
                                     const std::vector<Time>& rateTimes)
-        : variances_(rateTimes.size()),
-          volatilities_(rateTimes.size()),
-          rateTimes_(rateTimes)
-    {
+    : variances_(rateTimes.size()),
+      volatilities_(rateTimes.size()),
+      rateTimes_(rateTimes) {
+
         QL_REQUIRE(resetIndex<rateTimes_.size(),
                    "resetIndex (" << resetIndex <<
                    ") must be less than rateTimes.size() (" <<

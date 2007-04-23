@@ -30,26 +30,28 @@ namespace QuantLib {
 
 
     LogNormalFwdRateEulerConstrained::LogNormalFwdRateEulerConstrained(
-        const boost::shared_ptr<MarketModel>& marketModel,
-        const BrownianGeneratorFactory& factory,
-        const std::vector<Size>& numeraires,
-        Size initialStep)
+                        const boost::shared_ptr<MarketModel>& marketModel,
+                        const BrownianGeneratorFactory& factory,
+                        const std::vector<Size>& numeraires,
+                        Size initialStep)
     : marketModel_(marketModel),
       numeraires_(numeraires),
       initialStep_(initialStep),
-      n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
+      numberOfRates_(marketModel->numberOfRates()),
+      numberOfFactors_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       displacements_(marketModel->displacements()),
-      logForwards_(n_), initialLogForwards_(n_), drifts1_(n_),
-      initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
+      logForwards_(numberOfRates_), initialLogForwards_(numberOfRates_),
+      drifts1_(numberOfRates_), initialDrifts_(numberOfRates_),
+      brownians_(numberOfFactors_), correlatedBrownians_(numberOfRates_),
       alive_(marketModel->evolution().firstAliveRate())
     {
         checkCompatibility(marketModel->evolution(), numeraires);
 
         Size steps = marketModel->evolution().numberOfSteps();
 
-        generator_ = factory.create(F_, steps-initialStep_);
+        generator_ = factory.create(numberOfFactors_, steps-initialStep_);
         currentStep_ = initialStep_;
 
         calculators_.reserve(steps);
@@ -62,9 +64,9 @@ namespace QuantLib {
                 marketModel->evolution().rateTaus(),
                 numeraires[j],
                 alive_[j]));
-            std::vector<Real> fixed(n_);
-            std::vector<Real> variances(n_);
-            for (Size k=0; k<n_; ++k) {
+            std::vector<Real> fixed(numberOfRates_);
+            std::vector<Real> variances(numberOfRates_);
+            for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
                     A.row_begin(k), 0.0);
@@ -84,9 +86,9 @@ namespace QuantLib {
 
     void LogNormalFwdRateEulerConstrained::setForwards(const std::vector<Real>& forwards)
     {
-        QL_REQUIRE(forwards.size()==n_,
+        QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<n_; ++i)
+        for (Size i=0; i<numberOfRates_; ++i)
             initialLogForwards_[i] = std::log(forwards[i] +
                                               displacements_[i]);
         calculators_[initialStep_].compute(forwards, initialDrifts_);
@@ -110,7 +112,7 @@ namespace QuantLib {
         covariances_.clear();
         covariances_.reserve(startIndexOfSwapRate_.size());
 
-        std::vector<Real> covariances(n_);
+        std::vector<Real> covariances(numberOfRates_);
 
         for (Size i=0; i < startIndexOfSwapRate_.size(); ++i) {
             QL_REQUIRE(startIndexOfSwapRate_[i]+1 == endIndexOfSwapRate_[i],
@@ -118,9 +120,9 @@ namespace QuantLib {
 
             const Matrix& A = marketModel_->pseudoRoot(currentStep_);
 
-            for (Size j=0; j < n_; ++j) {
+            for (Size j=0; j < numberOfRates_; ++j) {
                 Real cov=0.0;
-                for (Size k=0; k < F_; ++k)
+                for (Size k=0; k < numberOfFactors_; ++k)
                     cov += A[startIndexOfSwapRate_[i]][k]*A[j][k];
                 covariances[j] = cov;
 
@@ -173,7 +175,7 @@ namespace QuantLib {
         const std::vector<Real>& fixedDrift = fixedDrifts_[currentStep_];
 
         Size alive = alive_[currentStep_];
-        for (Size i=alive; i<n_; i++) {
+        for (Size i=alive; i<numberOfRates_; i++) {
             logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
@@ -191,7 +193,7 @@ namespace QuantLib {
 
             // now shift each rate by multiplier * weighting of index rate
             // across the step
-            for (Size i=alive; i<n_; i++) {
+            for (Size i=alive; i<numberOfRates_; i++) {
                 // we only need a small part of cov matrix
                 logForwards_[i] += multiplier*covariances_[currentStep_][i];
             }
@@ -201,7 +203,7 @@ namespace QuantLib {
             Real weightsEffect = 1.0;
 
             CumulativeNormalDistribution phi;
-            for (Size k=0; k < F_; k++) {
+            for (Size k=0; k < numberOfFactors_; k++) {
                 Real shift = multiplier * A[index][k];
                 Real originalDensity = phi.derivative(brownians_[k]+shift);
                 // the density of the draw after changes in original measure
@@ -213,7 +215,7 @@ namespace QuantLib {
             weight *= weightsEffect;
         }
 
-        for (Size i=alive; i<n_; i++)
+        for (Size i=alive; i<numberOfRates_; i++)
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
 
         // c) update curve state

@@ -26,8 +26,12 @@ namespace QuantLib {
     BermudanSwaptionExerciseValue::BermudanSwaptionExerciseValue(
               const std::vector<Time>& rateTimes,
               const std::vector<boost::shared_ptr<Payoff> >&payoffs)
-    : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
+    : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size()-1),
+      rateTimes_(rateTimes),
       payoffs_(payoffs), currentIndex_(0) {
+
+        QL_REQUIRE(numberOfExercises_>0,
+                   "Rate times must contain at least two values");
         std::vector<Time> evolveTimes(rateTimes_);
         evolveTimes.pop_back();
         evolution_ = EvolutionDescription(rateTimes_,evolveTimes);

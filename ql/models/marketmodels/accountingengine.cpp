@@ -29,7 +29,7 @@ namespace QuantLib {
     AccountingEngine::AccountingEngine(
                          const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const Clone<MarketModelMultiProduct>& product,
-                         double initialNumeraireValue)
+                         Real initialNumeraireValue)
     : evolver_(evolver), product_(product),
       initialNumeraireValue_(initialNumeraireValue),
       numberProducts_(product->numberOfProducts()),

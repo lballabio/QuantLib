@@ -25,22 +25,24 @@ namespace QuantLib {
 
     CoterminalSwapCurveState::CoterminalSwapCurveState(const std::vector<Time>& rateTimes)
     : CurveState(rateTimes),
-      first_(nRates_),
-      discRatios_(nRates_+1, 1.0),
-      forwardRates_(nRates_),
-      cmSwapRates_(nRates_), cmSwapAnnuities_(nRates_,rateTaus_[nRates_-1]),
-      cotSwapRates_(nRates_), cotAnnuities_(nRates_, rateTaus_[nRates_-1]) {}
+      first_(numberOfRates_),
+      discRatios_(numberOfRates_+1, 1.0),
+      forwardRates_(numberOfRates_),
+      cmSwapRates_(numberOfRates_),
+      cmSwapAnnuities_(numberOfRates_, rateTaus_[numberOfRates_-1]),
+      cotSwapRates_(numberOfRates_),
+      cotAnnuities_(numberOfRates_, rateTaus_[numberOfRates_-1]) {}
 
       void CoterminalSwapCurveState::setOnCoterminalSwapRates(
                                         const std::vector<Rate>& rates,
                                         Size firstValidIndex) {
-            QL_REQUIRE(rates.size()==nRates_,
+            QL_REQUIRE(rates.size()==numberOfRates_,
                        "rates mismatch: " <<
-                       nRates_ << " required, " <<
+                       numberOfRates_ << " required, " <<
                        rates.size() << " provided");
-            QL_REQUIRE(firstValidIndex<nRates_,
+            QL_REQUIRE(firstValidIndex<numberOfRates_,
                        "first valid index must be less than " <<
-                       nRates_ << ": " <<
+                       numberOfRates_ << ": " <<
                        firstValidIndex << " not allowed");
         // first copy input...
         first_ = firstValidIndex;
@@ -48,10 +50,10 @@ namespace QuantLib {
                   cotSwapRates_.begin()+first_);
         // ...then calculate discount ratios and coterminal annuities:
         // reference discount bond =  P(n) (the last one)
-        // discRatios_[nRates_] = P(n)/P(n) = 1.0 by construction/definition
-        cotAnnuities_[nRates_-1] = rateTaus_[nRates_-1];
+        // discRatios_[numberOfRates_] = P(n)/P(n) = 1.0 by construction/definition
+        cotAnnuities_[numberOfRates_-1] = rateTaus_[numberOfRates_-1];
         // j < n
-        for (Size i=nRates_-1; i>first_; --i) {
+        for (Size i=numberOfRates_-1; i>first_; --i) {
             discRatios_[i] = 1.0 + cotSwapRates_[i] * cotAnnuities_[i];
             cotAnnuities_[i-1] = cotAnnuities_[i] + rateTaus_[i-1] * discRatios_[i];
         }
@@ -63,41 +65,41 @@ namespace QuantLib {
     }
 
     Real CoterminalSwapCurveState::discountRatio(Size i, Size j) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
         QL_REQUIRE(std::min(i, j)>=first_, "invalid index");
-        QL_REQUIRE(std::max(i, j)<=nRates_, "invalid index");
+        QL_REQUIRE(std::max(i, j)<=numberOfRates_, "invalid index");
         return discRatios_[i]/discRatios_[j];
     }
 
     Rate CoterminalSwapCurveState::forwardRate(Size i) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
+        QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
         forwardsFromDiscountRatios(first_, discRatios_, rateTaus_, forwardRates_);
         return forwardRates_[i];
     }
 
     Rate CoterminalSwapCurveState::coterminalSwapAnnuity(Size numeraire,
                                                          Size i) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
+        QL_REQUIRE(numeraire>=first_ && numeraire<=numberOfRates_,
                   "invalid numeraire");
-        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
         return cotAnnuities_[i]/discRatios_[numeraire];
     }
 
     Rate CoterminalSwapCurveState::coterminalSwapRate(Size i) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
+        QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
         return cotSwapRates_[i];
     }
 
     Rate CoterminalSwapCurveState::cmSwapAnnuity(Size numeraire,
                                                  Size i,
                                                  Size spanningForwards) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        QL_REQUIRE(numeraire>=first_ && numeraire<=nRates_,
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
+        QL_REQUIRE(numeraire>=first_ && numeraire<=numberOfRates_,
                    "invalid numeraire");
-        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
 
         // consider lazy evaluation here
         constantMaturityFromDiscountRatios(spanningForwards, first_,
@@ -108,8 +110,8 @@ namespace QuantLib {
 
     Rate CoterminalSwapCurveState::cmSwapRate(Size i,
                                               Size spanningForwards) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
-        QL_REQUIRE(i>=first_ && i<=nRates_, "invalid index");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
+        QL_REQUIRE(i>=first_ && i<=numberOfRates_, "invalid index");
 
         // consider lazy evaluation here
         constantMaturityFromDiscountRatios(spanningForwards, first_,
@@ -119,18 +121,18 @@ namespace QuantLib {
     }
 
     const std::vector<Rate>& CoterminalSwapCurveState::forwardRates() const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
         forwardsFromDiscountRatios(first_, discRatios_, rateTaus_, forwardRates_);
         return forwardRates_;
     }
 
     const std::vector<Rate>& CoterminalSwapCurveState::coterminalSwapRates() const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
         return cotSwapRates_;
     }
 
     const std::vector<Rate>& CoterminalSwapCurveState::cmSwapRates(Size spanningForwards) const {
-        QL_REQUIRE(first_<nRates_, "curve state not initialized yet");
+        QL_REQUIRE(first_<numberOfRates_, "curve state not initialized yet");
         constantMaturityFromDiscountRatios(spanningForwards, first_,
                                            discRatios_, rateTaus_,
                                            cmSwapRates_, cmSwapAnnuities_);

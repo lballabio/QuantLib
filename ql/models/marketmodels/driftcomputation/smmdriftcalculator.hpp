@@ -48,7 +48,7 @@ namespace QuantLib {
         void compute(const CoterminalSwapCurveState& cs,
                      std::vector<Real>& drifts) const;
       private:
-        Size nRates_, nFactors_;
+        Size numberOfRates_, numberOfFactors_;
         bool isFullFactor_;
         Size numeraire_, alive_;
         std::vector<Spread> displacements_;

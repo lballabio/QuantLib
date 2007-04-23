@@ -35,19 +35,21 @@ namespace QuantLib {
     : marketModel_(marketModel),
       numeraires_(numeraires),
       initialStep_(initialStep),
-      n_(marketModel->numberOfRates()), F_(marketModel_->numberOfFactors()),
+      numberOfRates_(marketModel->numberOfRates()),
+      numberOfFactors_(marketModel_->numberOfFactors()),
       curveState_(marketModel->evolution().rateTimes()),
       forwards_(marketModel->initialRates()),
       initialForwards_(marketModel->initialRates()),
-      drifts1_(n_), drifts2_(n_),
-      initialDrifts_(n_), brownians_(F_), correlatedBrownians_(n_),
+      drifts1_(numberOfRates_), drifts2_(numberOfRates_),
+      initialDrifts_(numberOfRates_), brownians_(numberOfFactors_),
+      correlatedBrownians_(numberOfRates_),
       alive_(marketModel->evolution().firstAliveRate())
     {
         checkCompatibility(marketModel->evolution(), numeraires);
 
         Size steps = marketModel->evolution().numberOfSteps();
 
-        generator_ = factory.create(F_, steps-initialStep_);
+        generator_ = factory.create(numberOfFactors_, steps-initialStep_);
 
         currentStep_ = initialStep_;
 
@@ -60,7 +62,7 @@ namespace QuantLib {
                                          numeraires[j],
                                          alive_[j]));
             /*
-            for (Size k=0; k<n_; ++k) {
+            for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
                                        A.row_begin(k), 0.0);
@@ -77,9 +79,9 @@ namespace QuantLib {
 
     void NormalFwdRatePc::setForwards(const std::vector<Real>& forwards)
     {
-        QL_REQUIRE(forwards.size()==n_,
+        QL_REQUIRE(forwards.size()==numberOfRates_,
                    "mismatch between forwards and rateTimes");
-        for (Size i=0; i<n_; ++i)
+        for (Size i=0; i<numberOfRates_; ++i)
         calculators_[initialStep_].compute(forwards, initialDrifts_);
     }
 
@@ -111,7 +113,7 @@ namespace QuantLib {
         const Matrix& A = marketModel_->pseudoRoot(currentStep_);
 
         Size i, alive = alive_[currentStep_];
-        for (i=alive; i<n_; ++i) {
+        for (i=alive; i<numberOfRates_; ++i) {
             forwards_[i] += drifts1_[i] ;
             forwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
@@ -122,7 +124,7 @@ namespace QuantLib {
         calculators_[currentStep_].compute(forwards_, drifts2_);
 
         // d) correct forwards using both drifts
-        for (i=alive; i<n_; ++i) {
+        for (i=alive; i<numberOfRates_; ++i) {
             forwards_[i] += (drifts2_[i]-drifts1_[i])/2.0;
         }
 

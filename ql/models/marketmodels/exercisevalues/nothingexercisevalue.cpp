@@ -23,8 +23,12 @@ namespace QuantLib {
 
     NothingExerciseValue::NothingExerciseValue(
                                           const std::vector<Time>& rateTimes)
-    : numberOfExercises_(rateTimes.size()-1), rateTimes_(rateTimes),
+    : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size()-1),
+      rateTimes_(rateTimes),
       currentIndex_(0) {
+
+        QL_REQUIRE(numberOfExercises_>0,
+                   "Rate times must contain at least two values");
         cf_.amount = 0.0;
         std::vector<Time> evolutionTimes(rateTimes_);
         evolutionTimes.pop_back();

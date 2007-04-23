@@ -29,8 +29,8 @@ namespace QuantLib {
                                     const std::vector<Time>& taus,
                                     Size numeraire,
                                     Size alive)
-    : nRates_(taus.size()), nFactors_(pseudo.columns()),
-      isFullFactor_(nFactors_==nRates_ ? true : false),
+    : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
+      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
       numeraire_(numeraire), alive_(alive),
       displacements_(displacements), oneOverTaus_(taus.size()),
       pseudo_(pseudo),
@@ -43,15 +43,15 @@ namespace QuantLib {
       downs_(taus.size()), ups_(taus.size())*/ {
 
         // Check requirements
-        QL_REQUIRE(nRates_>0, "Dim out of range");
-        QL_REQUIRE(displacements.size() == nRates_,
+        QL_REQUIRE(numberOfRates_>0, "Dim out of range");
+        QL_REQUIRE(displacements.size() == numberOfRates_,
             "Displacements out of range");
-        QL_REQUIRE(pseudo.rows()==nRates_,
+        QL_REQUIRE(pseudo.rows()==numberOfRates_,
             "pseudo.rows() not consistent with dim");
-        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=nRates_,
+        QL_REQUIRE(pseudo.columns()>0 && pseudo.columns()<=numberOfRates_,
             "pseudo.rows() not consistent with pseudo.columns()");
-        QL_REQUIRE(alive<nRates_, "Alive out of bounds");
-        QL_REQUIRE(numeraire_<=nRates_, "Numeraire larger than dim");
+        QL_REQUIRE(alive<numberOfRates_, "Alive out of bounds");
+        QL_REQUIRE(numeraire_<=numberOfRates_, "Numeraire larger than dim");
         QL_REQUIRE(numeraire_>=alive, "Numeraire smaller than alive");
 
         // Precompute 1/taus
@@ -63,7 +63,7 @@ namespace QuantLib {
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation
-        //for (Size i=alive_; i<nRates_; ++i) {
+        //for (Size i=alive_; i<numberOfRates_; ++i) {
         //    downs_[i] = std::min(i+1, numeraire_);
         //    ups_[i]   = std::max(i+1, numeraire_);
         //}
@@ -84,14 +84,14 @@ namespace QuantLib {
         // assuming terminal bond measure
         // eq 5.4-5.7
         const std::vector<Time>& taus=cs.rateTaus();
-        for (Size k=0; k<nFactors_; ++k) {
+        for (Size k=0; k<numberOfFactors_; ++k) {
                 // taken care in the constructor
-                // wkpj1_[k][nRates_-1]= 0.0;
-                // wkaj_[k][nRates_-1] = 0.0;
-            for (Integer j=nRates_-2; j>=static_cast<Integer>(alive_)-1; --j) {
+                // wkpj1_[k][numberOfRates_-1]= 0.0;
+                // wkaj_[k][numberOfRates_-1] = 0.0;
+            for (Integer j=numberOfRates_-2; j>=static_cast<Integer>(alive_)-1; --j) {
                  // < W(k) | P(j+1)/P(n) > =
                  // = SR(j+1) a(j+1,k) A(j+1) / P(n) + SR(j+1) < W(k) | A(j+1)/P(n) >
-                Real annuity = cs.coterminalSwapAnnuity(nRates_,j+1);
+                Real annuity = cs.coterminalSwapAnnuity(numberOfRates_,j+1);
                 wkpj_[k][j+1]= SR[j+1] *
                             ( pseudo_[j+1][k] * annuity +  wkaj_[k][j+1] )+
                             pseudo_[j+1][k]*displacements_[j+1]* annuity;
@@ -102,23 +102,23 @@ namespace QuantLib {
           }
 
 
-        double numeraireRatio = cs.discountRatio(nRates_,numeraire_);
+        double numeraireRatio = cs.discountRatio(numberOfRates_,numeraire_);
 
 // change to work for general numeraire
-        for (Size k=0; k<nFactors_; ++k) {
+        for (Size k=0; k<numberOfFactors_; ++k) {
             // compute < Wk, PN/pn>
-            for (Size j=alive_; j<nRates_; ++j)
+            for (Size j=alive_; j<numberOfRates_; ++j)
             {
-                wkajshifted_[k][j] = -wkaj_[k][j]/cs.coterminalSwapAnnuity(nRates_,j)
+                wkajshifted_[k][j] = -wkaj_[k][j]/cs.coterminalSwapAnnuity(numberOfRates_,j)
                                     + wkpj_[k][numeraire_]
                                                 *numeraireRatio;
             }
         }
 
         // eq 5.3 (in log coordinates)
-        for (Size j=alive_; j<nRates_; ++j) {
+        for (Size j=alive_; j<numberOfRates_; ++j) {
             drifts[j] = 0.0;
-            for (Size k=0; k<nFactors_; ++k) {
+            for (Size k=0; k<numberOfFactors_; ++k) {
                 drifts[j] += wkajshifted_[k][j]*pseudo_[j][k];
             }
         }

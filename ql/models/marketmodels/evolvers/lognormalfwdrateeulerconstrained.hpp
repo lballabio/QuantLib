@@ -37,9 +37,9 @@ namespace QuantLib {
         {
       public:
         LogNormalFwdRateEulerConstrained(const boost::shared_ptr<MarketModel>&,
-                                    const BrownianGeneratorFactory&,
-                                    const std::vector<Size>& numeraires,
-                                    Size initialStep = 0);
+                                         const BrownianGeneratorFactory&,
+                                         const std::vector<Size>& numeraires,
+                                         Size initialStep = 0);
         //! \name MarketModelConstrained interface
         //@{
         virtual void setConstraintType(
@@ -80,7 +80,7 @@ namespace QuantLib {
         // working variables
         std::vector<std::vector<Real> > covariances_; // covariance of constrained rate with other rates on same step
                                                                                           // step first index
-        Size n_, F_;
+        Size numberOfRates_, numberOfFactors_;
         LMMCurveState curveState_;
         Size currentStep_;
         std::vector<Rate> forwards_, displacements_, logForwards_, initialLogForwards_;

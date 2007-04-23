@@ -27,20 +27,25 @@ namespace QuantLib {
     TimeHomogeneousForwardCorrelation::TimeHomogeneousForwardCorrelation(
                         const Matrix& fwdCorrelation,
                         const std::vector<Time>& rateTimes)
-    : fwdCorrelation_(fwdCorrelation),
+    : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
+      fwdCorrelation_(fwdCorrelation),
       rateTimes_(rateTimes),
-      times_(rateTimes.begin(), rateTimes.end()-1),
-      numberOfRates_(rateTimes.size()-1),
-      correlations_(rateTimes.size()-1, Matrix(numberOfRates_,
-                                               numberOfRates_,
-                                               0.0)) {
+      times_(numberOfRates_),
+      correlations_(numberOfRates_, Matrix(numberOfRates_,
+                                           numberOfRates_,
+                                           0.0)) {
 
+        QL_REQUIRE(numberOfRates_>0,
+                   "Rate times must contain at least two values");
         QL_REQUIRE(numberOfRates_==fwdCorrelation.rows(),
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and fwdCorrelation rows (" << fwdCorrelation.rows() << ")");
         QL_REQUIRE(numberOfRates_==fwdCorrelation.columns(),
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
+
+        std::copy(rateTimes.begin(), rateTimes.end()-1,
+                  times_.begin());
 
         for (Size k=0; k<correlations_.size(); ++k) {
             // proper diagonal values

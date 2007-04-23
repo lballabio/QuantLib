@@ -36,9 +36,9 @@ namespace QuantLib {
         const std::vector<Matrix>& correlations() const;
         Size numberOfRates() const;
     private:
+        Size numberOfRates_;
         Matrix fwdCorrelation_;
         std::vector<Time> rateTimes_, times_;
-        Size numberOfRates_;
         std::vector<Matrix> correlations_;
     };
 

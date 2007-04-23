@@ -65,7 +65,7 @@ namespace QuantLib {
                             std::vector<Real>& drifts) const;
 
       private:
-        Size dim_, factors_;
+        Size numberOfRates_, numberOfFactors_;
         bool isFullFactor_;
         Size numeraire_, alive_;
         std::vector<Spread> displacements_;

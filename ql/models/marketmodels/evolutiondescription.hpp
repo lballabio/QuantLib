@@ -71,6 +71,7 @@ namespace QuantLib {
         Size numberOfRates() const;
         Size numberOfSteps() const;
       private:
+        Size numberOfRates_;
         std::vector<Time> rateTimes_, evolutionTimes_;
         //Size steps_;
         std::vector<std::pair<Size,Size> > relevanceRates_;

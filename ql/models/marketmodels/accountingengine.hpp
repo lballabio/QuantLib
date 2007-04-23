@@ -44,7 +44,7 @@ namespace QuantLib {
       public:
         AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
                          const Clone<MarketModelMultiProduct>& product,
-                         double initialNumeraireValue);
+                         Real initialNumeraireValue);
         void multiplePathValues(SequenceStatistics& stats,
                                 Size numberOfPaths);
       private:
