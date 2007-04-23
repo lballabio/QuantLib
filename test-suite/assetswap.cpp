@@ -39,6 +39,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
@@ -106,8 +107,6 @@ void AssetSwapTest::testImpliedValue() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
     
- /*   Date today_(20,September,2004);
-    Settings::instance().evaluationDate() = today_;*/
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
     Natural fixingDays = 2;
@@ -158,7 +157,7 @@ void AssetSwapTest::testImpliedValue() {
     boost::shared_ptr<Bond> floatingBond(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule,
                          iborindex_, Actual360(), 
-                         ModifiedFollowing,fixingDays,
+                         ModifiedFollowing, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
@@ -183,6 +182,53 @@ void AssetSwapTest::testImpliedValue() {
                     << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
+
+     // CMS Underlying bond (Isin: XS0218766664 ISPIM 0 5/6/15)
+
+    Schedule cmsBondSchedule(Date(06,May,2005),
+                                  Date(06,May,2015),
+                                  Period(Annual), bondCalendar,
+                                  Unadjusted, Unadjusted, 
+                                  true, false);
+    Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
+        boost::shared_ptr<SwaptionVolatilityStructure>(new
+            SwaptionConstantVolatility(Settings::instance().evaluationDate(),
+                                       0.2, Actual365Fixed())));
+    Handle<Quote> meanReversionQuote(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
+    GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
+    modelOfYieldCurve_= GFunctionFactory::Standard;
+    boost::shared_ptr<CmsCouponPricer> cmspricer(new 
+        ConundrumPricerByBlack(swaptionVolatilityStructure,
+                        modelOfYieldCurve_, meanReversionQuote));
+    boost::shared_ptr<Bond> cmsBond(new
+        CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule,
+                         swapindex_, Thirty360(), 
+                         Following, fixingDays,
+                         std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
+                         std::vector<Rate>(), std::vector<Rate>(),
+                         inArrears,
+                         100.0, Date(06,May,2005), termStructure_));
+    CashFlows::setPricer(cmsBond->cashflows(),cmspricer);
+    //swapindex_->addFixing(Date(04,May,2006), 0.04217);
+    Real cmsBondPrice = cmsBond->cleanPrice();
+    AssetSwap cmsBondAssetSwap(payFixedRate, 
+                                 cmsBond, cmsBondPrice,
+                                 iborindex_, spread_, termStructure_,
+                                 Schedule(),
+                                 floatingDayCounter_, parAssetSwap);
+    Real cmsBondAssetSwapPrice = cmsBondAssetSwap.fairPrice();
+    Real error3 = std::fabs(cmsBondAssetSwapPrice-cmsBondPrice);
+
+    if (error3>tolerance) {
+        BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond clean price:      " << cmsBondPrice
+                    << "\n  asset swap fair price: " << cmsBondAssetSwapPrice
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error3
+                    << "\n  tolerance:             " << tolerance);
+    }
+
       QL_TEST_TEARDOWN
 }
 
