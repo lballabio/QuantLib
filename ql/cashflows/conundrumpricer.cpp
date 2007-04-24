@@ -195,6 +195,45 @@ namespace QuantLib {
 //                  ConundrumPricerByNumericalIntegration                    //
 //===========================================================================//
 
+    namespace {
+
+        class VariableChange {
+          public:
+            VariableChange(boost::function<Real (Real)>& f,
+                           Real a, Real b, Size k)
+            : a_(a), b_(b), width_(b-a), f_(f), k_(k) {}
+            Real value(Real x) const {
+                Real newVar;
+                Real temp = width_;
+                for (Size i = 1; i < k_ ; ++i) {
+                    temp *= x;
+                }
+                newVar = a_ + x* temp;
+                return f_(newVar) * k_* temp;
+            }
+          private:
+            Real a_, b_, width_;
+            boost::function<Real (Real)> f_;
+            Size k_;
+        };
+
+        class Spy {
+          public:
+            Spy(boost::function<Real (Real)> f) : f_(f) {}
+            Real value(Real x){
+                abscissas.push_back(x);
+                Real value = f_(x);
+                functionValues.push_back(value);
+                return value;
+            }
+          private:
+            boost::function<Real (Real)> f_;
+            std::vector<Real> abscissas;
+            std::vector<Real> functionValues;
+        };
+
+    }
+
     ConundrumPricerByNumericalIntegration::ConundrumPricerByNumericalIntegration(
         const Handle<SwaptionVolatilityStructure>& swaptionVol,
         GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve,
@@ -210,41 +249,6 @@ namespace QuantLib {
        refiningIntegrationTolerance_(.0001){
 
     }
-
-    class VariableChange{
-    public:
-        VariableChange(boost::function<Real (Real)>& f,Real a, Real b, Size k)
-        : a_(a), b_(b), width_(b-a), f_(f), k_(k) {};
-        Real value(Real x) const {
-            Real newVar;
-            Real temp = width_;
-            for (Size i = 1; i < k_ ; ++i){
-                temp *= x;
-            }
-            newVar = a_ + x* temp;
-            return f_(newVar) * k_* temp;
-        }
-
-    private:
-        Real a_, b_, width_;
-        boost::function<Real (Real)> f_;
-        Size k_;
-        };
-
-    class Spy{
-    public:
-        Spy(boost::function<Real (Real)> f):f_(f){};
-        Real value(Real x){
-            abssicas.push_back(x);
-            Real value = f_(x);
-            functionValues.push_back(value);
-            return value;
-        }
-    private:
-        boost::function<Real (Real)> f_;
-        std::vector<Real> abssicas;
-        std::vector<Real> functionValues;
-    };
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
@@ -268,9 +272,9 @@ namespace QuantLib {
                     upperBoundary = std::min(upperBoundary, b);
 
                 boost::function<Real (Real)> f;
-                GaussKronrodNonAdaptive 
+                GaussKronrodNonAdaptive
                     gaussKronrodNonAdaptive(precision_, 1000000, 1.0);
-                // if the integration intervall is wide enough we use the 
+                // if the integration intervall is wide enough we use the
                 // following change variable x -> a + (b-a)*(t/(a-b))^3
                 if (upperBoundary > 2*a){
                     Size k = 3;
@@ -878,15 +882,15 @@ namespace QuantLib {
             const Real lower = -20, upper = 20.;
 
             try {
-				calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_,
-					std::max( std::min(initialGuess, upper*.99), lower*.99),
-					lower, upper);
+                calibratedShift_ = solver.solve(*objectiveFunction_, accuracy_,
+                    std::max( std::min(initialGuess, upper*.99), lower*.99),
+                    lower, upper);
             } catch (std::exception& e) {
-				QL_FAIL("meanReversion: " << meanReversion_->value() <<
-					    ", swapRateValue: " << swapRateValue_ <<
-					    ", swapStartTime: " << swapStartTime_ <<
-					    ", shapedPaymentTime: " << shapedPaymentTime_ <<
-						"\n error message: " << e.what());
+                QL_FAIL("meanReversion: " << meanReversion_->value() <<
+                        ", swapRateValue: " << swapRateValue_ <<
+                        ", swapStartTime: " << swapStartTime_ <<
+                        ", shapedPaymentTime: " << shapedPaymentTime_ <<
+                        "\n error message: " << e.what());
             }
             tmpRs_=Rs;
         }
