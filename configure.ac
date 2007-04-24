@@ -342,6 +342,7 @@ AC_CONFIG_FILES([
     ql/math/optimization/Makefile
     ql/math/randomnumbers/Makefile
     ql/math/solvers1d/Makefile
+    ql/math/statistics/Makefile
     ql/methods/Makefile
     ql/methods/finitedifferences/Makefile
     ql/methods/lattices/Makefile
