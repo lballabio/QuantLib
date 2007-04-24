@@ -24,7 +24,7 @@
 #ifndef quantlib_segment_integral_h
 #define quantlib_segment_integral_h
 
-#include <ql/types.hpp>
+#include <ql/math/integrals/integral.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -45,17 +45,29 @@ namespace QuantLib {
         \test the correctness of the result is tested by checking it
               against known good values.
     */
-    class SegmentIntegral{
+    class SegmentIntegral : public Integrator {
       public:
-        SegmentIntegral(Size intervals);
-        template <class F>
-        Real operator()(const F& f, Real a, Real b) const {
+        SegmentIntegral::SegmentIntegral(Real absoluteAccuracy, 
+        Size maxEvaluations, Size intervals);
+      protected:
+        virtual Real integrate(const boost::function<Real (Real)>& f,
+			    Real a, Real b) const; 
+      private:
+        Size intervals_;
+    };
 
-            if (a == b)
-                return 0.0;
-            if (a > b)
-                return -(*this)(f,b,a);
 
+    // inline and template definitions
+    
+    inline SegmentIntegral::SegmentIntegral(Real absoluteAccuracy, 
+        Size maxEvaluations, Size intervals)
+            : Integrator(absoluteAccuracy, maxEvaluations), 
+              intervals_(intervals) {
+        QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
+    }
+
+    inline Real SegmentIntegral::integrate(
+        const boost::function<Real (Real)>& f, Real a, Real b) const {
             Real dx = (b-a)/intervals_;
             Real sum = 0.5*(f(a)+f(b));
             Real end = b - 0.5*dx;
@@ -63,17 +75,6 @@ namespace QuantLib {
                 sum += f(x);
             return sum*dx;
         }
-      private:
-        Size intervals_;
-    };
-
-
-    // inline and template definitions
-
-    inline SegmentIntegral::SegmentIntegral(Size intervals)
-    : intervals_(intervals) {
-        QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
-    }
 
 }
 

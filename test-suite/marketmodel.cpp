@@ -2035,7 +2035,10 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
     const Real precision = 1e-04;
 
     boost::shared_ptr<Abcd> instVol(new Abcd(a,b,c,d));
-    SegmentIntegral SI(20000);
+    Size maxEvaluations = 1; // dummy value
+    Real absoluteAccuracy = .1; // dummy value
+        
+    SegmentIntegral SI(absoluteAccuracy, maxEvaluations, 20000);
     for (Size i=0; i<N; i++) {
         Time T1 = 0.5*(1+i);     // expiry of forward 1: after T1 AbcdVol = 0
         for (Size k=0; k<N-i; k++) {

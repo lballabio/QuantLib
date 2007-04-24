@@ -219,9 +219,9 @@ namespace QuantLib {
 
         Real upper = function.mux() + range*function.sigmax();
         Real lower = function.mux() - range*function.sigmax();
-
-        SegmentIntegral integrator(intervals);
-
+        Size maxEvaluations = 1; // dummy value
+        Real absoluteAccuracy = .1; // dummy value
+        SegmentIntegral integrator(absoluteAccuracy, maxEvaluations, intervals);
         return arguments.nominal*w*termStructure()->discount(start)*
             integrator(function, lower, upper);
     }

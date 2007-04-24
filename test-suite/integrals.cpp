@@ -85,7 +85,8 @@ QL_END_TEST_LOCALS(IntegralTest)
 
 void IntegralTest::testSegment() {
     BOOST_MESSAGE("Testing segment integration...");
-    testSeveral(SegmentIntegral(10000));
+    Size maxEvaluations = 1; // dummy value
+    testSeveral(SegmentIntegral(tolerance, maxEvaluations, 10000));
 }
 
 void IntegralTest::testTrapezoid() {
