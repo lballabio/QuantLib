@@ -3354,48 +3354,6 @@
 					RelativePath=".\ql\methods\montecarlo\genericlsregression.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.cpp">
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\ql\methods\montecarlo\genericparametricearlyexercise.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\methods\montecarlo\longstaffschwartzpathpricer.hpp">
 				</File>
 				<File
@@ -3457,6 +3415,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\nodedata.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\parametricexercise.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\methods\montecarlo\parametricexercise.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\methods\montecarlo\path.hpp">
