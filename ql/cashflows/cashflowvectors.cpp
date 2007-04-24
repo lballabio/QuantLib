@@ -330,7 +330,7 @@ namespace QuantLib {
         Date refStart, start, refEnd, end;
 
         // All payment dates at the end!! in arrears fixing makes no sense
-        Date paymentDate = calendar.adjust(schedule.date(n+1), paymentAdj);
+        Date paymentDate = calendar.adjust(schedule.date(n), paymentAdj);
         bool isInArrears = false;
 
         for (Size i=0; i<n; ++i) {
