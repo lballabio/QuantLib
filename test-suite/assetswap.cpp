@@ -87,7 +87,7 @@ void setup() {
                 iborindex_->dayCounter(), iborindex_));
     spread_=0.0;  
     //today_ = calendar_.adjust(Date::todaysDate());
-    Date today_(20,September,2004);
+    Date today_(24,April,2007);
     Settings::instance().evaluationDate() = today_;
     //settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(flatRate(today_,0.05,Actual365Fixed()));
@@ -163,7 +163,7 @@ void AssetSwapTest::testImpliedValue() {
                          inArrears,
                          100.0, Date(24,September,2004), termStructure_));
     CashFlows::setPricer(floatingBond->cashflows(),pricer);
-    //iborindex_->addFixing(Date(22,March,2007), 0.04013);
+    iborindex_->addFixing(Date(22,March,2007), 0.04013);
     Real floatingBondPrice = floatingBond->cleanPrice();
     AssetSwap floatingBondAssetSwap(payFixedRate, 
                                  floatingBond, floatingBondPrice,
@@ -209,7 +209,7 @@ void AssetSwapTest::testImpliedValue() {
                          inArrears,
                          100.0, Date(06,May,2005), termStructure_));
     CashFlows::setPricer(cmsBond->cashflows(),cmspricer);
-    //swapindex_->addFixing(Date(04,May,2006), 0.04217);
+    swapindex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondPrice = cmsBond->cleanPrice();
     AssetSwap cmsBondAssetSwap(payFixedRate, 
                                  cmsBond, cmsBondPrice,
