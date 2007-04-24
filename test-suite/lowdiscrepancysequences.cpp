@@ -19,8 +19,8 @@
 
 #include "lowdiscrepancysequences.hpp"
 #include "utilities.hpp"
-#include <ql/math/discrepancystatistics.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/statistics/discrepancystatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/randomnumbers/faurersg.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>

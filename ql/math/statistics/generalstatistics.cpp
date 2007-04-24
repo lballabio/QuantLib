@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/generalstatistics.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/functional.hpp>
 
 namespace QuantLib {

@@ -20,9 +20,9 @@
 
 #include "riskstats.hpp"
 #include "utilities.hpp"
-#include <ql/math/riskstatistics.hpp>
-#include <ql/math/incrementalstatistics.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/statistics/riskstatistics.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 
 using namespace QuantLib;

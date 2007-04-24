@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/incrementalstatistics.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
 #include <iomanip>
 
 namespace QuantLib {

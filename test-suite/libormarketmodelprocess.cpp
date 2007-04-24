@@ -23,7 +23,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 #include <ql/indexes/euribor.hpp>
-#include <ql/math/generalstatistics.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>

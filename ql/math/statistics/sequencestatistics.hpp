@@ -24,7 +24,7 @@
 #ifndef quantlib_sequence_statistics_hpp
 #define quantlib_sequence_statistics_hpp
 
-#include <ql/math/statistics.hpp>
+#include <ql/math/statistics/statistics.hpp>
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {

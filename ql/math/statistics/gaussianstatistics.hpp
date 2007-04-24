@@ -26,7 +26,7 @@
 #define quantlib_gaussian_statistics_h
 
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/generalstatistics.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 
 namespace QuantLib {
 

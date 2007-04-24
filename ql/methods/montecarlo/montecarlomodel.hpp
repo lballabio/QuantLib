@@ -26,7 +26,7 @@
 #define quantlib_montecarlo_model_hpp
 
 #include <ql/methods/montecarlo/mctraits.hpp>
-#include <ql/math/statistics.hpp>
+#include <ql/math/statistics/statistics.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace QuantLib {

@@ -2527,185 +2527,47 @@
 				Name="statistics"
 				>
 				<File
-					RelativePath=".\ql\math\convergencestatistics.hpp"
+					RelativePath=".\ql\math\statistics\convergencestatistics.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\discrepancystatistics.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\discrepancystatistics.hpp"
+					RelativePath=".\ql\math\statistics\discrepancystatistics.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\gaussianstatistics.hpp"
+					RelativePath=".\ql\math\statistics\discrepancystatistics.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\generalstatistics.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\generalstatistics.hpp"
+					RelativePath=".\ql\math\statistics\gaussianstatistics.hpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\incrementalstatistics.cpp"
-					>
-					<FileConfiguration
-						Name="Debug CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release CRTDLL|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="ql\math\incrementalstatistics.hpp"
+					RelativePath=".\ql\math\statistics\generalstatistics.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\riskstatistics.hpp"
+					RelativePath=".\ql\math\statistics\generalstatistics.hpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\sequencestatistics.hpp"
+					RelativePath=".\ql\math\statistics\incrementalstatistics.cpp"
 					>
 				</File>
 				<File
-					RelativePath="ql\math\statistics.hpp"
+					RelativePath=".\ql\math\statistics\incrementalstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\riskstatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\sequencestatistics.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\statistics\statistics.hpp"
 					>
 				</File>
 			</Filter>

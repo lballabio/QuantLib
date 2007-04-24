@@ -18,7 +18,7 @@
 */
 
 #include <ql/methods/montecarlo/genericlsregression.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 
 namespace QuantLib {

@@ -43,8 +43,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/math/sequencestatistics.hpp>
-#include <ql/math/convergencestatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/math/statistics/convergencestatistics.hpp>
 #include <iostream>
 #include <sstream>
 

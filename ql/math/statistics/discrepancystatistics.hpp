@@ -24,7 +24,7 @@
 #ifndef quantlib_dicrepancy_statistics_hpp
 #define quantlib_dicrepancy_statistics_hpp
 
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
 
 namespace QuantLib {
 

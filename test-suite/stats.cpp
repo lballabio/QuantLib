@@ -21,11 +21,11 @@
 
 #include "stats.hpp"
 #include "utilities.hpp"
-#include <ql/math/statistics.hpp>
-#include <ql/math/incrementalstatistics.hpp>
-#include <ql/math/gaussianstatistics.hpp>
-#include <ql/math/sequencestatistics.hpp>
-#include <ql/math/convergencestatistics.hpp>
+#include <ql/math/statistics/statistics.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
+#include <ql/math/statistics/gaussianstatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

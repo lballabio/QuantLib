@@ -22,7 +22,7 @@
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/sequencestatistics.hpp>
+#include <ql/math/statistics/sequencestatistics.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

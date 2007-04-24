@@ -27,7 +27,7 @@
 #include <ql/processes/lfmhullwhiteparam.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 
-#include <ql/math/generalstatistics.hpp>
+#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
 

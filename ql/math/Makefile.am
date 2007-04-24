@@ -1,6 +1,7 @@
 
 SUBDIRS = distributions integrals interpolations \
-          matrixutilities optimization randomnumbers solvers1d
+          matrixutilities optimization randomnumbers solvers1d \
+          statistics
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -10,39 +11,28 @@ this_include_HEADERS = \
 	array.hpp \
 	beta.hpp \
 	comparison.hpp \
-	convergencestatistics.hpp \
 	curve.hpp \
-	discrepancystatistics.hpp \
 	domain.hpp \
 	errorfunction.hpp \
 	factorial.hpp \
 	functional.hpp \
-	gaussianstatistics.hpp \
-	generalstatistics.hpp \
 	incompletegamma.hpp \
-	incrementalstatistics.hpp \
 	interpolation.hpp \
 	lexicographicalview.hpp \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
 	primenumbers.hpp \
-	riskstatistics.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
-	sequencestatistics.hpp \
 	solver1d.hpp \
-	statistics.hpp \
 	surface.hpp \
 	transformedgrid.hpp
 
 libMath_la_SOURCES = \
 	beta.cpp \
-	discrepancystatistics.cpp \
 	errorfunction.cpp \
 	factorial.cpp \
-	generalstatistics.cpp \
 	incompletegamma.cpp \
-	incrementalstatistics.cpp \
 	matrix.cpp \
 	primenumbers.cpp \
 	rounding.cpp \
@@ -54,7 +44,8 @@ libMath_la_LIBADD = \
     integrals/libIntegrals.la \
     matrixutilities/libMatrixUtilities.la \
     optimization/libOptimization.la \
-    randomnumbers/libRandomNumbers.la
+    randomnumbers/libRandomNumbers.la \
+    statistics/libStatistics.la
 
 noinst_LTLIBRARIES = libMath.la
 

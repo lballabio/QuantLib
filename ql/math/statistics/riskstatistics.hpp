@@ -25,7 +25,7 @@
 #define quantlib_risk_statistics_h
 
 #include <ql/math/functional.hpp>
-#include <ql/math/gaussianstatistics.hpp>
+#include <ql/math/statistics/gaussianstatistics.hpp>
 
 namespace QuantLib {
 
