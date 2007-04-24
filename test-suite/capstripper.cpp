@@ -213,6 +213,10 @@ void CapsStripperTest::FlatVolatilityStripping() {
 
     BOOST_MESSAGE("Testing flat-volatility stripping...");
     QL_TEST_BEGIN
+
+    Date today = TARGET().adjust(Settings::instance().evaluationDate());
+    Settings::instance().evaluationDate() = today;
+
     Volatility flatVolatility = .18;
     setFlatVolatilityTermStructure(flatVolatility);
     setup();
@@ -247,6 +251,9 @@ void CapsStripperTest::FlatVolatilityStripping() {
 void CapsStripperTest::highPrecisionTest(){
     BOOST_MESSAGE("Testing consistency of cap volatilities...");
     QL_TEST_BEGIN
+
+    Date today = TARGET().adjust(Settings::instance().evaluationDate());
+    Settings::instance().evaluationDate() = today;
 
     setMarketVolatilityTermStructure();
     setup();
