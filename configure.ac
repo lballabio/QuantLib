@@ -349,6 +349,7 @@ AC_CONFIG_FILES([
     ql/models/Makefile
     ql/models/equity/Makefile
     ql/models/marketmodels/Makefile
+    ql/models/marketmodels/basissystems/Makefile
     ql/models/marketmodels/browniangenerators/Makefile
     ql/models/marketmodels/curvestates/Makefile
     ql/models/marketmodels/driftcomputation/Makefile
@@ -356,6 +357,7 @@ AC_CONFIG_FILES([
     ql/models/marketmodels/exercisestrategies/Makefile
     ql/models/marketmodels/exercisevalues/Makefile
     ql/models/marketmodels/models/Makefile
+    ql/models/marketmodels/nodedataproviders/Makefile
     ql/models/marketmodels/piecewiseconstantcorrelations/Makefile
     ql/models/marketmodels/products/Makefile
     ql/models/marketmodels/products/onestep/Makefile

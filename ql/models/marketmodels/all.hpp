@@ -8,23 +8,19 @@
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/nodedataproviders/marketmodelbasissystem.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
 #include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
 #include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
-#include <ql/models/marketmodels/nodedataproviders/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
-#include <ql/models/marketmodels/exercisestrategies/parametricexerciseadapter.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>
-#include <ql/models/marketmodels/basissystems/swapbasissystem.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/nodedataproviders/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/upperboundengine.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 
+#include <ql/models/marketmodels/basissystems/all.hpp>
 #include <ql/models/marketmodels/browniangenerators/all.hpp>
 #include <ql/models/marketmodels/curvestates/all.hpp>
 #include <ql/models/marketmodels/driftcomputation/all.hpp>
@@ -32,5 +28,6 @@
 #include <ql/models/marketmodels/exercisestrategies/all.hpp>
 #include <ql/models/marketmodels/exercisevalues/all.hpp>
 #include <ql/models/marketmodels/models/all.hpp>
+#include <ql/models/marketmodels/nodedataproviders/all.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/all.hpp>
 #include <ql/models/marketmodels/products/all.hpp>

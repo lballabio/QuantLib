@@ -1,6 +1,8 @@
 
-SUBDIRS = browniangenerators curvestates driftcomputation evolvers \
+SUBDIRS = basissystems browniangenerators curvestates \
+	  driftcomputation evolvers \
           exercisestrategies exercisevalues models \
+	  nodedataproviders \
           piecewiseconstantcorrelations products
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
@@ -42,6 +44,7 @@ libMarketModels_la_SOURCES = \
 noinst_LTLIBRARIES = libMarketModels.la
 
 libMarketModels_la_LIBADD = \
+    basissystems/libMarketModelsBasisSystems.la \
     browniangenerators/libMarketModelsBrownianGenerators.la \
     curvestates/libMarketModelsCurveStates.la \
     driftcomputation/libMarketModelsDriftComputation.la \
@@ -49,6 +52,7 @@ libMarketModels_la_LIBADD = \
     exercisevalues/libMarketModelsExerciseValues.la \
     exercisestrategies/libMarketModelsExerciseStrategies.la \
     models/libMarketModelsModels.la \
+    nodedataproviders/libMarketModelsNodeDataProviders.la \
     piecewiseconstantcorrelations/libMarketModelsCorrelations.la \
     products/libMarketModelsProducts.la
 
