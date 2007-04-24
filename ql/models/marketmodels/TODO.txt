@@ -1,5 +1,7 @@
 
 GENERAL refactoring/review
+- rename MarketModelExerciseValue as ExerciseValue
+- factor out market data for all tests
 - use realistic data in CapletSwaptionCalibration
 - review/implement CurveState tests
 - setOnDiscoutnRatio in the CurveState base class
