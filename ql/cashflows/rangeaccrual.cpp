@@ -70,7 +70,7 @@ namespace QuantLib {
 
         startTime_ = dayCounter.yearFraction(referenceDate, startDate);
         endTime_ = dayCounter.yearFraction(referenceDate, endDate);
-        for(int i=0;i<observationsNo_;i++) {
+        for(Size i=0;i<observationsNo_;i++) {
             observationTimes_.push_back(dayCounter.yearFraction(referenceDate, observationDates_[i]));
         }
 
@@ -112,15 +112,15 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& rateCurve = index->termStructure();
         discount_ = rateCurve->discount(paymentDate);
 
-        startTime_ = coupon.startTime_;
-        endTime_ = coupon.endTime_;
+        startTime_ = coupon.startTime();
+        endTime_ = coupon.endTime();
         accrualFactor_ = coupon.accrualPeriod();
-        observationTimes_ = coupon.observationTimes_;
-        lowerTrigger_ = coupon.lowerTrigger_;
-        upperTrigger_ = coupon.upperTrigger_;
-        observationsNo_ = coupon.observationsNo_;
+        observationTimes_ = coupon.observationTimes();
+        lowerTrigger_ = coupon.lowerTrigger();
+        upperTrigger_ = coupon.upperTrigger();
+        observationsNo_ = coupon.observationsNo();
 
-        const std::vector<Date> &observationDates = coupon.observationsSchedule_->dates();
+        const std::vector<Date> &observationDates = coupon.observationsSchedule()->dates();
         QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
         initialValues_= std::vector<Real>(observationDates.size(),0.);
 
@@ -283,7 +283,7 @@ namespace QuantLib {
         Real result = 0.;
         const Real deflator = discount_*initialValues_[0];
 
-        for(int i=0;i<observationsNo_;i++){
+        for(Size i=0;i<observationsNo_;i++){
             Real digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
                                                      observationTimes_[i], deflator);
             result += digitalFloater;

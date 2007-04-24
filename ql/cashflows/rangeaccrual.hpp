@@ -35,11 +35,7 @@ namespace QuantLib {
 
     class RangeAccrualPricer;
 
-    //! RangeAccrualFloatersCoupon
-    /*!
-
-    */
-     class RangeAccrualFloatersCoupon: public IborCoupon{
+    class RangeAccrualFloatersCoupon: public IborCoupon{
 
       public:
 
@@ -60,31 +56,36 @@ namespace QuantLib {
                 Real upperTrigger,
                 const boost::shared_ptr<RangeAccrualPricer>& Pricer);
 
-        Real startTime_;                               // S
-        Real endTime_;                                 // T
-
-        const boost::shared_ptr<Schedule> observationsSchedule_;
-        std::vector<Date> observationDates_;
-        std::vector<Real> observationTimes_;
-        int observationsNo_;
-
-        Real lowerTrigger_;
-        Real upperTrigger_;
+        Real startTime() const {return startTime_; }
+        Real endTime() const {return endTime_; }
+        Real lowerTrigger() const {return lowerTrigger_; }
+        Real upperTrigger() const {return upperTrigger_; }
+        Size observationsNo() const {return observationsNo_; }
+        const std::vector<Date>& observationDates() const {return observationDates_; }
+        const std::vector<Real>& observationTimes() const {return observationTimes_; }
+        const boost::shared_ptr<Schedule> observationsSchedule() const {
+                                                        return observationsSchedule_; }
 
         Real rate() const;
         Real price(const Handle<YieldTermStructure>& discountingCurve) const;
         Real priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const;
 
       private:
+        
+        Real startTime_;                               // S
+        Real endTime_;                                 // T
+
+        const boost::shared_ptr<Schedule> observationsSchedule_;
+        std::vector<Date> observationDates_;
+        std::vector<Real> observationTimes_;
+        Size observationsNo_;
+
+        Real lowerTrigger_;
+        Real upperTrigger_;
 
         const boost::shared_ptr<RangeAccrualPricer> pricer_;
 
      };
-
-    //! VanillaRangeAccrualCouponPricer
-    /*!
-
-    */
 
     class RangeAccrualPricer {
       public:
@@ -94,10 +95,6 @@ namespace QuantLib {
         virtual void initialize(const RangeAccrualFloatersCoupon& coupon) = 0;
     };
 
-    //! RangeAccrualPricerByBgm
-    /*!
-
-    */
     class RangeAccrualPricerByBgm: public RangeAccrualPricer {
 
      public:
@@ -168,7 +165,7 @@ namespace QuantLib {
         std::vector<Real> observationTimeLags_;            // d
         std::vector<Real> observationTimes_;               // U
         std::vector<Real> initialValues_;
-        int observationsNo_;
+        Size observationsNo_;
         Real lowerTrigger_;
         Real upperTrigger_;
         Real discount_;
