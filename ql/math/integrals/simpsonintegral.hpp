@@ -38,8 +38,9 @@ namespace QuantLib {
         SimpsonIntegral(Real accuracy,
                         Size maxIterations = Null<Size>())
         : TrapezoidIntegral(accuracy,Default,maxIterations) {}
-        template <class F>
-        Real operator()(const F& f, Real a, Real b) const {
+    protected:
+        Real integrate(const boost::function<Real (Real)>& f, Real a, 
+                                                          Real b) const {
 
             if (a == b)
                 return 0.0;

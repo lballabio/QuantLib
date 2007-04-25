@@ -25,6 +25,7 @@
 #ifndef quantlib_trapezoid_integral_hpp
 #define quantlib_trapezoid_integral_hpp
 
+#include <ql/math/integrals/integral.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
 
@@ -47,21 +48,25 @@ namespace QuantLib {
         \test the correctness of the result is tested by checking it
               against known good values.
     */
-    class TrapezoidIntegral {
+    class TrapezoidIntegral : public Integrator {
       public:
         enum Method { Default, MidPoint };
         TrapezoidIntegral(Real accuracy,
                           Method method = Default,
                           Size maxIterations = Null<Size>())
-        : accuracy_(accuracy), method_(method),
-          maxIterations_(maxIterations) {}
-        template <class F>
-        Real operator()(const F& f, Real a, Real b) const {
-
-            if (a == b)
-                return 0.0;
-            if (a > b)
-                return -(*this)(f,b,a);
+        : Integrator(accuracy, maxIterations), method_(method){}
+      protected:
+        // calculation parameters
+        Real accuracy() const { return accuracy_; }
+        Real& accuracy() { return accuracy_; }
+        Method method() const { return method_; }
+        Method& method() { return method_; }
+        Size maxIterations() const { return maxIterations_; }
+        Size& maxIterations() { return maxIterations_; }
+      
+    protected:
+        Real integrate (const boost::function<Real (Real)>& f, 
+                                            Real a, Real b) const {
 
             // start from the coarsest trapezoid...
             Size N = 1;
@@ -89,20 +94,12 @@ namespace QuantLib {
             } while (i < maxIterations_);
             QL_FAIL("max number of iterations reached");
         }
-        // calculation parameters
-        Real accuracy() const { return accuracy_; }
-        Real& accuracy() { return accuracy_; }
-        Method method() const { return method_; }
-        Method& method() { return method_; }
-        Size maxIterations() const { return maxIterations_; }
-        Size& maxIterations() { return maxIterations_; }
-      protected:
         Real accuracy_;
         Method method_;
         Size maxIterations_;
-        template <class F>
-        Real defaultIteration(const F& f, Real a, Real b,
-                              Real I, Size N) const {
+
+        Real defaultIteration(const boost::function<Real (Real)>& f, 
+                    Real a, Real b, Real I, Size N) const {
             Real sum = 0.0;
             Real dx = (b-a)/N;
             Real x = a + dx/2.0;
@@ -110,9 +107,9 @@ namespace QuantLib {
                 sum += f(x);
             return (I + dx*sum)/2.0;
         }
-        template <class F>
-        Real midPointIteration(const F& f, Real a, Real b,
-                               Real I, Size N) const {
+
+        Real midPointIteration(const boost::function<Real (Real)>& f, Real a,
+                                              Real b, Real I, Size N) const {
             Real sum = 0.0;
             Real dx = (b-a)/N;
             Real x = a + dx/6.0;
