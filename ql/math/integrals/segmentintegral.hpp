@@ -47,7 +47,7 @@ namespace QuantLib {
     */
     class SegmentIntegral : public Integrator {
       public:
-        SegmentIntegral::SegmentIntegral(Real absoluteAccuracy, 
+        SegmentIntegral(Real absoluteAccuracy, 
         Size maxEvaluations, Size intervals);
       protected:
         virtual Real integrate(const boost::function<Real (Real)>& f,
