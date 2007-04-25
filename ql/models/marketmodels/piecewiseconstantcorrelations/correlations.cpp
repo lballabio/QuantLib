@@ -19,7 +19,6 @@
 */
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 
 namespace QuantLib {
