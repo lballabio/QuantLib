@@ -2093,6 +2093,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\tapcorrelations.cpp"
+				>
+			</File>
+			<File
 				RelativePath="termstructures.cpp"
 				>
 				<FileConfiguration
@@ -2499,6 +2503,10 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitymatrix.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tapcorrelations.hpp"
 				>
 			</File>
 			<File

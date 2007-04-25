@@ -3658,6 +3658,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\tapcorrelations.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\tapcorrelations.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.cpp"
 						>
 					</File>
