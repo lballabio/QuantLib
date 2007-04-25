@@ -91,7 +91,7 @@ void IntegralTest::testSegment() {
 
 void IntegralTest::testTrapezoid() {
     BOOST_MESSAGE("Testing trapezoid integration...");
-    testSeveral(TrapezoidIntegral(tolerance));
+    testSeveral(TrapezoidIntegral(tolerance, TrapezoidIntegral::Default, 1000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {

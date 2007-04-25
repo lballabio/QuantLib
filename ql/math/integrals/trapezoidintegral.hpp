@@ -57,12 +57,8 @@ namespace QuantLib {
         : Integrator(accuracy, maxIterations), method_(method){}
       protected:
         // calculation parameters
-        Real accuracy() const { return accuracy_; }
-        Real& accuracy() { return accuracy_; }
         Method method() const { return method_; }
         Method& method() { return method_; }
-        Size maxIterations() const { return maxIterations_; }
-        Size& maxIterations() { return maxIterations_; }
       
     protected:
         Real integrate (const boost::function<Real (Real)>& f, 
@@ -85,18 +81,16 @@ namespace QuantLib {
                     break;
                 }
                 // good enough? Also, don't run away immediately
-                if (std::fabs(I-newI) <= accuracy_ && i > 5)
+                if (std::fabs(I-newI) <= absoluteAccuracy() && i > 5)
                     // ok, exit
                     return newI;
                 // oh well. Another step.
                 I = newI;
                 i++;
-            } while (i < maxIterations_);
+            } while (i < maxEvaluations());
             QL_FAIL("max number of iterations reached");
         }
-        Real accuracy_;
         Method method_;
-        Size maxIterations_;
 
         Real defaultIteration(const boost::function<Real (Real)>& f, 
                     Real a, Real b, Real I, Size N) const {

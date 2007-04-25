@@ -42,11 +42,6 @@ namespace QuantLib {
         Real integrate(const boost::function<Real (Real)>& f, Real a, 
                                                           Real b) const {
 
-            if (a == b)
-                return 0.0;
-            if (a > b)
-                return -(*this)(f,b,a);
-
             // start from the coarsest trapezoid...
             Size N = 1;
             Real I = (f(a)+f(b))*(b-a)/2.0, newI;
@@ -58,14 +53,14 @@ namespace QuantLib {
                 N *= 2;
                 newAdjI = (4.0*newI-I)/3.0;
                 // good enough? Also, don't run away immediately
-                if (std::fabs(adjI-newAdjI) <= accuracy_ && i > 5)
+                if (std::fabs(adjI-newAdjI) <= absoluteAccuracy() && i > 5)
                     // ok, exit
                     return newAdjI;
                 // oh well. Another step.
                 I = newI;
                 adjI = newAdjI;
                 i++;
-            } while (i < maxIterations_);
+            } while (i < maxEvaluations());
             QL_FAIL("max number of iterations reached");
         }
       private:
