@@ -44,16 +44,14 @@ namespace QuantLib {
                 const Date& refPeriodEnd,
                 const boost::shared_ptr<Schedule>&  observationsSchedule,
                 Real lowerTrigger,                                    // l
-                Real upperTrigger,                                    // u
-                const boost::shared_ptr<RangeAccrualPricer>& pricer
+                Real upperTrigger                                     // u
         )
-    : IborCoupon(paymentDate, nominal, startDate, endDate,
+    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                         fixingDays, index, gearing, spread,
                         refPeriodStart, refPeriodEnd, dayCounter),
     observationsSchedule_(observationsSchedule),
     lowerTrigger_(lowerTrigger),
-    upperTrigger_(upperTrigger),
-    pricer_(pricer){
+    upperTrigger_(upperTrigger){
 
         QL_REQUIRE(observationsSchedule_->startDate()==startDate,
             "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: incompatible start date");
@@ -76,21 +74,79 @@ namespace QuantLib {
 
      }
 
-    Real RangeAccrualFloatersCoupon::rate() const {
-            pricer_->initialize(*this);
-            return gearing_*pricer_->rate()+spread_;
+    void RangeAccrualFloatersCoupon::accept(AcyclicVisitor& v) {
+        Visitor<RangeAccrualFloatersCoupon>* v1 = 
+            dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            FloatingRateCoupon::accept(v);
     }
-    Real RangeAccrualFloatersCoupon::price(const Handle<YieldTermStructure>& discountingCurve) const {
-        return rate()*accrualPeriod()* nominal()*discountingCurve->discount(date());
-    }
-    Real RangeAccrualFloatersCoupon::priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const {
+
+    Real RangeAccrualFloatersCoupon::priceWithoutOptionality(
+           const Handle<YieldTermStructure>& discountingCurve) const {
         return accrualPeriod() * (gearing_*indexFixing()+spread_) *
                nominal() * discountingCurve->discount(date());
     }
 
+    
+    //===========================================================================//
+    //                          RangeAccrualPricer                               //
+    //===========================================================================//
+    
+    void RangeAccrualPricer::initialize(const FloatingRateCoupon& coupon){
+        coupon_ =  dynamic_cast<const RangeAccrualFloatersCoupon*>(&coupon);
+        gearing_ = coupon_->gearing();
+        spread_ = coupon_->spread();
+
+        Date paymentDate = coupon_->date();
+
+        const boost::shared_ptr<InterestRateIndex>& index = coupon_->index();
+        const Handle<YieldTermStructure>& rateCurve = index->termStructure();
+        discount_ = rateCurve->discount(paymentDate);
+        accrualFactor_ = coupon_->accrualPeriod();
+        spreadLegValue_ = spread_ * accrualFactor_* discount_;
+
+        startTime_ = coupon_->startTime();
+        endTime_ = coupon_->endTime();
+        observationTimes_ = coupon_->observationTimes();
+        lowerTrigger_ = coupon_->lowerTrigger();
+        upperTrigger_ = coupon_->upperTrigger();
+        observationsNo_ = coupon_->observationsNo();
+ 
+        const std::vector<Date> &observationDates = coupon_->observationsSchedule()->dates();
+        QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
+        initialValues_= std::vector<Real>(observationDates.size(),0.);
+
+        Calendar calendar = index->calendar();
+        for(Size i=0; i<observationDates.size(); i++) {
+            initialValues_[i]=index->fixing(
+                calendar.advance(observationDates[i],
+                                 -static_cast<Integer>(coupon_->fixingDays()),
+                                 Days));
+        }
+
+      }
+    
+    Real RangeAccrualPricer::swapletRate() const {
+        return swapletPrice()/(accrualFactor_*discount_);
+    }
+    Real RangeAccrualPricer::capletPrice(Rate effectiveCap) const {
+        QL_FAIL("RangeAccrualPricer::capletPrice not implemented");
+    }
+    Rate RangeAccrualPricer::capletRate(Rate effectiveCap) const {
+        QL_FAIL("RangeAccrualPricer::capletRate not implemented");
+    }
+    Real RangeAccrualPricer::floorletPrice(Rate effectiveFloor) const {
+        QL_FAIL("RangeAccrualPricer::floorletPrice not implemented");
+    }
+    Rate RangeAccrualPricer::floorletRate(Rate effectiveFloor) const {
+        QL_FAIL("RangeAccrualPricer::floorletRate not implemented");
+    }      
+
     //===========================================================================//
     //                          RangeAccrualPricerByBgm                          //
-    //===========================================================================//
+    //===========================================================================//   
     RangeAccrualPricerByBgm::RangeAccrualPricerByBgm(
             Real correlation,
             const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
@@ -104,35 +160,19 @@ namespace QuantLib {
     byCallSpread_(byCallSpread){
 
     }
+    Real RangeAccrualPricerByBgm::swapletPrice() const{
 
-    void RangeAccrualPricerByBgm::initialize(const RangeAccrualFloatersCoupon& coupon){
-        Date paymentDate = coupon.date();
+        Real result = 0.;
+        const Real deflator = discount_*initialValues_[0];
 
-        const boost::shared_ptr<InterestRateIndex>& index = coupon.index();
-        const Handle<YieldTermStructure>& rateCurve = index->termStructure();
-        discount_ = rateCurve->discount(paymentDate);
-
-        startTime_ = coupon.startTime();
-        endTime_ = coupon.endTime();
-        accrualFactor_ = coupon.accrualPeriod();
-        observationTimes_ = coupon.observationTimes();
-        lowerTrigger_ = coupon.lowerTrigger();
-        upperTrigger_ = coupon.upperTrigger();
-        observationsNo_ = coupon.observationsNo();
-
-        const std::vector<Date> &observationDates = coupon.observationsSchedule()->dates();
-        QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
-        initialValues_= std::vector<Real>(observationDates.size(),0.);
-
-        Calendar calendar = index->calendar();
-        for(Size i=0; i<observationDates.size(); i++) {
-            initialValues_[i]=index->fixing(
-                calendar.advance(observationDates[i],
-                                 -static_cast<Integer>(coupon.fixingDays()),
-                                 Days));
+        for(Size i=0;i<observationsNo_;i++){
+            Real digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
+                                                     observationTimes_[i], deflator);
+            result += digitalFloater;
         }
 
-      }
+        return gearing_ *(result*accrualFactor_/observationsNo_)+ spreadLegValue_;
+    }
 
     std::vector<Real> RangeAccrualPricerByBgm::driftsOverPeriod(Real U,
                                                                 Real lambdaS,
@@ -276,25 +316,6 @@ namespace QuantLib {
         else {result = 1.;}
 
         return result;
-    }
-
-    Real RangeAccrualPricerByBgm::price() const{
-
-        Real result = 0.;
-        const Real deflator = discount_*initialValues_[0];
-
-        for(Size i=0;i<observationsNo_;i++){
-            Real digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
-                                                     observationTimes_[i], deflator);
-            result += digitalFloater;
-        }
-
-        return result*accrualFactor_/observationsNo_;
-    }
-
-
-    Real RangeAccrualPricerByBgm::rate() const {
-        return price()/(accrualFactor_*discount_);
     }
 
     Real RangeAccrualPricerByBgm::digitalRangePrice(Real lowerTrigger,

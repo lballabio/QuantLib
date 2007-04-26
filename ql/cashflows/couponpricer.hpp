@@ -38,6 +38,7 @@ namespace QuantLib {
     class CmsCoupon;
     class CappedFlooredIborCoupon;
     class CappedFlooredCmsCoupon;
+    class RangeAccrualFloatersCoupon;
 
     //
     //! generic pricer for FloatingRate coupons
@@ -146,7 +147,8 @@ namespace QuantLib {
                                     public Visitor<IborCoupon>,
                                     public Visitor<CmsCoupon>,
                                     public Visitor<CappedFlooredIborCoupon>,
-                                    public Visitor<CappedFlooredCmsCoupon> {
+                                    public Visitor<CappedFlooredCmsCoupon>,
+                                    public Visitor<RangeAccrualFloatersCoupon>{
       private:
        const boost::shared_ptr<FloatingRateCouponPricer>   pricer_;
       public:
@@ -159,6 +161,7 @@ namespace QuantLib {
         void visit(CappedFlooredIborCoupon& c);
         void visit(CmsCoupon& c);
         void visit(CappedFlooredCmsCoupon& c);
+        void visit(RangeAccrualFloatersCoupon& c);
     };
 }
 

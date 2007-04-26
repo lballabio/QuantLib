@@ -21,6 +21,7 @@
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 
@@ -173,6 +174,15 @@ namespace QuantLib {
             c.setPricer(cmsCouponPricer);
         else
             QL_FAIL("unexpected error when casting to CmsCouponPricer");
+    }
+
+    void CouponSelectorToSetPricer::visit(RangeAccrualFloatersCoupon& c) {
+        const boost::shared_ptr<RangeAccrualPricer> rangeAccrualPricer =
+            boost::dynamic_pointer_cast<RangeAccrualPricer>(pricer_);
+        if (rangeAccrualPricer)
+            c.setPricer(rangeAccrualPricer);
+        else
+            QL_FAIL("unexpected error when casting to RangeAccrualPricer");
     }
 
 }

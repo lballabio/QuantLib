@@ -27,7 +27,8 @@
 
 #include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/time/schedule.hpp>
 #include <vector>
 
@@ -35,7 +36,7 @@ namespace QuantLib {
 
     class RangeAccrualPricer;
 
-    class RangeAccrualFloatersCoupon: public IborCoupon{
+    class RangeAccrualFloatersCoupon: public FloatingRateCoupon{
 
       public:
 
@@ -53,8 +54,7 @@ namespace QuantLib {
                 const Date& refPeriodEnd,
                 const boost::shared_ptr<Schedule>&  observationsSchedule,
                 Real lowerTrigger,
-                Real upperTrigger,
-                const boost::shared_ptr<RangeAccrualPricer>& Pricer);
+                Real upperTrigger);
 
         Real startTime() const {return startTime_; }
         Real endTime() const {return endTime_; }
@@ -66,10 +66,11 @@ namespace QuantLib {
         const boost::shared_ptr<Schedule> observationsSchedule() const {
                                                         return observationsSchedule_; }
 
-        Real rate() const;
-        Real price(const Handle<YieldTermStructure>& discountingCurve) const;
         Real priceWithoutOptionality(const Handle<YieldTermStructure>& discountingCurve) const;
-
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
+        //@}
       private:
         
         Real startTime_;                               // S
@@ -82,17 +83,36 @@ namespace QuantLib {
 
         Real lowerTrigger_;
         Real upperTrigger_;
-
-        const boost::shared_ptr<RangeAccrualPricer> pricer_;
-
      };
 
-    class RangeAccrualPricer {
+    class RangeAccrualPricer: public FloatingRateCouponPricer {
       public:
-        virtual ~RangeAccrualPricer() {}
-        virtual Real price() const = 0;
-        virtual Real rate() const = 0;
-        virtual void initialize(const RangeAccrualFloatersCoupon& coupon) = 0;
+        //! \name Observer interface
+        //@{
+        virtual Rate swapletRate() const;
+        virtual Real capletPrice(Rate effectiveCap) const;
+        virtual Rate capletRate(Rate effectiveCap) const;
+        virtual Real floorletPrice(Rate effectiveFloor) const;
+        virtual Rate floorletRate(Rate effectiveFloor) const;
+        void initialize(const FloatingRateCoupon& coupon);  
+        //@}
+      
+    protected:
+        const RangeAccrualFloatersCoupon* coupon_;
+        Real startTime_;                                   // S
+        Real endTime_;                                     // T
+        Real accrualFactor_;                               // T-S
+        std::vector<Real> observationTimeLags_;            // d
+        std::vector<Real> observationTimes_;               // U
+        std::vector<Real> initialValues_;
+        Size observationsNo_;
+        Real lowerTrigger_;
+        Real upperTrigger_;
+        Real discount_;
+        Real gearing_;
+        Spread spread_;
+        Real spreadLegValue_;
+
     };
 
     class RangeAccrualPricerByBgm: public RangeAccrualPricer {
@@ -104,13 +124,12 @@ namespace QuantLib {
             const  boost::shared_ptr<SmileSection>& smilesOnPayment,
             bool withSmile,
             bool byCallSpread);
-
-        Real price() const;
-        Real rate() const;
+        //! \name Observer interface
+        //@{
+        virtual Real swapletPrice() const;
+        //@}
 
      protected:
-
-        void initialize(const RangeAccrualFloatersCoupon& coupon);
 
         Real drift(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
         Real derDriftDerLambdaS(Real U, Real lambdaS, Real lambdaT, Real correlation) const;
@@ -158,17 +177,6 @@ namespace QuantLib {
                                Real deflator) const;
 
      private:
-
-        Real startTime_;                                   // S
-        Real endTime_;                                     // T
-        Real accrualFactor_;                               // T-S
-        std::vector<Real> observationTimeLags_;            // d
-        std::vector<Real> observationTimes_;               // U
-        std::vector<Real> initialValues_;
-        Size observationsNo_;
-        Real lowerTrigger_;
-        Real upperTrigger_;
-        Real discount_;
 
         Real correlation_;                                // correlation between L(S) and L(T)
         bool withSmile_;
