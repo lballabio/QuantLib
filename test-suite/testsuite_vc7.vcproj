@@ -2368,6 +2368,9 @@
 				RelativePath=".\swaptionvolatilitymatrix.cpp">
 			</File>
 			<File
+				RelativePath=".\tapcorrelations.cpp">
+			</File>
+			<File
 				RelativePath="termstructures.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2718,6 +2721,9 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitymatrix.hpp">
+			</File>
+			<File
+				RelativePath=".\tapcorrelations.hpp">
 			</File>
 			<File
 				RelativePath="termstructures.hpp">
