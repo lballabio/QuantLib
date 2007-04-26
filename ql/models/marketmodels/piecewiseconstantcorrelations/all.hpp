@@ -3,5 +3,6 @@
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/piecewiseconstantcorrelations/tapcorrelations.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
 
