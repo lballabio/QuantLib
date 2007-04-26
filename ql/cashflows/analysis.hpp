@@ -51,6 +51,7 @@ namespace QuantLib {
       public:
         static Date startDate(const Leg& leg);
         static Date maturityDate(const Leg& leg);
+
         //! NPV of the cash flows.
         /*! The NPV is the sum of the cash flows, each discounted
             according to the given term structure.
@@ -60,6 +61,16 @@ namespace QuantLib {
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Integer exDividendDays = 0);
+        //! NPV of the cash flows.
+        /*! The NPV is the sum of the cash flows, each discounted
+            according to the given constant interest rate.  The result
+            is affected by the choice of the interest-rate compounding
+            and the relative frequency and day counter.
+        */
+        static Real npv(const Leg& leg,
+                        const InterestRate&,
+                        Date settlementDate = Date());
+
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -71,28 +82,6 @@ namespace QuantLib {
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Integer exDividendDays = 0);
-        //! At The Money Rate of the cash flows.
-        /*! The result is the fixed rate for which a fixed rate cash flow
-            vector, equivalent to the input vector, has the required NPV
-            according to the given term structure. If the required NPV is
-            not given, the input cash flow vector's NPV is used instead.
-        */
-        static Rate atmRate(const Leg& leg,
-                            const Handle<YieldTermStructure>& discountCurve,
-                            const Date& settlementDate = Date(),
-                            const Date& npvDate = Date(),
-                            Integer exDividendDays = 0,
-                            Real npv = Null<Real>());
-
-        //! NPV of the cash flows.
-        /*! The NPV is the sum of the cash flows, each discounted
-            according to the given constant interest rate.  The result
-            is affected by the choice of the interest-rate compounding
-            and the relative frequency and day counter.
-        */
-        static Real npv(const Leg& leg,
-                        const InterestRate&,
-                        Date settlementDate = Date());
         //! Basis-point sensitivity of the cash flows.
         /*! The result is the change in NPV due to a uniform
             1-basis-point change in the rate paid by the cash
@@ -104,6 +93,19 @@ namespace QuantLib {
         static Real bps(const Leg& leg,
                         const InterestRate&,
                         Date settlementDate = Date());
+
+        //! At-the-money rate of the cash flows.
+        /*! The result is the fixed rate for which a fixed rate cash flow
+            vector, equivalent to the input vector, has the required NPV
+            according to the given term structure. If the required NPV is
+            not given, the input cash flow vector's NPV is used instead.
+        */
+        static Rate atmRate(const Leg& leg,
+                            const Handle<YieldTermStructure>& discountCurve,
+                            const Date& settlementDate = Date(),
+                            const Date& npvDate = Date(),
+                            Integer exDividendDays = 0,
+                            Real npv = Null<Real>());
 
         //! Internal rate of return.
         /*! The IRR is the interest rate at which the NPV of the cash
@@ -160,15 +162,7 @@ namespace QuantLib {
         */
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
-                              Date settlementDate = Date()); 
-        //! Cash-flow convexity
-        /*! The convexity of a string of cash flows is defined as
-            \f[
-            C = \frac{1}{P} \frac{\partial^2 P}{\partial y^2}
-            \f]
-            where \f$ P \f$ is the present value of the cash flows
-            according to the given IRR \f$ y \f$.
-        */
+                              Date settlementDate = Date());
 
 
         static void setPricer(
@@ -177,11 +171,10 @@ namespace QuantLib {
 
         static void setPricers(
                const Leg& leg,
-               const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers); 
+               const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers);
     };
 
-
-    
 }
+
 
 #endif
