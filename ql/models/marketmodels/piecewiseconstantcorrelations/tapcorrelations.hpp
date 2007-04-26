@@ -22,11 +22,13 @@
 #define quantlib_tap_correlations_hpp
 
 #include <ql/types.hpp>
+#include <ql/utilities/disposable.hpp>
 #include <vector>
-
+#include <ql/math/matrix.hpp>
+#include <ql/math/optimization/costfunction.hpp>
+#include <boost/function.hpp>
 
 namespace QuantLib {
-    class Matrix;
     //! Returns the Triangular Angles Parametrized correlation matrix 
     /*!  The matrix \f$ m \f$ is filled with values corresponding to 
             angles given in the \f$ angles \f$ vector. See equation (24) in 
@@ -41,8 +43,13 @@ namespace QuantLib {
             - the correctness of the results is tested by checking
               returned values against numerical calculations.
     */
-    void setTriangularAnglesParametrization(const std::vector<Real>& angles, 
-                                                                Matrix& m);
+    Disposable<Matrix> triangularAnglesParametrization(const Array& angles);
+
+    // the same function using the angles parameterized by the following 
+    // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
+    Disposable<Matrix> triangularAnglesParametrizationUnconstrained(const Array& x);
+
+
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix 
     /*!  The matrix \f$ m \f$ is filled with values corresponding to 
             angles corresponding  to the 3D spherical spiral paramterized by 
@@ -58,8 +65,26 @@ namespace QuantLib {
             - the correctness of the results is tested by checking
               returned values against numerical calculations.
     */
-    void setTriangularAnglesParametrizationRankThree(Real alpha, Real t0, 
-                                                Real epsilon, Matrix& m);
+    Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0, 
+                                                Real epsilon, Size nbRows);
+
+    // the same function with parameters packed in an Array
+    Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
+        const Array& paramters, Size nbRows);
+
+    // Cost function associated with Frobenius norm.
+    // <http://en.wikipedia.org/wiki/Matrix_norm>
+    class FrobeniusCostFunction : public CostFunction{
+    public:
+        FrobeniusCostFunction(const Matrix& target,
+            const boost::function<Disposable<Matrix>(const Array&)>& f)
+            :target_(target), f_(f){}
+        Real value (const Array &x) const;
+        Disposable<Array> values (const Array &x) const;
+    private:
+        Matrix target_;
+        boost::function<Disposable<Matrix>(const Array&)> f_;
+    };
 }
 
 #endif

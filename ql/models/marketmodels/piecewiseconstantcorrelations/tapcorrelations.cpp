@@ -18,49 +18,81 @@
 */
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/tapcorrelations.hpp>
-#include <ql/math/matrix.hpp>
 #include <cmath>
-#include <iostream>
 
 namespace QuantLib {
 
-    void setTriangularAnglesParametrization(const std::vector<Real>& angles, 
-                                                                Matrix& m) {
-        QL_REQUIRE(m.rows() == m.columns(), "the matrix m must be square!");
-        QL_REQUIRE(m.rows() == angles.size()+1, 
-                          "angles vector size must be equal to m.rows()-1");  
-        for (Size i=0; i<m.rows(); ++i) {
-            Real cosPhi, sinPhi;
-            if (i>0) {
-                cosPhi = std::cos(angles[i-1]);
-                sinPhi = std::sin(angles[i-1]);
-            } 
-            else {
-                cosPhi = 1;
-                sinPhi = 0;
-            }
+    Disposable<Matrix> triangularAnglesParametrization(const Array& angles) {
+            Matrix m(angles.size()+1, angles.size()+1);
+            for (Size i=0; i<m.rows(); ++i) {
+                Real cosPhi, sinPhi;
+                if (i>0) {
+                    cosPhi = std::cos(angles[i-1]);
+                    sinPhi = std::sin(angles[i-1]);
+                } 
+                else {
+                    cosPhi = 1;
+                    sinPhi = 0;
+                }
 
-            for (Size j=0; j<i; ++j)
-                m[i][j] = sinPhi * m[i-1][j];
-            
-            m[i][i] = cosPhi;
-            
-            for (Size j=i+1; j<m.rows(); ++j)
-                m[i][j] = 0;
-        }
+                for (Size j=0; j<i; ++j)
+                    m[i][j] = sinPhi * m[i-1][j];
+
+                m[i][i] = cosPhi;
+
+                for (Size j=i+1; j<m.rows(); ++j)
+                    m[i][j] = 0;
+            }
+            return m;
     }
 
-    void setTriangularAnglesParametrizationRankThree(Real alpha, Real t0, 
-                                                Real epsilon, Matrix& m) {
-        QL_REQUIRE(3 == m.columns(), 
-                            "the matrix m must contain exactly 3 columns!");
-        for (Size i=0; i<m.rows(); ++i) {
-            Real t = t0 * (1 - std::exp(epsilon*Real(i)));
-            Real phi = std::atan(alpha * t);
-            std::cout << i << "\t" <<  t << "\t" << phi << std::endl;
-            m[i][0] = std::cos(t)*std::cos(phi);
-            m[i][1] = std::sin(t)*std::cos(phi);
-            m[i][2] = -std::sin(phi);
-        }
+    Disposable<Matrix> triangularAnglesParametrizationUnconstrained (
+                                                        const Array& x) {
+        Array angles(x.size()); // to be improved ...
+        //we convert the unconstrained parameters in angles
+        for(Size i = 0; i < x.size(); ++i)
+            angles[i] = std::atan(x[i]) + M_PI*.5 ;
+        return triangularAnglesParametrization(angles);
+    }
+    
+    Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0, 
+                                                           Real epsilon, Size nbRows) {
+            Matrix m(nbRows, 3);
+            for (Size i=0; i<m.rows(); ++i) {
+                Real t = t0 * (1 - std::exp(epsilon*Real(i)));
+                Real phi = std::atan(alpha * t);
+                m[i][0] = std::cos(t)*std::cos(phi);
+                m[i][1] = std::sin(t)*std::cos(phi);
+                m[i][2] = -std::sin(phi);
+            }
+        return m;
+    }
+
+    Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
+        const Array& paramters, Size nbRows){
+        QL_REQUIRE(paramters.size() == 3, 
+            "the parameter array must contain exactly 3 values" );
+        return  triangularAnglesParametrizationRankThree(paramters[0], 
+            paramters[1], paramters[2], nbRows);
+        
+    }
+
+    Real FrobeniusCostFunction::value(const Array& x) const{
+        Array temp = values(x);
+        return DotProduct(temp, temp);
+    }
+
+    Disposable<Array> FrobeniusCostFunction::values(const Array& x) const{
+        Array result(target_.rows()*target_.columns());
+        // refresh parameterizedMatrix_ with values implied by the new set of
+        // parameters
+        Matrix pseudoRoot = f_(x);
+        Matrix correlationMatrix = pseudoRoot * transpose(pseudoRoot) - target_;
+        // then we store the elementwise differences in a vector.
+        for (Size i=0; i<target_.rows(); ++i)
+            for (Size j=0; j<target_.columns(); ++j)
+                result[i*target_.rows()+j] 
+                            += correlationMatrix[i][j]*correlationMatrix[i][j];
+        return result;
     }
 }

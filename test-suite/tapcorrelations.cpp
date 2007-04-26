@@ -22,6 +22,8 @@
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/tapcorrelations.hpp>
 #include <ql/math/matrix.hpp>
 #include <sstream>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/constraint.hpp> 
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -34,28 +36,61 @@ using namespace boost::unit_test_framework;
 //QL_BEGIN_TEST_LOCALS(TapCorrelationTest)
 //QL_END_TEST_LOCALS(TapCorrelationTest)
 
-
+ // from Higham - nearest correlation matrix
+    Matrix M5;
+    void setup() {
+        M5 = Matrix(4, 4);
+        M5[0][0] = 2;   M5[0][1] = -1;  M5[0][2] = 0.0; M5[0][3] = 0.0;
+        M5[1][0] = M5[0][1];  M5[1][1] = 2;   M5[1][2] = -1;  M5[1][3] = 0.0;
+        M5[2][0] = M5[0][2]; M5[2][1] = M5[1][2];  M5[2][2] = 2;   M5[2][3] = -1;
+        M5[3][0] = M5[0][3]; M5[3][1] = M5[1][3]; M5[3][2] = M5[2][3];  M5[3][3] = 2;
+    }
 
 void TapCorrelationTest::testValues() {
     
     BOOST_MESSAGE("Testing Triangular Angles Parametrization correlations matrices");
     Size rank3MatrixSize = 10;
-    Matrix rank3PseudoRoot(rank3MatrixSize,3);
     Real alpha = -0.419973;
     Real t0 = 136.575;
     Real epsilon = -0.00119954;
-    setTriangularAnglesParametrizationRankThree(alpha, t0, epsilon, rank3PseudoRoot);
+    Matrix rank3PseudoRoot 
+        = triangularAnglesParametrizationRankThree(alpha, t0, epsilon, rank3MatrixSize);
     Matrix correlations = rank3PseudoRoot*transpose(rank3PseudoRoot);
 
     Size fullRankSize = 10;
-    Matrix fullRankPseudoRoot(fullRankSize, fullRankSize);
-    std::vector<Real> angles(fullRankSize-1);
+    Array angles(fullRankSize-1);
     for (Size i = 0; i<angles.size(); ++i)
         angles[i] = M_PI/2 * Real(i+1)/Real(angles.size()+1);
-    setTriangularAnglesParametrization(angles, fullRankPseudoRoot);
+    Matrix fullRankPseudoRoot 
+        = triangularAnglesParametrization(angles);
     Matrix fullRankCorrelations = 
         fullRankPseudoRoot * transpose(fullRankPseudoRoot);
     BOOST_MESSAGE(correlations);
+}
+
+void TapCorrelationTest::testCalibration() {
+    setup();
+    LevenbergMarquardt lm;
+    FrobeniusCostFunction frobeniusCostFunction(M5, 
+         &triangularAnglesParametrizationUnconstrained);
+    Array initialValues(M5.rows()-1, 0);
+    NoConstraint constraints;
+    Problem problem(frobeniusCostFunction, constraints, initialValues);
+    Size maxIterations = 100;
+    Size maxStationaryStateIterations = 10;
+    Real rootEpsilon = 1e-4;
+    Real functionEpsilon = 1e-4;
+    Real gradientNormEpsilon = 1e-4;
+    EndCriteria endCriteria(maxIterations, maxStationaryStateIterations, rootEpsilon, 
+        functionEpsilon, gradientNormEpsilon);
+    EndCriteria::Type optimizationResult;
+    optimizationResult = lm.minimize(problem, endCriteria);
+    Array test(3, 0);
+    Matrix resultTest = triangularAnglesParametrizationUnconstrained(test);
+    Matrix approximatedCorrelationsTest = resultTest * transpose(resultTest);
+    Matrix result = triangularAnglesParametrizationUnconstrained(problem.currentValue());
+    Matrix approximatedCorrelations = result * transpose(result);
+    BOOST_MESSAGE(problem.currentValue());
 }
 
 
@@ -63,7 +98,8 @@ void TapCorrelationTest::testValues() {
 test_suite* TapCorrelationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
-    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testValues));
+    //suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testValues));
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testCalibration));
 
     return suite;
 }
