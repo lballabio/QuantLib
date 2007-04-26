@@ -9,6 +9,7 @@ this_include_HEADERS = \
 	bilinearinterpolation.hpp \
 	cubicspline.hpp \
 	extrapolation.hpp \
+	flatextrapolation2d.hpp \
 	forwardflatinterpolation.hpp \
 	interpolation2d.hpp \
 	linearinterpolation.hpp \
