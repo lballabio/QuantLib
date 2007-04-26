@@ -81,7 +81,7 @@ namespace QuantLib {
             std::vector<Matrix> points_;
             mutable std::vector<Disposable<Matrix> > transposedPoints_;
             bool extrapolation_;
-            mutable std::vector< boost::shared_ptr<BilinearInterpolation> > interpolators_;
+            mutable std::vector< boost::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
         SwaptionVolCube1(

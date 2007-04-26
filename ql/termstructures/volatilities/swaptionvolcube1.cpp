@@ -20,6 +20,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/math/interpolations/flatextrapolation2d.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
 	#define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4
@@ -550,7 +551,7 @@ namespace QuantLib {
     }
 
     //======================================================================//
-    //                      SwaptionVolCube1::Cube              //
+    //                      SwaptionVolCube1::Cube                          //
     //======================================================================//
 
 
@@ -578,10 +579,13 @@ namespace QuantLib {
 
         for (Size k=0;k<nLayers_;k++) {
             transposedPoints_.push_back(transpose(points[k]));
-            interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
-                                        swapLengths_.begin(),
-                                        swapLengths_.end(),transposedPoints_[k])));
+
+            boost::shared_ptr<Interpolation2D> interpolation (
+                new BilinearInterpolation (optionTimes_.begin(), optionTimes_.end(),
+                                           swapLengths_.begin(), swapLengths_.end(),
+                                           transposedPoints_[k]));
+            interpolators_.push_back(boost::shared_ptr<Interpolation2D>(
+                new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(points);
@@ -596,10 +600,12 @@ namespace QuantLib {
         extrapolation_ = o.extrapolation_;
         transposedPoints_ = o.transposedPoints_;
         for (Size k=0; k<nLayers_; ++k) {
-            interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
-                                          swapLengths_.begin(), swapLengths_.end(),
-                                          transposedPoints_[k])));
+            boost::shared_ptr<Interpolation2D> interpolation (
+                new BilinearInterpolation (optionTimes_.begin(), optionTimes_.end(),
+                                           swapLengths_.begin(), swapLengths_.end(),
+                                           transposedPoints_[k]));
+            interpolators_.push_back(boost::shared_ptr<Interpolation2D>(
+                new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
@@ -615,10 +621,12 @@ namespace QuantLib {
         extrapolation_ = o.extrapolation_;
         transposedPoints_ = o.transposedPoints_;
         for(Size k=0;k<nLayers_;k++){
-            interpolators_.push_back(boost::shared_ptr<BilinearInterpolation>(
-                new BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
-                                          swapLengths_.begin(), swapLengths_.end(),
-                                          transposedPoints_[k])));
+            boost::shared_ptr<Interpolation2D> interpolation (
+                new BilinearInterpolation (optionTimes_.begin(), optionTimes_.end(),
+                                           swapLengths_.begin(), swapLengths_.end(),
+                                           transposedPoints_[k]));
+            interpolators_.push_back(boost::shared_ptr<Interpolation2D>(
+                new FlatExtrapolator2D(interpolation)));
             interpolators_[k]->enableExtrapolation();
         }
         setPoints(o.points_);
@@ -754,11 +762,12 @@ namespace QuantLib {
     void SwaptionVolCube1::Cube::updateInterpolators() const {
         for (Size k=0; k<nLayers_; ++k) {
             transposedPoints_[k] = transpose(points_[k]);
-            interpolators_[k] =
-                boost::shared_ptr<BilinearInterpolation>(new
-                    BilinearInterpolation(optionTimes_.begin(), optionTimes_.end(),
-                                          swapLengths_.begin(), swapLengths_.end(),
-                                          transposedPoints_[k]));
+            boost::shared_ptr<Interpolation2D> interpolation (
+                new BilinearInterpolation (optionTimes_.begin(), optionTimes_.end(),
+                                           swapLengths_.begin(), swapLengths_.end(),
+                                           transposedPoints_[k]));
+            interpolators_[k] = boost::shared_ptr<Interpolation2D>(
+                new FlatExtrapolator2D(interpolation));
             interpolators_[k]->enableExtrapolation();
         }
     }
