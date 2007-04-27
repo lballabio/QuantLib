@@ -42,74 +42,81 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying), eps_(eps),
-      hasUpperStrike_(false), hasLowerStrike_(false),
-      isCashOrNothing_(false) {
+      underlying_(underlying),
+      hasLowerStrike_(false), hasUpperStrike_(false),
+      eps_(eps), isCashOrNothing_(false) {
 
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>())
-            QL_REQUIRE(putStrike >= callStrike, "putStrike < callStrike");
-
-        if (putStrike != Null<Rate>()){
-            QL_REQUIRE(putStrike >= 0., "negative putstrike not allowed");
-            hasUpperStrike_ = true;
-            upperStrike_ = putStrike;
-         }
+            QL_REQUIRE(putStrike >= callStrike, "put strike (" << putStrike <<
+                                            ") < call strike " << callStrike);
         if (callStrike != Null<Rate>()){
-            QL_REQUIRE(callStrike >= 0., "negative callstrike not allowed");
-            lowerStrike_ = callStrike;
+            QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasLowerStrike_ = true;
+            lowerStrike_ = (callStrike - underlying->spread())/underlying->gearing();
         }
-
+        if (putStrike != Null<Rate>()){
+            QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
+            hasUpperStrike_ = true;
+            upperStrike_ = (putStrike - underlying->spread())/underlying->gearing();
+        }
         if (cashRate != Null<Rate>()){
             cashRate_ = cashRate;
             isCashOrNothing_ = true;
         }
-
         registerWith(underlying);
     }
 
-    Rate DigitalCoupon::rate() const {
+    Rate DigitalCoupon::optionRate() const {
 
-        Rate lowerDigitalRate = cashRate_;
-        if(hasLowerStrike_&& lowerStrike_>eps_){
+        Rate callOptionRate = isCashOrNothing_ ? cashRate_ : underlying_->rate();
+
+        // Call digital option
+        if(hasLowerStrike_&& lowerStrike_>eps_) {
             boost::shared_ptr<CappedFlooredCoupon> next(
-                new CappedFlooredCoupon(underlying_, lowerStrike_+eps_, Null<Rate>()));
+                new CappedFlooredCoupon(underlying_, lowerStrike_ + eps_, Null<Rate>()));
             boost::shared_ptr<CappedFlooredCoupon> previous(
-                new CappedFlooredCoupon(underlying_, lowerStrike_-eps_, Null<Rate>()));
-            lowerDigitalRate = cashRate_*(next->rate()-previous->rate())/(2*eps_);
-            // if asset-or-nothing
-            Rate assetRate = 0.;
-            if(!isCashOrNothing_){
-                boost::shared_ptr<CappedFlooredCoupon> cappedCoupon(
-                        new CappedFlooredCoupon(underlying_, lowerStrike_+eps_, Null<Rate>()));
-                assetRate = underlying_->rate()- cappedCoupon->rate();
-                lowerDigitalRate = lowerDigitalRate*(lowerStrike_+eps_)/cashRate_;
+                new CappedFlooredCoupon(underlying_, lowerStrike_ - eps_, Null<Rate>()));
+            if(isCashOrNothing_) {
+                callOptionRate = cashRate_ * 
+                                (next->rate() - previous->rate()) / (2*eps_);
+            } else {
+                // if asset-or-nothing
+                callOptionRate = lowerStrike_ * 
+                                 (next->rate() - previous->rate()) / (2*eps_);
+                callOptionRate += underlying_->rate() - next->rate();
             }
-            lowerDigitalRate += assetRate;
         }
 
-        Rate upperDigitalRate = 0.;
+        /* Floor digital option: 
+           the putOptionRate is calculated as a call digital option
+           to subract from the callOptionRate */
+        Rate putOptionRate = 0.;
         if(hasUpperStrike_){
-            if(upperStrike_>eps_){
+            if(upperStrike_ < eps_){
+                putOptionRate = cashRate_;
+            } else {
                 boost::shared_ptr<CappedFlooredCoupon> next(
-                    new CappedFlooredCoupon(underlying_, upperStrike_+eps_, Null<Rate>()));
+                    new CappedFlooredCoupon(underlying_, upperStrike_ + eps_, Null<Rate>()));
                 boost::shared_ptr<CappedFlooredCoupon> previous(
-                    new CappedFlooredCoupon(underlying_, upperStrike_-eps_, Null<Rate>()));
-                upperDigitalRate = cashRate_*(next->rate()-previous->rate())/(2*eps_);
-            } else
-                upperDigitalRate = cashRate_;
-            // if asset-or-nothing
-            Rate assetRate = 0.;
-            if(!isCashOrNothing_){
-                boost::shared_ptr<CappedFlooredCoupon> cappedCoupon(
-                        new CappedFlooredCoupon(underlying_, upperStrike_+eps_, Null<Rate>()));
-                assetRate = underlying_->rate()- cappedCoupon->rate();
-                upperDigitalRate = upperDigitalRate*(upperStrike_+eps_)/cashRate_;
+                    new CappedFlooredCoupon(underlying_, upperStrike_ - eps_, Null<Rate>()));
+                if(isCashOrNothing_){
+                    putOptionRate = cashRate_ * 
+                                   (next->rate() - previous->rate()) / (2*eps_);
+                } else {
+                    // if asset-or-nothing
+                    putOptionRate = upperStrike_ * 
+                                    (next->rate() - previous->rate()) / (2*eps_);
+                    putOptionRate += underlying_->rate() - next->rate();
+                }
             }
-            upperDigitalRate += assetRate;
         }
 
-        return lowerDigitalRate - upperDigitalRate;
+        return callOptionRate - putOptionRate;
+    }
+
+    Rate DigitalCoupon::rate() const {
+      
+        return underlying_->rate() - optionRate();
     }
 
     Rate DigitalCoupon::convexityAdjustment() const {

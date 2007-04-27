@@ -32,17 +32,19 @@
 namespace QuantLib {
 
     //! Floating-rate coupon with digital cap/floor
+    /*! The evaluation of the coupon is made using the call/put spread
+        replication method.
+    */
     class DigitalCoupon : public FloatingRateCoupon {
       public:
         //! \name Constructors
         //@{
         //! general constructor (collar)
-        DigitalCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate callStrike = Null<Rate>(),
-                  Rate putStrike = Null<Rate>(),
-                  Rate cashRate = Null<Rate>(),
-                  Real eps = 1e-4);
+        DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                      Rate callStrike = Null<Rate>(),
+                      Rate putStrike = Null<Rate>(),
+                      Rate cashRate = Null<Rate>(),
+                      Real eps = 1e-4);
         //@}
         //! \name Coupon interface
         //@{
@@ -52,14 +54,15 @@ namespace QuantLib {
         //@}
         //! \name Digital inspectors
         //@{
-        //! Returns the call strike
         Rate callStrike() const;
-        //! Returns the put strike
         Rate putStrike() const;
-        //!
         bool isPut() const { return (hasUpperStrike_ && !hasLowerStrike_); }
         bool isCall() const {return (hasLowerStrike_ && !hasUpperStrike_); }
         bool isCollar() const {return (hasLowerStrike_ && hasUpperStrike_); }
+        /*! Returns the option rate
+           (multiplied by: nominal*accrualperiod*discount is the NPV oh the potion)
+        */
+        Rate optionRate() const;
         //@}
         //! \name Observer interface
         //@{
