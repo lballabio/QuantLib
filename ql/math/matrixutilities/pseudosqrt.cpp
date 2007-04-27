@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Yiping Chen
  Copyright (C) 2007 Neil Firth
 
@@ -41,6 +41,29 @@ namespace QuantLib {
                                "non symmetric matrix: " <<
                                "[" << i << "][" << j << "]=" << matrix[i][j] <<
                                ", [" << j << "][" << i << "]=" << matrix[j][i]);
+        }
+
+        void normalizePseudoRoot(const Matrix& matrix,
+                                 Matrix& pseudo) {
+            Size size = matrix.rows();
+            QL_REQUIRE(size == pseudo.rows(),
+                       "matrix/pseudo mismatch: matrix rows are " << size <<
+                       " while pseudo rows are " << pseudo.columns());
+            Size pseudoCols = pseudo.columns();
+
+            // row normalization
+            for (Size i=0; i<size; ++i) {
+                Real norm = 0.0;
+                for (Size j=0; j<pseudoCols; ++j)
+                    norm += pseudo[i][j]*pseudo[i][j];
+                if (norm>0.0) {
+                    Real normAdj = std::sqrt(matrix[i][i]/norm);
+                    for (Size j=0; j<pseudoCols; ++j)
+                        pseudo[i][j] *= normAdj;
+                }
+            }
+
+
         }
 
         //cost function for hypersphere and lower-diagonal algorithm
@@ -261,12 +284,11 @@ namespace QuantLib {
         {
             Size size = M.rows();
             QL_REQUIRE(size == M.columns(),
-                   "matrix not square");
+                       "matrix not square");
 
             Matrix result(M);
-            for (Size i=0; i<size; i++){
+            for (Size i=0; i<size; ++i)
                 result[i][i] = 1.0;
-            }
 
             return result;
         }
@@ -276,9 +298,9 @@ namespace QuantLib {
         {
             Size size = M.rows();
             QL_REQUIRE(size == M.columns(),
-                   "matrix not square");
+                       "matrix not square");
 
-            Matrix result(M);
+            Matrix result;
             Matrix diagonal(size, size, 0.0);
             SymmetricSchurDecomposition jd(M);
             for (Size i=0; i<size; ++i)
@@ -297,10 +319,7 @@ namespace QuantLib {
                         const Real& tolerance) {
 
             Size size = A.rows();
-            Matrix Y(A);
-            Matrix X(A);
-            Matrix R(A);
-            Matrix deltaS(size, size, 0.0);
+            Matrix R, Y(A), X(A), deltaS(size, size, 0.0);
 
             Matrix lastX(X);
             Matrix lastY(Y);
@@ -369,17 +388,7 @@ namespace QuantLib {
                     std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
-            // row normalization
-            for (Size i=0; i<size; ++i) {
-                Real norm = 0.0;
-                for (Size j=0; j<size; ++j)
-                    norm += result[i][j]*result[i][j];
-                if (norm>0.0) {
-                    norm = std::sqrt(matrix[i][i]/norm);
-                    for (Size j=0; j<size; ++j)
-                        result[i][j] *= norm;
-                }
-            }
+            normalizePseudoRoot(matrix, result);
             break;
           case SalvagingAlgorithm::Hypersphere:
             // negative eigenvalues set to zero
@@ -390,17 +399,7 @@ namespace QuantLib {
                 if (jd.eigenvalues()[i]<0.0) negative=true;
             }
             result = jd.eigenvectors() * diagonal;
-            // row normalization
-            for (Size i=0; i<size; ++i) {
-                Real norm = 0.0;
-                for (Size j=0; j<size; ++j)
-                    norm += result[i][j]*result[i][j];
-                if (norm>0.0) {
-                    norm = std::sqrt(matrix[i][i]/norm);
-                    for (Size j=0; j<size; ++j)
-                        result[i][j] *= norm;
-                }
-            }
+            normalizePseudoRoot(matrix, result);
 
             if (negative) {
                 result=hypersphereOptimize(matrix, result, false);
@@ -416,17 +415,7 @@ namespace QuantLib {
             }
             result = jd.eigenvectors() * diagonal;
 
-            // row normalization
-            for (Size i=0; i<size; ++i) {
-                Real norm = 0.0;
-                for (Size j=0; j<size; ++j)
-                    norm += result[i][j]*result[i][j];
-                if (norm>0.0) {
-                    norm = std::sqrt(matrix[i][i]/norm);
-                    for (Size j=0; j<size; ++j)
-                        result[i][j] *= norm;
-                }
-            }
+            normalizePseudoRoot(matrix, result);
 
             if (negative) {
                 result=hypersphereOptimize(matrix, result, true);
@@ -434,8 +423,8 @@ namespace QuantLib {
             break;
           case SalvagingAlgorithm::Higham: {
               int maxIterations = 40;
-              Real tolerance = 1e-6;
-              result = highamImplementation(matrix, maxIterations, tolerance);
+              Real tol = 1e-6;
+              result = highamImplementation(matrix, maxIterations, tol);
               result = CholeskyDecomposition(result, true);
             }
             break;
@@ -524,18 +513,7 @@ namespace QuantLib {
             diagonal[i][i] = std::sqrt(eigenValues[i]);
         Matrix result = jd.eigenvectors() * diagonal;
 
-        // row normalization
-        for (Size i=0; i<size; ++i) {
-            Real norm = 0.0;
-            for (Size j=0; j<retainedFactors; ++j)
-                norm += result[i][j]*result[i][j];
-            if (norm>0.0) {
-                norm = std::sqrt(matrix[i][i]/norm);
-                for( Size j=0; j<retainedFactors; ++j)
-                    result[i][j] *= norm;
-            }
-        }
-
+        normalizePseudoRoot(matrix, result);
         return result;
     }
 
