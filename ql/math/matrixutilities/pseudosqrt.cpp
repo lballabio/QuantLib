@@ -262,26 +262,22 @@ namespace QuantLib {
 
         // Matrix infinity norm. See Golub and van Loan (2.3.10) or
         // <http://en.wikipedia.org/wiki/Matrix_norm>
-        Real normInf(const Matrix& M)
-        {
+        Real normInf(const Matrix& M) {
             Size rows = M.rows();
             Size cols = M.columns();
             Real norm = 0.0;
-            for (Size i=0; i<rows; ++i)
-            {
+            for (Size i=0; i<rows; ++i) {
                 Real colSum = 0.0;
                 for (Size j=0; j<cols; ++j)
-                {
                     colSum += std::fabs(M[i][j]);
-                }
                 norm = std::max(norm, colSum);
             }
             return norm;
         }
 
         // Take a matrix and make all the diagonal entries 1.
-        const Disposable <Matrix> projectToUnitDiagonalMatrix(const Matrix& M)
-        {
+        const Disposable <Matrix>
+        projectToUnitDiagonalMatrix(const Matrix& M) {
             Size size = M.rows();
             QL_REQUIRE(size == M.columns(),
                        "matrix not square");
@@ -294,29 +290,28 @@ namespace QuantLib {
         }
 
         // Take a matrix and make all the eigenvalues non-negative
-        const Disposable <Matrix> projectToPositiveSemidefiniteMatrix(Matrix& M)
-        {
+        const Disposable <Matrix>
+        projectToPositiveSemidefiniteMatrix(Matrix& M) {
             Size size = M.rows();
             QL_REQUIRE(size == M.columns(),
                        "matrix not square");
 
-            Matrix result;
             Matrix diagonal(size, size, 0.0);
             SymmetricSchurDecomposition jd(M);
             for (Size i=0; i<size; ++i)
                 diagonal[i][i] = std::max<Real>(jd.eigenvalues()[i], 0.0);
 
-            result = jd.eigenvectors()*diagonal*transpose(jd.eigenvectors());
-
+            Matrix result =
+                jd.eigenvectors()*diagonal*transpose(jd.eigenvectors());
             return result;
         }
 
         // implementation of the Higham algorithm to find the nearest
         // correlation matrix.
-        const Disposable <Matrix> highamImplementation(
-                        const Matrix& A,
-                        const Size maxIterations,
-                        const Real& tolerance) {
+        const Disposable <Matrix>
+        highamImplementation(const Matrix& A,
+                             const Size maxIterations,
+                             const Real& tolerance) {
 
             Size size = A.rows();
             Matrix R, Y(A), X(A), deltaS(size, size, 0.0);
@@ -401,9 +396,8 @@ namespace QuantLib {
             result = jd.eigenvectors() * diagonal;
             normalizePseudoRoot(matrix, result);
 
-            if (negative) {
-                result=hypersphereOptimize(matrix, result, false);
-            }
+            if (negative)
+                result = hypersphereOptimize(matrix, result, false);
             break;
           case SalvagingAlgorithm::LowerDiagonal:
             // negative eigenvalues set to zero
@@ -417,9 +411,8 @@ namespace QuantLib {
 
             normalizePseudoRoot(matrix, result);
 
-            if (negative) {
-                result=hypersphereOptimize(matrix, result, true);
-            }
+            if (negative)
+                result = hypersphereOptimize(matrix, result, true);
             break;
           case SalvagingAlgorithm::Higham: {
               int maxIterations = 40;
@@ -518,4 +511,3 @@ namespace QuantLib {
     }
 
 }
-
