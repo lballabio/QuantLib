@@ -35,11 +35,13 @@ void InstrumentTest::testObservable() {
 
     Flag f;
     f.registerWith(s);
-
+    
+    s->NPV();
     me1->setValue(3.14);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of instrument change");
-
+    
+    s->NPV();
     f.lower();
     boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
@@ -48,9 +50,11 @@ void InstrumentTest::testObservable() {
 
     f.lower();
     s->freeze();
+    s->NPV();
     me2->setValue(2.71);
     if (f.isUp())
         BOOST_FAIL("Observer was notified of frozen instrument change");
+    s->NPV();
     s->unfreeze();
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of instrument change");

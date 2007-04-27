@@ -100,10 +100,12 @@ namespace QuantLib {
     : calculated_(false), frozen_(false) {}
 
     inline void LazyObject::update() {
-        calculated_ = false;
         // observers don't expect notifications from frozen objects
-        if (!frozen_)
+        // LazyObject forwards notifications only once until it has been 
+        // recalculated
+        if (!frozen_&& calculated_)
             notifyObservers();
+        calculated_ = false;
     }
 
     inline void LazyObject::recalculate() {
