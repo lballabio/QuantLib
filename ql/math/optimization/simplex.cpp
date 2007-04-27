@@ -60,22 +60,25 @@ namespace QuantLib {
 
         bool end = false;
         Size n = x_.size(), i;
-
+        // initialize vertices of the simplex
         vertices_ = std::vector<Array>(n+1, x_);
         for (i=0; i<n; i++) {
             Array direction(n, 0.0);
             direction[i] = 1.0;
             P.constraint().update(vertices_[i+1], direction, lambda_);
         }
+        // initialize function values on the simplex vertices
         values_ = Array(n+1, 0.0);
         for (i=0; i<=n; i++)
             values_[i] = P.value(vertices_[i]);
+        // loop looking for function stationarity
         do {
             sum_ = Array(n, 0.0);
-            Size i;
-            for (i=0; i<=n; i++)
+            //Size i;
+            for (Size i=0; i<=n; i++)
                 sum_ += vertices_[i];
-            //Determine best, worst and 2nd worst vertices
+            //Determine the best (iLowest), worst (iHighest) 
+            // and 2nd worst (iNextHighest) vertices
             Size iLowest = 0;
             Size iHighest, iNextHighest;
             if (values_[0]<values_[1]) {
@@ -96,21 +99,21 @@ namespace QuantLib {
                 if (values_[i]<values_[iLowest])
                     iLowest = i;
             }
-            Real low = values_[iLowest], high = values_[iHighest];
+            // check end criteria
+            Real low = values_[iLowest];
+            Real high = values_[iHighest];
             Real rtol = 2.0*std::fabs(high - low)/
-                (std::fabs(high) + std::fabs(low) + QL_EPSILON);
+                        (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             ++iterationNumber_;
-            if (rtol < endCriteria.functionEpsilon() ||
-                endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
-				endCriteria.checkStationaryFunctionAccuracy(QL_EPSILON, true, ecType); 
-				endCriteria.checkMaxIterations(iterationNumber_, ecType); // WARNING: A CHE COSA SERVE ???
-                x_ = vertices_[iLowest];
-				P.setFunctionValue(low);
-                P.setCurrentValue(x_);
-                stopTimer();
-                return ecType;
-            }
-
+            if (endCriteria.checkStationaryFunctionAccuracy(rtol, true, ecType) ||
+                endCriteria.checkMaxIterations(iterationNumber_, ecType)) {				
+                    x_ = vertices_[iLowest];
+                    P.setCurrentValue(x_);
+				    P.setFunctionValue(low);
+                    stopTimer();
+                    return ecType;
+                }
+            // continue
             Real factor = -1.0;
             Real vTry = extrapolate(P, iHighest, factor);
             if ((vTry <= values_[iLowest]) && (factor == -1.0)) {
