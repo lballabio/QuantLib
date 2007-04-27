@@ -31,6 +31,7 @@ QL_BEGIN_TEST_LOCALS(OptimizersTest)
 std::vector<boost::shared_ptr<CostFunction> > costFunctions_;
 std::vector<boost::shared_ptr<Constraint> > constraints_;
 std::vector<Array> initialValues_;
+std::vector<Size> maxIterations_, maxStationaryStateIterations_;
 std::vector<Real> rootEpsilons_, functionEpsilons_, gradientNormEpsilons_;
 std::vector<boost::shared_ptr<EndCriteria> > endCriterias_;
 std::vector<std::vector<boost::shared_ptr<OptimizationMethod> > > optimizationMethods_;
@@ -96,6 +97,7 @@ boost::shared_ptr<OptimizationMethod> makeOptimizationMethod(
     }
 }
 
+
 std::vector<boost::shared_ptr<OptimizationMethod> > makeOptimizationMethods(
     OptimizationMethodType optimizationMethodTypes[],
     Real simplexLambda, 
@@ -104,6 +106,7 @@ std::vector<boost::shared_ptr<OptimizationMethod> > makeOptimizationMethods(
     Real levenbergMarquardtGtol)
 {
     std::vector<boost::shared_ptr<OptimizationMethod> > results;
+    Size length = LENGTH(optimizationMethodTypes);
     for (Size i=0; i<LENGTH(optimizationMethodTypes); ++i) {
         results.push_back(makeOptimizationMethod(
             optimizationMethodTypes[i],
@@ -132,22 +135,28 @@ void setup() {
     constraints_.push_back(boost::shared_ptr<Constraint>(new NoConstraint()));
     // Set initial guess for optimizer
     Array initialValue(1);
-    initialValue[0] = -10.;
+    initialValue[0] = -100.;
     initialValues_.push_back(initialValue);
     // Set end criteria for optimizer
-    rootEpsilons_.push_back(1e-8);
-    functionEpsilons_.push_back(1e-8);
-    gradientNormEpsilons_.push_back(1e-8);
+    maxIterations_.push_back(1000);                // maxIterations
+    maxStationaryStateIterations_.push_back(100);   // MaxStationaryStateIterations
+    rootEpsilons_.push_back(1e-8);                  // rootEpsilon
+    functionEpsilons_.push_back(1e-16);             // functionEpsilon
+    gradientNormEpsilons_.push_back(1e-8);          // gradientNormEpsilon
     endCriterias_.push_back(boost::shared_ptr<EndCriteria>(
-        new EndCriteria(1000, 100, rootEpsilons_.back(), functionEpsilons_.back(),
+        new EndCriteria(maxIterations_.back(), maxStationaryStateIterations_.back(), 
+                        rootEpsilons_.back(), functionEpsilons_.back(),
                         gradientNormEpsilons_.back())));
     // Set optimization methods for optimizer
     OptimizationMethodType optimizationMethodTypes[] = {
-        //simplex,
-        levenbergMarquardt};
+        simplex}; //, levenbergMarquardt};
+    Real simplexLambda = 0.1;                   // characteristic search length for simplex
+    Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
+    Real levenbergMarquardtXtol   = 1.0e-8;     //
+    Real levenbergMarquardtGtol   = 1.0e-8;     //
     optimizationMethods_.push_back(makeOptimizationMethods(
         optimizationMethodTypes,
-        0.1, 1.0e-8, 1.0e-8, 1.0e-8));
+        simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol, levenbergMarquardtGtol));
     // Set expected results for optimizer
     Array xMinExpected(1),yMinExpected(1);
     xMinExpected[0] = -b/(2.0*a);
@@ -163,26 +172,32 @@ void OptimizersTest::test() {
     QL_TEST_SETUP
     for (Size i=0; i<costFunctions_.size(); ++i) {
         Problem problem(*costFunctions_[i], *constraints_[i], initialValues_[i]);
-        for (Size j=0; j<optimizationMethods_[i].size(); ++j) {
+        for (Size j=0; j<(optimizationMethods_[i]).size(); ++j) {
             EndCriteria::Type endCriteriaResult = 
                 optimizationMethods_[i][j]->minimize(problem, *endCriterias_[i]);
         Array xMinCalculated = problem.currentValue();
-        //Array yMinCalculated = TBD;
+        Array yMinCalculated = problem.values(xMinCalculated);
         // Check optimizatin results vs known solution 
         for (Size k=0; k < xMinCalculated.size(); ++k) {
-            //if (std::fabs(xMinCalculated[k] - xMinExpected_[k]) > rootEpsilons_[i]) {
+            //if (std::fabs(yMinExpected_[k]- yMinCalculated[k]) > functionEpsilons_[i]) {
             if (true) {
-                    BOOST_MESSAGE("costFunction = " << i << "\n"
-                                  "optimizer = " << j<< "\n"
-                                  << " method:\n" << std::setprecision(9) 
-                                  << "    expected:   " << xMinExpected_[k] << "\n"
-                                  << "    calculated: " << xMinCalculated[k] << "\n"
-                                  << "    rootEpsilon:   " << rootEpsilons_[i]);
+            BOOST_MESSAGE("costFunction = " << i << "\n"
+                              "optimizer =  " << j<< "\n"
+                              << "    x expected:    " << xMinExpected_[k] << "\n"
+                              << "    x calculated:  " << std::setprecision(9) << xMinCalculated[k] << "\n"
+                              << "    x difference:  " <<  xMinExpected_[k]- xMinCalculated[k] << "\n"
+                              << "    rootEpsilon:   " << std::setprecision(9) << rootEpsilons_[i] << "\n"
+                              << "    y expected:    " << yMinExpected_[k] << "\n"
+                              << "    y calculated:  " << std::setprecision(9) << yMinCalculated[k] << "\n"
+                              << "    y difference:  " <<  yMinExpected_[k]- yMinCalculated[k] << "\n"
+                              << "    functionEpsilon:   " << std::setprecision(9) << functionEpsilons_[i] << "\n"
+                              << "    endCriteriaResult:  " << endCriteriaResult);
                 }
             }
         }
     }
 }
+
 
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
