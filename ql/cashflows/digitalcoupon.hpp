@@ -32,7 +32,12 @@
 namespace QuantLib {
 
     //! Floating-rate coupon with digital cap/floor
-    /*! The evaluation of the coupon is made using the call/put spread
+    /*! Payoffs:
+        - Digital Capped Rate Coupon:   rate - cashRate * Heaviside(rate-strike)
+        - Digital Floored Rate Coupon:  rate + cashRate * Heaviside(strike-rate)
+        where X is equal to cashRate for cash-or-nothing options and it is equal
+        to rate for asset-or-nothing options.
+        The evaluation of the coupon is made using the call/put spread
         replication method.
     */
     class DigitalCoupon : public FloatingRateCoupon {

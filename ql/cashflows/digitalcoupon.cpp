@@ -92,7 +92,6 @@ namespace QuantLib {
             }
         }
 
-
         /* Floor digital option: 
            the putOptionRate is calculated as a call digital option
            to subract from the callOptionRate */
@@ -121,7 +120,8 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::rate() const { 
-        return underlying_->rate() - optionRate();
+        Real csi = isCall() ? -1 : 1;
+        return underlying_->rate() + csi * optionRate();
     }
 
     Rate DigitalCoupon::convexityAdjustment() const {
