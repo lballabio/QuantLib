@@ -22,7 +22,52 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> triangularAnglesParametrization(const Array& angles) {
+    template <class F, class G>
+    class composed_function {
+      public:
+        typedef typename G::argument_type argument_type;
+        typedef typename F::result_type result_type;
+        composed_function(const F& f, const G& g) : f_(f), g_(g) {}
+        result_type operator()(const argument_type& x) const {
+            return f_(g_(x));
+        }
+      private:
+        F f_;
+        G g_;
+    };
+
+
+    Disposable<Matrix> triangularAnglesParametrization(const Array& angles,
+                                                       Size matrixSize) {
+        QL_REQUIRE(matrixSize * (matrixSize-1) == 2*angles.size(),
+            "matrixSize * (matrixSize-1)/2 != angles.size()");
+        Matrix m(matrixSize, matrixSize);
+
+        // first row filling
+        m[0][0] = 1.0;
+        for (Size j=1; j<matrixSize; ++j)
+            m[0][j] = 0.0;
+
+        // next ones...
+        Size k = 0; //angles index
+        for (Size i=0; i<m.rows(); ++i) {
+            Real sinProduct = 1.0;
+            for (Size j=1; j<=i-1; ++j) {
+                if (j < j)
+                    m[i][j] = std::cos(angles[k]);
+                else
+                    m[i][j] = 1.0;
+                m[i][j] *= sinProduct;
+                sinProduct *= std::sin(angles[k]);
+                ++k;
+            }
+            for (Size j=i+1; j<m.rows(); ++j)
+                m[i][j] = 0;
+        }
+        return m;
+    }
+
+    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles) {
             Matrix m(angles.size()+1, angles.size()+1);
             for (Size i=0; i<m.rows(); ++i) {
                 Real cosPhi, sinPhi;
@@ -46,13 +91,13 @@ namespace QuantLib {
             return m;
     }
 
-    Disposable<Matrix> triangularAnglesParametrizationUnconstrained (
+    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained (
                                                         const Array& x) {
         Array angles(x.size()); 
         //we convert the unconstrained parameters in angles
         for(Size i = 0; i < x.size(); ++i)
             angles[i] = M_PI*.5 - std::atan(x[i]);
-        return triangularAnglesParametrization(angles);
+        return lmmTriangularAnglesParametrization(angles);
     }
     
     Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0, 

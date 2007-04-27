@@ -45,9 +45,15 @@ namespace QuantLib {
     */
     Disposable<Matrix> triangularAnglesParametrization(const Array& angles);
 
+    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles);
+
     // the same function using the angles parameterized by the following 
     // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
+
     Disposable<Matrix> triangularAnglesParametrizationUnconstrained(const Array& x);
+
+
+    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained(const Array& x);
 
 
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix 
