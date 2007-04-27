@@ -60,7 +60,7 @@ namespace QuantLib {
 
         Size order() const { return x_.size(); }
 
-    private:
+      private:
         Array x_, w_;
     };
 
@@ -254,6 +254,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

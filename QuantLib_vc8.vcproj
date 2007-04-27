@@ -2663,6 +2663,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\math\integrals\segmentintegral.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\integrals\segmentintegral.hpp"
 					>
 				</File>

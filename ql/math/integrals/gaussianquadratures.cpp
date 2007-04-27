@@ -29,8 +29,8 @@
 namespace QuantLib {
 
     GaussianQuadrature::GaussianQuadrature(
-                                 Size n,
-                                 const GaussianOrthogonalPolynomial& orthPoly)
+                                Size n,
+                                const GaussianOrthogonalPolynomial& orthPoly)
     : x_(n), w_(n) {
 
         // set-up matrix to compute the roots and the weights
@@ -147,4 +147,3 @@ namespace QuantLib {
     const Size TabulatedGaussLegendre::n20 = 10;
 
 }
-

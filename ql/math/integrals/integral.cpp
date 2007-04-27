@@ -21,13 +21,14 @@
 
 namespace QuantLib {
 
-    Integrator::Integrator(Real absoluteAccuracy, Size maxEvaluations):
-        absoluteAccuracy_(absoluteAccuracy),
-        maxEvaluations_(maxEvaluations){
-                QL_REQUIRE(absoluteAccuracy > QL_EPSILON,
-                   std::scientific
-                   << "required tolerance (" << absoluteAccuracy
-                   << ") not allowed. It must be > " << QL_EPSILON);
+    Integrator::Integrator(Real absoluteAccuracy,
+                          Size maxEvaluations)
+    : absoluteAccuracy_(absoluteAccuracy),
+      maxEvaluations_(maxEvaluations) {
+        QL_REQUIRE(absoluteAccuracy > QL_EPSILON,
+                   std::scientific << "required tolerance (" <<
+                   absoluteAccuracy << ") not allowed. It must be > " <<
+                   QL_EPSILON);
     }
 
     void Integrator::setAbsoluteAccuracy(Real accuracy) {
@@ -58,11 +59,12 @@ namespace QuantLib {
     }
 
     Real Integrator::operator()(const boost::function<Real (Real)>& f,
-                                Real a, Real b) const {
+                                Real a,
+                                Real b) const {
             if (a == b)
                 return 0.0;
             if (a > b)
-                return -(*this)(f,b,a);
+                return -(*this)(f, b, a);
             nbEvalutions_ = 0;
             return integrate(f, a, b);
     }

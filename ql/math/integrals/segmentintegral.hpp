@@ -18,7 +18,7 @@
 */
 
 /*! \file segmentintegral.hpp
-    \brief Integral of a one-dimensional function
+    \brief Integral of a one-dimensional function using segment algorithm
 */
 
 #ifndef quantlib_segment_integral_h
@@ -50,7 +50,8 @@ namespace QuantLib {
         SegmentIntegral(Size intervals);
       protected:
         virtual Real integrate(const boost::function<Real (Real)>& f,
-			    Real a, Real b) const; 
+			                   Real a,
+                               Real b) const; 
       private:
         Size intervals_;
     };
@@ -58,22 +59,18 @@ namespace QuantLib {
 
     // inline and template definitions
     
-    inline SegmentIntegral::SegmentIntegral(Size intervals)
-            : Integrator(1, 1), intervals_(intervals) {
-        QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
+    inline Real
+    SegmentIntegral::integrate(const boost::function<Real (Real)>& f,
+                               Real a,
+                               Real b) const {
+        Real dx = (b-a)/intervals_;
+        Real sum = 0.5*(f(a)+f(b));
+        Real end = b - 0.5*dx;
+        for (Real x = a+dx; x < end; x += dx)
+            sum += f(x);
+        return sum*dx;
     }
 
-    inline Real SegmentIntegral::integrate(
-        const boost::function<Real (Real)>& f, Real a, Real b) const {
-            Real dx = (b-a)/intervals_;
-            Real sum = 0.5*(f(a)+f(b));
-            Real end = b - 0.5*dx;
-            for (Real x = a+dx; x < end; x += dx)
-                sum += f(x);
-            return sum*dx;
-        }
-
 }
-
 
 #endif

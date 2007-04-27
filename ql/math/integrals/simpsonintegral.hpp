@@ -19,7 +19,7 @@
 */
 
 /*! \file simpsonintegral.hpp
-    \brief integral of a one-dimensional function
+    \brief integral of a one-dimensional function using Simpson formula
 */
 
 #ifndef quantlib_simpson_integral_hpp
@@ -37,10 +37,11 @@ namespace QuantLib {
       public:
         SimpsonIntegral(Real accuracy,
                         Size maxIterations = Null<Size>())
-        : TrapezoidIntegral(accuracy,Default,maxIterations) {}
-    protected:
-        Real integrate(const boost::function<Real (Real)>& f, Real a, 
-                                                          Real b) const {
+        : TrapezoidIntegral(accuracy, Default, maxIterations) {}
+      protected:
+        Real integrate(const boost::function<Real (Real)>& f,
+                       Real a, 
+                       Real b) const {
 
             // start from the coarsest trapezoid...
             Size N = 1;
@@ -70,6 +71,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

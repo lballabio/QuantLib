@@ -2364,6 +2364,9 @@
 				Name="integrals"
 				Filter="">
 				<File
+					RelativePath=".\ql\math\integrals\all.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\integrals\gaussianorthogonalpolynomial.cpp">
 				</File>
 				<File
@@ -2386,6 +2389,9 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\integrals\kronrodintegral.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\integrals\segmentintegral.cpp">
 				</File>
 				<File
 					RelativePath=".\ql\math\integrals\segmentintegral.hpp">

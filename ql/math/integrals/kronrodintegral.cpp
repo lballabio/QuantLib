@@ -22,7 +22,9 @@
 
 namespace QuantLib {
 
-    static Real rescaleError (Real err, const Real resultAbs, const Real resultAsc){
+    static Real rescaleError(Real err,
+                             const Real resultAbs,
+                             const Real resultAsc) {
         err = std::fabs(err) ;
         if (resultAsc != 0 && err != 0){
             Real scale = pow((200 * err / resultAsc), 1.5) ;
@@ -37,7 +39,7 @@ namespace QuantLib {
                 err = min_err ;
             }
         return err ;
-        }
+    }
 
     /* Gauss-Kronrod-Patterson quadrature coefficients for use in
     quadpack routine qng. These coefficients were calculated with
@@ -217,14 +219,16 @@ namespace QuantLib {
 		return relativeAccuracy_; 
 	}
 
-	GaussKronrodNonAdaptive::GaussKronrodNonAdaptive (Real absoluteAccuracy, 
-								Size maxEvaluations, Real relativeAccuracy):
-						Integrator(absoluteAccuracy, maxEvaluations), 
-							relativeAccuracy_(relativeAccuracy){}
+	GaussKronrodNonAdaptive::GaussKronrodNonAdaptive(Real absoluteAccuracy,
+                                                     Size maxEvaluations,
+                                                     Real relativeAccuracy)
+    : Integrator(absoluteAccuracy, maxEvaluations), 
+	  relativeAccuracy_(relativeAccuracy) {}
 
-	Real GaussKronrodNonAdaptive::integrate(
-									const boost::function<Real (Real)>& f,
-									Real a, Real b) const {
+	Real
+    GaussKronrodNonAdaptive::integrate(const boost::function<Real (Real)>& f,
+                                       Real a,
+                                       Real b) const {
 		Real result;
 		//Size neval;
         Real fv1[5], fv2[5], fv3[5], fv4[5];
@@ -247,7 +251,7 @@ namespace QuantLib {
         res21 = w21b[5] * fCenter;
         resAbs = w21b[5] * std::fabs(fCenter);
 
-        for (k = 0; k < 5; k++){
+        for (k = 0; k < 5; k++) {
             Real abscissa = halfLength * x1[k];
             Real fval1 = f(center + abscissa);
             Real fval2 = f(center - abscissa);
@@ -258,9 +262,9 @@ namespace QuantLib {
             savfun[k] = fval;
             fv1[k] = fval1;
             fv2[k] = fval2;
-            }
+        }
 
-        for (k = 0; k < 5; k++){
+        for (k = 0; k < 5; k++) {
             Real abscissa = halfLength * x2[k];
             Real fval1 = f(center + abscissa);
             Real fval2 = f(center - abscissa);
@@ -270,7 +274,7 @@ namespace QuantLib {
             savfun[k + 5] = fval;
             fv3[k] = fval1;
             fv4[k] = fval2;
-            }
+        }
 
         result = res21 * halfLength;
         resAbs *= halfLength ;
@@ -330,7 +334,7 @@ namespace QuantLib {
             Real abscissa = halfLength * x4[k];
             res87 += w87b[k] * (f(center + abscissa)
                 + f(center - abscissa));
-            }
+        }
 
         // test for convergence.
         result = res87 * halfLength ;
@@ -341,9 +345,10 @@ namespace QuantLib {
         return result;
     }
 
-    Real GaussKronrodAdaptive::integrate(
-                        const boost::function<Real (Real)>& f,
-                        Real a, Real b) const {
+    Real
+    GaussKronrodAdaptive::integrate(const boost::function<Real (Real)>& f,
+                                    Real a,
+                                    Real b) const {
         return integrateRecursively(f, a, b, absoluteAccuracy());
     }
 
@@ -374,9 +379,10 @@ namespace QuantLib {
                                  0.991455371120813 };
 
     Real GaussKronrodAdaptive::integrateRecursively(
-                        const boost::function<Real (Real)>& f,
-                        Real a, Real b, Real tolerance) const {
-
+                                    const boost::function<Real (Real)>& f,
+                                    Real a,
+                                    Real b,
+                                    Real tolerance) const {
 
             Real halflength = (b - a) / 2;
             Real center = (a + b) / 2;
@@ -429,12 +435,10 @@ namespace QuantLib {
 
 
     GaussKronrodAdaptive::GaussKronrodAdaptive(Real absoluteAccuracy,
-                                            Size maxEvaluations)
-        :Integrator(absoluteAccuracy, maxEvaluations) {
+                                               Size maxEvaluations)
+    : Integrator(absoluteAccuracy, maxEvaluations) {
         QL_REQUIRE(maxEvaluations >= 15,
-               "required maxEvaluations ("
-               << maxEvaluations
-               << ") not allowed. It must be >= 15");
+                   "required maxEvaluations (" << maxEvaluations <<
+                   ") not allowed. It must be >= 15");
     }
 }
-

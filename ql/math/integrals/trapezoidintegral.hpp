@@ -19,7 +19,7 @@
 */
 
 /*! \file trapezoidintegral.hpp
-    \brief integral of a one-dimensional function
+    \brief integral of a one-dimensional function using the trapezoid formula
 */
 
 #ifndef quantlib_trapezoid_integral_hpp
@@ -54,15 +54,15 @@ namespace QuantLib {
         TrapezoidIntegral(Real accuracy,
                           Method method = Default,
                           Size maxIterations = Null<Size>())
-        : Integrator(accuracy, maxIterations), method_(method){}
+        : Integrator(accuracy, maxIterations), method_(method) {}
       protected:
         // calculation parameters
         Method method() const { return method_; }
         Method& method() { return method_; }
-      
-    protected:
+      protected:
         Real integrate (const boost::function<Real (Real)>& f, 
-                                            Real a, Real b) const {
+                        Real a,
+                        Real b) const {
 
             // start from the coarsest trapezoid...
             Size N = 1;
@@ -115,6 +115,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

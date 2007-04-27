@@ -49,24 +49,22 @@ namespace QuantLib {
         all the results of its predecessors, in order to minimize the total 
         number of function evaluations. 
     */
-
 	class GaussKronrodNonAdaptive : public Integrator {
 	  public:
           GaussKronrodNonAdaptive(Real absoluteAccuracy, 
-                                    Size maxEvaluations,
-								    Real relativeAccuracy);
-
-		  
+                                  Size maxEvaluations,
+								  Real relativeAccuracy);
 		  void setRelativeAccuracy(Real);	
 		  Real relativeAccuracy() const;
       protected:
           Real integrate(const boost::function<Real (Real)>& f,
-                            Real a, Real b) const;
+                         Real a,
+                         Real b) const;
 	  private:
 		  Real relativeAccuracy_;
 	};
-    /*
-        The gaussKronrodAdaptative class provide an adaptive integration procedure 
+
+    /*  The gaussKronrodAdaptative class provide an adaptive integration procedure 
         using 15 points Gauss-Kronrod integration rule. 
         This is more robust in that it allows to integrate less smooth functions
         (though singular functions should be integrated using dedicated algorithms)
@@ -84,21 +82,20 @@ namespace QuantLib {
         \test the correctness of the result is tested by checking it
               against known good values.
     */
-
     class GaussKronrodAdaptive : public Integrator {
       public:
           GaussKronrodAdaptive(Real tolerance,
-                        Size maxFunctionEvaluations = Null<Size>());
-        
-
+                               Size maxFunctionEvaluations = Null<Size>());
       protected:
           Real integrate(const boost::function<Real (Real)>& f,
-                            Real a, Real b) const;
+                         Real a,
+                         Real b) const;
       private:
           Real integrateRecursively(const boost::function<Real (Real)>& f,
-                            Real a, Real b, Real tolerance) const;
+                                    Real a,
+                                    Real b,
+                                    Real tolerance) const;
       };
 }
-
 
 #endif
