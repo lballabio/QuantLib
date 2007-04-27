@@ -91,7 +91,20 @@ namespace QuantLib {
                    const std::vector<Spread>& spreads =std::vector<Spread>(),
                    const std::vector<Rate>& caps = std::vector<Rate>(),
                    const std::vector<Rate>& floors = std::vector<Rate>());
-
+        
+    //! helper function building a sequence of range accrual floaters coupons
+    Leg RangeAccrualLeg(const std::vector<Real>& nominals,
+                       const Schedule& schedule,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const DayCounter& paymentDayCounter = DayCounter(),
+                       BusinessDayConvention paymentConvention = Following,
+                       Natural fixingDays = Null<Natural>(),
+                       const std::vector<Real>& gearings = std::vector<Real>(),
+                       const std::vector<Spread>& spreads =std::vector<Spread>(),
+                       const std::vector<Rate>& lowerTriggers = std::vector<Rate>(),
+                       const std::vector<Rate>& upperTriggers = std::vector<Rate>(),
+                       const Period& observationTenor = 1*Days,
+                       BusinessDayConvention observationConvention = ModifiedFollowing);
 }
 
 #endif

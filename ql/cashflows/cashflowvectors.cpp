@@ -26,6 +26,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/rangeaccrual.hpp>
 
 namespace QuantLib {
 
@@ -418,5 +419,86 @@ namespace QuantLib {
                    spreads,
                    caps,
                    floors);
+    }
+
+    Leg RangeAccrualLeg(const std::vector<Real>& nominals,
+                       const Schedule& schedule,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const DayCounter& paymentDayCounter,
+                       BusinessDayConvention paymentConvention,
+                       Natural fixingDays,
+                       const std::vector<Real>& gearings,
+                       const std::vector<Spread>& spreads,
+                       const std::vector<Rate>& lowerTriggers,
+                       const std::vector<Rate>& upperTriggers,
+                       const Period& observationTenor,
+                       BusinessDayConvention observationConvention) {
+
+        QL_REQUIRE(!nominals.empty(), "no nominal given");
+
+        Size n = schedule.size()-1;
+        QL_REQUIRE(nominals.size() <= n,
+                   "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings.size()<=n,
+                   "too many gearings (" << gearings.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads.size()<=n,
+                   "too many spreads (" << spreads.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(lowerTriggers.size()<=n,
+                   "too many lowerTriggers (" << lowerTriggers.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(upperTriggers.size()<=n,
+                   "too many upperTriggers (" << upperTriggers.size() <<
+                   "), only " << n << " required");
+
+        Leg leg; leg.reserve(n);
+
+        // the following is not always correct
+        Calendar calendar = schedule.calendar();
+
+        Date refStart, start, refEnd, end;
+        Date paymentDate;
+        std::vector<boost::shared_ptr<Schedule> > observationsSchedules;
+
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule.date(i);
+            refEnd   =   end = schedule.date(i+1);
+            paymentDate = calendar.adjust(end, paymentConvention);
+            if (i==0   && !schedule.isRegular(i+1))
+                refStart = calendar.adjust(end - schedule.tenor(), paymentConvention);
+            if (i==n-1 && !schedule.isRegular(i+1))
+                refEnd = calendar.adjust(start + schedule.tenor(), paymentConvention);
+            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
+                                    get(spreads, i, 0.0),
+                                    paymentDayCounter,
+                                    start, end, refStart, refEnd)));
+            } else { // floating coupon
+                    observationsSchedules.push_back( boost::shared_ptr<Schedule>( new 
+                          Schedule(start, end,
+                                  observationTenor, calendar,
+                                  observationConvention,
+                                  observationConvention,
+                                  false, false)));
+
+                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                       RangeAccrualFloatersCoupon(
+                            get(nominals, i, Null<Real>()),
+                            paymentDate,
+                            index,
+                            start, end, fixingDays,
+                            paymentDayCounter,
+                            get(gearings, i, 1.0),
+                            get(spreads, i, 0.0),
+                            refStart, refEnd,
+                            observationsSchedules.back(),
+                            get(lowerTriggers, i, Null<Rate>()),
+                            get(upperTriggers, i, Null<Rate>()))));
+            }
+        }
+        return leg;
     }
 }
