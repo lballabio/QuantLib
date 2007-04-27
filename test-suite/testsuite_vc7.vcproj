@@ -1081,6 +1081,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\digitalcoupon.cpp">
+			</File>
+			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2574,6 +2577,9 @@
 			</File>
 			<File
 				RelativePath="daycounters.hpp">
+			</File>
+			<File
+				RelativePath=".\digitalcoupon.hpp">
 			</File>
 			<File
 				RelativePath="digitaloption.hpp">

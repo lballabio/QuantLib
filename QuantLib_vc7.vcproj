@@ -2419,6 +2419,9 @@
 					RelativePath=".\ql\math\interpolations\extrapolation.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\interpolations\flatextrapolation2d.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\interpolations\forwardflatinterpolation.hpp">
 				</File>
 				<File
