@@ -83,7 +83,7 @@ namespace QuantLib {
             underlying_->setPricer(pricer);
         }
 
-    protected:
+    private:
         //! \name Data members
         //@{
         //!
@@ -92,6 +92,10 @@ namespace QuantLib {
         Rate lowerStrike_;
         //! the strike rate for the the put option
         Rate upperStrike_;
+        //! the effective strike rate for the the call option
+        Rate effectiveLowerStrike_;
+        //! the effective strike rate for the the put option
+        Rate effectiveUpperStrike_;
         //! the rate paid if the cash-or-nothing option is in-the-money
         Rate cashRate_;
         //! the gap between strikes in payoff replication
