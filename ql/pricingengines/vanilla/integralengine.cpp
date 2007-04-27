@@ -73,9 +73,7 @@ namespace QuantLib {
         Integrand f(arguments_.payoff,
                     process->stateVariable()->value(),
                     drift, variance);
-        Size maxEvaluations = 1; // dummy value
-        Real absoluteAccuracy = .1; // dummy value
-        SegmentIntegral integrator(absoluteAccuracy, maxEvaluations, 5000);
+        SegmentIntegral integrator(5000);
 
         Real infinity = 10.0*std::sqrt(variance);
         results_.value =

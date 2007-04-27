@@ -47,8 +47,7 @@ namespace QuantLib {
     */
     class SegmentIntegral : public Integrator {
       public:
-        SegmentIntegral(Real absoluteAccuracy, 
-        Size maxEvaluations, Size intervals);
+        SegmentIntegral(Size intervals);
       protected:
         virtual Real integrate(const boost::function<Real (Real)>& f,
 			    Real a, Real b) const; 
@@ -59,10 +58,8 @@ namespace QuantLib {
 
     // inline and template definitions
     
-    inline SegmentIntegral::SegmentIntegral(Real absoluteAccuracy, 
-        Size maxEvaluations, Size intervals)
-            : Integrator(absoluteAccuracy, maxEvaluations), 
-              intervals_(intervals) {
+    inline SegmentIntegral::SegmentIntegral(Size intervals)
+            : Integrator(1, 1), intervals_(intervals) {
         QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
     }
 

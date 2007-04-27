@@ -85,18 +85,17 @@ QL_END_TEST_LOCALS(IntegralTest)
 
 void IntegralTest::testSegment() {
     BOOST_MESSAGE("Testing segment integration...");
-    Size maxEvaluations = 1; // dummy value
-    testSeveral(SegmentIntegral(tolerance, maxEvaluations, 10000));
+    testSeveral(SegmentIntegral(10000));
 }
 
 void IntegralTest::testTrapezoid() {
     BOOST_MESSAGE("Testing trapezoid integration...");
-    testSeveral(TrapezoidIntegral(tolerance, TrapezoidIntegral::Default, 1000));
+    testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::Default,10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
     BOOST_MESSAGE("Testing mid-point trapezoid integration...");
-    testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::MidPoint));
+    testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::MidPoint,10000));
 }
 
 void IntegralTest::testSimpson() {

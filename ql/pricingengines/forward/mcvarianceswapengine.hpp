@@ -301,10 +301,7 @@ namespace QuantLib {
         Time t0 = path.timeGrid().front();
         Time t = path.timeGrid().back();
         Time dt = path.timeGrid().dt(0);
-        Size maxEvaluations = 1; // dummy value
-        Real absoluteAccuracy = .1; // dummy value
-        SegmentIntegral integrator(absoluteAccuracy, 
-            maxEvaluations,static_cast<Size>(t/dt));
+        SegmentIntegral integrator(static_cast<Size>(t/dt));
         detail::Integrand f(path, process_);
         return integrator(f,t0,t)/t;
     }
