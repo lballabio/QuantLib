@@ -30,6 +30,8 @@ class DigitalCouponTest {
   public:
     static void testAssetOrNothing();
     static void testCashOrNothing();
+    static void testCashOrNothingDeepInTheMoney();
+    static void testCashOrNothingDeepOutTheMoney();
     static boost::unit_test_framework::test_suite* suite();
 };
 
