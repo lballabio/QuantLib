@@ -48,10 +48,10 @@ namespace QuantLib {
 
     Disposable<Matrix> triangularAnglesParametrizationUnconstrained (
                                                         const Array& x) {
-        Array angles(x.size()); // to be improved ...
+        Array angles(x.size()); 
         //we convert the unconstrained parameters in angles
         for(Size i = 0; i < x.size(); ++i)
-            angles[i] = std::atan(x[i]) + M_PI*.5 ;
+            angles[i] = M_PI*.5 - std::atan(x[i]);
         return triangularAnglesParametrization(angles);
     }
     
@@ -87,12 +87,12 @@ namespace QuantLib {
         // refresh parameterizedMatrix_ with values implied by the new set of
         // parameters
         Matrix pseudoRoot = f_(x);
-        Matrix correlationMatrix = pseudoRoot * transpose(pseudoRoot) - target_;
+        Matrix differences = pseudoRoot * transpose(pseudoRoot) - target_;
         // then we store the elementwise differences in a vector.
         for (Size i=0; i<target_.rows(); ++i)
             for (Size j=0; j<target_.columns(); ++j)
                 result[i*target_.rows()+j] 
-                            += correlationMatrix[i][j]*correlationMatrix[i][j];
+                            = differences[i][j]*differences[i][j];
         return result;
     }
 }
