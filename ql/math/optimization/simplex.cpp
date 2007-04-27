@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Marco Bianchetti
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -99,14 +100,17 @@ namespace QuantLib {
                 if (values_[i]<values_[iLowest])
                     iLowest = i;
             }
-            // check end criteria
+            // compute fractional accuracy (rtol) and update iteration number
             Real low = values_[iLowest];
             Real high = values_[iHighest];
-            Real rtol = 2.0*std::fabs(high - low)/
-                        (std::fabs(high) + std::fabs(low) + QL_EPSILON);
+            Real averageAbs = 0.5*(std::fabs(high) + std::fabs(low) + QL_EPSILON);
+            Real rtol = std::fabs(high - low)/averageAbs;
             ++iterationNumber_;
-            if (endCriteria.checkStationaryFunctionAccuracy(rtol, true, ecType) ||
-                endCriteria.checkMaxIterations(iterationNumber_, ecType)) {				
+            // check end criteria
+            if (rtol < endCriteria.functionEpsilon()/averageAbs ||
+                endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
+                    endCriteria.checkStationaryFunctionAccuracy(QL_EPSILON, true, ecType);
+                    endCriteria.checkMaxIterations(iterationNumber_, ecType); 
                     x_ = vertices_[iLowest];
                     P.setCurrentValue(x_);
 				    P.setFunctionValue(low);
