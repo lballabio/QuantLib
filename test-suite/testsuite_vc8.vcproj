@@ -977,6 +977,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\digitalcoupon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="digitaloption.cpp"
 				>
 				<FileConfiguration
@@ -2311,6 +2315,10 @@
 			</File>
 			<File
 				RelativePath="daycounters.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\digitalcoupon.hpp"
 				>
 			</File>
 			<File
