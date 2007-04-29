@@ -81,10 +81,8 @@ namespace QuantLib {
         Real pastWeight   = pastFixings/N;
         Real futureWeight = 1.0-pastWeight;
 
-
         Time timeSum = std::accumulate(fixingTimes.begin(),
                                        fixingTimes.end(), 0.0);
-
 
         Volatility vola = process->blackVolatility()->blackVol(
                                               arguments_.exercise->lastDate(),
@@ -103,9 +101,10 @@ namespace QuantLib {
         Rate riskFreeRate = process->riskFreeRate()->
             zeroRate(exDate, rfdc, Continuous, NoFrequency);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
+		
+		Real s = process->stateVariable()->value();
         Real muG = pastWeight * runningLog +
-            futureWeight * std::log(process->stateVariable()->value()) +
-            nu*timeSum/N;
+            futureWeight * std::log(s) + nu*timeSum/N;
         Real forwardPrice = std::exp(muG + variance / 2.0);
 
         DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
@@ -115,10 +114,12 @@ namespace QuantLib {
                               riskFreeDiscount);
 
         results_.value = black.value();
-        results_.delta = black.delta(process->stateVariable()->value());
-        results_.gamma = black.gamma(process->stateVariable()->value());
+        results_.delta = futureWeight*black.delta(forwardPrice)*forwardPrice/s;
+        results_.gamma = forwardPrice*futureWeight/(s*s)
+				*(  black.gamma(forwardPrice)*futureWeight*forwardPrice
+				  - pastWeight*black.delta(forwardPrice) );
 
-        Real Nx_1, nx_1;
+		Real Nx_1, nx_1;
         CumulativeNormalDistribution CND;
         NormalDistribution ND;
         if (sigG > QL_EPSILON) {
@@ -136,28 +137,23 @@ namespace QuantLib {
             results_.vega -= riskFreeDiscount * forwardPrice *
                                               (dmuG_dsig + sigG * dsigG_dsig);
 
-        /*
-        Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                              arguments_.exercise->lastDate());
-        results_.rho = black.rho(t);
+        Time tRho = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+									  arguments_.exercise->lastDate());
+   		results_.rho = black.rho(tRho)*timeSum/(N*tRho) 
+                      - (tRho-timeSum/N)*results_.value;
 
-        t = divdc.yearFraction(process->dividendYield()->referenceDate(),
-                               arguments_.exercise->lastDate());
-        results_.dividendRho = black.dividendRho(t);
+		Time tDiv = divdc.yearFraction(
+                           process->dividendYield()->referenceDate(),
+                           arguments_.exercise->lastDate());
 
-        t = voldc.yearFraction(process->blackVolatility()->referenceDate(),
-                               arguments_.exercise->lastDate());
-
-        results_.theta = black.theta(process->stateVariable()->value(), t);
-        */
+        results_.dividendRho = black.dividendRho(tDiv)*timeSum/(N*tDiv);
 
         results_.strikeSensitivity = black.strikeSensitivity();
 
         results_.theta = blackScholesTheta(process,
                                            results_.value,
                                            results_.delta,
-                                           results_.gamma);
+										   results_.gamma);
     }
-
 }
 

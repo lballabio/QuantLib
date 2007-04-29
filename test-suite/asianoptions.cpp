@@ -633,8 +633,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
     tolerance["theta"]  = 1.0e-5;
-    // tolerance["rho"]    = 1.0e-5;
-    // tolerance["divRho"] = 1.0e-5;
+    tolerance["rho"]    = 1.0e-5;
+    tolerance["divRho"] = 1.0e-5;
     tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
@@ -670,8 +670,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
             boost::shared_ptr<PlainVanillaPayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-            Real runningAverage = 1.0;
-            Size pastFixings = 0;
+            Real runningAverage = 120;
+            Size pastFixings = 1;
 
             std::vector<Date> fixingDates;
             for (Date d = today + 3*Months;
@@ -706,8 +706,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
                       calculated["theta"]  = option.theta();
-                      // calculated["rho"]    = option.rho();
-                      // calculated["divRho"] = option.dividendRho();
+                      calculated["rho"]    = option.rho();
+                      calculated["divRho"] = option.dividendRho();
                       calculated["vega"]   = option.vega();
 
                       if (value > spot->value()*1.0e-5) {
@@ -723,7 +723,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
-                          /*
                           // perturb rates and get rho and dividend rho
                           Spread dr = r*1.0e-4;
                           rRate->setValue(r+dr);
@@ -740,7 +739,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_m = option.NPV();
                           qRate->setValue(q);
                           expected["divRho"] = (value_p - value_m)/(2*dq);
-                          */
 
                           // perturb volatility and get vega
                           Volatility dv = v*1.0e-4;
@@ -805,6 +803,7 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
+   
     return suite;
 }
 
