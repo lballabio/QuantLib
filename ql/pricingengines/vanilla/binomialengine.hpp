@@ -31,6 +31,7 @@
 #include <ql/methods/lattices/bsmlattice.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
+#include <ql/pricingengines/greeks.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/volatilities/blackconstantvol.hpp>
@@ -43,13 +44,11 @@ namespace QuantLib {
         \test the correctness of the returned values is tested by
               checking it against analytic results.
 
-        \warning the calculated theta is currently not accurate.
-                 Investigation is required.
-
-        \todo Greeks could be made more accurate by building a tree so
-              that it has three points at the current time. The value
-              would be fetched from the middle one, while the two side
-              points would be used for estimating partial derivatives.
+        \todo Greeks are not overly accurate. They could be improved
+              by building a tree so that it has three points at the
+              current time. The value would be fetched from the middle
+              one, while the two side points would be used for
+              estimating partial derivatives.
     */
     template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
@@ -134,7 +133,6 @@ namespace QuantLib {
         Array va2(option.values());
         QL_ENSURE(va2.size() == 3, "Expect 3 nodes in grid at second step");
         Real p2h = va2[2]; // high-price
-        Real p2m = va2[1]; // mid-price
         Real s2 = lattice->underlying(2, 2); // high price
 
         // Rollback to second-last step, and get option value (p1) at
@@ -157,7 +155,10 @@ namespace QuantLib {
         results_.value = p0;
         results_.delta = delta0;
         results_.gamma = 2.0*(delta1-delta0)/(s2-s0);    //d(delta)/ds
-        results_.theta = (p2m-p0)/grid[2];               //dp/dT
+        results_.theta = blackScholesTheta(process,
+                                           results_.value,
+                                           results_.delta,
+                                           results_.gamma);
     }
 
 }

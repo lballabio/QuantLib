@@ -1043,7 +1043,7 @@ void EuropeanOptionTest::testJRBinomialEngines() {
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 1.0;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1059,7 +1059,7 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
     relativeTol["value"] = 0.02;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 1.0;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1075,7 +1075,7 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
     relativeTol["value"] = 0.02;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 1.0;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1091,7 +1091,7 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 1.0e-2;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1107,7 +1107,7 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
     relativeTol["value"] = 0.002;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 1.5;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1123,7 +1123,7 @@ void EuropeanOptionTest::testLRBinomialEngines() {
     relativeTol["value"] = 1.0e-6;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 0.3;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
@@ -1139,7 +1139,7 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
     relativeTol["value"] = 1.0e-7;
     relativeTol["delta"] = 1.0e-3;
     relativeTol["gamma"] = 1.0e-4;
-    relativeTol["theta"] = 0.3;
+    relativeTol["theta"] = 0.03;
     testEngineConsistency(engine,steps,samples,relativeTol,true);
 }
 
