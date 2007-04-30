@@ -67,14 +67,6 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, Month);
 
 
-    //! Main cycle of the International Money Market (a.k.a. IMM) Months
-    struct IMM {
-        enum Month { F =  1, G =  2, H =  3,
-                     J =  4, K =  5, M =  6,
-                     N =  7, Q =  8, U =  9,
-                     V = 10, X = 11, Z = 12 };
-    };
-
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
         operators which implement a limited date algebra (increasing and
@@ -164,64 +156,6 @@ namespace QuantLib {
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
         static Date nthWeekday(Size n, Weekday, Month m, Year y);
-
-        //! whether or not the given date is an IMM date
-        static bool isIMMdate(const Date& d,
-                              bool mainCycle = true);
-
-        //! whether or not the given string is an IMM code
-        static bool isIMMcode(const std::string& in,
-                              bool mainCycle = true);
-
-        /*! returns the IMM code for the given date
-            (e.g. H3 for March 20th, 2013).
-
-            \warning It raises an exception if the input
-                     date is not an IMM date
-        */
-        static std::string IMMcode(const Date& immDate);
-
-        /*! returns the IMM date for the given IMM code
-            (e.g. March 20th, 2013 for H3).
-
-            \warning It raises an exception if the input
-                     string is not an IMM code
-        */
-        static Date IMMdate(const std::string& immCode,
-                            const Date& referenceDate = Date());
-
-        //! next IMM date following the given date
-        /*! returns the 1st delivery date for next contract listed in the
-            International Money Market section of the Chicago Mercantile
-            Exchange.
-        */
-        static Date nextIMMdate(const Date& d = Date(),
-                                bool mainCycle = true);
-
-        //! next IMM date following the given IMM code
-        /*! returns the 1st delivery date for next contract listed in the
-            International Money Market section of the Chicago Mercantile
-            Exchange.
-        */
-        static Date nextIMMdate(const std::string& immCode,
-                                bool mainCycle = true,
-                                const Date& referenceDate = Date());
-
-        /*! returns the IMM code for next contract listed in the
-            International Money Market section of the Chicago Mercantile
-            Exchange.
-        */
-        static std::string nextIMMcode(const Date& d = Date(),
-                                       bool mainCycle = true);
-
-        /*! returns the IMM code for next contract listed in the
-            International Money Market section of the Chicago Mercantile
-            Exchange.
-        */
-        static std::string nextIMMcode(const std::string& immCode,
-                                       bool mainCycle = true,
-                                       const Date& referenceDate = Date());
-
         //@}
       private:
         BigInteger serialNumber_;

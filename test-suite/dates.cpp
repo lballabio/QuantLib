@@ -21,6 +21,7 @@
 
 #include "dates.hpp"
 #include <ql/time/date.hpp>
+#include <ql/time/imm.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
 using namespace QuantLib;
@@ -48,7 +49,7 @@ void DateTest::immDates() {
     Date imm;
 
     while (counter<=last) {
-        imm = Date::nextIMMdate(counter, false);
+        imm = IMM::nextDate(counter, false);
 
         // check that imm is greater than counter
         if (imm<=counter)
@@ -58,38 +59,38 @@ void DateTest::immDates() {
                        << counter.weekday() << " " << counter);
 
         // check that imm is an IMM date
-        if (!Date::isIMMdate(imm, false))
+        if (!IMM::isIMMdate(imm, false))
             BOOST_FAIL("\n  "
                        << imm.weekday() << " " << imm
                        << " is not an IMM date (calculated from "
                        << counter.weekday() << " " << counter << ")");
 
         // check that imm is <= to the next IMM date in the main cycle
-        if (imm>Date::nextIMMdate(counter, true))
+        if (imm>IMM::nextDate(counter, true))
             BOOST_FAIL("\n  "
                        << imm.weekday() << " " << imm
                        << " is not less than or equal to the next future in the main cycle "
-                       << Date::nextIMMdate(counter, true));
+                       << IMM::nextDate(counter, true));
 
         //// check that if counter is an IMM date, then imm==counter
-        //if (Date::isIMMdate(counter, false) && (imm!=counter))
+        //if (IMM::isIMMdate(counter, false) && (imm!=counter))
         //    BOOST_FAIL("\n  "
         //               << counter.weekday() << " " << counter
         //               << " is already an IMM date, while nextIMM() returns "
         //               << imm.weekday() << " " << imm);
 
         // check that for every date IMMdate is the inverse of IMMcode
-        if (Date::IMMdate(Date::IMMcode(imm), counter) != imm)
+        if (IMM::date(IMM::code(imm), counter) != imm)
             BOOST_FAIL("\n  "
-                       << Date::IMMcode(imm)
+                       << IMM::code(imm)
                        << " at calendar day " << counter
                        << " is not the IMM code matching " << imm);
 
         // check that for every date the 120 IMM codes refer to future dates
         for (int i=0; i<40; ++i) {
-            if (Date::IMMdate(IMMcodes[i], counter)<counter)
+            if (IMM::date(IMMcodes[i], counter)<counter)
                 BOOST_FAIL("\n  "
-                       << Date::IMMdate(IMMcodes[i], counter)
+                       << IMM::date(IMMcodes[i], counter)
                        << " is wrong for " << IMMcodes[i]
                        << " at reference date " << counter);
         }

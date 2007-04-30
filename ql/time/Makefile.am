@@ -10,6 +10,7 @@ this_include_HEADERS = \
     calendar.hpp \
     date.hpp \
     frequency.hpp \
+    imm.hpp \
     period.hpp \
     schedule.hpp \
     timeunit.hpp \
@@ -20,6 +21,7 @@ libTime_la_SOURCES = \
     calendar.cpp \
     date.cpp \
     frequency.cpp \
+    imm.cpp \
     period.cpp \
     schedule.cpp \
     weekday.cpp

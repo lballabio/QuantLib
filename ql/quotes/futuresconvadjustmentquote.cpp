@@ -19,6 +19,7 @@
 
 #include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/time/imm.hpp>
 
 namespace QuantLib {
 
@@ -46,7 +47,7 @@ namespace QuantLib {
                                const Handle<Quote>& volatility,
                                const Handle<Quote>& meanReversion)
     : dc_(index->dayCounter()),
-      futuresDate_(Date::IMMdate(immCode)),
+      futuresDate_(IMM::date(immCode)),
       indexMaturityDate_(index->maturityDate(futuresDate_)),
       futuresQuote_(futuresQuote),
       volatility_(volatility), meanReversion_(meanReversion) {

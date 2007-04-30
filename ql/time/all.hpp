@@ -5,6 +5,7 @@
 #include <ql/time/calendar.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/frequency.hpp>
+#include <ql/time/imm.hpp>
 #include <ql/time/period.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/timeunit.hpp>
