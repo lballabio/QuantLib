@@ -36,6 +36,10 @@
 
 namespace QuantLib {
 
+    //! Day number
+    /*! \ingroup datetime */
+    typedef Integer Day;
+
     //! Month names
     /*! \ingroup datetime */
     enum Month { January   = 1,
@@ -65,6 +69,10 @@ namespace QuantLib {
 
     /*! \relates Month */
     std::ostream& operator<<(std::ostream&, Month);
+
+    //! Year number
+    /*! \ingroup datetime */
+    typedef Integer Year;
 
 
     //! Concrete date class

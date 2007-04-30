@@ -77,14 +77,6 @@ namespace QuantLib {
     /*! \ingroup types */
     typedef Real Volatility;
 
-    //! Day number
-    /*! \ingroup datetime */
-    typedef Integer Day;
-
-    //! Year number
-    /*! \ingroup datetime */
-    typedef Integer Year;
-
 }
 
 
