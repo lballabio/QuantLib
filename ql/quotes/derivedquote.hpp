@@ -26,11 +26,7 @@
 #define quantlib_derived_quote_hpp
 
 #include <ql/quote.hpp>
-#include <ql/types.hpp>
 #include <ql/handle.hpp>
-#include <ql/errors.hpp>
-#include <ql/index.hpp>
-#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -57,61 +53,6 @@ namespace QuantLib {
     };
 
 
-    class ForwardValueQuote : public Quote,
-                              public Observer {
-      public:
-        ForwardValueQuote(const boost::shared_ptr<Index>& index,
-                          const Date& fixingDate);
-        Real value() const;
-        void update();
-      private:
-        boost::shared_ptr<Index> index_;
-        Date fixingDate_;
-    };
-
-    class ImpliedStdDevQuote : public Quote,
-                               public LazyObject {
-      public:
-        ImpliedStdDevQuote(Option::Type optionType,
-                           const Handle<Quote>& forward,
-                           const Handle<Quote>& price,
-                           Real strike,
-                           Real guess = .15,
-                           Real accuracy = 1.0e-6);
-        Real value() const;
-        void update();
-        void performCalculations() const;
-      protected:
-        mutable Real impliedStdev_;
-        Option::Type optionType_;
-        Real strike_;
-        Real accuracy_;
-        Handle<Quote> forward_;
-        Handle<Quote> price_;
-    };
-
-    class EurodollarFuturesImpliedStdDevQuote : public Quote,
-                                                public LazyObject {
-      public:
-        EurodollarFuturesImpliedStdDevQuote(const Handle<Quote>& forward,
-                                            const Handle<Quote>& callPrice,
-                                            const Handle<Quote>& putPrice,
-                                            Real strike,
-                                            Real guess = .15,
-                                            Real accuracy = 1.0e-6);
-        Real value() const;
-        void update();
-        void performCalculations() const;
-      protected:
-        mutable Real impliedStdev_;
-        Real strike_;
-        Real accuracy_;
-        Handle<Quote> forward_;
-        Handle<Quote> callPrice_;
-        Handle<Quote> putPrice_;
-    };
-
-
     // inline definitions
 
     template <class UnaryFunction>
@@ -133,21 +74,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Real ForwardValueQuote::value() const {
-        return index_->fixing(fixingDate_);
-    }
-
-    inline void ForwardValueQuote::update() {
-        notifyObservers();
-    }
-
-    inline void ImpliedStdDevQuote::update(){
-        Quote::notifyObservers();
-    }
-
-    inline void EurodollarFuturesImpliedStdDevQuote::update() {
-        Quote::notifyObservers();
-    }
 }
+
 
 #endif

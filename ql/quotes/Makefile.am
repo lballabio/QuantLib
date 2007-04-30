@@ -6,12 +6,17 @@ this_include_HEADERS = \
     all.hpp \
     compositequote.hpp \
     derivedquote.hpp \
+    eurodollarfuturesquote.hpp \
+    forwardvaluequote.hpp \
     futuresconvadjustmentquote.hpp \
+    impliedstddevquote.hpp \
     simplequote.hpp
 
 libQuotes_la_SOURCES = \
-    derivedquote.cpp \
-    futuresconvadjustmentquote.cpp
+    eurodollarfuturesquote.cpp \
+    forwardvaluequote.cpp \
+    futuresconvadjustmentquote.cpp \
+    impliedstddevquote.cpp
 
 noinst_LTLIBRARIES = libQuotes.la
 
