@@ -6042,6 +6042,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\imm.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\time\imm.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\period.cpp"
 				>
 			</File>

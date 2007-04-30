@@ -6239,16 +6239,31 @@
 				RelativePath=".\ql\quotes\compositequote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\quotes\derivedquote.cpp">
+				RelativePath=".\ql\quotes\derivedquote.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\quotes\derivedquote.hpp">
+				RelativePath=".\ql\quotes\eurodollarfuturesquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\eurodollarfuturesquote.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\forwardvaluequote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\forwardvaluequote.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\quotes\futuresconvadjustmentquote.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\quotes\futuresconvadjustmentquote.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\impliedstddevquote.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\quotes\impliedstddevquote.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\quotes\simplequote.hpp">
@@ -6540,6 +6555,9 @@
 			Name="time"
 			Filter="">
 			<File
+				RelativePath=".\ql\time\all.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\time\businessdayconvention.cpp">
 				<FileConfiguration
 					Name="Debug CRTDLL|Win32">
@@ -6706,6 +6724,12 @@
 			</File>
 			<File
 				RelativePath=".\ql\time\frequency.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\imm.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\time\imm.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\time\period.cpp">
