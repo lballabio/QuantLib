@@ -5810,15 +5810,31 @@
 			Name="quotes"
 			>
 			<File
+				RelativePath=".\ql\quotes\all.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\quotes\compositequote.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\quotes\derivedquote.cpp"
+				RelativePath=".\ql\quotes\derivedquote.hpp"
 				>
 			</File>
 			<File
-				RelativePath=".\ql\quotes\derivedquote.hpp"
+				RelativePath=".\ql\quotes\eurodollarfuturesquote.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\eurodollarfuturesquote.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\forwardvaluequote.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\forwardvaluequote.hpp"
 				>
 			</File>
 			<File
@@ -5827,6 +5843,14 @@
 			</File>
 			<File
 				RelativePath=".\ql\quotes\futuresconvadjustmentquote.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\impliedstddevquote.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\quotes\impliedstddevquote.hpp"
 				>
 			</File>
 			<File
