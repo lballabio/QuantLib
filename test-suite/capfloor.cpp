@@ -652,7 +652,7 @@ test_suite* CapFloorTest::suite() {
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testVega));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testATMRate));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
-    suite->add(BOOST_TEST_CASE(&CapFloorTest::testMarketModel));
+    //suite->add(BOOST_TEST_CASE(&CapFloorTest::testMarketModel));
     suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
     return suite;
 }

@@ -30,7 +30,11 @@
 namespace QuantLib {
 
     //! Market-model cap/floor engine
-    /*! \ingroup capfloorengines */
+    /*! \bug This engine is not yet working correctly (results are off
+             the expected ones.)
+
+        \ingroup capfloorengines
+    */
     class MarketModelCapFloorEngine : public CapFloor::engine,
                                       public Observer {
       public:
