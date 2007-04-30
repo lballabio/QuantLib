@@ -33,7 +33,6 @@ namespace QuantLib {
 
     EndCriteria::Type LevenbergMarquardt::minimize(Problem& P,
                                                    const EndCriteria& endCriteria) {
-        startTimer();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -59,7 +58,7 @@ namespace QuantLib {
         boost::scoped_array<double> wa2(new double[n]);
         boost::scoped_array<double> wa3(new double[n]);
         boost::scoped_array<double> wa4(new double[m]);
-        // call lmdif to minimize the sum of the squares of m functions 
+        // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
         QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                                  static_cast<double>(endCriteria.functionEpsilon()),
@@ -80,7 +79,7 @@ namespace QuantLib {
         if (info != 6) ecType = QuantLib::EndCriteria::StationaryFunctionValue;
         //QL_REQUIRE(info != 5, "MINPACK: number of calls to fcn has "
         //                               "reached or exceeded maxfev.");
-		endCriteria.checkMaxIterations(nfev, ecType);
+        endCriteria.checkMaxIterations(nfev, ecType);
         QL_REQUIRE(info != 7, "MINPACK: xtol is too small. no further "
                                        "improvement in the approximate "
                                        "solution x is possible.");
@@ -91,7 +90,6 @@ namespace QuantLib {
         std::copy(xx.get(), xx.get()+n, x_.begin());
         P.setCurrentValue(x_);
 
-        stopTimer();
         return ecType;
     }
 

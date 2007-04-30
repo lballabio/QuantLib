@@ -25,13 +25,12 @@
 
 namespace QuantLib {
 
-    /*! Multi-dimensional Conjugate Gradient 
-        (Fletcher-Reeves-Polak-Ribiere algorithm 
+    /*! Multi-dimensional Conjugate Gradient
+        (Fletcher-Reeves-Polak-Ribiere algorithm
         adapted from Numerical Recipes in C, 2nd edition).
     */
     EndCriteria::Type ConjugateGradient::minimize(Problem &P,
                                                   const EndCriteria& endCriteria) {
-        startTimer();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -49,7 +48,7 @@ namespace QuantLib {
         // Set gradient g at the size of the optimization problem search direction
         Size sz = lineSearch_->searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
-        // Initialize cost function and gradient g 
+        // Initialize cost function and gradient g
         P.setFunctionValue(P.valueAndGradient(g, x_));
         lineSearch_->searchDirection() = -g;
         P.setGradientNormValue(DotProduct(g, g));
@@ -77,7 +76,7 @@ namespace QuantLib {
                 // conjugate gradient search direction
                 sddiff = (-g + c * d) - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));
-                lineSearch_->searchDirection() = -g + c * d;              
+                lineSearch_->searchDirection() = -g + c * d;
                 // End criteria
                 done = endCriteria(iterationNumber_,
                                    stationaryStateIterationNumber_,
@@ -90,15 +89,14 @@ namespace QuantLib {
                                    // FIXME: it's never been used! ???
                                    // , normdiff
                                    );
-			    // Increase interation number
+                // Increase interation number
                 ++iterationNumber_;
             } else {
                 done=true;
             }
         } while (!done);
         P.setCurrentValue(x_);
-        stopTimer();
         return ecType;
-	}
+    }
 
 }

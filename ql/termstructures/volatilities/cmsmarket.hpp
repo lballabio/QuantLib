@@ -34,7 +34,7 @@
 namespace QuantLib {
 
      typedef Leg Leg;
-     
+
      class CmsCouponPricer;
 
      class CmsMarket: public LazyObject{
@@ -52,10 +52,10 @@ namespace QuantLib {
         void update() { LazyObject::update();}
         //@}
 
-        // call during calibration procedure 
+        // call during calibration procedure
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                      Real meanReversion);
-		
+
         //inspectors ...
         const std::vector<Period>& swapTenors() const {return swapTenors_;}
         Matrix meanReversions(){return meanReversions_;};
@@ -64,18 +64,18 @@ namespace QuantLib {
         Matrix browse() const;
 
         //cms market calibration methods (they haven't Lazyness behaviour)
-		Real weightedError(const Matrix& weights);
+        Real weightedError(const Matrix& weights);
         Real weightedPriceError(const Matrix& weights);
         Real weightedForwardPriceError(const Matrix& weights);
         Disposable<Array> weightedErrors(const Matrix& weights);
         Disposable<Array> weightedPriceErrors(const Matrix& weights);
         Disposable<Array> weightedForwardPriceErrors(const Matrix& weights);
- 
+
       private:
-		void performCalculations() const;
-		void registerWithMarketData();
-		void createForwardStartingCms();
-		void priceForwardStartingCms() const;
+        void performCalculations() const;
+        void registerWithMarketData();
+        void createForwardStartingCms();
+        void priceForwardStartingCms() const;
         void priceSpotFromForwardStartingCms() const;
         Real weightedMean(const Matrix& var, const Matrix& weights);
         Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights);
@@ -93,11 +93,11 @@ namespace QuantLib {
         mutable Matrix mids_;
         // Implied spreads to model prices
         mutable Matrix modelCmsSpreads_;
-        // Differences between implied and mid spreads 
+        // Differences between implied and mid spreads
         mutable Matrix spreadErrors_;
-        
+
         // prices of constant maturity swaps with spread = 0
-        mutable Matrix prices_;           
+        mutable Matrix prices_;
         // market prices of Cms Leg corrisponding to bid spreads
         mutable Matrix marketBidCmsLegValues_;
         // market prices of Cms Leg corrisponding to ask spreads
@@ -106,20 +106,20 @@ namespace QuantLib {
         mutable Matrix marketMidCmsLegValues_;
         // model prices of Cms Leg corrisponding to mid spreads
         mutable Matrix modelCmsLegValues_;
-        // Differences between modelCmsLegValue and marketMidCmsLegValue_ 
+        // Differences between modelCmsLegValue and marketMidCmsLegValue_
         mutable Matrix priceErrors_;
 
-		mutable Matrix swapFloatingLegsPrices_,swapFloatingLegsBps_;
+        mutable Matrix swapFloatingLegsPrices_,swapFloatingLegsBps_;
 
         // market prices of Forward Cms Leg corrisponding to bid spreads
-        mutable Matrix marketBidForwardCmsLegValues_; 
+        mutable Matrix marketBidForwardCmsLegValues_;
         // market prices of Forward Cms Leg corrisponding to ask spreads
         mutable Matrix marketAskForwardCmsLegValues_;
         // market prices of Forward Cms Leg corrisponding to mid spreads
         mutable Matrix marketMidForwardCmsLegValues_;
         // model prices of Forward Cms Leg corrisponding to mid spreads
         mutable Matrix modelForwardCmsLegValues_;
-        // Differences between modelForwardCmsLegValues and marketMidCmsLegValues 
+        // Differences between modelForwardCmsLegValues and marketMidCmsLegValues
         mutable Matrix forwardPriceErrors_;
 
         mutable Matrix meanReversions_;
@@ -132,9 +132,9 @@ namespace QuantLib {
      };
 
      class CmsMarketCalibration{
-        
+
       public:
-        
+
         enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
 
         CmsMarketCalibration(
@@ -142,7 +142,7 @@ namespace QuantLib {
             boost::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights,
             CalibrationType calibrationType);
-        
+
         Handle<SwaptionVolatilityStructure> volCube_;
         boost::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
@@ -154,7 +154,6 @@ namespace QuantLib {
                       const Array& guess,
                       bool isMeanReversionFixed);
         Real error(){return error_;}
-        Real elapsed() {return elapsed_;}
         EndCriteria::Type endCriteria() { return endCriteria_; };
 
       private:
@@ -205,7 +204,7 @@ namespace QuantLib {
           private:
             virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
         };
- 
+
         class ParametersConstraintWithFixedMeanReversion : public Constraint {
               private:
                 class Impl : public Constraint::Impl {
@@ -219,7 +218,7 @@ namespace QuantLib {
                         bool areBetasInConstraints = true;
                         for(Size i=0;i<nBeta_;i++)
                             areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
-                        return areBetasInConstraints;   
+                        return areBetasInConstraints;
                     }
                 };
               public:
@@ -239,10 +238,9 @@ namespace QuantLib {
             Real fixedMeanReversion_;
         };
 
-        
-        Real error_; 
-		EndCriteria::Type endCriteria_;
-        Real elapsed_;
+
+        Real error_;
+        EndCriteria::Type endCriteria_;
     };
 
 }

@@ -188,7 +188,7 @@ namespace QuantLib {
     void CmsMarket::reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
                              Real meanReversion){
         Handle<Quote> meanReversionQuote = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(meanReversion))); 
+                SimpleQuote(meanReversion)));
         for (Size j=0; j<nSwapTenors_ ; j++) {
             // set new volatility structure and new mean reversion
             pricers_[j]->setSwaptionVolatility(volStructure);
@@ -210,7 +210,7 @@ namespace QuantLib {
             }
         }
     }
-    
+
     void CmsMarket::priceSpotFromForwardStartingCms() const {
           for (Size i=0; i<nExercise_; i++) {
             for (Size j=0; j<nSwapTenors_ ; j++) {
@@ -219,7 +219,7 @@ namespace QuantLib {
                     modelCmsLegValues_[i][j] += modelCmsLegValues_[i-1][j];
                 priceErrors_[i][j] = modelCmsLegValues_[i][j]
                                      - marketMidCmsLegValues_[i][j];
-                 
+
                 // Spread errors valuation
                 prices_[i][j]= swapFloatingLegsPrices_[i][j]+ modelCmsLegValues_[i][j];
                 Real PV01 = swapFloatingLegsBps_[i][j];
@@ -272,15 +272,15 @@ namespace QuantLib {
         mean=std::sqrt(mean/(nExercise_*nSwapTenors_));
         return mean;
     }
-        
-    Disposable<Array> CmsMarket::weightedMeans(const Matrix& var, 
+
+    Disposable<Array> CmsMarket::weightedMeans(const Matrix& var,
                                                        const Matrix& weights){
         Array  weightedVars(nExercise_*nSwapTenors_);
         for(Size i=0; i<nExercise_; i++) {
             for(Size j=0; j<nSwapTenors_; j++) {
                 weightedVars[i*nSwapTenors_+j] = std::sqrt(weights[i][j])*var[i][j];
-            }             
-        }        
+            }
+        }
         return weightedVars;
     }
 
@@ -361,7 +361,6 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
-            elapsed_ = method->elapsed();
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
@@ -370,7 +369,6 @@ namespace QuantLib {
             endCriteria_ = method->minimize(problem, *endCriteria);
             result = problem.currentValue();
             error_ = costFunction.value(result);
-            elapsed_ = method->elapsed();
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
             boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
@@ -394,7 +392,7 @@ namespace QuantLib {
         updateVolatilityCubeAndCmsMarket(x);
         return switchErrorsFunctionOnCalibrationType();
     }
-        
+
     void CmsMarketCalibration::ObjectiveFunction::
                     updateVolatilityCubeAndCmsMarket(const Array& x) const {
         const Array y = x;
