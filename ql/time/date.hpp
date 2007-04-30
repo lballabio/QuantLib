@@ -149,7 +149,7 @@ namespace QuantLib {
         //! last day of the month to which the given date belongs
         static Date endOfMonth(const Date& d);
         //! whether a date is the last day of its month
-        static bool isEOM(const Date& d);
+        static bool isEndOfMonth(const Date& d);
         //! next given weekday following or equal to the given date
         /*! E.g., the Friday following Tuesday, January 15th, 2002
             was January 18th, 2002.
@@ -276,7 +276,7 @@ namespace QuantLib {
         return Date(monthLength(m, isLeap(y)), m, y);
     }
 
-    inline bool Date::isEOM(const Date& d) {
+    inline bool Date::isEndOfMonth(const Date& d) {
        return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
     }
 

@@ -38,9 +38,9 @@ namespace QuantLib {
 
         if (dm1 == dm2 ||
             // e.g., Aug 30 -> Feb 28 ?
-            (dm1 > dm2 && Date::isEOM(d2)) ||
+            (dm1 > dm2 && Date::isEndOfMonth(d2)) ||
             // e.g., Feb 28 -> Aug 30 ?
-            (dm1 < dm2 && Date::isEOM(d1))) {
+            (dm1 < dm2 && Date::isEndOfMonth(d1))) {
 
             return (d2.year()-d1.year()) +
                 (Integer(d2.month())-Integer(d1.month()))/12.0;
