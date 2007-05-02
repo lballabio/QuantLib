@@ -3079,14 +3079,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\collectnodedata.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\collectnodedata.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\constrainedevolver.hpp"
 					>
 				</File>
@@ -3096,6 +3088,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\curvestate.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\discounter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\discounter.hpp"
 					>
 				</File>
 				<File
@@ -3111,6 +3111,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\evolver.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp"
 					>
 				</File>
@@ -3119,27 +3123,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelevolver.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelexercisevalue.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelmultiproduct.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelnodedataprovider.hpp"
+					RelativePath=".\ql\models\marketmodels\multiproduct.hpp"
 					>
 				</File>
 				<File
@@ -3160,14 +3144,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\upperboundengine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\upperboundengine.hpp"
 					>
 				</File>
 				<File
@@ -3331,62 +3307,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\evolvers\normalfwdratepc.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="exercisestrategies"
-					>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="exercisevalues"
-					>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\all.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.hpp"
 						>
 					</File>
 				</Filter>
@@ -3691,10 +3611,14 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="basissystems"
+					Name="callability"
 					>
 					<File
-						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.cpp"
+						RelativePath=".\ql\models\marketmodels\callability\all.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\bermudanswaptionexercisevalue.cpp"
 						>
 						<FileConfiguration
 							Name="Debug CRTDLL|Win32"
@@ -3734,23 +3658,11 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.hpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="nodedataproviders"
-					>
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelbasissystem.hpp"
+						RelativePath=".\ql\models\marketmodels\callability\bermudanswaptionexercisevalue.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelparametricexercise.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.cpp"
+						RelativePath=".\ql\models\marketmodels\callability\collectnodedata.cpp"
 						>
 						<FileConfiguration
 							Name="Debug CRTDLL|Win32"
@@ -3790,7 +3702,259 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.hpp"
+						RelativePath=".\ql\models\marketmodels\callability\collectnodedata.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\exercisevalue.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\lsstrategy.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\lsstrategy.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\marketmodelbasissystem.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\marketmodelparametricexercise.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nodedataprovider.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nothingexercisevalue.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nothingexercisevalue.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\parametricexerciseadapter.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\parametricexerciseadapter.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapbasissystem.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapbasissystem.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapratetrigger.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapratetrigger.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\triggeredswapexercise.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\triggeredswapexercise.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\upperboundengine.cpp"
+						>
+						<FileConfiguration
+							Name="Debug CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release CRTDLL|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\upperboundengine.hpp"
 						>
 					</File>
 				</Filter>

@@ -3520,12 +3520,6 @@
 					RelativePath=".\ql\models\marketmodels\browniangenerator.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\collectnodedata.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\collectnodedata.hpp">
-				</File>
-				<File
 					RelativePath=".\ql\models\marketmodels\constrainedevolver.hpp">
 				</File>
 				<File
@@ -3533,6 +3527,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\curvestate.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\discounter.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\discounter.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\duffsdeviceinnerproduct.hpp">
@@ -3544,7 +3544,7 @@
 					RelativePath=".\ql\models\marketmodels\evolutiondescription.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\maketmodelnodedataprovider.hpp">
+					RelativePath=".\ql\models\marketmodels\evolver.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp">
@@ -3553,28 +3553,7 @@
 					RelativePath=".\ql\models\marketmodels\marketmodel.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelbasissystem.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodeldiscounter.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelevolver.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelexercisevalue.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelmultiproduct.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelnodedataprovider.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\marketmodelparametricexercise.hpp">
+					RelativePath=".\ql\models\marketmodels\multiproduct.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelation.hpp">
@@ -3590,12 +3569,6 @@
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\swapforwardmappings.hpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\upperboundengine.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\models\marketmodels\upperboundengine.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\utilities.cpp">
@@ -3868,80 +3841,76 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="exercisevalues"
+					Name="callability"
 					Filter="">
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.cpp">
+						RelativePath=".\ql\models\marketmodels\callability\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\bermudanswaptionexercisevalue.hpp">
+						RelativePath=".\ql\models\marketmodels\callability\bermudanswaptionexercisevalue.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.cpp">
+						RelativePath=".\ql\models\marketmodels\callability\bermudanswaptionexercisevalue.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisevalues\nothingexercisevalue.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="exercisestrategies"
-					Filter="">
-					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\all.hpp">
+						RelativePath=".\ql\models\marketmodels\callability\collectnodedata.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.cpp">
+						RelativePath=".\ql\models\marketmodels\callability\collectnodedata.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\lsstrategy.hpp">
+						RelativePath=".\ql\models\marketmodels\callability\exercisevalue.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.cpp">
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
+						RelativePath=".\ql\models\marketmodels\callability\lsstrategy.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\parametricexerciseadapter.hpp">
+						RelativePath=".\ql\models\marketmodels\callability\lsstrategy.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.cpp">
+						RelativePath=".\ql\models\marketmodels\callability\marketmodelbasissystem.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\exercisestrategies\swapratetrigger.hpp">
+						RelativePath=".\ql\models\marketmodels\callability\marketmodelparametricexercise.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nodedataprovider.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nothingexercisevalue.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\nothingexercisevalue.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\parametricexerciseadapter.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\parametricexerciseadapter.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapbasissystem.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapbasissystem.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapratetrigger.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\swapratetrigger.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\triggeredswapexercise.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\triggeredswapexercise.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\upperboundengine.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\callability\upperboundengine.hpp">
 					</File>
 				</Filter>
 				<Filter
@@ -4020,104 +3989,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="basissystems"
-					Filter="">
-					<File
-						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.cpp">
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\basissystems\swapbasissystem.hpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="nodedataproviders"
-					Filter="">
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelbasissystem.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\marketmodelparametricexercise.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.cpp">
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug SingleThread|Win32">
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\nodedataproviders\triggeredswapexercise.hpp">
 					</File>
 				</Filter>
 			</Filter>
