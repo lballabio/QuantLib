@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 StatPro Italia srl
+ Copyright (C) 2006 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,48 +17,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_triggered_swap_exercise_hpp
-#define quantlib_triggered_swap_exercise_hpp
 
-#include <ql/models/marketmodels/nodedataproviders/marketmodelparametricexercise.hpp>
+#ifndef quantlib_swap_basis_system_hpp
+#define quantlib_swap_basis_system_hpp
+
+#include <ql/models/marketmodels/callability/marketmodelbasissystem.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {
 
-    class TriggeredSwapExercise : public MarketModelParametricExercise {
+    class SwapBasisSystem : public MarketModelBasisSystem {
       public:
-        TriggeredSwapExercise(const std::vector<Time>& rateTimes,
-                              const std::vector<Time>& exerciseTimes,
-                              const std::vector<Rate>& strikes);
-
-        // NodeDataProvider interface
+        SwapBasisSystem(const std::vector<Time>& rateTimes,
+                        const std::vector<Time>& exerciseTimes);
         Size numberOfExercises() const;
+        std::vector<Size> numberOfFunctions() const;
         const EvolutionDescription& evolution() const;
         void nextStep(const CurveState&);
         void reset();
         std::vector<bool> isExerciseTime() const;
         void values(const CurveState&,
                     std::vector<Real>& results) const;
-
-        // ParametricExercise interface
-        std::vector<Size> numberOfVariables() const;
-        std::vector<Size> numberOfParameters() const;
-        bool exercise(Size exerciseNumber,
-                      const std::vector<Real>& parameters,
-                      const std::vector<Real>& variables) const;
-        void guess(Size exerciseNumber,
-                   std::vector<Real>& parameters) const;
-
-        std::auto_ptr<MarketModelParametricExercise> clone() const;
-
+        std::auto_ptr<MarketModelBasisSystem> clone() const;
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
-        std::vector<Rate> strikes_;
-        Size currentStep_;
+        Size currentIndex_;
         std::vector<Size> rateIndex_;
         EvolutionDescription evolution_;
     };
 
 }
+
 
 #endif

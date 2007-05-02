@@ -1,9 +1,6 @@
 
-SUBDIRS = basissystems browniangenerators curvestates \
-	  driftcomputation evolvers \
-          exercisestrategies exercisevalues models \
-	  nodedataproviders \
-          piecewiseconstantcorrelations products
+SUBDIRS = browniangenerators callability curvestates driftcomputation \
+          evolvers models piecewiseconstantcorrelations products
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -12,7 +9,6 @@ this_include_HEADERS = \
     all.hpp \
     accountingengine.hpp \
     browniangenerator.hpp \
-    collectnodedata.hpp \
     constrainedevolver.hpp \
     curvestate.hpp \
     duffsdeviceinnerproduct.hpp \
@@ -26,33 +22,27 @@ this_include_HEADERS = \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
     swapforwardmappings.hpp \
-    upperboundengine.hpp \
     utilities.hpp
 
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
-    collectnodedata.cpp \
     curvestate.cpp \
     evolutiondescription.cpp \
     marketmodeldiscounter.cpp \
     marketmodel.cpp \
     proxygreekengine.cpp \
     swapforwardmappings.cpp \
-    upperboundengine.cpp \
     utilities.cpp
 
 noinst_LTLIBRARIES = libMarketModels.la
 
 libMarketModels_la_LIBADD = \
-    basissystems/libMarketModelsBasisSystems.la \
     browniangenerators/libMarketModelsBrownianGenerators.la \
+    callability/libMarketModelsCallability.la \
     curvestates/libMarketModelsCurveStates.la \
     driftcomputation/libMarketModelsDriftComputation.la \
     evolvers/libMarketModelsEvolvers.la \
-    exercisevalues/libMarketModelsExerciseValues.la \
-    exercisestrategies/libMarketModelsExerciseStrategies.la \
     models/libMarketModelsModels.la \
-    nodedataproviders/libMarketModelsNodeDataProviders.la \
     piecewiseconstantcorrelations/libMarketModelsCorrelations.la \
     products/libMarketModelsProducts.la
 

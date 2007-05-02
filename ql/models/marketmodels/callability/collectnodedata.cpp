@@ -18,7 +18,7 @@
 */
 
 #include <ql/methods/montecarlo/nodedata.hpp>
-#include <ql/models/marketmodels/collectnodedata.hpp>
+#include <ql/models/marketmodels/callability/collectnodedata.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
