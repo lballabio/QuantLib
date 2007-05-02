@@ -47,6 +47,7 @@ namespace QuantLib {
         bool calibrate(Size numberOfFactors,
                        const std::vector<Real>& alpha,
                        bool lowestRoot,
+					   bool useFullApprox,
                        Size maxIterations,
                        Real tolerance);
         // inspectors
@@ -67,6 +68,7 @@ namespace QuantLib {
                             const Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             const bool lowestRoot,
+							const bool useFullApprox,
                             std::vector<Matrix>& swapCovariancePseudoRoots,
                             Size& negativeDiscriminants);
       private:

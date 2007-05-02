@@ -54,6 +54,7 @@ namespace QuantLib {
                             const Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             const bool lowestRoot,
+							const bool useFullAprox,
                             std::vector<Matrix>& swapCovariancePseudoRoots,
                             Size& negativeDiscriminants) {
 
@@ -94,6 +95,8 @@ namespace QuantLib {
         QL_REQUIRE(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)==evolutionTimes,
                    "mismatch between evolutionTimes and rateTimes");
 
+		Real extraMultiplier =useFullAprox ? 1.0 : 0.0;
+
         Size numberOfSteps = evolution.numberOfSteps();
 
         // factor reduction
@@ -133,7 +136,8 @@ namespace QuantLib {
         // compute swap covariances for caplet approximation formula
         // without taking into account A and B
         std::vector<Matrix> CovarianceSwapPseudos(numberOfSteps);
-        std::vector<Matrix> CovarianceSwapCovs(numberOfSteps);
+        std::vector<Matrix> CovarianceSwapCovs(numberOfSteps); // this is total cov
+		std::vector<Matrix> CovarianceSwapMarginalCovs(numberOfSteps); // this is cov for one step
 
         for (Size i=0; i<numberOfSteps; ++i) {
             CovarianceSwapPseudos[i] =  corrPseudo[i];
@@ -142,8 +146,10 @@ namespace QuantLib {
                     CovarianceSwapPseudos[i][j][k] *=
                             sqrt(swapTimeInhomogeneousVariances[i][j]);
 
-            CovarianceSwapCovs[i] = CovarianceSwapPseudos[i] *
+            CovarianceSwapMarginalCovs[i] = CovarianceSwapPseudos[i] *
                                     transpose(CovarianceSwapPseudos[i]);
+
+			CovarianceSwapCovs[i] = CovarianceSwapMarginalCovs[i];
             if (i>0)
                 CovarianceSwapCovs[i]+= CovarianceSwapCovs[i-1];
         }
@@ -209,10 +215,51 @@ namespace QuantLib {
                                          CovarianceSwapCovs[i-1][k][l] *
                                          invertedZedMatrix[i-1][l];
 
+			// now compute contribution from top row excluding first two columns and its transpose
+			// we divide into two parts as one part is multiplied by a[i-1] and the other by b[i-1]
+			// a lot could be precomputed when we need to optimize
+			for (Size k = i+1; k < numberOfSteps; ++k)
+			{
+				if (i > 1)
+				{
+					extraConstantPart+=invertedZedMatrix[i-1][i-1] *
+						CovarianceSwapCovs[i-2][i-1][k] *
+						invertedZedMatrix[i-1][k]*a[i-1];
+
+					extraConstantPart+=invertedZedMatrix[i-1][k] *
+						CovarianceSwapCovs[i-2][k][i-1] *
+						invertedZedMatrix[i-1][i-1]*a[i-1];
+				}
+
+				extraConstantPart+=invertedZedMatrix[i-1][i-1] *
+					CovarianceSwapMarginalCovs[i-1][i-1][k] *
+					invertedZedMatrix[i-1][k]*b[i-1];
+
+				extraConstantPart+=invertedZedMatrix[i-1][k] *
+					CovarianceSwapCovs[i-1][k][i-1] *
+					invertedZedMatrix[i-1][i-1]*b[i-1];
+
+			}
+
+			// we also get an extra linear part, this corresponds to row i, and columns j>i+1, and transpose
+			double extraLinearPart=0.0;
+			for (Size k = i+1; k < numberOfSteps; ++k)
+			{
+					extraLinearPart+=invertedZedMatrix[i-1][k] *
+						CovarianceSwapCovs[i-1][k][i] *
+						invertedZedMatrix[i-1][i];
+
+					extraLinearPart+=invertedZedMatrix[i-1][i] *
+						CovarianceSwapCovs[i-1][i][k] *
+						invertedZedMatrix[i-1][k];
+			}
+
+
+
             Real constantPart = w0*w0*totVariance[i-1] +
-                                                    extraConstantPart-v1t1;
+                                                    extraConstantPart*extraMultiplier-v1t1;
             Real linearPart = -2*w0*w1*(a[i-1]*almostTotCovariance[i] +
-                                                b[i-1]*leftCovariance[i]);
+                                                b[i-1]*leftCovariance[i]) +extraLinearPart*extraMultiplier ;
             Real quadraticPart = w1*w1*almostTotVariance[i];
             Real disc = linearPart*linearPart-4.0*constantPart*quadraticPart;
 
@@ -289,6 +336,7 @@ namespace QuantLib {
                             Size numberOfFactors,
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
+							bool useFullApprox,
                             Size maxIterations,
                             Real tolerance) {
 
@@ -311,6 +359,7 @@ namespace QuantLib {
                                           numberOfFactors,
                                           alpha,
                                           lowestRoot,
+										  useFullApprox,
                                           swapCovariancePseudoRoots_,
                                           negDiscr_);
             if (!success)
