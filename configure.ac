@@ -352,11 +352,11 @@ AC_CONFIG_FILES([
     ql/models/marketmodels/Makefile
     ql/models/marketmodels/browniangenerators/Makefile
     ql/models/marketmodels/callability/Makefile
+    ql/models/marketmodels/correlations/Makefile
     ql/models/marketmodels/curvestates/Makefile
     ql/models/marketmodels/driftcomputation/Makefile
     ql/models/marketmodels/evolvers/Makefile
     ql/models/marketmodels/models/Makefile
-    ql/models/marketmodels/piecewiseconstantcorrelations/Makefile
     ql/models/marketmodels/products/Makefile
     ql/models/marketmodels/products/onestep/Makefile
     ql/models/marketmodels/products/multistep/Makefile

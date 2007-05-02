@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
@@ -56,7 +56,7 @@ namespace QuantLib {
             // copy only time hogeneous values
             for (Size i=k; i<numberOfRates_; ++i) {
                 for (Size j=k; j<i; ++j) {
-                    correlations_[k][i][j] = correlations_[k][j][i] = 
+                    correlations_[k][i][j] = correlations_[k][j][i] =
                         fwdCorrelation_[i-k][j-k];
                 }
             }

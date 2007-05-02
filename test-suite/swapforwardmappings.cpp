@@ -21,12 +21,12 @@
 #include "swapforwardmappings.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/correlations.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
@@ -184,7 +184,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
                                                   beta);
     boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          rateTimes));       
+                                          rateTimes));
     boost::shared_ptr<MarketModel> smmMarketModel(new
         FlatVol(marketData.volatilities(),
                        corr,

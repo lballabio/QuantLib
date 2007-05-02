@@ -1,6 +1,6 @@
 
-SUBDIRS = browniangenerators callability curvestates driftcomputation \
-          evolvers models piecewiseconstantcorrelations products
+SUBDIRS = browniangenerators callability correlations curvestates \
+          driftcomputation evolvers models products
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -37,11 +37,11 @@ noinst_LTLIBRARIES = libMarketModels.la
 libMarketModels_la_LIBADD = \
     browniangenerators/libMarketModelsBrownianGenerators.la \
     callability/libMarketModelsCallability.la \
+    correlations/libMarketModelsCorrelations.la \
     curvestates/libMarketModelsCurveStates.la \
     driftcomputation/libMarketModelsDriftComputation.la \
     evolvers/libMarketModelsEvolvers.la \
     models/libMarketModelsModels.la \
-    piecewiseconstantcorrelations/libMarketModelsCorrelations.la \
     products/libMarketModelsProducts.la
 
 all.hpp: Makefile.am

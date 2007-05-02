@@ -22,8 +22,8 @@
 
 #include "marketmodel_smmcapletcalibration.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/cotswapfromfwdcorrelation.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
@@ -36,7 +36,7 @@
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalcotswapratepc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/correlations.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
@@ -270,7 +270,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta_);
     boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes()));       
+                                          evolution.rateTimes()));
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
@@ -459,7 +459,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     bool result = calibrator.calibrate(numberOfFactors_,
                                        alpha,
                                        lowestRoot,
-									   false,
+                                       false,
                                        maxIterations,
                                        capletTolerance/10);
 

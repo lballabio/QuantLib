@@ -20,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/cotswapfromfwdcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/utilities/disposable.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
@@ -42,7 +42,7 @@ namespace QuantLib {
         Size nbRates = evolution.numberOfRates();
         QL_REQUIRE(nbRates==curveState.numberOfRates(),
                    "mismatch between number of rates in evolution (" <<
-                   nbRates << ") and curveState (" << 
+                   nbRates << ") and curveState (" <<
                    curveState.numberOfRates() << ")");
         QL_REQUIRE(nbRates==fraCorrelation.rows(),
                    "mismatch between number of rates (" << nbRates <<

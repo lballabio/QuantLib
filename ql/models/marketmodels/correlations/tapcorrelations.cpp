@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/tapcorrelations.hpp>
+#include <ql/models/marketmodels/correlations/tapcorrelations.hpp>
 #include <cmath>
 
 namespace QuantLib {
@@ -74,7 +74,7 @@ namespace QuantLib {
                 if (i>0) {
                     cosPhi = std::cos(angles[i-1]);
                     sinPhi = std::sin(angles[i-1]);
-                } 
+                }
                 else {
                     cosPhi = 1;
                     sinPhi = 0;
@@ -93,14 +93,14 @@ namespace QuantLib {
 
     Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained (
                                                         const Array& x) {
-        Array angles(x.size()); 
+        Array angles(x.size());
         //we convert the unconstrained parameters in angles
         for(Size i = 0; i < x.size(); ++i)
             angles[i] = M_PI*.5 - std::atan(x[i]);
         return lmmTriangularAnglesParametrization(angles);
     }
-    
-    Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0, 
+
+    Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0,
                                                            Real epsilon, Size nbRows) {
             Matrix m(nbRows, 3);
             for (Size i=0; i<m.rows(); ++i) {
@@ -115,11 +115,11 @@ namespace QuantLib {
 
     Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
         const Array& paramters, Size nbRows){
-        QL_REQUIRE(paramters.size() == 3, 
+        QL_REQUIRE(paramters.size() == 3,
             "the parameter array must contain exactly 3 values" );
-        return  triangularAnglesParametrizationRankThree(paramters[0], 
+        return  triangularAnglesParametrizationRankThree(paramters[0],
             paramters[1], paramters[2], nbRows);
-        
+
     }
 
     Real FrobeniusCostFunction::value(const Array& x) const{
@@ -136,7 +136,7 @@ namespace QuantLib {
         // then we store the elementwise differences in a vector.
         for (Size i=0; i<target_.rows(); ++i)
             for (Size j=0; j<target_.columns(); ++j)
-                result[i*target_.rows()+j] 
+                result[i*target_.rows()+j]
                             = differences[i][j]*differences[i][j];
         return result;
     }

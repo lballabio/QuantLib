@@ -43,8 +43,8 @@
 #include <ql/models/marketmodels/discounter.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/products/multiproductcomposite.hpp>
 #include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>

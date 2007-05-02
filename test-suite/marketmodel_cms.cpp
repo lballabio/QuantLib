@@ -22,7 +22,7 @@
 
 #include "marketmodel_cms.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/timehomogeneousforwardcorrelation.hpp>
+#include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalcmswapratepc.hpp>
@@ -30,7 +30,7 @@
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/correlations.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepcoterminalswaps.hpp>
@@ -232,7 +232,7 @@ boost::shared_ptr<MarketModel> makeMarketModel(
                                                   beta);
     boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
-                                          evolution.rateTimes()));       
+                                          evolution.rateTimes()));
     switch (marketModelType) {
         case ExponentialCorrelationFlatVolatility:
             return boost::shared_ptr<MarketModel>(new
