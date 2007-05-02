@@ -15,9 +15,7 @@ this_include_HEADERS = \
     evolutiondescription.hpp \
     marketmodeldiscounter.hpp \
     marketmodelevolver.hpp \
-    marketmodelexercisevalue.hpp \
     marketmodelmultiproduct.hpp \
-    marketmodelnodedataprovider.hpp \
     marketmodel.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \

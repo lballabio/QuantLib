@@ -21,7 +21,7 @@
 #ifndef quantlib_market_model_basis_system_hpp
 #define quantlib_market_model_basis_system_hpp
 
-#include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
+#include <ql/models/marketmodels/callability/nodedataprovider.hpp>
 #include <memory>
 
 namespace QuantLib {

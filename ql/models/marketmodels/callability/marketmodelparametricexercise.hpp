@@ -21,7 +21,7 @@
 #ifndef quantlib_market_model_parametric_exercise_hpp
 #define quantlib_market_model_parametric_exercise_hpp
 
-#include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
+#include <ql/models/marketmodels/callability/nodedataprovider.hpp>
 #include <ql/methods/montecarlo/parametricexercise.hpp>
 #include <memory>
 

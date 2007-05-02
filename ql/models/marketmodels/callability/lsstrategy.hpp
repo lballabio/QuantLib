@@ -22,7 +22,7 @@
 
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/models/marketmodels/callability/marketmodelbasissystem.hpp>
-#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
+#include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/utilities/clone.hpp>
 
 namespace QuantLib {

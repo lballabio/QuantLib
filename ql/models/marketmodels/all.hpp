@@ -9,9 +9,7 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
-#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
 #include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
-#include <ql/models/marketmodels/marketmodelnodedataprovider.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/proxygreekengine.hpp>

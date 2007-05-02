@@ -27,7 +27,7 @@
 #include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
 #include <ql/models/marketmodels/marketmodeldiscounter.hpp>
 #include <ql/models/marketmodels/marketmodelevolver.hpp>
-#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
+#include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <algorithm>
 
 namespace QuantLib {

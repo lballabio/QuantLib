@@ -22,7 +22,7 @@
 #define quantlib_multistep_exercise_adapter_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <ql/models/marketmodels/marketmodelexercisevalue.hpp>
+#include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/utilities/clone.hpp>
 
 namespace QuantLib {
