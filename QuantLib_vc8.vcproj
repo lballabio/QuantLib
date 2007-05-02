@@ -2783,10 +2783,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\randomnumbers\core.hpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\math\randomnumbers\faurersg.cpp"
 					>
 				</File>
