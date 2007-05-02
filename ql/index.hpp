@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
 
@@ -65,13 +66,23 @@ namespace QuantLib {
                         ValueIterator vBegin) {
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
+            bool allValidFixings = true;
+            Date invalidDate;
+            Real invalidValue;
             while (dBegin != dEnd) {
-                QL_REQUIRE(isValidFixingDate(*dBegin),
-                           "Fixing date " << (*dBegin).weekday() << ", " <<
-                           *dBegin << " is not valid");
-                h[*(dBegin++)] = *(vBegin++);
+                if (isValidFixingDate(*dBegin))
+                    h[*(dBegin++)] = *(vBegin++);
+                else {
+                    allValidFixings = false;
+                    invalidDate = *(dBegin++);
+                    invalidValue = *(vBegin++);
+                }
             }
-            IndexManager::instance().setHistory(tag,h);
+            IndexManager::instance().setHistory(tag, h);
+            QL_REQUIRE(allValidFixings,
+                       "At least one invalid fixing provided: " <<
+                       invalidDate.weekday() << ", " << invalidDate <<
+                       ", " << invalidValue);
         }
         //! clears all stored historical fixings
         void clearFixings();
