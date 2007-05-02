@@ -118,7 +118,7 @@ namespace QuantLib {
         QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
         initialValues_= std::vector<Real>(observationDates.size(),0.);
 
-        Calendar calendar = index->calendar();
+        Calendar calendar = index->fixingCalendar();
         for(Size i=0; i<observationDates.size(); i++) {
             initialValues_[i]=index->fixing(
                 calendar.advance(observationDates[i],

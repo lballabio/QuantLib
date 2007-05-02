@@ -26,7 +26,7 @@
 #include <ql/quotes/impliedstddevquote.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
 using namespace QuantLib;

@@ -26,8 +26,9 @@
 #ifndef quantlib_eur_libor_hpp
 #define quantlib_eur_libor_hpp
 
-#include <ql/indexes/libor.hpp>
+#include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 
@@ -40,23 +41,30 @@ namespace QuantLib {
 
         \warning This is the rate fixed in London by BBA. Use Euribor if
                  you're interested in the fixing by the ECB.
+        \warning This is not a valid base class for the O/N index
     */
-    class EURLibor : public Libor {
+    class EURLibor : public IborIndex {
       public:
         EURLibor(const Period& tenor,
-                 const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
-                 Natural settlementDays = 2)
-        : Libor("EURLibor", tenor, settlementDays, EURCurrency(),
-                TARGET(), TARGET(),
-                convention, endOfMonth, Actual360(), h) {}
+                 const Handle<YieldTermStructure>& h,
+                 BusinessDayConvention convention,
+                 bool endOfMonth);
+        /*! \name Date calculations
+
+            see http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412
+            @{
+        */
+        Date valueDate(const Date& fixingDate) const;
+        Date maturityDate(const Date& valueDate) const;
+        // @}
+      private:
+        Calendar target_;
     };
+
     class WeeklyTenorEURLibor : public EURLibor {
       public:
         WeeklyTenorEURLibor(const Period& tenor,
-                const Handle<YieldTermStructure>& h =
+                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(tenor, h, Following, false) {}
     };
@@ -64,7 +72,7 @@ namespace QuantLib {
     class MonthlyTenorEURLibor : public EURLibor {
       public:
         MonthlyTenorEURLibor(const Period& tenor,
-                const Handle<YieldTermStructure>& h =
+                             const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
         : EURLibor(tenor, h, ModifiedFollowing, true) {}
     };
@@ -184,6 +192,5 @@ namespace QuantLib {
 
 
 }
-
 
 #endif

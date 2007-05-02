@@ -26,8 +26,8 @@
 #define quantlib_eurliborswapfixifr_hpp
 
 #include <ql/indexes/swapindex.hpp>
-#include <ql/indexes/eurlibor.hpp>
-#include <ql/indexes/libor.hpp>
+#include <ql/indexes/ibor/eurlibor.hpp>
+#include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/currencies/europe.hpp>

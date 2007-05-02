@@ -33,7 +33,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
@@ -79,7 +79,7 @@ void setup() {
     floatingDayCounter_= Actual360();
     iborindex_ = boost::shared_ptr<IborIndex>(new
         Euribor(Period(floatingFrequency_), termStructure_));
-    calendar_ = iborindex_->calendar();
+    calendar_ = iborindex_->fixingCalendar();
     swapindex_= boost::shared_ptr<SwapIndex>(new
            SwapIndex("EuriborSwapFixA", 10*Years,swapSettlementDays_,
                 iborindex_->currency(), calendar_,

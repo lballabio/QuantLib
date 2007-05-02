@@ -22,7 +22,7 @@
 #include <ql/timegrid.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
@@ -52,14 +52,14 @@ boost::shared_ptr<IborIndex> makeIndex() {
 
     boost::shared_ptr<IborIndex> index(new Euribor1Y(termStructure));
 
-    Date todaysDate = index->calendar().adjust(Date(4,September,2005));
+    Date todaysDate = index->fixingCalendar().adjust(Date(4,September,2005));
     Settings::instance().evaluationDate() = todaysDate;
 
-    dates[0] = index->calendar().advance(todaysDate,
-                                         index->fixingDays(), Days);
+    dates[0] = index->fixingCalendar().advance(todaysDate,
+                                               index->fixingDays(), Days);
 
-    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
+    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(new
+        ZeroCurve(dates, rates, dayCounter)));
 
     return index;
 }
@@ -121,11 +121,12 @@ void LiborMarketModelProcessTest::testInitialisation() {
         flatRate(Date::todaysDate(), 0.04, dayCounter));
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    boost::shared_ptr<CapletVolatilityStructure> capletVol(
-        new CapletConstantVolatility(termStructure->referenceDate(), 0.2,
-                                     termStructure->dayCounter()));
+    boost::shared_ptr<CapletVolatilityStructure> capletVol(new
+        CapletConstantVolatility(termStructure->referenceDate(),
+                                 0.2,
+                                 termStructure->dayCounter()));
 
-    Calendar calendar = index->calendar();
+    Calendar calendar = index->fixingCalendar();
 
     for (Integer daysOffset=0; daysOffset < 1825 /* 5 year*/; daysOffset+=8) {
         Date todaysDate = calendar.adjust(Date::todaysDate()+daysOffset);

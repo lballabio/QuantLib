@@ -18,39 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file jpylibor.hpp
-    \brief %JPY %LIBOR rate
+/*! \file nzdlibor.hpp
+    \brief %NZD %LIBOR rate
 */
 
-#ifndef quantlib_jpy_libor_hpp
-#define quantlib_jpy_libor_hpp
+#ifndef quantlib_nzd_libor_hpp
+#define quantlib_nzd_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/japan.hpp>
+#include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/asia.hpp>
+#include <ql/currencies/oceania.hpp>
 
 namespace QuantLib {
 
-    //! %JPY %LIBOR rate
-    /*! Japanese Yen LIBOR fixed by BBA.
+    //! %NZD %LIBOR rate
+    /*! New Zealand Dollar LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
-
-        \warning This is the rate fixed in London by BBA. Use TIBOR if
-                 you're interested in the Tokio fixing.
     */
-    class JPYLibor : public Libor {
+    class NZDLibor : public Libor {
       public:
-        JPYLibor(const Period& tenor,
+        NZDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
                  Natural settlementDays = 2)
-        : Libor("JPYLibor", tenor, settlementDays, JPYCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Japan(),
+        : Libor("NZDLibor", tenor, settlementDays, NZDCurrency(),
+                NewZealand(),
                 convention, endOfMonth, Actual360(), h) {}
     };
 

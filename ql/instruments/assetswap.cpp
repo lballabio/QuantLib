@@ -47,7 +47,7 @@ namespace QuantLib {
             schedule = Schedule(bond->settlementDate(),
                                 bond->maturityDate(),
                                 index->tenor(),
-                                index->calendar(),
+                                index->fixingCalendar(),
                                 index->businessDayConvention(),
                                 Unadjusted,
                                 true,

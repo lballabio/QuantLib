@@ -25,9 +25,7 @@
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
-//#include <ql/time/calendar.hpp>
-//#include <ql/currency.hpp>
-//#include <ql/daycounter.hpp>
+#include <ql/time/calendar.hpp>
 #include <ql/indexes/indexmanager.hpp>
 
 namespace QuantLib {
@@ -42,8 +40,10 @@ namespace QuantLib {
                      used for writing switch-on-type code.
         */
         virtual std::string name() const = 0;
+        //! returns the calendar defining valid fixing dates
+        Calendar fixingCalendar() const;
         //! returns TRUE if the fixing date is a valid one
-        virtual bool isValidFixingDate(const Date& fixingDate) const = 0;
+        bool isValidFixingDate(const Date& fixingDate) const;
         //! returns the fixing at the given date
         /*! the date passed as arguments must be the actual calendar
             date of the fixing; no settlement days must be used.
@@ -75,7 +75,15 @@ namespace QuantLib {
         }
         //! clears all stored historical fixings
         void clearFixings();
+      protected:
+        Calendar fixingCalendar_;
     };
+
+    inline Calendar Index::fixingCalendar() const {
+        return fixingCalendar_;
+    }
+
+
 
 }
 

@@ -20,7 +20,7 @@
 
 #include "digitalcoupon.hpp"
 #include "utilities.hpp"
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
@@ -46,7 +46,7 @@ void setup() {
     fixingDays_ = 2;
     nominal_ = 1000000.0;
     index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    calendar_ = index_->calendar();
+    calendar_ = index_->fixingCalendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,fixingDays_,Days);

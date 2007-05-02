@@ -18,39 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file chflibor.hpp
-    \brief %CHF %LIBOR rate
+/*! \file dkklibor.hpp
+    \brief %DKK %LIBOR rate
 */
 
-#ifndef quantlib_chf_libor_hpp
-#define quantlib_chf_libor_hpp
+#ifndef quantlib_dkk_libor_hpp
+#define quantlib_dkk_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/switzerland.hpp>
+#include <ql/time/calendars/denmark.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %CHF %LIBOR rate
-    /*! Swiss Franc LIBOR fixed by BBA.
+    //! %DKK %LIBOR rate
+    /*! Danish Krona LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
-
-        \warning This is the rate fixed in London by BBA. Use ZIBOR if
-                 you're interested in the Zurich fixing.
     */
-    class CHFLibor : public Libor {
+    class DKKLibor : public Libor {
       public:
-        CHFLibor(const Period& tenor,
+        DKKLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
                  Natural settlementDays = 2)
-        : Libor("CHFLibor", tenor, settlementDays, CHFCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Switzerland(),
+        : Libor("DKKLibor", tenor, settlementDays, DKKCurrency(),
+                Denmark(),
                 convention, endOfMonth, Actual360(), h) {}
     };
 

@@ -25,7 +25,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
@@ -81,7 +81,7 @@ void setup() {
     fixedDayCount_ = Thirty360();
     index_ = boost::shared_ptr<IborIndex>(new
         Euribor(Period(floatingFrequency_), termStructure_));
-    calendar_ = index_->calendar();
+    calendar_ = index_->fixingCalendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);

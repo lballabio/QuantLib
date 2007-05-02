@@ -49,9 +49,9 @@ namespace QuantLib {
                 BusinessDayConvention convention = ModifiedFollowing,
                 bool endOfMonth = true)
         : IborIndex("Euribor", tenor,
-                2, // settlementDays
-                EURCurrency(), TARGET(),
-                convention, endOfMonth, Actual360(), h) {}
+                    2, // settlementDays
+                    EURCurrency(), TARGET(),
+                    convention, endOfMonth, Actual360(), h) {}
     };
 
 
@@ -68,9 +68,9 @@ namespace QuantLib {
                    BusinessDayConvention convention = ModifiedFollowing,
                    bool endOfMonth = true)
         : IborIndex("Euribor", tenor,
-                2, // settlementDays
-                EURCurrency(), TARGET(),
-                convention, endOfMonth, Actual365Fixed(), h) {}
+                    2, // settlementDays
+                    EURCurrency(), TARGET(),
+                    convention, endOfMonth, Actual365Fixed(), h) {}
     };
 
 

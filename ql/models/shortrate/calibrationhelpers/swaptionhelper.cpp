@@ -37,7 +37,7 @@ namespace QuantLib {
                               bool calibrateVolatility)
     : CalibrationHelper(volatility,termStructure, calibrateVolatility) {
 
-        Calendar calendar = index->calendar();
+        Calendar calendar = index->fixingCalendar();
         Period indexTenor = index->tenor();
         Natural fixingDays = index->fixingDays();
         Date exerciseDate = calendar.advance(termStructure->referenceDate(),

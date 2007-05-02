@@ -103,9 +103,8 @@ namespace QuantLib {
     Date FloatingRateCoupon::fixingDate() const {
         // if isInArrears_ fix at the end of period
         Date refDate = isInArrears_ ? accrualEndDate_ : accrualStartDate_;
-        return index_->calendar().advance(refDate,
-                                          -static_cast<Integer>(fixingDays_),
-                                          Days, Preceding);
+        return index_->fixingCalendar().advance(refDate,
+            -static_cast<Integer>(fixingDays_), Days, Preceding);
     }
 
     Real FloatingRateCoupon::gearing() const {

@@ -24,7 +24,7 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/termstructures/yieldcurves/discountcurve.hpp>

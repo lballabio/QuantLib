@@ -74,14 +74,16 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
-            Date fixingValueDate = index_->calendar().advance(
+            Date fixingValueDate = index_->fixingCalendar().advance(
                                      fixing_date, index_->fixingDays(), Days);
             DiscountFactor startDiscount = termStructure->discount(fixingValueDate);
             // ???
-            Date temp = index_->calendar().advance(accrualEndDate_,
+            Date temp = index_->fixingCalendar().advance(accrualEndDate_,
                                         -static_cast<Integer>(fixingDays()), Days);
             DiscountFactor endDiscount = termStructure->discount(
-                index_->calendar().advance(temp, index_->fixingDays(), Days));
+                index_->fixingCalendar().advance(temp,
+                                                 index_->fixingDays(),
+                                                 Days));
             return (startDiscount/endDiscount-1.0)/accrualPeriod();
         }
 #endif

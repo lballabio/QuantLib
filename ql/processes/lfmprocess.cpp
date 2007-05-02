@@ -185,7 +185,7 @@ namespace QuantLib {
                    Schedule(refDate,
                             refDate + Period(index_->tenor().length()*size_,
                                              index_->tenor().units()),
-                            index_->tenor(), index_->calendar(),
+                            index_->tenor(), index_->fixingCalendar(),
                             index_->businessDayConvention(),
                             index_->businessDayConvention(), false, false),
                    index_,

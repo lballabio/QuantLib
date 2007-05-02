@@ -18,39 +18,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cadlibor.hpp
-    \brief %CAD %LIBOR rate
+/*! \file jpylibor.hpp
+    \brief %JPY %LIBOR rate
 */
 
-#ifndef quantlib_cad_libor_hpp
-#define quantlib_cad_libor_hpp
+#ifndef quantlib_jpy_libor_hpp
+#define quantlib_jpy_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/japan.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/america.hpp>
+#include <ql/currencies/asia.hpp>
 
 namespace QuantLib {
 
-    //! %CAD LIBOR rate
-    /*! Canadian Dollar LIBOR fixed by BBA.
+    //! %JPY %LIBOR rate
+    /*! Japanese Yen LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
 
-        \warning This is the rate fixed in London by BBA. Use CDOR if
-                 you're interested in the Canadian fixing by IDA.
+        \warning This is the rate fixed in London by BBA. Use TIBOR if
+                 you're interested in the Tokio fixing.
     */
-    class CADLibor : public Libor {
+    class JPYLibor : public Libor {
       public:
-        CADLibor(const Period& tenor,
+        JPYLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
                  Natural settlementDays = 2)
-        : Libor("CADLibor", tenor, settlementDays, CADCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Canada(),
+        : Libor("JPYLibor", tenor, settlementDays, JPYCurrency(),
+                Japan(),
                 convention, endOfMonth, Actual360(), h) {}
     };
 

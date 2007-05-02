@@ -26,7 +26,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
@@ -193,10 +193,10 @@ void setup() {
     Euribor3M euribor3m;
     for (Size i=0; i<fras; i++) {
         Handle<Quote> r(fraRates[i]);
-        fraHelpers[i] = boost::shared_ptr<RateHelper>(
-              new FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
+        fraHelpers[i] = boost::shared_ptr<RateHelper>(new
+            FraRateHelper(r, fraData[i].n, fraData[i].n + 3,
                                 euribor3m.fixingDays(),
-                                euribor3m.calendar(),
+                                euribor3m.fixingCalendar(),
                                 euribor3m.businessDayConvention(),
                                 euribor3m.endOfMonth(),
                                 euribor3m.fixingDays(),

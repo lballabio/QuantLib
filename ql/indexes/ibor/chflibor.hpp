@@ -18,37 +18,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file usdlibor.hpp
-    \brief %USD %LIBOR rate
+/*! \file chflibor.hpp
+    \brief %CHF %LIBOR rate
 */
 
-#ifndef quantlib_usd_libor_hpp
-#define quantlib_usd_libor_hpp
+#ifndef quantlib_chf_libor_hpp
+#define quantlib_chf_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/calendars/switzerland.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/america.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %USD %LIBOR rate
-    /*! US Dollar LIBOR fixed by BBA.
+    //! %CHF %LIBOR rate
+    /*! Swiss Franc LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+
+        \warning This is the rate fixed in London by BBA. Use ZIBOR if
+                 you're interested in the Zurich fixing.
     */
-    class USDLibor : public Libor {
+    class CHFLibor : public Libor {
       public:
-        USDLibor(const Period& tenor,
+        CHFLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
                  Natural settlementDays = 2)
-        : Libor("USDLibor", tenor, settlementDays, USDCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedStates(UnitedStates::NYSE),
+        : Libor("CHFLibor", tenor, settlementDays, CHFCurrency(),
+                Switzerland(),
                 convention, endOfMonth, Actual360(), h) {}
     };
 

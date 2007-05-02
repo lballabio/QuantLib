@@ -24,7 +24,7 @@
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -75,7 +75,7 @@ void setup() {
     floatingFrequency_ = Semiannual;
     fixedDayCount_ = Thirty360();
     index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    calendar_ = index_->calendar();
+    calendar_ = index_->fixingCalendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);

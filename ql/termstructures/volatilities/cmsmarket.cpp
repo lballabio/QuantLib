@@ -23,7 +23,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/volatilities/cmsmarket.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube.hpp>
-#include <ql/indexes/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/analysis.hpp>
 

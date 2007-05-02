@@ -24,7 +24,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/marketmodelcapfloorengine.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
@@ -116,7 +116,7 @@ void setup() {
     nominals_ = std::vector<Real>(1,100);
     frequency_ = Semiannual;
     index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
-    calendar_ = index_->calendar();
+    calendar_ = index_->fixingCalendar();
     convention_ = ModifiedFollowing;
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;

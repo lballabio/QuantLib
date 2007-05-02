@@ -17,36 +17,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tibor.hpp
-    \brief %JPY %TIBOR rate
+/*! \file cdor.hpp
+    \brief %CDOR rate
 */
 
-#ifndef quantlib_tibor_hpp
-#define quantlib_tibor_hpp
+#ifndef quantlib_cdor_hpp
+#define quantlib_cdor_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/time/calendars/japan.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/currencies/asia.hpp>
+#include <ql/time/calendars/canada.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/america.hpp>
 
 namespace QuantLib {
 
-    //! %JPY %TIBOR index
-    /*! Tokyo Interbank Offered Rate.
+    //! %CDOR rate
+    /*! Canadian Dollar Offered Rate fixed by IDA.
 
-        \warning This is the rate fixed in Tokio by JBA. Use JPYLibor
+        \warning This is the rate fixed in Canada by IDA. Use CADLibor
                  if you're interested in the London fixing by BBA.
 
-        \todo check settlement days and end-of-month adjustment.
+        \todo check settlement days, end-of-month adjustment,
+              and day-count convention.
     */
-    class Tibor : public IborIndex {
+    class Cdor : public IborIndex {
       public:
-        Tibor(const Period& tenor,
-              const Handle<YieldTermStructure>& h =
+        Cdor(const Period& tenor,
+             const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : IborIndex("Tibor", tenor, 2, JPYCurrency(),
-                Japan(), ModifiedFollowing,
-                false, Actual365Fixed(), h) {}
+        : IborIndex("CDOR", tenor, 2, CADCurrency(),
+                    Canada(), ModifiedFollowing, false,
+                    Actual360(), h) {}
     };
 
 }

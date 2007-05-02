@@ -1,7 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Katiuscia Manzoni
+ Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,13 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/euriborswapfixb.hpp>
+#include <ql/indexes/swap/euriborswapfixa.hpp>
 
 namespace QuantLib {
 
-    EuriborSwapFixBvs3M::EuriborSwapFixBvs3M(const Period& tenor,
+    EuriborSwapFixAvs3M::EuriborSwapFixAvs3M(const Period& tenor,
                                          const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixB", // familyName
+    : SwapIndex("EuriborSwapFixA", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -33,9 +34,9 @@ namespace QuantLib {
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
 
-    EuriborSwapFixBvs6M::EuriborSwapFixBvs6M(const Period& tenor,
+    EuriborSwapFixAvs6M::EuriborSwapFixAvs6M(const Period& tenor,
                                          const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixB", // familyName
+    : SwapIndex("EuriborSwapFixA", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),

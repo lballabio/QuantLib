@@ -40,19 +40,19 @@ namespace QuantLib {
 
     //! base class for interest rate indexes
     /*! \todo add methods returning InterestRate */
-    class InterestRateIndex : public Index, public Observer {
+    class InterestRateIndex : public Index,
+                              public Observer {
       public:
         InterestRateIndex(
               const std::string& familyName,
               const Period& tenor,
               Natural settlementDays,
               const Currency& currency,
-              const Calendar& calendar,
+              const Calendar& fixingCalendar,
               const DayCounter& dayCounter);
         //! \name Index interface
         //@{
         std::string name() const;
-        bool isValidFixingDate(const Date& fixingDate) const;
         Rate fixing(const Date& fixingDate,
                     bool forecastTodaysFixing = false) const;
         //@}
@@ -65,29 +65,27 @@ namespace QuantLib {
         std::string familyName() const;
         Period tenor() const;
         Natural fixingDays() const;
+        Date fixingDate(const Date& valueDate) const;
         const Currency& currency() const;
-        Calendar calendar() const;
         const DayCounter& dayCounter() const;
         virtual Rate forecastFixing(const Date& fixingDate) const = 0;
         virtual Handle<YieldTermStructure> termStructure() const = 0;
+        virtual Date maturityDate(const Date& valueDate) const = 0;
         //@}
         /*! \name Date calculations
 
-            These methods can be overridden to implement particular
-            conventions
+            These method can be overridden to implement particular
+            conventions (e.g. EurLibor)
 
             @{
         */
         virtual Date valueDate(const Date& fixingDate) const;
-        virtual Date fixingDate(const Date& valueDate) const;
-        virtual Date maturityDate(const Date& valueDate) const = 0;
         // @}
       protected:
         std::string familyName_;
         Period tenor_;
         Natural fixingDays_;
         Currency currency_;
-        Calendar calendar_;
         DayCounter dayCounter_;
     };
 
@@ -112,10 +110,6 @@ namespace QuantLib {
 
     inline const Currency& InterestRateIndex::currency() const {
         return currency_;
-    }
-
-    inline Calendar InterestRateIndex::calendar() const {
-        return calendar_;
     }
 
     inline const DayCounter& InterestRateIndex::dayCounter() const {

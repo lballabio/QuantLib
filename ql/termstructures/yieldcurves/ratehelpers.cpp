@@ -188,9 +188,11 @@ namespace QuantLib {
 
     void DepositRateHelper::initializeDates() {
         earliestDate_ =
-            index_->calendar().advance(evaluationDate_,settlementDays_,Days);
+            index_->fixingCalendar().advance(evaluationDate_,
+                                             settlementDays_,
+                                             Days);
         latestDate_ = index_->maturityDate(earliestDate_);
-        fixingDate_ = index_->calendar().advance(earliestDate_,
+        fixingDate_ = index_->fixingCalendar().advance(earliestDate_,
             -static_cast<Integer>(index_->fixingDays()), Days);
     }
 
@@ -261,14 +263,15 @@ namespace QuantLib {
     }
 
     void FraRateHelper::initializeDates() {
-        Date settlement =
-            index_->calendar().advance(evaluationDate_,settlementDays_,Days);
-        earliestDate_ = index_->calendar().advance(
+        Date settlement = index_->fixingCalendar().advance(evaluationDate_,
+                                                           settlementDays_,
+                                                           Days);
+        earliestDate_ = index_->fixingCalendar().advance(
                                settlement,monthsToStart_,Months,
                                index_->businessDayConvention(),
                                index_->endOfMonth());
         latestDate_ = index_->maturityDate(earliestDate_);
-        fixingDate_ = index_->calendar().advance(earliestDate_,
+        fixingDate_ = index_->fixingCalendar().advance(earliestDate_,
             -static_cast<Integer>(index_->fixingDays()), Days);
     }
 
@@ -320,7 +323,7 @@ namespace QuantLib {
                   index_->tenor(),
                   index_->fixingDays(),
                   index_->currency(),
-                  index_->calendar(),
+                  index_->fixingCalendar(),
                   index_->businessDayConvention(),
                   index_->endOfMonth(),
                   index_->dayCounter(),

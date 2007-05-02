@@ -27,7 +27,7 @@
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/simplex.hpp>
 

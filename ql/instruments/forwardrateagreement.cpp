@@ -31,7 +31,7 @@ namespace QuantLib {
                            Real notionalAmount,
                            const boost::shared_ptr<IborIndex>& index,
                            const Handle<YieldTermStructure>& discountCurve)
-    : Forward(index->dayCounter(), index->calendar(),
+    : Forward(index->dayCounter(), index->fixingCalendar(),
               index->businessDayConvention(),
               index->fixingDays(), boost::shared_ptr<Payoff>(),
               valueDate, maturityDate, discountCurve),

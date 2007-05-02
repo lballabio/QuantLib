@@ -51,7 +51,7 @@ namespace QuantLib {
                       indexTenor,
                       index->fixingDays(),
                       index->currency(),
-                      index->calendar(),
+                      index->fixingCalendar(),
                       index->businessDayConvention(),
                       index->endOfMonth(),
                       termStructure->dayCounter(),
@@ -60,7 +60,7 @@ namespace QuantLib {
         std::vector<Real> nominals(1,1.0);
 
         Schedule floatSchedule(startDate, maturity,
-                               index->tenor(), index->calendar(),
+                               index->tenor(), index->fixingCalendar(),
                                index->businessDayConvention(),
                                index->businessDayConvention(), false, false);
         Leg floatingLeg = IborLeg(nominals,
@@ -74,7 +74,8 @@ namespace QuantLib {
         CashFlows::setPricer(floatingLeg,fictitiousPricer);
 
         Schedule fixedSchedule(startDate, maturity, Period(fixedLegFrequency),
-                               index->calendar(), Unadjusted, Unadjusted,
+                               index->fixingCalendar(),
+                               Unadjusted, Unadjusted,
                                false, false);
         Leg fixedLeg = FixedRateLeg(nominals,
                                     fixedSchedule,

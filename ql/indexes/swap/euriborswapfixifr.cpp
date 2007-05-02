@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Katiuscia Manzoni
+ Copyright (C) 2006 Chiara Fornarola
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,13 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/euriborswapfixa.hpp>
+#include <ql/indexes/swap/euriborswapfixifr.hpp>
 
 namespace QuantLib {
 
-    EuriborSwapFixAvs3M::EuriborSwapFixAvs3M(const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixA", // familyName
+    EuriborSwapFixIFRvs3M::EuriborSwapFixIFRvs3M(const Period& tenor,
+                                                 const Handle<YieldTermStructure>& h)
+    : SwapIndex("EuriborSwapFixIFR", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -34,9 +34,9 @@ namespace QuantLib {
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
 
-    EuriborSwapFixAvs6M::EuriborSwapFixAvs6M(const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixA", // familyName
+    EuriborSwapFixIFRvs6M::EuriborSwapFixIFRvs6M(const Period& tenor,
+                                                 const Handle<YieldTermStructure>& h)
+    : SwapIndex("EuriborSwapFixIFR", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -45,6 +45,5 @@ namespace QuantLib {
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
-
 
 }

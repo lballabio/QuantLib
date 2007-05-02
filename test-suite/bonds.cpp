@@ -29,7 +29,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/indexes/usdlibor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/schedule.hpp>

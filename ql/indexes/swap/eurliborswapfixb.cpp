@@ -18,13 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/eurliborswapfixifr.hpp>
+#include <ql/indexes/swap/eurliborswapfixb.hpp>
 
 namespace QuantLib {
 
-    EurliborSwapFixIFRvs3M::EurliborSwapFixIFRvs3M(const Period& tenor,
-                                                   const Handle<YieldTermStructure>& h)
-    : SwapIndex("EurliborSwapFixIFR", // familyName
+    EurliborSwapFixBvs3M::EurliborSwapFixBvs3M(const Period& tenor,
+                                               const Handle<YieldTermStructure>& h)
+    : SwapIndex("EurliborSwapFixB", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -34,9 +34,9 @@ namespace QuantLib {
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 boost::shared_ptr<IborIndex>(new EURLibor3M(h))) {}
 
-    EurliborSwapFixIFRvs6M::EurliborSwapFixIFRvs6M(const Period& tenor,
-                                                   const Handle<YieldTermStructure>& h)
-    : SwapIndex("EurliborSwapFixIFR", // familyName
+    EurliborSwapFixBvs6M::EurliborSwapFixBvs6M(const Period& tenor,
+                                               const Handle<YieldTermStructure>& h)
+    : SwapIndex("EurliborSwapFixB", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),

@@ -90,7 +90,7 @@ namespace QuantLib {
                          swapTenor,
                          swapIndexBase_->fixingDays(),
                          swapIndexBase_->currency(),
-                         swapIndexBase_->calendar(),
+                         swapIndexBase_->fixingCalendar(),
                          swapIndexBase_->fixedLegTenor(),
                          swapIndexBase_->fixedLegConvention(),
                          swapIndexBase_->dayCounter(),

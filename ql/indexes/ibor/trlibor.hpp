@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005 Sercan Atalik
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,40 +17,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cdor.hpp
-    \brief %CDOR rate
+/*! \file trlibor.hpp
+    \brief %TRY %LIBOR rate
 */
 
-#ifndef quantlib_cdor_hpp
-#define quantlib_cdor_hpp
+#ifndef quantlib_try_libor_hpp
+#define quantlib_try_libor_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/turkey.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/america.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %CDOR rate
-    /*! Canadian Dollar Offered Rate fixed by IDA.
+    //! %TRY %LIBOR rate
+    /*! TRY LIBOR fixed by TBA.
 
-        \warning This is the rate fixed in Canada by IDA. Use CADLibor
-                 if you're interested in the London fixing by BBA.
+        See <http://www.trlibor.org/trlibor/english/default.asp>
 
-        \todo check settlement days, end-of-month adjustment,
-              and day-count convention.
+        \todo check end-of-month adjustment.
     */
-    class Cdor : public IborIndex {
+    class TRLibor : public IborIndex {
       public:
-        Cdor(const Period& tenor,
-             const Handle<YieldTermStructure>& h =
+        TRLibor(const Period& tenor,
+                const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : IborIndex("CDOR", tenor, 2, CADCurrency(),
-                Canada(), ModifiedFollowing, false,
-                Actual360(), h) {}
+        : IborIndex("TRLibor", tenor, 0, TRYCurrency(),
+                    Turkey(), ModifiedFollowing, false,
+                    Actual360(), h) {}
     };
 
 }
 
 
 #endif
+

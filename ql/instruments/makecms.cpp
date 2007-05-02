@@ -37,8 +37,8 @@ namespace QuantLib {
       cmsCap_(2.0), cmsFloor_(0.0),
 
       effectiveDate_(Date()),
-      cmsCalendar_(swapIndex->calendar()),
-      floatCalendar_(swapIndex->iborIndex()->calendar()),
+      cmsCalendar_(swapIndex->fixingCalendar()),
+      floatCalendar_(swapIndex->iborIndex()->fixingCalendar()),
 
       discountingTermStructure_(swapIndex->termStructure()),
 
@@ -62,7 +62,7 @@ namespace QuantLib {
                       floatTenor_,
                       baseIndex->fixingDays(),
                       baseIndex->currency(),
-                      baseIndex->calendar(),
+                      baseIndex->fixingCalendar(),
                       baseIndex->businessDayConvention(),
                       baseIndex->endOfMonth(),
                       baseIndex->dayCounter(),

@@ -82,7 +82,7 @@ namespace QuantLib {
              smileSectionInterfaces,
          bool allowExtrapolation,
          bool decoupleInterpolation)
-    : CapletVolatilityStructure(0, index->calendar()),
+    : CapletVolatilityStructure(0, index->fixingCalendar()),
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),

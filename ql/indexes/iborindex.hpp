@@ -38,7 +38,7 @@ namespace QuantLib {
                   const Period& tenor,
                   Natural settlementDays,
                   const Currency& currency,
-                  const Calendar& calendar,
+                  const Calendar& fixingCalendar,
                   BusinessDayConvention convention,
                   bool endOfMonth,
                   const DayCounter& dayCounter,
@@ -76,6 +76,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

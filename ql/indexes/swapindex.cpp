@@ -51,7 +51,7 @@ namespace QuantLib {
                    iborIndex_->name());
         return MakeVanillaSwap(tenor_, iborIndex_, 0.0)
             .withEffectiveDate(valueDate(fixingDate))
-            .withFixedLegCalendar(calendar_)
+            .withFixedLegCalendar(fixingCalendar())
             .withFixedLegDayCount(dayCounter_)
             .withFixedLegTenor(fixedLegTenor_)
             .withFixedLegConvention(fixedLegConvention_)
@@ -60,16 +60,16 @@ namespace QuantLib {
 
     Schedule SwapIndex::fixedRateSchedule(const Date& fixingDate) const {
 
-        Date start = calendar_.advance(fixingDate, fixingDays_, Days);
-        Date end = calendar_.advance(start, tenor_);
+        Date start = fixingCalendar().advance(fixingDate, fixingDays_, Days);
+        Date end = fixingCalendar().advance(start, tenor_);
 
-        return Schedule(start, end, fixedLegTenor_, calendar_,
+        return Schedule(start, end, fixedLegTenor_, fixingCalendar(),
                         fixedLegConvention_, fixedLegConvention_,
                         false, false);
     }
 
     Date SwapIndex::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, tenor_, Unadjusted, false);
+        return fixingCalendar().advance(valueDate, tenor_, Unadjusted, false);
     }
 
 }

@@ -26,7 +26,7 @@
 #include <ql/instruments/swaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
@@ -91,7 +91,7 @@ void setup() {
         Euribor6M(termStructure_));
     floatingConvention_ = index_->businessDayConvention();
     floatingTenor_ = index_->tenor();
-    calendar_ = index_->calendar();
+    calendar_ = index_->fixingCalendar();
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);

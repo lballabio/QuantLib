@@ -20,7 +20,7 @@
 
 #include "cms.hpp"
 #include "utilities.hpp"
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>

@@ -20,7 +20,7 @@
 #include "libormarketmodel.hpp"
 #include "utilities.hpp"
 
-#include <ql/indexes/euribor.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/termstructures/volatilities/capletvariancecurve.hpp>
@@ -58,14 +58,14 @@ boost::shared_ptr<IborIndex> makeIndex(std::vector<Date> dates,
 
     boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    Date todaysDate = index->calendar().adjust(Date(4,September,2005));
+    Date todaysDate = index->fixingCalendar().adjust(Date(4,September,2005));
     Settings::instance().evaluationDate() = todaysDate;
 
-    dates[0] = index->calendar().advance(todaysDate,
-                                         index->fixingDays(), Days);
+    dates[0] = index->fixingCalendar().advance(todaysDate,
+                                               index->fixingDays(), Days);
 
-    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(
-                                    new ZeroCurve(dates, rates, dayCounter)));
+    termStructure.linkTo(boost::shared_ptr<YieldTermStructure>(new
+        ZeroCurve(dates, rates, dayCounter)));
 
     return index;
 }
@@ -406,7 +406,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
     boost::shared_ptr<LiborForwardModel>
         liborModel(new LiborForwardModel(process, volaModel, corrModel));
 
-    Calendar calendar = index->calendar();
+    Calendar calendar = index->fixingCalendar();
     DayCounter dayCounter = index->termStructure()->dayCounter();
     BusinessDayConvention convention = index->businessDayConvention();
 

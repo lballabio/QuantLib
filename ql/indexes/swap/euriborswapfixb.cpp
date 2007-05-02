@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Chiara Fornarola
+ Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,13 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/indexes/eurliborswapfixb.hpp>
+#include <ql/indexes/swap/euriborswapfixb.hpp>
 
 namespace QuantLib {
 
-    EurliborSwapFixBvs3M::EurliborSwapFixBvs3M(const Period& tenor,
-                                               const Handle<YieldTermStructure>& h)
-    : SwapIndex("EurliborSwapFixB", // familyName
+    EuriborSwapFixBvs3M::EuriborSwapFixBvs3M(const Period& tenor,
+                                         const Handle<YieldTermStructure>& h)
+    : SwapIndex("EuriborSwapFixB", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -32,11 +31,11 @@ namespace QuantLib {
                 1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new EURLibor3M(h))) {}
+                boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
 
-    EurliborSwapFixBvs6M::EurliborSwapFixBvs6M(const Period& tenor,
-                                               const Handle<YieldTermStructure>& h)
-    : SwapIndex("EurliborSwapFixB", // familyName
+    EuriborSwapFixBvs6M::EuriborSwapFixBvs6M(const Period& tenor,
+                                         const Handle<YieldTermStructure>& h)
+    : SwapIndex("EuriborSwapFixB", // familyName
                 tenor,
                 2, // settlementDays
                 EURCurrency(),
@@ -44,5 +43,7 @@ namespace QuantLib {
                 1*Years, // fixedLegTenor
                 Unadjusted, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new EURLibor6M(h))) {}
+                boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
+
+
 }

@@ -22,7 +22,7 @@
 #include <ql/termstructures/yieldcurves/compoundforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/indexes/jibar.hpp>
+#include <ql/indexes/ibor/jibar.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <iomanip>
 

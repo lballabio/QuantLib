@@ -18,36 +18,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file dkklibor.hpp
-    \brief %DKK %LIBOR rate
+/*! \file cadlibor.hpp
+    \brief %CAD %LIBOR rate
 */
 
-#ifndef quantlib_dkk_libor_hpp
-#define quantlib_dkk_libor_hpp
+#ifndef quantlib_cad_libor_hpp
+#define quantlib_cad_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/calendars/denmark.hpp>
+#include <ql/time/calendars/canada.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/europe.hpp>
+#include <ql/currencies/america.hpp>
 
 namespace QuantLib {
 
-    //! %DKK %LIBOR rate
-    /*! Danish Krona LIBOR fixed by BBA.
+    //! %CAD LIBOR rate
+    /*! Canadian Dollar LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
+
+        \warning This is the rate fixed in London by BBA. Use CDOR if
+                 you're interested in the Canadian fixing by IDA.
     */
-    class DKKLibor : public Libor {
+    class CADLibor : public Libor {
       public:
-        DKKLibor(const Period& tenor,
+        CADLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
                  bool endOfMonth = true,
                  Natural settlementDays = 2)
-        : Libor("DKKLibor", tenor, settlementDays, DKKCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange), Denmark(),
+        : Libor("CADLibor", tenor, settlementDays, CADCurrency(),
+                Canada(),
                 convention, endOfMonth, Actual360(), h) {}
     };
 

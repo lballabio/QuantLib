@@ -27,13 +27,13 @@ namespace QuantLib {
                          const Period& tenor,
                          Natural settlementDays,
                          const Currency& currency,
-                         const Calendar& calendar,
+                         const Calendar& fixingCalendar,
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const DayCounter& dayCounter,
                          const Handle<YieldTermStructure>& h)
     : InterestRateIndex(familyName, tenor, settlementDays, currency,
-                        calendar, dayCounter),
+                        fixingCalendar, dayCounter),
       convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {
         registerWith(termStructure_);
       }
@@ -53,7 +53,10 @@ namespace QuantLib {
     }
 
     Date IborIndex::maturityDate(const Date& valueDate) const {
-        return calendar_.advance(valueDate, tenor_, convention_,endOfMonth_);
+        return fixingCalendar().advance(valueDate,
+                                        tenor_,
+                                        convention_,
+                                        endOfMonth_);
     }
 
 }

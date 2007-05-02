@@ -30,11 +30,11 @@ namespace QuantLib {
                                          const Period& tenor,
                                          Natural fixingDays,
                                          const Currency& currency,
-                                         const Calendar& calendar,
+                                         const Calendar& fixingCalendar,
                                          const DayCounter& dayCounter)
     : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
-      currency_(currency), calendar_(calendar), dayCounter_(dayCounter)
-    {
+      currency_(currency), dayCounter_(dayCounter) {
+        fixingCalendar_ = fixingCalendar;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
@@ -44,10 +44,6 @@ namespace QuantLib {
         out << familyName_ << io::short_period(tenor_)
             << " " << dayCounter_.name();
         return out.str();
-    }
-
-    bool InterestRateIndex::isValidFixingDate(const Date& fixingDate) const {
-        return calendar_.isBusinessDay(fixingDate);
     }
 
     Rate InterestRateIndex::fixing(const Date& fixingDate,
@@ -86,17 +82,15 @@ namespace QuantLib {
     Date InterestRateIndex::valueDate(const Date& fixingDate) const {
         QL_REQUIRE(isValidFixingDate(fixingDate),
                    "Fixing date " << fixingDate << " is not valid");
-        return calendar_.advance(fixingDate, fixingDays_, Days);
+        return fixingCalendar().advance(fixingDate, fixingDays_, Days);
     }
 
     Date InterestRateIndex::fixingDate(const Date& valueDate) const {
-        Date fixingDate = calendar_.advance(valueDate,
-                                            -static_cast<Integer>(fixingDays_),
-                                            Days);
+        Date fixingDate = fixingCalendar().advance(valueDate,
+            -static_cast<Integer>(fixingDays_), Days);
         QL_ENSURE(isValidFixingDate(fixingDate),
                   "fixing date " << fixingDate << " is not valid");
         return fixingDate;
     }
 
 }
-

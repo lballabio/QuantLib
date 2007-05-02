@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Sercan Atalik
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,39 +17,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file trlibor.hpp
-    \brief %TRY %LIBOR rate
+/*! \file tibor.hpp
+    \brief %JPY %TIBOR rate
 */
 
-#ifndef quantlib_try_libor_hpp
-#define quantlib_try_libor_hpp
+#ifndef quantlib_tibor_hpp
+#define quantlib_tibor_hpp
 
 #include <ql/indexes/iborindex.hpp>
-#include <ql/time/calendars/turkey.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/currencies/europe.hpp>
+#include <ql/time/calendars/japan.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/currencies/asia.hpp>
 
 namespace QuantLib {
 
-    //! %TRY %LIBOR rate
-    /*! TRY LIBOR fixed by TBA.
+    //! %JPY %TIBOR index
+    /*! Tokyo Interbank Offered Rate.
 
-        See <http://www.trlibor.org/trlibor/english/default.asp>
+        \warning This is the rate fixed in Tokio by JBA. Use JPYLibor
+                 if you're interested in the London fixing by BBA.
 
-        \todo check end-of-month adjustment.
+        \todo check settlement days and end-of-month adjustment.
     */
-    class TRLibor : public IborIndex {
+    class Tibor : public IborIndex {
       public:
-        TRLibor(const Period& tenor,
-                const Handle<YieldTermStructure>& h =
+        Tibor(const Period& tenor,
+              const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>())
-        : IborIndex("TRLibor", tenor, 0, TRYCurrency(),
-                Turkey(), ModifiedFollowing, false,
-                Actual360(), h) {}
+        : IborIndex("Tibor", tenor, 2, JPYCurrency(),
+                    Japan(), ModifiedFollowing,
+                    false, Actual365Fixed(), h) {}
     };
 
 }
 
 
 #endif
-

@@ -18,36 +18,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file gbplibor.hpp
-    \brief %GBP %LIBOR rate
+/*! \file audlibor.hpp
+    \brief %AUD %LIBOR rate
 */
 
-#ifndef quantlib_gbp_libor_hpp
-#define quantlib_gbp_libor_hpp
+#ifndef quantlib_aud_libor_hpp
+#define quantlib_aud_libor_hpp
 
 #include <ql/indexes/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/currencies/europe.hpp>
+#include <ql/time/calendars/australia.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/oceania.hpp>
 
 namespace QuantLib {
 
-    //! %GBP %LIBOR rate
-    /*! Pound Sterling LIBOR fixed by BBA.
+    //! %AUD %LIBOR rate
+    /*! Australian Dollar LIBOR fixed by BBA.
 
         See <http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1414>.
     */
-    class GBPLibor : public Libor {
+    class AUDLibor : public Libor {
       public:
-        GBPLibor(const Period& tenor,
+        AUDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
+                                     Handle<YieldTermStructure>(),
                  BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true)
-        : Libor("GBPLibor", tenor, 0, GBPCurrency(),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                UnitedKingdom(UnitedKingdom::Exchange),
-                convention, endOfMonth, Actual365Fixed(), h) {}
+                 bool endOfMonth = true,
+                 Natural settlementDays = 2)
+        : Libor("AUDLibor", tenor, settlementDays, AUDCurrency(),
+                Australia(),
+                convention, endOfMonth, Actual360(), h) {}
     };
 
 }
