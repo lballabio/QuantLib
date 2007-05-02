@@ -22,7 +22,7 @@
 #ifndef quantlib_swap_rate_pc_evolver_hpp
 #define quantlib_swap_rate_pc_evolver_hpp
 
-#include <ql/models/marketmodels/marketmodelevolver.hpp>
+#include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
 #include <ql/models/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
 

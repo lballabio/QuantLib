@@ -18,8 +18,8 @@
 */
 
 #include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/marketmodeldiscounter.hpp>
-#include <ql/models/marketmodels/marketmodelevolver.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
+#include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <algorithm>

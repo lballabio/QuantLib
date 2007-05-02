@@ -40,7 +40,7 @@
 #include <ql/models/marketmodels/evolvers/lognormalfwdrateipc.hpp>
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/evolvers/normalfwdratepc.hpp>
-#include <ql/models/marketmodels/marketmodeldiscounter.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelations/correlations.hpp>

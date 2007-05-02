@@ -21,7 +21,7 @@
 #ifndef quantlib_constrained_evolver_hpp
 #define quantlib_constrained_evolver_hpp
 
-#include <ql/models/marketmodels/marketmodelevolver.hpp>
+#include <ql/models/marketmodels/evolver.hpp>
 
 namespace QuantLib {
 

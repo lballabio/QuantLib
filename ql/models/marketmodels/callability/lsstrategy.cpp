@@ -18,7 +18,7 @@
 */
 
 #include <ql/models/marketmodels/callability/lsstrategy.hpp>
-#include <ql/models/marketmodels/marketmodeldiscounter.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>

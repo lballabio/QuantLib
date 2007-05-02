@@ -22,7 +22,7 @@
 #define quantlib_callspecified_multiproduct_hpp
 
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
+#include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
 #include <ql/utilities/clone.hpp>
 

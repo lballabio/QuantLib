@@ -11,12 +11,12 @@ this_include_HEADERS = \
     browniangenerator.hpp \
     constrainedevolver.hpp \
     curvestate.hpp \
+    discounter.hpp \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
-    marketmodeldiscounter.hpp \
-    marketmodelevolver.hpp \
-    marketmodelmultiproduct.hpp \
+    evolver.hpp \
     marketmodel.hpp \
+    multiproduct.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
     swapforwardmappings.hpp \
@@ -25,8 +25,8 @@ this_include_HEADERS = \
 libMarketModels_la_SOURCES = \
     accountingengine.cpp \
     curvestate.cpp \
+    discounter.cpp \
     evolutiondescription.cpp \
-    marketmodeldiscounter.cpp \
     marketmodel.cpp \
     proxygreekengine.cpp \
     swapforwardmappings.cpp \

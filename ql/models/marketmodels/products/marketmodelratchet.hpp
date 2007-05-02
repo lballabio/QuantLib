@@ -21,7 +21,7 @@
 #ifndef quantlib_market_model_ratchet_hpp
 #define quantlib_market_model_ratchet_hpp
 
-#include <ql/models/marketmodels/marketmodelmultiproduct.hpp>
+#include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 
 namespace QuantLib {
