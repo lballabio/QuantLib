@@ -1497,37 +1497,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit146]
-FileName=fastfouriertransform.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit147]
-FileName=fastfouriertransform.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit148]
-FileName=marketmodel_cms.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit149]
 FileName=marketmodel_cms.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1537,7 +1507,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit150]
+[Unit148]
 FileName=marketmodel_smm.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1547,7 +1517,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit151]
+[Unit149]
 FileName=marketmodel_smm.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1557,7 +1527,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit152]
+[Unit150]
 FileName=marketmodel_smmcapletcalibration.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1567,7 +1537,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit153]
+[Unit151]
 FileName=marketmodel_smmcapletcalibration.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1577,27 +1547,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit155]
-FileName=QuantLib-test-suite_private.rc
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit156]
-FileName=swapforwardmappings.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit157]
+[Unit153]
 FileName=swapforwardmappings.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -1607,8 +1557,38 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit155]
+FileName=optimizers.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit156]
+FileName=digitalcoupon.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit157]
+FileName=digitalcoupon.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit158]
-FileName=optimizers.hpp
+FileName=tapcorrelations.hpp
 Folder=QuantLib-test-suite
 Compile=1
 Link=1
@@ -1618,7 +1598,7 @@ BuildCmd=
 CompileCpp=1
 
 [Unit159]
-FileName=optimizers.cpp
+FileName=tapcorrelations.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
@@ -1638,7 +1618,27 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit154]
-FileName=QuantLib-test-suite_private.h
+FileName=optimizers.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit146]
+FileName=marketmodel_cms.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit152]
+FileName=swapforwardmappings.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

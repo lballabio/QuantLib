@@ -3964,31 +3964,31 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="piecewiseconstantcorrelations"
+					Name="correlations"
 					Filter="">
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.cpp">
+						RelativePath=".\ql\models\marketmodels\correlations\correlations.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\correlations.hpp">
+						RelativePath=".\ql\models\marketmodels\correlations\correlations.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.cpp">
+						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\cotswapfromfwdcorrelation.hpp">
+						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\tapcorrelations.cpp">
+						RelativePath=".\ql\models\marketmodels\correlations\tapcorrelations.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\tapcorrelations.hpp">
+						RelativePath=".\ql\models\marketmodels\correlations\tapcorrelations.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.cpp">
+						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.cpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\piecewiseconstantcorrelations\timehomogeneousforwardcorrelation.hpp">
+						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.hpp">
 					</File>
 				</Filter>
 			</Filter>
