@@ -445,7 +445,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     // calibrate
     std::vector<Real> alpha(numberOfRates, alpha_);
     bool lowestRoot = true;
-    Size maxIterations = 4;
+    Size maxIterations = 2;
     Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
     if (printReport_) {
         BOOST_MESSAGE("numberOfFactors: " << numberOfFactors_);
