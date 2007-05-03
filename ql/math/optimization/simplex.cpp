@@ -52,6 +52,12 @@ namespace QuantLib {
 
     EndCriteria::Type Simplex::minimize(Problem& P,
                                         const EndCriteria& endCriteria) {
+        Real ftol = endCriteria.functionEpsilon();
+        // WARNING: to be decided about the following (strong) restriction 
+        //QL_REQUIRE(ftol < 10.0*QL_EPSILON,
+        //    "Fractional convergence tolerance ftol = " << ftol << 
+        //    " in simplex optimizer must be just slightly larger than machine precision "
+        //    "QL_EPSILON = " << QL_EPSILON << " (see Numerical Recipes in C++, p. 410)");
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
@@ -59,22 +65,25 @@ namespace QuantLib {
 
         bool end = false;
         Size n = x_.size(), i;
-
+        // Initialize vertices of the simplex
         vertices_ = std::vector<Array>(n+1, x_);
         for (i=0; i<n; i++) {
             Array direction(n, 0.0);
             direction[i] = 1.0;
             P.constraint().update(vertices_[i+1], direction, lambda_);
         }
+        // Initialize function values at the vertices of the simplex
         values_ = Array(n+1, 0.0);
         for (i=0; i<=n; i++)
             values_[i] = P.value(vertices_[i]);
+        // Loop looking for function stationarity
         do {
             sum_ = Array(n, 0.0);
             Size i;
             for (i=0; i<=n; i++)
                 sum_ += vertices_[i];
-            //Determine best, worst and 2nd worst vertices
+            // Determine the best (iLowest), worst (iHighest)
+            // and 2nd worst (iNextHighest) vertices
             Size iLowest = 0;
             Size iHighest, iNextHighest;
             if (values_[0]<values_[1]) {
@@ -95,20 +104,23 @@ namespace QuantLib {
                 if (values_[i]<values_[iLowest])
                     iLowest = i;
             }
-            Real low = values_[iLowest], high = values_[iHighest];
+            // Compute fractional accuracy (rtol) and update iteration number
+            Real low = values_[iLowest];
+            Real high = values_[iHighest];
             Real rtol = 2.0*std::fabs(high - low)/
                 (std::fabs(high) + std::fabs(low) + QL_EPSILON);
             ++iterationNumber_;
-            if (rtol < endCriteria.functionEpsilon() ||
+            // Check end criteria
+            if (rtol < ftol ||      // this is exactly the Numerical Recipes exit strategy, don't change it !
                 endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
-                endCriteria.checkStationaryFunctionAccuracy(QL_EPSILON, true, ecType);
-                endCriteria.checkMaxIterations(iterationNumber_, ecType); // WARNING: A CHE COSA SERVE ???
+                endCriteria.checkStationaryFunctionAccuracy(0.0, true, ecType);
+                endCriteria.checkMaxIterations(iterationNumber_, ecType);
                 x_ = vertices_[iLowest];
                 P.setFunctionValue(low);
                 P.setCurrentValue(x_);
                 return ecType;
             }
-
+            // Continue
             Real factor = -1.0;
             Real vTry = extrapolate(P, iHighest, factor);
             if ((vTry <= values_[iLowest]) && (factor == -1.0)) {
