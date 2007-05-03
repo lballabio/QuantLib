@@ -1,48 +1,26 @@
+SUBDIRS = \
+    ibor \
+    swap
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    audlibor.hpp \
-    cadlibor.hpp \
-    cdor.hpp \
-    chflibor.hpp \
-    dkklibor.hpp \
-    euribor.hpp \
-    euriborswapfixa.hpp \
-    euriborswapfixb.hpp \
-    euriborswapfixifr.hpp \
-    eurlibor.hpp \
-    eurliborswapfixa.hpp \
-    eurliborswapfixb.hpp \
-    eurliborswapfixifr.hpp \
-    gbplibor.hpp \
     iborindex.hpp \
     indexmanager.hpp \
     interestrateindex.hpp \
-    jibar.hpp \
-    jpylibor.hpp \
-    libor.hpp \
-    nzdlibor.hpp \
-    swapindex.hpp \
-    tibor.hpp \
-    trlibor.hpp \
-    usdlibor.hpp \
-    zibor.hpp
+    swapindex.hpp
 
 libIndexes_la_SOURCES = \
-    euriborswapfixa.cpp \
-    euriborswapfixb.cpp \
-    euriborswapfixifr.cpp \
-    eurliborswapfixa.cpp \
-    eurliborswapfixb.cpp \
-    eurliborswapfixifr.cpp \
-    libor.cpp \
     iborindex.cpp \
     indexmanager.cpp \
     interestrateindex.cpp \
     swapindex.cpp
+
+libIndexes_la_LIBADD = \
+    swap/libSwap.la \
+    ibor/libIbor.la
 
 noinst_LTLIBRARIES = libIndexes.la
 

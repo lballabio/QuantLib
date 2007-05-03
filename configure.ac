@@ -330,6 +330,8 @@ AC_CONFIG_FILES([
     ql/cashflows/Makefile
     ql/currencies/Makefile
     ql/indexes/Makefile
+    ql/indexes/ibor/Makefile
+    ql/indexes/swap/Makefile
     ql/instruments/Makefile
     ql/legacy/Makefile
     ql/legacy/pricers/Makefile
