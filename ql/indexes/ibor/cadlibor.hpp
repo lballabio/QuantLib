@@ -46,12 +46,9 @@ namespace QuantLib {
         CADLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("CADLibor", tenor, settlementDays, CADCurrency(),
-                Canada(),
-                convention, endOfMonth, Actual360(), h) {}
+                Canada(), Actual360(), h) {}
     };
 
 }

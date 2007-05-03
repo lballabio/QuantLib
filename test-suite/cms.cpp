@@ -29,6 +29,7 @@
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

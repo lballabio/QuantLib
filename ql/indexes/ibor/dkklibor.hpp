@@ -43,12 +43,9 @@ namespace QuantLib {
         DKKLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("DKKLibor", tenor, settlementDays, DKKCurrency(),
-                Denmark(),
-                convention, endOfMonth, Actual360(), h) {}
+                Denmark(), Actual360(), h) {}
     };
 
 }

@@ -43,12 +43,9 @@ namespace QuantLib {
         USDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("USDLibor", tenor, settlementDays, USDCurrency(),
-                UnitedStates(UnitedStates::NYSE),
-                convention, endOfMonth, Actual360(), h) {}
+                UnitedStates(UnitedStates::NYSE), Actual360(), h) {}
     };
 
 }

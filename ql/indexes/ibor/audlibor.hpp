@@ -43,12 +43,9 @@ namespace QuantLib {
         AUDLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                      Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("AUDLibor", tenor, settlementDays, AUDCurrency(),
-                Australia(),
-                convention, endOfMonth, Actual360(), h) {}
+                Australia(), Actual360(), h) {}
     };
 
 }

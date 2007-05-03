@@ -28,7 +28,9 @@
 #include <ql/indexes/indexmanager.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/termstructures/yieldcurves/discountcurve.hpp>
+#include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

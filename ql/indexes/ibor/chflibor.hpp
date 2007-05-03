@@ -46,12 +46,9 @@ namespace QuantLib {
         CHFLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("CHFLibor", tenor, settlementDays, CHFCurrency(),
-                Switzerland(),
-                convention, endOfMonth, Actual360(), h) {}
+                Switzerland(), Actual360(), h) {}
     };
 
 }

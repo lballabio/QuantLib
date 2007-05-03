@@ -46,12 +46,9 @@ namespace QuantLib {
         JPYLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true,
                  Natural settlementDays = 2)
         : Libor("JPYLibor", tenor, settlementDays, JPYCurrency(),
-                Japan(),
-                convention, endOfMonth, Actual360(), h) {}
+                Japan(), Actual360(), h) {}
     };
 
 }

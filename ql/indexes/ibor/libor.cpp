@@ -25,13 +25,42 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        BusinessDayConvention liborConvention(const Period& p) {
+            switch (p.units()) {
+              case Days:
+              case Weeks:
+                return Following;
+              case Months:
+              case Years:
+                return ModifiedFollowing;
+              default:
+                QL_FAIL("invalid time units");
+            }
+        }
+
+        bool liborEOM(const Period& p) {
+            switch (p.units()) {
+              case Days:
+              case Weeks:
+                return false;
+              case Months:
+              case Years:
+                return true;
+              default:
+                QL_FAIL("invalid time units");
+            }
+        }
+
+    }
+
+
     Libor::Libor(const std::string& familyName,
                  const Period& tenor,
                  Natural settlementDays,
                  const Currency& currency,
                  const Calendar& financialCenterCalendar,
-                 BusinessDayConvention convention,
-                 bool endOfMonth,
                  const DayCounter& dayCounter,
                  const Handle<YieldTermStructure>& h)
     : IborIndex(familyName, tenor, settlementDays, currency,
@@ -40,7 +69,8 @@ namespace QuantLib {
                 // a) all currencies but EUR
                 // b) all indexes but o/n and s/n
                 UnitedKingdom(UnitedKingdom::Exchange),
-                convention, endOfMonth, dayCounter, h),
+                liborConvention(tenor), liborEOM(tenor),
+                dayCounter, h),
       joinBusinessDays_(JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                                       financialCenterCalendar,
                                       JoinBusinessDays)),

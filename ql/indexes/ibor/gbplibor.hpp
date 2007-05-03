@@ -41,12 +41,10 @@ namespace QuantLib {
       public:
         GBPLibor(const Period& tenor,
                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>(),
-                 BusinessDayConvention convention = ModifiedFollowing,
-                 bool endOfMonth = true)
+                                    Handle<YieldTermStructure>())
         : Libor("GBPLibor", tenor, 0, GBPCurrency(),
                 UnitedKingdom(UnitedKingdom::Exchange),
-                convention, endOfMonth, Actual365Fixed(), h) {}
+                Actual365Fixed(), h) {}
     };
 
 }

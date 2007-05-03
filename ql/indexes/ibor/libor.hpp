@@ -44,8 +44,6 @@ namespace QuantLib {
               Natural settlementDays,
               const Currency& currency,
               const Calendar& financialCenterCalendar,
-              BusinessDayConvention convention,
-              bool endOfMonth,
               const DayCounter& dayCounter,
               const Handle<YieldTermStructure>& h);
         /*! \name Date calculations
@@ -58,36 +56,6 @@ namespace QuantLib {
         // @}
       private:
         Calendar joinBusinessDays_, joinHolidays_;
-    };
-
-    class WeeklyTenorLibor : public Libor {
-      public:
-        WeeklyTenorLibor(const std::string& familyName,
-                         const Period& tenor,
-                         Natural settlementDays,
-                         const Currency& currency,
-                         const Calendar& financialCenterCalendar,
-                         const DayCounter& dayCounter,
-                         const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
-        : Libor(familyName, tenor, settlementDays, currency,
-                financialCenterCalendar, Following, false, dayCounter,
-                h) {}
-    };
-
-    class MonthlyTenorLibor : public Libor {
-      public:
-        MonthlyTenorLibor(const std::string& familyName,
-                          const Period& tenor,
-                          Natural settlementDays,
-                          const Currency& currency,
-                          const Calendar& financialCenterCalendar,
-                          const DayCounter& dayCounter,
-                          const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
-        : Libor(familyName, tenor, settlementDays, currency,
-                financialCenterCalendar, ModifiedFollowing, true, dayCounter,
-                h) {}
     };
 
 }

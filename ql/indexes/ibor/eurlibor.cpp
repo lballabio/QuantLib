@@ -21,13 +21,44 @@
 #include <ql/indexes/ibor/eurlibor.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
+    namespace {
+
+        BusinessDayConvention eurliborConvention(const Period& p) {
+            switch (p.units()) {
+              case Days:
+              case Weeks:
+                return Following;
+              case Months:
+              case Years:
+                return ModifiedFollowing;
+              default:
+                QL_FAIL("invalid time units");
+            }
+        }
+
+        bool eurliborEOM(const Period& p) {
+            switch (p.units()) {
+              case Days:
+              case Weeks:
+                return false;
+              case Months:
+              case Years:
+                return true;
+              default:
+                QL_FAIL("invalid time units");
+            }
+        }
+
+    }
+
     EURLibor::EURLibor(const Period& tenor,
-                       const Handle<YieldTermStructure>& h,
-                       BusinessDayConvention convention,
-                       bool endOfMonth)
+                       const Handle<YieldTermStructure>& h)
     : IborIndex("EURLibor", tenor, 2, EURCurrency(),
                 // http://www.bba.org.uk/bba/jsp/polopoly.jsp?d=225&a=1412 :
                 // JoinBusinessDays is the fixing calendar for
@@ -35,7 +66,8 @@ namespace QuantLib {
                 JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
                               TARGET(),
                               JoinBusinessDays),
-                convention, endOfMonth, Actual360(), h),
+                eurliborConvention(tenor), eurliborEOM(tenor),
+                Actual360(), h),
       target_(TARGET()) {}
 
     Date EURLibor::valueDate(const Date& fixingDate) const {

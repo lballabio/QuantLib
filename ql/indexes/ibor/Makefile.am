@@ -22,6 +22,7 @@ this_include_HEADERS = \
     zibor.hpp
 
 libIborIndexes_la_SOURCES = \
+    euribor.cpp \
     eurlibor.cpp \
     libor.cpp
 
