@@ -48,7 +48,7 @@
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/optimization/simplex.hpp>
+//#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <sstream>
 
