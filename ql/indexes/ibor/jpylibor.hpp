@@ -25,7 +25,7 @@
 #ifndef quantlib_jpy_libor_hpp
 #define quantlib_jpy_libor_hpp
 
-#include <ql/indexes/libor.hpp>
+#include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/japan.hpp>
 #include <ql/time/daycounters/actual360.hpp>

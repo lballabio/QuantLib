@@ -25,7 +25,7 @@
 #ifndef quantlib_nzd_libor_hpp
 #define quantlib_nzd_libor_hpp
 
-#include <ql/indexes/libor.hpp>
+#include <ql/indexes/ibor/libor.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/newzealand.hpp>
 #include <ql/time/daycounters/actual360.hpp>
