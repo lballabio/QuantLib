@@ -1,6 +1,5 @@
-SUBDIRS = \
-    ibor \
-    swap
+
+SUBDIRS = ibor swap
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
@@ -19,8 +18,8 @@ libIndexes_la_SOURCES = \
     swapindex.cpp
 
 libIndexes_la_LIBADD = \
-    swap/libSwap.la \
-    ibor/libIbor.la
+    ibor/libIborIndexes.la \
+    swap/libSwapIndexes.la
 
 noinst_LTLIBRARIES = libIndexes.la
 
