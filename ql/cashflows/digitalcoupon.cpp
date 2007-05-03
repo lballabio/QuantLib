@@ -23,12 +23,13 @@
 
 namespace QuantLib {
 
-    DigitalCoupon::DigitalCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate callStrike,
-                  Rate putStrike,
-                  Rate cashRate,
-                  Real eps)
+    DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                                 Rate callStrike,
+                                 Rate putStrike,
+                                 Rate cashRate,
+                                 bool isPutOptionAdded,
+                                 bool isCallOptionAdded,
+                                 Real eps)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -42,27 +43,35 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears()),
       underlying_(underlying),
-      hasLowerStrike_(false), hasUpperStrike_(false),
+      hasCallStrike_(false), hasPutStrike_(false),
       eps_(eps), isCashOrNothing_(false) {
 
         QL_REQUIRE(gearing()==1.0 && (spread()==Null<Rate>() || spread()==0.),
                    "Gearing must be equal to 1 and spread must be null. Temporary requirement");
+        
+        QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>())
-            QL_REQUIRE(putStrike >= callStrike, "put strike (" << putStrike <<
-                                            ") < call strike " << callStrike);
+            QL_REQUIRE(putStrike >= callStrike,
+                       "put strike (" << putStrike << ") " <<
+                       "call strike (" << callStrike << ")");
+            QL_REQUIRE(isCallOptionAdded == isPutOptionAdded,
+                       "both call and put options must be added or subtracted");
+
         if (callStrike != Null<Rate>()){
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
-            hasLowerStrike_ = true;
-            lowerStrike_ = callStrike;
-            effectiveLowerStrike_ = (callStrike - spread())/gearing();
-            QL_REQUIRE(effectiveLowerStrike_>=eps_, "call strike < eps");
+            hasCallStrike_ = true;
+            callStrike_ = callStrike;
+            effectiveCallStrike_ = (callStrike - spread())/gearing();
+            QL_REQUIRE(effectiveCallStrike_>=eps_, "call strike < eps");
+            callCsi_ = isCallOptionAdded ? 1.0 : -1.0;
         }
         if (putStrike != Null<Rate>()){
             QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
-            hasUpperStrike_ = true;
-            upperStrike_ = putStrike;
-            effectiveUpperStrike_ = (putStrike - spread())/gearing();
+            hasPutStrike_ = true;
+            putStrike_ = putStrike;
+            effectivePutStrike_ = (putStrike - spread())/gearing();
+            putCsi_ = isPutOptionAdded ? 1.0 : -1.0;
         }
         if (cashRate != Null<Rate>()){
             cashRate_ = cashRate;
@@ -76,42 +85,33 @@ namespace QuantLib {
         Rate callOptionRate = isCashOrNothing_ ? cashRate_ : underlying_->rate();
 
         // Call digital option
-        if(hasLowerStrike_) {
+        if(hasCallStrike_) {
             boost::shared_ptr<CappedFlooredCoupon> next(
-                new CappedFlooredCoupon(underlying_, lowerStrike_ + eps_, Null<Rate>()));
+                new CappedFlooredCoupon(underlying_, effectiveCallStrike_ + eps_));
             boost::shared_ptr<CappedFlooredCoupon> previous(
-                new CappedFlooredCoupon(underlying_, lowerStrike_ - eps_, Null<Rate>()));
-            if(isCashOrNothing_) {
-                callOptionRate = cashRate_ * 
-                                (next->rate() - previous->rate()) / (2.*eps_);
-            } else {
-                // if asset-or-nothing
-                callOptionRate = effectiveLowerStrike_ * 
-                                 (next->rate() - previous->rate()) / (2.*eps_);
-                callOptionRate += underlying_->rate() - next->rate();
-            }
+                new CappedFlooredCoupon(underlying_, effectiveCallStrike_ - eps_));
+            callOptionRate *= (next->rate() - previous->rate()) / (2.*eps_);
         }
 
-        /* Floor digital option: 
+        /* Put digital option: 
            the putOptionRate is calculated as a call digital option
            to subract from the callOptionRate */
         Rate putOptionRate = 0.;
-        if(hasUpperStrike_){
-            if(upperStrike_ < eps_){
+        if(hasPutStrike_){
+            if(putStrike_ < eps_){
                 putOptionRate = cashRate_;
             } else {
                 boost::shared_ptr<CappedFlooredCoupon> next(
-                    new CappedFlooredCoupon(underlying_, upperStrike_ + eps_, Null<Rate>()));
+                    new CappedFlooredCoupon(underlying_, effectivePutStrike_ + eps_));
                 boost::shared_ptr<CappedFlooredCoupon> previous(
-                    new CappedFlooredCoupon(underlying_, upperStrike_ - eps_, Null<Rate>()));
+                    new CappedFlooredCoupon(underlying_, effectivePutStrike_ - eps_));
                 if(isCashOrNothing_){
                     putOptionRate = cashRate_ * 
                                    (next->rate() - previous->rate()) / (2.*eps_);
                 } else {
                     // if asset-or-nothing
-                    putOptionRate = effectiveUpperStrike_ * 
+                    putOptionRate = underlying_->rate() *
                                     (next->rate() - previous->rate()) / (2.*eps_);
-                    putOptionRate += underlying_->rate() - next->rate();
                 }
             }
         }
@@ -120,7 +120,8 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::rate() const { 
-        Real csi = isCall() ? -1 : 1;
+        QL_REQUIRE(underlying_->pricer(), "pricer not set");
+        Real csi = isCall() ? callCsi_ : putCsi_;
         return underlying_->rate() + csi * optionRate();
     }
 
@@ -129,11 +130,11 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::callStrike() const {
-        return lowerStrike_;
+        return callStrike_;
    }
 
     Rate DigitalCoupon::putStrike() const {
-        return upperStrike_;
+        return putStrike_;
     }
 
     void DigitalCoupon::update() {
@@ -150,5 +151,6 @@ namespace QuantLib {
         else
             super::accept(v);
     }
+
 
 }

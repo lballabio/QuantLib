@@ -19,7 +19,7 @@
 */
 
 /*! \file digitalcoupon.hpp
-    \brief Floating-rate coupon with digital cap/floor
+    \brief Floating-rate coupon with digital call/put option
 */
 
 #ifndef quantlib_digital_coupon_hpp
@@ -31,12 +31,18 @@
 
 namespace QuantLib {
 
-    //! Floating-rate coupon with digital cap/floor
+    //! Floating-rate coupon with digital digital call/put option
     /*! Payoffs:
-        - Digital Capped Rate Coupon:   rate - cashRate * Heaviside(rate-strike)
-        - Digital Floored Rate Coupon:  rate + cashRate * Heaviside(strike-rate)
-        where X is equal to cashRate for cash-or-nothing options and it is equal
-        to rate for asset-or-nothing options.
+        - Coupon with cash-or-nothing Digital Call
+          rate + csi * cashRate * Heaviside(rate-strike)
+        - Coupon with cash-or-nothing Digital Put
+          rate + csi * cashRate * Heaviside(strike-rate)
+        where csi=+1 or csi=-1.
+        - Coupon with asset-or-nothing Digital Call
+          rate + csi * rate * Heaviside(rate-strike)
+        - Coupon with asset-or-nothing Digital Put
+          rate + csi * rate * Heaviside(strike-rate)
+        where csi=+1 or csi=-1.
         The evaluation of the coupon is made using the call/put spread
         replication method.
     */
@@ -45,10 +51,15 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! general constructor (collar)
+        /*! If cashRate is equal to its default value, an asset-or-nothing option
+            will be constructed.
+        */
         DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
                       Rate putStrike = Null<Rate>(),
                       Rate cashRate = Null<Rate>(),
+                      bool isCallOptionAdded = true,
+                      bool isPutOptionAdded = true,
                       Real eps = 1e-4);
         //@}
         //! \name Coupon interface
@@ -61,9 +72,9 @@ namespace QuantLib {
         //@{
         Rate callStrike() const;
         Rate putStrike() const;
-        bool isPut() const { return (hasUpperStrike_ && !hasLowerStrike_); }
-        bool isCall() const {return (hasLowerStrike_ && !hasUpperStrike_); }
-        bool isCollar() const {return (hasLowerStrike_ && hasUpperStrike_); }
+        bool isPut() const { return (hasPutStrike_ && !hasCallStrike_); }
+        bool isCall() const {return (hasCallStrike_ && !hasPutStrike_); }
+        bool isCollar() const {return (hasCallStrike_ && hasPutStrike_); }
         /*! Returns the option rate
            (multiplied by: nominal*accrualperiod*discount is the NPV oh the potion)
         */
@@ -78,7 +89,8 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
 
         void setPricer(
-                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+            // set underlying pricer
             if(pricer_)
                 unregisterWith(pricer_);
             pricer_ = pricer;
@@ -88,28 +100,58 @@ namespace QuantLib {
             underlying_->setPricer(pricer);
         }
 
-    private:
+        protected:
         //! \name Data members
         //@{
         //!
         boost::shared_ptr<FloatingRateCoupon> underlying_;
         //! the strike rate for the the call option
-        Rate lowerStrike_;
+        Rate callStrike_;
         //! the strike rate for the the put option
-        Rate upperStrike_;
+        Rate putStrike_;
         //! the effective strike rate for the the call option
-        Rate effectiveLowerStrike_;
+        Rate effectiveCallStrike_;
         //! the effective strike rate for the the put option
-        Rate effectiveUpperStrike_;
+        Rate effectivePutStrike_;
         //! the rate paid if the cash-or-nothing option is in-the-money
         Rate cashRate_;
+        //! the multiplicative factor of call payoff
+        Real callCsi_;
+        //! the multiplicative factor of put payoff
+        Real putCsi_;
         //! the gap between strikes in payoff replication
         Real eps_;
         //!
-        bool hasUpperStrike_, hasLowerStrike_;
+        bool hasPutStrike_, hasCallStrike_;
         //! Digital option type: if true, cash-or-nothing, if false asset-or-nothing
         bool isCashOrNothing_;
         //@}
+    };
+
+    //! Ibor rate coupon with digital digital call/put option
+    class DigitalIborCoupon : public DigitalCoupon {
+        DigitalIborCoupon(const boost::shared_ptr<IborCoupon>& underlying,
+                          Rate callStrike = Null<Rate>(),
+                          Rate putStrike = Null<Rate>(),
+                          Rate cashRate = Null<Rate>(),
+                          bool isCallOptionAdded = true,
+                          bool isPutOptionAdded = true,
+                          Real eps = 1e-4) :
+            DigitalCoupon(underlying, callStrike, putStrike, cashRate,
+                          isCallOptionAdded, isPutOptionAdded, eps) {}
+    };
+
+    //! Swap rate coupon with digital digital call/put option
+    class DigitalCmsCoupon : public DigitalCoupon {
+        DigitalCmsCoupon(const boost::shared_ptr<CmsCoupon>& underlying,
+                         Rate callStrike = Null<Rate>(),
+                         Rate putStrike = Null<Rate>(),
+                         Rate cashRate = Null<Rate>(),
+                         bool isCallOptionAdded = true,
+                         bool isPutOptionAdded = true,
+                         Real eps = 1e-4) :
+            DigitalCoupon(underlying, callStrike, putStrike, cashRate,
+                          isCallOptionAdded, isPutOptionAdded, eps) {}
     };
 
 }
