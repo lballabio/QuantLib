@@ -67,6 +67,23 @@ namespace QuantLib {
                 const std::vector<Rate>& floors = std::vector<Rate>(),
                 bool isInArrears = false);
 
+    //! helper function building a sequence of digital ibor rate coupons
+    Leg DigitalIborLeg(const std::vector<Real>& nominals,
+                const Schedule& schedule,
+                const boost::shared_ptr<IborIndex>& index,
+                const DayCounter& paymentDayCounter = DayCounter(),
+                const BusinessDayConvention paymentConvention = Following,
+                Natural fixingDays = Null<Size>(),
+                const std::vector<Real>& gearings = std::vector<Real>(),
+                const std::vector<Spread>& spreads = std::vector<Spread>(),
+                bool isInArrears = false,
+                const std::vector<Rate>& callRates = std::vector<Rate>(),
+                const std::vector<Rate>& putRates = std::vector<Rate>(),
+                const std::vector<Rate>& cashRates = std::vector<Rate>(),
+                bool isCallOptionAdded = true,
+                bool isPutOptionAdded = true,
+                Real eps = 1e-4);
+
     //! helper function building a sequence of capped/floored cms rate coupons
     Leg CmsLeg(const std::vector<Real>& nominals,
                const Schedule& schedule,
@@ -79,6 +96,23 @@ namespace QuantLib {
                const std::vector<Rate>& caps = std::vector<Rate>(),
                const std::vector<Rate>& floors = std::vector<Rate>(),
                bool isInArrears = false);
+
+    //! helper function building a sequence of digital cms rate coupons
+    Leg DigitalCmsLeg(const std::vector<Real>& nominals,
+                const Schedule& schedule,
+                const boost::shared_ptr<SwapIndex>& index,
+                const DayCounter& paymentDayCounter = DayCounter(),
+                const BusinessDayConvention paymentConvention = Following,
+                Natural fixingDays = Null<Size>(),
+                const std::vector<Real>& gearings = std::vector<Real>(),
+                const std::vector<Spread>& spreads = std::vector<Spread>(),
+                bool isInArrears = false,
+                const std::vector<Rate>& callRates = std::vector<Rate>(),
+                const std::vector<Rate>& putRates = std::vector<Rate>(),
+                const std::vector<Rate>& cashRates = std::vector<Rate>(),
+                bool isCallOptionAdded = true,
+                bool isPutOptionAdded = true,
+                Real eps = 1e-4);
     
     //! helper function building a sequence of capped/floored cms zero rate coupons
     Leg CmsZeroLeg(const std::vector<Real>& nominals,
@@ -105,6 +139,7 @@ namespace QuantLib {
                        const std::vector<Rate>& upperTriggers = std::vector<Rate>(),
                        const Period& observationTenor = 1*Days,
                        BusinessDayConvention observationConvention = ModifiedFollowing);
+
 }
 
 #endif

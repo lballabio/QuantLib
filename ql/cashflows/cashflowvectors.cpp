@@ -23,6 +23,7 @@
 */
 
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
@@ -153,8 +154,6 @@ namespace QuantLib {
         return leg;
     }
 
-
-
     template <typename IndexType,
               typename FloatingCouponType,
               typename CappedFlooredCouponType>
@@ -263,6 +262,8 @@ namespace QuantLib {
                 floors,
                 isInArrears);
     }
+
+
 
     Leg CmsLeg(const std::vector<Real>& nominals,
                const Schedule& schedule,
@@ -501,4 +502,156 @@ namespace QuantLib {
         }
         return leg;
     }
+
+    template <typename IndexType,
+              typename FloatingCouponType,
+              typename DigitalCouponType>
+    Leg FloatingDigitalLeg(const std::vector<Real>& nominals,
+                   const Schedule& schedule,
+                   const boost::shared_ptr<IndexType>& index,
+                   const DayCounter& paymentDayCounter,
+                   BusinessDayConvention paymentAdj,
+                   Natural fixingDays,
+                   const std::vector<Real>& gearings,
+                   const std::vector<Spread>& spreads,
+                   bool isInArrears,
+                   const std::vector<Rate>& callRates,
+                   const std::vector<Rate>& putRates,
+                   const std::vector<Rate>& cashRates,
+                   bool isCallOptionAdded,
+                   bool isPutOptionAdded,
+                   Real eps) {
+
+        QL_REQUIRE(!nominals.empty(), "no nominal given");
+
+        Size n = schedule.size()-1;
+        QL_REQUIRE(nominals.size() <= n,
+                   "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(gearings.size()<=n,
+                   "too many gearings (" << gearings.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(spreads.size()<=n,
+                   "too many spreads (" << spreads.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(callRates.size()<=n,
+                   "too many call rates (" << callRates.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(putRates.size()<=n,
+                   "too many put rates (" << putRates.size() <<
+                   "), only " << n << " required");
+
+        Leg leg; leg.reserve(n);
+
+        // the following is not always correct
+        Calendar calendar = schedule.calendar();
+
+        Date refStart, start, refEnd, end;
+        Date paymentDate;
+
+        for (Size i=0; i<n; ++i) {
+            refStart = start = schedule.date(i);
+            refEnd   =   end = schedule.date(i+1);
+            paymentDate = calendar.adjust(end, paymentAdj);
+            if (i==0   && !schedule.isRegular(i+1))
+                refStart = calendar.adjust(end - schedule.tenor(), paymentAdj);
+            if (i==n-1 && !schedule.isRegular(i+1))
+                refEnd = calendar.adjust(start + schedule.tenor(), paymentAdj);
+            if (get(gearings, i, 1.0) == 0.0) { // fixed coupon
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    FixedRateCoupon(get(nominals, i, Null<Real>()), paymentDate,
+                                    get(spreads, i, 1.0),
+                                    paymentDayCounter,
+                                    start, end, refStart, refEnd)));
+            } else { // floating digital coupon
+                boost::shared_ptr<FloatingCouponType> underlying = 
+                    (boost::shared_ptr<FloatingCouponType>)(new 
+                        FloatingCouponType(paymentDate,
+                                       get(nominals, i, Null<Real>()),
+                                       start, end, fixingDays, index,
+                                       get(gearings, i, 1.0),
+                                       get(spreads, i, 0.0),
+                                       refStart, refEnd,
+                                       paymentDayCounter, isInArrears));
+                leg.push_back(boost::shared_ptr<CashFlow>(new
+                    DigitalCouponType( underlying,
+                                       get(callRates, i, 1.0),
+                                       get(putRates, i, 0.0),
+                                       get(cashRates, i, 0.0),
+                                       isCallOptionAdded,
+                                       isPutOptionAdded,
+                                       eps)));
+            }
+        }
+        return leg;
+    }
+
+    Leg DigitalIborLeg(const std::vector<Real>& nominals,
+                       const Schedule& schedule,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const DayCounter& paymentDayCounter,
+                       const BusinessDayConvention paymentConvention,
+                       Natural fixingDays,
+                       const std::vector<Real>& gearings,
+                       const std::vector<Spread>& spreads,
+                       bool isInArrears,
+                       const std::vector<QuantLib::Rate>& callRates,
+                       const std::vector<QuantLib::Rate>& putRates,
+                       const std::vector<QuantLib::Rate>& cashRates,
+                       bool isCallOptionAdded,
+                       bool isPutOptionAdded,
+                       Real eps) {
+
+        return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
+               nominals,
+               schedule,
+               index,
+               paymentDayCounter,
+               paymentConvention,
+               fixingDays,
+               gearings,
+               spreads,
+               isInArrears,
+               callRates,
+               putRates,
+               cashRates,
+               isCallOptionAdded,
+               isPutOptionAdded,
+               eps);  
+    }
+
+    Leg DigitalCmsLeg(const std::vector<Real>& nominals,
+                const Schedule& schedule,
+                const boost::shared_ptr<SwapIndex>& index,
+                const DayCounter& paymentDayCounter,
+                const BusinessDayConvention paymentConvention,
+                Natural fixingDays,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                bool isInArrears,
+                const std::vector<QuantLib::Rate>& callRates,
+                const std::vector<QuantLib::Rate>& putRates,
+                const std::vector<QuantLib::Rate>& cashRates,
+                bool isCallOptionAdded,
+                bool isPutOptionAdded,
+                Real eps) {
+    
+        return FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
+               nominals,
+               schedule,
+               index,
+               paymentDayCounter,
+               paymentConvention,
+               fixingDays,
+               gearings,
+               spreads,
+               isInArrears,
+               callRates,
+               putRates,
+               cashRates,
+               isCallOptionAdded,
+               isPutOptionAdded,
+               eps);
+    }
+
 }
