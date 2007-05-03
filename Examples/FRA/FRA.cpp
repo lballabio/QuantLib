@@ -72,7 +72,7 @@ int main(int, char* []) {
         Date todaysDate = Date(23, May, 2006);
         Settings::instance().evaluationDate() = todaysDate;
 
-        Calendar calendar = euribor3m->calendar();
+        Calendar calendar = euribor3m->fixingCalendar();
         Integer fixingDays = euribor3m->fixingDays();
         Date settlementDate = calendar.advance(todaysDate, fixingDays, Days);
 
@@ -199,7 +199,7 @@ int main(int, char* []) {
          ***  construct FRA's ***
          ***********************/
 
-        Calendar fraCalendar = euribor3m->calendar();
+        Calendar fraCalendar = euribor3m->fixingCalendar();
         BusinessDayConvention fraBusinessDayConvention =
             euribor3m->businessDayConvention();
         Position::Type fraFwdType = Position::Long;
