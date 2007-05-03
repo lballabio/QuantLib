@@ -29,6 +29,8 @@
 class DigitalCouponTest {
   public:
     static void testAssetOrNothing();
+    static void testAssetOrNothingDeepInTheMoney();
+    static void testAssetOrNothingDeepOutTheMoney();
     static void testCashOrNothing();
     static void testCashOrNothingDeepInTheMoney();
     static void testCashOrNothingDeepOutTheMoney();
