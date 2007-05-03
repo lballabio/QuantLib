@@ -329,12 +329,13 @@ void setup() {
         boost::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabr));
     swaptionVolatilityCubeBySabr_->enableExtrapolation();
 
-
+    swaptionVolatilityStructures_ = std::vector<Handle<SwaptionVolatilityStructure> >();
     swaptionVolatilityStructures_.push_back(atmVol_);
     //swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube1_);
     swaptionVolatilityStructures_.push_back(flatSwaptionVolatilityCube2_);
     swaptionVolatilityStructures_.push_back(swaptionVolatilityCubeBySabr_);
 
+    modelOfYieldCurves_ = std::vector<GFunctionFactory::ModelOfYieldCurve>();
     modelOfYieldCurves_.push_back(GFunctionFactory::Standard);
     modelOfYieldCurves_.push_back(GFunctionFactory::ExactYield);
     modelOfYieldCurves_.push_back(GFunctionFactory::ParallelShifts);
