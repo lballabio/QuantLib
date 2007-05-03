@@ -130,6 +130,7 @@ namespace QuantLib {
 
     //! Ibor rate coupon with digital digital call/put option
     class DigitalIborCoupon : public DigitalCoupon {
+    public:
         DigitalIborCoupon(const boost::shared_ptr<IborCoupon>& underlying,
                           Rate callStrike = Null<Rate>(),
                           Rate putStrike = Null<Rate>(),
@@ -143,6 +144,7 @@ namespace QuantLib {
 
     //! Swap rate coupon with digital digital call/put option
     class DigitalCmsCoupon : public DigitalCoupon {
+    public:
         DigitalCmsCoupon(const boost::shared_ptr<CmsCoupon>& underlying,
                          Rate callStrike = Null<Rate>(),
                          Rate putStrike = Null<Rate>(),
