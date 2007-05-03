@@ -561,6 +561,9 @@
 					RelativePath=".\ql\indexes\ibor\dkklibor.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\indexes\ibor\euribor.cpp">
+				</File>
+				<File
 					RelativePath=".\ql\indexes\ibor\euribor.hpp">
 				</File>
 				<File

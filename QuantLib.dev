@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=1015
+UnitCount=1016
 Type=2
 Ver=1
 ObjFiles=
@@ -10191,6 +10191,16 @@ BuildCmd=
 FileName=ql\indexes\swap\eurliborswapfixifr.cpp
 CompileCpp=1
 Folder=indexes/swap
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1016]
+FileName=ql\indexes\ibor\euribor.cpp
+CompileCpp=1
+Folder=indexes/ibor
 Compile=1
 Link=1
 Priority=1000
