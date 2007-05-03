@@ -140,6 +140,10 @@ namespace QuantLib {
                           Real eps = 1e-4) :
             DigitalCoupon(underlying, callStrike, putStrike, cashRate,
                           isCallOptionAdded, isPutOptionAdded, eps) {}
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
     };
 
     //! Swap rate coupon with digital digital call/put option
@@ -154,6 +158,10 @@ namespace QuantLib {
                          Real eps = 1e-4) :
             DigitalCoupon(underlying, callStrike, putStrike, cashRate,
                           isCallOptionAdded, isPutOptionAdded, eps) {}
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(AcyclicVisitor&);
     };
 
 }

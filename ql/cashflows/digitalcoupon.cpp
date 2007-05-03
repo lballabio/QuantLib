@@ -53,7 +53,7 @@ namespace QuantLib {
 
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>())
             QL_REQUIRE(putStrike >= callStrike,
-                       "put strike (" << putStrike << ") " <<
+                       "put strike (" << putStrike << ") < " <<
                        "call strike (" << callStrike << ")");
             QL_REQUIRE(isCallOptionAdded == isPutOptionAdded,
                        "both call and put options must be added or subtracted");
@@ -144,13 +144,33 @@ namespace QuantLib {
     void DigitalCoupon::accept(AcyclicVisitor& v) {
         typedef FloatingRateCoupon super;
         Visitor<DigitalCoupon>* v1 =
-
             dynamic_cast<Visitor<DigitalCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else
             super::accept(v);
     }
+
+    void DigitalIborCoupon::accept(AcyclicVisitor& v) {
+        typedef DigitalCoupon super;
+        Visitor<DigitalIborCoupon>* v1 =
+            dynamic_cast<Visitor<DigitalIborCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            super::accept(v);
+    }
+
+    void DigitalCmsCoupon::accept(AcyclicVisitor& v) {
+        typedef DigitalCoupon super;
+        Visitor<DigitalCmsCoupon>* v1 =
+            dynamic_cast<Visitor<DigitalCmsCoupon>*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            super::accept(v);
+    }
+
 
 
 }
