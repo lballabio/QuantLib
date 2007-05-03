@@ -575,9 +575,9 @@ namespace QuantLib {
                                        paymentDayCounter, isInArrears));
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     DigitalCouponType( underlying,
-                                       get(callRates, i, 1.0),
-                                       get(putRates, i, 0.0),
-                                       get(cashRates, i, 0.0),
+                                       get(callRates, i, Null<Real>()),
+                                       get(putRates, i, Null<Real>()),
+                                       get(cashRates, i, Null<Real>()),
                                        isCallOptionAdded,
                                        isPutOptionAdded,
                                        eps)));
