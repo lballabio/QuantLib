@@ -21,6 +21,7 @@
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/indexes/interestrateindex.hpp>
@@ -149,6 +150,15 @@ namespace QuantLib {
             QL_FAIL("unexpected error when casting to IborCouponPricer");
     }
 
+    void CouponSelectorToSetPricer::visit(DigitalIborCoupon& c) {
+        const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
+            boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+        if (iborCouponPricer)
+            c.setPricer(iborCouponPricer);
+        else
+            QL_FAIL("unexpected error when casting to IborCouponPricer");
+    }
+
     void CouponSelectorToSetPricer::visit(CappedFlooredIborCoupon& c) {
         const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
             boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
@@ -168,6 +178,15 @@ namespace QuantLib {
     }
 
     void CouponSelectorToSetPricer::visit(CappedFlooredCmsCoupon& c) {
+        const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+            boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+        if (cmsCouponPricer)
+            c.setPricer(cmsCouponPricer);
+        else
+            QL_FAIL("unexpected error when casting to CmsCouponPricer");
+    }
+
+    void CouponSelectorToSetPricer::visit(DigitalCmsCoupon& c) {
         const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
             boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
         if (cmsCouponPricer)
