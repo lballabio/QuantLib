@@ -68,10 +68,10 @@ namespace QuantLib {
             std::string tag = name();
             TimeSeries<Real> h = IndexManager::instance().getHistory(tag);
             bool allValidFixings = true;
-            Date invalidDate;
+            Date invalidDate, refDate=Settings::instance().evaluationDate();
             Real invalidValue;
             while (dBegin != dEnd) {
-                if (isValidFixingDate(*dBegin))
+                if (isValidFixingDate(*dBegin) && *dBegin>=refDate)
                     h[*(dBegin++)] = *(vBegin++);
                 else {
                     allValidFixings = false;
