@@ -411,7 +411,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     Size numberOfRates = todaysForwards_.size();
 
     EvolutionDescription evolution(rateTimes_);
-    Size numberOfSteps = evolution.numberOfSteps();
+    //Size numberOfSteps = evolution.numberOfSteps();
 
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                                                   longTermCorrelation_,

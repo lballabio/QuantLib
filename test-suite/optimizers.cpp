@@ -40,7 +40,7 @@ std::vector<Array> xMinExpected_, yMinExpected_;
 class OneDimensionalPolynomialDegreeN : public CostFunction {
   public:
     OneDimensionalPolynomialDegreeN(const Array& coefficients)
-    : coefficients_(coefficients), 
+    : coefficients_(coefficients),
       polynomialDegree_(coefficients.size()-1) {}
 
     Real value(const Array& x) const {
@@ -77,8 +77,8 @@ std::string optimizationMethodTypeToString(OptimizationMethodType type) {
 }
 
 boost::shared_ptr<OptimizationMethod> makeOptimizationMethod(
-    OptimizationMethodType optimizationMethodType, 
-    Real simplexLambda, 
+    OptimizationMethodType optimizationMethodType,
+    Real simplexLambda,
     Real levenbergMarquardtEpsfcn,
     Real levenbergMarquardtXtol,
     Real levenbergMarquardtGtol)
@@ -100,24 +100,23 @@ boost::shared_ptr<OptimizationMethod> makeOptimizationMethod(
 
 std::vector<boost::shared_ptr<OptimizationMethod> > makeOptimizationMethods(
     OptimizationMethodType optimizationMethodTypes[],
-    Real simplexLambda, 
+    Real simplexLambda,
     Real levenbergMarquardtEpsfcn,
     Real levenbergMarquardtXtol,
     Real levenbergMarquardtGtol)
 {
     std::vector<boost::shared_ptr<OptimizationMethod> > results;
-    Size length = LENGTH(optimizationMethodTypes);
     for (Size i=0; i<LENGTH(optimizationMethodTypes); ++i) {
         results.push_back(makeOptimizationMethod(
             optimizationMethodTypes[i],
-            simplexLambda, 
+            simplexLambda,
             levenbergMarquardtEpsfcn,
             levenbergMarquardtXtol,
             levenbergMarquardtGtol));
     }
     return results;
 }
-// Set up, for each cost function, all the ingredients for optimization: 
+// Set up, for each cost function, all the ingredients for optimization:
 // constraint, initial guess, end criteria, optimization methods.
 void setup() {
 
@@ -144,7 +143,7 @@ void setup() {
     functionEpsilons_.push_back(1e-16);             // functionEpsilon
     gradientNormEpsilons_.push_back(1e-8);          // gradientNormEpsilon
     endCriterias_.push_back(boost::shared_ptr<EndCriteria>(
-        new EndCriteria(maxIterations_.back(), maxStationaryStateIterations_.back(), 
+        new EndCriteria(maxIterations_.back(), maxStationaryStateIterations_.back(),
                         rootEpsilons_.back(), functionEpsilons_.back(),
                         gradientNormEpsilons_.back())));
     // Set optimization methods for optimizer
@@ -174,7 +173,7 @@ void OptimizersTest::test() {
     for (Size i=0; i<costFunctions_.size(); ++i) {
         Problem problem(*costFunctions_[i], *constraints_[i], initialValues_[i]);
         for (Size j=0; j<(optimizationMethods_[i]).size(); ++j) {
-            EndCriteria::Type endCriteriaResult = 
+            EndCriteria::Type endCriteriaResult =
                 optimizationMethods_[i][j]->minimize(problem, *endCriterias_[i]);
         Array xMinCalculated = problem.currentValue();
         Array yMinCalculated = problem.values(xMinCalculated);

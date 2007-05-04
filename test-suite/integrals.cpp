@@ -37,23 +37,23 @@ bool verbose = true;
 
 template <class T>
 void testSingle(const T& I, const std::string& tag,
-                const boost::function<Real (Real)>& f, 
+                const boost::function<Real (Real)>& f,
                 Real xMin, Real xMax, Real expected) {
     Real calculated = I(f,xMin,xMax);
     if (std::fabs(calculated-expected) > tolerance) {
         BOOST_FAIL(std::setprecision(10)
-                   << "integrating " << tag 
+                   << "integrating " << tag
                    << "    calculated: " << calculated
                    << "    expected:   " << expected);
-    } 
+    }
     // this will be uncommented later...
     /*else {
-        if (verbose) 
+        if (verbose)
             BOOST_MESSAGE("integrating " << tag
                             << "    calculated: " << calculated
                             << "    expected: " << expected
-                            << "    nb of evaluations: " << I.numberOfEvalutions() 
-                            << "    precision: " << std::setprecision(3) 
+                            << "    nb of evaluations: " << I.numberOfEvaluations()
+                            << "    precision: " << std::setprecision(3)
                             << std::fabs(calculated- expected));
     }*/
 
@@ -75,7 +75,7 @@ void testSeveral(const T& I) {
     testSingle(I, "f(x) = Gaussian(x)",
                NormalDistribution(), -10.0, 10.0, 1.0);
     testSingle(I, "f(x) = Abcd2(x)",
-               AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,               
+               AbcdSquared(0.07, 0.07, 0.5, 0.1, 8.0, 10.0), 5.0, 6.0,
                Abcd(0.07, 0.07, 0.5, 0.1).covariance(5.0, 6.0, 8.0, 10.0));
 
 }

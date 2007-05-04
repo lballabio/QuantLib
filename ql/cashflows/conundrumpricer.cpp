@@ -252,13 +252,14 @@ namespace QuantLib {
 
     Real ConundrumPricerByNumericalIntegration::integrate(Real a,
         Real b, const ConundrumIntegrand& integrand) const {
-            double result =.0, abserr =.0;
-            double alpha = 1.0;
+            double result =.0;
+            //double abserr =.0;
+            //double alpha = 1.0;
 
 
-            double epsabs = precision_;
-            double epsrel = 1.0; // we are interested only in absolut precision
-            size_t neval =0;
+            //double epsabs = precision_;
+            //double epsrel = 1.0; // we are interested only in absolute precision
+            //size_t neval =0;
 
             // we use the non adaptive algorithm only for semi infinite interval
             if (a>0){

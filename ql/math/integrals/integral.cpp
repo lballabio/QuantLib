@@ -39,33 +39,48 @@ namespace QuantLib {
         maxEvaluations_ = maxEvaluations;
     }
 
-    Real Integrator::absoluteAccuracy() const {return absoluteAccuracy_;}
+    Real Integrator::absoluteAccuracy() const {
+        return absoluteAccuracy_;
+    }
 
-    Size Integrator::maxEvaluations() const { return maxEvaluations_; }
+    Size Integrator::maxEvaluations() const {
+        return maxEvaluations_;
+    }
 
-    Real Integrator::absoluteError() const { return absoluteError_; }
+    Real Integrator::absoluteError() const {
+        return absoluteError_;
+    }
 
-    void Integrator::setAbsoluteError(Real error) const { absoluteError_ = error; }
+    void Integrator::setAbsoluteError(Real error) const {
+        absoluteError_ = error;
+    }
 
-    Size Integrator::numberOfEvalutions() const { return nbEvalutions_;}
+    Size Integrator::numberOfEvaluations() const {
+        return evaluations_;
+    }
 
-    void Integrator::setNumberOfEvalutions(Size nbEvalutions) const {
-        nbEvalutions_ = nbEvalutions;
+    void Integrator::setNumberOfEvaluations(Size evaluations) const {
+        evaluations_ = evaluations;
+    }
+
+    void Integrator::increaseNumberOfEvaluations(Size increase) const {
+        evaluations_ += increase;
     }
 
     bool Integrator::integrationSuccess() const {
-        return  (nbEvalutions_ <= maxEvaluations_
-                    && absoluteError_ <= absoluteAccuracy_);
+        return evaluations_ <= maxEvaluations_
+            && absoluteError_ <= absoluteAccuracy_;
     }
 
     Real Integrator::operator()(const boost::function<Real (Real)>& f,
                                 Real a,
                                 Real b) const {
-            if (a == b)
-                return 0.0;
-            if (a > b)
-                return -(*this)(f, b, a);
-            nbEvalutions_ = 0;
-            return integrate(f, a, b);
+        if (a == b)
+            return 0.0;
+        if (a > b)
+            return -(*this)(f, b, a);
+        evaluations_ = 0;
+        return integrate(f, a, b);
     }
+
 }

@@ -30,57 +30,49 @@
 
 namespace QuantLib {
 
-	class Integrator{
+    class Integrator{
       public:
         Integrator(Real absoluteAccuracy,
                    Size maxEvaluations);
         virtual ~Integrator() {};
 
-		Real operator()(const boost::function<Real (Real)>& f,
+        Real operator()(const boost::function<Real (Real)>& f,
                         Real a,
                         Real b) const;
 
-		//! \name Modifiers
-		//@{
-		void setAbsoluteAccuracy(Real);
-		void setMaxEvaluations(Size);
-		//@}
+        //! \name Modifiers
+        //@{
+        void setAbsoluteAccuracy(Real);
+        void setMaxEvaluations(Size);
+        //@}
 
-		//! \name Inspectors
-		//@{
-		Real absoluteAccuracy() const;
-		Size maxEvaluations() const;
-		//@}
+        //! \name Inspectors
+        //@{
+        Real absoluteAccuracy() const;
+        Size maxEvaluations() const;
+        //@}
 
-		Real absoluteError() const ;
-		void setAbsoluteError(Real error) const;
+        Real absoluteError() const ;
 
-		Size numberOfEvalutions() const;
-		void setNumberOfEvalutions(Size nbEvalutions) const;
+        Size numberOfEvaluations() const;
 
-		virtual bool integrationSuccess() const; 
+        virtual bool integrationSuccess() const;
 
       protected:
-        virtual Real integrate (const boost::function<Real (Real)>& f, 
-                                Real a,
-                                Real b) const = 0;
-        void increaseNumberOfEvalutions(Size increase) const {
-                nbEvalutions_+=15;
-        }
+        virtual Real integrate(const boost::function<Real (Real)>& f,
+                               Real a,
+                               Real b) const = 0;
+        void setAbsoluteError(Real error) const;
+        void setNumberOfEvaluations(Size evaluations) const;
+        void increaseNumberOfEvaluations(Size increase) const;
       private:
         Real absoluteAccuracy_;
         mutable Real absoluteError_;
         Size maxEvaluations_;
-        mutable Size nbEvalutions_;
-	};
-
-	/*!
-	\brief This class allows to delegate the choice of the integration method
-	*/
-	class IntegratorFactory {
-		boost::shared_ptr<Integrator> operator()() const;
-	};
+        mutable Size evaluations_;
+    };
 
 }
+
 
 #endif

@@ -75,7 +75,7 @@ namespace QuantLib {
      }
 
     void RangeAccrualFloatersCoupon::accept(AcyclicVisitor& v) {
-        Visitor<RangeAccrualFloatersCoupon>* v1 = 
+        Visitor<RangeAccrualFloatersCoupon>* v1 =
             dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -89,11 +89,11 @@ namespace QuantLib {
                nominal() * discountingCurve->discount(date());
     }
 
-    
+
     //===========================================================================//
     //                          RangeAccrualPricer                               //
     //===========================================================================//
-    
+
     void RangeAccrualPricer::initialize(const FloatingRateCoupon& coupon){
         coupon_ =  dynamic_cast<const RangeAccrualFloatersCoupon*>(&coupon);
         gearing_ = coupon_->gearing();
@@ -113,7 +113,7 @@ namespace QuantLib {
         lowerTrigger_ = coupon_->lowerTrigger();
         upperTrigger_ = coupon_->upperTrigger();
         observationsNo_ = coupon_->observationsNo();
- 
+
         const std::vector<Date> &observationDates = coupon_->observationsSchedule()->dates();
         QL_REQUIRE(observationDates.size()==observationsNo_+2, "incompatible size of initialValues vector");
         initialValues_= std::vector<Real>(observationDates.size(),0.);
@@ -127,7 +127,7 @@ namespace QuantLib {
         }
 
       }
-    
+
     Real RangeAccrualPricer::swapletRate() const {
         return swapletPrice()/(accrualFactor_*discount_);
     }
@@ -142,11 +142,11 @@ namespace QuantLib {
     }
     Rate RangeAccrualPricer::floorletRate(Rate effectiveFloor) const {
         QL_FAIL("RangeAccrualPricer::floorletRate not implemented");
-    }      
+    }
 
     //===========================================================================//
     //                          RangeAccrualPricerByBgm                          //
-    //===========================================================================//   
+    //===========================================================================//
     RangeAccrualPricerByBgm::RangeAccrualPricerByBgm(
             Real correlation,
             const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
@@ -154,10 +154,10 @@ namespace QuantLib {
             bool withSmile,
             bool byCallSpread)
     :correlation_(correlation),
-    smilesOnExpiry_(smilesOnExpiry),
-    smilesOnPayment_(smilesOnPayment),
-    withSmile_(withSmile),
-    byCallSpread_(byCallSpread){
+     withSmile_(withSmile),
+     byCallSpread_(byCallSpread),
+     smilesOnExpiry_(smilesOnExpiry),
+     smilesOnPayment_(smilesOnPayment){
 
     }
     Real RangeAccrualPricerByBgm::swapletPrice() const{
@@ -274,7 +274,7 @@ namespace QuantLib {
                                                         Real lambdaT) const{
         Real result;
 
-        const Real p = (U-startTime_)/accrualFactor_;
+        //const Real p = (U-startTime_)/accrualFactor_;
         const Real q = (endTime_-U)/accrualFactor_;
 
         if(startTime_ > 0){result = q;}
@@ -310,7 +310,7 @@ namespace QuantLib {
         Real result;
 
         const Real p = (U-startTime_)/accrualFactor_;
-        const Real q = (endTime_-U)/accrualFactor_;
+        //const Real q = (endTime_-U)/accrualFactor_;
 
         if(startTime_ > 0){result = p;}
         else {result = 1.;}
@@ -449,13 +449,13 @@ namespace QuantLib {
 
         Real lambdaS = smilesOnExpiry_->volatility(strike);
         Real lambdaT = smilesOnPayment_->volatility(strike);
-        Real lambdaU = lambda(expiry, lambdaS, lambdaT);
+        //Real lambdaU = lambda(expiry, lambdaS, lambdaT);
 
         Real derLambdaDerK = derLambdaDerLambdaS(expiry, lambdaS, lambdaT)*derSmileS +
                                derLambdaDerLambdaT(expiry, lambdaS, lambdaT)*derSmileT;
-        Real derDriftDerK = derDriftDerLambdaS(expiry, lambdaS, lambdaT, correlation_)*derSmileS +
-                              derDriftDerLambdaT(expiry, lambdaS, lambdaT, correlation_)*derSmileT +
-                              lambdaU * derLambdaDerK;
+        //Real derDriftDerK = derDriftDerLambdaS(expiry, lambdaS, lambdaT, correlation_)*derSmileS +
+        //                      derDriftDerLambdaT(expiry, lambdaS, lambdaT, correlation_)*derSmileT +
+        //                      lambdaU * derLambdaDerK;
 
         Real lambdaSATM = smilesOnExpiry_->volatility(forward);
         Real lambdaTATM = smilesOnPayment_->volatility(forward);
@@ -483,7 +483,7 @@ namespace QuantLib {
 
         result *= deflator;
 
-        QL_REQUIRE(abs(result/deflator) <= 1.000001,
+        QL_REQUIRE(std::fabs(result/deflator) <= 1.000001,
             "RangeAccrualPricerByBgm::smileCorrection: abs(result/deflator) > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 

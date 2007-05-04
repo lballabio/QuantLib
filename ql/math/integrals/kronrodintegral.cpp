@@ -215,22 +215,22 @@ namespace QuantLib {
         0.037361073762679023410321241766599
         } ;
 
-	Real GaussKronrodNonAdaptive::relativeAccuracy() const { 
-		return relativeAccuracy_; 
-	}
+    Real GaussKronrodNonAdaptive::relativeAccuracy() const {
+        return relativeAccuracy_;
+    }
 
-	GaussKronrodNonAdaptive::GaussKronrodNonAdaptive(Real absoluteAccuracy,
+    GaussKronrodNonAdaptive::GaussKronrodNonAdaptive(Real absoluteAccuracy,
                                                      Size maxEvaluations,
                                                      Real relativeAccuracy)
-    : Integrator(absoluteAccuracy, maxEvaluations), 
-	  relativeAccuracy_(relativeAccuracy) {}
+    : Integrator(absoluteAccuracy, maxEvaluations),
+      relativeAccuracy_(relativeAccuracy) {}
 
-	Real
+    Real
     GaussKronrodNonAdaptive::integrate(const boost::function<Real (Real)>& f,
                                        Real a,
                                        Real b) const {
-		Real result;
-		//Size neval;
+        Real result;
+        //Size neval;
         Real fv1[5], fv2[5], fv3[5], fv4[5];
         Real savfun[21];  /* array of function values which have been computed */
         Real res10, res21, res43, res87;    /* 10, 21, 43 and 87 point results */
@@ -293,7 +293,7 @@ namespace QuantLib {
         // test for convergence.
         if (err < absoluteAccuracy() || err < relativeAccuracy() * std::fabs(result)){
             setAbsoluteError(err);
-            setNumberOfEvalutions(21);
+            setNumberOfEvaluations(21);
             return result;
         }
 
@@ -319,7 +319,7 @@ namespace QuantLib {
 
        if (err < absoluteAccuracy() || err < relativeAccuracy() * std::fabs(result)){
             setAbsoluteError(err);
-            setNumberOfEvalutions(43);
+            setNumberOfEvaluations(43);
             return result;
         }
 
@@ -341,7 +341,7 @@ namespace QuantLib {
         err = rescaleError ((res87 - res43) * halfLength, resAbs, resasc);
 
         setAbsoluteError(err);
-        setNumberOfEvalutions(87);
+        setNumberOfEvaluations(87);
         return result;
     }
 
@@ -416,7 +416,7 @@ namespace QuantLib {
             k15 = halflength * k15;
 
             // 15 more function evaluations have been used
-            increaseNumberOfEvalutions(15);
+            increaseNumberOfEvaluations(15);
 
             // error is <= k15 - g7
             // if error is larger than tolerance then split the interval
@@ -424,7 +424,7 @@ namespace QuantLib {
             if (std::fabs(k15 - g7) < tolerance) {
                 return k15;
             } else {
-                QL_REQUIRE(numberOfEvalutions()+30 <=
+                QL_REQUIRE(numberOfEvaluations()+30 <=
                            maxEvaluations(),
                            "maximum number of function evaluations "
                            "exceeded");

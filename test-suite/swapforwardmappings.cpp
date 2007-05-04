@@ -212,21 +212,21 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     for (Size i=0; i<nbRates; ++i) {
         const Matrix& cotSwapsCovariance = smmMarketModel->totalCovariance(i);
         //Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
-        Time expiry = rateTimes[i];
+        //Time expiry = rateTimes[i];
         boost::shared_ptr<PlainVanillaPayoff> payoff(
             new PlainVanillaPayoff(Option::Call, strike+displacement));
-        const std::vector<Time>&  taus = lmmCurveState.rateTaus();
+        //const std::vector<Time>&  taus = lmmCurveState.rateTaus();
         Real expectedSwaption = BlackCalculator(payoff,
                         todaysCoterminalSwapRates[i]+displacement,
                         std::sqrt(cotSwapsCovariance[i][i]),
                         lmmCurveState.coterminalSwapAnnuity(i,i) *
                         todaysDiscounts[i]).value();
-        /*
-        BOOST_MESSAGE("expected\t" << expectedSwaption <<
-                      "\tLMM\t" << results[i]
-                      << "\tstdev:\t" << errors[i] <<
-                      "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
-        */
+        if (false)
+            BOOST_MESSAGE(
+                    "expected\t" << expectedSwaption <<
+                    "\tLMM\t" << results[i]
+                    << "\tstdev:\t" << errors[i] <<
+                    "\t" <<std::fabs(results[i]- expectedSwaption)/errors[i]);
     }
 }
 

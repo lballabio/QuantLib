@@ -107,7 +107,7 @@ namespace QuantLib {
                 boost::shared_ptr<CappedFlooredCoupon> previous(
                     new CappedFlooredCoupon(underlying_, effectivePutStrike_ - eps_));
                 if(isCashOrNothing_){
-                    putOptionRate = cashRate_ * 
+                    putOptionRate = cashRate_ *
                                    (next->rate() - previous->rate()) / (2.*eps_);
                 } else {
                     // if asset-or-nothing
@@ -120,7 +120,7 @@ namespace QuantLib {
         return callOptionRate - putOptionRate;
     }
 
-    Rate DigitalCoupon::rate() const { 
+    Rate DigitalCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
         Real csi = isCall() ? callCsi_ : putCsi_;
         return underlying_->rate() + csi * optionRate();
@@ -175,3 +175,4 @@ namespace QuantLib {
 
 
 }
+
