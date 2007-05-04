@@ -51,12 +51,13 @@ namespace QuantLib {
         
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
-        if (putStrike != Null<Rate>() && callStrike != Null<Rate>())
+        if (putStrike != Null<Rate>() && callStrike != Null<Rate>()) {
             QL_REQUIRE(putStrike >= callStrike,
                        "put strike (" << putStrike << ") < " <<
                        "call strike (" << callStrike << ")");
             QL_REQUIRE(isCallOptionAdded == isPutOptionAdded,
                        "both call and put options must be added or subtracted");
+        }
 
         if (callStrike != Null<Rate>()){
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
