@@ -27,8 +27,8 @@ namespace QuantLib {
                                  Rate callStrike,
                                  Rate putStrike,
                                  Rate cashRate,
-                                 bool isPutOptionAdded,
                                  bool isCallOptionAdded,
+                                 bool isPutOptionAdded,
                                  Real eps)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
