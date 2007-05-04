@@ -82,8 +82,9 @@ namespace QuantLib {
             IndexManager::instance().setHistory(tag, h);
             QL_REQUIRE(allValidFixings,
                        "At least one invalid fixing provided: " <<
-                       invalidDate.weekday() << ", " << invalidDate <<
-                       ", " << invalidValue);
+                       invalidDate.weekday() << " " << invalidDate <<
+                       ", " << invalidValue <<
+                       ", evaluation date being " << refDate);
         }
         //! clears all stored historical fixings
         void clearFixings();
