@@ -1666,6 +1666,9 @@
 				RelativePath=".\marketmodel_smm.cpp">
 			</File>
 			<File
+				RelativePath=".\marketmodel_smmcapletalphacalibration.cpp">
+			</File>
+			<File
 				RelativePath=".\marketmodel_smmcapletcalibration.cpp">
 			</File>
 			<File
@@ -2649,6 +2652,9 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smm.hpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcapletalphacalibration.hpp">
 			</File>
 			<File
 				RelativePath=".\marketmodel_smmcapletcalibration.hpp">

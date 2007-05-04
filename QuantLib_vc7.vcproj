@@ -3809,6 +3809,30 @@
 						RelativePath=".\ql\models\marketmodels\models\all.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\models\alphafinder.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\alphafinder.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\alphaform.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\alphaform.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\alphaformconcrete.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\alphaformconcrete.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalalphacalibration.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalalphacalibration.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp">
 					</File>
 					<File
