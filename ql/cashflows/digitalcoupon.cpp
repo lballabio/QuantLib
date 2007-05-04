@@ -122,7 +122,7 @@ namespace QuantLib {
 
     Rate DigitalCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
-        Real csi = isCall() ? callCsi_ : putCsi_;
+        Real csi = hasCall() ? callCsi_ : putCsi_;
         return underlying_->rate() + csi * optionRate();
     }
 
@@ -136,6 +136,10 @@ namespace QuantLib {
 
     Rate DigitalCoupon::putStrike() const {
         return putStrike_;
+    }
+    
+    Rate DigitalCoupon::cashRate() const {
+        return cashRate_;
     }
 
     void DigitalCoupon::update() {
