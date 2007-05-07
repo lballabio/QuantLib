@@ -22,25 +22,11 @@
 
 namespace QuantLib {
 
-    template <class F, class G>
-    class composed_function {
-      public:
-        typedef typename G::argument_type argument_type;
-        typedef typename F::result_type result_type;
-        composed_function(const F& f, const G& g) : f_(f), g_(g) {}
-        result_type operator()(const argument_type& x) const {
-            return f_(g_(x));
-        }
-      private:
-        F f_;
-        G g_;
-    };
-
-
-    Disposable<Matrix> triangularAnglesParametrization(const Array& angles,
-                                                       Size matrixSize) {
-        QL_REQUIRE(matrixSize * (matrixSize-1) == 2*angles.size(),
-            "matrixSize * (matrixSize-1)/2 != angles.size()");
+    Disposable<Matrix> triangularAnglesParametrization(
+                       const Array& angles, Size matrixSize, Size rank) {
+       
+        QL_REQUIRE((rank-1) * (2*matrixSize - rank) == 2*angles.size(),
+            "rank-1) * (matrixSize - rank/2) == angles.size()");
         Matrix m(matrixSize, matrixSize);
 
         // first row filling
@@ -50,25 +36,25 @@ namespace QuantLib {
 
         // next ones...
         Size k = 0; //angles index
-        for (Size i=0; i<m.rows(); ++i) {
+        for (Size i=1; i<m.rows(); ++i) {
             Real sinProduct = 1.0;
-            for (Size j=1; j<=i-1; ++j) {
-                if (j < j)
-                    m[i][j] = std::cos(angles[k]);
-                else
-                    m[i][j] = 1.0;
+            Size bound = std::min(i,rank-1);
+            for (Size j=0; j<bound; ++j) {
+                m[i][j] = std::cos(angles[k]);
                 m[i][j] *= sinProduct;
                 sinProduct *= std::sin(angles[k]);
                 ++k;
             }
-            for (Size j=i+1; j<m.rows(); ++j)
+            m[i][bound] = sinProduct;
+            for (Size j=bound+1; j<m.rows(); ++j)
                 m[i][j] = 0;
         }
         return m;
     }
 
-    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles) {
-            Matrix m(angles.size()+1, angles.size()+1);
+    Disposable<Matrix> lmmTriangularAnglesParametrization(
+                        const Array& angles, Size matrixSize, Size rank) {
+            Matrix m(matrixSize, matrixSize);
             for (Size i=0; i<m.rows(); ++i) {
                 Real cosPhi, sinPhi;
                 if (i>0) {
@@ -91,18 +77,28 @@ namespace QuantLib {
             return m;
     }
 
-    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained (
-                                                        const Array& x) {
+    Disposable<Matrix> triangularAnglesParametrizationUnconstrained (
+                               const Array& x, Size matrixSize, Size rank) {
         Array angles(x.size());
         //we convert the unconstrained parameters in angles
         for(Size i = 0; i < x.size(); ++i)
             angles[i] = M_PI*.5 - std::atan(x[i]);
-        return lmmTriangularAnglesParametrization(angles);
+        return triangularAnglesParametrization(angles, matrixSize, rank);
     }
 
-    Disposable<Matrix> triangularAnglesParametrizationRankThree(Real alpha, Real t0,
-                                                           Real epsilon, Size nbRows) {
-            Matrix m(nbRows, 3);
+    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained (
+                               const Array& x, Size matrixSize, Size rank) {
+        Array angles(x.size());
+        //we convert the unconstrained parameters in angles
+        for(Size i = 0; i < x.size(); ++i)
+            angles[i] = M_PI*.5 - std::atan(x[i]);
+        return lmmTriangularAnglesParametrization(angles, matrixSize, rank);
+    }
+
+    Disposable<Matrix> triangularAnglesParametrizationRankThree(
+                                            Real alpha, Real t0,
+                                            Real epsilon, Size matrixSize) {
+            Matrix m(matrixSize, 3);
             for (Size i=0; i<m.rows(); ++i) {
                 Real t = t0 * (1 - std::exp(epsilon*Real(i)));
                 Real phi = std::atan(alpha * t);
@@ -114,7 +110,7 @@ namespace QuantLib {
     }
 
     Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
-        const Array& paramters, Size nbRows){
+                            const Array& paramters, Size nbRows, Size rank){
         QL_REQUIRE(paramters.size() == 3,
             "the parameter array must contain exactly 3 values" );
         return  triangularAnglesParametrizationRankThree(paramters[0],
@@ -128,16 +124,18 @@ namespace QuantLib {
     }
 
     Disposable<Array> FrobeniusCostFunction::values(const Array& x) const{
-        Array result(target_.rows()*target_.columns());
+        Array result((target_.rows()*(target_.columns()-1))/2);
         // refresh parameterizedMatrix_ with values implied by the new set of
         // parameters
-        Matrix pseudoRoot = f_(x);
+        Matrix pseudoRoot = f_(x, matrixSize_, rank_);
         Matrix differences = pseudoRoot * transpose(pseudoRoot) - target_;
+        Size k = 0;
         // then we store the elementwise differences in a vector.
         for (Size i=0; i<target_.rows(); ++i)
-            for (Size j=0; j<target_.columns(); ++j)
-                result[i*target_.rows()+j]
-                            = differences[i][j]*differences[i][j];
+            for (Size j=0; j<i; ++j){
+                result[k] = differences[i][j]*differences[i][j];
+                ++k;
+            }
         return result;
     }
 }

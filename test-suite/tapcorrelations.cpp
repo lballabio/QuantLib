@@ -23,7 +23,13 @@
 #include <ql/math/matrix.hpp>
 #include <sstream>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+// to be removed later:
+#include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+
 
 #if defined(BOOST_MSVC)
 #include <float.h>
@@ -36,7 +42,8 @@ using namespace boost::unit_test_framework;
 //QL_BEGIN_TEST_LOCALS(TapCorrelationTest)
 //QL_END_TEST_LOCALS(TapCorrelationTest)
 
-    Matrix M;
+    Matrix M2;
+    Matrix M3;
     Matrix M5;
 
     // matrices given in Rapisarda Mercurio Brigo article
@@ -46,11 +53,17 @@ using namespace boost::unit_test_framework;
     void setup() {
         Real value1 = .5;
         Real value2 = .2;
-        Real value3 = .2;
-        M = Matrix(3, 3);
-        M[0][0] = 1.0;     M[0][1] = value1;    M[0][2] = value3;
-        M[1][0] = value1;  M[1][1] = 1.0;       M[1][2] = value2;
-        M[2][0] = value3;  M[2][1] = value2;    M[2][2] = 1.0;
+        Real value3 = .3;
+
+        M2 = Matrix(2,2);
+        M2[0][0] = 1.0;     M2[0][1] = value1;
+        M2[1][0] = value1;  M2[1][1] = 1.0;
+
+        M3 = Matrix(3, 3);
+
+        M3[0][0] = 1.0;     M3[0][1] = value1;    M3[0][2] = value3;
+        M3[1][0] = value1;  M3[1][1] = 1.0;       M3[1][2] = value2;
+        M3[2][0] = value3;  M3[2][1] = value2;    M3[2][2] = 1.0;
 
         M5 = Matrix(4, 4);
         M5[0][0] = 2;   M5[0][1] = -1;  M5[0][2] = 0.0; M5[0][3] = 0.0;
@@ -97,67 +110,177 @@ using namespace boost::unit_test_framework;
     }
 
 
-
-
-void TapCorrelationTest::testValues() {
-
-    BOOST_MESSAGE("Testing Triangular Angles Parametrization correlations matrices");
+void TapCorrelationTest::testRank3Values() {
+    BOOST_MESSAGE("Testing Rank 3 Triangular Angles Parametrization values against article");
+    setup();
     Size rank3MatrixSize = 10;
     Real alpha = -0.419973;
     Real t0 = 136.575;
     Real epsilon = -0.00119954;
-    Matrix rank3PseudoRoot
-        = triangularAnglesParametrizationRankThree(alpha, t0, epsilon, rank3MatrixSize);
+    Matrix rank3PseudoRoot = triangularAnglesParametrizationRankThree(
+                                        alpha, t0, epsilon, rank3MatrixSize);
     Matrix correlations = rank3PseudoRoot*transpose(rank3PseudoRoot);
-
-    Size fullRankSize = 10;
-    Array angles(fullRankSize-1);
-    for (Size i = 0; i<angles.size(); ++i)
-        angles[i] = M_PI/2 * Real(i+1)/Real(angles.size()+1);
-    Matrix fullRankPseudoRoot
-        = lmmTriangularAnglesParametrization(angles);
-    Matrix fullRankCorrelations =
-        fullRankPseudoRoot * transpose(fullRankPseudoRoot);
-    BOOST_MESSAGE(correlations);
+    Matrix differences = correlations - table3;
+    Real tolerance  = 1e-5;
+    for (Size i = 0; i<rank3MatrixSize; ++i)
+        for (Size j=0; j<rank3MatrixSize; ++j)
+            if (std::fabs(differences[i][j]) > tolerance)
+                QL_FAIL("unable to compute the values given in Rapisarda article");
 }
 
-void TapCorrelationTest::testCalibration() {
-    setup();
+Real sign(Real x) {
+    return x>0?1:-1;
+}
+
+Real safeBounds(Real x){
+    const Real eps=1e-16;
+    if(std::fabs(x) < 1-eps)
+        return x;
+    else
+        return sign(x)*(1-eps);
+}
+
+Real frobeniusNorm(const Matrix& m){
+    Real result = 0.0;
+    for (Size i=1; i<m.rows(); i++)
+        for (Size j=1; j<m.rows(); j++)
+            result += m[i][j]*m[i][j];
+    return result;
+}
+
+Disposable<Array> triangularAnglesParametrizationGuess(const Matrix& matrix, Size rank) {
+    // spectral (a.k.a Principal Component) analysis
+    SymmetricSchurDecomposition jd(matrix);
+    Size size = matrix.rows();
+    Matrix pseudoRoot = CholeskyDecomposition(matrix, true);
+    Size nbParameters = Size(Real(rank-1) * (Real(matrix.rows()) - Real(rank)/2));
+    Array theta(nbParameters);
+    Size k = 0;
+    for (Size i=1; i<size; i++) {
+        Real sinProduct = 1;
+        Size bound = std::min(i,rank-1);
+        for (Size j=0; j<bound; j++) {
+            theta[k] = std::acos(safeBounds(pseudoRoot[i][j]/sinProduct)) 
+                        * sign(pseudoRoot[i][j+1]);
+            sinProduct *= std::sin(theta[k]);
+            k++;
+        }
+    }
+    return theta;
+}
+
+Disposable<Array> tanArray(const Array& v) {
+    Array result(v.size());
+    for(Size i = 0; i<result.size(); ++i)
+        result[i] = std::tan(M_PI*.5 - v[i]);
+    //std::transform(v.begin(), v.end(), result.begin(), toto);
+    return result;
+}
+
+void testCorrelation(const Matrix& target,
+                     const boost::function<Disposable<Matrix>(const Array&, Size, Size)>& f,
+                     const Array& initialValues, Size rank){
+    Real lambda = .1;
+    Simplex sm(lambda);
     LevenbergMarquardt lm;
-    FrobeniusCostFunction frobeniusCostFunction(M,
-         &lmmTriangularAnglesParametrizationUnconstrained);
-    Array initialValues(M.rows()-1, 0);
+    OptimizationMethod& om = lm;
+    FrobeniusCostFunction frobeniusCostFunction(target, f, target.rows(), rank);
     NoConstraint constraints;
     Problem problem(frobeniusCostFunction, constraints, initialValues);
-    Size maxIterations = 1000;
+    Size maxIterations = 100000;
     Size maxStationaryStateIterations = 100;
     Real rootEpsilon = 1e-8;
-    Real functionEpsilon = 1e-8;
+    Real functionEpsilon = 1e-16;
     Real gradientNormEpsilon = 1e-8;
     EndCriteria endCriteria(maxIterations, maxStationaryStateIterations, rootEpsilon,
         functionEpsilon, gradientNormEpsilon);
     EndCriteria::Type optimizationResult;
-    optimizationResult = lm.minimize(problem, endCriteria);
+    optimizationResult = om.minimize(problem, endCriteria);
     Array currentValue = problem.currentValue();
+    Real value = problem.value(currentValue);
+    BOOST_MESSAGE("Cost function value: " << value);
     Matrix approximatedPseudoRoot
-        = lmmTriangularAnglesParametrizationUnconstrained(currentValue);
-
+        = f(currentValue, target.rows(), rank);
     Matrix approximatedCorrelations
         = approximatedPseudoRoot * transpose(approximatedPseudoRoot);
-    /*Array test(2, 0);
-    Matrix resultTest = lmmTriangularAnglesParametrizationUnconstrained(test);
-    Matrix approximatedCorrelationsTest = resultTest * transpose(resultTest);
-    Matrix result = lmmTriangularAnglesParametrizationUnconstrained(problem.currentValue());
-    Matrix approximatedCorrelations = result * transpose(result);*/
-    BOOST_MESSAGE(problem.currentValue());
+    BOOST_MESSAGE("nb Evaluations: " << problem.functionEvaluation());
+    BOOST_MESSAGE("End criteria: " << optimizationResult);
+    BOOST_MESSAGE("approximatedPseudoRoot\n"<<approximatedPseudoRoot);
+    BOOST_MESSAGE("approximatedCorrelations\n" <<approximatedCorrelations);
+    BOOST_MESSAGE("Frobenius cost function value " << frobeniusNorm(approximatedCorrelations-target));
 }
 
 
+void testCorrelations(const Matrix& m, Size rank) {
+    
+    BOOST_MESSAGE("Testing triangularAnglesParametrization");
+    Size nbParameters = Size(Real(rank-1) * (Real(m.rows()) - Real(rank)/2));
+    Array initialValues = triangularAnglesParametrizationGuess(m, rank);
+    ////(nbParameters,.0); //
+    //Array initialValuesNewCoordinate = tanArray(initialValues);
+    //testCorrelation(m,
+    //                &triangularAnglesParametrization/*Unconstrained*/, 
+    //                initialValues/*NewCoordinate*/,
+    //                rank);
+
+    //BOOST_MESSAGE("Testing lmmTriangularAnglesParametrization");
+    //nbParameters = (m.rows()*(m.rows()-1))/2;
+    //initialValues = Array(nbParameters, .0);
+    //testCorrelation(m, 
+    //                &lmmTriangularAnglesParametrization, 
+    //                initialValues,
+    //                m.rows());
+
+    BOOST_MESSAGE("Testing triangularAnglesParametrizationRankThree");
+    nbParameters = 3;
+    initialValues = Array(nbParameters, .0);
+    Real alpha = -0.419973;
+    Real t0 = 136.575;
+    Real epsilon = -0.00119954;
+    initialValues[0] = -.5;//alpha;
+    initialValues[1] = 150;//t0;
+    initialValues[2] = .0;//epsilon;
+    //initialValues[0] = alpha;
+    //initialValues[1] = t0;
+    //initialValues[2] = epsilon;
+    testCorrelation(m, 
+                    &triangularAnglesParametrizationRankThreeVectorial, 
+                    initialValues,
+                    3);
+    BOOST_MESSAGE("Article cost function value " << frobeniusNorm(table1 - table3));
+   
+}
+
+void TapCorrelationTest::testCalibration() {
+    BOOST_MESSAGE("Testing simple calibration cases");
+    setup();
+    testCorrelations(M3, 3);
+}
+
+
+
+void TapCorrelationTest::testArticleCalibrationExamples(){
+    BOOST_MESSAGE("Testing Triangular Angles Parametrization article examples");
+    setup();
+    
+    testCorrelations(table1, 3);
+    //Matrix test = triangularAnglesParametrizationGuess(M3);
+   // Matrix b = pseudoSqrt(table1, SalvagingAlgorithm::LowerDiagonal);
+    Matrix b = rankReducedSqrt(table1, 10, 1, SalvagingAlgorithm::Spectral);
+    /*Matrix correlations = b*transpose(b);
+    BOOST_MESSAGE(correlations);*/
+}
+
+    
+
+
+
 // --- Call the desired tests
-test_suite* TapCorrelationTest::suite() {
+    test_suite* TapCorrelationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
-    //suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testValues));
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testRank3Values));
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testArticleCalibrationExamples));
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testCalibration));
 
     return suite;

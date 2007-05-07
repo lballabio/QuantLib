@@ -43,17 +43,21 @@ namespace QuantLib {
             - the correctness of the results is tested by checking
               returned values against numerical calculations.
     */
-    Disposable<Matrix> triangularAnglesParametrization(const Array& angles);
+    Disposable<Matrix> triangularAnglesParametrization(const Array& angles,
+                                                Size matrixSize, Size rank);
 
-    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles);
+    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles,
+                                                  Size matrixSize, Size rank);
 
     // the same function using the angles parameterized by the following 
     // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
 
-    Disposable<Matrix> triangularAnglesParametrizationUnconstrained(const Array& x);
+    Disposable<Matrix> triangularAnglesParametrizationUnconstrained(const Array& x,
+                                                        Size matrixSize, Size rank);
 
 
-    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained(const Array& x);
+    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
+                                                          Size matrixSize, Size rank);
 
 
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix 
@@ -76,20 +80,23 @@ namespace QuantLib {
 
     // the same function with parameters packed in an Array
     Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
-        const Array& paramters, Size nbRows);
+        const Array& paramters, Size nbRows, Size rank);
 
     // Cost function associated with Frobenius norm.
     // <http://en.wikipedia.org/wiki/Matrix_norm>
     class FrobeniusCostFunction : public CostFunction{
     public:
         FrobeniusCostFunction(const Matrix& target,
-            const boost::function<Disposable<Matrix>(const Array&)>& f)
-            :target_(target), f_(f){}
+            const boost::function<Disposable<Matrix>(const Array&, Size, Size)>& f,
+            Size matrixSize, Size rank)
+            :target_(target), f_(f), matrixSize_(matrixSize),rank_(rank){}
         Real value (const Array &x) const;
         Disposable<Array> values (const Array &x) const;
     private:
         Matrix target_;
-        boost::function<Disposable<Matrix>(const Array&)> f_;
+        boost::function<Disposable<Matrix>(const Array&, Size, Size)> f_;
+        Size matrixSize_;
+        Size rank_;
     };
 }
 
