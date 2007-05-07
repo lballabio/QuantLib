@@ -184,6 +184,7 @@ namespace QuantLib {
 
         boost::shared_ptr<SmileSection> smilesOnExpiry_;
         boost::shared_ptr<SmileSection> smilesOnPayment_;
+        Real eps_;
 
     };
 

@@ -23,6 +23,8 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <cmath>
+#include <iostream>
+#include <iomanip>
 
 namespace QuantLib {
 
@@ -53,6 +55,8 @@ namespace QuantLib {
     lowerTrigger_(lowerTrigger),
     upperTrigger_(upperTrigger){
 
+        QL_REQUIRE(lowerTrigger_<upperTrigger,
+            "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: lowerTrigger_>=upperTrigger");
         QL_REQUIRE(observationsSchedule_->startDate()==startDate,
             "RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon: incompatible start date");
         QL_REQUIRE(observationsSchedule_->endDate()==endDate,
@@ -154,23 +158,22 @@ namespace QuantLib {
             bool withSmile,
             bool byCallSpread)
     :correlation_(correlation),
-     withSmile_(withSmile),
-     byCallSpread_(byCallSpread),
-     smilesOnExpiry_(smilesOnExpiry),
-     smilesOnPayment_(smilesOnPayment){
+    smilesOnExpiry_(smilesOnExpiry),
+    smilesOnPayment_(smilesOnPayment),
+    withSmile_(withSmile),
+    byCallSpread_(byCallSpread),
+    eps_(1.0e-8){
 
     }
     Real RangeAccrualPricerByBgm::swapletPrice() const{
 
         Real result = 0.;
         const Real deflator = discount_*initialValues_[0];
-
         for(Size i=0;i<observationsNo_;i++){
             Real digitalFloater = digitalRangePrice(lowerTrigger_, upperTrigger_,initialValues_[i+1],
                                                      observationTimes_[i], deflator);
             result += digitalFloater;
         }
-
         return gearing_ *(result*accrualFactor_/observationsNo_)+ spreadLegValue_;
     }
 
@@ -323,10 +326,12 @@ namespace QuantLib {
                                                       Real initialValue,
                                                       Real expiry,
                                                       Real deflator) const{
-            const Real result =  digitalPrice(lowerTrigger, initialValue, expiry, deflator)-
-                                   digitalPrice(upperTrigger, initialValue, expiry, deflator);
+            const Real lowerPrice = digitalPrice(lowerTrigger, initialValue, expiry, deflator);
+            const Real upperPrice = digitalPrice(upperTrigger, initialValue, expiry, deflator);
+            const Real result =  lowerPrice - upperPrice;
             QL_REQUIRE(result >0.,
-                "RangeAccrualPricerByBgm::digitalRangePrice: digitalPrice(upper) >  digitalPrice(lower)");
+                "RangeAccrualPricerByBgm::digitalRangePrice:\n digitalPrice("<<upperTrigger<<
+                "): "<<upperPrice<<" >  digitalPrice("<<lowerTrigger<<"): "<<lowerPrice);
             return result;
 
     }
@@ -334,11 +339,14 @@ namespace QuantLib {
                                         Real initialValue,
                                         Real expiry,
                                         Real deflator) const {
-        Real result;
-        if(withSmile_)
-            result = digitalPriceWithSmile(strike, initialValue, expiry, deflator);
-        else
-            result = digitalPriceWithoutSmile(strike, initialValue, expiry, deflator);
+        Real result = deflator;
+        if(strike>eps_/2){
+            if(withSmile_)
+                result = digitalPriceWithSmile(strike, initialValue, expiry, deflator);
+            else
+                result = digitalPriceWithoutSmile(strike, initialValue, expiry, deflator);
+        }
+        //std::cout<<strike<<"\t"<<result<<"\n";
         return result;
     }
 
@@ -365,9 +373,9 @@ namespace QuantLib {
 
        CumulativeNormalDistribution phi;
        const Real result = deflator*phi(d2);
-
+       
        QL_REQUIRE(result > 0.,
-            "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result< 0.");
+           "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result< 0. Result:"<<result);
        QL_REQUIRE(result/deflator <= 1.,
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
@@ -382,10 +390,8 @@ namespace QuantLib {
         Real result;
         if(byCallSpread_){
 
-            const Real eps = std::min(strike*1e-1, 1e-10);
-
             // Previous strike
-            const Real previousStrike = strike - eps/2;
+            const Real previousStrike = strike - eps_/2;
             Real lambdaS = smilesOnExpiry_->volatility(previousStrike);
             Real lambdaT = smilesOnPayment_->volatility(previousStrike);
 
@@ -402,7 +408,7 @@ namespace QuantLib {
             const Real previousForward = initialValue * previousAdjustment ;
 
             // Next strike
-            const Real nextStrike = strike + eps/2;
+            const Real nextStrike = strike + eps_/2;
             lambdaS = smilesOnExpiry_->volatility(nextStrike);
             lambdaT = smilesOnPayment_->volatility(nextStrike);
 
@@ -424,9 +430,9 @@ namespace QuantLib {
                      smileCorrection(strike, initialValue, expiry, deflator);
         }
 
-        QL_REQUIRE(result > 0.,
-            "RangeAccrualPricerByBgm::digitalPriceWithSmile: result< 0.");
-        QL_REQUIRE(result/deflator <=  1.000001,
+        QL_REQUIRE(result > -pow(eps_,.5),
+            "RangeAccrualPricerByBgm::digitalPriceWithSmile: result< 0 Result:"<<result);
+        QL_REQUIRE(result/deflator <=  1.0 + pow(eps_,.2),
             "RangeAccrualPricerByBgm::digitalPriceWithSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
@@ -438,14 +444,13 @@ namespace QuantLib {
                                         Real expiry,
                                         Real deflator) const {
 
-        const Real eps = std::min(strike*1e-1, 1e-10);
-        const Real previousStrike = strike - eps/2;
-        const Real nextStrike = strike + eps/2;
+        const Real previousStrike = strike - eps_/2;
+        const Real nextStrike = strike + eps_/2;
 
         const Real derSmileS = (smilesOnExpiry_->volatility(nextStrike)-
-                                 smilesOnExpiry_->volatility(previousStrike))/eps;
+                                 smilesOnExpiry_->volatility(previousStrike))/eps_;
         const Real derSmileT = (smilesOnPayment_->volatility(nextStrike)-
-                                 smilesOnPayment_->volatility(previousStrike))/eps;
+                                 smilesOnPayment_->volatility(previousStrike))/eps_;
 
         Real lambdaS = smilesOnExpiry_->volatility(strike);
         Real lambdaT = smilesOnPayment_->volatility(strike);
@@ -483,7 +488,7 @@ namespace QuantLib {
 
         result *= deflator;
 
-        QL_REQUIRE(std::fabs(result/deflator) <= 1.000001,
+        QL_REQUIRE(abs(result/deflator) <= 1.0 + pow(eps_,.2),
             "RangeAccrualPricerByBgm::smileCorrection: abs(result/deflator) > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
@@ -509,7 +514,7 @@ namespace QuantLib {
             "\n previousCall: strike :" << previousStrike << "; variance: " << previousVariance <<
             " adjusted initial value " << previousForward );
 
-         const Real result = (previousCall - nextCall)/(nextStrike-previousStrike);
+         const Real result = (previousCall-nextCall)/(nextStrike-previousStrike);
 
          return result;
     }

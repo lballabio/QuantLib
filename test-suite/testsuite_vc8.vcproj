@@ -1815,6 +1815,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\rangeaccrual.cpp"
+				>
+			</File>
+			<File
 				RelativePath="riskstats.cpp"
 				>
 				<FileConfiguration
@@ -2459,6 +2463,10 @@
 			</File>
 			<File
 				RelativePath="quotes.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\rangeaccrual.hpp"
 				>
 			</File>
 			<File
