@@ -42,14 +42,17 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying),
+      underlying_(underlying), callCsi_(Rate(0.)), putCsi_(Rate(0.)),
       hasCallStrike_(false), hasPutStrike_(false),
       eps_(eps), isCashOrNothing_(false) {
 
         QL_REQUIRE(gearing()==1.0 && (spread()==Null<Rate>() || spread()==0.),
-                   "Gearing must be equal to 1 and spread must be null. Temporary requirement");
+                   "Gearing must be equal to 1 and spread must be null. Temporary requirement");    
         
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
+
+        if (putStrike == Null<Rate>() && callStrike == Null<Rate>())
+            QL_REQUIRE(cashRate == Null<Rate>(), "Cash rate non allowed if call-put strike are both null");
 
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>()) {
             QL_REQUIRE(putStrike >= callStrike,
@@ -131,15 +134,24 @@ namespace QuantLib {
     }
 
     Rate DigitalCoupon::callStrike() const {
-        return callStrike_;
+        if (hasCall())
+            return callStrike_;
+        else
+            return Null<Rate>();
    }
 
     Rate DigitalCoupon::putStrike() const {
-        return putStrike_;
+        if (hasPut())
+            return putStrike_;
+        else
+            return Null<Rate>();
     }
     
     Rate DigitalCoupon::cashRate() const {
-        return cashRate_;
+        if (isCashOrNothing_)
+            return cashRate_;
+        else
+            return Null<Rate>();
     }
 
     void DigitalCoupon::update() {
