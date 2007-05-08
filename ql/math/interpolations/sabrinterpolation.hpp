@@ -32,6 +32,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/math/optimization/method.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -294,8 +295,10 @@ namespace QuantLib {
               weights_(xEnd-xBegin, 1.0/(xEnd-xBegin)), forward_(forward),
               vegaWeighted_(vegaWeighted)
             {
-                // if no method is provided we provide one
+                // if no optimization method or endCriteria is provided, we provide one
                 if (!method_)
+                    //method_ = boost::shared_ptr<OptimizationMethod>(new
+                    //    LevenbergMarquardt);
                     method_ = boost::shared_ptr<OptimizationMethod>(new
                         Simplex(0.01));
                 if (!endCriteria_) {
