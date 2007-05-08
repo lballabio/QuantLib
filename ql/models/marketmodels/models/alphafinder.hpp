@@ -37,7 +37,23 @@ public:
 						std::vector<Volatility>& ratetwovols
 						);
 
-
+	void solveWithMaxHomogeneity( Real alpha0,
+						Integer stepindex,
+						const std::vector<Volatility>& rateonevols,
+						const std::vector<Volatility>& ratetwohomogeneousvols,
+						const std::vector<Real>& correlations,
+						Real w0,
+						Real w1,
+						Real targetVariance,			
+    					Real tolerance,
+    					Real alphaMax,
+	 					Real alphaMin,
+						Integer steps,
+						Real& alpha,
+						Real& a,
+						Real& b,
+						std::vector<Volatility>& ratetwovols
+						);
 
 
 private:
@@ -52,8 +68,9 @@ private:
 
 	Real valueAtTurningPoint(Real alpha);
 	Real minusValueAtTurningPoint(Real alpha);
+	bool testIfSolutionExists(Real alpha);
 
-	void finalPart( Real alphaFound,
+	bool finalPart( Real alphaFound,
 						Integer stepindex,
 						const std::vector<Volatility>& ratetwohomogeneousvols,
 						Real quadraticPart,
@@ -64,6 +81,9 @@ private:
 						Real& b,
 						std::vector<Volatility>& ratetwovols);
 
+	
+	Real alphafinder::homogeneityfailure(Real alpha);
+
 
 	boost::shared_ptr<alphaform> parametricform_;
 
@@ -71,12 +91,15 @@ private:
 	Integer stepindex_;
 	std::vector<Volatility> rateonevols_;
 	std::vector<Volatility>	ratetwohomogeneousvols_;
+	std::vector<Volatility> putativevols_;
 	std::vector<Real> correlations_;
 	Real	 w0_;
 	Real	 w1_;
 	Real constantPart_;
 	Real linearPart_;
 	Real quadraticPart_;
+	Real totalVar_;
+	Real targetVariance_;
 
 
 };

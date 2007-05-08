@@ -188,9 +188,14 @@ bool calibrationOfAlphaFunctionData(
 
 		  Real w0 = invertedZedMatrix[i][i];
 		  Real w1 = invertedZedMatrix[i][i+1];
+		  // w0 adjustment
+		  for (Size k = i+2; k <invertedZedMatrix.columns(); ++k)
+			  w0+= invertedZedMatrix[i][k];
+
+
 		  Real targetVariance= capletVols[i]*capletVols[i]*rateTimes[i];
 
-		 solver.solve(alphaInitial[i+1] ,
+		 solver.solveWithMaxHomogeneity(alphaInitial[i+1] ,
 								i,
 								rateonevols,
 			                    ratetwovols,

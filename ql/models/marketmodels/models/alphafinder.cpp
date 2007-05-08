@@ -8,16 +8,16 @@
 
 namespace QuantLib
 {
-template<class T, double (T::*Value)(double) >
-double Bisection(double target, 
-                 double low, 
-                 double high,
-                 double tolerance,
+template<class T, Real (T::*Value)(Real) >
+Real Bisection(Real target, 
+                 Real low, 
+                 Real high,
+                 Real tolerance,
                  T& theObject) 
 {
 
-    double x=0.5*(low+high);
-    double y=(theObject.*Value)(x);
+    Real x=0.5*(low+high);
+    Real y=(theObject.*Value)(x);
     
     do
     {
@@ -36,6 +36,107 @@ double Bisection(double target,
     while 
         ( (fabs(y-target) > tolerance) );
 
+    return x;
+}
+
+
+template<class T, bool (T::*Value)(Real) >
+Real FindHighestOK(
+                 Real low, 
+                 Real high,
+                 Real tolerance,
+                 T& theObject) 
+{
+
+    Real x=0.5*(low+high);
+    bool ok=(theObject.*Value)(x);
+    
+    do
+    {
+       
+        if (ok)
+            low = x;
+		else
+			high = x;
+
+        x = 0.5*(low+high);
+
+        ok = (theObject.*Value)(x);
+    
+    }
+    while 
+        ( (fabs(high-low) > tolerance) );
+
+    return x;
+}
+
+template<class T, bool (T::*Value)(Real) >
+Real FindLowestOK(
+                 Real low, 
+                 Real high,
+                 Real tolerance,
+                 T& theObject) 
+{
+
+    Real x=0.5*(low+high);
+    bool ok=(theObject.*Value)(x);
+    
+    do
+    {
+       
+        if (ok)
+            high = x;
+		else
+			low = x;
+
+        x = 0.5*(low+high);
+
+        ok = (theObject.*Value)(x);
+    
+    }
+    while 
+        ( (fabs(high-low) > tolerance) );
+
+    return x;
+}
+template<class T, Real (T::*Value)(Real),  bool (T::*Condition)(Real) >
+Real Minimize(
+                 Real low, 
+                 Real high,
+                 Real tolerance,
+                 T& theObject,
+				 bool& failed) 
+{
+	Real leftValue = (theObject.*Value)(low);
+	Real rightValue = (theObject.*Value)(high);		
+	failed = true;
+	Real x=0.5*(low+high);;
+
+	while(high - low > tolerance)
+	{
+		    x=0.5*(low+high);
+			bool conditioner = (theObject.*Condition)(x);
+			if (!conditioner) // we have left the domain
+			{// panic
+					return low;
+			}
+			else
+			{
+					Real newValue =  (theObject.*Value)(x);
+
+					if (leftValue < rightValue)
+					{
+						high=x;
+						rightValue =newValue;
+					}
+					else
+					{
+						low=x;
+						leftValue = newValue;
+					}
+			}
+	}
+	failed = false;
     return x;
 }
 
@@ -138,7 +239,32 @@ alphafinder::alphafinder(boost::shared_ptr<alphaform> parametricform)
 		return var;
 	}
 
-void alphafinder::finalPart( Real alphaFound,
+Real alphafinder::homogeneityfailure(Real alpha)
+{
+	Real dum1, dum2, dum3;
+	finalPart(alpha,
+					stepindex_,
+					ratetwohomogeneousvols_,
+					computeQuadraticPart(alpha), 
+					computeLinearPart(alpha),
+					constantPart_,
+					dum1,
+					dum2,
+					dum3,
+					putativevols_);
+
+	Real result=0.0;
+	for (Size i=0; i <=static_cast<Size>(stepindex_)+1; ++i)
+	{
+		Real val =  putativevols_[i]-ratetwohomogeneousvols_[i];
+		result +=val*val;
+	}
+
+	return result;
+
+}
+
+bool alphafinder::finalPart( Real alphaFound,
 						Integer stepindex,
 						const std::vector<Volatility>& ratetwohomogeneousvols,
 						Real quadraticPart,
@@ -150,7 +276,7 @@ void alphafinder::finalPart( Real alphaFound,
 						std::vector<Volatility>& ratetwovols)
 {
 		    alpha = alphaFound;
-			quadratic q2(quadraticPart, linearPart, constantPart );
+			quadratic q2(quadraticPart, linearPart, constantPart-targetVariance_ );
 			parametricform_->setAlpha(alpha);
 			Real y; // dummy
 			q2.roots(a,y);
@@ -159,17 +285,17 @@ void alphafinder::finalPart( Real alphaFound,
 			Real varSoFar=0.0;
 			for (Integer i =0; i < stepindex+1; ++i)
 			{
-				totalVar += ratetwohomogeneousvols[i] * ratetwohomogeneousvols[i];
 				ratetwovols[i] =  ratetwohomogeneousvols[i] * (*parametricform_)(i)*a;
 				varSoFar += ratetwovols[i]* ratetwovols[i];
 			}
-			totalVar += ratetwohomogeneousvols[stepindex+1] * ratetwohomogeneousvols[stepindex+1];
-
-			Real VarToFind = totalVar-varSoFar;
+	
+			Real VarToFind = totalVar_-varSoFar;
+			if (VarToFind < 0)
+				return false;
 			Real requiredSd = sqrt(VarToFind);
 			b = requiredSd / (ratetwohomogeneousvols[stepindex+1] * (*parametricform_)(stepindex));
 			ratetwovols[stepindex+1] = requiredSd;
-			return;
+			return true;
 		
 }
 Real alphafinder::valueAtTurningPoint(Real alpha)
@@ -190,7 +316,28 @@ Real alphafinder::valueAtTurningPoint(Real alpha)
 
 Real alphafinder::minusValueAtTurningPoint(Real alpha)
 {
-	return - valueAtTurningPoint(alpha);
+	return -valueAtTurningPoint(alpha);
+}
+
+bool alphafinder::testIfSolutionExists(Real alpha)
+{
+	bool aExists =  valueAtTurningPoint(alpha)<targetVariance_;
+	if (!aExists)
+		return false;
+
+	Real dum1, dum2, dum3;
+	return finalPart(alpha,
+					stepindex_,
+					ratetwohomogeneousvols_,
+					computeQuadraticPart(alpha), 
+					computeLinearPart(alpha),
+					constantPart_,
+					dum1,
+					dum2,
+					dum3,
+					putativevols_);
+
+
 }
 	
 void alphafinder::solve( Real alpha0,
@@ -217,6 +364,10 @@ void alphafinder::solve( Real alpha0,
 	correlations_=correlations;
 	w0_=w0;
 	w1_=w1;
+	totalVar_=0;
+	for (Size i=0; i <=static_cast<Size>(stepindex)+1; ++i)
+		totalVar_+=ratetwohomogeneousvols[i]*ratetwohomogeneousvols[i];
+	targetVariance_ = targetVariance;
 
 		// constant part will not depend on alpha
 
@@ -236,7 +387,7 @@ void alphafinder::solve( Real alpha0,
 			ratetwohomogeneousvols,
 			quadraticPart_,
 			linearPart_,
-			constantPart_-targetVariance,
+			constantPart_,
 			alpha,
 			a,
 			b,
@@ -304,17 +455,132 @@ void alphafinder::solve( Real alpha0,
 
 
 	finalPart(  alpha,
-			stepindex,
-			ratetwohomogeneousvols,
-			quadraticPart_,
-			linearPart_,
-			constantPart_-targetVariance,
-			alpha,
-			a,
-			b,
-			ratetwovols);
+				stepindex,
+				ratetwohomogeneousvols,
+				quadraticPart_,
+				linearPart_,
+				constantPart_,
+				alpha,
+				a,
+				b,
+				ratetwovols);
+
+	return;
+
+	}
+
+
+
+
+void alphafinder::solveWithMaxHomogeneity( Real alpha0,
+		Integer stepindex, // index of caplet we are trying to find
+		const std::vector<Volatility>& rateonevols,
+		const std::vector<Volatility>& ratetwohomogeneousvols,
+		const std::vector<Real>& correlations,
+		Real w0,
+		Real w1,
+		Real targetVariance,
+    	Real tolerance,
+    	Real alphaMax,
+	 	Real alphaMin,
+		Integer steps,
+		Real& alpha,
+		Real& a,
+		Real& b,
+		std::vector<Volatility>& ratetwovols
+		)
+{
+	stepindex_=stepindex;
+	rateonevols_=rateonevols;
+	ratetwohomogeneousvols_=ratetwohomogeneousvols;
+	putativevols_.resize(ratetwohomogeneousvols_.size());
+	correlations_=correlations;
+	w0_=w0;
+	w1_=w1;
+	totalVar_=0;
+	for (Size i=0; i <=static_cast<Size>(stepindex)+1; ++i)
+		totalVar_+=ratetwohomogeneousvols[i]*ratetwohomogeneousvols[i];
+	targetVariance_=targetVariance;
+
+
+		// constant part will not depend on alpha
+
+	constantPart_ =0.0;
+	for (Integer i=0; i < stepindex+1; ++i)
+			constantPart_+=rateonevols[i]*rateonevols[i];
+
+	constantPart_ *= w0*w0;
+
+	Real alpha1 = alphaMin;
+	Real alpha2 = alphaMax;
+
+		// compute linear part with initial alpha
+	bool alpha0OK = testIfSolutionExists(alpha0);
+	bool alphaMaxOK = testIfSolutionExists(alphaMax);
+	bool alphaMinOK = testIfSolutionExists(alphaMin);
+
+	if (!alphaMinOK) // lower alpha is bad
+	{
+		if (alpha0OK) // must die somewhere in between
+		{
+			alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                 alphaMin, 
+                 alpha0,
+                 tolerance,
+                 *this); 
+		}
+		else
+		if (alphaMaxOK)
+		{
+			alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                 alpha0, 
+                 alphaMax,
+                 tolerance,
+                 *this); 
+		}
+		else
+			throw("no solution anywhere");
+
+		}
+	
+
+	if (!alphaMaxOK) // higher alpha is bad
+	{	
+			alpha2 = FindHighestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                 alpha1, 
+                 alphaMax,
+                 tolerance,
+                 *this); 
+	}
+	else
+		alpha2= alphaMax;
+
+
+	// suppose have found alpha1, alpha2 such that solution exists at endpoints
+	// we now want to minimize within that interval 
+
+	bool failed;
+	alpha =  Minimize<alphafinder, &alphafinder::homogeneityfailure, &alphafinder::testIfSolutionExists>(
+									alpha1, 
+									alpha2,
+									tolerance,
+									*this, 
+									failed) ;
+
+	finalPart(  alpha,
+		stepindex,
+		ratetwohomogeneousvols,
+		computeQuadraticPart(alpha),
+		computeLinearPart(alpha),
+		constantPart_,
+		alpha,
+		a,
+		b,
+		ratetwovols);
 
 	return;
 
 	}
 }
+
+
