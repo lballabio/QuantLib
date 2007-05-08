@@ -73,8 +73,8 @@ namespace QuantLib {
         Rate callStrike() const;
         Rate putStrike() const;
         Rate cashRate() const;
-        bool hasPut() const { return (hasPutStrike_ && !hasCallStrike_); }
-        bool hasCall() const {return (hasCallStrike_ && !hasPutStrike_); }
+        bool hasPut() const { return hasPutStrike_; }
+        bool hasCall() const {return hasCallStrike_; }
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
         bool isPutAdded() const { return (putCsi_==1.); }
         bool isCallAdded() const { return (callCsi_==1.); }
