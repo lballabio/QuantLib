@@ -70,8 +70,8 @@ void DigitalCouponTest::testAssetOrNothing() {
     Volatility vols[] = { 0.05, 0.15, 0.30 };
     Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    Real gearing = 1.0;
-    Real spread = 0.0;
+    Real gearing = 0.8;
+    Real spread = 0.005;
 
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVolatility = vols[i];
@@ -136,7 +136,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                 Real decompositionPrice = underlyingPrice - optionPrice;
                 Real digitalPrice = digitalCappedCoupon.price(termStructure_);
                 Real error = std::fabs(decompositionPrice - digitalPrice);
-                Real tolerance = 1e-11;
+                Real tolerance = 1e-10;
                 if (error>tolerance) {
                     BOOST_ERROR("\nFloating Coupon - Digital Call Option:" << 
                                 "\nVolatility = " << io::rate(capletVolatility) <<
@@ -155,12 +155,13 @@ void DigitalCouponTest::testAssetOrNothing() {
                                                              (strike-spread)/gearing));
                 Real ITM = blackFormulaCashItmProbability(Option::Call,
                                                          (strike-spread)/gearing,
-                                                          forward, stdDeviation);
+                                                         (forward-spread)/gearing,
+                                                          stdDeviation);
                 Real nd2Price = ITM * nominal_ * accrualPeriod * discount * forward;
                 optionPrice = digitalCappedCoupon.optionRate() *
                               nominal_ * accrualPeriod * discount;
                 error = std::abs(nd2Price - optionPrice);
-                Real optionTolerance = 1e-04;
+                Real optionTolerance = 1e-03;
                 if (error>optionTolerance) {
                     BOOST_ERROR("\nDigital Call Option:" << 
                                 "\nVolatility = " << io::rate(capletVolatility) <<
@@ -222,12 +223,13 @@ void DigitalCouponTest::testAssetOrNothing() {
                 // Check digital option price vs N(d2) price
                 ITM = blackFormulaCashItmProbability(Option::Put,
                                                     (strike-spread)/gearing,
-                                                     forward, stdDeviation);
+                                                    (forward-spread)/gearing,
+                                                     stdDeviation);
                 nd2Price = ITM * nominal_ * accrualPeriod * discount * forward;
                 optionPrice = digitalFlooredCoupon.optionRate() *
                               nominal_ * accrualPeriod * discount;
                 error = std::abs(nd2Price - optionPrice);
-                optionTolerance = 1.e-04;
+                optionTolerance = 1.e-03;
                 if (error>optionTolerance) {
                     BOOST_ERROR("\nDigital Put Option:" << 
                                 "\nVolatility = " << io::rate(capletVolatility) <<
@@ -702,8 +704,8 @@ void DigitalCouponTest::testCashOrNothing() {
     Volatility vols[] = { 0.05, 0.15, 0.30 };
     Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    Real gearing = 1.0;
-    Real spread = 0.0;
+    Real gearing = 3.0;
+    Real spread = -0.0002;
 
     for (Size i = 0; i< LENGTH(vols); i++) {
             Volatility capletVolatility = vols[i];
@@ -766,7 +768,6 @@ void DigitalCouponTest::testCashOrNothing() {
                                                cappedIborCoupon_d.rate() )
                                             / (2.0*gap) *
                                    nominal_ *  accrualPeriod *  discount;
-
                 Real decompositionPrice = underlying->price(termStructure_) -
                                           optionPrice;
                 Real digitalPrice = digitalCappedCoupon.price(termStructure_);
@@ -790,7 +791,8 @@ void DigitalCouponTest::testCashOrNothing() {
                                                              (strike-spread)/gearing));
                 Real ITM = blackFormulaCashItmProbability(Option::Call,
                                                          (strike-spread)/gearing,
-                                                          forward, stdDeviation);
+                                                         (forward-spread)/gearing,
+                                                          stdDeviation);
                 Real nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
                 optionPrice = digitalCappedCoupon.optionRate() *
                               nominal_ * accrualPeriod * discount;
@@ -856,12 +858,13 @@ void DigitalCouponTest::testCashOrNothing() {
 
                 // Check digital option price vs N(d2) price
                 ITM = blackFormulaCashItmProbability(Option::Put,
-                                                    (strike-spread)/gearing,
-                                                     forward, stdDeviation);
+                                                     (strike-spread)/gearing,
+                                                     (forward-spread)/gearing,
+                                                      stdDeviation);
                 nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
                 optionPrice = digitalFlooredCoupon.optionRate() *
-                                         nominal_ * accrualPeriod * discount;
-                error = std::abs(nd2Price- optionPrice);
+                              nominal_ * accrualPeriod * discount;
+                error = std::abs(nd2Price - optionPrice);
                 if (error>optionTolerance) {
                     BOOST_ERROR("\nPut Digital Option:" <<
                                 "\nVolatility = " << io::rate(capletVolatility) <<

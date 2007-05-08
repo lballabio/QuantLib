@@ -113,10 +113,6 @@ namespace QuantLib {
         Rate callStrike_;
         //! the strike rate for the the put option
         Rate putStrike_;
-        //! the effective strike rate for the the call option
-        Rate effectiveCallStrike_;
-        //! the effective strike rate for the the put option
-        Rate effectivePutStrike_;
         //! the rate paid if the cash-or-nothing option is in-the-money
         Rate cashRate_;
         //! the multiplicative factor of call payoff

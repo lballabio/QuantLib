@@ -45,9 +45,6 @@ namespace QuantLib {
       underlying_(underlying), callCsi_(Rate(0.)), putCsi_(Rate(0.)),
       hasCallStrike_(false), hasPutStrike_(false),
       eps_(eps), isCashOrNothing_(false) {
-
-        QL_REQUIRE(gearing()==1.0 && (spread()==Null<Rate>() || spread()==0.),
-                   "Gearing must be equal to 1 and spread must be null. Temporary requirement");    
         
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
@@ -66,15 +63,13 @@ namespace QuantLib {
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;
-            effectiveCallStrike_ = (callStrike - spread())/gearing();
-            QL_REQUIRE(effectiveCallStrike_>=eps_, "call strike < eps");
+            QL_REQUIRE(callStrike_>=eps_, "call strike < eps");
             callCsi_ = isCallOptionAdded ? 1.0 : -1.0;
         }
         if (putStrike != Null<Rate>()){
             QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
             hasPutStrike_ = true;
             putStrike_ = putStrike;
-            effectivePutStrike_ = (putStrike - spread())/gearing();
             putCsi_ = isPutOptionAdded ? 1.0 : -1.0;
         }
         if (cashRate != Null<Rate>()){
@@ -90,8 +85,8 @@ namespace QuantLib {
 
         // Call digital option
         if(hasCallStrike_) {
-            CappedFlooredCoupon next(underlying_, effectiveCallStrike_ + eps_);
-            CappedFlooredCoupon previous(underlying_, effectiveCallStrike_ - eps_);
+            CappedFlooredCoupon next(underlying_, callStrike_ + eps_);
+            CappedFlooredCoupon previous(underlying_, callStrike_ - eps_);
             callOptionRate *= (next.rate() - previous.rate()) / (2.*eps_);
         }
 
@@ -103,8 +98,8 @@ namespace QuantLib {
             if(putStrike_ < eps_){
                 putOptionRate = cashRate_;
             } else {
-                CappedFlooredCoupon next(underlying_, effectivePutStrike_ + eps_);
-                CappedFlooredCoupon previous(underlying_, effectivePutStrike_ - eps_);
+                CappedFlooredCoupon next(underlying_, putStrike_ + eps_);
+                CappedFlooredCoupon previous(underlying_, putStrike_ - eps_);
                 if(isCashOrNothing_){
                     putOptionRate = cashRate_ *
                                    (next.rate() - previous.rate()) / (2.*eps_);
