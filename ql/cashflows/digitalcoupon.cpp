@@ -90,11 +90,9 @@ namespace QuantLib {
 
         // Call digital option
         if(hasCallStrike_) {
-            boost::shared_ptr<CappedFlooredCoupon> next(
-                new CappedFlooredCoupon(underlying_, effectiveCallStrike_ + eps_));
-            boost::shared_ptr<CappedFlooredCoupon> previous(
-                new CappedFlooredCoupon(underlying_, effectiveCallStrike_ - eps_));
-            callOptionRate *= (next->rate() - previous->rate()) / (2.*eps_);
+            CappedFlooredCoupon next(underlying_, effectiveCallStrike_ + eps_);
+            CappedFlooredCoupon previous(underlying_, effectiveCallStrike_ - eps_);
+            callOptionRate *= (next.rate() - previous.rate()) / (2.*eps_);
         }
 
         /* Put digital option: 
@@ -105,17 +103,15 @@ namespace QuantLib {
             if(putStrike_ < eps_){
                 putOptionRate = cashRate_;
             } else {
-                boost::shared_ptr<CappedFlooredCoupon> next(
-                    new CappedFlooredCoupon(underlying_, effectivePutStrike_ + eps_));
-                boost::shared_ptr<CappedFlooredCoupon> previous(
-                    new CappedFlooredCoupon(underlying_, effectivePutStrike_ - eps_));
+                CappedFlooredCoupon next(underlying_, effectivePutStrike_ + eps_);
+                CappedFlooredCoupon previous(underlying_, effectivePutStrike_ - eps_);
                 if(isCashOrNothing_){
                     putOptionRate = cashRate_ *
-                                   (next->rate() - previous->rate()) / (2.*eps_);
+                                   (next.rate() - previous.rate()) / (2.*eps_);
                 } else {
                     // if asset-or-nothing
                     putOptionRate = underlying_->rate() *
-                                    (next->rate() - previous->rate()) / (2.*eps_);
+                                    (next.rate() - previous.rate()) / (2.*eps_);
                 }
             }
         }
