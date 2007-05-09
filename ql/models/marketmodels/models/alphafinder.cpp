@@ -340,7 +340,7 @@ bool alphafinder::testIfSolutionExists(Real alpha)
 
 }
 	
-void alphafinder::solve( Real alpha0,
+bool alphafinder::solve( Real alpha0,
 		Integer stepindex, // index of caplet we are trying to find
 		const std::vector<Volatility>& rateonevols,
 		const std::vector<Volatility>& ratetwohomogeneousvols,
@@ -392,7 +392,7 @@ void alphafinder::solve( Real alpha0,
 			a,
 			b,
 			ratetwovols);
-		return;
+		return true;
 	}
 
 	// we now have to solve
@@ -434,7 +434,7 @@ void alphafinder::solve( Real alpha0,
 	}
 
 	if (bottomValue > targetVariance && topValue > targetVariance)
-		throw("method failed");
+		return false;
 
 	if (bottomValue <= targetVariance) // then find root of increasing function (or as if increasing function)
 	{
@@ -465,14 +465,14 @@ void alphafinder::solve( Real alpha0,
 				b,
 				ratetwovols);
 
-	return;
+	return true;
 
 	}
 
 
 
 
-void alphafinder::solveWithMaxHomogeneity( Real alpha0,
+bool alphafinder::solveWithMaxHomogeneity( Real alpha0,
 		Integer stepindex, // index of caplet we are trying to find
 		const std::vector<Volatility>& rateonevols,
 		const std::vector<Volatility>& ratetwohomogeneousvols,
@@ -502,7 +502,6 @@ void alphafinder::solveWithMaxHomogeneity( Real alpha0,
 		totalVar_+=ratetwohomogeneousvols[i]*ratetwohomogeneousvols[i];
 	targetVariance_=targetVariance;
 
-
 		// constant part will not depend on alpha
 
 	constantPart_ =0.0;
@@ -519,44 +518,84 @@ void alphafinder::solveWithMaxHomogeneity( Real alpha0,
 	bool alphaMaxOK = testIfSolutionExists(alphaMax);
 	bool alphaMinOK = testIfSolutionExists(alphaMin);
 
-	if (!alphaMinOK) // lower alpha is bad
-	{
-		if (alpha0OK) // must die somewhere in between
-		{
-			alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
-                 alphaMin, 
-                 alpha0,
-                 tolerance,
-                 *this); 
-		}
-		else
-		if (alphaMaxOK)
-		{
-			alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
-                 alpha0, 
-                 alphaMax,
-                 tolerance,
-                 *this); 
-		}
-		else
-			throw("no solution anywhere");
+	bool foundOKPoint = alpha0OK || alphaMaxOK || alphaMinOK;
 
+	if (foundOKPoint)
+	{
+		if (!alphaMinOK) // lower alpha is bad
+		{
+			if (alpha0OK) // must die somewhere in between
+			{
+				alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+					 alphaMin, 
+					 alpha0,
+					 tolerance,
+					*this); 
+			}
+			else
+			{ // alphaMaxOK must be true to get here
+				alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+			         alpha0, 
+				     alphaMax,
+					 tolerance,
+					*this); 
+			}
 		}
 	
 
-	if (!alphaMaxOK) // higher alpha is bad
-	{	
+		if (!alphaMaxOK) // higher alpha is bad
+		{	
 			alpha2 = FindHighestOK<alphafinder, &alphafinder::testIfSolutionExists>(
                  alpha1, 
                  alphaMax,
                  tolerance,
                  *this); 
+		}
+		else
+			alpha2= alphaMax;
 	}
-	else
-		alpha2= alphaMax;
+	else // ok let's see if we can find a value of alpha that works
+	{
+		bool foundUpOK = false;
+		bool foundDownOK = false;
+		Real alphaUp,alphaDown;
+		Real stepSize = (alphaMax-alpha0)/steps;
+	
+		for (Size j=0; j < static_cast<Size>(steps) && !foundUpOK && !foundDownOK; ++j)
+		{
+				alphaUp = alpha0+j*stepSize;
+				foundUpOK=testIfSolutionExists(alphaUp);
+				alphaDown = alpha0-j*stepSize;
+				foundDownOK=testIfSolutionExists(alphaDown);
+				
+		}
+		foundOKPoint = foundUpOK || foundDownOK;
+		if (!foundOKPoint)
+			return false;
+
+		if (foundUpOK)
+		{
+			alpha1 = alphaUp;
+			alpha2 = FindHighestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                 alpha1, 
+                 alphaMax,
+                 tolerance,
+                 *this); 
+
+		}
+		else 
+		{
+				alpha2 = alphaDown;
+				alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+													         alphaMin, 
+															 alpha2,
+															 tolerance,
+															*this); 
+		}
+	}
 
 
-	// suppose have found alpha1, alpha2 such that solution exists at endpoints
+	//we   have now found alpha1, alpha2 such that solution exists at endpoints
 	// we now want to minimize within that interval 
 
 	bool failed;
@@ -578,7 +617,7 @@ void alphafinder::solveWithMaxHomogeneity( Real alpha0,
 		b,
 		ratetwovols);
 
-	return;
+	return true;;
 
 	}
 }

@@ -19,7 +19,7 @@ class alphafinder
 public:
 	alphafinder(boost::shared_ptr<alphaform> parametricform);
 
-	void solve( Real alpha0,
+	bool solve( Real alpha0,
 						Integer stepindex,
 						const std::vector<Volatility>& rateonevols,
 						const std::vector<Volatility>& ratetwohomogeneousvols,
@@ -37,7 +37,7 @@ public:
 						std::vector<Volatility>& ratetwovols
 						);
 
-	void solveWithMaxHomogeneity( Real alpha0,
+	bool solveWithMaxHomogeneity( Real alpha0,
 						Integer stepindex,
 						const std::vector<Volatility>& rateonevols,
 						const std::vector<Volatility>& ratetwohomogeneousvols,
