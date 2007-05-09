@@ -71,7 +71,7 @@ namespace QuantLib {
             Date invalidDate, refDate=Settings::instance().evaluationDate();
             Real invalidValue;
             while (dBegin != dEnd) {
-                if (isValidFixingDate(*dBegin) && *dBegin>=refDate)
+                if (isValidFixingDate(*dBegin) && *dBegin<=refDate)
                     h[*(dBegin++)] = *(vBegin++);
                 else {
                     allValidFixings = false;
