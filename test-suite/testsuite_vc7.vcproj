@@ -2050,6 +2050,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\rangeaccrual.cpp">
+			</File>
+			<File
 				RelativePath="riskstats.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2694,6 +2697,9 @@
 			</File>
 			<File
 				RelativePath="quotes.hpp">
+			</File>
+			<File
+				RelativePath=".\rangeaccrual.hpp">
 			</File>
 			<File
 				RelativePath="riskstats.hpp">
