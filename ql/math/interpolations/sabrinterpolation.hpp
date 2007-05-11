@@ -298,7 +298,7 @@ namespace QuantLib {
                 // if no optimization method or endCriteria is provided, we provide one
                 if (!method_)
                     //method_ = boost::shared_ptr<OptimizationMethod>(new
-                    //    LevenbergMarquardt);
+                    //    LevenbergMarquardt(1e-8, 1e-8, 1e-8));
                     method_ = boost::shared_ptr<OptimizationMethod>(new
                         Simplex(0.01));
                 if (!endCriteria_) {
