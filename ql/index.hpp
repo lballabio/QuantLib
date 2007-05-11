@@ -27,6 +27,7 @@
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
+#include <ql/settings.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/indexes/indexmanager.hpp>
 

@@ -333,6 +333,7 @@ AC_CONFIG_FILES([
     ql/indexes/ibor/Makefile
     ql/indexes/swap/Makefile
     ql/instruments/Makefile
+    ql/instruments/bonds/Makefile
     ql/legacy/Makefile
     ql/legacy/pricers/Makefile
     ql/legacy/libormarketmodels/Makefile
