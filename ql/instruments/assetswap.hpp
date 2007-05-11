@@ -28,11 +28,12 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/bond.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/interestrate.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
+
+    class IborIndex;
 
     /*! for mechanics of Par Asset Swap and Market Asset Swap refer to
         "Introduction to Asset Swap", Lehman Brothers European Fixed

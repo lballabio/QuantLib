@@ -7176,10 +7176,10 @@
 			RelativePath=".\ql\auto_link.hpp">
 		</File>
 		<File
-			RelativePath="ql\capvolstructures.hpp">
+			RelativePath=".\ql\capvolstructures.hpp">
 		</File>
 		<File
-			RelativePath="ql\cashflow.hpp">
+			RelativePath=".\ql\cashflow.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\config.ansi.hpp">
@@ -7191,7 +7191,7 @@
 			RelativePath=".\ql\config.mingw.hpp">
 		</File>
 		<File
-			RelativePath="ql\config.msvc.hpp">
+			RelativePath=".\ql\config.msvc.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\config.mwcw.hpp">
@@ -7200,133 +7200,22 @@
 			RelativePath=".\ql\currency.cpp">
 		</File>
 		<File
-			RelativePath="ql\currency.hpp">
+			RelativePath=".\ql\currency.hpp">
 		</File>
 		<File
-			RelativePath="ql\discretizedasset.cpp">
-			<FileConfiguration
-				Name="Debug CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
+			RelativePath=".\ql\daycounter.hpp">
 		</File>
 		<File
-			RelativePath="ql\discretizedasset.hpp">
+			RelativePath=".\ql\discretizedasset.cpp">
 		</File>
 		<File
-			RelativePath="ql\errors.cpp">
-			<FileConfiguration
-				Name="Debug CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
+			RelativePath=".\ql\discretizedasset.hpp">
 		</File>
 		<File
-			RelativePath="ql\errors.hpp">
+			RelativePath=".\ql\errors.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\errors.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\event.hpp">
@@ -7338,70 +7227,13 @@
 			RelativePath=".\ql\exchangerate.hpp">
 		</File>
 		<File
-			RelativePath="ql\exercise.cpp">
-			<FileConfiguration
-				Name="Debug CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
+			RelativePath=".\ql\exercise.cpp">
 		</File>
 		<File
-			RelativePath="ql\exercise.hpp">
+			RelativePath=".\ql\exercise.hpp">
 		</File>
 		<File
-			RelativePath="ql\grid.hpp">
+			RelativePath=".\ql\grid.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\handle.hpp">
@@ -7410,10 +7242,10 @@
 			RelativePath=".\ql\index.cpp">
 		</File>
 		<File
-			RelativePath="ql\index.hpp">
+			RelativePath=".\ql\index.hpp">
 		</File>
 		<File
-			RelativePath="ql\instrument.hpp">
+			RelativePath=".\ql\instrument.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\interestrate.cpp">
@@ -7428,13 +7260,13 @@
 			RelativePath=".\ql\money.hpp">
 		</File>
 		<File
-			RelativePath="ql\numericalmethod.hpp">
+			RelativePath=".\ql\numericalmethod.hpp">
 		</File>
 		<File
-			RelativePath="ql\option.hpp">
+			RelativePath=".\ql\option.hpp">
 		</File>
 		<File
-			RelativePath="ql\payoff.hpp">
+			RelativePath=".\ql\payoff.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\position.hpp">
@@ -7446,13 +7278,13 @@
 			RelativePath=".\ql\prices.hpp">
 		</File>
 		<File
-			RelativePath="ql\pricingengine.hpp">
+			RelativePath=".\ql\pricingengine.hpp">
 		</File>
 		<File
-			RelativePath="ql\qldefines.hpp">
+			RelativePath=".\ql\qldefines.hpp">
 		</File>
 		<File
-			RelativePath="ql\quantlib.hpp">
+			RelativePath=".\ql\quantlib.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\quote.hpp">
@@ -7461,22 +7293,19 @@
 			RelativePath=".\ql\settings.hpp">
 		</File>
 		<File
-			RelativePath="ql\solver1d.hpp">
-		</File>
-		<File
 			RelativePath=".\ql\stochasticprocess.cpp">
 		</File>
 		<File
-			RelativePath="ql\stochasticprocess.hpp">
+			RelativePath=".\ql\stochasticprocess.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\swaptionvolstructure.cpp">
 		</File>
 		<File
-			RelativePath="ql\swaptionvolstructure.hpp">
+			RelativePath=".\ql\swaptionvolstructure.hpp">
 		</File>
 		<File
-			RelativePath="ql\termstructure.hpp">
+			RelativePath=".\ql\termstructure.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\timegrid.cpp">
@@ -7488,76 +7317,19 @@
 			RelativePath=".\ql\timeseries.hpp">
 		</File>
 		<File
-			RelativePath="ql\types.hpp">
+			RelativePath=".\ql\types.hpp">
 		</File>
 		<File
-			RelativePath="ql\userconfig.hpp">
+			RelativePath=".\ql\userconfig.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\volatilitymodel.hpp">
 		</File>
 		<File
-			RelativePath="ql\voltermstructure.cpp">
-			<FileConfiguration
-				Name="Debug CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release CRTDLL|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="2"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug SingleThread|Win32">
-				<Tool
-					Name="VCCLCompilerTool"
-					Optimization="0"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					BasicRuntimeChecks="3"
-					BrowseInformation="1"/>
-			</FileConfiguration>
+			RelativePath=".\ql\voltermstructure.cpp">
 		</File>
 		<File
-			RelativePath="ql\voltermstructure.hpp">
+			RelativePath=".\ql\voltermstructure.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\yieldtermstructure.hpp">

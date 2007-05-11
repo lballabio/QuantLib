@@ -31,6 +31,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

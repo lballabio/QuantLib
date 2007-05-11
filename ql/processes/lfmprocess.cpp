@@ -25,6 +25,7 @@
 #include <ql/processes/lfmprocess.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
 
 namespace QuantLib {
 
@@ -50,8 +51,7 @@ namespace QuantLib {
 
         const Date settlement = index_->termStructure()->referenceDate();
         const Date startDate =
-            boost::dynamic_pointer_cast<IborCoupon>(
-                                                  flows[0])->fixingDate();
+            boost::dynamic_pointer_cast<IborCoupon>(flows[0])->fixingDate();
 
         for (Size i = 0; i < size_; ++i) {
             const boost::shared_ptr<IborCoupon> coupon =

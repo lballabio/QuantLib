@@ -22,6 +22,8 @@
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

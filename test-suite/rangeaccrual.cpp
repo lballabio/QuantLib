@@ -34,6 +34,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/time/schedule.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -26,6 +26,7 @@
 #include <ql/instruments/assetswap.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 

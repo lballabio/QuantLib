@@ -22,6 +22,8 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/settings.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

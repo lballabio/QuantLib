@@ -22,6 +22,8 @@
 #include <ql/instruments/cmsratebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/indexes/swapindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

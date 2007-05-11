@@ -25,6 +25,7 @@
 #include <ql/cashflows/coupon.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/time/schedule.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

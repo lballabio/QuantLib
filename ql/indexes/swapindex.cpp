@@ -18,6 +18,8 @@
 
 #include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 #include <sstream>
 
 namespace QuantLib {
@@ -37,6 +39,10 @@ namespace QuantLib {
       fixedLegTenor_(fixedLegTenor),
       fixedLegConvention_(fixedLegConvention) {
         registerWith(iborIndex_);
+    }
+
+    Handle<YieldTermStructure> SwapIndex::termStructure() const {
+        return iborIndex_->termStructure();
     }
 
     Rate SwapIndex::forecastFixing(const Date& fixingDate) const {

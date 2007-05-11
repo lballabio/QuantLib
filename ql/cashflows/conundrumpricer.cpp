@@ -32,6 +32,8 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/interestrateindex.hpp>
+#include <ql/time/schedule.hpp>
+
 #include <boost/bind.hpp>
 
 namespace QuantLib {

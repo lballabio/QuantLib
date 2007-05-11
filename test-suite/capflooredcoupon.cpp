@@ -29,6 +29,7 @@
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>

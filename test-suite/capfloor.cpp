@@ -32,6 +32,7 @@
 #include <ql/math/matrix.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>

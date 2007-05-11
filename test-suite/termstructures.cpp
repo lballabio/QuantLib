@@ -30,6 +30,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/currency.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;

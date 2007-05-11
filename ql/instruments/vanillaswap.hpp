@@ -27,11 +27,12 @@
 #define quantlib_vanilla_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/indexes/iborindex.hpp>
-#include <ql/time/schedule.hpp>
-
 
 namespace QuantLib {
+
+    class Schedule;
+    class IborIndex;
+    class DayCounter;
 
     //! Plain-vanilla swap
     /*! \ingroup instruments

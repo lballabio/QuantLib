@@ -23,6 +23,7 @@
 #include <ql/instruments/fixedratebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

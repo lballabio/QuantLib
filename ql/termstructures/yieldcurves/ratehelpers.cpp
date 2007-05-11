@@ -23,6 +23,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/currency.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 

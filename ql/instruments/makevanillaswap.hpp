@@ -27,6 +27,9 @@
 #define quantlib_makevanillaswap_hpp
 
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/time/businessdayconvention.hpp>
+#include <ql/time/calendar.hpp>
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 

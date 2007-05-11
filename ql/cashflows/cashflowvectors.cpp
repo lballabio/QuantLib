@@ -28,6 +28,8 @@
 #include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 

@@ -68,11 +68,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Handle<YieldTermStructure>
-    SwapIndex::termStructure() const {
-        return iborIndex_->termStructure();
-    }
-
     inline BusinessDayConvention SwapIndex::fixedLegConvention() const {
         return fixedLegConvention_;
     }

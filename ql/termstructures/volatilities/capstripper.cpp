@@ -26,6 +26,7 @@
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 

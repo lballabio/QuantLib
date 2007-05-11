@@ -23,6 +23,8 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/instruments/swap.hpp>
 
 namespace QuantLib {
 

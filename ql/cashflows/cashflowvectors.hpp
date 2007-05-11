@@ -30,12 +30,15 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cmscoupon.hpp>
-#include <ql/indexes/swapindex.hpp>
+#include <ql/time/businessdayconvention.hpp>
+#include <ql/daycounter.hpp>
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
+
+    class Schedule;
+    class SwapIndex;
+    class IborIndex;
 
     //! helper function building a sequence of fixed rate coupons
     Leg FixedRateLeg(const std::vector<Real>& nominals,
@@ -69,20 +72,26 @@ namespace QuantLib {
 
     //! helper function building a sequence of digital ibor rate coupons
     Leg DigitalIborLeg(const std::vector<Real>& nominals,
-                const Schedule& schedule,
-                const boost::shared_ptr<IborIndex>& index,
-                const DayCounter& paymentDayCounter = DayCounter(),
-                const BusinessDayConvention paymentConvention = Following,
-                Natural fixingDays = Null<Size>(),
-                const std::vector<Real>& gearings = std::vector<Real>(),
-                const std::vector<Spread>& spreads = std::vector<Spread>(),
-                bool isInArrears = false,
-                const std::vector<Rate>& callRates = std::vector<Rate>(),
-                const std::vector<Rate>& putRates = std::vector<Rate>(),
-                const std::vector<Rate>& cashRates = std::vector<Rate>(),
-                bool isCallOptionAdded = true,
-                bool isPutOptionAdded = true,
-                Real eps = 1e-4);
+                       const Schedule& schedule,
+                       const boost::shared_ptr<IborIndex>& index,
+                       const DayCounter& paymentDayCounter = DayCounter(),
+                       const BusinessDayConvention paymentConvention =
+                                                    Following,
+                       Natural fixingDays = Null<Size>(),
+                       const std::vector<Real>& gearings =
+                                                    std::vector<Real>(),
+                       const std::vector<Spread>& spreads =
+                                                    std::vector<Spread>(),
+                       bool isInArrears = false,
+                       const std::vector<Rate>& callRates =
+                                                    std::vector<Rate>(),
+                       const std::vector<Rate>& putRates =
+                                                    std::vector<Rate>(),
+                       const std::vector<Rate>& cashRates =
+                                                    std::vector<Rate>(),
+                       bool isCallOptionAdded = true,
+                       bool isPutOptionAdded = true,
+                       Real eps = 1e-4);
 
     //! helper function building a sequence of capped/floored cms rate coupons
     Leg CmsLeg(const std::vector<Real>& nominals,
@@ -99,20 +108,26 @@ namespace QuantLib {
 
     //! helper function building a sequence of digital cms rate coupons
     Leg DigitalCmsLeg(const std::vector<Real>& nominals,
-                const Schedule& schedule,
-                const boost::shared_ptr<SwapIndex>& index,
-                const DayCounter& paymentDayCounter = DayCounter(),
-                const BusinessDayConvention paymentConvention = Following,
-                Natural fixingDays = Null<Size>(),
-                const std::vector<Real>& gearings = std::vector<Real>(),
-                const std::vector<Spread>& spreads = std::vector<Spread>(),
-                bool isInArrears = false,
-                const std::vector<Rate>& callRates = std::vector<Rate>(),
-                const std::vector<Rate>& putRates = std::vector<Rate>(),
-                const std::vector<Rate>& cashRates = std::vector<Rate>(),
-                bool isCallOptionAdded = true,
-                bool isPutOptionAdded = true,
-                Real eps = 1e-4);
+                      const Schedule& schedule,
+                      const boost::shared_ptr<SwapIndex>& index,
+                      const DayCounter& paymentDayCounter = DayCounter(),
+                      const BusinessDayConvention paymentConvention =
+                                                    Following,
+                      Natural fixingDays = Null<Size>(),
+                      const std::vector<Real>& gearings =
+                                                    std::vector<Real>(),
+                      const std::vector<Spread>& spreads =
+                                                    std::vector<Spread>(),
+                      bool isInArrears = false,
+                      const std::vector<Rate>& callRates =
+                                                    std::vector<Rate>(),
+                      const std::vector<Rate>& putRates =
+                                                    std::vector<Rate>(),
+                      const std::vector<Rate>& cashRates =
+                                                    std::vector<Rate>(),
+                      bool isCallOptionAdded = true,
+                      bool isPutOptionAdded = true,
+                      Real eps = 1e-4);
     
     //! helper function building a sequence of capped/floored cms zero rate coupons
     Leg CmsZeroLeg(const std::vector<Real>& nominals,
@@ -128,18 +143,22 @@ namespace QuantLib {
         
     //! helper function building a sequence of range accrual floaters coupons
     Leg RangeAccrualLeg(const std::vector<Real>& nominals,
-                       const Schedule& schedule,
-                       const boost::shared_ptr<IborIndex>& index,
-                       const DayCounter& paymentDayCounter = DayCounter(),
-                       BusinessDayConvention paymentConvention = Following,
-                       Natural fixingDays = Null<Natural>(),
-                       const std::vector<Real>& gearings = std::vector<Real>(),
-                       const std::vector<Spread>& spreads =std::vector<Spread>(),
-                       const std::vector<Rate>& lowerTriggers = std::vector<Rate>(),
-                       const std::vector<Rate>& upperTriggers = std::vector<Rate>(),
-                       const Period& observationTenor = 1*Days,
-                       BusinessDayConvention observationConvention = ModifiedFollowing);
-
+                        const Schedule& schedule,
+                        const boost::shared_ptr<IborIndex>& index,
+                        const DayCounter& paymentDayCounter = DayCounter(),
+                        BusinessDayConvention paymentConvention = Following,
+                        Natural fixingDays = Null<Natural>(),
+                        const std::vector<Real>& gearings =
+                                                    std::vector<Real>(),
+                        const std::vector<Spread>& spreads =
+                                                    std::vector<Spread>(),
+                        const std::vector<Rate>& lowerTriggers =
+                                                    std::vector<Rate>(),
+                        const std::vector<Rate>& upperTriggers =
+                                                    std::vector<Rate>(),
+                        const Period& observationTenor = 1*Days,
+                        BusinessDayConvention observationConvention =
+                                                    ModifiedFollowing);
 }
 
 #endif

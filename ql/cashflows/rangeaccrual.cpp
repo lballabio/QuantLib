@@ -22,6 +22,9 @@
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/indexes/interestrateindex.hpp>
+
 #include <cmath>
 #include <iostream>
 #include <iomanip>

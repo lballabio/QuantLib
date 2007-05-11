@@ -21,6 +21,9 @@
 #include <ql/instruments/floatingratebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/time/schedule.hpp>
+#include <ql/indexes/swapindex.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 

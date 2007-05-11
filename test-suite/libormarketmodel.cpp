@@ -46,6 +46,7 @@
 #include <ql/legacy/libormarketmodels/liborforwardmodel.hpp>
 
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/schedule.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

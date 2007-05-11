@@ -29,6 +29,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

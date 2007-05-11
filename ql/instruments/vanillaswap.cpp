@@ -25,6 +25,8 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
