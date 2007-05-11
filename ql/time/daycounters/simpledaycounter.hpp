@@ -24,7 +24,7 @@
 #ifndef quantlib_simple_day_counter_hpp
 #define quantlib_simple_day_counter_hpp
 
-#include <ql/daycounter.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 

@@ -26,9 +26,10 @@
 #define quantlib_coupon_hpp
 
 #include <ql/cashflow.hpp>
-#include <ql/daycounter.hpp>
 
 namespace QuantLib {
+
+    class DayCounter;
 
     //! %coupon accruing over a fixed period
     /*! This class implements part of the CashFlow interface but it is
@@ -85,21 +86,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Coupon::Coupon(Real nominal,
-                          const Date& paymentDate,
-                          const Date& accrualStartDate,
-                          const Date& accrualEndDate,
-                          const Date& refPeriodStart,
-                          const Date& refPeriodEnd)
-    : nominal_(nominal), paymentDate_(paymentDate),
-      accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
-      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {
-        if (refPeriodStart_ == Date())
-            refPeriodStart_ = accrualStartDate_;
-        if (refPeriodEnd_ == Date())
-            refPeriodEnd_ = accrualEndDate_;
-    }
-
     inline Date Coupon::date() const {
         return paymentDate_;
     }
@@ -122,26 +108,6 @@ namespace QuantLib {
 
     inline const Date& Coupon::referencePeriodEnd() const {
         return refPeriodEnd_;
-    }
-
-    inline Time Coupon::accrualPeriod() const {
-        return dayCounter().yearFraction(accrualStartDate_,
-                                         accrualEndDate_,
-                                         refPeriodStart_,
-                                         refPeriodEnd_);
-    }
-
-    inline Integer Coupon::accrualDays() const {
-        return dayCounter().dayCount(accrualStartDate_,
-                                     accrualEndDate_);
-    }
-
-    inline void Coupon::accept(AcyclicVisitor& v) {
-        Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
-        if (v1 != 0)
-            v1->visit(*this);
-        else
-            CashFlow::accept(v);
     }
 
 }

@@ -29,7 +29,7 @@
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 

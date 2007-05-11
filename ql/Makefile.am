@@ -25,7 +25,6 @@ this_include_HEADERS = \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
-	daycounter.hpp \
 	discretizedasset.hpp \
 	errors.hpp \
 	exchangerate.hpp \

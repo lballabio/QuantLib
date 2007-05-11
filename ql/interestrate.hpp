@@ -25,7 +25,7 @@
 #define quantlib_interest_rate_hpp
 
 #include <ql/types.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 

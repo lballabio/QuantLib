@@ -31,7 +31,7 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/time/businessdayconvention.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/utilities/null.hpp>
 
 namespace QuantLib {

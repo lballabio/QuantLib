@@ -29,7 +29,7 @@
 #include <ql/index.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/currency.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/time/period.hpp>
 #include <ql/handle.hpp>
 #include <ql/yieldtermstructure.hpp>

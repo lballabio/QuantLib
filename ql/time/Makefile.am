@@ -9,6 +9,7 @@ this_include_HEADERS = \
     businessdayconvention.hpp \
     calendar.hpp \
     date.hpp \
+	daycounter.hpp \
     frequency.hpp \
     imm.hpp \
     period.hpp \

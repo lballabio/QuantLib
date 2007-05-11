@@ -726,6 +726,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\coupon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\cashflows\coupon.hpp"
 				>
 			</File>
@@ -6198,6 +6202,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\time\daycounter.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\time\frequency.cpp"
 				>
 				<FileConfiguration
@@ -6868,10 +6876,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\currency.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\daycounter.hpp"
 			>
 		</File>
 		<File

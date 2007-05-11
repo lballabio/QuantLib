@@ -26,6 +26,7 @@
 #define quantlib_fixed_rate_coupon_hpp
 
 #include <ql/cashflows/coupon.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
