@@ -28,7 +28,8 @@ namespace QuantLib {
 
     CalibratedModel::CalibratedModel(Size nArguments)
     : arguments_(nArguments),
-      constraint_(new PrivateConstraint(arguments_)) {}
+      constraint_(new PrivateConstraint(arguments_)),
+      shortRateEndCriteria_(EndCriteria::None) {}
 
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:
@@ -95,10 +96,21 @@ namespace QuantLib {
         CalibrationFunction f(this, instruments, w);
 
         Problem prob(f, c, params());
-        method.minimize(prob, endCriteria);
-
+        shortRateEndCriteria_ = method.minimize(prob, endCriteria);
         Array result(prob.currentValue());
         setParams(result);
+        Array shortRateProblemValues_ = prob.values(result);
+    }
+    // Inspectors
+    EndCriteria::Type CalibratedModel::endCriteria() {  
+        return shortRateEndCriteria_;
+    }
+    
+    Real CalibratedModel::value(const Array& params,
+       const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments) {
+        std::vector<Real> w = std::vector<Real>(instruments.size(), 1.0);
+        CalibrationFunction f(this, instruments, w);
+        return f.value(params);
     }
 
     Disposable<Array> CalibratedModel::params() const {

@@ -29,11 +29,11 @@
 #include <ql/methods/lattices/lattice.hpp>
 #include <ql/models/parameter.hpp>
 #include <ql/models/calibrationhelper.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
 
 namespace QuantLib {
 
     class OptimizationMethod;
-    class EndCriteria;
 
     //! Affine model class
     /*! Base class for analytically tractable models.
@@ -93,17 +93,22 @@ namespace QuantLib {
                    const EndCriteria& endCriteria,
                    const Constraint& constraint = Constraint(),
                    const std::vector<Real>& weights = std::vector<Real>());
-
+        Real value(const Array& params,
+                const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments);
+      // Inspectors
         const boost::shared_ptr<Constraint>& constraint() const;
-
+        //! returns end criteria result
+        EndCriteria::Type endCriteria();
         //! Returns array of arguments on which calibration is done
         Disposable<Array> params() const;
+
         virtual void setParams(const Array& params);
+
       protected:
         virtual void generateArguments() {}
-
-        std::vector<Parameter> arguments_;
         boost::shared_ptr<Constraint> constraint_;
+        EndCriteria::Type shortRateEndCriteria_;
+        std::vector<Parameter> arguments_;
 
       private:
         //! Constraint imposed on arguments
@@ -111,6 +116,7 @@ namespace QuantLib {
         //! Calibration cost function class
         class CalibrationFunction;
         friend class CalibrationFunction;
+
     };
 
     //! Abstract short-rate model class
