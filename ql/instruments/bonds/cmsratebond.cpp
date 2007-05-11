@@ -2,7 +2,8 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 Chiara Fornarola
+ Copyright (C) 2006, 2007 Chiara Fornarola
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,20 +19,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/floatingratebond.hpp>
+#include <ql/instruments/bonds/cmsratebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/indexes/swapindex.hpp>
-#include <ql/indexes/iborindex.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
-    FloatingRateBond::FloatingRateBond(
+    CmsRateBond::CmsRateBond(
                            Natural settlementDays,
                            Real faceAmount,
                            const Schedule& schedule,
-                           const boost::shared_ptr<IborIndex>& index,
+                           const boost::shared_ptr<SwapIndex>& index,
                            const DayCounter& paymentDayCounter,
                            BusinessDayConvention paymentConvention,
                            Natural fixingDays,
@@ -51,15 +51,15 @@ namespace QuantLib {
         frequency_    = schedule.tenor().frequency();
         issueDate_    = (issueDate==Date() ? datedDate_ : issueDate);
 
-        cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
-                             schedule,
-                             index,
-                             paymentDayCounter,
-                             paymentConvention,
-                             fixingDays,
-                             gearings, spreads,
-                             caps, floors,
-                             inArrears);
+        cashflows_ = CmsLeg(std::vector<Real>(1, faceAmount_),
+                            schedule,
+                            index,
+                            paymentDayCounter,
+                            paymentConvention,
+                            fixingDays,
+                            gearings, spreads,
+                            caps, floors,
+                            inArrears);
 
         Date redemptionDate = calendar_.adjust(maturityDate_,
                                                paymentConvention);

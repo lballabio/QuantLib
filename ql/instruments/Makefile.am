@@ -1,4 +1,6 @@
 
+SUBDIRS = bonds
+
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
@@ -12,15 +14,11 @@ this_include_HEADERS = \
     callabilityschedule.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
-    cmsratebond.hpp \
     compositeinstrument.hpp \
-    convertiblebond.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
-    fixedratebond.hpp \
     fixedratebondforward.hpp \
-    floatingratebond.hpp \
     forward.hpp \
     forwardrateagreement.hpp \
     forwardvanillaoption.hpp \
@@ -40,8 +38,7 @@ this_include_HEADERS = \
     swaption.hpp \
     vanillaoption.hpp \
     vanillaswap.hpp \
-    varianceswap.hpp \
-    zerocouponbond.hpp
+    varianceswap.hpp
 
 libInstruments_la_SOURCES = \
     asianoption.cpp \
@@ -51,14 +48,10 @@ libInstruments_la_SOURCES = \
     bond.cpp \
     capfloor.cpp \
     cliquetoption.cpp \
-    cmsratebond.cpp \
     compositeinstrument.cpp \
-    convertiblebond.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
-    fixedratebond.cpp \
     fixedratebondforward.cpp \
-    floatingratebond.cpp \
     forward.cpp \
     forwardrateagreement.cpp \
     forwardvanillaoption.cpp \
@@ -78,8 +71,10 @@ libInstruments_la_SOURCES = \
     swaption.cpp \
     vanillaoption.cpp \
     vanillaswap.cpp \
-    varianceswap.cpp \
-    zerocouponbond.cpp
+    varianceswap.cpp
+
+libInstruments_la_LIBADD = \
+    bonds/libBonds.la
 
 noinst_LTLIBRARIES = libInstruments.la
 

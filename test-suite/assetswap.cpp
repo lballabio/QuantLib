@@ -21,9 +21,9 @@
 #include "utilities.hpp"
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/assetswap.hpp>
-#include <ql/instruments/fixedratebond.hpp>
-#include <ql/instruments/floatingratebond.hpp>
-#include <ql/instruments/cmsratebond.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
+#include <ql/instruments/bonds/cmsratebond.hpp>
 #include <ql/index.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>

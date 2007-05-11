@@ -20,9 +20,9 @@
 
 #include "bonds.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/fixedratebond.hpp>
-#include <ql/instruments/floatingratebond.hpp>
-#include <ql/instruments/zerocouponbond.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bonds/floatingratebond.hpp>
+#include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>

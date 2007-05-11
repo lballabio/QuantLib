@@ -25,7 +25,7 @@
 #define quantlib_fixed_rate_bond_forward_hpp
 
 #include <ql/instruments/forward.hpp>
-#include <ql/instruments/fixedratebond.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
 
 namespace QuantLib {
 
