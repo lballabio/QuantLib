@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Francois Du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,12 +22,34 @@
 
 /* The implementation of the algorithm was highly inspired by
  * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling,
- * Flannery, chapter 10
+ * Flannery, chapter 10.
+ * Modified may 2007: end criteria set on x instead on fx, 
+ * inspired by bad behaviour found with test function fx=x*x+x+1, 
+ * xStart = -100, lambda = 1.0, ftol = 1.e-16 
+ * (it reports x=0 as the minimum!)
+ * and by GSL implementation, v. 1.9 (http://www.gnu.org/software/gsl/)
  */
 
 #include <ql/math/optimization/simplex.hpp>
 
+
 namespace QuantLib {
+
+    namespace {
+    // Computes the size of the simplex 
+        Real computeSimplexSize (const std::vector<Array>& vertices) {
+            Array center(vertices.front().size(),0);
+            for (Size i=0; i<vertices.size(); ++i)
+                center += vertices[i];
+            center *=1/Real(vertices.size());
+            Real result = 0;
+            for (Size i=0; i<vertices.size(); ++i) {
+                Array temp =  vertices[i] - center;
+                result += std::sqrt(DotProduct(temp,temp));
+            }
+            return result/Real(vertices.size());
+        }
+    }
 
     Real Simplex::extrapolate(Problem& P,
                               Size iHighest,
@@ -50,22 +74,22 @@ namespace QuantLib {
 
     }
 
+
     EndCriteria::Type Simplex::minimize(Problem& P,
                                         const EndCriteria& endCriteria) {
-        Real ftol = endCriteria.functionEpsilon();
-        // WARNING: to be decided about the following (strong) restriction 
-        //QL_REQUIRE(ftol < 10.0*QL_EPSILON,
-        //    "Fractional convergence tolerance ftol = " << ftol << 
-        //    " in simplex optimizer must be just slightly larger than machine precision "
-        //    "QL_EPSILON = " << QL_EPSILON << " (see Numerical Recipes in C++, p. 410)");
+        // set up of the problem        
+        //Real ftol = endCriteria.functionEpsilon();    // end criteria on f(x) (see Numerical Recipes in C++, p.410)
+        Real xtol = endCriteria.rootEpsilon();          // end criteria on x (see GSL v. 1.9, http://www.gnu.org/software/gsl/)
+        Size maxStationaryStateIterations_ 
+            = endCriteria.maxStationaryStateIterations();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
         Integer iterationNumber_=0;
-
+ 
+        // Initialize vertices of the simplex
         bool end = false;
         Size n = x_.size(), i;
-        // Initialize vertices of the simplex
         vertices_ = std::vector<Array>(n+1, x_);
         for (i=0; i<n; i++) {
             Array direction(n, 0.0);
@@ -76,7 +100,7 @@ namespace QuantLib {
         values_ = Array(n+1, 0.0);
         for (i=0; i<=n; i++)
             values_[i] = P.value(vertices_[i]);
-        // Loop looking for function stationarity
+        // Loop looking for minimum
         do {
             sum_ = Array(n, 0.0);
             Size i;
@@ -104,23 +128,30 @@ namespace QuantLib {
                 if (values_[i]<values_[iLowest])
                     iLowest = i;
             }
-            // Compute fractional accuracy (rtol) and update iteration number
-            Real low = values_[iLowest];
-            Real high = values_[iHighest];
-            Real rtol = 2.0*std::fabs(high - low)/
-                (std::fabs(high) + std::fabs(low) + QL_EPSILON);
+            // Now compute accuracy, update iteration number and check end criteria
+            //// Numerical Recipes exit strategy on fx (see NR in C++, p.410)
+            //Real low = values_[iLowest];
+            //Real high = values_[iHighest];
+            //Real rtol = 2.0*std::fabs(high - low)/
+            //    (std::fabs(high) + std::fabs(low) + QL_EPSILON);
+            //++iterationNumber_;
+            //if (rtol < ftol ||      
+            //    endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
+            // GSL exit strategy on x (see GSL v. 1.9, http://www.gnu.org/software/gsl
+            Real simplexSize = computeSimplexSize(vertices_);
             ++iterationNumber_;
-            // Check end criteria
-            if (rtol < ftol ||      // this is exactly the Numerical Recipes exit strategy, don't change it !
+            if (simplexSize < xtol ||      
                 endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
-                endCriteria.checkStationaryFunctionAccuracy(0.0, true, ecType);
+                endCriteria.checkStationaryPoint(0.0, 0.0, 
+                    maxStationaryStateIterations_, ecType);
                 endCriteria.checkMaxIterations(iterationNumber_, ecType);
                 x_ = vertices_[iLowest];
+                Real low = values_[iLowest];
                 P.setFunctionValue(low);
                 P.setCurrentValue(x_);
                 return ecType;
             }
-            // Continue
+            // If end criteria is not met, continue
             Real factor = -1.0;
             Real vTry = extrapolate(P, iHighest, factor);
             if ((vTry <= values_[iLowest]) && (factor == -1.0)) {

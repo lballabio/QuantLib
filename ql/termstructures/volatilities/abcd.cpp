@@ -103,11 +103,8 @@ namespace QuantLib {
         }
         boost::shared_ptr<EndCriteria> endCriteria = endCr;
         if (!endCriteria) {
-            Real ftol = 0.3e-4;     // previous default (correct??)
-            if (boost::dynamic_pointer_cast<Simplex>(method) != 0) 
-                ftol = 1.0e-16;
             endCriteria = boost::shared_ptr<EndCriteria>(new
-                EndCriteria(100000, 100, 0.3e-4, ftol, 0.3e-4));
+                EndCriteria(1000, 100, 1.0e-8, 0.3e-4, 0.3e-4));   // Why 0.3e-4 ?
         }
 
         Array guess(4);
