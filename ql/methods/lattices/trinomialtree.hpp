@@ -42,7 +42,7 @@ namespace QuantLib {
     class TrinomialTree : public Tree<TrinomialTree> {
         class Branching;
       public:
-        enum { branches = 3 };
+        enum Branches { branches = 3 };
         TrinomialTree(const boost::shared_ptr<StochasticProcess1D>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);

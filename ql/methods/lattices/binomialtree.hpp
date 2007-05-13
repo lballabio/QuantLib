@@ -38,7 +38,7 @@ namespace QuantLib {
     template <class T>
     class BinomialTree : public Tree<T> {
       public:
-        enum { branches = 2 };
+        enum Branches { branches = 2 };
         BinomialTree(const boost::shared_ptr<StochasticProcess1D>& process,
                      Time end,
                      Size steps)
