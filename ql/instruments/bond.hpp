@@ -131,10 +131,33 @@ namespace QuantLib {
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
+        //! clean price given Z-spread, compounding, frequency, daycount  and settlement date
+        /*! The default bond settlement is used if no date is given. */
+        Real cleanPrice(Spread zSpread,
+                        Compounding compounding,
+                        Frequency frequency,
+                        DayCounter paymentDayCounter,
+                        Date settlementDate = Date()) const;
+
+        //! dirty price given Z-spread, compounding, frequency, daycount  and settlement date
+        /*! The default bond settlement is used if no date is given. */
+        Real dirtyPrice(Spread zSpread,
+                        Compounding compounding,
+                        Frequency frequency,
+                        DayCounter paymentDayCounter,
+                        Date settlementDate = Date()) const;
+
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
+
         virtual Real accruedAmount(Date d = Date()) const;
         bool isExpired() const;
+        //@}
+
+         //! current coupon at a given date
+        /*! The default bond settlement is used if no date is given. */
+
+        virtual Real currentCoupon(Date d = Date()) const;
         //@}
 
       protected:
