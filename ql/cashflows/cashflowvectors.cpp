@@ -23,7 +23,6 @@
 */
 
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
@@ -518,10 +517,11 @@ namespace QuantLib {
                    const std::vector<Spread>& spreads,
                    bool isInArrears,
                    const std::vector<Rate>& callRates,
-                   const std::vector<Rate>& putRates,
-                   const std::vector<Rate>& cashRates,
                    bool isCallOptionAdded,
+                   const std::vector<Rate>& putRates,
                    bool isPutOptionAdded,
+                   const std::vector<Rate>& digitalPayoffs,
+                   Replication::Type replication,
                    Real eps) {
 
         QL_REQUIRE(!nominals.empty(), "no nominal given");
@@ -578,10 +578,11 @@ namespace QuantLib {
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     DigitalCouponType( underlying,
                                        get(callRates, i, Null<Real>()),
-                                       get(putRates, i, Null<Real>()),
-                                       get(cashRates, i, Null<Real>()),
                                        isCallOptionAdded,
+                                       get(putRates, i, Null<Real>()),
                                        isPutOptionAdded,
+                                       get(digitalPayoffs, i, Null<Real>()),
+                                       replication,
                                        eps)));
             }
         }
@@ -597,11 +598,12 @@ namespace QuantLib {
                        const std::vector<Real>& gearings,
                        const std::vector<Spread>& spreads,
                        bool isInArrears,
-                       const std::vector<QuantLib::Rate>& callRates,
-                       const std::vector<QuantLib::Rate>& putRates,
-                       const std::vector<QuantLib::Rate>& cashRates,
-                       bool isCallOptionAdded,
-                       bool isPutOptionAdded,
+                       const std::vector<Rate>& callRates,
+                       bool longCallOption,
+                       const std::vector<Rate>& putRates,
+                       bool longPutOption,
+                       const std::vector<Rate>& digitalPayoffs,
+                       Replication::Type replication,
                        Real eps) {
 
         return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
@@ -615,10 +617,11 @@ namespace QuantLib {
                spreads,
                isInArrears,
                callRates,
+               longCallOption,
                putRates,
-               cashRates,
-               isCallOptionAdded,
-               isPutOptionAdded,
+               longPutOption,
+               digitalPayoffs,
+               replication,
                eps);  
     }
 
@@ -632,10 +635,11 @@ namespace QuantLib {
                 const std::vector<Spread>& spreads,
                 bool isInArrears,
                 const std::vector<QuantLib::Rate>& callRates,
+                bool longCallOption,
                 const std::vector<QuantLib::Rate>& putRates,
+                bool longPutOption,
                 const std::vector<QuantLib::Rate>& cashRates,
-                bool isCallOptionAdded,
-                bool isPutOptionAdded,
+                Replication::Type replication,
                 Real eps) {
     
         return FloatingDigitalLeg<SwapIndex, CmsCoupon, DigitalCmsCoupon>(
@@ -649,10 +653,11 @@ namespace QuantLib {
                spreads,
                isInArrears,
                callRates,
+               longCallOption,
                putRates,
+               longPutOption,
                cashRates,
-               isCallOptionAdded,
-               isPutOptionAdded,
+               replication,
                eps);
     }
 
