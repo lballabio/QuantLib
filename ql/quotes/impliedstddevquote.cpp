@@ -53,9 +53,4 @@ namespace QuantLib {
             impliedStdev_ = 0.0;
         }
     }
-
-    void ImpliedStdDevQuote::update(){
-        Quote::notifyObservers();
-    }
-
 }

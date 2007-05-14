@@ -58,10 +58,5 @@ namespace QuantLib {
                                           discount_, impliedStdev_, accuracy_);
         }
     }
-
-    void EurodollarFuturesImpliedStdDevQuote::update() {
-        LazyObject::update();
-    }
-
 }
 

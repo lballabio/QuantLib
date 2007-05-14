@@ -40,7 +40,6 @@ namespace QuantLib {
                                             Real guess = .15,
                                             Real accuracy = 1.0e-6);
         Real value() const;
-        void update();
         void performCalculations() const;
       protected:
         mutable Real impliedStdev_;
