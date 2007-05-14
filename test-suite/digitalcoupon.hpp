@@ -34,6 +34,8 @@ class DigitalCouponTest {
     static void testCashOrNothing();
     static void testCashOrNothingDeepInTheMoney();
     static void testCashOrNothingDeepOutTheMoney();
+    static void testCallPutParity();
+    static void testReplicationType();
     static boost::unit_test_framework::test_suite* suite();
 };
 
