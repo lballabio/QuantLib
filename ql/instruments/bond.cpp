@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
@@ -25,9 +26,8 @@
 #include <ql/cashflows/coupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/termstructures/yieldcurves/zeroyieldstructure.hpp>
+#include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
-
 #include <ql/settings.hpp>
 
 namespace QuantLib {
@@ -132,77 +132,38 @@ namespace QuantLib {
             Date settlement_;
         };
 
-    }
 
+        Real dirtyPriceFromZSpreadFunction(
+                            Real faceAmount,
+                            const Leg& cashflows,
+                            Spread zSpread,
+                            Compounding comp,
+                            Frequency freq,
+                            const DayCounter& dc,
+                            const Date& settlement,
+                            const Handle<YieldTermStructure>& discountCurve) {
 
-    namespace {
-//work in progress for z-spread
-        Real dirtyPriceFromZSpread(
-                   Real faceAmount,
-                   const Leg& cashflows,
-                   Spread zSpread,
-                   Compounding compounding,
-                   Frequency frequency,
-                   const DayCounter& dayCounter,
-                   const Date& settlement,
-                   const Handle<YieldTermStructure>& discountCurve) {
+            QL_REQUIRE(freq != NoFrequency && freq != Once,
+                       "invalid frequency:" << freq);
 
-            if (frequency == NoFrequency || frequency == Once)
-                frequency = Annual;
+            Handle<Quote> zSpreadQuoteHandle(boost::shared_ptr<Quote>(new
+                SimpleQuote(zSpread)));
 
-    //    //    //InterestRate y(yield, dayCounter, compounding, frequency);
-            Rate spreaded = zSpread + discountCurve->zeroRate(Date(), dayCounter, compounding, frequency, false);
-            InterestRate spreadedZero(spreaded, dayCounter, compounding, frequency);
+            ZeroSpreadedTermStructure spreadedCurve(discountCurve,
+                                                    zSpreadQuoteHandle,
+                                                    comp, freq, dc);
             Real price = 0.0;
-            DiscountFactor discount = 1.0;
-            Date lastDate = Date();
-
-            for (Size i=0; i<cashflows.size()-1; ++i) {
+            for (Size i=0; i<cashflows.size(); ++i) {
                 if (cashflows[i]->hasOccurred(settlement))
                     continue;
 
                 Date couponDate = cashflows[i]->date();
                 Real amount = cashflows[i]->amount();
-                if (lastDate == Date()) {
-                    // first not-expired coupon
-                    if (i > 0) {
-                        lastDate = cashflows[i-1]->date();
-                    } else {
-                        boost::shared_ptr<Coupon> coupon =
-                            boost::dynamic_pointer_cast<Coupon>(cashflows[i]);
-                        if (coupon)
-                            lastDate = coupon->accrualStartDate();
-                        else
-                            lastDate = couponDate - 1*Years;
-                    }
-                    discount *= spreadedZero.discountFactor(settlement,couponDate,
-                                                 lastDate, couponDate);
-                } else  {
-                    discount *= spreadedZero.discountFactor(lastDate, couponDate);
-                }
-                lastDate = couponDate;
-
-                price += amount * discount;
+                price += amount * spreadedCurve.discount(couponDate);
             }
-
-    //        const boost::shared_ptr<CashFlow>& redemption = cashflows.back();
-    //        if (!redemption->hasOccurred(settlement)) {
-    //            Date redemptionDate = redemption->date();
-    //            Real amount = redemption->amount();
-    //            if (lastDate == Date()) {
-    //                // no coupons
-    //                lastDate = redemptionDate - 1*Years;
-    //                discount *= spreadedZeroRate.discountFactor(settlement,redemptionDate,
-    //                                             lastDate, redemptionDate);
-    //            } else {
-    //                discount *= spreadedZeroRate.discountFactor(lastDate, redemptionDate);
-    //            }
-
-    //            price += amount * discount;
-    //        }
-
-    //        return price/faceAmount*100.0;
-    //    }
+            price /= spreadedCurve.discount(settlement);
+            return price/faceAmount*100.0;
+        }
 
     //    class ZspreadFinder {
     //      public:
@@ -213,19 +174,21 @@ namespace QuantLib {
     //               Compounding compounding,
     //               const DayCounter& dayCounter,
     //               Frequency frequency,
-    //               const Date& settlement)
+    //               const Date& settlement,
+    //               const Handle<YieldTermStructure>& discountCurve)
     //        : faceAmount_(faceAmount), cashflows_(cashflows),
     //          dirtyPrice_(dirtyPrice),
     //          compounding_(compounding), dayCounter_(dayCounter),
-    //          frequency_(frequency), settlement_(settlement) {}
+    //          frequency_(frequency), settlement_(settlement),discountCurve_(discountCurve) {}
     //        Real operator()(Spread zSpread) const {
-    //            return dirtyPrice_ - dirtyPriceFromZspread(faceAmount_,
+    //            return dirtyPrice_ - dirtyPriceFromZSpread(faceAmount_,
     //                                                       cashflows_,
     //                                                       zSpread,
     //                                                       compounding_,
     //                                                       frequency_,
     //                                                       dayCounter_,
-    //                                                       settlement_);
+    //                                                       settlement_,
+    //                                                       discountCurve_);
     //        }
     //      private:
     //        Real faceAmount_;
@@ -235,10 +198,10 @@ namespace QuantLib {
     //        DayCounter dayCounter_;
     //        Frequency frequency_;
     //        Date settlement_;
-      return 0; };
+    //        Handle<YieldTermStructure> discountCurve_;
+    //         };
 
-    }
-
+    } // anonymous namespace ends here
 
     Bond::Bond(Natural settlementDays,
                Real faceAmount,
@@ -317,6 +280,27 @@ namespace QuantLib {
                               compounding, paymentDayCounter_, frequency_,
                               settlement);
         return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
+    }
+
+    Real Bond::cleanPriceFromZSpread(Spread zSpread,
+                                     Compounding comp,
+                                     Frequency freq,
+                                     DayCounter dc,
+                                     Date settlement) const {
+        Real p = dirtyPriceFromZSpread(zSpread, comp, freq, dc, settlement);
+        return p - accruedAmount(settlement);
+    }
+
+    Real Bond::dirtyPriceFromZSpread(Spread zSpread,
+                                     Compounding comp,
+                                     Frequency freq,
+                                     DayCounter dc,
+                                     Date settlement) const {
+         if (settlement == Date())
+             settlement = settlementDate();
+         return dirtyPriceFromZSpreadFunction(faceAmount_, cashflows_,
+                                              zSpread, comp, freq, dc,
+                                              settlement, discountCurve_);
     }
 
     Real Bond::accruedAmount(Date settlement) const {

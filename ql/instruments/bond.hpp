@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Chiara Fornarola
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
@@ -114,6 +115,7 @@ namespace QuantLib {
         Rate yield(Compounding compounding,
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
+
         //! clean price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real cleanPrice(Rate yield,
@@ -131,25 +133,32 @@ namespace QuantLib {
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
-        //! clean price given Z-spread, compounding, frequency, daycount  and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Real cleanPrice(Spread zSpread,
-                        Compounding compounding,
-                        Frequency frequency,
-                        DayCounter paymentDayCounter,
-                        Date settlementDate = Date()) const;
 
-        //! dirty price given Z-spread, compounding, frequency, daycount  and settlement date
-        /*! The default bond settlement is used if no date is given. */
-        Real dirtyPrice(Spread zSpread,
-                        Compounding compounding,
-                        Frequency frequency,
-                        DayCounter paymentDayCounter,
-                        Date settlementDate = Date()) const;
+        //! clean price given Z-spread
+        /*! Z-spread compounding, frequency, daycount are taken into account
+            The default bond settlement is used if no date is given.
+            For details on Z-spread refer to:
+            "Credit Spreads Explained", Lehman Brothers European Fixed
+            Income Research - March 2004, D. O'Kane*/
+        Real cleanPriceFromZSpread(Spread zSpread,
+                                   Compounding compounding,
+                                   Frequency frequency,
+                                   DayCounter paymentDayCounter,
+                                   Date settlementDate = Date()) const;
+        //! dirty price given Z-spread
+        /*! Z-spread compounding, frequency, daycount are taken into account
+            The default bond settlement is used if no date is given. 
+            For details on Z-spread refer to:
+            "Credit Spreads Explained", Lehman Brothers European Fixed
+            Income Research - March 2004, D. O'Kane*/
+        Real dirtyPriceFromZSpread(Spread zSpread,
+                                   Compounding compounding,
+                                   Frequency frequency,
+                                   DayCounter paymentDayCounter,
+                                   Date settlementDate = Date()) const;
 
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
-
         virtual Real accruedAmount(Date d = Date()) const;
         bool isExpired() const;
         //@}
