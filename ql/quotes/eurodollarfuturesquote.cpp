@@ -60,7 +60,7 @@ namespace QuantLib {
     }
 
     void EurodollarFuturesImpliedStdDevQuote::update() {
-        Quote::notifyObservers();
+        LazyObject::update();
     }
 
 }
