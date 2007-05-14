@@ -79,6 +79,11 @@ namespace QuantLib {
                                           Frequency freq,
                                           const DayCounter& dc)
     : originalCurve_(h), spread_(spread), comp_(comp), freq_(freq), dc_(dc) {
+        //QL_REQUIRE(h->dayCounter()==dc_,
+        //           "spread daycounter (" << dc_ <<
+        //           ") must be the same of the curve to be spreaded (" <<
+        //           originalCurve_->dayCounter() <<
+        //           ")");
         registerWith(originalCurve_);
         registerWith(spread_);
     }
