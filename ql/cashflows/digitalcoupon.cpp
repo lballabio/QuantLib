@@ -25,10 +25,11 @@ namespace QuantLib {
 
     DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
                                  Rate callStrike,
+                                 bool longCallOption,
                                  Rate putStrike,
-                                 Rate cashRate,
-                                 bool isCallOptionAdded,
-                                 bool isPutOptionAdded,
+                                 bool longPutOption,
+                                 Rate digitalPayoff,                              
+                                 Replication::Type replication,
                                  Real eps)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
@@ -44,80 +45,117 @@ namespace QuantLib {
                          underlying->isInArrears()),
       underlying_(underlying), callCsi_(Rate(0.)), putCsi_(Rate(0.)),
       hasCallStrike_(false), hasPutStrike_(false),
-      eps_(eps), isCashOrNothing_(false) {
-        
+      eps_(eps), putLeftEps_(eps_/2.), putRightEps_(eps_/2.),
+      callLeftEps_(eps_/2.), callRightEps_(eps_/2.),
+      isCashOrNothing_(false), replicationType_(replication) {
+      
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
         if (putStrike == Null<Rate>() && callStrike == Null<Rate>())
-            QL_REQUIRE(cashRate == Null<Rate>(), "Cash rate non allowed if call-put strike are both null");
+            QL_REQUIRE(digitalPayoff == Null<Rate>(), "Cash rate non allowed if call-put strike are both null");
 
         if (putStrike != Null<Rate>() && callStrike != Null<Rate>()) {
             QL_REQUIRE(putStrike >= callStrike,
                        "put strike (" << putStrike << ") < " <<
                        "call strike (" << callStrike << ")");
-            QL_REQUIRE(isCallOptionAdded == isPutOptionAdded,
-                       "both call and put options must be added or subtracted");
         }
 
         if (callStrike != Null<Rate>()){
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;
-            QL_REQUIRE(callStrike_>=eps_, "call strike < eps");
-            callCsi_ = isCallOptionAdded ? 1.0 : -1.0;
+            QL_REQUIRE(callStrike_>=eps_/2., "call strike < eps/2");
+            callCsi_ = longCallOption ? 1.0 : -1.0;
         }
         if (putStrike != Null<Rate>()){
             QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
             hasPutStrike_ = true;
             putStrike_ = putStrike;
-            putCsi_ = isPutOptionAdded ? 1.0 : -1.0;
+            putCsi_ = longPutOption ? 1.0 : -1.0;
         }
-        if (cashRate != Null<Rate>()){
-            cashRate_ = cashRate;
+        if (digitalPayoff != Null<Rate>()){
+            digitalPayoff_ = digitalPayoff;
             isCashOrNothing_ = true;
         }
+
+        switch (replication) {
+          case Replication::Central :
+            // do nothing
+            break;
+          case Replication::Sub :
+            if (hasCallStrike_) {
+                if(longCallOption) {
+                    callLeftEps_ = 0.;
+                    callRightEps_ = eps_;
+                } else {
+                    callLeftEps_ = eps_;
+                    callRightEps_ = 0.;
+                }
+            }
+            if (hasPutStrike_) {
+                if(longPutOption) {
+                    putLeftEps_ = eps_;
+                    putRightEps_ = 0.;
+                } else {
+                    putLeftEps_ = 0.;
+                    putRightEps_ = eps_;
+                }
+            }
+            break;
+          case Replication::Super :
+            if (hasCallStrike_) {
+                if(longCallOption) {
+                    callLeftEps_ = eps_;
+                    callRightEps_ = 0.;
+                } else {
+                    callLeftEps_ = 0.;
+                    callRightEps_ = eps_;
+               }
+            }
+            if (hasPutStrike_) {
+                if(longPutOption) {
+                    putLeftEps_ = 0.;
+                    putRightEps_ = eps_;
+                } else {
+                    putRightEps_ = 0.;
+                    callRightEps_ = eps_;
+                }
+            }
+            break;
+          default:
+            QL_FAIL("unsupported replication type");
+        }
+        
         registerWith(underlying);
     }
 
-    Rate DigitalCoupon::optionRate() const {
+    Rate DigitalCoupon::callOptionRate() const {
 
-        Rate callOptionRate = isCashOrNothing_ ? cashRate_ : underlying_->rate();
-
-        // Call digital option
-        if(hasCallStrike_) {
-            CappedFlooredCoupon next(underlying_, callStrike_ + eps_);
-            CappedFlooredCoupon previous(underlying_, callStrike_ - eps_);
-            callOptionRate *= (next.rate() - previous.rate()) / (2.*eps_);
+        Rate callOptionRate = Rate(0.);
+        if(hasCallStrike_) {      
+            callOptionRate = isCashOrNothing_ ? digitalPayoff_ : underlying_->rate();
+            CappedFlooredCoupon next(underlying_, callStrike_ + callRightEps_);
+            CappedFlooredCoupon previous(underlying_, callStrike_ - callLeftEps_);
+            callOptionRate *= (next.rate() - previous.rate()) / (callLeftEps_ + callRightEps_);
         }
+        return callOptionRate;
+    }
 
-        /* Put digital option: 
-           the putOptionRate is calculated as a call digital option
-           to subract from the callOptionRate */
-        Rate putOptionRate = 0.;
-        if(hasPutStrike_){
-            if(putStrike_ < eps_){
-                putOptionRate = cashRate_;
-            } else {
-                CappedFlooredCoupon next(underlying_, putStrike_ + eps_);
-                CappedFlooredCoupon previous(underlying_, putStrike_ - eps_);
-                if(isCashOrNothing_){
-                    putOptionRate = cashRate_ *
-                                   (next.rate() - previous.rate()) / (2.*eps_);
-                } else {
-                    // if asset-or-nothing
-                    putOptionRate = underlying_->rate() *
-                                    (next.rate() - previous.rate()) / (2.*eps_);
-                }
-            }
+    Rate DigitalCoupon::putOptionRate() const {
+
+        Rate putOptionRate = Rate(0.);
+        if(hasPutStrike_) {      
+            putOptionRate = isCashOrNothing_ ? digitalPayoff_ : underlying_->rate();
+            CappedFlooredCoupon next(underlying_, Null<Rate>(), putStrike_ + putRightEps_);
+            CappedFlooredCoupon previous(underlying_, Null<Rate>(), putStrike_ - putLeftEps_);
+            putOptionRate *= (next.rate() - previous.rate()) / (putLeftEps_ + putRightEps_);
         }
-
-        return callOptionRate - putOptionRate;
+        return putOptionRate;
     }
 
     Rate DigitalCoupon::rate() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
-        Real csi = hasCall() ? callCsi_ : putCsi_;
-        return underlying_->rate() + csi * optionRate();
+        return underlying_->rate() + callCsi_ * callOptionRate() + putCsi_ * putOptionRate();
     }
 
     Rate DigitalCoupon::convexityAdjustment() const {
@@ -138,9 +176,9 @@ namespace QuantLib {
             return Null<Rate>();
     }
     
-    Rate DigitalCoupon::cashRate() const {
+    Rate DigitalCoupon::digitalPayoff() const {
         if (isCashOrNothing_)
-            return cashRate_;
+            return digitalPayoff_;
         else
             return Null<Rate>();
     }

@@ -31,12 +31,17 @@
 
 namespace QuantLib {
 
+    //! settlement information
+    struct Replication {
+        enum Type { Sub, Central, Super };
+    };
+
     //! Floating-rate coupon with digital digital call/put option
     /*! Payoffs:
         - Coupon with cash-or-nothing Digital Call
-          rate + csi * cashRate * Heaviside(rate-strike)
+          rate + csi * payoffRate * Heaviside(rate-strike)
         - Coupon with cash-or-nothing Digital Put
-          rate + csi * cashRate * Heaviside(strike-rate)
+          rate + csi * payoffRate * Heaviside(strike-rate)
         where csi=+1 or csi=-1.
         - Coupon with asset-or-nothing Digital Call
           rate + csi * rate * Heaviside(rate-strike)
@@ -51,15 +56,16 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! general constructor (collar)
-        /*! If cashRate is equal to its default value, an asset-or-nothing option
+        /*! If payoffRate is equal to its default value, an asset-or-nothing option
             will be constructed.
         */
         DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
+                      bool longCallOption = true,
                       Rate putStrike = Null<Rate>(),
-                      Rate cashRate = Null<Rate>(),
-                      bool isCallOptionAdded = true,
-                      bool isPutOptionAdded = true,
+                      bool longPutOption = true,
+                      Rate digitalPayoff = Null<Rate>(),
+                      Replication::Type replication = Replication::Central,
                       Real eps = 1e-4);
         //@}
         //! \name Coupon interface
@@ -72,17 +78,21 @@ namespace QuantLib {
         //@{
         Rate callStrike() const;
         Rate putStrike() const;
-        Rate cashRate() const;
+        Rate digitalPayoff() const;
         bool hasPut() const { return hasPutStrike_; }
         bool hasCall() const {return hasCallStrike_; }
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
-        bool isPutAdded() const { return (putCsi_==1.); }
-        bool isCallAdded() const { return (callCsi_==1.); }
+        bool isLongPut() const { return (putCsi_==1.); }
+        bool isLongCall() const { return (callCsi_==1.); }
         boost::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
-        /*! Returns the option rate
+        /*! Returns the call option rate
            (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
         */
-        Rate optionRate() const;
+        Rate callOptionRate() const;
+        /*! Returns the put option rate
+           (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
+        */
+        Rate putOptionRate() const;
         //@}
         //! \name Observer interface
         //@{
@@ -114,17 +124,23 @@ namespace QuantLib {
         //! the strike rate for the the put option
         Rate putStrike_;
         //! the rate paid if the cash-or-nothing option is in-the-money
-        Rate cashRate_;
+        Rate digitalPayoff_;
         //! the multiplicative factor of call payoff
         Real callCsi_;
         //! the multiplicative factor of put payoff
         Real putCsi_;
         //! the gap between strikes in payoff replication
         Real eps_;
+        //! the left gap applied in payoff replication for call
+        Real callLeftEps_, callRightEps_;
+        //! the right gap applied in payoff replication for puf
+        Real putLeftEps_, putRightEps_;
         //!
         bool hasPutStrike_, hasCallStrike_;
         //! Digital option type: if true, cash-or-nothing, if false asset-or-nothing
         bool isCashOrNothing_;
+        //! Type of relication
+        Replication::Type replicationType_;
         //@}
     };
 
@@ -133,13 +149,15 @@ namespace QuantLib {
     public:
         DigitalIborCoupon(const boost::shared_ptr<IborCoupon>& underlying,
                           Rate callStrike = Null<Rate>(),
+                          bool longCallOption = true,
                           Rate putStrike = Null<Rate>(),
-                          Rate cashRate = Null<Rate>(),
-                          bool isCallOptionAdded = true,
-                          bool isPutOptionAdded = true,
+                          bool longPutOption = true,
+                          Rate digitalPayoff = Null<Rate>(),
+                          Replication::Type replication = Replication::Central,
                           Real eps = 1e-4) :
-            DigitalCoupon(underlying, callStrike, putStrike, cashRate,
-                          isCallOptionAdded, isPutOptionAdded, eps) {}
+            DigitalCoupon(underlying, callStrike, longCallOption,
+                          putStrike, longPutOption, digitalPayoff,
+                          replication, eps) {}
         //@}
         //! \name Visitability
         //@{
@@ -151,13 +169,15 @@ namespace QuantLib {
     public:
         DigitalCmsCoupon(const boost::shared_ptr<CmsCoupon>& underlying,
                          Rate callStrike = Null<Rate>(),
+                         bool longCallOption = true,
                          Rate putStrike = Null<Rate>(),
-                         Rate cashRate = Null<Rate>(),
-                         bool isCallOptionAdded = true,
-                         bool isPutOptionAdded = true,
+                         bool longPutOption = true,
+                         Rate digitalPayoff = Null<Rate>(),
+                         Replication::Type replication = Replication::Central,
                          Real eps = 1e-4) :
-            DigitalCoupon(underlying, callStrike, putStrike, cashRate,
-                          isCallOptionAdded, isPutOptionAdded, eps) {}
+            DigitalCoupon(underlying, callStrike, longCallOption,
+                          putStrike, longPutOption, digitalPayoff,
+                          replication, eps) {}
         //@}
         //! \name Visitability
         //@{
