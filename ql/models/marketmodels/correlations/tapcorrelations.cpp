@@ -133,15 +133,13 @@ namespace QuantLib {
 
     Disposable<Array> FrobeniusCostFunction::values(const Array& x) const {
         Array result((target_.rows()*(target_.columns()-1))/2);
-        // refresh parameterizedMatrix_ with values implied by the new set of
-        // parameters
         Matrix pseudoRoot = f_(x, matrixSize_, rank_);
         Matrix differences = pseudoRoot * transpose(pseudoRoot) - target_;
         Size k = 0;
         // then we store the elementwise differences in a vector.
         for (Size i=0; i<target_.rows(); ++i) {
             for (Size j=0; j<i; ++j){
-                result[k] = differences[i][j]*differences[i][j];
+                result[k] = differences[i][j];
                 ++k;
             }
         }
