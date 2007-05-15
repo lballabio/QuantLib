@@ -26,7 +26,7 @@
 
 #include <ql/processes/forwardmeasureprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

@@ -24,7 +24,7 @@
 #ifndef caplet_volatilities_structures_hpp
 #define caplet_volatilities_structures_hpp
 
-#include <ql/capvolstructures.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 

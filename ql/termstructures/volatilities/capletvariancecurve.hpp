@@ -24,7 +24,7 @@
 #ifndef quantlib_caplet_variance_curve_hpp
 #define quantlib_caplet_variance_curve_hpp
 
-#include <ql/capvolstructures.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
 #include <ql/termstructures/volatilities/blackvariancecurve.hpp>
 
 namespace QuantLib {

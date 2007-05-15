@@ -3431,6 +3431,30 @@
 				RelativePath=".\ql\termstructures\all.hpp"
 				>
 			</File>
+			<File
+				RelativePath=".\ql\termstructures\capvolstructures.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\swaptionvolstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\swaptionvolstructure.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\voltermstructure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\voltermstructure.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\yieldtermstructure.hpp"
+				>
+			</File>
 			<Filter
 				Name="volatilities"
 				>
@@ -6071,10 +6095,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ql\capvolstructures.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\ql\cashflow.hpp"
 			>
 		</File>
@@ -6231,14 +6251,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\ql\swaptionvolstructure.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\swaptionvolstructure.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\ql\termstructure.hpp"
 			>
 		</File>
@@ -6264,18 +6276,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\volatilitymodel.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\voltermstructure.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\voltermstructure.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\yieldtermstructure.hpp"
 			>
 		</File>
 	</Files>

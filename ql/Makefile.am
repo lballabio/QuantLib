@@ -21,7 +21,6 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	auto_link.hpp \
-	capvolstructures.hpp \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
@@ -47,14 +46,11 @@ this_include_HEADERS = \
 	quote.hpp \
 	settings.hpp \
 	stochasticprocess.hpp \
-	swaptionvolstructure.hpp \
 	termstructure.hpp \
 	timegrid.hpp \
 	timeseries.hpp \
 	types.hpp \
-	volatilitymodel.hpp \
-	voltermstructure.hpp \
-	yieldtermstructure.hpp
+	volatilitymodel.hpp
 
 libQuantLib_la_SOURCES = \
     currency.cpp \
@@ -67,9 +63,7 @@ libQuantLib_la_SOURCES = \
     money.cpp \
     prices.cpp \
 	stochasticprocess.cpp \
-	swaptionvolstructure.cpp \
-	timegrid.cpp \
-    voltermstructure.cpp
+	timegrid.cpp
 
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)

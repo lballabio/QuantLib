@@ -25,8 +25,8 @@
 #ifndef quantlib_coupon_pricer_hpp
 #define quantlib_coupon_pricer_hpp
 
-#include <ql/capvolstructures.hpp>
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
+#include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/option.hpp>
 
 namespace QuantLib {
@@ -65,28 +65,28 @@ namespace QuantLib {
 
     
     //! pricer for cappedFlooredIbor coupons
-    class IborCouponPricer: public FloatingRateCouponPricer{
+    class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         IborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol)
-         : capletVol_(capletVol) { registerWith(capletVol_);};
+        : capletVol_(capletVol) { registerWith(capletVol_); }
         virtual ~IborCouponPricer() {}
 		
         Handle<CapletVolatilityStructure> capletVolatility() const{
 	        return capletVol_;
 	    }
-		void setCapletVolatility(const Handle<CapletVolatilityStructure>& capletVol){
+		void setCapletVolatility(const Handle<CapletVolatilityStructure>& capletVol) {
             unregisterWith(capletVol_);
             capletVol_ = capletVol;
             QL_REQUIRE(!capletVol_.empty(), "no adequate capletVol given");
             registerWith(capletVol_);
             update();
 		}
-    private:
+      private:
         Handle<CapletVolatilityStructure> capletVol_;
     };
 
     //! By Black formula
-    class BlackIborCouponPricer: public IborCouponPricer{
+    class BlackIborCouponPricer : public IborCouponPricer {
       public:
 		BlackIborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol= 
                                         Handle<CapletVolatilityStructure>())
@@ -102,8 +102,8 @@ namespace QuantLib {
         virtual Rate floorletRate(Rate effectiveFloor) const;
       
       protected:
-        /* */
-        Real optionletPrice(Option::Type optionType, Real effStrike) const;
+        Real optionletPrice(Option::Type optionType,
+                            Real effStrike) const;
 
       private:
         Rate adjustedFixing() const;
@@ -117,14 +117,14 @@ namespace QuantLib {
 
     
     //! pricer for vanilla Cms coupons
-    class CmsCouponPricer: public FloatingRateCouponPricer {
+    class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
 		CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-            : swaptionVol_(swaptionVol) {registerWith(swaptionVol_);}
+        : swaptionVol_(swaptionVol) {registerWith(swaptionVol_);}
 
 		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
 			return swaptionVol_;
-	     }
+	    }
 		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
             unregisterWith(swaptionVol_);
             swaptionVol_ = swaptionVol;
@@ -144,20 +144,20 @@ namespace QuantLib {
     */
 
     class CouponSelectorToSetPricer : public AcyclicVisitor,
-                                    public Visitor<CashFlow>,
-                                    public Visitor<Coupon>,
-                                    public Visitor<IborCoupon>,
-                                    public Visitor<CmsCoupon>,
-                                    public Visitor<CappedFlooredIborCoupon>,
-                                    public Visitor<CappedFlooredCmsCoupon>,
-                                    public Visitor<DigitalIborCoupon>,
-                                    public Visitor<DigitalCmsCoupon>,
-                                    public Visitor<RangeAccrualFloatersCoupon>{
+                                public Visitor<CashFlow>,
+                                public Visitor<Coupon>,
+                                public Visitor<IborCoupon>,
+                                public Visitor<CmsCoupon>,
+                                public Visitor<CappedFlooredIborCoupon>,
+                                public Visitor<CappedFlooredCmsCoupon>,
+                                public Visitor<DigitalIborCoupon>,
+                                public Visitor<DigitalCmsCoupon>,
+                                public Visitor<RangeAccrualFloatersCoupon> {
       private:
-       const boost::shared_ptr<FloatingRateCouponPricer>   pricer_;
+        const boost::shared_ptr<FloatingRateCouponPricer>   pricer_;
       public:
-        CouponSelectorToSetPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer):
-          pricer_(pricer){ };
+        CouponSelectorToSetPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
+        : pricer_(pricer) {};
 
         void visit(CashFlow& c);
         void visit(Coupon& c);

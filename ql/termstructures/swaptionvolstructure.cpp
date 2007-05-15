@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/swaptionvolstructure.hpp>
+#include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/time/period.hpp>
 
 namespace QuantLib {

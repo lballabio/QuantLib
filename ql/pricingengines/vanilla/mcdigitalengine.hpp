@@ -28,8 +28,8 @@
 #define quantlib_digital_mc_engine_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/yieldtermstructure.hpp>
-#include <ql/voltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>

@@ -26,7 +26,7 @@
 
 #include <ql/grid.hpp>
 #include <ql/quote.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/pricingengine.hpp>
 
 namespace QuantLib {

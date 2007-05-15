@@ -26,7 +26,7 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/indexes/iborindex.hpp>
-#include <ql/capvolstructures.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/processes/lfmcovarparam.hpp>
 

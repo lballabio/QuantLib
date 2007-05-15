@@ -6,7 +6,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
 #include <ql/time/daycounter.hpp>
@@ -30,14 +29,11 @@
 #include <ql/quote.hpp>
 #include <ql/settings.hpp>
 #include <ql/stochasticprocess.hpp>
-#include <ql/swaptionvolstructure.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/timegrid.hpp>
 #include <ql/timeseries.hpp>
 #include <ql/types.hpp>
 #include <ql/volatilitymodel.hpp>
-#include <ql/voltermstructure.hpp>
-#include <ql/yieldtermstructure.hpp>
 
 #include <ql/cashflows/all.hpp>
 #include <ql/currencies/all.hpp>

@@ -1,13 +1,19 @@
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
-
 SUBDIRS = volatilities yieldcurves
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-    all.hpp
+    all.hpp \
+	capvolstructures.hpp \
+	swaptionvolstructure.hpp \
+	voltermstructure.hpp \
+	yieldtermstructure.hpp
 
-libTermStructures_la_SOURCES =
+libTermStructures_la_SOURCES = \
+	swaptionvolstructure.cpp \
+    voltermstructure.cpp
 
 libTermStructures_la_LIBADD = \
     volatilities/libVolatilities.la \

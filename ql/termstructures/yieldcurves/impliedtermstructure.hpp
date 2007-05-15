@@ -24,7 +24,7 @@
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

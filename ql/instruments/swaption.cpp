@@ -25,7 +25,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/analysis.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

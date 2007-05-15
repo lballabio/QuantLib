@@ -36,7 +36,7 @@
 #include <ql/handle.hpp>
 #include <ql/cashflow.hpp>
 #include <vector>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

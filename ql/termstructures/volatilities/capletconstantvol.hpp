@@ -24,7 +24,7 @@
 #ifndef quantlib_caplet_constant_volatility_hpp
 #define quantlib_caplet_constant_volatility_hpp
 
-#include <ql/capvolstructures.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 

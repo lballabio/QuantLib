@@ -24,8 +24,8 @@
 #ifndef quantlib_localvolsurface_hpp
 #define quantlib_localvolsurface_hpp
 
-#include <ql/voltermstructure.hpp>
-#include <ql/yieldtermstructure.hpp>
+#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
