@@ -72,6 +72,30 @@ class OneDimensionalPolynomialDegreeN : public CostFunction {
     mutable bool odd;
 };
 
+
+// The goal of this cost function is simply to call another optimization inside
+// in order to test nested optimizations
+class OptimizationBasedCostFunction : public CostFunction {
+  public:
+    Real value(const Array& x) const { return 1.0; }
+
+    Disposable<Array> values(const Array& x) const{
+        // dummy nested optimization
+        Array coefficients(3, 1.0);
+        OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
+        NoConstraint constraint;
+        Array initialValues(1, 100.0);
+        Problem problem(oneDimensionalPolynomialDegreeN, constraint, 
+                        initialValues);
+        LevenbergMarquardt optimizationMethod;
+        EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
+        optimizationMethod.minimize(problem, endCriteria);
+        // return dummy result
+        return Array(1,0);
+    }
+};
+
+
 enum OptimizationMethodType {simplex, 
                              levenbergMarquardt, 
                              conjugateGradient, 
@@ -180,7 +204,7 @@ void setup() {
                         gradientNormEpsilons_.back())));
     // Set optimization methods for optimizer
     OptimizationMethodType optimizationMethodTypes[] = {
-        simplex, levenbergMarquardt /*, conjugateGradient, steepestDescent*/};
+        simplex, levenbergMarquardt, conjugateGradient/*, steepestDescent*/};
     Real simplexLambda = 0.1;                   // characteristic search length for simplex
     Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
     Real levenbergMarquardtXtol   = 1.0e-8;     //
@@ -202,22 +226,32 @@ QL_END_TEST_LOCALS(OptimizersTest)
 void OptimizersTest::test() {
     BOOST_MESSAGE("Testing optimizers...");
     QL_TEST_SETUP
-    
+    // Loop over problems (currently there is only 1 problem)
     for (Size i=0; i<costFunctions_.size(); ++i) {
-        BOOST_MESSAGE("costFunction # = " << i << "\n");
-        Problem problem(*costFunctions_[i], *constraints_[i], initialValues_[i]);
+        #ifdef VERBOSE
+            BOOST_MESSAGE("costFunction # = " << i << "\n");
+        #endif
+        Problem problem(*costFunctions_[i], *constraints_[i], 
+                        initialValues_[i]);
         Array initialValues = problem.currentValue();
+        // Loop over optimizers
         for (Size j=0; j<(optimizationMethods_[i]).size(); ++j) {
             BOOST_MESSAGE("Optimizer: " << optimizationMethods_[i][j].name);
-            EndCriteria endCriteria = *endCriterias_[i];
+            Real rootEpsilon = endCriterias_[i]->rootEpsilon();
             Size endCriteriaTests = 1;
-            Real rootEpsilon = endCriteria.rootEpsilon();
+           // Loop over rootEpsilon
             for(Size k=0; k<endCriteriaTests; ++k) {
                 problem.setCurrentValue(initialValues); 
-                endCriteria.setRootEpsilon(rootEpsilon);
-                rootEpsilon *= .1; 
+                EndCriteria endCriteria(
+                            endCriterias_[i]->maxIterations(), 
+                            endCriterias_[i]->maxStationaryStateIterations(),
+                            rootEpsilon, 
+                            endCriterias_[i]->functionEpsilon(),
+                            endCriterias_[i]->gradientNormEpsilon());
+                rootEpsilon *= .1;
                 EndCriteria::Type endCriteriaResult =
-                    optimizationMethods_[i][j].optimizationMethod->minimize(problem, endCriteria);
+                    optimizationMethods_[i][j].optimizationMethod->minimize(
+                    problem, endCriteria);
                 Array xMinCalculated = problem.currentValue();
                 Array yMinCalculated = problem.values(xMinCalculated);
                 // Check optimization results vs known solution 
@@ -236,7 +270,7 @@ void OptimizersTest::test() {
                         << "    y expected:    " << yMinExpected_[i] << "\n"
                         << "    y calculated:  " << std::setprecision(9) << yMinCalculated << "\n"
                         << "    y difference:  " <<  yMinExpected_[i]- yMinCalculated << "\n"
-                        << "    functionEpsilon:   " << std::setprecision(9) << functionEpsilons_[i] << "\n"
+                        << "    functionEpsilon:   " << std::setprecision(9) << endCriteria.functionEpsilon() << "\n"
                         << "    endCriteriaResult:  " << endCriteriaResult << "\n");
             }
         }
@@ -244,9 +278,25 @@ void OptimizersTest::test() {
 }
 
 
+void OptimizersTest::nestedOptimizationTest() {
+    BOOST_MESSAGE("Testing nested optimizations...");
+    //QL_TEST_SETUP
+    OptimizationBasedCostFunction optimizationBasedCostFunction;
+    NoConstraint constraint;
+    Array initialValues(1, 0.0);
+    Problem problem(optimizationBasedCostFunction, constraint, 
+                    initialValues);
+    LevenbergMarquardt optimizationMethod;
+    EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
+    optimizationMethod.minimize(problem, endCriteria);
+
+}
+
+
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
     suite->add(BOOST_TEST_CASE(&OptimizersTest::test));
+    //suite->add(BOOST_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
     return suite;
 }
 

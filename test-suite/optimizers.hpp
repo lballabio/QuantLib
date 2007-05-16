@@ -27,6 +27,7 @@
 class OptimizersTest {
   public:
     static void test();
+    static void nestedOptimizationTest();
     static boost::unit_test_framework::test_suite* suite();
 };
 
