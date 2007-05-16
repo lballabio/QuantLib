@@ -879,9 +879,13 @@ namespace QuantLib {
             initialGuess = N/D;
 
             objectiveFunction_->setSwapRateValue(Rs);
-            //Newton solver;
             Newton solver;
             solver.setMaxEvaluations(1000);
+
+            // these boundaries migth not be big enough if the volatility 
+            // of big swap rate values is too high . In this case the G function 
+            // is not even integrable, so better to fix the vol than increasing 
+            // these values
             const Real lower = -20, upper = 20.;
 
             try {
