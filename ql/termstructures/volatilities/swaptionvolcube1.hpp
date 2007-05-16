@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2006, 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/optimization/method.hpp>
 
 namespace QuantLib {
 
@@ -97,7 +98,9 @@ namespace QuantLib {
             bool isAtmCalibrated,
             const boost::shared_ptr<EndCriteria>& endCriteria
                 = boost::shared_ptr<EndCriteria>(),
-            Real maxErrorTolerance = Null<Real>());
+            Real maxErrorTolerance = Null<Real>(),
+            const boost::shared_ptr<OptimizationMethod>& optMethod
+                = boost::shared_ptr<OptimizationMethod>());
         ////! \name LazyObject interface
         ////@{
         void performCalculations() const;
@@ -147,6 +150,7 @@ namespace QuantLib {
         bool isAtmCalibrated_;
         const boost::shared_ptr<EndCriteria> endCriteria_;
         Real maxErrorTolerance_;
+        const boost::shared_ptr<OptimizationMethod> optMethod_;
     };
 
 }

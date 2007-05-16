@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Giorgio Facchinetti
+ Copyright (C) 2006, 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,13 +47,14 @@ namespace QuantLib {
                 const std::vector<bool>& isParameterFixed,
                 bool isAtmCalibrated,
                 const boost::shared_ptr<EndCriteria>& endCriteria,
-                Real maxErrorTolerance)
+                Real maxErrorTolerance,
+                const boost::shared_ptr<OptimizationMethod>& optMethod)
     : SwaptionVolatilityCube(atmVolStructure, optionTenors, swapTenors,
                              strikeSpreads, volSpreads, swapIndexBase,
                              vegaWeightedSmileFit),
       parametersGuessQuotes_(parametersGuess),
       isParameterFixed_(isParameterFixed), isAtmCalibrated_(isAtmCalibrated),
-      endCriteria_(endCriteria)
+      endCriteria_(endCriteria), optMethod_(optMethod)
     {
         if(maxErrorTolerance != Null<Rate>()){
             maxErrorTolerance_ = maxErrorTolerance;
@@ -159,7 +160,7 @@ namespace QuantLib {
                                           isParameterFixed_[3],
                                           vegaWeightedSmileFit_,
                                           endCriteria_,
-                                          boost::shared_ptr<OptimizationMethod>()));
+                                          optMethod_));
                 sabrInterpolation->update();
 
                 Real interpolationError =
@@ -178,24 +179,26 @@ namespace QuantLib {
                           "MaxIterations reached: " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << ", \n" <<
-					      "alpha = " <<  alphas[j][k]<< ", \n" <<
-					      "beta = " <<  betas[j][k] << ", \n" <<
-					      "nu = " <<  nus[j][k]   << ", \n" <<
-					      "rho = " <<  rhos[j][k]  << ", \n" <<
-					      "error = " <<  io::rate(errors[j][k])
+						  "error = " << io::rate(errors[j][k])  << ", \n" <<
+                          "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
+					      "   alpha = " <<  alphas[j][k] << "n" <<
+					      "   beta = " <<  betas[j][k] << "\n" <<
+					      "   nu = " <<  nus[j][k]   << "\n" <<
+					      "   rho = " <<  rhos[j][k]  << "\n"
                           );
 
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
                           "global swaptions calibration failed: "
-                          "maxErrorTolerance not reached: " << "\n" <<
+                          "maxErrorTolerance = " << maxErrorTolerance_ 
+                          << " exceeded " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << "\n" <<
-                          "max error = " << io::rate(maxErrors[j][k]) << "\n" <<
-						  "error = " << io::rate(errors[j][k])  << "\n" <<
-						  "alpha = " << alphas[j][k]<< "\n" <<
-						  "beta = " << betas[j][k] << "\n" <<
-						  "nu = " << nus[j][k]   << "\n" <<
-						  "rho = " << rhos[j][k]
+						  "error = " << io::rate(errors[j][k])  << ", \n" <<
+                          "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
+						  "   alpha = " << alphas[j][k]<< "\n" <<
+						  "   beta = " << betas[j][k] << "\n" <<
+						  "   nu = " << nus[j][k]   << "\n" <<
+						  "   rho = " << rhos[j][k]
                           );
             }
         }
@@ -256,7 +259,7 @@ namespace QuantLib {
                                       isParameterFixed_[3],
                                       vegaWeightedSmileFit_,
                                       endCriteria_,
-                                      boost::shared_ptr<OptimizationMethod>()));
+                                      optMethod_));
 
             sabrInterpolation->update();
             Real interpolationError =
