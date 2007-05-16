@@ -48,17 +48,13 @@ namespace QuantLib {
         \test the correctness of the result is tested by checking it
               against known good values.
     */
+    template <class IntegrationPolicy>
     class TrapezoidIntegral : public Integrator {
       public:
-        enum Method { Default, MidPoint };
         TrapezoidIntegral(Real accuracy,
-                          Method method = Default,
-                          Size maxIterations = Null<Size>())
-        : Integrator(accuracy, maxIterations), method_(method) {}
-      protected:
-        // calculation parameters
-        Method method() const { return method_; }
-        Method& method() { return method_; }
+                          Size maxIterations)
+        : Integrator(accuracy, maxIterations){}
+
       protected:
         Real integrate (const boost::function<Real (Real)>& f, 
                         Real a,
@@ -70,16 +66,8 @@ namespace QuantLib {
             // ...and refine it
             Size i = 1;
             do {
-                switch (method_) {
-                  case MidPoint:
-                    newI = midPointIteration(f,a,b,I,N);
-                    N *= 3;
-                    break;
-                  default:
-                    newI = defaultIteration(f,a,b,I,N);
-                    N *= 2;
-                    break;
-                }
+                newI = IntegrationPolicy::integrate(f,a,b,I,N);
+                N *= IntegrationPolicy::nbEvalutions();
                 // good enough? Also, don't run away immediately
                 if (std::fabs(I-newI) <= absoluteAccuracy() && i > 5)
                     // ok, exit
@@ -90,10 +78,16 @@ namespace QuantLib {
             } while (i < maxEvaluations());
             QL_FAIL("max number of iterations reached");
         }
-        Method method_;
+    };
 
-        Real defaultIteration(const boost::function<Real (Real)>& f, 
-                    Real a, Real b, Real I, Size N) const {
+    // Integration policies
+    struct Default {
+        inline static Real integrate(const boost::function<Real (Real)>& f, 
+                                     Real a, 
+                                     Real b, 
+                                     Real I, 
+                                     Size N)
+        {
             Real sum = 0.0;
             Real dx = (b-a)/N;
             Real x = a + dx/2.0;
@@ -101,9 +95,16 @@ namespace QuantLib {
                 sum += f(x);
             return (I + dx*sum)/2.0;
         }
+        inline static Size nbEvalutions(){ return 2;}
+    };
 
-        Real midPointIteration(const boost::function<Real (Real)>& f, Real a,
-                                              Real b, Real I, Size N) const {
+    struct MidPoint {
+        inline static Real integrate(const boost::function<Real (Real)>& f,
+                                     Real a, 
+                                     Real b, 
+                                     Real I, 
+                                     Size N)
+        {
             Real sum = 0.0;
             Real dx = (b-a)/N;
             Real x = a + dx/6.0;
@@ -112,6 +113,7 @@ namespace QuantLib {
                 sum += f(x) + f(x+D);
             return (I + dx*sum)/3.0;
         }
+        inline static Size nbEvalutions(){ return 3;}
     };
 
 }

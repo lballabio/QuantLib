@@ -33,11 +33,11 @@ namespace QuantLib {
     /*! \test the correctness of the result is tested by checking it
               against known good values.
     */
-    class SimpsonIntegral : public TrapezoidIntegral {
+    class SimpsonIntegral : public TrapezoidIntegral<Default> {
       public:
         SimpsonIntegral(Real accuracy,
-                        Size maxIterations = Null<Size>())
-        : TrapezoidIntegral(accuracy, Default, maxIterations) {}
+                        Size maxIterations)
+        : TrapezoidIntegral(accuracy, maxIterations) {}
       protected:
         Real integrate(const boost::function<Real (Real)>& f,
                        Real a, 
@@ -50,7 +50,7 @@ namespace QuantLib {
             // ...and refine it
             Size i = 1;
             do {
-                newI = defaultIteration(f,a,b,I,N);
+                newI = Default::integrate(f,a,b,I,N);
                 N *= 2;
                 newAdjI = (4.0*newI-I)/3.0;
                 // good enough? Also, don't run away immediately
@@ -64,10 +64,6 @@ namespace QuantLib {
             } while (i < maxEvaluations());
             QL_FAIL("max number of iterations reached");
         }
-      private:
-        // inhibited
-        Method method() const { return method_; }
-        Method& method() { return method_; }
     };
 
 }

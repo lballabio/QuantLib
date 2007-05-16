@@ -75,12 +75,13 @@ namespace QuantLib {
     Real Integrator::operator()(const boost::function<Real (Real)>& f,
                                 Real a,
                                 Real b) const {
+        evaluations_ = 0;
         if (a == b)
             return 0.0;
-        if (a > b)
-            return -(*this)(f, b, a);
-        evaluations_ = 0;
-        return integrate(f, a, b);
+        if (b > a)
+            return integrate(f, a, b);
+        else
+            return -integrate(f, b, a);
     }
 
 }

@@ -90,17 +90,17 @@ void IntegralTest::testSegment() {
 
 void IntegralTest::testTrapezoid() {
     BOOST_MESSAGE("Testing trapezoid integration...");
-    testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::Default,10000));
+    testSeveral(TrapezoidIntegral<Default>(tolerance, 10000));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
     BOOST_MESSAGE("Testing mid-point trapezoid integration...");
-    testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::MidPoint,10000));
+    testSeveral(TrapezoidIntegral<MidPoint>(tolerance, 10000));
 }
 
 void IntegralTest::testSimpson() {
     BOOST_MESSAGE("Testing Simpson integration...");
-    testSeveral(SimpsonIntegral(tolerance));
+    testSeveral(SimpsonIntegral(tolerance, 10000));
 }
 
 void IntegralTest::testGaussKronrodAdaptive() {

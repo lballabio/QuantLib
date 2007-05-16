@@ -202,7 +202,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
     Real tabulatedMCErrors[]   = { 1.7e-2, 2.0e-3, 4.0e-5, 1.8e-6 };
     Real toleranceOnTabMCErr[] = { 0.1e-2, 0.1e-3, 0.1e-5, 0.1e-6 };
 
-    SimpsonIntegral integral(1e-12);
+    SimpsonIntegral integral(1e-12, 10000);
     std::vector<Real> x, y;
 
     // still unexplained scale factor needed to obtain the numerical
