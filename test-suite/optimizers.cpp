@@ -87,7 +87,10 @@ class OptimizationBasedCostFunction : public CostFunction {
         Array initialValues(1, 100.0);
         Problem problem(oneDimensionalPolynomialDegreeN, constraint, 
                         initialValues);
-        LevenbergMarquardt optimizationMethod;
+        //LevenbergMarquardt optimizationMethod;
+        //Simplex optimizationMethod(0.1);
+        ConjugateGradient optimizationMethod;
+        //SteepestDescent optimizationMethod;
         EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
         optimizationMethod.minimize(problem, endCriteria);
         // return dummy result
@@ -204,7 +207,7 @@ void setup() {
                         gradientNormEpsilons_.back())));
     // Set optimization methods for optimizer
     OptimizationMethodType optimizationMethodTypes[] = {
-        simplex, levenbergMarquardt, conjugateGradient/*, steepestDescent*/};
+        simplex, levenbergMarquardt, /*conjugateGradient, steepestDescent*/};
     Real simplexLambda = 0.1;                   // characteristic search length for simplex
     Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
     Real levenbergMarquardtXtol   = 1.0e-8;     //
@@ -286,17 +289,19 @@ void OptimizersTest::nestedOptimizationTest() {
     Array initialValues(1, 0.0);
     Problem problem(optimizationBasedCostFunction, constraint, 
                     initialValues);
-    LevenbergMarquardt optimizationMethod;
+    //LevenbergMarquardt optimizationMethod;
+    //Simplex optimizationMethod(0.1);
+    ConjugateGradient optimizationMethod;
+    //SteepestDescent optimizationMethod;
     EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
     optimizationMethod.minimize(problem, endCriteria);
 
 }
 
-
 test_suite* OptimizersTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
     suite->add(BOOST_TEST_CASE(&OptimizersTest::test));
-    //suite->add(BOOST_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
+    suite->add(BOOST_TEST_CASE(&OptimizersTest::nestedOptimizationTest));
     return suite;
 }
 
