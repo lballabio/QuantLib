@@ -58,8 +58,8 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionVolCube2::smileSection(Time optionTime,
-                                                 Time swapLength) const {
+    SwaptionVolCube2::smileSectionImpl(Time optionTime,
+                                       Time swapLength) const {
 
         Date optionDate = Date(static_cast<BigInteger>(
             optionInterpolator_(optionTime)));

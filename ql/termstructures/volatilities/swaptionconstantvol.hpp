@@ -59,16 +59,10 @@ namespace QuantLib {
         Time maxSwapLength() const;
         Real minStrike() const;
         Real maxStrike() const;
-
-        //! return trivial smile section
-        boost::shared_ptr<SmileSection> smileSection(
-                                                 const Date& optioDate,
-                                                 const Period& swapTenor) const;
-
       protected:
         Volatility volatilityImpl(Time, Time, Rate) const;
-        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
-                                                     Time swapLength) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+                                                         Time swapLength) const;
         Volatility volatilityImpl(const Date&, const Period&, Rate) const;
         //@}
       private:

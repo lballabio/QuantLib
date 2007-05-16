@@ -69,18 +69,9 @@ namespace QuantLib {
         //@}
         //! \name Other inspectors
         //@{
-        virtual boost::shared_ptr<SmileSection> smileSection(
-                                                  Time optionTime,
-                                                  Time swapLength) const = 0;
-        virtual boost::shared_ptr<SmileSection> smileSection(
-                                            const Date& optionDate,
-                                            const Period& swapTenor) const = 0;
-        boost::shared_ptr<SmileSection>
-        smileSection(const Period& optionTenor, const Period& swapTenor) const {
-                Date optionDate = optionDateFromTenor(optionTenor);
-                return smileSection(optionDate, swapTenor);
-        };
-
+        //virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+        //                                          Time optionTime,
+        //                                          Time swapLength) const = 0;
         Rate atmStrike(const Date& optionDate,
                        const Period& swapTenor) const;
         Rate atmStrike(const Period& optionTenor,
@@ -124,7 +115,8 @@ namespace QuantLib {
                                                         Time optionTime,
                                                         Time swapLength,
                                                         Rate strike) const {
-            return smileSection(optionTime, swapLength)->volatility(strike);
+            return smileSectionImpl(optionTime,
+                                    swapLength)->volatility(strike);
     }
 
     inline Volatility SwaptionVolatilityCube::volatilityImpl(

@@ -24,12 +24,12 @@
 namespace QuantLib {
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
-        const std::vector<Period>& optionTenors,
-        const std::vector<Period>& swapTenors,
-        Natural settlementDays,
-        const Calendar& cal,
-        const DayCounter& dc,
-        BusinessDayConvention bdc)
+                                    const std::vector<Period>& optionTenors,
+                                    const std::vector<Period>& swapTenors,
+                                    Natural settlementDays,
+                                    const Calendar& cal,
+                                    const DayCounter& dc,
+                                    BusinessDayConvention bdc)
     : SwaptionVolatilityStructure(settlementDays, cal, dc, bdc),
       nOptionTenors_(optionTenors.size()),
       optionTenors_(optionTenors),
@@ -171,8 +171,9 @@ namespace QuantLib {
         }
     }
 
-    std::pair<Time,Time> SwaptionVolatilityDiscrete::convertDates(
-                      const Date& optionDate, const Period& swapTenor) const {
+    std::pair<Time,Time>
+    SwaptionVolatilityDiscrete::convertDates(const Date& optionDate,
+                                             const Period& swapTenor) const {
         Time optionTime = timeFromReference(optionDate);
         Date startDate = optionDates_.front(); // for consistency
         Date endDate = startDate + swapTenor;

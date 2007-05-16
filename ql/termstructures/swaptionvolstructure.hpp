@@ -62,7 +62,7 @@ namespace QuantLib {
                                     BusinessDayConvention bdc = Following);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
-        //! \name Volatility and Variance
+        //! \name Volatility, variance and smile
         //@{
         //! returns the volatility for a given option time and swapLength
         Volatility volatility(Time optionTime,
@@ -74,6 +74,7 @@ namespace QuantLib {
                            Time swapLength,
                            Rate strike,
                            bool extrapolate = false) const;
+
         //! returns the volatility for a given option date and swap tenor
         Volatility volatility(const Date& optionDate,
                               const Period& swapTenor,
@@ -84,6 +85,14 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
+        // overloaded (at least) in SwaptionVolCube2
+        virtual boost::shared_ptr<SmileSection> smileSection(
+                                                 const Date& optionDate,
+                                                 const Period& swapTenor) const {
+            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
+            return smileSectionImpl(p.first, p.second);
+        }
+
         //! returns the volatility for a given option tenor and swap tenor
         Volatility volatility(const Period& optionTenor,
                               const Period& swapTenor,
@@ -94,6 +103,9 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
+        boost::shared_ptr<SmileSection> smileSection(
+                                            const Period& optionTenor,
+                                            const Period& swapTenor) const;
         //@}
         //! \name Limits
         //@{
@@ -106,12 +118,6 @@ namespace QuantLib {
         //! the maximum strike for which the term structure can return vols
         virtual Rate maxStrike() const = 0;
         //@}
-        virtual boost::shared_ptr<SmileSection> smileSection(
-                                                 const Date& optionDate,
-                                                 const Period& swapTenor) const {
-            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-            return smileSection(p.first, p.second);
-        }
         //! implements the conversion between dates and times
         virtual std::pair<Time,Time> convertDates(const Date& optionDate,
                                                   const Period& swapTenor) const;
@@ -121,8 +127,9 @@ namespace QuantLib {
         Date optionDateFromTenor(const Period& optionTenor) const;
       protected:
         //! return smile section
-        virtual boost::shared_ptr<SmileSection> smileSection(
-            Time optionTime, Time swapLength) const = 0;
+        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+                                                Time optionTime,
+                                                Time swapLength) const = 0;
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time optionTime,
                                           Time swapLength,
@@ -220,6 +227,12 @@ namespace QuantLib {
         return vol*vol*p.first;
     }
 
+    inline boost::shared_ptr<SmileSection>
+    SwaptionVolatilityStructure::smileSection(const Period& optionTenor,
+                                              const Period& swapTenor) const {
+        Date optionDate = optionDateFromTenor(optionTenor);
+        return smileSection(optionDate, swapTenor);
+    }
 
     inline void SwaptionVolatilityStructure::checkRange(
              Time optionTime, Time swapLength, Rate k, bool extrapolate) const {

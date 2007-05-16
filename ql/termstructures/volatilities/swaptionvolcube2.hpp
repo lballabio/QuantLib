@@ -46,13 +46,12 @@ namespace QuantLib {
         //! \name SwaptionVolatilityCube inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
-
-        boost::shared_ptr<SmileSection> smileSection(
-                                              Time optionTime,
-                                              Time swapLength) const;
         boost::shared_ptr<SmileSection> smileSection(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
+        boost::shared_ptr<SmileSection> smileSectionImpl(
+                                              Time optionTime,
+                                              Time swapLength) const;
         //@}
       private:
         mutable std::vector<Interpolation2D> volSpreadsInterpolator_;

@@ -503,21 +503,14 @@ namespace QuantLib {
     }
 	
 	boost::shared_ptr<SmileSection>
-    SwaptionVolCube1::smileSection(Time optionTime,
-                                               Time swapLength) const {
+    SwaptionVolCube1::smileSectionImpl(Time optionTime,
+                                       Time swapLength) const {
         if (isAtmCalibrated_)
             return smileSection(optionTime, swapLength, denseParameters_);
         else
             return smileSection(optionTime, swapLength, sparseParameters_);
     }
 
-    boost::shared_ptr<SmileSection>
-    SwaptionVolCube1::smileSection(
-        const Date& optionDate, const Period& swapTenor) const {
-        const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-        return smileSection(p.first, p.second);
-    }
-    
     Matrix SwaptionVolCube1::sparseSabrParameters() const {
         calculate();
         return sparseParameters_.browse();
@@ -538,7 +531,7 @@ namespace QuantLib {
     }
 
     void SwaptionVolCube1::recalibration(Real beta,
-                                                     const Period& swapTenor){
+                                         const Period& swapTenor){
         Matrix newBetaGuess(nOptionTenors_, nSwapTenors_, beta);
         parametersGuess_.setLayer(1, newBetaGuess);
         parametersGuess_.updateInterpolators();

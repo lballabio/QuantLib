@@ -71,19 +71,11 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionConstantVolatility::smileSection(Time optionTime,
-                                             Time) const {
+    SwaptionConstantVolatility::smileSectionImpl(Time optionTime,
+                                                 Time) const {
         Volatility atmVol = volatility_->value();
         return boost::shared_ptr<SmileSection>(new
             FlatSmileSection(optionTime, atmVol));
-    }
-
-    boost::shared_ptr<SmileSection>
-    SwaptionConstantVolatility::smileSection(const Date& optionDate,
-                                             const Period&) const {
-        Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(new
-            FlatSmileSection(timeFromReference(optionDate), atmVol));
     }
 
 }
