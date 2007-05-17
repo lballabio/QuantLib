@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +38,11 @@ namespace QuantLib {
     Real ImpliedStdDevQuote::value() const {
         calculate();
         return impliedStdev_;
+    }
+
+    bool ImpliedStdDevQuote::isValid() const {
+        return !price_.empty()    && !forward_.empty() &&
+                price_->isValid() &&  forward_->isValid();
     }
 
     void ImpliedStdDevQuote::performCalculations() const {

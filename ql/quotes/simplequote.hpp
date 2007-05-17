@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -35,11 +36,12 @@ namespace QuantLib {
         //! \name Quote interface
         //@{
         Real value() const;
+        bool isValid() const;
         //@}
         //! \name Modifiers
         //@{
         //! returns the difference between the new value and the old value
-        Real setValue(Real value);
+        Real setValue(Real value = Null<Real>());
         //@}
       private:
         Real value_;
@@ -54,6 +56,10 @@ namespace QuantLib {
         QL_ENSURE(value_!=Null<Real>(),
                   "invalid simple quote: no value available");
         return value_;
+    }
+
+    inline bool SimpleQuote::isValid() const {
+        return value_!=Null<Real>();
     }
 
     inline Real SimpleQuote::setValue(Real value) {

@@ -43,6 +43,16 @@ namespace QuantLib {
         return impliedStdev_;
     }
 
+    bool EurodollarFuturesImpliedStdDevQuote::isValid() const {
+        if (forward_.empty() || !forward_->isValid())
+            return false;
+        Real forwardValue = 100.0-forward_->value();
+        if (strike_>forwardValue)
+            return !putPrice_.empty() && putPrice_->isValid();
+        else
+            return !callPrice_.empty() && callPrice_->isValid();
+    }
+
     void EurodollarFuturesImpliedStdDevQuote::performCalculations() const {
         static const Real discount_ = 1.0;
         Real forwardValue = 100.0-forward_->value();

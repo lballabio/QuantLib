@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -34,7 +34,11 @@ namespace QuantLib {
       public:
         ForwardValueQuote(const boost::shared_ptr<Index>& index,
                           const Date& fixingDate);
+        //! \name Quote interface
+        //@{
         Real value() const;
+        bool isValid() const;
+        //@}
         void update();
       private:
         boost::shared_ptr<Index> index_;

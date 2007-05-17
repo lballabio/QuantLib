@@ -39,9 +39,10 @@ namespace QuantLib {
       public:
         DerivedQuote(const Handle<Quote>& element,
                      const UnaryFunction& f);
-        //! \name Market element interface
+        //! \name Quote interface
         //@{
         Real value() const;
+        bool isValid() const;
         //@}
         //! \name Observer interface
         //@{
@@ -67,6 +68,11 @@ namespace QuantLib {
     inline Real DerivedQuote<UnaryFunction>::value() const {
         QL_REQUIRE(!element_.empty(), "null market element set");
         return f_(element_->value());
+    }
+
+    template <class UnaryFunction>
+    inline bool DerivedQuote<UnaryFunction>::isValid() const {
+        return !element_.empty() && element_->isValid();
     }
 
     template <class UnaryFunction>

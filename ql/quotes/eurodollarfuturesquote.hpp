@@ -39,7 +39,11 @@ namespace QuantLib {
                                             Real strike,
                                             Real guess = .15,
                                             Real accuracy = 1.0e-6);
+        //! \name Quote interface
+        //@{
         Real value() const;
+        bool isValid() const;
+        //@}
         void performCalculations() const;
       protected:
         mutable Real impliedStdev_;

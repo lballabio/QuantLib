@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -38,6 +39,8 @@ namespace QuantLib {
         virtual ~Quote() {}
         //! returns the current value
         virtual Real value() const = 0;
+        //! returns TRUE if the quote is valid
+        virtual bool isValid() const = 0;
     };
 
 }

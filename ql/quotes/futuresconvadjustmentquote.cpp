@@ -61,11 +61,18 @@ namespace QuantLib {
 
         Date settlementDate = Settings::instance().evaluationDate();
         Time startTime = dc_.yearFraction(settlementDate, futuresDate_);
-        Time indexMaturity = dc_.yearFraction(settlementDate, indexMaturityDate_);
+        Time indexMaturity = dc_.yearFraction(settlementDate,
+                                              indexMaturityDate_);
         return HullWhite::convexityBias(futuresQuote_->value(),
                                         startTime,
                                         indexMaturity,
                                         volatility_->value(),
                                         meanReversion_->value());
+    }
+
+    bool FuturesConvAdjustmentQuote::isValid() const {
+        return !futuresQuote_.empty() && !volatility_.empty() &&
+               !meanReversion_.empty() && futuresQuote_->isValid() &&
+               volatility_->isValid() && meanReversion_->isValid();
     }
 }

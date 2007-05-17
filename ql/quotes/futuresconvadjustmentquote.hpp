@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2006 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,7 +44,11 @@ namespace QuantLib {
                                    const Handle<Quote>& futuresQuote,
                                    const Handle<Quote>& volatility,
                                    const Handle<Quote>& meanReversion);
+        //! \name Quote interface
+        //@{
         Real value() const;
+        bool isValid() const;
+        //@}
         void update();
         //! \name Inspectors
         //@{

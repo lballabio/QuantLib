@@ -45,6 +45,7 @@ namespace QuantLib {
         //! \name Quote interface
         //@{
         Real value() const;
+        bool isValid() const;
         //@}
         //! \name Observer interface
         //@{
@@ -73,6 +74,12 @@ namespace QuantLib {
         QL_REQUIRE(!element1_.empty() && !element2_.empty(),
                    "null quote set");
         return f_(element1_->value(),element2_->value());
+    }
+
+    template <class BinaryFunction>
+    inline bool CompositeQuote<BinaryFunction>::isValid() const {
+        return !element1_.empty()    && !element2_.empty() &&
+                element1_->isValid() &&  element2_->isValid();
     }
 
     template <class BinaryFunction>

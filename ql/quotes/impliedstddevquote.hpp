@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,7 +39,11 @@ namespace QuantLib {
                            Real strike,
                            Real guess = .15,
                            Real accuracy = 1.0e-6);
+        //! \name Quote interface
+        //@{
         Real value() const;
+        bool isValid() const;
+        //@}
         void performCalculations() const;
       protected:
         mutable Real impliedStdev_;
