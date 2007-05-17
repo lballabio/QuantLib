@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         SimpsonIntegral(Real accuracy,
                         Size maxIterations)
-        : TrapezoidIntegral(accuracy, maxIterations) {}
+        : TrapezoidIntegral<Default>(accuracy, maxIterations) {}
       protected:
         Real integrate(const boost::function<Real (Real)>& f,
                        Real a, 
