@@ -1886,6 +1886,12 @@
 					RelativePath=".\ql\math\matrixutilities\symmetricschurdecomposition.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\matrixutilities\tapcorrelations.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\tapcorrelations.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\tqreigendecomposition.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
@@ -3074,12 +3080,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\correlations\tapcorrelations.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\correlations\tapcorrelations.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.cpp">

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/correlations/tapcorrelations.hpp>
+#include <ql/math/matrixutilities/tapcorrelations.hpp>
 #include <cmath>
 
 namespace QuantLib {

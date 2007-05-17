@@ -19,7 +19,7 @@
 
 #include "tapcorrelations.hpp"
 #include "utilities.hpp"
-#include <ql/models/marketmodels/correlations/tapcorrelations.hpp>
+#include <ql/math/matrixutilities/tapcorrelations.hpp>
 #include <ql/math/matrix.hpp>
 #include <sstream>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
