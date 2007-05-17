@@ -61,7 +61,8 @@ What you see here may be used freely but it comes with no support
 or guarantee.
 */
 
-#include <ql/math/optimization/levenbergmarquardt.hpp>
+//#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/lmdif.hpp>
 #include <cmath>
 #include <cstdio>
 
@@ -265,14 +266,15 @@ for( i=0; i<m; i++ )
  * fvec = vector of function values
  * iflag = error return variable
  */
-void fcn(int m,int n, double* x, double* fvec,int *iflag)
-{
-  QuantLib::LevenbergMarquardt::fcn(m, n, x, fvec, iflag);
-}
+//void fcn(int m,int n, double* x, double* fvec,int *iflag)
+//{
+//  QuantLib::LevenbergMarquardt::fcn(m, n, x, fvec, iflag);
+//}
 
 void
 fdjac2(int m,int n,double* x,double* fvec,double* fjac,int,
-       int* iflag,double epsfcn,double* wa)
+       int* iflag,double epsfcn,double* wa,
+       const QuantLib::MINPACK::LmdifCostFunction& fcn)
 {
 /*
 *     **********
@@ -1162,7 +1164,8 @@ void lmdif(int m,int n,double* x,double* fvec,double ftol,
       double* diag, int mode, double factor,
       int nprint, int* info,int* nfev,double* fjac,
       int ldfjac,int* ipvt,double* qtf,
-      double* wa1,double* wa2,double* wa3,double* wa4)
+      double* wa1,double* wa2,double* wa3,double* wa4,
+      const QuantLib::MINPACK::LmdifCostFunction& fcn)
 {
 /*
 *     **********
@@ -1405,7 +1408,7 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4);
+fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
 *nfev += n;
 if(iflag < 0)
     goto L300;

@@ -19,6 +19,7 @@
 
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <boost/bind.hpp>
 
 namespace QuantLib {
 
@@ -36,10 +37,9 @@ namespace QuantLib {
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
         Array x_ = P.currentValue();
-        ProblemData::instance().problem() = &P;
-        ProblemData::instance().initCostValues() = P.costFunction().values(x_);
-
-        int m = ProblemData::instance().initCostValues().size();
+        currentProblem_ = &P;
+        initCostValues_ = P.costFunction().values(x_);
+        int m = initCostValues_.size();
         int n = x_.size();
         boost::scoped_array<double> xx(new double[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
@@ -60,6 +60,8 @@ namespace QuantLib {
         boost::scoped_array<double> wa4(new double[m]);
         // call lmdif to minimize the sum of the squares of m functions
         // in n variables by the Levenberg-Marquardt algorithm.
+        QuantLib::MINPACK::LmdifCostFunction lmdifCostFunction = 
+            boost::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         QuantLib::MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                                  static_cast<double>(endCriteria.functionEpsilon()),
                                  static_cast<double>(xtol_),
@@ -69,7 +71,8 @@ namespace QuantLib {
                                  diag.get(), mode, factor,
                                  nprint, &info, &nfev, fjac.get(),
                                  ldfjac, ipvt.get(), qtf.get(),
-                                 wa1.get(), wa2.get(), wa3.get(), wa4.get());
+                                 wa1.get(), wa2.get(), wa3.get(), wa4.get(),
+                                 lmdifCostFunction);
         info_ = info;
         // check requirements & endCriteria evaluation
         QL_REQUIRE(info != 0, "MINPACK: improper input parameters");
@@ -98,12 +101,11 @@ namespace QuantLib {
         std::copy(x, x+n, xt.begin());
         // constraint handling needs some improvement in the future:
         // starting point should not be close to a constraint violation
-        if (ProblemData::instance().problem()->constraint().test(xt)) {
-            const Array& tmp = ProblemData::instance().problem()->values(xt);
+        if (currentProblem_->constraint().test(xt)) {
+            const Array& tmp = currentProblem_->values(xt);
             std::copy(tmp.begin(), tmp.end(), fvec);
         } else {
-            std::copy(ProblemData::instance().initCostValues().begin(),
-                      ProblemData::instance().initCostValues().end(), fvec);
+            std::copy(initCostValues_.begin(), initCostValues_.end(), fvec);
         }
     }
 

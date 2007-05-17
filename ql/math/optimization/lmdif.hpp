@@ -25,17 +25,24 @@
 #define quantlib_optimization_lmdif_hpp
 
 #include <ql/qldefines.hpp>
+#include <boost/function.hpp>
 
 namespace QuantLib {
 
     namespace MINPACK {
+        typedef boost::function<void (int,
+                                      int, 
+                                      double*,
+                                      double*,
+                                      int*)> LmdifCostFunction;
 
         void lmdif(int m,int n,double* x,double* fvec,double ftol,
                    double xtol,double gtol,int maxfev,double epsfcn,
                    double* diag, int mode, double factor,
                    int nprint, int* info,int* nfev,double* fjac,
                    int ldfjac,int* ipvt,double* qtf,
-                   double* wa1,double* wa2,double* wa3,double* wa4);
+                   double* wa1,double* wa2,double* wa3,double* wa4,
+                   const LmdifCostFunction& fcn);
     }
 
 }

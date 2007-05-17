@@ -24,7 +24,6 @@
 #ifndef quantlib_optimization_levenberg_marquardt_hpp
 #define quantlib_optimization_levenberg_marquardt_hpp
 
-#include <ql/patterns/singleton.hpp>
 #include <ql/math/optimization/problem.hpp>
 
 namespace QuantLib {
@@ -44,22 +43,14 @@ namespace QuantLib {
                                            );
                                            //      = EndCriteria(400, 1.0e-8, 1.0e-8)
         virtual Integer getInfo() const;
-        static void fcn(int m,
-                        int n,
-                        double* x,
-                        double* fvec,
-                        int* iflag);
+        void fcn(int m,
+                 int n,
+                 double* x,
+                 double* fvec,
+                 int* iflag);
       private:
-        // class is needed to make the Levenberg-Marquardt
-        // algorithm sessionId() safe (or multi threading safe).
-        class ProblemData : public Singleton<ProblemData> {
-          public:
-            Problem* & problem() { return thisP_; }
-            Array& initCostValues()    { return initCostValues_; }
-          private:
-            Problem* thisP_;
-            Array initCostValues_;
-        };
+        Problem* currentProblem_;
+        Array initCostValues_;
         mutable Integer info_;
         const Real epsfcn_, xtol_, gtol_;
     };

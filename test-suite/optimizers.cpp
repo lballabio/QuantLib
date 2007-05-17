@@ -283,15 +283,14 @@ void OptimizersTest::test() {
 
 void OptimizersTest::nestedOptimizationTest() {
     BOOST_MESSAGE("Testing nested optimizations...");
-    //QL_TEST_SETUP
     OptimizationBasedCostFunction optimizationBasedCostFunction;
     NoConstraint constraint;
     Array initialValues(1, 0.0);
     Problem problem(optimizationBasedCostFunction, constraint, 
                     initialValues);
-    //LevenbergMarquardt optimizationMethod;
+    LevenbergMarquardt optimizationMethod;
     //Simplex optimizationMethod(0.1);
-    ConjugateGradient optimizationMethod;
+    //ConjugateGradient optimizationMethod;
     //SteepestDescent optimizationMethod;
     EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
     optimizationMethod.minimize(problem, endCriteria);
