@@ -186,6 +186,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
     f.lower();
+    quote->value();
     priceQuote->setValue(0.11);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
