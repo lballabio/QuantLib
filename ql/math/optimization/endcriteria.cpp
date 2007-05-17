@@ -157,11 +157,6 @@ namespace QuantLib {
         return gradientNormEpsilon_;
     }
 
-    // Setters
-    void EndCriteria::setRootEpsilon(Real rootEpsilon) {
-        rootEpsilon_ = rootEpsilon;
-    }
-        
     std::ostream& operator<<(std::ostream& out, EndCriteria::Type ec) {
         switch (ec) {
         case QuantLib::EndCriteria::None:

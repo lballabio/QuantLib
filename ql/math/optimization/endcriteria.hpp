@@ -61,9 +61,6 @@ namespace QuantLib {
         Real functionEpsilon() const;
         Real gradientNormEpsilon() const;
 
-        // Setters
-        void setRootEpsilon(Real rootEpsilon);
-
         /*! Test if the number of iterations is not too big 
             and if a minimum point is not reached */
         bool operator()(const Size iteration,

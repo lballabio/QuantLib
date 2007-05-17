@@ -29,8 +29,8 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-// Uncomment this line to have a more detailed display
-//#define VERBOSE
+//#define VERBOSE // Uncomment this line to have a more detailed display
+
 
 QL_BEGIN_TEST_LOCALS(OptimizersTest)
 
@@ -87,9 +87,9 @@ class OptimizationBasedCostFunction : public CostFunction {
         Array initialValues(1, 100.0);
         Problem problem(oneDimensionalPolynomialDegreeN, constraint, 
                         initialValues);
-        //LevenbergMarquardt optimizationMethod;
+        LevenbergMarquardt optimizationMethod;
         //Simplex optimizationMethod(0.1);
-        ConjugateGradient optimizationMethod;
+        //ConjugateGradient optimizationMethod;
         //SteepestDescent optimizationMethod;
         EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
         optimizationMethod.minimize(problem, endCriteria);
@@ -207,7 +207,7 @@ void setup() {
                         gradientNormEpsilons_.back())));
     // Set optimization methods for optimizer
     OptimizationMethodType optimizationMethodTypes[] = {
-        simplex, levenbergMarquardt, /*conjugateGradient, steepestDescent*/};
+        simplex, levenbergMarquardt, conjugateGradient/*, steepestDescent*/};
     Real simplexLambda = 0.1;                   // characteristic search length for simplex
     Real levenbergMarquardtEpsfcn = 1.0e-8;     // parameters specific for Levenberg-Marquardt
     Real levenbergMarquardtXtol   = 1.0e-8;     //
@@ -251,7 +251,7 @@ void OptimizersTest::test() {
                             rootEpsilon, 
                             endCriterias_[i]->functionEpsilon(),
                             endCriterias_[i]->gradientNormEpsilon());
-                rootEpsilon *= .1;
+                rootEpsilon *= .1; 
                 EndCriteria::Type endCriteriaResult =
                     optimizationMethods_[i][j].optimizationMethod->minimize(
                     problem, endCriteria);

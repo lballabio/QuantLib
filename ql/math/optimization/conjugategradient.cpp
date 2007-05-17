@@ -1,9 +1,10 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
  /*
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Francois Du Vignaud
+ Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,33 +26,32 @@
 
 namespace QuantLib {
 
-    /*! Multi-dimensional Conjugate Gradient
-        (Fletcher-Reeves-Polak-Ribiere algorithm
-        adapted from Numerical Recipes in C, 2nd edition).
-    */
     EndCriteria::Type ConjugateGradient::minimize(Problem &P,
                                                   const EndCriteria& endCriteria) {
-        EndCriteria::Type ecType = EndCriteria::None;
-        P.reset();
-        Array x_ = P.currentValue();
+        // Initializations
+        Real ftol = endCriteria.functionEpsilon();
+        Size maxStationaryStateIterations_ 
+            = endCriteria.maxStationaryStateIterations();
+        EndCriteria::Type ecType = EndCriteria::None;       // reset end criteria
+        P.reset();                                          // reset problem
+        Array x_ = P.currentValue();                        // store the starting point
         Size iterationNumber_=0, stationaryStateIterationNumber_=0;
-        lineSearch_->searchDirection() = Array(x_.size());
-
+        lineSearch_->searchDirection() = Array(x_.size());  // dimension line search
         bool done = false;
 
         // function and squared norm of gradient values;
-        Real fold, gold2;
+        Real fnew, fold, gold2;
         Real c;
-        Real normdiff;
+        Real fdiff, normdiff;
         // classical initial value for line-search step
         Real t = 1.0;
         // Set gradient g at the size of the optimization problem search direction
         Size sz = lineSearch_->searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
-        // Initialize cost function and gradient g
+        // Initialize cost function, gradient g and search direction
         P.setFunctionValue(P.valueAndGradient(g, x_));
-        lineSearch_->searchDirection() = -g;
         P.setGradientNormValue(DotProduct(g, g));
+        lineSearch_->searchDirection() = -g;
         // Loop over iterations
         do {
             // Linesearch
@@ -77,20 +77,28 @@ namespace QuantLib {
                 sddiff = (-g + c * d) - lineSearch_->searchDirection();
                 normdiff = std::sqrt(DotProduct(sddiff, sddiff));
                 lineSearch_->searchDirection() = -g + c * d;
-                // End criteria
-                done = endCriteria(iterationNumber_,
-                                   stationaryStateIterationNumber_,
-                                   true,  //FIXME: it should be in the problem
-                                   fold,
-                                   std::sqrt(gold2),
-                                   P.functionValue(),
-                                   std::sqrt(P.gradientNormValue()),
-                                   ecType
-                                   // FIXME: it's never been used! ???
-                                   // , normdiff
-                                   );
-                // Increase interation number
-                ++iterationNumber_;
+                // Now compute accuracy and check end criteria
+                // Numerical Recipes exit strategy on fx (see NR in C++, p.423)
+                fnew = P.functionValue();
+                fdiff = 2.0*std::fabs(fnew-fold) / 
+                        (std::fabs(fnew) + std::fabs(fold) + QL_EPSILON);
+                if (fdiff < ftol || 
+                    endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
+                    endCriteria.checkStationaryFunctionValue(0.0, 0.0, 
+                        maxStationaryStateIterations_, ecType);
+                    endCriteria.checkMaxIterations(iterationNumber_, ecType);
+                    return ecType;
+                }
+                //done = endCriteria(iterationNumber_,
+                //                   stationaryStateIterationNumber_,
+                //                   true,  //FIXME: it should be in the problem
+                //                   fold,
+                //                   std::sqrt(gold2),
+                //                   P.functionValue(),
+                //                   std::sqrt(P.gradientNormValue()),
+                //                   ecType);
+                P.setCurrentValue(x_);      // update problem current value
+                ++iterationNumber_;         // Increase iteration number
             } else {
                 done=true;
             }

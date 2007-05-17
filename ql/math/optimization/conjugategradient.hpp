@@ -30,8 +30,10 @@
 namespace QuantLib {
 
     //! Multi-dimensional Conjugate Gradient class.
-    /*! User has to provide line-search method and
-        optimization end criteria.
+    /*! Fletcher-Reeves-Polak-Ribiere algorithm
+        adapted from Numerical Recipes in C, 2nd edition.
+        
+        User has to provide line-search method and optimization end criteria.
         Search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
         where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
         and \f$ d_1 = - f'(x_1) \f$
