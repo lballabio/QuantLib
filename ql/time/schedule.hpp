@@ -56,6 +56,8 @@ namespace QuantLib {
         const Date& operator[](Size i) const;
         const Date& at(Size i) const;
         const Date& date(Size i) const;
+        Date previousDate(const Date& refDate) const;
+        Date nextDate(const Date& refDate) const;
         const std::vector<Date>& dates() const { return dates_; }
         bool isRegular(Size i) const;
         //@}
@@ -73,6 +75,7 @@ namespace QuantLib {
         typedef std::vector<Date>::const_iterator const_iterator;
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
+        const_iterator lower_bound(const Date& d = Null<Date>()) const;
         //@}
       private:
         bool fullInterface_;

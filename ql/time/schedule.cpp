@@ -19,6 +19,7 @@
 */
 
 #include <ql/time/schedule.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -168,6 +169,29 @@ namespace QuantLib {
         }
     }
 
+    std::vector<Date>::const_iterator
+    Schedule::lower_bound(const Date& refDate) const {
+        Date d = (refDate==Date() ?
+                  Settings::instance().evaluationDate() :
+                  refDate);
+        return std::lower_bound(dates_.begin(), dates_.end(), d);
+    }
+
+    Date Schedule::nextDate(const Date& refDate) const {
+        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        if (res!=dates_.end())
+            return *res;
+        else
+            return Date();
+    }
+
+    Date Schedule::previousDate(const Date& refDate) const {
+        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        if (res!=dates_.begin())
+            return *(--res);
+        else
+            return Date();
+    }
 
     bool Schedule::isRegular(Size i) const {
         QL_REQUIRE(fullInterface_, "full interface not available");
