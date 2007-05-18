@@ -95,9 +95,6 @@ namespace QuantLib {
         Volatility volatilityImpl(const Date& optionDate,
                                   const Period& swapTenor,
                                   Rate strike) const;
-        Volatility volatilityImpl(const Period& optionTenor,
-                                  const Period& swapTenor,
-                                  Rate strike) const;
         //@}
         Handle<SwaptionVolatilityStructure> atmVol_;
         Size nStrikes_;
@@ -126,12 +123,6 @@ namespace QuantLib {
             return smileSection(optionDate, swapTenor)->volatility(strike);
     }
 
-    inline Volatility SwaptionVolatilityCube::volatilityImpl(
-                                                    const Period& optionTenor,
-                                                    const Period& swapTenor,
-                                                    Rate strike) const {
-            return smileSection(optionTenor, swapTenor)->volatility(strike);
-    }
 }
 
 #endif

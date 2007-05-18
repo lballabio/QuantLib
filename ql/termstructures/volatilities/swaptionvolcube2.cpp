@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<SmileSection>
-    SwaptionVolCube2::smileSection(const Date& optionDate,
+    SwaptionVolCube2::smileSectionImpl(const Date& optionDate,
                                    const Period& swapTenor) const {
         calculate();
         Rate atmForward = atmStrike(optionDate, swapTenor);

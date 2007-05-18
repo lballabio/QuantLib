@@ -74,6 +74,11 @@ namespace QuantLib {
                            Time swapLength,
                            Rate strike,
                            bool extrapolate = false) const;
+        //! returns the smile for a given option time and swapLength
+        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+                                                    Time swapLength) const{
+            return smileSectionImpl(optionTime,swapLength);
+        };
 
         //! returns the volatility for a given option date and swap tenor
         Volatility volatility(const Date& optionDate,
@@ -85,14 +90,10 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        // overloaded (at least) in SwaptionVolCube2
-        virtual boost::shared_ptr<SmileSection> smileSection(
+        //! returns the smile for a given option date and swap tenor
+        boost::shared_ptr<SmileSection> smileSection(
                                                  const Date& optionDate,
-                                                 const Period& swapTenor) const {
-            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
-            return smileSectionImpl(p.first, p.second);
-        }
-
+                                                 const Period& swapTenor) const;
         //! returns the volatility for a given option tenor and swap tenor
         Volatility volatility(const Period& optionTenor,
                               const Period& swapTenor,
@@ -103,6 +104,7 @@ namespace QuantLib {
                            const Period& swapTenor,
                            Rate strike,
                            bool extrapolate = false) const;
+        //! returns the smile for a given option tenor and swap tenor
         boost::shared_ptr<SmileSection> smileSection(
                                             const Period& optionTenor,
                                             const Period& swapTenor) const;
@@ -125,11 +127,20 @@ namespace QuantLib {
         virtual BusinessDayConvention businessDayConvention() const;
         //! implements the conversion between optionTenors and optionDates
         Date optionDateFromTenor(const Period& optionTenor) const;
+        
+
       protected:
         //! return smile section
         virtual boost::shared_ptr<SmileSection> smileSectionImpl(
                                                 Time optionTime,
                                                 Time swapLength) const = 0;
+        // overloaded (at least) in SwaptionVolCube2
+        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+                                                 const Date& optionDate,
+                                                 const Period& swapTenor) const {
+            const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
+            return smileSectionImpl(p.first, p.second);
+        }
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time optionTime,
                                           Time swapLength,
@@ -164,7 +175,7 @@ namespace QuantLib {
     }
 
 
-
+    // Volatility, variance (Time - Time - Rate)
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                      Time optionTime,
                                                      Time swapLength,
@@ -185,7 +196,7 @@ namespace QuantLib {
         return vol*vol*optionTime;
     }
 
-
+    // Volatility, variance and smile (Date - Tenor - Rate)
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                      const Date& optionDate,
                                                      const Period& swapTenor,
@@ -205,7 +216,14 @@ namespace QuantLib {
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return vol*vol*p.first;
     }
+    inline boost::shared_ptr<SmileSection> 
+        SwaptionVolatilityStructure::smileSection(
+                                                 const Date& optionDate,
+                                                 const Period& swapTenor) const {
+           return smileSectionImpl(optionDate, swapTenor);
+    }
 
+    // Volatility, variance and smile (Tenor - Tenor - Rate)
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                     const Period& optionTenor,
                                                     const Period& swapTenor,

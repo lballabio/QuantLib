@@ -46,7 +46,7 @@ namespace QuantLib {
         //! \name SwaptionVolatilityCube inspectors
         //@{
         const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
-        boost::shared_ptr<SmileSection> smileSection(
+        boost::shared_ptr<SmileSection> smileSectionImpl(
                                               const Date& optionDate,
                                               const Period& swapTenor) const;
         boost::shared_ptr<SmileSection> smileSectionImpl(

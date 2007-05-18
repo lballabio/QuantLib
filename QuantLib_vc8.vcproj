@@ -3554,6 +3554,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatilities\swaptionconstantvol.cpp"
 						>
 						<FileConfiguration

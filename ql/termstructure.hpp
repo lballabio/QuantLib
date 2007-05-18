@@ -87,6 +87,8 @@ namespace QuantLib {
         virtual const Date& referenceDate() const;
         //! the calendar used for reference date calculation
         virtual Calendar calendar() const;
+        //! the settlementDays used for reference date calculation
+        virtual Natural settlementDays() const;
         //@}
 
         //! \name Observer interface
@@ -145,6 +147,10 @@ namespace QuantLib {
 
     inline DayCounter TermStructure::dayCounter() const {
         return dayCounter_;
+    }
+    
+    inline Natural TermStructure::settlementDays() const {
+        return settlementDays_;
     }
 
     inline void TermStructure::update() {

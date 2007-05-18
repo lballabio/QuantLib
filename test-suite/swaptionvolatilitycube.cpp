@@ -28,6 +28,7 @@
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/spreadedswaptionvolstructure.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 using namespace QuantLib;
@@ -367,6 +368,82 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     QL_TEST_TEARDOWN
 }
 
+void SwaptionVolatilityCubeTest::testSpreadedCube() {
+
+    BOOST_MESSAGE("Testing spreaded volatility cube...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
+    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(4);
+        parametersGuess[i][0] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    }
+    std::vector<bool> isParameterFixed(4, false);
+
+    Handle<SwaptionVolatilityStructure> volCube( boost::shared_ptr<SwaptionVolatilityStructure>(new 
+        SwaptionVolCube1(atmVolMatrix_,
+                         optionTenors_,
+                         swapTenors_,
+                         strikeSpreads_,
+                         volSpreads_,
+                         swapIndexBase_,
+                         vegaWeightedSmileFit_,
+                         parametersGuess,
+                         isParameterFixed,
+                         true)));
+    
+    Spread spread = 0.0001;
+    SpreadedSwaptionVolatilityStructure spreadedVolCube(volCube, spread);  
+    std::vector<Real> strikes;
+    for (Size k=1; k<100; k++)
+        strikes.push_back(k*.01);
+    for (Size i=0; i<optionTenors_.size(); i++) {
+        for (Size j=0; j<swapTenors_.size(); j++) {
+            boost::shared_ptr<SmileSection> smileSectionByCube = 
+                volCube->smileSection(optionTenors_[i], swapTenors_[j]);
+            boost::shared_ptr<SmileSection> smileSectionBySpreadedCube = 
+                spreadedVolCube.smileSection(optionTenors_[i], swapTenors_[j]);
+            for (Size k=0; k<strikes.size(); k++) {
+                Real strike = strikes[k];
+                Real a = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike);
+                Real b = volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
+                Real diff = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike)
+                            - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
+                if (abs(diff-spread)>1e-16)
+                    BOOST_ERROR("\ndiff!=spread in volatility method:"
+                                "\na = " << a <<
+                                "\nb = " << b <<
+                                "\nexpiry time = " << optionTenors_[i] <<
+                                "\nswap length = " << swapTenors_[j] <<
+                                "\n atm strike = " << io::rate(strike) <<
+                                "\ndiff = " << diff <<
+                                "\nspread = " << spread);    
+                
+                diff = smileSectionBySpreadedCube->volatility(strike)
+                       - smileSectionByCube->volatility(strike);
+                if (abs(diff-spread)>1e-16)
+                    BOOST_ERROR("\ndiff!=spread in smile section method:"
+                                "\nexpiry time = " << optionTenors_[i] <<
+                                "\nswap length = " << swapTenors_[j] <<
+                                "\n atm strike = " << io::rate(strike) <<
+                                "\ndiff = " << diff <<
+                                "\nspread = " << spread);    
+
+            }
+        }
+    }
+    QL_TEST_TEARDOWN
+}
+
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
@@ -378,6 +455,7 @@ test_suite* SwaptionVolatilityCubeTest::suite() {
     // SwaptionVolCubeBySabr reproduces ATM vol with given tolerance
     // SwaptionVolCubeBySabr reproduces smile spreads with given tolerance
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSpreadedCube));
 
     return suite;
 }

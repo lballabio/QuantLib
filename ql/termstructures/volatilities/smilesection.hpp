@@ -40,6 +40,7 @@ namespace QuantLib {
                      const Date& referenceDate = Date());
         SmileSection(Time exerciseTime,
                      const DayCounter& dc = Actual365Fixed());
+        SmileSection(){};
         virtual ~SmileSection() {};
 
         virtual Real minStrike() const = 0;
@@ -48,9 +49,9 @@ namespace QuantLib {
         virtual Volatility volatility(Rate strike) const = 0;
 
         //virtual Rate atmLevel() const = 0;
-        const Date& exerciseDate() const { return exerciseDate_; }
-        Time exerciseTime() const { return exerciseTime_; };
-        const DayCounter& dayCounter() const { return dc_; }
+        virtual const Date& exerciseDate() const { return exerciseDate_; }
+        virtual Time exerciseTime() const { return exerciseTime_; };
+        virtual const DayCounter& dayCounter() const { return dc_; }
       protected:
         Date exerciseDate_;
         DayCounter dc_;
@@ -94,6 +95,33 @@ namespace QuantLib {
         Real maxStrike () const { return QL_MAX_REAL; };
     private:
         Real alpha_, beta_, nu_, rho_, forward_;
+    };
+
+    class SpreadedSmileSection : public SmileSection {
+      public:
+        SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
+                         Spread spread =0)
+        : underlyingSection_(underlyingSection), spread_(spread) {
+        
+    };
+
+        Volatility volatility(Rate strike) const { 
+            return underlyingSection_->volatility(strike)+spread_; 
+        }
+        Real variance(Rate strike) const { 
+            Volatility vol = volatility(strike);
+            return vol*vol*exerciseTime(); 
+        }
+        Real minStrike() const { return underlyingSection_->minStrike(); }
+        Real maxStrike() const { return underlyingSection_->maxStrike(); }
+
+        const Date& exerciseDate() const { return underlyingSection_->exerciseDate(); }
+        Time exerciseTime() const { return underlyingSection_->exerciseTime(); }
+        const DayCounter& dayCounter() const { return underlyingSection_->dayCounter(); }
+
+      private:
+        const boost::shared_ptr<SmileSection> underlyingSection_;
+        Spread spread_;
     };
 
 }
