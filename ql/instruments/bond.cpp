@@ -326,25 +326,13 @@ namespace QuantLib {
         return cashflows_.back()->hasOccurred(settlementDate());
     }
 
-    Real Bond::currentCoupon(Date settlement) const {
-        if (settlement == Date())
-            settlement = settlementDate();
-
-        for (Size i = 0; i<cashflows_.size(); ++i) {
-            // the first coupon paying after d is the one we're after
-            if (!cashflows_[i]->hasOccurred(settlement)) {
-                boost::shared_ptr<Coupon> coupon =
-                    boost::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon)
-                    // !!!
-                    return coupon->rate();
-                else
-                    return 0.0;
-            }
-        }
-        return 0.0;
+    Real Bond::lastCoupon(Date settlement) const {
+        return CashFlows::lastCouponRate(cashflows_, settlement);
     }
 
+    Real Bond::currentCoupon(Date settlement) const {
+        return CashFlows::currentCouponRate(cashflows_, settlement);
+    }
 
     void Bond::performCalculations() const {
 

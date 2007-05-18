@@ -163,10 +163,13 @@ namespace QuantLib {
         bool isExpired() const;
         //@}
 
-         //! current coupon at a given date
+        //! current coupon at a given date
         /*! The default bond settlement is used if no date is given. */
+        Real currentCoupon(Date d = Date()) const;
 
-        virtual Real currentCoupon(Date d = Date()) const;
+        //! last coupon already paid at a given date
+        /*! The default bond settlement is used if no date is given. */
+        Real lastCoupon(Date d = Date()) const;
         //@}
 
       protected:

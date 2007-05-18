@@ -1,8 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 Charles Whitmore
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005, 2006 StatPro Italia srl
+ Copyright (C) 2005 Charles Whitmore
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -49,6 +50,15 @@ namespace QuantLib {
         CashFlows();
         CashFlows(const CashFlows&);
       public:
+        static Leg::const_iterator lastCashFlow(const Leg& leg,
+                                                const Date& refDate = Date());
+        static Leg::const_iterator nextCashFlow(const Leg& leg, 
+                                                const Date& refDate = Date());
+        static Rate lastCouponRate(const Leg& leg,
+                                   const Date& refDate = Date());
+        static Rate currentCouponRate(const Leg& leg,
+                                      const Date& refDate = Date());
+
         static Date startDate(const Leg& leg);
         static Date maturityDate(const Leg& leg);
 
