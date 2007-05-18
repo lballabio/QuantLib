@@ -71,8 +71,7 @@ namespace QuantLib {
 
     template <class BinaryFunction>
     inline Real CompositeQuote<BinaryFunction>::value() const {
-        QL_REQUIRE(!element1_.empty() && !element2_.empty(),
-                   "null quote set");
+        QL_ENSURE(isValid(), "invalid CompositeQuote");
         return f_(element1_->value(),element2_->value());
     }
 
@@ -88,6 +87,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

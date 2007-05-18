@@ -53,9 +53,7 @@ namespace QuantLib {
         UnaryFunction f_;
     };
 
-
     // inline definitions
-
     template <class UnaryFunction>
     inline DerivedQuote<UnaryFunction>::DerivedQuote(
                                                  const Handle<Quote>& element,
@@ -66,7 +64,7 @@ namespace QuantLib {
 
     template <class UnaryFunction>
     inline Real DerivedQuote<UnaryFunction>::value() const {
-        QL_REQUIRE(!element_.empty(), "null market element set");
+        QL_ENSURE(isValid(), "invalid DerivedQuote");
         return f_(element_->value());
     }
 
@@ -81,6 +79,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

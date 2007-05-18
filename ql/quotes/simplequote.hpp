@@ -53,8 +53,7 @@ namespace QuantLib {
     : value_(value) {}
 
     inline Real SimpleQuote::value() const {
-        QL_ENSURE(value_!=Null<Real>(),
-                  "invalid simple quote: no value available");
+        QL_ENSURE(isValid(), "invalid SimpleQuote");
         return value_;
     }
 
