@@ -428,8 +428,6 @@ void checkCoterminalSwapsAndSwaptions(
     LMMCurveState curveState(rateTimes);
     curveState.setOnForwardRates(todaysForwards);
     std::vector<Rate> atmRates = curveState.coterminalSwapRates();
-//    std::vector<Real> discountRatios = curveState.discountRatios();
-//    std::vector<Real> annuities = curveState.coterminalSwapAnnuities();
     std::vector<Real> expectedNPVs(atmRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
@@ -440,7 +438,7 @@ void checkCoterminalSwapsAndSwaptions(
         maxError = std::max(std::fabs(discrepancies[i]), maxError);
     }
 
-    /*if (maxError > errorThreshold)*/ {
+    if (maxError > errorThreshold) {
         BOOST_MESSAGE(config);
         for (Size i=0; i<N; ++i) {
             BOOST_MESSAGE(io::ordinal(i+1) << " coterminal swap NPV: "
@@ -468,7 +466,7 @@ void checkCoterminalSwapsAndSwaptions(
         Matrix cotSwapsCovariance =
             jacobian * forwardsCovariance * transpose(jacobian);
         boost::shared_ptr<PlainVanillaPayoff> payoff(
-            new PlainVanillaPayoff(Option::Call, fixedRate+displacement));
+            new PlainVanillaPayoff(Option::Call, todaysForwards[i]+displacement));
 
         Real expectedSwaption =
             BlackCalculator(payoff,
@@ -1195,7 +1193,7 @@ void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
             PlainVanillaPayoff(Option::Call, todaysForwards[i]));
 
     MultiStepCoterminalSwaptions swaptions(rateTimes,
-                                           paymentTimes, payoffs);
+                                           rateTimes, payoffs);
     MultiProductComposite product;
     product.add(swaps);
     product.add(swaptions);
@@ -2255,7 +2253,7 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
 
     // the next one fails
-    // suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
+     suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
 
     // just one of the tests below is run in order to reduce running times...
     // uncomment as much as you prefer...
