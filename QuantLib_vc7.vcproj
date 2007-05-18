@@ -1301,6 +1301,9 @@
 				RelativePath="ql\math\incompletegamma.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\math\interpolation.hpp">
+			</File>
+			<File
 				RelativePath="ql\math\lexicographicalview.hpp">
 			</File>
 			<File
@@ -1386,6 +1389,9 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\sampledcurve.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\math\solver1d.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\math\surface.cpp">
@@ -5350,6 +5356,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatilities\smilesection.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\volatilities\swaptionconstantvol.cpp">

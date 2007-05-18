@@ -22,6 +22,7 @@ this_include_HEADERS = \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
     smilesection.hpp \
+    spreadedswaptionvolstructure.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
     swaptionvolcube1.hpp \
@@ -40,6 +41,7 @@ libVolatilities_la_SOURCES = \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
     smilesection.cpp \
+    spreadedswaptionvolstructure.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
     swaptionvolcube1.cpp \
