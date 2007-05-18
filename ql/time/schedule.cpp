@@ -23,6 +23,17 @@
 
 namespace QuantLib {
 
+    Schedule::Schedule(const std::vector<Date>& dates,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention)
+    : fullInterface_(false),
+      tenor_(Period()), calendar_(calendar),
+      convention_(convention),
+      terminationDateConvention_(convention),
+      backward_(false), endOfMonth_(false),
+      finalIsRegular_(true),
+      dates_(dates) {}
+
     Schedule::Schedule(const Date& effectiveDate,
                        const Date& terminationDate,
                        const Period& tenor,
@@ -34,10 +45,12 @@ namespace QuantLib {
                        const Date& firstDate,
                        const Date& nextToLastDate)
     : fullInterface_(true),
-      calendar_(calendar), tenor_(tenor), convention_(convention),
+      tenor_(tenor), calendar_(calendar),
+      convention_(convention),
+      terminationDateConvention_(terminationDateConvention),
+      backward_(backward), endOfMonth_(endOfMonth),
       firstDate_(firstDate), nextToLastDate_(nextToLastDate),
-      startFromEnd_(backward), longFinal_(false),
-      endOfMonth_(endOfMonth), finalIsRegular_(true)
+      finalIsRegular_(true)
     {
         // sanity checks
         QL_REQUIRE(effectiveDate != Date(), "null effective date");
@@ -198,7 +211,7 @@ namespace QuantLib {
         if (isRegular_.empty()) {
             if (tenor_ < Period(1,Days)) {
                 return true;
-            } else if (startFromEnd_) {
+            } else if (backward_) {
                 if (i == 1)
                     return finalIsRegular_;
                 else if (i == size()-1)

@@ -69,6 +69,9 @@ namespace QuantLib {
         const Date& endDate() const;
         const Period& tenor() const;
         BusinessDayConvention businessDayConvention() const;
+        BusinessDayConvention terminationDateBusinessDayConvention() const;
+        bool backward() const;
+        bool endOfMonth() const;
         //@}
         //! \name Iterators
         //@{
@@ -79,13 +82,12 @@ namespace QuantLib {
         //@}
       private:
         bool fullInterface_;
-        Calendar calendar_;
         Period tenor_;
-        BusinessDayConvention convention_;
+        Calendar calendar_;
+        BusinessDayConvention convention_, terminationDateConvention_;
+        bool backward_, endOfMonth_;
         Date firstDate_, nextToLastDate_;
-        bool startFromEnd_;
-        bool longFinal_;
-        bool endOfMonth_, finalIsRegular_;
+        bool finalIsRegular_;
         std::vector<Date> dates_;
         std::vector<bool> isRegular_;
     };
@@ -136,15 +138,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Schedule::Schedule(const std::vector<Date>& dates,
-                              const Calendar& calendar,
-                              BusinessDayConvention convention)
-    : fullInterface_(false),
-      calendar_(calendar),
-      tenor_(Period()), convention_(convention),
-      startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
-      dates_(dates) {}
-
     inline const Date& Schedule::date(Size i) const {
         return dates_.at(i);
     }
@@ -180,6 +173,22 @@ namespace QuantLib {
 
     inline BusinessDayConvention Schedule::businessDayConvention() const {
         return convention_;
+    }
+
+    inline BusinessDayConvention
+    Schedule::terminationDateBusinessDayConvention() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
+        return terminationDateConvention_;
+    }
+
+    inline bool Schedule::backward() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
+        return backward_;
+    }
+
+    inline bool Schedule::endOfMonth() const {
+        QL_REQUIRE(fullInterface_, "full interface not available");
+        return endOfMonth_;
     }
 
 }
