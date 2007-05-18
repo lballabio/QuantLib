@@ -433,7 +433,7 @@ void checkCoterminalSwapsAndSwaptions(
     std::vector<Real> expectedNPVs(atmRates.size());
     Real errorThreshold = 0.5;
     for (Size i=0; i<N; ++i) {
-        Real expectedNPV = curveState.coterminalSwapAnnuity(i, i) * (atmRates[i]-fixedRate) *
+        Real expectedNPV = curveState.coterminalSwapAnnuity(0, i) * (atmRates[i]-fixedRate) *
             todaysDiscounts[0];
         expectedNPVs[i] = expectedNPV;
         discrepancies[i] = (results[i]-expectedNPVs[i])/errors[i];
@@ -474,7 +474,7 @@ void checkCoterminalSwapsAndSwaptions(
             BlackCalculator(payoff,
                             todaysCoterminalSwapRates[i]+displacement,
                             std::sqrt(cotSwapsCovariance[i][i]),
-                            curveState.coterminalSwapAnnuity(i,i) *
+                            curveState.coterminalSwapAnnuity(0,i) *
                                 todaysDiscounts[0]).value();
         expectedSwaptions[i] = expectedSwaption;
         discrepancies[i] = (results[N+i]-expectedSwaptions[i])/errors[N+i];
