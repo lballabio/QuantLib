@@ -94,7 +94,8 @@ class OptimizationBasedCostFunction : public CostFunction {
         EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
         optimizationMethod.minimize(problem, endCriteria);
         // return dummy result
-        return Array(1,0);
+        Array dummy(1,0);
+        return dummy;
     }
 };
 
