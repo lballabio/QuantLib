@@ -12,7 +12,7 @@ this_include_HEADERS = \
 	yieldtermstructure.hpp
 
 libTermStructures_la_SOURCES = \
-	swaptionvolstructure.cpp \
+    swaptionvolstructure.cpp \
     voltermstructure.cpp
 
 libTermStructures_la_LIBADD = \

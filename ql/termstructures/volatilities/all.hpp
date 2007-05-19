@@ -19,6 +19,7 @@
 #include <ql/termstructures/volatilities/sabr.hpp>
 #include <ql/termstructures/volatilities/sabrinterpolatedsmilesection.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
+#include <ql/termstructures/volatilities/spreadedswaptionvolstructure.hpp>
 #include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
