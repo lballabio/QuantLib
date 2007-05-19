@@ -418,7 +418,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 Real b = volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
                 Real diff = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike)
                             - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
-                if (abs(diff-spread)>1e-16)
+                if (fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
                                 "\na = " << a <<
                                 "\nb = " << b <<
@@ -430,7 +430,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 
                 diff = smileSectionBySpreadedCube->volatility(strike)
                        - smileSectionByCube->volatility(strike);
-                if (abs(diff-spread)>1e-16)
+                if (fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in smile section method:"
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
