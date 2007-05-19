@@ -6,13 +6,11 @@ this_include_HEADERS = \
 	all.hpp \
 	correlations.hpp \
 	cotswapfromfwdcorrelation.hpp \
-	tapcorrelations.hpp \
 	timehomogeneousforwardcorrelation.hpp
 
 libMarketModelsCorrelations_la_SOURCES = \
 	correlations.cpp \
 	cotswapfromfwdcorrelation.cpp \
-	tapcorrelations.cpp \
 	timehomogeneousforwardcorrelation.cpp
 
 noinst_LTLIBRARIES = libMarketModelsCorrelations.la

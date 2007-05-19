@@ -3,6 +3,5 @@
 
 #include <ql/models/marketmodels/correlations/correlations.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
-#include <ql/models/marketmodels/correlations/tapcorrelations.hpp>
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 
