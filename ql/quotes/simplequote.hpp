@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     inline void SimpleQuote::reset() {
-        value_ = Null<Real>();
+        setValue(Null<Real>());
     }
 
 }
