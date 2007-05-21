@@ -27,7 +27,7 @@
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/utilities/dataparsers.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities/capletvol/capstripper.hpp>
+#include <ql/termstructures/volatilities/caplet/capstripper.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 

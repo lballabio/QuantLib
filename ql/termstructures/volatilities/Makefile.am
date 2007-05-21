@@ -1,5 +1,5 @@
 
-SUBDIRS = capletvol equity swaptionvol
+SUBDIRS = caplet equity swaption
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 

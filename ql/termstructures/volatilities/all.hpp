@@ -5,12 +5,12 @@
 #include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
 #include <ql/termstructures/volatilities/equity/blackvariancecurve.hpp>
 #include <ql/termstructures/volatilities/equity/blackvariancesurface.hpp>
-#include <ql/termstructures/volatilities/capletvol/capflatvolvector.hpp>
-#include <ql/termstructures/volatilities/capletvol/capletconstantvol.hpp>
-#include <ql/termstructures/volatilities/capletvol/capletvariancecurve.hpp>
-#include <ql/termstructures/volatilities/capletvol/capletvolatilitiesstructures.hpp>
-#include <ql/termstructures/volatilities/capletvol/capstripper.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/cmsmarket.hpp>
+#include <ql/termstructures/volatilities/caplet/capflatvolvector.hpp>
+#include <ql/termstructures/volatilities/caplet/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/caplet/capletvariancecurve.hpp>
+#include <ql/termstructures/volatilities/caplet/capletvolatilitiesstructures.hpp>
+#include <ql/termstructures/volatilities/caplet/capstripper.hpp>
+#include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatilities/equity/impliedvoltermstructure.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/termstructures/volatilities/equity/localconstantvol.hpp>
@@ -19,11 +19,11 @@
 #include <ql/termstructures/volatilities/sabr.hpp>
 #include <ql/termstructures/volatilities/sabrinterpolatedsmilesection.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/spreadedswaptionvolstructure.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionconstantvol.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvoldiscrete.hpp>
-#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaption/spreadedswaptionvolstructure.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvoldiscrete.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 

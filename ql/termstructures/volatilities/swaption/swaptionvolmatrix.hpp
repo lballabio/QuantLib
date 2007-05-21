@@ -26,7 +26,7 @@
 #ifndef quantlib_swaption_volatility_matrix_hpp
 #define quantlib_swaption_volatility_matrix_hpp
 
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvoldiscrete.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvoldiscrete.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>

@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/swaptionvol/spreadedswaptionvolstructure.hpp>
+#include <ql/termstructures/volatilities/swaption/spreadedswaptionvolstructure.hpp>
 
 namespace QuantLib {
 

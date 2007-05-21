@@ -21,8 +21,8 @@
 #include <ql/instruments/makecms.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/cmsmarket.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube.hpp>
+#include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
 #include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>

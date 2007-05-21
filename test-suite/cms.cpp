@@ -27,8 +27,8 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>

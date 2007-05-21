@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 

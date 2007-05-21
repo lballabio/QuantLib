@@ -25,7 +25,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 #include <iostream>
 #include <string>
 

@@ -25,7 +25,7 @@
 #define quantlib_interpolated_caplet_variance_curve_hpp
 
 #include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/volatilities/capletvol/capletvolatilitiesstructures.hpp>
+#include <ql/termstructures/volatilities/caplet/capletvolatilitiesstructures.hpp>
 
 
 namespace QuantLib {
