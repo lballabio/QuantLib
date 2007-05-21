@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/blackvariancecurve.hpp>
+#include <ql/termstructures/volatilities/equity/blackvariancecurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {

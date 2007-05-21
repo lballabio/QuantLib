@@ -20,9 +20,9 @@
 */
 
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/volatilities/localvolsurface.hpp>
-#include <ql/termstructures/volatilities/localvolcurve.hpp>
-#include <ql/termstructures/volatilities/localconstantvol.hpp>
+#include <ql/termstructures/volatilities/equity/localvolsurface.hpp>
+#include <ql/termstructures/volatilities/equity/localvolcurve.hpp>
+#include <ql/termstructures/volatilities/equity/localconstantvol.hpp>
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>

@@ -21,7 +21,7 @@
     \brief caplet variance curve
 */
 
-#include <ql/termstructures/volatilities/capstripper.hpp>
+#include <ql/termstructures/volatilities/capletvol/capstripper.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/math/solvers1d/brent.hpp>

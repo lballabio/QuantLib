@@ -24,7 +24,7 @@
 #ifndef quantlib_localconstantvol_hpp
 #define quantlib_localconstantvol_hpp
 
-#include <ql/termstructures/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
 
 namespace QuantLib {
 

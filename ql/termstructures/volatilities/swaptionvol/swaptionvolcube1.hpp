@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_volcube_fit_early_interpolate_later_h
 #define quantlib_swaption_volcube_fit_early_interpolate_later_h
 
-#include <ql/termstructures/volatilities/swaptionvolcube.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/optimization/endcriteria.hpp>

@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_volcube_fit_later_interpolate_early_h
 #define quantlib_swaption_volcube_fit_later_interpolate_early_h
 
-#include <ql/termstructures/volatilities/swaptionvolcube.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 
 namespace QuantLib {

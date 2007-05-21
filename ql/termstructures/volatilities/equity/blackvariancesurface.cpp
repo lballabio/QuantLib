@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/blackvariancesurface.hpp>
+#include <ql/termstructures/volatilities/equity/blackvariancesurface.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 
 namespace QuantLib {

@@ -38,12 +38,12 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
-#include <ql/termstructures/volatilities/capletconstantvol.hpp>
-#include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
-#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
-#include <ql/termstructures/volatilities/swaptionvolcube.hpp>
+#include <ql/termstructures/volatilities/capletvol/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 

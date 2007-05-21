@@ -1,53 +1,27 @@
 
+SUBDIRS = capletvol equity swaptionvol
+
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
-    blackconstantvol.hpp \
-    blackvariancecurve.hpp \
-    blackvariancesurface.hpp \
-    capflatvolvector.hpp \
-    capletconstantvol.hpp \
-    capletvariancecurve.hpp \
-    capletvolatilitiesstructures.hpp \
-    capstripper.hpp \
-    cmsmarket.hpp \
-    impliedvoltermstructure.hpp \
     interpolatedsmilesection.hpp \
-    localconstantvol.hpp \
-    localvolcurve.hpp \
-    localvolsurface.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
-    smilesection.hpp \
-    spreadedswaptionvolstructure.hpp \
-    swaptionconstantvol.hpp \
-    swaptionvolcube.hpp \
-    swaptionvolcube1.hpp \
-    swaptionvolcube2.hpp \
-    swaptionvoldiscrete.hpp \
-    swaptionvolmatrix.hpp
+    smilesection.hpp
 
 libVolatilities_la_SOURCES = \
     abcd.cpp \
-    blackvariancecurve.cpp \
-    blackvariancesurface.cpp \
-    capletvolatilitiesstructures.cpp \
-    capstripper.cpp \
-    cmsmarket.cpp \
-    localvolsurface.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
-    smilesection.cpp \
-    spreadedswaptionvolstructure.cpp \
-    swaptionconstantvol.cpp \
-    swaptionvolcube.cpp \
-    swaptionvolcube1.cpp \
-    swaptionvolcube2.cpp \
-    swaptionvoldiscrete.cpp \
-    swaptionvolmatrix.cpp
+    smilesection.cpp
+
+libVolatilities_la_LIBADD = \
+    capletvol/libCapletVol.la \
+    equity/libEquity.la \
+    swaptionvol/libSwaptionVol.la
 
 noinst_LTLIBRARIES = libVolatilities.la
 

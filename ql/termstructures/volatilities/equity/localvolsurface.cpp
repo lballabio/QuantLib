@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/localvolsurface.hpp>
+#include <ql/termstructures/volatilities/equity/localvolsurface.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

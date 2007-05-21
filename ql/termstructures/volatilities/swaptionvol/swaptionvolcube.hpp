@@ -24,7 +24,7 @@
 #ifndef quantlib_swaption_volatility_cube_h
 #define quantlib_swaption_volatility_cube_h
 
-#include <ql/termstructures/volatilities/swaptionvoldiscrete.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvoldiscrete.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/quote.hpp>

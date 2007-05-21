@@ -21,7 +21,7 @@
 
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionconstantvol.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 

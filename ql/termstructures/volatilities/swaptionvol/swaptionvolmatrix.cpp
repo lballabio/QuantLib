@@ -22,7 +22,7 @@
 
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
 

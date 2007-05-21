@@ -26,8 +26,8 @@
 #define quantlib_mc_discrete_geometric_average_price_asian_engine_h
 
 #include <ql/pricingengines/asian/mcdiscreteasianengine.hpp>
-#include <ql/termstructures/volatilities/blackconstantvol.hpp>
-#include <ql/termstructures/volatilities/blackvariancecurve.hpp>
+#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equity/blackvariancecurve.hpp>
 
 namespace QuantLib {
 

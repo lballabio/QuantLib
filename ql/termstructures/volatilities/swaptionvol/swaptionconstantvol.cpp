@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionconstantvol.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

@@ -21,7 +21,7 @@
     \brief Caplet Volatilities Structures used during bootstrapping procedure
 */
 
-#include <ql/termstructures/volatilities/capletvolatilitiesstructures.hpp>
+#include <ql/termstructures/volatilities/capletvol/capletvolatilitiesstructures.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/cashflows/iborcoupon.hpp>

@@ -27,8 +27,8 @@
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/termstructures/volatilities/capletconstantvol.hpp>
-#include <ql/termstructures/volatilities/capletvariancecurve.hpp>
+#include <ql/termstructures/volatilities/capletvol/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/capletvol/capletvariancecurve.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 
 using namespace QuantLib;

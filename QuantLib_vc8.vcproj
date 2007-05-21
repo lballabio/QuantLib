@@ -3502,43 +3502,47 @@
 					Name="equity"
 					>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\blackconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\all.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\blackvariancecurve.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\blackconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\blackvariancecurve.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancecurve.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\blackvariancesurface.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancecurve.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\blackvariancesurface.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancesurface.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\impliedvoltermstructure.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\blackvariancesurface.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\localconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\impliedvoltermstructure.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\localvolcurve.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\localconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\localvolsurface.cpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\localvolcurve.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\localvolsurface.hpp"
+						RelativePath=".\ql\termstructures\volatilities\equity\localvolsurface.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\equity\localvolsurface.hpp"
 						>
 					</File>
 				</Filter>
@@ -3546,103 +3550,71 @@
 					Name="swaptionvol"
 					>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\cmsmarket.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\all.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\cmsmarket.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\cmsmarket.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\cmsmarket.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\spreadedswaptionvolstructure.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\spreadedswaptionvolstructure.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionconstantvol.cpp"
-						>
-						<FileConfiguration
-							Name="Debug CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release CRTDLL|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)\$(InputName)1.obj"
-								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\spreadedswaptionvolstructure.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionconstantvol.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube1.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube1.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube2.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube1.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolcube2.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube1.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvoldiscrete.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube2.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvoldiscrete.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolcube2.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolmatrix.cpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvoldiscrete.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\swaptionvolmatrix.hpp"
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvoldiscrete.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolmatrix.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\swaptionvol\swaptionvolmatrix.hpp"
 						>
 					</File>
 				</Filter>
@@ -3650,31 +3622,35 @@
 					Name="capletvol"
 					>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capflatvolvector.hpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\all.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capletconstantvol.hpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capflatvolvector.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capletvariancecurve.hpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capletconstantvol.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capletvolatilitiesstructures.cpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capletvariancecurve.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capletvolatilitiesstructures.hpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capletvolatilitiesstructures.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capstripper.cpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capletvolatilitiesstructures.hpp"
 						>
 					</File>
 					<File
-						RelativePath=".\ql\termstructures\volatilities\capstripper.hpp"
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capstripper.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\capletvol\capstripper.hpp"
 						>
 					</File>
 				</Filter>

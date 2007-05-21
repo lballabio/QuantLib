@@ -29,7 +29,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/volatilities/capletconstantvol.hpp>
+#include <ql/termstructures/volatilities/capletvol/capletconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>

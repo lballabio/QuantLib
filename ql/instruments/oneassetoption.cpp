@@ -21,7 +21,7 @@
 
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/volatilities/blackconstantvol.hpp>
+#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {

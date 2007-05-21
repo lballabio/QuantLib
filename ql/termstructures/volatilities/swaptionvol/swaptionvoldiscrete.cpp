@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/swaptionvoldiscrete.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvoldiscrete.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
 namespace QuantLib {

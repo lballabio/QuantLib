@@ -24,7 +24,7 @@
 #ifndef quantlib_localvolcurve_hpp
 #define quantlib_localvolcurve_hpp
 
-#include <ql/termstructures/volatilities/blackvariancecurve.hpp>
+#include <ql/termstructures/volatilities/equity/blackvariancecurve.hpp>
 
 namespace QuantLib {
 

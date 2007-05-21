@@ -17,9 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatilities/swaptionvol/swaptionvolcube1.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
-#include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
