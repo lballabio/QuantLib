@@ -40,7 +40,7 @@
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/termstructures/volatilities/caplet/capletconstantvol.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionconstantvol.hpp>
-#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
