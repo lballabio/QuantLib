@@ -27,7 +27,7 @@
 
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube2.hpp>

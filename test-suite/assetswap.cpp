@@ -45,7 +45,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube1.hpp>
 #include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

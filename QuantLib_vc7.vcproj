@@ -394,16 +394,16 @@
 				RelativePath=".\ql\cashflows\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\cashflows\analysis.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\analysis.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\cashflows\capflooredcoupon.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\capflooredcoupon.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\cashflows.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\cashflows\cashflows.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\cashflowvectors.cpp">

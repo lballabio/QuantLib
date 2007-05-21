@@ -31,7 +31,7 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/termstructures/volatilities/capletconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/currencies/europe.hpp>
 

@@ -19,12 +19,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analysis.hpp
+/*! \file cashflows.hpp
     \brief Cash-flow analysis functions
 */
 
-#ifndef quantlib_cash_flow_analysis_hpp
-#define quantlib_cash_flow_analysis_hpp
+#ifndef quantlib_cashflows_hpp
+#define quantlib_cashflows_hpp
 
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>

@@ -4,8 +4,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    analysis.hpp \
     capflooredcoupon.hpp \
+    cashflows.hpp \
     cashflowvectors.hpp \
     cmscoupon.hpp \
     conundrumpricer.hpp \
@@ -23,8 +23,8 @@ this_include_HEADERS = \
     timebasket.hpp
 
 libCashFlows_la_SOURCES = \
-    analysis.cpp \
     capflooredcoupon.cpp \
+    cashflows.cpp \
     cashflowvectors.cpp \
     cmscoupon.cpp \
     conundrumpricer.cpp \

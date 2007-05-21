@@ -34,7 +34,7 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 
 using namespace QuantLib;

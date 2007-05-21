@@ -1,67 +1,57 @@
-//
-//
-//										alphaformconcrete.cpp
-//
-//
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
+/*
+ Copyright (C) 2007 Mark Joshi
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
 
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <cmath>
 
-namespace QuantLib
-{
+namespace QuantLib {
 
-alphaforminverselinear::alphaforminverselinear( const std::vector<Time>& times,
-												Real alpha )
-												:
-												times_(times),
-												alpha_(alpha)
-{
-}
-alphaforminverselinear::~alphaforminverselinear()
-{
-}
+    alphaforminverselinear::alphaforminverselinear(
+                                                const std::vector<Time>& times,
+                                                Real alpha )
+    : times_(times), alpha_(alpha) {}
 
-Real alphaforminverselinear::operator()(Integer i) const
-{
-	return 1.0/(1.0+alpha_*times_[i]);
-}
+    Real alphaforminverselinear::operator()(Integer i) const {
+    	return 1.0/(1.0+alpha_*times_[i]);
+    }
 
-void alphaforminverselinear::setAlpha(Real alpha)
-{
-	alpha_=alpha;
-}
+    void alphaforminverselinear::setAlpha(Real alpha) {
+        alpha_=alpha;
+    }
 
 
-alphaformlinearhyperbolic::alphaformlinearhyperbolic( const std::vector<Time>& times,
-												Real alpha )
-												:
-												times_(times),
-												alpha_(alpha)
-{
+    alphaformlinearhyperbolic::alphaformlinearhyperbolic(
+                                                const std::vector<Time>& times,
+                                                Real alpha )
+    : times_(times), alpha_(alpha) {}
 
-}
+    Real alphaformlinearhyperbolic::operator()(Integer i) const {
+        Real at = alpha_*times_[i];
+        Real res = std::atan(at)-0.5*M_PI;
+        res *= at;
+        res += 1.0;
+        res =std::sqrt(res);
+        return res;
+    }
 
-alphaformlinearhyperbolic::~alphaformlinearhyperbolic()
-{
-
-}
-
-Real alphaformlinearhyperbolic::operator()(Integer i) const
-{
-	Real at = alpha_*times_[i];
-	Real res = std::atan(at)-0.5*M_PI;
-	res *= at;
-	res += 1.0;
-	res =std::sqrt(res);
-	return res;
-
-}
-
-void alphaformlinearhyperbolic::setAlpha(Real alpha)
-{
-	alpha_ = alpha;
-}
-
-
+    void alphaformlinearhyperbolic::setAlpha(Real alpha) {
+    	alpha_ = alpha;
+    }
 
 }

@@ -23,7 +23,7 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/processes/lfmprocess.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 

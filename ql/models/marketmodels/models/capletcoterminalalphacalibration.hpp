@@ -1,8 +1,4 @@
-//
-//
-//										CapletCoterminalAlphaCalibration.hpp
-//
-//
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2007 Mark Joshi
@@ -21,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef CAPLET_COTERMINAL_ALPHA_CALIBRATION
-#define CAPLET_COTERMINAL_ALPHA_CALIBRATION
+#ifndef quantlib_caplet_coterminal_alpha_calibration_hpp
+#define quantlib_caplet_coterminal_alpha_calibration_hpp
+
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
@@ -35,76 +32,74 @@ namespace QuantLib {
     class Matrix;
 	class alphaform;
 
-bool calibrationOfAlphaFunctionData(
-                            const EvolutionDescription& evolution,
-                            const PiecewiseConstantCorrelation& corr,
-                            const std::vector<boost::shared_ptr<
-                                PiecewiseConstantVariance> >&
-                                    displacedSwapVariances,
-                            const std::vector<Volatility>& capletVols,
-                            const CurveState& cs,
-                            const Spread displacement,
-                            const Size numberOfFactors,
-							boost::shared_ptr<alphaform> parametricform,
-                            const std::vector<Real>& alphaInitial,
-							const std::vector<Real>& alphaMax,
-							const std::vector<Real>& alphaMin,
-							Integer steps,
-							Real toleranceForAlphaSolving,
-							bool maximizeHomogeneity,
-							std::vector<Real>& alpha, // for info only,
-							std::vector<Real>& a,// for info only,
-							std::vector<Real>& b,// for info only,
-                            std::vector<Matrix>& swapCovariancePseudoRoots // this is what you really want to know
+    bool calibrationOfAlphaFunctionData(
+        const EvolutionDescription& evolution,
+        const PiecewiseConstantCorrelation& corr,
+        const std::vector<boost::shared_ptr<
+            PiecewiseConstantVariance> >&
+                displacedSwapVariances,
+        const std::vector<Volatility>& capletVols,
+        const CurveState& cs,
+        const Spread displacement,
+        const Size numberOfFactors,
+    	boost::shared_ptr<alphaform> parametricform,
+        const std::vector<Real>& alphaInitial,
+    	const std::vector<Real>& alphaMax,
+    	const std::vector<Real>& alphaMin,
+    	Integer steps,
+    	Real toleranceForAlphaSolving,
+    	bool maximizeHomogeneity,
+    	std::vector<Real>& alpha, // for info only,
+    	std::vector<Real>& a,     // for info only,
+    	std::vector<Real>& b,    // for info only,
+        std::vector<Matrix>& swapCovariancePseudoRoots // the real result
      );
 
 	bool calibrationOfAlphaFunctionDataIterative(
-		const EvolutionDescription& evolution,
-		const PiecewiseConstantCorrelation& corr,
-		const std::vector<boost::shared_ptr<
-		PiecewiseConstantVariance> >&
-		displacedSwapVariances,
-		const std::vector<Volatility>& capletVols,
-		const CurveState& cs,
-		const Spread displacement,
-		const Size numberOfFactors,
-		boost::shared_ptr<alphaform> parametricform,
-		const std::vector<Real>& alphaInitial,
-		const std::vector<Real>& alphaMax,
-		const std::vector<Real>& alphaMin,
-		Integer steps,
-		Real toleranceForAlphaSolving,
-		bool maximizeHomogeneity,
-		Size maxIterations,
-		Real toleranceForIterativeSolving,
-		std::vector<Real>& alpha, // for info only,
-		std::vector<Real>& a,// for info only,
-		std::vector<Real>& b,// for info only,
-		std::vector<Matrix>& swapCovariancePseudoRoots // this is what you really want to know
-		);
+    	const EvolutionDescription& evolution,
+    	const PiecewiseConstantCorrelation& corr,
+    	const std::vector<boost::shared_ptr<
+    	PiecewiseConstantVariance> >&
+    	displacedSwapVariances,
+    	const std::vector<Volatility>& capletVols,
+    	const CurveState& cs,
+    	const Spread displacement,
+    	const Size numberOfFactors,
+    	boost::shared_ptr<alphaform> parametricform,
+    	const std::vector<Real>& alphaInitial,
+    	const std::vector<Real>& alphaMax,
+    	const std::vector<Real>& alphaMin,
+    	Integer steps,
+    	Real toleranceForAlphaSolving,
+    	bool maximizeHomogeneity,
+    	Size maxIterations,
+    	Real toleranceForIterativeSolving,
+    	std::vector<Real>& alpha, // for info only,
+    	std::vector<Real>& a,     // for info only,
+    	std::vector<Real>& b,     // for info only,
+    	std::vector<Matrix>& swapCovariancePseudoRoots // the real result
+        );
 
-// doesn't return as much for those not interested in all the extras
-
-bool calibrationOfAlphaFunction(
-		const EvolutionDescription& evolution,
-		const PiecewiseConstantCorrelation& corr,
-		const std::vector<boost::shared_ptr<
-		PiecewiseConstantVariance> >&
-		displacedSwapVariances,
-		const std::vector<Volatility>& capletVols,
-		const CurveState& cs,
-		const Spread displacement,
-		const Size numberOfFactors,
-		boost::shared_ptr<alphaform> parametricform,
-		const std::vector<Real>& alphaInitial,
-		const std::vector<Real>& alphaMax,
-		const std::vector<Real>& alphaMin,
-		Integer steps,
-		Real toleranceForAlphaSolving,
-		Size maxIterations,
-		Real toleranceForIterativeSolving,
-		std::vector<Matrix>& swapCovariancePseudoRoots
-		);
+    // doesn't return as much for those not interested in all the extras
+    bool calibrationOfAlphaFunction(
+    	const EvolutionDescription& evolution,
+    	const PiecewiseConstantCorrelation& corr,
+    	const std::vector<boost::shared_ptr<
+    	PiecewiseConstantVariance> >&
+    	displacedSwapVariances,
+    	const std::vector<Volatility>& capletVols,
+    	const CurveState& cs,
+    	const Spread displacement,
+    	const Size numberOfFactors,
+    	boost::shared_ptr<alphaform> parametricform,
+    	const std::vector<Real>& alphaInitial,
+    	const std::vector<Real>& alphaMax,
+    	const std::vector<Real>& alphaMin,
+    	Integer steps,
+    	Real toleranceForAlphaSolving,
+    	Size maxIterations,
+    	Real toleranceForIterativeSolving,
+    	std::vector<Matrix>& swapCovariancePseudoRoots);
 
 }
 

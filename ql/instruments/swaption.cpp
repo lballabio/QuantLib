@@ -23,7 +23,7 @@
 #include <ql/instruments/swaption.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 

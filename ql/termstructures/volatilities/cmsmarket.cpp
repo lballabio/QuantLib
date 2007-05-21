@@ -25,7 +25,7 @@
 #include <ql/termstructures/volatilities/swaptionvolcube.hpp>
 #include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/cashflows/analysis.hpp>
+#include <ql/cashflows/cashflows.hpp>
 
 namespace QuantLib {
 
