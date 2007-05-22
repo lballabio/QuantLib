@@ -40,8 +40,8 @@ namespace QuantLib {
                      const Date& referenceDate = Date());
         SmileSection(Time exerciseTime,
                      const DayCounter& dc = Actual365Fixed());
-        SmileSection(){};
-        virtual ~SmileSection() {};
+        SmileSection() {}
+        virtual ~SmileSection() {}
 
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
@@ -50,7 +50,7 @@ namespace QuantLib {
 
         //virtual Rate atmLevel() const = 0;
         virtual const Date& exerciseDate() const { return exerciseDate_; }
-        virtual Time exerciseTime() const { return exerciseTime_; };
+        virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }
       protected:
         Date exerciseDate_;
@@ -64,17 +64,17 @@ namespace QuantLib {
                          Volatility vol,
                          const DayCounter& dc,
                          const Date& referenceDate = Date())
-        : SmileSection(d, dc, referenceDate), vol_(vol) {};
+        : SmileSection(d, dc, referenceDate), vol_(vol) {}
 
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
                          const DayCounter& dc = Actual365Fixed())
-        : SmileSection(exerciseTime, dc), vol_(vol) {};
+        : SmileSection(exerciseTime, dc), vol_(vol) {}
 
         Real variance(Rate) const { return vol_*vol_*exerciseTime_; }
         Volatility volatility(Rate) const { return vol_; }
-        Real minStrike () const { return 0.0; };
-        Real maxStrike () const { return QL_MAX_REAL; };
+        Real minStrike () const { return 0.0; }
+        Real maxStrike () const { return QL_MAX_REAL; }
 
       private:
         Volatility vol_;
@@ -91,8 +91,8 @@ namespace QuantLib {
                          const DayCounter& dc = Actual365Fixed());
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
-        Real minStrike () const { return 0.0; };
-        Real maxStrike () const { return QL_MAX_REAL; };
+        Real minStrike () const { return 0.0; }
+        Real maxStrike () const { return QL_MAX_REAL; }
     private:
         Real alpha_, beta_, nu_, rho_, forward_;
     };
@@ -100,10 +100,8 @@ namespace QuantLib {
     class SpreadedSmileSection : public SmileSection {
       public:
         SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
-                         Spread spread =0)
-        : underlyingSection_(underlyingSection), spread_(spread) {
-        
-    };
+                             Spread spread =0)
+        : underlyingSection_(underlyingSection), spread_(spread) {}
 
         Volatility volatility(Rate strike) const { 
             return underlyingSection_->volatility(strike)+spread_; 
