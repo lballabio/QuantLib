@@ -19,9 +19,9 @@ libVolatilities_la_SOURCES = \
     smilesection.cpp
 
 libVolatilities_la_LIBADD = \
-    capletvol/libCapletVol.la \
+    caplet/libCapletVol.la \
     equity/libEquity.la \
-    swaptionvol/libSwaptionVol.la
+    swaption/libSwaptionVol.la
 
 noinst_LTLIBRARIES = libVolatilities.la
 

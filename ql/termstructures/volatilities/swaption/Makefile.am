@@ -13,7 +13,7 @@ this_include_HEADERS = \
     swaptionvoldiscrete.hpp \
     swaptionvolmatrix.hpp
 
-libVolatilities_la_SOURCES = \
+libSwaptionVol_la_SOURCES = \
     cmsmarket.cpp \
     spreadedswaptionvolstructure.cpp \
     swaptionconstantvol.cpp \

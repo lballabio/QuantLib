@@ -8,5 +8,5 @@
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvoldiscrete.hpp>
-#include <ql/termstructures/volatilities//swaptionvol/swaptionvolmatrix.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 

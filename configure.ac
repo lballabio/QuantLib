@@ -388,6 +388,9 @@ AC_CONFIG_FILES([
     ql/time/daycounters/Makefile
     ql/termstructures/Makefile
     ql/termstructures/volatilities/Makefile
+    ql/termstructures/volatilities/caplet/Makefile
+    ql/termstructures/volatilities/equity/Makefile
+    ql/termstructures/volatilities/swaption/Makefile
     ql/termstructures/yieldcurves/Makefile
     ql/utilities/Makefile
     man/Makefile

@@ -12,7 +12,7 @@ this_include_HEADERS = \
     localvolcurve.hpp \
     localvolsurface.hpp
 
-libVolatilities_la_SOURCES = \
+libEquity_la_SOURCES = \
     blackvariancecurve.cpp \
     blackvariancesurface.cpp \
     localvolsurface.cpp

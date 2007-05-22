@@ -10,7 +10,7 @@ this_include_HEADERS = \
     capletvolatilitiesstructures.hpp \
     capstripper.hpp
 
-libVolatilities_la_SOURCES = \
+libCapletVol_la_SOURCES = \
     capletvolatilitiesstructures.cpp \
     capstripper.cpp
 
