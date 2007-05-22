@@ -25,8 +25,8 @@
 namespace QuantLib {
 
     SmileSection::SmileSection(const Date& d,
-                                                 const DayCounter& dc,
-                                                 const Date& referenceDate)
+                               const DayCounter& dc,
+                               const Date& referenceDate)
     : exerciseDate_(d), dc_(dc) {
         Date refDate = referenceDate!=Date() ? referenceDate :
                        Settings::instance().evaluationDate();

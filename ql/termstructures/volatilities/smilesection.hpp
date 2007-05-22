@@ -27,6 +27,7 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/utilities/null.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -48,7 +49,7 @@ namespace QuantLib {
         virtual Real variance(Rate strike) const = 0;
         virtual Volatility volatility(Rate strike) const = 0;
 
-        //virtual Rate atmLevel() const = 0;
+        virtual Real atmLevel() const = 0;
         virtual const Date& exerciseDate() const { return exerciseDate_; }
         virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }
@@ -63,8 +64,11 @@ namespace QuantLib {
         FlatSmileSection(const Date& d,
                          Volatility vol,
                          const DayCounter& dc,
-                         const Date& referenceDate = Date())
-        : SmileSection(d, dc, referenceDate), vol_(vol) {}
+                         const Date& referenceDate = Date(),
+                         Real atmLevel = Null<Rate>())
+        : SmileSection(d, dc, referenceDate), 
+          vol_(vol),
+          atmLevel_(atmLevel){}
 
         FlatSmileSection(Time exerciseTime,
                          Volatility vol,
@@ -75,9 +79,10 @@ namespace QuantLib {
         Volatility volatility(Rate) const { return vol_; }
         Real minStrike () const { return 0.0; }
         Real maxStrike () const { return QL_MAX_REAL; }
-
+        Real atmLevel() const { return atmLevel_; }
       private:
         Volatility vol_;
+        Real atmLevel_;
     };
 
     class SabrSmileSection : public SmileSection {
@@ -93,6 +98,7 @@ namespace QuantLib {
         Volatility volatility(Rate strike) const;
         Real minStrike () const { return 0.0; }
         Real maxStrike () const { return QL_MAX_REAL; }
+        Real atmLevel() const { return forward_; }
     private:
         Real alpha_, beta_, nu_, rho_, forward_;
     };
@@ -100,7 +106,7 @@ namespace QuantLib {
     class SpreadedSmileSection : public SmileSection {
       public:
         SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
-                             Spread spread =0)
+                         Spread spread =0)
         : underlyingSection_(underlyingSection), spread_(spread) {}
 
         Volatility volatility(Rate strike) const { 
@@ -116,7 +122,8 @@ namespace QuantLib {
         const Date& exerciseDate() const { return underlyingSection_->exerciseDate(); }
         Time exerciseTime() const { return underlyingSection_->exerciseTime(); }
         const DayCounter& dayCounter() const { return underlyingSection_->dayCounter(); }
-
+        
+        Real atmLevel() const { return underlyingSection_->atmLevel(); }
       private:
         const boost::shared_ptr<SmileSection> underlyingSection_;
         Spread spread_;

@@ -66,6 +66,7 @@ namespace QuantLib {
         EndCriteria::Type endCriteria() const;
         Real minStrike () const;
         Real maxStrike () const;
+        Real atmLevel() const;
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
@@ -126,6 +127,10 @@ namespace QuantLib {
         return strikes_.back();
     }
 
+    inline Real SabrInterpolatedSmileSection::atmLevel() const { 
+        calculate();
+        return forwardValue_;
+    }
 }
 
 #endif

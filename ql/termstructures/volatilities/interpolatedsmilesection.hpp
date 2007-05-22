@@ -41,12 +41,14 @@ namespace QuantLib {
                            Time expiryTime,
                            const std::vector<Rate>& strikes,
                            const std::vector<Handle<Quote> >& stdDevHandles,
+                           const Handle<Quote>& atmLevel,
                            const Interpolator& interpolator = Interpolator(),
                            const DayCounter& dc = Actual365Fixed());
         InterpolatedSmileSection(
                            Time expiryTime,
                            const std::vector<Rate>& strikes,
                            const std::vector<Real>& stdDevs,
+                           Real atmLevel,
                            const Interpolator& interpolator = Interpolator(),
                            const DayCounter& dc = Actual365Fixed());
 
@@ -54,6 +56,7 @@ namespace QuantLib {
                            const Date& d,
                            const std::vector<Rate>& strikes,
                            const std::vector<Handle<Quote> >& stdDevHandles,
+                           const Handle<Quote>& atmLevel,
                            const DayCounter& dc = Actual365Fixed(),
                            const Interpolator& interpolator = Interpolator(),
                            const Date& referenceDate = Date());
@@ -61,18 +64,21 @@ namespace QuantLib {
                            const Date& d,
                            const std::vector<Rate>& strikes,
                            const std::vector<Real>& stdDevs,
+                           Real atmLevel,
                            const DayCounter& dc = Actual365Fixed(),
                            const Interpolator& interpolator = Interpolator(),
                            const Date& referenceDate = Date());
         void performCalculations() const;
         Real variance(Rate strike) const;
         Volatility volatility(Rate strike) const;
-        Real minStrike () const { return strikes_.front(); };
-        Real maxStrike () const { return strikes_.back(); };
+        Real minStrike () const { return strikes_.front(); }
+        Real maxStrike () const { return strikes_.back(); }
+        virtual Real atmLevel() const { return atmLevel_->value(); } 
       private:
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
         std::vector<Handle<Quote> > stdDevHandles_;
+        Handle<Quote> atmLevel_;
         mutable std::vector<Volatility> vols_;
         mutable Interpolation interpolation_;
     };
@@ -83,15 +89,17 @@ namespace QuantLib {
                                Time timeToExpiry,
                                const std::vector<Rate>& strikes,
                                const std::vector<Handle<Quote> >& stdDevHandles,
+                               const Handle<Quote>& atmLevel,
                                const Interpolator& interpolator,
                                const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
-      stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
+      stdDevHandles_(stdDevHandles), atmLevel_(atmLevel), 
+      vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             registerWith(stdDevHandles_[i]);
-
+        registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
@@ -103,6 +111,7 @@ namespace QuantLib {
                                 Time timeToExpiry,
                                 const std::vector<Rate>& strikes,
                                 const std::vector<Real>& stdDevs,
+                                Real atmLevel,
                                 const Interpolator& interpolator,
                                 const DayCounter& dc)
     : SmileSection(timeToExpiry, dc),
@@ -114,7 +123,8 @@ namespace QuantLib {
         for (Size i=0; i<stdDevs.size(); ++i)
             stdDevHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
                 SimpleQuote(stdDevs[i])));
-
+        atmLevel_ = Handle<Quote>
+           (boost::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
@@ -126,16 +136,17 @@ namespace QuantLib {
                            const Date& d,
                            const std::vector<Rate>& strikes,
                            const std::vector<Handle<Quote> >& stdDevHandles,
+                           const Handle<Quote>& atmLevel,
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
     : SmileSection(d, dc, referenceDate),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
-      stdDevHandles_(stdDevHandles), vols_(stdDevHandles.size())
+      stdDevHandles_(stdDevHandles), atmLevel_(atmLevel), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             registerWith(stdDevHandles_[i]);
-
+        registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
@@ -147,6 +158,7 @@ namespace QuantLib {
                            const Date& d,
                            const std::vector<Rate>& strikes,
                            const std::vector<Real>& stdDevs,
+                           Real atmLevel,
                            const DayCounter& dc,
                            const Interpolator& interpolator,
                            const Date& referenceDate)
@@ -159,7 +171,8 @@ namespace QuantLib {
         for (Size i=0; i<stdDevs.size(); ++i)
             stdDevHandles_[i] = Handle<Quote>(boost::shared_ptr<Quote>(new
                 SimpleQuote(stdDevs[i])));
-
+        atmLevel_ = Handle<Quote>
+           (boost::shared_ptr<Quote>(new SimpleQuote(atmLevel)));
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
