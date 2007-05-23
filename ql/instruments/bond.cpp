@@ -326,8 +326,8 @@ namespace QuantLib {
         return cashflows_.back()->hasOccurred(settlementDate());
     }
 
-    Real Bond::lastCoupon(Date settlement) const {
-        return CashFlows::lastCouponRate(cashflows_, settlement);
+    Real Bond::previousCoupon(Date settlement) const {
+        return CashFlows::previousCouponRate(cashflows_, settlement);
     }
 
     Real Bond::currentCoupon(Date settlement) const {

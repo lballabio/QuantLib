@@ -54,7 +54,7 @@ namespace QuantLib {
                                                 const Date& refDate = Date());
         static Leg::const_iterator nextCashFlow(const Leg& leg, 
                                                 const Date& refDate = Date());
-        static Rate lastCouponRate(const Leg& leg,
+        static Rate previousCouponRate(const Leg& leg,
                                    const Date& refDate = Date());
         static Rate currentCouponRate(const Leg& leg,
                                       const Date& refDate = Date());
