@@ -1397,8 +1397,9 @@ void createSmileSections() {
     smilesOnExpiry_ = std::vector<boost::shared_ptr<SmileSection> >();
     smilesOnExpiry_.push_back(boost::shared_ptr<SmileSection>(
         new FlatSmileSection(startDate_, flatVol_, rangeCouponDayCount_)));
+    Real dummyAtmLevel = 0; 
     smilesOnExpiry_.push_back(boost::shared_ptr<SmileSection>(
-        new InterpolatedSmileSection<>(startDate_, strikes, stdDevsOnExpiry, rangeCouponDayCount_)));
+        new InterpolatedSmileSection<>(startDate_, strikes, stdDevsOnExpiry, dummyAtmLevel, rangeCouponDayCount_)));
     //smilesOnExpiry_.push_back(
     //    swaptionVolatilityStructures_[0]->smileSection(startDate_,
     //                                                   Period(6, Months)));
@@ -1407,7 +1408,7 @@ void createSmileSections() {
     smilesOnPayment_.push_back(boost::shared_ptr<SmileSection>(
         new FlatSmileSection(endDate_, flatVol_, rangeCouponDayCount_)));
     smilesOnPayment_.push_back(boost::shared_ptr<SmileSection>(
-        new InterpolatedSmileSection<>(endDate_, strikes, stdDevsOnPayment, rangeCouponDayCount_)));
+        new InterpolatedSmileSection<>(endDate_, strikes, stdDevsOnPayment, dummyAtmLevel, rangeCouponDayCount_)));
     //smilesOnPayment_.push_back(
     //    swaptionVolatilityStructures_[0]->smileSection(endDate_,
     //                                                   Period(6, Months)));
