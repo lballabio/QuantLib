@@ -30,7 +30,7 @@ namespace QuantLib {
                                   underlyingVolStructure->businessDayConvention()),
       underlyingVolStructure_(underlyingVolStructure),
       spread_(spread) {
-
+          enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
     }
 
     Volatility SpreadedSwaptionVolatilityStructure::volatilityImpl(
@@ -72,10 +72,6 @@ namespace QuantLib {
         return underlyingVolStructure_->maxStrike();
     }
 
-    Date SpreadedSwaptionVolatilityStructure::maxDate() const {
-        return underlyingVolStructure_->maxDate();
-    }
-
     Time SpreadedSwaptionVolatilityStructure::maxSwapLength() const {
         return underlyingVolStructure_->maxSwapLength();
     }
@@ -89,6 +85,30 @@ namespace QuantLib {
         SpreadedSwaptionVolatilityStructure::convertDates(const Date& optionDate,
                                                 const Period& swapTenor) const {
         return underlyingVolStructure_->convertDates(optionDate, swapTenor);
+    }
+    
+    DayCounter SpreadedSwaptionVolatilityStructure::dayCounter() const {
+        return underlyingVolStructure_->dayCounter();
+    }
+    
+    Date SpreadedSwaptionVolatilityStructure::maxDate() const {
+        return underlyingVolStructure_->maxDate();
+    }
+
+    Time SpreadedSwaptionVolatilityStructure::maxTime() const {
+        return underlyingVolStructure_->maxTime();
+    }
+        
+    const Date& SpreadedSwaptionVolatilityStructure::referenceDate() const {
+        return underlyingVolStructure_->referenceDate();
+    }
+        
+    Calendar SpreadedSwaptionVolatilityStructure::calendar() const {
+        return underlyingVolStructure_->calendar();
+    }
+        
+    Natural SpreadedSwaptionVolatilityStructure::settlementDays() const {
+        return underlyingVolStructure_->settlementDays();
     }
 
 }

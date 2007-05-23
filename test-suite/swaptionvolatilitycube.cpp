@@ -414,14 +414,10 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 spreadedVolCube.smileSection(optionTenors_[i], swapTenors_[j]);
             for (Size k=0; k<strikes.size(); k++) {
                 Real strike = strikes[k];
-                Real a = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike);
-                Real b = volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
                 Real diff = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike)
                             - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
                 if (fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
-                                "\na = " << a <<
-                                "\nb = " << b <<
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
                                 "\n atm strike = " << io::rate(strike) <<

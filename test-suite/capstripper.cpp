@@ -30,6 +30,7 @@
 #include <ql/termstructures/volatilities/caplet/capstripper.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/termstructures/volatilities/caplet/spreadedcapletvolstructure.hpp>
 
 #include <iostream>
 
@@ -302,10 +303,47 @@ void CapsStripperTest::highPrecisionTest(){
     QL_TEST_END
 }
 
+/* Spreaded volatility stripper test*/
+
+void CapsStripperTest::testSpreadedStripper() {
+
+    BOOST_MESSAGE("Testing spreaded volatility stripper...");
+
+    QL_TEST_BEGIN
+    
+    Date today = TARGET().adjust(Settings::instance().evaluationDate());
+    Settings::instance().evaluationDate() = today;
+
+    setMarketVolatilityTermStructure();
+    setup();
+
+    Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
+    Spread spread = 0.0001;
+    SpreadedCapletVolatilityStructure spreadedStripper(strippedVolatilityStructureHandle, spread);  
+    std::vector<Real> strikes;
+    for (Size k=1; k<100; k++)
+        strikes.push_back(k*.01);
+    for (Size i=0; i<tenors.size(); i++) {
+        for (Size k=0; k<strikes.size(); k++) {
+            Real strike = strikes[k];
+            Real diff = spreadedStripper.volatility(tenors[i], strike)
+                        - strippedVolatilityStructureHandle->volatility(tenors[i], strike);
+            if (fabs(diff-spread)>1e-16)
+                BOOST_ERROR("\ndiff!=spread in volatility method:"
+                            "\nexpiry time = " << tenors[i] <<
+                            "\n atm strike = " << io::rate(strike) <<
+                            "\ndiff = " << diff <<
+                            "\nspread = " << spread);    
+        }
+    }
+    QL_TEST_END
+}
+
 
 test_suite* CapsStripperTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("CapsStripper tests");
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::FlatVolatilityStripping));
     suite->add(BOOST_TEST_CASE(&CapsStripperTest::highPrecisionTest));
+    suite->add(BOOST_TEST_CASE(&CapsStripperTest::testSpreadedStripper));
     return suite;
 }

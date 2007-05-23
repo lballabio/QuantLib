@@ -17,22 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file spreadedswaptionvolstructure.hpp
-    \brief Spreaded swaption volatility
+/*! \file spreadedcapletvolstructure.hpp
+    \brief Spreaded caplet volatility
 */
 
-#ifndef quantlib_spreaded_swaption_volstructure_h
-#define quantlib_spreaded_swaption_volstructure_h
+#ifndef quantlib_spreaded_caplet_volstructure_h
+#define quantlib_spreaded_caplet_volstructure_h
 
-#include <ql/termstructures/swaptionvolstructure.hpp>
+#include <ql/termstructures/capvolstructures.hpp>
 #include <ql/time/period.hpp>
 
 namespace QuantLib {
 
-    class SpreadedSwaptionVolatilityStructure : public SwaptionVolatilityStructure {
+    class SpreadedCapletVolatilityStructure : public CapletVolatilityStructure {
       public:
-        SpreadedSwaptionVolatilityStructure(
-            const Handle<SwaptionVolatilityStructure>& underlyingVolStructure,
+        SpreadedCapletVolatilityStructure(
+            const Handle<CapletVolatilityStructure>& underlyingVolStructure,
             Spread spread = 0.);
 
       protected:
@@ -46,34 +46,19 @@ namespace QuantLib {
         Calendar calendar() const;
         Natural settlementDays() const;
         //@}
-        //! \name SwaptionVolatilityStructure interface
+        //! \name CapletVolatilityStructure interface
         //@{
-        const Period& maxSwapTenor() const;
         Rate minStrike() const;
         Rate maxStrike() const;
-        Time maxSwapLength() const;
         BusinessDayConvention businessDayConvention() const;
-        
-        std::pair<Time,Time> convertDates(const Date& optionDate,
-                                          const Period& swapTenor) const;
-    
 
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
+        Volatility volatilityImpl(Time length,
                                   Rate strike) const;
 
-        boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        Time optionTime, 
-                                        Time swapLength) const;
-        
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        const Date& optionDate,
-                                        const Period& swapTenor) const;
-        
         //@} 
 
     private:
-        const Handle<SwaptionVolatilityStructure> underlyingVolStructure_;
+        const Handle<CapletVolatilityStructure> underlyingVolStructure_;
         Spread spread_;
 
     };

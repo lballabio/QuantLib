@@ -29,6 +29,7 @@ class CapsStripperTest {
   public:
     static void FlatVolatilityStripping();
     static void highPrecisionTest();
+    static void testSpreadedStripper();
     static boost::unit_test_framework::test_suite* suite();
 };
 

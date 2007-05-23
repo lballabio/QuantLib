@@ -3653,6 +3653,14 @@
 						RelativePath=".\ql\termstructures\volatilities\caplet\capstripper.hpp"
 						>
 					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\caplet\spreadedcapletvolstructure.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\caplet\spreadedcapletvolstructure.hpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
