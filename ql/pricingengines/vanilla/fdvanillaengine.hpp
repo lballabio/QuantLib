@@ -52,7 +52,7 @@ namespace QuantLib {
         : timeSteps_(timeSteps), gridPoints_(gridPoints),
           timeDependent_(timeDependent),
           intrinsicValues_(gridPoints), BCs_(2) {}
-        virtual ~FDVanillaEngine() {};
+        virtual ~FDVanillaEngine() {}
         // accessors
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:

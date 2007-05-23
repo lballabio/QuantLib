@@ -43,7 +43,7 @@ namespace QuantLib {
         std::string name() const { return basePayoff_->name();};
         std::string description() const { return basePayoff_->description();};
         Real operator()(Real price) const { return (*basePayoff_)(price);};
-        virtual ~BasketPayoff() {};
+        virtual ~BasketPayoff() {}
         virtual Real operator()(const Array &a) const {
             return (*basePayoff_)(accumulate(a));
         }

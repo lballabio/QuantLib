@@ -33,7 +33,7 @@ namespace QuantLib {
 
     class VanillaOptionPricer {
       public:
-        virtual ~VanillaOptionPricer() {};
+        virtual ~VanillaOptionPricer() {}
         virtual Real operator()(Real strike,
                                 Option::Type optionType,
                                 Real deflator) const = 0;
@@ -61,7 +61,7 @@ namespace QuantLib {
 
     class GFunction {
       public:
-        virtual ~GFunction() {};
+        virtual ~GFunction() {}
         virtual Real operator()(Real x) = 0;
         virtual Real firstDerivative(Real x) = 0;
         virtual Real secondDerivative(Real x) = 0;
@@ -92,8 +92,8 @@ namespace QuantLib {
             GFunctionStandard(Size q,
                               Real delta,
                               Size swapLength)
-            : q_(q), delta_(delta), swapLength_(swapLength) {};
-            Real operator()(Real x) ;
+            : q_(q), delta_(delta), swapLength_(swapLength) {}
+            Real operator()(Real x);
             Real firstDerivative(Real x);
             Real secondDerivative(Real x);
           protected:
@@ -161,7 +161,8 @@ namespace QuantLib {
                 virtual Real operator()(const Real& x) const;
                 Real derivative (const Real& x) const;
                 void setSwapRateValue(Real x);
-                const GFunctionWithShifts& gFunctionWithShifts() const {return o_;}
+                const GFunctionWithShifts& gFunctionWithShifts() const {
+                    return o_; }
             };
 
             boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
@@ -242,13 +243,13 @@ namespace QuantLib {
             Rate upperLimit = 1.0,
             Real precision = 1.0e-6);
 
-       Real upperLimit(){return upperLimit_;}
-       Real stdDeviations(){return stdDeviationsForUpperLimit_;}
+       Real upperLimit() { return upperLimit_; }
+       Real stdDeviations() { return stdDeviationsForUpperLimit_; }
 
       //private:
         class Function : public std::unary_function<Real, Real> {
           public:
-            virtual ~Function() {};
+            virtual ~Function() {}
             virtual Real operator()(Real x) const = 0;
         };
         //! ConundrumIntegrand

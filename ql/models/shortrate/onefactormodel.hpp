@@ -59,7 +59,7 @@ namespace QuantLib {
         ShortRateDynamics(
                         const boost::shared_ptr<StochasticProcess1D>& process)
         : process_(process) {}
-        virtual ~ShortRateDynamics() {};
+        virtual ~ShortRateDynamics() {}
 
         //! Compute state variable from short rate
         virtual Real variable(Time t, Rate r) const = 0;

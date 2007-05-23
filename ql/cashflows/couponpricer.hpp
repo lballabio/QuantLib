@@ -91,7 +91,7 @@ namespace QuantLib {
 		BlackIborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol= 
                                         Handle<CapletVolatilityStructure>())
 		: IborCouponPricer(capletVol) {};
-        virtual ~BlackIborCouponPricer() {};
+        virtual ~BlackIborCouponPricer() {}
         virtual void initialize(const FloatingRateCoupon& coupon);
         /* */
         virtual Real swapletPrice() const;

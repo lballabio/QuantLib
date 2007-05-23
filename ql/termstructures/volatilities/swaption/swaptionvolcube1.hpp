@@ -35,7 +35,7 @@ namespace QuantLib {
     class SwaptionVolCube1 : public SwaptionVolatilityCube {
         class Cube {
           public:
-            Cube() {};
+            Cube() {}
             Cube(const std::vector<Date>& optionDates,
                  const std::vector<Period>& swapTenors,
                  const std::vector<Time>& optionTimes,
@@ -44,7 +44,7 @@ namespace QuantLib {
                  bool extrapolation = true);
             Cube& operator=(const Cube& o);
             Cube(const Cube&);
-            virtual ~Cube() {};
+            virtual ~Cube() {}
             void setElement(Size IndexOfLayer,
                             Size IndexOfRow,
                             Size IndexOfColumn,

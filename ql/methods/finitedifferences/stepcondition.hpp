@@ -72,7 +72,7 @@ namespace QuantLib {
 
         class CurveWrapper {
           public:
-            virtual ~CurveWrapper() {};
+            virtual ~CurveWrapper() {}
             virtual Real getValue(const array_type &a,
                                   int i) = 0;
         };

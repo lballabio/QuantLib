@@ -37,14 +37,14 @@ namespace QuantLib {
     template <class T>
     class LocalVolatilityEstimator {
     public:
-        virtual ~LocalVolatilityEstimator() {};
+        virtual ~LocalVolatilityEstimator() {}
         virtual TimeSeries<Volatility>
         calculate(const TimeSeries<T> &quoteSeries) = 0;
     };
 
     class VolatilityCompositor {
       public:
-        virtual ~VolatilityCompositor() {};
+        virtual ~VolatilityCompositor() {}
         virtual TimeSeries<Volatility>
         calculate(const TimeSeries<Volatility>& volatilitySeries) = 0;
         virtual void calibrate(const TimeSeries<Volatility>& volatilitySeries) = 0;

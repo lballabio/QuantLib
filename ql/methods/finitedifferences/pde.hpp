@@ -31,7 +31,7 @@
 namespace QuantLib {
     class PdeSecondOrderParabolic {
     public:
-        virtual ~PdeSecondOrderParabolic() {};
+        virtual ~PdeSecondOrderParabolic() {}
         virtual Real diffusion(Time t, Real x) const = 0;
         virtual Real drift(Time t, Real x) const = 0;
         virtual Real discount(Time t, Real x) const = 0;

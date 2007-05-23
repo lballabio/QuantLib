@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         Integrator(Real absoluteAccuracy,
                    Size maxEvaluations);
-        virtual ~Integrator() {};
+        virtual ~Integrator() {}
 
         Real operator()(const boost::function<Real (Real)>& f,
                         Real a,
