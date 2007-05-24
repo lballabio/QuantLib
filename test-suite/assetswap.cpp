@@ -164,6 +164,20 @@ void AssetSwapTest::testImpliedValue() {
                          100.0, Date(24,September,2004), termStructure_));
     CashFlows::setPricer(floatingBond->cashflows(),pricer);
     iborindex_->addFixing(Date(22,March,2007), 0.04013);
+    Real currentCoupon=0.04013+0.0025;
+    Real floatingCurrentCoupon= floatingBond->currentCoupon();
+    Real error2= std::fabs(floatingCurrentCoupon-currentCoupon);
+    if (error2>tolerance) {
+        BOOST_ERROR("wrong current coupon is returned for floating bond:"
+                    << QL_FIXED << std::setprecision(4)
+                    << "\n  bond calculated current coupon:      " << currentCoupon
+                    << "\n  current coupon asked to the bond: " << floatingCurrentCoupon
+                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << "\n  error:                 " << error2
+                    << "\n  tolerance:             " << tolerance);
+    }
+
+
     Real floatingBondPrice = floatingBond->cleanPrice();
     AssetSwap floatingBondAssetSwap(payFixedRate, 
                                  floatingBond, floatingBondPrice,
@@ -171,15 +185,15 @@ void AssetSwapTest::testImpliedValue() {
                                  Schedule(),
                                  floatingDayCounter_, parAssetSwap);
     Real floatingBondAssetSwapPrice = floatingBondAssetSwap.fairPrice();
-    Real error2 = std::fabs(floatingBondAssetSwapPrice-floatingBondPrice);
+    Real error3 = std::fabs(floatingBondAssetSwapPrice-floatingBondPrice);
 
-    if (error2>tolerance) {
+    if (error3>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for floating bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  bond clean price:      " << floatingBondPrice
                     << "\n  asset swap fair price: " << floatingBondAssetSwapPrice
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error2
+                    << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
     }
 
@@ -217,15 +231,15 @@ void AssetSwapTest::testImpliedValue() {
                                  Schedule(),
                                  floatingDayCounter_, parAssetSwap);
     Real cmsBondAssetSwapPrice = cmsBondAssetSwap.fairPrice();
-    Real error3 = std::fabs(cmsBondAssetSwapPrice-cmsBondPrice);
+    Real error4 = std::fabs(cmsBondAssetSwapPrice-cmsBondPrice);
 
-    if (error3>tolerance) {
+    if (error4>tolerance) {
         BOOST_ERROR("wrong zero spread asset swap price for cms bond:"
                     << QL_FIXED << std::setprecision(4)
                     << "\n  bond clean price:      " << cmsBondPrice
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice
                     << QL_SCIENTIFIC << std::setprecision(2)
-                    << "\n  error:                 " << error3
+                    << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
 
