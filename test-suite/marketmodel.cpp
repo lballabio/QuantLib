@@ -466,7 +466,7 @@ void checkMultiProductCompositeResults (const SequenceStatistics& stats,
             BOOST_MESSAGE(config);
             currentResultIndex = 0;
             for (Size j=0; j<subProductExpectedValue->values.size(); ++j) {
-                BOOST_MESSAGE(io::ordinal(i+1) 
+                BOOST_MESSAGE(io::ordinal(j+1) 
                     << " "  << subProductExpectedValue->description
                     << ": " << io::rate(results[currentResultIndex])
                     << "\t" << io::rate(subProductExpectedValue->values[j])
@@ -1063,40 +1063,20 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
     }
 }
 
-void MarketModelTest::testMultiStepForwardsAndOptionlets() {
-    std::string testDescription = "multi-step forwards and optionlets ";
+
+void MarketModelTest::testAllMultiStepProducts() {
+    std::string testDescription = "all multiStepProducts ";
     QL_TEST_SETUP
     MultiProductComposite product;
     std::vector<SubProductExpectedValues> subProductExpectedValues;
     addForwards(product, subProductExpectedValues);
     addOptionLets(product, subProductExpectedValues);
-    product.finalize();
-    testMultiProductComposite(product, subProductExpectedValues, 
-                              testDescription);
-}
-
-void MarketModelTest::testMultiStepCoinitialSwaps() {
-    std::string testDescription = "multi-step coinitial swaps ";
-    QL_TEST_SETUP
-    MultiProductComposite product;
-    std::vector<SubProductExpectedValues> subProductExpectedValues;
     addCoinitialSwaps(product, subProductExpectedValues);
-    product.finalize();
-    testMultiProductComposite(product, subProductExpectedValues, 
-                              testDescription);
-}
-
-void MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions() {
-    std::string testDescription = "multi-step coterminal swaps and swaptions ";
-    QL_TEST_SETUP
-    MultiProductComposite product;
-    std::vector<SubProductExpectedValues> subProductExpectedValues;
     addCoterminalSwapsAndSwaptions(product, subProductExpectedValues);
     product.finalize();
     testMultiProductComposite(product, subProductExpectedValues, 
                               testDescription);
 }
-
 
 void MarketModelTest::testCallableSwapNaif() {
 
@@ -2088,9 +2068,7 @@ test_suite* MarketModelTest::suite() {
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepForwardsAndOptionlets));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoinitialSwaps));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testMultiStepCoterminalSwapsAndSwaptions));
+    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
 
     // just one of the tests below is run in order to reduce running times...
     // uncomment as much as you prefer...
