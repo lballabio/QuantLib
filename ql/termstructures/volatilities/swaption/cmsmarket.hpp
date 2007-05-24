@@ -30,6 +30,7 @@
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 

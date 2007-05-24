@@ -19,6 +19,7 @@
 
 #include <ql/methods/montecarlo/parametricexercise.hpp>
 #include <ql/math/optimization/problem.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 
