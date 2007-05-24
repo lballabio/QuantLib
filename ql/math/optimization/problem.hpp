@@ -27,9 +27,11 @@
 #define quantlib_optimization_problem_h
 
 #include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/costfunction.hpp>
 
 namespace QuantLib {
 
+    class Constraint;
     //! Constrained optimization problem
     class Problem {
       public:

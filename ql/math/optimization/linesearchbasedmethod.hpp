@@ -25,6 +25,7 @@
 #define quantlib_line_search_based_optimization_method_h
 
 #include <ql/math/optimization/method.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

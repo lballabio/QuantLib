@@ -38,7 +38,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/termstructures/volatilities/sabr.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
-
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 

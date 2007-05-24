@@ -26,15 +26,12 @@
 #ifndef quantlib_optimization_method_h
 #define quantlib_optimization_method_h
 
-#include <ql/utilities/null.hpp>
-#include <ql/math/optimization/constraint.hpp>
-#include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
 
 namespace QuantLib {
 
     class Problem;
-
+    
     //! Abstract class for constrained optimization method
     class OptimizationMethod {
       public:

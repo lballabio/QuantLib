@@ -25,6 +25,7 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/problem.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
  */
 
 #include <ql/math/optimization/simplex.hpp>
-
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 

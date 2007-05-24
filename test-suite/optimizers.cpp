@@ -25,6 +25,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
