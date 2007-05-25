@@ -168,8 +168,9 @@
 #  endif
 #  define QL_PATCH_MSVC80
 #  define QL_WORKING_BOOST_STREAMS
-// see the corresponding pragma in the 7.1 section
+// see the corresponding pragmas in the 7.1 section
 #  pragma warning(disable: 4267)
+#  pragma warning(disable: 4224)
 #else
 #  error "unknown Microsoft compiler"
 #endif
