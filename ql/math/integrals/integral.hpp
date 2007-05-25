@@ -22,11 +22,8 @@
 #ifndef quantlib_math_integrator_hpp
 #define quantlib_math_integrator_hpp
 
-#include <ql/errors.hpp>
 #include <ql/types.hpp>
-#include <ql/utilities/null.hpp>
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

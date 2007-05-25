@@ -18,6 +18,7 @@
 */
 
 #include <ql/math/integrals/integral.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
