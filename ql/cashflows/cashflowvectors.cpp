@@ -516,11 +516,14 @@ namespace QuantLib {
                    const std::vector<Real>& gearings,
                    const std::vector<Spread>& spreads,
                    bool isInArrears,
-                   const std::vector<Rate>& callRates,
-                   bool isCallOptionAdded,
-                   const std::vector<Rate>& putRates,
-                   bool isPutOptionAdded,
-                   const std::vector<Rate>& digitalPayoffs,
+                   const std::vector<Rate>& callStrikes,
+                   Position::Type callPosition,
+                   bool isCallATMIncluded,
+                   const std::vector<Rate>& callDigitalPayoffs,
+                   const std::vector<Rate>& putStrikes,
+                   Position::Type putPosition,
+                   bool isPutATMIncluded,
+                   const std::vector<Rate>& putDigitalPayoffs,
                    Replication::Type replication,
                    Real eps) {
 
@@ -536,11 +539,11 @@ namespace QuantLib {
         QL_REQUIRE(spreads.size()<=n,
                    "too many spreads (" << spreads.size() <<
                    "), only " << n << " required");
-        QL_REQUIRE(callRates.size()<=n,
-                   "too many call rates (" << callRates.size() <<
+        QL_REQUIRE(callStrikes.size()<=n,
+                   "too many call rates (" << callStrikes.size() <<
                    "), only " << n << " required");
-        QL_REQUIRE(putRates.size()<=n,
-                   "too many put rates (" << putRates.size() <<
+        QL_REQUIRE(putStrikes.size()<=n,
+                   "too many put rates (" << putStrikes.size() <<
                    "), only " << n << " required");
 
         Leg leg; leg.reserve(n);
@@ -577,11 +580,14 @@ namespace QuantLib {
                                        paymentDayCounter, isInArrears));
                 leg.push_back(boost::shared_ptr<CashFlow>(new
                     DigitalCouponType( underlying,
-                                       get(callRates, i, Null<Real>()),
-                                       isCallOptionAdded,
-                                       get(putRates, i, Null<Real>()),
-                                       isPutOptionAdded,
-                                       get(digitalPayoffs, i, Null<Real>()),
+                                       get(callStrikes, i, Null<Real>()),
+                                       callPosition,
+                                       isCallATMIncluded,
+                                       get(callDigitalPayoffs, i, Null<Real>()),
+                                       get(putStrikes, i, Null<Real>()),
+                                       putPosition,
+                                       isPutATMIncluded,
+                                       get(putDigitalPayoffs, i, Null<Real>()),
                                        replication,
                                        eps)));
             }
@@ -590,22 +596,25 @@ namespace QuantLib {
     }
 
     Leg DigitalIborLeg(const std::vector<Real>& nominals,
-                       const Schedule& schedule,
-                       const boost::shared_ptr<IborIndex>& index,
-                       const DayCounter& paymentDayCounter,
-                       const BusinessDayConvention paymentConvention,
-                       Natural fixingDays,
-                       const std::vector<Real>& gearings,
-                       const std::vector<Spread>& spreads,
-                       bool isInArrears,
-                       const std::vector<Rate>& callRates,
-                       bool longCallOption,
-                       const std::vector<Rate>& putRates,
-                       bool longPutOption,
-                       const std::vector<Rate>& digitalPayoffs,
-                       Replication::Type replication,
-                       Real eps) {
-
+                const Schedule& schedule,
+                const boost::shared_ptr<IborIndex>& index,
+                const DayCounter& paymentDayCounter,
+                const BusinessDayConvention paymentConvention,
+                Natural fixingDays,
+                const std::vector<Real>& gearings,
+                const std::vector<Spread>& spreads,
+                bool isInArrears,
+                const std::vector<Rate>& callStrikes,
+                Position::Type longCallOption,
+                bool isCallATMIncluded,
+                const std::vector<Rate>& callDigitalPayoffs,
+                const std::vector<Rate>& putStrikes,
+                Position::Type longPutOption,
+                bool isPutATMIncluded,
+                const std::vector<Rate>& putDigitalPayoffs,
+                Replication::Type replication,
+                Real eps) {
+    
         return FloatingDigitalLeg<IborIndex, IborCoupon, DigitalIborCoupon>(
                nominals,
                schedule,
@@ -616,14 +625,16 @@ namespace QuantLib {
                gearings,
                spreads,
                isInArrears,
-               callRates,
+               callStrikes,
                longCallOption,
-               putRates,
+               isCallATMIncluded,
+               callDigitalPayoffs,
+               putStrikes,
                longPutOption,
-               digitalPayoffs,
+               isPutATMIncluded,
+               putDigitalPayoffs,
                replication,
-               eps);  
-    }
+               eps);    }
 
     Leg DigitalCmsLeg(const std::vector<Real>& nominals,
                 const Schedule& schedule,
@@ -634,11 +645,14 @@ namespace QuantLib {
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 bool isInArrears,
-                const std::vector<QuantLib::Rate>& callRates,
-                bool longCallOption,
-                const std::vector<QuantLib::Rate>& putRates,
-                bool longPutOption,
-                const std::vector<QuantLib::Rate>& cashRates,
+                const std::vector<Rate>& callStrikes,
+                Position::Type callPosition,
+                bool isCallATMIncluded,
+                const std::vector<Rate>& callDigitalPayoffs,
+                const std::vector<Rate>& putStrikes,
+                Position::Type putPosition,
+                bool isPutATMIncluded,
+                const std::vector<Rate>& putDigitalPayoffs,
                 Replication::Type replication,
                 Real eps) {
     
@@ -652,11 +666,14 @@ namespace QuantLib {
                gearings,
                spreads,
                isInArrears,
-               callRates,
-               longCallOption,
-               putRates,
-               longPutOption,
-               cashRates,
+               callStrikes,
+               callPosition,
+               isCallATMIncluded,
+               callDigitalPayoffs,
+               putStrikes,
+               putPosition,
+               isPutATMIncluded,
+               putDigitalPayoffs,
                replication,
                eps);
     }

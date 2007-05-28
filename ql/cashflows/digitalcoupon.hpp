@@ -28,6 +28,8 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+//
+#include <ql/position.hpp>
 
 namespace QuantLib {
 
@@ -55,18 +57,19 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        //! general constructor (collar)
-        /*! If payoffRate is equal to its default value, an asset-or-nothing option
-            will be constructed.
-        */
+        //! general constructor
         DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
-                      bool longCallOption = true,
+                      Position::Type callPosition = Position::Long,
+                      bool isCallITMIncluded = false,
+                      Rate callDigitalPayoff = Null<Rate>(),
                       Rate putStrike = Null<Rate>(),
-                      bool longPutOption = true,
-                      Rate digitalPayoff = Null<Rate>(),
+                      Position::Type putPosition = Position::Long,
+                      bool isPutITMIncluded = false,
+                      Rate putDigitalPayoff = Null<Rate>(),
                       Replication::Type replication = Replication::Central,
                       Real eps = 1e-4);
+
         //@}
         //! \name Coupon interface
         //@{
@@ -78,7 +81,8 @@ namespace QuantLib {
         //@{
         Rate callStrike() const;
         Rate putStrike() const;
-        Rate digitalPayoff() const;
+        Rate callDigitalPayoff() const;
+        Rate putDigitalPayoff() const;
         bool hasPut() const { return hasPutStrike_; }
         bool hasCall() const {return hasCallStrike_; }
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
@@ -119,45 +123,68 @@ namespace QuantLib {
         //@{
         //!
         boost::shared_ptr<FloatingRateCoupon> underlying_;
-        //! the strike rate for the the call option
+        //! strike rate for the the call option
         Rate callStrike_;
-        //! the strike rate for the the put option
+        //! strike rate for the the put option
         Rate putStrike_;
-        //! the rate paid if the cash-or-nothing option is in-the-money
-        Rate digitalPayoff_;
-        //! the multiplicative factor of call payoff
+        //! multiplicative factor of call payoff
         Real callCsi_;
-        //! the multiplicative factor of put payoff
+        //! multiplicative factor of put payoff
         Real putCsi_;
-        //! the gap between strikes in payoff replication
-        Real eps_;
-        //! the left gap applied in payoff replication for call
+        //! inclusion flag og the call payoff if the call option ends at-the-money
+        bool isCallATMIncluded_;
+        //! inclusion flag og the put payoff if the put option ends at-the-money
+        bool isPutATMIncluded_;
+        //! digital call option type: if true, cash-or-nothing, if false asset-or-nothing
+        bool isCallCashOrNothing_;
+        //! digital put option type: if true, cash-or-nothing, if false asset-or-nothing
+        bool isPutCashOrNothing_;
+        //! digital call option payoff rate, if any
+        Rate callDigitalPayoff_;
+        //! digital put option payoff rate, if any
+        Rate putDigitalPayoff_;
+        //! the left and right gaps applied in payoff replication for call
         Real callLeftEps_, callRightEps_;
-        //! the right gap applied in payoff replication for puf
+        //! the left and right gaps applied in payoff replication for puf
         Real putLeftEps_, putRightEps_;
-        //!
+        //! 
         bool hasPutStrike_, hasCallStrike_;
-        //! Digital option type: if true, cash-or-nothing, if false asset-or-nothing
-        bool isCashOrNothing_;
-        //! Type of relication
+        //! Type of replication
         Replication::Type replicationType_;
+
         //@}
+        private:
+        Rate callPayoff() const;
+        Rate putPayoff() const;
+
     };
 
     //! Ibor rate coupon with digital digital call/put option
     class DigitalIborCoupon : public DigitalCoupon {
     public:
-        DigitalIborCoupon(const boost::shared_ptr<IborCoupon>& underlying,
-                          Rate callStrike = Null<Rate>(),
-                          bool longCallOption = true,
-                          Rate putStrike = Null<Rate>(),
-                          bool longPutOption = true,
-                          Rate digitalPayoff = Null<Rate>(),
-                          Replication::Type replication = Replication::Central,
-                          Real eps = 1e-4) :
-            DigitalCoupon(underlying, callStrike, longCallOption,
-                          putStrike, longPutOption, digitalPayoff,
-                          replication, eps) {}
+        DigitalIborCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                      Rate callStrike = Null<Rate>(),
+                      Position::Type callPosition = Position::Long,
+                      bool isCallATMIncluded = false,
+                      Rate callDigitalPayoff = Null<Rate>(),
+                      Rate putStrike = Null<Rate>(),
+                      Position::Type putPosition = Position::Long,
+                      bool isPutATMIncluded = false,
+                      Rate putDigitalPayoff = Null<Rate>(),
+                      Replication::Type replication = Replication::Central,
+                      Real eps = 1e-4) :
+            DigitalCoupon(underlying,
+                          callStrike,
+                          callPosition,
+                          isCallATMIncluded,
+                          callDigitalPayoff,
+                          putStrike,
+                          putPosition,
+                          isPutATMIncluded,
+                          putDigitalPayoff,
+                          replication,
+                          eps) {}
+
         //@}
         //! \name Visitability
         //@{
@@ -167,23 +194,33 @@ namespace QuantLib {
     //! Swap rate coupon with digital digital call/put option
     class DigitalCmsCoupon : public DigitalCoupon {
     public:
-        DigitalCmsCoupon(const boost::shared_ptr<CmsCoupon>& underlying,
-                         Rate callStrike = Null<Rate>(),
-                         bool longCallOption = true,
-                         Rate putStrike = Null<Rate>(),
-                         bool longPutOption = true,
-                         Rate digitalPayoff = Null<Rate>(),
-                         Replication::Type replication = Replication::Central,
-                         Real eps = 1e-4) :
-            DigitalCoupon(underlying, callStrike, longCallOption,
-                          putStrike, longPutOption, digitalPayoff,
-                          replication, eps) {}
+        DigitalCmsCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                      Rate callStrike = Null<Rate>(),
+                      Position::Type callPosition = Position::Long,
+                      bool isCallATMIncluded = false,
+                      Rate callDigitalPayoff = Null<Rate>(),
+                      Rate putStrike = Null<Rate>(),
+                      Position::Type putPosition = Position::Long,
+                      bool isPutATMIncluded = false,
+                      Rate putDigitalPayoff = Null<Rate>(),
+                      Replication::Type replication = Replication::Central,
+                      Real eps = 1e-4) :
+            DigitalCoupon(underlying,
+                          callStrike,
+                          callPosition,
+                          isCallATMIncluded,
+                          callDigitalPayoff,
+                          putStrike,
+                          putPosition,
+                          isPutATMIncluded,
+                          putDigitalPayoff,
+                          replication,
+                          eps) {}
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
     };
-
 }
 
 #endif
