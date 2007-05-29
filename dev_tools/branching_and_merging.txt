@@ -2,58 +2,90 @@
 = BRANCH creation =
 ===================
 
-If you want to branch out from trunk's tip, refresh to trunk's tip
-    cvs -q update -P -A -d (in directory E:\Projects\moduleName)
+Check that everything on the trunk runs properly, compiles, passes
+tests, etc.
 
-Check that everything runs properly, compiles, passes tests, ecc.
+Create the branch by copying the whole trunk (*not* just one module)
+to the branches/ folder in the repository. The name of the branch
+should reflect the version number of the release(s) you're preparing,
+i.e., R000800-branch for the 0.8.0 release---or better yet,
+R0008xx-branch to take into account that we might want to use the
+branch for subsequent minor-point releases (0.8.1 etc.) The command
+line (which should be on a single line) is:
 
-tag your checked-out version (NOT rtag, as this would tag the trunk's tip.
-If you use wincvs try to select your module with the right button and select
-'Create a tag on selection'). From command line it should look like
-    cvs tag Root-Of-R000201a2 (in directory E:\Projects\moduleName)
+svn copy -m "Created R0008xx-branch from trunk" \
+https://quantlib.svn.sf.net/svnroot/quantlib/trunk \
+https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch
 
-now branch-tag your checked-out version
-    cvs tag -b R000201a2-branch (in directory E:\Projects\moduleName)
+Please provide an informative message, including the name of the branch
+being created.
 
-Switch to your "branches" folder and check out the newly created branch
-    cvs -q update -P -d -r R000201a2-branch (in directory E:\Branches\moduleName)
+The branch can now be checked out with the command:
+
+svn checkout \
+https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch
+
+
+
+===================
+= TAG creation =
+===================
+
+After a release is made, a tag must be created to hold the code being
+released. Unlike branch creation, this has to be made for each module
+separately since not all of them are released at the same time. This
+can be done as follows:
+
+- when (or even before) the first module is released, a folder is
+  created in the tags/ folder of the repository to hold the
+  modules. This can be done with the command line
+
+svn mkdir -m "Created tag R000800 to hold the 0.8.0 release" \
+    https://quantlib.svn.sf.net/svnroot/quantlib/tags/R000800
+
+- as each module is released, it is copied in the above folder. For
+  instance, when a QuantLib release is made, the QuantLib module can
+  be copied with the command line
+
+svn copy -m "QuantLib 0.8.0 released" \
+https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch/QuantLib \
+https: //quantlib.svn.sf.net/svnroot/quantlib/tags/R000800/QuantLib
+
 
 
 ==================
 = BRANCH MERGING =
 ==================
-The following procedure do not take care of binary files: do it by hand!
 
-The procedure assumes this is not the first branch-into-trunk merge.
-If it is the first one you have to substitute any occurrence of
-R000201a2-branch-merge2 with R000201a2-branch-merge1 and any occurrence of
-R000201a2-branch-merge1 with Root-Of-R000201a2.
+Changes made on a release branch can be merged back into the main
+development line by entering your local working copy of the trunk,
+updating, and issuing the command
 
-In the folder of the branch checked-out version, refresh to branch's tip:
-    cvs -q update -P -d -r R000201a2-branch (in directory E:\Branches\moduleName)
+svn merge -r N:M \
+https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch
 
-Check that everything runs properly, compiles, passes tests, ecc.
+where N is the last revision which was merged into the trunk (or the
+revision at which the branch was created, if no previous merge was
+performed) and M is the last revision to be merged (likely HEAD.)
 
-tag this version (NOT rtag, as this would tag the trunk's tip.
-If you use wincvs try to select your module with the right button and select
-'Create a tag on selection')
-    cvs tag R000201a2-branch-merge2 (in directory E:\Branches\moduleName)
+The above command only modifies your working copy; after you resolved
+conflicts (if any) and checked that everything runs properly,
+compiles, passes tests, etc, you will have to commit the changes.
+When you do, please:
 
-check carefully what you are going to merge into truck
-    cvs -q diff -r R000201a2-branch-merge1 -r R000201a2-branch-merge2
+- unless absolutely necessary, merge and commit the whole trunk rather
+  than a single module;
 
-CHANGE BACK TO YOUR PROJECT FOLDER !!!!!!!!!!!!!!!!!!!!!
-In the folder of the trunk checked out version, (remote)tag the trunk
-    cvs rtag Before-R000201a2-branch-merge2 moduleName (in directory E:\Projects\moduleName)
+- provide a message such as
 
-refresh to trunk's tip
-    cvs -q update -P -A -d (in directory E:\Projects\moduleName)
+  "Merged R0008xx-branch into the trunk up to revision N"
 
-Merge the branch latest changes into trunk
-    cvs -q update -kk -j R000201a2-branch-merge1 -j R000201a2-branch-merge2 (in directory E:\Projects\moduleName)
+  or 
 
-Resolve all conflicts (if any), then commit into trunk
-    cvs -q commit -m "R000201a2-branch-merge2 merged into trunk" (in directory E:\Projects\moduleName)
+  "Merged revisions M:N from R0008xx-branch into the trunk"
 
-Finally tag (NOT rtag) your version
-    cvs tag After-R000201a2-branch-merge2 (in directory E:\Projects\moduleName)
+  i.e., include the word "merged" and the branch name, so that your
+  commit can be easily found by searching the log; and include the
+  number of the latest revision you merged, so that it can be easily
+  used as the starting point for subsequent merges.
+
