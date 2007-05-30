@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -55,6 +55,62 @@ namespace QuantLib {
                              schedule,
                              index,
                              paymentDayCounter,
+                             paymentConvention,
+                             fixingDays,
+                             gearings, spreads,
+                             caps, floors,
+                             inArrears);
+
+        Date redemptionDate = calendar_.adjust(maturityDate_,
+                                               paymentConvention);
+        cashflows_.push_back(boost::shared_ptr<CashFlow>(new
+            SimpleCashFlow(faceAmount_*redemption/100.0, redemptionDate)));
+
+        QL_ENSURE(!cashflows().empty(), "bond with no cashflows!");
+
+        registerWith(index);
+    }
+
+    FloatingRateBond::FloatingRateBond(
+                           Natural settlementDays,
+                           Real faceAmount,
+                           const Date& startDate,
+                           const Date& maturityDate,
+                           Frequency couponFrequency,
+                           const Calendar& calendar,
+                           const boost::shared_ptr<IborIndex>& index,
+                           const DayCounter& accrualDayCounter,
+                           BusinessDayConvention accrualConvention,
+                           BusinessDayConvention paymentConvention,
+                           Natural fixingDays,
+                           const std::vector<Real>& gearings,
+                           const std::vector<Spread>& spreads,
+                           const std::vector<Rate>& caps,
+                           const std::vector<Rate>& floors,
+                           bool inArrears,
+                           Real redemption,
+                           const Date& issueDate,
+                           const Handle<YieldTermStructure>& discountCurve,
+                           const Date& stubDate,
+                           bool fromEnd)
+    : Bond(settlementDays, faceAmount, calendar,
+           accrualDayCounter, paymentConvention, discountCurve) {
+
+        datedDate_    = startDate;
+        maturityDate_ = maturityDate;
+        frequency_    = couponFrequency;
+        issueDate_    = (issueDate==Date() ? startDate : issueDate);
+
+        Date firstDate = (fromEnd ? Date() : stubDate);
+        Date nextToLastDate = (fromEnd ? stubDate : Date());
+        Schedule schedule(datedDate_, maturityDate_, Period(frequency_),
+                          calendar_, accrualConvention, accrualConvention,
+                          fromEnd, false, firstDate, nextToLastDate);
+
+        cashflows_ = IborLeg(std::vector<Real>(1, faceAmount_),
+                             schedule,
+                             index,
+                             accrualDayCounter,
                              paymentConvention,
                              fixingDays,
                              gearings, spreads,

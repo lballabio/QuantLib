@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,10 +23,10 @@
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 
 #ifndef SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL
-	#define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4
+    #define SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL 15.0e-4
 #endif
 #ifndef SWAPTIONVOLCUBE_TOL
-	#define SWAPTIONVOLCUBE_TOL 100.0e-4
+    #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
 namespace QuantLib {
@@ -59,8 +59,8 @@ namespace QuantLib {
         if(maxErrorTolerance != Null<Rate>()){
             maxErrorTolerance_ = maxErrorTolerance;
         } else{
-        	maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
-			if (vegaWeightedSmileFit_) maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
+            maxErrorTolerance_ = SWAPTIONVOLCUBE_VEGAWEIGHTED_TOL;
+            if (vegaWeightedSmileFit_) maxErrorTolerance_ = SWAPTIONVOLCUBE_TOL;
         }
        registerWithParametersGuess();
     }
@@ -81,7 +81,7 @@ namespace QuantLib {
         for (i=0; i<4; i++)
             for (Size j=0; j<nOptionTenors_ ; j++)
                 for (Size k=0; k<nSwapTenors_; k++) {
-                    parametersGuess_.setElement(i, j, k, 
+                    parametersGuess_.setElement(i, j, k,
                         parametersGuessQuotes_[j+k*nOptionTenors_][i]->value());
                 }
         parametersGuess_.updateInterpolators();
@@ -146,7 +146,7 @@ namespace QuantLib {
 
                 const std::vector<Real>& guess = parametersGuess_.operator()(
                     optionTimes[j], swapLengths[k]);
-                
+
                 const boost::shared_ptr<SABRInterpolation> sabrInterpolation =
                     boost::shared_ptr<SABRInterpolation>(new
                         SABRInterpolation(strikes.begin(), strikes.end(),
@@ -173,32 +173,32 @@ namespace QuantLib {
                 errors     [j][k]=interpolationError;
                 maxErrors  [j][k]=sabrInterpolation->interpolationMaxError();
                 endCriteria[j][k]=sabrInterpolation->endCriteria();
-				
+
                 QL_ENSURE(endCriteria[j][k]!=EndCriteria::MaxIterations,
                           "global swaptions calibration failed: "
                           "MaxIterations reached: " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << ", \n" <<
-						  "error = " << io::rate(errors[j][k])  << ", \n" <<
+                          "error = " << io::rate(errors[j][k])  << ", \n" <<
                           "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
-					      "   alpha = " <<  alphas[j][k] << "n" <<
-					      "   beta = " <<  betas[j][k] << "\n" <<
-					      "   nu = " <<  nus[j][k]   << "\n" <<
-					      "   rho = " <<  rhos[j][k]  << "\n"
+                          "   alpha = " <<  alphas[j][k] << "n" <<
+                          "   beta = " <<  betas[j][k] << "\n" <<
+                          "   nu = " <<  nus[j][k]   << "\n" <<
+                          "   rho = " <<  rhos[j][k]  << "\n"
                           );
 
                 QL_ENSURE(maxErrors[j][k]<maxErrorTolerance_,
                           "global swaptions calibration failed: "
-                          "maxErrorTolerance = " << maxErrorTolerance_ 
+                          "maxErrorTolerance = " << maxErrorTolerance_
                           << " exceeded " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
                           "swap tenor = " << swapTenors[k] << "\n" <<
-						  "error = " << io::rate(errors[j][k])  << ", \n" <<
+                          "error = " << io::rate(errors[j][k])  << ", \n" <<
                           "max error = " << io::rate(maxErrors[j][k]) << ", \n" <<
-						  "   alpha = " << alphas[j][k]<< "\n" <<
-						  "   beta = " << betas[j][k] << "\n" <<
-						  "   nu = " << nus[j][k]   << "\n" <<
-						  "   rho = " << rhos[j][k]
+                          "   alpha = " << alphas[j][k]<< "\n" <<
+                          "   beta = " << betas[j][k] << "\n" <<
+                          "   nu = " << nus[j][k]   << "\n" <<
+                          "   rho = " << rhos[j][k]
                           );
             }
         }
@@ -272,31 +272,31 @@ namespace QuantLib {
             calibrationResult[5]=interpolationError;
             calibrationResult[6]=sabrInterpolation->interpolationMaxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
-            
+
             QL_ENSURE(calibrationResult[7]!=EndCriteria::MaxIterations,
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max iteration (" <<
                       endCriteria_->maxIterations() << ")" <<
-						  ", alpha " <<  calibrationResult[0]<<
-						  ", beta "  <<  calibrationResult[1] <<
-						  ", nu "    <<  calibrationResult[2]   <<
-						  ", rho "   <<  calibrationResult[3]  <<
-						  ", error " <<  calibrationResult[5]
-						  );
+                          ", alpha " <<  calibrationResult[0]<<
+                          ", beta "  <<  calibrationResult[1] <<
+                          ", nu "    <<  calibrationResult[2]   <<
+                          ", rho "   <<  calibrationResult[3]  <<
+                          ", error " <<  calibrationResult[5]
+                          );
 
             QL_ENSURE(calibrationResult[6]< maxErrorTolerance_,
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
                       ": max error " << calibrationResult[6]  <<
-						  ", alpha " <<  calibrationResult[0] <<
-						  ", beta "  <<  calibrationResult[1] <<
-						  ", nu "    <<  calibrationResult[2] <<
-						  ", rho "   <<  calibrationResult[3] <<
-						  ", error " <<  calibrationResult[5]
-						  );
+                          ", alpha " <<  calibrationResult[0] <<
+                          ", beta "  <<  calibrationResult[1] <<
+                          ", nu "    <<  calibrationResult[2] <<
+                          ", rho "   <<  calibrationResult[3] <<
+                          ", error " <<  calibrationResult[5]
+                          );
 
             parametersCube.setPoint(optionDates[j], swapTenors[k],
                                     optionTimes[j], swapLengths[k],
@@ -312,7 +312,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
                                                     atmVol_.currentLink());
 
-		std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
+        std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
         std::vector<Time> optionTimes(volCubeAtmCalibrated_.optionTimes());
         atmOptionTimes.insert(atmOptionTimes.end(),
                                 optionTimes.begin(), optionTimes.end());
@@ -504,8 +504,8 @@ namespace QuantLib {
         return boost::shared_ptr<SmileSection>(new
             SabrSmileSection(optionTime, sabrParameters[4], sabrParameters));
     }
-	
-	boost::shared_ptr<SmileSection>
+
+    boost::shared_ptr<SmileSection>
     SwaptionVolCube1::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
         if (isAtmCalibrated_)
@@ -635,7 +635,7 @@ namespace QuantLib {
                                                         Size IndexOfColumn,
                                                         Real x) {
         QL_REQUIRE(IndexOfLayer<nLayers_,
-			"Cube::setElement: incompatible IndexOfLayer ");
+            "Cube::setElement: incompatible IndexOfLayer ");
         QL_REQUIRE(IndexOfRow<optionTimes_.size(),
             "Cube::setElement: incompatible IndexOfRow");
         QL_REQUIRE(IndexOfColumn<swapLengths_.size(),
@@ -646,7 +646,7 @@ namespace QuantLib {
     void SwaptionVolCube1::Cube::setPoints(
                                                const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,
-			"Cube::setPoints: incompatible number of layers ");
+            "Cube::setPoints: incompatible number of layers ");
         QL_REQUIRE(x[0].rows()==optionTimes_.size(),
             "Cube::setPoints: incompatible size 1");
         QL_REQUIRE(x[0].columns()==swapLengths_.size(),
@@ -658,7 +658,7 @@ namespace QuantLib {
     void SwaptionVolCube1::Cube::setLayer(Size i,
                                                       const Matrix& x) {
         QL_REQUIRE(i<nLayers_,
-			"Cube::setLayer: incompatible number of layer ");
+            "Cube::setLayer: incompatible number of layer ");
         QL_REQUIRE(x.rows()==optionTimes_.size(),
             "Cube::setLayer: incompatible size 1");
         QL_REQUIRE(x.columns()==swapLengths_.size(),
@@ -704,7 +704,7 @@ namespace QuantLib {
     void SwaptionVolCube1::Cube::expandLayers(
                                                  Size i, bool expandOptionTimes,
                                                  Size j, bool expandSwapLengths) {
-		QL_REQUIRE(i<=optionTimes_.size(),"Cube::expandLayers: incompatible size 1");
+        QL_REQUIRE(i<=optionTimes_.size(),"Cube::expandLayers: incompatible size 1");
         QL_REQUIRE(j<=swapLengths_.size(),"Cube::expandLayers: incompatible size 2");
 
         if (expandOptionTimes) {

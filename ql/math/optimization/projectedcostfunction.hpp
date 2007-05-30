@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +29,8 @@
 
 
 namespace QuantLib {
+
+    //! Parameterized cost function
     /*! This class creates a proxy cost function which can depend
         on any arbitrary subset of parameters (the other being fixed)
     */
@@ -41,21 +43,21 @@ namespace QuantLib {
             //! \name CostFunction interface
             //@{
             virtual Real value(const Array& freeParameters) const;
-            virtual Disposable<Array> 
+            virtual Disposable<Array>
                                    values(const Array& freeParameters) const;
             //@}
 
-            //! returns the subset of free parameters corresponding 
+            //! returns the subset of free parameters corresponding
             // to set of parameters
             virtual Disposable<Array> project(const Array& parameters) const;
 
-            //! returns whole set of parameters corresponding to the set 
+            //! returns whole set of parameters corresponding to the set
             // of projected parameters
-            virtual Disposable<Array> 
+            virtual Disposable<Array>
                              include(const Array& projectedParameters) const;
 
         private:
-            void mapFreeParameters(const Array& parametersValues) const; 
+            void mapFreeParameters(const Array& parametersValues) const;
             Size numberOfFreeParameters_;
             const Array fixedParameters_;
             mutable Array actualParameters_;

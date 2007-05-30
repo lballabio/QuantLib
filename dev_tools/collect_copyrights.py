@@ -16,10 +16,10 @@ for line in sys.stdin:
     if m1:
         first, last = [ int(y) for y in m1.groups()[0].split('-') ]
         years = range(first, last+1)
-        owner = m1.groups()[-1]
+        owner = m1.groups()[-1].strip()
     elif m2:
         years = [ int(y) for y in m2.groups()[0].split(', ') ]
-        owner = m2.groups()[-1]
+        owner = m2.groups()[-1].strip()
     s = copyrights.get(owner,sets.Set())
     for y in years:
         s.add(y)

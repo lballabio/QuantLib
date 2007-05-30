@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Marco Bianchetti 
+ Copyright (C) 2007 Marco Bianchetti
  Copyright (C) 2007 Francois du Vignaud
  Copyright (C) 2007 Giorgio Facchinetti
 
@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -86,7 +86,7 @@ class OptimizationBasedCostFunction : public CostFunction {
         OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
         NoConstraint constraint;
         Array initialValues(1, 100.0);
-        Problem problem(oneDimensionalPolynomialDegreeN, constraint, 
+        Problem problem(oneDimensionalPolynomialDegreeN, constraint,
                         initialValues);
         LevenbergMarquardt optimizationMethod;
         //Simplex optimizationMethod(0.1);
@@ -101,9 +101,9 @@ class OptimizationBasedCostFunction : public CostFunction {
 };
 
 
-enum OptimizationMethodType {simplex, 
-                             levenbergMarquardt, 
-                             conjugateGradient, 
+enum OptimizationMethodType {simplex,
+                             levenbergMarquardt,
+                             conjugateGradient,
                              steepestDescent};
 
 std::string optimizationMethodTypeToString(OptimizationMethodType type) {
@@ -171,7 +171,7 @@ std::vector<NamedOptimizationMethod> makeOptimizationMethods(
             levenbergMarquardtEpsfcn,
             levenbergMarquardtXtol,
             levenbergMarquardtGtol);
-        namedOptimizationMethod.name 
+        namedOptimizationMethod.name
             = optimizationMethodTypeToString(optimizationMethodTypes[i]);
         results.push_back(namedOptimizationMethod);
     }
@@ -216,7 +216,7 @@ void setup() {
     Real levenbergMarquardtGtol   = 1.0e-8;     //
     optimizationMethods_.push_back(makeOptimizationMethods(
         optimizationMethodTypes, LENGTH(optimizationMethodTypes),
-        simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol, 
+        simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol,
         levenbergMarquardtGtol));
     // Set expected results for optimizer
     Array xMinExpected(1),yMinExpected(1);
@@ -226,7 +226,7 @@ void setup() {
     yMinExpected_.push_back(yMinExpected);
 }
 
-QL_END_TEST_LOCALS(OptimizersTest) 
+QL_END_TEST_LOCALS(OptimizersTest)
 
 void OptimizersTest::test() {
     BOOST_MESSAGE("Testing optimizers...");
@@ -236,7 +236,7 @@ void OptimizersTest::test() {
         #ifdef VERBOSE
             BOOST_MESSAGE("costFunction # = " << i << "\n");
         #endif
-        Problem problem(*costFunctions_[i], *constraints_[i], 
+        Problem problem(*costFunctions_[i], *constraints_[i],
                         initialValues_[i]);
         Array initialValues = problem.currentValue();
         // Loop over optimizers
@@ -246,22 +246,22 @@ void OptimizersTest::test() {
             Size endCriteriaTests = 1;
            // Loop over rootEpsilon
             for(Size k=0; k<endCriteriaTests; ++k) {
-                problem.setCurrentValue(initialValues); 
+                problem.setCurrentValue(initialValues);
                 EndCriteria endCriteria(
-                            endCriterias_[i]->maxIterations(), 
+                            endCriterias_[i]->maxIterations(),
                             endCriterias_[i]->maxStationaryStateIterations(),
-                            rootEpsilon, 
+                            rootEpsilon,
                             endCriterias_[i]->functionEpsilon(),
                             endCriterias_[i]->gradientNormEpsilon());
-                rootEpsilon *= .1; 
+                rootEpsilon *= .1;
                 EndCriteria::Type endCriteriaResult =
                     optimizationMethods_[i][j].optimizationMethod->minimize(
                     problem, endCriteria);
                 Array xMinCalculated = problem.currentValue();
                 Array yMinCalculated = problem.values(xMinCalculated);
-                // Check optimization results vs known solution 
+                // Check optimization results vs known solution
                 #ifndef VERBOSE
-                    if (endCriteriaResult==EndCriteria::None || 
+                    if (endCriteriaResult==EndCriteria::None ||
                         endCriteriaResult==EndCriteria::MaxIterations ||
                         endCriteriaResult==EndCriteria::Unknown)
                 #endif
@@ -288,7 +288,7 @@ void OptimizersTest::nestedOptimizationTest() {
     OptimizationBasedCostFunction optimizationBasedCostFunction;
     NoConstraint constraint;
     Array initialValues(1, 0.0);
-    Problem problem(optimizationBasedCostFunction, constraint, 
+    Problem problem(optimizationBasedCostFunction, constraint,
                     initialValues);
     LevenbergMarquardt optimizationMethod;
     //Simplex optimizationMethod(0.1);

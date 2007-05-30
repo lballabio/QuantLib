@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -90,8 +90,6 @@ QL_END_TEST_LOCALS(BermudanSwaptionTest)
 
 
 void BermudanSwaptionTest::testCachedValues() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing Bermudan swaption against cached values...");
 
     QL_TEST_BEGIN
@@ -178,15 +176,12 @@ void BermudanSwaptionTest::testCachedValues() {
                     << "expected:   " << otmValue);
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 test_suite* BermudanSwaptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
-    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
-    #endif
     return suite;
 }
 

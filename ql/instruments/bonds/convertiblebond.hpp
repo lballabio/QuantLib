@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,7 +39,7 @@ namespace QuantLib {
 
     class IborIndex;
 
-    //! callability leaving to the holder the possibility to convert
+    //! %callability leaving to the holder the possibility to convert
     class SoftCallability : public Callability {
       public:
         SoftCallability(const Price& price, const Date& date, Real trigger)
@@ -49,6 +49,7 @@ namespace QuantLib {
         Real trigger_;
     };
 
+    //! base class for convertible bonds
     class ConvertibleBond : public Bond {
       public:
         class option;
@@ -188,7 +189,7 @@ namespace QuantLib {
         Real redemption_;
     };
 
-    //! %Arguments for Convertible Bond calculation
+
     class ConvertibleBond::option::arguments
         : public OneAssetStrikedOption::arguments {
       public:
@@ -213,8 +214,6 @@ namespace QuantLib {
         void validate() const;
     };
 
-
-    //! convertible bond engine base class
     class ConvertibleBond::option::engine
         : public GenericEngine<ConvertibleBond::option::arguments,
                                ConvertibleBond::option::results> {};

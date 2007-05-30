@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,12 +29,10 @@
 
 namespace QuantLib {
 
-    /*! Pricing engine for American vanilla options with digital payoff
-        using analytic formulae
+    //! Analytic pricing engine for American vanilla options with digital payoff
+    /*! \ingroup vanillaengines
 
         \todo add more greeks (as of now only delta and rho available)
-
-        \ingroup vanillaengines
 
         \test
         - the correctness of the returned value in case of

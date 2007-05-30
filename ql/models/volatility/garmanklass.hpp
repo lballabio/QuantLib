@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,10 +29,12 @@
 
 namespace QuantLib {
 
+    //! Garman-Klass volatility model
     /*! This class implements a concrete volatility model based on
-      high low formulas using the method of Garman and Klass in their
-      paper "On the Estimation of the Security Price from Historical Data"
-      at http://www.fea.com/resources/pdf/a_estimation_of_security_price.pdf
+        high low formulas using the method of Garman and Klass in
+        their paper "On the Estimation of the Security Price from
+        Historical Data" at
+        http://www.fea.com/resources/pdf/a_estimation_of_security_price.pdf
 
         Volatilities are assumed to be expressed on an annual basis.
     */
@@ -70,10 +72,9 @@ namespace QuantLib {
         }
     };
 
-    /*! This template factors out common functionality found in
-      classes which rely on the difference between the previous day's
-      close price and today's open price. */
-
+    /* This template factors out common functionality found in
+       classes which rely on the difference between the previous day's
+       close price and today's open price. */
     template <class T>
     class GarmanKlassOpenClose : public T {
     protected:

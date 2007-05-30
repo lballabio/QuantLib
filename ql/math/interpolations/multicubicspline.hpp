@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,8 +28,6 @@
 #include <ql/types.hpp>
 #include <functional>
 #include <vector>
-
-#if !defined(QL_PATCH_BORLAND)
 
 namespace QuantLib {
 
@@ -453,21 +451,17 @@ namespace QuantLib {
 
     typedef detail::SplineGrid SplineGrid;
 
-    //| N-dimensional cubic spline interpolation between discrete points
+    //! N-dimensional cubic spline interpolation between discrete points
     /*! \test interpolated values are checked against the original
               function.
 
         \todo
-        - fix it for Borland compilation
         - allow extrapolation as for the other interpolations
         - investigate if and how to implement Hyman filters and
           different boundary conditions
 
-        \bug
-        - cannot interpolate at the grid points on the boundary surface
-          of the N-dimensional region
-        - it does not compile under Borland
-
+        \bug cannot interpolate at the grid points on the boundary
+             surface of the N-dimensional region
     */
     template <Size i> class MultiCubicSpline {
         typedef typename detail::Int2Type<i>::c_spline c_spline;
@@ -568,8 +562,6 @@ namespace QuantLib {
 
 }
 
-
-#endif
 
 #endif
 

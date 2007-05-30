@@ -24,7 +24,6 @@
 
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/shortfloatingcoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/indexes/iborindex.hpp>
@@ -249,7 +248,7 @@ namespace QuantLib {
                 const std::vector<Rate>& caps,
                 const std::vector<Rate>& floors,
                 bool isInArrears) {
-    
+
         return FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                 nominals,
                 schedule,
@@ -277,7 +276,7 @@ namespace QuantLib {
                const std::vector<Rate>& caps,
                const std::vector<Rate>& floors,
                bool isInArrears) {
-    
+
         return FloatingLeg<SwapIndex, CmsCoupon, CappedFlooredCmsCoupon>(
                nominals,
                schedule,
@@ -292,7 +291,7 @@ namespace QuantLib {
                isInArrears);
     }
 
-    template <typename IndexType, 
+    template <typename IndexType,
               typename FloatingCouponType,
               typename CappedFlooredFloatingCouponType>
     Leg FloatingZeroLeg(const std::vector<Real>& nominals,
@@ -385,7 +384,7 @@ namespace QuantLib {
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
                     const std::vector<Rate>& floors) {
-    
+
         return FloatingZeroLeg <IborIndex, IborCoupon, CappedFlooredIborCoupon>(
                    nominals,
                    schedule,
@@ -479,7 +478,7 @@ namespace QuantLib {
                                     paymentDayCounter,
                                     start, end, refStart, refEnd)));
             } else { // floating coupon
-                    observationsSchedules.push_back( boost::shared_ptr<Schedule>( new 
+                    observationsSchedules.push_back( boost::shared_ptr<Schedule>( new
                           Schedule(start, end,
                                   observationTenor, calendar,
                                   observationConvention,

@@ -1,7 +1,7 @@
 [Project]
 FileName=testsuite.dev
 Name=QuantLib-test-suite
-UnitCount=159
+UnitCount=155
 Type=1
 Ver=1
 ObjFiles=
@@ -1559,26 +1559,6 @@ BuildCmd=
 
 [Unit155]
 FileName=optimizers.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit156]
-FileName=digitalcoupon.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit157]
-FileName=digitalcoupon.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

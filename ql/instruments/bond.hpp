@@ -14,7 +14,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -35,8 +35,8 @@
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/cashflow.hpp>
-#include <vector>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -147,7 +147,7 @@ namespace QuantLib {
                                    Date settlementDate = Date()) const;
         //! dirty price given Z-spread
         /*! Z-spread compounding, frequency, daycount are taken into account
-            The default bond settlement is used if no date is given. 
+            The default bond settlement is used if no date is given.
             For details on Z-spread refer to:
             "Credit Spreads Explained", Lehman Brothers European Fixed
             Income Research - March 2004, D. O'Kane*/

@@ -10,16 +10,12 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-
-#include <ql/qldefines.hpp>
-
-#if !defined(QL_PATCH_BORLAND)
 
 #include <ql/models/shortrate/onefactormodels/blackkarasinski.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
@@ -27,7 +23,7 @@
 
 namespace QuantLib {
 
-    //Private function used by solver to determine time-dependent parameter
+    // Private function used by solver to determine time-dependent parameter
     class BlackKarasinski::Helper {
       public:
         Helper(Size i, Real xMin, Real dx,
@@ -105,6 +101,3 @@ namespace QuantLib {
     }
 
 }
-
-#endif
-

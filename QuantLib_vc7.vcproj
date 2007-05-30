@@ -436,12 +436,6 @@
 				RelativePath=".\ql\cashflows\couponpricer.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\cashflows\digitalcoupon.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\digitalcoupon.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\cashflows\dividend.cpp">
 			</File>
 			<File
@@ -467,15 +461,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\rangeaccrual.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\shortfloatingcoupon.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\shortfloatingcoupon.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\shortindexedcoupon.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\simplecashflow.hpp">
@@ -5807,36 +5792,42 @@
 					Name="Debug CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release SingleThread|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release CRTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug SingleThread|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
+						DisableLanguageExtensions="FALSE"
 						ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 				</FileConfiguration>
 			</File>
@@ -6299,9 +6290,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\config.ansi.hpp">
-		</File>
-		<File
-			RelativePath=".\ql\config.bcc.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\config.mingw.hpp">

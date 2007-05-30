@@ -742,14 +742,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\cashflows\digitalcoupon.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ql\cashflows\digitalcoupon.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\cashflows\dividend.cpp"
 				>
 			</File>
@@ -783,64 +775,6 @@
 			</File>
 			<File
 				RelativePath=".\ql\cashflows\rangeaccrual.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\cashflows\shortfloatingcoupon.cpp"
-				>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\cashflows\shortfloatingcoupon.hpp"
-				>
-			</File>
-			<File
-				RelativePath="ql\cashflows\shortindexedcoupon.hpp"
 				>
 			</File>
 			<File
@@ -2671,14 +2605,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\products\compositeproduct.hpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\products\marketmodelratchet.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\products\marketmodelratchet.hpp"
 						>
 					</File>
 					<File
@@ -6092,10 +6018,6 @@
 		</File>
 		<File
 			RelativePath=".\ql\config.ansi.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ql\config.bcc.hpp"
 			>
 		</File>
 		<File

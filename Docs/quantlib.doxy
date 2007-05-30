@@ -89,7 +89,7 @@ EXCLUDE                = ../ql/config.hpp \
                          ../ql/config.mwcw.hpp \
                          ../ql/math/interpolations/abcdinterpolation.hpp
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */all.hpp
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = Examples \
                          ../Examples

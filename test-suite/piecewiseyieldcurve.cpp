@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -269,11 +269,7 @@ void testCurveConsistency(const T&, const I& interpolator) {
 
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        #ifdef QL_PATCH_BORLAND
-        Real tolerance = 1.0e-5;
-        #else
         Real tolerance = 1.0e-9;
-        #endif
         Spread error = std::fabs(expectedRate-estimatedRate);
         if (error > tolerance) {
             BOOST_ERROR(swapData[i].n << " year(s) swap:\n"
@@ -537,11 +533,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        #ifdef QL_PATCH_BORLAND
-        Real tolerance = 1.0e-5;
-        #else
         Real tolerance = 1.0e-9;
-        #endif
         if (std::fabs(expectedRate-estimatedRate) > tolerance) {
             BOOST_ERROR("before LIBOR fixing:\n"
                         << swapData[i].n << " year(s) swap:\n"
@@ -574,11 +566,7 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
 
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
-        #ifdef QL_PATCH_BORLAND
-        Real tolerance = 1.0e-5;
-        #else
         Real tolerance = 1.0e-9;
-        #endif
         if (std::fabs(expectedRate-estimatedRate) > tolerance) {
             BOOST_ERROR("after LIBOR fixing:\n"
                         << swapData[i].n << " year(s) swap:\n"

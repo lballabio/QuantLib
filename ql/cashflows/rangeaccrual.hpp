@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,6 +20,7 @@
 */
 
 /*! \file rangeaccrual.hpp
+    \brief range-accrual coupon
 */
 
 #ifndef quantlib_range_accrual_h
@@ -72,7 +73,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        
+
         Real startTime_;                               // S
         Real endTime_;                                 // T
 
@@ -94,9 +95,9 @@ namespace QuantLib {
         virtual Rate capletRate(Rate effectiveCap) const;
         virtual Real floorletPrice(Rate effectiveFloor) const;
         virtual Rate floorletRate(Rate effectiveFloor) const;
-        void initialize(const FloatingRateCoupon& coupon);  
+        void initialize(const FloatingRateCoupon& coupon);
         //@}
-      
+
     protected:
         const RangeAccrualFloatersCoupon* coupon_;
         Real startTime_;                                   // S

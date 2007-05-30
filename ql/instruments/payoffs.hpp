@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -57,7 +57,7 @@ namespace QuantLib {
     //    Real strike_;
     //};
 
-    //! Payoff based on a floating strike
+    //! %Payoff based on a floating strike
     class FloatingTypePayoff : public TypePayoff {
       public:
         FloatingTypePayoff(Option::Type type) : TypePayoff(type) {}
@@ -114,8 +114,8 @@ namespace QuantLib {
         //@}
     };
 
-    /*! Definitions of Binary path-independent payoffs used below, 
-        can be found in M. Rubinstein, E. Reiner:"Unscrambling The Binary Code", Risk, Vol.4 no.9,1991. 
+    /*! Definitions of Binary path-independent payoffs used below,
+        can be found in M. Rubinstein, E. Reiner:"Unscrambling The Binary Code", Risk, Vol.4 no.9,1991.
         (see: http://www.in-the-money.com/artandpap/Binary%20Options.doc)
     */
 
@@ -177,11 +177,11 @@ namespace QuantLib {
       protected:
         Real secondStrike_;
     };
-  
+
     //! Binary supershare and superfund payoffs
 
-    //! 1) Binary superfund payoff
-    /*! Superfund sometimes also called "supershare", which can lead to ambiguity; within QuantLib 
+    //! Binary superfund payoff
+    /*! Superfund sometimes also called "supershare", which can lead to ambiguity; within QuantLib
         the terms supershare and superfund are used consistently according to the definitions in
         Bloomberg OVX function's help pages.
     */
@@ -212,7 +212,8 @@ namespace QuantLib {
       protected:
         Real secondStrike_;
     };
-    //! 2) Binary supershare payoff
+
+    //! Binary supershare payoff
     class SuperSharePayoff : public StrikedTypePayoff {
       public:
         SuperSharePayoff(Real strike,
@@ -220,7 +221,7 @@ namespace QuantLib {
                          Real cashPayoff)
         : StrikedTypePayoff(Option::Call, strike),
           secondStrike_(secondStrike),
-          cashPayoff_(cashPayoff){ 
+          cashPayoff_(cashPayoff){
               QL_REQUIRE(secondStrike>strike,
               "second strike (" <<  secondStrike << ") must be "
               "higher than first strike (" << strike << ")");}

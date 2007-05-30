@@ -86,7 +86,6 @@ libQuantLib_la_LIBADD = \
 
 EXTRA_DIST= \
 	config.ansi.hpp \
-	config.bcc.hpp \
 	config.msvc.hpp \
 	config.mwcw.hpp \
 	config.mingw.hpp \

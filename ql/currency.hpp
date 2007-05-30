@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,7 +19,7 @@
 */
 
 /*! \file currency.hpp
-    \brief Known currencies
+    \brief Currency specification
 */
 
 #ifndef quantlib_currency_hpp
@@ -63,7 +63,7 @@ namespace QuantLib {
         */
         std::string format() const;
         //@}
-        //! \name other info
+        //! \name Other information
         //@{
         //! is this a usable instance?
         bool empty() const;
@@ -92,12 +92,7 @@ namespace QuantLib {
              Integer fractionsPerUnit,
              const Rounding& rounding,
              const std::string& formatString,
-             const Currency& triangulationCurrency = Currency())
-        : name(name), code(code), numeric(numericCode),
-          symbol(symbol), fractionSymbol(fractionSymbol),
-          fractionsPerUnit(fractionsPerUnit), rounding(rounding),
-          triangulated(triangulationCurrency),
-          formatString(formatString) {}
+             const Currency& triangulationCurrency = Currency());
     };
 
     /*! \relates Currency */

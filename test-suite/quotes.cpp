@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -123,7 +123,7 @@ void QuoteTest::testComposite() {
 }
 
 void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
-    BOOST_MESSAGE("Testing ForwardValue and ImpliedStdev quotes...");
+    BOOST_MESSAGE("Testing forward-value and implied-stdev quotes...");
     Real forwardRate = .05;
     DayCounter dc = ActualActual();
     Calendar calendar = TARGET();
@@ -185,6 +185,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     forwardQuote->setValue(0.05);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
+    quote->value();
     f.lower();
     quote->value();
     priceQuote->setValue(0.11);

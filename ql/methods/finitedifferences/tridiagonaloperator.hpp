@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -113,25 +113,8 @@ namespace QuantLib {
     /* \relates TridiagonalOperator */
     void swap(TridiagonalOperator&, TridiagonalOperator&);
 
-    // inline definitions
 
-    #if defined(QL_PATCH_MSVC6)
-    inline TridiagonalOperator::TridiagonalOperator(
-                                               const TridiagonalOperator& L) {
-        lowerDiagonal_ = L.lowerDiagonal_;
-        diagonal_      = L.diagonal_;
-        upperDiagonal_ = L.upperDiagonal_;
-        timeSetter_    = L.timeSetter_;
-    }
-    inline TridiagonalOperator& TridiagonalOperator::operator=(
-                                               const TridiagonalOperator& L) {
-        lowerDiagonal_ = L.lowerDiagonal_;
-        diagonal_      = L.diagonal_;
-        upperDiagonal_ = L.upperDiagonal_;
-        timeSetter_    = L.timeSetter_;
-        return *this;
-    }
-    #endif
+    // inline definitions
 
     inline TridiagonalOperator::TridiagonalOperator(
                                 const Disposable<TridiagonalOperator>& from) {

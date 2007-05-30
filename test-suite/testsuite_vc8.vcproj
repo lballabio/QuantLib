@@ -977,10 +977,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\digitalcoupon.cpp"
-				>
-			</File>
-			<File
 				RelativePath="digitaloption.cpp"
 				>
 				<FileConfiguration
@@ -1187,10 +1183,6 @@
 						BrowseInformation="1"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\fastfouriertransform.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\forwardoption.cpp"
@@ -2105,10 +2097,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\tapcorrelations.cpp"
-				>
-			</File>
-			<File
 				RelativePath="termstructures.cpp"
 				>
 				<FileConfiguration
@@ -2326,10 +2314,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\digitalcoupon.hpp"
-				>
-			</File>
-			<File
 				RelativePath="digitaloption.hpp"
 				>
 			</File>
@@ -2351,10 +2335,6 @@
 			</File>
 			<File
 				RelativePath="factorial.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\fastfouriertransform.hpp"
 				>
 			</File>
 			<File
@@ -2527,10 +2507,6 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitymatrix.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\tapcorrelations.hpp"
 				>
 			</File>
 			<File

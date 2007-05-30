@@ -85,7 +85,7 @@ void setup() {
                 iborindex_->currency(), calendar_,
                 Period(fixedFrequency_), fixedConvention_,
                 iborindex_->dayCounter(), iborindex_));
-    spread_=0.0;  
+    spread_=0.0;
     //today_ = calendar_.adjust(Date::todaysDate());
     Date today_(24,April,2007);
     Settings::instance().evaluationDate() = today_;
@@ -106,11 +106,11 @@ void AssetSwapTest::testImpliedValue() {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-    
+
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
     Natural fixingDays = 2;
-   
+
     bool payFixedRate = true;
     bool parAssetSwap = true;
 
@@ -124,7 +124,7 @@ void AssetSwapTest::testImpliedValue() {
                       std::vector<Rate>(1, 0.04), ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005), termStructure_));
     Real fixedBondPrice = fixedBond->cleanPrice();
-    AssetSwap fixedBondAssetSwap(payFixedRate, 
+    AssetSwap fixedBondAssetSwap(payFixedRate,
                                  fixedBond, fixedBondPrice,
                                  iborindex_, spread_, termStructure_,
                                  Schedule(),
@@ -149,20 +149,20 @@ void AssetSwapTest::testImpliedValue() {
     Schedule floatingBondSchedule(Date(24,September,2004),
                                   Date(24,September,2018),
                                   Period(Semiannual), bondCalendar,
-                                  ModifiedFollowing, ModifiedFollowing, 
+                                  ModifiedFollowing, ModifiedFollowing,
                                   true, false);
     boost::shared_ptr<IborCouponPricer> pricer(new
     BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
     bool inArrears = false;
     boost::shared_ptr<Bond> floatingBond(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule,
-                         iborindex_, Actual360(), 
+                         iborindex_, Actual360(),
                          ModifiedFollowing, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
                          100.0, Date(24,September,2004), termStructure_));
-    CashFlows::setPricer(floatingBond->cashflows(),pricer);
+    setCouponPricer(floatingBond->cashflows(),pricer);
     iborindex_->addFixing(Date(22,March,2007), 0.04013);
     Real currentCoupon=0.04013+0.0025;
     Real floatingCurrentCoupon= floatingBond->currentCoupon();
@@ -179,7 +179,7 @@ void AssetSwapTest::testImpliedValue() {
 
 
     Real floatingBondPrice = floatingBond->cleanPrice();
-    AssetSwap floatingBondAssetSwap(payFixedRate, 
+    AssetSwap floatingBondAssetSwap(payFixedRate,
                                  floatingBond, floatingBondPrice,
                                  iborindex_, spread_, termStructure_,
                                  Schedule(),
@@ -202,7 +202,7 @@ void AssetSwapTest::testImpliedValue() {
     Schedule cmsBondSchedule(Date(06,May,2005),
                                   Date(06,May,2015),
                                   Period(Annual), bondCalendar,
-                                  Unadjusted, Unadjusted, 
+                                  Unadjusted, Unadjusted,
                                   true, false);
     Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
@@ -211,21 +211,21 @@ void AssetSwapTest::testImpliedValue() {
     Handle<Quote> meanReversionQuote(boost::shared_ptr<Quote>(new SimpleQuote(0.01)));
     GFunctionFactory::ModelOfYieldCurve modelOfYieldCurve_;
     modelOfYieldCurve_= GFunctionFactory::Standard;
-    boost::shared_ptr<CmsCouponPricer> cmspricer(new 
+    boost::shared_ptr<CmsCouponPricer> cmspricer(new
         ConundrumPricerByBlack(swaptionVolatilityStructure,
                         modelOfYieldCurve_, meanReversionQuote));
     boost::shared_ptr<Bond> cmsBond(new
         CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule,
-                         swapindex_, Thirty360(), 
+                         swapindex_, Thirty360(),
                          Following, fixingDays,
                          std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
                          100.0, Date(06,May,2005), termStructure_));
-    CashFlows::setPricer(cmsBond->cashflows(),cmspricer);
+    setCouponPricer(cmsBond->cashflows(),cmspricer);
     swapindex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondPrice = cmsBond->cleanPrice();
-    AssetSwap cmsBondAssetSwap(payFixedRate, 
+    AssetSwap cmsBondAssetSwap(payFixedRate,
                                  cmsBond, cmsBondPrice,
                                  iborindex_, spread_, termStructure_,
                                  Schedule(),
@@ -250,7 +250,7 @@ test_suite* AssetSwapTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
     suite->add(BOOST_TEST_CASE(&AssetSwapTest::testImpliedValue));
     //suite->add(BOOST_TEST_CASE(&AssetSwapTest::testMarketASWSpread));
-    
+
     return suite;
 }
 

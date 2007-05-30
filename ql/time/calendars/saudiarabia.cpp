@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004 FIMAT Group
+ Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,34 +19,41 @@
 */
 
 #include <ql/time/calendars/saudiarabia.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    SaudiArabia::SaudiArabia() {
+    SaudiArabia::SaudiArabia(Market market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new SaudiArabia::Impl);
-        impl_ = impl;
+        static boost::shared_ptr<Calendar::Impl> tadawulImpl(
+                                                new SaudiArabia::TadawulImpl);
+        switch (market) {
+          case Tadawul:
+            impl_ = tadawulImpl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
-    bool SaudiArabia::Impl::isWeekend(Weekday w) const {
-        return w == Friday;
+    bool SaudiArabia::TadawulImpl::isWeekend(Weekday w) const {
+        return w == Thursday || w == Friday;
     }
 
-    bool SaudiArabia::Impl::isBusinessDay(const Date& date) const {
+    bool SaudiArabia::TadawulImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
         if (isWeekend(w)
-            // eid al-adha 2004
-            || ((d==29 || d==30) && m == January && y==2004)
+            // National Day
+            || (d == 23 && m == September)
+            // Eid Al-Adha
             || (d >= 1 && d <= 6 && m == February && y==2004)
-            // eid al-adha 2005
             || (d >= 21 && d <= 25 && m == January && y==2005)
-            // eid al-fitr 2004
+            // Eid Al-Fitr
             || (d >= 25 && d <= 29 && m == November && y==2004)
-            // eid al-fitr 2005
             || (d >= 14 && d <= 18 && m == November && y==2005)
             )
             return false;

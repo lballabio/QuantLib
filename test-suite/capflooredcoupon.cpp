@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -104,7 +104,7 @@ Leg makeFloatingLeg(const Date& startDate,
                            convention_, fixingDays_, gearingVector, spreadVector);
     boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
         BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
-    CashFlows::setPricer(floatLeg,fictitiousPricer);
+    setCouponPricer(floatLeg,fictitiousPricer);
     return floatLeg;
 }
 
@@ -131,7 +131,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
     Leg iborLeg = IborLeg(nominals_,
                           schedule,
                           index_,
-                          index_->dayCounter(), 
+                          index_->dayCounter(),
                           convention_,
                           fixingDays_,
                           gearingVector,
@@ -139,7 +139,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
                           caps,
                           floors,
                           false);
-     CashFlows::setPricer(iborLeg, pricer);
+     setCouponPricer(iborLeg, pricer);
      return iborLeg;
 }
 

@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -819,7 +819,7 @@ QL_END_TEST_LOCALS(LowDiscrepancyTest)
 
 void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
 
-    BOOST_MESSAGE("Testing Mersenne twister discrepancy...");
+    BOOST_MESSAGE("Testing Mersenne-twister discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002DiscrMersenneTwis, dim003DiscrMersenneTwis,
@@ -916,7 +916,7 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing SobolLevitan-Sobol discrepancy...");
+    BOOST_MESSAGE("Testing Levitan-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,
@@ -932,7 +932,7 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
 
 void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
 
-    BOOST_MESSAGE("Testing SobolLevitanLemieux-Sobol discrepancy...");
+    BOOST_MESSAGE("Testing Levitan-Lemieux-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
         dim002Discr_Sobol, dim003Discr_Sobol,

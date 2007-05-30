@@ -9,7 +9,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
 
  This program is distributed in the hope that it will be useful, but
@@ -17,7 +17,7 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 /*! \file conundrumpricer.hpp
-    \brief
+    \brief CMS-coupon pricer
 */
 
 #ifndef quantlib_conundrum_pricer_hpp
@@ -28,6 +28,7 @@
 
 namespace QuantLib {
 
+    class CmsCoupon;
     class YieldTermStructure;
     class Quote;
 
@@ -86,7 +87,6 @@ namespace QuantLib {
       private:
         GFunctionFactory();
 
-        /*! Corresponds to Standard Model in Hagan's paper */
         class GFunctionStandard : public GFunction {
           public:
             GFunctionStandard(Size q,
@@ -177,11 +177,10 @@ namespace QuantLib {
     };
 
 
-    //! ConundrumPricer
-    /*! Base class for the pricing of a Cms coupon via static replication
+    //! CMS-coupon pricer
+    /*! Base class for the pricing of a CMS coupon via static replication
         as in Hagan's "Conundrums..." article
     */
-
     class ConundrumPricer: public CmsCouponPricer {
       public:
         /* */
@@ -228,8 +227,8 @@ namespace QuantLib {
     };
 
 
-    //! ConundrumPricerByNumericalIntegration
-    /*! Prices a Cms coupon via static replication as in Hagan's
+    //! CMS-coupon pricer
+    /*! Prices a cms coupon via static replication as in Hagan's
         "Conundrums..." article via numerical integration based on
         prices of vanilla swaptions
     */
@@ -252,9 +251,7 @@ namespace QuantLib {
             virtual ~Function() {}
             virtual Real operator()(Real x) const = 0;
         };
-        //! ConundrumIntegrand
-        /*! Base class for the definition of the integrand for Hagan's
-            integral */
+
         class ConundrumIntegrand : public Function {
             friend class ConundrumPricerByNumericalIntegration;
           public:
@@ -300,6 +297,7 @@ namespace QuantLib {
         const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
     };
 
+    //! CMS-coupon pricer
     class ConundrumPricerByBlack : public ConundrumPricer {
       public:
         ConundrumPricerByBlack(

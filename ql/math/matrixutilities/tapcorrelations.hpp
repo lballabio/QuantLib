@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -23,10 +23,10 @@
 
 #include <ql/types.hpp>
 #include <ql/utilities/disposable.hpp>
-#include <vector>
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <boost/function.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -35,7 +35,7 @@ namespace QuantLib {
         given in the \f$ angles \f$ vector. See equation (24) in
         "Parameterizing correlations: a geometric interpretation"
         by Francesco Rapisarda, Damiano Brigo, Fabio Mercurio
-            
+
         \test
         - the correctness of the results is tested by reproducing
           known good data.
@@ -52,7 +52,7 @@ namespace QuantLib {
                                        Size matrixSize,
                                        Size rank);
 
-    // the same function using the angles parameterized by the following 
+    // the same function using the angles parameterized by the following
     // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
     Disposable<Matrix>
     triangularAnglesParametrizationUnconstrained(const Array& x,
@@ -65,7 +65,7 @@ namespace QuantLib {
                                                     Size rank);
 
 
-    //! Returns the rank reduced Triangular Angles Parametrized correlation matrix 
+    //! Returns the rank reduced Triangular Angles Parametrized correlation matrix
     /*! The matrix \f$ m \f$ is filled with values corresponding to angles
         corresponding  to the 3D spherical spiral paramterized by
         \f$ alpha \f$, \f$ t0 \f$, \f$ epsilon \f$ values. See equation (32) in
@@ -80,7 +80,7 @@ namespace QuantLib {
     */
     Disposable<Matrix>
     triangularAnglesParametrizationRankThree(Real alpha,
-                                             Real t0, 
+                                             Real t0,
                                              Real epsilon,
                                              Size nbRows);
 

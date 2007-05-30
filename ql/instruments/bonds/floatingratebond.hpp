@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -44,7 +44,7 @@ namespace QuantLib {
                          Real faceAmount,
                          const Schedule& schedule,
                          const boost::shared_ptr<IborIndex>& index,
-                         const DayCounter& paymentDayCounter,
+                         const DayCounter& accrualDayCounter,
                          BusinessDayConvention paymentConvention
                                              = Following,
                          Natural fixingDays = Null<Natural>(),
@@ -61,6 +61,32 @@ namespace QuantLib {
                          const Date& issueDate = Date(),
                          const Handle<YieldTermStructure>& discountCurve
                                             = Handle<YieldTermStructure>());
+        FloatingRateBond(Natural settlementDays,
+                         Real faceAmount,
+                         const Date& startDate,
+                         const Date& maturityDate,
+                         Frequency couponFrequency,
+                         const Calendar& calendar,
+                         const boost::shared_ptr<IborIndex>& index,
+                         const DayCounter& accrualDayCounter,
+                         BusinessDayConvention accrualConvention = Following,
+                         BusinessDayConvention paymentConvention = Following,
+                         Natural fixingDays = Null<Natural>(),
+                         const std::vector<Real>& gearings
+                                             = std::vector<Real>(1, 1.0),
+                         const std::vector<Spread>& spreads
+                                             = std::vector<Spread>(1, 0.0),
+                         const std::vector<Rate>& caps
+                                             = std::vector<Rate>(),
+                         const std::vector<Rate>& floors
+                                            = std::vector<Rate>(),
+                         bool inArrears = false,
+                         Real redemption = 100.0,
+                         const Date& issueDate = Date(),
+                         const Handle<YieldTermStructure>& discountCurve
+                                               = Handle<YieldTermStructure>(),
+                         const Date& stubDate = Date(),
+                         bool fromEnd = true);
     };
 
 }

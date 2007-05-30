@@ -4,27 +4,12 @@
 import os, string
 
 options = [
-    "-r",                         # show revision numbers
+    "-i",                         # show revision numbers
     "-f ChangeLog.txt",           # output file
-    "-W 180",                     # unify commits within 3 mins
-    "-U dev_tools/developers",    # developer e-mails
-    "-P",                         # no empty log messages
-    "--no-hide-branch-additions", # show files added on branch
-    "-S"                          # blank line between header and log
+    "--authors=dev_tools/developers",    # developer e-mails
+    "--break-before-msg=2",       # blank line between header and log
+    "--linelen=78"                # maximum length of an output line
 ]
 
-try:
-    branch = None
-    tag = open('CVS/Tag')
-    for line in tag:
-        line = line.strip()
-        if line.startswith('T'):
-            branch = line[1:]
-except:
-    pass
-
-if branch:
-    options.append('-F %s' % branch) # only show messages on or before branch
-
-os.system('cvs2cl %s' % string.join(options))
+os.system('svn2cl %s' % string.join(options))
 

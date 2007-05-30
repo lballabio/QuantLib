@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -221,7 +221,7 @@ namespace QuantLib {
         else    return 0.0;
     }
 
-    Rate CashFlows::currentCouponRate(const Leg& leg, 
+    Rate CashFlows::currentCouponRate(const Leg& leg,
                                       const Date& refDate) {
         Leg::const_iterator cf = nextCashFlow(leg, refDate);
         if (cf==leg.end()) return 0.0;
@@ -231,7 +231,7 @@ namespace QuantLib {
         else    return 0.0;
     }
 
-   Date CashFlows::startDate(const Leg& cashflows) {
+    Date CashFlows::startDate(const Leg& cashflows) {
         Date d = Date::maxDate();
         for (Size i=0; i<cashflows.size(); ++i) {
             boost::shared_ptr<Coupon> c =
@@ -257,9 +257,9 @@ namespace QuantLib {
                         const Date& settlementDate,
                         const Date& npvDate,
                         Integer exDividendDays) {
-        Date d = settlementDate;
-        if (d==Date())
-            d = discountCurve->referenceDate();
+        Date d = settlementDate != Date() ?
+                 settlementDate :
+                 discountCurve->referenceDate();
 
         Real totalNPV = 0.0;
         for (Size i=0; i<cashflows.size(); ++i) {
@@ -453,26 +453,6 @@ namespace QuantLib {
             npv = CashFlows::npv(cashFlows, discountCurve, settlementDate,
                                   npvDate, exDividendDays);
         return basisPoint_*npv/bps;
-    }
-
-
-    void CashFlows::setPricer(
-               const Leg& leg,
-               const boost::shared_ptr<FloatingRateCouponPricer>& pricer){
-         for(Size i=0; i<leg.size(); ++i){
-            CouponSelectorToSetPricer selector(pricer);
-            leg[i]->accept(selector);
-       }
-    }
-    
-    void CashFlows::setPricers(
-            const Leg& leg,
-            const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers){
-        QL_REQUIRE(leg.size() == pricers.size(), "mismatch between leg and pricers");
-        for(QuantLib::Size i=0; i<leg.size(); ++i){
-            CouponSelectorToSetPricer selector(pricers[i]);
-            leg[i]->accept(selector);
-       }
     }
 
 }

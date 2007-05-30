@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! forward contract on a fixed-rate bond
+    //! %Forward contract on a fixed-rate bond
     /*! 1. valueDate refers to the settlement date of the bond forward
            contract.  maturityDate is the delivery (or repurchase)
            date for the underlying bond (not the bond's maturity

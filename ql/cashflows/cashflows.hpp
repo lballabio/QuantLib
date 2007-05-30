@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,14 +36,12 @@ namespace QuantLib {
 
     class YieldTermStructure;
 
-    //! duration type
+    //! %duration type
     struct Duration {
         enum Type { Simple, Macaulay, Modified };
     };
 
-    class FloatingRateCouponPricer;
-
-    //! cashflows analysis functions
+    //! %cashflow-analysis functions
     /*! \todo add tests */
     class CashFlows {
       private:
@@ -173,15 +171,6 @@ namespace QuantLib {
         static Real convexity(const Leg& leg,
                               const InterestRate& y,
                               Date settlementDate = Date());
-
-
-        static void setPricer(
-               const Leg& leg,
-               const boost::shared_ptr<FloatingRateCouponPricer>& pricer);
-
-        static void setPricers(
-               const Leg& leg,
-               const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >& pricers);
     };
 
 }

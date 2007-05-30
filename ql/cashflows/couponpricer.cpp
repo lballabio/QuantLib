@@ -4,7 +4,6 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 Cristina Duminuco
 
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -12,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -32,7 +31,7 @@ namespace QuantLib {
 //                              BlackIborCouponPricer                        //
 //===========================================================================//
 
-    void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon){
+    void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ =  dynamic_cast<const IborCoupon*>(&coupon);
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
@@ -77,10 +76,12 @@ namespace QuantLib {
     }
 
     Rate BlackIborCouponPricer::floorletRate(Rate effectiveFloor) const {
-        return floorletPrice(effectiveFloor)/(coupon_->accrualPeriod()*discount_);
+        return floorletPrice(effectiveFloor)/
+            (coupon_->accrualPeriod()*discount_);
     }
 
-    Real BlackIborCouponPricer::optionletPrice(Option::Type optionType, Real effStrike) const {
+    Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
+                                               Real effStrike) const {
         Date fixingDate = coupon_->fixingDate();
         if (fixingDate <= Settings::instance().evaluationDate()) {
             // the amount is determined
@@ -97,17 +98,19 @@ namespace QuantLib {
             QL_REQUIRE(!capletVolatility().empty(),"missing caplet volatility");
             // not yet determined, use Black model
             Rate fixing =
-                 blackFormula(optionType,
-                              effStrike,
-                              adjustedFixing(),
-                              std::sqrt(capletVolatility()->blackVariance(fixingDate,effStrike)));
+                 blackFormula(
+                       optionType,
+                       effStrike,
+                       adjustedFixing(),
+                       std::sqrt(capletVolatility()->blackVariance(fixingDate,
+                                                                   effStrike)));
             return fixing* coupon_->accrualPeriod()*discount_; ;
         }
     }
 
     Rate BlackIborCouponPricer::adjustedFixing() const {
 
-        Real adjustement;
+        Real adjustement = 0.0;
 
         Rate fixing = coupon_->indexFixing();
 
@@ -116,7 +119,8 @@ namespace QuantLib {
         } else {
             // see Hull, 4th ed., page 550
             QL_REQUIRE(!capletVolatility().empty(),"missing caplet volatility");
-            Date d1 = coupon_->fixingDate(), referenceDate = capletVolatility()->referenceDate();
+            Date d1 = coupon_->fixingDate(),
+                 referenceDate = capletVolatility()->referenceDate();
             if (d1 <= referenceDate) {
                 adjustement = 0.0;
             } else {
@@ -133,75 +137,123 @@ namespace QuantLib {
 //                         CouponSelectorToSetPricer                         //
 //===========================================================================//
 
-    void CouponSelectorToSetPricer::visit(CashFlow&) {
-        // nothing to do
-    }
+    namespace {
 
-    void CouponSelectorToSetPricer::visit(Coupon&) {
-        // nothing to do
-    }
+        class PricerSetter : public AcyclicVisitor,
+                             public Visitor<CashFlow>,
+                             public Visitor<Coupon>,
+                             public Visitor<IborCoupon>,
+                             public Visitor<CmsCoupon>,
+                             public Visitor<CappedFlooredIborCoupon>,
+                             public Visitor<CappedFlooredCmsCoupon>,
+                             public Visitor<DigitalIborCoupon>,
+                             public Visitor<DigitalCmsCoupon>,
+                             public Visitor<RangeAccrualFloatersCoupon>{
+          private:
+            const boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+          public:
+            PricerSetter(
+                    const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
+            : pricer_(pricer) {}
 
-    void CouponSelectorToSetPricer::visit(IborCoupon& c) {
-        const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
-            boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
-        if (iborCouponPricer)
+            void visit(CashFlow& c);
+            void visit(Coupon& c);
+            void visit(IborCoupon& c);
+            void visit(CappedFlooredIborCoupon& c);
+            void visit(DigitalIborCoupon& c);
+            void visit(CmsCoupon& c);
+            void visit(CappedFlooredCmsCoupon& c);
+            void visit(DigitalCmsCoupon& c);
+            void visit(RangeAccrualFloatersCoupon& c);
+        };
+
+        void PricerSetter::visit(CashFlow&) {
+            // nothing to do
+        }
+
+        void PricerSetter::visit(Coupon&) {
+            // nothing to do
+        }
+
+        void PricerSetter::visit(IborCoupon& c) {
+            const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
+                boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            QL_REQUIRE(iborCouponPricer,
+                       "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to IborCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(DigitalIborCoupon& c) {
-        const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
-            boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
-        if (iborCouponPricer)
+        void PricerSetter::visit(DigitalIborCoupon& c) {
+            const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
+                boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            QL_REQUIRE(iborCouponPricer,
+                       "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to IborCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(CappedFlooredIborCoupon& c) {
-        const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
-            boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
-        if (iborCouponPricer)
+        void PricerSetter::visit(CappedFlooredIborCoupon& c) {
+            const boost::shared_ptr<IborCouponPricer> iborCouponPricer =
+                boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+            QL_REQUIRE(iborCouponPricer,
+                       "pricer not compatible with Ibor coupon");
             c.setPricer(iborCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to IborCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(CmsCoupon& c) {
-        const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-            boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
-        if (cmsCouponPricer)
+        void PricerSetter::visit(CmsCoupon& c) {
+            const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            QL_REQUIRE(cmsCouponPricer,
+                       "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to CmsCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(CappedFlooredCmsCoupon& c) {
-        const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-            boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
-        if (cmsCouponPricer)
+        void PricerSetter::visit(CappedFlooredCmsCoupon& c) {
+            const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            QL_REQUIRE(cmsCouponPricer,
+                       "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to CmsCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(DigitalCmsCoupon& c) {
-        const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
-            boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
-        if (cmsCouponPricer)
+        void PricerSetter::visit(DigitalCmsCoupon& c) {
+            const boost::shared_ptr<CmsCouponPricer> cmsCouponPricer =
+                boost::dynamic_pointer_cast<CmsCouponPricer>(pricer_);
+            QL_REQUIRE(cmsCouponPricer,
+                       "pricer not compatible with CMS coupon");
             c.setPricer(cmsCouponPricer);
-        else
-            QL_FAIL("unexpected error when casting to CmsCouponPricer");
-    }
+        }
 
-    void CouponSelectorToSetPricer::visit(RangeAccrualFloatersCoupon& c) {
-        const boost::shared_ptr<RangeAccrualPricer> rangeAccrualPricer =
-            boost::dynamic_pointer_cast<RangeAccrualPricer>(pricer_);
-        if (rangeAccrualPricer)
+        void PricerSetter::visit(RangeAccrualFloatersCoupon& c) {
+            const boost::shared_ptr<RangeAccrualPricer> rangeAccrualPricer =
+                boost::dynamic_pointer_cast<RangeAccrualPricer>(pricer_);
+            QL_REQUIRE(rangeAccrualPricer,
+                       "pricer not compatible with range-accrual coupon");
             c.setPricer(rangeAccrualPricer);
-        else
-            QL_FAIL("unexpected error when casting to RangeAccrualPricer");
+        }
+
+    }
+
+
+    void setCouponPricer(
+                  const Leg& leg,
+                  const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        PricerSetter setter(pricer);
+        for (Size i=0; i<leg.size(); ++i) {
+            leg[i]->accept(setter);
+        }
+    }
+
+    void setCouponPricers(
+            const Leg& leg,
+            const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&
+                                                                    pricers) {
+        QL_REQUIRE(leg.size() == pricers.size(),
+                   "mismatch between leg size and number of pricers");
+        for (Size i=0; i<leg.size(); ++i) {
+            PricerSetter setter(pricers[i]);
+            leg[i]->accept(setter);
+        }
     }
 
 }
+

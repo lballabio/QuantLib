@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -623,7 +623,7 @@ void BondTest::testCachedFloating() {
                              std::vector<Rate>(), std::vector<Rate>(),
                              false,
                              100.0, Date(30,November,2004), riskFreeRate);
-    CashFlows::setPricer(bond1.cashflows(),pricer);
+    setCouponPricer(bond1.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice1 = 99.874645;
@@ -650,7 +650,7 @@ void BondTest::testCachedFloating() {
                            std::vector<Rate>(), std::vector<Rate>(),
                            false,
                            100.0, Date(30,November,2004), discountCurve);
-    CashFlows::setPricer(bond2.cashflows(),pricer);
+    setCouponPricer(bond2.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice2 = 97.955904;
@@ -682,7 +682,7 @@ void BondTest::testCachedFloating() {
                            std::vector<Rate>(), std::vector<Rate>(),
                            false,
                            100.0, Date(30,November,2004), discountCurve);
-    CashFlows::setPricer(bond3.cashflows(),pricer);
+    setCouponPricer(bond3.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice3 = 98.495458;

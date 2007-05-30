@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -758,8 +758,6 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 }
 
 void InterpolationTest::testMultiSpline() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing N-dimensional cubic spline...");
 
     std::vector<Size> dim(5);
@@ -859,7 +857,6 @@ void InterpolationTest::testMultiSpline() {
                 << "\n    tolerance:    " << tolerance);
         }
     }
-    #endif
 }
 
 namespace {
@@ -1309,9 +1306,7 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineOnGaussianValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
-    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
-    #endif
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testAsFunctor));
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testForwardFlat));

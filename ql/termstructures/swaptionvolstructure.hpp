@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -76,7 +76,7 @@ namespace QuantLib {
                            bool extrapolate = false) const;
         //! returns the smile for a given option time and swapLength
         boost::shared_ptr<SmileSection> smileSection(Time optionTime,
-                                                    Time swapLength) const{
+                                                     Time swapLength) const{
             return smileSectionImpl(optionTime,swapLength);
         };
 
@@ -127,7 +127,7 @@ namespace QuantLib {
         virtual BusinessDayConvention businessDayConvention() const;
         //! implements the conversion between optionTenors and optionDates
         Date optionDateFromTenor(const Period& optionTenor) const;
-        
+
 
       protected:
         //! return smile section
@@ -216,7 +216,7 @@ namespace QuantLib {
         const std::pair<Time, Time> p = convertDates(optionDate, swapTenor);
         return vol*vol*p.first;
     }
-    inline boost::shared_ptr<SmileSection> 
+    inline boost::shared_ptr<SmileSection>
         SwaptionVolatilityStructure::smileSection(
                                                  const Date& optionDate,
                                                  const Period& swapTenor) const {

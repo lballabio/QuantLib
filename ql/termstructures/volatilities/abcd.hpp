@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -38,7 +38,7 @@ namespace QuantLib {
                    "d (" << d << ") must be non negative");
     }
 
-    //! Abcd functional form for instantaneous volatility
+    //! %Abcd functional form for instantaneous volatility
     /*! \f[ f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d \f]
         following Rebonato's notation.
     */
@@ -169,7 +169,7 @@ namespace QuantLib {
 
     class OptimizationMethod;
 
-    //! Abcd functional form for instantaneous volatility
+    //! %Abcd functional form for instantaneous volatility
     /*!
         \f[
         f(T-t) = [ a + b(T-t) ] e^{-c(T-t)} + d

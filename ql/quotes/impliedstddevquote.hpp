@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,6 +19,7 @@
 */
 
 /*! \file impliedstddevquote.hpp
+    \brief quote for the implied standard deviation of an underlying
 */
 
 #ifndef quantlib_implied_std_dev_quote_hpp
@@ -30,6 +31,7 @@
 
 namespace QuantLib {
 
+    //! %quote for the implied standard deviation of an underlying
     class ImpliedStdDevQuote : public Quote,
                                public LazyObject {
       public:
@@ -44,8 +46,8 @@ namespace QuantLib {
         Real value() const;
         bool isValid() const;
         //@}
-        void performCalculations() const;
       protected:
+        void performCalculations() const;
         mutable Real impliedStdev_;
         Option::Type optionType_;
         Real strike_;

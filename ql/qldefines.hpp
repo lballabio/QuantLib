@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -69,8 +69,6 @@
 
 #if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
     #include <ql/config.hpp>
-#elif defined(__BORLANDC__)     // Borland C++ 5.5
-    #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
     #include <ql/config.mwcw.hpp>
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
@@ -120,27 +118,6 @@
     #define QL_DUMMY_RETURN(x)        return x;
 #else
     #define QL_DUMMY_RETURN(x)
-#endif
-
-/*! \def QL_IO_INIT
-    \brief I/O initialization
-
-    Sometimes, programs compiled with the free Borland compiler will
-    crash miserably upon attempting to write on std::cout.  Strangely
-    enough, issuing the instruction
-    \code
-    std::cout << std::string();
-    \endcode
-    at the beginning of the program will prevent other accesses to
-    <code>std::cout</code> from crashing the program. This macro, to
-    be called at the beginning of <code>main()</code>, encapsulates
-    the above enchantment for Borland and is defined as empty for the
-    other compilers.
-*/
-#if defined(QL_PATCH_BORLAND)
-    #define QL_IO_INIT    std::cout << std::string();
-#else
-    #define QL_IO_INIT
 #endif
 /*! @} */
 

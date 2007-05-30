@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -48,10 +48,9 @@ namespace QuantLib {
 #endif
 
 
-int main(int, char* [])
-{
+int main(int, char* []) {
+
     try {
-        QL_IO_INIT
 
         boost::timer timer;
         std::cout << std::endl;
@@ -342,7 +341,6 @@ int main(int, char* [])
                   << std::setw(widths[3]) << std::left << "N/A"
                   << std::endl;
 
-        #if !defined(QL_PATCH_MSVC6) && !defined(QL_PATCH_BORLAND)
         method = "MC (Longstaff Schwartz)";
         boost::shared_ptr<PricingEngine> mcengine3;
         mcengine3 =
@@ -358,7 +356,6 @@ int main(int, char* [])
                   << std::setw(widths[2]) << std::left << "N/A"
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
-        #endif
 
         Real seconds = timer.elapsed();
         Integer hours = int(seconds/3600);

@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -56,8 +56,6 @@ QL_END_TEST_LOCALS(ShortRateModelTest)
 
 
 void ShortRateModelTest::testCachedHullWhite() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing Hull-White calibration against cached values...");
 
     QL_TEST_BEGIN
@@ -129,13 +127,10 @@ void ShortRateModelTest::testCachedHullWhite() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 
 void ShortRateModelTest::testSwaps() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
     QL_TEST_BEGIN
@@ -244,12 +239,9 @@ void ShortRateModelTest::testSwaps() {
     }
 
     QL_TEST_TEARDOWN
-    #endif
 }
 
 void ShortRateModelTest::testFuturesConvexityBias() {
-    #if !defined(QL_PATCH_BORLAND)
-
     BOOST_MESSAGE("Testing Hull-White futures convexity bias...");
 
     // G. Kirikos, D. Novak, "Convexity Conundrums", Risk Magazine, March 1997
@@ -276,16 +268,13 @@ void ShortRateModelTest::testFuturesConvexityBias() {
                     << "\n     error: " << error
                     << "\n tolerance: " << tolerance);
     }
-    #endif
 }
 
 test_suite* ShortRateModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
-    #if !defined(QL_PATCH_BORLAND)
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testSwaps));
     suite->add(BOOST_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
-    #endif
     return suite;
 }
 

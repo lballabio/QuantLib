@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,7 +19,7 @@
 */
 
 /*! \file couponpricer.hpp
-    \brief Coupon Pricers
+    \brief Coupon pricers
 */
 
 #ifndef quantlib_coupon_pricer_hpp
@@ -27,80 +27,72 @@
 
 #include <ql/termstructures/capvolstructures.hpp>
 #include <ql/termstructures/swaptionvolstructure.hpp>
+#include <ql/cashflow.hpp>
 #include <ql/option.hpp>
 
 namespace QuantLib {
 
-    class CashFlow;
-    class Coupon;
     class FloatingRateCoupon;
     class IborCoupon;
-    class CmsCoupon;
-    class CappedFlooredIborCoupon;
-    class CappedFlooredCmsCoupon;
-    class DigitalIborCoupon;
-    class DigitalCmsCoupon;
-    class RangeAccrualFloatersCoupon;
 
-    //
-    //! generic pricer for FloatingRate coupons
-    //
+    //! generic pricer for floating-rate coupons
     class FloatingRateCouponPricer: public virtual Observer,
-                                    public virtual Observable{
+                                    public virtual Observable {
       public:
         virtual ~FloatingRateCouponPricer() {}
-        /* */
+        //! \name required interface
+        //@{
         virtual Real swapletPrice() const = 0;
         virtual Rate swapletRate() const = 0;
         virtual Real capletPrice(Rate effectiveCap) const = 0;
         virtual Rate capletRate(Rate effectiveCap) const = 0;
         virtual Real floorletPrice(Rate effectiveFloor) const = 0;
         virtual Rate floorletRate(Rate effectiveFloor) const = 0;
-        virtual void initialize(const FloatingRateCoupon& coupon)= 0;  
+        virtual void initialize(const FloatingRateCoupon& coupon) = 0;
+        //@}
         //! \name Observer interface
         //@{
         void update(){notifyObservers();}
         //@}
     };
 
-    
-    //! pricer for cappedFlooredIbor coupons
+    //! base pricer for capped/floored Ibor coupons
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         IborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol)
         : capletVol_(capletVol) { registerWith(capletVol_); }
-        virtual ~IborCouponPricer() {}
-		
+
         Handle<CapletVolatilityStructure> capletVolatility() const{
-	        return capletVol_;
-	    }
-		void setCapletVolatility(const Handle<CapletVolatilityStructure>& capletVol) {
+            return capletVol_;
+        }
+        void setCapletVolatility(
+                         const Handle<CapletVolatilityStructure>& capletVol) {
             unregisterWith(capletVol_);
             capletVol_ = capletVol;
             QL_REQUIRE(!capletVol_.empty(), "no adequate capletVol given");
             registerWith(capletVol_);
             update();
-		}
+        }
       private:
         Handle<CapletVolatilityStructure> capletVol_;
     };
 
-    //! By Black formula
+    //! Black-formula pricer for capped/floored Ibor coupons
     class BlackIborCouponPricer : public IborCouponPricer {
       public:
-		BlackIborCouponPricer(const Handle<CapletVolatilityStructure>& capletVol= 
-                                        Handle<CapletVolatilityStructure>())
-		: IborCouponPricer(capletVol) {};
-        virtual ~BlackIborCouponPricer() {}
+        BlackIborCouponPricer(
+                          const Handle<CapletVolatilityStructure>& capletVol =
+                                          Handle<CapletVolatilityStructure>())
+        : IborCouponPricer(capletVol) {};
         virtual void initialize(const FloatingRateCoupon& coupon);
         /* */
-        virtual Real swapletPrice() const;
-        virtual Rate swapletRate() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Rate capletRate(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-        virtual Rate floorletRate(Rate effectiveFloor) const;
-      
+        Real swapletPrice() const;
+        Rate swapletRate() const;
+        Real capletPrice(Rate effectiveCap) const;
+        Rate capletRate(Rate effectiveCap) const;
+        Real floorletPrice(Rate effectiveFloor) const;
+        Rate floorletRate(Rate effectiveFloor) const;
+
       protected:
         Real optionletPrice(Option::Type optionType,
                             Real effStrike) const;
@@ -113,62 +105,37 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         Real spreadLegValue_;
-    };   
+    };
 
-    
-    //! pricer for vanilla Cms coupons
+    //! base pricer for vanilla CMS coupons
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
-		CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
-        : swaptionVol_(swaptionVol) {registerWith(swaptionVol_);}
+        CmsCouponPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol)
+        : swaptionVol_(swaptionVol) { registerWith(swaptionVol_); }
 
-		Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
-			return swaptionVol_;
-	    }
-		void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& swaptionVol){
+        Handle<SwaptionVolatilityStructure> swaptionVolatility() const{
+            return swaptionVol_;
+        }
+        void setSwaptionVolatility(
+                     const Handle<SwaptionVolatilityStructure>& swaptionVol) {
             unregisterWith(swaptionVol_);
             swaptionVol_ = swaptionVol;
             QL_REQUIRE(!swaptionVol_.empty(), "no adequate swaptionVol given");
             registerWith(swaptionVol_);
             update();
-		}
+        }
       private:
         Handle<SwaptionVolatilityStructure> swaptionVol_;
-
     };
-    
-    /* In addition, we have in conundrumpricer.hpp:
-    class ConundrumPricer
-    class ConundrumPricer::ConundrumPricerByNumericalIntegration
-    class ConundrumPricer::ConundrumPricerByBlack
-    */
 
-    class CouponSelectorToSetPricer : public AcyclicVisitor,
-                                public Visitor<CashFlow>,
-                                public Visitor<Coupon>,
-                                public Visitor<IborCoupon>,
-                                public Visitor<CmsCoupon>,
-                                public Visitor<CappedFlooredIborCoupon>,
-                                public Visitor<CappedFlooredCmsCoupon>,
-                                public Visitor<DigitalIborCoupon>,
-                                public Visitor<DigitalCmsCoupon>,
-                                public Visitor<RangeAccrualFloatersCoupon> {
-      private:
-        const boost::shared_ptr<FloatingRateCouponPricer>   pricer_;
-      public:
-        CouponSelectorToSetPricer(const boost::shared_ptr<FloatingRateCouponPricer>& pricer)
-        : pricer_(pricer) {};
+    void setCouponPricer(const Leg& leg,
+                         const boost::shared_ptr<FloatingRateCouponPricer>&);
 
-        void visit(CashFlow& c);
-        void visit(Coupon& c);
-        void visit(IborCoupon& c);
-        void visit(CappedFlooredIborCoupon& c);
-        void visit(DigitalIborCoupon& c);
-        void visit(CmsCoupon& c);
-        void visit(CappedFlooredCmsCoupon& c);
-        void visit(DigitalCmsCoupon& c);
-        void visit(RangeAccrualFloatersCoupon& c);
-    };
+    void setCouponPricers(
+            const Leg& leg,
+            const std::vector<boost::shared_ptr<FloatingRateCouponPricer> >&);
+
 }
+
 
 #endif

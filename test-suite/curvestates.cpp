@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -118,20 +118,20 @@ QL_END_TEST_LOCALS(CurveStatesTest)
 
 void CurveStatesTest::testLMMCurveState() {
 
-    BOOST_MESSAGE("Testing LMMCurveState class...");
+    BOOST_MESSAGE("Testing Libor-market-model curve state...");
     QL_TEST_SETUP
 }
 
 void CurveStatesTest::testCoterminalSwapCurveState() {
 
-    BOOST_MESSAGE("Testing CoterminalSwapCurveState class...");
+    BOOST_MESSAGE("Testing coterminal-swap-market-model curve state...");
     QL_TEST_SETUP
 }
 
 
 void CurveStatesTest::testCMSwapCurveState() {
 
-    BOOST_MESSAGE("Testing CMSwapCurveState class...");
+    BOOST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
     QL_TEST_SETUP
     Size nbRates = todaysForwards.size();
     Size factors = nbRates;
@@ -159,16 +159,16 @@ void CurveStatesTest::testCMSwapCurveState() {
 
     Size spanningFwds = 1;
 
-    CMSMMDriftCalculator cmsDriftcalulator(pseudo, displacements, taus,
-                                           numeraire, alive, spanningFwds);
+    CMSMMDriftCalculator cmsDriftcalculator(pseudo, displacements, taus,
+                                            numeraire, alive, spanningFwds);
 
     CMSwapCurveState cmsCs(rateTimes, spanningFwds);
     cmsCs.setOnCMSwapRates(forwards);
     std::vector<Real> cmsDrifts(nbRates);
-    cmsDriftcalulator.compute(cmsCs,cmsDrifts);
+    cmsDriftcalculator.compute(cmsCs,cmsDrifts);
 
-    LMMDriftCalculator lmmDriftcalulator(pseudo, displacements, taus,
-                                         numeraire, alive);
+    LMMDriftCalculator lmmDriftcalculator(pseudo, displacements, taus,
+                                          numeraire, alive);
     LMMCurveState lmmCs(rateTimes);
     lmmCs.setOnForwardRates(forwards);
     std::vector<Real> lmmDrifts(nbRates);
@@ -191,8 +191,8 @@ void CurveStatesTest::testCMSwapCurveState() {
 // --- Call the desired tests
 test_suite* CurveStatesTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Curve States tests");
-    suite->add(BOOST_TEST_CASE(&CurveStatesTest::testLMMCurveState));
-    suite->add(BOOST_TEST_CASE(&CurveStatesTest::testCoterminalSwapCurveState));
+    //suite->add(BOOST_TEST_CASE(&CurveStatesTest::testLMMCurveState));
+    //suite->add(BOOST_TEST_CASE(&CurveStatesTest::testCoterminalSwapCurveState));
     suite->add(BOOST_TEST_CASE(&CurveStatesTest::testCMSwapCurveState));
     return suite;
 }

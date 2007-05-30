@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -19,7 +19,7 @@
 */
 
 /*! \file capvolstructures.hpp
-    \brief Cap/Floor volatility structures
+    \brief cap/floor volatility structures
 */
 
 #ifndef quantlib_cap_volatility_structures_hpp
@@ -172,7 +172,7 @@ namespace QuantLib {
     : TermStructure(settlementDays, cal, dc) {}
 
 
-	inline Volatility CapVolatilityStructure::volatility(const Date& end,
+    inline Volatility CapVolatilityStructure::volatility(const Date& end,
                                                          Rate strike,
                                                          bool extrapolate)
                                                                        const {

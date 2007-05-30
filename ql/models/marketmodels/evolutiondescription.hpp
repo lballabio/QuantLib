@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -27,29 +27,31 @@
 
 namespace QuantLib {
 
+    //! Market-model evolution description
     /*! This class stores:
-		1) evolutionTimes = the times defining the rates that are to be evolved,
-		2) rateTimes = the times at which the rates need to be known, 
-		3) relevanceRates = which rates need to be known at each time.
-        This class is really just a tuple of evolution and rate times
-        
-        - There will be n+1 rate times expressing payment and reset times of
-        forward rates.
-		- There will be any number of evolution times.
-		- We also store which part of the rates are relevant for pricing via
-        relevance rates. The important part for the i-th step will then range
-        from relevanceRates[i].first to relevanceRates[i].second
-        Default values for relevance rates will be 0 and n. 
+        -# evolutionTimes = the times defining the rates that are to be evolved,
+        -# rateTimes = the times at which the rates need to be known,
+        -# relevanceRates = which rates need to be known at each time.
 
-        - Example n = 5:
+        This class is really just a tuple of evolution and rate times;
+        - there will be n+1 rate times expressing payment and reset
+          times of forward rates.
+        - there will be any number of evolution times.
+        - we also store which part of the rates are relevant for
+          pricing via relevance rates. The important part for the i-th
+          step will then range from relevanceRates[i].first to
+          relevanceRates[i].second. Default values for relevance rates
+          will be 0 and n.
+        - example for n = 5:
+        <pre>
            |-----|-----|-----|-----|-----|      (size = 6)
            t0    t1    t2    t3    t4    t5     rateTimes
            f0    f1    f2    f3    f4           forwardRates
            d0    d1    d2    d3    d4    d5     discountBonds
            d0/d0 d1/d0 d2/d0 d3/d0 d4/d0 d5/d0  discountRatios
            sr0   sr1   sr2   sr3   sr4          coterminalSwaps
-        */
-
+        </pre>
+    */
     class EvolutionDescription {
         // This typedef is used so that gcc 3.3 can parse the
         // constructor declaration (not even parenthesizing the
@@ -82,7 +84,7 @@ namespace QuantLib {
 
     // Numeraire functions
 
-	/*! Check that there is one numeraire for each evolution time.
+    /*! Check that there is one numeraire for each evolution time.
         Each numeraire must be an index amongst the rate times so it ranges
         from 0 to n. Each numeraire must not have expired before the end of
         the step.

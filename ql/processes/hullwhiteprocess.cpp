@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Banca Profilo S.p.A.
+ Copyright (C) 2006, 2007 Banca Profilo S.p.A.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -36,7 +36,13 @@ namespace QuantLib {
     }
 
     Real HullWhiteProcess::drift(Time t, Real x) const {
-        return process_->drift(t, x);
+        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-exp(-2*a_*t));
+        Real shift = 0.0001;
+        Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
+        Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
+        Real f_prime = (fup-f)/shift;
+        alpha_drift += a_*f+f_prime;
+        return process_->drift(t, x) + alpha_drift;
     }
 
     Real HullWhiteProcess::diffusion(Time t, Real x) const{
@@ -61,7 +67,7 @@ namespace QuantLib {
                     (sigma_/a_)*(1 - std::exp(-a_*t)) :
                     sigma_*t;
         alfa *= 0.5*alfa;
-        alfa += h_->forwardRate(0.0,0.0,Continuous,NoFrequency);
+        alfa += h_->forwardRate(t, t, Continuous, NoFrequency);
         return alfa;
     }
 
@@ -79,7 +85,13 @@ namespace QuantLib {
     }
 
     Real HullWhiteForwardProcess::drift(Time t, Real x) const {
-        return process_->drift(t, x) - B(t, T_)*sigma_*sigma_;
+        Real alpha_drift = sigma_*sigma_/(2*a_)*(1-exp(-2*a_*t));
+        Real shift = 0.0001;
+        Real f = h_->forwardRate(t, t, Continuous, NoFrequency);
+        Real fup = h_->forwardRate(t+shift, t+shift, Continuous, NoFrequency);
+        Real f_prime = (fup-f)/shift;
+        alpha_drift += a_*f+f_prime;
+        return process_->drift(t, x) + alpha_drift - B(t, T_)*sigma_*sigma_;
     }
 
     Real HullWhiteForwardProcess::diffusion(Time t, Real x) const{
@@ -107,7 +119,7 @@ namespace QuantLib {
                     (sigma_/a_)*(1 - std::exp(-a_*t)) :
                     sigma_*t;
         alfa *= 0.5*alfa;
-        alfa += h_->forwardRate(0.0, 0.0, Continuous, NoFrequency);
+        alfa += h_->forwardRate(t, t, Continuous, NoFrequency);
 
         return alfa;
     }

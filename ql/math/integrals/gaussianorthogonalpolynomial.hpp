@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -102,25 +102,25 @@ namespace QuantLib {
         const Real beta_;
     };
 
-    // Gauss-Legendre polynomial
+    //! Gauss-Legendre polynomial
     class GaussLegendrePolynomial : public GaussJacobiPolynomial {
       public:
         GaussLegendrePolynomial();
     };
 
-    // Gauss-Chebyshev polynomial
+    //! Gauss-Chebyshev polynomial
     class GaussChebyshevPolynomial : public GaussJacobiPolynomial {
       public:
         GaussChebyshevPolynomial();
     };
 
-    // Gauss-Chebyshev2th polynomial
+    //! Gauss-Chebyshev polynomial (second kind)
     class GaussChebyshev2thPolynomial : public GaussJacobiPolynomial {
       public:
         GaussChebyshev2thPolynomial();
     };
 
-    // Gauss-Gegenbauer polynomial
+    //! Gauss-Gegenbauer polynomial
     class GaussGegenbauerPolynomial : public GaussJacobiPolynomial {
       public:
         GaussGegenbauerPolynomial(Real lambda);
@@ -134,6 +134,7 @@ namespace QuantLib {
         Real beta(Size i) const;
         Real w(Real x) const;
     };
+
 }
 
 #endif

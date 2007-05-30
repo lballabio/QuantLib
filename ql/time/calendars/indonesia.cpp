@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -10,7 +10,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -18,13 +18,22 @@
 */
 
 #include <ql/time/calendars/indonesia.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    Indonesia::Indonesia(Market) {
+    Indonesia::Indonesia(Market market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Indonesia::BejImpl);
-        impl_ = impl;
+        static boost::shared_ptr<Calendar::Impl> bejImpl(
+                                                      new Indonesia::BejImpl);
+        switch (market) {
+          case BEJ:
+          case JSX:
+            impl_ = bejImpl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
     bool Indonesia::BejImpl::isBusinessDay(const Date& date) const {
@@ -36,6 +45,8 @@ namespace QuantLib {
         Day em = easterMonday(y);
 
         if (isWeekend(w)
+            // New Year's Day
+            || (d == 1 && m == January)
             // Good Friday
             || (dd == em-3)
             // Ascension Thursday
@@ -84,6 +95,20 @@ namespace QuantLib {
                 || ((d == 24 || d == 25) && m == October)
                 // National leaves
                 || ((d == 23 || d == 26 || d == 27) && m == October)
+                )
+                return false;
+        }
+        if (y == 2007) {
+            if (// Nyepi
+                (d == 19 && m == March)
+                // Waisak
+                || (d == 1 && m == June)
+                // Ied Adha
+                || (d == 20 && m == December)
+                // National leaves
+                || (d == 18 && m == May)
+                || ((d == 12 || d == 15 || d == 16) && m == October)
+                || ((d == 21 || d == 24) && m == October)
                 )
                 return false;
         }

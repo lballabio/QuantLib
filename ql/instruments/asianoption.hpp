@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -79,7 +79,7 @@ namespace QuantLib {
         std::vector<Date> fixingDates_;
     };
 
-    //! Extra arguments for single-asset discrete-average Asian option
+    //! Extra %arguments for single-asset discrete-average Asian option
     class DiscreteAveragingAsianOption::arguments
         : public OneAssetStrikedOption::arguments {
       public:
@@ -93,7 +93,7 @@ namespace QuantLib {
         std::vector<Date> fixingDates;
     };
 
-    //! Extra arguments for single-asset continuous-average Asian option
+    //! Extra %arguments for single-asset continuous-average Asian option
     class ContinuousAveragingAsianOption::arguments
         : public OneAssetStrikedOption::arguments {
       public:
@@ -102,12 +102,12 @@ namespace QuantLib {
         Average::Type averageType;
     };
 
-    //! Discrete-averaging Asian engine base class
+    //! Discrete-averaging Asian %engine base class
     class DiscreteAveragingAsianOption::engine
         : public GenericEngine<DiscreteAveragingAsianOption::arguments,
                                DiscreteAveragingAsianOption::results> {};
 
-    //! Continuous-averaging Asian engine base class
+    //! Continuous-averaging Asian %engine base class
     class ContinuousAveragingAsianOption::engine
         : public GenericEngine<ContinuousAveragingAsianOption::arguments,
                                ContinuousAveragingAsianOption::results> {};

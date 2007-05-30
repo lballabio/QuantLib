@@ -13,7 +13,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -429,7 +429,7 @@ void checkMultiProductCompositeResults (const SequenceStatistics& stats,
 
     std::vector<Real> results = stats.mean();
     std::vector<Real> errors = stats.errorEstimate();
-    
+
     // size check
     Size nbOfResults = 0;
     for (Size i=0; i<subProductExpectedValues.size(); ++i) {
@@ -451,7 +451,7 @@ void checkMultiProductCompositeResults (const SequenceStatistics& stats,
         Real maxError = QL_MIN_REAL;
         Real errorThreshold = subProductExpectedValue->errorThreshold;
         for (Size j=0; j<subProductExpectedValue->values.size(); ++j) {
-            Real stdDev = 
+            Real stdDev =
                 (results[currentResultIndex]-subProductExpectedValue->values[j])
                 /errors[currentResultIndex];
             stdDevs.push_back(stdDev);
@@ -460,13 +460,13 @@ void checkMultiProductCompositeResults (const SequenceStatistics& stats,
             ++currentResultIndex;
         }
         bool isBiased = minError > 0.0 || maxError < 0.0;
-        if (printReport_ 
-            || subProductExpectedValue->testBias && isBiased 
+        if (printReport_
+            || subProductExpectedValue->testBias && isBiased
             || std::max(-minError, maxError) > errorThreshold) {
             BOOST_MESSAGE(config);
             currentResultIndex = 0;
             for (Size j=0; j<subProductExpectedValue->values.size(); ++j) {
-                BOOST_MESSAGE(io::ordinal(j+1) 
+                BOOST_MESSAGE(io::ordinal(j+1)
                     << " "  << subProductExpectedValue->description
                     << ": " << io::rate(results[currentResultIndex])
                     << "\t" << io::rate(subProductExpectedValue->values[j])
@@ -479,8 +479,8 @@ void checkMultiProductCompositeResults (const SequenceStatistics& stats,
             BOOST_ERROR("test failed");
         }
     }
-  
-    
+
+
 }
 
 
@@ -730,7 +730,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                     for (Size n=0; n<1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
                         //SobolBrownianGeneratorFactory generatorFactory(
-                        //    SobolBrownianGenerator::Diagonal);
+                        //    SobolBrownianGenerator::Diagonal, seed_);
 
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
@@ -823,7 +823,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                     for (Size n=0; n<1; n++) {
                         MTBrownianGeneratorFactory generatorFactory(seed_);
                         //SobolBrownianGeneratorFactory generatorFactory(
-                        //    SobolBrownianGenerator::Diagonal);
+                        //    SobolBrownianGenerator::Diagonal, seed_);
 
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
@@ -897,7 +897,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(
-                            SobolBrownianGenerator::Diagonal/*, seed_*/);
+                            SobolBrownianGenerator::Diagonal, seed_);
 
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
@@ -931,9 +931,9 @@ void addForwards(MultiProductComposite& product,
     // create forwards and add them to the product...
     std::vector<Rate> forwardStrikes(todaysForwards.size());
 
-    for (Size i=0; i<todaysForwards.size(); ++i) 
+    for (Size i=0; i<todaysForwards.size(); ++i)
         forwardStrikes[i] = todaysForwards[i] + 0.01;
-    
+
     MultiStepForwards forwards(rateTimes, accruals,
                                paymentTimes, forwardStrikes);
     product.add(forwards);
@@ -1019,7 +1019,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
     product.add(swaptions);
 
     subProductExpectedValues.push_back(SubProductExpectedValues("coterminal swap"));
-    subProductExpectedValues.back().testBias = false; 
+    subProductExpectedValues.back().testBias = false;
     subProductExpectedValues.back().errorThreshold = 2.32;
     LMMCurveState curveState(rateTimes);  // not the best way to detect errors in LMMCurveState...
     curveState.setOnForwardRates(todaysForwards);
@@ -1033,7 +1033,7 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
     MultiProductComposite productClone = product;
     productClone.finalize();
     subProductExpectedValues.push_back(SubProductExpectedValues("coterminal swaption"));
-    subProductExpectedValues.back().testBias = false; 
+    subProductExpectedValues.back().testBias = false;
     subProductExpectedValues.back().errorThreshold = 2.32;
     const Spread displacement = 0;
     Matrix jacobian =
@@ -1074,7 +1074,7 @@ void MarketModelTest::testAllMultiStepProducts() {
     addCoinitialSwaps(product, subProductExpectedValues);
     addCoterminalSwapsAndSwaptions(product, subProductExpectedValues);
     product.finalize();
-    testMultiProductComposite(product, subProductExpectedValues, 
+    testMultiProductComposite(product, subProductExpectedValues,
                               testDescription);
 }
 
@@ -1152,7 +1152,7 @@ void MarketModelTest::testCallableSwapNaif() {
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_);
 
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
@@ -1199,7 +1199,7 @@ void MarketModelTest::testCallableSwapNaif() {
 
                         //MTBrownianGeneratorFactory uFactory(seed_+142);
                         SobolBrownianGeneratorFactory uFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_+142);
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          uFactory,
@@ -1321,7 +1321,7 @@ void MarketModelTest::testCallableSwapLS() {
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_);
 
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
@@ -1377,7 +1377,7 @@ void MarketModelTest::testCallableSwapLS() {
 
                         //MTBrownianGeneratorFactory uFactory(seed_+142);
                         SobolBrownianGeneratorFactory uFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_+142);
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          uFactory,
@@ -1496,7 +1496,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                     for (Size n=0; n<1; n++) {
                         //MTBrownianGeneratorFactory generatorFactory(seed_);
                         SobolBrownianGeneratorFactory generatorFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_);
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          generatorFactory,
@@ -1550,7 +1550,7 @@ void MarketModelTest::testCallableSwapAnderson() {
                         // upper bound
                         //MTBrownianGeneratorFactory uFactory(seed_+142);
                         SobolBrownianGeneratorFactory uFactory(
-                            SobolBrownianGenerator::Diagonal);
+                            SobolBrownianGenerator::Diagonal, seed_+142);
                         evolver = makeMarketModelEvolver(marketModel,
                                                          numeraires,
                                                          uFactory,

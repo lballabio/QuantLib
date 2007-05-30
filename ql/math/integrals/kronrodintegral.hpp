@@ -1,9 +1,9 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Francois du Vignaud
+ Copyright (C) 2007 François du Vignaud
  Copyright (C) 2003 Niels Elken Sønderby
- 
+
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -11,7 +11,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,50 +28,51 @@
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/function.hpp>
 #include <ql/math/integrals/integral.hpp>
+#include <boost/function.hpp>
 
 namespace QuantLib {
 
-    //! Integrals of a 1-dimensional function using the Gauss-Kronrod methods
-    /*! 
-        The gaussKronrodNonAdaptative class provide a non-adaptive 
-        integration procedure which uses fixed Gauss-Kronrod abscissae 
-        to sample the integrand at a maximum of 87 points. 
-        It is provided for fast integration of smooth functions.
-        This function applies the Gauss-Kronrod 10-point, 21-point, 43-point 
-        and 87-point integration rules in succession until an estimate of the 
-        integral of f over (a, b) is achieved within the desired absolute and 
-        relative error limits, epsabs and epsrel. The function returns the 
-        final approximation, result, an estimate of the absolute error, 
-        abserr and the number of function evaluations used, neval. The 
-        Gauss-Kronrod rules are designed in such a way that each rule uses 
-        all the results of its predecessors, in order to minimize the total 
-        number of function evaluations. 
-    */
-	class GaussKronrodNonAdaptive : public Integrator {
-	  public:
-          GaussKronrodNonAdaptive(Real absoluteAccuracy, 
-                                  Size maxEvaluations,
-								  Real relativeAccuracy);
-		  void setRelativeAccuracy(Real);	
-		  Real relativeAccuracy() const;
-      protected:
-          Real integrate(const boost::function<Real (Real)>& f,
-                         Real a,
-                         Real b) const;
-	  private:
-		  Real relativeAccuracy_;
-	};
+    //! Integral of a 1-dimensional function using the Gauss-Kronrod methods
+    /*! This class provide a non-adaptive integration procedure which
+        uses fixed Gauss-Kronrod abscissae to sample the integrand at
+        a maximum of 87 points.  It is provided for fast integration
+        of smooth functions.
 
-    /*  The gaussKronrodAdaptative class provide an adaptive integration procedure 
-        using 15 points Gauss-Kronrod integration rule. 
-        This is more robust in that it allows to integrate less smooth functions
-        (though singular functions should be integrated using dedicated algorithms)
-        but less efficient beacuse it does not reuse precedently computed points 
-        during computation steps.
+        This function applies the Gauss-Kronrod 10-point, 21-point, 43-point
+        and 87-point integration rules in succession until an estimate of the
+        integral of f over (a, b) is achieved within the desired absolute and
+        relative error limits, epsabs and epsrel. The function returns the
+        final approximation, result, an estimate of the absolute error,
+        abserr and the number of function evaluations used, neval. The
+        Gauss-Kronrod rules are designed in such a way that each rule uses
+        all the results of its predecessors, in order to minimize the total
+        number of function evaluations.
     */
-    /*! References:
+    class GaussKronrodNonAdaptive : public Integrator {
+      public:
+        GaussKronrodNonAdaptive(Real absoluteAccuracy,
+                                Size maxEvaluations,
+                                Real relativeAccuracy);
+        void setRelativeAccuracy(Real);
+        Real relativeAccuracy() const;
+      protected:
+        Real integrate(const boost::function<Real (Real)>& f,
+                       Real a,
+                       Real b) const;
+      private:
+        Real relativeAccuracy_;
+    };
+
+    //! Integral of a 1-dimensional function using the Gauss-Kronrod methods
+    /*! This class provide an adaptive integration procedure using 15
+        points Gauss-Kronrod integration rule.  This is more robust in
+        that it allows to integrate less smooth functions (though
+        singular functions should be integrated using dedicated
+        algorithms) but less efficient beacuse it does not reuse
+        precedently computed points during computation steps.
+
+        References:
 
         Gauss-Kronrod Integration
         <http://mathcssun1.emporia.edu/~oneilcat/ExperimentApplet3/ExperimentApplet3.html>

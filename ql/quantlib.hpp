@@ -8,7 +8,6 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
-#include <ql/time/daycounter.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>
 #include <ql/exchangerate.hpp>

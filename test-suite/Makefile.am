@@ -23,7 +23,6 @@ QL_TESTS = \
 	curvestates.hpp curvestates.cpp \
 	dates.hpp dates.cpp \
 	daycounters.hpp daycounters.cpp \
-	digitalcoupon.hpp digitalcoupon.cpp \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
 	dividendoption.hpp dividendoption.cpp \
@@ -70,7 +69,6 @@ QL_TESTS = \
 	swaption.hpp swaption.cpp \
 	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
 	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \
-	tapcorrelations.hpp tapcorrelations.cpp \
 	termstructures.hpp termstructures.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \

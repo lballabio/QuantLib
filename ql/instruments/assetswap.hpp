@@ -12,7 +12,7 @@
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
- <http://quantlib.org/reference/license.html>.
+ <http://quantlib.org/license.shtml>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -20,7 +20,7 @@
 */
 
 /*! \file assetswap.hpp
-    \brief Bullet Bond vs Libor swap
+    \brief Bullet bond vs Libor swap
 */
 
 #ifndef quantlib_asset_swap_hpp
@@ -35,11 +35,15 @@ namespace QuantLib {
 
     class IborIndex;
 
-    /*! for mechanics of Par Asset Swap and Market Asset Swap refer to
+    //! Bullet bond vs %Libor swap
+    /*! for mechanics of par asset swap and market asset swap, refer to
         "Introduction to Asset Swap", Lehman Brothers European Fixed
         Income Research - January 2000, D. O'Kane
 
         \ingroup instruments
+
+        \bug fair prices are not calculated correctly when using
+             indexed coupons.
     */
     class AssetSwap : public Swap {
       public:
