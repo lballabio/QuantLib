@@ -49,7 +49,7 @@ svn mkdir -m "Created tag R000800f0 to hold the 0.8.0 release" \
 
 svn copy -m "QuantLib 0.8.0 released" \
 https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch/QuantLib \
-https: //quantlib.svn.sf.net/svnroot/quantlib/tags/R000800f0/QuantLib
+https://quantlib.svn.sf.net/svnroot/quantlib/tags/R000800f0/QuantLib
 
 
 
