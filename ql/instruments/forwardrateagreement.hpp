@@ -25,7 +25,6 @@
 #define quantlib_forward_rate_agreement_hpp
 
 #include <ql/instruments/forward.hpp>
-#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 
@@ -73,6 +72,7 @@ namespace QuantLib {
 
         \ingroup instruments
     */
+    class IborIndex;
     class ForwardRateAgreement: public Forward {
       public:
         ForwardRateAgreement(const Date& valueDate,

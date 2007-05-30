@@ -19,7 +19,8 @@
 
 #include <ql/legacy/pricers/mcperformanceoption.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {

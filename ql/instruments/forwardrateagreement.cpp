@@ -18,11 +18,10 @@
 */
 
 #include <ql/instruments/forwardrateagreement.hpp>
-#include <ql/termstructures/yieldcurves/flatforward.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
-
+    
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
