@@ -40,8 +40,8 @@ can be done as follows:
   created in the tags/ folder of the repository to hold the
   modules. This can be done with the command line
 
-svn mkdir -m "Created tag R000800 to hold the 0.8.0 release" \
-    https://quantlib.svn.sf.net/svnroot/quantlib/tags/R000800
+svn mkdir -m "Created tag R000800f0 to hold the 0.8.0 release" \
+    https://quantlib.svn.sf.net/svnroot/quantlib/tags/R000800f0
 
 - as each module is released, it is copied in the above folder. For
   instance, when a QuantLib release is made, the QuantLib module can
@@ -49,7 +49,7 @@ svn mkdir -m "Created tag R000800 to hold the 0.8.0 release" \
 
 svn copy -m "QuantLib 0.8.0 released" \
 https://quantlib.svn.sf.net/svnroot/quantlib/branches/R0008xx-branch/QuantLib \
-https: //quantlib.svn.sf.net/svnroot/quantlib/tags/R000800/QuantLib
+https: //quantlib.svn.sf.net/svnroot/quantlib/tags/R000800f0/QuantLib
 
 
 
