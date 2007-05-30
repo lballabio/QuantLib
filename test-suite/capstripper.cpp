@@ -45,14 +45,11 @@ std::vector<Rate> strikes;
 std::vector<Period> tenors;
 std::vector<std::vector<Handle<Quote> > > volatilityQuoteHandle;
 boost::shared_ptr<FlatForward> myTermStructure;
-boost::shared_ptr<Quote> forwardRate;
-RelinkableHandle<Quote> forwardRateQuote;
 RelinkableHandle<YieldTermStructure> rhTermStructure;
 boost::shared_ptr<IborIndex> xiborIndex;
 Natural fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
-Rate flatForwardRate;
 std::vector<boost::shared_ptr<SmileSection> > smileSections;
 Matrix v;
 
@@ -180,15 +177,15 @@ void setMarketVolatilityTermStructure(){
 
 
 void setup(Real impliedVolatilityPrecision = 1e-5) {
-
+    
     calendar = TARGET();
     fixingDays = 2;
     businessDayConvention = Unadjusted;
     Natural settlementDays = 2;
-    flatForwardRate = 0.04;
+    Rate flatForwardRate = 0.04;
     Integer maxIterations = 100;
-    forwardRate = boost::shared_ptr<Quote>(new SimpleQuote(flatForwardRate));
-    forwardRateQuote.linkTo(forwardRate);
+    boost::shared_ptr<SimpleQuote> forwardRate(new SimpleQuote);
+    Handle<Quote> forwardRateQuote(forwardRate);
     myTermStructure = boost::shared_ptr<FlatForward>(
                   new FlatForward(settlementDays, calendar, forwardRateQuote,
                                   dayCounter));
@@ -204,6 +201,7 @@ void setup(Real impliedVolatilityPrecision = 1e-5) {
                                                 impliedVolatilityPrecision,
                                                 maxIterations,
                                                 smileSections));
+    forwardRate->setValue(flatForwardRate);
 }
 
 QL_END_TEST_LOCALS(CapsStripperTest)

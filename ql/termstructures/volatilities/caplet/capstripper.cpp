@@ -28,7 +28,20 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/indexes/iborindex.hpp>
 
-namespace QuantLib {
+namespace {
+
+    using namespace QuantLib;
+    boost::shared_ptr<CapFloor> 
+    changeCapFloorType(boost::shared_ptr<CapFloor> capFloor) {
+        CapFloor::Type newType = (capFloor->type() == CapFloor::Cap)? 
+                                  CapFloor::Floor : CapFloor::Cap;
+        return boost::shared_ptr<CapFloor> (new CapFloor(newType, 
+                                                 capFloor->leg(), 
+                                                 capFloor->floorRates(),
+                                                 capFloor->capRates(),
+                                                 capFloor->termStructure(),
+                                                 capFloor->engine()));
+    }
 
     class ImpliedVolHelper{
     public:
@@ -69,6 +82,9 @@ namespace QuantLib {
         solver.solve(f, accuracy, guess, minVol, maxVol);
     }
 
+}
+
+namespace QuantLib {
 
     CapsStripper::CapsStripper(
          const std::vector<Period>& tenors,
@@ -87,7 +103,8 @@ namespace QuantLib {
       volatilityDayCounter_(volatilityDayCounter),
       tenors_(tenors), strikes_(strikes),
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
-      maxEvaluations_(maxEvaluations){
+      maxEvaluations_(maxEvaluations),
+      atmRates_(tenors_.size()){
       enableExtrapolation(allowExtrapolation);
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
@@ -97,18 +114,15 @@ namespace QuantLib {
                    ") and vol columns(" << vols[0].size() << ")");
 
         marketDataCap_.resize(tenors.size());
+        Rate dummyAtmRate = .04; // we will use a real ones during boostrap
         for (Size i = 0 ; i < tenors_.size(); i++) {
-            // this caps is used to compute the atm rate only
-             boost::shared_ptr<CapFloor> dummyCap = MakeCapFloor(CapFloor::Cap,
-                 tenors_[i], index, strikes_.front(), 0*Days);
-            Rate atmRate = dummyCap->atmRate();
             marketDataCap_[i].resize(strikes_.size());
 
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
                    BlackCapFloorEngine(vols[i][j], volatilityDayCounter));
                CapFloor::Type type =
-                   (strikes_[j] < atmRate)? CapFloor::Floor : CapFloor::Cap;
+                   (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
                marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
                         index, strikes_[j], 0*Days, blackCapFloorEngine);
                registerWith(marketDataCap_[i][j]);
@@ -173,17 +187,33 @@ namespace QuantLib {
         }
     }
 
-
     void CapsStripper::performCalculations () const {
         Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
         Size i,j;
         Real capPrice = 0.0;
+        // refresh the atm rates level
+        for (i=0 ; i<atmRates_.size(); ++i)
+            atmRates_[i] = marketDataCap_[i].front()->atmRate();
+
         try {
-            for (j = 0 ; j < strikes_.size(); j++) {
-                for (i = 0 ; i < tenors_.size(); i++) {
+            for (j=0 ; j<strikes_.size(); ++j) {
+                for (i=0 ; i<tenors_.size(); ++i) {
+                    CapFloor::Type requestedType = 
+                    (strikes_[j]<atmRates_[i])? CapFloor::Floor:CapFloor::Cap;
+                    // change the marketDataCap_ type if necessary
+                    if (requestedType!=marketDataCap_[i][j]->type()) {
+                        marketDataCap_[i][j] 
+                            = changeCapFloorType(marketDataCap_[i][j]);
+                        CapsStripper& me = const_cast<CapsStripper&>(*this); 
+                        me.registerWith(marketDataCap_[i][j]);
+                    }
                     CapFloor & mktCap = *marketDataCap_[i][j];
                     capPrice = mktCap.NPV();
+                    // change the calibCap_ type if necessary
+                    if (requestedType!=calibCap_[i][j]->type())
+                        calibCap_[i][j] = 
+                            changeCapFloorType(calibCap_[i][j]);
                     fitVolatilityParameter(calibCap_[i][j],
                         volatilityParameters[i][j],
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);

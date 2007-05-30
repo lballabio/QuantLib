@@ -85,7 +85,7 @@ namespace QuantLib {
           Volatility volatilityImpl(Time t, Rate r) const;
       private:
         void createMarketData();
-        CapMatrix marketDataCap_, calibCap_;
+        mutable CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
         std::vector<Period> tenors_;
         std::vector<Rate> strikes_;
@@ -93,6 +93,7 @@ namespace QuantLib {
         Size maxEvaluations_;
         boost::shared_ptr<ParametrizedCapletVolStructure>
             parametrizedCapletVolStructure_;
+        mutable std::vector<Rate> atmRates_;
     };
 
     inline DayCounter CapsStripper::dayCounter() const {
