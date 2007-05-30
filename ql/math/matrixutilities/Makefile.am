@@ -9,6 +9,7 @@ this_include_HEADERS = \
 	pseudosqrt.hpp \
 	svd.hpp \
 	symmetricschurdecomposition.hpp \
+	tapcorrelations.hpp \
 	tqreigendecomposition.hpp
 
 libMatrixUtilities_la_SOURCES = \
@@ -17,6 +18,7 @@ libMatrixUtilities_la_SOURCES = \
 	pseudosqrt.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp \
+	tapcorrelations.cpp \
 	tqreigendecomposition.cpp
 
 noinst_LTLIBRARIES = libMatrixUtilities.la
