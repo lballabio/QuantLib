@@ -25,6 +25,7 @@
 #ifndef quantlib_flat_forward_curve_hpp
 #define quantlib_flat_forward_curve_hpp
 
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -32,7 +33,8 @@ namespace QuantLib {
 
     //! Flat interest-rate curve
     /*! \ingroup yieldtermstructures */
-    class FlatForward : public YieldTermStructure {
+    class FlatForward : public YieldTermStructure,
+                        public LazyObject {
       public:
         // constructors
         FlatForward(const Date& referenceDate,
@@ -60,19 +62,18 @@ namespace QuantLib {
         // inspectors
         Compounding compounding() const { return compounding_; }
         Frequency compoundingFrequency() const { return frequency_; }
+        virtual void performCalculations() const;
         Date maxDate() const;
         void update();
       private:
         DiscountFactor discountImpl(Time) const;
-        void updateRate();
         Handle<Quote> forward_;
         Compounding compounding_;
         Frequency frequency_;
-        InterestRate rate_;
+        mutable InterestRate rate_;
     };
 
     // inline definitions
-
     inline FlatForward::FlatForward(const Date& referenceDate,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter,
@@ -81,7 +82,6 @@ namespace QuantLib {
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
-        updateRate();
     }
 
     inline FlatForward::FlatForward(const Date& referenceDate,
@@ -91,9 +91,7 @@ namespace QuantLib {
                                     Frequency frequency)
     : YieldTermStructure(referenceDate, Calendar(), dayCounter),
       forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
-      compounding_(compounding), frequency_(frequency) {
-        updateRate();
-    }
+      compounding_(compounding), frequency_(frequency) {}
 
     inline FlatForward::FlatForward(Natural settlementDays,
                                     const Calendar& calendar,
@@ -104,7 +102,6 @@ namespace QuantLib {
     : YieldTermStructure(settlementDays, calendar, dayCounter),
       forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
-        updateRate();
     }
 
     inline FlatForward::FlatForward(Natural settlementDays,
@@ -115,24 +112,23 @@ namespace QuantLib {
                                     Frequency frequency)
     : YieldTermStructure(settlementDays, calendar, dayCounter),
       forward_(boost::shared_ptr<Quote>(new SimpleQuote(forward))),
-      compounding_(compounding), frequency_(frequency) {
-        updateRate();
-    }
+      compounding_(compounding), frequency_(frequency) {}
 
     inline Date FlatForward::maxDate() const {
         return Date::maxDate();
     }
 
     inline void FlatForward::update() {
-        updateRate();
+        LazyObject::update();
         YieldTermStructure::update();
     }
 
     inline DiscountFactor FlatForward::discountImpl(Time t) const {
+        calculate();
         return rate_.discountFactor(t);
     }
-
-    inline void FlatForward::updateRate() {
+  
+    inline void FlatForward::performCalculations() const {
         rate_ = InterestRate(forward_->value(), dayCounter(),
                              compounding_, frequency_);
     }

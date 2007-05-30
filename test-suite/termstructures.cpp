@@ -126,11 +126,12 @@ void TermStructureTest::testReferenceChange() {
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
-
+    boost::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
+    Handle<Quote> flatRateHandle(flatRate);
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
-         new FlatForward(settlementDays_, NullCalendar(), 0.03, Actual360()));
-
+         new FlatForward(settlementDays_, NullCalendar(), flatRateHandle, Actual360()));
     Date today = Settings::instance().evaluationDate();
+    flatRate->setValue(.03);
     Integer days[] = { 10, 30, 60, 120, 360, 720 };
     Size i;
 
