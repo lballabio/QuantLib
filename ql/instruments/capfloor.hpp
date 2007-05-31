@@ -90,6 +90,12 @@ namespace QuantLib {
         const Leg& floatingLeg() const {
             return floatingLeg_;
         }
+        const Handle<YieldTermStructure>& termStructure() const {
+            return termStructure_;
+        }
+        const boost::shared_ptr<PricingEngine>& engine() const {
+            return engine_;
+        }
         Rate atmRate() const;
         Date startDate() const;
         Date maturityDate() const;
