@@ -55,10 +55,9 @@ QL_BEGIN_TEST_LOCALS(AssetSwapTest)
 // global data
 
 Date today_, settlement_;
-boost::shared_ptr<IborIndex> iborindex_;
-boost::shared_ptr<SwapIndex> swapindex_;
+boost::shared_ptr<IborIndex> iborIndex_;
+boost::shared_ptr<SwapIndex> swapIndex_;
 Spread spread_;
-DayCounter floatingDayCounter_;
 Real faceAmount_;
 Calendar calendar_;
 //Compounding compounding_ ;
@@ -76,15 +75,14 @@ void setup() {
     //floatingConvention_ = ModifiedFollowing;
     fixedFrequency_ = Annual;
     floatingFrequency_ = Semiannual;
-    floatingDayCounter_= Actual360();
-    iborindex_ = boost::shared_ptr<IborIndex>(new
+    iborIndex_ = boost::shared_ptr<IborIndex>(new
         Euribor(Period(floatingFrequency_), termStructure_));
-    calendar_ = iborindex_->fixingCalendar();
-    swapindex_= boost::shared_ptr<SwapIndex>(new
+    calendar_ = iborIndex_->fixingCalendar();
+    swapIndex_= boost::shared_ptr<SwapIndex>(new
            SwapIndex("EuriborSwapFixA", 10*Years,swapSettlementDays_,
-                iborindex_->currency(), calendar_,
+                iborIndex_->currency(), calendar_,
                 Period(fixedFrequency_), fixedConvention_,
-                iborindex_->dayCounter(), iborindex_));
+                iborIndex_->dayCounter(), iborIndex_));
     spread_=0.0;
     //today_ = calendar_.adjust(Date::todaysDate());
     Date today_(24,April,2007);
@@ -121,14 +119,16 @@ void AssetSwapTest::testImpliedValue() {
                                Unadjusted, Unadjusted, true, false);
     boost::shared_ptr<Bond> fixedBond(new
         FixedRateBond(settlementDays, faceAmount_, fixedBondSchedule,
-                      std::vector<Rate>(1, 0.04), ActualActual(ActualActual::ISDA), Following,
+                      std::vector<Rate>(1, 0.04),
+                      ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005), termStructure_));
     Real fixedBondPrice = fixedBond->cleanPrice();
     AssetSwap fixedBondAssetSwap(payFixedRate,
                                  fixedBond, fixedBondPrice,
-                                 iborindex_, spread_, termStructure_,
+                                 iborIndex_, spread_, termStructure_,
                                  Schedule(),
-                                 floatingDayCounter_, parAssetSwap);
+                                 iborIndex_->dayCounter(),
+                                 parAssetSwap);
     Real fixedBondAssetSwapPrice = fixedBondAssetSwap.fairPrice();
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondAssetSwapPrice-fixedBondPrice);
@@ -156,14 +156,14 @@ void AssetSwapTest::testImpliedValue() {
     bool inArrears = false;
     boost::shared_ptr<Bond> floatingBond(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule,
-                         iborindex_, Actual360(),
+                         iborIndex_, Actual360(),
                          ModifiedFollowing, fixingDays,
                          std::vector<Real>(1,1), std::vector<Spread>(1,0.0025),
                          std::vector<Rate>(), std::vector<Rate>(),
                          inArrears,
                          100.0, Date(24,September,2004), termStructure_));
     setCouponPricer(floatingBond->cashflows(),pricer);
-    iborindex_->addFixing(Date(22,March,2007), 0.04013);
+    iborIndex_->addFixing(Date(22,March,2007), 0.04013);
     Real currentCoupon=0.04013+0.0025;
     Real floatingCurrentCoupon= floatingBond->currentCoupon();
     Real error2= std::fabs(floatingCurrentCoupon-currentCoupon);
@@ -180,10 +180,11 @@ void AssetSwapTest::testImpliedValue() {
 
     Real floatingBondPrice = floatingBond->cleanPrice();
     AssetSwap floatingBondAssetSwap(payFixedRate,
-                                 floatingBond, floatingBondPrice,
-                                 iborindex_, spread_, termStructure_,
-                                 Schedule(),
-                                 floatingDayCounter_, parAssetSwap);
+                                    floatingBond, floatingBondPrice,
+                                    iborIndex_, spread_, termStructure_,
+                                    Schedule(),
+                                    iborIndex_->dayCounter(),
+                                    parAssetSwap);
     Real floatingBondAssetSwapPrice = floatingBondAssetSwap.fairPrice();
     Real error3 = std::fabs(floatingBondAssetSwapPrice-floatingBondPrice);
 
@@ -216,20 +217,21 @@ void AssetSwapTest::testImpliedValue() {
                         modelOfYieldCurve_, meanReversionQuote));
     boost::shared_ptr<Bond> cmsBond(new
         CmsRateBond(settlementDays, faceAmount_, cmsBondSchedule,
-                         swapindex_, Thirty360(),
-                         Following, fixingDays,
-                         std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
-                         std::vector<Rate>(), std::vector<Rate>(),
-                         inArrears,
-                         100.0, Date(06,May,2005), termStructure_));
+                    swapIndex_, Thirty360(),
+                    Following, fixingDays,
+                    std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
+                    std::vector<Rate>(), std::vector<Rate>(),
+                    inArrears,
+                    100.0, Date(06,May,2005), termStructure_));
     setCouponPricer(cmsBond->cashflows(),cmspricer);
-    swapindex_->addFixing(Date(04,May,2006), 0.04217);
+    swapIndex_->addFixing(Date(04,May,2006), 0.04217);
     Real cmsBondPrice = cmsBond->cleanPrice();
     AssetSwap cmsBondAssetSwap(payFixedRate,
-                                 cmsBond, cmsBondPrice,
-                                 iborindex_, spread_, termStructure_,
-                                 Schedule(),
-                                 floatingDayCounter_, parAssetSwap);
+                               cmsBond, cmsBondPrice,
+                               iborIndex_, spread_, termStructure_,
+                               Schedule(),
+                               iborIndex_->dayCounter(),
+                               parAssetSwap);
     Real cmsBondAssetSwapPrice = cmsBondAssetSwap.fairPrice();
     Real error4 = std::fabs(cmsBondAssetSwapPrice-cmsBondPrice);
 
@@ -253,4 +255,3 @@ test_suite* AssetSwapTest::suite() {
 
     return suite;
 }
-

@@ -44,7 +44,7 @@ namespace QuantLib {
 #ifdef QL_USE_INDEXED_COUPON
         return index_->fixing(fixingDate());
 #else
-        if(isInArrears()){
+        if (isInArrears()) {
             return index_->fixing(fixingDate());
         } else {
             Handle<YieldTermStructure> termStructure = index_->termStructure();
@@ -74,17 +74,22 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
+
+            // forecast: 1) startDiscount
             Date fixingValueDate = index_->fixingCalendar().advance(
-                                     fixing_date, index_->fixingDays(), Days);
+                fixing_date, index_->fixingDays(), Days);
             DiscountFactor startDiscount = termStructure->discount(fixingValueDate);
-            // ???
-            Date temp = index_->fixingCalendar().advance(accrualEndDate_,
-                                        -static_cast<Integer>(fixingDays()), Days);
-            DiscountFactor endDiscount = termStructure->discount(
-                index_->fixingCalendar().advance(temp,
-                                                 index_->fixingDays(),
-                                                 Days));
-            return (startDiscount/endDiscount-1.0)/accrualPeriod();
+            // forecast: 2) endDiscount
+            Date nextFixingDate = index_->fixingCalendar().advance(
+                accrualEndDate_, -static_cast<Integer>(fixingDays()), Days);
+            Date nextFixingValueDate = index_->fixingCalendar().advance(
+                nextFixingDate, index_->fixingDays(), Days);
+            DiscountFactor endDiscount = termStructure->discount(nextFixingValueDate);
+            // forecast: 3) spanningTime
+            Time spanningTime = index_->dayCounter().yearFraction(
+                fixingValueDate, nextFixingValueDate);
+            // forecast: 4) implied fixing
+            return (startDiscount/endDiscount-1.0)/spanningTime;
         }
 #endif
 

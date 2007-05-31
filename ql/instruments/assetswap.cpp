@@ -50,7 +50,7 @@ namespace QuantLib {
                                 index->tenor(),
                                 index->fixingCalendar(),
                                 index->businessDayConvention(),
-                                Unadjusted,
+                                index->businessDayConvention(),
                                 true,
                                 index->endOfMonth());
 

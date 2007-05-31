@@ -617,18 +617,18 @@ void BondTest::testCachedFloating() {
                  true, false);
 
     FloatingRateBond bond1(settlementDays, faceAmount, sch,
-                             index, ActualActual(ActualActual::ISMA),
-                             ModifiedFollowing, fixingDays,
-                             std::vector<Real>(), std::vector<Spread>(),
-                             std::vector<Rate>(), std::vector<Rate>(),
-                             false,
-                             100.0, Date(30,November,2004), riskFreeRate);
+                           index, ActualActual(ActualActual::ISMA),
+                           ModifiedFollowing, fixingDays,
+                           std::vector<Real>(), std::vector<Spread>(),
+                           std::vector<Rate>(), std::vector<Rate>(),
+                           false,
+                           100.0, Date(30,November,2004), riskFreeRate);
     setCouponPricer(bond1.cashflows(),pricer);
 
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice1 = 99.874645;
     #else
-    Real cachedPrice1 = 100.013038;
+    Real cachedPrice1 = 99.874646;
     #endif
 
 
@@ -655,7 +655,7 @@ void BondTest::testCachedFloating() {
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice2 = 97.955904;
     #else
-    Real cachedPrice2 = 98.092692;
+    Real cachedPrice2 = 97.955904;
     #endif
 
     price = bond2.cleanPrice();
@@ -687,7 +687,7 @@ void BondTest::testCachedFloating() {
     #if defined(QL_USE_INDEXED_COUPON)
     Real cachedPrice3 = 98.495458;
     #else
-    Real cachedPrice3 = 98.632247;
+    Real cachedPrice3 = 98.495459;
     #endif
 
     price = bond3.cleanPrice();
