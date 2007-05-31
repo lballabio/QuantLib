@@ -78,6 +78,7 @@ namespace QuantLib {
         capFloor.type_ = (capFloor.type() == CapFloor::Cap) ?
                          CapFloor::Floor : CapFloor::Cap;
         std::swap(capFloor.capRates_, capFloor.floorRates_);
+        capFloor.update();
     }
 
     CapsStripper::CapsStripper(
