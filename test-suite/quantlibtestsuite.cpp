@@ -177,7 +177,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AmericanOptionTest::suite());
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite());
-    test->add(AssetSwapTest::suite());
+    test->add(AssetSwapTest::suite()); // fails whith QL_USE_INDEXED_COUPON
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
@@ -190,7 +190,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite());
+    test->add(CompoundForwardTest::suite());  // fails whith QL_USE_INDEXED_COUPON
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CurveStatesTest::suite());
@@ -231,7 +231,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
     test->add(SampledCurveTest::suite());
-    test->add(ShortRateModelTest::suite());
+    test->add(ShortRateModelTest::suite()); // fails whith QL_USE_INDEXED_COUPON
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SurfaceTest::suite());
