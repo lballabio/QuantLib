@@ -90,12 +90,7 @@ namespace QuantLib {
         const Leg& floatingLeg() const {
             return floatingLeg_;
         }
-        const Handle<YieldTermStructure>& termStructure() const {
-            return termStructure_;
-        }
-        const boost::shared_ptr<PricingEngine>& engine() const {
-            return engine_;
-        }
+
         Rate atmRate() const;
         Date startDate() const;
         Date maturityDate() const;
@@ -113,6 +108,7 @@ namespace QuantLib {
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
         Handle<YieldTermStructure> termStructure_;
+        friend void changeCapFloorType(CapFloor&);
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:

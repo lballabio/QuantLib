@@ -31,18 +31,7 @@
 namespace {
 
     using namespace QuantLib;
-    boost::shared_ptr<CapFloor> 
-    changeCapFloorType(boost::shared_ptr<CapFloor> capFloor) {
-        CapFloor::Type newType = (capFloor->type() == CapFloor::Cap)? 
-                                  CapFloor::Floor : CapFloor::Cap;
-        return boost::shared_ptr<CapFloor> (new CapFloor(newType, 
-                                                 capFloor->leg(), 
-                                                 capFloor->floorRates(),
-                                                 capFloor->capRates(),
-                                                 capFloor->termStructure(),
-                                                 capFloor->engine()));
-    }
-
+    
     class ImpliedVolHelper{
     public:
         ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
@@ -81,10 +70,15 @@ namespace {
             guess = 0.1;
         solver.solve(f, accuracy, guess, minVol, maxVol);
     }
-
 }
 
 namespace QuantLib {
+    
+    void changeCapFloorType(CapFloor& capFloor) {
+        capFloor.type_ = (capFloor.type() == CapFloor::Cap) ?
+                         CapFloor::Floor : CapFloor::Cap;
+        std::swap(capFloor.capRates_, capFloor.floorRates_);
+    }
 
     CapsStripper::CapsStripper(
          const std::vector<Period>& tenors,
@@ -201,19 +195,14 @@ namespace QuantLib {
                 for (i=0 ; i<tenors_.size(); ++i) {
                     CapFloor::Type requestedType = 
                     (strikes_[j]<atmRates_[i])? CapFloor::Floor:CapFloor::Cap;
-                    // change the marketDataCap_ type if necessary
-                    if (requestedType!=marketDataCap_[i][j]->type()) {
-                        marketDataCap_[i][j] 
-                            = changeCapFloorType(marketDataCap_[i][j]);
-                        CapsStripper& me = const_cast<CapsStripper&>(*this); 
-                        me.registerWith(marketDataCap_[i][j]);
-                    }
                     CapFloor & mktCap = *marketDataCap_[i][j];
+                    // change the marketDataCap_ type if necessary
+                    if (requestedType!=mktCap.type()) 
+                        changeCapFloorType(mktCap);
                     capPrice = mktCap.NPV();
                     // change the calibCap_ type if necessary
                     if (requestedType!=calibCap_[i][j]->type())
-                        calibCap_[i][j] = 
-                            changeCapFloorType(calibCap_[i][j]);
+                        changeCapFloorType(*calibCap_[i][j]);
                     fitVolatilityParameter(calibCap_[i][j],
                         volatilityParameters[i][j],
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
