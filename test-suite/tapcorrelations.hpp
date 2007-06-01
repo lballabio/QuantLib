@@ -30,6 +30,7 @@ class TapCorrelationTest {
     static void testRank3Values();
     static void testCalibration();
     static void testArticleCalibrationExamples();
+    static void testHistoricalCorrelation();
     static boost::unit_test_framework::test_suite* suite();
 };
 

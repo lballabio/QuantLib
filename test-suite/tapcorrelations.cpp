@@ -20,6 +20,8 @@
 #include "tapcorrelations.hpp"
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/tapcorrelations.hpp>
+#include <ql/models/marketmodels/historicalcorrelation.hpp>
+#include <ql/indexes/ibor/euribor.hpp> 
 #include <ql/math/matrix.hpp>
 #include <sstream>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
@@ -29,6 +31,14 @@
 // to be removed later:
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yieldcurves/ratehelpers.hpp> 
+#include <ql/math/statistics/sequencestatistics.hpp>
 
 
 #if defined(BOOST_MSVC)
@@ -199,6 +209,7 @@ void testCorrelation(const Matrix& target,
         = f(currentValue, target.rows(), rank);
     Matrix approximatedCorrelations
         = approximatedPseudoRoot * transpose(approximatedPseudoRoot);
+    BOOST_MESSAGE("target-approximatedCorrelations: " << frobeniusNorm(target - approximatedCorrelations));
     BOOST_MESSAGE("Cost function value: " << value);
     BOOST_MESSAGE("nb Evaluations: " << problem.functionEvaluation());
     BOOST_MESSAGE("End criteria: " << optimizationResult);
@@ -268,8 +279,8 @@ void TapCorrelationTest::testArticleCalibrationExamples(){
     setup();
     
     testCorrelations(table1, 3);
-    BOOST_MESSAGE("Article table1-table2 norm " << frobeniusNorm(table1 - table3));
-    BOOST_MESSAGE("Article table1-table3 norm " << frobeniusNorm(table1 - table2));
+    BOOST_MESSAGE("Article table1-table2 norm " << frobeniusNorm(table1 - table2));
+    BOOST_MESSAGE("Article table1-table3 norm " << frobeniusNorm(table1 - table3));
 
     //Matrix test = triangularAnglesParametrizationGuess(M3);
     //Matrix a = pseudoSqrt(table1, SalvagingAlgorithm::LowerDiagonal);
@@ -279,13 +290,109 @@ void TapCorrelationTest::testArticleCalibrationExamples(){
 }
 
 
+typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
+typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
+
+void addSwapIndexes(SwapVector& swapIndexes, Period step, Period horizon,
+             const boost::shared_ptr<IborIndex> &iborIndex) {
+    Period fixedLegTenor(6, Months);
+    BusinessDayConvention bdc = Following;
+    Actual360 dayCounter;
+    TARGET calendar;
+    Period currentPeriod;
+    Handle<YieldTermStructure> dummyYTSHandle;
+    Size i = 1;
+    for(currentPeriod = step; currentPeriod<=horizon; ++i, currentPeriod = i*step)
+        swapIndexes.push_back(boost::shared_ptr<SwapIndex> 
+                            (new SwapIndex("swap", currentPeriod, 2, 
+                                        EURCurrency(), calendar,
+                                        fixedLegTenor, bdc,
+                                        dayCounter, iborIndex)));
+}
+
+void addSwaps(SwapVector& swapIndexes,
+              const boost::shared_ptr<IborIndex> &iborIndex) {
+   addSwapIndexes(swapIndexes, Period(5, Years), Period(30, Years), iborIndex);
+}
+
+void addIborIndexes(IborVector& iborIndexes, Period step, Period horizon) {
+    BusinessDayConvention bdc = Following;
+    Actual360 dayCounter;
+    TARGET calendar;
+    Period currentPeriod;
+    Handle<YieldTermStructure> dummyYTSHandle;
+    Size i = 1;
+    for(currentPeriod = step; currentPeriod<=horizon;++i, currentPeriod = i*step)
+        iborIndexes.push_back(boost::shared_ptr<IborIndex> 
+                            (new IborIndex("ibor", currentPeriod, 2, 
+                                        EURCurrency(), calendar, bdc, false,
+                                        dayCounter, dummyYTSHandle)));
+}
+
+void addIbors(IborVector& iborIndexes) {
+   addIborIndexes(iborIndexes, Period(1,Days), Period(1,Days));
+   addIborIndexes(iborIndexes, Period(1,Weeks), Period(3,Weeks));
+   addIborIndexes(iborIndexes, Period(1,Months), Period(6,Months));
+   addIborIndexes(iborIndexes, Period(9,Months), Period(9,Months));
+   addIborIndexes(iborIndexes, Period(12,Months), Period(12,Months));
+}
+
+
+void TapCorrelationTest::testHistoricalCorrelation() {
+    BOOST_MESSAGE("Testing historical correlations");
+    IborVector iborIndexes;
+    SwapVector swapIndexes;
+    TARGET calendar;
+    BusinessDayConvention bdc = Following;
+    Actual360 dayCounter;
+    Handle<YieldTermStructure> dummyYTSHandle;
+    boost::shared_ptr<IborIndex> iborIndex(new IborIndex("toto", Period(6, Months), 2, 
+                                        EURCurrency(), calendar, bdc, false,
+                                        dayCounter, dummyYTSHandle));
+    addIbors(iborIndexes);
+    addSwaps(swapIndexes, iborIndex);
+        
+    Date endDate = Settings::instance().evaluationDate();
+    Date startDate = endDate - Period(1, Years);
+    Date currentDate = startDate;
+    Rate rate = .04;
+    Period fixingStep(1, Days);
+    while(currentDate<=endDate) {
+        for(Size i=0; i<iborIndexes.size(); ++i)
+            iborIndexes[i]->addFixing(currentDate, rate);
+        for(Size i=0; i<swapIndexes.size(); ++i)
+            swapIndexes[i]->addFixing(currentDate, rate);
+        currentDate = calendar.advance(currentDate, fixingStep, Unadjusted);
+    }
+    Natural depositSettlementDays = 2;
+    Natural swapSettlementDays = 2;
+    Actual360 yieldCurveDayCounter;
+    Actual360 swapCurveDayCounter;
+    Real yieldCurveAccuracy=1.0e-12;
+    Period historicalStep(1, Days);
+    Period forwardHorizon(2, Years);
+    Matrix historicalCorrelations 
+                = computeHistoricalCorrelations<ForwardRate, Linear>(
+               startDate, endDate, historicalStep, 
+               calendar, iborIndex, forwardHorizon, 
+               iborIndexes, swapIndexes,
+               depositSettlementDays,
+               swapSettlementDays,
+               swapCurveDayCounter,
+               yieldCurveDayCounter,
+               yieldCurveAccuracy);
+    BOOST_MESSAGE(historicalCorrelations);
+}
+
+
 // --- Call the desired tests
     test_suite* TapCorrelationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
 
-    //suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testRank3Values));
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testRank3Values));
     suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testArticleCalibrationExamples));
-    //suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testCalibration));
-
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testCalibration));
+    suite->add(BOOST_TEST_CASE(&TapCorrelationTest::testHistoricalCorrelation));
+    
     return suite;
 }
