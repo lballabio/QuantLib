@@ -17,8 +17,6 @@ The project status is available at <http://quantlib.org>.
 QuantLib depends on Boost <http://www.boost.org>. You will need to
 download, build, and install Boost before compiling and using
 QuantLib. Boost 1.31 or later is required; Boost 1.33.1 is suggested.
-Boost 1.34.0 is not yet supported on Linux systems due to changes in
-its unit-test framework.
 
 Please report bugs using the Bug Tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>,

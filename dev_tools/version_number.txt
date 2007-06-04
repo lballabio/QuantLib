@@ -11,7 +11,7 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R010300a2 stands for Release 1.3.1a2
      R000501f0 stands for Release 0.5.1
 
-The current version number is 0.8.0 - 000800f0
+The current version number is 0.8.1 - 000801f0
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
@@ -23,7 +23,6 @@ This version number is in:
     QuantLib/ql/qldefines.hpp,
     QuantLib/test-suite/testsuite_vc7.vcproj
     QuantLib/test-suite/testsuite_vc8.vcproj
-    QuantLib/test-suite/testsuite.dsp
     QuantLib/test-suite/testsuite.dev
     QuantLib/Examples/BermudanSwaption/BermudanSwaption.dev
     QuantLib/Examples/ConvertibleBonds/ConvertibleBonds.dev

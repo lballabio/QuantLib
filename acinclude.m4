@@ -73,9 +73,17 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
 [AC_MSG_CHECKING([for Boost unit-test framework])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
- for boost_lib in boost_unit_test_framework-$CC boost_unit_test_framework \
-           boost_unit_test_framework-mt-$CC boost_unit_test_framework-mt ; do
+ ql_original_CXXFLAGS=$CXXFLAGS
+ CC_VERSION=`$CC -dumpversion | sed -e "s|\([[0-9]]\+\)\.\([[0-9]]\+\)\.\([[0-9]]\+\)|\1\2|"`
+ for boost_lib in boost_unit_test_framework-$CC$CC_VERSION \
+                  boost_unit_test_framework-$CC \
+                  boost_unit_test_framework \
+                  boost_unit_test_framework-mt-$CC$CC_VERSION \
+                  boost_unit_test_framework-mt-$CC \
+                  boost_unit_test_framework-mt ; do
      LIBS="$ql_original_LIBS -l$boost_lib"
+     # 1.33.1 or 1.34 static
+     CXXFLAGS="$ql_original_CXXFLAGS"
      boost_unit_found=no
      AC_LINK_IFELSE(
          [@%:@include <boost/test/unit_test.hpp>
@@ -87,18 +95,38 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
           }
          ],
          [boost_unit_found=$boost_lib
+          boost_defines=""
+          break],
+         [])
+     # 1.34 shared
+     CXXFLAGS="$ql_original_CXXFLAGS -DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK"
+     boost_unit_found=no
+     AC_LINK_IFELSE(
+         [@%:@include <boost/test/unit_test.hpp>
+          using namespace boost::unit_test_framework;
+          test_suite*
+          init_unit_test_suite(int argc, char** argv)
+          {
+              return (test_suite*) 0;
+          }
+         ],
+         [boost_unit_found=$boost_lib
+          boost_defines="-DBOOST_TEST_DYN_LINK"
           break],
          [])
  done
  LIBS="$ql_original_LIBS"
+ CXXFLAGS="$ql_original_CXXFLAGS"
  if test "$boost_unit_found" = no ; then
      AC_MSG_RESULT([no])
      AC_SUBST([BOOST_UNIT_TEST_LIB],[""])
+     AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[""])
      AC_MSG_WARN([Boost unit-test framework not found])
      AC_MSG_WARN([The test suite will be disabled])
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])
+     AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[$boost_defines])
  fi
 ])
 

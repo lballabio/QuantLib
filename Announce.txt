@@ -2,34 +2,16 @@
 QuantLib is a cross-platform, free/open-source quantitative finance C++
 library for modeling, pricing, trading, and risk management in real-life.
 
-Version 0.8.0 has been released and is available for download at
+Version 0.8.1 has been released and is available for download at
 <http://quantlib.org/download.shtml>.
-See <http://quantlib.org/reference/history.html>
-for a summary of the changes since version 0.4.0.
 
-QuantLib depends on the Boost library (www.boost.org). You will need a
-working Boost installation in order to compile and use QuantLib.
-Instructions for installing Boost are available at
-<http://www.boost.org/more/getting_started.html>.
-Boost 1.31 or later is required; Boost 1.33.1 is suggested.
-Boost 1.34.0 is not yet supported on Linux systems due to changes in
-its unit-test framework.
-
-Version 0.8.0 is the last QuantLib release to support the Metrowerks
-CodeWarrior compiler (which was discountinued by Metrowerks.)  If you
-use such compiler and want support to continue, you can volunteer for
-maintaining the necessary patches: contact the QuantLib developers for
-information.
-
-Python, Ruby, Guile, and MzScheme bindings are available for QuantLib
-0.8.0 as well as experimental Java, C#, Perl, OCaml, and R bindings;
-an Excel add-in is also provided. Instructions for download are at
-<http://quantlib.org/download.shtml>.
+Version 0.8.1 adds support for Boost 1.34 on Linux systems. If you are
+using version 0.8.0 on Windows systems, you do not need this upgrade.
 
 Please log any problems you have with this release in the SourceForge
 bug tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>
-specifying that you're using QuantLib 0.8.0.
+specifying that you're using QuantLib 0.8.1.
 
         The QuantLib group
 

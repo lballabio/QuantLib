@@ -1,3 +1,30 @@
+2007-06-01 08:54  Luigi Ballabio
+
+	* [r11084] Announce.txt, Readme.txt, acinclude.m4, test-suite,
+	  test-suite/Makefile.am:
+	  
+	  Added support for Boost 1.34 on Linux systems
+
+2007-05-24 10:29  Luigi Ballabio
+
+	* [r10944] ql/termstructures/yieldcurves/ratehelpers.cpp:
+	  
+	  Fixed calculation of swap-rate nodes when use of indexed coupons is
+	  enabled
+
+2007-05-23 14:13  Luigi Ballabio
+
+	* [r10919] ql/math/matrix.cpp:
+	  
+	  Syncronized conditional code and inclusions
+
+2007-05-23 12:01  Luigi Ballabio
+
+	* [r10915] ChangeLog.txt, dev_tools/developers,
+	  dev_tools/update_changelog.py:
+	  
+	  Updated ChangeLogs
+
 2007-05-21 13:12  Luigi Ballabio
 
 	* [r10879] Docs/pages/history.docs, News.txt:

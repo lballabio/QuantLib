@@ -18,7 +18,7 @@ Icon=
 ExeOutput=.\lib
 ObjectOutput=.\build\mingw
 OverrideOutput=1
-OverrideOutputName=libQuantLib-mgw-0_8_0.a
+OverrideOutputName=libQuantLib-mgw-0_8_1.a
 HostApplication=
 Folders=cashflows,currencies,indexes,indexes/ibor,indexes/swap,instruments,legacy,legacy/libormarketmodels,legacy/pricers,math,math/distributions,math/integrals,math/interpolations,math/matrixutilities,math/optimization,math/randomnumbers,math/solvers1d,math/statistics,methods,methods/finitedifferences,methods/lattices,methods/montecarlo,models,models/equity,models/marketmodels,models/marketmodels/browniangenerators,models/marketmodels/callability,models/marketmodels/correlations,models/marketmodels/curvestates,models/marketmodels/driftcomputation,models/marketmodels/evolvers,models/marketmodels/models,models/marketmodels/products,models/marketmodels/products/multistep,models/marketmodels/products/onestep,models/shortrate,models/shortrate/calibrationhelpers,models/shortrate/onefactormodels,models/shortrate/twofactormodels,models/volatility,patterns,pricingengines,pricingengines/asian,pricingengines/barrier,pricingengines/basket,pricingengines/capfloor,pricingengines/cliquet,pricingengines/forward,pricingengines/hybrid,pricingengines/lookback,pricingengines/quanto,pricingengines/swaption,pricingengines/vanilla,processes,quotes,termstructures,termstructures/volatilities,termstructures/yieldcurves,time,time/calendars,time/daycounters,utilities
 CommandLine=
@@ -191,8 +191,8 @@ BuildCmd=
 
 [VersionInfo]
 Major=0
-Minor=3
-Release=8
+Minor=8
+Release=1
 Build=0
 LanguageID=1033
 CharsetID=1252

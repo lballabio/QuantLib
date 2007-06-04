@@ -104,12 +104,30 @@ dist-hook:
 	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/bin
 	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
+	rm -f $(distdir)/main.cpp
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = \
-	-I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir} \
-	${BOOST_UNIT_TEST_DEFINE}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${BOOST_UNIT_TEST_DEFINE}
+
+noinst_LTLIBRARIES = libUnitMain.la
+libUnitMain_la_SOURCES = main.cpp
+libUnitMain_la_CXXFLAGS = ${BOOST_UNIT_TEST_MAIN_CXXFLAGS}
+
+main.cpp: Makefile.am
+	echo "#ifdef BOOST_TEST_DYN_LINK" > $@
+	echo "#include <boost/test/unit_test.hpp>" >> $@
+	echo "using namespace boost::unit_test;" >> $@
+	echo "test_suite* init_unit_test_suite(int, char* []);" >> $@
+	echo "bool init_function() {" >> $@
+	echo "framework::master_test_suite().add(init_unit_test_suite(0,0));" >> $@
+	echo "return true;" >> $@
+	echo "}" >> $@
+	echo "int main( int argc, char* argv[] ) {" >> $@
+	echo "return ::boost::unit_test::unit_test_main( &init_function, argc, argv );" >> $@
+	echo "}" >> $@
+	echo "#endif" >> $@
+
 
 if AUTO_BENCHMARK
 bin_PROGRAMS = quantlib-test-suite quantlib-benchmark
@@ -120,11 +138,11 @@ CLEANFILES = quantlib-benchmark
 endif
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
-quantlib_test_suite_LDADD = ${top_builddir}/ql/libQuantLib.la
+quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la
 quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
-quantlib_benchmark_LDADD = ${top_builddir}/ql/libQuantLib.la
+quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la
 quantlib_benchmark_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 TESTS = quantlib-test-suite
