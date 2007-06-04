@@ -19,8 +19,9 @@
 
 #include "tapcorrelations.hpp"
 #include "utilities.hpp"
-#include <ql/math/matrixutilities/tapcorrelations.hpp>
 #include <ql/models/marketmodels/historicalcorrelation.hpp>
+#include <ql/math/matrixutilities/tapcorrelations.hpp>
+
 #include <ql/indexes/ibor/euribor.hpp> 
 #include <ql/math/matrix.hpp>
 #include <sstream>
@@ -337,6 +338,47 @@ void addIbors(IborVector& iborIndexes) {
    addIborIndexes(iborIndexes, Period(12,Months), Period(12,Months));
 }
 
+boost::shared_ptr<YieldTermStructure> createTermStructure(const IborVector& iborIndexes,
+                                                          const SwapVector& swapIndexes, 
+                                                          Natural depositSettlementDays,
+                                                          Natural swapSettlementDays,
+                                                          const DayCounter& swapDayCounter) {
+        std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
+        IborVector::const_iterator ibor;
+        for(ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
+            boost::shared_ptr<SimpleQuote> dummyQuote(new SimpleQuote);
+            Handle<Quote> quoteHandle(dummyQuote); 
+            rateHelpers.push_back(boost::shared_ptr<RateHelper> (
+                                new DepositRateHelper(quoteHandle,  
+                                                (*ibor)->tenor(),
+                                                depositSettlementDays,
+                                                (*ibor)->fixingCalendar(),
+                                                (*ibor)->businessDayConvention(),
+                                                (*ibor)->endOfMonth(),
+                                                (*ibor)->fixingDays(),
+                                                (*ibor)->dayCounter())));
+        }
+        SwapVector::const_iterator swap;
+        for(swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
+            boost::shared_ptr<SimpleQuote> dummyQuote(new SimpleQuote);
+            Handle<Quote> quoteHandle(dummyQuote);
+            rateHelpers.push_back(boost::shared_ptr<RateHelper> (
+                                        new SwapRateHelper(quoteHandle,
+                                            (*swap)->tenor(),
+                                            swapSettlementDays,
+                                            (*swap)->fixingCalendar(),
+                                            (*swap)->fixedLegTenor().frequency(),
+                                            (*swap)->fixedLegConvention(),
+                                            swapDayCounter,
+                                            (*swap)->iborIndex())));
+        }
+    Actual360 dayCounter;
+    Date today = Settings::instance().evaluationDate();
+    Real yieldCurveAccuracy = 1.0e-12;
+    return boost::shared_ptr<YieldTermStructure> 
+        (new PiecewiseYieldCurve<ForwardRate, Linear>
+        (today, rateHelpers, dayCounter, yieldCurveAccuracy));
+}
 
 void TapCorrelationTest::testHistoricalCorrelation() {
     BOOST_MESSAGE("Testing historical correlations");
@@ -367,10 +409,30 @@ void TapCorrelationTest::testHistoricalCorrelation() {
     Natural depositSettlementDays = 2;
     Natural swapSettlementDays = 2;
     Actual360 yieldCurveDayCounter;
-    Actual360 swapCurveDayCounter;
+    Actual360 swapDayCounter;
     Real yieldCurveAccuracy=1.0e-12;
     Period historicalStep(1, Days);
     Period forwardHorizon(2, Years);
+    boost::shared_ptr<YieldTermStructure> termStructure 
+        = createTermStructure(iborIndexes, swapIndexes, 
+                              depositSettlementDays, swapSettlementDays, 
+                              swapDayCounter);
+    
+    //Matrix historicalCorrelations1
+    //            = computeHistoricalCorrelations1 (
+    //               startDate, endDate, historicalStep, calendar,
+    //               iborIndex, forwardHorizon, termStructure);
+    Matrix historicalCorrelationsZeroYieldLinear 
+                = computeHistoricalCorrelationsZeroYieldLinear(
+               startDate, endDate, historicalStep, 
+               calendar, iborIndex, forwardHorizon, 
+               iborIndexes, swapIndexes,
+               depositSettlementDays,
+               swapSettlementDays,
+               swapDayCounter,
+               swapDayCounter,
+               yieldCurveAccuracy);
+    
     Matrix historicalCorrelations 
                 = computeHistoricalCorrelations<ForwardRate, Linear>(
                startDate, endDate, historicalStep, 
@@ -378,8 +440,8 @@ void TapCorrelationTest::testHistoricalCorrelation() {
                iborIndexes, swapIndexes,
                depositSettlementDays,
                swapSettlementDays,
-               swapCurveDayCounter,
-               yieldCurveDayCounter,
+               swapDayCounter,
+               swapDayCounter,
                yieldCurveAccuracy);
     BOOST_MESSAGE(historicalCorrelations);
 }
