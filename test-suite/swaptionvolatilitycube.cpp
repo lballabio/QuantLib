@@ -389,7 +389,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     }
     std::vector<bool> isParameterFixed(4, false);
 
-    Handle<SwaptionVolatilityStructure> volCube( boost::shared_ptr<SwaptionVolatilityStructure>(new 
+    Handle<SwaptionVolatilityStructure> volCube( boost::shared_ptr<SwaptionVolatilityStructure>(new
         SwaptionVolCube1(atmVolMatrix_,
                          optionTenors_,
                          swapTenors_,
@@ -400,39 +400,39 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                          parametersGuess,
                          isParameterFixed,
                          true)));
-    
+
     Spread spread = 0.0001;
-    SpreadedSwaptionVolatilityStructure spreadedVolCube(volCube, spread);  
+    SpreadedSwaptionVolatilityStructure spreadedVolCube(volCube, spread);
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
     for (Size i=0; i<optionTenors_.size(); i++) {
         for (Size j=0; j<swapTenors_.size(); j++) {
-            boost::shared_ptr<SmileSection> smileSectionByCube = 
+            boost::shared_ptr<SmileSection> smileSectionByCube =
                 volCube->smileSection(optionTenors_[i], swapTenors_[j]);
-            boost::shared_ptr<SmileSection> smileSectionBySpreadedCube = 
+            boost::shared_ptr<SmileSection> smileSectionBySpreadedCube =
                 spreadedVolCube.smileSection(optionTenors_[i], swapTenors_[j]);
             for (Size k=0; k<strikes.size(); k++) {
                 Real strike = strikes[k];
                 Real diff = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike)
                             - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
-                if (fabs(diff-spread)>1e-16)
+                if (std::fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
-                                "\nspread = " << spread);    
-                
+                                "\nspread = " << spread);
+
                 diff = smileSectionBySpreadedCube->volatility(strike)
                        - smileSectionByCube->volatility(strike);
-                if (fabs(diff-spread)>1e-16)
+                if (std::fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in smile section method:"
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
-                                "\nspread = " << spread);    
+                                "\nspread = " << spread);
 
             }
         }

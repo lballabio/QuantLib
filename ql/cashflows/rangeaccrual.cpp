@@ -160,12 +160,12 @@ namespace QuantLib {
             const  boost::shared_ptr<SmileSection>& smilesOnPayment,
             bool withSmile,
             bool byCallSpread)
-    :correlation_(correlation),
-    smilesOnExpiry_(smilesOnExpiry),
-    smilesOnPayment_(smilesOnPayment),
-    withSmile_(withSmile),
-    byCallSpread_(byCallSpread),
-    eps_(1.0e-8){
+    : correlation_(correlation),
+      withSmile_(withSmile),
+      byCallSpread_(byCallSpread),
+      smilesOnExpiry_(smilesOnExpiry),
+      smilesOnPayment_(smilesOnPayment),
+      eps_(1.0e-8) {
 
     }
     Real RangeAccrualPricerByBgm::swapletPrice() const{
@@ -376,7 +376,7 @@ namespace QuantLib {
 
        CumulativeNormalDistribution phi;
        const Real result = deflator*phi(d2);
-       
+
        QL_REQUIRE(result > 0.,
            "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result< 0. Result:"<<result);
        QL_REQUIRE(result/deflator <= 1.,
@@ -491,7 +491,7 @@ namespace QuantLib {
 
         result *= deflator;
 
-        QL_REQUIRE(abs(result/deflator) <= 1.0 + pow(eps_,.2),
+        QL_REQUIRE(std::fabs(result/deflator) <= 1.0 + pow(eps_,.2),
             "RangeAccrualPricerByBgm::smileCorrection: abs(result/deflator) > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 

@@ -24,7 +24,7 @@
 #include <ql/indexes/interestrateindex.hpp>
 
 namespace QuantLib {
-        
+
     DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike,
                       Position::Type callPosition,
@@ -49,13 +49,13 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears()),
       underlying_(underlying), callCsi_(0.), putCsi_(0.),
-      hasCallStrike_(false), hasPutStrike_(false),
-      putLeftEps_(eps/2.), putRightEps_(eps/2.),
-      callLeftEps_(eps/2.), callRightEps_(eps/2.),
+      isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded),
       isCallCashOrNothing_(false), isPutCashOrNothing_(false),
-      replicationType_(replication),
-      isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded){
-      
+      callLeftEps_(eps/2.), callRightEps_(eps/2.),
+      putLeftEps_(eps/2.), putRightEps_(eps/2.),
+      hasPutStrike_(false), hasCallStrike_(false),
+      replicationType_(replication) {
+
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
         if (putStrike == Null<Rate>())
@@ -121,7 +121,7 @@ namespace QuantLib {
                     default:
                         QL_FAIL("unsupported position type");
                 }
-            }            
+            }
             if (hasPutStrike_) {
                 switch (putPosition) {
                     case Position::Long :
@@ -170,14 +170,14 @@ namespace QuantLib {
           default:
             QL_FAIL("unsupported replication type");
         }
-        
+
         registerWith(underlying);
     }
-    
+
     Rate DigitalCoupon::callOptionRate() const {
 
         Rate callOptionRate = Rate(0.);
-        if(hasCallStrike_) {      
+        if(hasCallStrike_) {
             callOptionRate = isCallCashOrNothing_ ? callDigitalPayoff_ : underlying_->rate();
             CappedFlooredCoupon next(underlying_, callStrike_ + callRightEps_);
             CappedFlooredCoupon previous(underlying_, callStrike_ - callLeftEps_);
@@ -189,7 +189,7 @@ namespace QuantLib {
     Rate DigitalCoupon::putOptionRate() const {
 
         Rate putOptionRate = Rate(0.);
-        if(hasPutStrike_) {      
+        if(hasPutStrike_) {
             putOptionRate = isPutCashOrNothing_ ? putDigitalPayoff_ : underlying_->rate();
             CappedFlooredCoupon next(underlying_, Null<Rate>(), putStrike_ + putRightEps_);
             CappedFlooredCoupon previous(underlying_, Null<Rate>(), putStrike_ - putLeftEps_);
@@ -201,10 +201,10 @@ namespace QuantLib {
     Rate DigitalCoupon::rate() const {
 
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
-        
+
         Date fixingDate = underlying_->fixingDate();
         Date today = Settings::instance().evaluationDate();
-        bool enforceTodaysHistoricFixings = 
+        bool enforceTodaysHistoricFixings =
             Settings::instance().enforceTodaysHistoricFixings();
         Rate underlyingRate = underlying_->rate();
         if (fixingDate < today ||
@@ -241,7 +241,7 @@ namespace QuantLib {
         else
             return Null<Rate>();
     }
-    
+
     Rate DigitalCoupon::callDigitalPayoff() const {
         if (isCallCashOrNothing_)
             return callDigitalPayoff_;
@@ -297,11 +297,11 @@ namespace QuantLib {
             Rate underlyingRate = underlying_->rate();
             if ( (underlyingRate - callStrike_) > 1.e-16 ) {
                 payoff = isCallCashOrNothing_ ? callDigitalPayoff_ : underlyingRate;
-            } else { 
+            } else {
                 if (isCallATMIncluded_) {
                     if ( std::abs(callStrike_ - underlyingRate) <= 1.e-16 )
                         payoff = isCallCashOrNothing_ ? callDigitalPayoff_ : underlyingRate;
-                }            
+                }
             }
         }
         return payoff;
@@ -317,9 +317,9 @@ namespace QuantLib {
             } else {
                 // putStrike_ <= underlyingRate
                 if (isPutATMIncluded_) {
-                    if ( std::abs(putStrike_ - underlyingRate) <= 1.e-16 ) 
+                    if ( std::abs(putStrike_ - underlyingRate) <= 1.e-16 )
                         payoff = isPutCashOrNothing_ ? putDigitalPayoff_ : underlyingRate;
-                }            
+                }
             }
         }
         return payoff;
