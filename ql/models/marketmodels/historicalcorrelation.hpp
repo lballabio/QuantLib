@@ -44,7 +44,6 @@ namespace QuantLib {
                    const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                    const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                    Natural depositSettlementDays, Natural swapSettlementDays,
-                   DayCounter& swapDayCounter,
                    const DayCounter& yieldCurveDayCounter,
                    Real yieldCurveAccuracy) {
         typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
@@ -81,7 +80,7 @@ namespace QuantLib {
                                             (*swap)->fixingCalendar(),
                                             (*swap)->fixedLegTenor().frequency(),
                                             (*swap)->fixedLegConvention(),
-                                            swapDayCounter,
+                                            (*swap)->dayCounter(),
                                             (*swap)->iborIndex())));
         }
         std::vector<Period> forwardFixingPeriods;
@@ -131,14 +130,13 @@ namespace QuantLib {
                    const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                    const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                    Natural depositSettlementDays, Natural swapSettlementDays,
-                   DayCounter& swapDayCounter,
                    const DayCounter& yieldCurveDayCounter,
                    Real yieldCurveAccuracy){
         return computeHistoricalCorrelations<ZeroYield, Linear> (
                    startDate, endDate, historicalStep, calendar,
                    index, forwardHorizon, iborIndexes, swapIndexes,
                    depositSettlementDays, swapSettlementDays,
-                   swapDayCounter,yieldCurveDayCounter,
+                   yieldCurveDayCounter,
                    yieldCurveAccuracy);
     }
 

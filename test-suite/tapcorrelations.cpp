@@ -430,7 +430,6 @@ void TapCorrelationTest::testHistoricalCorrelation() {
                depositSettlementDays,
                swapSettlementDays,
                swapDayCounter,
-               swapDayCounter,
                yieldCurveAccuracy);
     
     Matrix historicalCorrelations 
@@ -440,7 +439,6 @@ void TapCorrelationTest::testHistoricalCorrelation() {
                iborIndexes, swapIndexes,
                depositSettlementDays,
                swapSettlementDays,
-               swapDayCounter,
                swapDayCounter,
                yieldCurveAccuracy);
     BOOST_MESSAGE(historicalCorrelations);
