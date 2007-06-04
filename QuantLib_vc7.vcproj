@@ -1623,6 +1623,12 @@
 					RelativePath=".\ql\math\optimization\simplex.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\math\optimization\spherecylinder.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\spherecylinder.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\math\optimization\steepestdescent.cpp">
 				</File>
 				<File
@@ -1708,6 +1714,12 @@
 			<Filter
 				Name="matrixutilities"
 				Filter="">
+				<File
+					RelativePath=".\ql\math\matrixutilities\basisincompletedordered.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\basisincompleteordered.hpp">
+				</File>
 				<File
 					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.cpp">
 					<FileConfiguration
@@ -2620,6 +2632,9 @@
 					RelativePath=".\ql\models\marketmodels\evolver.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\historicalcorrelation.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp">
 				</File>
 				<File
@@ -2893,6 +2908,12 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalalphacalibration.hpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalmaxhomogeneity.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalmaxhomogeneity.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalswaptioncalibration.cpp">
