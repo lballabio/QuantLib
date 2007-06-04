@@ -108,8 +108,13 @@ namespace
 			bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
 			 
 			if (!conditioner) {
-                // panic
-                return low;
+                if  ((theObject.*Condition)(x))
+					return x;
+				else
+					if (leftValue < rightValue)
+						return low;
+					else 
+						return high;
             }
 
 			if (tentativeNewMid <= midValue) // go right
