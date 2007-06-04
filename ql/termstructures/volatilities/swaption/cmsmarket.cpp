@@ -18,10 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
+
 #include <ql/instruments/makecms.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
 #include <ql/indexes/swap/euriborswapfixa.hpp>
 #include <ql/quotes/simplequote.hpp>
