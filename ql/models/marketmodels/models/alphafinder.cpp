@@ -21,6 +21,9 @@
 
 namespace QuantLib {
 
+namespace
+{
+
     template<class T, Real (T::*Value)(Real) >
     Real Bisection(Real target,
                    Real low,
@@ -81,6 +84,7 @@ namespace QuantLib {
 
         return x;
     }
+  
 
     template<class T, Real (T::*Value)(Real),  bool (T::*Condition)(Real) >
     Real Minimize(Real low,
@@ -91,31 +95,42 @@ namespace QuantLib {
 
         Real leftValue = (theObject.*Value)(low);
         Real rightValue = (theObject.*Value)(high);
-        failed = true;
-        Real x=0.5*(low+high);;
+		Real W = 0.5*(3.0-sqrt(5.0));
+        Real x=W*low+(1-W)*high;
 
+		Real midValue =  (theObject.*Value)(x);
+ 
+        failed = true;
+      
         while(high - low > tolerance) {
-            x=0.5*(low+high);
-            bool conditioner = (theObject.*Condition)(x);
-            // we have left the domain
-            if (!conditioner) {
+			Real tentativeNewMid = W*low+(1-W)*high;
+			Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+			bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+			 
+			if (!conditioner) {
                 // panic
                 return low;
-            } else {
-                Real newValue =  (theObject.*Value)(x);
-                if (leftValue < rightValue) {
-                    high=x;
-                    rightValue =newValue;
-                } else {
-                    low=x;
-                    leftValue = newValue;
-                }
             }
-        }
+
+			if (tentativeNewMid <= midValue) // go right
+			{
+				leftValue = midValue;
+				low = x;
+				x = tentativeNewMid;
+				midValue = tentativeNewMidValue;
+			}
+			else //go left
+			{
+				rightValue = tentativeNewMidValue;
+				high = tentativeNewMid;
+			}
+            
+			
+		}
         failed = false;
         return x;
     }
-
+}
 
     class quadratic {
       public:
