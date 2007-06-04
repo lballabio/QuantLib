@@ -18,49 +18,42 @@
 */
 
 /*! \file spherecylinder.hpp
-    \brief Find closest point of the intersection of a sphere and cylinder to a given point
+    \brief Find closest point of the intersection of a sphere and cylinder to a
+           given point
 */
 
 #ifndef quantlib_optimization_sphere_cylinder_h
 #define quantlib_optimization_sphere_cylinder_h
 
 #include <ql/types.hpp>
+
 namespace QuantLib {
 
-    //! 
-    /*! we are in R^3
-	sphere centred at O radius R
-	vertical cylinder centred at (\alpha,0) radius S     
-	Z some point in R3
-	find point on intersection that is closest to Z
+    /*! we are in R^3 sphere centred at O radius R
+        vertical cylinder centred at (\alpha,0) radius S
+        Z some point in R3
+        find point on intersection that is closest to Z
 
-	the intersection may be empty!
-	
-	*/
-    class  spherecylinderoptimizer
-	{
-	public:
-			spherecylinderoptimizer(Real R, Real S, Real alpha, Real Z1, Real Z2, Real Z3);
-			bool isIntersectionNonEmpty() const;
-
-			void findClosest(Size maxIterations, 
-										  Real tolerance,
-										  Real& y1,
-										  Real& y2,
-										  Real& y3) const;
-
-	private:
-		Real R_;
-		Real S_; 
-		Real alpha_; 
-		Real Z1_;
-		Real Z2_; 
-		Real Z3_;
-
-		Real objectiveFunction(Real x2) const;
-
-		Real topValue_;
-
+       the intersection may be empty!
+    */
+    class  spherecylinderoptimizer {
+      public:
+        spherecylinderoptimizer(Real R,
+                                Real S,
+                                Real alpha,
+                                Real Z1,
+                                Real Z2,
+                                Real Z3);
+        bool isIntersectionNonEmpty() const;
+        void findClosest(Size maxIterations,
+                         Real tolerance,
+                         Real& y1,
+                         Real& y2,
+                         Real& y3) const;
+      private:
+        Real R_, S_, alpha_, Z1_, Z2_, Z3_;
+        Real objectiveFunction(Real x2) const;
+        Real topValue_;
     };
 
 }

@@ -19,108 +19,101 @@
 
 #include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/errors.hpp>
+
+
 namespace QuantLib {
 
-namespace
-{
-  template<class T, Real (T::*Value)(Real) const >
-    Real BrentMinimize(Real low,
-                  Real high,
-                  Real tolerance,
-				  Size maxIt,
-                  const T& theObject)
-	{
+    namespace {
 
-        Real leftValue = (theObject.*Value)(low);
-        Real rightValue = (theObject.*Value)(high);
-		Real W = 0.5*(3.0-sqrt(5.0));
+        template<class T, Real (T::*Value)(Real) const >
+        Real BrentMinimize(Real low,
+                           Real high,
+                           Real tolerance,
+                           Size maxIt,
+                           const T& theObject) {
 
-        Real x=W*low+(1-W)*high;
-		Real midValue =  (theObject.*Value)(x);
-        
-		Size iterations = 0;
+            Real leftValue = (theObject.*Value)(low);
+            Real rightValue = (theObject.*Value)(high);
+            Real W = 0.5*(3.0-sqrt(5.0));
 
-        while(leftValue - rightValue > tolerance && iterations < maxIt) 
-		{
-			Real tentativeNewMid = W*low+(1-W)*high;
-			Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+            Real x=W*low+(1-W)*high;
+            Real midValue =  (theObject.*Value)(x);
 
-			if (tentativeNewMid <= midValue) // go right
-			{
-				leftValue = midValue;
-				low = x;
-				x = tentativeNewMid;
-				midValue = tentativeNewMidValue;
-			}
-			else //go left
-			{
-				rightValue = tentativeNewMidValue;
-				high = tentativeNewMid;
-			}
+            Size iterations = 0;
 
-			++iterations;
+            while(leftValue - rightValue > tolerance && iterations < maxIt)
+            {
+                Real tentativeNewMid = W*low+(1-W)*high;
+                Real tentativeNewMidValue = (theObject.*Value)(tentativeNewMid);
 
-		}  
-            
-        return x;
+                if (tentativeNewMid <= midValue) // go right
+                {
+                    leftValue = midValue;
+                    low = x;
+                    x = tentativeNewMid;
+                    midValue = tentativeNewMidValue;
+                }
+                else //go left
+                {
+                    rightValue = tentativeNewMidValue;
+                    high = tentativeNewMid;
+                }
+
+                ++iterations;
+
+            }
+
+            return x;
+        }
     }
-}
-   	spherecylinderoptimizer::spherecylinderoptimizer(Real R, Real S, Real alpha, Real Z1, Real Z2, Real Z3)
-		: R_(R), S_(S), alpha_(alpha), Z1_(Z1), Z2_(Z2), Z3_(Z3)
-	{
-		      QL_REQUIRE(R>0,
-                   "sphere must have positive radius");
-			  QL_REQUIRE(S>0,
-				   "cylinder must have positive radius");
-			QL_REQUIRE(alpha>0,
-				   "cylinder centre must have positive coordinate");
-		Real cylinderInside = R*R - (S*S + alpha*alpha);
-		
-		if (cylinderInside >0.0)
-			topValue_ = S;
-		else
-		{
-			topValue_ = S*S - cylinderInside*cylinderInside/(4*alpha*alpha);
-		}
 
-	}
+    spherecylinderoptimizer::spherecylinderoptimizer(Real R,
+                                                     Real S,
+                                                     Real alpha,
+                                                     Real Z1,
+                                                     Real Z2,
+                                                     Real Z3)
+    : R_(R), S_(S), alpha_(alpha), Z1_(Z1), Z2_(Z2), Z3_(Z3) {
+        QL_REQUIRE(R>0,
+           "sphere must have positive radius");
+        QL_REQUIRE(S>0,
+           "cylinder must have positive radius");
+        QL_REQUIRE(alpha>0,
+               "cylinder centre must have positive coordinate");
+        Real cylinderInside = R*R - (S*S + alpha*alpha);
 
-	bool spherecylinderoptimizer::isIntersectionNonEmpty() const
-	{
-		return topValue_ >=0.0;
-		
-	}
+        if (cylinderInside >0.0)
+            topValue_ = S;
+        else
+            topValue_ = S*S - cylinderInside*cylinderInside/(4*alpha*alpha);
+    }
 
-	void spherecylinderoptimizer::findClosest(Size maxIterations, 
-										  Real tolerance,
-										  Real& y1,
-										  Real& y2,
-										  Real& y3) const
-	{
-		 y2 = BrentMinimize<spherecylinderoptimizer,&spherecylinderoptimizer::objectiveFunction>(0.0, 
-																																						topValue_,
-																																						tolerance,
-																																						maxIterations,
-																																						*this);
+    bool spherecylinderoptimizer::isIntersectionNonEmpty() const {
+        return topValue_ >=0.0;
+    }
 
-		 y1 = alpha_ - sqrt(S_*S_-y2*y2);
-		 y3= sqrt(R_*R_ - y1*y1-y2*y2);
-
-
+    void spherecylinderoptimizer::findClosest(Size maxIterations,
+                                              Real tolerance,
+                                              Real& y1,
+                                              Real& y2,
+                                              Real& y3) const {
+         y2 = BrentMinimize<spherecylinderoptimizer,
+                            &spherecylinderoptimizer::objectiveFunction>(
+                                0.0, topValue_,tolerance, maxIterations,*this);
+         y1 = alpha_ - sqrt(S_*S_-y2*y2);
+         y3= sqrt(R_*R_ - y1*y1-y2*y2);
     };
 
-	Real spherecylinderoptimizer::objectiveFunction(Real x2) const
-	{
-			Real x1 = alpha_ - sqrt(S_*S_-x2*x2);
-			Real x3= sqrt(R_*R_ - x1*x1-x2*x2);
+    Real spherecylinderoptimizer::objectiveFunction(Real x2) const {
+        Real x1 = alpha_ - sqrt(S_*S_-x2*x2);
+        Real x3= sqrt(R_*R_ - x1*x1-x2*x2);
 
-			Real err=0.0;
-			err+= (x1-Z1_)*(x1-Z1_);
-			err+= (x2-Z2_)*(x2-Z2_);
-			err+= (x3-Z3_)*(x3-Z3_);
-			
-			return err;
-	}
+        Real err=0.0;
+        err+= (x1-Z1_)*(x1-Z1_);
+        err+= (x2-Z2_)*(x2-Z2_);
+        err+= (x3-Z3_)*(x3-Z3_);
 
+        return err;
+    }
 
 }

@@ -31,21 +31,21 @@ namespace QuantLib {
     class PiecewiseConstantVariance;
     class Matrix;
 
-	bool calibrationOfMaxHomogeneityIterative(
-    	const EvolutionDescription& evolution,
-    	const PiecewiseConstantCorrelation& corr,
-    	const std::vector<boost::shared_ptr<
-    	PiecewiseConstantVariance> >&
-    	displacedSwapVariances,
-    	const std::vector<Volatility>& capletVols,
-    	const CurveState& cs,
-    	const Spread displacement,
-    	const Size numberOfFactors,
+    bool calibrationOfMaxHomogeneityIterative(
+        const EvolutionDescription& evolution,
+        const PiecewiseConstantCorrelation& corr,
+        const std::vector<boost::shared_ptr<
+        PiecewiseConstantVariance> >&
+        displacedSwapVariances,
+        const std::vector<Volatility>& capletVols,
+        const CurveState& cs,
+        const Spread displacement,
+        const Size numberOfFactors,
         Integer iterationsForHomogeneous,
-    	Real toleranceHomogeneousSolving,
-    	Size maxIterationsForIterative,
-    	Real toleranceForIterativeSolving,
-    	std::vector<Matrix>& swapCovariancePseudoRoots);
+        Real toleranceHomogeneousSolving,
+        Size maxIterationsForIterative,
+        Real toleranceForIterativeSolving,
+        std::vector<Matrix>& swapCovariancePseudoRoots);
 }
 
 #endif

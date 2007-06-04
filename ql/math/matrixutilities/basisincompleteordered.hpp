@@ -25,26 +25,20 @@
 
 namespace QuantLib {
 
-	class basisincompleteordered
-	{
-	public:
-		basisincompleteordered(Size euclideanDimension);
-		bool addVector(const Array& newVector); // return value indicates if the vector was linearly independent
-
-		Size basisSize() const; 
-		Size euclideanDimension() const;
-
-		Matrix getBasisAsRowsInMatrix() const;
-
-	private:
-		
-		std::vector<Array> currentBasis_;
-		Size euclideanDimension_;
-		Array newVector;
-
-	};
+    class basisincompleteordered {
+      public:
+        basisincompleteordered(Size euclideanDimension);
+        //! return value indicates if the vector was linearly independent
+        bool addVector(const Array& newVector);
+        Size basisSize() const;
+        Size euclideanDimension() const;
+        Matrix getBasisAsRowsInMatrix() const;
+      private:
+        std::vector<Array> currentBasis_;
+        Size euclideanDimension_;
+        Array newVector_;
+    };
 
 }
-
 
 #endif

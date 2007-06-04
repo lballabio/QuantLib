@@ -23,64 +23,60 @@
 
 namespace QuantLib {
 
-	basisincompleteordered::basisincompleteordered(Size euclideanDimension)
-		: euclideanDimension_(euclideanDimension)
-	{
-	}
+    basisincompleteordered::basisincompleteordered(Size euclideanDimension)
+    : euclideanDimension_(euclideanDimension) {}
 
-	bool basisincompleteordered::addVector(const Array& newVector1)
-	{
-			  QL_REQUIRE(newVector.size() == euclideanDimension_, 
-				"missized vector passed to basisincompleteordered::addVector");
+    bool basisincompleteordered::addVector(const Array& newVector1) {
 
-			  newVector = newVector1;
-    
-			  if (currentBasis_.size()==euclideanDimension_)
-				  return false;
-			 
-			  for (Size j=0; j < currentBasis_.size(); ++j)
-				{
-					Real innerProd = std::inner_product(newVector.begin(),newVector.end(), currentBasis_[j].begin(), 0.0);
+        QL_REQUIRE(newVector_.size() == euclideanDimension_,
+                   "missized vector passed to "
+                   "basisincompleteordered::addVector");
 
-					for (Size k=0; k < euclideanDimension_; ++k)
-						newVector[k] -=innerProd*currentBasis_[j][k];
+        newVector_ = newVector1;
 
-				}
+        if (currentBasis_.size()==euclideanDimension_)
+            return false;
 
-			  	Real norm =sqrt(std::inner_product(newVector.begin(), newVector.end(), newVector.begin(),0.0));
+        for (Size j=0; j<currentBasis_.size(); ++j) {
+            Real innerProd = std::inner_product(newVector_.begin(),
+                                                newVector_.end(),
+                                                currentBasis_[j].begin(), 0.0);
 
-				if (norm ==0.0) // maybe this should be a tolerance
-					return false; 
+            for (Size k=0; k<euclideanDimension_; ++k)
+                newVector_[k] -=innerProd*currentBasis_[j][k];
+        }
 
-				for (Size l=0; l < euclideanDimension_; ++l)
-					newVector[l]/=norm;
+        Real norm = sqrt(std::inner_product(newVector_.begin(),
+                                            newVector_.end(),
+                                            newVector_.begin(), 0.0));
 
-				currentBasis_.push_back(newVector);
+        if (norm==0.0) // maybe this should be a tolerance
+            return false;
 
-				return true;
-	}
+        for (Size l=0; l<euclideanDimension_; ++l)
+            newVector_[l]/=norm;
 
-	Size basisincompleteordered::basisSize() const
-	{
-		   return currentBasis_.size();
-	}
+        currentBasis_.push_back(newVector_);
 
-	Size basisincompleteordered::euclideanDimension() const
-	{
-			return euclideanDimension_;
-	}
+        return true;
+    }
 
-	
-	Matrix basisincompleteordered::getBasisAsRowsInMatrix() const
-	{
-		Matrix basis(currentBasis_.size(), euclideanDimension_);
-		for (Size i=0; i < basis.rows(); ++i)
-			for (Size j=0; j < basis.columns(); ++j)
-				basis[i][j] = currentBasis_[i][j];
-		
-		return basis;
-     
-	}
+    Size basisincompleteordered::basisSize() const {
+        return currentBasis_.size();
+    }
+
+    Size basisincompleteordered::euclideanDimension() const {
+        return euclideanDimension_;
+    }
+
+
+    Matrix basisincompleteordered::getBasisAsRowsInMatrix() const {
+        Matrix basis(currentBasis_.size(), euclideanDimension_);
+        for (Size i=0; i<basis.rows(); ++i)
+            for (Size j=0; j<basis.columns(); ++j)
+                basis[i][j] = currentBasis_[i][j];
+
+        return basis;
+    }
 
 }
-

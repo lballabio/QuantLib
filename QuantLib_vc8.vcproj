@@ -1865,6 +1865,18 @@
 				Name="matrixutilities"
 				>
 				<File
+					RelativePath=".\ql\math\matrixutilities\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\basisincompletedordered.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\matrixutilities\basisincompleteordered.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\math\matrixutilities\choleskydecomposition.cpp"
 					>
 				</File>
@@ -2198,6 +2210,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\math\optimization\simplex.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\spherecylinder.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\math\optimization\spherecylinder.hpp"
 					>
 				</File>
 				<File
@@ -2545,6 +2565,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\capletcoterminalalphacalibration.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalmaxhomogeneity.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\capletcoterminalmaxhomogeneity.hpp"
 						>
 					</File>
 					<File
