@@ -37,15 +37,15 @@ namespace QuantLib {
 
   template<class Traits, class Interpolator>
     Disposable<Matrix> computeHistoricalCorrelations(
-                   Date startDate, Date endDate, Period historicalStep,
-                   const Calendar& calendar,
-                   const boost::shared_ptr<InterestRateIndex> index,
-                   Period forwardHorizon,
-                   const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                   const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-                   Natural depositSettlementDays, Natural swapSettlementDays,
-                   const DayCounter& yieldCurveDayCounter,
-                   Real yieldCurveAccuracy) {
+            Date startDate, Date endDate, Period historicalStep,
+            const Calendar& calendar,
+            const boost::shared_ptr<InterestRateIndex> index,
+            Period forwardHorizon,
+            const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+            const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+            Natural depositSettlementDays, Natural swapSettlementDays,
+            const DayCounter& yieldCurveDayCounter,
+            Real yieldCurveAccuracy) {
         typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
         typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
 
@@ -59,45 +59,51 @@ namespace QuantLib {
             iborHistoricFixings.push_back(quote);
             Handle<Quote> quoteHandle(quote); 
             rateHelpers.push_back(boost::shared_ptr<RateHelper> (
-                                new DepositRateHelper(quoteHandle,  
-                                                (*ibor)->tenor(),
-                                                depositSettlementDays,
-                                                (*ibor)->fixingCalendar(),
-                                                (*ibor)->businessDayConvention(),
-                                                (*ibor)->endOfMonth(),
-                                                (*ibor)->fixingDays(),
-                                                (*ibor)->dayCounter())));
-        }
+                new DepositRateHelper(quoteHandle,  
+                                      (*ibor)->tenor(),
+                                      depositSettlementDays,
+                                      (*ibor)->fixingCalendar(),
+                                      (*ibor)->businessDayConvention(),
+                                      (*ibor)->endOfMonth(),
+                                      (*ibor)->fixingDays(),
+                                      (*ibor)->dayCounter())));
+        } 
         SwapVector::const_iterator swap;
         for(swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             swapHistoricFixings.push_back(quote);
             Handle<Quote> quoteHandle(quote);
             rateHelpers.push_back(boost::shared_ptr<RateHelper> (
-                                        new SwapRateHelper(quoteHandle,
-                                            (*swap)->tenor(),
-                                            swapSettlementDays,
-                                            (*swap)->fixingCalendar(),
-                                            (*swap)->fixedLegTenor().frequency(),
-                                            (*swap)->fixedLegConvention(),
-                                            (*swap)->dayCounter(),
-                                            (*swap)->iborIndex())));
+                new SwapRateHelper(quoteHandle,
+                                   (*swap)->tenor(),
+                                   swapSettlementDays,
+                                   (*swap)->fixingCalendar(),
+                                   (*swap)->fixedLegTenor().frequency(),
+                                   (*swap)->fixedLegConvention(),
+                                   (*swap)->dayCounter(),
+                                   (*swap)->iborIndex())));
         }
         std::vector<Period> forwardFixingPeriods;
         Period indexTenor = index->tenor(); 
-        Period forwardFixingPeriod = indexTenor;
         DayCounter indexDayCounter = index->dayCounter();
-        Size i=1;
-        for ( ;forwardFixingPeriod<forwardHorizon ;
-                i++, forwardFixingPeriod=i*indexTenor)
+        Size i=2;
+        Period forwardFixingPeriod = i*indexTenor;
+        while (forwardFixingPeriod<forwardHorizon) {
             forwardFixingPeriods.push_back(forwardFixingPeriod);
-        Natural settlementDays =0;
-        
+            ++i;
+            forwardFixingPeriod=i*indexTenor;
+        }
+       
         GenericSequenceStatistics<Statistics> statistics;
-        std::vector<Rate> forwardsValues(forwardFixingPeriods.size());
+        std::vector<Rate> forwardRates(forwardFixingPeriods.size());
+        std::vector<Rate> forwardRatesPrevious(forwardFixingPeriods.size());
+        std::vector<Rate> forwardRatesDifferences(forwardRates.size());
 
-        Date currentDate = calendar.advance(startDate,Period(0, Days), Unadjusted) ;
-
+        // Advance date
+        Date currentDate = calendar.advance(startDate, Period(0, Days), 
+                                            Unadjusted);
+        bool isFirst = true;
+        // Loop over the historical dataset
         while(currentDate<=endDate) {
             for (Size i=0; i<iborIndexes.size(); ++i)
                 iborHistoricFixings[i]
@@ -105,18 +111,34 @@ namespace QuantLib {
             for (Size i=0; i<swapIndexes.size(); ++i)
                 swapHistoricFixings[i]
                     ->setValue(swapIndexes[i]->fixing(currentDate, false));
-            
+            // Bootstrap the yield curve for currentDate 
             PiecewiseYieldCurve<Traits, Interpolator>
                     piecewiseYieldCurve(currentDate, rateHelpers, 
                     yieldCurveDayCounter, yieldCurveAccuracy);         
+            // Calculate relevant forward rates on a rolling time grid
+            // (implement here other alternatives)
             
-            for(Size i=0; i<forwardsValues.size(); ++i)
-                forwardsValues[i] 
-                = piecewiseYieldCurve.forwardRate(
-                        currentDate+forwardFixingPeriods[i],
-                        indexTenor,indexDayCounter, Simple);
-            statistics.add(forwardsValues.begin(), forwardsValues.end());
-            currentDate = calendar.advance(currentDate, historicalStep, Unadjusted);
+            for(Size i=0; i<forwardRates.size(); ++i) {
+                forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                    currentDate + forwardFixingPeriods[i],
+                    indexTenor, indexDayCounter, Simple);
+            }
+            
+            if (!isFirst)
+                for(Size i=0; i<forwardRates.size(); ++i)
+                    forwardRatesDifferences[i] = 
+                        forwardRates[i]/forwardRatesPrevious[i] - 1.0;
+            else
+                isFirst = false;
+
+            std::swap(forwardRatesPrevious, forwardRates);    // Last calculated forward rates
+
+            // Calculate correlations
+            statistics.add(forwardRatesDifferences.begin(), 
+                           forwardRatesDifferences.end());
+            // Advance date
+            currentDate = calendar.advance(currentDate, historicalStep, 
+                                           Unadjusted);
         }
         return statistics.correlation();
     }
@@ -163,12 +185,12 @@ namespace QuantLib {
     //            // loop over the dates in the range
     //            while(currentDate<=endDate) {
     //                Settings::instance().evaluationDate() = currentDate;
-    //                for(Size i=0; i<forwardsValues.size(); ++i)
-    //                    forwardsValues[i] 
+    //                for(Size i=0; i<forwardRates.size(); ++i)
+    //                    forwardRates[i] 
     //                    = localTermStructure.forwardRate(
     //                            currentDate+forwardFixingPeriods[i],
     //                            indexTenor,indexDayCounter, Simple);
-    //                statistics.add(forwardsValues.begin(), forwardsValues.end());
+    //                statistics.add(forwardRates.begin(), forwardRates.end());
     //                currentDate = calendar.advance(currentDate, historicalStep, Unadjusted);
     //            }
     //            termStructure_.useFixings() = useFixings_;
