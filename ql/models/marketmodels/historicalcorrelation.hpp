@@ -86,7 +86,7 @@ namespace QuantLib {
         std::vector<Period> forwardFixingPeriods;
         Period indexTenor = index->tenor(); 
         DayCounter indexDayCounter = index->dayCounter();
-        Size i=2;
+        Size i=1;
         Period forwardFixingPeriod = i*indexTenor;
         while (forwardFixingPeriod<forwardHorizon) {
             forwardFixingPeriods.push_back(forwardFixingPeriod);
@@ -101,7 +101,7 @@ namespace QuantLib {
 
         // Advance date
         Date currentDate = calendar.advance(startDate, Period(0, Days), 
-                                            Unadjusted);
+                                            Following);
         bool isFirst = true;
         // Loop over the historical dataset
         while(currentDate<=endDate) {
@@ -117,28 +117,26 @@ namespace QuantLib {
                     yieldCurveDayCounter, yieldCurveAccuracy);         
             // Calculate relevant forward rates on a rolling time grid
             // (implement here other alternatives)
-            
             for(Size i=0; i<forwardRates.size(); ++i) {
                 forwardRates[i] = piecewiseYieldCurve.forwardRate(
                     currentDate + forwardFixingPeriods[i],
                     indexTenor, indexDayCounter, Simple);
             }
-            
+            // Calculate forward rate relative differences
             if (!isFirst)
                 for(Size i=0; i<forwardRates.size(); ++i)
                     forwardRatesDifferences[i] = 
                         forwardRates[i]/forwardRatesPrevious[i] - 1.0;
             else
                 isFirst = false;
-
-            std::swap(forwardRatesPrevious, forwardRates);    // Last calculated forward rates
-
             // Calculate correlations
             statistics.add(forwardRatesDifferences.begin(), 
                            forwardRatesDifferences.end());
+            // Store last calculated forward rates
+            std::swap(forwardRatesPrevious, forwardRates);
             // Advance date
             currentDate = calendar.advance(currentDate, historicalStep, 
-                                           Unadjusted);
+                                           Following);
         }
         return statistics.correlation();
     }
