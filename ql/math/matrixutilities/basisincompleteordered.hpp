@@ -18,16 +18,16 @@
 */
 
 
-#ifndef quantlib_basis_incompleted_ordered_hpp
-#define quantlib_basis_incompleted_ordered_hpp
+#ifndef quantlib_basis_incomplete_ordered_hpp
+#define quantlib_basis_incomplete_ordered_hpp
 
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 
-    class basisincompleteordered {
+    class BasisIncompleteOrdered {
       public:
-        basisincompleteordered(Size euclideanDimension);
+        BasisIncompleteOrdered(Size euclideanDimension);
         //! return value indicates if the vector was linearly independent
         bool addVector(const Array& newVector);
         Size basisSize() const;

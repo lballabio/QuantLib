@@ -22,6 +22,7 @@ this_include_HEADERS = \
 	linearleastsquaresregression.hpp \
 	matrix.hpp \
 	primenumbers.hpp \
+	quadratic.hpp \
 	rounding.hpp \
 	sampledcurve.hpp \
 	solver1d.hpp \
@@ -35,6 +36,7 @@ libMath_la_SOURCES = \
 	incompletegamma.cpp \
 	matrix.cpp \
 	primenumbers.cpp \
+	quadratic.cpp \
 	rounding.cpp \
 	sampledcurve.cpp \
 	surface.cpp

@@ -24,10 +24,10 @@
 
 namespace QuantLib {
 
-    class alphaform {
+    class AlphaForm {
       public:
-        alphaform();
-        virtual ~alphaform() {}
+        AlphaForm();
+        virtual ~AlphaForm() {}
         virtual Real operator()(Integer i) const=0;
         virtual void setAlpha(Real alpha)=0;
     };

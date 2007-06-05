@@ -20,75 +20,74 @@
 #include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/errors.hpp>
 
-
 namespace QuantLib {
- namespace 
- {
 
-	 template<class T, Real (T::*Value)(Real) const >
-	 Real BrentMinimize(Real low,
-		 Real high,
-		 Real tolerance,
-		 Size maxIt,
-		 const T& theObject) 
-	 {
+    namespace {
 
-		 Real leftValue = (theObject.*Value)(low);
-		 Real rightValue = (theObject.*Value)(high);
-		 Real W = 0.5*(3.0-sqrt(5.0));
-		 Real x=W*low+(1-W)*high;
-		 Real midValue =  (theObject.*Value)(x);
+     template<class T, Real (T::*Value)(Real) const >
+     Real BrentMinimize(Real low,
+         Real high,
+         Real tolerance,
+         Size maxIt,
+         const T& theObject)
+     {
 
-		 Size iterations =0;
+         Real leftValue = (theObject.*Value)(low);
+         Real rightValue = (theObject.*Value)(high);
+         Real W = 0.5*(3.0-sqrt(5.0));
+         Real x=W*low+(1-W)*high;
+         Real midValue =  (theObject.*Value)(x);
 
-		 while(high - low > tolerance && iterations < maxIt) 
-		 {
+         Size iterations =0;
 
-			 if (x - low > high -x) // left interval is bigger
-			 {
-				 Real tentativeNewMid = W*low+(1-W)*x;
-				 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+         while(high - low > tolerance && iterations < maxIt)
+         {
 
-				 if (tentativeNewMidValue < midValue) // go left
-				 {
-					 high =x;
-					 rightValue = midValue;
-					 x = tentativeNewMid;
-					 midValue = tentativeNewMidValue;
-				 }
-				 else // go right
-					{
-						low = tentativeNewMid;
-						leftValue = tentativeNewMidValue;
-					}
-				}
-			  else
-				{
-					Real tentativeNewMid = W*x+(1-W)*high;
-					Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-			
-					if (tentativeNewMidValue < midValue) // go right
-					{
-						low =x;
-						leftValue = midValue;
-						x = tentativeNewMid;
-						midValue = tentativeNewMidValue;
-					}
-					else // go left
-					{
-						high = tentativeNewMid;
-						rightValue = tentativeNewMidValue;
-					}
-				}
+             if (x - low > high -x) // left interval is bigger
+             {
+                 Real tentativeNewMid = W*low+(1-W)*x;
+                 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
 
-			 ++iterations;
-		 }
+                 if (tentativeNewMidValue < midValue) // go left
+                 {
+                     high =x;
+                     rightValue = midValue;
+                     x = tentativeNewMid;
+                     midValue = tentativeNewMidValue;
+                 }
+                 else // go right
+                    {
+                        low = tentativeNewMid;
+                        leftValue = tentativeNewMidValue;
+                    }
+                }
+              else
+                {
+                    Real tentativeNewMid = W*x+(1-W)*high;
+                    Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
 
-	    return x;
-		 }
+                    if (tentativeNewMidValue < midValue) // go right
+                    {
+                        low =x;
+                        leftValue = midValue;
+                        x = tentativeNewMid;
+                        midValue = tentativeNewMidValue;
+                    }
+                    else // go left
+                    {
+                        high = tentativeNewMid;
+                        rightValue = tentativeNewMidValue;
+                    }
+                }
+
+             ++iterations;
+         }
+
+        return x;
+         }
     }
 
-    spherecylinderoptimizer::spherecylinderoptimizer(Real R,
+    SphereCylinderOptimizer::SphereCylinderOptimizer(Real R,
                                                      Real S,
                                                      Real alpha,
                                                      Real Z1,
@@ -109,23 +108,23 @@ namespace QuantLib {
             topValue_ = S*S - cylinderInside*cylinderInside/(4*alpha*alpha);
     }
 
-    bool spherecylinderoptimizer::isIntersectionNonEmpty() const {
+    bool SphereCylinderOptimizer::isIntersectionNonEmpty() const {
         return topValue_ >=0.0;
     }
 
-    void spherecylinderoptimizer::findClosest(Size maxIterations,
+    void SphereCylinderOptimizer::findClosest(Size maxIterations,
                                               Real tolerance,
                                               Real& y1,
                                               Real& y2,
                                               Real& y3) const {
-         y2 = BrentMinimize<spherecylinderoptimizer,
-                            &spherecylinderoptimizer::objectiveFunction>(
+         y2 = BrentMinimize<SphereCylinderOptimizer,
+                            &SphereCylinderOptimizer::objectiveFunction>(
                                 0.0, topValue_,tolerance, maxIterations,*this);
          y1 = alpha_ - sqrt(S_*S_-y2*y2);
          y3= sqrt(R_*R_ - y1*y1-y2*y2);
-    };
+    }
 
-    Real spherecylinderoptimizer::objectiveFunction(Real x2) const {
+    Real SphereCylinderOptimizer::objectiveFunction(Real x2) const {
         Real x1 = alpha_ - sqrt(S_*S_-x2*x2);
         Real x3= sqrt(R_*R_ - x1*x1-x2*x2);
 

@@ -15,5 +15,6 @@
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/math/optimization/steepestdescent.hpp>
 

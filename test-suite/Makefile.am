@@ -45,7 +45,9 @@ QL_TESTS = \
 	marketmodel.hpp marketmodel.cpp \
 	marketmodel_cms.hpp marketmodel_cms.cpp \
 	marketmodel_smm.hpp marketmodel_smm.cpp \
+	marketmodel_smmcapletalphacalibration.hpp marketmodel_smmcapletalphacalibration.cpp \
 	marketmodel_smmcapletcalibration.hpp marketmodel_smmcapletcalibration.cpp \
+	marketmodel_smmcaplethomocalibration.hpp marketmodel_smmcaplethomocalibration.cpp \
 	matrices.hpp matrices.cpp \
 	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
@@ -56,6 +58,7 @@ QL_TESTS = \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
+	rangeaccrual.hpp rangeaccrual.cpp \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \

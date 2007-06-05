@@ -17,20 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <algorithm>
 
 namespace QuantLib {
 
-    basisincompleteordered::basisincompleteordered(Size euclideanDimension)
+    BasisIncompleteOrdered::BasisIncompleteOrdered(Size euclideanDimension)
     : euclideanDimension_(euclideanDimension) {}
 
-    bool basisincompleteordered::addVector(const Array& newVector1) {
+    bool BasisIncompleteOrdered::addVector(const Array& newVector1) {
 
         QL_REQUIRE(newVector1.size() == euclideanDimension_,
                    "missized vector passed to "
-                   "basisincompleteordered::addVector");
+                   "BasisIncompleteOrdered::addVector");
 
         newVector_ = newVector1;
 
@@ -61,16 +60,16 @@ namespace QuantLib {
         return true;
     }
 
-    Size basisincompleteordered::basisSize() const {
+    Size BasisIncompleteOrdered::basisSize() const {
         return currentBasis_.size();
     }
 
-    Size basisincompleteordered::euclideanDimension() const {
+    Size BasisIncompleteOrdered::euclideanDimension() const {
         return euclideanDimension_;
     }
 
 
-    Matrix basisincompleteordered::getBasisAsRowsInMatrix() const {
+    Matrix BasisIncompleteOrdered::getBasisAsRowsInMatrix() const {
         Matrix basis(currentBasis_.size(), euclideanDimension_);
         for (Size i=0; i<basis.rows(); ++i)
             for (Size j=0; j<basis.columns(); ++j)

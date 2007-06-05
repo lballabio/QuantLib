@@ -21,6 +21,6 @@
 
 namespace QuantLib {
 
-    alphaform::alphaform() {}
+    AlphaForm::AlphaForm() {}
 
 }

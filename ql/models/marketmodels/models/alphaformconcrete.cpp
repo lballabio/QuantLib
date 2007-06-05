@@ -22,26 +22,26 @@
 
 namespace QuantLib {
 
-    alphaforminverselinear::alphaforminverselinear(
+    AlphaFormInverseLinear::AlphaFormInverseLinear(
                                                 const std::vector<Time>& times,
                                                 Real alpha )
     : times_(times), alpha_(alpha) {}
 
-    Real alphaforminverselinear::operator()(Integer i) const {
-    	return 1.0/(1.0+alpha_*times_[i]);
+    Real AlphaFormInverseLinear::operator()(Integer i) const {
+        return 1.0/(1.0+alpha_*times_[i]);
     }
 
-    void alphaforminverselinear::setAlpha(Real alpha) {
+    void AlphaFormInverseLinear::setAlpha(Real alpha) {
         alpha_=alpha;
     }
 
 
-    alphaformlinearhyperbolic::alphaformlinearhyperbolic(
+    AlphaFormLinearHyperbolic::AlphaFormLinearHyperbolic(
                                                 const std::vector<Time>& times,
                                                 Real alpha )
     : times_(times), alpha_(alpha) {}
 
-    Real alphaformlinearhyperbolic::operator()(Integer i) const {
+    Real AlphaFormLinearHyperbolic::operator()(Integer i) const {
         Real at = alpha_*times_[i];
         Real res = std::atan(at)-0.5*M_PI;
         res *= at;
@@ -50,8 +50,8 @@ namespace QuantLib {
         return res;
     }
 
-    void alphaformlinearhyperbolic::setAlpha(Real alpha) {
-    	alpha_ = alpha;
+    void AlphaFormLinearHyperbolic::setAlpha(Real alpha) {
+        alpha_ = alpha;
     }
 
 }

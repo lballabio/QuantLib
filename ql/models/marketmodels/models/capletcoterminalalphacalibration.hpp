@@ -30,7 +30,7 @@ namespace QuantLib {
 
     class PiecewiseConstantVariance;
     class Matrix;
-	class alphaform;
+    class AlphaForm;
 
     bool calibrationOfAlphaFunctionData(
         const EvolutionDescription& evolution,
@@ -42,64 +42,64 @@ namespace QuantLib {
         const CurveState& cs,
         const Spread displacement,
         const Size numberOfFactors,
-    	boost::shared_ptr<alphaform> parametricform,
+        boost::shared_ptr<AlphaForm> parametricform,
         const std::vector<Real>& alphaInitial,
-    	const std::vector<Real>& alphaMax,
-    	const std::vector<Real>& alphaMin,
-    	Integer steps,
-    	Real toleranceForAlphaSolving,
-    	bool maximizeHomogeneity,
-    	std::vector<Real>& alpha, // for info only,
-    	std::vector<Real>& a,     // for info only,
-    	std::vector<Real>& b,    // for info only,
+        const std::vector<Real>& alphaMax,
+        const std::vector<Real>& alphaMin,
+        Integer steps,
+        Real toleranceForAlphaSolving,
+        bool maximizeHomogeneity,
+        std::vector<Real>& alpha, // for info only,
+        std::vector<Real>& a,     // for info only,
+        std::vector<Real>& b,    // for info only,
         std::vector<Matrix>& swapCovariancePseudoRoots // the real result
      );
 
-	bool calibrationOfAlphaFunctionDataIterative(
-    	const EvolutionDescription& evolution,
-    	const PiecewiseConstantCorrelation& corr,
-    	const std::vector<boost::shared_ptr<
-    	PiecewiseConstantVariance> >&
-    	displacedSwapVariances,
-    	const std::vector<Volatility>& capletVols,
-    	const CurveState& cs,
-    	const Spread displacement,
-    	const Size numberOfFactors,
-    	boost::shared_ptr<alphaform> parametricform,
-    	const std::vector<Real>& alphaInitial,
-    	const std::vector<Real>& alphaMax,
-    	const std::vector<Real>& alphaMin,
-    	Integer steps,
-    	Real toleranceForAlphaSolving,
-    	bool maximizeHomogeneity,
-    	Size maxIterations,
-    	Real toleranceForIterativeSolving,
-    	std::vector<Real>& alpha, // for info only,
-    	std::vector<Real>& a,     // for info only,
-    	std::vector<Real>& b,     // for info only,
-    	std::vector<Matrix>& swapCovariancePseudoRoots // the real result
+    bool calibrationOfAlphaFunctionDataIterative(
+        const EvolutionDescription& evolution,
+        const PiecewiseConstantCorrelation& corr,
+        const std::vector<boost::shared_ptr<
+        PiecewiseConstantVariance> >&
+        displacedSwapVariances,
+        const std::vector<Volatility>& capletVols,
+        const CurveState& cs,
+        const Spread displacement,
+        const Size numberOfFactors,
+        boost::shared_ptr<AlphaForm> parametricform,
+        const std::vector<Real>& alphaInitial,
+        const std::vector<Real>& alphaMax,
+        const std::vector<Real>& alphaMin,
+        Integer steps,
+        Real toleranceForAlphaSolving,
+        bool maximizeHomogeneity,
+        Size maxIterations,
+        Real toleranceForIterativeSolving,
+        std::vector<Real>& alpha, // for info only,
+        std::vector<Real>& a,     // for info only,
+        std::vector<Real>& b,     // for info only,
+        std::vector<Matrix>& swapCovariancePseudoRoots // the real result
         );
 
     // doesn't return as much for those not interested in all the extras
     bool calibrationOfAlphaFunction(
-    	const EvolutionDescription& evolution,
-    	const PiecewiseConstantCorrelation& corr,
-    	const std::vector<boost::shared_ptr<
-    	PiecewiseConstantVariance> >&
-    	displacedSwapVariances,
-    	const std::vector<Volatility>& capletVols,
-    	const CurveState& cs,
-    	const Spread displacement,
-    	const Size numberOfFactors,
-    	boost::shared_ptr<alphaform> parametricform,
-    	const std::vector<Real>& alphaInitial,
-    	const std::vector<Real>& alphaMax,
-    	const std::vector<Real>& alphaMin,
-    	Integer steps,
-    	Real toleranceForAlphaSolving,
-    	Size maxIterations,
-    	Real toleranceForIterativeSolving,
-    	std::vector<Matrix>& swapCovariancePseudoRoots);
+        const EvolutionDescription& evolution,
+        const PiecewiseConstantCorrelation& corr,
+        const std::vector<boost::shared_ptr<
+        PiecewiseConstantVariance> >&
+        displacedSwapVariances,
+        const std::vector<Volatility>& capletVols,
+        const CurveState& cs,
+        const Spread displacement,
+        const Size numberOfFactors,
+        boost::shared_ptr<AlphaForm> parametricform,
+        const std::vector<Real>& alphaInitial,
+        const std::vector<Real>& alphaMax,
+        const std::vector<Real>& alphaMin,
+        Integer steps,
+        Real toleranceForAlphaSolving,
+        Size maxIterations,
+        Real toleranceForIterativeSolving,
+        std::vector<Matrix>& swapCovariancePseudoRoots);
 
 }
 

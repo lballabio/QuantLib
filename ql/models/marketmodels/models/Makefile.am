@@ -6,6 +6,11 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	abcdvol.hpp \
+	alphafinder.hpp \
+	alphaform.hpp \
+	alphaformconcrete.hpp \
+	capletcoterminalalphacalibration.hpp \
+	capletcoterminalmaxhomogeneity.hpp \
 	capletcoterminalswaptioncalibration.hpp \
 	cotswaptofwdadapter.hpp \
 	flatvol.hpp \
@@ -16,6 +21,11 @@ this_include_HEADERS = \
 
 libMarketModelsModels_la_SOURCES = \
 	abcdvol.cpp \
+	alphafinder.cpp \
+	alphaform.cpp \
+	alphaformconcrete.cpp \
+	capletcoterminalalphacalibration.cpp \
+	capletcoterminalmaxhomogeneity.cpp \
 	capletcoterminalswaptioncalibration.cpp \
 	cotswaptofwdadapter.cpp \
 	flatvol.cpp \

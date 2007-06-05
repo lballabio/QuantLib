@@ -43,28 +43,28 @@ namespace QuantLib {
                  Real w1,
                  Size maxIterations,
                  Real tolerance,
-                 std::vector<Volatility>& solution) 
-		{
-			if (capletNumber ==0) // there only is one point so to go through everything would be silly
-			{
-			    Real previousSwapVariance = previousRateSolution[0] *previousRateSolution[0];
-				Real thisSwapVariance = homogeneousSolution[0] *homogeneousSolution[0]
-														+ homogeneousSolution[1] *homogeneousSolution[1];
-      			Real crossTerm =  2*w0*w1*correlations[0]*previousRateSolution[0];
-				Real constantTerm = w0*w0* previousSwapVariance - capletVariance;
-				Real theta = w1*w1;
+                 std::vector<Volatility>& solution)
+        {
+            if (capletNumber ==0) // there only is one point so to go through everything would be silly
+            {
+                Real previousSwapVariance = previousRateSolution[0] *previousRateSolution[0];
+                Real thisSwapVariance = homogeneousSolution[0] *homogeneousSolution[0]
+                                                        + homogeneousSolution[1] *homogeneousSolution[1];
+                Real crossTerm =  2*w0*w1*correlations[0]*previousRateSolution[0];
+                Real constantTerm = w0*w0* previousSwapVariance - capletVariance;
+                Real theta = w1*w1;
 
-				quadratic q(theta,crossTerm, constantTerm);
-				Real volminus, volplus;
-				bool success = q.roots(volminus,volplus);
-				Real residual = thisSwapVariance - volminus*volminus;
-				success = success && (residual >=0);
+                quadratic q(theta,crossTerm, constantTerm);
+                Real volminus, volplus;
+                bool success = q.roots(volminus,volplus);
+                Real residual = thisSwapVariance - volminus*volminus;
+                success = success && (residual >=0);
 
-				solution[0] = volminus;
-				solution[1] = sqrt(residual);
+                solution[0] = volminus;
+                solution[1] = sqrt(residual);
 
-				return success;
-			}
+                return success;
+            }
 
             // first get in correct format
             Real previousSwapVariance=0.0;
@@ -84,7 +84,7 @@ namespace QuantLib {
             std::vector<Real> b(capletNumber+1);
             Array cylinderCentre(capletNumber+1);
             Array targetArray(capletNumber+2);
-			Array targetArrayRestricted(capletNumber+1);
+            Array targetArrayRestricted(capletNumber+1);
 
 
             Real bsq = 0.0;
@@ -92,7 +92,7 @@ namespace QuantLib {
                 b[i] = 2*w0*w1*correlations[i]*previousRateSolution[i]/theta;
                 cylinderCentre[i] = -0.5*b[i];
                 targetArray[i] = homogeneousSolution[i];
-				targetArrayRestricted[i] = targetArray[i];
+                targetArrayRestricted[i] = targetArray[i];
                 bsq+=b[i]*b[i];
             }
             targetArray[capletNumber+1] = homogeneousSolution[capletNumber+1];
@@ -104,7 +104,7 @@ namespace QuantLib {
 
             Real R = sqrt(thisSwapVariance);
 
-            basisincompleteordered basis(capletNumber+1);
+            BasisIncompleteOrdered basis(capletNumber+1);
             basis.addVector(cylinderCentre);
             basis.addVector(targetArrayRestricted);
             for (Size i=0; i<capletNumber+1; ++i) {
@@ -127,7 +127,7 @@ namespace QuantLib {
 
             Real Z1=0.0, Z2=0.0, Z3=0.0;
 
-            spherecylinderoptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1]);
+            SphereCylinderOptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1]);
 
             if (!optimizer.isIntersectionNonEmpty())
                 return false;
@@ -145,13 +145,13 @@ namespace QuantLib {
 
             Array arraySolution(transpose(orthTransformation) *
                                 rotatedSolution);
-			{
-				Size i=0;
-				for (; i < arraySolution.size(); ++i)
-					solution[i]=arraySolution[i];
-				for (; i < solution.size(); ++i)
-					solution[i]=0.0;
-			}
+            {
+                Size i=0;
+                for (; i < arraySolution.size(); ++i)
+                    solution[i]=arraySolution[i];
+                for (; i < solution.size(); ++i)
+                    solution[i]=0.0;
+            }
 
             return true;
 
@@ -171,7 +171,7 @@ namespace QuantLib {
             const Size numberOfFactors,
             Real toleranceForMinimization,
             Size iterationsForMinimzation,
-			Real& deformationSize,
+            Real& deformationSize,
             std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
@@ -208,7 +208,7 @@ namespace QuantLib {
         QL_REQUIRE(temp==evolutionTimes,
                    "mismatch between evolutionTimes and rateTimes");
 
-		deformationSize=0.0;
+        deformationSize=0.0;
 
 
         Size numberOfSteps = evolution.numberOfSteps();
@@ -272,8 +272,8 @@ namespace QuantLib {
             if (!success)
                 return success; // i.e. false
 
-			for (Size j=0; j < i+2; ++j)
-				deformationSize += (theseNewVols[i]-ratetwovols[i])*(theseNewVols[i]-ratetwovols[i]);
+            for (Size j=0; j < i+2; ++j)
+                deformationSize += (theseNewVols[i]-ratetwovols[i])*(theseNewVols[i]-ratetwovols[i]);
 
 
             newVols.push_back(theseNewVols);
@@ -318,14 +318,14 @@ namespace QuantLib {
         Real toleranceHomogeneousSolving,
         Size maxIterationsForIterative,
         Real toleranceForIterativeSolving,
-		Real& deformationSize,
+        Real& deformationSize,
         std::vector<Matrix>& swapCovariancePseudoRoots)
     {
         std::vector<Volatility> modifiedCapletVols=capletVols;
         Real error;
         Size iterations=0;
         Size numberOfRates = evolution.numberOfRates();
-		deformationSize=0.0;
+        deformationSize=0.0;
 
         do
         {
@@ -339,7 +339,7 @@ namespace QuantLib {
                 numberOfFactors,
                 toleranceHomogeneousSolving,
                 iterationsForHomogeneous,
-				deformationSize,
+                deformationSize,
                 swapCovariancePseudoRoots);
 
             if (!success)

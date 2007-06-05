@@ -18,6 +18,7 @@ this_include_HEADERS = \
     problem.hpp \
     projectedcostfunction.hpp \
     simplex.hpp \
+    spherecylinder.hpp \
     steepestdescent.hpp
 
 libOptimization_la_SOURCES = \
@@ -32,6 +33,7 @@ libOptimization_la_SOURCES = \
     lmdif.cpp \
     projectedcostfunction.cpp \
     simplex.cpp \
+    spherecylinder.cpp \
     steepestdescent.cpp
 
 noinst_LTLIBRARIES = libOptimization.la

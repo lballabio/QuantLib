@@ -4,28 +4,21 @@
 #include <ql/math/array.hpp>
 #include <ql/math/beta.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/math/curve.hpp>
-#include <ql/math/statistics/discrepancystatistics.hpp>
 #include <ql/math/domain.hpp>
 #include <ql/math/errorfunction.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/statistics/gaussianstatistics.hpp>
-#include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/math/incompletegamma.hpp>
-#include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/lexicographicalview.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/primenumbers.hpp>
-#include <ql/math/statistics/riskstatistics.hpp>
+#include <ql/math/quadratic.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/math/sampledcurve.hpp>
-#include <ql/math/statistics/sequencestatistics.hpp>
 #include <ql/math/solver1d.hpp>
-#include <ql/math/statistics/statistics.hpp>
 #include <ql/math/surface.hpp>
 #include <ql/math/transformedgrid.hpp>
 
@@ -36,3 +29,4 @@
 #include <ql/math/optimization/all.hpp>
 #include <ql/math/randomnumbers/all.hpp>
 #include <ql/math/solvers1d/all.hpp>
+#include <ql/math/statistics/all.hpp>

@@ -2,6 +2,11 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/models/marketmodels/models/abcdvol.hpp>
+#include <ql/models/marketmodels/models/alphafinder.hpp>
+#include <ql/models/marketmodels/models/alphaform.hpp>
+#include <ql/models/marketmodels/models/alphaformconcrete.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>

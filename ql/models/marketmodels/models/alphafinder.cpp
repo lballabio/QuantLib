@@ -85,7 +85,7 @@ namespace
 
         return x;
     }
-  
+
 
     template<class T, Real (T::*Value)(Real),  bool (T::*Condition)(Real) >
     Real Minimize(Real low,
@@ -96,112 +96,112 @@ namespace
 
         Real leftValue = (theObject.*Value)(low);
         Real rightValue = (theObject.*Value)(high);
-		Real W = 0.5*(3.0-sqrt(5.0));
+        Real W = 0.5*(3.0-sqrt(5.0));
         Real x=W*low+(1-W)*high;
-		Real midValue =  (theObject.*Value)(x);
-	
+        Real midValue =  (theObject.*Value)(x);
+
         failed = true;
-      
+
         while(high - low > tolerance) {
-		
-			if (x - low > high -x) // left interval is bigger
-			{
-				Real tentativeNewMid = W*low+(1-W)*x;
-				Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-				bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
-				if (!conditioner) {
-					if  ((theObject.*Condition)(x))
-						return x;
-					else
-						if (leftValue < rightValue)
-							return low;
-						else 
-							return high;
-				}
 
-				if (tentativeNewMidValue < midValue) // go left
-				{
-					high =x;
-					rightValue = midValue;
-					x = tentativeNewMid;
-					midValue = tentativeNewMidValue;
-				}
-				else // go right
-				{
-					low = tentativeNewMid;
-					leftValue = tentativeNewMidValue;
-				}
-			}
-			else
-			{
-				Real tentativeNewMid = W*x+(1-W)*high;
-				Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
-				bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
-				if (!conditioner) {
-					if  ((theObject.*Condition)(x))
-						return x;
-					else
-						if (leftValue < rightValue)
-							return low;
-						else 
-							return high;
-				}
+            if (x - low > high -x) // left interval is bigger
+            {
+                Real tentativeNewMid = W*low+(1-W)*x;
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                if (!conditioner) {
+                    if  ((theObject.*Condition)(x))
+                        return x;
+                    else
+                        if (leftValue < rightValue)
+                            return low;
+                        else
+                            return high;
+                }
 
-				if (tentativeNewMidValue < midValue) // go right
-				{
-					low =x;
-					leftValue = midValue;
-					x = tentativeNewMid;
-					midValue = tentativeNewMidValue;
-				}
-				else // go left
-				{
-					high = tentativeNewMid;
-					rightValue = tentativeNewMidValue;
-				}
-			}
+                if (tentativeNewMidValue < midValue) // go left
+                {
+                    high =x;
+                    rightValue = midValue;
+                    x = tentativeNewMid;
+                    midValue = tentativeNewMidValue;
+                }
+                else // go right
+                {
+                    low = tentativeNewMid;
+                    leftValue = tentativeNewMidValue;
+                }
+            }
+            else
+            {
+                Real tentativeNewMid = W*x+(1-W)*high;
+                Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+                bool conditioner = (theObject.*Condition)(tentativeNewMidValue);
+                if (!conditioner) {
+                    if  ((theObject.*Condition)(x))
+                        return x;
+                    else
+                        if (leftValue < rightValue)
+                            return low;
+                        else
+                            return high;
+                }
+
+                if (tentativeNewMidValue < midValue) // go right
+                {
+                    low =x;
+                    leftValue = midValue;
+                    x = tentativeNewMid;
+                    midValue = tentativeNewMidValue;
+                }
+                else // go left
+                {
+                    high = tentativeNewMid;
+                    rightValue = tentativeNewMidValue;
+                }
+            }
 
 
-	
-				
-			}
+
+
+            }
         failed = false;
         return x;
     }
 }
 
-    alphafinder::alphafinder(boost::shared_ptr<alphaform> parametricform)
+    AlphaFinder::AlphaFinder(boost::shared_ptr<AlphaForm> parametricform)
     : parametricform_(parametricform) {}
 
 
-	Real alphafinder::computeLinearPart(Real alpha) {
-    	Real cov =0.0;
-    	parametricform_->setAlpha(alpha);
+    Real AlphaFinder::computeLinearPart(Real alpha) {
+        Real cov =0.0;
+        parametricform_->setAlpha(alpha);
 
-    	for (Integer i=0; i < stepindex_+1; ++i) {
-        	Real vol1 = ratetwohomogeneousvols_[i]*(*parametricform_)(i);
-        	cov += vol1*rateonevols_[i]*correlations_[i];
+        for (Integer i=0; i < stepindex_+1; ++i) {
+            Real vol1 = ratetwohomogeneousvols_[i]*(*parametricform_)(i);
+            cov += vol1*rateonevols_[i]*correlations_[i];
         }
 
-    	cov *= 2*w0_*w1_;
-    	return cov;
+        cov *= 2*w0_*w1_;
+        return cov;
     }
 
 
-	Real alphafinder::computeQuadraticPart(Real alpha) {
-    	Real var =0.0;
-    	parametricform_->setAlpha(alpha);
+    Real AlphaFinder::computeQuadraticPart(Real alpha) {
+        Real var =0.0;
+        parametricform_->setAlpha(alpha);
 
-    	for (Integer i=0; i < stepindex_+1; ++i) {
-        	Real vol = ratetwohomogeneousvols_[i]*(*parametricform_)(i);
-        	var+= vol*vol;
+        for (Integer i=0; i < stepindex_+1; ++i) {
+            Real vol = ratetwohomogeneousvols_[i]*(*parametricform_)(i);
+            var+= vol*vol;
         }
 
-    	var *= w1_*w1_;
-    	return var;
+        var *= w1_*w1_;
+        return var;
     }
 
-    Real alphafinder::homogeneityfailure(Real alpha) {
+    Real AlphaFinder::homogeneityfailure(Real alpha) {
         Real dum1, dum2, dum3;
         finalPart(alpha,
                   stepindex_,
@@ -214,16 +214,16 @@ namespace
                   dum3,
                   putativevols_);
 
-	Real result=0.0;
-	for (Size i=0; i<=static_cast<Size>(stepindex_)+1; ++i) {
-    	Real val =  putativevols_[i]-ratetwohomogeneousvols_[i];
-    	result +=val*val;
+    Real result=0.0;
+    for (Size i=0; i<=static_cast<Size>(stepindex_)+1; ++i) {
+        Real val =  putativevols_[i]-ratetwohomogeneousvols_[i];
+        result +=val*val;
     }
 
-	return result;
+    return result;
 }
 
-    bool alphafinder::finalPart(Real alphaFound,
+    bool AlphaFinder::finalPart(Real alphaFound,
                                 Integer stepindex,
                                 const std::vector<Volatility>& ratetwohomogeneousvols,
                                 Real quadraticPart,
@@ -234,30 +234,30 @@ namespace
                                 Real& b,
                                 std::vector<Volatility>& ratetwovols) {
             alpha = alphaFound;
-        	quadratic q2(quadraticPart, linearPart, constantPart-targetVariance_ );
-        	parametricform_->setAlpha(alpha);
-        	Real y; // dummy
-        	q2.roots(a,y);
+            quadratic q2(quadraticPart, linearPart, constantPart-targetVariance_ );
+            parametricform_->setAlpha(alpha);
+            Real y; // dummy
+            q2.roots(a,y);
 
-        	Real totalVar=0.0;
-        	Real varSoFar=0.0;
-        	for (Integer i =0; i < stepindex+1; ++i) {
-            	ratetwovols[i] = ratetwohomogeneousvols[i] *
-                	                        (*parametricform_)(i) * a;
-            	varSoFar += ratetwovols[i]* ratetwovols[i];
+            Real totalVar=0.0;
+            Real varSoFar=0.0;
+            for (Integer i =0; i < stepindex+1; ++i) {
+                ratetwovols[i] = ratetwohomogeneousvols[i] *
+                                            (*parametricform_)(i) * a;
+                varSoFar += ratetwovols[i]* ratetwovols[i];
             }
 
-        	Real VarToFind = totalVar_-varSoFar;
-        	if (VarToFind < 0)
-            	return false;
-        	Real requiredSd = sqrt(VarToFind);
-        	b = requiredSd / (ratetwohomogeneousvols[stepindex+1] *
-        	                                (*parametricform_)(stepindex));
-        	ratetwovols[stepindex+1] = requiredSd;
-        	return true;
+            Real VarToFind = totalVar_-varSoFar;
+            if (VarToFind < 0)
+                return false;
+            Real requiredSd = sqrt(VarToFind);
+            b = requiredSd / (ratetwohomogeneousvols[stepindex+1] *
+                                            (*parametricform_)(stepindex));
+            ratetwovols[stepindex+1] = requiredSd;
+            return true;
     }
 
-    Real alphafinder::valueAtTurningPoint(Real alpha) {
+    Real AlphaFinder::valueAtTurningPoint(Real alpha) {
 
         linearPart_ = computeLinearPart(alpha);
         quadraticPart_ = computeQuadraticPart(alpha);
@@ -267,11 +267,11 @@ namespace
         return valueAtTP;
     }
 
-    Real alphafinder::minusValueAtTurningPoint(Real alpha) {
+    Real AlphaFinder::minusValueAtTurningPoint(Real alpha) {
         return -valueAtTurningPoint(alpha);
     }
 
-    bool alphafinder::testIfSolutionExists(Real alpha) {
+    bool AlphaFinder::testIfSolutionExists(Real alpha) {
         bool aExists =  valueAtTurningPoint(alpha)<targetVariance_;
         if (!aExists)
             return false;
@@ -289,7 +289,7 @@ namespace
                          putativevols_);
     }
 
-    bool alphafinder::solve(Real alpha0,
+    bool AlphaFinder::solve(Real alpha0,
                             Integer stepindex, // caplet index
                             const std::vector<Volatility>& rateonevols,
                             const std::vector<Volatility>& ratetwohomogeneousvols,
@@ -380,7 +380,7 @@ namespace
         if (bottomValue <= targetVariance) {
             // then find root of increasing function
             // (or as if increasing function)
-            alpha = Bisection<alphafinder, &alphafinder::valueAtTurningPoint>(
+            alpha = Bisection<AlphaFinder, &AlphaFinder::valueAtTurningPoint>(
                                                             targetVariance,
                                                             bottomAlpha,
                                                             bilimit,
@@ -388,7 +388,7 @@ namespace
                                                             *this);
         } else {
             // find root of decreasing function (or as if decreasing function)
-            alpha=Bisection<alphafinder, &alphafinder::minusValueAtTurningPoint>(
+            alpha=Bisection<AlphaFinder, &AlphaFinder::minusValueAtTurningPoint>(
                                                             targetVariance,
                                                             bilimit,
                                                             topAlpha,
@@ -408,7 +408,7 @@ namespace
         return true;
     }
 
-    bool alphafinder::solveWithMaxHomogeneity(
+    bool AlphaFinder::solveWithMaxHomogeneity(
                         Real alpha0,
                         Integer stepindex, // caplet index
                         const std::vector<Volatility>& rateonevols,
@@ -461,14 +461,14 @@ namespace
                 // lower alpha is bad
                 if (alpha0OK) {
                     // must die somewhere in between
-                    alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                    alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
                          alphaMin,
                          alpha0,
                          tolerance,
                         *this);
                 } else {
                     // alphaMaxOK must be true to get here
-                    alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                    alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
                          alpha0,
                          alphaMax,
                          tolerance,
@@ -479,7 +479,7 @@ namespace
 
             if (!alphaMaxOK) {
                 // higher alpha is bad
-                alpha2 = FindHighestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                alpha2 = FindHighestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
                      alpha1,
                      alphaMax,
                      tolerance,
@@ -508,14 +508,14 @@ namespace
 
             if (foundUpOK) {
                 alpha1 = alphaUp;
-                alpha2 = FindHighestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                alpha2 = FindHighestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
                      alpha1,
                      alphaMax,
                      tolerance,
                      *this);
             } else {
                 alpha2 = alphaDown;
-                alpha1 = FindLowestOK<alphafinder, &alphafinder::testIfSolutionExists>(
+                alpha1 = FindLowestOK<AlphaFinder, &AlphaFinder::testIfSolutionExists>(
                      alphaMin,
                      alpha2,
                      tolerance,
@@ -526,7 +526,7 @@ namespace
         // we have now found alpha1, alpha2 such that solution exists
         // at endpoints. we now want to minimize within that interval
         bool failed;
-        alpha =  Minimize<alphafinder, &alphafinder::homogeneityfailure, &alphafinder::testIfSolutionExists>(
+        alpha =  Minimize<AlphaFinder, &AlphaFinder::homogeneityfailure, &AlphaFinder::testIfSolutionExists>(
                                         alpha1,
                                         alpha2,
                                         tolerance,

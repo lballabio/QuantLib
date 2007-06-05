@@ -436,37 +436,37 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
                                           i, rateTimes_));
     }
 
-	boost::shared_ptr<alphaform> parametricform(new alphaformlinearhyperbolic(evolution.rateTimes()));
+    boost::shared_ptr<AlphaForm> parametricform(new AlphaFormLinearHyperbolic(evolution.rateTimes()));
     std::vector<Real> alphaInitial(numberOfRates,alpha_);
     std::vector<Real> alphaMax(numberOfRates,1.0);
     std::vector<Real> alphaMin(numberOfRates,-1.0);
 
-	Integer steps =50;
-	Real toleranceForAlphaSolving=1e-9;
+    Integer steps =50;
+    Real toleranceForAlphaSolving=1e-9;
 
-	Size maxIterations=10;
-	Real toleranceForIterativeSolving = 1e-4; // i.e. 1 bp
+    Size maxIterations=10;
+    Real toleranceForIterativeSolving = 1e-4; // i.e. 1 bp
 
-	std::vector<Matrix> swapPseudoRoots;
-	bool result = calibrationOfAlphaFunction(
-							evolution,
-							*corr,
-							swapVariances,
-							capletVols_,
-							*cs,
-							displacement_,
+    std::vector<Matrix> swapPseudoRoots;
+    bool result = calibrationOfAlphaFunction(
+                            evolution,
+                            *corr,
+                            swapVariances,
+                            capletVols_,
+                            *cs,
+                            displacement_,
                             numberOfFactors_,
-							parametricform,
+                            parametricform,
                             alphaInitial,
-							alphaMax,
-							alphaMin,
-							steps,
-							toleranceForAlphaSolving,
-							maxIterations,
-							toleranceForIterativeSolving,
-							swapPseudoRoots
+                            alphaMax,
+                            alphaMin,
+                            steps,
+                            toleranceForAlphaSolving,
+                            maxIterations,
+                            toleranceForIterativeSolving,
+                            swapPseudoRoots
     );
-	
+
     if (!result)
         BOOST_FAIL("calibration failed");
 
@@ -492,35 +492,35 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     Real error, swapTolerance = 1e-14;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
 
-	for (Size i=0; i<numberOfRates; ++i)
-	{
+    for (Size i=0; i<numberOfRates; ++i)
+    {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
         swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
-	
+
         if (error>swapTolerance)
-		{
+        {
             BOOST_MESSAGE("\n failed to reproduce "
                        << io::ordinal(i) << " swaption vol:"
                        "\n expected:  " << io::rate(expSwaptionVol) <<
                        "\n realized:  " << io::rate(swaptionVol) <<
                        "\n error:     " << error <<
                        "\n tolerance: " << swapTolerance);
-	
-		}
+
+        }
     }
-  
-	Real capletTolerance = 0.001;
-	bool	 fail=false;
-  
+
+    Real capletTolerance = 0.001;
+    bool     fail=false;
+
     // check caplet fit
     // the last caplet vol has not been used in calibration as it is assumed
     // to be equal to the last swaption vol. So it makes no sense to check...
     for (Size i=0; i<numberOfRates-1; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
-		{
+        {
             BOOST_MESSAGE("\n failed to reproduce "
                        << io::ordinal(i) << " caplet vol:"
                        "\n expected:         " << io::rate(capletVols_[i]) <<
@@ -528,11 +528,11 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
                        "\n percentage error: " << error/capletVols_[i] <<
                        "\n error:            " << error <<
                        "\n tolerance:        " << capletTolerance);
-			fail=true;
-		}
+            fail=true;
+        }
     }
-	if (fail)
-		  BOOST_FAIL("\n failed to reproduce caplet vols");
+    if (fail)
+          BOOST_FAIL("\n failed to reproduce caplet vols");
 
 
     QL_TEST_END

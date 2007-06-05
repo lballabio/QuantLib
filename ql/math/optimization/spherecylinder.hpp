@@ -22,8 +22,8 @@
            given point
 */
 
-#ifndef quantlib_optimization_sphere_cylinder_h
-#define quantlib_optimization_sphere_cylinder_h
+#ifndef quantlib_optimization_sphere_cylinder_hpp
+#define quantlib_optimization_sphere_cylinder_hpp
 
 #include <ql/types.hpp>
 
@@ -36,9 +36,9 @@ namespace QuantLib {
 
        the intersection may be empty!
     */
-    class  spherecylinderoptimizer {
+    class SphereCylinderOptimizer {
       public:
-        spherecylinderoptimizer(Real R,
+        SphereCylinderOptimizer(Real R,
                                 Real S,
                                 Real alpha,
                                 Real Z1,

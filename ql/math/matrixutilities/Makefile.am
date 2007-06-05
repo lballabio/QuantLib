@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
+	basisincompleteordered.hpp \
 	choleskydecomposition.hpp \
 	getcovariance.hpp \
 	pseudosqrt.hpp \
@@ -13,6 +14,7 @@ this_include_HEADERS = \
 	tqreigendecomposition.hpp
 
 libMatrixUtilities_la_SOURCES = \
+	basisincompleteordered.cpp \
 	choleskydecomposition.cpp \
 	getcovariance.cpp \
 	pseudosqrt.cpp \
