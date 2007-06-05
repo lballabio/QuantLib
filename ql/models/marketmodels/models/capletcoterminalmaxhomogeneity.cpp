@@ -27,6 +27,7 @@
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/optimization/spherecylinder.hpp>
+#include <ql/math/quadratic.hpp>
 
 namespace QuantLib {
 
@@ -42,14 +43,35 @@ namespace QuantLib {
                  Real w1,
                  Size maxIterations,
                  Real tolerance,
-                 std::vector<Volatility>& solution) {
+                 std::vector<Volatility>& solution) 
+		{
+			if (capletNumber ==0) // there only is one point so to go through everything would be silly
+			{
+			    Real previousSwapVariance = previousRateSolution[0] *previousRateSolution[0];
+				Real thisSwapVariance = homogeneousSolution[0] *homogeneousSolution[0]
+														+ homogeneousSolution[1] *homogeneousSolution[1];
+      			Real crossTerm =  2*w0*w1*correlations[0]*previousRateSolution[0];
+				Real constantTerm = w0*w0* previousSwapVariance - capletVariance;
+				Real theta = w1*w1;
+
+				quadratic q(theta,crossTerm, constantTerm);
+				Real volminus, volplus;
+				bool success = q.roots(volminus,volplus);
+				Real residual = thisSwapVariance - volminus*volminus;
+				success = success && (residual >=0);
+
+				solution[0] = volminus;
+				solution[1] = sqrt(residual);
+
+				return success;
+			}
 
             // first get in correct format
             Real previousSwapVariance=0.0;
             Real thisSwapVariance =0.0;
             {
                 Size i=0;
-                for (; i<capletNumber; ++i) {
+                for (; i<capletNumber+1; ++i) {
                     previousSwapVariance += previousRateSolution[i] *
                                                 previousRateSolution[i];
                     thisSwapVariance += homogeneousSolution[i] *
@@ -59,15 +81,18 @@ namespace QuantLib {
             }
 
             Real theta = w1*w1;
-            std::vector<Real> b(capletNumber);
+            std::vector<Real> b(capletNumber+1);
             Array cylinderCentre(capletNumber+1);
-            Array targetArray(capletNumber+1);
+            Array targetArray(capletNumber+2);
+			Array targetArrayRestricted(capletNumber+1);
+
 
             Real bsq = 0.0;
             for (Size i=0; i<capletNumber+1; ++i) {
                 b[i] = 2*w0*w1*correlations[i]*previousRateSolution[i]/theta;
                 cylinderCentre[i] = -0.5*b[i];
                 targetArray[i] = homogeneousSolution[i];
+				targetArrayRestricted[i] = targetArray[i];
                 bsq+=b[i]*b[i];
             }
             targetArray[capletNumber+1] = homogeneousSolution[capletNumber+1];
@@ -81,7 +106,7 @@ namespace QuantLib {
 
             basisincompleteordered basis(capletNumber+1);
             basis.addVector(cylinderCentre);
-            basis.addVector(targetArray);
+            basis.addVector(targetArrayRestricted);
             for (Size i=0; i<capletNumber+1; ++i) {
                 Array ei(capletNumber+1,0.0);
                 ei[i]=1.0;
@@ -89,9 +114,9 @@ namespace QuantLib {
             }
 
             Matrix orthTransformationRestricted(basis.getBasisAsRowsInMatrix());
-            Matrix orthTransformation(capletNumber+1, capletNumber+1, 0.0);
+            Matrix orthTransformation(capletNumber+2, capletNumber+2, 0.0);
 
-            orthTransformation[capletNumber][capletNumber]=1.0;
+            orthTransformation[capletNumber+1][capletNumber+1]=1.0;
             for (Size k=0; k<capletNumber+1; ++k)
                 for (Size l=0; l<capletNumber+1; ++l)
                     orthTransformation[k][l]=orthTransformationRestricted[k][l];
@@ -102,7 +127,7 @@ namespace QuantLib {
 
             Real Z1=0.0, Z2=0.0, Z3=0.0;
 
-            spherecylinderoptimizer optimizer(R, S, alpha, Z1, Z2, Z3);
+            spherecylinderoptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1]);
 
             if (!optimizer.isIntersectionNonEmpty())
                 return false;
@@ -120,8 +145,14 @@ namespace QuantLib {
 
             Array arraySolution(transpose(orthTransformation) *
                                 rotatedSolution);
-            for (Size i=0; i < solution.size(); ++i)
-                solution[i]=arraySolution[i];
+			{
+				Size i=0;
+				for (; i < arraySolution.size(); ++i)
+					solution[i]=arraySolution[i];
+				for (; i < solution.size(); ++i)
+					solution[i]=0.0;
+			}
+
             return true;
 
         }
@@ -140,6 +171,7 @@ namespace QuantLib {
             const Size numberOfFactors,
             Real toleranceForMinimization,
             Size iterationsForMinimzation,
+			Real& deformationSize,
             std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
@@ -175,6 +207,8 @@ namespace QuantLib {
         std::vector<Time> temp(rateTimes.begin(), rateTimes.end()-1);
         QL_REQUIRE(temp==evolutionTimes,
                    "mismatch between evolutionTimes and rateTimes");
+
+		deformationSize=0.0;
 
 
         Size numberOfSteps = evolution.numberOfSteps();
@@ -238,6 +272,10 @@ namespace QuantLib {
             if (!success)
                 return success; // i.e. false
 
+			for (Size j=0; j < i+2; ++j)
+				deformationSize += (theseNewVols[i]-ratetwovols[i])*(theseNewVols[i]-ratetwovols[i]);
+
+
             newVols.push_back(theseNewVols);
             rateonevols = theseNewVols;
         }
@@ -280,12 +318,14 @@ namespace QuantLib {
         Real toleranceHomogeneousSolving,
         Size maxIterationsForIterative,
         Real toleranceForIterativeSolving,
+		Real& deformationSize,
         std::vector<Matrix>& swapCovariancePseudoRoots)
     {
         std::vector<Volatility> modifiedCapletVols=capletVols;
         Real error;
         Size iterations=0;
         Size numberOfRates = evolution.numberOfRates();
+		deformationSize=0.0;
 
         do
         {
@@ -299,6 +339,7 @@ namespace QuantLib {
                 numberOfFactors,
                 toleranceHomogeneousSolving,
                 iterationsForHomogeneous,
+				deformationSize,
                 swapCovariancePseudoRoots);
 
             if (!success)

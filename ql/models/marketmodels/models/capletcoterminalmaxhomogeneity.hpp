@@ -45,6 +45,7 @@ namespace QuantLib {
         Real toleranceHomogeneousSolving,
         Size maxIterationsForIterative,
         Real toleranceForIterativeSolving,
+		Real& deformationSize,
         std::vector<Matrix>& swapCovariancePseudoRoots);
 }
 
