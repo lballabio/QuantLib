@@ -1394,7 +1394,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\complexarray.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\core.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\curve.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\domain.hpp"
 				>
 			</File>
 			<File
@@ -1506,6 +1518,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\fastfouriertransform.hpp"
+				>
+			</File>
+			<File
 				RelativePath="ql\math\functional.hpp"
 				>
 			</File>
@@ -1561,6 +1577,10 @@
 			</File>
 			<File
 				RelativePath="ql\math\incompletegamma.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\interpolation.hpp"
 				>
 			</File>
 			<File
@@ -1634,6 +1654,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\math\quadratic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\quadratic.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\math\rounding.cpp"
 				>
 			</File>
@@ -1655,6 +1683,10 @@
 			</File>
 			<File
 				RelativePath=".\ql\math\surface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\math\surface.hpp"
 				>
 			</File>
 			<File
@@ -1869,7 +1901,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\math\matrixutilities\basisincompletedordered.cpp"
+					RelativePath=".\ql\math\matrixutilities\basisincompleteordered.cpp"
 					>
 				</File>
 				<File

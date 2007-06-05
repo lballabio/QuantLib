@@ -1666,6 +1666,9 @@
 				RelativePath=".\marketmodel_smmcapletcalibration.cpp">
 			</File>
 			<File
+				RelativePath=".\marketmodel_smmcaplethomocalibration.cpp">
+			</File>
+			<File
 				RelativePath="matrices.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2646,6 +2649,9 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smmcapletcalibration.hpp">
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcaplethomocalibration.hpp">
 			</File>
 			<File
 				RelativePath="matrices.hpp">

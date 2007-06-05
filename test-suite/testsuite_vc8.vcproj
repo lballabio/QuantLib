@@ -1487,6 +1487,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\marketmodel_smmcaplethomocalibration.cpp"
+				>
+			</File>
+			<File
 				RelativePath="matrices.cpp"
 				>
 				<FileConfiguration
@@ -2407,6 +2411,10 @@
 			</File>
 			<File
 				RelativePath=".\marketmodel_smmcapletcalibration.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\marketmodel_smmcaplethomocalibration.hpp"
 				>
 			</File>
 			<File
