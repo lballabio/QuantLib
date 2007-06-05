@@ -145,33 +145,15 @@ namespace QuantLib {
                 // Advance date
                 currentDate = calendar.advance(currentDate, historicalStep, 
                                                Following);
-             } catch(QuantLib::Error&e) { //FIXME it should catch all errors...
-                    Settings::instance().evaluationDate() = today;
-                    QL_FAIL("computeHistoricalCorrelations: " << e.what());
+            } catch(...) {
+                Settings::instance().evaluationDate() = today;
+                throw;
             }
         }
         Settings::instance().evaluationDate() = today;
         return statistics.correlation();
     }
 
-    // a specialization for excel
-    inline Disposable<Matrix> computeHistoricalCorrelationsZeroYieldLinear(
-                   Date startDate, Date endDate, Period historicalStep,
-                   const Calendar& calendar,
-                   const boost::shared_ptr<InterestRateIndex> index,
-                   Period forwardHorizon,
-                   const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                   const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-                   Natural depositSettlementDays, Natural swapSettlementDays,
-                   const DayCounter& yieldCurveDayCounter,
-                   Real yieldCurveAccuracy){
-        return computeHistoricalCorrelations<ZeroYield, Linear> (
-                   startDate, endDate, historicalStep, calendar,
-                   index, forwardHorizon, iborIndexes, swapIndexes,
-                   depositSettlementDays, swapSettlementDays,
-                   yieldCurveDayCounter,
-                   yieldCurveAccuracy);
-    }
 
     //Disposable<Matrix> computeHistoricalCorrelations1 (
     //               Date startDate, Date endDate, Period historicalStep,
