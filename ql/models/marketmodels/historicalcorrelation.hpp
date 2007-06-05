@@ -103,41 +103,54 @@ namespace QuantLib {
         Date currentDate = calendar.advance(startDate, Period(0, Days), 
                                             Following);
         bool isFirst = true;
+        Date today = Settings::instance().evaluationDate();
         // Loop over the historical dataset
         while(currentDate<=endDate) {
-            for (Size i=0; i<iborIndexes.size(); ++i)
-                iborHistoricFixings[i]
-                    ->setValue(iborIndexes[i]->fixing(currentDate, false));
-            for (Size i=0; i<swapIndexes.size(); ++i)
-                swapHistoricFixings[i]
-                    ->setValue(swapIndexes[i]->fixing(currentDate, false));
-            // Bootstrap the yield curve for currentDate 
-            PiecewiseYieldCurve<Traits, Interpolator>
-                    piecewiseYieldCurve(currentDate, rateHelpers, 
-                    yieldCurveDayCounter, yieldCurveAccuracy);         
-            // Calculate relevant forward rates on a rolling time grid
-            // (implement here other alternatives)
-            for(Size i=0; i<forwardRates.size(); ++i) {
-                forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                    currentDate + forwardFixingPeriods[i],
-                    indexTenor, indexDayCounter, Simple);
+            try {
+                // we set the evaluationDate equal to today, so that an 
+                // error will be raised if a fixing is missing 
+                Settings::instance().evaluationDate() = today;
+                //we update the quotes...
+                for (Size i=0; i<iborIndexes.size(); ++i)
+                    iborHistoricFixings[i]
+                        ->setValue(iborIndexes[i]->fixing(currentDate, false));
+                for (Size i=0; i<swapIndexes.size(); ++i)
+                    swapHistoricFixings[i]
+                        ->setValue(swapIndexes[i]->fixing(currentDate, false));
+                //move the evaluationDate to update ratehelpers dates ...
+                Settings::instance().evaluationDate() = currentDate;
+                // Bootstrap the yield curve at the currentDate 
+                PiecewiseYieldCurve<Traits, Interpolator>
+                        piecewiseYieldCurve(currentDate, rateHelpers, 
+                        yieldCurveDayCounter, yieldCurveAccuracy);         
+                // Calculate relevant forward rates on a rolling time grid
+                // (implement here other alternatives)
+                for(Size i=0; i<forwardRates.size(); ++i) {
+                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                        currentDate + forwardFixingPeriods[i],
+                        indexTenor, indexDayCounter, Simple);
+                }
+                // Calculate forward rate relative differences
+                if (!isFirst)
+                    for(Size i=0; i<forwardRates.size(); ++i)
+                        forwardRatesDifferences[i] = 
+                            forwardRates[i]/forwardRatesPrevious[i] - 1.0;
+                else
+                    isFirst = false;
+                // Calculate correlations
+                statistics.add(forwardRatesDifferences.begin(), 
+                               forwardRatesDifferences.end());
+                // Store last calculated forward rates
+                std::swap(forwardRatesPrevious, forwardRates);
+                // Advance date
+                currentDate = calendar.advance(currentDate, historicalStep, 
+                                               Following);
+             } catch(QuantLib::Error&e) { //FIXME it should catch all errors...
+                    Settings::instance().evaluationDate() = today;
+                    QL_FAIL("computeHistoricalCorrelations: " << e.what());
             }
-            // Calculate forward rate relative differences
-            if (!isFirst)
-                for(Size i=0; i<forwardRates.size(); ++i)
-                    forwardRatesDifferences[i] = 
-                        forwardRates[i]/forwardRatesPrevious[i] - 1.0;
-            else
-                isFirst = false;
-            // Calculate correlations
-            statistics.add(forwardRatesDifferences.begin(), 
-                           forwardRatesDifferences.end());
-            // Store last calculated forward rates
-            std::swap(forwardRatesPrevious, forwardRates);
-            // Advance date
-            currentDate = calendar.advance(currentDate, historicalStep, 
-                                           Following);
         }
+        Settings::instance().evaluationDate() = today;
         return statistics.correlation();
     }
 
