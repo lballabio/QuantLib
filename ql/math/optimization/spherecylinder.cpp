@@ -22,49 +22,70 @@
 
 
 namespace QuantLib {
+ namespace 
+ {
 
-    namespace {
+	 template<class T, Real (T::*Value)(Real) const >
+	 Real BrentMinimize(Real low,
+		 Real high,
+		 Real tolerance,
+		 Size maxIt,
+		 const T& theObject) 
+	 {
 
-        template<class T, Real (T::*Value)(Real) const >
-        Real BrentMinimize(Real low,
-                           Real high,
-                           Real tolerance,
-                           Size maxIt,
-                           const T& theObject) {
+		 Real leftValue = (theObject.*Value)(low);
+		 Real rightValue = (theObject.*Value)(high);
+		 Real W = 0.5*(3.0-sqrt(5.0));
+		 Real x=W*low+(1-W)*high;
+		 Real midValue =  (theObject.*Value)(x);
 
-            Real leftValue = (theObject.*Value)(low);
-            Real rightValue = (theObject.*Value)(high);
-            Real W = 0.5*(3.0-sqrt(5.0));
+		 Size iterations =0;
 
-            Real x=W*low+(1-W)*high;
-            Real midValue =  (theObject.*Value)(x);
+		 while(high - low > tolerance && iterations < maxIt) 
+		 {
 
-            Size iterations = 0;
+			 if (x - low > high -x) // left interval is bigger
+			 {
+				 Real tentativeNewMid = W*low+(1-W)*x;
+				 Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
 
-            while(leftValue - rightValue > tolerance && iterations < maxIt)
-            {
-                Real tentativeNewMid = W*low+(1-W)*high;
-                Real tentativeNewMidValue = (theObject.*Value)(tentativeNewMid);
+				 if (tentativeNewMidValue < midValue) // go left
+				 {
+					 high =x;
+					 rightValue = midValue;
+					 x = tentativeNewMid;
+					 midValue = tentativeNewMidValue;
+				 }
+				 else // go right
+					{
+						low = tentativeNewMid;
+						leftValue = tentativeNewMidValue;
+					}
+				}
+			  else
+				{
+					Real tentativeNewMid = W*x+(1-W)*high;
+					Real tentativeNewMidValue =  (theObject.*Value)(tentativeNewMid);
+			
+					if (tentativeNewMidValue < midValue) // go right
+					{
+						low =x;
+						leftValue = midValue;
+						x = tentativeNewMid;
+						midValue = tentativeNewMidValue;
+					}
+					else // go left
+					{
+						high = tentativeNewMid;
+						rightValue = tentativeNewMidValue;
+					}
+				}
 
-                if (tentativeNewMid <= midValue) // go right
-                {
-                    leftValue = midValue;
-                    low = x;
-                    x = tentativeNewMid;
-                    midValue = tentativeNewMidValue;
-                }
-                else //go left
-                {
-                    rightValue = tentativeNewMidValue;
-                    high = tentativeNewMid;
-                }
+			 ++iterations;
+		 }
 
-                ++iterations;
-
-            }
-
-            return x;
-        }
+	    return x;
+		 }
     }
 
     spherecylinderoptimizer::spherecylinderoptimizer(Real R,
