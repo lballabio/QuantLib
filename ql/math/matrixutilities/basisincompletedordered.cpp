@@ -28,7 +28,7 @@ namespace QuantLib {
 
     bool basisincompleteordered::addVector(const Array& newVector1) {
 
-        QL_REQUIRE(newVector_.size() == euclideanDimension_,
+        QL_REQUIRE(newVector1.size() == euclideanDimension_,
                    "missized vector passed to "
                    "basisincompleteordered::addVector");
 
