@@ -106,9 +106,9 @@ namespace QuantLib {
 
       protected:
         virtual void generateArguments() {}
+        std::vector<Parameter> arguments_;
         boost::shared_ptr<Constraint> constraint_;
         EndCriteria::Type shortRateEndCriteria_;
-        std::vector<Parameter> arguments_;
 
       private:
         //! Constraint imposed on arguments

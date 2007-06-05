@@ -102,10 +102,10 @@ namespace QuantLib {
         Array shortRateProblemValues_ = prob.values(result);
     }
     // Inspectors
-    EndCriteria::Type CalibratedModel::endCriteria() {  
+    EndCriteria::Type CalibratedModel::endCriteria() {
         return shortRateEndCriteria_;
     }
-    
+
     Real CalibratedModel::value(const Array& params,
        const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments) {
         std::vector<Real> w = std::vector<Real>(instruments.size(), 1.0);
