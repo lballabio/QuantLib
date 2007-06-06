@@ -6,4 +6,5 @@
 #include <ql/termstructures/volatilities/caplet/capletvariancecurve.hpp>
 #include <ql/termstructures/volatilities/caplet/capletvolatilitiesstructures.hpp>
 #include <ql/termstructures/volatilities/caplet/capstripper.hpp>
+#include <ql/termstructures/volatilities/caplet/spreadedcapletvolstructure.hpp>
 

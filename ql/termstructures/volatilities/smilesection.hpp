@@ -52,7 +52,7 @@ namespace QuantLib {
         virtual const Date& exerciseDate() const { return exerciseDate_; }
         virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }
-        friend SpreadedSmileSection;
+        friend class SpreadedSmileSection;
       protected:
         virtual Real varianceImpl(Rate strike) const = 0;
         virtual Volatility volatilityImpl(Rate strike) const = 0;
