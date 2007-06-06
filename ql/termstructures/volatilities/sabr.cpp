@@ -21,6 +21,7 @@
 
 #include <ql/termstructures/volatilities/sabr.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -35,7 +36,8 @@ namespace QuantLib {
         const Real oneMinusBeta = 1.0-beta;
         const Real A = std::pow(forward*strike, oneMinusBeta);
         const Real sqrtA= std::sqrt(A);
-        const Real logM = std::log(forward/strike);
+        const Real logM 
+            = close(forward, strike) ? 0.0 : std::log(forward/strike);
         const Real z = (nu/alpha)*sqrtA*logM;
         const Real B = 1.0-2.0*rho*z+z*z;
         const Real C = oneMinusBeta*oneMinusBeta*logM*logM;
@@ -44,6 +46,7 @@ namespace QuantLib {
         const Real D = sqrtA*(1.0+C/24.0+C*C/1920.0);
         const Real d = 1.0 + expiryTime *
             (oneMinusBeta*oneMinusBeta*alpha*alpha/(24.0*A)
+
                                 + 0.25*rho*beta*nu*alpha/sqrtA
                                     +(2.0-3.0*rho*rho)*(nu*nu/24.0));
         const Real multiplier = (xx!=0.0 ? z/xx : 1.0);
