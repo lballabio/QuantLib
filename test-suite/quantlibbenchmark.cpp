@@ -197,8 +197,6 @@ test_suite* init_unit_test_suite(int, char*[]) {
         &DividendOptionTest::testFdEuropeanGreeks, 949.6));
     bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
         &DividendOptionTest::testFdAmericanGreeks, 1113.8));
-    bm.push_back(Benchmark("EuropeanOption::FdGreeks",
-        &EuropeanOptionTest::testFdGreeks, 413.1));
     bm.push_back(Benchmark("EuropeanOption::FdMcEngines",
         &EuropeanOptionTest::testMcEngines, 2285.9));
     bm.push_back(Benchmark("EuropeanOption::ImpliedVol",
