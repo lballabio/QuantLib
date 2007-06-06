@@ -31,7 +31,7 @@
 #include <vector>
 
 namespace QuantLib {
-
+    class SpreadedSmileSection;
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
     class SmileSection : public virtual Observable {
@@ -52,6 +52,7 @@ namespace QuantLib {
         virtual const Date& exerciseDate() const { return exerciseDate_; }
         virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }
+        friend SpreadedSmileSection;
       protected:
         virtual Real varianceImpl(Rate strike) const = 0;
         virtual Volatility volatilityImpl(Rate strike) const = 0;
@@ -139,11 +140,11 @@ namespace QuantLib {
         Real atmLevel() const { return underlyingSection_->atmLevel(); }
       protected:
         Real varianceImpl(Rate strike) const { 
-            Volatility vol = volatility(strike);
+            Volatility vol = volatilityImpl(strike);
             return vol*vol*exerciseTime(); 
         }
         Volatility volatilityImpl(Rate strike) const { 
-            return underlyingSection_->volatility(strike)+spread_; 
+            return underlyingSection_->volatilityImpl(strike)+spread_; 
         }
       private:
         const boost::shared_ptr<SmileSection> underlyingSection_;
