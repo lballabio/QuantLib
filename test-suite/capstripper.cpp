@@ -317,14 +317,16 @@ void CapsStripperTest::testSpreadedStripper() {
 
     Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     Spread spread = 0.0001;
-    SpreadedCapletVolatilityStructure spreadedStripper(strippedVolatilityStructureHandle, spread);  
+    boost::shared_ptr<CapletVolatilityStructure> spreadedStripper(
+        new SpreadedCapletVolatilityStructure 
+        (strippedVolatilityStructureHandle, spread));  
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
     for (Size i=0; i<tenors.size(); i++) {
         for (Size k=0; k<strikes.size(); k++) {
             Real strike = strikes[k];
-            Real diff = spreadedStripper.volatility(tenors[i], strike)
+            Real diff = spreadedStripper->volatility(tenors[i], strike)
                         - strippedVolatilityStructureHandle->volatility(tenors[i], strike);
             if (fabs(diff-spread)>1e-16)
                 BOOST_ERROR("\ndiff!=spread in volatility method:"
@@ -334,6 +336,13 @@ void CapsStripperTest::testSpreadedStripper() {
                             "\nspread = " << spread);    
         }
     }
+    //testing observability
+    Flag f;
+    f.registerWith(spreadedStripper);
+    strippedVolatilityStructureHandle->update();
+    if(!f.isUp())
+        BOOST_ERROR("spreadedCapletVolatilityStructure " 
+                    << "does not propagate notifications");
     QL_TEST_END
 }
 

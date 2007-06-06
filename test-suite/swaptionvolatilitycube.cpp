@@ -402,7 +402,8 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                          true)));
 
     Spread spread = 0.0001;
-    SpreadedSwaptionVolatilityStructure spreadedVolCube(volCube, spread);
+    boost::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube 
+        (new SpreadedSwaptionVolatilityStructure(volCube, spread));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
@@ -411,10 +412,10 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
             boost::shared_ptr<SmileSection> smileSectionByCube =
                 volCube->smileSection(optionTenors_[i], swapTenors_[j]);
             boost::shared_ptr<SmileSection> smileSectionBySpreadedCube =
-                spreadedVolCube.smileSection(optionTenors_[i], swapTenors_[j]);
+                spreadedVolCube->smileSection(optionTenors_[i], swapTenors_[j]);
             for (Size k=0; k<strikes.size(); k++) {
                 Real strike = strikes[k];
-                Real diff = spreadedVolCube.volatility(optionTenors_[i], swapTenors_[j], strike)
+                Real diff = spreadedVolCube->volatility(optionTenors_[i], swapTenors_[j], strike)
                             - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
                 if (std::fabs(diff-spread)>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
@@ -437,6 +438,14 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
             }
         }
     }
+    
+    //testing observability
+    Flag f;
+    f.registerWith(spreadedVolCube);
+    volCube->update();
+    if(!f.isUp())
+        BOOST_ERROR("SpreadedSwaptionVolatilityStructure " 
+                    << "does not propagate notifications");
     QL_TEST_TEARDOWN
 }
 

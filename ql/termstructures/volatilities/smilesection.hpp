@@ -122,13 +122,16 @@ namespace QuantLib {
         Real alpha_, beta_, nu_, rho_, forward_;
     };
 
-    class SpreadedSmileSection : public SmileSection {
+    class SpreadedSmileSection : public SmileSection,
+                                 public Observer {
       public:
         SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
                          Spread spread =0)
-        : underlyingSection_(underlyingSection), spread_(spread) {}
+        : underlyingSection_(underlyingSection), spread_(spread) {
+            registerWith(underlyingSection_);
+        }
 
-        
+        void update(){ notifyObservers(); }
       
         Real minStrike() const { return underlyingSection_->minStrike(); }
         Real maxStrike() const { return underlyingSection_->maxStrike(); }

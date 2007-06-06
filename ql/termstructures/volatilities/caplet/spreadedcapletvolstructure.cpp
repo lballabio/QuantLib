@@ -29,6 +29,7 @@ namespace QuantLib {
                                 underlyingVolStructure->dayCounter()),
       underlyingVolStructure_(underlyingVolStructure),
       spread_(spread) {
+          registerWith(underlyingVolStructure_);
           enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
     }
 
