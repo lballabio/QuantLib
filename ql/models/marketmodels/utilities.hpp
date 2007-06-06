@@ -40,6 +40,7 @@ namespace QuantLib {
     std::vector<bool> isInSubset(const std::vector<Time>& set,
                                  const std::vector<Time>& subset);
 
+    //! check for strictly increasing times, first time greater than zero
     void checkIncreasingTimes(const std::vector<Time>& times);
     void checkIncreasingTimesAndCalculateTaus(const std::vector<Time>& times,
                                               std::vector<Time>& taus);
