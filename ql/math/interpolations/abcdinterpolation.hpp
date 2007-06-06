@@ -191,6 +191,17 @@ namespace QuantLib {
 
                     return abcd_->interpolationSquaredError();
                 }
+
+                Disposable<Array> values(const Array& x) const{
+                    // INVERSE TRANSFORMATION
+                    if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
+                    if (!abcd_->cIsFixed_) abcd_->c_ = x[2]*x[2];
+                    if (!abcd_->dIsFixed_) abcd_->d_ = x[3]*x[3];
+                    if (!abcd_->aIsFixed_) abcd_->a_ = x[0]*x[0]-abcd_->d_;
+
+                    return abcd_->interpolationErrors();
+                }
+
               private:
                 AbcdInterpolationImpl* abcd_;
             };
@@ -322,6 +333,19 @@ namespace QuantLib {
                     totalError += error*error * (*w);
                 }
                 return totalError;
+            }
+
+            // calculate weighted differences
+            Disposable<Array> interpolationErrors(const Array&) const {
+                Array results(this->xEnd_ - this->xBegin_);
+                std::vector<Real>::const_iterator x = this->xBegin_;
+                Array::iterator r = results.begin();
+                std::vector<Real>::const_iterator y = this->yBegin_;
+                std::vector<Real>::const_iterator w = weights_.begin();
+                for (; x != this->xEnd_; ++x, ++r, ++w, ++y) {
+                    *r = (value(*x) - *y)* std::sqrt(*w);
+                }
+                return results;
             }
 
             Real interpolationError() const {

@@ -240,6 +240,9 @@ namespace QuantLib {
         //! volatility error
         Real error(const std::vector<Real>& blackVols,
                    const std::vector<Real>::const_iterator& t) const;
+        //! volatility errors
+        Disposable<Array> errors(const std::vector<Real>& blackVols,
+                                 const std::vector<Real>::const_iterator& t) const;
         //! volatility max error
         Real maxError(const std::vector<Real>& blackVols,
                       const std::vector<Real>::const_iterator& t) const;
@@ -287,8 +290,12 @@ namespace QuantLib {
                 if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
                 return abcd_->error(blackVols_, t_);
             }
-            Disposable<Array> values(const Array&) const {
-                QL_FAIL("values method not implemented");
+            Disposable<Array> values(const Array& x) const {
+                if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
+                if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
+                if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
+                if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+                return abcd_->errors(blackVols_, t_);
             }
           private:
             Abcd* abcd_;

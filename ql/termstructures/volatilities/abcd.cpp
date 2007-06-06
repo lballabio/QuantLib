@@ -79,6 +79,16 @@ namespace QuantLib {
         return std::sqrt(error/n);
     }
 
+    Disposable<Array> Abcd::errors(const std::vector<Real>& blackVols,
+                                   const std::vector<Real>::const_iterator& t) const {
+        Size n = blackVols.size();
+        Array errors(n,0.0);
+        for (Size i=0; i<n ; i++) {
+            errors[i]= blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+        }
+        return errors;
+    }
+
     Real Abcd::maxError(const std::vector<Real>& blackVols,
                         const std::vector<Real>::const_iterator& t) const {
         Real maxError = QL_MIN_REAL;
