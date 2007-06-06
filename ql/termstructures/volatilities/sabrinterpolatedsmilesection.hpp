@@ -55,8 +55,8 @@ namespace QuantLib {
                            const DayCounter& dc = Actual365Fixed()
                            );
         void performCalculations() const;
-        Real variance(Rate strike) const;
-        Volatility volatility(Rate strike) const;
+        Real varianceImpl(Rate strike) const;
+        Volatility volatilityImpl(Rate strike) const;
         Real alpha() const;
         Real beta() const;
         Real nu() const;
@@ -77,7 +77,7 @@ namespace QuantLib {
         mutable SABRInterpolation sabrInterpolation_;
     };
 
-    inline Real SabrInterpolatedSmileSection::volatility(Rate strike) const {
+    inline Real SabrInterpolatedSmileSection::volatilityImpl(Rate strike) const {
         calculate();
         return sabrInterpolation_(strike, true);
     }

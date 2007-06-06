@@ -60,7 +60,7 @@ namespace QuantLib {
         sabrInterpolation_.update();
     }
 
-    Real SabrInterpolatedSmileSection::variance(Real strike) const {
+    Real SabrInterpolatedSmileSection::varianceImpl(Real strike) const {
         calculate();
         Real v = sabrInterpolation_(strike, true);
         return v*v*exerciseTime();

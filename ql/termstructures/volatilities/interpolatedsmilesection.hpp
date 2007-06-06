@@ -69,8 +69,8 @@ namespace QuantLib {
                            const Interpolator& interpolator = Interpolator(),
                            const Date& referenceDate = Date());
         void performCalculations() const;
-        Real variance(Rate strike) const;
-        Volatility volatility(Rate strike) const;
+        Real varianceImpl(Rate strike) const;
+        Volatility volatilityImpl(Rate strike) const;
         Real minStrike () const { return strikes_.front(); }
         Real maxStrike () const { return strikes_.back(); }
         virtual Real atmLevel() const { return atmLevel_->value(); } 
@@ -189,14 +189,14 @@ namespace QuantLib {
 
     #ifndef __DOXYGEN__
     template <class Interpolator>
-    Real InterpolatedSmileSection<Interpolator>::variance(Real strike) const {
+    Real InterpolatedSmileSection<Interpolator>::varianceImpl(Real strike) const {
         calculate();
         Real v = interpolation_(strike, true);
         return v*v*exerciseTime();
     }
 
     template <class Interpolator>
-    Real InterpolatedSmileSection<Interpolator>::volatility(Real strike) const {
+    Real InterpolatedSmileSection<Interpolator>::volatilityImpl(Real strike) const {
         calculate();
         return interpolation_(strike, true);
     }

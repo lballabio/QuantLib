@@ -76,15 +76,15 @@ namespace QuantLib {
         validateSabrParameters(alpha_, beta_, nu_, rho_);
     }
 
-     Real SabrSmileSection::variance(Rate strike) const {
+     Real SabrSmileSection::varianceImpl(Rate strike) const {
         Volatility vol = unsafeSabrVolatility(strike, forward_,
-            exerciseTime_, alpha_, beta_, nu_, rho_);
-        return vol*vol*exerciseTime_;
+            exerciseTime(), alpha_, beta_, nu_, rho_);
+        return vol*vol*exerciseTime();
      }
 
-     Real SabrSmileSection::volatility(Rate strike) const {
+     Real SabrSmileSection::volatilityImpl(Rate strike) const {
         return unsafeSabrVolatility(strike, forward_,
-            exerciseTime_, alpha_, beta_, nu_, rho_);
+            exerciseTime(), alpha_, beta_, nu_, rho_);
      }
 
 }
