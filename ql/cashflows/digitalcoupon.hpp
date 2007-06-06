@@ -38,8 +38,9 @@ namespace QuantLib {
         enum Type { Sub, Central, Super };
     };
 
-    //! Floating-rate coupon with digital digital call/put option
-    /*! Payoffs:
+    //! %DigitalCoupon class
+    /*! Implemetation of a floating-rate coupon with digital digital call/put option.
+        Payoffs:
         - Coupon with cash-or-nothing Digital Call
           rate + csi * payoffRate * Heaviside(rate-strike)
         - Coupon with cash-or-nothing Digital Put
@@ -52,6 +53,30 @@ namespace QuantLib {
         where csi=+1 or csi=-1.
         The evaluation of the coupon is made using the call/put spread
         replication method.
+    */
+    /*! \ingroup instruments
+
+        \test
+        - the correctness of the returned value in case of Asset-or-nothing
+          embedded option is tested by using the same replication method.
+        - the correctness of the returned value in case of deep-in-the-money
+          Asset-or-nothing embedded option is tested vs the expected values of
+          coupon and option.
+        - the correctness of the returned value in case of deep-out-of-the-money
+          Asset-or-nothing embedded option is tested vs the expected values of
+          coupon and option.
+        - the correctness of the returned value in case of Cash-or-nothing
+          embedded option is tested by using the same replication method.
+        - the correctness of the returned value in case of deep-in-the-money
+          Cash-or-nothing embedded option is tested vs the expected values of
+          coupon and option.
+        - the correctness of the returned value in case of deep-out-of-the-money
+          Cash-or-nothing embedded option is tested vs the expected values of
+          coupon and option.
+        - the correctness of the returned value is tested checking the corectness
+          of the call-put parity relation.
+        - the correctness of the returned value is tested by the relationship
+          between prices in case of different replication types.
     */
     class DigitalCoupon : public FloatingRateCoupon {
       public:
