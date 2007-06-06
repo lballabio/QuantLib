@@ -191,13 +191,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CapsStripperTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
-    test->add(CompoundForwardTest::suite());  // fails whith QL_USE_INDEXED_COUPON
+    test->add(CompoundForwardTest::suite()); // fails whith QL_USE_INDEXED_COUPON
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
-    test->add(DigitalCouponTest::suite());  // might fail whith QL_USE_INDEXED_COUPON
+    test->add(DigitalCouponTest::suite()); // might fail whith QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());
