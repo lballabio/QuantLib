@@ -1081,6 +1081,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\digitalcoupon.cpp">
+			</File>
+			<File
 				RelativePath="digitaloption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1924,66 +1927,6 @@
 				RelativePath=".\piecewiseyieldcurve.cpp">
 			</File>
 			<File
-				RelativePath="quantlibtestsuite.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release CRTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\quantooption.cpp">
 			</File>
 			<File
@@ -2579,6 +2522,9 @@
 				RelativePath="daycounters.hpp">
 			</File>
 			<File
+				RelativePath=".\digitalcoupon.hpp">
+			</File>
+			<File
 				RelativePath="digitaloption.hpp">
 			</File>
 			<File
@@ -2756,6 +2702,66 @@
 				RelativePath=".\volatilitymodels.hpp">
 			</File>
 		</Filter>
+		<File
+			RelativePath="quantlibtestsuite.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BrowseInformation="1"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release SingleThread|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BrowseInformation="1"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug CRTDLL|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release CRTDLL|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BrowseInformation="1"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug SingleThread|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					BasicRuntimeChecks="3"
+					BrowseInformation="1"/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -305,7 +305,7 @@ void CapsStripperTest::highPrecisionTest(){
 
 void CapsStripperTest::testSpreadedStripper() {
 
-    BOOST_MESSAGE("Testing spreaded volatility stripper...");
+    BOOST_MESSAGE("Testing spreaded caplet volatility stripper...");
 
     QL_TEST_BEGIN
     

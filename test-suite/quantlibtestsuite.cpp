@@ -61,6 +61,7 @@
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
+#include "digitalcoupon.hpp"
 #include "digitaloption.hpp"
 #include "distributions.hpp"
 #include "dividendoption.hpp"
@@ -196,6 +197,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite());
     test->add(DayCounterTest::suite());
+    test->add(DigitalCouponTest::suite());  // might fail whith QL_USE_INDEXED_COUPON
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite());
     test->add(DividendOptionTest::suite());

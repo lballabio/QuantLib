@@ -370,7 +370,7 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 
 void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
-    BOOST_MESSAGE("Testing spreaded volatility cube...");
+    BOOST_MESSAGE("Testing spreaded swaption volatility cube...");
 
     QL_TEST_BEGIN
     QL_TEST_SETUP
