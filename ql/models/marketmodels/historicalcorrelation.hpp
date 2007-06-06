@@ -38,6 +38,7 @@ namespace QuantLib {
   template<class Traits, class Interpolator>
     Disposable<Matrix> computeHistoricalCorrelations(
             Date startDate, Date endDate, Period historicalStep,
+            bool rollingForwardRatesTimeGrid,
             const Calendar& calendar,
             const boost::shared_ptr<InterestRateIndex> index,
             Period forwardHorizon,
@@ -53,7 +54,7 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<SimpleQuote> > swapHistoricFixings;
         std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
         IborVector::const_iterator ibor;
-   
+        // Set up Depo historical quotes   
         for(ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             iborHistoricFixings.push_back(quote);
@@ -68,6 +69,7 @@ namespace QuantLib {
                                       (*ibor)->fixingDays(),
                                       (*ibor)->dayCounter())));
         } 
+        // Set up Swap historical quotes
         SwapVector::const_iterator swap;
         for(swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
@@ -83,6 +85,7 @@ namespace QuantLib {
                                    (*swap)->dayCounter(),
                                    (*swap)->iborIndex())));
         }
+        // Set up the forward rates time grid
         std::vector<Period> forwardFixingPeriods;
         Period indexTenor = index->tenor(); 
         DayCounter indexDayCounter = index->dayCounter();
@@ -100,11 +103,11 @@ namespace QuantLib {
         std::vector<Rate> forwardRatesDifferences(forwardRates.size());
 
         // Advance date
+        Date today = Settings::instance().evaluationDate();
         Date currentDate = calendar.advance(startDate, Period(0, Days), 
                                             Following);
-        bool isFirst = true;
-        Date today = Settings::instance().evaluationDate();
         // Loop over the historical dataset
+        bool isFirst = true;
         while(currentDate<=endDate) {
             try {
                 // we set the evaluationDate equal to today, so that an 
@@ -117,20 +120,30 @@ namespace QuantLib {
                 for (Size i=0; i<swapIndexes.size(); ++i)
                     swapHistoricFixings[i]
                         ->setValue(swapIndexes[i]->fixing(currentDate, false));
-                //move the evaluationDate to update ratehelpers dates ...
+                //move the evaluationDate to currentDate 
+                //and update ratehelpers dates ...
                 Settings::instance().evaluationDate() = currentDate;
                 // Bootstrap the yield curve at the currentDate 
                 PiecewiseYieldCurve<Traits, Interpolator>
                         piecewiseYieldCurve(currentDate, rateHelpers, 
                         yieldCurveDayCounter, yieldCurveAccuracy);         
                 // Calculate relevant forward rates on a rolling time grid
-                // (implement here other alternatives)
-                for(Size i=0; i<forwardRates.size(); ++i) {
-                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                        currentDate + forwardFixingPeriods[i],
-                        indexTenor, indexDayCounter, Simple);
+                if (rollingForwardRatesTimeGrid) {
+                    for(Size i=0; i<forwardRates.size(); ++i) {
+                        forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                            currentDate + forwardFixingPeriods[i],
+                            indexTenor, indexDayCounter, Simple);
+                    }
+                // Calculate relevant forward rates on a fixed time grid
+                } else {
+                    for(Size i=0; i<forwardRates.size(); ++i) {
+                        forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                            today + forwardFixingPeriods[i],
+                            indexTenor, indexDayCounter, Simple);
+                    }
                 }
-                // Calculate forward rate relative differences
+                // From 2nd step onwards, calculate forward rate 
+                // relative differences
                 if (!isFirst)
                     for(Size i=0; i<forwardRates.size(); ++i)
                         forwardRatesDifferences[i] = 
