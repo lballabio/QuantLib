@@ -22,12 +22,8 @@
 #include <boost/config.hpp>
 
 // select toolset:
-#if (_MSC_VER < 1200)
+#if (_MSC_VER < 1310)
 #  error "unsupported Microsoft compiler"
-#elif (_MSC_VER == 1200)
-#  define QL_LIB_TOOLSET "vc6"
-#elif (_MSC_VER == 1300)
-#  define QL_LIB_TOOLSET "vc7"
 #elif (_MSC_VER == 1310)
 #  define QL_LIB_TOOLSET "vc71"
 #elif (_MSC_VER == 1400)
