@@ -20,6 +20,7 @@
 
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/indexes/swapindex.hpp>
 
 namespace QuantLib {
 

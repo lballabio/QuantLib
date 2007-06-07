@@ -18,6 +18,7 @@
 */
 
 #include <ql/termstructures/volatilities/swaption/swaptionconstantvol.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {

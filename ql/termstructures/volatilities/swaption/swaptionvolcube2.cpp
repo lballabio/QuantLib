@@ -21,6 +21,7 @@
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/interpolatedsmilesection.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <ql/math/rounding.hpp>
 
 namespace QuantLib {
 

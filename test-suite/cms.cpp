@@ -21,10 +21,10 @@
 #include "cms.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swapindex.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>

@@ -20,6 +20,7 @@
 #include "rangeaccrual.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/swapindex.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/time/calendars/target.hpp>
