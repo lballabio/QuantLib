@@ -146,25 +146,29 @@ namespace QuantLib {
                  new SmileSectionsVolStructure(referenceDate(),
                                                volatilityDayCounter,
                                                smileSectionInterfaces));
+             boost::shared_ptr<ParametrizedCapletVolStructure> volatilitiesFromCaps;
              if (decoupleInterpolation)
-                 parametrizedCapletVolStructure_
+                 volatilitiesFromCaps 
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
-                    new HybridCapletVolatilityStructure<BilinInterpCapletVolStructure>
-                                        ( referenceDate(),
+                    new DecInterpCapletVolStructure(referenceDate(),
                                         volatilityDayCounter,
                                         marketDataCap_,
-                                        strikes,
-                                        smileSectionsVolStructure));
+                                        strikes));
              else
-                parametrizedCapletVolStructure_
+                 volatilitiesFromCaps 
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
-                    new HybridCapletVolatilityStructure<BilinInterpCapletVolStructure>
-                                        ( referenceDate(),
+                    new BilinInterpCapletVolStructure(referenceDate(),
                                         volatilityDayCounter,
                                         marketDataCap_,
-                                        strikes,
+                                        strikes));
+
+             parametrizedCapletVolStructure_
+                   = boost::shared_ptr<ParametrizedCapletVolStructure>(
+                    new HybridCapletVolatilityStructure
+                                        (referenceDate(),
+                                        volatilityDayCounter,
+                                        volatilitiesFromCaps,
                                         smileSectionsVolStructure));
-             
         }
 
        Handle<CapletVolatilityStructure> bilinInterpCapletVolStructureHandle(
