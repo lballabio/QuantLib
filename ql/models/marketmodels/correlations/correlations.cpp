@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -27,7 +29,13 @@ namespace QuantLib {
                                         const std::vector<Rate>& rateTimes,
                                         Real longTermCorr,
                                         Real beta) {
-        checkIncreasingTimes(rateTimes);
+        // preliminary checks
+        checkIncreasingTimes(rateTimes);    // increasing rate times
+        QL_REQUIRE(longTermCorr<1.0 && longTermCorr>0.0,
+            "Long term correlation outside [0;1] interval");
+        QL_REQUIRE(beta<1.0 && beta>0.0, "beta outside [0;1] interval");
+
+        // Calculate correlation matrix
         Size nbRows = rateTimes.size()-1;
         Matrix correlations(nbRows, nbRows);
         for (Size i=0; i<nbRows; ++i) {
@@ -36,6 +44,44 @@ namespace QuantLib {
                 correlations[i][j] = correlations[j][i] =
                     longTermCorr + (1.0-longTermCorr) *
                         std::exp(-beta*std::fabs(rateTimes[i]-rateTimes[j]));
+        }
+        return correlations;
+    }
+
+    Disposable<Matrix> exponentialCorrelationsTimeDependent(
+                                        const std::vector<Rate>& rateTimes,
+                                        Real longTermCorr,
+                                        Real beta,
+                                        Real gamma,
+                                        Time time) {
+        // preliminary checks
+        checkIncreasingTimes(rateTimes);    // increasing rate times
+        QL_REQUIRE(longTermCorr<1.0 && longTermCorr>0.0,
+            "Long term correlation outside [0;1] interval");
+        QL_REQUIRE(beta<1.0 && beta>0.0, "beta outside [0;1] interval");
+        QL_REQUIRE(gamma<1.0 && gamma>0.0, "gamma outside [0;1] interval");
+
+        // Calculate correlation matrix
+        Size nbRows = rateTimes.size()-1;
+        Matrix correlations(nbRows, nbRows);
+        for (Size i=0; i<nbRows; ++i) {
+            correlations[i][i] = 1.0;
+            for (Size j=0; j<i; ++j)
+                // correlation is defined only between 
+                // stochastic forward rates...
+                if (time<rateTimes[j]) {
+                    correlations[i][j] = correlations[j][i] =
+                        longTermCorr + (1.0-longTermCorr) *
+                        std::exp(-beta*std::fabs(
+                            std::pow(rateTimes[i]-time,gamma) -
+                            std::pow(rateTimes[j]-time,gamma)
+                            )
+                        );
+                } else {
+                // ...so, if forward rates have already fixed 
+                // we put correlation to zero.
+                    correlations[i][j] = correlations[j][i] = 0.0;
+                }
         }
         return correlations;
     }

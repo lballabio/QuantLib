@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2007 François du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,6 +20,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file correlations.hpp
+    \brief Market Model correlation matrix
+*/
 
 #ifndef quantlib_correlations_hpp
 #define quantlib_correlations_hpp
@@ -27,10 +32,25 @@
 
 namespace QuantLib {
 
+    //! Time homogeneous functional form with:
+    //! - L = long term correlation
+    //! - beta = exponential decay of correlation between far away forward rates
     Disposable<Matrix> exponentialCorrelations(
                                         const std::vector<Rate>& rateTimes,
                                         Real longTermCorr,
                                         Real beta);
+
+    //! Time homogeneous functional form with:
+    //! - L = long term correlation
+    //! - beta = exponential decay of correlation between far away forward rates
+    //! - gamma = exponent for time to go  
+    //! - time = time dependence
+    Disposable<Matrix> exponentialCorrelationsTimeDependent(
+                                        const std::vector<Rate>& rateTimes,
+                                        Real longTermCorr,
+                                        Real beta,
+                                        Real gamma,
+                                        Time time);
 }
 
 #endif
