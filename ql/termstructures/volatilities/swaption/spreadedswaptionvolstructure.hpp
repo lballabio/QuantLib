@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/time/period.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
       public:
         SpreadedSwaptionVolatilityStructure(
             const Handle<SwaptionVolatilityStructure>& underlyingVolStructure,
-            Spread spread = 0.);
+            const Handle<Quote>& spread);
 
       protected:
         // All virtual methods of base classes must be forwarded
@@ -74,7 +75,7 @@ namespace QuantLib {
 
     private:
         const Handle<SwaptionVolatilityStructure> underlyingVolStructure_;
-        Spread spread_;
+        const Handle<Quote> spread_;
 
     };
 

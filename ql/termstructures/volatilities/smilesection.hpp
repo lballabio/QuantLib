@@ -28,6 +28,7 @@
 #include <ql/time/date.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/utilities/null.hpp>
+#include <ql/quote.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -126,9 +127,10 @@ namespace QuantLib {
                                  public Observer {
       public:
         SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
-                         Spread spread =0)
+                             const Handle<Quote>& spread)
         : underlyingSection_(underlyingSection), spread_(spread) {
             registerWith(underlyingSection_);
+            registerWith(spread_);
         }
 
         void update(){ notifyObservers(); }
@@ -147,11 +149,11 @@ namespace QuantLib {
             return vol*vol*exerciseTime(); 
         }
         Volatility volatilityImpl(Rate strike) const { 
-            return underlyingSection_->volatilityImpl(strike)+spread_; 
+            return underlyingSection_->volatilityImpl(strike)+spread_->value(); 
         }
       private:
         const boost::shared_ptr<SmileSection> underlyingSection_;
-        Spread spread_;
+        const Handle<Quote> spread_;
     };
 
 }

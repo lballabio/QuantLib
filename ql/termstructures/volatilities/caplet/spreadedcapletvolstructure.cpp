@@ -18,25 +18,27 @@
 */
 
 #include <ql/termstructures/volatilities/caplet/spreadedcapletvolstructure.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
     SpreadedCapletVolatilityStructure::SpreadedCapletVolatilityStructure(
             const Handle<CapletVolatilityStructure>& underlyingVolStructure,
-            Spread spread)
+            const Handle<Quote>& spread)
     : CapletVolatilityStructure(underlyingVolStructure->settlementDays(), 
                                 underlyingVolStructure->calendar(),
                                 underlyingVolStructure->dayCounter()),
       underlyingVolStructure_(underlyingVolStructure),
       spread_(spread) {
           registerWith(underlyingVolStructure_);
+          registerWith(spread_);
           enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
     }
 
     Volatility SpreadedCapletVolatilityStructure::volatilityImpl(
                                                     Time length,
                                                     Rate strike) const {
-        return underlyingVolStructure_->volatility(length, strike)+spread_;
+        return underlyingVolStructure_->volatility(length, strike)+spread_->value();
     }
 
     Rate SpreadedCapletVolatilityStructure::minStrike() const {

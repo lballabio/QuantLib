@@ -23,7 +23,7 @@ namespace QuantLib {
 
     SpreadedSwaptionVolatilityStructure::SpreadedSwaptionVolatilityStructure(
             const Handle<SwaptionVolatilityStructure>& underlyingVolStructure,
-            Spread spread)
+            const Handle<Quote>& spread)
     : SwaptionVolatilityStructure(underlyingVolStructure->settlementDays(), 
                                   underlyingVolStructure->calendar(),
                                   underlyingVolStructure->dayCounter(),
@@ -31,6 +31,7 @@ namespace QuantLib {
       underlyingVolStructure_(underlyingVolStructure),
       spread_(spread) {
           registerWith(underlyingVolStructure_);
+          registerWith(spread_);
           enableExtrapolation(underlyingVolStructure->allowsExtrapolation());
     }
 
@@ -38,7 +39,8 @@ namespace QuantLib {
                                                     Time optionTime,
                                                     Time swapLength,
                                                     Rate strike) const {
-        return underlyingVolStructure_->volatility(optionTime, swapLength, strike)+spread_;
+        return underlyingVolStructure_
+            ->volatility(optionTime, swapLength, strike)+spread_->value();
     }
     
     boost::shared_ptr<SmileSection> 
