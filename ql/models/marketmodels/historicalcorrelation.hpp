@@ -127,14 +127,16 @@ namespace QuantLib {
                 PiecewiseYieldCurve<Traits, Interpolator>
                         piecewiseYieldCurve(currentDate, rateHelpers, 
                         yieldCurveDayCounter, yieldCurveAccuracy);         
-                // Calculate relevant forward rates on a rolling time grid
+                // Relative forwards: calculate relevant forward rates 
+                // on a rolling time grid
                 if (rollingForwardRatesTimeGrid) {
                     for(Size i=0; i<forwardRates.size(); ++i) {
                         forwardRates[i] = piecewiseYieldCurve.forwardRate(
                             currentDate + forwardFixingPeriods[i],
                             indexTenor, indexDayCounter, Simple);
                     }
-                // Calculate relevant forward rates on a fixed time grid
+                // Absolute forwards: calculate relevant forward rates 
+                // on a fixed time grid
                 } else {
                     for(Size i=0; i<forwardRates.size(); ++i) {
                         forwardRates[i] = piecewiseYieldCurve.forwardRate(
