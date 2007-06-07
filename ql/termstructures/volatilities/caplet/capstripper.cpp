@@ -146,7 +146,7 @@ namespace QuantLib {
                  new SmileSectionsVolStructure(referenceDate(),
                                                volatilityDayCounter,
                                                smileSectionInterfaces));
-             if (decoupleInterpolation)
+  /*           if (decoupleInterpolation)
                  parametrizedCapletVolStructure_
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new HybridCapletVolatilityStructure<BilinInterpCapletVolStructure>
@@ -163,7 +163,7 @@ namespace QuantLib {
                                         volatilityDayCounter,
                                         marketDataCap_,
                                         strikes,
-                                        smileSectionsVolStructure));
+                                        smileSectionsVolStructure));*/
              
         }
 
