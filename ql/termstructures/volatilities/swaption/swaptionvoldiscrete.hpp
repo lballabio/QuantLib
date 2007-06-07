@@ -25,7 +25,7 @@
 #define quantlib_swaption_volatility_discrete_h
 
 #include <ql/termstructures/swaptionvolstructure.hpp>
-#include <ql/time/period.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 
 namespace QuantLib {
 

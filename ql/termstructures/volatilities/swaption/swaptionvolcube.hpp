@@ -25,12 +25,12 @@
 #define quantlib_swaption_volatility_cube_h
 
 #include <ql/termstructures/volatilities/swaption/swaptionvoldiscrete.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/math/matrix.hpp>
+#include <ql/termstructures/volatilities/smilesection.hpp>
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
-
+    class SwapIndex;
     //! swaption-volatility cube
     /*! \warning this class is not finalized and its interface might
                  change in subsequent releases.

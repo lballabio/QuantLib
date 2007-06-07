@@ -26,18 +26,17 @@
 #define quantlib_cms_market_h
 
 #include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
-#include <ql/cashflows/cmscoupon.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
-#include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/costfunction.hpp> 
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/endcriteria.hpp> 
 
 namespace QuantLib {
 
-     typedef Leg Leg;
-
      class CmsCouponPricer;
+     class Swap;
+     class SwapIndex;
+     class OptimizationMethod;
+     class YieldTermStructure;
 
     //! set of CMS quotes
     class CmsMarket: public LazyObject{

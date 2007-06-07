@@ -19,14 +19,12 @@
 */
 
 #include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
-
 #include <ql/instruments/makecms.hpp>
 #include <ql/cashflows/conundrumpricer.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
-#include <ql/indexes/swap/euriborswapfixa.hpp>
+#include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/cashflows/cashflows.hpp>
+#include <ql/math/optimization/problem.hpp> 
 
 namespace QuantLib {
 

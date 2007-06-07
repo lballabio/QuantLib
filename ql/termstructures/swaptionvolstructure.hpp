@@ -27,11 +27,9 @@
 #define quantlib_swaption_volatility_structure_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/termstructures/volatilities/smilesection.hpp>
 
 namespace QuantLib {
-
+    class SmileSection;
     //! %Swaption-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
