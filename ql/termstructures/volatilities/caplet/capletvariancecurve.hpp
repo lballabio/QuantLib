@@ -35,8 +35,11 @@ namespace QuantLib {
                             const std::vector<Date>& dates,
                             const std::vector<Volatility>& capletVolCurve,
                             const DayCounter& dayCounter);
+        //! \name TermStructure interface
+        //@{
         DayCounter dayCounter() const;
         Date maxDate() const;
+        //@}
         Real minStrike() const;
         Real maxStrike() const;
         template <class Interpolator>

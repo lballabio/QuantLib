@@ -28,10 +28,10 @@
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 
+
 namespace QuantLib {
 
     class CapFloor;
-    class Matrix;
     class BilinearInterpolation;
     class SmileSection;
 
@@ -79,10 +79,8 @@ namespace QuantLib {
     public:
         ParametrizedCapletVolStructure(Date referenceDate):
           CapletVolatilityStructure(referenceDate){};
-       virtual void update() = 0;
        virtual Matrix& volatilityParameters() const = 0;
        virtual Time minTime() const = 0;
-       virtual Time maxTime() const = 0;
        virtual void setClosestTenors(Time time,
             Time& nextLowerTenor, Time& nextHigherTenor) = 0;
     };
@@ -191,10 +189,11 @@ namespace QuantLib {
         Rate maxStrike_, minStrike_;
     };
 
-    template <class T>
+    
     class HybridCapletVolatilityStructure:
         public ParametrizedCapletVolStructure{
     public:
+        template <class T>
         HybridCapletVolatilityStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
@@ -243,15 +242,9 @@ namespace QuantLib {
         Rate minStrike_, maxStrike_;
     };
 
-    inline Real linearInterpolation(Real x, Real x1, Real x2,
-                                            Real y1, Real y2){
-        if (x == x1)
-            return y1;
-        return y1 + (x-x1)*(y2-y1)/(x2-x1);
-    }
 
     template <class T>
-    inline HybridCapletVolatilityStructure<T>::HybridCapletVolatilityStructure(
+    inline HybridCapletVolatilityStructure::HybridCapletVolatilityStructure(
             const Date& referenceDate,
             const DayCounter dayCounter,
             const CapMatrix& referenceCaps,
@@ -276,72 +269,17 @@ namespace QuantLib {
             overlapEnd = std::max(maxShortTermMaturity, minCapMaturity);
         }
 
-    template <class T>
-    inline Volatility HybridCapletVolatilityStructure<T>::volatilityImpl(
-                              Time length,
-                              Rate strike) const {
-            if (length < overlapStart)
-                return shortTermCapletVolatilityStructure_->volatility(length,
-                strike, true);
-            if (length > overlapEnd)
-                return volatilitiesFromCaps_->volatility(length, strike,
-                                                        true);
-
-            Time nextLowerFutureTenor, nextHigherFutureTenor,
-                nextLowerCapTenor, nextHigherCapTenor,
-                nextLowerTenor, nextHigherTenor;
-            Volatility volAtNextLowerTenor, volAtNextHigherTenor;
-
-            volatilitiesFromCaps_->setClosestTenors(length,
-                nextLowerCapTenor, nextHigherCapTenor);
-
-            shortTermCapletVolatilityStructure_->setClosestTenors(length,
-                nextLowerFutureTenor, nextHigherFutureTenor);
-
-            /* we determine which volatility surface should be used for the
-               lower value*/
-            if (nextLowerCapTenor < nextLowerFutureTenor) {
-                nextLowerTenor = nextLowerFutureTenor;
-                volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
-                    volatility(nextLowerTenor, strike, true);
-            } else {
-                nextLowerTenor = nextLowerCapTenor;
-                volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
-                    nextLowerTenor, strike, true);
-            }
-
-            /* we determine which volatility surface should be used for
-               the higher value*/
-            if (nextHigherCapTenor < nextHigherFutureTenor){
-                nextHigherTenor = nextHigherCapTenor;
-                volAtNextHigherTenor = volatilitiesFromCaps_->volatility(
-                    nextHigherTenor, strike, true);
-            }else{
-                nextHigherTenor = nextHigherFutureTenor;
-                volAtNextHigherTenor = shortTermCapletVolatilityStructure_->
-                    volatility(nextHigherTenor, strike, true);
-            }
-
-            return linearInterpolation(length, nextLowerTenor,
-                nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
-    }
-
-    template <class T>
-    inline Date HybridCapletVolatilityStructure<T>::maxDate() const{
+    inline Date HybridCapletVolatilityStructure::maxDate() const{
         return volatilitiesFromCaps_->maxDate();}
 
-    template <class T>
-    inline DayCounter HybridCapletVolatilityStructure<T>::dayCounter() const{
+    inline DayCounter HybridCapletVolatilityStructure::dayCounter() const{
         return dayCounter_;}
 
-    template <class T>
-    inline Real HybridCapletVolatilityStructure<T>::minStrike() const {return 0;}
+    inline Real HybridCapletVolatilityStructure::minStrike() const {return 0;}
 
-    template <class T>
-    inline Real HybridCapletVolatilityStructure<T>::maxStrike() const {return 10;}
+    inline Real HybridCapletVolatilityStructure::maxStrike() const {return 10;}
 
-    template <class T>
-    inline void HybridCapletVolatilityStructure<T>::update(){
+    inline void HybridCapletVolatilityStructure::update(){
         volatilitiesFromCaps_->update();
     }
 

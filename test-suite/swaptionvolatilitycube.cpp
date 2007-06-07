@@ -401,9 +401,10 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                          isParameterFixed,
                          true)));
 
-    Spread spread = 0.0001;
+    boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
+    Handle<Quote> spreadHandle(spread);
     boost::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube 
-        (new SpreadedSwaptionVolatilityStructure(volCube, spread));
+        (new SpreadedSwaptionVolatilityStructure(volCube, spreadHandle));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
@@ -417,23 +418,23 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 Real strike = strikes[k];
                 Real diff = spreadedVolCube->volatility(optionTenors_[i], swapTenors_[j], strike)
                             - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
-                if (std::fabs(diff-spread)>1e-16)
+                if (std::fabs(diff-spread->value())>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
-                                "\nspread = " << spread);
+                                "\nspread = " << spread->value());
 
                 diff = smileSectionBySpreadedCube->volatility(strike)
                        - smileSectionByCube->volatility(strike);
-                if (std::fabs(diff-spread)>1e-16)
+                if (std::fabs(diff-spread->value())>1e-16)
                     BOOST_ERROR("\ndiff!=spread in smile section method:"
                                 "\nexpiry time = " << optionTenors_[i] <<
                                 "\nswap length = " << swapTenors_[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
-                                "\nspread = " << spread);
+                                "\nspread = " << spread->value());
 
             }
         }
@@ -445,6 +446,11 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     volCube->update();
     if(!f.isUp())
         BOOST_ERROR("SpreadedSwaptionVolatilityStructure " 
+                    << "does not propagate notifications");
+    f.lower();
+    spread->setValue(.001);
+    if(!f.isUp())
+        BOOST_ERROR("spreadedCapletVolatilityStructure "
                     << "does not propagate notifications");
     QL_TEST_TEARDOWN
 }

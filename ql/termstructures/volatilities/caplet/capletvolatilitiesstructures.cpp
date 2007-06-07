@@ -28,7 +28,16 @@
 #include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 
-using namespace QuantLib;
+
+
+namespace {
+    using namespace QuantLib;
+    inline Real linearInterpolation(Real x, Real x1, Real x2,
+                                            Real y1, Real y2){
+        if (x == x1)
+            return y1;
+        return y1 + (x-x1)*(y2-y1)/(x2-x1);
+    }
 
     Size upperIndex(const std::vector<Time>& times, Time time){
         if (time <= times.front())
@@ -59,7 +68,9 @@ using namespace QuantLib;
         lowerBound = times[i-1];
         higherBound = times[i];
     }
+}
 
+namespace QuantLib {
 
 
     SmileSectionsVolStructure::SmileSectionsVolStructure(
@@ -263,4 +274,54 @@ using namespace QuantLib;
             strikeInterpolations_[i]->update();
     }
 
+
+    Volatility HybridCapletVolatilityStructure::volatilityImpl(
+                              Time length,
+                              Rate strike) const {
+            if (length < overlapStart)
+                return shortTermCapletVolatilityStructure_->volatility(length,
+                strike, true);
+            if (length > overlapEnd)
+                return volatilitiesFromCaps_->volatility(length, strike,
+                                                        true);
+
+            Time nextLowerFutureTenor, nextHigherFutureTenor,
+                nextLowerCapTenor, nextHigherCapTenor,
+                nextLowerTenor, nextHigherTenor;
+            Volatility volAtNextLowerTenor, volAtNextHigherTenor;
+
+            volatilitiesFromCaps_->setClosestTenors(length,
+                nextLowerCapTenor, nextHigherCapTenor);
+
+            shortTermCapletVolatilityStructure_->setClosestTenors(length,
+                nextLowerFutureTenor, nextHigherFutureTenor);
+
+            /* we determine which volatility surface should be used for the
+               lower value*/
+            if (nextLowerCapTenor < nextLowerFutureTenor) {
+                nextLowerTenor = nextLowerFutureTenor;
+                volAtNextLowerTenor = shortTermCapletVolatilityStructure_->
+                    volatility(nextLowerTenor, strike, true);
+            } else {
+                nextLowerTenor = nextLowerCapTenor;
+                volAtNextLowerTenor = volatilitiesFromCaps_->volatility(
+                    nextLowerTenor, strike, true);
+            }
+
+            /* we determine which volatility surface should be used for
+               the higher value*/
+            if (nextHigherCapTenor < nextHigherFutureTenor){
+                nextHigherTenor = nextHigherCapTenor;
+                volAtNextHigherTenor = volatilitiesFromCaps_->volatility(
+                    nextHigherTenor, strike, true);
+            }else{
+                nextHigherTenor = nextHigherFutureTenor;
+                volAtNextHigherTenor = shortTermCapletVolatilityStructure_->
+                    volatility(nextHigherTenor, strike, true);
+            }
+
+            return linearInterpolation(length, nextLowerTenor,
+                nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
+    }
     
+}

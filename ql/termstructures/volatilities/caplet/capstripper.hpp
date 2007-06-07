@@ -80,9 +80,12 @@ namespace QuantLib {
         boost::shared_ptr<ParametrizedCapletVolStructure>
             parametrizedCapletVolStructure() {
                 return parametrizedCapletVolStructure_;}
-
+        //@}
       protected:
+        //! \name CapletVolatilityStructure interface
+        //@{
           Volatility volatilityImpl(Time t, Rate r) const;
+        //@}
       private:
         void createMarketData();
         mutable CapMatrix marketDataCap_, calibCap_;

@@ -26,8 +26,6 @@
 #define quantlib_black_variance_curve_hpp
 
 #include <ql/termstructures/voltermstructure.hpp>
-#include <ql/math/interpolation.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
 

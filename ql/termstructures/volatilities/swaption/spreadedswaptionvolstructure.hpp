@@ -25,7 +25,6 @@
 #define quantlib_spreaded_swaption_volstructure_h
 
 #include <ql/termstructures/swaptionvolstructure.hpp>
-#include <ql/time/period.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

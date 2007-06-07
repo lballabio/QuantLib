@@ -25,12 +25,12 @@
 #define quantlib_spreaded_caplet_volstructure_h
 
 #include <ql/termstructures/capvolstructures.hpp>
-#include <ql/time/period.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
 
-    class SpreadedCapletVolatilityStructure : public CapletVolatilityStructure {
+    class SpreadedCapletVolatilityStructure : 
+                                         public CapletVolatilityStructure {
       public:
         SpreadedCapletVolatilityStructure(
             const Handle<CapletVolatilityStructure>& underlyingVolStructure,
@@ -55,7 +55,6 @@ namespace QuantLib {
 
         Volatility volatilityImpl(Time length,
                                   Rate strike) const;
-
         //@} 
 
     private:

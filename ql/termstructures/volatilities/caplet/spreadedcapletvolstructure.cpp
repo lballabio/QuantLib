@@ -18,7 +18,6 @@
 */
 
 #include <ql/termstructures/volatilities/caplet/spreadedcapletvolstructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +37,8 @@ namespace QuantLib {
     Volatility SpreadedCapletVolatilityStructure::volatilityImpl(
                                                     Time length,
                                                     Rate strike) const {
-        return underlyingVolStructure_->volatility(length, strike)+spread_->value();
+        return underlyingVolStructure_->volatility(length, strike)
+                                                        +spread_->value();
     }
 
     Rate SpreadedCapletVolatilityStructure::minStrike() const {

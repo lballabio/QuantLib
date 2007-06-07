@@ -46,13 +46,13 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
-        //@}
         Date maxDate() const;
+        //@}
+        //! \name CapletVolatilityStructure interface
+        //@{
         Real minStrike() const;
         Real maxStrike() const;
       protected:
-        //! \name CapletVolatilityStructure interface
-        //@{
         Volatility volatilityImpl(Time t, Rate) const;
         //@}
       private:
