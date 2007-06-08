@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2006 Marco Bianchetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,8 +33,22 @@
 #include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/quotes/simplequote.hpp>
 
-namespace QuantLib {
+namespace {
+    using namespace QuantLib;
+    class SafeEvaluationDateBackUp {
+      public:
+          SafeEvaluationDateBackUp()
+              :date_(Settings::instance().evaluationDate()){}
+          ~SafeEvaluationDateBackUp() {
+              Settings::instance().evaluationDate() = date_;
+          }
+      private:
+          Date date_; 
+    };
+}
 
+
+namespace QuantLib {
 
   template<class Traits, class Interpolator>
     Disposable<Matrix> computeHistoricalCorrelations(
@@ -49,7 +64,8 @@ namespace QuantLib {
             Real yieldCurveAccuracy) {
         typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
         typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
-
+        //backuping the evaluation date
+        SafeEvaluationDateBackUp backup;
         std::vector<boost::shared_ptr<SimpleQuote> > iborHistoricFixings;
         std::vector<boost::shared_ptr<SimpleQuote> > swapHistoricFixings;
         std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
@@ -109,63 +125,57 @@ namespace QuantLib {
         // Loop over the historical dataset
         bool isFirst = true;
         while(currentDate<=endDate) {
-            try {
-                // we set the evaluationDate equal to today, so that an 
-                // error will be raised if a fixing is missing 
-                Settings::instance().evaluationDate() = today;
-                //we update the quotes...
-                for (Size i=0; i<iborIndexes.size(); ++i)
-                    iborHistoricFixings[i]
-                        ->setValue(iborIndexes[i]->fixing(currentDate, false));
-                for (Size i=0; i<swapIndexes.size(); ++i)
-                    swapHistoricFixings[i]
-                        ->setValue(swapIndexes[i]->fixing(currentDate, false));
-                //move the evaluationDate to currentDate 
-                //and update ratehelpers dates ...
-                Settings::instance().evaluationDate() = currentDate;
-                // Bootstrap the yield curve at the currentDate 
-                PiecewiseYieldCurve<Traits, Interpolator>
-                        piecewiseYieldCurve(currentDate, rateHelpers, 
-                        yieldCurveDayCounter, yieldCurveAccuracy);         
-                // Relative forwards: calculate relevant forward rates 
-                // on a rolling time grid
-                if (rollingForwardRatesTimeGrid) {
-                    for(Size i=0; i<forwardRates.size(); ++i) {
-                        forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                            currentDate + forwardFixingPeriods[i],
-                            indexTenor, indexDayCounter, Simple);
-                    }
-                // Absolute forwards: calculate relevant forward rates 
-                // on a fixed time grid
-                } else {
-                    for(Size i=0; i<forwardRates.size(); ++i) {
-                        forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                            today + forwardFixingPeriods[i],
-                            indexTenor, indexDayCounter, Simple);
-                    }
+            // we set the evaluationDate equal to today, so that an 
+            // error will be raised if a fixing is missing 
+            Settings::instance().evaluationDate() = today;
+            //we update the quotes...
+            for (Size i=0; i<iborIndexes.size(); ++i)
+                iborHistoricFixings[i]
+                    ->setValue(iborIndexes[i]->fixing(currentDate, false));
+            for (Size i=0; i<swapIndexes.size(); ++i)
+                swapHistoricFixings[i]
+                    ->setValue(swapIndexes[i]->fixing(currentDate, false));
+            //move the evaluationDate to currentDate 
+            //and update ratehelpers dates ...
+            Settings::instance().evaluationDate() = currentDate;
+            // Bootstrap the yield curve at the currentDate 
+            PiecewiseYieldCurve<Traits, Interpolator>
+                    piecewiseYieldCurve(currentDate, rateHelpers, 
+                    yieldCurveDayCounter, yieldCurveAccuracy);         
+            // Relative forwards: calculate relevant forward rates 
+            // on a rolling time grid
+            if (rollingForwardRatesTimeGrid) {
+                for(Size i=0; i<forwardRates.size(); ++i) {
+                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                        currentDate + forwardFixingPeriods[i],
+                        indexTenor, indexDayCounter, Simple);
                 }
-                // From 2nd step onwards, calculate forward rate 
-                // relative differences
-                if (!isFirst)
-                    for(Size i=0; i<forwardRates.size(); ++i)
-                        forwardRatesDifferences[i] = 
-                            forwardRates[i]/forwardRatesPrevious[i] - 1.0;
-                else
-                    isFirst = false;
-                // Calculate correlations
-                statistics.add(forwardRatesDifferences.begin(), 
-                               forwardRatesDifferences.end());
-                // Store last calculated forward rates
-                std::swap(forwardRatesPrevious, forwardRates);
-                // Advance date
-                currentDate = calendar.advance(currentDate, historicalStep, 
-                                               Following);
-            } catch(...) {
-                Settings::instance().evaluationDate() = today;
-                throw;
+            // Absolute forwards: calculate relevant forward rates 
+            // on a fixed time grid
+            } else {
+                for(Size i=0; i<forwardRates.size(); ++i) {
+                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                        today + forwardFixingPeriods[i],
+                        indexTenor, indexDayCounter, Simple);
+                }
             }
-        }
-        Settings::instance().evaluationDate() = today;
+            // From 2nd step onwards, calculate forward rate 
+            // relative differences
+            if (!isFirst)
+                for(Size i=0; i<forwardRates.size(); ++i)
+                    forwardRatesDifferences[i] = 
+                        forwardRates[i]/forwardRatesPrevious[i] - 1.0;
+            else
+                isFirst = false;
+            // Calculate correlations
+            statistics.add(forwardRatesDifferences.begin(), 
+                           forwardRatesDifferences.end());
+            // Store last calculated forward rates
+            std::swap(forwardRatesPrevious, forwardRates);
+            // Advance date
+            currentDate = calendar.advance(currentDate, historicalStep, 
+                                           Following);
+        } 
         return statistics.correlation();
     }
 
