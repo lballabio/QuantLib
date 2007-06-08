@@ -70,7 +70,7 @@ namespace QuantLib {
                                   index,
                                   DayCounter(),
                                   index->businessDayConvention(),
-                                  0);
+                                  std::vector<Natural>(1,0));
         boost::shared_ptr<IborCouponPricer>
                         fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
         setCouponPricer(floatingLeg,fictitiousPricer);

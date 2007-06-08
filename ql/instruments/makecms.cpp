@@ -104,7 +104,7 @@ namespace QuantLib {
                             swapIndex_,
                             cmsDayCount_,
                             cmsConvention_,
-                            swapIndex_->fixingDays(),
+                            std::vector<Natural>(1,swapIndex_->fixingDays()),
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
@@ -115,7 +115,7 @@ namespace QuantLib {
                                iborIndex_,
                                floatDayCount_,
                                floatConvention_,
-                               iborIndex_->fixingDays(),
+                               std::vector<Natural>(1,iborIndex_->fixingDays()),
                                std::vector<Real>(1, 1.0), // gearing
                                std::vector<Spread>(1, iborSpread_));
         boost::shared_ptr<IborCouponPricer>
@@ -161,7 +161,7 @@ namespace QuantLib {
                             swapIndex_,
                             cmsDayCount_,
                             cmsConvention_,
-                            swapIndex_->fixingDays(),
+                            std::vector<Natural>(1,swapIndex_->fixingDays()),
                             std::vector<Real>(1, cmsGearing_),
                             std::vector<Spread>(1, cmsSpread_),
                             std::vector<Rate>(1, cmsCap_),
@@ -172,7 +172,7 @@ namespace QuantLib {
                                iborIndex_,
                                floatDayCount_,
                                floatConvention_,
-                               iborIndex_->fixingDays(),
+                               std::vector<Natural>(1,iborIndex_->fixingDays()),
                                std::vector<Real>(1, 1.0), // gearing
                                std::vector<Spread>(1, iborSpread_));
         boost::shared_ptr<IborCouponPricer>

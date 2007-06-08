@@ -618,7 +618,7 @@ void CmsTest::testCmsSwap() {
                                         index_,
                                         fixedCmsDayCount_,
                                         fixedCmsConvention_,
-                                        settlementDays_,
+                                        std::vector<Natural>(1,settlementDays_),
                                         fractions,
                                         baseRate,
                                         caps,
@@ -630,7 +630,7 @@ void CmsTest::testCmsSwap() {
                                               iborIndex_,
                                               iborIndex_->dayCounter(),
                                               floatingCmsConvention_,
-                                              settlementDays_);
+                                              std::vector<Natural>(1,settlementDays_));
                     boost::shared_ptr<IborCouponPricer>
                       fictitiousPricer(new BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
                     setCouponPricer(floatingLeg,fictitiousPricer);

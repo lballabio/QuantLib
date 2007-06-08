@@ -56,7 +56,7 @@ namespace QuantLib {
                             index,
                             paymentDayCounter,
                             paymentConvention,
-                            fixingDays,
+                            std::vector<Natural>(1,fixingDays),
                             gearings, spreads,
                             caps, floors,
                             inArrears);

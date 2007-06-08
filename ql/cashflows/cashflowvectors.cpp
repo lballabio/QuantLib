@@ -45,6 +45,18 @@ namespace QuantLib {
             }
         }
 
+        Natural get(const std::vector<Natural>& v,
+                 Size i,
+                 Natural defaultValue) {
+            if (v.empty()) {
+                return defaultValue;
+            } else if (i < v.size()) {
+                return v[i];
+            } else {
+                return v.back();
+            }
+        }
+
         Rate effectiveFixedRate(const std::vector<Spread>& spreads,
                                 const std::vector<Rate>& caps,
                                 const std::vector<Rate>& floors,
@@ -162,7 +174,7 @@ namespace QuantLib {
                     const boost::shared_ptr<IndexType>& index,
                     const DayCounter& paymentDayCounter,
                     BusinessDayConvention paymentAdj,
-                    Natural fixingDays,
+                    const std::vector<Natural>& fixingDays,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
@@ -215,7 +227,8 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(paymentDate,
                                    get(nominals, i, Null<Real>()),
-                                   start, end, fixingDays, index,
+                                   start, end, 
+                                   get(fixingDays, i, 2), index,
                                    get(gearings, i, 1.0),
                                    get(spreads, i, 0.0),
                                    refStart, refEnd,
@@ -224,7 +237,8 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredCouponType(paymentDate,
                                                 get(nominals, i, Null<Real>()),
-                                                start, end, fixingDays, index,
+                                                start, end, 
+                                                get(fixingDays, i, 2), index,
                                                 get(gearings, i, 1.0),
                                                 get(spreads, i, 0.0),
                                                 get(caps,   i, Null<Rate>()),
@@ -242,7 +256,7 @@ namespace QuantLib {
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter,
                 BusinessDayConvention paymentAdj,
-                Natural fixingDays,
+                const std::vector<Natural>& fixingDays,
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 const std::vector<Rate>& caps,
@@ -270,7 +284,7 @@ namespace QuantLib {
                const boost::shared_ptr<SwapIndex>& index,
                const DayCounter& paymentDayCounter,
                BusinessDayConvention paymentAdj,
-               Natural fixingDays,
+               const std::vector<Natural>& fixingDays,
                const std::vector<Real>& gearings,
                const std::vector<Spread>& spreads,
                const std::vector<Rate>& caps,
@@ -299,7 +313,7 @@ namespace QuantLib {
                         const boost::shared_ptr<IndexType>& index,
                         const DayCounter& paymentDayCounter,
                         BusinessDayConvention paymentAdj,
-                        Natural fixingDays,
+                        const std::vector<Natural>& fixingDays,
                         const std::vector<Real>& gearings,
                         const std::vector<Spread>& spreads,
                         const std::vector<Rate>& caps,
@@ -354,7 +368,8 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         FloatingCouponType(paymentDate, // diff
                                            get(nominals, i, Null<Real>()),
-                                           start, end, fixingDays, index,
+                                           start, end, 
+                                           get(fixingDays, i, 2), index,
                                            get(gearings, i, 1.0), get(spreads, i, 0.0),
                                            refStart, refEnd,
                                            paymentDayCounter, isInArrears)));
@@ -362,7 +377,8 @@ namespace QuantLib {
                     leg.push_back(boost::shared_ptr<CashFlow>(new
                         CappedFlooredFloatingCouponType(paymentDate, // diff
                                            get(nominals, i, Null<Real>()),
-                                           start, end, fixingDays, index,
+                                           start, end, 
+                                           get(fixingDays, i, 2), index,
                                            get(gearings, i, 1.0), get(spreads, i, 0.0),
                                            get(caps,   i, Null<Rate>()),
                                            get(floors, i, Null<Rate>()),
@@ -379,7 +395,7 @@ namespace QuantLib {
                     const boost::shared_ptr<IborIndex>& index,
                     const DayCounter& paymentDayCounter,
                     BusinessDayConvention paymentAdj,
-                    Natural fixingDays,
+                    const std::vector<Natural>& fixingDays,
                     const std::vector<Real>& gearings,
                     const std::vector<Spread>& spreads,
                     const std::vector<Rate>& caps,
@@ -403,7 +419,7 @@ namespace QuantLib {
                    const boost::shared_ptr<SwapIndex>& index,
                    const DayCounter& paymentDayCounter,
                    BusinessDayConvention paymentAdj,
-                   Natural fixingDays,
+                   const std::vector<Natural>& fixingDays,
                    const std::vector<Real>& gearings,
                    const std::vector<Spread>& spreads,
                    const std::vector<Rate>& caps,
@@ -427,7 +443,7 @@ namespace QuantLib {
                        const boost::shared_ptr<IborIndex>& index,
                        const DayCounter& paymentDayCounter,
                        BusinessDayConvention paymentConvention,
-                       Natural fixingDays,
+                       const std::vector<Natural>& fixingDays,
                        const std::vector<Real>& gearings,
                        const std::vector<Spread>& spreads,
                        const std::vector<Rate>& lowerTriggers,
@@ -440,6 +456,9 @@ namespace QuantLib {
         Size n = schedule.size()-1;
         QL_REQUIRE(nominals.size() <= n,
                    "too many nominals (" << nominals.size() <<
+                   "), only " << n << " required");
+        QL_REQUIRE(fixingDays.size() <= n,
+                   "too many fixingDays (" << fixingDays.size() <<
                    "), only " << n << " required");
         QL_REQUIRE(gearings.size()<=n,
                    "too many gearings (" << gearings.size() <<
@@ -490,7 +509,8 @@ namespace QuantLib {
                             get(nominals, i, Null<Real>()),
                             paymentDate,
                             index,
-                            start, end, fixingDays,
+                            start, end,
+                            get(fixingDays, i, 2),
                             paymentDayCounter,
                             get(gearings, i, 1.0),
                             get(spreads, i, 0.0),
@@ -511,7 +531,7 @@ namespace QuantLib {
                    const boost::shared_ptr<IndexType>& index,
                    const DayCounter& paymentDayCounter,
                    BusinessDayConvention paymentAdj,
-                   Natural fixingDays,
+                   const std::vector<Natural>& fixingDays,
                    const std::vector<Real>& gearings,
                    const std::vector<Spread>& spreads,
                    bool isInArrears,
@@ -572,7 +592,8 @@ namespace QuantLib {
                     (boost::shared_ptr<FloatingCouponType>)(new 
                         FloatingCouponType(paymentDate,
                                        get(nominals, i, Null<Real>()),
-                                       start, end, fixingDays, index,
+                                       start, end, 
+                                       get(fixingDays, i, 2), index,
                                        get(gearings, i, 1.0),
                                        get(spreads, i, 0.0),
                                        refStart, refEnd,
@@ -599,7 +620,7 @@ namespace QuantLib {
                 const boost::shared_ptr<IborIndex>& index,
                 const DayCounter& paymentDayCounter,
                 const BusinessDayConvention paymentConvention,
-                Natural fixingDays,
+                const std::vector<Natural>& fixingDays,
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 bool isInArrears,
@@ -640,7 +661,7 @@ namespace QuantLib {
                 const boost::shared_ptr<SwapIndex>& index,
                 const DayCounter& paymentDayCounter,
                 const BusinessDayConvention paymentConvention,
-                Natural fixingDays,
+                const std::vector<Natural>& fixingDays,
                 const std::vector<Real>& gearings,
                 const std::vector<Spread>& spreads,
                 bool isInArrears,

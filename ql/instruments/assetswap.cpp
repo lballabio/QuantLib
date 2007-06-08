@@ -81,7 +81,7 @@ namespace QuantLib {
                            index,
                            floatingDayCounter,
                            paymentAdjustment,
-                           fixingDays,
+                           std::vector<Natural>(1,fixingDays),
                            gearings, spreads);
 
         boost::shared_ptr<IborCouponPricer> fictitiousPricer(new

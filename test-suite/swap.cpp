@@ -284,7 +284,7 @@ void SwapTest::testInArrears() {
                               index,
                               dayCounter,
                               Following,
-                              fixingDays,
+                              std::vector<Natural>(1,fixingDays),
                               gearings, spreads,
                               std::vector<Rate>(), std::vector<Rate>(),
                               true);

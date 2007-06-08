@@ -68,7 +68,7 @@ Leg makeLeg(const Date& startDate, Integer length) {
                           index_,
                           index_->dayCounter(),
                           convention_,
-                          fixingDays_,
+                          std::vector<Natural>(1,fixingDays_),
                           std::vector<Real>(),
                           std::vector<Spread>());
     boost::shared_ptr<IborCouponPricer>

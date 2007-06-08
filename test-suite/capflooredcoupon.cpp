@@ -101,7 +101,8 @@ Leg makeFloatingLeg(const Date& startDate,
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
     Leg floatLeg = IborLeg(nominals_, schedule, index_, index_->dayCounter(),
-                           convention_, fixingDays_, gearingVector, spreadVector);
+                           convention_, std::vector<Natural>(1,fixingDays_), 
+                           gearingVector, spreadVector);
     boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
         BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
     setCouponPricer(floatLeg,fictitiousPricer);
@@ -133,7 +134,7 @@ Leg makeCapFlooredLeg(const Date& startDate,
                           index_,
                           index_->dayCounter(),
                           convention_,
-                          fixingDays_,
+                          std::vector<Natural>(1,fixingDays_),
                           gearingVector,
                           spreadVector,
                           caps,

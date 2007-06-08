@@ -60,7 +60,7 @@ namespace QuantLib {
                                   index,
                                   floatingDayCount,
                                   convention,
-                                  index->fixingDays(),
+                                  std::vector<Natural>(1,index->fixingDays()),
                                   std::vector<Real>(1,1.0),
                                   std::vector<Spread>(1,spread));
         boost::shared_ptr<IborCouponPricer>
