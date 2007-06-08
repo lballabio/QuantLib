@@ -28,7 +28,7 @@ namespace QuantLib {
 
     class Matrix;
 
-    // piecewise constant in time
+    // piecewise constant in time full factor correlation
     class PiecewiseConstantCorrelation {
       public:
         virtual ~PiecewiseConstantCorrelation() {}

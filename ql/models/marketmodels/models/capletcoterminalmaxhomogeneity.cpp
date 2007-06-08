@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/alphafinder.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
@@ -159,18 +159,32 @@ namespace QuantLib {
 
     }
 
-    bool calibrationOfMaxHomogeneity(
+    CapletCoterminalSwaptionCalibration3::CapletCoterminalSwaptionCalibration3(
+                            const EvolutionDescription& evolution,
+                            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+                            const std::vector<boost::shared_ptr<
+                                        PiecewiseConstantVariance> >&
+                                                displacedSwapVariances,
+                            const std::vector<Volatility>& mktCapletVols,
+                            const boost::shared_ptr<CurveState>& cs,
+                            Spread displacement)
+    : evolution_(evolution),  corr_(corr),
+      displacedSwapVariances_(displacedSwapVariances),
+      mktCapletVols_(mktCapletVols),
+      cs_(cs), displacement_(displacement), calibrated_(false) {}
+
+    bool CapletCoterminalSwaptionCalibration3::calibrationOfMaxHomogeneity(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
-            PiecewiseConstantVariance> >&
-            displacedSwapVariances,
+                PiecewiseConstantVariance> >&
+                displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
             const Spread displacement,
             const Size numberOfFactors,
-            Real toleranceForMinimization,
             Size iterationsForMinimzation,
+            Real toleranceForMinimization,
             Real& deformationSize,
             std::vector<Matrix>& swapCovariancePseudoRoots) {
 
@@ -210,20 +224,16 @@ namespace QuantLib {
 
         deformationSize=0.0;
 
-
         Size numberOfSteps = evolution.numberOfSteps();
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
         for (Size i=0; i<corrPseudo.size(); ++i)
             corrPseudo[i] = rankReducedSqrt(corr.correlation(i),
-            numberOfFactors, 1.0,
-            SalvagingAlgorithm::None);
+                                            numberOfFactors, 1.0,
+                                            SalvagingAlgorithm::None);
 
-
-
-
-        // vectors for new vol
+        // vectors for the new vol of all swap rates
         std::vector<std::vector<Volatility> > newVols;
         std::vector<Volatility> theseNewVols(numberOfRates);
 
@@ -232,19 +242,18 @@ namespace QuantLib {
             SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
         Matrix invertedZedMatrix = inverse(zedMatrix);
 
-        std::vector<Volatility> rateonevols(numberOfRates);
-        rateonevols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
-        std::vector<Volatility> ratetwovols(numberOfRates);
+        std::vector<Volatility> firstRateVols(numberOfRates);
+        firstRateVols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
+        std::vector<Volatility> secondRateVols(numberOfRates);
         std::vector<Real> correlations(numberOfRates);
-        newVols.push_back(rateonevols);
-
+        newVols.push_back(firstRateVols);
 
         for (Size i =0; i < numberOfRates-1; ++i) {
               const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
 
             for (Size j =0; j < i+2; ++j)
-                ratetwovols[j] = sqrt(var[j]);
+                secondRateVols[j] = sqrt(var[j]);
 
             for (Size k=0; k < i+1; k++) {
                 Real correlation=0.0;
@@ -262,10 +271,10 @@ namespace QuantLib {
             for (Size k = i+2; k <invertedZedMatrix.columns(); ++k)
                 w0+= invertedZedMatrix[i][k];
 
-            Real targetVariance= capletVols[i]*capletVols[i]*rateTimes[i];
+            Real targetCapletVariance= capletVols[i]*capletVols[i]*rateTimes[i];
 
             bool success = singleRateClosestPointFinder(
-                i, ratetwovols, rateonevols, targetVariance, correlations,
+                i, secondRateVols, firstRateVols, targetCapletVariance, correlations,
                 w0, w1, iterationsForMinimzation, toleranceForMinimization,
                 theseNewVols);
 
@@ -273,11 +282,11 @@ namespace QuantLib {
                 return success; // i.e. false
 
             for (Size j=0; j < i+2; ++j)
-                deformationSize += (theseNewVols[i]-ratetwovols[i])*(theseNewVols[i]-ratetwovols[i]);
+                deformationSize += (theseNewVols[i]-secondRateVols[i])*(theseNewVols[i]-secondRateVols[i]);
 
 
             newVols.push_back(theseNewVols);
-            rateonevols = theseNewVols;
+            firstRateVols = theseNewVols;
         }
 
         swapCovariancePseudoRoots.resize(numberOfSteps);
@@ -304,81 +313,94 @@ namespace QuantLib {
     }
 
 
-    bool calibrationOfMaxHomogeneityIterative(
-        const EvolutionDescription& evolution,
-        const PiecewiseConstantCorrelation& corr,
-        const std::vector<boost::shared_ptr<
-        PiecewiseConstantVariance> >&
-        displacedSwapVariances,
-        const std::vector<Volatility>& capletVols,
-        const CurveState& cs,
-        const Spread displacement,
-        const Size numberOfFactors,
-        Integer iterationsForHomogeneous,
-        Real toleranceHomogeneousSolving,
-        Size maxIterationsForIterative,
-        Real toleranceForIterativeSolving,
-        Real& deformationSize,
-        std::vector<Matrix>& swapCovariancePseudoRoots)
-    {
-        std::vector<Volatility> modifiedCapletVols=capletVols;
-        Real error;
+    bool CapletCoterminalSwaptionCalibration3::calibrate(
+                            Size numberOfFactors,
+                            Size iterationsForHomogeneous,
+                            Real toleranceHomogeneousSolving,
+                            Size maxIterationsForIterative,
+                            Real toleranceForIterativeSolving) {
+
+        Size numberOfRates = evolution_.numberOfRates();
+        deformationSize_=0.0;
+        error_ = 987654321; // a positive large number
+        calibrated_ = false;
+        bool success = true;
+
+        std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
         Size iterations=0;
-        Size numberOfRates = evolution.numberOfRates();
-        deformationSize=0.0;
 
         do
         {
-            bool success = calibrationOfMaxHomogeneity(
-                evolution,
-                corr,
-                displacedSwapVariances,
-                modifiedCapletVols,
-                cs,
-                displacement,
-                numberOfFactors,
-                toleranceHomogeneousSolving,
-                iterationsForHomogeneous,
-                deformationSize,
-                swapCovariancePseudoRoots);
+            success = calibrationOfMaxHomogeneity(evolution_,
+                                                  *corr_,
+                                                  displacedSwapVariances_,
+                                                  modifiedCapletVols,
+                                                  *cs_,
+                                                  displacement_,
+                                                  numberOfFactors,
+                                                  iterationsForHomogeneous,
+                                                  toleranceHomogeneousSolving,
+                                                  deformationSize_,
+                                                  swapCovariancePseudoRoots_);
 
             if (!success)
-                return false;
+                return success;
 
-            std::vector<Spread> displacements(evolution.numberOfRates(),
-                                              displacement);
+            const std::vector<Time>& rateTimes = evolution_.rateTimes();
+            std::vector<Spread> displacements(numberOfRates,
+                                              displacement_);
             boost::shared_ptr<MarketModel> smm(new
-                PseudoRootFacade(swapCovariancePseudoRoots,
-                                 evolution.rateTimes(),
-                                 cs.coterminalSwapRates(),
+                PseudoRootFacade(swapCovariancePseudoRoots_,
+                                 rateTimes,
+                                 cs_->coterminalSwapRates(),
                                  displacements));
-
             CotSwapToFwdAdapter flmm(smm);
-            Matrix capletTotCovariance =
-                            flmm.totalCovariance(evolution.numberOfRates()-1);
+            // avoid this copy
+            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
-            std::vector<Volatility> capletVolsOutput(numberOfRates);
-            for (Size i=0; i<numberOfRates; ++i) {
-                capletVolsOutput[i] = std::sqrt(capletTotCovariance[i][i] /
-                                                evolution.rateTimes()[i]);
-            }
-
-            error=0.0;
             // check caplet fit
+            error_=0.0;
+            std::vector<Volatility> mdlCapletVols(numberOfRates);
             for (Size i=0; i<numberOfRates-1; ++i) {
-                Real thisError = capletVols[i]-capletVolsOutput[i];
-                error += thisError*thisError;
-
-                modifiedCapletVols[i] = modifiedCapletVols[i] *
-                                        capletVols[i] / capletVolsOutput[i];
+                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real diff = mktCapletVols_[i]-mdlCapletVols[i];
+                error_ += diff*diff;
+                modifiedCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
             }
+            error_ = std::sqrt(error_/(numberOfRates-1));
             ++iterations;
         }
 
         while (iterations<maxIterationsForIterative &&
-               sqrt(error)>toleranceForIterativeSolving);
+               error_>toleranceForIterativeSolving);
 
-        return true;
+        calibrated_ = true;
+        return success;
+    }
+
+    Real CapletCoterminalSwaptionCalibration3::deformationSize() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return deformationSize_;
+    }
+
+    Real CapletCoterminalSwaptionCalibration3::rmsError() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return error_;
+    }
+
+    const std::vector<Matrix>&
+    CapletCoterminalSwaptionCalibration3::swapPseudoRoots() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return swapCovariancePseudoRoots_;
+    }
+
+    const Matrix&
+    CapletCoterminalSwaptionCalibration3::swapPseudoRoot(Size i) const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
+                   i << "is an invalid index, must be less than "
+                   << swapCovariancePseudoRoots_.size());
+        return swapCovariancePseudoRoots_[i];
     }
 
 }

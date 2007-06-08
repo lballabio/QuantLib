@@ -340,7 +340,6 @@ namespace QuantLib {
                             Size maxIterations,
                             Real tolerance) {
 
-        const std::vector<Time>& rateTimes = evolution_.rateTimes();
         Size numberOfRates = evolution_.numberOfRates();
         negDiscr_ = 0;
         error_ = 987654321; // a positive large number
@@ -348,7 +347,7 @@ namespace QuantLib {
         bool success = true;
         std::vector<Volatility> targetCapletVols(mktCapletVols_);
         for (Size iterCounter=1;
-             iterCounter<=maxIterations && success && negDiscr_==0 && error_>tolerance;
+             iterCounter<=maxIterations && negDiscr_==0 && error_>tolerance;
              ++iterCounter) {
             success = calibrationFunction(evolution_,
                                           *corr_,
@@ -364,20 +363,27 @@ namespace QuantLib {
                                           negDiscr_);
             if (!success)
                 return success;
+
+            const std::vector<Time>& rateTimes = evolution_.rateTimes();
+            std::vector<Spread> displacements(numberOfRates,
+                                              displacement_);
             boost::shared_ptr<MarketModel> smm(new
                 PseudoRootFacade(swapCovariancePseudoRoots_,
                                  rateTimes,
                                  cs_->coterminalSwapRates(),
-                                 std::vector<Spread>(numberOfRates, displacement_)));
+                                 displacements));
             CotSwapToFwdAdapter flmm(smm);
             // avoid this copy
             Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+
+            // check caplet fit
             error_ = 0.0;
+            std::vector<Volatility> mdlCapletVols(numberOfRates);
             for (Size i=0; i<numberOfRates-1; ++i) {
-                Real capletVol = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
-                Real diff = mktCapletVols_[i]-capletVol;
+                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real diff = mktCapletVols_[i]-mdlCapletVols[i];
                 error_ += diff*diff;
-                targetCapletVols[i] *= mktCapletVols_[i]/capletVol;
+                targetCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
             }
             error_ = std::sqrt(error_/(numberOfRates-1));
         }
@@ -386,26 +392,27 @@ namespace QuantLib {
     }
 
     Size CapletCoterminalSwaptionCalibration::negativeDiscriminants() const {
-        QL_REQUIRE(calibrated_, "not calibrated yet");
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return negDiscr_;
     }
 
     Real CapletCoterminalSwaptionCalibration::rmsError() const {
-        QL_REQUIRE(calibrated_, "not calibrated yet");
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return error_;
     }
 
     const std::vector<Matrix>&
     CapletCoterminalSwaptionCalibration::swapPseudoRoots() const {
-        QL_REQUIRE(calibrated_, "not calibrated yet");
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return swapCovariancePseudoRoots_;
     }
 
     const Matrix&
     CapletCoterminalSwaptionCalibration::swapPseudoRoot(Size i) const {
-        QL_REQUIRE(calibrated_, "not calibrated yet");
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
-                   "invalid index");
+                   i << "is an invalid index, must be less than "
+                   << swapCovariancePseudoRoots_.size());
         return swapCovariancePseudoRoots_[i];
     }
 

@@ -31,22 +31,62 @@ namespace QuantLib {
     class PiecewiseConstantVariance;
     class Matrix;
 
-    bool calibrationOfMaxHomogeneityIterative(
-        const EvolutionDescription& evolution,
-        const PiecewiseConstantCorrelation& corr,
-        const std::vector<boost::shared_ptr<
-        PiecewiseConstantVariance> >&
-        displacedSwapVariances,
-        const std::vector<Volatility>& capletVols,
-        const CurveState& cs,
-        const Spread displacement,
-        const Size numberOfFactors,
-        Integer iterationsForHomogeneous,
-        Real toleranceHomogeneousSolving,
-        Size maxIterationsForIterative,
-        Real toleranceForIterativeSolving,
-		Real& deformationSize,
-        std::vector<Matrix>& swapCovariancePseudoRoots);
+
+    class CapletCoterminalSwaptionCalibration3 {
+      public:
+        CapletCoterminalSwaptionCalibration3(
+            const EvolutionDescription& evolution,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const std::vector<boost::shared_ptr<
+                        PiecewiseConstantVariance> >&
+                                    displacedSwapVariances,
+            const std::vector<Volatility>& capletVols,
+            const boost::shared_ptr<CurveState>& cs,
+            Spread displacement);
+        // modifiers
+        bool calibrate(Size numberOfFactors,
+                       Size iterationsForHomogeneous,
+                       Real toleranceHomogeneousSolving,
+                       Size maxIterationsForIterative,
+                       Real toleranceForIterativeSolving);
+
+        // inspectors
+        Real deformationSize() const;
+        Real rmsError() const; // caplet
+        const std::vector<Matrix>& swapPseudoRoots() const;
+        const Matrix& swapPseudoRoot(Size i) const;
+        // actual calibration function
+        static bool calibrationOfMaxHomogeneity(
+                    const EvolutionDescription& evolution,
+                    const PiecewiseConstantCorrelation& corr,
+                    const std::vector<boost::shared_ptr<
+                        PiecewiseConstantVariance> >&
+                            displacedSwapVariances,
+                    const std::vector<Volatility>& capletVols,
+                    const CurveState& cs,
+                    const Spread displacement,
+                    Size numberOfFactors,
+
+                    Size iterationsForHomogeneous,
+                    Real toleranceHomogeneousSolving,
+
+                    Real& deformationSize,
+                    std::vector<Matrix>& swapCovariancePseudoRoots);
+      private:
+        // input
+        EvolutionDescription evolution_;
+        boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
+        std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
+                                                displacedSwapVariances_;
+        std::vector<Volatility> mktCapletVols_;
+        boost::shared_ptr<CurveState> cs_;
+        Spread displacement_;
+        // results
+        bool calibrated_;
+        Real error_, deformationSize_;
+        std::vector<Matrix> swapCovariancePseudoRoots_;
+    };
+
 }
 
 #endif
