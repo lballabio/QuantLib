@@ -36,7 +36,7 @@ namespace QuantLib {
     //! - L = long term correlation
     //! - beta = exponential decay of correlation between far away forward rates
     Disposable<Matrix> exponentialCorrelations(
-                                        const std::vector<Rate>& rateTimes,
+                                        const std::vector<Time>& rateTimes,
                                         Real longTermCorr,
                                         Real beta);
 
@@ -46,7 +46,7 @@ namespace QuantLib {
     //! - gamma = exponent for time to go  
     //! - time = time dependence
     Disposable<Matrix> exponentialCorrelationsTimeDependent(
-                                        const std::vector<Rate>& rateTimes,
+                                        const std::vector<Time>& rateTimes,
                                         Real longTermCorr,
                                         Real beta,
                                         Real gamma,
