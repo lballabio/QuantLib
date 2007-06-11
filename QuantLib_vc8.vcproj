@@ -2365,6 +2365,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\marketmodeldifferences.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\marketmodeldifferences.hpp"
 					>
 				</File>
