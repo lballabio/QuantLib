@@ -2641,6 +2641,9 @@
 					RelativePath=".\ql\models\marketmodels\evolver.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\historicalcorrelation.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp">
 				</File>
 				<File
@@ -3110,9 +3113,6 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\historicalcorrelation.hpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.cpp">
