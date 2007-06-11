@@ -17,8 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_caplet_coterminal_alpha_calibration_hpp
-#define quantlib_caplet_coterminal_alpha_calibration_hpp
+#ifndef quantlib_caplet_coterminal_max_homogenity_calibration_hpp
+#define quantlib_caplet_coterminal_max_homogenity_calibration_hpp
 
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
