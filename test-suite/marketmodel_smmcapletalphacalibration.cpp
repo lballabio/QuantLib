@@ -23,7 +23,6 @@
 #include "marketmodel_smmcapletalphacalibration.hpp"
 #include "utilities.hpp"
 #include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
-#include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
@@ -82,7 +81,7 @@ DayCounter dayCounter_;
 std::vector<Rate> todaysForwards_, todaysSwaps_;
 std::vector<Real> coterminalAnnuity_;
 Size numberOfFactors_;
-Real alpha_;
+Real alpha_, alphaMax_, alphaMin_;
 Spread displacement_;
 std::vector<DiscountFactor> todaysDiscounts_;
 std::vector<Volatility> swaptionDisplacedVols_, swaptionVols_;
@@ -115,6 +114,8 @@ void setup() {
     todaysForwards_ = std::vector<Rate>(accruals_.size());
     numberOfFactors_ = 3;
     alpha_ = 0.0;
+    alphaMax_ = 1.0;
+    alphaMin_ = -1.0;
     displacement_ = 0.0;
     for (Size i=0; i<todaysForwards_.size(); ++i) {
         todaysForwards_[i] = 0.03 + 0.0025*i;
@@ -406,7 +407,7 @@ QL_END_TEST_LOCALS(MarketModelTest_smm)
 
 void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
 
-    BOOST_MESSAGE("Testing coterminal swap & caplet calibration "
+    BOOST_MESSAGE("Testing alpha caplet calibration "
                   "in a lognormal coterminal swap market model...");
     QL_TEST_BEGIN
     QL_TEST_SETUP
@@ -424,9 +425,9 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
 
     boost::shared_ptr<CotSwapFromFwdCorrelation> corr(new
         CotSwapFromFwdCorrelation(correlations,
-                                        *cs,
-                                        displacement_,
-                                        evolution));
+                                  *cs,
+                                  displacement_,
+                                  evolution));
 
     std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
@@ -436,46 +437,53 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
                                           i, rateTimes_));
     }
 
-    boost::shared_ptr<AlphaForm> parametricform(new AlphaFormLinearHyperbolic(evolution.rateTimes()));
-    std::vector<Real> alphaInitial(numberOfRates,alpha_);
-    std::vector<Real> alphaMax(numberOfRates,1.0);
-    std::vector<Real> alphaMin(numberOfRates,-1.0);
+    // create calibrator
+    CapletCoterminalSwaptionCalibration2 calibrator(evolution,
+                                                    corr,
+                                                    swapVariances,
+                                                    capletVols_,
+                                                    cs,
+                                                    displacement_);
+    // calibrate
+    bool maximizeHomogeneity = false; //?
+    std::vector<Real> alphaInitial(numberOfRates, alpha_);
+    std::vector<Real> alphaMax(numberOfRates,  1.0);
+    std::vector<Real> alphaMin(numberOfRates, -1.0);
 
-    Integer steps =50;
-    Real toleranceForAlphaSolving=1e-9;
+    Integer steps = 100;
+    Real toleranceForAlphaSolving = 1e-8;
 
-    Size maxIterations=10;
-    Real toleranceForIterativeSolving = 1e-4; // i.e. 1 bp
+    Size maxIterations = 10;
+    Real capletTolerance = 1e-4; // i.e. 1 bp
+    if (printReport_) {
+        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_MESSAGE("alphaMin:           " << alphaMin_);
+        BOOST_MESSAGE("alphaInitial:       " << alpha_);
+        BOOST_MESSAGE("alphaMax:           " << alphaMax_);
+        BOOST_MESSAGE("maxIterations:      " << maxIterations);
+        BOOST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
+        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
+    }
 
-    std::vector<Matrix> swapPseudoRoots;
-    bool result = calibrationOfAlphaFunction(
-                            evolution,
-                            *corr,
-                            swapVariances,
-                            capletVols_,
-                            *cs,
-                            displacement_,
-                            numberOfFactors_,
-                            parametricform,
-                            alphaInitial,
-                            alphaMax,
-                            alphaMin,
-                            steps,
-                            toleranceForAlphaSolving,
-                            maxIterations,
-                            toleranceForIterativeSolving,
-                            swapPseudoRoots
-    );
-
+    bool result = calibrator.calibrate(numberOfFactors_,
+                                       maxIterations,
+                                       capletTolerance,
+                                       steps,
+                                       toleranceForAlphaSolving,
+                                       maximizeHomogeneity,
+                                       alphaInitial,
+                                       alphaMax,
+                                       alphaMin);
     if (!result)
         BOOST_FAIL("calibration failed");
 
+    const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
     boost::shared_ptr<MarketModel> smm(new
         PseudoRootFacade(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),
                          std::vector<Spread>(numberOfRates, displacement_)));
-
     CotSwapToFwdAdapter flmm(smm);
     Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
@@ -486,33 +494,25 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols));
-      }
+        BOOST_MESSAGE("rmsError: " << calibrator.rmsError());
+    }
 
     // check perfect swaption fit
     Real error, swapTolerance = 1e-14;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
-
-    for (Size i=0; i<numberOfRates; ++i)
-    {
+    for (Size i=0; i<numberOfRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
         swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
-
         if (error>swapTolerance)
-        {
             BOOST_MESSAGE("\n failed to reproduce "
                        << io::ordinal(i) << " swaption vol:"
                        "\n expected:  " << io::rate(expSwaptionVol) <<
                        "\n realized:  " << io::rate(swaptionVol) <<
                        "\n error:     " << error <<
                        "\n tolerance: " << swapTolerance);
-
-        }
     }
-
-    Real capletTolerance = 0.001;
-    bool     fail=false;
 
     // check caplet fit
     // the last caplet vol has not been used in calibration as it is assumed
@@ -520,20 +520,14 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     for (Size i=0; i<numberOfRates-1; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
-        {
-            BOOST_MESSAGE("\n failed to reproduce "
-                       << io::ordinal(i) << " caplet vol:"
-                       "\n expected:         " << io::rate(capletVols_[i]) <<
-                       "\n realized:         " << io::rate(capletVols[i]) <<
-                       "\n percentage error: " << error/capletVols_[i] <<
-                       "\n error:            " << error <<
-                       "\n tolerance:        " << capletTolerance);
-            fail=true;
-        }
+            BOOST_ERROR("\n failed to reproduce "
+                        << io::ordinal(i) << " caplet vol:"
+                        "\n expected:         " << io::rate(capletVols_[i]) <<
+                        "\n realized:         " << io::rate(capletVols[i]) <<
+                        "\n percentage error: " << error/capletVols_[i] <<
+                        "\n error:            " << error <<
+                        "\n tolerance:        " << capletTolerance);
     }
-    if (fail)
-          BOOST_FAIL("\n failed to reproduce caplet vols");
-
 
     QL_TEST_END
 }

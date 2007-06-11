@@ -95,7 +95,7 @@ namespace QuantLib {
         QL_REQUIRE(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)==evolutionTimes,
                    "mismatch between evolutionTimes and rateTimes");
 
-        Real extraMultiplier =useFullAprox ? 1.0 : 0.0;
+        Real extraMultiplier = useFullAprox ? 1.0 : 0.0;
 
         Size numberOfSteps = evolution.numberOfSteps();
 
@@ -334,11 +334,11 @@ namespace QuantLib {
 
     bool CapletCoterminalSwaptionCalibration::calibrate(
                             Size numberOfFactors,
+                            Size maxIterations,
+                            Real tolerance,
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
-                            bool useFullApprox,
-                            Size maxIterations,
-                            Real tolerance) {
+                            bool useFullApprox) {
 
         Size numberOfRates = evolution_.numberOfRates();
         negDiscr_ = 0;

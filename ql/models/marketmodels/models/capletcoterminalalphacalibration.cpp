@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,6 +20,7 @@
 
 #include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/models/alphafinder.hpp>
+#include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
@@ -28,7 +30,30 @@
 
 namespace QuantLib {
 
-    bool calibrationOfAlphaFunctionData(
+    CapletCoterminalSwaptionCalibration2::CapletCoterminalSwaptionCalibration2(
+                            const EvolutionDescription& evolution,
+                            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+                            const std::vector<boost::shared_ptr<
+                                        PiecewiseConstantVariance> >&
+                                                displacedSwapVariances,
+                            const std::vector<Volatility>& mktCapletVols,
+                            const boost::shared_ptr<CurveState>& cs,
+                            Spread displacement,
+                            boost::shared_ptr<AlphaForm> parametricform)
+    : evolution_(evolution),  corr_(corr),
+      displacedSwapVariances_(displacedSwapVariances),
+      mktCapletVols_(mktCapletVols),
+      cs_(cs), displacement_(displacement),
+      parametricform_(parametricform),
+      calibrated_(false),
+      alpha_(evolution_.numberOfRates()),
+      a_(evolution_.numberOfRates()), b_(evolution_.numberOfRates()) {
+          if (!parametricform_)
+              parametricform_ = boost::shared_ptr<AlphaForm>(new
+                AlphaFormLinearHyperbolic(evolution.rateTimes()));
+    }
+
+    bool CapletCoterminalSwaptionCalibration2::calibrationOfAlphaFunctionData(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
@@ -42,7 +67,7 @@ namespace QuantLib {
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
-            Integer steps,
+            Integer iterationsForAlphaSolving,
             Real toleranceForAlphaSolving,
             bool maximizeHomogeneity,
             std::vector<Real>& alpha,
@@ -80,15 +105,15 @@ namespace QuantLib {
 
         QL_REQUIRE(numberOfRates==alphaInitial.size(),
             "mismatch between number of rates (" << numberOfRates <<
-            ") and alphas (" << alphaInitial.size() << ")");
+            ") and alphaInitial (" << alphaInitial.size() << ")");
 
         QL_REQUIRE(numberOfRates==alphaMax.size(),
             "mismatch between number of rates (" << numberOfRates <<
-            ") and alphas (" << alphaMax.size() << ")");
+            ") and alphaMax (" << alphaMax.size() << ")");
 
         QL_REQUIRE(numberOfRates==alphaMin.size(),
             "mismatch between number of rates (" << numberOfRates <<
-            ") and alphas (" << alphaMin.size() << ")");
+            ") and alphaMin (" << alphaMin.size() << ")");
 
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         std::vector<Time> temp(rateTimes.begin(), rateTimes.end()-1);
@@ -104,10 +129,6 @@ namespace QuantLib {
             corrPseudo[i] = rankReducedSqrt(corr.correlation(i),
             numberOfFactors, 1.0,
             SalvagingAlgorithm::None);
-
-        alpha.resize(numberOfRates);
-        a.resize(numberOfRates);
-        b.resize(numberOfRates);
 
         alpha[0] = alphaInitial[0]; // has no effect on anything in any case
         a[0] = b[0] = 1.0; // no modifications to swap vol for first rate
@@ -130,10 +151,10 @@ namespace QuantLib {
         newVols.push_back(rateonevols);
 
 
-        for (Size i =0; i < numberOfRates-1; ++i) {
+        // final caplet and swaption are the same, so we skip that case
+        for (Size i=0; i<numberOfRates-1; ++i) {
             // we will calibrate caplet on forward rate i,
             // we will do this by modifying the vol of swap rate i+1
-            // final caplet and swaption are the same, so we skip that case
             const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
             for (Size j =0; j < i+2; ++j)
@@ -171,7 +192,7 @@ namespace QuantLib {
                                                     toleranceForAlphaSolving,
                                                     alphaMax[i+1],
                                                     alphaMin[i+1],
-                                                    steps,
+                                                    iterationsForAlphaSolving,
                                                     alpha[i+1],
                                                     a[i+1],
                                                     b[i+1],
@@ -188,7 +209,7 @@ namespace QuantLib {
                                        toleranceForAlphaSolving,
                                        alphaMax[i+1],
                                        alphaMin[i+1],
-                                       steps,
+                                       iterationsForAlphaSolving,
                                        alpha[i+1],
                                        a[i+1],
                                        b[i+1],
@@ -225,142 +246,144 @@ namespace QuantLib {
     }
 
 
-    bool calibrationOfAlphaFunctionDataIterative(
-        const EvolutionDescription& evolution,
-        const PiecewiseConstantCorrelation& corr,
-        const std::vector<boost::shared_ptr<
-        PiecewiseConstantVariance> >&
-        displacedSwapVariances,
-        const std::vector<Volatility>& capletVols,
-        const CurveState& cs,
-        const Spread displacement,
-        const Size numberOfFactors,
-        boost::shared_ptr<AlphaForm> parametricform,
-        const std::vector<Real>& alphaInitial,
-        const std::vector<Real>& alphaMax,
-        const std::vector<Real>& alphaMin,
-        Integer steps,
-        Real toleranceForAlphaSolving,
-        bool maximizeHomogeneity,
-        Size maxIterations,
-        Real toleranceForIterativeSolving,
-        std::vector<Real>& alpha, // for info only,
-        std::vector<Real>& a,     // for info only,
-        std::vector<Real>& b,     // for info only,
-        std::vector<Matrix>& swapCovariancePseudoRoots // the real result
-        )
-    {
-        std::vector<Volatility> modifiedCapletVols=capletVols;
-        Real error;
-        Size iterations=0;
-        Size numberOfRates = evolution.numberOfRates();
+    bool CapletCoterminalSwaptionCalibration2::calibrate(
+                Size numberOfFactors,
+                Size maxIterationsForIterative,
+                Real toleranceForIterativeSolving,
+                Size iterationsForAlphaSolving,
+                Real toleranceForAlphaSolving,
+                bool maximizeHomogeneity,
+                const std::vector<Real>& alphaInitial,
+                const std::vector<Real>& alphaMax,
+                const std::vector<Real>& alphaMin) {
 
+        Size numberOfRates = evolution_.numberOfRates();
+        deformationSize_ = 0.0;
+        error_ = 987654321; // a positive large number
+        calibrated_ = false;
+        bool success = true;
+
+        std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
+        Size iterations=0;
         do {
-            bool success = calibrationOfAlphaFunctionData(
-                evolution,
-                corr,
-                displacedSwapVariances,
-                modifiedCapletVols,
-                cs,
-                displacement,
-                numberOfFactors,
-                parametricform,
-                alphaInitial,
-                alphaMax,
-                alphaMin,
-                steps,
-                toleranceForAlphaSolving,
-                maximizeHomogeneity,
-                alpha,
-                a,
-                b,
-                swapCovariancePseudoRoots);
+            success = calibrationOfAlphaFunctionData(evolution_,
+                                                     *corr_,
+                                                     displacedSwapVariances_,
+                                                     modifiedCapletVols,
+                                                     *cs_,
+                                                     displacement_,
+                                                     numberOfFactors,
+                                                     parametricform_,
+                                                     alphaInitial,
+                                                     alphaMax,
+                                                     alphaMin,
+                                                     iterationsForAlphaSolving,
+                                                     toleranceForAlphaSolving,
+                                                     maximizeHomogeneity,
+                                                     alpha_,
+                                                     a_,
+                                                     b_,
+                                                     swapCovariancePseudoRoots_);
             if (!success)
                 return false;
 
-            std::vector<Spread> displacements(evolution.numberOfRates(),
-                                              displacement);
+            std::vector<Spread> displacements(numberOfRates,
+                                              displacement_);
+            const std::vector<Time>& rateTimes = evolution_.rateTimes();
             boost::shared_ptr<MarketModel> smm(new
-                PseudoRootFacade(swapCovariancePseudoRoots,
-                                 evolution.rateTimes(),
-                                 cs.coterminalSwapRates(),
+                PseudoRootFacade(swapCovariancePseudoRoots_,
+                                 rateTimes,
+                                 cs_->coterminalSwapRates(),
                                  displacements));
-
             CotSwapToFwdAdapter flmm(smm);
-            Matrix capletTotCovariance =
-                            flmm.totalCovariance(evolution.numberOfRates()-1);
+            // avoid this copy
+            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
 
-            std::vector<Volatility> capletVolsOutput(numberOfRates);
-            for (Size i=0; i<numberOfRates; ++i) {
-                capletVolsOutput[i] = std::sqrt(capletTotCovariance[i][i] /
-                                                evolution.rateTimes()[i]);
-            }
-
-            error=0.0;
             // check caplet fit
+            error_=0.0;
+            std::vector<Volatility> mdlCapletVols(numberOfRates);
             for (Size i=0; i<numberOfRates-1; ++i) {
-                Real thisError = capletVols[i]-capletVolsOutput[i];
-                error += thisError*thisError;
-
-                modifiedCapletVols[i] = modifiedCapletVols[i] * capletVols[i] /
-                                                            capletVolsOutput[i];
+                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real diff = mktCapletVols_[i]-mdlCapletVols[i];
+                error_ += diff*diff;
+                modifiedCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
             }
+            error_ = std::sqrt(error_/(numberOfRates-1));
             ++iterations;
-        }
+        } while (iterations<maxIterationsForIterative &&
+                 error_>toleranceForIterativeSolving);
 
-        while (iterations<maxIterations &&
-               sqrt(error)>toleranceForIterativeSolving);
-
-        return true;
+        calibrated_ = true;
+        return success;
     }
 
-    bool calibrationOfAlphaFunction(
-        const EvolutionDescription& evolution,
-        const PiecewiseConstantCorrelation& corr,
-        const std::vector<boost::shared_ptr<
-        PiecewiseConstantVariance> >&
-        displacedSwapVariances,
-        const std::vector<Volatility>& capletVols,
-        const CurveState& cs,
-        const Spread displacement,
-        const Size numberOfFactors,
-        boost::shared_ptr<AlphaForm> parametricform,
-        const std::vector<Real>& alphaInitial,
-        const std::vector<Real>& alphaMax,
-        const std::vector<Real>& alphaMin,
-        Integer steps,
-        Real toleranceForAlphaSolving,
-        Size maxIterations,
-        Real toleranceForIterativeSolving,
-        std::vector<Matrix>& swapCovariancePseudoRoots
-        )
-    {
-        std::vector<Real> alpha(evolution.numberOfRates());
-        std::vector<Real> a(evolution.numberOfRates());
-        std::vector<Real> b(evolution.numberOfRates());
-
-        return calibrationOfAlphaFunctionDataIterative(
-            evolution,
-            corr,
-            displacedSwapVariances,
-            capletVols,
-            cs,
-            displacement,
-            numberOfFactors,
-            parametricform,
-            alphaInitial,
-            alphaMax,
-            alphaMin,
-            steps,
-            toleranceForAlphaSolving,
-            true,
-            maxIterations,
-            toleranceForIterativeSolving,
-            alpha,
-            a,
-            b,
-            swapCovariancePseudoRoots
-            );
+    Real CapletCoterminalSwaptionCalibration2::rmsError() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return error_;
     }
+
+    const std::vector<Matrix>&
+    CapletCoterminalSwaptionCalibration2::swapPseudoRoots() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return swapCovariancePseudoRoots_;
+    }
+
+    const Matrix&
+    CapletCoterminalSwaptionCalibration2::swapPseudoRoot(Size i) const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
+                   i << "is an invalid index, must be less than "
+                   << swapCovariancePseudoRoots_.size());
+        return swapCovariancePseudoRoots_[i];
+    }
+
+    //bool calibrationOfAlphaFunction(
+    //    const EvolutionDescription& evolution,
+    //    const PiecewiseConstantCorrelation& corr,
+    //    const std::vector<boost::shared_ptr<
+    //    PiecewiseConstantVariance> >&
+    //    displacedSwapVariances,
+    //    const std::vector<Volatility>& capletVols,
+    //    const CurveState& cs,
+    //    const Spread displacement,
+    //    const Size numberOfFactors,
+    //    boost::shared_ptr<AlphaForm> parametricform,
+    //    const std::vector<Real>& alphaInitial,
+    //    const std::vector<Real>& alphaMax,
+    //    const std::vector<Real>& alphaMin,
+    //    Integer iterationsForAlphaSolving,
+    //    Real toleranceForAlphaSolving,
+    //    Size maxIterationsForIterative,
+    //    Real toleranceForIterativeSolving,
+    //    std::vector<Matrix>& swapCovariancePseudoRoots
+    //    )
+    //{
+    //    std::vector<Real> alpha(evolution.numberOfRates());
+    //    std::vector<Real> a(evolution.numberOfRates());
+    //    std::vector<Real> b(evolution.numberOfRates());
+
+    //    return calibrationOfAlphaFunctionDataIterative(
+    //        evolution,
+    //        corr,
+    //        displacedSwapVariances,
+    //        capletVols,
+    //        cs,
+    //        displacement,
+    //        numberOfFactors,
+    //        parametricform,
+    //        alphaInitial,
+    //        alphaMax,
+    //        alphaMin,
+    //        iterationsForAlphaSolving,
+    //        toleranceForAlphaSolving,
+    //        true,
+    //        maxIterationsForIterative,
+    //        toleranceForIterativeSolving,
+    //        alpha,
+    //        a,
+    //        b,
+    //        swapCovariancePseudoRoots
+    //        );
+    //}
 
 }

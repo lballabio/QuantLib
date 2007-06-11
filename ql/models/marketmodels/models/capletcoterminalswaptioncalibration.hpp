@@ -45,11 +45,11 @@ namespace QuantLib {
             Spread displacement);
         // modifiers
         bool calibrate(Size numberOfFactors,
+                       Size maxIterations,
+                       Real capletVolTolerance,
                        const std::vector<Real>& alpha,
                        bool lowestRoot,
-					   bool useFullApprox,
-                       Size maxIterations,
-                       Real tolerance);
+					   bool useFullApprox);
         // inspectors
         Size negativeDiscriminants() const;
         Real rmsError() const;

@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,7 +19,6 @@
 */
 
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
-#include <ql/models/marketmodels/models/alphafinder.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
@@ -177,8 +177,7 @@ namespace QuantLib {
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
-                PiecewiseConstantVariance> >&
-                displacedSwapVariances,
+                PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
             const Spread displacement,
@@ -248,7 +247,8 @@ namespace QuantLib {
         std::vector<Real> correlations(numberOfRates);
         newVols.push_back(firstRateVols);
 
-        for (Size i =0; i < numberOfRates-1; ++i) {
+        // final caplet and swaption are the same, so we skip that case
+        for (Size i=0; i<numberOfRates-1; ++i) {
               const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
 
@@ -315,22 +315,20 @@ namespace QuantLib {
 
     bool CapletCoterminalSwaptionCalibration3::calibrate(
                             Size numberOfFactors,
-                            Size iterationsForHomogeneous,
-                            Real toleranceHomogeneousSolving,
                             Size maxIterationsForIterative,
-                            Real toleranceForIterativeSolving) {
+                            Real toleranceForIterativeSolving,
+                            Size iterationsForHomogeneous,
+                            Real toleranceHomogeneousSolving) {
 
         Size numberOfRates = evolution_.numberOfRates();
-        deformationSize_=0.0;
+        deformationSize_ = 0.0;
         error_ = 987654321; // a positive large number
         calibrated_ = false;
         bool success = true;
 
         std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
         Size iterations=0;
-
-        do
-        {
+        do {
             success = calibrationOfMaxHomogeneity(evolution_,
                                                   *corr_,
                                                   displacedSwapVariances_,
@@ -346,9 +344,9 @@ namespace QuantLib {
             if (!success)
                 return success;
 
-            const std::vector<Time>& rateTimes = evolution_.rateTimes();
             std::vector<Spread> displacements(numberOfRates,
                                               displacement_);
+            const std::vector<Time>& rateTimes = evolution_.rateTimes();
             boost::shared_ptr<MarketModel> smm(new
                 PseudoRootFacade(swapCovariancePseudoRoots_,
                                  rateTimes,
@@ -369,10 +367,8 @@ namespace QuantLib {
             }
             error_ = std::sqrt(error_/(numberOfRates-1));
             ++iterations;
-        }
-
-        while (iterations<maxIterationsForIterative &&
-               error_>toleranceForIterativeSolving);
+        } while (iterations<maxIterationsForIterative &&
+                 error_>toleranceForIterativeSolving);
 
         calibrated_ = true;
         return success;

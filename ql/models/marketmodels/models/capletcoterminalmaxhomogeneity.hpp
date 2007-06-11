@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Mark Joshi
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_caplet_coterminal_max_homogenity_calibration_hpp
-#define quantlib_caplet_coterminal_max_homogenity_calibration_hpp
+#ifndef quantlib_caplet_coterminal_max_homogeneity_calibration_hpp
+#define quantlib_caplet_coterminal_max_homogeneity_calibration_hpp
 
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
@@ -45,11 +46,10 @@ namespace QuantLib {
             Spread displacement);
         // modifiers
         bool calibrate(Size numberOfFactors,
-                       Size iterationsForHomogeneous,
-                       Real toleranceHomogeneousSolving,
-                       Size maxIterationsForIterative,
-                       Real toleranceForIterativeSolving);
-
+                       Size maxIterations,
+                       Real capletVolTolerance,
+                       Size iterationsForHomogeneous = 100,
+                       Real toleranceHomogeneousSolving = 1e-8);
         // inspectors
         Real deformationSize() const;
         Real rmsError() const; // caplet
