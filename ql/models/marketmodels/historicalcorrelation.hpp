@@ -39,12 +39,12 @@ namespace QuantLib {
 
     template<class Traits, class Interpolator>
     Disposable<Matrix> historicalCorrelations(
-                Date startDate,
-                Date endDate,
-                Period step,
-                const boost::shared_ptr<InterestRateIndex> fwdIndex,
-                Period initialGap,
-                Period horizon,
+                const Date& startDate,
+                const Date& endDate,
+                const Period& step,
+                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const Period& initialGap,
+                const Period& horizon,
                 const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
