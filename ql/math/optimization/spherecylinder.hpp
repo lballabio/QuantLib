@@ -26,11 +26,12 @@
 #define quantlib_optimization_sphere_cylinder_hpp
 
 #include <ql/types.hpp>
+#include <vector>
 
 namespace QuantLib {
 
-    /*! we are in R^3 sphere centred at O radius R
-        vertical cylinder centred at (\alpha,0) radius S
+    /*! we are in r^3 sphere centred at O radius r
+        vertical cylinder centred at (\alpha,0) radius s
         Z some point in R3
         find point on intersection that is closest to Z
 
@@ -38,28 +39,36 @@ namespace QuantLib {
     */
     class SphereCylinderOptimizer {
       public:
-        SphereCylinderOptimizer(Real R,
-                                Real S,
+        SphereCylinderOptimizer(Real r,
+                                Real s,
                                 Real alpha,
-                                Real Z1,
-                                Real Z2,
-                                Real Z3);
+                                Real z1,
+                                Real z2,
+                                Real z3);
         bool isIntersectionNonEmpty() const;
         void findClosest(Size maxIterations,
                          Real tolerance,
                          Real& y1,
                          Real& y2,
                          Real& y3) const;
-
         bool findByProjection(
                          Real& y1,
                          Real& y2,
                          Real& y3) const;
       private:
-        Real R_, S_, alpha_, Z1_, Z2_, Z3_;
+        Real r_, s_, alpha_, z1_, z2_, z3_;
         Real objectiveFunction(Real x2) const;
         Real topValue_;
     };
+
+    std::vector<Real> sphereCylinderOptimizerClosest(Real r,
+                                                     Real s,
+                                                     Real alpha,
+                                                     Real z1,
+                                                     Real z2,
+                                                     Real z3,
+                                                     Natural maxIterations,
+                                                     Real tolerance);
 
 }
 
