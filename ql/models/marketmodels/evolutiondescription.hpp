@@ -21,9 +21,9 @@
 #ifndef quantlib_evolution_description_hpp
 #define quantlib_evolution_description_hpp
 
-#include <ql/math/array.hpp>
-#include <ql/math/matrix.hpp>
 #include <vector>
+#include <ql/types.hpp>
+
 
 namespace QuantLib {
 

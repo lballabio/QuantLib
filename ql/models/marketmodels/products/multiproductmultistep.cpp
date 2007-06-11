@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

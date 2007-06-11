@@ -22,6 +22,7 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

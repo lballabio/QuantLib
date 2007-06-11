@@ -23,6 +23,7 @@
 
 #include <ql/models/marketmodels/multiproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 

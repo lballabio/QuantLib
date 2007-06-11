@@ -23,6 +23,7 @@
 
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
