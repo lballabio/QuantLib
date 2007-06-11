@@ -1,6 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
+ Copyright (C) 2007 François du Vignaud
  Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -79,6 +81,17 @@ namespace QuantLib {
     };
 
 
+    class SafeSettingsBackUp {
+      public:
+          SafeSettingsBackUp();
+          ~SafeSettingsBackUp();
+      private:
+          Date date_;
+          bool enforceTodaysHistoricFixings_;
+    };
+
+
+
     // inline definitions
 
     inline Settings::DateProxy& Settings::evaluationDate() {
@@ -102,6 +115,17 @@ namespace QuantLib {
     Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
         ObservableValue<Date>::operator=(d);
         return *this;
+    }
+
+    inline SafeSettingsBackUp::SafeSettingsBackUp()
+    : date_(Settings::instance().evaluationDate()),
+      enforceTodaysHistoricFixings_(
+        Settings::instance().enforceTodaysHistoricFixings()) {}
+
+    inline SafeSettingsBackUp::~SafeSettingsBackUp() {
+      Settings::instance().evaluationDate() = date_;
+      Settings::instance().setEnforceTodaysHistoricFixings(
+          enforceTodaysHistoricFixings_);
     }
 
     inline std::ostream& operator<<(std::ostream& out,
