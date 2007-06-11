@@ -2365,6 +2365,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\marketmodeldifferences.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\multiproduct.hpp"
 					>
 				</File>
@@ -2873,6 +2877,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneoustimedependentforwardcorrelation.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneoustimedependentforwardcorrelation.hpp"
 						>
 					</File>
 				</Filter>
