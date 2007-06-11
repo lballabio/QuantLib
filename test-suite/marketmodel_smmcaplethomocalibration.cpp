@@ -22,6 +22,8 @@
 
 #include "marketmodel_smmcaplethomocalibration.hpp"
 #include "utilities.hpp"
+
+#include <ql/math/optimization/spherecylinder.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
@@ -521,11 +523,32 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 }
 
 
+
+
+void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
+
+    BOOST_MESSAGE("testSphereCylinder");
+
+    
+
+    //SphereCylinderOptimizer(Real R,
+    //                            Real S,
+    //                            Real alpha,
+    //                            Real Z1,
+    //                            Real Z2,
+    //                            Real Z3);
+
+
+    
+    }
+
+
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
     suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testFunction));
+    suite->add(BOOST_TEST_CASE(&MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 
     return suite;
 }

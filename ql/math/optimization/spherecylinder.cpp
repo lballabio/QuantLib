@@ -105,7 +105,7 @@ namespace QuantLib {
         if (cylinderInside >0.0)
             topValue_ = S;
         else
-            topValue_ = S*S - cylinderInside*cylinderInside/(4*alpha*alpha);
+            topValue_ = sqrt(S*S - cylinderInside*cylinderInside/(4*alpha*alpha));
     }
 
     bool SphereCylinderOptimizer::isIntersectionNonEmpty() const {
@@ -135,5 +135,39 @@ namespace QuantLib {
 
         return err;
     }
+
+    bool SphereCylinderOptimizer::findByProjection(
+                                              Real& y1,
+                                              Real& y2,
+                                              Real& y3) const 
+    {
+        Real z1moved = Z1_-alpha_;
+        Real distance = sqrt( z1moved*z1moved + Z2_*Z2_);
+        Real scale = S_/distance;
+        Real y1moved = z1moved*scale;
+        y1 = alpha_+ y1moved;
+        y2 = scale*Z2_;
+        Real residual = R_*R_ - y1*y1 -y2*y2;
+        if (residual >=0.0)
+            {
+                y3 = sqrt(residual);
+                return true;
+            }
+        // we are outside the sphere
+        if (!isIntersectionNonEmpty())
+        {
+            y3=0.0;
+            return false;
+       }
+
+       // intersection is non-empty but projection point is outside sphere
+       // so take rightmost point
+       y3 = 0.0;
+       y2 = topValue_;
+       y1 = sqrt(R_*R_ -y2*y2);
+       return true;
+
+    }
+
 
 }

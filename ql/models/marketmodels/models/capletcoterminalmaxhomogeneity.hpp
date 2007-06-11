@@ -56,7 +56,7 @@ namespace QuantLib {
         const std::vector<Matrix>& swapPseudoRoots() const;
         const Matrix& swapPseudoRoot(Size i) const;
         // actual calibration function
-        static bool calibrationOfMaxHomogeneity(
+        static Size calibrationOfMaxHomogeneity(
                     const EvolutionDescription& evolution,
                     const PiecewiseConstantCorrelation& corr,
                     const std::vector<boost::shared_ptr<
@@ -84,6 +84,7 @@ namespace QuantLib {
         // results
         bool calibrated_;
         Real error_, deformationSize_;
+        Size failures_;
         std::vector<Matrix> swapCovariancePseudoRoots_;
     };
 

@@ -50,6 +50,11 @@ namespace QuantLib {
                          Real& y1,
                          Real& y2,
                          Real& y3) const;
+
+        bool findByProjection(
+                         Real& y1,
+                         Real& y2,
+                         Real& y3) const;
       private:
         Real R_, S_, alpha_, Z1_, Z2_, Z3_;
         Real objectiveFunction(Real x2) const;

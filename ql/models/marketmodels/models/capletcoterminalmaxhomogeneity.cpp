@@ -129,14 +129,32 @@ namespace QuantLib {
 
             SphereCylinderOptimizer optimizer(R, S, alpha, movedTarget[0], movedTarget[1],movedTarget[movedTarget.size()-1]);
 
-            if (!optimizer.isIntersectionNonEmpty())
-                return false;
+            bool success = false;
 
-            optimizer.findClosest(maxIterations,
-                                  tolerance,
-                                  Z1,
-                                  Z2,
-                                  Z3);
+            if (!optimizer.isIntersectionNonEmpty())
+            {
+                Z1 = R;
+                Z2 = 0.0;
+                Z3 = 0.0;
+            }
+            else
+            {
+                success = true;
+
+                if (maxIterations > 0.0)
+                {
+                    optimizer.findClosest(maxIterations,
+                                      tolerance,
+                                      Z1,
+                                      Z2,
+                                      Z3);
+                }
+                else
+                    optimizer.findByProjection(
+                                          Z1,
+                                          Z2,
+                                          Z3);
+            }
 
             Array rotatedSolution(capletNumber+2,0.0);
             rotatedSolution[0] = Z1;
@@ -153,7 +171,7 @@ namespace QuantLib {
                     solution[i]=0.0;
             }
 
-            return true;
+            return success;
 
         }
 
@@ -173,7 +191,7 @@ namespace QuantLib {
       mktCapletVols_(mktCapletVols),
       cs_(cs), displacement_(displacement), calibrated_(false) {}
 
-    bool CapletCoterminalSwaptionCalibration3::calibrationOfMaxHomogeneity(
+    Size CapletCoterminalSwaptionCalibration3::calibrationOfMaxHomogeneity(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
@@ -246,6 +264,7 @@ namespace QuantLib {
         std::vector<Volatility> secondRateVols(numberOfRates);
         std::vector<Real> correlations(numberOfRates);
         newVols.push_back(firstRateVols);
+        Size failures=0;
 
         // final caplet and swaption are the same, so we skip that case
         for (Size i=0; i<numberOfRates-1; ++i) {
@@ -279,7 +298,7 @@ namespace QuantLib {
                 theseNewVols);
 
             if (!success)
-                return success; // i.e. false
+                ++failures; // i.e. false
 
             for (Size j=0; j < i+2; ++j)
                 deformationSize += (theseNewVols[i]-secondRateVols[i])*(theseNewVols[i]-secondRateVols[i]);
@@ -309,7 +328,7 @@ namespace QuantLib {
                 << " instead of " << numberOfFactors);
         }
 
-        return true;
+        return failures;
     }
 
 
@@ -324,12 +343,12 @@ namespace QuantLib {
         deformationSize_ = 0.0;
         error_ = 987654321; // a positive large number
         calibrated_ = false;
-        bool success = true;
+        failures_= 0;
 
         std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
         Size iterations=0;
         do {
-            success = calibrationOfMaxHomogeneity(evolution_,
+            failures_ = calibrationOfMaxHomogeneity(evolution_,
                                                   *corr_,
                                                   displacedSwapVariances_,
                                                   modifiedCapletVols,
@@ -341,9 +360,7 @@ namespace QuantLib {
                                                   deformationSize_,
                                                   swapCovariancePseudoRoots_);
 
-            if (!success)
-                return success;
-
+           
             std::vector<Spread> displacements(numberOfRates,
                                               displacement_);
             const std::vector<Time>& rateTimes = evolution_.rateTimes();
@@ -368,10 +385,10 @@ namespace QuantLib {
             error_ = std::sqrt(error_/(numberOfRates-1));
             ++iterations;
         } while (iterations<maxIterationsForIterative &&
-                 error_>toleranceForIterativeSolving);
+                 error_>toleranceForIterativeSolving && failures_==0);
 
         calibrated_ = true;
-        return success;
+        return failures_==0;
     }
 
     Real CapletCoterminalSwaptionCalibration3::deformationSize() const {
