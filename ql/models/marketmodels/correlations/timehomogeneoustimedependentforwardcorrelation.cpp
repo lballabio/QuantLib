@@ -31,8 +31,8 @@ namespace QuantLib {
                                     Real beta,
                                     Real gamma)
     : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
-      rateTimes_(rateTimes), times_(numberOfRates_),
       longTermCorr_(longTermCorr), beta_(beta), gamma_(gamma),
+      rateTimes_(rateTimes), times_(numberOfRates_),
       correlations_(numberOfRates_, Matrix(numberOfRates_,
                                            numberOfRates_,
                                            0.0)) {
@@ -59,7 +59,7 @@ namespace QuantLib {
         }
     }
 
-    const std::vector<Time>& 
+    const std::vector<Time>&
         TimeHomogeneousTimeDependentForwardCorrelation::times() const {
         return times_;
     }
