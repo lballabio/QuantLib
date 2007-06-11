@@ -46,14 +46,13 @@ namespace QuantLib {
                    "mismatch between number of rates (" << numberOfRates_ <<
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
 
-        std::copy(rateTimes.begin(), rateTimes.end()-1,
-                  times_.begin());
+        std::copy(rateTimes.begin(), rateTimes.end()-1, times_.begin());
 
         for (Size k=0; k<correlations_.size(); ++k) {
             // proper diagonal values
             for (Size i=0; i<numberOfRates_; ++i)
                 correlations_[k][i][i] = 1.0;
-            // copy only time hogeneous values
+            // copy only time homogeneous values
             for (Size i=k; i<numberOfRates_; ++i) {
                 for (Size j=k; j<i; ++j) {
                     correlations_[k][i][j] = correlations_[k][j][i] =
@@ -61,8 +60,6 @@ namespace QuantLib {
                 }
             }
         }
-
-
     }
 
     const std::vector<Time>& TimeHomogeneousForwardCorrelation::times() const {
