@@ -7,7 +7,7 @@
 # shouldn't be converted
 
 tar xfz $1.tar.gz
-find $1 | grep -v '\.\(\(bmp\)\|\(jpg\)\|\(ico\)\|\(pdf\)\|\(png\)\|\(gif\)\)$' | xargs todos -o -p
+find $1 | grep -v '\.\(\(bmp\)\|\(jpg\)\|\(ico\)\|\(pdf\)\|\(png\)\|\(gif\)\)$' | grep -v '\.\(\(ac\)\|\(am\)\|\(m4\)\|\(in\)\|\(sh\)\)$' | grep -v '/configure$' | grep -v '/depcomp$' | grep -v '/elisp-comp$' | grep -v '/install-sh$' | grep -v '/missing$' | grep -v '/config\.sub$' | grep -v '/config\.guess$' || xargs todos -o -p
 zip -q -9 -r $1.zip $1
 rm -r $1
 
