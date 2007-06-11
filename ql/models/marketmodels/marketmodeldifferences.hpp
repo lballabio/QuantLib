@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    Disposable<std::vector<Real> > totalCovariancesDifferences(
+    Disposable<std::vector<Volatility> > rateVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
@@ -44,43 +44,48 @@ namespace QuantLib {
             = marketModel1.totalCovariance(marketModel1.numberOfSteps()-1);
         const Matrix& totalCovariance2 
             = marketModel2.totalCovariance(marketModel2.numberOfSteps()-1);
-        std::vector<Real> differences(totalCovariance1.columns());
-        Time maturity = evolutionDescription1.evolutionTimes().back();
-        for(Size i=0; i< totalCovariance1.columns(); ++i)
-            differences[i] = (totalCovariance1[i][i]-totalCovariance2[i][i])
-            /std::sqrt(maturity);
-        return differences;
+        const std::vector<Time>& maturities =
+            evolutionDescription1.evolutionTimes();
+
+        std::vector<Volatility> result(totalCovariance1.columns());
+        for (Size i=0; i<totalCovariance1.columns(); ++i) {
+            Real diff = totalCovariance1[i][i]-totalCovariance2[i][i];
+            result[i] = std::sqrt(diff/maturities[i]);
+        }
+        return result;
     }       
 
-    Disposable<std::vector<Real> > forwardRateCovariancesDifferences(
+    Disposable<std::vector<Real> > rateInstVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2, 
                                            Size index) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
                   "initialRates do not match");
-        const EvolutionDescription& evolutionDescription1 
+        const EvolutionDescription& evolutionDescription1
                                            = marketModel1.evolution();
-        const EvolutionDescription& evolutionDescription2 
+        const EvolutionDescription& evolutionDescription2
                                            = marketModel2.evolution();
         QL_ENSURE(evolutionDescription1.evolutionTimes()
                   == evolutionDescription2.evolutionTimes(),
                   "Evolution times do not match");
         QL_ENSURE(index<evolutionDescription1.numberOfSteps(), 
             "the index given is greater than the number of steps");
+
         const std::vector<Time>& evolutionTimes 
             = evolutionDescription1.evolutionTimes();
-        std::vector<Real> differences(evolutionTimes.size());
+        std::vector<Real> result(evolutionTimes.size());
+
         Time previousEvolutionTime = 0;
-        for(Size i=0; i<evolutionTimes.size(); ++i) {
+        for (Size i=0; i<evolutionTimes.size(); ++i) {
             Time currentEvolutionTime = evolutionTimes[i];
+            Time dt = currentEvolutionTime - previousEvolutionTime;
             const Matrix& covariance1 = marketModel1.covariance(i);
             const Matrix& covariance2 = marketModel2.covariance(i);
-            differences[i] 
-                = (covariance1[index][index] - covariance2[index][index])
-                / std::sqrt(currentEvolutionTime - previousEvolutionTime);
+            Real diff = covariance1[index][index] - covariance2[index][index];
+            result[i] = std::sqrt(diff/dt);
             previousEvolutionTime = currentEvolutionTime;
         }
-        return differences;
+        return result;
     }
 
 }

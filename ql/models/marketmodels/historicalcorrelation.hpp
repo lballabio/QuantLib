@@ -38,7 +38,7 @@ namespace {
     class SafeEvaluationDateBackUp {
       public:
           SafeEvaluationDateBackUp()
-              :date_(Settings::instance().evaluationDate()){}
+          : date_(Settings::instance().evaluationDate()) {}
           ~SafeEvaluationDateBackUp() {
               Settings::instance().evaluationDate() = date_;
           }
@@ -52,61 +52,72 @@ namespace QuantLib {
 
   template<class Traits, class Interpolator>
     Disposable<Matrix> computeHistoricalCorrelations(
-            Date startDate, Date endDate, Period historicalStep,
-            bool rollingForwardRatesTimeGrid,
-            const Calendar& calendar,
-            const boost::shared_ptr<InterestRateIndex> index,
-            Period forwardHorizon,
-            const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-            const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-            Natural depositSettlementDays, Natural swapSettlementDays,
-            const DayCounter& yieldCurveDayCounter,
-            Real yieldCurveAccuracy) {
+                Date startDate,
+                Date endDate,
+                Period historicalStep, // ?
+                bool rollingForwardRatesTimeGrid,
+                const Calendar& calendar, // should be the index calendar
+                const boost::shared_ptr<InterestRateIndex> fwdIndex,
+                // Period initialGap,
+                Period forwardHorizon,
+                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                Natural depositSettlementDays,
+                Natural swapSettlementDays,
+                const DayCounter& yieldCurveDayCounter,
+                Real yieldCurveAccuracy) {
+
         typedef std::vector<boost::shared_ptr<IborIndex> > IborVector;
         typedef std::vector<boost::shared_ptr<SwapIndex> > SwapVector;
+
         //backuping the evaluation date
         SafeEvaluationDateBackUp backup;
+
         std::vector<boost::shared_ptr<SimpleQuote> > iborHistoricFixings;
         std::vector<boost::shared_ptr<SimpleQuote> > swapHistoricFixings;
         std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
         IborVector::const_iterator ibor;
-        // Set up Depo historical quotes   
-        for(ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
+
+        // Create DepositRateHelper
+        for (ibor=iborIndexes.begin(); ibor!=iborIndexes.end(); ++ibor) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             iborHistoricFixings.push_back(quote);
             Handle<Quote> quoteHandle(quote); 
-            rateHelpers.push_back(boost::shared_ptr<RateHelper> (
-                new DepositRateHelper(quoteHandle,  
-                                      (*ibor)->tenor(),
-                                      depositSettlementDays,
-                                      (*ibor)->fixingCalendar(),
-                                      (*ibor)->businessDayConvention(),
-                                      (*ibor)->endOfMonth(),
-                                      (*ibor)->fixingDays(),
-                                      (*ibor)->dayCounter())));
+            rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
+                DepositRateHelper(quoteHandle,
+                                  (*ibor)->tenor(),
+                                  depositSettlementDays,
+                                  (*ibor)->fixingCalendar(),
+                                  (*ibor)->businessDayConvention(),
+                                  (*ibor)->endOfMonth(),
+                                  (*ibor)->fixingDays(),
+                                  (*ibor)->dayCounter())));
         } 
-        // Set up Swap historical quotes
+
+        // Create SwapRateHelper
         SwapVector::const_iterator swap;
-        for(swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
+        for (swap=swapIndexes.begin(); swap!=swapIndexes.end(); ++swap) {
             boost::shared_ptr<SimpleQuote> quote(new SimpleQuote);
             swapHistoricFixings.push_back(quote);
             Handle<Quote> quoteHandle(quote);
-            rateHelpers.push_back(boost::shared_ptr<RateHelper> (
-                new SwapRateHelper(quoteHandle,
-                                   (*swap)->tenor(),
-                                   swapSettlementDays,
-                                   (*swap)->fixingCalendar(),
-                                   (*swap)->fixedLegTenor().frequency(),
-                                   (*swap)->fixedLegConvention(),
-                                   (*swap)->dayCounter(),
-                                   (*swap)->iborIndex())));
+            rateHelpers.push_back(boost::shared_ptr<RateHelper> (new
+                SwapRateHelper(quoteHandle,
+                               (*swap)->tenor(),
+                               swapSettlementDays,
+                               (*swap)->fixingCalendar(),
+                               (*swap)->fixedLegTenor().frequency(),
+                               (*swap)->fixedLegConvention(),
+                               (*swap)->dayCounter(),
+                               (*swap)->iborIndex())));
         }
+
         // Set up the forward rates time grid
         std::vector<Period> forwardFixingPeriods;
-        Period indexTenor = index->tenor(); 
-        DayCounter indexDayCounter = index->dayCounter();
-        Size i=1;
-        Period forwardFixingPeriod = i*indexTenor;
+        Period indexTenor = fwdIndex->tenor(); 
+        DayCounter indexDayCounter = fwdIndex->dayCounter();
+        Size i=1; // i=0;
+        Period forwardFixingPeriod = // initialGap +
+            + i*indexTenor;
         while (forwardFixingPeriod<forwardHorizon) {
             forwardFixingPeriods.push_back(forwardFixingPeriod);
             ++i;
@@ -116,49 +127,48 @@ namespace QuantLib {
         GenericSequenceStatistics<Statistics> statistics;
         std::vector<Rate> forwardRates(forwardFixingPeriods.size());
         std::vector<Rate> forwardRatesPrevious(forwardFixingPeriods.size());
-        std::vector<Rate> forwardRatesDifferences(forwardRates.size());
+        std::vector<Rate> forwardRatesDifferences(forwardFixingPeriods.size());
 
         // Advance date
         Date today = Settings::instance().evaluationDate();
         Date currentDate = calendar.advance(startDate, Period(0, Days), 
                                             Following);
+
         // Loop over the historical dataset
         bool isFirst = true;
-        while(currentDate<=endDate) {
+        while (currentDate<=endDate) {
+
             // we set the evaluationDate equal to today, so that an 
             // error will be raised if a fixing is missing 
             Settings::instance().evaluationDate() = today;
-            //we update the quotes...
+            // we update the quotes...
             for (Size i=0; i<iborIndexes.size(); ++i)
                 iborHistoricFixings[i]
                     ->setValue(iborIndexes[i]->fixing(currentDate, false));
             for (Size i=0; i<swapIndexes.size(); ++i)
                 swapHistoricFixings[i]
                     ->setValue(swapIndexes[i]->fixing(currentDate, false));
-            //move the evaluationDate to currentDate 
-            //and update ratehelpers dates ...
+
+            // move the evaluationDate to currentDate 
+            // and update ratehelpers dates...
             Settings::instance().evaluationDate() = currentDate;
             // Bootstrap the yield curve at the currentDate 
             PiecewiseYieldCurve<Traits, Interpolator>
                     piecewiseYieldCurve(currentDate, rateHelpers, 
                     yieldCurveDayCounter, yieldCurveAccuracy);         
-            // Relative forwards: calculate relevant forward rates 
-            // on a rolling time grid
-            if (rollingForwardRatesTimeGrid) {
-                for(Size i=0; i<forwardRates.size(); ++i) {
-                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                        currentDate + forwardFixingPeriods[i],
-                        indexTenor, indexDayCounter, Simple);
-                }
-            // Absolute forwards: calculate relevant forward rates 
-            // on a fixed time grid
-            } else {
-                for(Size i=0; i<forwardRates.size(); ++i) {
-                    forwardRates[i] = piecewiseYieldCurve.forwardRate(
-                        today + forwardFixingPeriods[i],
-                        indexTenor, indexDayCounter, Simple);
-                }
+            // Time to go forwards
+            for (Size i=0; i<forwardRates.size(); ++i) {
+                forwardRates[i] = piecewiseYieldCurve.forwardRate(
+                    currentDate + forwardFixingPeriods[i],
+                    indexTenor, indexDayCounter, Simple);
             }
+            // Calendar time forwards, bad for our usage
+            //for (Size i=0; i<forwardRates.size(); ++i) {
+            //    forwardRates[i] = piecewiseYieldCurve.forwardRate(
+            //        today + forwardFixingPeriods[i],
+            //        indexTenor, indexDayCounter, Simple);
+            //}
+
             // From 2nd step onwards, calculate forward rate 
             // relative differences
             if (!isFirst)
@@ -167,15 +177,19 @@ namespace QuantLib {
                         forwardRates[i]/forwardRatesPrevious[i] - 1.0;
             else
                 isFirst = false;
+
             // Calculate correlations
             statistics.add(forwardRatesDifferences.begin(), 
                            forwardRatesDifferences.end());
+
             // Store last calculated forward rates
             std::swap(forwardRatesPrevious, forwardRates);
+
             // Advance date
-            currentDate = calendar.advance(currentDate, historicalStep, 
+            currentDate = calendar.advance(currentDate, historicalStep,
                                            Following);
         } 
+
         return statistics.correlation();
     }
 
@@ -183,7 +197,7 @@ namespace QuantLib {
     //Disposable<Matrix> computeHistoricalCorrelations1 (
     //               Date startDate, Date endDate, Period historicalStep,
     //               const Calendar& calendar,
-    //               const boost::shared_ptr<InterestRateIndex> index,
+    //               const boost::shared_ptr<InterestRateIndex> fwdIndex,
     //               Period forwardHorizon,
     //               const YieldTermStructure& termStructure){
     //        YieldTermStructure& termStructure_ 
@@ -196,7 +210,7 @@ namespace QuantLib {
     //            // build the tenors at which we will compute the forward rates
     //            std::vector<Period> forwardFixingPeriods;
     //            for (Size i=1; forwardFixingPeriod<forwardHorizon;
-    //                    forwardFixingPeriod=i*index->tenor(), ++i)
+    //                    forwardFixingPeriod=i*fwdIndex->tenor(), ++i)
     //                forwardFixingPeriods.push_back(forwardFixingPeriod);
     //            Date currentDate = startDate;
 

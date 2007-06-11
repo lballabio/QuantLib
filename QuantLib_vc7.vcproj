@@ -2647,6 +2647,9 @@
 					RelativePath=".\ql\models\marketmodels\marketmodel.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\marketmodeldifferences.hpp">
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\multiproduct.hpp">
 				</File>
 				<File
