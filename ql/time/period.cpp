@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
@@ -88,6 +88,50 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown time unit (" << Integer(units_));
         }
+    }
+
+    Period& Period::operator+=(const Period& p) {
+
+        if (units_==p.units()) {
+            // no conversion needed
+            length_ += p.length();
+        } else {
+            switch (units_) {
+              case Years:
+                if (p.units()==Months) {
+                    units_ = Months;
+                    length_ = length_*12 + p.length();
+                } else
+                    QL_FAIL("impossible addition between "
+                             << *this << " and " << p);
+              case Months:
+                if (p.units()==Years)
+                    length_ += p.length()*12;
+                else
+                    QL_FAIL("impossible addition between "
+                             << *this << " and " << p);
+              case Weeks:
+                if (p.units()==Days) {
+                    units_ = Days;
+                    length_ = length_*7 + p.length();
+                } else
+                    QL_FAIL("impossible addition between "
+                             << *this << " and " << p);
+              case Days:
+                if (p.units()==Weeks)
+                    length_ += p.length()*7;
+                else
+                    QL_FAIL("impossible addition between "
+                             << *this << " and " << p);
+              default:
+                QL_FAIL("unknown units");
+            }
+        }
+        return *this;
+    }
+
+    Period& Period::operator-=(const Period& p) {
+        return operator+=(-p);
     }
 
     bool operator<(const Period& p1, const Period& p2) {
@@ -185,6 +229,17 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown units");
         }
+    }
+
+
+    Period operator+(const Period& p1, const Period& p2) {
+        Period result = p1;
+        result += p2;
+        return result;
+    }
+
+    Period operator-(const Period& p1, const Period& p2) {
+        return p1+(-p2);
     }
 
     // period formatting
