@@ -54,9 +54,10 @@ namespace QuantLib {
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy,
                 const Interpolator& i = Interpolator()) {
-        //FIXME: this vector should be passed as an argument
-        std::vector<Date> skippedDates;
+        //FIXME: these vector should be passed as an argument
+        std::vector<Date> skippedDates, failedDates;
         //skippedDates.clear();
+        //failedDates.clear();
 
         SafeSettingsBackUp backup;
 
@@ -126,9 +127,10 @@ namespace QuantLib {
                                                      yieldCurveAccuracy,
                                                      i); 
 
-        // Loop over the historical dataset starting with a valid date
+        // start with a valid business date
         Date currentDate = cal.advance(startDate, 1*Days, Following);
         bool isFirst = true;
+        // Loop over the historical dataset 
         for (; currentDate<=endDate; 
             currentDate = cal.advance(currentDate, step, Following)) {
 
@@ -151,13 +153,18 @@ namespace QuantLib {
                 continue;
             }
 
-            for (Size i=0; i<nRates; ++i) {
-                // Time-to-go forwards
-                Date d = currentDate + fixingPeriods[i];
-                fwdRates[i] = yc.forwardRate(d,
-                                             indexTenor,
-                                             indexDayCounter,
-                                             Simple);
+            try {
+                for (Size i=0; i<nRates; ++i) {
+                    // Time-to-go forwards
+                    Date d = currentDate + fixingPeriods[i];
+                    fwdRates[i] = yc.forwardRate(d,
+                                                 indexTenor,
+                                                 indexDayCounter,
+                                                 Simple);
+                }
+            } catch (...) {
+                failedDates.push_back(currentDate);
+                continue;
             }
 
             // From 2nd step onwards, calculate forward rate 
