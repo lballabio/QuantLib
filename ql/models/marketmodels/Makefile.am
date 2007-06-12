@@ -15,7 +15,9 @@ this_include_HEADERS = \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
     evolver.hpp \
+    historicalcorrelation.hpp \
     marketmodel.hpp \
+    marketmodeldifferences.hpp \
     multiproduct.hpp \
     piecewiseconstantcorrelation.hpp \
     proxygreekengine.hpp \
@@ -28,6 +30,7 @@ libMarketModels_la_SOURCES = \
     discounter.cpp \
     evolutiondescription.cpp \
     marketmodel.cpp \
+    marketmodeldifferences.cpp \
     proxygreekengine.cpp \
     swapforwardmappings.cpp \
     utilities.cpp

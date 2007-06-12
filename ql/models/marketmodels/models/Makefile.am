@@ -22,7 +22,6 @@ this_include_HEADERS = \
 libMarketModelsModels_la_SOURCES = \
 	abcdvol.cpp \
 	alphafinder.cpp \
-	alphaform.cpp \
 	alphaformconcrete.cpp \
 	capletcoterminalalphacalibration.cpp \
 	capletcoterminalmaxhomogeneity.cpp \
