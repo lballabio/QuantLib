@@ -41,7 +41,7 @@ namespace QuantLib {
     class EuriborSwapFixAvs3M : public SwapIndex {
       public:
         EuriborSwapFixAvs3M(const Period& tenor,
-                          const Handle<YieldTermStructure>& h =
+                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
     };
 
@@ -53,7 +53,7 @@ namespace QuantLib {
     class EuriborSwapFixAvs6M : public SwapIndex {
       public:
         EuriborSwapFixAvs6M(const Period& tenor,
-                          const Handle<YieldTermStructure>& h =
+                            const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
     };
 
