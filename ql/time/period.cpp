@@ -97,32 +97,65 @@ namespace QuantLib {
             length_ += p.length();
         } else {
             switch (units_) {
+
               case Years:
-                if (p.units()==Months) {
+                switch (p.units()) {
+                  case Months:
                     units_ = Months;
                     length_ = length_*12 + p.length();
-                } else
+                    break;
+                  case Weeks:
+                  case Days:
                     QL_FAIL("impossible addition between "
                              << *this << " and " << p);
+                  default:
+                    QL_FAIL("unknown units");
+                }
+                break;
+
               case Months:
-                if (p.units()==Years)
+                switch (p.units()) {
+                  case Years:
                     length_ += p.length()*12;
-                else
+                    break;
+                  case Weeks:
+                  case Days:
                     QL_FAIL("impossible addition between "
                              << *this << " and " << p);
+                  default:
+                    QL_FAIL("unknown units");
+                }
+                break;
+
               case Weeks:
-                if (p.units()==Days) {
+                switch (p.units()) {
+                  case Days:
                     units_ = Days;
                     length_ = length_*7 + p.length();
-                } else
+                    break;
+                  case Years:
+                  case Months:
                     QL_FAIL("impossible addition between "
                              << *this << " and " << p);
+                  default:
+                    QL_FAIL("unknown units");
+                }
+                break;
+
               case Days:
-                if (p.units()==Weeks)
+                switch (p.units()) {
+                  case Weeks:
                     length_ += p.length()*7;
-                else
+                    break;
+                  case Years:
+                  case Months:
                     QL_FAIL("impossible addition between "
                              << *this << " and " << p);
+                  default:
+                    QL_FAIL("unknown units");
+                }
+                break;
+
               default:
                 QL_FAIL("unknown units");
             }
