@@ -6436,6 +6436,9 @@
 			RelativePath=".\ql\quote.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\settings.cpp">
+		</File>
+		<File
 			RelativePath=".\ql\settings.hpp">
 		</File>
 		<File
