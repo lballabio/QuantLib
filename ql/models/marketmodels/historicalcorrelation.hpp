@@ -52,7 +52,8 @@ namespace QuantLib {
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
 
                 const DayCounter& yieldCurveDayCounter,
-                Real yieldCurveAccuracy) {
+                Real yieldCurveAccuracy,
+                const Interpolator& i = Interpolator()) {
         //FIXME: this vector should be passed as an argument
         std::vector<Date> skippedDates;
         //skippedDates.clear();
@@ -122,7 +123,8 @@ namespace QuantLib {
                                                      cal,
                                                      rateHelpers,
                                                      yieldCurveDayCounter,
-                                                     yieldCurveAccuracy); 
+                                                     yieldCurveAccuracy,
+                                                     i); 
 
         // Loop over the historical dataset starting with a valid date
         Date currentDate = cal.advance(startDate, 1*Days, Following);
