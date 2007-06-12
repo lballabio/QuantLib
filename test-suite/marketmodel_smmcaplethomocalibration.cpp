@@ -589,16 +589,16 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
         optimizer.findClosest(maxIterations, tolerance, y1, y2, y3);
 
         Real errorTol = 1e-4;
-        if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y1=1: "
+        if ( fabs(y1-1.03306) > errorTol)
+            BOOST_ERROR("\n failed to reproduce y1=1.03306: "
             << y1 << ", " << y2 << ", "  << y3);
 
-        if ( fabs(y2-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y2=1: "
+        if ( fabs(y2-0.999453) > errorTol)
+            BOOST_ERROR("\n failed to reproduce y2=0.999453: "
             << y1 << ", " << y2 << ", "  << y3);
 
-        if ( fabs(y3-sqrt(23.0)) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y3=sqrt(23): "
+        if ( fabs(y3-4.78893) > errorTol)
+            BOOST_ERROR("\n failed to reproduce y3=4.78893: "
             << y1 << ", " <<y2 << ", "  << y3);
 
 
