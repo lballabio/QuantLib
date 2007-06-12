@@ -53,6 +53,9 @@ namespace QuantLib {
 
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy) {
+        //FIXME: this vector should be passed as an argument
+        std::vector<Date> skippedDates;
+        //skippedDates.clear();
 
         SafeSettingsBackUp backup;
 
@@ -113,30 +116,39 @@ namespace QuantLib {
         DayCounter indexDayCounter = fwdIndex->dayCounter();
         Calendar cal = fwdIndex->fixingCalendar();
 
+        // Bootstrap the yield curve at the currentDate
+        Natural settlementDays = 0;
+        PiecewiseYieldCurve<Traits, Interpolator> yc(settlementDays,
+                                                     cal,
+                                                     rateHelpers,
+                                                     yieldCurveDayCounter,
+                                                     yieldCurveAccuracy); 
+
         // Loop over the historical dataset starting with a valid date
-        Date currentDate = cal.advance(startDate, 0*Days, Following);
+        Date currentDate = cal.advance(startDate, 1*Days, Following);
         bool isFirst = true;
-        while (currentDate<=endDate) {
+        for (; currentDate<=endDate; 
+            currentDate = cal.advance(currentDate, step, Following)) {
 
             // move the evaluationDate to currentDate 
             // and update ratehelpers dates...
             Settings::instance().evaluationDate() = currentDate;
 
-            // update the quotes...
-            for (Size i=0; i<iborIndexes.size(); ++i) {
-                Rate fixing = iborIndexes[i]->fixing(currentDate, false);
-                iborQuotes[i]->setValue(fixing);
-            }
-            for (Size i=0; i<swapIndexes.size(); ++i) {
-                Rate fixing = swapIndexes[i]->fixing(currentDate, false);
-                swapQuotes[i]->setValue(fixing);
+            try {
+                // update the quotes...
+                for (Size i=0; i<iborIndexes.size(); ++i) {
+                    Rate fixing = iborIndexes[i]->fixing(currentDate, false);
+                    iborQuotes[i]->setValue(fixing);
+                }
+                for (Size i=0; i<swapIndexes.size(); ++i) {
+                    Rate fixing = swapIndexes[i]->fixing(currentDate, false);
+                    swapQuotes[i]->setValue(fixing);
+                }
+            } catch (...) {
+                skippedDates.push_back(currentDate);
+                continue;
             }
 
-            // Bootstrap the yield curve at the currentDate 
-            PiecewiseYieldCurve<Traits, Interpolator> yc(currentDate,
-                                                         rateHelpers,
-                                                         yieldCurveDayCounter,
-                                                         yieldCurveAccuracy);         
             for (Size i=0; i<nRates; ++i) {
                 // Time-to-go forwards
                 Date d = currentDate + fixingPeriods[i];
@@ -148,20 +160,18 @@ namespace QuantLib {
 
             // From 2nd step onwards, calculate forward rate 
             // relative differences
-            if (isFirst)
-                isFirst = false;
-            else {
+            if (!isFirst){
                 for (Size i=0; i<nRates; ++i)
                     fwdRatesDiff[i] = fwdRates[i]/prevFwdRates[i] -1.0;
                 // add observation
                 statistics.add(fwdRatesDiff.begin(), fwdRatesDiff.end());
             }
+            else 
+                isFirst = false;
 
             // Store last calculated forward rates
             std::swap(prevFwdRates, fwdRates);
-
-            // Advance date
-            currentDate = cal.advance(currentDate, step, Following);
+           
         } 
 
         return statistics.correlation();
