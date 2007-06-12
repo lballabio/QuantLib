@@ -26,6 +26,7 @@ namespace QuantLib {
 
         template<class T, Real (T::*Value)(Real) const >
         Real BrentMinimize(Real low,
+                           Real mid,
                            Real high,
                            Real tolerance,
                            Size maxIt,
@@ -35,6 +36,9 @@ namespace QuantLib {
             Real rightValue = (theObject.*Value)(high);
             Real W = 0.5*(3.0-sqrt(5.0));
             Real x = W*low+(1-W)*high;
+            if (mid > low && mid < high)
+                x = mid; 
+
             Real midValue = (theObject.*Value)(x);
 
             Size iterations = 0;
@@ -88,32 +92,67 @@ namespace QuantLib {
                    "cylinder must have positive radius");
         QL_REQUIRE(alpha>0,
                    "cylinder centre must have positive coordinate");
-        Real cylinderInside = r*r - (s*s + alpha*alpha);
+        
+        if (fabs(alpha-s) > r )
+            nonEmpty_=false;
+        else
+            nonEmpty_=true;
+
+        Real cylinderInside = r*r - (s + alpha)*(s+alpha);
 
         if (cylinderInside >0.0)
-            topValue_ = s;
+        {
+            topValue_ = alpha+s;
+            bottomValue_ = alpha-s;                
+        }
         else
-            topValue_ = sqrt(s*s - cylinderInside*cylinderInside/(4*alpha*alpha));
+        {
+          
+            bottomValue_ = alpha-s;
+            Real tmp = r*r - (s *s+alpha*alpha);
+
+            if (  tmp <=0)
+            { // max to left of maximimum
+                Real topValue2 = sqrt(s*s - tmp*tmp/(4*alpha*alpha));
+                topValue_ = alpha -sqrt(s*s - topValue2*topValue2);
+                
+            }
+            else    
+            { 
+                topValue_ = alpha+ tmp/(2.0*alpha);
+                
+            }
+           
+            
+        }
+            
     }
 
     bool SphereCylinderOptimizer::isIntersectionNonEmpty() const {
-        return topValue_ >=0.0;
+        return nonEmpty_;
     }
 
     void SphereCylinderOptimizer::findClosest(Size maxIterations,
                                               Real tolerance,
                                               Real& y1,
                                               Real& y2,
-                                              Real& y3) const {
-         y2 = BrentMinimize<SphereCylinderOptimizer,
+                                              Real& y3) const 
+    {
+         Real x1,x2,x3;
+         findByProjection(x1,x2,x3);
+
+         y1 = BrentMinimize<SphereCylinderOptimizer,
                             &SphereCylinderOptimizer::objectiveFunction>(
-                                0.0, topValue_,tolerance, maxIterations,*this);
-         y1 = alpha_ - sqrt(s_*s_-y2*y2);
+                                bottomValue_, x1, topValue_,tolerance, maxIterations,*this);
+         y2 =sqrt(s_*s_ - (y1-alpha_)*(y1-alpha_));
          y3= sqrt(r_*r_ - y1*y1-y2*y2);
     }
 
-    Real SphereCylinderOptimizer::objectiveFunction(Real x2) const {
-        Real x1 = alpha_ - sqrt(s_*s_-x2*x2);
+    Real SphereCylinderOptimizer::objectiveFunction(Real x1) const 
+    {
+   //     Real x1 = alpha_ - sqrt(s_*s_-x2*x2);
+      
+        Real x2 = sqrt(s_*s_ - (x1-alpha_)*(x1-alpha_));
         Real x3= sqrt(r_*r_ - x1*x1-x2*x2);
 
         Real err=0.0;
@@ -147,8 +186,8 @@ namespace QuantLib {
        // intersection is non-empty but projection point is outside sphere
        // so take rightmost point
        y3 = 0.0;
-       y2 = topValue_;
-       y1 = sqrt(r_*r_ -y2*y2);
+       y1 = topValue_;
+       y2 = sqrt(r_*r_ -y1*y1);
 
        return true;
     }

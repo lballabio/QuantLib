@@ -59,6 +59,8 @@ namespace QuantLib {
         Real r_, s_, alpha_, z1_, z2_, z3_;
         Real objectiveFunction(Real x2) const;
         Real topValue_;
+        Real bottomValue_;
+        bool nonEmpty_;
     };
 
     std::vector<Real> sphereCylinderOptimizerClosest(Real r,

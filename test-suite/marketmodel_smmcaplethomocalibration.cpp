@@ -528,7 +528,8 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
     BOOST_MESSAGE("testSphereCylinder");
-        {
+
+    {
         Real R =1.0;
         Real S =0.5;
         Real alpha=1.5;
@@ -536,60 +537,43 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
         Real Z2=1.0/sqrt(3.0);
         Real Z3=1.0/sqrt(3.0);
 
-        SphereCylinderOptimizer optimizer(R,
-            S,
-            alpha,
-            Z1,
-            Z2,
-            Z3);
+        SphereCylinderOptimizer optimizer(R, S, alpha, Z1, Z2, Z3);
         Size maxIterations=100;
         Real tolerance=1e-8;
-        Real y1,y2,y3;
+        Real y1, y2, y3;
 
-        optimizer.findClosest(maxIterations,
-            tolerance,
-            y1,
-            y2,
-            y3);
+        optimizer.findClosest(maxIterations, tolerance, y1, y2, y3);
 
         Real errorTol = 1e-12;
-
         if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y1 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\n failed to reproduce y1=1: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y2-0.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y2 =0:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\n failed to reproduce y2=0: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y3-0.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y3 =0:"
-            << y1 << " " <<y2 << " "  << y3);
+            BOOST_ERROR("\n failed to reproduce y3=0: "
+            << y1 << ", " <<y2 << ", "  << y3);
 
 
-        optimizer.findByProjection(
-            y1,
-            y2,
-            y3);
+        optimizer.findByProjection(y1, y2, y3);
 
         if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\nfindByProjection failed to reproduce y1 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\nfindByProjection failed to reproduce y1=1: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y2-0.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y2 =0:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\n findByProjection failed to reproduce y2=0: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y3-0.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y3 =0:"
-            << y1 << " " <<y2 << " "  << y3);
-        }
+            BOOST_ERROR("\n findByProjection failed to reproduce y3=0: "
+            << y1 << ", " <<y2 << ", "  << y3);
+    }
 
-       {
+   {
         Real R =5.0;
         Real S =1.0;
         Real alpha=1.0;
@@ -597,63 +581,43 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
         Real Z2=2.0;
         Real Z3=sqrt(20.0);
 
-        SphereCylinderOptimizer optimizer(R,
-            S,
-            alpha,
-            Z1,
-            Z2,
-            Z3);
+        SphereCylinderOptimizer optimizer(R, S, alpha, Z1, Z2, Z3);
         Size maxIterations=100;
         Real tolerance=1e-8;
         Real y1,y2,y3;
 
-        optimizer.findClosest(maxIterations,
-            tolerance,
-            y1,
-            y2,
-            y3);
+        optimizer.findClosest(maxIterations, tolerance, y1, y2, y3);
 
         Real errorTol = 1e-4;
-
         if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y1 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\n failed to reproduce y1=1: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y2-1.0) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y2 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
-
-        if ( fabs(y3-sqrt(3.0)) > errorTol)
-            BOOST_ERROR("\n failed to reproduce y3 =sqrt(23):"
-            << y1 << " " <<y2 << " "  << y3);
-
-
-        optimizer.findByProjection(
-            y1,
-            y2,
-            y3);
-
-      
-        if ( fabs(y1-1.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y1 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
-
-        if ( fabs(y2-1.0) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y2 =1:"
-            << y1 << " " << y2 << " "  << y3);
-
+            BOOST_ERROR("\n failed to reproduce y2=1: "
+            << y1 << ", " << y2 << ", "  << y3);
 
         if ( fabs(y3-sqrt(23.0)) > errorTol)
-            BOOST_ERROR("\n findByProjection failed to reproduce y3 =sqrt(23):"
+            BOOST_ERROR("\n failed to reproduce y3=sqrt(23): "
+            << y1 << ", " <<y2 << ", "  << y3);
+
+
+        optimizer.findByProjection(y1, y2, y3);
+
+        if ( fabs(y1-1.0) > errorTol)
+            BOOST_ERROR("\n findByProjection failed to reproduce y1 =1: "
+            << y1 << " " << y2 << " "  << y3);
+
+        if ( fabs(y2-1.0) > errorTol)
+            BOOST_ERROR("\n findByProjection failed to reproduce y2 =1: "
+            << y1 << " " << y2 << " "  << y3);
+
+        if ( fabs(y3-sqrt(23.0)) > errorTol)
+            BOOST_ERROR("\n findByProjection failed to reproduce y3 =sqrt(23): "
             << y1 << " " <<y2 << " "  << y3);
 
-        }
-
-    
     }
+}
 
 
 // --- Call the desired tests
