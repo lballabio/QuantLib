@@ -55,13 +55,11 @@ namespace QuantLib {
         return evaluationDate_;
     }
 
-    ObservableValue<bool>&
-    Settings::enforcesTodaysHistoricFixings() {
+    bool& Settings::enforcesTodaysHistoricFixings() {
         return enforcesTodaysHistoricFixings_;
     }
 
-    const ObservableValue<bool>&
-    Settings::enforcesTodaysHistoricFixings() const {
+    bool Settings::enforcesTodaysHistoricFixings() const {
         return enforcesTodaysHistoricFixings_;
     }
 

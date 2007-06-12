@@ -69,11 +69,11 @@ namespace QuantLib {
         */
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
-        ObservableValue<bool>& enforcesTodaysHistoricFixings();
-        const ObservableValue<bool>& enforcesTodaysHistoricFixings() const;
+        bool& enforcesTodaysHistoricFixings();
+        bool enforcesTodaysHistoricFixings() const;
       private:
         DateProxy evaluationDate_;
-        ObservableValue<bool> enforcesTodaysHistoricFixings_;
+        bool enforcesTodaysHistoricFixings_;
     };
 
 
