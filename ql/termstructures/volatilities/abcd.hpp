@@ -101,13 +101,25 @@ namespace QuantLib {
     }
 
     inline Real AbcdFunction::maximumLocation() const {
-        return (b_>0.0 ? (b_-c_*a_)/(c_*b_) : 0.0);
+        if (b_<=0) {
+            return 0.0;
+        } else {
+            if((b_-c_*a_)/(c_*b_)>0) {
+                return (b_-c_*a_)/(c_*b_);
+            } else
+                return 0.0;
+        }
     }
 
     inline Real AbcdFunction::maximumValue() const {
-        return (b_>0.0 ?
-                b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ :
-                shortTermValue());
+        if (b_<=0) {
+            return shortTermValue();
+        } else {
+            if ((b_-c_*a_)/(c_*b_) > 0.0) {
+                return b_/c_*std::exp(-1.0 +c_*a_/b_) + d_;
+            } else
+                return shortTermValue();
+        }
     }
 
     inline Real AbcdFunction::covariance(Time t, Time T, Time S) const {
@@ -318,13 +330,29 @@ namespace QuantLib {
     }
 
     inline Real Abcd::maximumLocation() const {
-        return (b_>0.0 ? (b_-c_*a_)/(c_*b_) : 0.0);
+        if (b_<=0) {
+            return 0.0;
+        } else {
+            if((b_-c_*a_)/(c_*b_)>0) {
+                return (b_-c_*a_)/(c_*b_);
+            } else
+                return 0.0;
+        }
+        //return (b_>0.0 ? (b_-c_*a_)/(c_*b_) : 0.0);
     }
 
     inline Real Abcd::maximumVolatility() const {
-        return (b_>0.0 ?
-                b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ :
-                shortTermVolatility());
+        if (b_<=0) {
+            return shortTermVolatility();
+        } else {
+            if ((b_-c_*a_)/(c_*b_) > 0.0) {
+                return b_/c_*std::exp(-1.0 +c_*a_/b_) + d_;
+            } else
+                return shortTermVolatility();
+        }        
+        //return (b_>0.0 ?
+        //        b_/c_*std::exp(-1.0 +c_*a_/b_)+d_ :
+        //        shortTermVolatility());
     }
 
     inline Real Abcd::instantaneousVolatility(Time u, Time T) const {
