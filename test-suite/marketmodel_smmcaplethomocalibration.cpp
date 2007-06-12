@@ -461,12 +461,14 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                       std::setprecision(4) << Array(capletVols_));
     }
 
-    Real capletSwaptionPriority =1.0;
+    Real caplet0Swaption1Priority =1.0;
 
     bool result = calibrator.calibrate(numberOfFactors_,
-                                       capletSwaptionPriority,
+
                                        maxIterations,
                                        capletTolerance,
+
+                                       caplet0Swaption1Priority,
                                        innerIterations,
                                        toleranceForInnerSolving);
     if (!result)
@@ -488,7 +490,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols));
-        BOOST_MESSAGE("rmsError: " << calibrator.rmsError());
+        BOOST_MESSAGE("rmsError: " << calibrator.rmsCapletError());
       }
 
     // check perfect swaption fit

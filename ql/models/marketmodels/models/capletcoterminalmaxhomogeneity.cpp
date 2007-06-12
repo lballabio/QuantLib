@@ -353,9 +353,11 @@ namespace QuantLib {
 
     bool CapletCoterminalSwaptionCalibration3::calibrate(
                             Size numberOfFactors,
+
                             Size maxIterationsForIterative,
                             Real toleranceForIterativeSolving,
-                            Real capletSwaptionPriority,
+
+                            Real caplet0Swaption1Priority,
                             Size iterationsForHomogeneous,
                             Real toleranceHomogeneousSolving) {
 
@@ -377,7 +379,7 @@ namespace QuantLib {
                                                   *cs_,
                                                   displacement_,
                                                   numberOfFactors,
-                                                  capletSwaptionPriority,
+                                                  caplet0Swaption1Priority,
                                                   iterationsForHomogeneous,
                                                   toleranceHomogeneousSolving,
                                                   deformationSize_,

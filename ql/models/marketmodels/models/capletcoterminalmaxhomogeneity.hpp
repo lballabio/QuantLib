@@ -46,9 +46,11 @@ namespace QuantLib {
             Spread displacement);
         // modifiers
         bool calibrate(Size numberOfFactors,
+
                        Size maxIterations,
                        Real capletVolTolerance,
-                       Real capletSwaptionPriority,
+
+                       Real caplet0Swaption1Priority,
                        Size iterationsForHomogeneous = 100,
                        Real toleranceHomogeneousSolving = 1e-8);
         // inspectors
