@@ -2907,9 +2907,6 @@
 						RelativePath=".\ql\models\marketmodels\models\alphafinder.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\models\alphaform.cpp">
-					</File>
-					<File
 						RelativePath=".\ql\models\marketmodels\models\alphaform.hpp">
 					</File>
 					<File
