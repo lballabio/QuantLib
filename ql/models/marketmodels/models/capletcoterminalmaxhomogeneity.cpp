@@ -41,9 +41,12 @@ namespace QuantLib {
                  const std::vector<Real>& correlations,
                  Real w0,
                  Real w1,
+                 Real capletSwaptionPriority,
                  Size maxIterations,
                  Real tolerance,
-                 std::vector<Volatility>& solution)
+                 std::vector<Volatility>& solution, 
+                 Real& swaptionError,
+                 Real& capletError)
         {
             if (capletNumber ==0) // there only is one point so to go through everything would be silly
             {
@@ -62,6 +65,9 @@ namespace QuantLib {
 
                 solution[0] = volminus;
                 solution[1] = sqrt(residual);
+                swaptionError=0.0;
+                capletError=0.0;
+
 
                 return success;
             }
@@ -133,13 +139,17 @@ namespace QuantLib {
 
             if (!optimizer.isIntersectionNonEmpty())
             {
-                Z1 = R;
+                Z1 = R*capletSwaptionPriority+(1-capletSwaptionPriority)*(alpha-S);
                 Z2 = 0.0;
                 Z3 = 0.0;
+                swaptionError =Z1-R;
+                capletError = (alpha-S)-Z1;
             }
             else
             {
                 success = true;
+                capletError =0.0;
+                swaptionError =0.0;
 
                 if (maxIterations > 0.0)
                 {
@@ -200,10 +210,13 @@ namespace QuantLib {
             const CurveState& cs,
             const Spread displacement,
             const Size numberOfFactors,
+            Real capletSwaptionPriority, 
             Size iterationsForMinimzation,
             Real toleranceForMinimization,
             Real& deformationSize,
-            std::vector<Matrix>& swapCovariancePseudoRoots) {
+            std::vector<Matrix>& swapCovariancePseudoRoots,
+            Real& totalSwaptionError) 
+        {
 
         QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
                    "evolutionTimes not equal to correlation times");
@@ -265,6 +278,7 @@ namespace QuantLib {
         std::vector<Real> correlations(numberOfRates);
         newVols.push_back(firstRateVols);
         Size failures=0;
+        totalSwaptionError=0.0;
 
         // final caplet and swaption are the same, so we skip that case
         for (Size i=0; i<numberOfRates-1; ++i) {
@@ -292,10 +306,15 @@ namespace QuantLib {
 
             Real targetCapletVariance= capletVols[i]*capletVols[i]*rateTimes[i];
 
+            Real thisCapletError;
+            Real thisSwaptionError;
+
             bool success = singleRateClosestPointFinder(
                 i, secondRateVols, firstRateVols, targetCapletVariance, correlations,
-                w0, w1, iterationsForMinimzation, toleranceForMinimization,
-                theseNewVols);
+                w0, w1, capletSwaptionPriority,iterationsForMinimzation, toleranceForMinimization,
+                theseNewVols, thisSwaptionError, thisCapletError);
+
+            totalSwaptionError+= thisSwaptionError*thisSwaptionError;
 
             if (!success)
                 ++failures; // i.e. false
@@ -336,6 +355,7 @@ namespace QuantLib {
                             Size numberOfFactors,
                             Size maxIterationsForIterative,
                             Real toleranceForIterativeSolving,
+                            Real capletSwaptionPriority,
                             Size iterationsForHomogeneous,
                             Real toleranceHomogeneousSolving) {
 
@@ -344,9 +364,11 @@ namespace QuantLib {
         error_ = 987654321; // a positive large number
         calibrated_ = false;
         failures_= 0;
+        swaptionError_=0.0;
 
         std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
         Size iterations=0;
+        Real totalSwaptionError;
         do {
             failures_ = calibrationOfMaxHomogeneity(evolution_,
                                                   *corr_,
@@ -355,10 +377,12 @@ namespace QuantLib {
                                                   *cs_,
                                                   displacement_,
                                                   numberOfFactors,
+                                                  capletSwaptionPriority,
                                                   iterationsForHomogeneous,
                                                   toleranceHomogeneousSolving,
                                                   deformationSize_,
-                                                  swapCovariancePseudoRoots_);
+                                                  swapCovariancePseudoRoots_,
+                                                  totalSwaptionError);
 
            
             std::vector<Spread> displacements(numberOfRates,
@@ -382,10 +406,13 @@ namespace QuantLib {
                 error_ += diff*diff;
                 modifiedCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
             }
-            error_ = std::sqrt(error_/(numberOfRates-1));
+            error_ = std::sqrt(error_/numberOfRates);
             ++iterations;
         } while (iterations<maxIterationsForIterative &&
-                 error_>toleranceForIterativeSolving && failures_==0);
+                 error_>toleranceForIterativeSolving // && failures_==0
+                 );
+
+        swaptionError_ = sqrt(totalSwaptionError/numberOfRates);
 
         calibrated_ = true;
         return failures_==0;
@@ -396,9 +423,14 @@ namespace QuantLib {
         return deformationSize_;
     }
 
-    Real CapletCoterminalSwaptionCalibration3::rmsError() const {
+    Real CapletCoterminalSwaptionCalibration3::rmsCapletError() const {
         QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return error_;
+    }
+
+    Real CapletCoterminalSwaptionCalibration3::rmsSwaptionError() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return swaptionError_;
     }
 
     const std::vector<Matrix>&

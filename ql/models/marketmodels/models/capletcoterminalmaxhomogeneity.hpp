@@ -48,11 +48,13 @@ namespace QuantLib {
         bool calibrate(Size numberOfFactors,
                        Size maxIterations,
                        Real capletVolTolerance,
+                       Real capletSwaptionPriority,
                        Size iterationsForHomogeneous = 100,
                        Real toleranceHomogeneousSolving = 1e-8);
         // inspectors
         Real deformationSize() const;
-        Real rmsError() const; // caplet
+        Real rmsCapletError() const; 
+        Real rmsSwaptionError() const;
         const std::vector<Matrix>& swapPseudoRoots() const;
         const Matrix& swapPseudoRoot(Size i) const;
         // actual calibration function
@@ -66,12 +68,15 @@ namespace QuantLib {
                     const CurveState& cs,
                     const Spread displacement,
                     Size numberOfFactors,
+                    Real capletSwaptionPriority, 
+                 
 
                     Size iterationsForHomogeneous,
                     Real toleranceHomogeneousSolving,
 
                     Real& deformationSize,
-                    std::vector<Matrix>& swapCovariancePseudoRoots);
+                    std::vector<Matrix>& swapCovariancePseudoRoots,
+                    Real& totalSwaptionError);
       private:
         // input
         EvolutionDescription evolution_;
@@ -83,7 +88,7 @@ namespace QuantLib {
         Spread displacement_;
         // results
         bool calibrated_;
-        Real error_, deformationSize_;
+        Real error_, swaptionError_, deformationSize_;
         Size failures_;
         std::vector<Matrix> swapCovariancePseudoRoots_;
     };

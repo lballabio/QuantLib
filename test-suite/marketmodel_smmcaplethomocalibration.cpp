@@ -460,7 +460,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols_));
     }
+
+    Real capletSwaptionPriority =1.0;
+
     bool result = calibrator.calibrate(numberOfFactors_,
+                                       capletSwaptionPriority,
                                        maxIterations,
                                        capletTolerance,
                                        innerIterations,
