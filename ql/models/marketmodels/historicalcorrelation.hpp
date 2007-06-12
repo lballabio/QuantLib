@@ -42,11 +42,15 @@ namespace QuantLib {
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
+
                 const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+
                 const Period& initialGap,
                 const Period& horizon,
+
                 const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy) {
 
@@ -98,7 +102,7 @@ namespace QuantLib {
         Period fixingPeriod = initialGap;
         while (fixingPeriod<horizon) {
             fixingPeriods.push_back(fixingPeriod);
-            fixingPeriod = fixingPeriod + indexTenor;
+            fixingPeriod += indexTenor;
         }
 
         Size nRates = fixingPeriods.size();
@@ -162,46 +166,6 @@ namespace QuantLib {
 
         return statistics.correlation();
     }
-
-
-    //Disposable<Matrix> computeHistoricalCorrelations1 (
-    //               Date startDate, Date endDate, Period step,
-    //               const Calendar& calendar,
-    //               const boost::shared_ptr<InterestRateIndex> fwdIndex,
-    //               Period forwardHorizon,
-    //               const YieldTermStructure& termStructure){
-    //        YieldTermStructure& termStructure_ 
-    //            = const_cast<YieldTermStructure&>(termStructure);
-    //        bool useFixings_ = termStructure_.useFixings();
-    //        try {
-    //            termStructure_.useFixings() = true;
-    //            YieldTermStructure localTermStructure(termStructure);
-    //            
-    //            // build the tenors at which we will compute the forward rates
-    //            std::vector<Period> forwardFixingPeriods;
-    //            for (Size i=1; forwardFixingPeriod<forwardHorizon;
-    //                    forwardFixingPeriod=i*fwdIndex->tenor(), ++i)
-    //                forwardFixingPeriods.push_back(forwardFixingPeriod);
-    //            Date currentDate = startDate;
-
-    //            // loop over the dates in the range
-    //            while(currentDate<=endDate) {
-    //                Settings::instance().evaluationDate() = currentDate;
-    //                for(Size i=0; i<fwdRates.size(); ++i)
-    //                    fwdRates[i] 
-    //                    = localTermStructure.forwardRate(
-    //                            currentDate+forwardFixingPeriods[i],
-    //                            indexTenor,indexDayCounter, Simple);
-    //                statistics.add(fwdRates.begin(), fwdRates.end());
-    //                currentDate = calendar.advance(currentDate, step, Unadjusted);
-    //            }
-    //            termStructure_.useFixings() = useFixings_;
-    //            return statistics.correlation();
-    //    } catch(QuantLib::Error&e) {
-    //        termStructure_.useFixings() = useFixings_;
-    //        QL_FAIL("computeHistoricalCorrelations1\n" << e.what());
-    //    }
-    //}
 
 }
 
