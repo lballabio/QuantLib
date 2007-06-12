@@ -33,7 +33,7 @@
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/quotes/simplequote.hpp>
-
+#include <ql/math/statistics/sequencestatistics.hpp>
 
 namespace QuantLib {
 
