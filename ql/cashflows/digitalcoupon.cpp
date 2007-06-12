@@ -205,7 +205,7 @@ namespace QuantLib {
         Date fixingDate = underlying_->fixingDate();
         Date today = Settings::instance().evaluationDate();
         bool enforceTodaysHistoricFixings =
-            Settings::instance().enforceTodaysHistoricFixings();
+            Settings::instance().enforcesTodaysHistoricFixings();
         Rate underlyingRate = underlying_->rate();
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings)) {

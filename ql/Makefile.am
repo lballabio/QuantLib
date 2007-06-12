@@ -62,6 +62,7 @@ libQuantLib_la_SOURCES = \
     interestrate.cpp \
     money.cpp \
     prices.cpp \
+    settings.cpp \
 	stochasticprocess.cpp \
 	timegrid.cpp
 

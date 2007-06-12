@@ -52,7 +52,7 @@ namespace QuantLib {
                    "Fixing date " << fixingDate << " is not valid");
         Date today = Settings::instance().evaluationDate();
         bool enforceTodaysHistoricFixings =
-            Settings::instance().enforceTodaysHistoricFixings();
+            Settings::instance().enforcesTodaysHistoricFixings();
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings && !forecastTodaysFixing)) {
             // must have been fixed

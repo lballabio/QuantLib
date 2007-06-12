@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
- Copyright (C) 2004, 2005 StatPro Italia srl
+ Copyright (C) 2004, 2005, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,7 +36,7 @@ namespace QuantLib {
     class Settings : public Singleton<Settings> {
         friend class Singleton<Settings>;
       private:
-        Settings() : enforceTodaysHistoricFixings_(false) {}
+        Settings();
         class DateProxy : public ObservableValue<Date> {
           public:
             DateProxy();
@@ -69,69 +69,23 @@ namespace QuantLib {
         */
         DateProxy& evaluationDate();
         const DateProxy& evaluationDate() const;
-        bool enforceTodaysHistoricFixings() const {
-            return enforceTodaysHistoricFixings_;
-        }
-        void setEnforceTodaysHistoricFixings(bool b = true) {
-            enforceTodaysHistoricFixings_ = b;
-        }
+        ObservableValue<bool>& enforcesTodaysHistoricFixings();
+        const ObservableValue<bool>& enforcesTodaysHistoricFixings() const;
       private:
         DateProxy evaluationDate_;
-        bool enforceTodaysHistoricFixings_;
+        ObservableValue<bool> enforcesTodaysHistoricFixings_;
     };
 
 
-    class SafeSettingsBackUp {
+    // helper class to temporarily and safely change the settings
+    class SavedSettings {
       public:
-          SafeSettingsBackUp();
-          ~SafeSettingsBackUp();
+        SavedSettings();
+        ~SavedSettings();
       private:
-          Date date_;
-          bool enforceTodaysHistoricFixings_;
+        Date evaluationDate_;
+        bool enforcesTodaysHistoricFixings_;
     };
-
-
-
-    // inline definitions
-
-    inline Settings::DateProxy& Settings::evaluationDate() {
-        return evaluationDate_;
-    }
-
-    inline const Settings::DateProxy& Settings::evaluationDate() const {
-        return evaluationDate_;
-    }
-
-    inline Settings::DateProxy::DateProxy() : ObservableValue<Date>(Date()) {}
-
-    inline Settings::DateProxy::operator Date() const {
-        if (value() == Date())
-            return Date::todaysDate();
-        else
-            return value();
-    }
-
-    inline
-    Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
-        ObservableValue<Date>::operator=(d);
-        return *this;
-    }
-
-    inline SafeSettingsBackUp::SafeSettingsBackUp()
-    : date_(Settings::instance().evaluationDate()),
-      enforceTodaysHistoricFixings_(
-        Settings::instance().enforceTodaysHistoricFixings()) {}
-
-    inline SafeSettingsBackUp::~SafeSettingsBackUp() {
-      Settings::instance().evaluationDate() = date_;
-      Settings::instance().setEnforceTodaysHistoricFixings(
-          enforceTodaysHistoricFixings_);
-    }
-
-    inline std::ostream& operator<<(std::ostream& out,
-                                    const Settings::DateProxy& p) {
-        return out << Date(p);
-    }
 
 }
 

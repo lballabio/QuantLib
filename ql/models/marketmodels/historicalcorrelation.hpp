@@ -59,9 +59,8 @@ namespace QuantLib {
         //skippedDates.clear();
         //failedDates.clear();
 
-        SafeSettingsBackUp backup;
-
-        Settings::instance().setEnforceTodaysHistoricFixings();
+        SavedSettings backup;
+        Settings::instance().enforcesTodaysHistoricFixings() = true;
 
         std::vector<boost::shared_ptr<RateHelper> > rateHelpers;
 
