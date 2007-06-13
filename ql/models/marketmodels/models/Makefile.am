@@ -13,6 +13,7 @@ this_include_HEADERS = \
 	capletcoterminalmaxhomogeneity.hpp \
 	capletcoterminalswaptioncalibration.hpp \
 	cotswaptofwdadapter.hpp \
+	ctsmmcapletcalibration.hpp \
 	flatvol.hpp \
 	fwdtocotswapadapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
@@ -27,6 +28,7 @@ libMarketModelsModels_la_SOURCES = \
 	capletcoterminalmaxhomogeneity.cpp \
 	capletcoterminalswaptioncalibration.cpp \
 	cotswaptofwdadapter.cpp \
+	ctsmmcapletcalibration.cpp \
 	flatvol.cpp \
 	fwdtocotswapadapter.cpp \
 	piecewiseconstantabcdvariance.cpp \

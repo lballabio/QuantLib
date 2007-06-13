@@ -9,6 +9,7 @@
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
+#include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
