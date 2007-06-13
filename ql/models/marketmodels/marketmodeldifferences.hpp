@@ -30,7 +30,7 @@ namespace QuantLib {
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2);       
 
-    std::vector<Real> rateInstVolDifferences(
+    std::vector<Spread> rateInstVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2, 
                                            Size index);

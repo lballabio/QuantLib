@@ -33,7 +33,9 @@ namespace QuantLib {
         checkIncreasingTimes(rateTimes);    // increasing rate times
         QL_REQUIRE(longTermCorr<1.0 && longTermCorr>0.0,
             "Long term correlation outside [0;1] interval");
-        QL_REQUIRE(beta<1.0 && beta>0.0, "beta outside [0;1] interval");
+        QL_REQUIRE(beta>=0.0,
+                   "beta (" << beta <<
+                   ") must be greater than zero");
 
         // Calculate correlation matrix
         Size nbRows = rateTimes.size()-1;
@@ -56,10 +58,15 @@ namespace QuantLib {
                                         Time time) {
         // preliminary checks
         checkIncreasingTimes(rateTimes);    // increasing rate times
-        QL_REQUIRE(longTermCorr<1.0 && longTermCorr>0.0,
-            "Long term correlation outside [0;1] interval");
-        QL_REQUIRE(beta<1.0 && beta>0.0, "beta outside [0;1] interval");
-        QL_REQUIRE(gamma<1.0 && gamma>0.0, "gamma outside [0;1] interval");
+        QL_REQUIRE(longTermCorr<=1.0 && longTermCorr>=0.0,
+                   "Long term correlation (" << longTermCorr <<
+                   ") outside [0;1] interval");
+        QL_REQUIRE(beta>=0.0,
+                   "beta (" << beta <<
+                   ") must be greater than zero");
+        QL_REQUIRE(gamma<=1.0 && gamma>=0.0, 
+                   "gamma (" << gamma <<
+                   ") outside [0;1] interval");
 
         // Calculate correlation matrix
         Size nbRows = rateTimes.size()-1;
@@ -73,8 +80,8 @@ namespace QuantLib {
                     correlations[i][j] = correlations[j][i] =
                         longTermCorr + (1.0-longTermCorr) *
                         std::exp(-beta*std::fabs(
-                            std::pow(rateTimes[i]-time,gamma) -
-                            std::pow(rateTimes[j]-time,gamma)
+                            std::pow(rateTimes[i]-time, gamma) -
+                            std::pow(rateTimes[j]-time, gamma)
                             )
                         );
                 } else {

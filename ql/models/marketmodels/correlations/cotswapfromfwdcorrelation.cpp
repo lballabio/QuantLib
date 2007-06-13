@@ -33,7 +33,7 @@ namespace QuantLib {
     CotSwapFromFwdCorrelation::CotSwapFromFwdCorrelation(
             const Matrix& fraCorrelation,
             const CurveState& curveState,
-            Real displacement,
+            Spread displacement,
             const EvolutionDescription& evolution)
     : fraCorrelationMatrix_(evolution.numberOfRates()),
       numberOfRates_(evolution.numberOfRates()),

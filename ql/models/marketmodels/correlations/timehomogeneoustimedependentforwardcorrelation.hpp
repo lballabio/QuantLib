@@ -32,6 +32,7 @@ namespace QuantLib {
       public:
         TimeHomogeneousTimeDependentForwardCorrelation(
                                     const std::vector<Time>& rateTimes,
+                                    //const std::vector<Time>& times,
                                     Real longTermCorr,
                                     Real beta,
                                     Real gamma);

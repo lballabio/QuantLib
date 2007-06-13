@@ -34,7 +34,7 @@ namespace QuantLib {
         CotSwapFromFwdCorrelation(
             const Matrix& correlations,
             const CurveState& curveState,
-            Real displacement,
+            Spread displacement,
             const EvolutionDescription& evolution);
         const std::vector<Time>& times() const;
         const std::vector<Matrix>& correlations() const;

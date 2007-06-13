@@ -53,7 +53,7 @@ namespace QuantLib {
         return result;
     }       
 
-    std::vector<Real> rateInstVolDifferences(
+    std::vector<Spread> rateInstVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2, 
                                            Size index) {
@@ -71,7 +71,7 @@ namespace QuantLib {
 
         const std::vector<Time>& evolutionTimes 
             = evolutionDescription1.evolutionTimes();
-        std::vector<Real> result(evolutionTimes.size());
+        std::vector<Spread> result(evolutionTimes.size());
 
         Time previousEvolutionTime = 0;
         for (Size i=0; i<evolutionTimes.size(); ++i) {
