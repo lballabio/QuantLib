@@ -35,7 +35,6 @@ void SampledCurveTest::testConstruction() {
 
     BOOST_MESSAGE("Testing sampled curve construction...");
 
-    QL_TEST_BEGIN
     SampledCurve curve(BoundedGrid(-10.0,10.0,100));
     FSquared f2;
     curve.sample(f2);
@@ -78,9 +77,6 @@ void SampledCurveTest::testConstruction() {
                         << "\n    expected:   " << expected);
         }
     }
-
-
-    QL_TEST_END
 }
 
 test_suite* SampledCurveTest::suite() {

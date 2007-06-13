@@ -67,10 +67,6 @@ struct DigitalOptionData {
     Real tol;      // tolerance
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(DigitalOptionTest)
 
 
@@ -498,7 +494,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     BOOST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
                   "digital option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
@@ -655,8 +651,6 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -664,6 +658,8 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     BOOST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
                   "American engine...");
+
+    SavedSettings backup;
 
     QL_TEST_START_TIMING
 

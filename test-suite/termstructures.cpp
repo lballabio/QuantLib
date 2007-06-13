@@ -113,10 +113,6 @@ void setup() {
                                                                 Actual360()));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(TermStructureTest)
 
 
@@ -124,8 +120,10 @@ void TermStructureTest::testReferenceChange() {
 
     BOOST_MESSAGE("Testing term structure against evaluation date change...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
+
     boost::shared_ptr<SimpleQuote> flatRate (new SimpleQuote);
     Handle<Quote> flatRateHandle(flatRate);
     termStructure_ = boost::shared_ptr<YieldTermStructure>(
@@ -151,8 +149,6 @@ void TermStructureTest::testReferenceChange() {
                         << "    before date change: " << expected[i] << "\n"
                         << "    after date change:  " << calculated[i]);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -160,8 +156,9 @@ void TermStructureTest::testImplied() {
 
     BOOST_MESSAGE("Testing consistency of implied term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1.0e-10;
     Date today = Settings::instance().evaluationDate();
@@ -180,16 +177,15 @@ void TermStructureTest::testImplied() {
             << QL_FIXED << std::setprecision(10)
             << "    calculated: " << baseDiscount*impliedDiscount << "\n"
             << "    expected:   " << discount);
-
-    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testImpliedObs() {
 
     BOOST_MESSAGE("Testing observability of implied term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Date today = Settings::instance().evaluationDate();
     Date newToday = today + 3*Years;
@@ -202,16 +198,15 @@ void TermStructureTest::testImpliedObs() {
     h.linkTo(termStructure_);
     if (!flag.isUp())
         BOOST_ERROR("Observer was not notified of term structure change");
-
-    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testFSpreaded() {
 
     BOOST_MESSAGE("Testing consistency of forward-spreaded term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
@@ -233,8 +228,6 @@ void TermStructureTest::testFSpreaded() {
             << "    calculated: "
             << io::rate(spreadedForward-me->value()) << "\n"
             << "    expected:   " << io::rate(forward));
-
-    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testFSpreadedObs() {
@@ -242,8 +235,9 @@ void TermStructureTest::testFSpreadedObs() {
     BOOST_MESSAGE("Testing observability of forward-spreaded "
                   "term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
@@ -259,16 +253,15 @@ void TermStructureTest::testFSpreadedObs() {
     me->setValue(0.005);
     if (!flag.isUp())
         BOOST_ERROR("Observer was not notified of spread change");
-
-    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testZSpreaded() {
 
     BOOST_MESSAGE("Testing consistency of zero-spreaded term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
@@ -288,16 +281,15 @@ void TermStructureTest::testZSpreaded() {
             << std::setprecision(10)
             << "    calculated: " << io::rate(spreadedZero-me->value()) << "\n"
             << "    expected:   " << io::rate(zero));
-
-    QL_TEST_TEARDOWN
 }
 
 void TermStructureTest::testZSpreadedObs() {
 
     BOOST_MESSAGE("Testing observability of zero-spreaded term structure...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
@@ -314,8 +306,6 @@ void TermStructureTest::testZSpreadedObs() {
     me->setValue(0.005);
     if (!flag.isUp())
         BOOST_ERROR("Observer was not notified of spread change");
-
-    QL_TEST_TEARDOWN
 }
 
 

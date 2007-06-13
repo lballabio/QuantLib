@@ -74,10 +74,6 @@ void setup() {
                                    ActualActual(ActualActual::ISDA)));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 // utilities
 
 Leg makeFixedLeg(const Date& startDate,
@@ -101,7 +97,7 @@ Leg makeFloatingLeg(const Date& startDate,
     std::vector<Real> gearingVector(length_, gearing);
     std::vector<Spread> spreadVector(length_, spread);
     Leg floatLeg = IborLeg(nominals_, schedule, index_, index_->dayCounter(),
-                           convention_, std::vector<Natural>(1,fixingDays_), 
+                           convention_, std::vector<Natural>(1,fixingDays_),
                            gearingVector, spreadVector);
     boost::shared_ptr<IborCouponPricer> fictitiousPricer(new
         BlackIborCouponPricer(Handle<CapletVolatilityStructure>()));
@@ -191,8 +187,9 @@ void CapFlooredCouponTest::testLargeRates() {
 
     BOOST_MESSAGE("Testing degenerate collared coupon...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     /* A vanilla floating leg and a capped floating leg with strike
        equal to 100 and floor equal to 0 must have (about) the same NPV
@@ -224,15 +221,15 @@ void CapFlooredCouponTest::testLargeRates() {
             << "\n" <<
             "Diff: " << std::abs(vanillaLeg.NPV()-collarLeg.NPV()));
    }
-    QL_TEST_TEARDOWN
 }
 
 void CapFlooredCouponTest::testDecomposition() {
 
     BOOST_MESSAGE("Testing collared coupon against its decomposition...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1e-12;
     Real npvVanilla,npvCappedLeg,npvFlooredLeg,npvCollaredLeg,npvCap,npvFloor,npvCollar;
@@ -518,7 +515,6 @@ void CapFlooredCouponTest::testDecomposition() {
                       << "\n" <<
                       "  Diff: " << error );
     }
-    QL_TEST_TEARDOWN
 }
 
 test_suite* CapFlooredCouponTest::suite() {

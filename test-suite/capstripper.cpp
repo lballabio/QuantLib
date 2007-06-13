@@ -177,7 +177,7 @@ void setMarketVolatilityTermStructure(){
 
 
 void setup(Real impliedVolatilityPrecision = 1e-5) {
-    
+
     calendar = TARGET();
     fixingDays = 2;
     businessDayConvention = Unadjusted;
@@ -212,7 +212,8 @@ QL_END_TEST_LOCALS(CapsStripperTest)
 void CapsStripperTest::FlatVolatilityStripping() {
 
     BOOST_MESSAGE("Testing flat-volatility stripping...");
-    QL_TEST_BEGIN
+
+    SavedSettings backup;
 
     Date today = TARGET().adjust(Settings::instance().evaluationDate());
     Settings::instance().evaluationDate() = today;
@@ -239,7 +240,6 @@ void CapsStripperTest::FlatVolatilityStripping() {
                             << "\n-------------\n");
         }
     }
-    QL_TEST_END
 }
 
 
@@ -250,7 +250,8 @@ void CapsStripperTest::FlatVolatilityStripping() {
 
 void CapsStripperTest::highPrecisionTest(){
     BOOST_MESSAGE("Testing consistency of cap volatilities...");
-    QL_TEST_BEGIN
+
+    SavedSettings backup;
 
     Date today = TARGET().adjust(Settings::instance().evaluationDate());
     Settings::instance().evaluationDate() = today;
@@ -297,8 +298,6 @@ void CapsStripperTest::highPrecisionTest(){
                            "\nrel error: " << io::percent(relativeError) << "\n");
          }
     }
-
-    QL_TEST_END
 }
 
 /* Spreaded volatility stripper test*/
@@ -307,8 +306,8 @@ void CapsStripperTest::testSpreadedStripper() {
 
     BOOST_MESSAGE("Testing spreaded caplet volatility stripper...");
 
-    QL_TEST_BEGIN
-    
+    SavedSettings backup;
+
     Date today = TARGET().adjust(Settings::instance().evaluationDate());
     Settings::instance().evaluationDate() = today;
 
@@ -319,8 +318,8 @@ void CapsStripperTest::testSpreadedStripper() {
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
     Handle<Quote> spreadHandle(spread);
     boost::shared_ptr<CapletVolatilityStructure> spreadedStripper(
-        new SpreadedCapletVolatilityStructure 
-        (strippedVolatilityStructureHandle, spreadHandle));  
+        new SpreadedCapletVolatilityStructure
+        (strippedVolatilityStructureHandle, spreadHandle));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
@@ -334,7 +333,7 @@ void CapsStripperTest::testSpreadedStripper() {
                             "\nexpiry time = " << tenors[i] <<
                             "\n atm strike = " << io::rate(strike) <<
                             "\ndiff = " << diff <<
-                            "\nspread = " << spread->value());    
+                            "\nspread = " << spread->value());
         }
     }
     //testing observability
@@ -342,14 +341,13 @@ void CapsStripperTest::testSpreadedStripper() {
     f.registerWith(spreadedStripper);
     strippedVolatilityStructureHandle->update();
     if(!f.isUp())
-        BOOST_ERROR("spreadedCapletVolatilityStructure " 
+        BOOST_ERROR("spreadedCapletVolatilityStructure "
                     << "does not propagate notifications");
     f.lower();
     spread->setValue(.001);
     if(!f.isUp())
-        BOOST_ERROR("spreadedCapletVolatilityStructure " 
+        BOOST_ERROR("spreadedCapletVolatilityStructure "
                     << "does not propagate notifications");
-    QL_TEST_END
 }
 
 

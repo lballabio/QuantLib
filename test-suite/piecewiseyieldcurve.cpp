@@ -223,11 +223,6 @@ void setup() {
     }
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-    IndexManager::instance().clearHistories();
-}
-
 template <class T, class I>
 void testCurveConsistency(const T&, const I& interpolator) {
 
@@ -353,12 +348,12 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(Discount(), LogLinear());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
@@ -366,12 +361,12 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(Discount(), Linear());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
@@ -379,12 +374,12 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ZeroYield(), LogLinear());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
@@ -392,12 +387,12 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ZeroYield(), Linear());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
@@ -405,15 +400,15 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline zero-yield curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ZeroYield(),
                          Cubic(CubicSpline::SecondDerivative,0.0,
                                CubicSpline::SecondDerivative,0.0,
                                true));
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
@@ -421,12 +416,12 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ForwardRate(), Linear());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
@@ -434,12 +429,12 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ForwardRate(), BackwardFlat());
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
@@ -447,23 +442,25 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline forward-rate curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     testCurveConsistency(ForwardRate(),
                          Cubic(CubicSpline::SecondDerivative,0.0,
                                CubicSpline::SecondDerivative,0.0,
                                true));
-
-    QL_TEST_TEARDOWN
 }
 
 void PiecewiseYieldCurveTest::testObservability() {
 
     BOOST_MESSAGE("Testing observability of piecewise yield curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     termStructure = boost::shared_ptr<YieldTermStructure>(
        new PiecewiseYieldCurve<Discount,LogLinear>(settlementDays, calendar,
@@ -488,8 +485,6 @@ void PiecewiseYieldCurveTest::testObservability() {
     Settings::instance().evaluationDate() = calendar.advance(today,15,Days);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of date change");
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -498,8 +493,10 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
     BOOST_MESSAGE(
         "Testing use of today's LIBOR fixings in swap curve...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    setup();
 
     std::vector<boost::shared_ptr<RateHelper> > swapHelpers(swaps);
     boost::shared_ptr<IborIndex> euribor6m(new Euribor6M);
@@ -577,8 +574,6 @@ void PiecewiseYieldCurveTest::testLiborFixing() {
                         << io::rate(expectedRate));
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

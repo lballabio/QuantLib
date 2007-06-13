@@ -99,10 +99,6 @@ void setup() {
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));  // by default: COntinuous and annual
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(SwaptionTest)
 
 
@@ -110,8 +106,9 @@ void SwaptionTest::testStrikeDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on strike...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
@@ -201,16 +198,15 @@ void SwaptionTest::testStrikeDependency() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing swaption dependency on spread...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -302,16 +298,15 @@ void SwaptionTest::testSpreadDependency() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testSpreadTreatment() {
 
     BOOST_MESSAGE("Testing swaption treatment of spread...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -373,16 +368,15 @@ void SwaptionTest::testSpreadTreatment() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing swaption value against cached value...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     today_ = Date(13, March, 2002);
     settlement_ = Date(15, March, 2002);
@@ -406,16 +400,15 @@ void SwaptionTest::testCachedValue() {
                     << QL_FIXED << std::setprecision(12)
                     << "    calculated: " << swaption->NPV() << "\n"
                     << "    expected:   " << cachedNPV);
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionTest::testVega() {
 
     BOOST_MESSAGE("Testing swaption vega...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Settlement::Type types[] = { Settlement::Physical, Settlement::Cash };
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -475,8 +468,6 @@ void SwaptionTest::testVega() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -485,8 +476,9 @@ void SwaptionTest::testCashSettledSwaptions() {
 
     BOOST_MESSAGE("Testing cash settled swaptions modified annuity...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Rate strike = 0.05;
 
@@ -792,9 +784,6 @@ void SwaptionTest::testCashSettledSwaptions() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
-
 }
 
 
@@ -803,8 +792,9 @@ void SwaptionTest::testImpliedVolatility() {
 
     BOOST_MESSAGE("Testing implied volatility for swaptions...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-08;
@@ -896,8 +886,6 @@ void SwaptionTest::testImpliedVolatility() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

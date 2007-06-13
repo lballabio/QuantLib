@@ -34,8 +34,6 @@ void ArrayTest::testConstruction() {
 
     BOOST_MESSAGE("Testing array construction...");
 
-    QL_TEST_BEGIN
-
     // empty array
     Array a1;
     if (!a1.empty())
@@ -175,8 +173,6 @@ void ArrayTest::testConstruction() {
                         << calculated);
         }
     }
-
-    QL_TEST_END
 }
 
 test_suite* ArrayTest::suite() {

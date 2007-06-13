@@ -32,8 +32,6 @@ void VolatilityModelsTest::testConstruction() {
 
     BOOST_MESSAGE("Testing volatility model construction...");
 
-    QL_TEST_BEGIN
-
     TimeSeries<Real> ts;
     ts[Date(25, March, 2005)] = 1.2;
     ts[Date(29, March, 2005)] = 2.3;
@@ -45,8 +43,6 @@ void VolatilityModelsTest::testConstruction() {
     ConstantEstimator ce(1);
     TimeSeries<Volatility> sv = ce.calculate(locale);
     TimeSeries<Volatility>::const_iterator cur = sv.begin();
-
-    QL_TEST_END
 }
 
 test_suite* VolatilityModelsTest::suite() {

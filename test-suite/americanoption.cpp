@@ -68,10 +68,6 @@ struct AmericanOptionData {
     Real result;   // expected result
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(AmericanOptionTest)
 
 
@@ -427,6 +423,8 @@ QL_BEGIN_TEST_LOCALS(AmericanOptionTest)
 template <class Engine>
 void testFdGreeks(const Engine&) {
 
+    SavedSettings backup;
+
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 7.0e-4;
     tolerance["gamma"]  = 2.0e-4;
@@ -540,25 +538,13 @@ QL_END_TEST_LOCALS(AmericanOptionTest)
 
 
 void AmericanOptionTest::testFdAmericanGreeks() {
-
     BOOST_MESSAGE("Testing finite-differences American option greeks...");
-
-    QL_TEST_BEGIN
-
     testFdGreeks(FDAmericanEngine());
-
-    QL_TEST_TEARDOWN
 }
 
 void AmericanOptionTest::testFdShoutGreeks() {
-
     BOOST_MESSAGE("Testing finite-differences shout option greeks...");
-
-    QL_TEST_BEGIN
-
     testFdGreeks(FDShoutEngine());
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* AmericanOptionTest::suite() {

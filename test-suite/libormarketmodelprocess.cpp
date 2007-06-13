@@ -105,17 +105,13 @@ makeProcess(const Matrix& volaComp = Matrix()) {
     return process;
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(LiborMarketModelProcessTest)
 
 
 void LiborMarketModelProcessTest::testInitialisation() {
     BOOST_MESSAGE("Testing caplet LMM process initialisation...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     DayCounter dayCounter = Actual360();
     RelinkableHandle<YieldTermStructure> termStructure(
@@ -151,14 +147,12 @@ void LiborMarketModelProcessTest::testInitialisation() {
         }
 
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void LiborMarketModelProcessTest::testLambdaBootstrapping() {
     BOOST_MESSAGE("Testing caplet-LMM lambda bootstrapping...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1e-10;
     Volatility lambdaExpected[]= {14.3010297550, 19.3821411939, 15.9816590141,
@@ -199,14 +193,12 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
     BOOST_MESSAGE("Testing caplet-LMM Monte-Carlo caplet pricing...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     /* factor loadings are taken from Hull & White article
        plus extra normalisation to get orthogonal eigenvectors
@@ -335,8 +327,6 @@ void LiborMarketModelProcessTest::testMonteCarloCapletPricing() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* LiborMarketModelProcessTest::suite() {

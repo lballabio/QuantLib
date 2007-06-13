@@ -28,12 +28,19 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(TracingTest)
 
-void teardown() {
-    QL_TRACE_ON(std::cerr);
-}
+class TestCaseCleaner {
+  public:
+    TestCaseCleaner() {}
+    ~TestCaseCleaner() {
+        QL_TRACE_ON(std::cerr);
+    }
+};
 
 void testTraceOutput(bool enable,
                      const std::string& result) {
+
+    TestCaseCleaner cleaner;
+
     std::ostringstream output;
     if (enable)
         QL_TRACE_ENABLE;
@@ -65,12 +72,8 @@ void TracingTest::testOutput() {
 
     BOOST_MESSAGE("Testing tracing...");
 
-    QL_TEST_BEGIN
-
     testTraceOutput(false, "");
     testTraceOutput(true,  "trace[0]: i = 42\n");
-
-    QL_TEST_TEARDOWN
 }
 
 

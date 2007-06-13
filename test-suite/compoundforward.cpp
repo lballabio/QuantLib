@@ -116,10 +116,6 @@ void setup() {
                                                  frequency,dayCounter));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(CompoundForwardTest)
 
 
@@ -128,8 +124,9 @@ void CompoundForwardTest::testSuppliedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with supplied rates...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Handle<YieldTermStructure> liborHandle =
         Handle<YieldTermStructure>(termStructure);
@@ -159,8 +156,6 @@ void CompoundForwardTest::testSuppliedRates() {
                        << io::rate(expectedRate));
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CompoundForwardTest::testConvertedRates() {
@@ -168,8 +163,9 @@ void CompoundForwardTest::testConvertedRates() {
     BOOST_MESSAGE("Testing consistency of compound-forward curve "
                   "with converted rates...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Handle<YieldTermStructure> liborHandle =
         Handle<YieldTermStructure>(termStructure);
@@ -202,8 +198,6 @@ void CompoundForwardTest::testConvertedRates() {
                        << io::rate(expectedRate));
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

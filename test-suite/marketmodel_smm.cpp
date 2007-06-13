@@ -437,8 +437,9 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
     BOOST_MESSAGE("Testing exact repricing of "
                   "multi-step coterminal swaps and swaptions "
                   "in a lognormal coterminal swap rate market model...");
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+
+    setup();
+
     Real fixedRate = 0.04;
 
     // swaps
@@ -511,7 +512,6 @@ void MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions() {
             }
         }
     }
-    QL_TEST_END
 }
 
 

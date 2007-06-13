@@ -129,10 +129,6 @@ void setup() {
                                    ActualActual(ActualActual::ISDA)));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(CapFloorTest)
 
 
@@ -140,8 +136,9 @@ void CapFloorTest::testVega() {
 
     BOOST_MESSAGE("Testing cap/floor vega...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 3, 4, 5, 6, 7, 10, 15, 20, 30 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
@@ -191,16 +188,15 @@ void CapFloorTest::testVega() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testStrikeDependency() {
 
     BOOST_MESSAGE("Testing cap/floor dependency on strike...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
@@ -257,16 +253,15 @@ void CapFloorTest::testStrikeDependency() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testConsistency() {
 
     BOOST_MESSAGE("Testing consistency between cap, floor and collar...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Rate cap_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -307,16 +302,15 @@ void CapFloorTest::testConsistency() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testParity() {
 
     BOOST_MESSAGE("Testing cap/floor parity...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Rate strikes[] = { 0., 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -357,16 +351,15 @@ void CapFloorTest::testParity() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testATMRate() {
 
     BOOST_MESSAGE("Testing ATM rate...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     Rate strikes[] = { 0., 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -413,8 +406,6 @@ void CapFloorTest::testATMRate() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -425,8 +416,9 @@ void CapFloorTest::testImpliedVolatility() {
 
     BOOST_MESSAGE("Testing implied term volatility for cap and floor...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -501,16 +493,15 @@ void CapFloorTest::testImpliedVolatility() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testMarketModel() {
 
     BOOST_MESSAGE("Testing cap/floor pricing with market-model engine...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
@@ -597,16 +588,15 @@ void CapFloorTest::testMarketModel() {
             << "    calculated: " << lmmFloorNPV << "\n"
             << "    stdev:   " << floor->errorEstimate() << "\n"
             << "    expected:   " <<blackFloorNPV);
-
-    QL_TEST_TEARDOWN
 }
 
 void CapFloorTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing Black cap/floor price against cached values...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
@@ -641,8 +631,6 @@ void CapFloorTest::testCachedValue() {
             << std::setprecision(12)
             << "    calculated: " << floor->NPV() << "\n"
             << "    expected:   " <<cachedFloorNPV);
-
-    QL_TEST_TEARDOWN
 }
 
 

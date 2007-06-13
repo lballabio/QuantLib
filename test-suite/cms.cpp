@@ -102,10 +102,6 @@ Real priceTolerance_;
 //******************************************************************************************//
 //******************************************************************************************//
 
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
 void setup() {
 
     //General Settings
@@ -386,8 +382,9 @@ void CmsTest::testFairRate()  {
     BOOST_MESSAGE(
             "Testing fair-rate calculation for constant-maturity coupons...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Handle<Quote> nullMeanReversionQuote =
                     Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
@@ -434,16 +431,15 @@ void CmsTest::testFairRate()  {
                         "tolerance: \t" << io::rate(rateTolerance_));
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void CmsTest::testParity() {
 
     BOOST_MESSAGE("Testing put-call parity for constant-maturity coupons...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Handle<Quote> nullMeanReversionQuote =
                     Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
@@ -529,8 +525,6 @@ void CmsTest::testParity() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -538,8 +532,9 @@ void CmsTest::testCmsSwap() {
 
     BOOST_MESSAGE("Testing constant-maturity swaps...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     swaptionVolatilityStructures_.clear();
     swaptionVolatilityStructures_.push_back(atmVol_);
@@ -652,8 +647,6 @@ void CmsTest::testCmsSwap() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* CmsTest::suite() {

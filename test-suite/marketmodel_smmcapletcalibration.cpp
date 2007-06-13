@@ -407,8 +407,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
     BOOST_MESSAGE("Testing GHLS caplet calibration "
                   "in a lognormal coterminal swap market model...");
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+
+    setup();
 
     Size numberOfRates = todaysForwards_.size();
 
@@ -526,8 +526,6 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
                         "\n error:            " << error <<
                         "\n tolerance:        " << capletTolerance);
     }
-
-    QL_TEST_END
 }
 
 

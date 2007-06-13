@@ -35,7 +35,6 @@ void TransformedGridTest::testConstruction() {
 
     BOOST_MESSAGE("Testing transformed grid construction...");
 
-    QL_TEST_BEGIN
     PlusOne p1;
     Array grid = BoundedGrid(0, 100, 100);
     TransformedGrid tg(grid, p1);
@@ -43,10 +42,8 @@ void TransformedGridTest::testConstruction() {
         BOOST_ERROR("grid creation failed");
     }
 
-    if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5) {
+    if (std::fabs(tg.transformedGrid(0) - 1.0) > 1e-5)
         BOOST_ERROR("grid transformation failed");
-    }
-    QL_TEST_END
 }
 
 test_suite* TransformedGridTest::suite() {

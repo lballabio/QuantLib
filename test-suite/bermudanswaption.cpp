@@ -78,25 +78,24 @@ void setup() {
     index_ = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure_));
     calendar_ = index_->fixingCalendar();
     today_ = calendar_.adjust(Date::todaysDate());
-    Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-}
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
 }
 
 QL_END_TEST_LOCALS(BermudanSwaptionTest)
 
 
 void BermudanSwaptionTest::testCachedValues() {
+
     BOOST_MESSAGE("Testing Bermudan swaption against cached values...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     today_ = Date(15, February, 2002);
+
     Settings::instance().evaluationDate() = today_;
+
     settlement_ = Date(19, February, 2002);
     // flat yield term structure impling 1x5 swap at 5%
     termStructure_.linkTo(flatRate(settlement_,0.04875825,
@@ -174,8 +173,6 @@ void BermudanSwaptionTest::testCachedValues() {
                     << "swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << otmValue);
-
-    QL_TEST_TEARDOWN
 }
 
 

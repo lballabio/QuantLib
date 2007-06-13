@@ -26,19 +26,12 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(LinearLeastSquaresRegressionTest)
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-QL_END_TEST_LOCALS(LinearLeastSquaresRegressionTest)
-
 void LinearLeastSquaresRegressionTest::testRegression() {
 
     BOOST_MESSAGE("Testing linear least-squares regression...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
+
     const Real tolerance = 0.025;
 
     const Size nr=100000;
@@ -100,8 +93,6 @@ void LinearLeastSquaresRegressionTest::testRegression() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

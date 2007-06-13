@@ -112,16 +112,14 @@ struct QuantoForwardOptionData {
     Real tol;        // tolerance
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(QuantoOptionTest)
 
 
 void QuantoOptionTest::testValues() {
 
     BOOST_MESSAGE("Testing quanto option values...");
+
+    SavedSettings backup;
 
     /* The data below are from
        from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -202,7 +200,7 @@ void QuantoOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing quanto option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
@@ -400,8 +398,6 @@ void QuantoOptionTest::testGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -409,6 +405,8 @@ void QuantoOptionTest::testGreeks() {
 void QuantoOptionTest::testForwardValues() {
 
     BOOST_MESSAGE("Testing quanto-forward option values...");
+
+    SavedSettings backup;
 
     QuantoForwardOptionData values[] = {
         //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
@@ -496,7 +494,7 @@ void QuantoOptionTest::testForwardGreeks() {
 
     BOOST_MESSAGE("Testing quanto-forward option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
@@ -705,14 +703,14 @@ void QuantoOptionTest::testForwardGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void QuantoOptionTest::testForwardPerformanceValues() {
 
     BOOST_MESSAGE("Testing quanto-forward-performance option values...");
+
+    SavedSettings backup;
 
     QuantoForwardOptionData values[] = {
         //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol

@@ -90,10 +90,6 @@ struct HaugMertonData {
     Real tol;      // tolerance
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(JumpDiffusionTest)
 
 
@@ -101,6 +97,8 @@ void JumpDiffusionTest::testMerton76() {
 
     BOOST_MESSAGE("Testing Merton 76 jump-diffusion model "
                   "for European options...");
+
+    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998, pag 9
@@ -351,7 +349,7 @@ void JumpDiffusionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing jump-diffusion option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
@@ -533,8 +531,6 @@ void JumpDiffusionTest::testGreeks() {
       }
       }
     } // type loop
-
-    QL_TEST_TEARDOWN
 }
 
 

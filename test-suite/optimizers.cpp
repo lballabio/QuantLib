@@ -230,7 +230,9 @@ QL_END_TEST_LOCALS(OptimizersTest)
 
 void OptimizersTest::test() {
     BOOST_MESSAGE("Testing optimizers...");
-    QL_TEST_SETUP
+
+    setup();
+
     // Loop over problems (currently there is only 1 problem)
     for (Size i=0; i<costFunctions_.size(); ++i) {
         #ifdef VERBOSE

@@ -36,7 +36,7 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 /* the following works around a problem with Boost 1.32 where std::fixed
-   and similar manipulators could not be streamed to the Boost streams */
+   and similar manipulators could not be sent to the Boost streams */
 #if defined(QL_WORKING_BOOST_STREAMS)
 #define QL_FIXED std::fixed
 #define QL_SCIENTIFIC std::scientific
@@ -44,16 +44,6 @@
 #define QL_FIXED ""
 #define QL_SCIENTIFIC ""
 #endif
-
-/* the following somewhat support setup() and teardown() functions,
-   the latter being called even in presence of exceptions.  When used,
-   QL_TEST_BEGIN must begin the test, and either QL_TEST_TEARDOWN or
-   QL_TEST_END must close the test.  When needed, QL_TEST_SETUP must
-   be put in between. */
-#define QL_TEST_BEGIN     try {
-#define QL_TEST_SETUP     setup();
-#define QL_TEST_TEARDOWN  teardown(); } catch (...) { teardown(); throw; }
-#define QL_TEST_END       } catch (...) { throw; }
 
 /*! the following supports file-local variables for linkers which
     fail to manage anonymous namespaces correctly */
@@ -149,6 +139,14 @@ namespace QuantLib {
                       - 0.5*f2.front() - 0.5*f2.back());
         return std::sqrt(I);
     }
+
+
+    // this cleans up index-fixing histories when destroyed
+    class IndexHistoryCleaner {
+      public:
+        IndexHistoryCleaner();
+        ~IndexHistoryCleaner();
+    };
 
 }
 

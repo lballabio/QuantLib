@@ -186,16 +186,14 @@ Integer timeToDays(Time t) {
     return Integer(t*360+0.5);
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(EuropeanOptionTest)
 
 
 void EuropeanOptionTest::testValues() {
 
     BOOST_MESSAGE("Testing European option values...");
+
+    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -300,6 +298,8 @@ void EuropeanOptionTest::testValues() {
 void EuropeanOptionTest::testGreekValues() {
 
     BOOST_MESSAGE("Testing European option greek values...");
+
+    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -576,7 +576,7 @@ void EuropeanOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing analytic European option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -729,13 +729,13 @@ void EuropeanOptionTest::testGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void EuropeanOptionTest::testImpliedVol() {
 
     BOOST_MESSAGE("Testing European option implied volatility...");
+
+    SavedSettings backup;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -859,6 +859,8 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
     BOOST_MESSAGE("Testing self-containment of "
                   "implied volatility calculation...");
+
+    SavedSettings backup;
 
     Size maxEvaluations = 100;
     Real tolerance = 1.0e-6;
@@ -1036,6 +1038,8 @@ void EuropeanOptionTest::testJRBinomialEngines() {
     BOOST_MESSAGE("Testing JR binomial European engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = JR;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1051,6 +1055,8 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
 
     BOOST_MESSAGE("Testing CRR binomial European engines "
                   "against analytic results...");
+
+    SavedSettings backup;
 
     EngineType engine = CRR;
     Size steps = 501;
@@ -1068,6 +1074,8 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
     BOOST_MESSAGE("Testing EQP binomial European engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = EQP;
     Size steps = 501;
     Size samples = Null<Size>();
@@ -1083,6 +1091,8 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
 
     BOOST_MESSAGE("Testing TGEO binomial European engines "
                   "against analytic results...");
+
+    SavedSettings backup;
 
     EngineType engine = TGEO;
     Size steps = 251;
@@ -1100,6 +1110,8 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
     BOOST_MESSAGE("Testing TIAN binomial European engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = TIAN;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1115,6 +1127,8 @@ void EuropeanOptionTest::testLRBinomialEngines() {
 
     BOOST_MESSAGE("Testing LR binomial European engines "
                   "against analytic results...");
+
+    SavedSettings backup;
 
     EngineType engine = LR;
     Size steps = 251;
@@ -1132,6 +1146,8 @@ void EuropeanOptionTest::testJOSHIBinomialEngines() {
     BOOST_MESSAGE("Testing Joshi binomial European engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = JOSHI;
     Size steps = 251;
     Size samples = Null<Size>();
@@ -1147,6 +1163,8 @@ void EuropeanOptionTest::testFdEngines() {
 
     BOOST_MESSAGE("Testing finite-difference European engines "
                   "against analytic results...");
+
+    SavedSettings backup;
 
     EngineType engine = FiniteDifferences;
     Size timeSteps = 300;
@@ -1164,6 +1182,8 @@ void EuropeanOptionTest::testIntegralEngines() {
     BOOST_MESSAGE("Testing integral engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = Integral;
     Size timeSteps = 300;
     Size gridPoints = 300;
@@ -1176,6 +1196,8 @@ void EuropeanOptionTest::testMcEngines() {
 
     BOOST_MESSAGE("Testing Monte Carlo European engines "
                   "against analytic results...");
+
+    SavedSettings backup;
 
     EngineType engine = PseudoMonteCarlo;
     Size steps = Null<Size>();
@@ -1190,6 +1212,8 @@ void EuropeanOptionTest::testQmcEngines() {
     BOOST_MESSAGE("Testing Quasi Monte Carlo European engines "
                   "against analytic results...");
 
+    SavedSettings backup;
+
     EngineType engine = QuasiMonteCarlo;
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
@@ -1201,6 +1225,8 @@ void EuropeanOptionTest::testQmcEngines() {
 void EuropeanOptionTest::testPriceCurve() {
 
     BOOST_MESSAGE("Testing European price curves...");
+
+    SavedSettings backup;
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998

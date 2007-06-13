@@ -33,10 +33,6 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
   public:
     AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
@@ -124,7 +120,7 @@ QL_END_TEST_LOCALS(MCLongstaffSchwartzEngineTest)
 void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     BOOST_MESSAGE("Testing Monte-Carlo pricing of American options...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     // most of the example taken from the EquityOption.cpp
     const Option::Type type(Option::Put);
@@ -204,8 +200,6 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
@@ -216,7 +210,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
     BOOST_MESSAGE("Testing Monte-Carlo pricing of American max options...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     // most of the example taken from the EquityOption.cpp
     const Option::Type type(Option::Call);
@@ -292,8 +286,6 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
                             << " +/- " << errorEstimate);
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* MCLongstaffSchwartzEngineTest::suite() {

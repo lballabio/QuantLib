@@ -49,20 +49,17 @@ QL_BEGIN_TEST_LOCALS(BatesModelTest)
     return sse;
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(BatesModelTest)
 
 void BatesModelTest::testAnalyticVsBlack() {
 
     BOOST_MESSAGE("Testing analytic Bates engine against Black formula...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
+
     DayCounter dayCounter = ActualActual();
     Date exerciseDate = settlementDate + 6*Months;
 
@@ -162,8 +159,6 @@ void BatesModelTest::testAnalyticVsBlack() {
                     << QL_SCIENTIFIC
                     << "\n    error:      " << error);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -171,9 +166,11 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
 
     BOOST_MESSAGE("Testing analytic Bates engine against Merton-76 engine...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
+
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
+
     DayCounter dayCounter = ActualActual();
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -243,8 +240,6 @@ void BatesModelTest::testAnalyticVsJumpDiffusion() {
                        << "\n    tolerance:  " << tolerance);
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void BatesModelTest::testDAXCalibration() {
@@ -257,7 +252,7 @@ void BatesModelTest::testDAXCalibration() {
     BOOST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -392,8 +387,6 @@ void BatesModelTest::testDAXCalibration() {
                         << "\n    calculated: " << calculated
                         << "\n    expected:   " << expectedValues[i]);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* BatesModelTest::suite() {

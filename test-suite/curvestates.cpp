@@ -119,20 +119,30 @@ QL_END_TEST_LOCALS(CurveStatesTest)
 void CurveStatesTest::testLMMCurveState() {
 
     BOOST_MESSAGE("Testing Libor-market-model curve state...");
-    QL_TEST_SETUP
+
+    SavedSettings backup;
+
+    setup();
 }
 
 void CurveStatesTest::testCoterminalSwapCurveState() {
 
     BOOST_MESSAGE("Testing coterminal-swap-market-model curve state...");
-    QL_TEST_SETUP
+
+    SavedSettings backup;
+
+    setup();
 }
 
 
 void CurveStatesTest::testCMSwapCurveState() {
 
     BOOST_MESSAGE("Testing constant-maturity-swap-market-model curve state...");
-    QL_TEST_SETUP
+
+    SavedSettings backup;
+
+    setup();
+
     Size nbRates = todaysForwards.size();
     Size factors = nbRates;
     Matrix pseudo(nbRates, factors, 0.1);

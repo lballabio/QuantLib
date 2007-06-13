@@ -90,10 +90,6 @@ void setup() {
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(SwapTest)
 
 
@@ -101,8 +97,9 @@ void SwapTest::testFairRate() {
 
     BOOST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -123,8 +120,6 @@ void SwapTest::testFairRate() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testFairSpread() {
@@ -132,8 +127,9 @@ void SwapTest::testFairSpread() {
     BOOST_MESSAGE("Testing vanilla-swap calculation of "
                   "fair floating spread...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -153,16 +149,15 @@ void SwapTest::testFairSpread() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testRateDependency() {
 
     BOOST_MESSAGE("Testing vanilla-swap dependency on fixed rate...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
@@ -193,16 +188,15 @@ void SwapTest::testRateDependency() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testSpreadDependency() {
 
     BOOST_MESSAGE("Testing vanilla-swap dependency on floating spread...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
@@ -233,16 +227,15 @@ void SwapTest::testSpreadDependency() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testInArrears() {
 
     BOOST_MESSAGE("Testing in-arrears swap calculation...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     /* See Hull, 4th ed., page 550
        Note: the calculation in the book is wrong (work out the
@@ -299,16 +292,15 @@ void SwapTest::testInArrears() {
         BOOST_ERROR("Wrong NPV calculation:\n"
                     << "    expected:   " << storedValue << "\n"
                     << "    calculated: " << swap.NPV());
-
-    QL_TEST_TEARDOWN
 }
 
 void SwapTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing vanilla-swap calculation against cached value...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     today_ = Date(17,June,2002);
     Settings::instance().evaluationDate() = today_;
@@ -327,8 +319,6 @@ void SwapTest::testCachedValue() {
                     << QL_FIXED << std::setprecision(12)
                     << "    calculated: " << swap->NPV() << "\n"
                     << "    expected:   " << cachedNPV);
-
-    QL_TEST_TEARDOWN
 }
 
 

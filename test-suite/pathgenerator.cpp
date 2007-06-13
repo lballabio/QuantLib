@@ -34,10 +34,6 @@ using namespace boost::unit_test_framework;
 
 QL_BEGIN_TEST_LOCALS(PathGeneratorTest)
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
                 const std::string& tag, bool brownianBridge,
                 Real expected, Real antithetic) {
@@ -148,7 +144,7 @@ void PathGeneratorTest::testPathGenerator() {
 
     BOOST_MESSAGE("Testing 1-D path generation against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
@@ -178,8 +174,6 @@ void PathGeneratorTest::testPathGenerator() {
     testSingle(boost::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
                "square-root", false, 1.70608664108, 6.024200546031);
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -187,7 +181,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
 
     BOOST_MESSAGE("Testing n-D path generation against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
@@ -292,8 +286,6 @@ void PathGeneratorTest::testMultiPathGenerator() {
         2.226487196647,
         3.503859264341 };
     testMultiple(process, "square-root", result4, result4a);
-
-    QL_TEST_TEARDOWN
 }
 
 

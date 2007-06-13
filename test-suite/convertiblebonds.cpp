@@ -93,10 +93,6 @@ void setup() {
     conversionRatio_ = redemption_/underlying_->value();
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(ConvertibleBondTest)
 
 
@@ -108,8 +104,9 @@ void ConvertibleBondTest::testBond() {
     BOOST_MESSAGE(
        "Testing out-of-the-money convertible bonds against vanilla bonds...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     conversionRatio_ = 1.0e-16;
 
@@ -264,8 +261,6 @@ void ConvertibleBondTest::testBond() {
                     << "\n    expected:   " << floating.NPV()
                     << "\n    error:      " << error);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void ConvertibleBondTest::testOption() {
@@ -276,8 +271,9 @@ void ConvertibleBondTest::testOption() {
     BOOST_MESSAGE(
        "Testing zero-coupon convertible bonds against vanilla option...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     boost::shared_ptr<Exercise> euExercise(new
                                     EuropeanExercise(maturityDate_));
@@ -321,8 +317,6 @@ void ConvertibleBondTest::testOption() {
                     << "\n    expected:   " << expected
                     << "\n    error:      " << error);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* ConvertibleBondTest::suite() {

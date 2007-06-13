@@ -106,16 +106,12 @@ makeCapVolCurve(const Date& todaysDate) {
                                                  capletVols, Actual360()));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(LiborMarketModelTest)
 
 void LiborMarketModelTest::testSimpleCovarianceModels() {
     BOOST_MESSAGE("Testing simple covariance models...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     const Size size = 10;
     const Real tolerance = 1e-14;
@@ -186,15 +182,13 @@ void LiborMarketModelTest::testSimpleCovarianceModels() {
                             << "\n    expected:   " << expected);
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void LiborMarketModelTest::testCapletPricing() {
     BOOST_MESSAGE("Testing caplet pricing...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     const Size size = 10;
     #if defined(QL_USE_INDEXED_COUPON)
@@ -241,14 +235,12 @@ void LiborMarketModelTest::testCapletPricing() {
         BOOST_ERROR("Failed to reproduce npv"
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected);
-
-    QL_TEST_TEARDOWN
 }
 
 void LiborMarketModelTest::testCalibration() {
     BOOST_MESSAGE("Testing calibration of a Libor Forward Model...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     const Size size = 14;
     const Real tolerance = 8e-3;
@@ -345,14 +337,12 @@ void LiborMarketModelTest::testCalibration() {
         BOOST_ERROR("Failed to calibrate libor forward model"
                     << "\n    calculated diff: " << std::sqrt(calculated)
                     << "\n    expected : smaller than  " << tolerance);
-
-    QL_TEST_TEARDOWN
 }
 
 void LiborMarketModelTest::testSwaptionPricing() {
     BOOST_MESSAGE("Testing forward swap and swaption pricing...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     const Size size  = 10;
     const Size steps = 8*size;
@@ -489,8 +479,6 @@ void LiborMarketModelTest::testSwaptionPricing() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

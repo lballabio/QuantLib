@@ -61,21 +61,12 @@ using namespace boost::unit_test_framework;
 
 // tests
 
-QL_BEGIN_TEST_LOCALS(DividendOptionTest)
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-QL_END_TEST_LOCALS(DividendOptionTest)
-
-
 void DividendOptionTest::testEuropeanValues() {
 
     BOOST_MESSAGE(
               "Testing dividend European option values with no dividends...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1.0e-5;
 
@@ -162,8 +153,6 @@ void DividendOptionTest::testEuropeanValues() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 // Reference pg. 253 - Hull - Options, Futures, and Other Derivatives 5th ed
@@ -174,7 +163,7 @@ void DividendOptionTest::testEuropeanKnownValue() {
     BOOST_MESSAGE(
               "Testing dividend European option values with known value...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1.0e-2;
     Real expected = 3.67;
@@ -231,7 +220,6 @@ void DividendOptionTest::testEuropeanKnownValue() {
                        expected, calculated,
                        error, tolerance);
     }
-    QL_TEST_TEARDOWN
 }
 
 
@@ -240,7 +228,7 @@ void DividendOptionTest::testEuropeanStartLimit() {
     BOOST_MESSAGE(
               "Testing dividend European option values with no dividends...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1.0e-5;
     Real dividendValue = 10.0;
@@ -325,8 +313,6 @@ void DividendOptionTest::testEuropeanStartLimit() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void DividendOptionTest::testEuropeanEndLimit() {
@@ -334,7 +320,7 @@ void DividendOptionTest::testEuropeanEndLimit() {
     BOOST_MESSAGE(
               "Testing dividend European option values with end limits...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1.0e-5;
     Real dividendValue = 10.0;
@@ -424,8 +410,6 @@ void DividendOptionTest::testEuropeanEndLimit() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -433,7 +417,7 @@ void DividendOptionTest::testEuropeanGreeks() {
 
     BOOST_MESSAGE("Testing dividend European option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"] = 1.0e-5;
@@ -573,8 +557,6 @@ void DividendOptionTest::testEuropeanGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -583,7 +565,7 @@ void DividendOptionTest::testFdEuropeanValues() {
     BOOST_MESSAGE(
               "Testing finite-difference dividend European option values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Real tolerance = 1.0e-2;
     Size gridPoints = 300;
@@ -677,8 +659,6 @@ void DividendOptionTest::testFdEuropeanValues() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -806,7 +786,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     BOOST_MESSAGE(
              "Testing finite-differences dividend European option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
@@ -820,15 +800,13 @@ void DividendOptionTest::testFdEuropeanGreeks() {
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         testFdGreeks(today,exercise,engine);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void DividendOptionTest::testFdAmericanGreeks() {
     BOOST_MESSAGE(
              "Testing finite-differences dividend American option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
@@ -842,8 +820,6 @@ void DividendOptionTest::testFdAmericanGreeks() {
                                           new AmericanExercise(today,exDate));
         testFdGreeks(today,exercise,engine);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -900,7 +876,7 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
     BOOST_MESSAGE(
          "Testing degenerate finite-differences dividend European option...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today = Date(27,February,2005);
     Settings::instance().evaluationDate() = today;
@@ -915,8 +891,6 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     testFdDegenerate(today,exercise,engine);
-
-    QL_TEST_TEARDOWN
 }
 
 void DividendOptionTest::testFdAmericanDegenerate() {
@@ -924,7 +898,7 @@ void DividendOptionTest::testFdAmericanDegenerate() {
     BOOST_MESSAGE(
          "Testing degenerate finite-differences dividend American option...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today = Date(27,February,2005);
     Settings::instance().evaluationDate() = today;
@@ -939,8 +913,6 @@ void DividendOptionTest::testFdAmericanDegenerate() {
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,exDate));
 
     testFdDegenerate(today,exercise,engine);
-
-    QL_TEST_TEARDOWN
 }
 
 

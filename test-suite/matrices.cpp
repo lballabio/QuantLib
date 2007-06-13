@@ -97,8 +97,7 @@ void MatricesTest::testEigenvectors() {
 
     BOOST_MESSAGE("Testing eigenvalues and eigenvectors calculation...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    setup();
 
     Matrix testMatrices[] = { M1, M2 };
 
@@ -131,16 +130,13 @@ void MatricesTest::testEigenvectors() {
         if (norm(m-I) > 1.0e-15)
             BOOST_FAIL("Eigenvector not normalized");
     }
-
-    QL_TEST_END
 }
 
 void MatricesTest::testSqrt() {
 
     BOOST_MESSAGE("Testing matricial square root...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    setup();
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
     Matrix temp = m*transpose(m);
@@ -154,15 +150,12 @@ void MatricesTest::testSqrt() {
                    << "\nerror:     " << error
                    << "\ntolerance: " << tolerance);
     }
-
-    QL_TEST_END
 }
 
 void MatricesTest::testHighamSqrt() {
     BOOST_MESSAGE("Testing Higham matricial square root...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    setup();
 
     Matrix tempSqrt = pseudoSqrt(M5, SalvagingAlgorithm::Higham);
     Matrix ansSqrt = pseudoSqrt(M6, SalvagingAlgorithm::None);
@@ -176,16 +169,13 @@ void MatricesTest::testHighamSqrt() {
                    << "\nerror:     " << error
                    << "\ntolerance: " << tolerance);
     }
-
-    QL_TEST_END
 }
 
 void MatricesTest::testSVD() {
 
     BOOST_MESSAGE("Testing singular value decomposition...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    setup();
 
     Real tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, M3, M4 };
@@ -224,16 +214,13 @@ void MatricesTest::testSVD() {
             BOOST_FAIL("Product does not recover A: (norm of U*S*V^T-A = "
                        << norm(A_reconstructed-A) << ")");
     }
-
-    QL_TEST_END
 }
 
 void MatricesTest::testInverse() {
 
     BOOST_MESSAGE("Testing inverse calculation...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    setup();
 
     Real tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, I };
@@ -253,8 +240,6 @@ void MatricesTest::testInverse() {
             BOOST_FAIL("A*inverse(A) does not recover unit matrix (norm = "
                        << norm(I1-I) << ")");
     }
-
-    QL_TEST_END
 }
 
 test_suite* MatricesTest::suite() {

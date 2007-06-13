@@ -107,19 +107,16 @@ void setup() {
                       modelOfYieldCurve_, meanReversionQuote));
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(AssetSwapTest)
 
 
 void AssetSwapTest::testImpliedValue() {
 
-    BOOST_MESSAGE("Testing bond implied value is given by asset swap fair price with spread=0...");
+    BOOST_MESSAGE("Testing bond implied value against asset-swap fair price with spread=0...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
@@ -173,7 +170,7 @@ void AssetSwapTest::testImpliedValue() {
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
-    
+
     // Fixed Underlying bond (Isin: IT0006527060 IBRD 5 02/05/19)
     // maturity occurs on a business day
 
@@ -214,7 +211,7 @@ void AssetSwapTest::testImpliedValue() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
-    
+
     boost::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                          iborIndex_, Actual360(),
@@ -374,9 +371,9 @@ void AssetSwapTest::testImpliedValue() {
 
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(20,December,2015),
                        Thirty360(), Following,
                        100.0, Date(19,December,1985), termStructure_));
@@ -402,9 +399,9 @@ void AssetSwapTest::testImpliedValue() {
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(17,February,2028),
                        ActualActual(ActualActual::ISMA), Following,
                        100.0, Date(17,February,1998), termStructure_));
@@ -427,15 +424,16 @@ void AssetSwapTest::testImpliedValue() {
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
-
-      QL_TEST_TEARDOWN
 }
+
+
 void AssetSwapTest::testMarketASWSpread() {
 
     BOOST_MESSAGE("Testing relationship between market asset swap and par asset swap...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
@@ -537,7 +535,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
-    
+
     boost::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                          iborIndex_, Actual360(),
@@ -595,7 +593,7 @@ void AssetSwapTest::testMarketASWSpread() {
                          100.0, Date(24,September,2004), termStructure_));
     setCouponPricer(floatingBond2->cashflows(),pricer_);
     iborIndex_->addFixing(Date(22,March,2007), 0.04013);
-    Real floatingBondMktPrice2 = 101.248 ; // market price observed on 7th June 2007 
+    Real floatingBondMktPrice2 = 101.248 ; // market price observed on 7th June 2007
     Real floatingBondMktFullPrice2 = floatingBondMktPrice2+floatingBond2->accruedAmount();
     AssetSwap floatingBondParAssetSwap2(payFixedRate,
                                         floatingBond2, floatingBondMktPrice2,
@@ -642,7 +640,7 @@ void AssetSwapTest::testMarketASWSpread() {
                     100.0, Date(22,August,2005), termStructure_));
     setCouponPricer(cmsBond1->cashflows(),cmspricer_);
     swapIndex_->addFixing(Date(18,August,2006), 0.04158);
-    Real cmsBondMktPrice1 = 88.45 ; // market price observed on 7th June 2007 
+    Real cmsBondMktPrice1 = 88.45 ; // market price observed on 7th June 2007
     Real cmsBondMktFullPrice1 = cmsBondMktPrice1+cmsBond1->accruedAmount();
     AssetSwap cmsBondParAssetSwap1(payFixedRate,
                                    cmsBond1, cmsBondMktPrice1,
@@ -689,7 +687,7 @@ void AssetSwapTest::testMarketASWSpread() {
                     100.0, Date(06,May,2005), termStructure_));
     setCouponPricer(cmsBond2->cashflows(),cmspricer_);
     swapIndex_->addFixing(Date(04,May,2006), 0.04217);
-    Real cmsBondMktPrice2 = 94.08 ; // market price observed on 7th June 2007 
+    Real cmsBondMktPrice2 = 94.08 ; // market price observed on 7th June 2007
     Real cmsBondMktFullPrice2 = cmsBondMktPrice2+cmsBond2->accruedAmount();
     AssetSwap cmsBondParAssetSwap2(payFixedRate,
                                    cmsBond2, cmsBondMktPrice2,
@@ -720,25 +718,25 @@ void AssetSwapTest::testMarketASWSpread() {
 
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(20,December,2015),
                        Thirty360(), Following,
                        100.0, Date(19,December,1985), termStructure_));
-    Real zeroCpnBondMktPrice1 = 70.436 ; // market price observed on 12th June 2007 
+    Real zeroCpnBondMktPrice1 = 70.436 ; // market price observed on 12th June 2007
     Real zeroCpnBondMktFullPrice1 = zeroCpnBondMktPrice1+zeroCpnBond1->accruedAmount();
     AssetSwap zeroCpnBondParAssetSwap1(payFixedRate,zeroCpnBond1,
-                                       zeroCpnBondMktPrice1, iborIndex_, 
+                                       zeroCpnBondMktPrice1, iborIndex_,
                                        spread_, termStructure_,
                                        Schedule(),
-                                       iborIndex_->dayCounter(), parAssetSwap);                                 
+                                       iborIndex_->dayCounter(), parAssetSwap);
     Real zeroCpnBondParAssetSwapSpread1 = zeroCpnBondParAssetSwap1.fairSpread();
     AssetSwap zeroCpnBondMktAssetSwap1(payFixedRate,zeroCpnBond1,
                                        zeroCpnBondMktPrice1,iborIndex_,
                                        spread_, termStructure_,
                                        Schedule(),
-                                       iborIndex_->dayCounter(),mktAssetSwap);                                  
+                                       iborIndex_->dayCounter(),mktAssetSwap);
     Real zeroCpnBondMktAssetSwapSpread1 = zeroCpnBondMktAssetSwap1.fairSpread();
     Real error7 = std::fabs(zeroCpnBondMktAssetSwapSpread1-
                             100*zeroCpnBondParAssetSwapSpread1/zeroCpnBondMktFullPrice1);
@@ -755,26 +753,26 @@ void AssetSwapTest::testMarketASWSpread() {
 
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(17,February,2028),
                        ActualActual(ActualActual::ISMA), Following,
                        100.0, Date(17,February,1998), termStructure_));
     Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
-    Real zeroCpnBondMktPrice2 = 35.160 ; // market price observed on 12th June 2007 
+    Real zeroCpnBondMktPrice2 = 35.160 ; // market price observed on 12th June 2007
     Real zeroCpnBondMktFullPrice2 = zeroCpnBondMktPrice2+zeroCpnBond2->accruedAmount();
     AssetSwap zeroCpnBondParAssetSwap2(payFixedRate,zeroCpnBond2,
-                                       zeroCpnBondMktPrice2, iborIndex_, 
+                                       zeroCpnBondMktPrice2, iborIndex_,
                                        spread_, termStructure_,
                                        Schedule(),
-                                       iborIndex_->dayCounter(), parAssetSwap);                                 
+                                       iborIndex_->dayCounter(), parAssetSwap);
     Real zeroCpnBondParAssetSwapSpread2 = zeroCpnBondParAssetSwap2.fairSpread();
     AssetSwap zeroCpnBondMktAssetSwap2(payFixedRate,zeroCpnBond2,
                                        zeroCpnBondMktPrice2,iborIndex_,
                                        spread_, termStructure_,
                                        Schedule(),
-                                       iborIndex_->dayCounter(),mktAssetSwap);                                  
+                                       iborIndex_->dayCounter(),mktAssetSwap);
     Real zeroCpnBondMktAssetSwapSpread2 = zeroCpnBondMktAssetSwap2.fairSpread();
     Real error8 = std::fabs(zeroCpnBondMktAssetSwapSpread2-
                             100*zeroCpnBondParAssetSwapSpread2/zeroCpnBondMktFullPrice2);
@@ -788,17 +786,17 @@ void AssetSwapTest::testMarketASWSpread() {
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
     }
-
-      QL_TEST_TEARDOWN
 }
 
 
 void AssetSwapTest::testZSpread() {
 
-    BOOST_MESSAGE("Testing cleanPriceFromZSpread and dirtyPriceFromZSpread for Zspread=0.. ");
+    BOOST_MESSAGE(
+        "Testing clean- and dirty-price calculation for asset-swaps...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Calendar bondCalendar = TARGET();
     Natural settlementDays = 3;
@@ -820,11 +818,11 @@ void AssetSwapTest::testZSpread() {
     Real fixedBondImpliedValue1 = fixedBond1->cleanPrice();
     Date fixedBondSettlementDate1= fixedBond1->settlementDate();
     // standard market conventions to be investigated...
-    Real fixedBondCleanPrice1= fixedBond1->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, ActualActual(ActualActual::ISDA), 
+    Real fixedBondCleanPrice1= fixedBond1->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, ActualActual(ActualActual::ISDA),
          fixedBondSettlementDate1);
-    Real fixedBondDirtyPrice1= fixedBond1->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual, ActualActual(ActualActual::ISDA), 
+    Real fixedBondDirtyPrice1= fixedBond1->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual, ActualActual(ActualActual::ISDA),
          fixedBondSettlementDate1);
     Real tolerance = 1.0e-13;
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
@@ -838,7 +836,7 @@ void AssetSwapTest::testZSpread() {
                     << "\n  tolerance:             " << tolerance);
     }
     Real fixedBondImpliedDirty1 = fixedBondImpliedValue1+fixedBond1->accruedAmount();
-    Real error2 = std::fabs(fixedBondImpliedDirty1-fixedBondDirtyPrice1);   
+    Real error2 = std::fabs(fixedBondImpliedDirty1-fixedBondDirtyPrice1);
     if (error2>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -864,11 +862,11 @@ void AssetSwapTest::testZSpread() {
     Real fixedBondImpliedValue2 = fixedBond2->cleanPrice();
     Date fixedBondSettlementDate2= fixedBond2->settlementDate();
     // standard market conventions to be investigated...
-    Real fixedBondCleanPrice2= fixedBond2->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(Thirty360::BondBasis), 
+    Real fixedBondCleanPrice2= fixedBond2->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(Thirty360::BondBasis),
          fixedBondSettlementDate2);
-    Real fixedBondDirtyPrice2= fixedBond2->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual, ActualActual(ActualActual::ISDA), 
+    Real fixedBondDirtyPrice2= fixedBond2->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual, ActualActual(ActualActual::ISDA),
          fixedBondSettlementDate2);
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
@@ -881,7 +879,7 @@ void AssetSwapTest::testZSpread() {
                     << "\n  tolerance:             " << tolerance);
     }
     Real fixedBondImpliedDirty2 = fixedBondImpliedValue2+fixedBond2->accruedAmount();
-    Real error4 = std::fabs(fixedBondImpliedDirty2-fixedBondDirtyPrice2);   
+    Real error4 = std::fabs(fixedBondImpliedDirty2-fixedBondDirtyPrice2);
     if (error4>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -900,7 +898,7 @@ void AssetSwapTest::testZSpread() {
                                    Period(Semiannual), bondCalendar,
                                    Unadjusted, Following,
                                    true, false);
-    
+
     boost::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, faceAmount_, floatingBondSchedule1,
                          iborIndex_, Actual360(),
@@ -917,7 +915,7 @@ void AssetSwapTest::testZSpread() {
     Real floatingBondCleanPrice1= floatingBond1->cleanPriceFromZSpread(
          spread_, compounding_, Semiannual, Actual360(), fixedBondSettlementDate1);
     Real floatingBondDirtyPrice1= floatingBond1->dirtyPriceFromZSpread(
-         spread_, compounding_, Semiannual, Actual360(), 
+         spread_, compounding_, Semiannual, Actual360(),
          floatingBondSettlementDate1);
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
@@ -931,7 +929,7 @@ void AssetSwapTest::testZSpread() {
     }
     Real floatingBondImpliedDirty1 = floatingBondImpliedValue1+
                                      floatingBond1->accruedAmount();
-    Real error6 = std::fabs(floatingBondImpliedDirty1-floatingBondDirtyPrice1);   
+    Real error6 = std::fabs(floatingBondImpliedDirty1-floatingBondDirtyPrice1);
     if (error6>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -940,7 +938,7 @@ void AssetSwapTest::testZSpread() {
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
-    }  
+    }
 
     // FRN bond (Isin: XS0090566539 COE 0 09/24/18)
     // maturity occurs on a business day
@@ -966,7 +964,7 @@ void AssetSwapTest::testZSpread() {
     Real floatingBondCleanPrice2= floatingBond2->cleanPriceFromZSpread(
          spread_, compounding_, Semiannual, Actual360(), fixedBondSettlementDate1);
     Real floatingBondDirtyPrice2= floatingBond2->dirtyPriceFromZSpread(
-         spread_, compounding_, Semiannual, Actual360(), 
+         spread_, compounding_, Semiannual, Actual360(),
          floatingBondSettlementDate2);
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
@@ -980,7 +978,7 @@ void AssetSwapTest::testZSpread() {
     }
     Real floatingBondImpliedDirty2 = floatingBondImpliedValue2+
                                      floatingBond2->accruedAmount();
-    Real error8 = std::fabs(floatingBondImpliedDirty2-floatingBondDirtyPrice2);   
+    Real error8 = std::fabs(floatingBondImpliedDirty2-floatingBondDirtyPrice2);
     if (error8>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -989,7 +987,7 @@ void AssetSwapTest::testZSpread() {
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
-    }  
+    }
 
 
     //// CMS bond (Isin: XS0228052402 CRDIT 0 8/22/20)
@@ -1013,11 +1011,11 @@ void AssetSwapTest::testZSpread() {
     Real cmsBondImpliedValue1 = cmsBond1->cleanPrice();
     Date cmsBondSettlementDate1= cmsBond1->settlementDate();
     // standard market conventions to be investigated...
-    Real cmsBondCleanPrice1= cmsBond1->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(), 
+    Real cmsBondCleanPrice1= cmsBond1->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(),
          cmsBondSettlementDate1);
-    Real cmsBondDirtyPrice1= cmsBond1->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(), 
+    Real cmsBondDirtyPrice1= cmsBond1->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(),
          fixedBondSettlementDate1);
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
@@ -1030,7 +1028,7 @@ void AssetSwapTest::testZSpread() {
                     << "\n  tolerance:             " << tolerance);
     }
     Real cmsBondImpliedDirty1 = cmsBondImpliedValue1+cmsBond1->accruedAmount();
-    Real error10 = std::fabs(cmsBondImpliedDirty1-cmsBondDirtyPrice1);   
+    Real error10 = std::fabs(cmsBondImpliedDirty1-cmsBondDirtyPrice1);
     if (error10>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -1062,11 +1060,11 @@ void AssetSwapTest::testZSpread() {
     Real cmsBondImpliedValue2 = cmsBond2->cleanPrice();
     Date cmsBondSettlementDate2= cmsBond2->settlementDate();
     // standard market conventions to be investigated...
-    Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(), 
+    Real cmsBondCleanPrice2= cmsBond2->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(),
          cmsBondSettlementDate2);
-    Real cmsBondDirtyPrice2= cmsBond2->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(), 
+    Real cmsBondDirtyPrice2= cmsBond2->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(),
          fixedBondSettlementDate2);
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
@@ -1079,7 +1077,7 @@ void AssetSwapTest::testZSpread() {
                     << "\n  tolerance:             " << tolerance);
     }
     Real cmsBondImpliedDirty2 = cmsBondImpliedValue2+cmsBond2->accruedAmount();
-    Real error12 = std::fabs(cmsBondImpliedDirty2-cmsBondDirtyPrice2);   
+    Real error12 = std::fabs(cmsBondImpliedDirty2-cmsBondDirtyPrice2);
     if (error12>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -1088,24 +1086,24 @@ void AssetSwapTest::testZSpread() {
                     << QL_SCIENTIFIC << std::setprecision(2)
                     << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
-    } 
+    }
 
     // Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond1(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(20,December,2015),
                        Thirty360(), Following,
                        100.0, Date(19,December,1985), termStructure_));
     Real zeroCpnBondImpliedValue1 = zeroCpnBond1->cleanPrice();
     Date zeroCpnBondSettlementDate1= zeroCpnBond1->settlementDate();
     // standard market conventions to be investigated
-    Real zeroCpnBondCleanPrice1= zeroCpnBond1->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, Thirty360(), 
+    Real zeroCpnBondCleanPrice1= zeroCpnBond1->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, Thirty360(),
          zeroCpnBondSettlementDate1);
-    Real zeroCpnBondDirtyPrice1= zeroCpnBond1->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual,Thirty360(), 
+    Real zeroCpnBondDirtyPrice1= zeroCpnBond1->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual,Thirty360(),
          zeroCpnBondSettlementDate1);
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
@@ -1119,7 +1117,7 @@ void AssetSwapTest::testZSpread() {
     }
     Real zeroCpnBondImpliedDirty1 = zeroCpnBondImpliedValue1+
                                     zeroCpnBond1->accruedAmount();
-    Real error14 = std::fabs(zeroCpnBondImpliedDirty1-zeroCpnBondDirtyPrice1);   
+    Real error14 = std::fabs(zeroCpnBondImpliedDirty1-zeroCpnBondDirtyPrice1);
     if (error14>tolerance) {
         BOOST_ERROR("wrong dirty price for fixed bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -1131,20 +1129,20 @@ void AssetSwapTest::testZSpread() {
     }
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity doesn't occur on a business day
-    
+
     boost::shared_ptr<Bond> zeroCpnBond2(new
-        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar, 
+        ZeroCouponBond(settlementDays, faceAmount_, bondCalendar,
                        Date(17,February,2028),
                        ActualActual(ActualActual::ISMA), Following,
                        100.0, Date(17,February,1998), termStructure_));
     Real zeroCpnBondImpliedValue2 = zeroCpnBond2->cleanPrice();
     Date zeroCpnBondSettlementDate2= zeroCpnBond2->settlementDate();
     // standard market conventions to be investigated
-    Real zeroCpnBondCleanPrice2= zeroCpnBond2->cleanPriceFromZSpread(spread_, 
-         compounding_, Annual, ActualActual(ActualActual::ISMA), 
+    Real zeroCpnBondCleanPrice2= zeroCpnBond2->cleanPriceFromZSpread(spread_,
+         compounding_, Annual, ActualActual(ActualActual::ISMA),
          zeroCpnBondSettlementDate2);
-    Real zeroCpnBondDirtyPrice2= zeroCpnBond2->dirtyPriceFromZSpread(spread_, 
-         compounding_, Annual, ActualActual(ActualActual::ISMA), 
+    Real zeroCpnBondDirtyPrice2= zeroCpnBond2->dirtyPriceFromZSpread(spread_,
+         compounding_, Annual, ActualActual(ActualActual::ISMA),
          zeroCpnBondSettlementDate2);
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
@@ -1158,7 +1156,7 @@ void AssetSwapTest::testZSpread() {
     }
     Real zeroCpnBondImpliedDirty2 = zeroCpnBondImpliedValue2+
                                     zeroCpnBond2->accruedAmount();
-    Real error16 = std::fabs(zeroCpnBondImpliedDirty2-zeroCpnBondDirtyPrice2);   
+    Real error16 = std::fabs(zeroCpnBondImpliedDirty2-zeroCpnBondDirtyPrice2);
     if (error16>tolerance) {
         BOOST_ERROR("wrong dirty price for zero coupon bond:"
                     << QL_FIXED << std::setprecision(4)
@@ -1168,9 +1166,6 @@ void AssetSwapTest::testZSpread() {
                     << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
     }
-
-
-      QL_TEST_TEARDOWN
 }
 
 

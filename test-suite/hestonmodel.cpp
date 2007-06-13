@@ -38,20 +38,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-QL_BEGIN_TEST_LOCALS(HestonModelTest)
-
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-QL_END_TEST_LOCALS(HestonModelTest)
-
-
 void HestonModelTest::testBlackCalibration() {
     BOOST_MESSAGE(
        "Testing Heston model calibration using a flat volatility surface...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     /* calibrate a Heston model to a constant volatility surface without
        smile. expected result is a vanishing volatility of the volatility.
@@ -140,8 +131,6 @@ void HestonModelTest::testBlackCalibration() {
                         << "\n    expected:   " << volatility*volatility);
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -155,7 +144,7 @@ void HestonModelTest::testDAXCalibration() {
     BOOST_MESSAGE(
              "Testing Heston model calibration using DAX volatility data...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(5, July, 2002);
     Settings::instance().evaluationDate() = settlementDate;
@@ -248,14 +237,12 @@ void HestonModelTest::testDAXCalibration() {
                    << "\n    calculated: " << sse
                    << "\n    expected:   " << expected);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void HestonModelTest::testAnalyticVsBlack() {
     BOOST_MESSAGE("Testing analytic Heston engine against Black formula...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
@@ -301,15 +288,13 @@ void HestonModelTest::testAnalyticVsBlack() {
                    << "\n    expected:   " << expected
                    << "\n    error:      " << QL_SCIENTIFIC << error);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void HestonModelTest::testAnalyticVsCached() {
     BOOST_MESSAGE("Testing analytic Heston engine against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(27, December, 2004);
     Settings::instance().evaluationDate() = settlementDate;
@@ -399,8 +384,6 @@ void HestonModelTest::testAnalyticVsCached() {
                         << "\n    expected:   " << expected2[i] );
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -408,7 +391,7 @@ void HestonModelTest::testMcVsCached() {
     BOOST_MESSAGE(
                 "Testing Monte Carlo Heston engine against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(27, December, 2004);
     Settings::instance().evaluationDate() = settlementDate;
@@ -456,8 +439,6 @@ void HestonModelTest::testMcVsCached() {
                     << "\n    calculated: " << errorEstimate
                     << "\n    expected:   " << tolerance);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -471,7 +452,7 @@ void HestonModelTest::testKahlJaeckelCase() {
        "QuantLib code is very high quatlity"
     */
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(30, March, 2007);
     Settings::instance().evaluationDate() = settlementDate;
@@ -520,8 +501,6 @@ void HestonModelTest::testKahlJaeckelCase() {
                     << "\n    calculated: " << errorEstimate
                     << "\n    expected:   " << tolerance);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -529,8 +508,7 @@ void HestonModelTest::testEngines() {
     BOOST_MESSAGE(
        "Testing Monte Carlo Heston engine against analytic Heston engine...");
 
-
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date settlementDate(27, December, 2004);
     Settings::instance().evaluationDate() = settlementDate;
@@ -596,8 +574,6 @@ void HestonModelTest::testEngines() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* HestonModelTest::suite() {

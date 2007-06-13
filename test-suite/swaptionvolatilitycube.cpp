@@ -24,7 +24,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/swapindex.hpp> 
+#include <ql/indexes/swapindex.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
@@ -278,12 +278,6 @@ void setup() {
     vegaWeightedSmileFit_=false;
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-
-
 QL_END_TEST_LOCALS(SwaptionVolatilityCubeTest)
 
 
@@ -291,8 +285,9 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (atm vols)...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     SwaptionVolCube2 volCube(atmVolMatrix_,
                                            optionTenors_,
@@ -304,16 +299,15 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
 
     Real tolerance = 1.0e-16;
     makeAtmVolTest(volCube, tolerance);
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionVolatilityCubeTest::testSmile() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (smile)...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     SwaptionVolCube2 volCube(atmVolMatrix_,
                                            optionTenors_,
@@ -325,16 +319,15 @@ void SwaptionVolatilityCubeTest::testSmile() {
 
     Real tolerance = 1.0e-16;
     makeVolSpreadsTest(volCube, tolerance);
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionVolatilityCubeTest::testSabrVols() {
 
     BOOST_MESSAGE("Testing swaption volatility cube (sabr interpolation)...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
     for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
@@ -365,16 +358,15 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 
     tolerance = 12.0e-4;
     makeVolSpreadsTest(volCube, tolerance);
-
-    QL_TEST_TEARDOWN
 }
 
 void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
     BOOST_MESSAGE("Testing spreaded swaption volatility cube...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
     for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
@@ -404,7 +396,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
     Handle<Quote> spreadHandle(spread);
-    boost::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube 
+    boost::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube
         (new SpreadedSwaptionVolatilityStructure(volCube, spreadHandle));
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
@@ -440,20 +432,19 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
             }
         }
     }
-    
+
     //testing observability
     Flag f;
     f.registerWith(spreadedVolCube);
     volCube->update();
     if(!f.isUp())
-        BOOST_ERROR("SpreadedSwaptionVolatilityStructure " 
+        BOOST_ERROR("SpreadedSwaptionVolatilityStructure "
                     << "does not propagate notifications");
     f.lower();
     spread->setValue(.001);
     if(!f.isUp())
         BOOST_ERROR("spreadedCapletVolatilityStructure "
                     << "does not propagate notifications");
-    QL_TEST_TEARDOWN
 }
 
 test_suite* SwaptionVolatilityCubeTest::suite() {

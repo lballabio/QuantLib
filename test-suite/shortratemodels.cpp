@@ -47,18 +47,14 @@ struct CalibrationData {
     Volatility volatility;
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-    IndexManager::instance().clearHistories();
-}
-
 QL_END_TEST_LOCALS(ShortRateModelTest)
 
 
 void ShortRateModelTest::testCachedHullWhite() {
     BOOST_MESSAGE("Testing Hull-White calibration against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
@@ -123,17 +119,16 @@ void ShortRateModelTest::testCachedHullWhite() {
                     << "difference: a = " << xMinCalculated[0]-xMinExpected[0] << ", "
                     << "sigma = " << xMinCalculated[1]-xMinExpected[1] << ", "
                     << "f(a) = " << yMinCalculated - yMinExpected << ",\n"
-                    << "end criteria = " << ecType ); 
+                    << "end criteria = " << ecType );
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void ShortRateModelTest::testSwaps() {
     BOOST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
 
     Date today = Settings::instance().evaluationDate();
     Calendar calendar = TARGET();
@@ -237,8 +232,6 @@ void ShortRateModelTest::testSwaps() {
             }
         }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 void ShortRateModelTest::testFuturesConvexityBias() {

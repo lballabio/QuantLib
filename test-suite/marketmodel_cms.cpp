@@ -442,8 +442,9 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
     BOOST_MESSAGE("Testing exact repricing of "
                   "multi-step constant maturity swaps and swaptions "
                   "in a lognormal constant maturity swap market model...");
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+
+    setup();
+
     Real fixedRate = 0.04;
 
     // swaps
@@ -528,7 +529,6 @@ void MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions() {
             }
         }
     }
-    QL_TEST_END
 }
 
 

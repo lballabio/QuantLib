@@ -83,11 +83,7 @@ void setup() {
     }
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
-void makeObservabiltyTest(
+void makeObservabilityTest(
                       const std::string& description,
                       const boost::shared_ptr<SwaptionVolatilityMatrix>& vol,
                       bool mktDataFloating,
@@ -230,8 +226,10 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     BOOST_MESSAGE("Testing swaption volatility matrix observability...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
+
     boost::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
 
@@ -244,7 +242,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
                                  volsHandles_,
                                  dayCounter_,
                                  bdc_));
-    makeObservabiltyTest(description, vol, true, true);
+    makeObservabilityTest(description, vol, true, true);
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
@@ -256,7 +254,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
                                  volsHandles_,
                                  dayCounter_,
                                  bdc_));
-    makeObservabiltyTest(description, vol, true, false);
+    makeObservabilityTest(description, vol, true, false);
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
@@ -267,7 +265,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
                                  vols_,
                                  dayCounter_,
                                  bdc_));
-    makeObservabiltyTest(description, vol, false, true);
+    makeObservabilityTest(description, vol, false, true);
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
@@ -279,7 +277,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
                                  vols_,
                                  dayCounter_,
                                   bdc_));
-    makeObservabiltyTest(description, vol, false, false);
+    makeObservabilityTest(description, vol, false, false);
 
    // fixed reference date and fixed market data, option dates
         //SwaptionVolatilityMatrix(const Date& referenceDate,
@@ -287,9 +285,6 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
         //                         const std::vector<Period>& swapTenors,
         //                         const Matrix& volatilities,
         //                         const DayCounter& dayCounter);
-
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -297,8 +292,9 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     BOOST_MESSAGE("Testing swaption volatility matrix...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     boost::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
@@ -346,8 +342,6 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
                                  dayCounter_,
                                   bdc_));
     makeCoherenceTest(description, vol);
-
-    QL_TEST_TEARDOWN
 }
 
 

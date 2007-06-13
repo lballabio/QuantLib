@@ -62,8 +62,9 @@ void BondTest::testYield() {
 
     BOOST_MESSAGE("Testing consistency of bond price/yield calculation...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
@@ -130,8 +131,6 @@ void BondTest::testYield() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -140,8 +139,9 @@ void BondTest::testTheoretical() {
 
     BOOST_MESSAGE("Testing theoretical bond price/yield calculation...");
 
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+    SavedSettings backup;
+
+    setup();
 
     Real tolerance = 1.0e-7;
     Size maxEvaluations = 100;
@@ -216,8 +216,6 @@ void BondTest::testTheoretical() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -226,7 +224,7 @@ void BondTest::testCached() {
     BOOST_MESSAGE(
         "Testing bond price/yield calculation against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     // with implicit settlement calculation:
 
@@ -409,18 +407,15 @@ void BondTest::testCached() {
                     << "    expected:   " << cachedPrice3 << "\n"
                     << "    error:      " << price-cachedPrice3);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 
 void BondTest::testCachedZero() {
 
-    BOOST_MESSAGE(
-        "Testing zero-coupon bond prices against cached values...");
+    BOOST_MESSAGE("Testing zero-coupon bond prices against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -486,17 +481,14 @@ void BondTest::testCachedZero() {
                     << "    expected:   " << cachedPrice3 << "\n"
                     << "    error:      " << price-cachedPrice3);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void BondTest::testCachedFixed() {
 
-    BOOST_MESSAGE(
-        "Testing fixed-coupon bond prices against cached values...");
+    BOOST_MESSAGE("Testing fixed-coupon bond prices against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -579,17 +571,14 @@ void BondTest::testCachedFixed() {
                     << "    expected:   " << cachedPrice3 << "\n"
                     << "    error:      " << price-cachedPrice3);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
 void BondTest::testCachedFloating() {
 
-    BOOST_MESSAGE(
-        "Testing floating-rate bond prices against cached values...");
+    BOOST_MESSAGE("Testing floating-rate bond prices against cached values...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     Date today(22,November,2004);
     Settings::instance().evaluationDate() = today;
@@ -698,8 +687,6 @@ void BondTest::testCachedFloating() {
                     << "    expected:   " << cachedPrice3 << "\n"
                     << "    error:      " << price-cachedPrice3);
     }
-
-    QL_TEST_TEARDOWN
 }
 
 

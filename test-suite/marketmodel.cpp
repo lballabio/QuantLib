@@ -673,7 +673,7 @@ void MarketModelTest::testOneStepForwardsAndOptionlets() {
                   "one-step forwards and optionlets "
                   "in a lognormal forward rate market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
     std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
@@ -766,7 +766,7 @@ void MarketModelTest::testOneStepNormalForwardsAndOptionlets() {
                   "one-step forwards and optionlets "
                   "in a normal forward rate market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     std::vector<Rate> forwardStrikes(todaysForwards.size());
     std::vector<boost::shared_ptr<Payoff> > optionletPayoffs(todaysForwards.size());
@@ -860,7 +860,7 @@ void testMultiProductComposite(const MarketModelMultiProduct& product,
                     << testDescription
                     << "in a lognormal forward rate market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     EvolutionDescription evolution = product.evolution();
 
@@ -1066,7 +1066,9 @@ void addCoterminalSwapsAndSwaptions(MultiProductComposite& product,
 
 void MarketModelTest::testAllMultiStepProducts() {
     std::string testDescription = "all multiStepProducts ";
-    QL_TEST_SETUP
+
+    setup();
+
     MultiProductComposite product;
     std::vector<SubProductExpectedValues> subProductExpectedValues;
     addForwards(product, subProductExpectedValues);
@@ -1082,7 +1084,7 @@ void MarketModelTest::testCallableSwapNaif() {
 
     BOOST_MESSAGE("Pricing callable swap with naif exercise strategy in a LIBOR market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     Real fixedRate = 0.04;
 
@@ -1251,7 +1253,7 @@ void MarketModelTest::testCallableSwapLS() {
 
     BOOST_MESSAGE("Pricing callable swap with Longstaff-Schwartz exercise strategy in a LIBOR market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     Real fixedRate = 0.04;
 
@@ -1429,7 +1431,7 @@ void MarketModelTest::testCallableSwapAnderson() {
 
     BOOST_MESSAGE("Pricing callable swap with Anderson exercise strategy in a LIBOR market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     Real fixedRate = 0.04;
 
@@ -1597,7 +1599,7 @@ void MarketModelTest::testGreeks() {
 
     BOOST_MESSAGE("Testing caplets greeks in a lognormal forward rate market model...");
 
-    QL_TEST_SETUP
+    setup();
 
     std::vector<boost::shared_ptr<Payoff> > payoffs(todaysForwards.size());
     std::vector<boost::shared_ptr<StrikedTypePayoff> >
@@ -1840,7 +1842,7 @@ void MarketModelTest::testAbcdVolatilityIntegration() {
 
     BOOST_MESSAGE("Testing Abcd-volatility integration...");
 
-    QL_TEST_SETUP
+    setup();
 
     Real a = -0.0597;
     Real b =  0.1677;
@@ -1893,7 +1895,7 @@ void MarketModelTest::testAbcdVolatilityCompare() {
 
     BOOST_MESSAGE("Testing different implementations of Abcd-volatility...");
 
-    QL_TEST_SETUP
+    setup();
 
     /*
         Given the instantaneous volatilities related to forward expiring at
@@ -1941,7 +1943,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
 
     BOOST_MESSAGE("Testing Abcd-volatility fit...");
 
-    QL_TEST_SETUP
+    setup();
 
     Abcd instVol;
     Real a0 = instVol.a();
@@ -1991,7 +1993,8 @@ void MarketModelTest::testDriftCalculator() {
     // computeReduced()
 
     BOOST_MESSAGE("Testing drift calculation...");
-    QL_TEST_SETUP
+
+    setup();
 
     Real tolerance = 1.0e-16;
     Size factors = todaysForwards.size();
@@ -2044,7 +2047,8 @@ void MarketModelTest::testIsInSubset() {
     // Performance test for isInSubset function (temporary)
 
     BOOST_MESSAGE("Testing isInSubset...");
-    QL_TEST_SETUP
+
+    setup();
 
     Size dim = 100;
     std::vector<Time> set, subset;

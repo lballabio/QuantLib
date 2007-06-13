@@ -67,10 +67,6 @@ struct ForwardOptionData {
     Real tol;        // tolerance
 };
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(ForwardOptionTest)
 
 
@@ -373,12 +369,10 @@ void ForwardOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing forward option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     testForwardGreeks<ForwardEngine<VanillaOption::arguments,
                                     VanillaOption::results> >();
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -386,12 +380,10 @@ void ForwardOptionTest::testPerformanceGreeks() {
 
     BOOST_MESSAGE("Testing forward performance option greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     testForwardGreeks<ForwardPerformanceEngine<VanillaOption::arguments,
                                                VanillaOption::results> >();
-
-    QL_TEST_TEARDOWN
 }
 
 

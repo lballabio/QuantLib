@@ -74,10 +74,6 @@ std::string averageTypeToString(Average::Type averageType) {
         QL_FAIL("unknown averaging");
 }
 
-void teardown() {
-    Settings::instance().evaluationDate() = Date();
-}
-
 QL_END_TEST_LOCALS(AsianOptionTest)
 
 
@@ -166,7 +162,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     BOOST_MESSAGE("Testing analytic continuous geometric average-price Asian "
                   "greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -314,8 +310,6 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 
@@ -627,7 +621,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
-    QL_TEST_BEGIN
+    SavedSettings backup;
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -784,8 +778,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
         }
       }
     }
-
-    QL_TEST_TEARDOWN
 }
 
 test_suite* AsianOptionTest::suite() {
@@ -803,7 +795,7 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
-   
+
     return suite;
 }
 

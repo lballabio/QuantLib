@@ -412,8 +412,8 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
 
     BOOST_MESSAGE("Testing max homogeneity caplet calibration "
                   "in a lognormal coterminal swap market model...");
-    QL_TEST_BEGIN
-    QL_TEST_SETUP
+
+    setup();
 
     Size numberOfRates = todaysForwards_.size();
 
@@ -455,10 +455,10 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                                                     displacement_,
                                                     caplet0Swaption1Priority);
     // calibrate
-	Natural maxIterations = 10;
-	Real capletTolerance = 1e-4; // i.e. 1 bp
-	Natural innerMaxIterations = 100;
-	Real innerTolerance = 1e-8;
+    Natural maxIterations = 10;
+    Real capletTolerance = 1e-4; // i.e. 1 bp
+    Natural innerMaxIterations = 100;
+    Real innerTolerance = 1e-8;
     if (printReport_) {
         BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
         BOOST_MESSAGE("maxIterations:      " << maxIterations);
@@ -501,7 +501,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     // check perfect swaption fit
     Real error, swapTolerance = 1e-14;
     Matrix swapTerminalCovariance(numberOfRates, numberOfRates, 0.0);
-	for (Size i=0; i<numberOfRates; ++i) {
+    for (Size i=0; i<numberOfRates; ++i) {
         Volatility expSwaptionVol = swapVariances[i]->totalVolatility(i);
         swapTerminalCovariance += swapPseudoRoots[i] * transpose(swapPseudoRoots[i]);
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
@@ -514,7 +514,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                        "\n error:     " << error <<
                        "\n tolerance: " << swapTolerance);
     }
-  
+
     // check caplet fit
     for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
@@ -527,11 +527,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                         "\n error:            " << error <<
                         "\n tolerance:        " << capletTolerance);
     }
-
-    QL_TEST_END
 }
-
-
 
 
 void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {

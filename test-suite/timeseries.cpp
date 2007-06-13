@@ -29,8 +29,6 @@ void TimeSeriesTest::testConstruction() {
 
     BOOST_MESSAGE("Testing time series construction...");
 
-    QL_TEST_BEGIN
-
     TimeSeries<Real> ts;
     ts[Date(25, March, 2005)] = 1.2;
     ts[Date(29, March, 2005)] = 2.3;
@@ -55,14 +53,10 @@ void TimeSeriesTest::testConstruction() {
     if (cur->second != 3.5) {
         BOOST_ERROR("set value operator not match" << cur->second << "\n");
     }
-
-    QL_TEST_END
 }
 
 void TimeSeriesTest::testIntervalPrice() {
     BOOST_MESSAGE("Testing time series interval price...");
-
-    QL_TEST_BEGIN
 
     std::vector<Date> date;
     std::vector<Real> open, close, high, low;
@@ -86,8 +80,6 @@ void TimeSeriesTest::testIntervalPrice() {
                                                                close,
                                                                high,
                                                                low);
-
-    QL_TEST_END
 }
 
 test_suite* TimeSeriesTest::suite() {

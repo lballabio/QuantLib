@@ -21,8 +21,6 @@
 #include "utilities.hpp"
 #include <ql/math/surface.hpp>
 #include <ql/math/domain.hpp>
-#include <sstream>
-#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -31,7 +29,7 @@ void SurfaceTest::testOutput() {
 
     BOOST_MESSAGE("Testing surface...");
     Real tolerance = 1e-5;
-    QL_TEST_BEGIN
+
     TestSurface st;
     Real out = st(0, 0);
     Real expected = 0.0;
@@ -39,11 +37,10 @@ void SurfaceTest::testOutput() {
         BOOST_FAIL("test surface incorrect value");
 
     RectangularDomain rect(0.0, 0.0, 1.0, 1.0);
-    if (!rect.includes(0.5, 0.5)) 
+    if (!rect.includes(0.5, 0.5))
         BOOST_FAIL("RectangularDomain fails 0.5 0.5");
     if (rect.includes(1.5, 0.5))
         BOOST_FAIL("RectangularDomain fails 1.5 0.5");
-    QL_TEST_END
 }
 
 
