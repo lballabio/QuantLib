@@ -41,7 +41,7 @@ namespace
 
             x = 0.5*(low+high);
             y = (theObject.*Value)(x);
-        } while ((fabs(y-target) > tolerance));
+        } while ((fabs(high-low) > tolerance));
 
         return x;
     }
@@ -389,7 +389,7 @@ namespace
         } else {
             // find root of decreasing function (or as if decreasing function)
             alpha=Bisection<AlphaFinder, &AlphaFinder::minusValueAtTurningPoint>(
-                                                            targetVariance,
+                                                            -targetVariance,
                                                             bilimit,
                                                             topAlpha,
                                                             tolerance,
