@@ -61,8 +61,8 @@ namespace QuantLib {
                             std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 
-                                 Natural maxIterations,
-                                 Real tolerance);
+                                 Natural ,
+                                 Real );
         // input
         std::vector<Real> alpha_;
         bool lowestRoot_, useFullApprox_;

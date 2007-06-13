@@ -44,6 +44,8 @@ namespace QuantLib {
             bool maximizeHomogeneity,
             boost::shared_ptr<AlphaForm> parametricForm =
                                     boost::shared_ptr<AlphaForm>());
+        // inspector
+        const std::vector<Real>& alpha() const;
         // actual calibration function
         static Natural capletAlphaFormCalibration(
             const EvolutionDescription& evolution,
@@ -81,6 +83,12 @@ namespace QuantLib {
         // results
         std::vector<Real> alpha_, a_, b_;
     };
+
+    inline const std::vector<Real>&
+    CTSMMCapletAlphaFormCalibration::alpha() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return alpha_;
+    }
 
 }
 
