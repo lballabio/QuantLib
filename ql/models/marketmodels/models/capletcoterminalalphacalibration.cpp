@@ -43,9 +43,9 @@ namespace QuantLib {
                             boost::shared_ptr<AlphaForm> parametricForm)
     : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
                              mktCapletVols, cs, displacement),
-      parametricForm_(parametricForm),
       alphaInitial_(alphaInitial), alphaMax_(alphaMax), alphaMin_(alphaMin),
       maximizeHomogeneity_(maximizeHomogeneity),
+      parametricForm_(parametricForm),
       alpha_(numberOfRates_), a_(numberOfRates_), b_(numberOfRates_) {
           if (!parametricForm_)
               parametricForm_ = boost::shared_ptr<AlphaForm>(new
@@ -62,7 +62,7 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==alphaMin.size(),
             "mismatch between number of rates (" << numberOfRates_ <<
             ") and alphaMin (" << alphaMin.size() << ")");
-      
+
     }
 
     Natural CTSMMCapletAlphaFormCalibration::capletAlphaFormCalibration(
@@ -227,7 +227,7 @@ namespace QuantLib {
     }
 
     Natural CTSMMCapletAlphaFormCalibration::calibrationImpl_(
-                                Natural numberOfFactors, 
+                                Natural numberOfFactors,
                                 Natural maxIterations,
                                 Real tolerance) {
 
@@ -236,8 +236,8 @@ namespace QuantLib {
                                           displacedSwapVariances_,
                                           // not mktCapletVols_ but...
                                           usedCapletVols_,
-                                          *cs_, 
-                                          displacement_, 
+                                          *cs_,
+                                          displacement_,
                                           numberOfFactors,
                                           parametricForm_,
                                           alphaInitial_,
