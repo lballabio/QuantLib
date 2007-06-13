@@ -2628,6 +2628,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\models\ctsmmcapletcalibration.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\ctsmmcapletcalibration.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\models\flatvol.cpp"
 						>
 					</File>
