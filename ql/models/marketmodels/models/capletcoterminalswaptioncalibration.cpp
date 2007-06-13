@@ -56,11 +56,16 @@ namespace QuantLib {
                                     displacedSwapVariances,
                             const std::vector<Volatility>& capletVols,
                             const CurveState& cs,
-                            const Spread displacement,
-                            const Size numberOfFactors,
+                            Spread displacement,
+
                             const std::vector<Real>& alpha,
                             bool lowestRoot,
                             bool useFullAprox,
+
+                            Size numberOfFactors,
+                            //Size maxIterations,
+                            //Real tolerance,
+
                             std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         CTSMMCapletCalibration::performChecks(evolution, corr,
@@ -88,6 +93,12 @@ namespace QuantLib {
                                             numberOfFactors, 1.0,
                                             SalvagingAlgorithm::None);
 
+        Matrix zedMatrix =
+            SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
+        Matrix invertedZedMatrix = inverse(zedMatrix);
+
+
+
         // do alpha part
         // first modify variances to take account of alpha
         // then rescale so total variance is unchanged
@@ -110,10 +121,6 @@ namespace QuantLib {
             for (Size j=i; j<numberOfRates; ++j)
                 swapTimeInhomogeneousVariances[i][j] *= originalVariances[j]/
                                                         modifiedVariances[j];
-
-        Matrix zedMatrix =
-            SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
-        Matrix invertedZedMatrix = inverse(zedMatrix);
 
 
         // compute swap covariances for caplet approximation formula
@@ -274,13 +281,20 @@ namespace QuantLib {
             }
 
             if (mult<0.0) // no solution...
-                return failures;
+            {
+               ++failures;
+               a[i]=root;
+               b[i]=0.0;
+            }
+            else
+            {    
+                a[i]=root;
+                b[i]=std::sqrt(mult);
+            }
 
             QL_ENSURE(root>=0.0,
                       "negative root -- it should have not happened");
 
-            a[i]=root;
-            b[i]=std::sqrt(mult);
         }
 
         {
@@ -327,10 +341,13 @@ namespace QuantLib {
                                    usedCapletVols_,
                                    *cs_, 
                                    displacement_, 
-                                   numberOfFactors,
+
                                    alpha_,
                                    lowestRoot_,
                                    useFullApprox_,
+
+                                   numberOfFactors,
+
                                    swapCovariancePseudoRoots_);
     }
 

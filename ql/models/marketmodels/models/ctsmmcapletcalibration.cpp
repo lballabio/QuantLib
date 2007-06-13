@@ -110,12 +110,16 @@ namespace QuantLib {
         // initialize results
         calibrated_ = false;
         failures_ = 987654321; // a positive large number
+        deformationSize_ = 987654321;
         capletRmsError_ = swaptionRmsError_ = 987654321;
         capletMaxError_ = swaptionMaxError_ = 987654321;
 
         // initialize working variables
         usedCapletVols_ = mktCapletVols_;
-        std::vector<Volatility> mktSwaptionVols(numberOfRates_);
+        std::vector<Volatility> mktSwaptionVols(numberOfRates_); // to be calculated!!
+        for (Size i=0; i<numberOfRates_; ++i)
+            mktSwaptionVols[i]=displacedSwapVariances_[i]->totalVolatility(i);
+
         std::vector<Spread> displacements(numberOfRates_,
                                           displacement_);
         const std::vector<Time>& rateTimes = evolution_.rateTimes();
@@ -155,7 +159,8 @@ namespace QuantLib {
                 capletRmsError_ += capletError*capletError;
                 capletMaxError_ = std::max(capletMaxError_, capletError);
 
-                usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols[i];
+                if (i < numberOfRates_-1) 
+                    usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols[i];
             }
             swaptionRmsError_ = std::sqrt(swaptionRmsError_/numberOfRates_);
             capletRmsError_ = std::sqrt(capletRmsError_/numberOfRates_);
@@ -163,7 +168,7 @@ namespace QuantLib {
         } while (iterations<maxIterations &&
                  capletRmsError_>capletVolTolerance);
 
-        // calculate deformationSize_;
+        // calculate deformationSize_ ??
         calibrated_ = true;
         return failures_==0;
     }

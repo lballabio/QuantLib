@@ -54,17 +54,21 @@ namespace QuantLib {
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
             const Spread displacement,
-            const Size numberOfFactors,
-            boost::shared_ptr<AlphaForm> parametricForm,
+
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
+            bool maximizeHomogeneity,
+            boost::shared_ptr<AlphaForm> parametricForm,
+
+            const Size numberOfFactors,
             Integer steps,
             Real toleranceForAlphaSolving,
-            bool maximizeHomogeneity,
+
             std::vector<Real>& alpha,
             std::vector<Real>& a,
             std::vector<Real>& b,
+
             std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 

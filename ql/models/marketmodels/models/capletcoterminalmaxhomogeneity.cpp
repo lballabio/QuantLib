@@ -212,13 +212,17 @@ namespace QuantLib {
                 const std::vector<Volatility>& capletVols,
                 const CurveState& cs,
                 const Spread displacement,
-                const Size numberOfFactors,
+
                 Real caplet0Swaption1Priority, 
-                Size iterationsForMinimization,
-                Real toleranceForMinimization,
+
+                const Size numberOfFactors,
+                Size maxIterations,
+                Real tolerance,
+
                 Real& deformationSize,
-                std::vector<Matrix>& swapCovariancePseudoRoots,
-                Real& totalSwaptionError) {
+                Real& totalSwaptionError,
+
+                std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         CTSMMCapletCalibration::performChecks(evolution, corr,
             displacedSwapVariances, capletVols, cs);
@@ -237,9 +241,9 @@ namespace QuantLib {
 
 
         Natural failures=0;
-        totalSwaptionError=0.0;
-        deformationSize=0.0;
 
+        totalSwaptionError = 0.0;
+        deformationSize = 0.0;
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
@@ -248,15 +252,14 @@ namespace QuantLib {
                                             numberOfFactors, 1.0,
                                             SalvagingAlgorithm::None);
 
-        // vectors for the new vol of all swap rates
-        std::vector<std::vector<Volatility> > newVols;
-        std::vector<Volatility> theseNewVols(numberOfRates);
-
         // get Zinverse, we can get wj later
         Matrix zedMatrix =
             SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
         Matrix invertedZedMatrix = inverse(zedMatrix);
 
+        // vectors for the new vol of all swap rates
+        std::vector<std::vector<Volatility> > newVols;
+        std::vector<Volatility> theseNewVols(numberOfRates);
         std::vector<Volatility> firstRateVols(numberOfRates);
         firstRateVols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
         std::vector<Volatility> secondRateVols(numberOfRates);
@@ -265,7 +268,9 @@ namespace QuantLib {
 
         // final caplet and swaption are the same, so we skip that case
         for (Size i=0; i<numberOfRates-1; ++i) {
-              const std::vector<Real>& var =
+            // we will calibrate caplet on forward rate i,
+            // we will do this by modifying the vol of swap rate i+1
+            const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
 
             for (Size j =0; j < i+2; ++j)
@@ -294,7 +299,7 @@ namespace QuantLib {
 
             bool success = singleRateClosestPointFinder(
                 i, secondRateVols, firstRateVols, targetCapletVariance, correlations,
-                w0, w1, caplet0Swaption1Priority,iterationsForMinimization, toleranceForMinimization,
+                w0, w1, caplet0Swaption1Priority,maxIterations, tolerance,
                 theseNewVols, thisSwaptionError, thisCapletError);
 
             totalSwaptionError+= thisSwaptionError*thisSwaptionError;
@@ -344,13 +349,17 @@ namespace QuantLib {
                                                usedCapletVols_,
                                                *cs_, 
                                                displacement_, 
-                                               numberOfFactors,
+
                                                caplet0Swaption1Priority_,
+
+                                               numberOfFactors,
                                                maxIterations,
                                                tolerance,
+
                                                deformationSize_,
-                                               swapCovariancePseudoRoots_,
-                                               totalSwaptionError_);
+                                               totalSwaptionError_,
+
+                                               swapCovariancePseudoRoots_);
     }
 
 }

@@ -74,17 +74,21 @@ namespace QuantLib {
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
             const Spread displacement,
-            const Size numberOfFactors,
-            boost::shared_ptr<AlphaForm> parametricForm,
+
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
-            Integer iterationsForAlphaSolving,
-            Real toleranceForAlphaSolving,
             bool maximizeHomogeneity,
+            boost::shared_ptr<AlphaForm> parametricForm,
+
+            const Size numberOfFactors,
+            Integer maxIterations,
+            Real tolerance,
+
             std::vector<Real>& alpha,
             std::vector<Real>& a,
             std::vector<Real>& b,
+
             std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         CTSMMCapletCalibration::performChecks(evolution, corr,
@@ -104,33 +108,36 @@ namespace QuantLib {
 
         Natural failures=0;
 
+        alpha.resize(numberOfRates);
+        a.resize(numberOfRates);
+        b.resize(numberOfRates);
+
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
         for (Size i=0; i<corrPseudo.size(); ++i)
             corrPseudo[i] = rankReducedSqrt(corr.correlation(i),
-            numberOfFactors, 1.0,
-            SalvagingAlgorithm::None);
-
-        alpha[0] = alphaInitial[0]; // has no effect on anything in any case
-        a[0] = b[0] = 1.0; // no modifications to swap vol for first rate
-
-        AlphaFinder solver(parametricForm);
-
-        // vectors for new vol
-        std::vector<std::vector<Volatility> > newVols;
-        std::vector<Volatility> theseNewVols(numberOfRates);
+                                            numberOfFactors, 1.0,
+                                            SalvagingAlgorithm::None);
 
         // get Zinverse, we can get wj later
         Matrix zedMatrix =
             SwapForwardMappings::coterminalSwapZedMatrix(cs, displacement);
         Matrix invertedZedMatrix = inverse(zedMatrix);
 
-        std::vector<Volatility> rateonevols(numberOfRates);
-        rateonevols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
-        std::vector<Volatility> ratetwovols(numberOfRates);
+        // vectors for new vol
+        std::vector<std::vector<Volatility> > newVols;
+        std::vector<Volatility> theseNewVols(numberOfRates);
+        std::vector<Volatility> firstRateVols(numberOfRates);
+        firstRateVols[0] = sqrt(displacedSwapVariances[0]->variances()[0]);
+        std::vector<Volatility> secondRateVols(numberOfRates);
         std::vector<Real> correlations(numberOfRates);
-        newVols.push_back(rateonevols);
+        newVols.push_back(firstRateVols);
 
+
+        alpha[0] = alphaInitial[0]; // has no effect on anything in any case
+        a[0] = b[0] = 1.0; // no modifications to swap vol for first rate
+
+        AlphaFinder solver(parametricForm);
 
         // final caplet and swaption are the same, so we skip that case
         for (Size i=0; i<numberOfRates-1; ++i) {
@@ -139,7 +146,7 @@ namespace QuantLib {
             const std::vector<Real>& var =
                                     displacedSwapVariances[i+1]->variances();
             for (Size j =0; j < i+2; ++j)
-                ratetwovols[j] = sqrt(var[j]);
+                secondRateVols[j] = sqrt(var[j]);
 
             for (Size k=0; k < i+1; k++) {
                 Real correlation=0.0;
@@ -164,16 +171,16 @@ namespace QuantLib {
                 success = solver.solveWithMaxHomogeneity(
                                                     alphaInitial[i+1] ,
                                                     i,
-                                                    rateonevols,
-                                                    ratetwovols,
+                                                    firstRateVols,
+                                                    secondRateVols,
                                                     correlations,
                                                     w0,
                                                     w1,
                                                     targetVariance,
-                                                    toleranceForAlphaSolving,
+                                                    tolerance,
                                                     alphaMax[i+1],
                                                     alphaMin[i+1],
-                                                    iterationsForAlphaSolving,
+                                                    maxIterations,
                                                     alpha[i+1],
                                                     a[i+1],
                                                     b[i+1],
@@ -181,26 +188,28 @@ namespace QuantLib {
             else
                 success = solver.solve(alphaInitial[i+1] ,
                                        i,
-                                       rateonevols,
-                                       ratetwovols,
+                                       firstRateVols,
+                                       secondRateVols,
                                        correlations,
                                        w0,
                                        w1,
                                        targetVariance,
-                                       toleranceForAlphaSolving,
+                                       tolerance,
                                        alphaMax[i+1],
                                        alphaMin[i+1],
-                                       iterationsForAlphaSolving,
+                                       maxIterations,
                                        alpha[i+1],
                                        a[i+1],
                                        b[i+1],
                                        theseNewVols);
 
-            if (!success)
-                ++failures;
+            if (!success) {
+                //++failures;
+                QL_FAIL("alpha form failure");
+            }
 
             newVols.push_back(theseNewVols);
-            rateonevols = theseNewVols;
+            firstRateVols = theseNewVols;
         }
 
         swapCovariancePseudoRoots.resize(numberOfSteps);
@@ -238,17 +247,21 @@ namespace QuantLib {
                                           usedCapletVols_,
                                           *cs_,
                                           displacement_,
-                                          numberOfFactors,
-                                          parametricForm_,
+
                                           alphaInitial_,
                                           alphaMax_,
                                           alphaMin_,
+                                          maximizeHomogeneity_,
+                                          parametricForm_,
+
+                                          numberOfFactors,
                                           maxIterations,
                                           tolerance,
-                                          maximizeHomogeneity_,
+
                                           alpha_,
                                           a_,
                                           b_,
+
                                           swapCovariancePseudoRoots_);
     }
 }

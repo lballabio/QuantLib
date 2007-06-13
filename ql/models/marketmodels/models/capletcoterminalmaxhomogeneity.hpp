@@ -47,15 +47,16 @@ namespace QuantLib {
                     const std::vector<Volatility>& capletVols,
                     const CurveState& cs,
                     const Spread displacement,
-                    Size numberOfFactors,
                     Real caplet0Swaption1Priority, 
-                 
+
+                    Size numberOfFactors,
                     Size maxIterations,
                     Real tolerance,
 
-                    Real& deformationSize, // ?
-                    std::vector<Matrix>& swapCovariancePseudoRoots,
-                    Real& totalSwaptionError); // ?
+                    Real& deformationSize,
+                    Real& totalSwaptionError, // ?
+
+                    std::vector<Matrix>& swapCovariancePseudoRoots); // ?
       private:
         Natural calibrationImpl_(Natural numberOfFactors, 
                                  Natural maxIterations,
