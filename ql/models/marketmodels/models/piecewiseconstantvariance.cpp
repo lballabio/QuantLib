@@ -27,24 +27,24 @@ namespace QuantLib {
 
     Real PiecewiseConstantVariance::variance(Size i) const {
         QL_REQUIRE(i<variances().size(),
-                   "invalid index");
+                   "invalid step index");
         return variances()[i];
     }
 
-    Real PiecewiseConstantVariance::volatility(Size i) const {
+    Volatility PiecewiseConstantVariance::volatility(Size i) const {
         QL_REQUIRE(i<volatilities().size(),
-                   "invalid index");
+                   "invalid step index");
         return volatilities()[i];
     }
 
     Real PiecewiseConstantVariance::totalVariance(Size i) const {
         QL_REQUIRE(i<variances().size(),
-                   "invalid index");
+                   "invalid step index");
         return std::accumulate(variances().begin(),
                                variances().begin()+i+1, 0.0);
     }
 
-    Real PiecewiseConstantVariance::totalVolatility(Size i) const {
+    Volatility PiecewiseConstantVariance::totalVolatility(Size i) const {
         return std::sqrt(totalVariance(i)/rateTimes()[i]);
     }
 

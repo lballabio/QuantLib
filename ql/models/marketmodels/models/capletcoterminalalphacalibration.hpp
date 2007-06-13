@@ -18,24 +18,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_caplet_coterminal_alpha_calibration_hpp
-#define quantlib_caplet_coterminal_alpha_calibration_hpp
+#ifndef quantlib_ctsmm_caplet_calibration_alfa_form_hpp
+#define quantlib_ctsmm_caplet_calibration_alfa_form_hpp
 
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 
 namespace QuantLib {
 
-    class PiecewiseConstantVariance;
-    class Matrix;
     class AlphaForm;
 
-    class CapletCoterminalSwaptionCalibration2 {
+    class CTSMMCapletAlphaFormCalibration : public CTSMMCapletCalibration {
       public:
-        CapletCoterminalSwaptionCalibration2(
+        CTSMMCapletAlphaFormCalibration(
             const EvolutionDescription& evolution,
             const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const std::vector<boost::shared_ptr<
@@ -44,25 +38,14 @@ namespace QuantLib {
             const std::vector<Volatility>& capletVols,
             const boost::shared_ptr<CurveState>& cs,
             Spread displacement,
-            boost::shared_ptr<AlphaForm> parametricform =
+            const std::vector<Real>& alphaInitial,
+            const std::vector<Real>& alphaMax,
+            const std::vector<Real>& alphaMin,
+            bool maximizeHomogeneity,
+            boost::shared_ptr<AlphaForm> parametricForm =
                                     boost::shared_ptr<AlphaForm>());
-        // modifiers
-        bool calibrate(Size numberOfFactors,
-                       Size maxIterations,
-                       Real capletVolTolerance,
-                       Size iterationsForAlphaSolving,
-                       Real toleranceForAlphaSolving,
-                       bool maximizeHomogeneity,
-                       const std::vector<Real>& alphaInitial,
-                       const std::vector<Real>& alphaMax,
-                       const std::vector<Real>& alphaMin);
-        // inspectors
-        Real deformationSize() const;
-        Real rmsError() const; // caplet
-        const std::vector<Matrix>& swapPseudoRoots() const;
-        const Matrix& swapPseudoRoot(Size i) const;
         // actual calibration function
-        static bool calibrationOfAlphaFunctionData(
+        static Natural capletAlphaFormCalibration(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
@@ -72,7 +55,7 @@ namespace QuantLib {
             const CurveState& cs,
             const Spread displacement,
             const Size numberOfFactors,
-            boost::shared_ptr<AlphaForm> parametricform,
+            boost::shared_ptr<AlphaForm> parametricForm,
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
@@ -84,20 +67,15 @@ namespace QuantLib {
             std::vector<Real>& b,
             std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
+        Natural calibrationImpl_(Natural numberOfFactors, 
+                                 Natural maxIterations,
+                                 Real tolerance);
         // input
-        EvolutionDescription evolution_;
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
-        std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
-                                                displacedSwapVariances_;
-        std::vector<Volatility> mktCapletVols_;
-        boost::shared_ptr<CurveState> cs_;
-        Spread displacement_;
-        boost::shared_ptr<AlphaForm> parametricform_;
+        std::vector<Real> alphaInitial_, alphaMax_, alphaMin_;
+        bool maximizeHomogeneity_;
+        boost::shared_ptr<AlphaForm> parametricForm_;
         // results
-        bool calibrated_;
-        Real error_, deformationSize_;
         std::vector<Real> alpha_, a_, b_;
-        std::vector<Matrix> swapCovariancePseudoRoots_;
     };
 
 }

@@ -173,7 +173,7 @@ void setup() {
                             0.1640,
                             0.1540,
                             0.1440,
-                            0.1340
+                            0.1340376439125532
     };
 
     //swaptionDisplacedVols = std::vector<Volatility>(todaysSwaps.size());
@@ -436,38 +436,42 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     }
 
     // create calibrator
-    CapletCoterminalSwaptionCalibration calibrator(evolution,
-                                                   corr,
-                                                   swapVariances,
-                                                   capletVols_,
-                                                   cs,
-                                                   displacement_);
-    // calibrate
     std::vector<Real> alpha(numberOfRates, alpha_);
     bool lowestRoot = true;
     bool useFullApprox = false;
-    //Integer steps = 50;
-    //Real toleranceForAlphaSolving=1e-9;
-
-    Size maxIterations = 2;
-    Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
     if (printReport_) {
-        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
-        BOOST_MESSAGE("alpha:              " << alpha_);
-        BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
-        BOOST_MESSAGE("maxIterations:      " << maxIterations);
-        BOOST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
         BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols_));
+        BOOST_MESSAGE("alpha:              " << alpha_);
+        BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
+        BOOST_MESSAGE("useFullApprox:      " << useFullApprox);
+    }
+    CTSMMCapletOriginalCalibration calibrator(evolution,
+                                              corr,
+                                              swapVariances,
+                                              capletVols_,
+                                              cs,
+                                              displacement_,
+                                              alpha,
+                                              lowestRoot,
+                                              useFullApprox);
+    // calibrate
+    Natural maxIterations = 2;
+    Real capletTolerance = (maxIterations==1 ? 0.0032 : 0.0001);
+    Natural innerMaxIterations = 50;
+    Real innerTolerance = 1e-9;
+    if (printReport_) {
+        BOOST_MESSAGE("alpha:              " << alpha_);
+        BOOST_MESSAGE("lowestRoot:         " << lowestRoot);
+        BOOST_MESSAGE("useFullApprox:      " << useFullApprox);
     }
     bool result = calibrator.calibrate(numberOfFactors_,
                                        maxIterations,
                                        capletTolerance/10,
-                                       alpha,
-                                       lowestRoot,
-                                       useFullApprox);
+                                       innerMaxIterations,
+                                       innerTolerance);
     if (!result)
-        BOOST_FAIL("calibration failed");
+        BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
     boost::shared_ptr<MarketModel> smm(new
@@ -485,8 +489,12 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols));
-        BOOST_MESSAGE("rmsError: " << calibrator.rmsError());
-        BOOST_MESSAGE("negativeDiscriminants: " << calibrator.negativeDiscriminants());
+        BOOST_MESSAGE("failures: " << calibrator.failures());
+        BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
+        BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
+        BOOST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
+        BOOST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
+        BOOST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
     }
 
     // check perfect swaption fit
@@ -498,7 +506,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
-            BOOST_FAIL("\n failed to reproduce "
+            BOOST_ERROR("\n failed to reproduce "
                        << io::ordinal(i) << " swaption vol:"
                        "\n expected:  " << io::rate(expSwaptionVol) <<
                        "\n realized:  " << io::rate(swaptionVol) <<
@@ -507,9 +515,7 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     }
 
     // check caplet fit
-    // the last caplet vol has not been used in calibration as it is assumed
-    // to be equal to the last swaption vol. So it makes no sense to check...
-    for (Size i=0; i<numberOfRates-1; ++i) {
+    for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
             BOOST_ERROR("\n failed to reproduce "

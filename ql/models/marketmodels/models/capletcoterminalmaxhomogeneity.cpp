@@ -20,10 +20,7 @@
 
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
-#include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/optimization/spherecylinder.hpp>
@@ -187,7 +184,7 @@ namespace QuantLib {
 
     }
 
-    CapletCoterminalSwaptionCalibration3::CapletCoterminalSwaptionCalibration3(
+    CTSMMCapletMaxHomogeneityCalibration::CTSMMCapletMaxHomogeneityCalibration(
                             const EvolutionDescription& evolution,
                             const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
                             const std::vector<boost::shared_ptr<
@@ -195,66 +192,54 @@ namespace QuantLib {
                                                 displacedSwapVariances,
                             const std::vector<Volatility>& mktCapletVols,
                             const boost::shared_ptr<CurveState>& cs,
-                            Spread displacement)
-    : evolution_(evolution),  corr_(corr),
-      displacedSwapVariances_(displacedSwapVariances),
-      mktCapletVols_(mktCapletVols),
-      cs_(cs), displacement_(displacement), calibrated_(false) {}
+                            Spread displacement,
+                            Real caplet0Swaption1Priority)
+    : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
+                             mktCapletVols, cs, displacement),
+      caplet0Swaption1Priority_(caplet0Swaption1Priority) {
 
-    Size CapletCoterminalSwaptionCalibration3::calibrationOfMaxHomogeneity(
-            const EvolutionDescription& evolution,
-            const PiecewiseConstantCorrelation& corr,
-            const std::vector<boost::shared_ptr<
-                PiecewiseConstantVariance> >& displacedSwapVariances,
-            const std::vector<Volatility>& capletVols,
-            const CurveState& cs,
-            const Spread displacement,
-            const Size numberOfFactors,
-            Real capletSwaptionPriority, 
-            Size iterationsForMinimzation,
-            Real toleranceForMinimization,
-            Real& deformationSize,
-            std::vector<Matrix>& swapCovariancePseudoRoots,
-            Real& totalSwaptionError) 
-        {
+        QL_REQUIRE(caplet0Swaption1Priority>=0.0 &&
+                   caplet0Swaption1Priority<=1.0,
+                   "caplet0Swaption1Priority (" << caplet0Swaption1Priority <<
+                   ") must be in [0.0, 1.0]");
+    }
 
-        QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
-                   "evolutionTimes not equal to correlation times");
+    Natural CTSMMCapletMaxHomogeneityCalibration::capletMaxHomogeneityCalibration(
+                const EvolutionDescription& evolution,
+                const PiecewiseConstantCorrelation& corr,
+                const std::vector<boost::shared_ptr<
+                    PiecewiseConstantVariance> >& displacedSwapVariances,
+                const std::vector<Volatility>& capletVols,
+                const CurveState& cs,
+                const Spread displacement,
+                const Size numberOfFactors,
+                Real caplet0Swaption1Priority, 
+                Size iterationsForMinimization,
+                Real toleranceForMinimization,
+                Real& deformationSize,
+                std::vector<Matrix>& swapCovariancePseudoRoots,
+                Real& totalSwaptionError) {
 
-        Size numberOfRates = evolution.numberOfRates();
-        QL_REQUIRE(numberOfFactors<=numberOfRates,
-            "number of factors (" << numberOfFactors <<
-            ") cannot be greater than numberOfRates (" <<
-            numberOfRates << ")");
-        QL_REQUIRE(numberOfFactors>0,
-            "number of factors (" << numberOfFactors <<
-            ") must be greater than zero");
-
-        QL_REQUIRE(numberOfRates==displacedSwapVariances.size(),
-            "mismatch between number of rates (" << numberOfRates <<
-            ") and displacedSwapVariances");
-
-        QL_REQUIRE(numberOfRates==capletVols.size(),
-            "mismatch between number of rates (" << numberOfRates <<
-            ") and capletVols (" << capletVols.size() <<
-            ")");
-
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
-        QL_REQUIRE(rateTimes==cs.rateTimes(),
-            "mismatch between EvolutionDescriptionand CurveState rate times ");
-        QL_REQUIRE(numberOfRates==cs.numberOfRates(),
-            "mismatch between number of rates (" << numberOfRates <<
-            ") and CurveState");
-
-
-        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
-        std::vector<Time> temp(rateTimes.begin(), rateTimes.end()-1);
-        QL_REQUIRE(temp==evolutionTimes,
-                   "mismatch between evolutionTimes and rateTimes");
-
-        deformationSize=0.0;
+        CTSMMCapletCalibration::performChecks(evolution, corr,
+            displacedSwapVariances, capletVols, cs);
 
         Size numberOfSteps = evolution.numberOfSteps();
+        Size numberOfRates = evolution.numberOfRates();
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+
+        QL_REQUIRE(numberOfFactors<=numberOfRates,
+                   "number of factors (" << numberOfFactors <<
+                   ") cannot be greater than numberOfRates (" <<
+                   numberOfRates << ")");
+        QL_REQUIRE(numberOfFactors>0,
+                   "number of factors (" << numberOfFactors <<
+                   ") must be greater than zero");
+
+
+        Natural failures=0;
+        totalSwaptionError=0.0;
+        deformationSize=0.0;
+
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
@@ -277,8 +262,6 @@ namespace QuantLib {
         std::vector<Volatility> secondRateVols(numberOfRates);
         std::vector<Real> correlations(numberOfRates);
         newVols.push_back(firstRateVols);
-        Size failures=0;
-        totalSwaptionError=0.0;
 
         // final caplet and swaption are the same, so we skip that case
         for (Size i=0; i<numberOfRates-1; ++i) {
@@ -311,17 +294,16 @@ namespace QuantLib {
 
             bool success = singleRateClosestPointFinder(
                 i, secondRateVols, firstRateVols, targetCapletVariance, correlations,
-                w0, w1, capletSwaptionPriority,iterationsForMinimzation, toleranceForMinimization,
+                w0, w1, caplet0Swaption1Priority,iterationsForMinimization, toleranceForMinimization,
                 theseNewVols, thisSwaptionError, thisCapletError);
 
             totalSwaptionError+= thisSwaptionError*thisSwaptionError;
 
             if (!success)
-                ++failures; // i.e. false
+                ++failures;
 
             for (Size j=0; j < i+2; ++j)
                 deformationSize += (theseNewVols[i]-secondRateVols[i])*(theseNewVols[i]-secondRateVols[i]);
-
 
             newVols.push_back(theseNewVols);
             firstRateVols = theseNewVols;
@@ -350,104 +332,25 @@ namespace QuantLib {
         return failures;
     }
 
+    Natural CTSMMCapletMaxHomogeneityCalibration::calibrationImpl_(
+                                Natural numberOfFactors, 
+                                Natural maxIterations,
+                                Real tolerance) {
 
-    bool CapletCoterminalSwaptionCalibration3::calibrate(
-                            Size numberOfFactors,
-
-                            Size maxIterationsForIterative,
-                            Real toleranceForIterativeSolving,
-
-                            Real caplet0Swaption1Priority,
-                            Size iterationsForHomogeneous,
-                            Real toleranceHomogeneousSolving) {
-
-        Size numberOfRates = evolution_.numberOfRates();
-        deformationSize_ = 0.0;
-        error_ = 987654321; // a positive large number
-        calibrated_ = false;
-        failures_= 0;
-        swaptionError_=0.0;
-
-        std::vector<Volatility> modifiedCapletVols(mktCapletVols_);
-        Size iterations=0;
-        Real totalSwaptionError;
-        do {
-            failures_ = calibrationOfMaxHomogeneity(evolution_,
-                                                  *corr_,
-                                                  displacedSwapVariances_,
-                                                  modifiedCapletVols,
-                                                  *cs_,
-                                                  displacement_,
-                                                  numberOfFactors,
-                                                  caplet0Swaption1Priority,
-                                                  iterationsForHomogeneous,
-                                                  toleranceHomogeneousSolving,
-                                                  deformationSize_,
-                                                  swapCovariancePseudoRoots_,
-                                                  totalSwaptionError);
-
-           
-            std::vector<Spread> displacements(numberOfRates,
-                                              displacement_);
-            const std::vector<Time>& rateTimes = evolution_.rateTimes();
-            boost::shared_ptr<MarketModel> smm(new
-                PseudoRootFacade(swapCovariancePseudoRoots_,
-                                 rateTimes,
-                                 cs_->coterminalSwapRates(),
-                                 displacements));
-            CotSwapToFwdAdapter flmm(smm);
-            // avoid this copy
-            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
-
-            // check caplet fit
-            error_=0.0;
-            std::vector<Volatility> mdlCapletVols(numberOfRates);
-            for (Size i=0; i<numberOfRates-1; ++i) {
-                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
-                Real diff = mktCapletVols_[i]-mdlCapletVols[i];
-                error_ += diff*diff;
-                modifiedCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
-            }
-            error_ = std::sqrt(error_/numberOfRates);
-            ++iterations;
-        } while (iterations<maxIterationsForIterative &&
-                 error_>toleranceForIterativeSolving // && failures_==0
-                 );
-
-        swaptionError_ = sqrt(totalSwaptionError/numberOfRates);
-
-        calibrated_ = true;
-        return failures_==0;
-    }
-
-    Real CapletCoterminalSwaptionCalibration3::deformationSize() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return deformationSize_;
-    }
-
-    Real CapletCoterminalSwaptionCalibration3::rmsCapletError() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return error_;
-    }
-
-    Real CapletCoterminalSwaptionCalibration3::rmsSwaptionError() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return swaptionError_;
-    }
-
-    const std::vector<Matrix>&
-    CapletCoterminalSwaptionCalibration3::swapPseudoRoots() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return swapCovariancePseudoRoots_;
-    }
-
-    const Matrix&
-    CapletCoterminalSwaptionCalibration3::swapPseudoRoot(Size i) const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
-                   i << "is an invalid index, must be less than "
-                   << swapCovariancePseudoRoots_.size());
-        return swapCovariancePseudoRoots_[i];
+        return capletMaxHomogeneityCalibration(evolution_,
+                                               *corr_,
+                                               displacedSwapVariances_,
+                                               // not mktCapletVols_ but...
+                                               usedCapletVols_,
+                                               *cs_, 
+                                               displacement_, 
+                                               numberOfFactors,
+                                               caplet0Swaption1Priority_,
+                                               maxIterations,
+                                               tolerance,
+                                               deformationSize_,
+                                               swapCovariancePseudoRoots_,
+                                               totalSwaptionError_);
     }
 
 }

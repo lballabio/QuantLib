@@ -18,24 +18,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_caplet_coterminal_max_homogeneity_calibration_hpp
-#define quantlib_caplet_coterminal_max_homogeneity_calibration_hpp
+#ifndef quantlib_ctsmm_caplet_calibration_max_homogeneity_hpp
+#define quantlib_ctsmm_caplet_calibration_max_homogeneity_hpp
 
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 
 namespace QuantLib {
 
-    class PiecewiseConstantVariance;
-    class Matrix;
-
-
-    class CapletCoterminalSwaptionCalibration3 {
+    class CTSMMCapletMaxHomogeneityCalibration : public CTSMMCapletCalibration {
       public:
-        CapletCoterminalSwaptionCalibration3(
+        CTSMMCapletMaxHomogeneityCalibration(
             const EvolutionDescription& evolution,
             const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const std::vector<boost::shared_ptr<
@@ -43,24 +35,10 @@ namespace QuantLib {
                                     displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const boost::shared_ptr<CurveState>& cs,
-            Spread displacement);
-        // modifiers
-        bool calibrate(Size numberOfFactors,
-
-                       Size maxIterations,
-                       Real capletVolTolerance,
-
-                       Real caplet0Swaption1Priority,
-                       Size iterationsForHomogeneous = 100,
-                       Real toleranceHomogeneousSolving = 1e-8);
-        // inspectors
-        Real deformationSize() const;
-        Real rmsCapletError() const; 
-        Real rmsSwaptionError() const;
-        const std::vector<Matrix>& swapPseudoRoots() const;
-        const Matrix& swapPseudoRoot(Size i) const;
+            Spread displacement,
+            Real caplet0Swaption1Priority = 1.0);
         // actual calibration function
-        static Size calibrationOfMaxHomogeneity(
+        static Natural capletMaxHomogeneityCalibration(
                     const EvolutionDescription& evolution,
                     const PiecewiseConstantCorrelation& corr,
                     const std::vector<boost::shared_ptr<
@@ -70,29 +48,22 @@ namespace QuantLib {
                     const CurveState& cs,
                     const Spread displacement,
                     Size numberOfFactors,
-                    Real capletSwaptionPriority, 
+                    Real caplet0Swaption1Priority, 
                  
+                    Size maxIterations,
+                    Real tolerance,
 
-                    Size iterationsForHomogeneous,
-                    Real toleranceHomogeneousSolving,
-
-                    Real& deformationSize,
+                    Real& deformationSize, // ?
                     std::vector<Matrix>& swapCovariancePseudoRoots,
-                    Real& totalSwaptionError);
+                    Real& totalSwaptionError); // ?
       private:
+        Natural calibrationImpl_(Natural numberOfFactors, 
+                                 Natural maxIterations,
+                                 Real tolerance);
         // input
-        EvolutionDescription evolution_;
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
-        std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
-                                                displacedSwapVariances_;
-        std::vector<Volatility> mktCapletVols_;
-        boost::shared_ptr<CurveState> cs_;
-        Spread displacement_;
+        Real caplet0Swaption1Priority_;
         // results
-        bool calibrated_;
-        Real error_, swaptionError_, deformationSize_;
-        Size failures_;
-        std::vector<Matrix> swapCovariancePseudoRoots_;
+        Real totalSwaptionError_; // ??
     };
 
 }

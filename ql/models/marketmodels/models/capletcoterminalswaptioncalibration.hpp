@@ -18,23 +18,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_caplet_coterminal_calibration_hpp
-#define quantlib_caplet_coterminal_calibration_hpp
+#ifndef quantlib_ctsmm_caplet_original_calibration_hpp
+#define quantlib_ctsmm_caplet_original_calibration_hpp
 
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 
 namespace QuantLib {
 
-    class PiecewiseConstantVariance;
-    class Matrix;
-
-    class CapletCoterminalSwaptionCalibration {
+    class CTSMMCapletOriginalCalibration : public CTSMMCapletCalibration {
       public:
-        CapletCoterminalSwaptionCalibration(
+        CTSMMCapletOriginalCalibration(
             const EvolutionDescription& evolution,
             const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const std::vector<boost::shared_ptr<
@@ -42,21 +35,12 @@ namespace QuantLib {
                                     displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const boost::shared_ptr<CurveState>& cs,
-            Spread displacement);
-        // modifiers
-        bool calibrate(Size numberOfFactors,
-                       Size maxIterations,
-                       Real capletVolTolerance,
-                       const std::vector<Real>& alpha,
-                       bool lowestRoot,
-					   bool useFullApprox);
-        // inspectors
-        Size negativeDiscriminants() const;
-        Real rmsError() const;
-        const std::vector<Matrix>& swapPseudoRoots() const;
-        const Matrix& swapPseudoRoot(Size i) const;
+            Spread displacement,
+            const std::vector<Real>& alpha,
+            bool lowestRoot,
+			bool useFullApprox);
         // actual calibration function
-        static bool calibrationFunction(
+        static Natural calibrationFunction(
                             const EvolutionDescription& evolution,
                             const PiecewiseConstantCorrelation& corr,
                             const std::vector<boost::shared_ptr<
@@ -67,24 +51,16 @@ namespace QuantLib {
                             const Spread displacement,
                             const Size numberOfFactors,
                             const std::vector<Real>& alpha,
-                            const bool lowestRoot,
-							const bool useFullApprox,
-                            std::vector<Matrix>& swapCovariancePseudoRoots,
-                            Size& negativeDiscriminants);
+                            bool lowestRoot,
+							bool useFullApprox,
+                            std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
+        Natural calibrationImpl_(Natural numberOfFactors, 
+                                 Natural maxIterations,
+                                 Real tolerance);
         // input
-        EvolutionDescription evolution_;
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
-        std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
-                                                displacedSwapVariances_;
-        std::vector<Volatility> mktCapletVols_;
-        boost::shared_ptr<CurveState> cs_;
-        Spread displacement_;
-        // results
-        bool calibrated_;
-        Size negDiscr_;
-        Real error_;
-        std::vector<Matrix> swapCovariancePseudoRoots_;
+        std::vector<Real> alpha_;
+        bool lowestRoot_, useFullApprox_;
     };
 
 }

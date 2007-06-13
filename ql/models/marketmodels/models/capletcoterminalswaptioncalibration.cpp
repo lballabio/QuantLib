@@ -20,15 +20,12 @@
 
 #include <ql/models/marketmodels/models/capletcoterminalswaptioncalibration.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
-#include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 
 namespace QuantLib {
 
-    CapletCoterminalSwaptionCalibration::CapletCoterminalSwaptionCalibration(
+    CTSMMCapletOriginalCalibration::CTSMMCapletOriginalCalibration(
                             const EvolutionDescription& evolution,
                             const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
                             const std::vector<boost::shared_ptr<
@@ -36,13 +33,22 @@ namespace QuantLib {
                                                 displacedSwapVariances,
                             const std::vector<Volatility>& mktCapletVols,
                             const boost::shared_ptr<CurveState>& cs,
-                            Spread displacement)
-    : evolution_(evolution),  corr_(corr),
-      displacedSwapVariances_(displacedSwapVariances),
-      mktCapletVols_(mktCapletVols),
-      cs_(cs), displacement_(displacement), calibrated_(false) {}
+                            Spread displacement,
+                            const std::vector<Real>& alpha,
+                            bool lowestRoot,
+			                bool useFullApprox)
+    : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
+                             mktCapletVols, cs, displacement),
+      alpha_(alpha), lowestRoot_(lowestRoot),
+      useFullApprox_(useFullApprox) {
 
-    bool CapletCoterminalSwaptionCalibration::calibrationFunction(
+        QL_REQUIRE(numberOfRates_==alpha.size(),
+                   "mismatch between number of rates (" << numberOfRates_ <<
+                   ") and alpha (" << alpha.size() << ")");
+
+    }
+
+    Natural CTSMMCapletOriginalCalibration::calibrationFunction(
                             const EvolutionDescription& evolution,
                             const PiecewiseConstantCorrelation& corr,
                             const std::vector<boost::shared_ptr<
@@ -53,16 +59,17 @@ namespace QuantLib {
                             const Spread displacement,
                             const Size numberOfFactors,
                             const std::vector<Real>& alpha,
-                            const bool lowestRoot,
-                            const bool useFullAprox,
-                            std::vector<Matrix>& swapCovariancePseudoRoots,
-                            Size& negativeDiscriminants) {
+                            bool lowestRoot,
+                            bool useFullAprox,
+                            std::vector<Matrix>& swapCovariancePseudoRoots) {
 
-        negativeDiscriminants = 0;
-        QL_REQUIRE(evolution.evolutionTimes()==corr.times(),
-                   "evolutionTimes not equal to correlation times");
+        CTSMMCapletCalibration::performChecks(evolution, corr,
+            displacedSwapVariances, capletVols, cs);
 
+        Size numberOfSteps = evolution.numberOfSteps();
         Size numberOfRates = evolution.numberOfRates();
+        const std::vector<Time>& rateTimes = evolution.rateTimes();
+
         QL_REQUIRE(numberOfFactors<=numberOfRates,
                    "number of factors (" << numberOfFactors <<
                    ") cannot be greater than numberOfRates (" <<
@@ -71,33 +78,8 @@ namespace QuantLib {
                    "number of factors (" << numberOfFactors <<
                    ") must be greater than zero");
 
-        QL_REQUIRE(numberOfRates==displacedSwapVariances.size(),
-                   "mismatch between number of rates (" << numberOfRates <<
-                   ") and displacedSwapVariances");
-
-        QL_REQUIRE(numberOfRates==capletVols.size(),
-                   "mismatch between number of rates (" << numberOfRates <<
-                   ") and capletVols (" << capletVols.size() <<
-                   ")");
-
-        const std::vector<Time>& rateTimes = evolution.rateTimes();
-        QL_REQUIRE(rateTimes==cs.rateTimes(),
-                   "mismatch between EvolutionDescriptionand CurveState rate times ");
-        QL_REQUIRE(numberOfRates==cs.numberOfRates(),
-                   "mismatch between number of rates (" << numberOfRates <<
-                   ") and CurveState");
-
-        QL_REQUIRE(numberOfRates==alpha.size(),
-                   "mismatch between number of rates (" << numberOfRates <<
-                   ") and alphas (" << alpha.size() << ")");
-
-        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
-        QL_REQUIRE(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1)==evolutionTimes,
-                   "mismatch between evolutionTimes and rateTimes");
-
+        Natural failures = 0;
         Real extraMultiplier = useFullAprox ? 1.0 : 0.0;
-
-        Size numberOfSteps = evolution.numberOfSteps();
 
         // factor reduction
         std::vector<Matrix> corrPseudo(corr.times().size());
@@ -112,6 +94,7 @@ namespace QuantLib {
         Matrix swapTimeInhomogeneousVariances(numberOfSteps, numberOfRates, 0.0);
         std::vector<Real> originalVariances(numberOfRates, 0.0);
         std::vector<Real> modifiedVariances(numberOfRates, 0.0);
+        const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         for (Size i=0; i<numberOfSteps; ++i) {
             Real s = (i==0 ? 0.0 : evolutionTimes[i-1]);
             for (Size j=i; j<numberOfRates; ++j) {
@@ -266,7 +249,7 @@ namespace QuantLib {
             Real root, minimum = -linearPart/(2.0*quadraticPart);
             bool rightUsed = false;
             if (disc <0.0) {
-                ++negativeDiscriminants;
+                ++failures;
                 // pick up the minimum vol for the caplet
                 root = minimum;
             } else if (lowestRoot) {
@@ -291,7 +274,7 @@ namespace QuantLib {
             }
 
             if (mult<0.0) // no solution...
-                return false;
+                return failures;
 
             QL_ENSURE(root>=0.0,
                       "negative root -- it should have not happened");
@@ -329,91 +312,26 @@ namespace QuantLib {
                       << " instead of " << numberOfFactors);
         }
 
-        return true;
+        return failures;
     }
 
-    bool CapletCoterminalSwaptionCalibration::calibrate(
-                            Size numberOfFactors,
-                            Size maxIterations,
-                            Real tolerance,
-                            const std::vector<Real>& alpha,
-                            bool lowestRoot,
-                            bool useFullApprox) {
+    Natural CTSMMCapletOriginalCalibration::calibrationImpl_(
+                                Natural numberOfFactors, 
+                                Natural ,
+                                Real ) {
 
-        Size numberOfRates = evolution_.numberOfRates();
-        negDiscr_ = 0;
-        error_ = 987654321; // a positive large number
-        calibrated_ = false;
-        bool success = true;
-        std::vector<Volatility> targetCapletVols(mktCapletVols_);
-        for (Size iterCounter=1;
-             iterCounter<=maxIterations && negDiscr_==0 && error_>tolerance;
-             ++iterCounter) {
-            success = calibrationFunction(evolution_,
-                                          *corr_,
-                                          displacedSwapVariances_,
-                                          targetCapletVols,
-                                          *cs_,
-                                          displacement_,
-                                          numberOfFactors,
-                                          alpha,
-                                          lowestRoot,
-                                          useFullApprox,
-                                          swapCovariancePseudoRoots_,
-                                          negDiscr_);
-            if (!success)
-                return success;
-
-            const std::vector<Time>& rateTimes = evolution_.rateTimes();
-            std::vector<Spread> displacements(numberOfRates,
-                                              displacement_);
-            boost::shared_ptr<MarketModel> smm(new
-                PseudoRootFacade(swapCovariancePseudoRoots_,
-                                 rateTimes,
-                                 cs_->coterminalSwapRates(),
-                                 displacements));
-            CotSwapToFwdAdapter flmm(smm);
-            // avoid this copy
-            Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
-
-            // check caplet fit
-            error_ = 0.0;
-            std::vector<Volatility> mdlCapletVols(numberOfRates);
-            for (Size i=0; i<numberOfRates-1; ++i) {
-                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
-                Real diff = mktCapletVols_[i]-mdlCapletVols[i];
-                error_ += diff*diff;
-                targetCapletVols[i] *= mktCapletVols_[i]/mdlCapletVols[i];
-            }
-            error_ = std::sqrt(error_/(numberOfRates-1));
-        }
-        calibrated_ = true;
-        return success;
-    }
-
-    Size CapletCoterminalSwaptionCalibration::negativeDiscriminants() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return negDiscr_;
-    }
-
-    Real CapletCoterminalSwaptionCalibration::rmsError() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return error_;
-    }
-
-    const std::vector<Matrix>&
-    CapletCoterminalSwaptionCalibration::swapPseudoRoots() const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        return swapCovariancePseudoRoots_;
-    }
-
-    const Matrix&
-    CapletCoterminalSwaptionCalibration::swapPseudoRoot(Size i) const {
-        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
-        QL_REQUIRE(i<swapCovariancePseudoRoots_.size(),
-                   i << "is an invalid index, must be less than "
-                   << swapCovariancePseudoRoots_.size());
-        return swapCovariancePseudoRoots_[i];
+        return calibrationFunction(evolution_,
+                                   *corr_,
+                                   displacedSwapVariances_,
+                                   // not mktCapletVols_ but...
+                                   usedCapletVols_,
+                                   *cs_, 
+                                   displacement_, 
+                                   numberOfFactors,
+                                   alpha_,
+                                   lowestRoot_,
+                                   useFullApprox_,
+                                   swapCovariancePseudoRoots_);
     }
 
 }

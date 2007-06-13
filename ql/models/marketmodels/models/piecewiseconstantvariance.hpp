@@ -34,14 +34,14 @@ namespace QuantLib {
       public:
         virtual ~PiecewiseConstantVariance() {}
         virtual const std::vector<Real>& variances() const = 0;
-        virtual const std::vector<Real>& volatilities() const = 0;
+        virtual const std::vector<Volatility>& volatilities() const = 0;
         virtual const std::vector<Time>& rateTimes() const = 0;
         Real variance(Size i) const;
-        Real volatility(Size i) const;
+        Volatility volatility(Size i) const;
         //const std::vector<Real>& totalVariances() const;
-        //const std::vector<Real>& totalVolatilities() const;
+        //const std::vector<Volatility>& totalVolatilities() const;
         Real totalVariance(Size i) const;
-        Real totalVolatility(Size i) const;
+        Volatility totalVolatility(Size i) const;
     };
 
 }

@@ -175,7 +175,7 @@ void setup() {
                             0.1640,
                             0.1540,
                             0.1440,
-                            0.1340
+                            0.1340376439125532
     };
 
     //swaptionDisplacedVols = std::vector<Volatility>(todaysSwaps.size());
@@ -438,45 +438,49 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     }
 
     // create calibrator
-    CapletCoterminalSwaptionCalibration2 calibrator(evolution,
-                                                    corr,
-                                                    swapVariances,
-                                                    capletVols_,
-                                                    cs,
-                                                    displacement_);
-    // calibrate
-    bool maximizeHomogeneity = false; //?
     std::vector<Real> alphaInitial(numberOfRates, alpha_);
     std::vector<Real> alphaMax(numberOfRates,  1.0);
     std::vector<Real> alphaMin(numberOfRates, -1.0);
-
-    Integer steps = 100;
-    Real toleranceForAlphaSolving = 1e-8;
-
-    Size maxIterations = 10;
-    Real capletTolerance = 1e-4; // i.e. 1 bp
+    bool maximizeHomogeneity = false; //?
     if (printReport_) {
-        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
+        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
+                      std::setprecision(4) << Array(capletVols_));
         BOOST_MESSAGE("alphaMin:           " << alphaMin_);
         BOOST_MESSAGE("alphaInitial:       " << alpha_);
         BOOST_MESSAGE("alphaMax:           " << alphaMax_);
+        BOOST_MESSAGE("maximizeHomogeneity:" << maximizeHomogeneity);
+    }
+    CTSMMCapletAlphaFormCalibration calibrator(evolution,
+                                               corr,
+                                               swapVariances,
+                                               capletVols_,
+                                               cs,
+                                               displacement_,
+                                               alphaInitial,
+                                               alphaMax,
+                                               alphaMin,
+                                               maximizeHomogeneity);
+    // calibrate
+    Natural maxIterations = 10;
+    Real capletTolerance = 1e-4; // i.e. 1 bp
+    Natural innerMaxIterations = 100;
+    Real innerTolerance = 1e-8;
+
+    if (printReport_) {
+        BOOST_MESSAGE("numberOfFactors:    " << numberOfFactors_);
         BOOST_MESSAGE("maxIterations:      " << maxIterations);
         BOOST_MESSAGE("capletTolerance:    " << io::rate(capletTolerance));
-        BOOST_MESSAGE("caplet market vols: " << QL_FIXED <<
-                      std::setprecision(4) << Array(capletVols_));
+        BOOST_MESSAGE("innerMaxIterations: " << innerMaxIterations);
+        BOOST_MESSAGE("innerTolerance:     " << io::rate(innerTolerance));
     }
 
     bool result = calibrator.calibrate(numberOfFactors_,
                                        maxIterations,
                                        capletTolerance,
-                                       steps,
-                                       toleranceForAlphaSolving,
-                                       maximizeHomogeneity,
-                                       alphaInitial,
-                                       alphaMax,
-                                       alphaMin);
+                                       innerMaxIterations,
+                                       innerTolerance);
     if (!result)
-        BOOST_FAIL("calibration failed");
+        BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
     boost::shared_ptr<MarketModel> smm(new
@@ -494,7 +498,12 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     if (printReport_) {
         BOOST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
                       std::setprecision(4) << Array(capletVols));
-        BOOST_MESSAGE("rmsError: " << calibrator.rmsError());
+        BOOST_MESSAGE("failures: " << calibrator.failures());
+        BOOST_MESSAGE("deformationSize: " << calibrator.deformationSize());
+        BOOST_MESSAGE("capletRmsError: " << calibrator.capletRmsError());
+        BOOST_MESSAGE("capletMaxError: " << calibrator.capletMaxError());
+        BOOST_MESSAGE("swaptionRmsError: " << calibrator.swaptionRmsError());
+        BOOST_MESSAGE("swaptionMaxError: " << calibrator.swaptionMaxError());
     }
 
     // check perfect swaption fit
@@ -506,7 +515,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
         Volatility swaptionVol = std::sqrt(swapTerminalCovariance[i][i]/rateTimes_[i]);
         error = std::fabs(swaptionVol-expSwaptionVol);
         if (error>swapTolerance)
-            BOOST_MESSAGE("\n failed to reproduce "
+            BOOST_ERROR("\n failed to reproduce "
                        << io::ordinal(i) << " swaption vol:"
                        "\n expected:  " << io::rate(expSwaptionVol) <<
                        "\n realized:  " << io::rate(swaptionVol) <<
@@ -515,9 +524,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     }
 
     // check caplet fit
-    // the last caplet vol has not been used in calibration as it is assumed
-    // to be equal to the last swaption vol. So it makes no sense to check...
-    for (Size i=0; i<numberOfRates-1; ++i) {
+    for (Size i=0; i<numberOfRates; ++i) {
         error = std::fabs(capletVols[i]-capletVols_[i]);
         if (error>capletTolerance)
             BOOST_ERROR("\n failed to reproduce "
