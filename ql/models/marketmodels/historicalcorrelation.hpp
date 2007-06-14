@@ -4,6 +4,7 @@
  Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 François du Vignaud
  Copyright (C) 2007 Marco Bianchetti
+ Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file model.hpp
+/*! \file historicalcorelation.hpp
     \brief Calculation of historical correlation between forward rates
 */
 
@@ -34,30 +35,93 @@
 #include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
 
-    template<class Traits, class Interpolator>
-    Disposable<Matrix> historicalCorrelations(
+    //! %Historical correlation class
+    class HistoricalCorrelation {
+      public:
+        HistoricalCorrelation(
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-
                 const boost::shared_ptr<InterestRateIndex>& fwdIndex,
-
                 const Period& initialGap,
                 const Period& horizon,
-
                 const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const DayCounter& yieldCurveDayCounter,
+                Real yieldCurveAccuracy);
+        const std::vector<Period>& fixingPeriods() const;
+        const std::vector<Date>& skippedDates() const;
+        const std::vector<Date>& failedDates() const;
 
+        template<class Traits, class Interpolator>
+        static Disposable<Matrix> historicalCorrelationCalculate(
+                    // results
+                    std::vector<Date>& skippedDates,
+                    std::vector<Date>& failedDates,
+                    std::vector<Period>& fixingPeriods,
+                    // inputs
+                    const Date& startDate,
+                    const Date& endDate,
+                    const Period& step,
+                    const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                    const Period& initialGap,
+                    const Period& horizon,
+                    const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+                    const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                    const DayCounter& yieldCurveDayCounter,
+                    Real yieldCurveAccuracy,
+                    const Interpolator& i = Interpolator());
+      private:
+        // calculated data
+        std::vector<Date> skippedDates_;
+        std::vector<Date> failedDates_;
+        std::vector<Period> fixingPeriods_;
+        Matrix corr_;
+
+    };
+
+    // inline
+
+    inline const std::vector<Period>&
+    HistoricalCorrelation::fixingPeriods() const {
+        return fixingPeriods_;
+    }
+
+    inline const std::vector<Date>&
+    HistoricalCorrelation::skippedDates() const {
+        return skippedDates_;
+    }
+
+    inline const std::vector<Date>&
+    HistoricalCorrelation::failedDates() const {
+        return failedDates_;
+    }
+ 
+    template<class Traits, class Interpolator>
+    Disposable<Matrix> HistoricalCorrelation::historicalCorrelationCalculate(
+                std::vector<Date>& skippedDates,
+                std::vector<Date>& failedDates,
+                std::vector<Period>& fixingPeriods,
+                const Date& startDate,
+                const Date& endDate,
+                const Period& step,
+                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const Period& initialGap,
+                const Period& horizon,
+                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy,
-                const Interpolator& i = Interpolator()) {
-        //FIXME: these vector should be passed as an argument
-        std::vector<Date> skippedDates, failedDates;
-        //skippedDates.clear();
-        //failedDates.clear();
+                const Interpolator& i) {
+
+                    
+        skippedDates.clear();
+        failedDates.clear();
+        fixingPeriods.clear();
 
         SavedSettings backup;
         Settings::instance().enforcesTodaysHistoricFixings() = true;
@@ -102,7 +166,6 @@ namespace QuantLib {
 
         // Set up the forward rates time grid
         Period indexTenor = fwdIndex->tenor(); 
-        std::vector<Period> fixingPeriods;
         Period fixingPeriod = initialGap;
         while (fixingPeriod<horizon) {
             fixingPeriods.push_back(fixingPeriod);
