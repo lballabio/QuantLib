@@ -68,6 +68,9 @@ namespace QuantLib {
         const std::vector<Volatility>& mdlCapletVols() const;
         const std::vector<Volatility>& mktSwaptionVols() const;
         const std::vector<Volatility>& mdlSwaptionVols() const;
+        const std::vector<Volatility>& timeDependentCalibratedSwaptionVols(Size i) const;
+        const std::vector<Volatility>& timeDependentUnCalibratedSwaptionVols(Size i) const;
+
 
         static void performChecks(
             const EvolutionDescription& evolution,
@@ -90,6 +93,7 @@ namespace QuantLib {
         
         std::vector<Volatility> mktCapletVols_, mdlCapletVols_;
         std::vector<Volatility> mktSwaptionVols_, mdlSwaptionVols_;
+        std::vector<std::vector<Volatility> > timeDependentCalibratedSwaptionVols_;
         
         boost::shared_ptr<CurveState> cs_;
         Spread displacement_;

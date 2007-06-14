@@ -48,7 +48,11 @@ namespace QuantLib {
         virtual const Matrix& pseudoRoot(Size i) const = 0;
         virtual const Matrix& covariance(Size i) const;
         virtual const Matrix& totalCovariance(Size endIndex) const;
-      private:
+
+        
+        std::vector<Volatility> timeDependentVolatility(Size i) const;
+      
+    private:
         mutable std::vector<Matrix> covariance_, totalCovariance_;
     };
 
@@ -61,6 +65,7 @@ namespace QuantLib {
                                               Size numberOfFactors) const = 0;
     };
     
+
 }
 
 #endif

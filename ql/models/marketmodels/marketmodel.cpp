@@ -18,6 +18,7 @@
 */
 
 #include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
 
 
 namespace QuantLib {
@@ -48,5 +49,28 @@ namespace QuantLib {
                    ") must be less than covariance_.size() (" << covariance_.size() << ")")
         return totalCovariance_[endIndex];
     }
+
+   std::vector<Volatility> MarketModel::timeDependentVolatility(Size i) const
+   {
+        QL_REQUIRE(i < numberOfRates() , "index must less than number of rates in MarketModel::timeDependentVolatility");
+      
+        std::vector<Volatility> result(numberOfSteps());
+        const std::vector<Time>& evolutionTime(evolution().evolutionTimes());
+
+        Time lastTime=0.0;
+
+        for (Size j=0; j < numberOfSteps(); ++j)
+        {
+            Time tau = evolutionTime[j]-lastTime;
+            Real thisVariance = covariance(j)[i][i];
+            Real thisVol = sqrt(thisVariance/tau);
+            result[j]=thisVol;
+            lastTime =  evolutionTime[j];
+
+
+        }
+        return result;
+   }
+     
 
 }

@@ -2353,6 +2353,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\forwardforwardmappings.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\forwardforwardmappings.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\historicalcorrelation.cpp"
 					>
 				</File>
@@ -2645,6 +2653,14 @@
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\models\flatvol.hpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\fwdperiodadapter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\models\fwdperiodadapter.hpp"
 						>
 					</File>
 					<File

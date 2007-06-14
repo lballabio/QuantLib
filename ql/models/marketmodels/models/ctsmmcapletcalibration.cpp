@@ -51,6 +51,23 @@ namespace QuantLib {
     {
         performChecks(evolution_, *corr_, displacedSwapVariances_,
                       mktCapletVols_, *cs_);
+
+        
+        
+    }
+
+    const std::vector<Volatility>& CTSMMCapletCalibration::timeDependentUnCalibratedSwaptionVols(Size i) const
+    {
+      QL_REQUIRE(i < numberOfRates_ , "index must less than number of rates in MarketModel::timeDependentUnCalibratedSwaptionVols");
+      
+        return displacedSwapVariances_[i]->volatilities();
+    }
+
+    const std::vector<Volatility>& CTSMMCapletCalibration::timeDependentCalibratedSwaptionVols(Size i) const
+    {
+      QL_REQUIRE(i < numberOfRates_ , "index must less than number of rates in MarketModel::timeDependentCalibratedSwaptionVols");
+      
+        return timeDependentCalibratedSwaptionVols_[i];
     }
 
     void CTSMMCapletCalibration::performChecks(
@@ -169,6 +186,18 @@ namespace QuantLib {
             ++iterations;
         } while (iterations<maxIterations &&
                  capletRmsError_>capletVolTolerance);
+
+         boost::shared_ptr<MarketModel> ctsmm(new
+                PseudoRootFacade(swapCovariancePseudoRoots_,
+                                 rateTimes,
+                                 cs_->coterminalSwapRates(),
+                                 displacements));
+
+         timeDependentCalibratedSwaptionVols_.clear();
+
+         for (Size i=0; i < numberOfRates_; ++i)
+             timeDependentCalibratedSwaptionVols_.push_back(ctsmm->timeDependentVolatility(i));
+      
 
         // calculate deformationSize_ ??
         calibrated_ = true;
