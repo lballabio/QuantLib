@@ -33,6 +33,7 @@ namespace QuantLib {
         FwdPeriodAdapter(
                           const boost::shared_ptr<MarketModel>& largeModel,
                           Size period,
+                          Size offset,
                           const std::vector<Spread>& newDisplacements_ );
         //! \name MarketModel interface
         //@{

@@ -31,18 +31,19 @@ namespace QuantLib {
     FwdPeriodAdapter::FwdPeriodAdapter(
                                const boost::shared_ptr<MarketModel>& largeModel,
                                Size period,
+                               Size offset,
                                const std::vector<Spread>& newDisplacements)
     : 
       numberOfFactors_(largeModel->numberOfFactors()),
-          numberOfRates_(largeModel->numberOfRates() / (period > 0 ? period : 0) ),
+          numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 0) ),
       numberOfSteps_(largeModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_/(period > 0 ? period :  0), 
+      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  0), 
                                           numberOfFactors_)),
                                           displacements_(newDisplacements)
     {
         Size n = largeModel->numberOfRates();
         QL_REQUIRE( period >0, "period must  be greater than zero in fwdperiodadapter");
-        QL_REQUIRE(n % period ==0, "period must divide number of rates on fwdperiodadapter");
+        QL_REQUIRE(period > offset, "period must be greater than offset in fwdperiodadapter");
 
         const std::vector<Spread>& largeDisplacements_ =
             largeModel->displacements();
@@ -73,7 +74,7 @@ namespace QuantLib {
 
         LMMCurveState smallCS(
                 ForwardForwardMappings::RestrictCurveState(largeCS,
-                                    period
+                                    period, offset
                                         ));
 
         evolution_=EvolutionDescription(smallCS.rateTimes(),
@@ -97,7 +98,8 @@ namespace QuantLib {
             ForwardForwardMappings::YMatrix( smallCS,
                                                  largeDisplacements_,
                                                  displacements_,
-                                                 period
+                                                 period,
+                                                 offset
                                                  );
 
         const std::vector<Size>& alive =

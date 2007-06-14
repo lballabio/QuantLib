@@ -27,19 +27,22 @@ namespace QuantLib {
 
     Disposable<Matrix>
         ForwardForwardMappings::ForwardForwardJacobian(const CurveState& cs, 
-        Size multiplier)
+        Size multiplier,
+        Size offset)
         {
+       
         Size n = cs.numberOfRates();
-        QL_REQUIRE(n % multiplier ==0, "multiplier must divide the number"
-            " of rates for forward forward mappings");
-        Size k = n/multiplier;
+       
+        QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
+            "  forward forward mappings");
+        Size k = (n-offset)/multiplier;
 
         const std::vector<Rate>& f = cs.forwardRates();
         const std::vector<Time>& tau = cs.rateTaus();
 
         Matrix jacobian = Matrix(k, n, 0.0);
 
-        Size m=0; 
+        Size m=offset; 
         for (Size l=0; l < k; ++l)
             {
             Real df = cs.discountRatio(m,m+multiplier);
@@ -62,30 +65,31 @@ namespace QuantLib {
         ForwardForwardMappings::YMatrix(const CurveState& cs,
         const std::vector<Spread>& shortDisplacements,
         const std::vector<Spread>& longDisplacements,
-        Size multiplier
+        Size multiplier,
+        Size offset
         )
         {
         Size n = cs.numberOfRates();
 
-        QL_REQUIRE(n % multiplier ==0, "multiplier must divide the number"
-            " of rates for forward forward mappings");
+        QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
+            "  forward forward mappings");
+        Size k = (n-offset)/multiplier;
 
-        Size k = n/multiplier;
-
+      
         QL_REQUIRE(longDisplacements.size() == n , "longDisplacements must be of size"
             " equal to number of rates");
 
         QL_REQUIRE(longDisplacements.size() == k , "shortDisplacements must be of size"
-            " equal to number of rates divided by multiplier");
+            " equal to (number of rates minus offset) divided by multiplier");
 
-        Matrix jacobian(ForwardForwardJacobian(cs,multiplier));
+        Matrix jacobian(ForwardForwardJacobian(cs,multiplier,offset));
 
         for (Size i=0; i < k ; ++i)
             {
-            Real tau = cs.rateTimes()[(i+1)*multiplier] 
-            -  cs.rateTimes()[i*multiplier];
+            Real tau = cs.rateTimes()[(i+1)*multiplier+offset] 
+            -  cs.rateTimes()[i*multiplier+offset];
 
-            Real longForward = (cs.discountRatio((i+1)*multiplier,i*multiplier)-1.0)
+            Real longForward = (cs.discountRatio((i+1)*multiplier+offset,i*multiplier+offset)-1.0)
                 /tau;   
             Real longForwardDisplaced = longForward+ shortDisplacements[i];
             for (Size j=0; j < n; ++j)
@@ -103,15 +107,15 @@ namespace QuantLib {
 
     LMMCurveState
         ForwardForwardMappings::RestrictCurveState(const CurveState& cs,
-                                 Size multiplier
+                                 Size multiplier,
+                                 Size offset
                                 )
         {
            Size n = cs.numberOfRates();
 
-           QL_REQUIRE(n % multiplier ==0, "multiplier must divide the number"
-            " of rates for forward forward mappings");
-
-           Size k = n/multiplier;
+           QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
+           "  forward forward mappings");
+           Size k = (n-offset)/multiplier;
 
            std::vector<Time> times(k+1);
            std::vector<DiscountFactor> discRatios(k+1);
@@ -119,8 +123,8 @@ namespace QuantLib {
 
            for (Size i=0; i < k+1; ++i)
            {
-               times[i] = cs.rateTimes()[i*multiplier];
-               discRatios[i] = cs.discountRatio(0,i*multiplier);
+               times[i] = cs.rateTimes()[i*multiplier+offset];
+               discRatios[i] = cs.discountRatio(0,i*multiplier+offset);
            }
            
            LMMCurveState newState(times);

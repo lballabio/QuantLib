@@ -36,7 +36,9 @@ namespace QuantLib {
             /*! Returns the dg[i]/df[j] jacobian between
             forward rates with tenor multipler and forward rates with tenor 1*/
             Disposable<Matrix>
-                ForwardForwardJacobian(const CurveState& cs, Size multiplier);
+                ForwardForwardJacobian(const CurveState& cs, 
+                                       Size multiplier,
+                                       Size offset);
 
             /*! Returns the Y matrix to switch base          
             forward rates with tenor multipler and forward rates with tenor 1*/
@@ -45,7 +47,8 @@ namespace QuantLib {
                 YMatrix(const CurveState& cs,
                 const std::vector<Spread>& shortDisplacements,
                 const std::vector<Spread>& longDisplacements,
-                Size Multiplier
+                Size Multiplier,
+                Size offset
                 );
 
             /*! 
@@ -54,7 +57,8 @@ namespace QuantLib {
             */
             LMMCurveState
                 RestrictCurveState(const CurveState& cs,
-                                 Size multiplier
+                                 Size multiplier,
+                                 Size offSet
                                 );
 
         }
