@@ -3121,28 +3121,22 @@
 						RelativePath=".\ql\models\marketmodels\correlations\all.hpp">
 					</File>
 					<File
-						RelativePath=".\ql\models\marketmodels\correlations\correlations.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\correlations\correlations.hpp">
-					</File>
-					<File
 						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.cpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\cotswapfromfwdcorrelation.hpp">
 					</File>
 					<File
+						RelativePath=".\ql\models\marketmodels\correlations\expcorrelations.cpp">
+					</File>
+					<File
+						RelativePath=".\ql\models\marketmodels\correlations\expcorrelations.hpp">
+					</File>
+					<File
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.cpp">
 					</File>
 					<File
 						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneousforwardcorrelation.hpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneoustimedependentforwardcorrelation.cpp">
-					</File>
-					<File
-						RelativePath=".\ql\models\marketmodels\correlations\timehomogeneoustimedependentforwardcorrelation.hpp">
 					</File>
 				</Filter>
 			</Filter>
