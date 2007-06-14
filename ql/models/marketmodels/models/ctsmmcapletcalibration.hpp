@@ -64,13 +64,18 @@ namespace QuantLib {
         const std::vector<Matrix>& swapPseudoRoots() const;
         const Matrix& swapPseudoRoot(Size i) const;
 
+        const std::vector<Volatility>& mktCapletVols() const;
+        const std::vector<Volatility>& mdlCapletVols() const;
+        const std::vector<Volatility>& mktSwaptionVols() const;
+        const std::vector<Volatility>& mdlSwaptionVols() const;
+
         static void performChecks(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
             const std::vector<boost::shared_ptr<
                         PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
-            const std::vector<Volatility>& mktCapletVols_,
+            const std::vector<Volatility>& mktCapletVols,
             const CurveState& cs);
       protected:
         virtual Natural calibrationImpl_(Natural numberOfFactors,
@@ -82,7 +87,10 @@ namespace QuantLib {
         boost::shared_ptr<PiecewiseConstantCorrelation> corr_;
         std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                                 displacedSwapVariances_;
-        std::vector<Volatility> mktCapletVols_;
+        
+        std::vector<Volatility> mktCapletVols_, mdlCapletVols_;
+        std::vector<Volatility> mktSwaptionVols_, mdlSwaptionVols_;
+        
         boost::shared_ptr<CurveState> cs_;
         Spread displacement_;
         Size numberOfRates_;
@@ -98,6 +106,24 @@ namespace QuantLib {
     };
 
     // inline
+
+    inline const std::vector<Volatility>& CTSMMCapletCalibration::mktCapletVols() const {
+        return mktCapletVols_;
+    }
+
+    inline const std::vector<Volatility>& CTSMMCapletCalibration::mdlCapletVols() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return mdlCapletVols_;
+    }
+
+    inline const std::vector<Volatility>& CTSMMCapletCalibration::mktSwaptionVols() const {
+        return mktSwaptionVols_;
+    }
+
+    inline const std::vector<Volatility>& CTSMMCapletCalibration::mdlSwaptionVols() const {
+        QL_REQUIRE(calibrated_, "not successfully calibrated yet");
+        return mdlSwaptionVols_;
+    }
 
     inline Natural CTSMMCapletCalibration::failures() const {
         QL_REQUIRE(calibrated_, "not successfully calibrated yet");

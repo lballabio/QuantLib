@@ -43,6 +43,7 @@ namespace QuantLib {
     : evolution_(evolution),  corr_(corr),
       displacedSwapVariances_(displacedSwapVariances),
       mktCapletVols_(mktCapletVols),
+      mktSwaptionVols_(evolution_.numberOfRates()),
       cs_(cs), displacement_(displacement),
       numberOfRates_(evolution_.numberOfRates())
     {
@@ -116,9 +117,9 @@ namespace QuantLib {
 
         // initialize working variables
         usedCapletVols_ = mktCapletVols_;
-        std::vector<Volatility> mktSwaptionVols(numberOfRates_); // to be calculated!!
+
         for (Size i=0; i<numberOfRates_; ++i)
-            mktSwaptionVols[i]=displacedSwapVariances_[i]->totalVolatility(i);
+            mktSwaptionVols_[i]=displacedSwapVariances_[i]->totalVolatility(i);
 
         std::vector<Spread> displacements(numberOfRates_,
                                           displacement_);
@@ -146,21 +147,20 @@ namespace QuantLib {
             // check fit
             capletRmsError_ = swaptionRmsError_ = 0.0;
             capletMaxError_ = swaptionMaxError_ = -1.0;
-            std::vector<Volatility> mdlCapletVols(numberOfRates_);
-            std::vector<Volatility> mdlSwaptionVols(numberOfRates_);
+
             for (Size i=0; i<numberOfRates_; ++i) {
-                mdlSwaptionVols[i] = std::sqrt(swaptionTotCovariance[i][i]/rateTimes[i]);
-                Real swaptionError = std::fabs(mktSwaptionVols[i]-mdlSwaptionVols[i]);
+                mdlSwaptionVols_[i] = std::sqrt(swaptionTotCovariance[i][i]/rateTimes[i]);
+                Real swaptionError = std::fabs(mktSwaptionVols_[i]-mdlSwaptionVols_[i]);
                 swaptionRmsError_ += swaptionError*swaptionError;
                 swaptionMaxError_ = std::max(swaptionMaxError_, swaptionError);
 
-                mdlCapletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
-                Real capletError = std::fabs(mktCapletVols_[i]-mdlCapletVols[i]);
+                mdlCapletVols_[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes[i]);
+                Real capletError = std::fabs(mktCapletVols_[i]-mdlCapletVols_[i]);
                 capletRmsError_ += capletError*capletError;
                 capletMaxError_ = std::max(capletMaxError_, capletError);
 
                 if (i < numberOfRates_-1) 
-                    usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols[i];
+                    usedCapletVols_[i] *= mktCapletVols_[i]/mdlCapletVols_[i];
             }
             swaptionRmsError_ = std::sqrt(swaptionRmsError_/numberOfRates_);
             capletRmsError_ = std::sqrt(capletRmsError_/numberOfRates_);
