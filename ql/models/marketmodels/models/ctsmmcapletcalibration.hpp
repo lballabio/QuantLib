@@ -80,6 +80,9 @@ namespace QuantLib {
                                     displacedSwapVariances,
             const std::vector<Volatility>& mktCapletVols,
             const CurveState& cs);
+
+        const boost::shared_ptr<CurveState>& curveState() const;
+        std::vector<Spread> displacements() const;
       protected:
         virtual Natural calibrationImpl_(Natural numberOfFactors,
 
@@ -111,20 +114,24 @@ namespace QuantLib {
 
     // inline
 
-    inline const std::vector<Volatility>& CTSMMCapletCalibration::mktCapletVols() const {
+    inline const std::vector<Volatility>&
+    CTSMMCapletCalibration::mktCapletVols() const {
         return mktCapletVols_;
     }
 
-    inline const std::vector<Volatility>& CTSMMCapletCalibration::mdlCapletVols() const {
+    inline const std::vector<Volatility>&
+    CTSMMCapletCalibration::mdlCapletVols() const {
         QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return mdlCapletVols_;
     }
 
-    inline const std::vector<Volatility>& CTSMMCapletCalibration::mktSwaptionVols() const {
+    inline const std::vector<Volatility>&
+    CTSMMCapletCalibration::mktSwaptionVols() const {
         return mktSwaptionVols_;
     }
 
-    inline const std::vector<Volatility>& CTSMMCapletCalibration::mdlSwaptionVols() const {
+    inline const std::vector<Volatility>&
+    CTSMMCapletCalibration::mdlSwaptionVols() const {
         QL_REQUIRE(calibrated_, "not successfully calibrated yet");
         return mdlSwaptionVols_;
     }
@@ -172,6 +179,16 @@ namespace QuantLib {
                    i << "is an invalid index, must be less than "
                    << swapCovariancePseudoRoots_.size());
         return swapCovariancePseudoRoots_[i];
+    }
+
+    inline const boost::shared_ptr<CurveState>&
+    CTSMMCapletCalibration::curveState() const {
+        return cs_;
+    }
+
+    inline std::vector<Spread>
+    CTSMMCapletCalibration::displacements() const {
+        return std::vector<Volatility>(numberOfRates_, displacement_);
     }
 
 }

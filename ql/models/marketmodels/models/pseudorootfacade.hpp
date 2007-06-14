@@ -22,6 +22,7 @@
 #ifndef quantlib_pseudoroot_facade_hpp
 #define quantlib_pseudoroot_facade_hpp
 
+#include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/math/matrix.hpp>
@@ -31,6 +32,8 @@ namespace QuantLib
 {
     class PseudoRootFacade : public MarketModel {
       public:
+        PseudoRootFacade(
+            const boost::shared_ptr<CTSMMCapletCalibration> calibrator);
         PseudoRootFacade(
             const std::vector<Matrix>& covariancePseudoRoots,
             const std::vector<Rate>& rateTimes,

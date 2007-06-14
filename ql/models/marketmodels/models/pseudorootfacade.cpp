@@ -25,6 +25,19 @@
 namespace QuantLib {
 
     PseudoRootFacade::PseudoRootFacade(
+        const boost::shared_ptr<CTSMMCapletCalibration> c)
+    : numberOfFactors_(c->swapPseudoRoots().front().columns()),
+      numberOfRates_(c->swapPseudoRoots().front().rows()),
+      numberOfSteps_(c->swapPseudoRoots().size()),
+      initialRates_(c->curveState()->coterminalSwapRates()),
+      displacements_(c->displacements()),
+      evolution_(c->curveState()->rateTimes()),
+      covariancePseudoRoots_(c->swapPseudoRoots())
+    {
+    }
+
+
+    PseudoRootFacade::PseudoRootFacade(
             const std::vector<Matrix>& covariancePseudoRoots,
             const std::vector<Rate>& rateTimes,
             const std::vector<Rate>& initialRates,
