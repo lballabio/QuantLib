@@ -43,7 +43,9 @@ namespace QuantLib {
     : evolution_(evolution),  corr_(corr),
       displacedSwapVariances_(displacedSwapVariances),
       mktCapletVols_(mktCapletVols),
+      mdlCapletVols_(evolution_.numberOfRates()),
       mktSwaptionVols_(evolution_.numberOfRates()),
+      mdlSwaptionVols_(evolution_.numberOfRates()),
       cs_(cs), displacement_(displacement),
       numberOfRates_(evolution_.numberOfRates())
     {
