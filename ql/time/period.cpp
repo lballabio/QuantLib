@@ -112,6 +112,7 @@ namespace QuantLib {
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
+                    break;
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -127,6 +128,7 @@ namespace QuantLib {
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
+                    break;
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -143,6 +145,7 @@ namespace QuantLib {
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
+                    break;
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -158,6 +161,7 @@ namespace QuantLib {
                     QL_REQUIRE(p.length()==0,
                                "impossible addition between " << *this <<
                                " and " << p);
+                    break;
                   default:
                     QL_FAIL("unknown units");
                 }
