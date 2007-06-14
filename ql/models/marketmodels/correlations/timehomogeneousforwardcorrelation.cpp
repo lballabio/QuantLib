@@ -31,10 +31,7 @@ namespace QuantLib {
     : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
       fwdCorrelation_(fwdCorrelation),
       rateTimes_(rateTimes),
-      times_(numberOfRates_),
-      correlations_(numberOfRates_, Matrix(numberOfRates_,
-                                           numberOfRates_,
-                                           0.0)) {
+      times_(numberOfRates_) {
 
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(numberOfRates_>1,
@@ -47,22 +44,34 @@ namespace QuantLib {
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
 
         std::copy(rateTimes.begin(), rateTimes.end()-1, times_.begin());
+        correlations_ = evolvedMatrices(fwdCorrelation_, rateTimes_);
 
-        for (Size k=0; k<correlations_.size(); ++k) {
+    }
+
+    std::vector<Matrix> TimeHomogeneousForwardCorrelation::evolvedMatrices(
+                                    const Matrix& fwdCorrelation,
+                                    const std::vector<Time>& rateTimes) {
+        Size numberOfRates = rateTimes.size()-1;
+        std::vector<Matrix> correlations(numberOfRates, Matrix(numberOfRates,
+                                                               numberOfRates,
+                                                               0.0));
+        for (Size k=0; k<correlations.size(); ++k) {
             // proper diagonal values
-            for (Size i=0; i<numberOfRates_; ++i)
-                correlations_[k][i][i] = 1.0;
+            for (Size i=0; i<numberOfRates; ++i)
+                correlations[k][i][i] = 1.0;
             // copy only time homogeneous values
-            for (Size i=k; i<numberOfRates_; ++i) {
+            for (Size i=k; i<numberOfRates; ++i) {
                 for (Size j=k; j<i; ++j) {
-                    correlations_[k][i][j] = correlations_[k][j][i] =
-                        fwdCorrelation_[i-k][j-k];
+                    correlations[k][i][j] = correlations[k][j][i] =
+                        fwdCorrelation[i-k][j-k];
                 }
             }
         }
+        return correlations;
     }
 
-    const std::vector<Time>& TimeHomogeneousForwardCorrelation::times() const {
+    const std::vector<Time>&
+    TimeHomogeneousForwardCorrelation::times() const {
         return times_;
     }
 
