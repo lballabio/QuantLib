@@ -21,11 +21,12 @@
 
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-
+#include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp> 
+#include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp> 
 
 namespace QuantLib {
 
-    std::vector<Volatility> rateVolDifferences(
+    Disposable<std::vector<Volatility> > rateVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2) {
         QL_ENSURE(marketModel1.initialRates() == marketModel2.initialRates(),
@@ -53,7 +54,7 @@ namespace QuantLib {
         return result;
     }       
 
-    std::vector<Spread> rateInstVolDifferences(
+    Disposable<std::vector<Spread> > rateInstVolDifferences(
                                            const MarketModel& marketModel1,
                                            const MarketModel& marketModel2, 
                                            Size index) {
@@ -84,6 +85,35 @@ namespace QuantLib {
             previousEvolutionTime = currentEvolutionTime;
         }
         return result;
+    }
+
+    Disposable<std::vector<Matrix> > coterminalSwapPseudoRoots(
+        const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
+        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& 
+                                        piecewiseConstantVariances) {
+            QL_ENSURE(piecewiseConstantCorrelation.times() 
+                == piecewiseConstantVariances.front()->rateTimes(),
+                "correlations and volatilities intertave");
+            std::vector<Matrix> peudoRoots;
+            const std::vector<Time>& rateTimes
+                = piecewiseConstantVariances.front()->rateTimes();
+            for (Size i=1; i<rateTimes.size(); ++i) {
+                Time sqrtTau = std::sqrt(rateTimes[i]-rateTimes[i-1]);
+                const Matrix& correlations
+                    = piecewiseConstantCorrelation.correlation(i);
+                Matrix pseudoRoot(correlations.rows(), correlations.rows());
+                for (Size j=0; j<correlations.rows(); ++j) {
+                    Real volatility
+                      = piecewiseConstantVariances[j]->volatility(i)*sqrtTau;
+                    std::transform(correlations.row_begin(j),
+                                   correlations.row_end(j), 
+                                   pseudoRoot.row_begin(j),
+                                   std::bind2nd(std::multiplies<Real>(),
+                                                            volatility));   
+                }
+                peudoRoots.push_back(pseudoRoot);
+            }
+            return peudoRoots;
     }
 
 }
