@@ -11,6 +11,7 @@
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>

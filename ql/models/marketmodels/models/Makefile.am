@@ -15,6 +15,7 @@ this_include_HEADERS = \
 	cotswaptofwdadapter.hpp \
 	ctsmmcapletcalibration.hpp \
 	flatvol.hpp \
+	fwdperiodadapter.hpp \
 	fwdtocotswapadapter.hpp \
 	piecewiseconstantabcdvariance.hpp \
 	piecewiseconstantvariance.hpp \
@@ -30,6 +31,7 @@ libMarketModelsModels_la_SOURCES = \
 	cotswaptofwdadapter.cpp \
 	ctsmmcapletcalibration.cpp \
 	flatvol.cpp \
+	fwdperiodadapter.cpp \
 	fwdtocotswapadapter.cpp \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \

@@ -9,6 +9,7 @@
 #include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/evolver.hpp>
+#include <ql/models/marketmodels/forwardforwardmappings.hpp>
 #include <ql/models/marketmodels/historicalcorrelation.hpp>
 #include <ql/models/marketmodels/marketmodel.hpp>
 #include <ql/models/marketmodels/marketmodeldifferences.hpp>

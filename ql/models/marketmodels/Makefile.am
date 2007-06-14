@@ -15,6 +15,7 @@ this_include_HEADERS = \
     duffsdeviceinnerproduct.hpp \
     evolutiondescription.hpp \
     evolver.hpp \
+    forwardforwardmappings.hpp \
     historicalcorrelation.hpp \
     marketmodel.hpp \
     marketmodeldifferences.hpp \
@@ -29,6 +30,7 @@ libMarketModels_la_SOURCES = \
     curvestate.cpp \
     discounter.cpp \
     evolutiondescription.cpp \
+    forwardforwardmappings.cpp \
     historicalcorrelation.cpp \
     marketmodel.cpp \
     marketmodeldifferences.cpp \
