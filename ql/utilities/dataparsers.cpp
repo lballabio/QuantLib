@@ -33,6 +33,30 @@ namespace QuantLib {
 
     Period PeriodParser::parse(const std::string& str) {
         QL_REQUIRE(str.length()>1, "argument needs length of at least 2");
+        
+        std::vector<std::string > subStrings;
+        std::string reducedString = str;
+
+        Size iPos, reducedStringDim = 100000, max_iter = 0;
+        while(reducedStringDim>0){
+            iPos = reducedString.find_first_of("DdWwMmYy");
+            Size subStringDim = iPos+1;
+            reducedStringDim = reducedString.length()-subStringDim;
+            subStrings.push_back(reducedString.substr(0, subStringDim));
+            reducedString = reducedString.substr(iPos+1, reducedStringDim);
+            max_iter++;
+            QL_REQUIRE(max_iter<str.length(), "unknown '" << str << "' unit");
+        }
+         
+        Period result = parseOnePeriod(subStrings[0]);
+        for(Size i=1; i<subStrings.size(); i++){
+            result += parseOnePeriod(subStrings[i]);
+        }
+        return result;
+    }
+
+    Period PeriodParser::parseOnePeriod(const std::string& str) {
+        QL_REQUIRE(str.length()>1, "single period needs length of at least 2");
 
         Size iPos = str.find_first_of("DdWwMmYy");
         QL_REQUIRE(iPos==str.length()-1, "unknown '" << str << "' unit");

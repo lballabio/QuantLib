@@ -33,6 +33,8 @@ namespace QuantLib {
     class PeriodParser {
       public:
         static Period parse(const std::string& str);
+      private:
+        static Period parseOnePeriod(const std::string& str);
     };
 
     class DateParser {
