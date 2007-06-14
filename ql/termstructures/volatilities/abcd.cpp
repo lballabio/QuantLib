@@ -22,6 +22,7 @@
 #include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -109,7 +110,9 @@ namespace QuantLib {
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
             method = boost::shared_ptr<OptimizationMethod>(new
-                Simplex(0.01));
+                LevenbergMarquardt(1e-8, 1e-8, 1e-8));
+            //method = boost::shared_ptr<OptimizationMethod>(new
+            //    Simplex(0.01));
         }
         boost::shared_ptr<EndCriteria> endCriteria = endCr;
         if (!endCriteria) {
