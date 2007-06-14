@@ -1292,8 +1292,62 @@ void InterpolationTest::testSabrInterpolation(){
     }
 
 }
+
+void InterpolationTest::testCheckingCubicSplineMontonicity() {
+    BOOST_MESSAGE("Testing cubic Montonicity...");
+    std::vector<Real> x, y;
+    Size nbOfData = 20;
+    for(Size i=0; i<nbOfData; ++i){
+       Real xValue = i;
+       Real yValue = std::sin(xValue);
+       x.push_back(i);
+       y.push_back(yValue);
+    }
+      CubicSpline::BoundaryCondition leftCondition = CubicSpline::SecondDerivative;  
+      Real  leftConditionValue = 0.0;  
+      CubicSpline::BoundaryCondition  rightCondition = CubicSpline::SecondDerivative;  
+      Real  rightConditionValue = 0.0;  
+      bool  monotonicityConstraint = true;   
+ 
+      CubicSpline monotonicCubicSpline(x.begin(),
+                                       x.end(),
+                                       y.begin(),
+                                       leftCondition, 
+                                       leftConditionValue, 
+                                       rightCondition,
+                                       rightConditionValue,
+                                       monotonicityConstraint);
+       
+      monotonicCubicSpline.update();
+       // testing the monotonicity empirically...
+      Size nbOfSteps = 10;
+      for(Size i=1; i<x.size(); ++i){
+          if (y[i]==y[i-1])
+              continue;
+          bool isIncreasing = y[i]>y[i-1];
+          Real step = (x[i]-x[i-1])/nbOfSteps;
+          Real previousValue = monotonicCubicSpline(x[i-1]);
+          for (Real abscissae=x[i-1]+step; abscissae<x[i]; abscissae+=step){
+            Real value = monotonicCubicSpline(abscissae);
+            if(isIncreasing && (value<previousValue)){
+                BOOST_ERROR("Monotonicity is not enforced"
+                            << "\nx[i-1]=\t" << x[i-1]
+                            << "\nx[i]=\t" << x[i]
+                            << "\npreviousValue=\t" << previousValue 
+                            << "\nvalue=\t" << value 
+                            << "\nabscissae=\t" << abscissae);
+                return;
+            }
+            previousValue = value;
+          }
+      }
+}   
+
+
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
+    
+    suite->add(BOOST_TEST_CASE(&InterpolationTest::testCheckingCubicSplineMontonicity));
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSimmetricEndConditions));

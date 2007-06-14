@@ -29,6 +29,7 @@
 class InterpolationTest {
   public:
     // cubic spline tests
+    static void testCheckingCubicSplineMontonicity();
     static void testSplineOnGenericValues();
     static void testSimmetricEndConditions();
     static void testDerivativeEndConditions();
