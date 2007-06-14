@@ -92,7 +92,10 @@ namespace QuantLib {
 
     Period& Period::operator+=(const Period& p) {
 
-        if (units_==p.units()) {
+        if (length_==0) {
+            length_ = p.length();
+            units_ = p.units();
+        } else if (units_==p.units()) {
             // no conversion needed
             length_ += p.length();
         } else {
@@ -106,8 +109,9 @@ namespace QuantLib {
                     break;
                   case Weeks:
                   case Days:
-                    QL_FAIL("impossible addition between "
-                             << *this << " and " << p);
+                    QL_REQUIRE(p.length()==0,
+                               "impossible addition between " << *this <<
+                               " and " << p);
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -120,8 +124,9 @@ namespace QuantLib {
                     break;
                   case Weeks:
                   case Days:
-                    QL_FAIL("impossible addition between "
-                             << *this << " and " << p);
+                    QL_REQUIRE(p.length()==0,
+                               "impossible addition between " << *this <<
+                               " and " << p);
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -135,8 +140,9 @@ namespace QuantLib {
                     break;
                   case Years:
                   case Months:
-                    QL_FAIL("impossible addition between "
-                             << *this << " and " << p);
+                    QL_REQUIRE(p.length()==0,
+                               "impossible addition between " << *this <<
+                               " and " << p);
                   default:
                     QL_FAIL("unknown units");
                 }
@@ -149,8 +155,9 @@ namespace QuantLib {
                     break;
                   case Years:
                   case Months:
-                    QL_FAIL("impossible addition between "
-                             << *this << " and " << p);
+                    QL_REQUIRE(p.length()==0,
+                               "impossible addition between " << *this <<
+                               " and " << p);
                   default:
                     QL_FAIL("unknown units");
                 }
