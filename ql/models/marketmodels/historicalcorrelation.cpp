@@ -33,15 +33,13 @@ namespace QuantLib {
                           const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                           const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                           const DayCounter& yieldCurveDayCounter,
-                          Real yieldCurveAccuracy)
-        {
-
-            corr_ = historicalCorrelationCalculate<QuantLib::ZeroYield, QuantLib::Linear>(
-                skippedDates_, failedDates_, fixingPeriods_,
-                startDate, endDate, step, fwdIndex, initialGap, horizon,
-                iborIndexes, swapIndexes,
-                yieldCurveDayCounter, yieldCurveAccuracy);
-          
-          }
+                          Real yieldCurveAccuracy) {
+        historicalForwardRatesAnalysis<QuantLib::ZeroYield, QuantLib::Linear>(
+            stats_,
+            skippedDates_, failedDates_, fixingPeriods_,
+            startDate, endDate, step, fwdIndex, initialGap, horizon,
+            iborIndexes, swapIndexes,
+            yieldCurveDayCounter, yieldCurveAccuracy);
+      }
 
 }

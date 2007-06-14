@@ -39,70 +39,9 @@
 
 namespace QuantLib {
 
-    //! %Historical correlation class
-    class HistoricalCorrelation {
-      public:
-        HistoricalCorrelation(
-                const Date& startDate,
-                const Date& endDate,
-                const Period& step,
-                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
-                const Period& initialGap,
-                const Period& horizon,
-                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-                const DayCounter& yieldCurveDayCounter,
-                Real yieldCurveAccuracy);
-        const std::vector<Period>& fixingPeriods() const;
-        const std::vector<Date>& skippedDates() const;
-        const std::vector<Date>& failedDates() const;
-
-        template<class Traits, class Interpolator>
-        static Disposable<Matrix> historicalCorrelationCalculate(
-                    // results
-                    std::vector<Date>& skippedDates,
-                    std::vector<Date>& failedDates,
-                    std::vector<Period>& fixingPeriods,
-                    // inputs
-                    const Date& startDate,
-                    const Date& endDate,
-                    const Period& step,
-                    const boost::shared_ptr<InterestRateIndex>& fwdIndex,
-                    const Period& initialGap,
-                    const Period& horizon,
-                    const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
-                    const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
-                    const DayCounter& yieldCurveDayCounter,
-                    Real yieldCurveAccuracy,
-                    const Interpolator& i = Interpolator());
-      private:
-        // calculated data
-        std::vector<Date> skippedDates_;
-        std::vector<Date> failedDates_;
-        std::vector<Period> fixingPeriods_;
-        Matrix corr_;
-
-    };
-
-    // inline
-
-    inline const std::vector<Period>&
-    HistoricalCorrelation::fixingPeriods() const {
-        return fixingPeriods_;
-    }
-
-    inline const std::vector<Date>&
-    HistoricalCorrelation::skippedDates() const {
-        return skippedDates_;
-    }
-
-    inline const std::vector<Date>&
-    HistoricalCorrelation::failedDates() const {
-        return failedDates_;
-    }
- 
     template<class Traits, class Interpolator>
-    Disposable<Matrix> HistoricalCorrelation::historicalCorrelationCalculate(
+    void historicalForwardRatesAnalysis(
+                SequenceStatistics& statistics,
                 std::vector<Date>& skippedDates,
                 std::vector<Date>& failedDates,
                 std::vector<Period>& fixingPeriods,
@@ -116,7 +55,7 @@ namespace QuantLib {
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy,
-                const Interpolator& i) {
+                const Interpolator& i = Interpolator()) {
 
                     
         skippedDates.clear();
@@ -173,7 +112,7 @@ namespace QuantLib {
         }
 
         Size nRates = fixingPeriods.size();
-        GenericSequenceStatistics<Statistics> statistics(nRates);
+        statistics.reset(nRates);
         std::vector<Rate> fwdRates(nRates);
         std::vector<Rate> prevFwdRates(nRates);
         std::vector<Rate> fwdRatesDiff(nRates);
@@ -244,8 +183,55 @@ namespace QuantLib {
             std::swap(prevFwdRates, fwdRates);
            
         } 
+    }
 
-        return statistics.correlation();
+
+    //! %Historical correlation class
+    class HistoricalCorrelation {
+      public:
+        HistoricalCorrelation(
+                const Date& startDate,
+                const Date& endDate,
+                const Period& step,
+                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const Period& initialGap,
+                const Period& horizon,
+                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const DayCounter& yieldCurveDayCounter,
+                Real yieldCurveAccuracy);
+        const std::vector<Period>& fixingPeriods() const;
+        const std::vector<Date>& skippedDates() const;
+        const std::vector<Date>& failedDates() const;
+        const SequenceStatistics& stats() const;
+      private:
+        // calculated data
+        SequenceStatistics stats_;
+        std::vector<Date> skippedDates_;
+        std::vector<Date> failedDates_;
+        std::vector<Period> fixingPeriods_;
+    };
+
+    // inline
+
+    inline const std::vector<Period>&
+    HistoricalCorrelation::fixingPeriods() const {
+        return fixingPeriods_;
+    }
+
+    inline const std::vector<Date>&
+    HistoricalCorrelation::skippedDates() const {
+        return skippedDates_;
+    }
+
+    inline const std::vector<Date>&
+    HistoricalCorrelation::failedDates() const {
+        return failedDates_;
+    }
+ 
+    inline const GenericSequenceStatistics<Statistics>&
+    HistoricalCorrelation::stats() const {
+        return stats_;
     }
 
 }
