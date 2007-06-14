@@ -24,7 +24,7 @@
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/models/marketmodels/correlations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
 #include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
 #include <ql/models/marketmodels/models/flatvol.hpp>
 #include <ql/models/marketmodels/models/abcdvol.hpp>
-#include <ql/models/marketmodels/correlations/correlations.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>

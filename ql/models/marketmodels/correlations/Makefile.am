@@ -4,16 +4,14 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
-	correlations.hpp \
 	cotswapfromfwdcorrelation.hpp \
-	timehomogeneousforwardcorrelation.hpp \
-	timehomogeneoustimedependentforwardcorrelation.hpp
+	expcorrelations.hpp \
+	timehomogeneousforwardcorrelation.hpp
 
 libMarketModelsCorrelations_la_SOURCES = \
-	correlations.cpp \
 	cotswapfromfwdcorrelation.cpp \
-	timehomogeneousforwardcorrelation.cpp \
-	timehomogeneoustimedependentforwardcorrelation.cpp
+	expcorrelations.cpp \
+	timehomogeneousforwardcorrelation.cpp
 
 noinst_LTLIBRARIES = libMarketModelsCorrelations.la
 
