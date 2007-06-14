@@ -29,6 +29,7 @@ libMarketModels_la_SOURCES = \
     curvestate.cpp \
     discounter.cpp \
     evolutiondescription.cpp \
+    historicalcorrelation.cpp \
     marketmodel.cpp \
     marketmodeldifferences.cpp \
     proxygreekengine.cpp \

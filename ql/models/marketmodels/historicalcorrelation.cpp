@@ -42,6 +42,6 @@ namespace QuantLib {
                 iborIndexes, swapIndexes,
                 yieldCurveDayCounter, yieldCurveAccuracy);
           
-          };
+          }
 
 }
