@@ -35,9 +35,9 @@ namespace QuantLib {
                                const std::vector<Spread>& newDisplacements)
     : 
       numberOfFactors_(largeModel->numberOfFactors()),
-          numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 0) ),
+          numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 1) ),
       numberOfSteps_(largeModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  0), 
+      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  1), 
                                           numberOfFactors_)),
                                           displacements_(newDisplacements)
     {
@@ -51,6 +51,7 @@ namespace QuantLib {
         if (displacements_.size() == 1)
         {
             Real dis = displacements_[0];
+            displacements_.resize(numberOfRates_);
             std::fill(displacements_.begin(), displacements_.end(), dis);
         }
     
@@ -77,8 +78,18 @@ namespace QuantLib {
                                     period, offset
                                         ));
 
+        initialRates_ =smallCS.forwardRates();
+
+        Real finalReset = smallCS.rateTimes()[smallCS.numberOfRates()-1];
+        std::vector<Time> oldEvolutionTimes(largeModel->evolution().evolutionTimes());
+        std::vector<Time> newEvolutionTimes;
+        for (Size i =0; i < oldEvolutionTimes.size(), oldEvolutionTimes[i]<= finalReset; ++i)
+            newEvolutionTimes.push_back(oldEvolutionTimes[i]);
+
         evolution_=EvolutionDescription(smallCS.rateTimes(),
-                                        largeModel->evolution().evolutionTimes());
+                                        newEvolutionTimes);
+
+        numberOfSteps_ = newEvolutionTimes.size();
 
 
         const std::vector<Time>& rateTimes =
@@ -87,7 +98,7 @@ namespace QuantLib {
         const std::vector<Time>& evolutionTimes =
             evolution_.evolutionTimes();
 
-        std::set<Time> setTimes(evolutionTimes.begin(),evolutionTimes.begin());
+        std::set<Time> setTimes(evolutionTimes.begin(),evolutionTimes.end());
 
         for (Size i=0; i < rateTimes.size()-1; ++i)
             QL_REQUIRE(setTimes.find(rateTimes[i]) != setTimes.end(),
@@ -95,9 +106,9 @@ namespace QuantLib {
 
      
         Matrix YMatrix = 
-            ForwardForwardMappings::YMatrix( smallCS,
+            ForwardForwardMappings::YMatrix( largeCS,
                                                  largeDisplacements_,
-                                                 displacements_,
+                                                  displacements_,
                                                  period,
                                                  offset
                                                  );

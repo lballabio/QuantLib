@@ -76,10 +76,10 @@ namespace QuantLib {
         Size k = (n-offset)/multiplier;
 
       
-        QL_REQUIRE(longDisplacements.size() == n , "longDisplacements must be of size"
+        QL_REQUIRE(shortDisplacements.size() == n , "shortDisplacements must be of size"
             " equal to number of rates");
 
-        QL_REQUIRE(longDisplacements.size() == k , "shortDisplacements must be of size"
+        QL_REQUIRE(longDisplacements.size() == k , "longDisplacements must be of size"
             " equal to (number of rates minus offset) divided by multiplier");
 
         Matrix jacobian(ForwardForwardJacobian(cs,multiplier,offset));
@@ -91,7 +91,7 @@ namespace QuantLib {
 
             Real longForward = (cs.discountRatio((i+1)*multiplier+offset,i*multiplier+offset)-1.0)
                 /tau;   
-            Real longForwardDisplaced = longForward+ shortDisplacements[i];
+            Real longForwardDisplaced = longForward+ longDisplacements[i];
             for (Size j=0; j < n; ++j)
                 {
                 Real shortForward = cs.forwardRate(j);

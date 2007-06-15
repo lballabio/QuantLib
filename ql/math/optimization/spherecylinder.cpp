@@ -88,9 +88,9 @@ namespace QuantLib {
 
         QL_REQUIRE(r>0,
                    "sphere must have positive radius");
-        QL_REQUIRE(s>0,
-                   "cylinder must have positive radius");
-        QL_REQUIRE(alpha>0,
+
+        s = std::max(s,0.0);
+         QL_REQUIRE(alpha>0,
                    "cylinder centre must have positive coordinate");
         
         if (fabs(alpha-s) > r )

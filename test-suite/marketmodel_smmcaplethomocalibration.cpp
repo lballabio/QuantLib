@@ -24,6 +24,8 @@
 #include "utilities.hpp"
 
 #include <ql/math/optimization/spherecylinder.hpp>
+#include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
+#include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/capletcoterminalmaxhomogeneity.hpp>
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
@@ -480,8 +482,8 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                          rateTimes_,
                          cs->coterminalSwapRates(),
                          std::vector<Spread>(numberOfRates, displacement_)));
-    CotSwapToFwdAdapter flmm(smm);
-    Matrix capletTotCovariance = flmm.totalCovariance(numberOfRates-1);
+    boost::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+    Matrix capletTotCovariance = flmm->totalCovariance(numberOfRates-1);
 
     std::vector<Volatility> capletVols(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
@@ -527,6 +529,16 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
                         "\n error:            " << error <<
                         "\n tolerance:        " << capletTolerance);
     }
+
+    Size period =2;
+    Size offset =0;
+    std::vector<Spread> adaptedDisplacements;
+    boost::shared_ptr<MarketModel> adapted(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
+    FwdToCotSwapAdapter newSwapMM(adapted);
+
+
+
+
 }
 
 

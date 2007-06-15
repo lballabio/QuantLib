@@ -56,16 +56,27 @@ namespace QuantLib {
 
                 quadratic q(theta,crossTerm, constantTerm);
                 Real volminus, volplus;
-                bool success = q.roots(volminus,volplus);
+                bool capSuccess = q.roots(volminus,volplus);
                 Real residual = thisSwapVariance - volminus*volminus;
-                success = success && (residual >=0);
+                bool swapSuccess = residual >=0;
+                bool success = capSuccess && swapSuccess;
 
-                solution[0] = volminus;
-                solution[1] = sqrt(residual);
-                swaptionError=0.0;
-                capletError=0.0;
+                if (capletSwaptionPriority <0.5 || swapSuccess )
+                {
+                    solution[0]  = volminus;
+                    solution[1]  = sqrt(residual);
+                    swaptionError= residual;
+                }
+                else
+                {                  
+                  solution[0]  =  sqrt(thisSwapVariance);
+                  solution[1]  =  0;
+                  swaptionError=  0.0;                
+                }
 
-
+                capletError= sqrt(q(solution[0])) - sqrt(capletVariance);
+                capletError*= capletError;
+   
                 return success;
             }
 
