@@ -252,12 +252,25 @@ void DayCounterTest::testBusiness252() {
         0.2023809523810
         };
 
-    DayCounter dayCounter = Business252(Brazil());
+    DayCounter dayCounter1 = Business252(Brazil());
 
     Time calculated;
 
     for (Size i=1; i<testDates.size(); i++) {
-        calculated = dayCounter.yearFraction(testDates[i-1],testDates[i]);
+        calculated = dayCounter1.yearFraction(testDates[i-1],testDates[i]);
+        if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
+                BOOST_ERROR("from " << testDates[i-1]
+                            << " to " << testDates[i] << ":\n"
+                            << std::setprecision(12)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected[i-1]);
+        }
+    }
+
+    DayCounter dayCounter2 = Business252();
+
+    for (Size i=1; i<testDates.size(); i++) {
+        calculated = dayCounter2.yearFraction(testDates[i-1],testDates[i]);
         if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
                 BOOST_ERROR("from " << testDates[i-1]
                             << " to " << testDates[i] << ":\n"
@@ -278,3 +291,5 @@ test_suite* DayCounterTest::suite() {
     return suite;
 }
 
+
+ 	  	 

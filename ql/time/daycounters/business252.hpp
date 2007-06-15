@@ -26,6 +26,7 @@
 
 #include <ql/time/daycounter.hpp>
 #include <ql/time/calendar.hpp>
+#include <ql/time/calendars/brazil.hpp>
 
 namespace QuantLib {
 
@@ -55,7 +56,7 @@ namespace QuantLib {
             Impl(Calendar c) { calendar_ = c; }
         };
       public:
-        Business252(Calendar c)
+        Business252(Calendar c = Brazil())
         : DayCounter(boost::shared_ptr<DayCounter::Impl>(
                                                  new Business252::Impl(c))) {}
     };
