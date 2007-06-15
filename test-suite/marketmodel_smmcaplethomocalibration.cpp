@@ -534,7 +534,12 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     Size offset =0;
     std::vector<Spread> adaptedDisplacements;
     boost::shared_ptr<MarketModel> adapted(new FwdPeriodAdapter(flmm,period,offset,adaptedDisplacements));
-    FwdToCotSwapAdapter newSwapMM(adapted);
+   // FwdToCotSwapAdapter newSwapMM(adapted);
+   // for (Size i=0; i < newSwapMM.numberOfRates(); ++i)
+     //      BOOST_MESSAGE("swap MM time dependent vols: "<< i << QL_FIXED <<
+       //               std::setprecision(6) << Array(newSwapMM.timeDependentVolatility(i)));
+    
+
 
 
 
