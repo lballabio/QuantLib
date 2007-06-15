@@ -57,11 +57,12 @@ namespace QuantLib {
         first derivative value, second derivative value.
 
         It also implements Hyman's monotonicity constraint filter
-        which ensures that the interpolating spline remains monotonic
-        at the expense of the second derivative of the curve which will no
-        longer be continuous where the filter has been applied.
-        If the interpolating spline is already monotonic, the Hyman filter
-        leaves it unchanged.
+        which ensures that in the regions of monotoniticity of the input 
+        (so, three successive increasing or decreasing values) 
+        the interpolating spline remains monotonic at the expense of the 
+        second derivative of the curve which will no longer be continuous 
+        where the filter has been applied. If the interpolating spline 
+        is already monotonic, the Hyman filter leaves it unchanged.
 
         See R. L. Dougherty, A. Edelman, and J. M. Hyman,
         "Nonnegativity-, Monotonicity-, or Convexity-Preserving Cubic and
