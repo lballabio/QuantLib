@@ -9,15 +9,11 @@
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/cliquetoption.hpp>
-#include <ql/instruments/bonds/cmsratebond.hpp>
 #include <ql/instruments/compositeinstrument.hpp>
-#include <ql/instruments/bonds/convertiblebond.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>
-#include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
-#include <ql/instruments/bonds/floatingratebond.hpp>
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
@@ -38,5 +34,5 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/instruments/varianceswap.hpp>
-#include <ql/instruments/bonds/zerocouponbond.hpp>
 
+#include <ql/instruments/bonds/all.hpp>
