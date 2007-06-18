@@ -2647,10 +2647,10 @@
 					RelativePath=".\ql\models\marketmodels\forwardforwardmappings.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\historicalcorrelation.cpp">
+					RelativePath=".\ql\models\marketmodels\historicalforwardratesanalysis.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\models\marketmodels\historicalcorrelation.hpp">
+					RelativePath=".\ql\models\marketmodels\historicalforwardratesanalysis.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp">
@@ -5557,9 +5557,6 @@
 					RelativePath=".\ql\termstructures\yieldcurves\impliedtermstructure.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\yieldcurves\piecewiseyieldcurve.cpp">
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\yieldcurves\piecewiseyieldcurve.hpp">
 				</File>
 				<File
@@ -5567,6 +5564,12 @@
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yieldcurves\quantotermstructure.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yieldcurves\ratehelper.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yieldcurves\ratehelper.hpp">
 				</File>
 				<File
 					RelativePath=".\ql\termstructures\yieldcurves\ratehelpers.cpp">
@@ -6347,6 +6350,9 @@
 		</File>
 		<File
 			RelativePath=".\ql\cashflow.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\compounding.hpp">
 		</File>
 		<File
 			RelativePath=".\ql\config.ansi.hpp">

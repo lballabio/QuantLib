@@ -25,8 +25,10 @@
 #ifndef quantlib_ratehelpers_hpp
 #define quantlib_ratehelpers_hpp
 
-#include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yieldcurves/ratehelper.hpp>
 #include <ql/instruments/vanillaswap.hpp>
+#include <ql/time/calendar.hpp>
+#include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -60,7 +62,7 @@ namespace QuantLib {
                           Rate convexityAdjustment = 0.0);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        Real convexityAdjustment() const { return convAdj_->value(); }
+        Real convexityAdjustment() const;
       private:
         Time yearFraction_;
         Handle<Quote> convAdj_;
@@ -186,6 +188,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

@@ -22,24 +22,24 @@
 
 namespace QuantLib {
 
-    RateHelper::RateHelper(const Handle<Quote>& quote)
-    : quote_(quote), termStructure_(0) {
-        registerWith(quote_);
-    }
+    //RateHelper::RateHelper(const Handle<Quote>& quote)
+    //: quote_(quote), termStructure_(0) {
+    //    registerWith(quote_);
+    //}
 
-    RateHelper::RateHelper(Real quote)
-    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
-      termStructure_(0) {
-        registerWith(quote_);
-    }
+    //RateHelper::RateHelper(Real quote)
+    //: quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
+    //  termStructure_(0) {
+    //    registerWith(quote_);
+    //}
 
-    void RateHelper::setTermStructure(YieldTermStructure* t) {
-        QL_REQUIRE(t != 0, "null term structure given");
-        termStructure_ = t;
-    }
+    //void RateHelper::setTermStructure(YieldTermStructure* t) {
+    //    QL_REQUIRE(t != 0, "null term structure given");
+    //    termStructure_ = t;
+    //}
 
-    Real RateHelper::quoteError() const {
-        return quote_->value()-impliedQuote();
-    }
+    //Real RateHelper::quoteError() const {
+    //    return quote_->value()-impliedQuote();
+    //}
 
 }

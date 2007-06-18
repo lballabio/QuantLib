@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2005, 2006, 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,84 +25,12 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
-#include <ql/quote.hpp>
-#include <ql/termstructures/yieldcurves/discountcurve.hpp>
+#include <ql/termstructures/yieldcurves/ratehelper.hpp>
 #include <ql/termstructures/yieldcurves/bootstraptraits.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
-
-    //! Base helper class for yield-curve bootstrapping
-    /*! This class provides an abstraction for the instruments used to
-        bootstrap a term structure.
-        It is advised that a rate helper for an instrument contains an
-        instance of the actual instrument class to ensure consistancy
-        between the algorithms used during bootstrapping and later
-        instrument pricing. This is not yet fully enforced in the
-        available rate helpers, though - only SwapRateHelper and
-        FixedCouponBondHelper contain their corresponding instrument
-        for the time being.
-    */
-    class RateHelper : public Observer, public Observable {
-      public:
-        RateHelper(const Handle<Quote>& quote);
-        RateHelper(Real quote);
-        virtual ~RateHelper() {}
-        //! \name RateHelper interface
-        //@{
-        Real quoteError() const;
-        Real referenceQuote() const { return quote_->value(); }
-        virtual Real impliedQuote() const = 0;
-        virtual DiscountFactor discountGuess() const {
-            return Null<Real>();
-        }
-        //! sets the term structure to be used for pricing
-        /*! \warning Being a pointer and not a shared_ptr, the term
-                     structure is not guaranteed to remain allocated
-                     for the whole life of the rate helper. It is
-                     responsibility of the programmer to ensure that
-                     the pointer remains valid. It is advised that
-                     rate helpers be used only in term structure
-                     constructors, setting the term structure to
-                     <b>this</b>, i.e., the one being constructed.
-        */
-        virtual void setTermStructure(YieldTermStructure*);
-        //! earliest relevant date
-        /*! The earliest date at which discounts are needed by the
-            helper in order to provide a quote.
-        */
-        virtual Date earliestDate() const { return earliestDate_;}
-        //! latest relevant date
-        /*! The latest date at which discounts are needed by the
-            helper in order to provide a quote. It does not
-            necessarily equal the maturity of the underlying
-            instrument.
-        */
-        virtual Date latestDate() const { return latestDate_;}
-        //@}
-        //! \name Observer interface
-        //@{
-        virtual void update() { notifyObservers(); }
-        //@}
-      protected:
-        Handle<Quote> quote_;
-        YieldTermStructure* termStructure_;
-        Date earliestDate_, latestDate_;
-    };
-
-    // helper class
-    namespace detail {
-
-        class RateHelperSorter {
-          public:
-            bool operator()(const boost::shared_ptr<RateHelper>& h1,
-                            const boost::shared_ptr<RateHelper>& h2) const {
-                return (h1->latestDate() < h2->latestDate());
-            }
-        };
-
-    }
 
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
@@ -240,7 +169,8 @@ namespace QuantLib {
     PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, Real accuracy,
+               const DayCounter& dayCounter,
+               Real accuracy,
                const I& interpolator)
     : base_curve(referenceDate, dayCounter, interpolator),
       instruments_(instruments), accuracy_(accuracy) {
@@ -252,7 +182,8 @@ namespace QuantLib {
                Natural settlementDays,
                const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, Real accuracy,
+               const DayCounter& dayCounter,
+               Real accuracy,
                const I& interpolator)
     : base_curve(settlementDays, calendar, dayCounter, interpolator),
       instruments_(instruments), accuracy_(accuracy) {
@@ -265,18 +196,18 @@ namespace QuantLib {
         QL_REQUIRE(!instruments_.empty(), "no instrument given");
 
         // sort rate helpers
-        for (Size i=0; i<instruments_.size(); i++)
+        for (Size i=0; i<instruments_.size(); ++i)
             instruments_[i]->setTermStructure(this);
         std::sort(instruments_.begin(),instruments_.end(),
                   detail::RateHelperSorter());
         // check that there is no instruments with the same maturity
-        for (Size i=1; i<instruments_.size(); i++) {
+        for (Size i=1; i<instruments_.size(); ++i) {
             Date m1 = instruments_[i-1]->latestDate(),
                  m2 = instruments_[i]->latestDate();
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity ("<< m1 <<")");
         }
-        for (Size i=0; i<instruments_.size(); i++)
+        for (Size i=0; i<instruments_.size(); ++i)
             registerWith(instruments_[i]);
     }
 
@@ -284,13 +215,13 @@ namespace QuantLib {
     void PiecewiseYieldCurve<C,I>::performCalculations() const
     {
         // check that there is no instruments with invalid quote
-        for (Size i=0; i<instruments_.size(); i++)
-            QL_REQUIRE(instruments_[i]->referenceQuote()!=Null<Real>(),
-                       "instrument with null price");
+        for (Size i=0; i<instruments_.size(); ++i)
+            QL_REQUIRE(instruments_[i]->quoteIsValid(),
+                       "instrument with invalid quote");
 
         // setup vectors
         Size n = instruments_.size();
-        for (Size i=0; i<n; i++) {
+        for (Size i=0; i<n; ++i) {
             // don't try this at home!
             instruments_[i]->setTermStructure(
                                  const_cast<PiecewiseYieldCurve<C,I>*>(this));
@@ -301,7 +232,7 @@ namespace QuantLib {
         this->dates_[0] = this->referenceDate();
         this->times_[0] = 0.0;
         this->data_[0] = C::initialValue();
-        for (Size i=0; i<n; i++) {
+        for (Size i=0; i<n; ++i) {
             this->dates_[i+1] = instruments_[i]->latestDate();
             this->times_[i+1] = this->timeFromReference(this->dates_[i+1]);
             this->data_[i+1] = this->data_[i];
@@ -311,11 +242,11 @@ namespace QuantLib {
         // bootstrapping loop
         for (Size iteration = 0; ; iteration++) {
             std::vector<Real> previousData = this->data_;
-            for (Size i=1; i<n+1; i++) {
+            for (Size i=1; i<n+1; ++i) {
                 if (iteration == 0) {
                     // extend interpolation a point at a time
-                    if (I::global && i < 2) {
-                        // not enough points for splines
+                    if (I::global) {
+                        // use Linear in the first iteration
                         this->interpolation_ = Linear().interpolate(
                                                     this->times_.begin(),
                                                     this->times_.begin()+i+1,
@@ -349,17 +280,29 @@ namespace QuantLib {
                         solver.solve(ObjectiveFunction(this, instrument, i),
                                      accuracy_, guess, min, max);
                 } catch (std::exception& e) {
-                    QL_FAIL("could not bootstrap the " << io::ordinal(i) <<
+                    QL_FAIL(io::ordinal(iteration) << " iteration: "
+                            "could not bootstrap the " << io::ordinal(i) <<
                             " instrument, maturity " << this->dates_[i] <<
                             "\n error message: " << e.what());
                 }
             }
+
             // check exit conditions
-            if (!I::global)
-                break;   // no need for convergence loop
+            if (!I::global) {
+                // no need for convergence loop
+                break;
+            } else if (iteration == 0) {
+                // at least one more iteration is needed
+                // since the first one used Linear interpolation
+                this->interpolation_ = this->interpolator_.interpolate(
+                                            this->times_.begin(),
+                                            this->times_.end(),
+                                            this->data_.begin());
+                continue;
+            }
 
             Real improvement = 0.0;
-            for (Size i=1; i<n+1; i++)
+            for (Size i=1; i<n+1; ++i)
                 improvement += std::abs(this->data_[i]-previousData[i]);
             if (improvement <= n*accuracy_)  // convergence reached
                 break;
