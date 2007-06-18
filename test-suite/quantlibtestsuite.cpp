@@ -94,6 +94,7 @@
 #include "operators.hpp"
 #include "optimizers.hpp"
 #include "pathgenerator.hpp"
+#include "period.hpp"
 #include "piecewiseyieldcurve.hpp"
 #include "quantooption.hpp"
 #include "quotes.hpp"
@@ -230,6 +231,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite());
     test->add(PathGeneratorTest::suite());
+    test->add(PeriodTest::suite());
     test->add(PiecewiseYieldCurveTest::suite());
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
