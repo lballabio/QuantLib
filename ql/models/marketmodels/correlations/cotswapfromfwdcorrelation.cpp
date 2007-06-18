@@ -21,53 +21,49 @@
 */
 
 #include <ql/models/marketmodels/correlations/cotswapfromfwdcorrelation.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
 
 namespace QuantLib {
 
     CotSwapFromFwdCorrelation::CotSwapFromFwdCorrelation(
-            const Matrix& fraCorrelation,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
             const CurveState& curveState,
-            Spread displacement,
-            const EvolutionDescription& evolution)
-    : fraCorrelationMatrix_(evolution.numberOfRates()),
-      numberOfRates_(evolution.numberOfRates()),
-      evolution_(evolution) {
-
-        Size nbRates = evolution.numberOfRates();
-        QL_REQUIRE(nbRates==curveState.numberOfRates(),
-                   "mismatch between number of rates in evolution (" <<
-                   nbRates << ") and curveState (" <<
+            Spread displacement)
+    : fwdCorr_(fwdCorr),
+      numberOfRates_(fwdCorr->numberOfRates()),
+      swapCorrMatrices_(fwdCorr->correlations().size())
+    {
+        QL_REQUIRE(numberOfRates_==curveState.numberOfRates(),
+                   "mismatch between number of rates in fwdCorr (" <<
+                   numberOfRates_ << ") and curveState (" <<
                    curveState.numberOfRates() << ")");
-        QL_REQUIRE(nbRates==fraCorrelation.rows(),
-                   "mismatch between number of rates (" << nbRates <<
-                   ") and fraCorrelation rows (" <<
-                   fraCorrelation.rows() << ")");
-        QL_REQUIRE(nbRates==fraCorrelation.columns(),
-                   "mismatch between number of rates (" << nbRates <<
-                   ") and fraCorrelation columns (" <<
-                   fraCorrelation.columns() << ")");
-        QL_REQUIRE(fraCorrelation.rows()==fraCorrelation.columns(),
-                   "correlation matrix is not square: " <<
-                   fraCorrelation.rows() << " rows and " <<
-                   fraCorrelation.columns() << " columns");
 
         Matrix zed = SwapForwardMappings::coterminalSwapZedMatrix(
                                                 curveState, displacement);
         Matrix zedT = transpose(zed);
-        Matrix cotSwapCorrelation = CovarianceDecomposition(
-                zed * fraCorrelation * zedT).correlationMatrix();
-        correlations_ = std::vector<Matrix>(evolution.numberOfRates(),
-                                            cotSwapCorrelation);
+        const std::vector<Matrix>& fwdCorrMatrices = fwdCorr->correlations();
+        for (Size k = 0; k<fwdCorrMatrices.size(); ++k) {
+            swapCorrMatrices_[k] = CovarianceDecomposition(
+                zed * fwdCorrMatrices[k] * zedT).correlationMatrix();
+            //// zero expired rates' correlation coefficients
+            //const std::vector<Time>& rateTimes = curveState.rateTimes();
+            //const std::vector<Time>& corrTimes = fwdCorr_->times();
+            //for (Size i=0; i<numberOfRates_; ++i)
+            //    for (Size j=0; j<i; ++j)
+            //        if (corrTimes[k]>rateTimes[j])
+            //            swapCorrMatrices_[k][i][j] =
+            //                swapCorrMatrices_[k][j][i] = 0.0;
+        }
     }
 
     const std::vector<Time>& CotSwapFromFwdCorrelation::times() const {
-        return evolution_.evolutionTimes();
+        return fwdCorr_->times();
+    }
+
+    const std::vector<Time>& CotSwapFromFwdCorrelation::rateTimes() const {
+        return fwdCorr_->rateTimes();
     }
 
     Size CotSwapFromFwdCorrelation::numberOfRates() const {
@@ -76,7 +72,7 @@ namespace QuantLib {
 
     const std::vector<Matrix>&
     CotSwapFromFwdCorrelation::correlations() const {
-        return correlations_;
+        return swapCorrMatrices_;
     }
 
 }

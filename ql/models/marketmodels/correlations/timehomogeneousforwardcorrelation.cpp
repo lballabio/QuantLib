@@ -44,14 +44,12 @@ namespace QuantLib {
                    ") and fwdCorrelation columns (" << fwdCorrelation.columns() << ")");
 
         std::copy(rateTimes.begin(), rateTimes.end()-1, times_.begin());
-        correlations_ = evolvedMatrices(fwdCorrelation_, rateTimes_);
-
+        correlations_ = evolvedMatrices(fwdCorrelation_);
     }
 
     std::vector<Matrix> TimeHomogeneousForwardCorrelation::evolvedMatrices(
-                                    const Matrix& fwdCorrelation,
-                                    const std::vector<Time>& rateTimes) {
-        Size numberOfRates = rateTimes.size()-1;
+                                    const Matrix& fwdCorrelation) {
+        Size numberOfRates = fwdCorrelation.rows();
         std::vector<Matrix> correlations(numberOfRates, Matrix(numberOfRates,
                                                                numberOfRates,
                                                                0.0));
@@ -73,6 +71,11 @@ namespace QuantLib {
     const std::vector<Time>&
     TimeHomogeneousForwardCorrelation::times() const {
         return times_;
+    }
+
+    const std::vector<Time>&
+    TimeHomogeneousForwardCorrelation::rateTimes() const {
+        return rateTimes_;
     }
 
     const std::vector<Matrix>&

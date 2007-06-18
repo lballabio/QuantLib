@@ -28,12 +28,12 @@ namespace QuantLib {
 
     class Matrix;
 
-    // piecewise constant in time full factor correlation
-    // should it be supplemented with rateTimes?
+    // corrTimes must include all rateTimes but the last
     class PiecewiseConstantCorrelation {
       public:
         virtual ~PiecewiseConstantCorrelation() {}
         virtual const std::vector<Time>& times() const = 0;
+        virtual const std::vector<Time>& rateTimes() const = 0;
         virtual const std::vector<Matrix>& correlations() const = 0;
         virtual const Matrix& correlation(Size i) const;
         virtual Size numberOfRates() const = 0;

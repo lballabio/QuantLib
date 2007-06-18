@@ -27,17 +27,17 @@
 
 namespace QuantLib {
 
-    class TimeHomogeneousForwardCorrelation : public PiecewiseConstantCorrelation {
+    class TimeHomogeneousForwardCorrelation :
+                                        public PiecewiseConstantCorrelation {
       public:
-        TimeHomogeneousForwardCorrelation(
-                        const Matrix& fwdCorrelation,
-                        const std::vector<Time>& rateTimes);
+        TimeHomogeneousForwardCorrelation(const Matrix& fwdCorrelation,
+                                          const std::vector<Time>& rateTimes);
         const std::vector<Time>& times() const;
+        const std::vector<Time>& rateTimes() const;
         const std::vector<Matrix>& correlations() const;
         Size numberOfRates() const;
         static std::vector<Matrix> evolvedMatrices(
-                                        const Matrix& fwdCorrelation,
-                                        const std::vector<Time>& rateTimes);
+                                        const Matrix& fwdCorrelation);
     private:
         Size numberOfRates_;
         Matrix fwdCorrelation_;

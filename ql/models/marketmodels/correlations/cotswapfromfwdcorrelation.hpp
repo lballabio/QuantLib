@@ -22,7 +22,6 @@
 #define quantlib_fra_time_dep_corr_struct_hpp
 
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -32,18 +31,17 @@ namespace QuantLib {
     class CotSwapFromFwdCorrelation : public PiecewiseConstantCorrelation {
       public:
         CotSwapFromFwdCorrelation(
-            const Matrix& correlations,
+            const boost::shared_ptr<PiecewiseConstantCorrelation>& fwdCorr,
             const CurveState& curveState,
-            Spread displacement,
-            const EvolutionDescription& evolution);
+            Spread displacement);
         const std::vector<Time>& times() const;
+        const std::vector<Time>& rateTimes() const;
         const std::vector<Matrix>& correlations() const;
         Size numberOfRates() const;
     private:
-        std::vector<Matrix> fraCorrelationMatrix_;
-        std::vector<Matrix> correlations_;
+        boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr_;
         Size numberOfRates_;
-        EvolutionDescription evolution_;
+        std::vector<Matrix> swapCorrMatrices_;
     };
 
 }

@@ -415,17 +415,16 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
     EvolutionDescription evolution(rateTimes_);
     Size numberOfSteps = evolution.numberOfSteps();
 
-    Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
-                                                  longTermCorrelation_,
-                                                  beta_);
+    boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
+        ExponentialForwardCorrelation(rateTimes_,
+                                      longTermCorrelation_,
+                                      beta_));
+
     boost::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
     cs->setOnForwardRates(todaysForwards_);
 
-    boost::shared_ptr<CotSwapFromFwdCorrelation> corr(new
-        CotSwapFromFwdCorrelation(correlations,
-                                  *cs,
-                                  displacement_,
-                                  evolution));
+    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
 
     std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
