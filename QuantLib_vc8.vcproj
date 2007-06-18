@@ -3765,6 +3765,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\yieldcurves\ratehelper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\yieldcurves\ratehelper.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\yieldcurves\ratehelpers.cpp"
 					>
 				</File>
