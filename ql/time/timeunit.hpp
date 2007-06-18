@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004, 2005, 2006 Ferdinando Ametrano
+ Copyright (C) 2004, 2005, 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
@@ -38,6 +38,10 @@ namespace QuantLib {
                     Months,
                     Years
     };
+
+    /*! \relates Weekday */
+    std::ostream& operator<<(std::ostream&,
+                             const TimeUnit&);
 
 }
 

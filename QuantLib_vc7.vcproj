@@ -5898,6 +5898,9 @@
 				RelativePath=".\ql\time\schedule.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\time\timeunit.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\time\timeunit.hpp">
 			</File>
 			<File
