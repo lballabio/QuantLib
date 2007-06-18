@@ -39,7 +39,7 @@ namespace QuantLib {
                     Years
     };
 
-    /*! \relates Weekday */
+    /*! \relates TimeUnit */
     std::ostream& operator<<(std::ostream&,
                              const TimeUnit&);
 
