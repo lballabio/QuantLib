@@ -23,6 +23,7 @@
 #include <ql/pricingengines/greeks.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/exercise.hpp>
 #include <numeric>
 
 namespace QuantLib {

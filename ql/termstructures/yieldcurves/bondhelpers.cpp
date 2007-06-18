@@ -18,6 +18,8 @@
 */
 
 #include <ql/termstructures/yieldcurves/bondhelpers.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 

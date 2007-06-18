@@ -18,6 +18,7 @@
 */
 
 #include <ql/instruments/cliquetoption.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

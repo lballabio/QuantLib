@@ -25,12 +25,11 @@
 #define quantlib_option_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/payoff.hpp>
-#include <ql/exercise.hpp>
-#include <ql/math/sampledcurve.hpp>
+#include <vector>
 
 namespace QuantLib {
-
+    class Payoff;
+    class Exercise;
     //! base option class
     class Option : public Instrument {
       public:

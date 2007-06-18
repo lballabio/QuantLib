@@ -22,6 +22,7 @@
 #include <ql/pricingengines/americanpayoffathit.hpp>
 #include <ql/pricingengines/americanpayoffatexpiry.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

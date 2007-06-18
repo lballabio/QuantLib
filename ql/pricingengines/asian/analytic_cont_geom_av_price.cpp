@@ -20,6 +20,7 @@
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

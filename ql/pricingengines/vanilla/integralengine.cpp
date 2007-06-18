@@ -20,6 +20,7 @@
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

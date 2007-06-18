@@ -34,12 +34,12 @@
 #include <ql/interestrate.hpp>
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
-#include <ql/cashflow.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <vector>
 
 namespace QuantLib {
-
+     class YieldTermStructure;
+     class CashFlow;
+     typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
     //! Base bond class
     /*! Derived classes must fill the unitialized data members.
 

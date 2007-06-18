@@ -26,9 +26,11 @@
 #define quantlib_stickyratchet_hpp
 
 #include <ql/option.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
-
+    
+    class AcyclicVisitor;
     //! Intermediate class for single/double sticky/ratchet payoffs.
     //  initialValues can be a (forward) rate or a coupon/accrualFactor 
     class DoubleStickyRatchetPayoff : public Payoff {

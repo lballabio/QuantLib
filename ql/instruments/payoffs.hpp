@@ -28,6 +28,7 @@
 #define quantlib_payoffs_hpp
 
 #include <ql/option.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

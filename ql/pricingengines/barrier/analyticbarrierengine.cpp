@@ -22,6 +22,7 @@
 
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

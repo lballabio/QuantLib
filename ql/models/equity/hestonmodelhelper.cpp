@@ -21,6 +21,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

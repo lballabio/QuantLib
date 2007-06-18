@@ -27,7 +27,7 @@
 #include <ql/instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
-
+    class EuropeanExercise;
     //! cliquet (Ratchet) option
     /*! A cliquet option, also known as Ratchet option, is a series of
         forward-starting (a.k.a. deferred strike) options where the

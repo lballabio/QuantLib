@@ -26,6 +26,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

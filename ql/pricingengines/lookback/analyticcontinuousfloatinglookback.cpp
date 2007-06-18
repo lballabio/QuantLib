@@ -19,6 +19,7 @@
 
 #include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

@@ -20,6 +20,7 @@
 #include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

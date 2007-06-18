@@ -30,6 +30,7 @@
 #include <ql/termstructures/volatilities/equity/impliedvoltermstructure.hpp>
 #include <ql/termstructures/yieldcurves/impliedtermstructure.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

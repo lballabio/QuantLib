@@ -24,6 +24,7 @@
 #include <ql/termstructures/yieldcurves/flatforward.hpp>
 #include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

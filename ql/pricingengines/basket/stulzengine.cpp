@@ -25,6 +25,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

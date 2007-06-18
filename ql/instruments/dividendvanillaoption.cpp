@@ -20,6 +20,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
