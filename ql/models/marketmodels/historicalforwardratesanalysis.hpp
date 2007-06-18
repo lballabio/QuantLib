@@ -20,12 +20,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file historicalcorelation.hpp
-    \brief Calculation of historical correlation between forward rates
+/*! \file historicalforwardratesanalysis.hpp
+    \brief Statistical analysis of historical forward rates
 */
 
-#ifndef quantlib_historical_correlation_hpp
-#define quantlib_historical_correlation_hpp
+#ifndef quantlib_historical_forward_rates_analysis_hpp
+#define quantlib_historical_forward_rates_analysis_hpp
 
 #include <ql/math/matrix.hpp>
 #include <ql/time/calendar.hpp>
@@ -54,10 +54,11 @@ namespace QuantLib {
                 const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
-                Real yieldCurveAccuracy,
+                Real yieldCurveAccuracy = 1.0e-12,
                 const Interpolator& i = Interpolator()) {
 
-                    
+
+        statistics.reset();
         skippedDates.clear();
         failedDates.clear();
         fixingPeriods.clear();
@@ -106,7 +107,7 @@ namespace QuantLib {
         // Set up the forward rates time grid
         Period indexTenor = fwdIndex->tenor(); 
         Period fixingPeriod = initialGap;
-        while (fixingPeriod<horizon) {
+        while (fixingPeriod<=horizon) {
             fixingPeriods.push_back(fixingPeriod);
             fixingPeriod += indexTenor;
         }
@@ -187,9 +188,10 @@ namespace QuantLib {
 
 
     //! %Historical correlation class
-    class HistoricalCorrelation {
+    class HistoricalForwardRatesAnalysis {
       public:
-        HistoricalCorrelation(
+        HistoricalForwardRatesAnalysis(
+                const boost::shared_ptr<SequenceStatistics>& stats,
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
@@ -200,13 +202,13 @@ namespace QuantLib {
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
-        const std::vector<Period>& fixingPeriods() const;
         const std::vector<Date>& skippedDates() const;
         const std::vector<Date>& failedDates() const;
-        const SequenceStatistics& stats() const;
+        const std::vector<Period>& fixingPeriods() const;
+        //const boost::shared_ptr<SequenceStatistics>& stats() const;
       private:
         // calculated data
-        SequenceStatistics stats_;
+        boost::shared_ptr<SequenceStatistics> stats_;
         std::vector<Date> skippedDates_;
         std::vector<Date> failedDates_;
         std::vector<Period> fixingPeriods_;
@@ -215,24 +217,24 @@ namespace QuantLib {
     // inline
 
     inline const std::vector<Period>&
-    HistoricalCorrelation::fixingPeriods() const {
+    HistoricalForwardRatesAnalysis::fixingPeriods() const {
         return fixingPeriods_;
     }
 
     inline const std::vector<Date>&
-    HistoricalCorrelation::skippedDates() const {
+    HistoricalForwardRatesAnalysis::skippedDates() const {
         return skippedDates_;
     }
 
     inline const std::vector<Date>&
-    HistoricalCorrelation::failedDates() const {
+    HistoricalForwardRatesAnalysis::failedDates() const {
         return failedDates_;
     }
  
-    inline const GenericSequenceStatistics<Statistics>&
-    HistoricalCorrelation::stats() const {
-        return stats_;
-    }
+    //inline const boost::shared_ptr<SequenceStatistics>&
+    //HistoricalForwardRatesAnalysis::stats() const {
+    //    return stats_;
+    //}
 
 }
 
