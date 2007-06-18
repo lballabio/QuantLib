@@ -27,6 +27,7 @@
 
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

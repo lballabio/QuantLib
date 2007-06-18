@@ -28,6 +28,7 @@
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 

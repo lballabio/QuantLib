@@ -28,6 +28,7 @@
 #include <ql/pricingengines/asian/mcdiscreteasianengine.hpp>
 #include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
 #include <ql/termstructures/volatilities/equity/blackvariancecurve.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
