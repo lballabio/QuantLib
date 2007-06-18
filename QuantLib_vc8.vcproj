@@ -3757,10 +3757,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ql\termstructures\yieldcurves\piecewiseyieldcurve.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ql\termstructures\yieldcurves\piecewiseyieldcurve.hpp"
 					>
 				</File>
