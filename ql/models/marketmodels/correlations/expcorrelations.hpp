@@ -56,6 +56,7 @@ namespace QuantLib {
                         Real gamma = 1.0,
                         const std::vector<Time>& times = std::vector<Time>());
         const std::vector<Time>& times() const;
+        const std::vector<Time>& rateTimes() const;
         const std::vector<Matrix>& correlations() const;
         Size numberOfRates() const;
     private:

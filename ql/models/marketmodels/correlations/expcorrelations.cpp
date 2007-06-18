@@ -51,9 +51,9 @@ namespace QuantLib {
         for (Size i=0; i<nbRows; ++i) {
             correlations[i][i] = 1.0;
             for (Size j=0; j<i; ++j)
-                if (time<rateTimes[j]) {
+                if (time<=rateTimes[j]) {
                     // correlation is defined only between 
-                    // stochastic rates...
+                    // (alive) stochastic rates...
                     correlations[i][j] = correlations[j][i] =
                         longTermCorr + (1.0-longTermCorr) *
                         std::exp(-beta*std::fabs(
@@ -87,32 +87,35 @@ namespace QuantLib {
 
         checkIncreasingTimes(rateTimes_);
 
-        if (close(gamma,1.0)) {
+        // corrTimes must include all rateTimes but the last
+        if (times_ == std::vector<Time>())
+            times_ = std::vector<Time>(rateTimes_.begin(),
+                                       rateTimes_.end()-1);
+        else
+            checkIncreasingTimes(times_);
 
-            if (times_ == std::vector<Time>())
-                std::copy(rateTimes.begin(), rateTimes.end()-2,
-                          times_.begin());
-            else {
-                // times should be a subset of rateTimes
-                std::vector<Time> temp(rateTimes_.begin(), rateTimes_.end()-2);
-                QL_REQUIRE(times_==temp, "times!=rateTimes");
-            }
+        if (close(gamma,1.0)) {
+            std::vector<Time> temp(rateTimes_.begin(), rateTimes_.end()-1);
+            QL_REQUIRE(times_==temp,
+                       "corr times " << Array(times_) << " must be equal to "
+                       "(all) rate times (but the last) " << Array(temp));
             Matrix c = exponentialCorrelations(
                 rateTimes_, longTermCorr_, beta_, 1.0, 0.0);
-            correlations_ = TimeHomogeneousForwardCorrelation::
-                                            evolvedMatrices(c, rateTimes_);
+            correlations_ =
+                TimeHomogeneousForwardCorrelation::evolvedMatrices(c);
         } else {
-            if (times_ == std::vector<Time>())
-                std::copy(rateTimes.begin(), rateTimes.end()-1,
-                          times_.begin());
-            else {
-                checkIncreasingTimes(times_);
-                QL_REQUIRE(times_.back()<=rateTimes_[numberOfRates_],
-                           "last corr time after rateTimes_[numberOfRates_]");
-            }
-
-            for (Size k=0; k<times_.size(); ++k) {
-                Time time = 0.5*(times_[k+1]+times_[k]);
+            // FIXME should check here that all rateTimes but the last
+            // are included in rateTimes
+            QL_REQUIRE(times_.back()<=rateTimes_[numberOfRates_],
+                       "last corr time " << times_.back() <<
+                       "is after next-to-last rate time " <<
+                       rateTimes_[numberOfRates_]);
+            correlations_.resize(times_.size());
+            Time time = times_[0]/2.0;
+            correlations_[0] = exponentialCorrelations(
+                rateTimes_, longTermCorr_, beta_, gamma_, time);
+            for (Size k=1; k<times_.size(); ++k) {
+                time = (times_[k]+times_[k-1])/2.0;
                 correlations_[k] = exponentialCorrelations(
                     rateTimes_, longTermCorr_, beta_, gamma_, time);
             }
@@ -122,6 +125,11 @@ namespace QuantLib {
     const std::vector<Time>&
     ExponentialForwardCorrelation::times() const {
         return times_;
+    }
+
+    const std::vector<Time>&
+    ExponentialForwardCorrelation::rateTimes() const {
+        return rateTimes_;
     }
 
     const std::vector<Matrix>&
