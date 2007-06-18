@@ -34,8 +34,13 @@
 
 namespace QuantLib {
 
-    //! Time period described by a number of a given time unit
-    /*! \ingroup datetime */
+    /*! This class provides a Period (length + TimeUnit) class
+        and implements a limited algebra.
+
+        \ingroup datetime
+
+        \test self-consistency of algebra is checked.
+    */
     class Period {
       public:
         Period()
