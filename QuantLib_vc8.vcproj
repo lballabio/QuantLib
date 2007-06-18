@@ -2361,6 +2361,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\models\marketmodels\historicalforwardratesanalysis.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\models\marketmodels\historicalforwardratesanalysis.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\models\marketmodels\marketmodel.cpp"
 					>
 				</File>
