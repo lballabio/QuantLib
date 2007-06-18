@@ -1,8 +1,8 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006 Ferdinando Ametrano
- Copyright (C) 2006 Mark Joshi
+ Copyright (C) 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2006, 2007 Mark Joshi
  Copyright (C) 2007 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -48,10 +48,7 @@ namespace QuantLib {
         virtual const Matrix& pseudoRoot(Size i) const = 0;
         virtual const Matrix& covariance(Size i) const;
         virtual const Matrix& totalCovariance(Size endIndex) const;
-
-        
         std::vector<Volatility> timeDependentVolatility(Size i) const;
-      
     private:
         mutable std::vector<Matrix> covariance_, totalCovariance_;
     };
