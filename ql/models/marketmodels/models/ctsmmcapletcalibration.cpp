@@ -56,17 +56,21 @@ namespace QuantLib {
         
     }
 
-    const std::vector<Volatility>& CTSMMCapletCalibration::timeDependentUnCalibratedSwaptionVols(Size i) const
+    const std::vector<Volatility>&
+    CTSMMCapletCalibration::timeDependentUnCalibratedSwaptionVols(Size i) const
     {
-      QL_REQUIRE(i < numberOfRates_ , "index must less than number of rates in MarketModel::timeDependentUnCalibratedSwaptionVols");
-      
+        QL_REQUIRE(i<numberOfRates_,
+                   "index (" << i << ") must less than number of rates (" <<
+                   numberOfRates_ << ")");
         return displacedSwapVariances_[i]->volatilities();
     }
 
-    const std::vector<Volatility>& CTSMMCapletCalibration::timeDependentCalibratedSwaptionVols(Size i) const
+    const std::vector<Volatility>&
+    CTSMMCapletCalibration::timeDependentCalibratedSwaptionVols(Size i) const
     {
-      QL_REQUIRE(i < numberOfRates_ , "index must less than number of rates in MarketModel::timeDependentCalibratedSwaptionVols");
-      
+        QL_REQUIRE(i<numberOfRates_,
+                   "index (" << i << ") must less than number of rates (" <<
+                   numberOfRates_ << ")");
         return timeDependentCalibratedSwaptionVols_[i];
     }
 
@@ -77,11 +81,12 @@ namespace QuantLib {
                                 PiecewiseConstantVariance> >&
                                             displacedSwapVariances,
                     const std::vector<Volatility>& mktCapletVols,
-                    const CurveState& cs) {
-
+                    const CurveState& cs)
+    {
         const std::vector<Time>& evolutionTimes = evolution.evolutionTimes();
         QL_REQUIRE(evolutionTimes==corr.times(),
-                   "evolutionTimes not equal to correlation times");
+                   "evolutionTimes " << Array(evolutionTimes) <<
+                   " not equal to correlation times " << Array(corr.times()));
 
         const std::vector<Time>& rateTimes = evolution.rateTimes();
         QL_REQUIRE(rateTimes==cs.rateTimes(),
@@ -194,11 +199,10 @@ namespace QuantLib {
                                  displacements));
 
          timeDependentCalibratedSwaptionVols_.clear();
-
-         for (Size i=0; i < numberOfRates_; ++i)
-             timeDependentCalibratedSwaptionVols_.push_back(ctsmm->timeDependentVolatility(i));
+         for (Size i=0; i<numberOfRates_; ++i)
+             timeDependentCalibratedSwaptionVols_.push_back(
+                ctsmm->timeDependentVolatility(i));
       
-
         // calculate deformationSize_ ??
         calibrated_ = true;
         return failures_==0;
