@@ -16,7 +16,7 @@ this_include_HEADERS = \
     evolutiondescription.hpp \
     evolver.hpp \
     forwardforwardmappings.hpp \
-    historicalcorrelation.hpp \
+    historicalforwardratesanalysis.hpp \
     marketmodel.hpp \
     marketmodeldifferences.hpp \
     multiproduct.hpp \
@@ -31,7 +31,7 @@ libMarketModels_la_SOURCES = \
     discounter.cpp \
     evolutiondescription.cpp \
     forwardforwardmappings.cpp \
-    historicalcorrelation.cpp \
+    historicalforwardratesanalysis.cpp \
     marketmodel.cpp \
     marketmodeldifferences.cpp \
     proxygreekengine.cpp \

@@ -15,6 +15,7 @@
 #include <ql/termstructures/yieldcurves/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yieldcurves/piecewisezerospreadedtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/quantotermstructure.hpp>
+#include <ql/termstructures/yieldcurves/ratehelper.hpp>
 #include <ql/termstructures/yieldcurves/ratehelpers.hpp>
 #include <ql/termstructures/yieldcurves/zerocurve.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>

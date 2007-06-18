@@ -7,6 +7,7 @@
 #endif
 
 #include <ql/cashflow.hpp>
+#include <ql/compounding.hpp>
 #include <ql/currency.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>

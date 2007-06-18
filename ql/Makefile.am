@@ -22,6 +22,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	auto_link.hpp \
 	cashflow.hpp \
+	compounding.hpp \
 	config.hpp \
 	currency.hpp \
 	discretizedasset.hpp \
