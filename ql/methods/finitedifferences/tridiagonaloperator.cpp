@@ -32,7 +32,7 @@ namespace QuantLib {
             lowerDiagonal_ = Array(0);
             upperDiagonal_ = Array(0);
         } else {
-            QL_FAIL("invalid size for tridiagonal operator "
+            QL_FAIL("invalid size (" << size << ") for tridiagonal operator "
                     "(must be null or >= 3)");
         }
     }
