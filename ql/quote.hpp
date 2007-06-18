@@ -39,11 +39,10 @@ namespace QuantLib {
         virtual ~Quote() {}
         //! returns the current value
         virtual Real value() const = 0;
-        //! returns TRUE if the quote is valid
+        //! returns true if the Quote holds a valid value
         virtual bool isValid() const = 0;
     };
 
 }
-
 
 #endif
