@@ -130,12 +130,15 @@ namespace QuantLib {
     : moving_(true), updated_(false), settlementDays_(settlementDays),
       calendar_(cal), dayCounter_(dc) {
         registerWith(Settings::instance().evaluationDate());
+        // verify immediately if calendar and settlementDays are ok
+        Date today = Settings::instance().evaluationDate();
+        referenceDate_ = calendar().advance(today, settlementDays_, Days);
     }
 
     inline const Date& TermStructure::referenceDate() const {
         if (!updated_) {
             Date today = Settings::instance().evaluationDate();
-            referenceDate_ = calendar().advance(today,settlementDays_,Days);
+            referenceDate_ = calendar().advance(today, settlementDays_, Days);
             updated_ = true;
         }
         return referenceDate_;
