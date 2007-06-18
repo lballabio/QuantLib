@@ -67,6 +67,9 @@ namespace QuantLib {
     Period operator*(const Period&, Integer n);
 
     /*! \relates Period */
+    Period operator/(const Period&, Integer n);
+
+    /*! \relates Period */
     Period operator+(const Period&, const Period&);
     /*! \relates Period */
     Period operator-(const Period&, const Period&);

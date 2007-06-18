@@ -90,6 +90,45 @@ namespace QuantLib {
         }
     }
 
+    Period operator/(const Period& p, Integer n) {
+        TimeUnit units = p.units();
+        Integer length = p.length();
+        switch (units) {
+          case Years:
+            length *= 12;
+            units = Months;
+            break;
+          case Weeks:
+            length *= 7;
+            units = Days;
+            break;
+          default:
+            break;
+        }
+        QL_REQUIRE(!(length%n),
+                   "" << p << " cannot be divided by " << n)
+        length /= n;
+
+        // normalization
+        switch (units) {
+          case Days:
+            if (!(length%7)) {
+                length/=7;
+                units = Weeks;
+            }
+            break;
+          case Months:
+            if (!(length%12)) {
+                length/=12;
+                units = Years;
+            }
+            break;
+          default:
+            break;
+        }
+        return Period(length, p.units());
+    }
+
     Period& Period::operator+=(const Period& p) {
 
         if (length_==0) {
@@ -171,6 +210,24 @@ namespace QuantLib {
                 QL_FAIL("unknown units");
             }
         }
+
+        //// normalization
+        //switch (units_) {
+        //  case Days:
+        //    if (!(length_%7)) {
+        //        length_/=7;
+        //        units_ = Weeks;
+        //    }
+        //    break;
+        //  case Months:
+        //    if (!(length_%12)) {
+        //        length_/=12;
+        //        units_ = Years;
+        //    }
+        //    break;
+        //  default:
+        //    break;
+        //}
         return *this;
     }
 
@@ -297,16 +354,23 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const long_period_holder& holder) {
             Integer n = holder.p.length();
-            out << n << " ";
             switch (holder.p.units()) {
               case Days:
-                return out << (n == 1 ? "day" : "days");
+                if (n>=7) {
+                    out << n/7 << (n/7 == 1 ? " week " : " weeks ");
+                    n = n%7;
+                }
+                return out << n << (n == 1 ? " day" : " days");
               case Weeks:
-                return out << (n == 1 ? "week" : "weeks");
+                return out << n << (n == 1 ? " week" : " weeks");
               case Months:
-                return out << (n == 1 ? "month" : "months");
+                if (n>=12) {
+                    out << n/12 << (n/12 == 1 ? " year " : " years ");
+                    n = n%12;
+                }
+                return out << n << (n == 1 ? " month" : " months");
               case Years:
-                return out << (n == 1 ? "year" : "years");
+                return out << n << (n == 1 ? " year" : " years");
               default:
                 QL_FAIL("unknown time unit");
             }
@@ -315,16 +379,23 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const short_period_holder& holder) {
             Integer n = holder.p.length();
-            out << n;
             switch (holder.p.units()) {
               case Days:
-                return out << "D";
+                if (n>=7) {
+                    out << n/7 << "W";
+                    n = n%7;
+                }
+                return out << n << "D";
               case Weeks:
-                return out << "W";
+                return out << n << "W";
               case Months:
-                return out << "M";
+                if (n>=12) {
+                    out << n/12 << "Y";
+                    n = n%12;
+                }
+                return out << n << "M";
               case Years:
-                return out << "Y";
+                return out << n << "Y";
               default:
                 QL_FAIL("unknown time unit");
             }
