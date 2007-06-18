@@ -6125,6 +6125,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ql\compounding.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\ql\config.ansi.hpp"
 			>
 		</File>
