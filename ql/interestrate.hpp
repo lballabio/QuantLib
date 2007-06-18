@@ -24,17 +24,10 @@
 #ifndef quantlib_interest_rate_hpp
 #define quantlib_interest_rate_hpp
 
-#include <ql/types.hpp>
+#include <ql/compounding.hpp>
 #include <ql/time/daycounter.hpp>
 
 namespace QuantLib {
-
-    //! Interest rate coumpounding rule
-    enum Compounding { Simple = 0,          //!< \f$ 1+rt \f$
-                       Compounded = 1,      //!< \f$ (1+r)^t \f$
-                       Continuous = 2,      //!< \f$ e^{rt} \f$
-                       SimpleThenCompounded //!< Simple up to the first period then Compounded
-    };
 
     //! Concrete interest rate class
     /*! This class encapsulate the interest rate compounding algebra.
@@ -186,6 +179,5 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, const InterestRate&);
 
 }
-
 
 #endif
