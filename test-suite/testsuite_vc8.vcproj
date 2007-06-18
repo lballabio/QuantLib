@@ -1711,6 +1711,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\period.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\piecewiseyieldcurve.cpp"
 				>
 			</File>
@@ -2405,6 +2409,10 @@
 			</File>
 			<File
 				RelativePath=".\pathgenerator.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\period.hpp"
 				>
 			</File>
 			<File
