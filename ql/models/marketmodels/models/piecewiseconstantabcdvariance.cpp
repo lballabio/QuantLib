@@ -28,17 +28,17 @@ namespace QuantLib {
                                     Real a, Real b, Real c, Real d,
                                     Size resetIndex,
                                     const std::vector<Time>& rateTimes)
-    : variances_(rateTimes.size()),
-      volatilities_(rateTimes.size()),
+    : variances_(rateTimes.size()-1, 0.0),
+      volatilities_(rateTimes.size()-1, 0.0),
       rateTimes_(rateTimes) {
 
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(rateTimes.size()>1,
                    "Rate times must contain at least two values");
-        QL_REQUIRE(resetIndex<rateTimes_.size(),
+        QL_REQUIRE(resetIndex<rateTimes_.size()-1,
                    "resetIndex (" << resetIndex <<
-                   ") must be less than rateTimes.size() (" <<
-                   rateTimes_.size() << ")");
+                   ") must be less than rateTimes.size()-1 (" <<
+                   rateTimes_.size()-1 << ")");
         AbcdFunction abcdFunction(a,b,c,d);
         for (Size i=0; i<=resetIndex; ++i) {
             Time startTime = (i==0 ? 0.0 : rateTimes_[i-1]);
