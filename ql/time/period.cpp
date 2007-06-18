@@ -90,7 +90,30 @@ namespace QuantLib {
         }
     }
 
+    void Period::normalize() {
+        switch (units_) {
+          case Days:
+            if (!(length_%7)) {
+                length_/=7;
+                units_ = Weeks;
+            }
+            break;
+          case Months:
+            if (!(length_%12)) {
+                length_/=12;
+                units_ = Years;
+            }
+            break;
+          case Weeks:
+          case Years:
+            break;
+          default:
+            QL_FAIL("unknown time unit (" << Integer(units_));
+        }
+    }
+
     Period operator/(const Period& p, Integer n) {
+        QL_REQUIRE(n!=0, "cannot by divided by zero");
         TimeUnit units = p.units();
         Integer length = p.length();
         switch (units) {
@@ -106,27 +129,11 @@ namespace QuantLib {
             break;
         }
         QL_REQUIRE(!(length%n),
-                   "" << p << " cannot be divided by " << n)
-        length /= n;
+                   "" << p << " cannot be divided by " << n);
 
-        // normalization
-        switch (units) {
-          case Days:
-            if (!(length%7)) {
-                length/=7;
-                units = Weeks;
-            }
-            break;
-          case Months:
-            if (!(length%12)) {
-                length/=12;
-                units = Years;
-            }
-            break;
-          default:
-            break;
-        }
-        return Period(length, p.units());
+        Period result(length/n, units);
+        result.normalize();
+        return result;
     }
 
     Period& Period::operator+=(const Period& p) {
@@ -211,23 +218,7 @@ namespace QuantLib {
             }
         }
 
-        //// normalization
-        //switch (units_) {
-        //  case Days:
-        //    if (!(length_%7)) {
-        //        length_/=7;
-        //        units_ = Weeks;
-        //    }
-        //    break;
-        //  case Months:
-        //    if (!(length_%12)) {
-        //        length_/=12;
-        //        units_ = Years;
-        //    }
-        //    break;
-        //  default:
-        //    break;
-        //}
+        //this->normalize();
         return *this;
     }
 
