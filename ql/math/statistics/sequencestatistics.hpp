@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004, 2005, 2006, 2007 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,8 +52,7 @@ namespace QuantLib {
         typedef StatisticsType statistics_type;
         typedef std::vector<typename StatisticsType::value_type> value_type;
         // constructor
-        GenericSequenceStatistics();
-        GenericSequenceStatistics(Size dimension);
+        GenericSequenceStatistics(Size dimension = 0);
         //! \name inspectors
         //@{
         Size size() const { return dimension_; }
@@ -114,7 +113,7 @@ namespace QuantLib {
         template <class Sequence>
         void add(const Sequence& sample,
                  Real weight = 1.0) {
-            add(sample.begin(),sample.end(),weight);
+            add(sample.begin(), sample.end(), weight);
         }
         template <class Iterator>
         void add(Iterator begin,
@@ -122,16 +121,20 @@ namespace QuantLib {
                  Real weight = 1.0) {
             if (dimension_ == 0) {
                 // stat wasn't initialized yet
-                reset(Size(std::distance(begin, end)));
+                Integer dimension = std::distance(begin, end);
+                QL_REQUIRE(dimension>0, "sample error: end<=begin");
+                reset(Size(dimension));
             }
 
             QL_REQUIRE(std::distance(begin, end) == Integer(dimension_),
-                       "sample size mismatch");
+                       "sample size mismatch: " << dimension_ <<
+                       " required, " << std::distance(begin, end) <<
+                       " provided");
 
             quadraticSum_ += weight * outerProduct(begin, end,
                                                    begin, end);
 
-            for (Size i=0; i<dimension_; begin++, i++)
+            for (Size i=0; i<dimension_; ++begin, ++i)
                 stats_[i].add(*begin, weight);
 
         }
@@ -155,11 +158,6 @@ namespace QuantLib {
     inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics(Size dimension)
     : dimension_(0) {
         reset(dimension);
-    }
-
-    template <class Stat>
-    inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics()
-    : dimension_(0) {
     }
 
     template <class Stat>
@@ -228,21 +226,21 @@ namespace QuantLib {
 
     template <class Stat>
     void GenericSequenceStatistics<Stat>::reset(Size dimension) {
-        if (dimension == 0)           // if no size given,
-            dimension = dimension_;   // keep the current one
-        QL_REQUIRE(dimension > 0, "null dimension");
-        if (dimension == dimension_) {
-            for (Size i=0; i<dimension_; i++)
-                stats_[i].reset();
+        // (re-)initialize
+        if (dimension > 0) {
+            if (dimension == dimension_) {
+                for (Size i=0; i<dimension_; ++i)
+                    stats_[i].reset();
+            } else {
+                dimension_ = dimension;
+                stats_ = std::vector<Stat>(dimension);
+                results_ = std::vector<Real>(dimension);
+            }
+            quadraticSum_ = Matrix(dimension_, dimension_, 0.0);
         } else {
             dimension_ = dimension;
-            stats_ = std::vector<Stat>(dimension);
-            results_ = std::vector<Real>(dimension);
         }
-        quadraticSum_ = Matrix(dimension_, dimension_, 0.0);
     }
-
-
 
     template <class Stat>
     Disposable<Matrix> GenericSequenceStatistics<Stat>::covariance() const {
