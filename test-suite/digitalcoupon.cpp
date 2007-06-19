@@ -28,6 +28,9 @@
 #include <ql/termstructures/volatilities/caplet/capletconstantvol.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -42,6 +45,8 @@ Calendar calendar_;
 boost::shared_ptr<IborIndex> index_;
 Natural fixingDays_;
 RelinkableHandle<YieldTermStructure> termStructure_;
+Real optionTolerance_;
+Real blackTolerance_;
 
 void setup() {
     fixingDays_ = 2;
@@ -51,7 +56,9 @@ void setup() {
     today_ = calendar_.adjust(Date::todaysDate());
     Settings::instance().evaluationDate() = today_;
     settlement_ = calendar_.advance(today_,fixingDays_,Days);
-    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));  // by default: Continuous and annual
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
+    optionTolerance_ = 1.e-04; 
+    blackTolerance_ = 1e-10;
 }
 
 QL_END_TEST_LOCALS(DigitalCouponTest)
@@ -60,188 +67,195 @@ void DigitalCouponTest::testAssetOrNothing() {
 
     BOOST_MESSAGE("Testing European asset-or-nothing digital coupon ...");
 
+    /*  Call Payoff = (aL+b)Heaviside(aL+b-X) =  a Max[L-X'] + (b+aX')Heaviside(L-X')
+        Value Call = aF N(d1') + bN(d2') 
+        Put Payoff =  (aL+b)Heaviside(X-aL-b) = -a Max[X-L'] + (b+aX')Heaviside(X'-L)
+        Value Put = aF N(-d1') + bN(-d2')
+        where:
+        d1' = ln(F/X')/stdDev + 0.5*stdDev;
+    */
+
     SavedSettings backup;
 
     setup();
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
     Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Real gearings[] = { 1.0, 2.8 };
+    Rate spreads[] = { 0.0, 0.005 };
 
-    Real gearing = 0.8;
-    Real spread = 0.005;
+    Real gap = 1e-7; /* low, in order to compare digital option value
+                        with black formula result */
 
     for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVolatility = vols[i];
-            RelinkableHandle<CapletVolatilityStructure> volatility;
-            volatility.linkTo(boost::shared_ptr<CapletVolatilityStructure>(new
-                                CapletConstantVolatility(today_, capletVolatility,
-                                                         Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
+            Volatility capletVol = vols[i];
+            RelinkableHandle<CapletVolatilityStructure> vol;
+            vol.linkTo(boost::shared_ptr<CapletVolatilityStructure>(new
+                            CapletConstantVolatility(today_, capletVol, Actual360())));
+        for (Size j=0; j<LENGTH(strikes); j++) {
             Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+            for (Size k=9; k<10; k++) {
                 Date startDate = calendar_.advance(settlement_,(k+1)*Years);
                 Date endDate = calendar_.advance(settlement_,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
-                Real gap = 1e-08; /* very low, in order to compare digital option value
-                                     with black formula result */
                 Date paymentDate = endDate;
+                for (Size h=0; h<LENGTH(gearings); h++) {
+                    
+                    Real gearing = gearings[h];
+                    Rate spread = spreads[h];
 
-                boost::shared_ptr<FloatingRateCoupon> underlying(
-                                            new IborCoupon(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread));
-                // Floating Rate Coupon - Call Digital option
-                DigitalCoupon digitalCappedCoupon(underlying,
-                                                  strike, Position::Short, false, nullstrike,
-                                                  nullstrike, Position::Short, false, nullstrike,
-                                                  Replication::Central, gap);
+                    boost::shared_ptr<FloatingRateCoupon> underlying(new
+                                                    IborCoupon(paymentDate,
+                                                               nominal_,
+                                                               startDate,
+                                                               endDate,
+                                                               fixingDays_,
+                                                               index_,
+                                                               gearing,
+                                                               spread));
+                    // Floating Rate Coupon - Call Digital option
+                    DigitalCoupon digitalCappedCoupon(underlying,
+                                        strike, Position::Short, false, nullstrike,
+                                        nullstrike, Position::Short, false, nullstrike,
+                                        Replication::Central, gap);
+                    boost::shared_ptr<IborCouponPricer> pricer(new
+                                                            BlackIborCouponPricer(vol));
+                    digitalCappedCoupon.setPricer(pricer);
 
-                boost::shared_ptr<IborCouponPricer> pricer(
-                    new BlackIborCouponPricer(volatility));
-                digitalCappedCoupon.setPricer(pricer);
+                    // Check digital option price vs N(d1) price
+                    Time accrualPeriod = underlying->accrualPeriod();
+                    Real discount = termStructure_->discount(endDate);
+                    Date exerciseDate = underlying->fixingDate();                
+                    Rate forward = underlying->rate();
+                    Rate effFwd = (forward-spread)/gearing;
+                    Rate effStrike = (strike-spread)/gearing;
+                    Real stdDev = std::sqrt(vol->blackVariance(exerciseDate, effStrike));
+                    CumulativeNormalDistribution phi;
+                    Real d1 = std::log(effFwd/effStrike)/stdDev + 0.5*stdDev;
+                    Real d2 = d1 - stdDev;
+                    Real N_d1 = phi(d1);
+                    Real N_d2 = phi(d2);
+                    Real nd1Price = (gearing * effFwd * N_d1 + spread * N_d2)
+                                  * nominal_ * accrualPeriod * discount;
+                    Real optionPrice = digitalCappedCoupon.callOptionRate() *
+                                       nominal_ * accrualPeriod * discount;
+                    Real error = std::abs(nd1Price - optionPrice);
+                    if (error>optionTolerance_) {
+                        BOOST_ERROR("\nDigital Call Option:" <<
+                            "\nVolatility = " << io::rate(capletVol) <<
+                            "\nStrike = " << io::rate(strike) <<
+                            "\nExercise = " << k+1 << " years" <<
+                            "\nOption price by replication = "  << optionPrice <<
+                            "\nOption price by Cox-Rubinstein formula = " << nd1Price <<
+                            "\nError " << error);
+                    }
 
-                // Check vs decomposition used in digital coupon class implementation
-                CappedFlooredIborCoupon cappedIborCoupon_d(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread,
-                                                           strike - gap/2.);
-                cappedIborCoupon_d.setPricer(pricer);
-                CappedFlooredIborCoupon cappedIborCoupon_u(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread,
-                                                           strike + gap/2.);
-                cappedIborCoupon_u.setPricer(pricer);
+                    // Check digital option price vs N(d1) price using Vanilla Option class
+                    if(spread==0.0) {
+                        boost::shared_ptr<Exercise> 
+                            exercise(new EuropeanExercise(exerciseDate));
+                        Real discountAtFixing = termStructure_->discount(exerciseDate);
+                        boost::shared_ptr<SimpleQuote> 
+                            fwd(new SimpleQuote(effFwd*discountAtFixing));
+                        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                        boost::shared_ptr<YieldTermStructure> 
+                            qTS = flatRate(today_, qRate, Actual360());
+                        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                        boost::shared_ptr<BlackVolTermStructure> 
+                            volTS = flatVol(today_, capletVol, Actual360());
+                        boost::shared_ptr<PricingEngine> 
+                            engine(new AnalyticEuropeanEngine);
+                        boost::shared_ptr<StrikedTypePayoff> 
+                            callPayoff(new AssetOrNothingPayoff(Option::Call,effStrike));
+                        boost::shared_ptr<StochasticProcess> stochProcess(new
+                            BlackScholesMertonProcess(Handle<Quote>(fwd),
+                                              Handle<YieldTermStructure>(qTS),
+                                              Handle<YieldTermStructure>(termStructure_),
+                                              Handle<BlackVolTermStructure>(volTS)));
+                        VanillaOption callOpt(stochProcess, callPayoff, exercise, engine);
+                        Real callVO = nominal_ * gearing 
+                                               * accrualPeriod * callOpt.NPV() 
+                                               * discount / discountAtFixing
+                                               * forward / effFwd;
+                        error = std::abs(nd1Price - callVO);
+                        if (error>blackTolerance_) {
+                            BOOST_ERROR("\nDigital Call Option:" <<
+                            "\nVolatility = " << io::rate(capletVol) <<
+                            "\nStrike = " << io::rate(strike) <<
+                            "\nExercise = " << k+1 << " years" <<
+                            "\nOption price by Black asset-ot-nothing payoff = " << callVO <<
+                            "\nOption price by Cox-Rubinstein = " << nd1Price <<
+                            "\nError " << error );
+                        }
+                    }
 
-                Time accrualPeriod = underlying->accrualPeriod();
-                Real discount = termStructure_->discount(endDate);
-                Real underlyingPrice = underlying->price(termStructure_);
-                Real optionPrice = underlyingPrice * (cappedIborCoupon_u.rate() -
-                                                      cappedIborCoupon_d.rate() )
-                                                   / gap;
-                Real decompositionPrice = underlyingPrice - optionPrice;
-                Real digitalPrice = digitalCappedCoupon.price(termStructure_);
-                Real error = std::fabs(decompositionPrice - digitalPrice);
-                Real tolerance = 1e-10;
-                if (error>tolerance) {
-                    BOOST_ERROR("\nFloating Coupon - Digital Call Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nCoupon Price = "  << digitalPrice <<
-                                "\nDecomposition price = " << decompositionPrice <<
-                                "\nError = " << error );
-                }
+                    // Floating Rate Coupon + Put Digital option
+                    DigitalCoupon digitalFlooredCoupon(underlying,
+                                        nullstrike, Position::Long, false, nullstrike,
+                                        strike, Position::Long, false, nullstrike,
+                                        Replication::Central, gap);
+                    digitalFlooredCoupon.setPricer(pricer);
 
-                // Check digital option price vs N(d2) price
-                Rate forward = underlying->rate();
-                Date exerciseDate = underlying->fixingDate();
-                Real stdDeviation = std::sqrt(
-                                    volatility->blackVariance(exerciseDate,
-                                                             (strike-spread)/gearing));
-                Real ITM = blackFormulaCashItmProbability(Option::Call,
-                                                         (strike-spread)/gearing,
-                                                         (forward-spread)/gearing,
-                                                          stdDeviation);
-                Real nd2Price = ITM * nominal_ * accrualPeriod * discount * forward;
-                optionPrice = digitalCappedCoupon.callOptionRate() *
-                              nominal_ * accrualPeriod * discount;
-                error = std::abs(nd2Price - optionPrice);
-                Real optionTolerance = 1e-04;
-                if (error>optionTolerance) {
-                    BOOST_ERROR("\nDigital Call Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nOption price by replication "  << optionPrice <<
-                                "\nOption price by black formula " << nd2Price <<
-                                "\nError " << error );
-                }
+                    // Check digital option price vs N(d1) price
+                    N_d1 = phi(-d1);
+                    N_d2 = phi(-d2);
+                    nd1Price = (gearing * effFwd * N_d1 + spread * N_d2)
+                             * nominal_ * accrualPeriod * discount;
+                    optionPrice = digitalFlooredCoupon.putOptionRate() *
+                                  nominal_ * accrualPeriod * discount;
+                    error = std::abs(nd1Price - optionPrice);
+                    if (error>optionTolerance_) {
+                        BOOST_ERROR("\nDigital Put Option:" <<
+                                    "\nVolatility = " << io::rate(capletVol) <<
+                                    "\nStrike = " << io::rate(strike) <<
+                                    "\nExercise = " << k+1 << " years" <<
+                                    "\nOption price by replication = "  << optionPrice <<
+                                    "\nOption price by Cox-Rubinstein = " << nd1Price <<
+                                    "\nError " << error );
+                    }
 
-                // Floating Rate Coupon + Put Digital option
-                DigitalCoupon digitalFlooredCoupon(underlying,
-                                                  nullstrike, Position::Long, false, nullstrike,
-                                                  strike, Position::Long, false, nullstrike,
-                                                  Replication::Central, gap);
-                digitalFlooredCoupon.setPricer(pricer);
-
-                // Check vs decomposition used in digital coupon class implementation
-                CappedFlooredIborCoupon flooredIborCoupon_d(paymentDate,
-                                                            nominal_,
-                                                            startDate,
-                                                            endDate,
-                                                            fixingDays_,
-                                                            index_,
-                                                            gearing,
-                                                            spread,
-                                                            Null<Rate>(),
-                                                            strike - gap/2.);
-                flooredIborCoupon_d.setPricer(pricer);
-                CappedFlooredIborCoupon flooredIborCoupon_u(paymentDate,
-                                                            nominal_,
-                                                            startDate,
-                                                            endDate,
-                                                            fixingDays_,
-                                                            index_,
-                                                            gearing,
-                                                            spread,
-                                                            Null<Rate>(),
-                                                            strike + gap/2.);
-                flooredIborCoupon_u.setPricer(pricer);
-
-                optionPrice = underlyingPrice * (flooredIborCoupon_u.rate() -
-                                                 flooredIborCoupon_d.rate() )
-                                              / gap;
-                decompositionPrice = underlyingPrice + optionPrice;
-                digitalPrice = digitalFlooredCoupon.price(termStructure_);
-                error = std::fabs(decompositionPrice - digitalPrice);
-                if (error>tolerance) {
-                    BOOST_ERROR("\nFloating Rate Coupon + Digital Put Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nDigital coupon price "  << digitalPrice <<
-                                "\nDecomposition price  " << decompositionPrice <<
-                                "\nError " << error );
-                }
-
-                // Check digital option price vs N(d2) price
-                ITM = blackFormulaCashItmProbability(Option::Put,
-                                                    (strike-spread)/gearing,
-                                                    (forward-spread)/gearing,
-                                                     stdDeviation);
-                nd2Price = ITM * nominal_ * accrualPeriod * discount * forward;
-                optionPrice = digitalFlooredCoupon.putOptionRate() *
-                              nominal_ * accrualPeriod * discount;
-                error = std::abs(nd2Price - optionPrice);
-                if (error>optionTolerance) {
-                    BOOST_ERROR("\nDigital Put Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nOption price by replication "  << optionPrice <<
-                                "\nOption price by black formula " << nd2Price <<
-                                "\nError " << error );
+                    // Check digital option price vs N(d1) price using Vanilla Option class
+                    if(spread==0.0) {
+                        boost::shared_ptr<Exercise>
+                            exercise(new EuropeanExercise(exerciseDate));
+                        Real discountAtFixing = termStructure_->discount(exerciseDate);
+                        boost::shared_ptr<SimpleQuote> 
+                            fwd(new SimpleQuote(effFwd*discountAtFixing));
+                        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                        boost::shared_ptr<YieldTermStructure>
+                            qTS = flatRate(today_, qRate, Actual360());
+                        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                        boost::shared_ptr<BlackVolTermStructure> 
+                            volTS = flatVol(today_, capletVol, Actual360());
+                        boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
+                        boost::shared_ptr<StochasticProcess> stochProcess(new
+                            BlackScholesMertonProcess(Handle<Quote>(fwd),
+                                              Handle<YieldTermStructure>(qTS),
+                                              Handle<YieldTermStructure>(termStructure_),
+                                              Handle<BlackVolTermStructure>(volTS)));
+                        boost::shared_ptr<StrikedTypePayoff>
+                            putPayoff(new AssetOrNothingPayoff(Option::Put, effStrike));
+                        VanillaOption putOpt(stochProcess, putPayoff, exercise, engine);
+                        Real putVO  = nominal_ * gearing
+                                               * accrualPeriod * putOpt.NPV() 
+                                               * discount / discountAtFixing
+                                               * forward / effFwd;
+                        error = std::abs(nd1Price - putVO);
+                        if (error>blackTolerance_) {
+                            BOOST_ERROR("\nDigital Put Option:" <<
+                            "\nVolatility = " << io::rate(capletVol) <<
+                            "\nStrike = " << io::rate(strike) <<
+                            "\nExercise = " << k+1 << " years" <<
+                            "\nOption price by Black asset-ot-nothing payoff = " << putVO <<
+                            "\nOption price by Cox-Rubinstein = " << nd1Price <<
+                            "\nError " << error );
+                        }
+                    }
                 }
             }
         }
     }
 }
-
 
 void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
 
@@ -263,7 +277,6 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         Date startDate = calendar_.advance(settlement_,(k+1)*Years);
         Date endDate = calendar_.advance(settlement_,(k+2)*Years);
         Rate nullstrike = Null<Rate>();
-        Rate cashRate = 0.01;
         Real gap = 1e-4;
         Date paymentDate = endDate;
 
@@ -295,7 +308,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         Real targetPrice = 0.0;
         Real digitalPrice = digitalCappedCoupon.price(termStructure_);
         Real error = std::fabs(targetPrice - digitalPrice);
-        Real tolerance = 1e-07;
+        Real tolerance = 1e-08;
         if (error>tolerance) {
             BOOST_ERROR("\nFloating Coupon - Digital Call Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -310,7 +323,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         Real replicationOptionPrice = digitalCappedCoupon.callOptionRate() *
                                       nominal_ * accrualPeriod * discount;
         error = std::abs(targetOptionPrice - replicationOptionPrice);
-        Real optionTolerance = 1e-07;
+        Real optionTolerance = 1e-08;
         if (error>optionTolerance) {
             BOOST_ERROR("\nDigital Call Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -334,6 +347,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         targetPrice = underlying->price(termStructure_) + targetOptionPrice ;
         digitalPrice = digitalFlooredCoupon.price(termStructure_);
         error = std::fabs(targetPrice - digitalPrice);
+        tolerance = 1e-06;
         if (error>tolerance) {
             BOOST_ERROR("\nFloating Coupon + Digital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -343,11 +357,12 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
                         "\nTarget price = " << targetPrice <<
                         "\nError " << error);
         }
-
+        
         // Check digital option
         replicationOptionPrice = digitalFlooredCoupon.putOptionRate() *
                                  nominal_ * accrualPeriod * discount;
         error = std::abs(targetOptionPrice - replicationOptionPrice);
+        optionTolerance = 1e-06;
         if (error>optionTolerance) {
             BOOST_ERROR("\nDigital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -472,6 +487,162 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
                         "\nPrice by replication = " << replicationOptionPrice <<
                         "\nTarget price = " << targetOptionPrice <<
                         "\nError = " << error );
+        }
+    }
+}
+
+void DigitalCouponTest::testCashOrNothing() {
+
+    BOOST_MESSAGE("Testing European cash-or-nothing digital coupon ...");
+
+    /*  Call Payoff = R Heaviside(aL+b-X)
+        Value Call = R N(d2') 
+        Put Payoff =  R Heaviside(X-aL-b)
+        Value Put = R N(-d2')
+        where:
+        d2' = ln(F/X')/stdDev - 0.5*stdDev;
+    */
+    SavedSettings backup;
+
+    setup();
+
+    Volatility vols[] = { 0.05, 0.15, 0.30 };
+    Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
+
+    Real gearing = 3.0;
+    Real spread = -0.0002;
+
+    for (Size i = 0; i< LENGTH(vols); i++) {
+            Volatility capletVol = vols[i];
+            RelinkableHandle<CapletVolatilityStructure> vol;
+            vol.linkTo(boost::shared_ptr<CapletVolatilityStructure>(new
+                        CapletConstantVolatility(today_,capletVol,Actual360())));
+        for (Size j = 0; j< LENGTH(strikes); j++) {
+            Rate strike = strikes[j];
+            for (Size k = 0; k<10; k++) {
+                Date startDate = calendar_.advance(settlement_,(k+1)*Years);
+                Date endDate = calendar_.advance(settlement_,(k+2)*Years);
+                Rate nullstrike = Null<Rate>();
+                Rate cashRate = 0.01;
+                Real gap = 1e-08; /* very low, in order to compare digital option value
+                                     with black formula result */
+                Date paymentDate = endDate;
+                boost::shared_ptr<FloatingRateCoupon> underlying(
+                                            new IborCoupon(paymentDate,
+                                                           nominal_,
+                                                           startDate,
+                                                           endDate,
+                                                           fixingDays_,
+                                                           index_,
+                                                           gearing,
+                                                           spread));
+                // Floating Rate Coupon - Call Digital option
+                DigitalCoupon digitalCappedCoupon(underlying,
+                                          strike, Position::Short, false, cashRate,
+                                          nullstrike, Position::Short, false, nullstrike,
+                                          Replication::Central, gap);
+                boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
+                digitalCappedCoupon.setPricer(pricer);
+
+                // Check digital option price vs N(d2) price
+                Date exerciseDate = underlying->fixingDate();
+                Rate forward = underlying->rate();
+                Rate effFwd = (forward-spread)/gearing;
+                Rate effStrike = (strike-spread)/gearing;
+                Time accrualPeriod = underlying->accrualPeriod();
+                Real discount = termStructure_->discount(endDate);
+                Real stdDev = std::sqrt(vol->blackVariance(exerciseDate, effStrike));
+                Real ITM = blackFormulaCashItmProbability(Option::Call, effStrike,
+                                                          effFwd, stdDev);
+                Real nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
+                Real optionPrice = digitalCappedCoupon.callOptionRate() *
+                                   nominal_ * accrualPeriod * discount;
+                Real error = std::abs(nd2Price - optionPrice);
+                if (error>optionTolerance_) {
+                    BOOST_ERROR("\nDigital Call Option:" <<
+                                "\nVolatility = " << io::rate(capletVol) <<
+                                "\nStrike = " << io::rate(strike) <<
+                                "\nExercise = " << k+1 << " years" <<
+                                "\nPrice by replication = " << optionPrice <<
+                                "\nPrice by Reiner-Rubinstein = " << nd2Price <<
+                                "\nError = " << error );
+                }
+
+                // Check digital option price vs N(d2) price using Vanilla Option class
+                boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+                Real discountAtFixing = termStructure_->discount(exerciseDate);
+                boost::shared_ptr<SimpleQuote> fwd(new SimpleQuote(effFwd*discountAtFixing));
+                boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                boost::shared_ptr<YieldTermStructure> qTS = flatRate(today_, qRate, Actual360());
+                boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today_, capletVol,
+                                                                         Actual360());
+                boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
+                boost::shared_ptr<StrikedTypePayoff> callPayoff(new CashOrNothingPayoff(
+                                                        Option::Call, effStrike, cashRate));
+                boost::shared_ptr<StochasticProcess> stochProcess(new
+                BlackScholesMertonProcess(Handle<Quote>(fwd),
+                                          Handle<YieldTermStructure>(qTS),
+                                          Handle<YieldTermStructure>(termStructure_),
+                                          Handle<BlackVolTermStructure>(volTS)));
+                VanillaOption callOpt(stochProcess, callPayoff, exercise, engine);
+                Real callVO = nominal_ * accrualPeriod * callOpt.NPV() 
+                                       * discount / discountAtFixing;
+                error = std::abs(nd2Price - callVO);
+                if (error>blackTolerance_) {
+                    BOOST_ERROR("\nDigital Call Option:" <<
+                        "\nVolatility = " << io::rate(capletVol) <<
+                        "\nStrike = " << io::rate(strike) <<
+                        "\nExercise = " << k+1 << " years" <<
+                        "\nOption price by Black asset-ot-nothing payoff = " << callVO <<
+                        "\nOption price by Reiner-Rubinstein = " << nd2Price <<
+                        "\nError " << error );
+                }
+
+                // Floating Rate Coupon + Put Digital option
+                DigitalCoupon digitalFlooredCoupon(underlying,
+                                          nullstrike, Position::Long, false, nullstrike,
+                                          strike, Position::Long, false, cashRate,
+                                          Replication::Central, gap);
+                digitalFlooredCoupon.setPricer(pricer);
+
+
+                // Check digital option price vs N(d2) price
+                ITM = blackFormulaCashItmProbability(Option::Put,
+                                                     effStrike,
+                                                     effFwd,
+                                                     stdDev);
+                nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
+                optionPrice = digitalFlooredCoupon.putOptionRate() *
+                              nominal_ * accrualPeriod * discount;
+                error = std::abs(nd2Price - optionPrice);
+                if (error>optionTolerance_) {
+                    BOOST_ERROR("\nPut Digital Option:" <<
+                                "\nVolatility = " << io::rate(capletVol) <<
+                                "\nStrike = " << io::rate(strike) <<
+                                "\nExercise = " << k+1 << " years" <<
+                                "\nPrice by replication = "  << optionPrice <<
+                                "\nPrice by Reiner-Rubinstein = " << nd2Price <<
+                                "\nError = " << error );
+                }
+
+                // Check digital option price vs N(d2) price using Vanilla Option class
+                boost::shared_ptr<StrikedTypePayoff> putPayoff(new CashOrNothingPayoff(
+                                                        Option::Put, effStrike, cashRate));
+                VanillaOption putOpt(stochProcess, putPayoff, exercise, engine);
+                Real putVO  = nominal_ * accrualPeriod * putOpt.NPV() 
+                                       * discount / discountAtFixing;
+                error = std::abs(nd2Price - putVO);
+                if (error>blackTolerance_) {
+                    BOOST_ERROR("\nDigital Put Option:" <<
+                        "\nVolatility = " << io::rate(capletVol) <<
+                        "\nStrike = " << io::rate(strike) <<
+                        "\nExercise = " << k+1 << " years" <<
+                        "\nOption price by Black asset-ot-nothing payoff = "  << putVO <<
+                        "\nOption price by Reiner-Rubinstein = " << nd2Price <<
+                        "\nError " << error );
+                }
+            }
         }
     }
 }
@@ -708,192 +879,6 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
     }
 }
 
-void DigitalCouponTest::testCashOrNothing() {
-
-    BOOST_MESSAGE("Testing European cash-or-nothing digital coupon ...");
-
-    SavedSettings backup;
-
-    setup();
-
-    Volatility vols[] = { 0.05, 0.15, 0.30 };
-    Rate strikes[] = { 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07 };
-
-    Real gearing = 3.0;
-    Real spread = -0.0002;
-
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVolatility = vols[i];
-            RelinkableHandle<CapletVolatilityStructure> volatility;
-            volatility.linkTo(boost::shared_ptr<CapletVolatilityStructure>(new
-                        CapletConstantVolatility(today_,capletVolatility,Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
-                Date startDate = calendar_.advance(settlement_,(k+1)*Years);
-                Date endDate = calendar_.advance(settlement_,(k+2)*Years);
-                Rate nullstrike = Null<Rate>();
-                Rate cashRate = 0.01;
-                Real gap = 1e-08; /* very low, in order to compare digital option value
-                                     with black formula result */
-                Date paymentDate = endDate;
-
-                boost::shared_ptr<FloatingRateCoupon> underlying(
-                                            new IborCoupon(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread));
-                // Floating Rate Coupon - Call Digital option
-                DigitalCoupon digitalCappedCoupon(underlying,
-                                          strike, Position::Short, false, cashRate,
-                                          nullstrike, Position::Short, false, nullstrike,
-                                          Replication::Central, gap);
-                boost::shared_ptr<IborCouponPricer> pricer(
-                    new BlackIborCouponPricer(volatility));
-                digitalCappedCoupon.setPricer(pricer);
-
-                // Check vs decomposition used in digital coupon class implementation
-                CappedFlooredIborCoupon cappedIborCoupon_d(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread,
-                                                           strike - gap/2.);
-                cappedIborCoupon_d.setPricer(pricer);
-                CappedFlooredIborCoupon cappedIborCoupon_u(paymentDate,
-                                                           nominal_,
-                                                           startDate,
-                                                           endDate,
-                                                           fixingDays_,
-                                                           index_,
-                                                           gearing,
-                                                           spread,
-                                                           strike + gap/2.);
-                cappedIborCoupon_u.setPricer(pricer);
-
-                Time accrualPeriod = underlying->accrualPeriod();
-                Real discount = termStructure_->discount(endDate);
-
-                Real optionPrice = cashRate * (cappedIborCoupon_u.rate() -
-                                               cappedIborCoupon_d.rate() )
-                                            / gap *
-                                   nominal_ *  accrualPeriod *  discount;
-                Real decompositionPrice = underlying->price(termStructure_) -
-                                          optionPrice;
-                Real digitalPrice = digitalCappedCoupon.price(termStructure_);
-                Real error = std::fabs(decompositionPrice - digitalPrice);
-                Real tolerance = 1.e-10;
-                if (error>tolerance) {
-                    BOOST_ERROR("\nDigital Coupon - Digital Call Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nCoupon price = "  << digitalPrice <<
-                                "\nDecomposition price  = " << decompositionPrice <<
-                                "\nError = " << error );
-                }
-
-                // Check digital option price vs N(d2) price
-                Date exerciseDate = underlying->fixingDate();
-                Real forward = underlying->rate();
-                Real stdDeviation = std::sqrt(
-                                    volatility->blackVariance(exerciseDate,
-                                                             (strike-spread)/gearing));
-                Real ITM = blackFormulaCashItmProbability(Option::Call,
-                                                         (strike-spread)/gearing,
-                                                         (forward-spread)/gearing,
-                                                          stdDeviation);
-                Real nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
-                optionPrice = digitalCappedCoupon.callOptionRate() *
-                              nominal_ * accrualPeriod * discount;
-                error = std::abs(nd2Price - optionPrice);
-                Real optionTolerance = 1e-04;
-                if (error>optionTolerance) {
-                    BOOST_ERROR("\nDigital Put Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nPrice by replication = "  << optionPrice <<
-                                "\nPrice by black formula = " << nd2Price <<
-                                "\nError = " << error );
-                }
-
-                // Floating Rate Coupon + Put Digital option
-                DigitalCoupon digitalFlooredCoupon(underlying,
-                                          nullstrike, Position::Long, false, nullstrike,
-                                          strike, Position::Long, false, cashRate,
-                                          Replication::Central, gap);
-                digitalFlooredCoupon.setPricer(pricer);
-
-                // Check vs decomposition used in digital coupon class implementation
-                CappedFlooredIborCoupon flooredIborCoupon_d(paymentDate,
-                                                            nominal_,
-                                                            startDate,
-                                                            endDate,
-                                                            fixingDays_,
-                                                            index_,
-                                                            gearing,
-                                                            spread,
-                                                            nullstrike,
-                                                            strike - gap/2.);
-                flooredIborCoupon_d.setPricer(pricer);
-                CappedFlooredIborCoupon flooredIborCoupon_u(paymentDate,
-                                                            nominal_,
-                                                            startDate,
-                                                            endDate,
-                                                            fixingDays_,
-                                                            index_,
-                                                            gearing,
-                                                            spread,
-                                                            nullstrike,
-                                                            strike + gap/2.);
-                flooredIborCoupon_u.setPricer(pricer);
-                optionPrice = cashRate * (flooredIborCoupon_u.rate() -
-                                          flooredIborCoupon_d.rate() )
-                                       / gap *
-                              nominal_ * accrualPeriod * discount;
-                decompositionPrice = underlying->price(termStructure_) + optionPrice;
-                digitalPrice = digitalFlooredCoupon.price(termStructure_);
-                error = std::fabs(decompositionPrice - digitalPrice);
-                if (error>tolerance) {
-                    BOOST_ERROR("\nDigital Coupon + Put Digital Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nCoupon price = "  << digitalPrice <<
-                                "\nDecomposition price  = " << decompositionPrice <<
-                                "\nError = " << error );
-                }
-
-                // Check digital option price vs N(d2) price
-                ITM = blackFormulaCashItmProbability(Option::Put,
-                                                     (strike-spread)/gearing,
-                                                     (forward-spread)/gearing,
-                                                      stdDeviation);
-                nd2Price = ITM * nominal_ * accrualPeriod * discount * cashRate;
-                optionPrice = digitalFlooredCoupon.putOptionRate() *
-                              nominal_ * accrualPeriod * discount;
-                error = std::abs(nd2Price - optionPrice);
-                if (error>optionTolerance) {
-                    BOOST_ERROR("\nPut Digital Option:" <<
-                                "\nVolatility = " << io::rate(capletVolatility) <<
-                                "\nStrike = " << io::rate(strike) <<
-                                "\nExercise = " << k+1 << " years" <<
-                                "\nPrice by replication = "  << optionPrice <<
-                                "\nPrice by black formula = " << nd2Price <<
-                                "\nError = " << error );
-                }
-            }
-        }
-    }
-}
 
 void DigitalCouponTest::testCallPutParity() {
 
@@ -1179,6 +1164,7 @@ void DigitalCouponTest::testReplicationType() {
         }
     }
 }
+
 
 test_suite* DigitalCouponTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Digital coupon tests");

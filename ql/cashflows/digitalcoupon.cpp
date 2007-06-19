@@ -59,10 +59,11 @@ namespace QuantLib {
         QL_REQUIRE(eps>0.0, "Non positive epsilon not allowed");
 
         if (putStrike == Null<Rate>())
-            QL_REQUIRE(putDigitalPayoff == Null<Rate>(), "Put Cash rate non allowed if put strike is null");
+            QL_REQUIRE(putDigitalPayoff == Null<Rate>(),
+            "Put Cash rate non allowed if put strike is null");
         if (callStrike == Null<Rate>())
-            QL_REQUIRE(callDigitalPayoff == Null<Rate>(), "Call Cash rate non allowed if call strike is null");
-
+            QL_REQUIRE(callDigitalPayoff == Null<Rate>(),
+            "Call Cash rate non allowed if call strike is null");
         if (callStrike != Null<Rate>()){
             QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
@@ -178,10 +179,19 @@ namespace QuantLib {
 
         Rate callOptionRate = Rate(0.);
         if(hasCallStrike_) {
-            callOptionRate = isCallCashOrNothing_ ? callDigitalPayoff_ : underlying_->rate();
+            // Step function
+            callOptionRate = isCallCashOrNothing_ ? callDigitalPayoff_ : callStrike_;
             CappedFlooredCoupon next(underlying_, callStrike_ + callRightEps_);
             CappedFlooredCoupon previous(underlying_, callStrike_ - callLeftEps_);
-            callOptionRate *= (next.rate() - previous.rate()) / (callLeftEps_ + callRightEps_);
+            callOptionRate *= (next.rate() - previous.rate())
+                            / (callLeftEps_ + callRightEps_);
+            if (!isCallCashOrNothing_) {
+                // Call
+                CappedFlooredCoupon atStrike(underlying_, callStrike_);
+                Rate call = underlying_->rate() - atStrike.rate();
+                // Sum up
+                callOptionRate += call;
+            }
         }
         return callOptionRate;
     }
@@ -190,10 +200,19 @@ namespace QuantLib {
 
         Rate putOptionRate = Rate(0.);
         if(hasPutStrike_) {
-            putOptionRate = isPutCashOrNothing_ ? putDigitalPayoff_ : underlying_->rate();
+            // Step function
+            putOptionRate = isPutCashOrNothing_ ? putDigitalPayoff_ : putStrike_;
             CappedFlooredCoupon next(underlying_, Null<Rate>(), putStrike_ + putRightEps_);
             CappedFlooredCoupon previous(underlying_, Null<Rate>(), putStrike_ - putLeftEps_);
-            putOptionRate *= (next.rate() - previous.rate()) / (putLeftEps_ + putRightEps_);
+            putOptionRate *= (next.rate() - previous.rate())
+                           / (putLeftEps_ + putRightEps_);        
+            if (!isPutCashOrNothing_) {
+                // Put
+                CappedFlooredCoupon atStrike(underlying_, Null<Rate>(), putStrike_);
+                Rate put = - underlying_->rate() + atStrike.rate();
+                // Sum up
+                putOptionRate -= put;
+            }
         }
         return putOptionRate;
     }

@@ -58,7 +58,8 @@ namespace QuantLib {
 
         \test
         - the correctness of the returned value in case of Asset-or-nothing
-          embedded option is tested by using the same replication method.
+          embedded option is tested by pricing the digital option with
+          Cox-Rubinstein formula.
         - the correctness of the returned value in case of deep-in-the-money
           Asset-or-nothing embedded option is tested vs the expected values of
           coupon and option.
@@ -66,14 +67,15 @@ namespace QuantLib {
           Asset-or-nothing embedded option is tested vs the expected values of
           coupon and option.
         - the correctness of the returned value in case of Cash-or-nothing
-          embedded option is tested by using the same replication method.
+          embedded option is tested by pricing the digital option with
+          Reiner-Rubinstein formula.
         - the correctness of the returned value in case of deep-in-the-money
           Cash-or-nothing embedded option is tested vs the expected values of
           coupon and option.
         - the correctness of the returned value in case of deep-out-of-the-money
           Cash-or-nothing embedded option is tested vs the expected values of
           coupon and option.
-        - the correctness of the returned value is tested checking the corectness
+        - the correctness of the returned value is tested checking the correctness
           of the call-put parity relation.
         - the correctness of the returned value is tested by the relationship
           between prices in case of different replication types.
