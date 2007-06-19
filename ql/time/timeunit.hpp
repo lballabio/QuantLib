@@ -28,6 +28,7 @@
 #define quantlib_timeunit_hpp
 
 #include <ql/qldefines.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
