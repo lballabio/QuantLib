@@ -43,7 +43,9 @@ namespace QuantLib {
     void historicalForwardRatesAnalysis(
                 SequenceStatistics& statistics,
                 std::vector<Date>& skippedDates,
+                std::vector<std::string>& skippedDatesErrorMessage,
                 std::vector<Date>& failedDates,
+                std::vector<std::string>& failedDatesErrorMessage,
                 std::vector<Period>& fixingPeriods,
                 const Date& startDate,
                 const Date& endDate,
@@ -60,7 +62,9 @@ namespace QuantLib {
 
         statistics.reset();
         skippedDates.clear();
+        skippedDatesErrorMessage.clear();
         failedDates.clear();
+        failedDatesErrorMessage.clear();
         fixingPeriods.clear();
 
         SavedSettings backup;
@@ -150,10 +154,9 @@ namespace QuantLib {
                     Rate fixing = swapIndexes[i]->fixing(currentDate, false);
                     swapQuotes[i]->setValue(fixing);
                 }
-//            } catch (std::exception& e) {
-            } catch (...) {
+            } catch (std::exception& e) {
                 skippedDates.push_back(currentDate);
-//                skippedDateErrorMessages.push_back(e.what());
+                skippedDatesErrorMessage.push_back(e.what());
                 continue;
             }
 
@@ -166,10 +169,9 @@ namespace QuantLib {
                                                  indexDayCounter,
                                                  Simple);
                 }
-//            } catch (std::exception& e) {
-            } catch (...) {
+            } catch (std::exception& e) {
                 failedDates.push_back(currentDate);
-//                failedDateErrorMessages.push_back(e.what());
+                failedDatesErrorMessage.push_back(e.what());
                 continue;
             }
 
@@ -207,14 +209,18 @@ namespace QuantLib {
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
         const std::vector<Date>& skippedDates() const;
+        const std::vector<std::string>& skippedDatesErrorMessage() const;
         const std::vector<Date>& failedDates() const;
+        const std::vector<std::string>& failedDatesErrorMessage() const;
         const std::vector<Period>& fixingPeriods() const;
         //const boost::shared_ptr<SequenceStatistics>& stats() const;
       private:
         // calculated data
         boost::shared_ptr<SequenceStatistics> stats_;
         std::vector<Date> skippedDates_;
+        std::vector<std::string> skippedDatesErrorMessage_;
         std::vector<Date> failedDates_;
+        std::vector<std::string> failedDatesErrorMessage_;
         std::vector<Period> fixingPeriods_;
     };
 
@@ -230,9 +236,19 @@ namespace QuantLib {
         return skippedDates_;
     }
 
+    inline const std::vector<std::string>&
+    HistoricalForwardRatesAnalysis::skippedDatesErrorMessage() const {
+        return skippedDatesErrorMessage_;
+    }
+
     inline const std::vector<Date>&
     HistoricalForwardRatesAnalysis::failedDates() const {
         return failedDates_;
+    }
+
+    inline const std::vector<std::string>&
+    HistoricalForwardRatesAnalysis::failedDatesErrorMessage() const {
+        return failedDatesErrorMessage_;
     }
  
     //inline const boost::shared_ptr<SequenceStatistics>&

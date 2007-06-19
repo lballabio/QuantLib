@@ -42,8 +42,10 @@ namespace QuantLib {
         historicalForwardRatesAnalysis<QuantLib::ZeroYield,
                                        QuantLib::Linear>(
                     *stats_,
-                    skippedDates_, failedDates_, fixingPeriods_,
-                    startDate, endDate, step, fwdIndex, initialGap, horizon,
+                    skippedDates_, skippedDatesErrorMessage_,
+                    failedDates_, failedDatesErrorMessage_, 
+                    fixingPeriods_, startDate, endDate, step, 
+                    fwdIndex, initialGap, horizon,
                     iborIndexes, swapIndexes,
                     yieldCurveDayCounter, yieldCurveAccuracy);
       }
