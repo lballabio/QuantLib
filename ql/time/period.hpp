@@ -53,6 +53,7 @@ namespace QuantLib {
         Frequency frequency() const;
         Period& operator+=(const Period&);
         Period& operator-=(const Period&);
+        Period& operator/=(Integer);
         void normalize();
       private:
         Integer length_;

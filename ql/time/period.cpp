@@ -112,30 +112,6 @@ namespace QuantLib {
         }
     }
 
-    Period operator/(const Period& p, Integer n) {
-        QL_REQUIRE(n!=0, "cannot by divided by zero");
-        TimeUnit units = p.units();
-        Integer length = p.length();
-        switch (units) {
-          case Years:
-            length *= 12;
-            units = Months;
-            break;
-          case Weeks:
-            length *= 7;
-            units = Days;
-            break;
-          default:
-            break;
-        }
-        QL_REQUIRE(!(length%n),
-                   "" << p << " cannot be divided by " << n);
-
-        Period result(length/n, units);
-        result.normalize();
-        return result;
-    }
-
     Period& Period::operator+=(const Period& p) {
 
         if (length_==0) {
@@ -225,6 +201,42 @@ namespace QuantLib {
     Period& Period::operator-=(const Period& p) {
         return operator+=(-p);
     }
+
+    Period& Period::operator/=(Integer n) {
+        QL_REQUIRE(n != 0, "cannot be divided by zero");
+        if (length_ % n == 0) {
+            // keep the original units. If the user created a
+            // 24-months period, he'll probably want a 12-months one
+            // when he halves it.
+            length_ /= n;
+        } else {
+            // try
+            TimeUnit units = units_;
+            Integer length = length_;
+            switch (units) {
+              case Years:
+                length *= 12;
+                units = Months;
+                break;
+              case Weeks:
+                length *= 7;
+                units = Days;
+                break;
+              default:
+                ;
+            }
+            QL_REQUIRE(length % n == 0,
+                       *this << " cannot be divided by " << n);
+            length_ = length/n;
+            units_ = units;
+            // if normalization were possible, we wouldn't be
+            // here---the "if" branch would have been executed
+            // instead.
+            // result.normalize();
+        }
+        return *this;
+    }
+
 
     bool operator<(const Period& p1, const Period& p2) {
         if (p1.length()==0) return (p2.length()>0);
@@ -334,6 +346,12 @@ namespace QuantLib {
         return p1+(-p2);
     }
 
+    Period operator/(const Period& p, Integer n) {
+        Period result = p;
+        result /= n;
+        return result;
+    }
+
     // period formatting
 
     std::ostream& operator<<(std::ostream& out, const Period& p) {
@@ -345,21 +363,30 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const long_period_holder& holder) {
             Integer n = holder.p.length();
+            Integer m = 0;
             switch (holder.p.units()) {
               case Days:
                 if (n>=7) {
-                    out << n/7 << (n/7 == 1 ? " week " : " weeks ");
+                    m = n/7;
+                    out << m << (m == 1 ? " week " : " weeks ");
                     n = n%7;
                 }
-                return out << n << (n == 1 ? " day" : " days");
+                if (n != 0 || m == 0)
+                    return out << n << (n == 1 ? " day" : " days");
+                else
+                    return out;
               case Weeks:
                 return out << n << (n == 1 ? " week" : " weeks");
               case Months:
                 if (n>=12) {
-                    out << n/12 << (n/12 == 1 ? " year " : " years ");
+                    m = n/12;
+                    out << m << (m == 1 ? " year " : " years ");
                     n = n%12;
                 }
-                return out << n << (n == 1 ? " month" : " months");
+                if (n != 0 || m == 0)
+                    return out << n << (n == 1 ? " month" : " months");
+                else
+                    return out;
               case Years:
                 return out << n << (n == 1 ? " year" : " years");
               default:
@@ -370,21 +397,30 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const short_period_holder& holder) {
             Integer n = holder.p.length();
+            Integer m = 0;
             switch (holder.p.units()) {
               case Days:
                 if (n>=7) {
-                    out << n/7 << "W";
+                    m = n/7;
+                    out << m << "W";
                     n = n%7;
                 }
-                return out << n << "D";
+                if (n != 0 || m == 0)
+                    return out << n << "D";
+                else
+                    return out;
               case Weeks:
                 return out << n << "W";
               case Months:
                 if (n>=12) {
+                    m = n/12;
                     out << n/12 << "Y";
                     n = n%12;
                 }
-                return out << n << "M";
+                if (n != 0 || m == 0)
+                    return out << n << "M";
+                else
+                    return out;
               case Years:
                 return out << n << "Y";
               default:
