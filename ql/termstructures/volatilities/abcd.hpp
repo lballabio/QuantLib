@@ -248,21 +248,21 @@ namespace QuantLib {
 
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& blackVols,
-                            const std::vector<Real>::const_iterator& t) const;
+                            const std::vector<Real>& t) const;
         //! volatility error
         Real error(const std::vector<Real>& blackVols,
-                   const std::vector<Real>::const_iterator& t) const;
+                   const std::vector<Real>& t) const;
         //! volatility errors
         Disposable<Array> errors(const std::vector<Real>& blackVols,
-                                 const std::vector<Real>::const_iterator& t) const;
+                                 const std::vector<Real>& t) const;
         //! volatility max error
         Real maxError(const std::vector<Real>& blackVols,
-                      const std::vector<Real>::const_iterator& t) const;
+                      const std::vector<Real>& t) const;
 
         //! calibration
         EndCriteria::Type calibration(
             const std::vector<Real>& blackVols,
-            const std::vector<Real>::const_iterator& t,
+            const std::vector<Real>& t,
             const boost::shared_ptr<EndCriteria>& endCriteria
                                 = boost::shared_ptr<EndCriteria>(),
             const boost::shared_ptr<OptimizationMethod>& method
@@ -293,7 +293,7 @@ namespace QuantLib {
           public:
             AbcdCostFunction(Abcd* abcd,
                              const std::vector<Real>& blackVols,
-                             const std::vector<Real>::const_iterator& t)
+                             const std::vector<Real>& t)
             : abcd_(abcd), blackVols_(blackVols), t_(t) {}
             Real value(const Array& x) const {
                 if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
@@ -312,7 +312,7 @@ namespace QuantLib {
           private:
             Abcd* abcd_;
             std::vector<Real> blackVols_;
-            std::vector<Real>::const_iterator t_;
+            std::vector<Real> t_;
         };
         //! Parameters
         Real a_, b_, c_, d_;

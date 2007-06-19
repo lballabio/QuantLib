@@ -60,42 +60,50 @@ namespace QuantLib {
 
     std::vector<Real> Abcd::k(
                     const std::vector<Real>& blackVols,
-                    const std::vector<Real>::const_iterator& t) const {
+                    const std::vector<Real>& t) const {
+        QL_REQUIRE(blackVols.size()==t.size(),
+            "mismatch between t size and number of blackVols");
         Size n = blackVols.size();
         std::vector<Real> k(n);
         for (Size i=0; i<n ; i++) {
-            k[i]=blackVols[i]/volatility(0.0, *(t+i), *(t+i));
+            k[i]=blackVols[i]/volatility(0.0, t[i], t[i]);
         }
         return k;
     }
 
     Real Abcd::error(const std::vector<Real>& blackVols,
-                     const std::vector<Real>::const_iterator& t) const {
+                     const std::vector<Real>& t) const {
+        QL_REQUIRE(blackVols.size()==t.size(),
+            "mismatch between t size and number of blackVols");
         Real error = 0.0;
         Size n = blackVols.size();
         for (Size i=0; i<n ; i++) {
-            Real temp = blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+            Real temp = blackVols[i]-volatility(0.0, t[i], t[i]);
             error += temp*temp;
         }
         return std::sqrt(error/n);
     }
 
     Disposable<Array> Abcd::errors(const std::vector<Real>& blackVols,
-                                   const std::vector<Real>::const_iterator& t) const {
+                                   const std::vector<Real>& t) const {
+        QL_REQUIRE(blackVols.size()==t.size(),
+            "mismatch between t size and number of blackVols");
         Size n = blackVols.size();
         Array errors(n,0.0);
         for (Size i=0; i<n ; i++) {
-            errors[i]= blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+            errors[i]= blackVols[i]-volatility(0.0, t[i], t[i]);
         }
         return errors;
     }
 
     Real Abcd::maxError(const std::vector<Real>& blackVols,
-                        const std::vector<Real>::const_iterator& t) const {
+                        const std::vector<Real>& t) const {
+        QL_REQUIRE(blackVols.size()==t.size(),
+            "mismatch between t size and number of blackVols");        
         Real maxError = QL_MIN_REAL;
         Size n = blackVols.size();
         for (Size i=0; i<n ; i++) {
-            Real temp = blackVols[i]-volatility(0.0, *(t+i), *(t+i));
+            Real temp = blackVols[i]-volatility(0.0, t[i], t[i]);
             maxError = std::max(maxError, std::fabs(temp));
         }
         return maxError;
@@ -103,10 +111,12 @@ namespace QuantLib {
 
     EndCriteria::Type Abcd::calibration(
                 const std::vector<Real>& blackVols,
-                const std::vector<Real>::const_iterator& t,
+                const std::vector<Real>& t,
                 const boost::shared_ptr<EndCriteria>& endCr,
                 const boost::shared_ptr<OptimizationMethod>& meth) {
-
+        
+        QL_REQUIRE(blackVols.size()==t.size(),
+            "mismatch between t size and number of blackVols");
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
             method = boost::shared_ptr<OptimizationMethod>(new
