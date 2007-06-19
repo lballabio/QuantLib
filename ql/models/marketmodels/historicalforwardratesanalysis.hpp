@@ -150,8 +150,10 @@ namespace QuantLib {
                     Rate fixing = swapIndexes[i]->fixing(currentDate, false);
                     swapQuotes[i]->setValue(fixing);
                 }
+//            } catch (std::exception& e) {
             } catch (...) {
                 skippedDates.push_back(currentDate);
+//                skippedDateErrorMessages.push_back(e.what());
                 continue;
             }
 
@@ -164,8 +166,10 @@ namespace QuantLib {
                                                  indexDayCounter,
                                                  Simple);
                 }
+//            } catch (std::exception& e) {
             } catch (...) {
                 failedDates.push_back(currentDate);
+//                failedDateErrorMessages.push_back(e.what());
                 continue;
             }
 
