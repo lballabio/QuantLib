@@ -47,9 +47,14 @@ namespace QuantLib {
             return c->discount(d,true);
         }
         // possible constraints based on previous values
-        static DiscountFactor minValueAfter(Size,
-                                            const std::vector<Real>&) {
-            return QL_EPSILON;
+        static DiscountFactor minValueAfter(Size i,
+                                            const std::vector<Real>& dfs) {
+            if (i>0) {
+                Real decayFactor = .5;
+                return dfs[i-1]*decayFactor;
+            }
+            else
+                return QL_EPSILON;
         }
         static DiscountFactor maxValueAfter(Size i,
                                             const std::vector<Real>& data) {
