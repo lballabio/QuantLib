@@ -45,7 +45,7 @@ namespace QuantLib {
         \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
-    template <class StatisticsType = Statistics>
+    template <class StatisticsType>
     class GenericSequenceStatistics {
       public:
         // typedefs
@@ -150,7 +150,7 @@ namespace QuantLib {
     /*! \test the correctness of the returned values is tested by
               checking them against numerical calculations.
     */
-    typedef GenericSequenceStatistics<> SequenceStatistics;
+    typedef GenericSequenceStatistics<Statistics> SequenceStatistics;
 
     // inline definitions
 
