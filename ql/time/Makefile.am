@@ -25,6 +25,7 @@ libTime_la_SOURCES = \
     imm.cpp \
     period.cpp \
     schedule.cpp \
+    timeunit.cpp \
     weekday.cpp
 
 libTime_la_LIBADD = \

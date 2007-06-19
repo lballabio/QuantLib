@@ -55,6 +55,7 @@ QL_TESTS = \
 	money.hpp money.cpp \
 	operators.hpp operators.cpp \
 	optimizers.hpp optimizers.cpp \
+	period.hpp period.cpp \
 	pathgenerator.hpp pathgenerator.cpp \
 	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
 	quantooption.hpp quantooption.cpp \
