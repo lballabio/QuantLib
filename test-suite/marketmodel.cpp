@@ -1950,14 +1950,14 @@ void MarketModelTest::testAbcdVolatilityFit() {
     Real b0 = instVol.b();
     Real c0 = instVol.c();
     Real d0 = instVol.d();
-    Real error0 = instVol.error(blackVols, rateTimes.begin());
+    Real error0 = instVol.error(blackVols, rateTimes);
 
-    EndCriteria::Type ec = instVol.calibration(blackVols, rateTimes.begin());
+    EndCriteria::Type ec = instVol.calibration(blackVols, rateTimes);
     Real a1 = instVol.a();
     Real b1 = instVol.b();
     Real c1 = instVol.c();
     Real d1 = instVol.d();
-    Real error1 = instVol.error(blackVols, rateTimes.begin());
+    Real error1 = instVol.error(blackVols, rateTimes);
 
     if (error1>=error0)
         BOOST_FAIL("Parameters:" <<
@@ -1967,7 +1967,7 @@ void MarketModelTest::testAbcdVolatilityFit() {
             "\nd:     " << d0 << " ---> " << d1 <<
             "\nerror: " << error0 << " ---> " << error1);
 
-    std::vector<Real> k = instVol.k(blackVols, rateTimes.begin());
+    std::vector<Real> k = instVol.k(blackVols, rateTimes);
     Real tol = 3.0e-4;
     for (Size i=0; i<blackVols.size(); i++) {
         if (std::abs(k[i]-1.0)>tol) {
@@ -2069,25 +2069,25 @@ void MarketModelTest::testIsInSubset() {
 test_suite* MarketModelTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Market-model tests");
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
 
-    // just one of the tests below is run in order to reduce running times...
-    // uncomment as much as you prefer...
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
+    //// just one of the tests below is run in order to reduce running times...
+    //// uncomment as much as you prefer...
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapLS));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testCallableSwapAnderson));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testGreeks));
 
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(BOOST_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
 
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
-    suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testDriftCalculator));
+    //suite->add(BOOST_TEST_CASE(&MarketModelTest::testIsInSubset));
 
     return suite;
 }
