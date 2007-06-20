@@ -62,7 +62,8 @@ namespace QuantLib {
                     const std::vector<Real>& blackVols,
                     const std::vector<Real>& t) const {
         QL_REQUIRE(blackVols.size()==t.size(),
-            "mismatch between t size and number of blackVols");
+                   "mismatch between number of times (" << t.size() <<
+                   ") and blackVols (" << blackVols.size() << ")");
         Size n = blackVols.size();
         std::vector<Real> k(n);
         for (Size i=0; i<n ; i++) {
@@ -74,7 +75,8 @@ namespace QuantLib {
     Real Abcd::error(const std::vector<Real>& blackVols,
                      const std::vector<Real>& t) const {
         QL_REQUIRE(blackVols.size()==t.size(),
-            "mismatch between t size and number of blackVols");
+                   "mismatch between number of times (" << t.size() <<
+                   ") and blackVols (" << blackVols.size() << ")");
         Real error = 0.0;
         Size n = blackVols.size();
         for (Size i=0; i<n ; i++) {
@@ -87,7 +89,8 @@ namespace QuantLib {
     Disposable<Array> Abcd::errors(const std::vector<Real>& blackVols,
                                    const std::vector<Real>& t) const {
         QL_REQUIRE(blackVols.size()==t.size(),
-            "mismatch between t size and number of blackVols");
+                   "mismatch between number of times (" << t.size() <<
+                   ") and blackVols (" << blackVols.size() << ")");
         Size n = blackVols.size();
         Array errors(n,0.0);
         for (Size i=0; i<n ; i++) {
@@ -99,7 +102,8 @@ namespace QuantLib {
     Real Abcd::maxError(const std::vector<Real>& blackVols,
                         const std::vector<Real>& t) const {
         QL_REQUIRE(blackVols.size()==t.size(),
-            "mismatch between t size and number of blackVols");        
+                   "mismatch between number of times (" << t.size() <<
+                   ") and blackVols (" << blackVols.size() << ")");
         Real maxError = QL_MIN_REAL;
         Size n = blackVols.size();
         for (Size i=0; i<n ; i++) {
@@ -116,7 +120,8 @@ namespace QuantLib {
                 const boost::shared_ptr<OptimizationMethod>& meth) {
         
         QL_REQUIRE(blackVols.size()==t.size(),
-            "mismatch between t size and number of blackVols");
+                   "mismatch between number of times (" << t.size() <<
+                   ") and blackVols (" << blackVols.size() << ")");
         boost::shared_ptr<OptimizationMethod> method = meth;
         if (!method) {
             method = boost::shared_ptr<OptimizationMethod>(new
