@@ -25,12 +25,11 @@
 #ifndef quantlib_trinomial_tree_hpp
 #define quantlib_trinomial_tree_hpp
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/methods/lattices/tree.hpp>
 #include <ql/timegrid.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess1D;
     //! Recombining trinomial tree class
     /*! This class defines a recombining trinomial tree approximating a
         1-D stochastic process.

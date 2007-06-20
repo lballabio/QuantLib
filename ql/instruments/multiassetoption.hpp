@@ -27,11 +27,10 @@
 #define quantlib_multiasset_option_hpp
 
 #include <ql/option.hpp>
-#include <ql/stochasticprocess.hpp>
 #include <ql/math/matrix.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess;
     //! Base class for options on multiple assets
     class MultiAssetOption : public Option {
       public:

@@ -27,11 +27,10 @@
 #define quantlib_oneasset_option_hpp
 
 #include <ql/option.hpp>
-#include <ql/stochasticprocess.hpp>
-#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess;
+    class SimpleQuote;
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:

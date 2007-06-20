@@ -28,8 +28,9 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/voltermstructure.hpp>
 
-namespace QuantLib {
 
+namespace QuantLib {
+    class Matrix;
     //! roofed Asian option
     /*! Given a certain portfolio of assets at the end of the period
         it is returned the minimum of a given roof and a certain

@@ -25,12 +25,12 @@
 #ifndef quantlib_two_factor_model_hpp
 #define quantlib_two_factor_model_hpp
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice2d.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess1D;
+    class StochasticProcess;
     //! Abstract base-class for two-factor models
     /*! \ingroup shortrate */
     class TwoFactorModel : public ShortRateModel {

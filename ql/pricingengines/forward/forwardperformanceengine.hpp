@@ -28,7 +28,8 @@
 #include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess;
+    
     //! %Forward performance engine
     /*! \ingroup forwardengines
 

@@ -20,9 +20,8 @@
 */
 
 #include <ql/instruments/multiassetoption.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/termstructures/volatilities/equity/blackconstantvol.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <ql/stochasticprocess.hpp>
+#include <ql/settings.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

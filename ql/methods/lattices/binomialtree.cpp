@@ -21,6 +21,7 @@
 
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/math/distributions/binomialdistribution.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 

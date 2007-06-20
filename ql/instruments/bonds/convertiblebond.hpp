@@ -25,15 +25,13 @@
 #ifndef quantlib_convertible_bond_hpp
 #define quantlib_convertible_bond_hpp
 
-#include <ql/exercise.hpp>
 #include <ql/pricingengine.hpp>
-#include <ql/payoff.hpp>
-#include <ql/stochasticprocess.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/instruments/oneassetstrikedoption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

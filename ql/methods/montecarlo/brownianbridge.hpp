@@ -37,7 +37,6 @@
 
 #include <ql/methods/montecarlo/path.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
-#include <ql/stochasticprocess.hpp>
 #include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {

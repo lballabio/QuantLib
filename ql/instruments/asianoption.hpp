@@ -28,7 +28,7 @@
 #include <ql/instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
-
+    class Date;
     //! placeholder for enumerated averaging types
     struct Average {
         enum Type { Arithmetic, Geometric };

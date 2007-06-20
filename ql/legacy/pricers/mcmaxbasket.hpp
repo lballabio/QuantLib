@@ -29,7 +29,7 @@
 #include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
-
+    class Matrix;
     //! Max-basket Monte Carlo pricer
     class McMaxBasket
         : public McPricer<MultiVariate,PseudoRandom> {

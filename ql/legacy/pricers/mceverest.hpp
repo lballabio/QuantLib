@@ -29,7 +29,7 @@
 #include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
-
+    class Matrix;
     //! Everest-type option pricer
     /*! The payoff of an Everest option is simply given by the
         final price / initial price ratio of the worst performer

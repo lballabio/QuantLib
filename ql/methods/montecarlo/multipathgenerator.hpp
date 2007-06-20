@@ -27,12 +27,11 @@
 #ifndef quantlib_multi_path_generator_hpp
 #define quantlib_multi_path_generator_hpp
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess;
     //! Generates a multipath from a random number generator.
     /*! RSG is a sample generator which returns a random sequence.
         It must have the minimal interface:

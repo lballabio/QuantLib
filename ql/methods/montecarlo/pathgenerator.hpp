@@ -26,11 +26,12 @@
 #ifndef quantlib_montecarlo_path_generator_hpp
 #define quantlib_montecarlo_path_generator_hpp
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/methods/montecarlo/brownianbridge.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess;
+    class StochasticProcess1D;
     //! Generates random paths using a sequence generator
     /*! Generates random paths with drift(S,t) and variance(S,t)
         using a gaussian sequence generator

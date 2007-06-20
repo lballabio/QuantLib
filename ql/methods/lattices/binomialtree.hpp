@@ -26,13 +26,12 @@
 #ifndef quantlib_binomial_tree_hpp
 #define quantlib_binomial_tree_hpp
 
-#include <ql/stochasticprocess.hpp>
+
 #include <ql/methods/lattices/tree.hpp>
 #include <ql/instruments/dividendschedule.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
-
+    class StochasticProcess1D;
     //! Binomial tree base class
     /*! \ingroup lattices */
     template <class T>

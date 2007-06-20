@@ -29,7 +29,7 @@
 #include <ql/termstructures/voltermstructure.hpp>
 
 namespace QuantLib {
-
+    class Matrix;
     //! Himalayan-type option pricer
     /*! The payoff of a Himalaya option is computed in the following
         way: Given a basket of N assets, and N time periods, at end of

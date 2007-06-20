@@ -17,6 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/stochasticprocess.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -98,6 +99,12 @@ namespace QuantLib {
                               new TrinomialTree(dynamics()->process(), grid));
         return boost::shared_ptr<Lattice>(
                               new ShortRateTree(trinomial, dynamics(), grid));
+    }
+
+    DiscountFactor OneFactorAffineModel::discount(Time t) const {
+        Real x0 = dynamics()->process()->x0();
+        Rate r0 = dynamics()->shortRate(0.0, x0);
+        return discountBond(0.0, t, r0);
     }
 
 }

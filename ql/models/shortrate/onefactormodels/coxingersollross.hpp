@@ -25,6 +25,7 @@
 #define quantlib_cox_ingersoll_ross_hpp
 
 #include <ql/models/shortrate/onefactormodel.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 

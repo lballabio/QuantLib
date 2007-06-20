@@ -19,6 +19,7 @@
 */
 
 #include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 

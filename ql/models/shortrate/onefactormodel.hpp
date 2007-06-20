@@ -25,12 +25,12 @@
 #ifndef quantlib_one_factor_model_hpp
 #define quantlib_one_factor_model_hpp
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice1d.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
 
 namespace QuantLib {
+    class StochasticProcess1D;
 
     //! Single-factor short-rate model abstract class
     /*! \ingroup shortrate */
@@ -135,11 +135,7 @@ namespace QuantLib {
             return A(now, maturity)*std::exp(-B(now, maturity)*rate);
         }
 
-        DiscountFactor discount(Time t) const {
-            Real x0 = dynamics()->process()->x0();
-            Rate r0 = dynamics()->shortRate(0.0, x0);
-            return discountBond(0.0, t, r0);
-        }
+        DiscountFactor discount(Time t) const;
       protected:
         virtual Real A(Time t, Time T) const = 0;
         virtual Real B(Time t, Time T) const = 0;
