@@ -29,9 +29,10 @@
 
 #include <ql/methods/lattices/tree.hpp>
 #include <ql/instruments/dividendschedule.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
-    class StochasticProcess1D;
+
     //! Binomial tree base class
     /*! \ingroup lattices */
     template <class T>
@@ -188,7 +189,7 @@ namespace QuantLib {
     };
 
 
-	 class Joshi4 : public BinomialTree<Joshi4> {
+     class Joshi4 : public BinomialTree<Joshi4> {
       public:
         Joshi4(const boost::shared_ptr<StochasticProcess1D>&,
                Time end,
