@@ -39,12 +39,12 @@ namespace QuantLib {
                    "resetIndex (" << resetIndex <<
                    ") must be less than rateTimes.size()-1 (" <<
                    rateTimes_.size()-1 << ")");
-        AbcdFunction abcdFunction(a,b,c,d);
+        Abcd abcd(a,b,c,d);
         for (Size i=0; i<=resetIndex; ++i) {
             Time startTime = (i==0 ? 0.0 : rateTimes_[i-1]);
-            variances_[i] = abcdFunction.variance(rateTimes_[resetIndex],
-                                                  rateTimes_[i],
-                                                  startTime);
+            variances_[i] = abcd.variance(startTime,
+                                          rateTimes_[i],
+                                          rateTimes_[resetIndex]);
             Time totTime = rateTimes_[i]-startTime;
             volatilities_[i] = std::sqrt(variances_[i]/totTime);
         }

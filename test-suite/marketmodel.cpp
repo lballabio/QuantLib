@@ -71,9 +71,10 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
-#include <ql/termstructures/volatilities/abcd.hpp>
+#include <ql/termstructures/volatilities/abcdcalibration.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <sstream>
 
 #if defined(BOOST_MSVC)
@@ -1944,20 +1945,22 @@ void MarketModelTest::testAbcdVolatilityFit() {
     BOOST_MESSAGE("Testing Abcd-volatility fit...");
 
     setup();
-
-    Abcd instVol;
+    
+    AbcdCalibration instVol(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1), blackVols);
     Real a0 = instVol.a();
     Real b0 = instVol.b();
     Real c0 = instVol.c();
     Real d0 = instVol.d();
-    Real error0 = instVol.error(blackVols, rateTimes);
+    Real error0 = instVol.error();
 
-    EndCriteria::Type ec = instVol.calibration(blackVols, rateTimes);
+    instVol.compute();
+
+    EndCriteria::Type ec = instVol.endCriteria();
     Real a1 = instVol.a();
     Real b1 = instVol.b();
     Real c1 = instVol.c();
     Real d1 = instVol.d();
-    Real error1 = instVol.error(blackVols, rateTimes);
+    Real error1 = instVol.error();
 
     if (error1>=error0)
         BOOST_FAIL("Parameters:" <<
@@ -1966,13 +1969,14 @@ void MarketModelTest::testAbcdVolatilityFit() {
             "\nc:     " << c0 << " ---> " << c1 <<
             "\nd:     " << d0 << " ---> " << d1 <<
             "\nerror: " << error0 << " ---> " << error1);
-
-    std::vector<Real> k = instVol.k(blackVols, rateTimes);
+    
+    Abcd abcd(a1, b1, c1, d1);
+    std::vector<Real> k = instVol.k(std::vector<Time>(rateTimes.begin(), rateTimes.end()-1), blackVols);
     Real tol = 3.0e-4;
     for (Size i=0; i<blackVols.size(); i++) {
         if (std::abs(k[i]-1.0)>tol) {
             Real modelVol =
-                instVol.volatility(0.0, rateTimes[i], rateTimes[i]);
+                abcd.volatility(0.0, rateTimes[i], rateTimes[i]);
             BOOST_FAIL("\n EndCriteria = " << ec <<
                        "\n Fixing Time = " << rateTimes[i] <<
                        "\n MktVol      = " << io::rate(blackVols[i]) <<

@@ -3497,6 +3497,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ql\termstructures\volatilities\abcdcalibration.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\termstructures\volatilities\abcdcalibration.hpp"
+					>
+				</File>
+				<File
 					RelativePath=".\ql\termstructures\volatilities\all.hpp"
 					>
 				</File>
