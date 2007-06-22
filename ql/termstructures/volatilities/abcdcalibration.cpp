@@ -28,24 +28,22 @@ namespace QuantLib {
                const std::vector<Real>& t,
                const std::vector<Real>& blackVols,
                Real aGuess, Real bGuess, Real cGuess, Real dGuess,
-               bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed, 
+               bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed,
                bool vegaWeighted,
                const boost::shared_ptr<EndCriteria>& endCriteria,
                const boost::shared_ptr<OptimizationMethod>& method)
-    : times_(t),
-      blackVols_(blackVols),
-      a_(aGuess), b_(bGuess), c_(cGuess), d_(dGuess),
-      aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), 
+    : aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
       cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
-      endCriteria_(endCriteria), method_(method), 
-      weights_(blackVols.size(), 1.0/blackVols.size()), 
-      vegaWeighted_(vegaWeighted),
-      abcdEndCriteria_(EndCriteria::None){
-    
+      a_(aGuess), b_(bGuess), c_(cGuess), d_(dGuess),
+      times_(t), blackVols_(blackVols),
+      abcdEndCriteria_(EndCriteria::None), endCriteria_(endCriteria),
+      method_(method), weights_(blackVols.size(), 1.0/blackVols.size()),
+      vegaWeighted_(vegaWeighted) {
+
         QL_REQUIRE(blackVols.size()==t.size(),
                        "mismatch between number of times (" << t.size() <<
                        ") and blackVols (" << blackVols.size() << ")");
-        
+
         // if no optimization method or endCriteria is provided, we provide one
         if (!method_)
             method_ = boost::shared_ptr<OptimizationMethod>(new
@@ -58,7 +56,7 @@ namespace QuantLib {
             endCriteria_ = boost::shared_ptr<EndCriteria>(new
                 EndCriteria(1000, 100, 1.0e-8, 0.3e-4, 0.3e-4));   // Why 0.3e-4 ?
     }
-    
+
     void AbcdCalibration::compute() {
         if (vegaWeighted_) {
             Real weightsSum = 0.0;
@@ -119,7 +117,7 @@ namespace QuantLib {
         return d_;
     }
 
-    
+
     Real AbcdCalibration::value(Real x) const {
         return abcdBlackVolatility(x,a_,b_,c_,d_);
     }
@@ -153,7 +151,7 @@ namespace QuantLib {
         }
         return maxError;
     }
-    
+
     // calculate weighted differences
     Disposable<Array> AbcdCalibration::errors() const {
         Array results(times_.size());
