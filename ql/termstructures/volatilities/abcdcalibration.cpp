@@ -20,7 +20,58 @@
 */
 
 #include <ql/termstructures/volatilities/abcdcalibration.hpp>
+#include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
+
+namespace {
+
+    using namespace QuantLib;
+
+
+    //! optimization constraints
+    class AbcdConstraint : public Constraint {
+        private:
+        class Impl : public Constraint::Impl {
+            public:
+            bool test(const Array& params) const {
+                return params[0] + params[3] > 0.0  // a + d
+                    && params[2] > 0.0              // c
+                    && params[3] > 0.0;             // d
+            }
+        };
+        public:
+        AbcdConstraint()
+            : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
+    };
+
+    class AbcdCostFunction : public CostFunction {
+      public:
+        AbcdCostFunction(AbcdCalibration* abcd)
+        : abcd_(abcd) {}
+
+        Real value(const Array& x) const {
+            if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
+            if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
+            if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
+            if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+            return abcd_->error();
+        }
+        Disposable<Array> values(const Array& x) const {
+            if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
+            if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
+            if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
+            if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+            return abcd_->errors();
+        }
+      private:
+        AbcdCalibration* abcd_;
+    };
+
+}
+
 
 namespace QuantLib {
 
@@ -121,6 +172,7 @@ namespace QuantLib {
     Real AbcdCalibration::value(Real x) const {
         return abcdBlackVolatility(x,a_,b_,c_,d_);
     }
+
     std::vector<Real> AbcdCalibration::k(const std::vector<Real>& t,
                                          const std::vector<Real>& blackVols) const {
         QL_REQUIRE(blackVols.size()==t.size(),

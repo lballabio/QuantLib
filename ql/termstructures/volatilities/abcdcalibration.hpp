@@ -21,23 +21,17 @@
 #ifndef quantlib_abcdcalibration_hpp
 #define quantlib_abcdcalibration_hpp
 
-#include <ql/handle.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/volatilities/abcd.hpp>
 
-#include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/utilities/null.hpp>
-#include <ql/utilities/dataformatters.hpp>
-#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/endcriteria.hpp>
+#include <ql/math/array.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
+
 
 namespace QuantLib {
     
     class Quote;
-
+    class OptimizationMethod;
     //! %AbcdCalibration
     class AbcdCalibration {
       public:
@@ -78,60 +72,15 @@ namespace QuantLib {
         Real a_, b_, c_, d_;
 
       private:
-       
-        //! Parameters
-        std::vector<Real> times_, blackVols_;
-
-        //! optimization constraints
-        class AbcdConstraint : public Constraint {
-            private:
-            class Impl : public Constraint::Impl {
-                public:
-                bool test(const Array& params) const {
-                    return params[0] + params[3] > 0.0  // a + d
-                        && params[2] > 0.0              // c
-                        && params[3] > 0.0;             // d
-                }
-            };
-            public:
-            AbcdConstraint()
-                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
-        };
-        //! function to minimize
-        class AbcdCostFunction;
-        friend class AbcdCostFunction;
-        class AbcdCostFunction : public CostFunction {
-          public:
-            AbcdCostFunction(AbcdCalibration* abcd)
-            : abcd_(abcd) {}
-
-            Real value(const Array& x) const {
-                if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
-                if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
-                if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
-                if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
-                return abcd_->error();
-            }
-            Disposable<Array> values(const Array& x) const {
-                if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
-                if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
-                if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
-                if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
-                return abcd_->errors();
-            }
-          private:
-            AbcdCalibration* abcd_;
-        };
-
-
         // optimization method used for fitting
         mutable EndCriteria::Type abcdEndCriteria_;
         boost::shared_ptr<EndCriteria> endCriteria_;
         boost::shared_ptr<OptimizationMethod> method_;
         mutable std::vector<Real> weights_;
         bool vegaWeighted_;
+        //! Parameters
+        std::vector<Real> times_, blackVols_;
     };
-
 
 }
 
