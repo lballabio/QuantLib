@@ -7,6 +7,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     abcd.hpp \
+    abcdcalibration.hpp \
     interpolatedsmilesection.hpp \
     sabr.hpp \
     sabrinterpolatedsmilesection.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
 
 libVolatilities_la_SOURCES = \
     abcd.cpp \
+    abcdcalibration.cpp \
     sabr.cpp \
     sabrinterpolatedsmilesection.cpp \
     smilesection.cpp
