@@ -26,13 +26,10 @@
 #define quantlib_asian_option_hpp
 
 #include <ql/instruments/oneassetstrikedoption.hpp>
+#include <ql/instruments/averagetype.hpp>
+#include <ql/time/date.hpp>
 
 namespace QuantLib {
-    class Date;
-    //! placeholder for enumerated averaging types
-    struct Average {
-        enum Type { Arithmetic, Geometric };
-    };
 
     //! Continuous-averaging Asian option
     /*! \todo add running average
@@ -116,4 +113,3 @@ namespace QuantLib {
 
 
 #endif
-

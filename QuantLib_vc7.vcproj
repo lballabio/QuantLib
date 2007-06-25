@@ -657,6 +657,9 @@
 				RelativePath=".\ql\instruments\assetswap.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\averagetype.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\barrieroption.cpp">
 			</File>
 			<File

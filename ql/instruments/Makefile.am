@@ -8,6 +8,7 @@ this_include_HEADERS = \
     all.hpp \
     asianoption.hpp \
     assetswap.hpp \
+    averagetype.hpp \
     barrieroption.hpp \
     basketoption.hpp \
     bond.hpp \
