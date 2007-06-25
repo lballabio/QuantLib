@@ -29,8 +29,8 @@
 #include <ql/math/optimization/constraint.hpp>
 
 namespace {
-     using namespace QuantLib;
-     class ParametersConstraint : public Constraint {
+    using namespace QuantLib;
+    class ParametersConstraint : public Constraint {
               private:
                 class Impl : public Constraint::Impl {
                     Size nBeta_;
@@ -52,7 +52,7 @@ namespace {
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
             };
 
-        class ObjectiveFunction : public CostFunction {
+    class ObjectiveFunction : public CostFunction {
           public:
             ObjectiveFunction(CmsMarketCalibration* smileAndCms)
                 :smileAndCms_(smileAndCms),
@@ -77,7 +77,7 @@ namespace {
             virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
         };
 
-        class ParametersConstraintWithFixedMeanReversion : public Constraint {
+    class ParametersConstraintWithFixedMeanReversion : public Constraint {
               private:
                 class Impl : public Constraint::Impl {
                     Size nBeta_;
@@ -98,7 +98,7 @@ namespace {
                 : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
         };
 
-        class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
+    class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
           public:
             ObjectiveFunctionWithFixedMeanReversion(CmsMarketCalibration* smileAndCms,
                                                     Real fixedMeanReversion)
@@ -110,7 +110,12 @@ namespace {
             Real fixedMeanReversion_;
         };
 
-        Real ObjectiveFunction::value(const Array& x) const {
+    
+    //===========================================================================//
+    //                              ObjectiveFunction                            //
+    //===========================================================================//
+
+    Real ObjectiveFunction::value(const Array& x) const {
         updateVolatilityCubeAndCmsMarket(x);
         return switchErrorFunctionOnCalibrationType();
     }
@@ -163,7 +168,7 @@ namespace {
     }
 
     //===========================================================================//
-    //       CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion       //
+    //                      ObjectiveFunctionWithFixedMeanReversion              //
     //===========================================================================//
 
     void ObjectiveFunctionWithFixedMeanReversion::
@@ -534,12 +539,6 @@ namespace QuantLib {
 
         return result;
     }
-
-    //===========================================================================//
-    //                   CmsMarketCalibration::ObjectiveFunction                 //
-    //===========================================================================//
-
-
 
 
 }
