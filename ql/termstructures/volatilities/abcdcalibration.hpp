@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006, 2007 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +33,8 @@ namespace QuantLib {
     
     class Quote;
     class OptimizationMethod;
-    //! %AbcdCalibration
+    class ParametersTransformation;
+
     class AbcdCalibration {
       public:
         AbcdCalibration(
@@ -70,6 +72,7 @@ namespace QuantLib {
 
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
         Real a_, b_, c_, d_;
+        boost::shared_ptr<ParametersTransformation> transformation_;
 
       private:
         // optimization method used for fitting

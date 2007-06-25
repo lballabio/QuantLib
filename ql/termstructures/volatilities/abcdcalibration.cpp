@@ -4,6 +4,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2005, 2006 Klaus Spanderen
+ Copyright (C) 2007 Giorgio Facchinetti
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,27 +26,11 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
+#include <ql/math/optimization/projectedcostfunction.hpp>
 
 namespace {
 
     using namespace QuantLib;
-
-
-    //! optimization constraints
-    class AbcdConstraint : public Constraint {
-        private:
-        class Impl : public Constraint::Impl {
-            public:
-            bool test(const Array& params) const {
-                return params[0] + params[3] > 0.0  // a + d
-                    && params[2] > 0.0              // c
-                    && params[3] > 0.0;             // d
-            }
-        };
-        public:
-        AbcdConstraint()
-            : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl)) {}
-    };
 
     class AbcdCostFunction : public CostFunction {
       public:
@@ -53,21 +38,49 @@ namespace {
         : abcd_(abcd) {}
 
         Real value(const Array& x) const {
-            if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
-            if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
-            if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
-            if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+            const Array y = abcd_->transformation_->direct(x);
+            abcd_->a_ = y[0];
+            abcd_->b_ = y[1];
+            abcd_->c_ = y[2];
+            abcd_->d_ = y[3];
             return abcd_->error();
         }
         Disposable<Array> values(const Array& x) const {
-            if (!abcd_->aIsFixed_) abcd_->a_ = x[0];
-            if (!abcd_->bIsFixed_) abcd_->b_ = x[1];
-            if (!abcd_->cIsFixed_) abcd_->c_ = x[2];
-            if (!abcd_->dIsFixed_) abcd_->d_ = x[3];
+            const Array y = abcd_->transformation_->direct(x);
+            abcd_->a_ = y[0];
+            abcd_->b_ = y[1];
+            abcd_->c_ = y[2];
+            abcd_->d_ = y[3];
             return abcd_->errors();
         }
       private:
         AbcdCalibration* abcd_;
+    };
+
+    class AbcdParametersTransformation :
+          public ParametersTransformation {
+             mutable Array y_;
+             const Real eps1_;
+     public:
+
+        AbcdParametersTransformation() : y_(Array(4)),
+            eps1_(.000000001){ }
+
+        Array direct(const Array& x) const {
+            y_[0] = x[0]*x[0] - x[3]*x[3] + eps1_;  // a + d > 0
+            y_[1] = x[1];
+            y_[2] = x[2]*x[2]+ eps1_;               // c > 0
+            y_[3] = x[3]*x[3]+ eps1_;               // d > 0
+            return y_;
+        }
+
+        Array inverse(const Array& x) const {
+            y_[0] = std::sqrt(x[0] + x[3]- eps1_);
+            y_[1] = x[1];
+            y_[2] = std::sqrt(x[2]- eps1_);
+            y_[3] = std::sqrt(x[3]- eps1_);
+            return y_;
+        }
     };
 
 }
@@ -130,25 +143,44 @@ namespace QuantLib {
             abcdEndCriteria_ = EndCriteria::None;
             return;
         } else {
+
+            AbcdCostFunction costFunction(this);
+            transformation_ = boost::shared_ptr<ParametersTransformation>(new
+                AbcdParametersTransformation);
+
             Array guess(4);
             guess[0] = a_;
             guess[1] = b_;
             guess[2] = c_;
             guess[3] = d_;
 
-            AbcdConstraint constraint;
-            AbcdCostFunction costFunction(this);
-            Problem problem(costFunction, constraint, guess);
-            abcdEndCriteria_ = method_->minimize(problem, *endCriteria_);
+            std::vector<bool> parameterAreFixed(4);
+            parameterAreFixed[0] = aIsFixed_;
+            parameterAreFixed[1] = bIsFixed_;
+            parameterAreFixed[2] = cIsFixed_;
+            parameterAreFixed[3] = dIsFixed_;
 
-            Array result = problem.currentValue();
-            if (!aIsFixed_) a_ = result[0];
-            if (!bIsFixed_) b_ = result[1];
-            if (!cIsFixed_) c_ = result[2];
-            if (!dIsFixed_) d_ = result[3];
+            Array inversedTransformatedGuess(transformation_->inverse(guess));
+            
+            ProjectedCostFunction projectedAbcdCostFunction(costFunction,
+                            inversedTransformatedGuess, parameterAreFixed);
+
+            Array projectedGuess
+                (projectedAbcdCostFunction.project(inversedTransformatedGuess));
+
+            NoConstraint constraint;
+            Problem problem(projectedAbcdCostFunction, constraint, projectedGuess);
+            abcdEndCriteria_ = method_->minimize(problem, *endCriteria_);
+            Array projectedResult(problem.currentValue());
+            Array transfResult(projectedAbcdCostFunction.include(projectedResult));
+
+            Array result = transformation_->direct(transfResult);
+            a_ = result[0];
+            b_ = result[1];
+            c_ = result[2];
+            d_ = result[3];
 
             validateAbcdParameters(a_, b_, c_, d_);
-
         }
     }
 
