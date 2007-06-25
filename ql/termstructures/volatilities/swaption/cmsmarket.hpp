@@ -30,11 +30,11 @@
 
 namespace QuantLib {
 
-     class CmsCouponPricer;
-     class Swap;
-     class SwapIndex;
-     class OptimizationMethod;
-     class YieldTermStructure;
+    class CmsCouponPricer;
+    class Swap;
+    class SwapIndex;
+    class OptimizationMethod;
+    class YieldTermStructure;
 
     //! set of CMS quotes
     class CmsMarket: public LazyObject{
@@ -131,7 +131,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> yieldTermStructure_;
      };
 
-     class CmsMarketCalibration{
+    class CmsMarketCalibration {
 
       public:
 
