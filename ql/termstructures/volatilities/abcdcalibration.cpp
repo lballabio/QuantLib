@@ -99,10 +99,10 @@ namespace QuantLib {
     : aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
       cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
       a_(aGuess), b_(bGuess), c_(cGuess), d_(dGuess),
-      times_(t), blackVols_(blackVols),
       abcdEndCriteria_(EndCriteria::None), endCriteria_(endCriteria),
       method_(method), weights_(blackVols.size(), 1.0/blackVols.size()),
-      vegaWeighted_(vegaWeighted) {
+      vegaWeighted_(vegaWeighted),
+      times_(t), blackVols_(blackVols) {
 
         QL_REQUIRE(blackVols.size()==t.size(),
                        "mismatch between number of times (" << t.size() <<
@@ -161,7 +161,7 @@ namespace QuantLib {
             parameterAreFixed[3] = dIsFixed_;
 
             Array inversedTransformatedGuess(transformation_->inverse(guess));
-            
+
             ProjectedCostFunction projectedAbcdCostFunction(costFunction,
                             inversedTransformatedGuess, parameterAreFixed);
 
