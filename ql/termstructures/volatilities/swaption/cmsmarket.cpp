@@ -25,9 +25,166 @@
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/optimization/problem.hpp> 
+#include <ql/math/optimization/costfunction.hpp> 
+#include <ql/math/optimization/constraint.hpp>
+
+namespace {
+     using namespace QuantLib;
+     class ParametersConstraint : public Constraint {
+              private:
+                class Impl : public Constraint::Impl {
+                    Size nBeta_;
+                  public:
+                    Impl(Size nBeta)
+                    : Constraint::Impl(),nBeta_(nBeta){}
+
+                    bool test(const Array& params) const {
+                        QL_REQUIRE(params.size()==nBeta_+1,"params.size()!=nBeta_+1");
+                        bool areBetasInConstraints = true;
+                        for(Size i=0;i<nBeta_;i++)
+                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
+                        return areBetasInConstraints             // betas
+                            && params[nBeta_]>0.0 && params[nBeta_]<2.0;   // mean reversion
+                    }
+                };
+              public:
+                ParametersConstraint(Size nBeta)
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
+            };
+
+        class ObjectiveFunction : public CostFunction {
+          public:
+            ObjectiveFunction(CmsMarketCalibration* smileAndCms)
+                :smileAndCms_(smileAndCms),
+                volCube_(smileAndCms->volCube_),
+                cmsMarket_(smileAndCms->cmsMarket_),
+                weights_(smileAndCms->weights_),
+                calibrationType_(smileAndCms->calibrationType_){};
+
+                Real value(const Array& x) const;
+                Disposable<Array> values(const Array& x) const;
+
+          protected:
+            Real switchErrorFunctionOnCalibrationType() const;
+            Disposable<Array> switchErrorsFunctionOnCalibrationType() const;
+
+            CmsMarketCalibration* smileAndCms_;
+            Handle<SwaptionVolatilityStructure> volCube_;
+            boost::shared_ptr<CmsMarket> cmsMarket_;
+            Matrix weights_;
+            CmsMarketCalibration::CalibrationType calibrationType_;
+          private:
+            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
+        };
+
+        class ParametersConstraintWithFixedMeanReversion : public Constraint {
+              private:
+                class Impl : public Constraint::Impl {
+                    Size nBeta_;
+                  public:
+                    Impl(Size nBeta)
+                    : Constraint::Impl(),nBeta_(nBeta){}
+
+                    bool test(const Array& params) const {
+                        QL_REQUIRE(params.size()==nBeta_,"params.size()!=nBeta_");
+                        bool areBetasInConstraints = true;
+                        for(Size i=0;i<nBeta_;i++)
+                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
+                        return areBetasInConstraints;
+                    }
+                };
+              public:
+                ParametersConstraintWithFixedMeanReversion(Size nBeta)
+                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
+        };
+
+        class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
+          public:
+            ObjectiveFunctionWithFixedMeanReversion(CmsMarketCalibration* smileAndCms,
+                                                    Real fixedMeanReversion)
+                :ObjectiveFunction(smileAndCms),
+                fixedMeanReversion_(fixedMeanReversion){};
+
+          private:
+            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
+            Real fixedMeanReversion_;
+        };
+
+        Real ObjectiveFunction::value(const Array& x) const {
+        updateVolatilityCubeAndCmsMarket(x);
+        return switchErrorFunctionOnCalibrationType();
+    }
+
+    Disposable<Array> ObjectiveFunction::values(const Array& x) const {
+        updateVolatilityCubeAndCmsMarket(x);
+        return switchErrorsFunctionOnCalibrationType();
+    }
+
+    void ObjectiveFunction::updateVolatilityCubeAndCmsMarket(const Array& x) const {
+        const Array y = x;
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        Size nSwapTenors = swapTenors.size();
+        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 != x.size()");
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        for (Size i=0; i<nSwapTenors; i++){
+            Real beta = y[i];
+            volCubeBySabr->recalibration(beta, swapTenors[i]);
+        }
+        Real meanReversion = y[nSwapTenors];
+        cmsMarket_->reprice(volCube_, meanReversion);
+    }
+
+    Real ObjectiveFunction::switchErrorFunctionOnCalibrationType() const {
+        switch (calibrationType_) {
+            case CmsMarketCalibration::OnSpread:
+                return cmsMarket_->weightedError(weights_);
+            case CmsMarketCalibration::OnPrice:
+                return cmsMarket_->weightedPriceError(weights_);
+            case CmsMarketCalibration::OnForwardCmsPrice:
+                return cmsMarket_->weightedForwardPriceError(weights_);
+            default:
+                QL_FAIL("unknown/illegal calibration type");
+        }
+    }
+
+    Disposable<Array> ObjectiveFunction::
+                                    switchErrorsFunctionOnCalibrationType() const {
+        switch (calibrationType_) {
+            case CmsMarketCalibration::OnSpread:
+                return cmsMarket_->weightedErrors(weights_);
+            case CmsMarketCalibration::OnPrice:
+                return cmsMarket_->weightedPriceErrors(weights_);
+            case CmsMarketCalibration::OnForwardCmsPrice:
+                return cmsMarket_->weightedForwardPriceErrors(weights_);
+            default:
+                QL_FAIL("unknown/illegal calibration type");
+        }
+    }
+
+    //===========================================================================//
+    //       CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion       //
+    //===========================================================================//
+
+    void ObjectiveFunctionWithFixedMeanReversion::
+                                updateVolatilityCubeAndCmsMarket(const Array& x) const {
+        const Array y = x;
+        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
+        Size nSwapTenors = swapTenors.size();
+        QL_REQUIRE(nSwapTenors == x.size(),"bad calibration guess nSwapTenors != x.size()");
+        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+        for (Size i=0; i<nSwapTenors; i++){
+            Real beta = y[i];
+            volCubeBySabr->recalibration(beta, swapTenors[i]);
+        }
+        cmsMarket_->reprice(volCube_, fixedMeanReversion_);
+    }
+}
 
 namespace QuantLib {
-
+    
+           
     //===========================================================================//
     //                                CmsMarket                                  //
     //===========================================================================//
@@ -382,77 +539,7 @@ namespace QuantLib {
     //                   CmsMarketCalibration::ObjectiveFunction                 //
     //===========================================================================//
 
-    Real CmsMarketCalibration::ObjectiveFunction::value(const Array& x) const {
-        updateVolatilityCubeAndCmsMarket(x);
-        return switchErrorFunctionOnCalibrationType();
-    }
 
-    Disposable<Array> CmsMarketCalibration::ObjectiveFunction::values(const Array& x) const {
-        updateVolatilityCubeAndCmsMarket(x);
-        return switchErrorsFunctionOnCalibrationType();
-    }
-
-    void CmsMarketCalibration::ObjectiveFunction::
-                    updateVolatilityCubeAndCmsMarket(const Array& x) const {
-        const Array y = x;
-        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
-        Size nSwapTenors = swapTenors.size();
-        QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        for (Size i=0; i<nSwapTenors; i++){
-            Real beta = y[i];
-            volCubeBySabr->recalibration(beta, swapTenors[i]);
-        }
-        Real meanReversion = y[nSwapTenors];
-        cmsMarket_->reprice(volCube_, meanReversion);
-    }
-
-    Real CmsMarketCalibration::ObjectiveFunction::switchErrorFunctionOnCalibrationType() const {
-        switch (calibrationType_) {
-            case OnSpread:
-                return cmsMarket_->weightedError(weights_);
-            case OnPrice:
-                return cmsMarket_->weightedPriceError(weights_);
-            case OnForwardCmsPrice:
-                return cmsMarket_->weightedForwardPriceError(weights_);
-            default:
-                QL_FAIL("unknown/illegal calibration type");
-        }
-    }
-
-    Disposable<Array> CmsMarketCalibration::ObjectiveFunction::
-                                    switchErrorsFunctionOnCalibrationType() const {
-        switch (calibrationType_) {
-            case OnSpread:
-                return cmsMarket_->weightedErrors(weights_);
-            case OnPrice:
-                return cmsMarket_->weightedPriceErrors(weights_);
-            case OnForwardCmsPrice:
-                return cmsMarket_->weightedForwardPriceErrors(weights_);
-            default:
-                QL_FAIL("unknown/illegal calibration type");
-        }
-    }
-
-    //===========================================================================//
-    //       CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion       //
-    //===========================================================================//
-
-    void CmsMarketCalibration::ObjectiveFunctionWithFixedMeanReversion::
-                                updateVolatilityCubeAndCmsMarket(const Array& x) const {
-        const Array y = x;
-        const std::vector<Period>& swapTenors = cmsMarket_->swapTenors();
-        Size nSwapTenors = swapTenors.size();
-        QL_REQUIRE(nSwapTenors == x.size(),"bad calibration guess nSwapTenors != x.size()");
-        const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
-        for (Size i=0; i<nSwapTenors; i++){
-            Real beta = y[i];
-            volCubeBySabr->recalibration(beta, swapTenors[i]);
-        }
-        cmsMarket_->reprice(volCube_, fixedMeanReversion_);
-    }
 
 
 }

@@ -26,8 +26,6 @@
 #define quantlib_cms_market_h
 
 #include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
-#include <ql/math/optimization/costfunction.hpp> 
-#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/endcriteria.hpp> 
 
 namespace QuantLib {
@@ -159,88 +157,6 @@ namespace QuantLib {
         EndCriteria::Type endCriteria() { return endCriteria_; };
 
       private:
-
-        class ParametersConstraint : public Constraint {
-              private:
-                class Impl : public Constraint::Impl {
-                    Size nBeta_;
-                  public:
-                    Impl(Size nBeta)
-                    : Constraint::Impl(),nBeta_(nBeta){}
-
-                    bool test(const Array& params) const {
-                        QL_REQUIRE(params.size()==nBeta_+1,"params.size()!=nBeta_+1");
-                        bool areBetasInConstraints = true;
-                        for(Size i=0;i<nBeta_;i++)
-                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
-                        return areBetasInConstraints             // betas
-                            && params[nBeta_]>0.0 && params[nBeta_]<2.0;   // mean reversion
-                    }
-                };
-              public:
-                ParametersConstraint(Size nBeta)
-                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
-            };
-
-        class ObjectiveFunction : public CostFunction {
-          public:
-            ObjectiveFunction(CmsMarketCalibration* smileAndCms)
-                :smileAndCms_(smileAndCms),
-                volCube_(smileAndCms->volCube_),
-                cmsMarket_(smileAndCms->cmsMarket_),
-                weights_(smileAndCms->weights_),
-                calibrationType_(smileAndCms->calibrationType_){};
-
-                Real value(const Array& x) const;
-                Disposable<Array> values(const Array& x) const;
-
-          protected:
-            Real switchErrorFunctionOnCalibrationType() const;
-            Disposable<Array> switchErrorsFunctionOnCalibrationType() const;
-
-            CmsMarketCalibration* smileAndCms_;
-            Handle<SwaptionVolatilityStructure> volCube_;
-            boost::shared_ptr<CmsMarket> cmsMarket_;
-            Matrix weights_;
-            CalibrationType calibrationType_;
-          private:
-            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
-        };
-
-        class ParametersConstraintWithFixedMeanReversion : public Constraint {
-              private:
-                class Impl : public Constraint::Impl {
-                    Size nBeta_;
-                  public:
-                    Impl(Size nBeta)
-                    : Constraint::Impl(),nBeta_(nBeta){}
-
-                    bool test(const Array& params) const {
-                        QL_REQUIRE(params.size()==nBeta_,"params.size()!=nBeta_");
-                        bool areBetasInConstraints = true;
-                        for(Size i=0;i<nBeta_;i++)
-                            areBetasInConstraints = areBetasInConstraints && (params[i]>=0.0 && params[i]<=1.0);
-                        return areBetasInConstraints;
-                    }
-                };
-              public:
-                ParametersConstraintWithFixedMeanReversion(Size nBeta)
-                : Constraint(boost::shared_ptr<Constraint::Impl>(new Impl(nBeta))) {}
-        };
-
-        class ObjectiveFunctionWithFixedMeanReversion : public ObjectiveFunction {
-          public:
-            ObjectiveFunctionWithFixedMeanReversion(CmsMarketCalibration* smileAndCms,
-                                                    Real fixedMeanReversion)
-                :ObjectiveFunction(smileAndCms),
-                fixedMeanReversion_(fixedMeanReversion){};
-
-          private:
-            virtual void updateVolatilityCubeAndCmsMarket(const Array& x) const;
-            Real fixedMeanReversion_;
-        };
-
-
         Real error_;
         EndCriteria::Type endCriteria_;
     };

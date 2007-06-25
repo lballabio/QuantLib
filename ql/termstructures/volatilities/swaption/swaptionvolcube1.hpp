@@ -25,13 +25,12 @@
 #define quantlib_swaption_volcube_fit_early_interpolate_later_h
 
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>
-#include <ql/math/interpolations/bilinearinterpolation.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/math/optimization/endcriteria.hpp>
-#include <ql/math/optimization/method.hpp>
+#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
-
+    class Interpolation2D;
+    class EndCriteria;
+    class OptimizationMethod;
     class SwaptionVolCube1 : public SwaptionVolatilityCube {
         class Cube {
           public:
