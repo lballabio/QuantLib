@@ -25,11 +25,15 @@
 #define quantlib_makecms_hpp
 
 #include <ql/cashflows/cmscoupon.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/instruments/swap.hpp>
+//#include <ql/instruments/swap.hpp>
+#include <ql/time/calendar.hpp>
+#include <ql/time/businessdayconvention.hpp>
 
 namespace QuantLib {
-
+    class SwapIndex;
+    class Swap;
+    class Calendar;
+    class IborIndex;
     //! helper class
     /*! This class provides a more comfortable way
         to instantiate standard market constant maturity swap.

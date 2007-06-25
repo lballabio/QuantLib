@@ -24,6 +24,53 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp> 
+#include <ql/quotes/simplequote.hpp>
+
+namespace {
+    using namespace QuantLib;
+    class ImpliedVolHelper {
+          public:
+            ImpliedVolHelper(const CapFloor&,
+                             const Handle<YieldTermStructure>&,
+                             Real targetValue);
+            Real operator()(Volatility x) const;
+            Real derivative(Volatility x) const;
+          private:
+            boost::shared_ptr<PricingEngine> engine_;
+            Handle<YieldTermStructure> termStructure_;
+            Real targetValue_;
+            boost::shared_ptr<SimpleQuote> vol_;
+            const Instrument::results* results_;
+        };
+
+     ImpliedVolHelper::ImpliedVolHelper(
+                              const CapFloor& cap,
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real targetValue)
+    : termStructure_(termStructure), targetValue_(targetValue) {
+
+        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+        Handle<Quote> h(vol_);
+        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
+        cap.setupArguments(engine_->getArguments());
+
+        results_ =
+            dynamic_cast<const Instrument::results*>(engine_->getResults());
+    }
+
+    Real ImpliedVolHelper::operator()(Volatility x) const {
+        vol_->setValue(x);
+        engine_->calculate();
+        return results_->value-targetValue_;
+    }
+
+    Real ImpliedVolHelper::derivative(Volatility x) const {
+        vol_->setValue(x);
+        engine_->calculate();
+        return 0.0;
+        //return results_->vega;
+    }
+}
 
 namespace QuantLib {
 
@@ -242,33 +289,7 @@ namespace QuantLib {
     }
 
 
-    CapFloor::ImpliedVolHelper::ImpliedVolHelper(
-                              const CapFloor& cap,
-                              const Handle<YieldTermStructure>& termStructure,
-                              Real targetValue)
-    : termStructure_(termStructure), targetValue_(targetValue) {
-
-        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        Handle<Quote> h(vol_);
-        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloorEngine(h));
-        cap.setupArguments(engine_->getArguments());
-
-        results_ =
-            dynamic_cast<const Instrument::results*>(engine_->getResults());
-    }
-
-    Real CapFloor::ImpliedVolHelper::operator()(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return results_->value-targetValue_;
-    }
-
-    Real CapFloor::ImpliedVolHelper::derivative(Volatility x) const {
-        vol_->setValue(x);
-        engine_->calculate();
-        return 0.0;
-        //return results_->vega;
-    }
+   
 
     std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {
         switch (t) {

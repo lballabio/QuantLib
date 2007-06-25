@@ -27,6 +27,7 @@
 #include <ql/math/optimization/problem.hpp> 
 #include <ql/math/optimization/costfunction.hpp> 
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/indexes/swapindex.hpp>
 
 namespace {
     using namespace QuantLib;

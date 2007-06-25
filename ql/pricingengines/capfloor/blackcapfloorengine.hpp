@@ -29,6 +29,7 @@
 #include <ql/instruments/capfloor.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/capvolstructures.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

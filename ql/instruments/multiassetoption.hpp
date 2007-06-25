@@ -27,7 +27,6 @@
 #define quantlib_multiasset_option_hpp
 
 #include <ql/option.hpp>
-#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
     class StochasticProcess;

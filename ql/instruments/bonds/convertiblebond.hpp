@@ -25,7 +25,6 @@
 #ifndef quantlib_convertible_bond_hpp
 #define quantlib_convertible_bond_hpp
 
-#include <ql/pricingengine.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/instruments/oneassetstrikedoption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
@@ -36,7 +35,7 @@
 namespace QuantLib {
 
     class IborIndex;
-
+    class PricingEngine;
     //! %callability leaving to the holder the possibility to convert
     class SoftCallability : public Callability {
       public:

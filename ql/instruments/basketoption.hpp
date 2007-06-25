@@ -28,9 +28,9 @@
 
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/multiassetoption.hpp>
+#include <ql/math/array.hpp>
 
 namespace QuantLib {
-
     class BasketPayoff : public Payoff {
       private:
         boost::shared_ptr<Payoff> basePayoff_;

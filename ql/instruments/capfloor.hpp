@@ -27,12 +27,9 @@
 #ifndef quantlib_instruments_capfloor_hpp
 #define quantlib_instruments_capfloor_hpp
 
-#include <ql/numericalmethod.hpp>
 #include <ql/instrument.hpp>
-#include <ql/cashflow.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/handle.hpp>
-#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
@@ -110,20 +107,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure_;
         friend void changeCapFloorType(CapFloor&);
         // helper class for implied volatility calculation
-        class ImpliedVolHelper {
-          public:
-            ImpliedVolHelper(const CapFloor&,
-                             const Handle<YieldTermStructure>&,
-                             Real targetValue);
-            Real operator()(Volatility x) const;
-            Real derivative(Volatility x) const;
-          private:
-            boost::shared_ptr<PricingEngine> engine_;
-            Handle<YieldTermStructure> termStructure_;
-            Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
-            const Instrument::results* results_;
-        };
+        
     };
 
     //! Concrete cap class

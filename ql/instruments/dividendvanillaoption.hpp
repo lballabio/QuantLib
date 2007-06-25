@@ -26,7 +26,7 @@
 
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/instruments/dividendschedule.hpp>
-#include <ql/cashflow.hpp>
+
 
 namespace QuantLib {
 

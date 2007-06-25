@@ -31,7 +31,6 @@
 #include <ql/instrument.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
-#include <ql/interestrate.hpp>
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>

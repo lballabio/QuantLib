@@ -23,7 +23,6 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/cashflows/cashflows.hpp>
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

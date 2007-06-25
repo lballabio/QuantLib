@@ -26,7 +26,6 @@
 #include <ql/cashflows/coupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/yieldcurves/zerospreadedtermstructure.hpp>
 #include <ql/settings.hpp>
 

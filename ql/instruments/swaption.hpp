@@ -27,7 +27,6 @@
 #ifndef quantlib_instruments_swaption_hpp
 #define quantlib_instruments_swaption_hpp
 
-#include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/instruments/vanillaswap.hpp>
 #include <ql/quotes/simplequote.hpp>

@@ -22,7 +22,8 @@
 #ifndef quantlib_abcd_hpp
 #define quantlib_abcd_hpp
 
-#include <ql/math/optimization/costfunction.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
     

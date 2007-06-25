@@ -25,6 +25,7 @@
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/instruments/swap.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 

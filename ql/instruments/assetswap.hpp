@@ -28,7 +28,6 @@
 
 #include <ql/instruments/swap.hpp>
 #include <ql/instruments/bond.hpp>
-#include <ql/interestrate.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
