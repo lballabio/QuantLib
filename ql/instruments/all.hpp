@@ -3,6 +3,7 @@
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/instruments/assetswap.hpp>
+#include <ql/instruments/averagetype.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/instruments/bond.hpp>
