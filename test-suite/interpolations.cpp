@@ -1220,12 +1220,12 @@ void InterpolationTest::testSabrInterpolation(){
     boost::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
 
-    for(Size j=0; j< methods_.size(); j++){
-        for(Size i=0; i< LENGTH(vegaWeighted); i++){
-            for(Size k_a=0; k_a< LENGTH(isAlphaFixed); k_a++){
-            for(Size k_b=0; k_b< LENGTH(isBetaFixed); k_b++){            
-            for(Size k_n=0; k_n< LENGTH(isNuFixed); k_n++){
-            for(Size k_r=0; k_r< LENGTH(isRhoFixed); k_r++){
+    for (Size j=0; j<methods_.size(); ++j) {
+      for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
+        for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
+          for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {            
+            for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
+              for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
                 SABRInterpolation sabrInterpolation(strikes.begin(), strikes.end(),
                                                     volatilities.begin(), expiry, forward,
                                                     alphaGuess, betaGuess, nuGuess, rhoGuess,
@@ -1235,60 +1235,62 @@ void InterpolationTest::testSabrInterpolation(){
                                                     endCriteria, methods_[j]);
                 sabrInterpolation.update();
 
+                bool failed = false;
                 Real calibratedAlpha = sabrInterpolation.alpha();
                 Real calibratedBeta = sabrInterpolation.beta();
                 Real calibratedNu = sabrInterpolation.nu();
                 Real calibratedRho = sabrInterpolation.rho();
+                Real error;
 
-                if (std::fabs(initialAlpha-calibratedAlpha) > calibrationTolerance)
-                    BOOST_ERROR(
-                        "failed to calibrate alpha Sabr parameter: "
-                        << "\n    isAlphaFixed:   " << isAlphaFixed[k_a]
-                        << "\n    isBetaFixed:   " << isBetaFixed[k_b]
-                        << "\n    isNuFixed:   " << isNuFixed[k_n]
-                        << "\n    isRhoFixed:   " << isRhoFixed[k_r]
-                        << "\n    vegaWeighted[i]:   " << vegaWeighted[i]
-                        << "\n    expected:   " << initialAlpha
-                        << "\n    calibrated: " << calibratedAlpha
-                        << "\n    error:      " << std::fabs(initialAlpha-calibratedAlpha));
-                if (std::fabs(initialBeta-calibratedBeta) > calibrationTolerance)
-                    BOOST_ERROR(
-                        "failed to calibrate beta Sabr parameter: "
-                        << "\n    isAlphaFixed:   " << isAlphaFixed[k_a]
-                        << "\n    isBetaFixed:   " << isBetaFixed[k_b]
-                        << "\n    isNuFixed:   " << isNuFixed[k_n]
-                        << "\n    isRhoFixed:   " << isRhoFixed[k_r]
-                        << "\n    vegaWeighted[i]:   " << vegaWeighted[i]
-                        << "\n    expected:   " << initialBeta
-                        << "\n    calibrated: " << calibratedBeta
-                        << "\n    error:      " << std::fabs(initialBeta-calibratedBeta));
-                if (std::fabs(initialNu-calibratedNu) > calibrationTolerance)
-                    BOOST_ERROR(
-                        "failed to calibrate nu Sabr parameter: "
-                        << "\n    isAlphaFixed:   " << isAlphaFixed[k_a]
-                        << "\n    isBetaFixed:   " << isBetaFixed[k_b]
-                        << "\n    isNuFixed:   " << isNuFixed[k_n]
-                        << "\n    isRhoFixed:   " << isRhoFixed[k_r]
-                        << "\n    vegaWeighted[i]:   " << vegaWeighted[i]
-                        << "\n    expected:   " << initialNu
-                        << "\n    calibrated: " << calibratedNu
-                        << "\n    error:      " << std::fabs(initialNu-calibratedNu));
-                if (std::fabs(initialRho-calibratedRho) > calibrationTolerance)
-                    BOOST_ERROR(
-                        "failed to calibrate rho Sabr parameter: "
-                        << "\n    isAlphaFixed:   " << isAlphaFixed[k_a]
-                        << "\n    isBetaFixed:   " << isBetaFixed[k_b]
-                        << "\n    isNuFixed:   " << isNuFixed[k_n]
-                        << "\n    isRhoFixed:   " << isRhoFixed[k_r]
-                        << "\n    vegaWeighted[i]:   " << vegaWeighted[i]
-                        << "\n    expected:   " << initialRho
-                        << "\n    calibrated: " << calibratedRho
-                        << "\n    error:      " << std::fabs(initialRho-calibratedRho));
+                error = std::fabs(initialAlpha-calibratedAlpha);
+                if (error > calibrationTolerance) {
+                    BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
+                                "\n    expected:        " << initialAlpha <<
+                                "\n    calibrated:      " << calibratedAlpha <<
+                                "\n    error:           " << error);
+                    failed = true;
+                }
+
+                error = std::fabs(initialBeta-calibratedBeta);
+                if (error > calibrationTolerance) {
+                    BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
+                                "\n    expected:        " << initialBeta <<
+                                "\n    calibrated:      " << calibratedBeta <<
+                                "\n    error:           " << error);
+                    failed = true;
+                }
+
+                error = std::fabs(initialNu-calibratedNu);
+                if (error > calibrationTolerance) {
+                    BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
+                                "\n    expected:        " << initialNu <<
+                                "\n    calibrated:      " << calibratedNu <<
+                                "\n    error:           " << error);
+                    failed = true;
+                }
+
+                error = std::fabs(initialRho-calibratedRho);
+                if (error > calibrationTolerance) {
+                    BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
+                                "\n    expected:        " << initialRho <<
+                                "\n    calibrated:      " << calibratedRho <<
+                                "\n    error:           " << error);
+                    failed = true;
+                }
+
+                if (failed)
+                    BOOST_FAIL("\nSabr calibration failure:" <<
+                               "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
+                               "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
+                               "\n    isNuFixed:       " << isNuFixed[k_n] <<
+                               "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
+                               "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+
+              }
             }
-            }
-            }
-            }
+          }
         }
+      }
     }
 
 }
