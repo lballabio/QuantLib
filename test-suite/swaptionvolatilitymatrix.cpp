@@ -84,10 +84,10 @@ void setup() {
 }
 
 void makeObservabilityTest(
-                      const std::string& description,
-                      const boost::shared_ptr<SwaptionVolatilityMatrix>& vol,
-                      bool mktDataFloating,
-                      bool referenceDateFloating) {
+                const std::string& description,
+                const boost::shared_ptr<SwaptionVolatilityStructure>& vol,
+                bool mktDataFloating,
+                bool referenceDateFloating) {
     Rate dummyStrike = .02;
     Date referenceDate = Settings::instance().evaluationDate();
     Volatility initialVol = vol->volatility(
@@ -124,12 +124,11 @@ void makeObservabilityTest(
 }
 
 void makeCoherenceTest(
-                      const std::string& description,
-                      const boost::shared_ptr<SwaptionVolatilityMatrix>& vol) {
-
+                const std::string& description,
+                const boost::shared_ptr<SwaptionVolatilityDiscrete>& vol) {
 
     Date refDate = vol->referenceDate();
-    for (Size i=0; i<optionTenors_.size(); i++) {
+    for (Size i=0; i<optionTenors_.size(); ++i) {
         Date expOptDate = calendar_.advance(refDate, optionTenors_[i], bdc_);
         Date actOptDate = vol->optionDates()[i];
         if (actOptDate!=expOptDate)
@@ -144,7 +143,7 @@ void makeCoherenceTest(
 
     Date lengthRef = vol->optionDates()[0];
     DayCounter volDC = vol->dayCounter();
-    for (Size j=0; j<swapTenors_.size(); j++) {
+    for (Size j=0; j<swapTenors_.size(); ++j) {
         Period actSwapTenor = vol->swapTenors()[j];
         Date endDate = lengthRef + swapTenors_[j];
         Time expSwapLength = volDC.yearFraction(lengthRef, endDate);
@@ -161,7 +160,7 @@ void makeCoherenceTest(
     }
 
     Real tolerance = 1.0e-16;
-    for (Size i=0; i<optionTenors_.size(); i++) {
+    for (Size i=0; i<optionTenors_.size(); ++i) {
       for (Size j=0; j<swapTenors_.size(); j++) {
 
           Period thisOptionTenor=  optionTenors_[i];

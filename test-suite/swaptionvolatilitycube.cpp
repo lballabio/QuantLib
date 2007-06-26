@@ -443,7 +443,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     f.lower();
     spread->setValue(.001);
     if(!f.isUp())
-        BOOST_ERROR("spreadedCapletVolatilityStructure "
+        BOOST_ERROR("SpreadedSwaptionVolatilityStructure "
                     << "does not propagate notifications");
 }
 
