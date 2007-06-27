@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-  Copyright (C) 2007 Cristina Duminuco
+ Copyright (C) 2007 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,29 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file replication.hpp
-    \brief Sub, Central, or Super replication
-*/
-
-#ifndef quantlib_replication_hpp
-#define quantlib_replication_hpp
-
-#include <ostream>
+#include <ql/cashflows/replication.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    //! Digital option replication strategy
-    /*! Specification of replication strategies used to price
-        the embedded digital option in a digital coupon.        
-    */
-    struct Replication {
-        enum Type { Sub, Central, Super };
-    };
-
-    /*! \relates Replication */
-    std::ostream& operator<<(std::ostream&,
-                             Replication::Type);
+    std::ostream& operator<<(std::ostream& out, Replication::Type r) {
+        switch (r) {
+          case Replication::Sub :
+            return out << "Sub";
+          case Replication::Central :
+            return out << "Central";
+          case Replication::Super :
+            return out << "Super";
+          default:
+            QL_FAIL("unknown Replication Type (" << Integer(r) << ")");
+        }
+    }
 
 }
-
-#endif

@@ -25,12 +25,17 @@
 #define quantlib_position_hpp
 
 #include <ql/qldefines.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
     struct Position {
         enum Type { Long, Short };
     };
+
+    /*! \relates Position */
+    std::ostream& operator<<(std::ostream&,
+                             Position::Type);
 
 }
 

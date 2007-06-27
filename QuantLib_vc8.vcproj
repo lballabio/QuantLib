@@ -786,6 +786,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\cashflows\replication.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\cashflows\replication.hpp"
 				>
 			</File>
@@ -6266,6 +6270,10 @@
 		</File>
 		<File
 			RelativePath=".\ql\payoff.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ql\position.cpp"
 			>
 		</File>
 		<File
