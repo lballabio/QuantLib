@@ -24,13 +24,12 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helper_h
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
-#include <ql/grid.hpp>
+
 #include <ql/quote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/pricingengine.hpp>
 
 namespace QuantLib {
-
+    class PricingEngine;
     //! liquid market instrument used during calibration
     class CalibrationHelper : public Observer, public Observable {
       public:

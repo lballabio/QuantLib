@@ -17,9 +17,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/stochasticprocess.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
-#include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 
 namespace QuantLib {
