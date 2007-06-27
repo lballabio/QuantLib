@@ -334,15 +334,13 @@ namespace QuantLib {
                     swapCovariancePseudoRoots[k][j][i]*=coeff;
             }
             QL_ENSURE(swapCovariancePseudoRoots[k].rows()==numberOfRates,
-                "step " << k
-                << " abcd vol wrong number of rows: "
-                << swapCovariancePseudoRoots[k].rows()
-                << " instead of " << numberOfRates);
+                      "step " << k << " abcd vol wrong number of rows: " <<
+                      swapCovariancePseudoRoots[k].rows() <<
+                      " instead of " << numberOfRates);
             QL_ENSURE(swapCovariancePseudoRoots[k].columns()==numberOfFactors,
-                "step " << k
-                << " abcd vol wrong number of columns: "
-                << swapCovariancePseudoRoots[k].columns()
-                << " instead of " << numberOfFactors);
+                      "step " << k << " abcd vol wrong number of columns: " <<
+                      swapCovariancePseudoRoots[k].columns() <<
+                      " instead of " << numberOfFactors);
         }
 
         return failures;
