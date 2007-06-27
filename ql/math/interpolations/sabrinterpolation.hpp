@@ -210,12 +210,13 @@ namespace QuantLib {
                 SabrParametersTransformation() : y_(Array(4)),
                     eps1_(.0000001),
                     eps2_(.9999),
-                    dilationFactor_(0.0001){
+                    dilationFactor_(0.001){
                 }
 
                 Array direct(const Array& x) const {
                     y_[0] = x[0]*x[0] + eps1_;                      
-                    y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
+                    //y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
+                    y_[1] = std::exp(-(x[1]*x[1]));
                     y_[2] = x[2]*x[2] + eps1_;
                     y_[3] = eps2_ * std::sin(x[3]);
                     return y_;
@@ -223,7 +224,8 @@ namespace QuantLib {
 
                 Array inverse(const Array& x) const {
                     y_[0] = std::sqrt(x[0] - eps1_);
-                    y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor_;
+                    //y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor_;
+                    y_[1] = std::sqrt(-std::log(x[1]));
                     y_[2] = std::sqrt(x[2] - eps1_);
                     {
                         //arcsin expansion
