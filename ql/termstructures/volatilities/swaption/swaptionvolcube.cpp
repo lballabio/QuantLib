@@ -73,6 +73,8 @@ namespace QuantLib {
             registerWith(swapIndexBase_);
 
         registerWithVolatilitySpread();
+        registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     void SwaptionVolatilityCube::registerWithVolatilitySpread()

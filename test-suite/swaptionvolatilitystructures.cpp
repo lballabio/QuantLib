@@ -287,7 +287,7 @@ void makeObservabilityTest2(const std::string& description,
                                                  dummyStrike + strikeSpreads_[k],
                                                  false);
                 if (v0 != v1)
-                    BOOST_ERROR(description <<
+                    BOOST_FAIL(description <<
                                 " option tenor = " << optionTenors_[i] << 
                                 " swap tenor = " << swapTenors_[j] << 
                                 " strike = " << io::rate(dummyStrike+strikeSpreads_[k])<<
@@ -854,7 +854,7 @@ void SwaptionVolatilityStructuresTest::testSwaptionVolCubeObservability() {
                                                                  parametersGuess_,
                                                                  isParameterFixed_,
                                                                  true));
-    //makeObservabilityTest(description, volCube1, true, true); FAILS
+    //makeObservabilityTest(description, volCube1, true, true); //FAILS
 
     volCube2 = boost::shared_ptr<SwaptionVolCube2>(new SwaptionVolCube2(atmVolMatrix_,
                                            optionTenors_,
@@ -998,9 +998,9 @@ test_suite* SwaptionVolatilityStructuresTest::suite() {
     //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeAtmVols));
     //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeSmile));
     //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolSpreadedCube));
-    //
-    //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeCoherence));
-    //suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeObservability));
+
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeCoherence));
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityStructuresTest::testSwaptionVolCubeObservability));
 
     return suite;
 }

@@ -160,8 +160,7 @@ namespace QuantLib {
 
     void SwaptionVolatilityMatrix::performCalculations() const {
 
-        if (moving_) // check if date recalculation could be avoided
-            initializeOptionDatesAndTimes();
+        SwaptionVolatilityDiscrete::performCalculations();
 
         // we might use iterators here...
         for (Size i=0; i<volatilities_.rows(); ++i)

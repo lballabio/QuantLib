@@ -110,6 +110,7 @@
 #include "swapforwardmappings.hpp"
 #include "swaption.hpp"
 #include "swaptionvolatilitycube.hpp"
+#include "swaptionvolatilitystructures.hpp"
 #include "termstructures.hpp"
 #include "timeseries.hpp"
 #include "tqreigendecomposition.hpp"
@@ -248,6 +249,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwaptionTest::suite());
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
+    test->add(SwaptionVolatilityStructuresTest::suite());
     test->add(TermStructureTest::suite());
     test->add(TimeSeriesTest::suite());
     test->add(TqrEigenDecompositionTest::suite());

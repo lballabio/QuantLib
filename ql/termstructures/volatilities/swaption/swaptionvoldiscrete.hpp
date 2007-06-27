@@ -26,10 +26,12 @@
 
 #include <ql/termstructures/swaptionvolstructure.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/patterns/lazyobject.hpp>
 
 namespace QuantLib {
 
-    class SwaptionVolatilityDiscrete : public SwaptionVolatilityStructure {
+    class SwaptionVolatilityDiscrete : public SwaptionVolatilityStructure,
+                                       public LazyObject   {
       public:
         SwaptionVolatilityDiscrete(const std::vector<Period>& optionTenors,
                                    const std::vector<Period>& swapTenors,
@@ -57,6 +59,20 @@ namespace QuantLib {
         //! implements the conversion between dates and times
         std::pair<Time,Time> convertDates(const Date& optionDates,
                                           const Period& swapTenor) const;
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void update() {
+            if (evaluationDate_ != Settings::instance().evaluationDate()) {
+                evaluationDate_ = Settings::instance().evaluationDate();
+                if (moving_) // check if date recalculation could be avoided
+                        initializeOptionDatesAndTimes();
+            }
+            TermStructure::update();
+            LazyObject::update();
+        };
+        void performCalculations() const;
+        //@}
       protected:
         void checkOptionTenors() const;
         void checkOptionDates() const;
@@ -74,7 +90,7 @@ namespace QuantLib {
         Size nSwapTenors_;
         std::vector<Period> swapTenors_;
         mutable std::vector<Time> swapLengths_;
-
+        Date evaluationDate_;
     };
 
     // inline

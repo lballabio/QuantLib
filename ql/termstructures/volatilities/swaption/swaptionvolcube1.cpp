@@ -74,6 +74,9 @@ namespace QuantLib {
     }
 
     void SwaptionVolCube1::performCalculations() const{
+
+        SwaptionVolatilityDiscrete::performCalculations();
+
         //! set parametersGuess_ by parametersGuessQuotes_
         parametersGuess_ = Cube(optionDates_, swapTenors_,
                                 optionTimes_, swapLengths_, 4);

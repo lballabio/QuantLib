@@ -31,7 +31,6 @@
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/quote.hpp>
-#include <ql/patterns/lazyobject.hpp>
 #include <boost/noncopyable.hpp>
 #include <vector>
 
@@ -49,8 +48,7 @@ namespace QuantLib {
         - <tt>M[i][j]</tt> contains the volatility corresponding
           to the <tt>i</tt>-th option and <tt>j</tt>-th tenor.
     */
-    class SwaptionVolatilityMatrix : public LazyObject,
-                                     public SwaptionVolatilityDiscrete,
+    class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete,
                                      private boost::noncopyable {
       public:
         //! floating reference date, floating market data
@@ -101,7 +99,6 @@ namespace QuantLib {
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
         void performCalculations() const;
         //@}
         //! \name SwaptionVolatilityStructure interface
@@ -191,10 +188,6 @@ namespace QuantLib {
         return volatilityImpl(optionDate, swapTenor,true);
     }
 
-    inline void SwaptionVolatilityMatrix::update(){
-        TermStructure::update();
-        LazyObject::update();
-    }
 }
 
 #endif

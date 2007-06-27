@@ -50,6 +50,9 @@ namespace QuantLib {
                                                  optionDatesAsReal_.begin());
         optionInterpolator_.update();
         optionInterpolator_.enableExtrapolation();
+
+        registerWith(Settings::instance().evaluationDate());
+        evaluationDate_ = Settings::instance().evaluationDate();
     }
 
     SwaptionVolatilityDiscrete::SwaptionVolatilityDiscrete(
@@ -179,6 +182,11 @@ namespace QuantLib {
         Date endDate = startDate + swapTenor;
         Time swapLength = dayCounter().yearFraction(startDate, endDate);
         return std::make_pair(optionTime, swapLength);
+    }
+        
+    void SwaptionVolatilityDiscrete::performCalculations() const {
+         if (moving_) // check if date recalculation could be avoided
+            initializeOptionDatesAndTimes();
     }
 
 }
