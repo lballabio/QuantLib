@@ -347,7 +347,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         targetPrice = underlying->price(termStructure_) + targetOptionPrice ;
         digitalPrice = digitalFlooredCoupon.price(termStructure_);
         error = std::fabs(targetPrice - digitalPrice);
-        tolerance = 1e-06;
+        tolerance = 1.5e-06;
         if (error>tolerance) {
             BOOST_ERROR("\nFloating Coupon + Digital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<
@@ -362,7 +362,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         replicationOptionPrice = digitalFlooredCoupon.putOptionRate() *
                                  nominal_ * accrualPeriod * discount;
         error = std::abs(targetOptionPrice - replicationOptionPrice);
-        optionTolerance = 1e-06;
+        optionTolerance = 1.5e-06;
         if (error>optionTolerance) {
             BOOST_ERROR("\nDigital Put Option:" <<
                         "\nVolatility = " << io::rate(capletVolatility) <<

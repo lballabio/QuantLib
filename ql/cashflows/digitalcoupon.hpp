@@ -28,15 +28,10 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-//
+#include <ql/cashflows/replication.hpp>
 #include <ql/position.hpp>
 
 namespace QuantLib {
-
-    //! settlement information
-    struct Replication {
-        enum Type { Sub, Central, Super };
-    };
 
     //! %DigitalCoupon class
     /*! Implemetation of a floating-rate coupon with digital digital call/put option.
