@@ -72,8 +72,9 @@ QL_TESTS = \
 	swap.hpp swap.cpp \
 	swapforwardmappings.hpp swapforwardmappings.cpp \
 	swaption.hpp swaption.cpp \
-	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
 	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \
+	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
+	swaptionvolatilitystructures.hpp swaptionvolatilitystructures.cpp \
 	termstructures.hpp termstructures.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \

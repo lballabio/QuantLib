@@ -31,7 +31,7 @@
 namespace {
 
     using namespace QuantLib;
-    
+
     class ImpliedVolHelper{
     public:
         ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
@@ -73,18 +73,18 @@ namespace {
 }
 
 namespace QuantLib {
-    
+
     void changeCapFloorType(CapFloor& capFloor) {
         capFloor.type_ = (capFloor.type() == CapFloor::Cap) ?
                          CapFloor::Floor : CapFloor::Cap;
         std::swap(capFloor.capRates_, capFloor.floorRates_);
         capFloor.update();
     }
-    
+
     void CapsStripper::createMarketData() const {
         marketDataCap_.resize(tenors_.size());
         Rate dummyAtmRate = .04; // we will use a real one during boostrap
-        // market data cap (used to compute the price to invert) construction 
+        // market data cap (used to compute the price to invert) construction
         for (Size i = 0 ; i < tenors_.size(); i++) {
             marketDataCap_[i].resize(strikes_.size());
 
@@ -98,7 +98,7 @@ namespace QuantLib {
                const_cast<CapsStripper*>(this)->registerWith(marketDataCap_[i][j]);
            }
         }
-        // if the volatility surface given by the smile sections volatility 
+        // if the volatility surface given by the smile sections volatility
         // structure is empty we will use a simple caplet vol surface
         if (smileSectionInterfaces_.empty())
             if (decoupleInterpolation_)
@@ -115,7 +115,7 @@ namespace QuantLib {
                                                     volatilityDayCounter_,
                                                     marketDataCap_,
                                                     strikes_));
-        // otherwise we use an HybridCapletVolatilityStructure            
+        // otherwise we use an HybridCapletVolatilityStructure
         else{
              boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure(
                  new SmileSectionsVolStructure(referenceDate(),
@@ -123,14 +123,14 @@ namespace QuantLib {
                                                smileSectionInterfaces_));
              boost::shared_ptr<ParametrizedCapletVolStructure> volatilitiesFromCaps;
              if (decoupleInterpolation_)
-                 volatilitiesFromCaps 
+                 volatilitiesFromCaps
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new DecInterpCapletVolStructure(referenceDate(),
                                         volatilityDayCounter_,
                                         marketDataCap_,
                                         strikes_));
              else
-                 volatilitiesFromCaps 
+                 volatilitiesFromCaps
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new BilinInterpCapletVolStructure(referenceDate(),
                                         volatilityDayCounter_,
@@ -180,11 +180,11 @@ namespace QuantLib {
       impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
       maxEvaluations_(maxEvaluations),
       atmRates_(tenors_.size()),
+      vols_(vols),
       index_(index),
       smileSectionInterfaces_(smileSectionInterfaces),
-      decoupleInterpolation_(decoupleInterpolation),
-      vols_(vols){
-      enableExtrapolation(allowExtrapolation);
+      decoupleInterpolation_(decoupleInterpolation) {
+        enableExtrapolation(allowExtrapolation);
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
                    ") and vol rows(" << vols.size() << ")");
@@ -212,11 +212,11 @@ namespace QuantLib {
         try {
             for (j=0 ; j<strikes_.size(); ++j) {
                 for (i=0 ; i<tenors_.size(); ++i) {
-                    CapFloor::Type requestedType = 
+                    CapFloor::Type requestedType =
                     (strikes_[j]<atmRates_[i])? CapFloor::Floor:CapFloor::Cap;
                     CapFloor & mktCap = *marketDataCap_[i][j];
                     // change the marketDataCap_ type if necessary
-                    if (requestedType!=mktCap.type()) 
+                    if (requestedType!=mktCap.type())
                         changeCapFloorType(mktCap);
                     capPrice = mktCap.NPV();
                     // change the calibCap_ type if necessary
