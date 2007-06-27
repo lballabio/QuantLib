@@ -87,16 +87,22 @@ namespace QuantLib {
           Volatility volatilityImpl(Time t, Rate r) const;
         //@}
       private:
-        void createMarketData();
+        mutable Date evaluationDate;
+        void createMarketData() const;
         mutable CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
         std::vector<Period> tenors_;
         std::vector<Rate> strikes_;
         Real impliedVolatilityAccuracy_;
         Size maxEvaluations_;
-        boost::shared_ptr<ParametrizedCapletVolStructure>
+        mutable boost::shared_ptr<ParametrizedCapletVolStructure>
             parametrizedCapletVolStructure_;
         mutable std::vector<Rate> atmRates_;
+        std::vector<std::vector<Handle<Quote> > > vols_;
+        const boost::shared_ptr<IborIndex> index_;
+        const std::vector<boost::shared_ptr<SmileSection> > 
+            smileSectionInterfaces_;
+        const bool decoupleInterpolation_;
     };
 
     inline DayCounter CapsStripper::dayCounter() const {

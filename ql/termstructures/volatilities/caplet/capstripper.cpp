@@ -80,93 +80,68 @@ namespace QuantLib {
         std::swap(capFloor.capRates_, capFloor.floorRates_);
         capFloor.update();
     }
-
-    CapsStripper::CapsStripper(
-         const std::vector<Period>& tenors,
-         const std::vector<Rate>& strikes,
-         const std::vector<std::vector<Handle<Quote> > >& vols,
-         const boost::shared_ptr<IborIndex>& index,
-         const Handle< YieldTermStructure >,
-         const DayCounter& volatilityDayCounter,
-         Real impliedVolatilityAccuracy,
-         Size maxEvaluations,
-         const std::vector<boost::shared_ptr<SmileSection> >&
-             smileSectionInterfaces,
-         bool allowExtrapolation,
-         bool decoupleInterpolation)
-    : CapletVolatilityStructure(0, index->fixingCalendar()),
-      volatilityDayCounter_(volatilityDayCounter),
-      tenors_(tenors), strikes_(strikes),
-      impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
-      maxEvaluations_(maxEvaluations),
-      atmRates_(tenors_.size()){
-      enableExtrapolation(allowExtrapolation);
-        QL_REQUIRE(vols.size()==tenors.size(),
-                   "mismatch between tenors(" << tenors.size() <<
-                   ") and vol rows(" << vols.size() << ")");
-        QL_REQUIRE(vols[0].size()==strikes.size(),
-                   "mismatch between strikes(" << strikes.size() <<
-                   ") and vol columns(" << vols[0].size() << ")");
-
-        marketDataCap_.resize(tenors.size());
-        Rate dummyAtmRate = .04; // we will use a real ones during boostrap
+    
+    void CapsStripper::createMarketData() const {
+        marketDataCap_.resize(tenors_.size());
+        Rate dummyAtmRate = .04; // we will use a real one during boostrap
+        // market data cap (used to compute the price to invert) construction 
         for (Size i = 0 ; i < tenors_.size(); i++) {
             marketDataCap_[i].resize(strikes_.size());
 
            for (Size j = 0 ; j < strikes_.size(); j++) {
                boost::shared_ptr<PricingEngine> blackCapFloorEngine(new
-                   BlackCapFloorEngine(vols[i][j], volatilityDayCounter));
+                   BlackCapFloorEngine(vols_[i][j], volatilityDayCounter_));
                CapFloor::Type type =
                    (strikes_[j] < dummyAtmRate)? CapFloor::Floor : CapFloor::Cap;
                marketDataCap_[i][j] = MakeCapFloor(type, tenors_[i],
-                        index, strikes_[j], 0*Days, blackCapFloorEngine);
-               registerWith(marketDataCap_[i][j]);
+                        index_, strikes_[j], 0*Days, blackCapFloorEngine);
+               const_cast<CapsStripper*>(this)->registerWith(marketDataCap_[i][j]);
            }
         }
         // if the volatility surface given by the smile sections volatility 
         // structure is empty we will use a simple caplet vol surface
-        if (smileSectionInterfaces.empty())
-            if (decoupleInterpolation)
+        if (smileSectionInterfaces_.empty())
+            if (decoupleInterpolation_)
                 parametrizedCapletVolStructure_
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new DecInterpCapletVolStructure(
-                            referenceDate(),volatilityDayCounter,
+                            referenceDate(),volatilityDayCounter_,
                             marketDataCap_,
-                            strikes));
+                            strikes_));
             else
                 parametrizedCapletVolStructure_
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new BilinInterpCapletVolStructure(referenceDate(),
-                                                    volatilityDayCounter,
+                                                    volatilityDayCounter_,
                                                     marketDataCap_,
-                                                    strikes));
+                                                    strikes_));
         // otherwise we use an HybridCapletVolatilityStructure            
         else{
              boost::shared_ptr<SmileSectionsVolStructure> smileSectionsVolStructure(
                  new SmileSectionsVolStructure(referenceDate(),
-                                               volatilityDayCounter,
-                                               smileSectionInterfaces));
+                                               volatilityDayCounter_,
+                                               smileSectionInterfaces_));
              boost::shared_ptr<ParametrizedCapletVolStructure> volatilitiesFromCaps;
-             if (decoupleInterpolation)
+             if (decoupleInterpolation_)
                  volatilitiesFromCaps 
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new DecInterpCapletVolStructure(referenceDate(),
-                                        volatilityDayCounter,
+                                        volatilityDayCounter_,
                                         marketDataCap_,
-                                        strikes));
+                                        strikes_));
              else
                  volatilitiesFromCaps 
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new BilinInterpCapletVolStructure(referenceDate(),
-                                        volatilityDayCounter,
+                                        volatilityDayCounter_,
                                         marketDataCap_,
-                                        strikes));
+                                        strikes_));
 
              parametrizedCapletVolStructure_
                    = boost::shared_ptr<ParametrizedCapletVolStructure>(
                     new HybridCapletVolatilityStructure
                                         (referenceDate(),
-                                        volatilityDayCounter,
+                                        volatilityDayCounter_,
                                         volatilitiesFromCaps,
                                         smileSectionsVolStructure));
         }
@@ -186,7 +161,46 @@ namespace QuantLib {
         }
     }
 
+    CapsStripper::CapsStripper(
+         const std::vector<Period>& tenors,
+         const std::vector<Rate>& strikes,
+         const std::vector<std::vector<Handle<Quote> > >& vols,
+         const boost::shared_ptr<IborIndex>& index,
+         const Handle< YieldTermStructure >,
+         const DayCounter& volatilityDayCounter,
+         Real impliedVolatilityAccuracy,
+         Size maxEvaluations,
+         const std::vector<boost::shared_ptr<SmileSection> >&
+             smileSectionInterfaces,
+         bool allowExtrapolation,
+         bool decoupleInterpolation)
+    : CapletVolatilityStructure(0, index->fixingCalendar()),
+      volatilityDayCounter_(volatilityDayCounter),
+      tenors_(tenors), strikes_(strikes),
+      impliedVolatilityAccuracy_(impliedVolatilityAccuracy),
+      maxEvaluations_(maxEvaluations),
+      atmRates_(tenors_.size()),
+      index_(index),
+      smileSectionInterfaces_(smileSectionInterfaces),
+      decoupleInterpolation_(decoupleInterpolation),
+      vols_(vols){
+      enableExtrapolation(allowExtrapolation);
+        QL_REQUIRE(vols.size()==tenors.size(),
+                   "mismatch between tenors(" << tenors.size() <<
+                   ") and vol rows(" << vols.size() << ")");
+        QL_REQUIRE(vols[0].size()==strikes.size(),
+                   "mismatch between strikes(" << strikes.size() <<
+                   ") and vol columns(" << vols[0].size() << ")");
+        registerWith(Settings::instance().evaluationDate());
+        evaluationDate = Settings::instance().evaluationDate();
+        createMarketData();
+    }
+
     void CapsStripper::performCalculations () const {
+        if(evaluationDate != Settings::instance().evaluationDate()) {
+            createMarketData();
+            evaluationDate = Settings::instance().evaluationDate();
+        }
         Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
         Size i,j;
