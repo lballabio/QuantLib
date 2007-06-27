@@ -47,25 +47,24 @@ namespace QuantLib {
 
         // Calculate correlation matrix
         Size nbRows = rateTimes.size()-1;
-        Matrix correlations(nbRows, nbRows);
+        Matrix correlations(nbRows, nbRows, 0.0);
         for (Size i=0; i<nbRows; ++i) {
-            correlations[i][i] = 1.0;
-            for (Size j=0; j<i; ++j)
-                if (time<=rateTimes[j]) {
-                    // correlation is defined only between 
-                    // (alive) stochastic rates...
-                    correlations[i][j] = correlations[j][i] =
-                        longTermCorr + (1.0-longTermCorr) *
-                        std::exp(-beta*std::fabs(
-                            std::pow(rateTimes[i]-time, gamma) -
-                            std::pow(rateTimes[j]-time, gamma)
-                            )
-                        );
-                } else {
-                    // ...so, if rates have already fixed 
-                    // we put correlation to zero.
-                    correlations[i][j] = correlations[j][i] = 0.0;
+            // correlation is defined only between 
+            // (alive) stochastic rates...
+            if (time<=rateTimes[i]) {
+                correlations[i][i] = 1.0;
+                for (Size j=0; j<i; ++j) {
+                    if (time<=rateTimes[j]) {
+                        correlations[i][j] = correlations[j][i] =
+                            longTermCorr + (1.0-longTermCorr) *
+                            std::exp(-beta*std::fabs(
+                                std::pow(rateTimes[i]-time, gamma) -
+                                std::pow(rateTimes[j]-time, gamma)
+                                )
+                            );
+                    }
                 }
+            }
         }
         return correlations;
     }

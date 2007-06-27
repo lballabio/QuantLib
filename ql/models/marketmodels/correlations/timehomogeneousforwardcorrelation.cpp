@@ -55,7 +55,7 @@ namespace QuantLib {
                                                                0.0));
         for (Size k=0; k<correlations.size(); ++k) {
             // proper diagonal values
-            for (Size i=0; i<numberOfRates; ++i)
+            for (Size i=k; i<numberOfRates; ++i)
                 correlations[k][i][i] = 1.0;
             // copy only time homogeneous values
             for (Size i=k; i<numberOfRates; ++i) {

@@ -47,14 +47,14 @@ namespace QuantLib {
         for (Size k = 0; k<fwdCorrMatrices.size(); ++k) {
             swapCorrMatrices_[k] = CovarianceDecomposition(
                 zed * fwdCorrMatrices[k] * zedT).correlationMatrix();
-            //// zero expired rates' correlation coefficients
-            //const std::vector<Time>& rateTimes = curveState.rateTimes();
-            //const std::vector<Time>& corrTimes = fwdCorr_->times();
-            //for (Size i=0; i<numberOfRates_; ++i)
-            //    for (Size j=0; j<i; ++j)
-            //        if (corrTimes[k]>rateTimes[j])
-            //            swapCorrMatrices_[k][i][j] =
-            //                swapCorrMatrices_[k][j][i] = 0.0;
+            // zero expired rates' correlation coefficients
+            const std::vector<Time>& rateTimes = curveState.rateTimes();
+            const std::vector<Time>& corrTimes = fwdCorr_->times();
+            for (Size i=0; i<numberOfRates_; ++i)
+                for (Size j=0; j<=i; ++j)
+                    if (corrTimes[k]>rateTimes[j])
+                        swapCorrMatrices_[k][i][j] =
+                            swapCorrMatrices_[k][j][i] = 0.0;
         }
     }
 
