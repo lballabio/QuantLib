@@ -20,7 +20,6 @@
 */
 
 #include <ql/indexes/interestrateindex.hpp>
-#include <ql/indexes/indexmanager.hpp>
 #include <ql/settings.hpp>
 #include <sstream>
 
