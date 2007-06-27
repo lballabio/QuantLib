@@ -17,6 +17,7 @@ this_include_HEADERS = \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
     rangeaccrual.hpp \
+    replication.hpp \
     simplecashflow.hpp \
     timebasket.hpp
 
@@ -33,6 +34,7 @@ libCashFlows_la_SOURCES = \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
     rangeaccrual.cpp \
+    replication.cpp \
     timebasket.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la
