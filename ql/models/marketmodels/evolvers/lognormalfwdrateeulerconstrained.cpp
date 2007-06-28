@@ -23,7 +23,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
 #include <ql/models/marketmodels/driftcomputation/lmmdriftcalculator.hpp>
-#include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 
 namespace QuantLib {

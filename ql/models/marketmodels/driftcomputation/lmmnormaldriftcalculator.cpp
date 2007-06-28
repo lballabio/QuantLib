@@ -19,7 +19,6 @@
 */
 
 #include <ql/models/marketmodels/driftcomputation/lmmnormaldriftcalculator.hpp>
-#include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 

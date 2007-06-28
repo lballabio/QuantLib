@@ -23,7 +23,6 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/browniangenerator.hpp>
 #include <ql/models/marketmodels/driftcomputation/smmdriftcalculator.hpp>
-#include <ql/models/marketmodels/duffsdeviceinnerproduct.hpp>
 
 namespace QuantLib {
 
