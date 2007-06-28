@@ -24,13 +24,13 @@
 
 #include <ql/models/marketmodels/evolver.hpp>
 #include <ql/models/marketmodels/curvestates/cmswapcurvestate.hpp>
+#include <ql/models/marketmodels/driftcomputation/cmsmmdriftcalculator.hpp>
 
 namespace QuantLib {
 
     class MarketModel;
     class BrownianGenerator;
     class BrownianGeneratorFactory;
-    class CMSMMDriftCalculator;
 
     //! Predictor-Corrector
     class LogNormalCmSwapRatePc : public MarketModelEvolver {
