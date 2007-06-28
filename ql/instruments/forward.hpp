@@ -32,10 +32,9 @@
 #include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/payoff.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 namespace QuantLib {
-
-    class YieldTermStructure;
 
     //! Abstract base forward class
     /*! Derived classes must implement the virtual functions
