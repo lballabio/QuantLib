@@ -2,6 +2,7 @@
 /* Add the files to be included into Makefile.am instead. */
 
 #include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
+#include <ql/termstructures/volatilities/swaption/cmsmarketcalibration.hpp>
 #include <ql/termstructures/volatilities/swaption/spreadedswaptionvolstructure.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionconstantvol.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube.hpp>

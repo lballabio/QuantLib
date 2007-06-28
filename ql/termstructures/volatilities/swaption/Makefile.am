@@ -5,6 +5,7 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     cmsmarket.hpp \
+    cmsmarketcalibration.hpp \
     spreadedswaptionvolstructure.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
@@ -15,6 +16,7 @@ this_include_HEADERS = \
 
 libSwaptionVol_la_SOURCES = \
     cmsmarket.cpp \
+    cmsmarketcalibration.cpp \
     spreadedswaptionvolstructure.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
