@@ -2322,6 +2322,9 @@
 				RelativePath=".\swaptionvolatilitymatrix.cpp">
 			</File>
 			<File
+				RelativePath=".\swaptionvolatilitystructures.cpp">
+			</File>
+			<File
 				RelativePath="termstructures.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2684,6 +2687,9 @@
 			</File>
 			<File
 				RelativePath=".\swaptionvolatilitymatrix.hpp">
+			</File>
+			<File
+				RelativePath=".\swaptionvolatilitystructures.hpp">
 			</File>
 			<File
 				RelativePath="termstructures.hpp">
