@@ -26,14 +26,12 @@
 #define quantlib_cms_market_h
 
 #include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
-#include <ql/math/optimization/endcriteria.hpp> 
 
 namespace QuantLib {
 
     class CmsCouponPricer;
     class Swap;
     class SwapIndex;
-    class OptimizationMethod;
     class YieldTermStructure;
 
     //! set of CMS quotes
@@ -130,36 +128,6 @@ namespace QuantLib {
         std::vector< std::vector< boost::shared_ptr<Swap> > > forwardSwaps_;
         Handle<YieldTermStructure> yieldTermStructure_;
      };
-
-    class CmsMarketCalibration {
-
-      public:
-
-        enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
-
-        CmsMarketCalibration(
-            Handle<SwaptionVolatilityStructure>& volCube,
-            boost::shared_ptr<CmsMarket>& cmsMarket,
-            const Matrix& weights,
-            CalibrationType calibrationType);
-
-        Handle<SwaptionVolatilityStructure> volCube_;
-        boost::shared_ptr<CmsMarket> cmsMarket_;
-        Matrix weights_;
-        CalibrationType calibrationType_;
-        Matrix sparseSabrParameters_, denseSabrParameters_, browseCmsMarket_;
-
-        Array compute(const boost::shared_ptr<EndCriteria>& endCriteria,
-                      const boost::shared_ptr<OptimizationMethod>& method,
-                      const Array& guess,
-                      bool isMeanReversionFixed);
-        Real error(){return error_;}
-        EndCriteria::Type endCriteria() { return endCriteria_; };
-
-      private:
-        Real error_;
-        EndCriteria::Type endCriteria_;
-    };
 
 }
 

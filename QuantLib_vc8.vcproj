@@ -3624,6 +3624,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarketcalibration.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ql\termstructures\volatilities\swaption\cmsmarketcalibration.hpp"
+						>
+					</File>
+					<File
 						RelativePath=".\ql\termstructures\volatilities\swaption\spreadedswaptionvolstructure.cpp"
 						>
 					</File>
