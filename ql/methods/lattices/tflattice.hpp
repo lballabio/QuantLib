@@ -32,7 +32,7 @@ namespace QuantLib {
 
     //! Binomial lattice approximating the Tsiveriotis-Fernandes model
     /*! \ingroup lattices */
-	template <class T>
+    template <class T>
     class TsiveriotisFernandesLattice : public BlackScholesLattice<T> {
       public:
         TsiveriotisFernandesLattice(const boost::shared_ptr<T>& tree,
@@ -62,7 +62,7 @@ namespace QuantLib {
     };
 
 
-	// template definitions
+    // template definitions
 
     template <class T>
     TsiveriotisFernandesLattice<T>::TsiveriotisFernandesLattice(
@@ -75,14 +75,8 @@ namespace QuantLib {
 
         dt_ = end/steps;
 
-        Real a = std::exp((riskFreeRate-divYield)*dt_);
-
-        Real u = std::exp(sigma*(std::sqrt(dt_)));
-
-        Real d = 1/u;
-
-        pu_ = (a-d)/(u-d);
-        pd_ = 1 - pu_;
+        pd_ = tree->probability(0,0,0);
+        pu_ = tree->probability(0,0,1);
 
         riskFreeRate_ = riskFreeRate;
         creditSpread_ = creditSpread;
@@ -120,15 +114,15 @@ namespace QuantLib {
     }
 
     template <class T>
-	void TsiveriotisFernandesLattice<T>::rollback(
+    void TsiveriotisFernandesLattice<T>::rollback(
                                      DiscretizedAsset& asset, Time to) const {
         partialRollback(asset,to);
         asset.adjustValues();
     }
 
 
-	template <class T>
-	void TsiveriotisFernandesLattice<T>::partialRollback(
+    template <class T>
+    void TsiveriotisFernandesLattice<T>::partialRollback(
                                      DiscretizedAsset& asset, Time to) const {
 
         Time from = asset.time();
