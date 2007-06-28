@@ -123,6 +123,7 @@ libUnitMain_la_CXXFLAGS = ${BOOST_UNIT_TEST_MAIN_CXXFLAGS}
 main.cpp: Makefile.am
 	echo "#ifdef BOOST_TEST_DYN_LINK" > $@
 	echo "#include <boost/test/unit_test.hpp>" >> $@
+	echo "#include <boost/test/framework.hpp>" >> $@
 	echo "using namespace boost::unit_test;" >> $@
 	echo "test_suite* init_unit_test_suite(int, char* []);" >> $@
 	echo "bool init_function() {" >> $@
