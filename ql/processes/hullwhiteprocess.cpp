@@ -144,5 +144,12 @@ namespace QuantLib {
                T-t;
     }
 
+    Real HullWhiteForwardProcess::a() const {
+        return a_;
+    }
+
+    Real HullWhiteForwardProcess::sigma() const {
+        return sigma_;
+    }
 }
 

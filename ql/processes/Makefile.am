@@ -11,6 +11,8 @@ this_include_HEADERS = \
 	geometricbrownianprocess.hpp \
 	hestonprocess.hpp \
 	hullwhiteprocess.hpp \
+	hybridhestonhullwhiteprocess.hpp \
+	jointstochasticprocess.hpp \
 	lfmcovarparam.hpp \
 	lfmhullwhiteparam.hpp \
 	lfmprocess.hpp \
@@ -27,6 +29,8 @@ libProcesses_la_SOURCES = \
 	geometricbrownianprocess.cpp \
 	hestonprocess.cpp \
 	hullwhiteprocess.cpp \
+	hybridhestonhullwhiteprocess.cpp \
+	jointstochasticprocess.cpp \
 	lfmcovarparam.cpp \
 	lfmhullwhiteparam.cpp \
 	lfmprocess.cpp \

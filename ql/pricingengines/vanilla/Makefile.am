@@ -4,6 +4,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    analyticbsmhullwhiteengine.hpp \
     analyticdigitalamericanengine.hpp \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
@@ -32,9 +33,11 @@ this_include_HEADERS = \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \
-    mcvanillaengine.hpp
+    mcvanillaengine.hpp \
+    mchestonhullwhiteengine.hpp
 
 libVanillaEngines_la_SOURCES = \
+    analyticbsmhullwhiteengine.cpp \
     analyticdigitalamericanengine.cpp \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
@@ -52,7 +55,8 @@ libVanillaEngines_la_SOURCES = \
     fdstepconditionengine.cpp \
     fdvanillaengine.cpp \
     mcamericanengine.cpp \
-    mcdigitalengine.cpp
+    mcdigitalengine.cpp \
+    mchestonhullwhiteengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la
 

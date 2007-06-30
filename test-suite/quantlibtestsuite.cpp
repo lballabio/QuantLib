@@ -71,6 +71,7 @@
 #include "forwardoption.hpp"
 #include "gaussianquadratures.hpp"
 #include "hestonmodel.hpp"
+#include "hybridhestonhullwhiteprocess.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -211,6 +212,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ForwardOptionTest::suite());
     test->add(GaussianQuadraturesTest::suite());
     test->add(HestonModelTest::suite());
+    test->add(HybridHestonHullWhiteProcessTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());

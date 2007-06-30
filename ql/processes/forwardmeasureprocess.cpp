@@ -32,6 +32,9 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    Time ForwardMeasureProcess::getForwardMeasureTime() const {
+        return T_;
+    }
 
     // 1-D specialization
 
@@ -44,5 +47,8 @@ namespace QuantLib {
         notifyObservers();
     }
 
+    Time ForwardMeasureProcess1D::getForwardMeasureTime() const {
+        return T_;
+    }
 }
 

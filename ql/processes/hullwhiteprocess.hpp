@@ -70,14 +70,17 @@ namespace QuantLib {
         Real stdDeviation(Time t0, Real x0, Time dt) const;
         Real variance(Time t0, Real x0, Time dt) const;
         //@}
+
+        Real a() const;
+        Real sigma() const;
+        Real alpha(Time t) const;
+        Real M_T(Real s, Real t, Real T) const;
+        Real B(Time t, Time T) const;
+
     protected:
         boost::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> process_;
         Handle<YieldTermStructure> h_;
         Real a_, sigma_;
-
-        Real alpha(Time t) const;
-        Real M_T(Real s, Real t, Real T) const;
-        Real B(Time t, Time T) const;
     };
 
 }
