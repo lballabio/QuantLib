@@ -8,6 +8,8 @@
 #include <ql/processes/geometricbrownianprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
+#include <ql/processes/hybridhestonhullwhiteprocess.hpp>
+#include <ql/processes/jointstochasticprocess.hpp>
 #include <ql/processes/lfmcovarparam.hpp>
 #include <ql/processes/lfmhullwhiteparam.hpp>
 #include <ql/processes/lfmprocess.hpp>
