@@ -104,7 +104,8 @@ namespace QuantLib {
         Matrix tmp(2,2);
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1]) 
                          : (discretization_ == Reflection) ? -sqrt(-x[1]) 
-                         : 0.0;
+                         : 1e-8; // set vol to (almost) zero but still
+                                 // expose some correlation information
         const Real sigma2 = sigmav_ * vol;
 
         tmp[0][0] = vol;          tmp[0][1] = 0.0;
@@ -137,8 +138,8 @@ namespace QuantLib {
           case PartialTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0; 
             vol2 = sigmav_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0, Continuous)
-                  - dividendYield_->forwardRate(t0, t0, Continuous)
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
             nu = kappav_*(thetav_ - x0[1]);
              
@@ -148,8 +149,8 @@ namespace QuantLib {
           case FullTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0; 
             vol2 = sigmav_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0, Continuous)
-                  - dividendYield_->forwardRate(t0, t0, Continuous)
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol * vol;
             nu = kappav_*(thetav_ - vol*vol);
              
@@ -159,8 +160,8 @@ namespace QuantLib {
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
             vol2 = sigmav_ * vol; 
-            mu =    riskFreeRate_->forwardRate(t0, t0, Continuous)
-                  - dividendYield_->forwardRate(t0, t0, Continuous)
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                     - 0.5 * vol*vol;
             nu = kappav_*(thetav_ - vol*vol);
 
@@ -173,10 +174,10 @@ namespace QuantLib {
             // process by using y(t)=x(t)-\frac{rho}{sigma}\nu(t) 
             // and Ito's Lemma. Then use exact sampling for the variance 
             // process. For further details please read the wilmott thread
-            // "QuantLib code is very high quatlity"
+            // "QuantLib code is very high quality"
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0; 
-            mu =   riskFreeRate_->forwardRate(t0, t0, Continuous)
-                 - dividendYield_->forwardRate(t0, t0, Continuous)
+            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                 - dividendYield_->forwardRate(t0, t0+dt, Continuous)
                    - 0.5 * vol*vol;
 
             df  = 4*thetav_*kappav_/(sigmav_*sigmav_);
