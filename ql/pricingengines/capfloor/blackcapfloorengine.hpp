@@ -38,6 +38,8 @@ namespace QuantLib {
     class BlackCapFloorEngine : public CapFloor::engine,
                                 public Observer {
       public:
+        BlackCapFloorEngine(Volatility volatility,
+                            const DayCounter& dc = Actual365Fixed());
         BlackCapFloorEngine(const Handle<Quote>& volatility,
                             const DayCounter& dc = Actual365Fixed());
         BlackCapFloorEngine(const Handle<CapletVolatilityStructure>&);
