@@ -58,7 +58,7 @@ namespace QuantLib {
                       const boost::shared_ptr<OptimizationMethod>& method,
                       const Array& guess,
                       bool isMeanReversionFixed);
-        Real error(){return error_;}
+        Real error() { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };
 
       private:
