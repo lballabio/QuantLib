@@ -21,7 +21,7 @@
 */
 
 /*! \file index.hpp
-    \brief purely virtual base class for indexes
+    \brief virtual base class for indexes
 */
 
 #ifndef quantlib_index_hpp
@@ -44,7 +44,7 @@ namespace QuantLib {
         */
         virtual std::string name() const = 0;
         //! returns the calendar defining valid fixing dates
-        Calendar fixingCalendar() const;
+        const Calendar& fixingCalendar() const;
         //! returns TRUE if the fixing date is a valid one
         bool isValidFixingDate(const Date& fixingDate) const;
         //! returns the fixing at the given date
@@ -59,6 +59,12 @@ namespace QuantLib {
         */
         void addFixing(const Date& fixingDate,
                        Real fixing);
+        //! stores historical fixings at the given dates
+        /*! the dates passed as arguments must be the actual calendar
+            dates of the fixings; no settlement days must be used.
+        */
+        void addFixings(const std::vector<Date>& dates,
+                        const std::vector<Real>& values);
         //! stores historical fixings at the given dates
         /*! the dates passed as arguments must be the actual calendar
             dates of the fixings; no settlement days must be used.
@@ -93,11 +99,17 @@ namespace QuantLib {
         Calendar fixingCalendar_;
     };
 
-    inline Calendar Index::fixingCalendar() const {
+    inline const Calendar& Index::fixingCalendar() const {
         return fixingCalendar_;
     }
 
-
+    inline void Index::addFixings(const std::vector<Date>& dates,
+                                  const std::vector<Real>& values) {
+        QL_REQUIRE(dates.size()==values.size(),
+                   "size mismatch between dates (" << dates.size() <<
+                   ") and values  (" << values.size() << ")");
+        addFixings(dates.begin(), dates.end(), values.begin());
+    }
 
 }
 
