@@ -4380,6 +4380,12 @@
 					RelativePath=".\ql\pricingengines\vanilla\all.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticbsmhullwhiteengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticbsmhullwhiteengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
@@ -5034,6 +5040,12 @@
 					RelativePath=".\ql\pricingengines\vanilla\mchestonengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\pricingengines\vanilla\mcvanillaengine.hpp">
 				</File>
 			</Filter>
@@ -5188,6 +5200,9 @@
 				RelativePath=".\ql\processes\blackscholesprocess.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\processes\defaultable.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\processes\eulerdiscretization.cpp">
 			</File>
 			<File
@@ -5222,6 +5237,18 @@
 			</File>
 			<File
 				RelativePath=".\ql\processes\hullwhiteprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\hybridhestonhullwhiteprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\hybridhestonhullwhiteprocess.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\jointstochasticprocess.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\processes\jointstochasticprocess.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\processes\lfmcovarparam.cpp">
