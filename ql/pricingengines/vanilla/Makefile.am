@@ -33,8 +33,8 @@ this_include_HEADERS = \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \
-    mcvanillaengine.hpp \
-    mchestonhullwhiteengine.hpp
+    mchestonhullwhiteengine.hpp \
+    mcvanillaengine.hpp
 
 libVanillaEngines_la_SOURCES = \
     analyticbsmhullwhiteengine.cpp \
