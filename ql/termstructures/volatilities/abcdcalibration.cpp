@@ -27,6 +27,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatilities/abcd.hpp>
 #include <ql/math/optimization/projectedcostfunction.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 namespace {
 
@@ -125,11 +126,9 @@ namespace QuantLib {
         if (vegaWeighted_) {
             Real weightsSum = 0.0;
             for (Size i=0; i<times_.size() ; i++) {
-                // unable to vcalculate vega:
-                // discount and forward are missing
-                //Real stdDev = std::sqrt((*y)*(*y)*t);
-                //*w = blackStdDevDerivative(*x, forward, stdDev);
-                weights_[i] = 1.0;
+                Real stdDev = std::sqrt(blackVols_[i]* blackVols_[i]* times_[i]);
+                // when strike==forward, the blackFormulaStdDevDerivative becomes
+                weights_[i] = CumulativeNormalDistribution().derivative(.5*stdDev);
                 weightsSum += weights_[i];
             }
             // weight normalization
