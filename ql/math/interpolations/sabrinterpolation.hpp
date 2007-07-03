@@ -227,13 +227,8 @@ namespace QuantLib {
                     //y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor_;
                     y_[1] = std::sqrt(-std::log(x[1]));
                     y_[2] = std::sqrt(x[2] - eps1_);
-                    {
-                        //arcsin expansion
-                        const Real z = x[3]/eps2_;
-                        const Real z3 = z*z*z;
-                        const Real z5 = z3*z*z;
-                        y_[3] = z + z3/6 + 3*z5/40;
-                    }
+                    y_[3] = std::asin(x[3]/eps2_);
+                     
                     return y_;
                 }
             };
