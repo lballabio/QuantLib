@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2006 Cristina Duminuco
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
 
@@ -19,14 +20,12 @@
 */
 
 #include "swaptionvolatilitycube.hpp"
+#include "swaptionvolstructuresutilities.hpp"
 #include "utilities.hpp"
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/volatilities/swaption/swaptionvolmatrix.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube2.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/termstructures/volatilities/swaption/spreadedswaptionvolstructure.hpp>
@@ -40,20 +39,11 @@ QL_BEGIN_TEST_LOCALS(SwaptionVolatilityCubeTest)
 // global data
 
 Date referenceDate_;
-Calendar calendar_;
+SwaptionMarketConventions conventions_;
+AtmVolatility atm_;
+RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix_;
+VolatilityCube cube_;
 
-BusinessDayConvention optionBDC_;
-std::vector<Period> atmOptionTenors_;
-std::vector<Period> atmSwapTenors_;
-Matrix atmVols_;
-DayCounter dayCounter_;
-Handle<SwaptionVolatilityStructure> atmVolMatrix_;
-
-std::vector<Period> optionTenors_;
-std::vector<Period> swapTenors_;
-std::vector<Spread> strikeSpreads_;
-Matrix volSpreadsMatrix_;
-std::vector<std::vector<Handle<Quote> > > volSpreads_;
 Natural swapSettlementDays_;
 Frequency fixedLegFrequency_;
 BusinessDayConvention fixedLegConvention_;
@@ -72,18 +62,18 @@ bool vegaWeightedSmileFit_;
 void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                     Real tolerance) {
 
-    for (Size i=0; i<atmOptionTenors_.size(); i++) {
-      for (Size j=0; j<atmSwapTenors_.size(); j++) {
-          Rate strike = volCube.atmStrike(atmOptionTenors_[i], atmSwapTenors_[j]);
+    for (Size i=0; i<atm_.tenors.options.size(); i++) {
+      for (Size j=0; j<atm_.tenors.swaps.size(); j++) {
+          Rate strike = volCube.atmStrike(atm_.tenors.options[i], atm_.tenors.swaps[j]);
           Volatility expVol = atmVolMatrix_->volatility(
-              atmOptionTenors_[i], atmSwapTenors_[j], strike, true);
+              atm_.tenors.options[i], atm_.tenors.swaps[j], strike, true);
           Volatility actVol = volCube.volatility(
-              atmOptionTenors_[i], atmSwapTenors_[j], strike, true);
+              atm_.tenors.options[i], atm_.tenors.swaps[j], strike, true);
           Volatility error = std::abs(expVol-actVol);
           if (error>tolerance)
               BOOST_ERROR("\nrecovery of atm vols failed:"
-                          "\nexpiry time = " << atmOptionTenors_[i] <<
-                          "\nswap length = " << atmSwapTenors_[j] <<
+                          "\nexpiry time = " << atm_.tenors.options[i] <<
+                          "\nswap length = " << atm_.tenors.swaps[j] <<
                           "\n atm strike = " << io::rate(strike) <<
                           "\n   exp. vol = " << io::volatility(expVol) <<
                           "\n actual vol = " << io::volatility(actVol) <<
@@ -97,23 +87,23 @@ void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
 void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
                         Real tolerance) {
 
-    for (Size i=0; i<optionTenors_.size(); i++) {
-      for (Size j=0; j<swapTenors_.size(); j++) {
-          for (Size k=0; k<strikeSpreads_.size(); k++) {
-              Rate atmStrike = volCube.atmStrike(optionTenors_[i], swapTenors_[j]);
+    for (Size i=0; i<cube_.tenors.options.size(); i++) {
+      for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
+          for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
+              Rate atmStrike = volCube.atmStrike(cube_.tenors.options[i], cube_.tenors.swaps[j]);
               Volatility atmVol = atmVolMatrix_->volatility(
-                  optionTenors_[i], swapTenors_[j], atmStrike, true);
+                  cube_.tenors.options[i], cube_.tenors.swaps[j], atmStrike, true);
               Volatility vol = volCube.volatility(
-                  optionTenors_[i], swapTenors_[j], atmStrike+strikeSpreads_[k], true);
+                  cube_.tenors.options[i], cube_.tenors.swaps[j], atmStrike+cube_.strikeSpreads[k], true);
               Volatility spread = vol-atmVol;
-              Volatility expVolSpread = volSpreadsMatrix_[i*swapTenors_.size()+j][k];
+              Volatility expVolSpread = cube_.volSpreads[i*cube_.tenors.swaps.size()+j][k];
               Volatility error = std::abs(expVolSpread-spread);
               if (error>tolerance)
                   BOOST_ERROR("\nrecovery of smile vol spreads failed:"
-                              "\n    option tenor = " << optionTenors_[i] <<
-                              "\n      swap tenor = " << swapTenors_[j] <<
+                              "\n    option tenor = " << cube_.tenors.options[i] <<
+                              "\n      swap tenor = " << cube_.tenors.swaps[j] <<
                               "\n      atm strike = " << io::rate(atmStrike) <<
-                              "\n   strike spread = " << io::rate(strikeSpreads_[k]) <<
+                              "\n   strike spread = " << io::rate(cube_.strikeSpreads[k]) <<
                               "\n         atm vol = " << io::volatility(atmVol) <<
                               "\n      smiled vol = " << io::volatility(vol) <<
                               "\n      vol spread = " << io::volatility(spread) <<
@@ -129,131 +119,26 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
 
 void setup() {
 
+    //referenceDate_ = Settings::instance().evaluationDate();
     referenceDate_ = Date(6, September, 2006);
-    calendar_ = TARGET();
-
     Settings::instance().evaluationDate() = referenceDate_;
-
-    optionBDC_ = Following;
-
+    
+    conventions_.setConventions();
+    
     // ATM swaptionvolmatrix
-
-    atmOptionTenors_ = std::vector<Period>();
-    atmOptionTenors_.push_back(Period(1, Months));
-    atmOptionTenors_.push_back(Period(6, Months));
-    atmOptionTenors_.push_back(Period(1, Years));
-    atmOptionTenors_.push_back(Period(5, Years));
-    atmOptionTenors_.push_back(Period(10, Years));
-    atmOptionTenors_.push_back(Period(30, Years));
-
-    atmSwapTenors_ = std::vector<Period>();
-    atmSwapTenors_.push_back(Period(1, Years));
-    atmSwapTenors_.push_back(Period(5, Years));
-    atmSwapTenors_.push_back(Period(10, Years));
-    atmSwapTenors_.push_back(Period(30, Years));
-
-    atmVols_ = Matrix(atmOptionTenors_.size(), atmSwapTenors_.size());
-    atmVols_[0][0]=0.1300; atmVols_[0][1]=0.1560; atmVols_[0][2]=0.1390; atmVols_[0][3]=0.1220;
-    atmVols_[1][0]=0.1440; atmVols_[1][1]=0.1580; atmVols_[1][2]=0.1460; atmVols_[1][3]=0.1260;
-    atmVols_[2][0]=0.1600; atmVols_[2][1]=0.1590; atmVols_[2][2]=0.1470; atmVols_[2][3]=0.1290;
-    atmVols_[3][0]=0.1640; atmVols_[3][1]=0.1470; atmVols_[3][2]=0.1370; atmVols_[3][3]=0.1220;
-    atmVols_[4][0]=0.1400; atmVols_[4][1]=0.1300; atmVols_[4][2]=0.1250; atmVols_[4][3]=0.1100;
-    atmVols_[5][0]=0.1130; atmVols_[5][1]=0.1090; atmVols_[5][2]=0.1070; atmVols_[5][3]=0.0930;
-
-    Size nRowsAtmVols = atmVols_.rows();
-    Size nColsAtmVols = atmVols_.columns();
-    std::vector<std::vector<Handle<Quote> > > atmVolsHandle_;
-    atmVolsHandle_ = std::vector<std::vector<Handle<Quote> > >(nRowsAtmVols);
-    Size i;
-    for (i=0; i<nRowsAtmVols; i++){
-        atmVolsHandle_[i] = std::vector<Handle<Quote> >(nColsAtmVols);
-        for (Size j=0; j<nColsAtmVols; j++) {
-            // every handle must be reassigned, as the ones created by
-            // default are all linked together.
-            atmVolsHandle_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(atmVols_[i][j])));
-        }
-    }
-
-    dayCounter_ = Actual365Fixed();
-
-    atmVolMatrix_ = Handle<SwaptionVolatilityStructure>(
+    atm_.setMarketData();
+    
+    atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
-            SwaptionVolatilityMatrix(calendar_,
-                                     atmOptionTenors_,
-                                     atmSwapTenors_,
-                                     atmVolsHandle_,
-                                     dayCounter_,
-                                     optionBDC_)));
+            SwaptionVolatilityMatrix(conventions_.calendar,
+                                     atm_.tenors.options,
+                                     atm_.tenors.swaps,
+                                     atm_.volsHandle,
+                                     conventions_.dayCounter,
+                                     conventions_.optionBdc)));
 
-    //swaptionvolcube
-
-    optionTenors_ = std::vector<Period>();
-    optionTenors_.push_back(Period(1, Years));
-    optionTenors_.push_back(Period(10, Years));
-    optionTenors_.push_back(Period(30, Years));
-
-    swapTenors_ = std::vector<Period>();
-    swapTenors_.push_back(Period(2, Years));
-    swapTenors_.push_back(Period(10, Years));
-    swapTenors_.push_back(Period(30, Years));
-
-    strikeSpreads_ = std::vector<Rate>();
-    strikeSpreads_.push_back(-0.020);
-    strikeSpreads_.push_back(-0.005);
-    strikeSpreads_.push_back(+0.000);
-    strikeSpreads_.push_back(+0.005);
-    strikeSpreads_.push_back(+0.020);
-
-    Size nRows = optionTenors_.size()*swapTenors_.size();
-    Size nCols = strikeSpreads_.size();
-    volSpreadsMatrix_ = Matrix(nRows, nCols);
-    volSpreadsMatrix_[0][0]=0.0599; volSpreadsMatrix_[0][1]=0.0049;
-    volSpreadsMatrix_[0][2]=0.0000;
-    volSpreadsMatrix_[0][3]=-0.0001; volSpreadsMatrix_[0][4]=0.0127;
-
-    volSpreadsMatrix_[1][0]=0.0729; volSpreadsMatrix_[1][1]=0.0086;
-    volSpreadsMatrix_[1][2]=0.0000;
-    volSpreadsMatrix_[1][3]=-0.0024; volSpreadsMatrix_[1][4]=0.0098;
-
-    volSpreadsMatrix_[2][0]=0.0738; volSpreadsMatrix_[2][1]=0.0102;
-    volSpreadsMatrix_[2][2]=0.0000;
-    volSpreadsMatrix_[2][3]=-0.0039; volSpreadsMatrix_[2][4]=0.0065;
-
-    volSpreadsMatrix_[3][0]=0.0465; volSpreadsMatrix_[3][1]=0.0063;
-    volSpreadsMatrix_[3][2]=0.0000;
-    volSpreadsMatrix_[3][3]=-0.0032; volSpreadsMatrix_[3][4]=-0.0010;
-
-    volSpreadsMatrix_[4][0]=0.0558; volSpreadsMatrix_[4][1]=0.0084;
-    volSpreadsMatrix_[4][2]=0.0000;
-    volSpreadsMatrix_[4][3]=-0.0050; volSpreadsMatrix_[4][4]=-0.0057;
-
-    volSpreadsMatrix_[5][0]=0.0576; volSpreadsMatrix_[5][1]=0.0083;
-    volSpreadsMatrix_[5][2]=0.0000;
-    volSpreadsMatrix_[5][3]=-0.0043; volSpreadsMatrix_[5][4]=-0.0014;
-
-    volSpreadsMatrix_[6][0]=0.0437; volSpreadsMatrix_[6][1]=0.0059;
-    volSpreadsMatrix_[6][2]=0.0000;
-    volSpreadsMatrix_[6][3]=-0.0030; volSpreadsMatrix_[6][4]=-0.0006;
-
-    volSpreadsMatrix_[7][0]=0.0533; volSpreadsMatrix_[7][1]=0.0078;
-    volSpreadsMatrix_[7][2]=0.0000;
-    volSpreadsMatrix_[7][3]=-0.0045; volSpreadsMatrix_[7][4]=-0.0046;
-
-    volSpreadsMatrix_[8][0]=0.0545; volSpreadsMatrix_[8][1]=0.0079;
-    volSpreadsMatrix_[8][2]=0.0000;
-    volSpreadsMatrix_[8][3]=-0.0042; volSpreadsMatrix_[8][4]=-0.0020;
-
-    volSpreads_ = std::vector<std::vector<Handle<Quote> > >(nRows);
-    for (i=0; i<optionTenors_.size()*swapTenors_.size(); i++){
-        volSpreads_[i] = std::vector<Handle<Quote> >(nCols);
-        for (Size j=0; j<strikeSpreads_.size(); j++) {
-            // every handle must be reassigned, as the ones created by
-            // default are all linked together.
-            volSpreads_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
-                SimpleQuote(volSpreadsMatrix_[i][j])));
-        }
-    }
+    // Swaptionvolcube
+    cube_.setMarketData();
 
     swapSettlementDays_ = 2;
     fixedLegFrequency_ = Annual;
@@ -269,7 +154,7 @@ void setup() {
                   10*Years,
                   swapSettlementDays_,
                   iborIndex_->currency(),
-                  calendar_,
+                  conventions_.calendar,
                   Period(fixedLegFrequency_),
                   fixedLegConvention_,
                   iborIndex_->dayCounter(),
@@ -290,12 +175,12 @@ void SwaptionVolatilityCubeTest::testAtmVols() {
     setup();
 
     SwaptionVolCube2 volCube(atmVolMatrix_,
-                                           optionTenors_,
-                                           swapTenors_,
-                                           strikeSpreads_,
-                                           volSpreads_,
-                                           swapIndexBase_,
-                                           vegaWeightedSmileFit_);
+                             cube_.tenors.options,
+                             cube_.tenors.swaps,
+                             cube_.strikeSpreads,
+                             cube_.volSpreadsHandle,
+                             swapIndexBase_,
+                             vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
     makeAtmVolTest(volCube, tolerance);
@@ -310,12 +195,12 @@ void SwaptionVolatilityCubeTest::testSmile() {
     setup();
 
     SwaptionVolCube2 volCube(atmVolMatrix_,
-                                           optionTenors_,
-                                           swapTenors_,
-                                           strikeSpreads_,
-                                           volSpreads_,
-                                           swapIndexBase_,
-                                           vegaWeightedSmileFit_);
+                             cube_.tenors.options,
+                             cube_.tenors.swaps,
+                             cube_.strikeSpreads,
+                             cube_.volSpreadsHandle,
+                             swapIndexBase_,
+                             vegaWeightedSmileFit_);
 
     Real tolerance = 1.0e-16;
     makeVolSpreadsTest(volCube, tolerance);
@@ -329,8 +214,9 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
 
     setup();
 
-    std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+    std::vector<std::vector<Handle<Quote> > >
+        parametersGuess(cube_.tenors.options.size()*cube_.tenors.swaps.size());
+    for (Size i=0; i<cube_.tenors.options.size()*cube_.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
@@ -344,15 +230,15 @@ void SwaptionVolatilityCubeTest::testSabrVols() {
     std::vector<bool> isParameterFixed(4, false);
 
     SwaptionVolCube1 volCube(atmVolMatrix_,
-                                         optionTenors_,
-                                         swapTenors_,
-                                         strikeSpreads_,
-                                         volSpreads_,
-                                         swapIndexBase_,
-                                         vegaWeightedSmileFit_,
-                                         parametersGuess,
-                                         isParameterFixed,
-                                         true);
+                             cube_.tenors.options,
+                             cube_.tenors.swaps,
+                             cube_.strikeSpreads,
+                             cube_.volSpreadsHandle,
+                             swapIndexBase_,
+                             vegaWeightedSmileFit_,
+                             parametersGuess,
+                             isParameterFixed,
+                             true);
     Real tolerance = 3.0e-4;
     makeAtmVolTest(volCube, tolerance);
 
@@ -368,8 +254,9 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
     setup();
 
-    std::vector<std::vector<Handle<Quote> > > parametersGuess(optionTenors_.size()*swapTenors_.size());
-    for (Size i=0; i<optionTenors_.size()*swapTenors_.size(); i++) {
+    std::vector<std::vector<Handle<Quote> > >
+        parametersGuess(cube_.tenors.options.size()*cube_.tenors.swaps.size());
+    for (Size i=0; i<cube_.tenors.options.size()*cube_.tenors.swaps.size(); i++) {
         parametersGuess[i] = std::vector<Handle<Quote> >(4);
         parametersGuess[i][0] =
             Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
@@ -384,10 +271,10 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
 
     Handle<SwaptionVolatilityStructure> volCube( boost::shared_ptr<SwaptionVolatilityStructure>(new
         SwaptionVolCube1(atmVolMatrix_,
-                         optionTenors_,
-                         swapTenors_,
-                         strikeSpreads_,
-                         volSpreads_,
+                         cube_.tenors.options,
+                         cube_.tenors.swaps,
+                         cube_.strikeSpreads,
+                         cube_.volSpreadsHandle,
                          swapIndexBase_,
                          vegaWeightedSmileFit_,
                          parametersGuess,
@@ -401,20 +288,20 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
     std::vector<Real> strikes;
     for (Size k=1; k<100; k++)
         strikes.push_back(k*.01);
-    for (Size i=0; i<optionTenors_.size(); i++) {
-        for (Size j=0; j<swapTenors_.size(); j++) {
+    for (Size i=0; i<cube_.tenors.options.size(); i++) {
+        for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
             boost::shared_ptr<SmileSection> smileSectionByCube =
-                volCube->smileSection(optionTenors_[i], swapTenors_[j]);
+                volCube->smileSection(cube_.tenors.options[i], cube_.tenors.swaps[j]);
             boost::shared_ptr<SmileSection> smileSectionBySpreadedCube =
-                spreadedVolCube->smileSection(optionTenors_[i], swapTenors_[j]);
+                spreadedVolCube->smileSection(cube_.tenors.options[i], cube_.tenors.swaps[j]);
             for (Size k=0; k<strikes.size(); k++) {
                 Real strike = strikes[k];
-                Real diff = spreadedVolCube->volatility(optionTenors_[i], swapTenors_[j], strike)
-                            - volCube->volatility(optionTenors_[i], swapTenors_[j], strike);
+                Real diff = spreadedVolCube->volatility(cube_.tenors.options[i], cube_.tenors.swaps[j], strike)
+                            - volCube->volatility(cube_.tenors.options[i], cube_.tenors.swaps[j], strike);
                 if (std::fabs(diff-spread->value())>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
-                                "\nexpiry time = " << optionTenors_[i] <<
-                                "\nswap length = " << swapTenors_[j] <<
+                                "\nexpiry time = " << cube_.tenors.options[i] <<
+                                "\nswap length = " << cube_.tenors.swaps[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
                                 "\nspread = " << spread->value());
@@ -423,8 +310,8 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                        - smileSectionByCube->volatility(strike);
                 if (std::fabs(diff-spread->value())>1e-16)
                     BOOST_ERROR("\ndiff!=spread in smile section method:"
-                                "\nexpiry time = " << optionTenors_[i] <<
-                                "\nswap length = " << swapTenors_[j] <<
+                                "\nexpiry time = " << cube_.tenors.options[i] <<
+                                "\nswap length = " << cube_.tenors.swaps[j] <<
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
                                 "\nspread = " << spread->value());
@@ -447,6 +334,131 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                     << "does not propagate notifications");
 }
 
+
+void SwaptionVolatilityCubeTest::testObservability() {
+    BOOST_MESSAGE("Testing volatility cube observability...");
+
+    SavedSettings backup;
+    
+    setup();
+
+    std::vector<std::vector<Handle<Quote> > >
+        parametersGuess(cube_.tenors.options.size()*cube_.tenors.swaps.size());
+    for (Size i=0; i<cube_.tenors.options.size()*cube_.tenors.swaps.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(4);
+        parametersGuess[i][0] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] =
+            Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    }
+    std::vector<bool> isParameterFixed(4, false);
+
+    std::string description;
+    boost::shared_ptr<SwaptionVolCube1> volCube1_0, volCube1_1;
+    // VolCube created before change of reference date
+    volCube1_0 = boost::shared_ptr<SwaptionVolCube1>(new SwaptionVolCube1(atmVolMatrix_,
+                                                                cube_.tenors.options,
+                                                                cube_.tenors.swaps,
+                                                                cube_.strikeSpreads,
+                                                                cube_.volSpreadsHandle,
+                                                                swapIndexBase_,
+                                                                vegaWeightedSmileFit_,
+                                                                parametersGuess,
+                                                                isParameterFixed,
+                                                                true));
+
+    Date referenceDate = Settings::instance().evaluationDate();
+    Settings::instance().evaluationDate() = 
+        conventions_.calendar.advance(referenceDate, Period(1, Days), conventions_.optionBdc);
+    
+    // VolCube created after change of reference date
+    volCube1_1 = boost::shared_ptr<SwaptionVolCube1>(new SwaptionVolCube1(atmVolMatrix_,
+                                                                cube_.tenors.options,
+                                                                cube_.tenors.swaps,
+                                                                cube_.strikeSpreads,
+                                                                cube_.volSpreadsHandle,
+                                                                swapIndexBase_,
+                                                                vegaWeightedSmileFit_,
+                                                                parametersGuess,
+                                                                isParameterFixed,
+                                                                true));
+    Rate dummyStrike = 0.03;
+    for (Size i=0;i<cube_.tenors.options.size(); i++ ) {
+        for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
+            for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
+              
+                Volatility v0 = volCube1_0->volatility(cube_.tenors.options[i],
+                                                       cube_.tenors.swaps[j],
+                                                       dummyStrike + cube_.strikeSpreads[k],
+                                                       false);
+                Volatility v1 = volCube1_1->volatility(cube_.tenors.options[i],
+                                                       cube_.tenors.swaps[j],
+                                                       dummyStrike + cube_.strikeSpreads[k],
+                                                       false);
+                if (v0 != v1)
+                    BOOST_ERROR(description <<
+                                " option tenor = " << cube_.tenors.options[i] << 
+                                " swap tenor = " << cube_.tenors.swaps[j] << 
+                                " strike = " << io::rate(dummyStrike+cube_.strikeSpreads[k])<<
+                                "  v0 = " << io::volatility(v0) <<
+                                "  v1 = " << io::volatility(v1));                
+            }
+        }
+    }   
+
+    Settings::instance().evaluationDate() = referenceDate;
+
+    boost::shared_ptr<SwaptionVolCube2> volCube2_0, volCube2_1;
+    // VolCube created before change of reference date
+    volCube2_0 = boost::shared_ptr<SwaptionVolCube2>(new SwaptionVolCube2(atmVolMatrix_,
+                                                                cube_.tenors.options,
+                                                                cube_.tenors.swaps,
+                                                                cube_.strikeSpreads,
+                                                                cube_.volSpreadsHandle,
+                                                                swapIndexBase_,
+                                                                vegaWeightedSmileFit_));
+    Settings::instance().evaluationDate() = 
+        conventions_.calendar.advance(referenceDate, Period(1, Days), conventions_.optionBdc);
+    
+    // VolCube created after change of reference date
+    volCube2_1 = boost::shared_ptr<SwaptionVolCube2>(new SwaptionVolCube2(atmVolMatrix_,
+                                                                cube_.tenors.options,
+                                                                cube_.tenors.swaps,
+                                                                cube_.strikeSpreads,
+                                                                cube_.volSpreadsHandle,
+                                                                swapIndexBase_,
+                                                                vegaWeightedSmileFit_));
+
+    for (i=0;i<cube_.tenors.options.size(); i++ ) {
+        for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
+            for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
+              
+                Volatility v0 = volCube2_0->volatility(cube_.tenors.options[i],
+                                                       cube_.tenors.swaps[j],
+                                                       dummyStrike + cube_.strikeSpreads[k],
+                                                       false);
+                Volatility v1 = volCube2_1->volatility(cube_.tenors.options[i],
+                                                       cube_.tenors.swaps[j],
+                                                       dummyStrike + cube_.strikeSpreads[k],
+                                                       false);
+                if (v0 != v1)
+                    BOOST_ERROR(description <<
+                                " option tenor = " << cube_.tenors.options[i] << 
+                                " swap tenor = " << cube_.tenors.swaps[j] << 
+                                " strike = " << io::rate(dummyStrike+cube_.strikeSpreads[k])<<
+                                "  v0 = " << io::volatility(v0) <<
+                                "  v1 = " << io::volatility(v1));                
+            }
+        }
+    }   
+    
+    Settings::instance().evaluationDate() = referenceDate;
+}
+
 test_suite* SwaptionVolatilityCubeTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
@@ -460,5 +472,7 @@ test_suite* SwaptionVolatilityCubeTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrVols));
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSpreadedCube));
 
+    suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testObservability));
+    
     return suite;
 }

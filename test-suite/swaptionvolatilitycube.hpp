@@ -32,6 +32,8 @@ class SwaptionVolatilityCubeTest {
     static void testSmile();
     static void testSabrVols();
     static void testSpreadedCube();
+    static void testObservability();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 
