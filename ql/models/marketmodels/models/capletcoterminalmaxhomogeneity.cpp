@@ -74,7 +74,7 @@ namespace QuantLib {
                   swaptionError=  0.0;                
                 }
 
-                capletError= sqrt(q(solution[0])) - sqrt(capletVariance);
+                capletError= sqrt(q(solution[0])+capletVariance) - sqrt(capletVariance);
                 capletError*= capletError;
    
                 return success;
@@ -114,7 +114,9 @@ namespace QuantLib {
             Real A = previousSwapVariance*w0*w0/theta;
             Real constQuadraticTerm = A - 0.25*bsq;
             Real S2 = capletVariance/theta - constQuadraticTerm;
-            Real S = sqrt(S2);
+			
+			// if S2 < 0, there are no solutions so we take the best we can. 
+			Real S = S2 > 0 ? sqrt(S2) : 0;
 
             Real R = sqrt(thisSwapVariance);
 
