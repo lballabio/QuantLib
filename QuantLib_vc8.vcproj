@@ -3994,6 +3994,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ql\processes\hybridhestonhullwhiteprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\hybridhestonhullwhiteprocess.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\jointstochasticprocess.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ql\processes\jointstochasticprocess.hpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ql\processes\lfmcovarparam.cpp"
 				>
 			</File>
@@ -4542,6 +4558,14 @@
 				>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\all.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticbsmhullwhiteengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analyticbsmhullwhiteengine.hpp"
 					>
 				</File>
 				<File
@@ -5144,6 +5168,14 @@
 				</File>
 				<File
 					RelativePath=".\ql\pricingengines\vanilla\mchestonengine.hpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\mchestonhullwhiteengine.hpp"
 					>
 				</File>
 				<File

@@ -1201,6 +1201,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\hybridhestonhullwhiteprocess.cpp"
+				>
+			</File>
+			<File
 				RelativePath="instruments.cpp"
 				>
 				<FileConfiguration
@@ -2317,6 +2321,10 @@
 			</File>
 			<File
 				RelativePath=".\hestonmodel.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\hybridhestonhullwhiteprocess.hpp"
 				>
 			</File>
 			<File
