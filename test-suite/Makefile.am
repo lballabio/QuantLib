@@ -76,6 +76,7 @@ QL_TESTS = \
 	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \
 	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
 	swaptionvolatilitystructures.hpp swaptionvolatilitystructures.cpp \
+	swaptionvolstructuresutilities.hpp \
 	termstructures.hpp termstructures.cpp \
 	timeseries.hpp timeseries.cpp \
 	transformedgrid.hpp transformedgrid.cpp \

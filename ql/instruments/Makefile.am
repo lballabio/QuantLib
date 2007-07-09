@@ -26,6 +26,7 @@ this_include_HEADERS = \
     lookbackoption.hpp \
     makecapfloor.hpp \
     makecms.hpp \
+    makeswaptions.hpp \
     makevanillaswap.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
@@ -59,6 +60,7 @@ libInstruments_la_SOURCES = \
     lookbackoption.cpp \
     makecapfloor.cpp \
     makecms.cpp \
+    makeswaptions.cpp \
     makevanillaswap.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \

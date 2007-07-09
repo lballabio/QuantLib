@@ -122,12 +122,12 @@ void setup() {
     //referenceDate_ = Settings::instance().evaluationDate();
     referenceDate_ = Date(6, September, 2006);
     Settings::instance().evaluationDate() = referenceDate_;
-    
+
     conventions_.setConventions();
-    
+
     // ATM swaptionvolmatrix
     atm_.setMarketData();
-    
+
     atmVolMatrix_ = RelinkableHandle<SwaptionVolatilityStructure>(
         boost::shared_ptr<SwaptionVolatilityStructure>(new
             SwaptionVolatilityMatrix(conventions_.calendar,
@@ -339,7 +339,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
     BOOST_MESSAGE("Testing volatility cube observability...");
 
     SavedSettings backup;
-    
+
     setup();
 
     std::vector<std::vector<Handle<Quote> > >
@@ -372,9 +372,9 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 true));
 
     Date referenceDate = Settings::instance().evaluationDate();
-    Settings::instance().evaluationDate() = 
+    Settings::instance().evaluationDate() =
         conventions_.calendar.advance(referenceDate, Period(1, Days), conventions_.optionBdc);
-    
+
     // VolCube created after change of reference date
     volCube1_1 = boost::shared_ptr<SwaptionVolCube1>(new SwaptionVolCube1(atmVolMatrix_,
                                                                 cube_.tenors.options,
@@ -390,7 +390,7 @@ void SwaptionVolatilityCubeTest::testObservability() {
     for (Size i=0;i<cube_.tenors.options.size(); i++ ) {
         for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
             for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
-              
+
                 Volatility v0 = volCube1_0->volatility(cube_.tenors.options[i],
                                                        cube_.tenors.swaps[j],
                                                        dummyStrike + cube_.strikeSpreads[k],
@@ -401,14 +401,14 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        false);
                 if (v0 != v1)
                     BOOST_ERROR(description <<
-                                " option tenor = " << cube_.tenors.options[i] << 
-                                " swap tenor = " << cube_.tenors.swaps[j] << 
+                                " option tenor = " << cube_.tenors.options[i] <<
+                                " swap tenor = " << cube_.tenors.swaps[j] <<
                                 " strike = " << io::rate(dummyStrike+cube_.strikeSpreads[k])<<
                                 "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1));                
+                                "  v1 = " << io::volatility(v1));
             }
         }
-    }   
+    }
 
     Settings::instance().evaluationDate() = referenceDate;
 
@@ -421,9 +421,9 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 cube_.volSpreadsHandle,
                                                                 swapIndexBase_,
                                                                 vegaWeightedSmileFit_));
-    Settings::instance().evaluationDate() = 
+    Settings::instance().evaluationDate() =
         conventions_.calendar.advance(referenceDate, Period(1, Days), conventions_.optionBdc);
-    
+
     // VolCube created after change of reference date
     volCube2_1 = boost::shared_ptr<SwaptionVolCube2>(new SwaptionVolCube2(atmVolMatrix_,
                                                                 cube_.tenors.options,
@@ -433,10 +433,10 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                                 swapIndexBase_,
                                                                 vegaWeightedSmileFit_));
 
-    for (i=0;i<cube_.tenors.options.size(); i++ ) {
+    for (Size i=0;i<cube_.tenors.options.size(); i++ ) {
         for (Size j=0; j<cube_.tenors.swaps.size(); j++) {
             for (Size k=0; k<cube_.strikeSpreads.size(); k++) {
-              
+
                 Volatility v0 = volCube2_0->volatility(cube_.tenors.options[i],
                                                        cube_.tenors.swaps[j],
                                                        dummyStrike + cube_.strikeSpreads[k],
@@ -447,15 +447,15 @@ void SwaptionVolatilityCubeTest::testObservability() {
                                                        false);
                 if (v0 != v1)
                     BOOST_ERROR(description <<
-                                " option tenor = " << cube_.tenors.options[i] << 
-                                " swap tenor = " << cube_.tenors.swaps[j] << 
+                                " option tenor = " << cube_.tenors.options[i] <<
+                                " swap tenor = " << cube_.tenors.swaps[j] <<
                                 " strike = " << io::rate(dummyStrike+cube_.strikeSpreads[k])<<
                                 "  v0 = " << io::volatility(v0) <<
-                                "  v1 = " << io::volatility(v1));                
+                                "  v1 = " << io::volatility(v1));
             }
         }
-    }   
-    
+    }
+
     Settings::instance().evaluationDate() = referenceDate;
 }
 
@@ -473,6 +473,6 @@ test_suite* SwaptionVolatilityCubeTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testSpreadedCube));
 
     suite->add(BOOST_TEST_CASE(&SwaptionVolatilityCubeTest::testObservability));
-    
+
     return suite;
 }
