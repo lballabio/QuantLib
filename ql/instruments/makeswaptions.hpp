@@ -44,25 +44,26 @@ namespace QuantLib {
                      Rate strike = Null<Rate>(),
                      const Period& forwardStart = 0*Days,
                      const boost::shared_ptr<PricingEngine>& engine =
-                         boost::shared_ptr<PricingEngine>(),
-                     Settlement::Type delivery = Settlement::Physical);
+                         boost::shared_ptr<PricingEngine>());
 
         operator Swaption() const;
         operator boost::shared_ptr<Swaption>() const ;
 
         MakeSwaption& withSwaptionConvention(BusinessDayConvention bdc);
+        MakeSwaption& withSettlementType(Settlement::Type delivery);
 
       private:
+        void create() const;
 
         Settlement::Type delivery_;
-        Rate strike_;
+        mutable Rate strike_;
         Period optionTenor_;
         boost::shared_ptr<SwapIndex> swapIndex_;
         BusinessDayConvention swaptionConvention_;
 
         boost::shared_ptr<PricingEngine> engine_;
-        boost::shared_ptr<Exercise> exercise_;
-        boost::shared_ptr<VanillaSwap> underlyingSwap_; 
+        mutable boost::shared_ptr<Exercise> exercise_;
+        mutable boost::shared_ptr<VanillaSwap> underlyingSwap_; 
     };
 
 }
