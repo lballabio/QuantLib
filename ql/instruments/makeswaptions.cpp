@@ -18,6 +18,7 @@
 */
 
 #include <ql/instruments/makeswaptions.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/swapindex.hpp>
 #include <ql/exercise.hpp>
@@ -46,6 +47,12 @@ namespace QuantLib {
         if (strike_ == Null<Rate>())
             strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(), 
                                          underlyingSwap_->termStructure());
+        underlyingSwap_ = MakeVanillaSwap(swapIndex_->tenor(), swapIndex_->iborIndex(), strike_)
+            .withEffectiveDate(swapIndex_->valueDate(optionDate))
+            .withFixedLegCalendar(swapIndex_->fixingCalendar())
+            .withFixedLegDayCount(swapIndex_->dayCounter())
+            .withFixedLegConvention(swapIndex_->fixedLegConvention())
+            .withFixedLegTerminationDateConvention(swapIndex_->fixedLegConvention());
     }
 
     MakeSwaption::operator Swaption() const {
