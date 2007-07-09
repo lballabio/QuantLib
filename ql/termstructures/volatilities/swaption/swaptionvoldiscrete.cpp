@@ -140,7 +140,14 @@ namespace QuantLib {
     }
 
     void SwaptionVolatilityDiscrete::checkSwapTenors() const {
-        Date startDate = optionDates_[0]; // as good as any
+        Date startDate = referenceDate();
+        /* better than an any option date, for coherence between swaption atm vol matrix
+           and swaption vol cube:
+           otherwise, if both swaption atm vol matrix and swaption vol cube are created
+           and they have different first option date, the swap tenors of the structures may 
+           differ
+        */           
+        // Date startDate = optionDates_[0]; // as good as any
         Date endDate = startDate + swapTenors_[0];
         QL_REQUIRE(endDate>startDate, "first swap tenor is negative ("  << swapTenors_[0] << ")");
         for (Size i=1; i<nSwapTenors_; ++i) {
@@ -167,7 +174,8 @@ namespace QuantLib {
             optionTimes_[i] = timeFromReference(optionDates_[i]);
             //optionTimes_[i] = dayCounter().yearFraction(referenceDate(), optionDates_[i]);
 
-        Date startDate = optionDates_.front(); // as good as any
+        Date startDate = referenceDate();
+        //Date startDate = optionDates_[0]; // as good as any
         for (Size i=0; i<nSwapTenors_; ++i) {
             Date endDate = startDate + swapTenors_[i];
             swapLengths_[i] = dayCounter().yearFraction(startDate, endDate);
@@ -178,7 +186,8 @@ namespace QuantLib {
     SwaptionVolatilityDiscrete::convertDates(const Date& optionDate,
                                              const Period& swapTenor) const {
         Time optionTime = timeFromReference(optionDate);
-        Date startDate = optionDates_.front(); // for consistency
+        Date startDate = referenceDate(); // for consistency
+        // Date startDate = optionDates_[0]; // for consistency
         Date endDate = startDate + swapTenor;
         Time swapLength = dayCounter().yearFraction(startDate, endDate);
         return std::make_pair(optionTime, swapLength);

@@ -110,7 +110,6 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
                               "\n exp. vol spread = " << io::volatility(expVolSpread) <<
                               "\n           error = " << io::volatility(error) <<
                               "\n       tolerance = " << tolerance);
-
           }
       }
     }
@@ -119,8 +118,8 @@ void makeVolSpreadsTest(const SwaptionVolatilityCube& volCube,
 
 void setup() {
 
-    //referenceDate_ = Settings::instance().evaluationDate();
-    referenceDate_ = Date(6, September, 2006);
+    referenceDate_ = Settings::instance().evaluationDate();
+    //referenceDate_ = Date(6, September, 2006);
     Settings::instance().evaluationDate() = referenceDate_;
 
     conventions_.setConventions();
