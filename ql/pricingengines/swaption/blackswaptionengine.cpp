@@ -62,8 +62,12 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown settlement type");
         }
+
+        // FIXME: not coherent with the way volatility_ would calculate it
+        Time swapLength = maturity-exercise;
+
         Volatility vol = volatility_->volatility(exercise,
-                                                 maturity-exercise,
+                                                 swapLength,
                                                  arguments_.fixedRate);
         Option::Type w = arguments_.type==VanillaSwap::Payer ?
                                                 Option::Call : Option::Put;
@@ -71,8 +75,8 @@ namespace QuantLib {
                                                 arguments_.fairRate,
                                                 vol*std::sqrt(exercise));
         Real variance = volatility_->blackVariance(exercise,
-                                                 maturity-exercise,
-                                                 arguments_.fixedRate);
+                                                   swapLength,
+                                                   arguments_.fixedRate);
         Real stdDev = std::sqrt(variance);
         Rate forward = arguments_.fairRate;
         Rate strike = arguments_.fixedRate;
