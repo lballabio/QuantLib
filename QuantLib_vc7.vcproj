@@ -771,6 +771,12 @@
 				RelativePath=".\ql\instruments\makecms.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\instruments\makeswaptions.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\instruments\makeswaptions.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\instruments\makevanillaswap.cpp">
 			</File>
 			<File

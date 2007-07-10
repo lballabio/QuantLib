@@ -2698,6 +2698,9 @@
 				RelativePath=".\swaptionvolatilitystructures.hpp">
 			</File>
 			<File
+				RelativePath=".\swaptionvolstructuresutilities.hpp">
+			</File>
+			<File
 				RelativePath="termstructures.hpp">
 			</File>
 			<File
