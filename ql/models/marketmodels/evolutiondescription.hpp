@@ -75,10 +75,9 @@ namespace QuantLib {
       private:
         Size numberOfRates_;
         std::vector<Time> rateTimes_, evolutionTimes_;
-        //Size steps_;
         std::vector<std::pair<Size,Size> > relevanceRates_;
+        // convenience variables
         std::vector<Time> rateTaus_;
-        //Matrix effStopTime_;
         std::vector<Size> firstAliveRate_;
     };
 
