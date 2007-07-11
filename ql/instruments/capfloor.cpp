@@ -137,7 +137,7 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate() const {
-        return CashFlows::atmRate(floatingLeg_, *termStructure_.currentLink());
+        return CashFlows::atmRate(floatingLeg_, termStructure_);
     }
 
     bool CapFloor::isExpired() const {
