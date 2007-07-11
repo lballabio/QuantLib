@@ -28,7 +28,6 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/handle.hpp>
 #include <ql/utilities/null.hpp>
 #include <vector>
 
@@ -65,7 +64,7 @@ namespace QuantLib {
             according to the given term structure.
         */
         static Real npv(const Leg& leg,
-                        const Handle<YieldTermStructure>& discountCurve,
+                        const YieldTermStructure& discountCurve,
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Integer exDividendDays = 0);
@@ -86,7 +85,7 @@ namespace QuantLib {
             to the given term structure.
         */
         static Real bps(const Leg& leg,
-                        const Handle<YieldTermStructure>& discountCurve,
+                        const YieldTermStructure& discountCurve,
                         const Date& settlementDate = Date(),
                         const Date& npvDate = Date(),
                         Integer exDividendDays = 0);
@@ -109,7 +108,7 @@ namespace QuantLib {
             not given, the input cash flow vector's NPV is used instead.
         */
         static Rate atmRate(const Leg& leg,
-                            const Handle<YieldTermStructure>& discountCurve,
+                            const YieldTermStructure& discountCurve,
                             const Date& settlementDate = Date(),
                             const Date& npvDate = Date(),
                             Integer exDividendDays = 0,

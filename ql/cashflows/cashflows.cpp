@@ -73,23 +73,23 @@ namespace QuantLib {
                               public Visitor<CashFlow>,
                               public Visitor<Coupon> {
           public:
-            BPSCalculator(const Handle<YieldTermStructure>& termStructure,
+            BPSCalculator(const YieldTermStructure& termStructure,
                           const Date& npvDate)
             : termStructure_(termStructure), npvDate_(npvDate), result_(0.0) {}
             void visit(Coupon& c)  {
                 result_ += c.accrualPeriod() *
                            c.nominal() *
-                           termStructure_->discount(c.date());
+                           termStructure_.discount(c.date());
             }
             void visit(CashFlow&) {}
             Real result() const {
                 if (npvDate_==Date())
                     return result_;
                 else
-                    return result_/termStructure_->discount(npvDate_);
+                    return result_/termStructure_.discount(npvDate_);
             }
           private:
-            Handle<YieldTermStructure> termStructure_;
+            const YieldTermStructure& termStructure_;
             Date npvDate_;
             Real result_;
         };
@@ -253,25 +253,25 @@ namespace QuantLib {
     }
 
     Real CashFlows::npv(const Leg& cashflows,
-                        const Handle<YieldTermStructure>& discountCurve,
+                        const YieldTermStructure& discountCurve,
                         const Date& settlementDate,
                         const Date& npvDate,
                         Integer exDividendDays) {
         Date d = settlementDate != Date() ?
                  settlementDate :
-                 discountCurve->referenceDate();
+                 discountCurve.referenceDate();
 
         Real totalNPV = 0.0;
         for (Size i=0; i<cashflows.size(); ++i) {
             if (!cashflows[i]->hasOccurred(d+exDividendDays))
                 totalNPV += cashflows[i]->amount() *
-                            discountCurve->discount(cashflows[i]->date());
+                            discountCurve.discount(cashflows[i]->date());
         }
 
         if (npvDate==Date())
             return totalNPV;
         else
-            return totalNPV/discountCurve->discount(npvDate);
+            return totalNPV/discountCurve.discount(npvDate);
     }
 
     Real CashFlows::npv(const Leg& cashflows,
@@ -279,22 +279,20 @@ namespace QuantLib {
                         Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-        boost::shared_ptr<YieldTermStructure> flatRate(
-                 new FlatForward(settlementDate, irr.rate(), irr.dayCounter(),
-                                 irr.compounding(), irr.frequency()));
-        return npv(cashflows, Handle<YieldTermStructure>(flatRate),
-                   settlementDate, settlementDate);
+        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
+                                 irr.compounding(), irr.frequency());
+        return npv(cashflows, flatRate, settlementDate, settlementDate);
     }
 
     Real CashFlows::bps(const Leg& cashflows,
-                        const Handle<YieldTermStructure>& discountCurve,
+                        const YieldTermStructure& discountCurve,
                         const Date& settlementDate,
                         const Date& npvDate,
                         Integer exDividendDays) {
 
         Date d = settlementDate;
         if (d==Date())
-            d = discountCurve->referenceDate();
+            d = discountCurve.referenceDate();
 
         BPSCalculator calc(discountCurve, npvDate);
         for (Size i=0; i<cashflows.size(); ++i) {
@@ -309,11 +307,9 @@ namespace QuantLib {
                         Date settlementDate) {
         if (settlementDate == Date())
             settlementDate = Settings::instance().evaluationDate();
-        boost::shared_ptr<YieldTermStructure> flatRate(
-                 new FlatForward(settlementDate, irr.rate(), irr.dayCounter(),
-                                 irr.compounding(), irr.frequency()));
-        return bps(cashflows, Handle<YieldTermStructure>(flatRate),
-                   settlementDate, settlementDate);
+        FlatForward flatRate(settlementDate, irr.rate(), irr.dayCounter(),
+                                 irr.compounding(), irr.frequency());
+        return bps(cashflows, flatRate, settlementDate, settlementDate);
     }
 
     Rate CashFlows::irr(const Leg& cashflows,
@@ -442,7 +438,7 @@ namespace QuantLib {
     }
 
     Rate CashFlows::atmRate(const Leg& cashFlows,
-                            const Handle<YieldTermStructure>& discountCurve,
+                            const YieldTermStructure& discountCurve,
                             const Date& settlementDate,
                             const Date& npvDate,
                             Integer exDividendDays,

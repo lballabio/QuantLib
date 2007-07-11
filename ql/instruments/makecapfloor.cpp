@@ -48,7 +48,8 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg, swap.termStructure());
+            strikeVector[0] = CashFlows::atmRate(leg, 
+                                        *swap.termStructure().currentLink());
 
         return CapFloor(capFloorType_, leg, strikeVector,
                         swap.termStructure(), engine_);
@@ -64,11 +65,12 @@ namespace QuantLib {
 
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg, swap.termStructure());
+            strikeVector[0] = CashFlows::atmRate(leg, 
+                                        *swap.termStructure().currentLink());
 
         return boost::shared_ptr<CapFloor>(new
-            CapFloor(capFloorType_, leg, strikeVector, swap.termStructure(),
-                                                                   engine_));
+            CapFloor(capFloorType_, leg, strikeVector, 
+                swap.termStructure(), engine_));
     }
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {

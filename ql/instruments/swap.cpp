@@ -88,11 +88,11 @@ namespace QuantLib {
         for (Size j=0; j<legs_.size(); j++) {
             //Date settlement = calendar_[j].advance(d, settlementDays_[j], Days);
             Date settlement = d;
-            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j], termStructure_,
-                                                 settlement);
+            legNPV_[j]= payer_[j]*CashFlows::npv(legs_[j], 
+                            *termStructure_.currentLink(), settlement);
             NPV_ += legNPV_[j] ;
-            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j], termStructure_,
-                                                  settlement);
+            legBPS_[j] = payer_[j]*CashFlows::bps(legs_[j], 
+                            *termStructure_.currentLink(), settlement);
         }
     }
 

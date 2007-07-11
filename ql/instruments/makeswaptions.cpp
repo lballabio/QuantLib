@@ -46,7 +46,7 @@ namespace QuantLib {
 
         if (strike_ == Null<Rate>())
             strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(), 
-                                         underlyingSwap_->termStructure());
+                                         *underlyingSwap_->termStructure().currentLink());
         underlyingSwap_ = MakeVanillaSwap(swapIndex_->tenor(), swapIndex_->iborIndex(), strike_)
             .withEffectiveDate(swapIndex_->valueDate(optionDate))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())

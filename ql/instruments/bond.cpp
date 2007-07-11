@@ -340,7 +340,7 @@ namespace QuantLib {
         } else {
             QL_REQUIRE(!discountCurve_.empty(),
                        "no discounting term structure set");
-            NPV_= CashFlows::npv(cashflows_, discountCurve_, settlementDate(),
+            NPV_= CashFlows::npv(cashflows_, *discountCurve_.currentLink(), 
                                                              settlementDate());
         }
     }
