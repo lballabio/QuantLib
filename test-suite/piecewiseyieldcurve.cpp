@@ -32,6 +32,7 @@
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/loglinearinterpolation.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>

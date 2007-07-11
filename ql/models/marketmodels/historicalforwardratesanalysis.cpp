@@ -22,7 +22,8 @@
 
 #include <ql/models/marketmodels/historicalforwardratesanalysis.hpp>
 #include <ql/math/interpolations/cubicspline.hpp>
-//#include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/math/interpolations/loglinearinterpolation.hpp>
 
 namespace QuantLib {
 

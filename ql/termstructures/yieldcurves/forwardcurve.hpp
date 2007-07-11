@@ -25,12 +25,10 @@
 #define quantlib_forward_curve_hpp
 
 #include <ql/termstructures/yieldcurves/forwardstructure.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <vector>
-#include <utility>
+#include <ql/math/interpolation.hpp>
 
 namespace QuantLib {
-
+    class BackwardFlat;
     //! Term structure based on interpolation of forward rates
     /*! \ingroup yieldtermstructures */
     template <class Interpolator>
@@ -73,6 +71,7 @@ namespace QuantLib {
 
     //! Term structure based on flat interpolation of forward rates
     /*! \ingroup yieldtermstructures */
+    
     typedef InterpolatedForwardCurve<BackwardFlat> ForwardCurve;
 
 
