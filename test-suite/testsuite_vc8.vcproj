@@ -112,7 +112,9 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Auto run test"
+				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -215,6 +217,7 @@
 				Name="VCPostBuildEventTool"
 				Description="Auto run test"
 				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
+				ExcludedFromBuild="false"
 			/>
 		</Configuration>
 		<Configuration
@@ -314,7 +317,9 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Auto run test"
+				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -418,6 +423,7 @@
 				Name="VCPostBuildEventTool"
 				Description="Auto run test"
 				CommandLine="&quot;$(TargetDir)$(TargetName).exe&quot; --log_level=message --build_info=yes --result_code=no --report_level=short"
+				ExcludedFromBuild="false"
 			/>
 		</Configuration>
 	</Configurations>
