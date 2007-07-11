@@ -379,6 +379,7 @@ namespace QuantLib {
 
         std::vector<Time> optionTimes(sparseParameters_.optionTimes());
         std::vector<Time> swapLengths(sparseParameters_.swapLengths());
+        sparseSmiles_.clear();
 
         for (Size j=0; j<optionTimes.size(); j++) {
             std::vector<boost::shared_ptr<SmileSection> > tmp;
@@ -415,15 +416,15 @@ namespace QuantLib {
                                                 atmOptionTime);
         Size optionTimesPreviousIndex
             = optionTimesPreviousNode - optionTimes.begin();
-        if (optionTimesPreviousIndex >= optionTimes.size()-1)
-            optionTimesPreviousIndex = optionTimes.size()-2;
+        if (optionTimesPreviousIndex >0)
+            optionTimesPreviousIndex --;
 
         swapLengthsPreviousNode = std::lower_bound(swapLengths.begin(),
                                                swapLengths.end(),
                                                atmTimeLength);
         Size swapLengthsPreviousIndex = swapLengthsPreviousNode - swapLengths.begin();
-        if (swapLengthsPreviousIndex >= swapLengths.size()-1)
-            swapLengthsPreviousIndex = swapLengths.size()-2;
+        if (swapLengthsPreviousIndex >0)
+            swapLengthsPreviousIndex --;
 
         std::vector< std::vector<boost::shared_ptr<SmileSection> > > smiles;
         std::vector<boost::shared_ptr<SmileSection> >  smilesOnPreviousExpiry;
