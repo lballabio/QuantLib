@@ -35,18 +35,18 @@ namespace QuantLib {
       swapIndex_(swapIndex),
       swaptionConvention_(Following),
       engine_(engine) { }
-    
+
     void MakeSwaption::create() const {
         Date evaluationDate = Settings::instance().evaluationDate();
         Date optionDate = swapIndex_->fixingCalendar().advance(evaluationDate,
-                                                               optionTenor_, 
+                                                               optionTenor_,
                                                                swaptionConvention_);
         exercise_ = boost::shared_ptr<Exercise>(new EuropeanExercise(optionDate));
         underlyingSwap_ = swapIndex_->underlyingSwap(optionDate);
 
         if (strike_ == Null<Rate>())
-            strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(), 
-                                         *underlyingSwap_->termStructure().currentLink());
+            strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
+                                         **underlyingSwap_->termStructure());
         underlyingSwap_ = MakeVanillaSwap(swapIndex_->tenor(), swapIndex_->iborIndex(), strike_)
             .withEffectiveDate(swapIndex_->valueDate(optionDate))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
@@ -70,7 +70,7 @@ namespace QuantLib {
         swaptionConvention_ = bdc;
         return *this;
     }
-        
+
     MakeSwaption& MakeSwaption::withSettlementType(Settlement::Type delivery) {
         delivery_ = delivery;
         return *this;

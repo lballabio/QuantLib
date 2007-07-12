@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     MakeCapFloor::MakeCapFloor(CapFloor::Type capFloorType,
-                               const Period& tenor, 
+                               const Period& tenor,
                                const boost::shared_ptr<IborIndex>& index,
                                Rate strike,
                                const Period& forwardStart,
@@ -46,10 +46,11 @@ namespace QuantLib {
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
 
+
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg, 
-                                        *swap.termStructure().currentLink());
+            strikeVector[0] = CashFlows::atmRate(leg,
+                                                 **swap.termStructure());
 
         return CapFloor(capFloorType_, leg, strikeVector,
                         swap.termStructure(), engine_);
@@ -63,14 +64,15 @@ namespace QuantLib {
         if (firstCapletExcluded_)
             leg.erase(leg.begin());
 
+
         std::vector<Rate> strikeVector(1, strike_);
         if (strike_ == Null<Rate>())
-            strikeVector[0] = CashFlows::atmRate(leg, 
-                                        *swap.termStructure().currentLink());
+            strikeVector[0] = CashFlows::atmRate(leg,
+                                                 **swap.termStructure());
 
-        return boost::shared_ptr<CapFloor>(new
-            CapFloor(capFloorType_, leg, strikeVector, 
-                swap.termStructure(), engine_));
+        return boost::shared_ptr<CapFloor>(
+                                new CapFloor(capFloorType_, leg, strikeVector,
+                                             swap.termStructure(), engine_));
     }
 
     MakeCapFloor& MakeCapFloor::withNominal(Real n) {

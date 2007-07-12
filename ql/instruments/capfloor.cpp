@@ -23,7 +23,7 @@
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp> 
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace {
@@ -137,13 +137,14 @@ namespace QuantLib {
     }
 
     Rate CapFloor::atmRate() const {
-        return CashFlows::atmRate(floatingLeg_, *termStructure_.currentLink());
+        return CashFlows::atmRate(floatingLeg_, **termStructure_);
     }
 
     bool CapFloor::isExpired() const {
         Date lastPaymentDate = Date::minDate();
         for (Size i=0; i<floatingLeg_.size(); i++)
-            lastPaymentDate = std::max(lastPaymentDate, floatingLeg_[i]->date());
+            lastPaymentDate = std::max(lastPaymentDate,
+                                       floatingLeg_[i]->date());
         return lastPaymentDate < termStructure_->referenceDate();
     }
 
@@ -294,7 +295,7 @@ namespace QuantLib {
     }
 
 
-   
+
 
     std::ostream& operator<<(std::ostream& out, CapFloor::Type t) {
         switch (t) {

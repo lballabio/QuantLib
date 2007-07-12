@@ -83,7 +83,7 @@ namespace QuantLib {
         fixingDate_ = coupon_->fixingDate();
         paymentDate_ = coupon_->date();
         const boost::shared_ptr<SwapIndex>& swapIndex = coupon_->swapIndex();
-        rateCurve_ = swapIndex->termStructure().currentLink();
+        rateCurve_ = *(swapIndex->termStructure());
 
         Date today = Settings::instance().evaluationDate();
 
@@ -135,7 +135,7 @@ namespace QuantLib {
             }
             vanillaOptionPricer_= boost::shared_ptr<VanillaOptionPricer>(new
                 BlackVanillaOptionPricer(swapRateValue_, fixingDate_, swapTenor_,
-                                        swaptionVolatility().currentLink()));
+                                        *swaptionVolatility()));
          }
     }
 
@@ -882,9 +882,9 @@ namespace QuantLib {
             Newton solver;
             solver.setMaxEvaluations(1000);
 
-            // these boundaries migth not be big enough if the volatility 
-            // of big swap rate values is too high . In this case the G function 
-            // is not even integrable, so better to fix the vol than increasing 
+            // these boundaries migth not be big enough if the volatility
+            // of big swap rate values is too high . In this case the G function
+            // is not even integrable, so better to fix the vol than increasing
             // these values
             const Real lower = -20, upper = 20.;
 

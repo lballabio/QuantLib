@@ -75,6 +75,7 @@ namespace QuantLib {
         //! dereferencing
         const boost::shared_ptr<T>& currentLink() const;
         const boost::shared_ptr<T>& operator->() const;
+        const boost::shared_ptr<T>& operator*() const;
         //! checks if the contained shared pointer points to anything
         bool empty() const;
         //! allows registration as observable
@@ -156,6 +157,12 @@ namespace QuantLib {
 
     template <class T>
     inline const boost::shared_ptr<T>& Handle<T>::operator->() const {
+        QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
+        return link_->currentLink();
+    }
+
+    template <class T>
+    inline const boost::shared_ptr<T>& Handle<T>::operator*() const {
         QL_REQUIRE(!empty(), "empty Handle cannot be dereferenced");
         return link_->currentLink();
     }

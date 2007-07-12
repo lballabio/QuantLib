@@ -21,8 +21,8 @@
 #include <ql/termstructures/volatilities/swaption/cmsmarketcalibration.hpp>
 #include <ql/termstructures/volatilities/swaption/cmsmarket.hpp>
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
-#include <ql/math/optimization/problem.hpp> 
-#include <ql/math/optimization/costfunction.hpp> 
+#include <ql/math/optimization/problem.hpp>
+#include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
 namespace {
@@ -107,7 +107,7 @@ namespace {
             Real fixedMeanReversion_;
         };
 
-    
+
     //===========================================================================//
     //                              ObjectiveFunction                            //
     //===========================================================================//
@@ -128,7 +128,7 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors+1 == x.size(),"bad calibration guess nSwapTenors+1 != x.size()");
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; i++){
             Real beta = y[i];
             volCubeBySabr->recalibration(beta, swapTenors[i]);
@@ -175,7 +175,7 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors == x.size(),"bad calibration guess nSwapTenors != x.size()");
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-               boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+               boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         for (Size i=0; i<nSwapTenors; i++){
             Real beta = y[i];
             volCubeBySabr->recalibration(beta, swapTenors[i]);
@@ -229,7 +229,7 @@ namespace QuantLib {
             error_ = costFunction.value(result);
         }
         const boost::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            boost::dynamic_pointer_cast<SwaptionVolCube1>(volCube_.currentLink());
+            boost::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
         browseCmsMarket_ = cmsMarket_->browse();

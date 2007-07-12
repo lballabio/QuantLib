@@ -312,8 +312,7 @@ namespace QuantLib {
     void SwaptionVolCube1::fillVolatilityCube() const{
 
         const boost::shared_ptr<SwaptionVolatilityMatrix> atmVolStructure =
-            boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(
-                                                    atmVol_.currentLink());
+            boost::dynamic_pointer_cast<SwaptionVolatilityMatrix>(*atmVol_);
 
         std::vector<Time> atmOptionTimes(atmVolStructure->optionTimes());
         std::vector<Time> optionTimes(volCubeAtmCalibrated_.optionTimes());

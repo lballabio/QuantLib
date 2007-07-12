@@ -166,7 +166,7 @@ namespace QuantLib {
              new LongstaffSchwartzPathPricer<Path>(
                                       this->timeGrid(),
                                       earlyExercisePathPricer,
-                                      process->riskFreeRate().currentLink()));
+                                      *(process->riskFreeRate())));
     }
 
     template <class RNG, class S>
