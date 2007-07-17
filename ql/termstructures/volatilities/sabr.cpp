@@ -36,8 +36,13 @@ namespace QuantLib {
         const Real oneMinusBeta = 1.0-beta;
         const Real A = std::pow(forward*strike, oneMinusBeta);
         const Real sqrtA= std::sqrt(A);
-        const Real logM 
-            = close(forward, strike) ? 0.0 : std::log(forward/strike);
+        Real logM;
+        if (!close(forward, strike))
+            logM = std::log(forward/strike);
+        else {
+            const Real epsilon = (forward-strike)/strike;
+            logM = epsilon - .5 * epsilon * epsilon ;
+        }
         const Real z = (nu/alpha)*sqrtA*logM;
         const Real B = 1.0-2.0*rho*z+z*z;
         const Real C = oneMinusBeta*oneMinusBeta*logM*logM;
@@ -46,10 +51,21 @@ namespace QuantLib {
         const Real D = sqrtA*(1.0+C/24.0+C*C/1920.0);
         const Real d = 1.0 + expiryTime *
             (oneMinusBeta*oneMinusBeta*alpha*alpha/(24.0*A)
-
                                 + 0.25*rho*beta*nu*alpha/sqrtA
                                     +(2.0-3.0*rho*rho)*(nu*nu/24.0));
-        const Real multiplier = (xx!=0.0 ? z/xx : 1.0);
+
+        Real multiplier;
+        // computations become precise enough if the square of z worth
+        // slightly more than the precision machine (hence the m)
+        static const Real m = 10;
+        if (std::fabs(z*z)>QL_EPSILON * m) 
+            multiplier = z/xx;
+        else {
+            Real alpha = (0.5-rho*rho)/(1.0-rho);
+            Real beta = alpha - .5;
+            Real gamma = rho/(1-rho);
+            multiplier = 1.0 - beta*z + (gamma - alpha + beta*beta*.5)*z*z;
+        }
         return (alpha/D)*multiplier*d;
     }
 
