@@ -364,6 +364,112 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     }
 }
 
+
+void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
+    BOOST_MESSAGE("Testing Monte-Carlo Heston Option Pricing...");
+
+    SavedSettings backup;
+
+    DayCounter dc = Actual360();
+    const Date today = Date::todaysDate();
+
+    // construct a strange yield curve to check drifts and discounting
+    // of the joint stochastic process
+
+    std::vector<Date> dates;
+    std::vector<Time> times;
+    std::vector<Rate> rates, divRates;
+
+    for (Size i=0; i <= 40; ++i) {
+        dates.push_back(today+Period(i, Months));
+        rates.push_back(0.01 + 0.02*std::exp(std::sin(i/10.0)));
+        divRates.push_back(0.02 + 0.01*std::exp(std::sin(i/20.0)));
+        times.push_back(dc.yearFraction(today, dates.back()));
+    }
+
+    const Date maturity = today + Period(2, Years);
+
+    const Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
+    const Handle<YieldTermStructure> rTS(
+       boost::shared_ptr<YieldTermStructure>(new ZeroCurve(dates, rates, dc)));
+    const Handle<YieldTermStructure> qTS(       
+       boost::shared_ptr<YieldTermStructure>(
+                                          new ZeroCurve(dates, divRates, dc)));
+
+    const boost::shared_ptr<HestonProcess> hestonProcess(
+             new HestonProcess(rTS, qTS, s0, 0.08, 1.5, 0.0625, 0.5, -0.8));
+    const boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
+              new HullWhiteForwardProcess(rTS, 0.1, 1e-8));
+    hwProcess->setForwardMeasureTime(dc.yearFraction(today, maturity));
+    
+    const Real tol = 0.1;
+    const Real corr[] = { 0.25 };
+    const Real strike[] = { 100 };
+
+    for (Size i=0; i < LENGTH(corr); ++i) {
+        for (Size j=0; j < LENGTH(strike); ++j) {
+            const boost::shared_ptr<JointStochasticProcess> jointProcess(
+                new HybridHestonHullWhiteProcess(hestonProcess, 
+                                                 hwProcess, corr[i], 5));
+
+            const boost::shared_ptr<StrikedTypePayoff> payoff(
+                               new PlainVanillaPayoff(Option::Put, strike[j]));
+            const boost::shared_ptr<Exercise> exercise(
+                               new EuropeanExercise(maturity));
+
+            VanillaOption optionHestonHW(jointProcess, payoff, exercise,
+                boost::shared_ptr<PricingEngine>(
+                    new MCHestonHullWhiteEngine<PseudoRandom>(
+                                          10, Null<Size>(), true, false, 1, 
+                                          tol, Null<Size>(), 42)));
+
+            VanillaOption optionPureHeston(hestonProcess, payoff, exercise,
+                boost::shared_ptr<PricingEngine>(
+                    new AnalyticHestonEngine(
+                          boost::shared_ptr<HestonModel>(
+                                           new HestonModel(hestonProcess)))) );
+
+            Real calculated = optionHestonHW.NPV();
+            Real error      = optionHestonHW.errorEstimate();
+            Real expected   = optionPureHeston.NPV();
+
+            if (std::fabs(calculated - expected) > 3*error) {
+                BOOST_ERROR("Failed to reproduce heston vanilla prices"
+                        << "\n   corr:       " << corr[i]
+                        << "\n   strike:     " << strike[j]
+                        << "\n   calculated: " << calculated
+                        << "\n   error:      " << error
+                        << "\n   expected:   " << expected);
+            }
+
+
+            // using the heston pricer as a control variate 
+            // yields to almost the exact price within ms
+            optionHestonHW.setPricingEngine(
+                boost::shared_ptr<PricingEngine>(
+                    new MCHestonHullWhiteEngine<PseudoRandom>(
+                           2, Null<Size>(), true, true, 1, 
+                           tol, Null<Size>(), 42)));
+            
+            calculated = optionHestonHW.NPV();
+            error      = optionHestonHW.errorEstimate();
+
+             if (   std::fabs(calculated - expected) > 1e-5
+                 || error > 1e-5) {
+                BOOST_ERROR("Failed to reproduce heston vanilla prices "
+                            "using control variate"
+                        << "\n   corr:       " << corr[i]
+                        << "\n   strike:     " << strike[j]
+                        << "\n   calculated: " << calculated
+                        << "\n   error:      " << error
+                        << "\n   expected:   " << expected);
+            }
+           
+        }
+    }
+}
+
+
 void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     BOOST_MESSAGE("Testing the pricing of a callable equity product...");
 
@@ -1126,6 +1232,8 @@ test_suite* HybridHestonHullWhiteProcessTest::suite() {
             &HybridHestonHullWhiteProcessTest::testZeroBondPricing));
     suite->add(BOOST_TEST_CASE(
             &HybridHestonHullWhiteProcessTest::testMcVanillaPricing));
+    suite->add(BOOST_TEST_CASE(
+            &HybridHestonHullWhiteProcessTest::testMcPureHestonPricing));
     suite->add(BOOST_TEST_CASE(
             &HybridHestonHullWhiteProcessTest::testCallableEquityPricing));
     suite->add(BOOST_TEST_CASE(
