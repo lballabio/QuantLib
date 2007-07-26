@@ -56,7 +56,7 @@ namespace QuantLib {
         //@{
         void performCalculations () const;
         void update() {
-            //TermStructure::update();
+            TermStructure::update();
             LazyObject::update();
         };
         //@}
