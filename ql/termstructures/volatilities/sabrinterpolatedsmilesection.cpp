@@ -42,12 +42,11 @@ namespace QuantLib {
     : SmileSection(optionDate, dc),
       exerciseTimeSquareRoot_(std::sqrt(exerciseTime())), strikes_(strikes),
       stdDevHandles_(stdDevHandles), forward_(forward),
-      vols_(stdDevHandles.size()),
-      sabrInterpolation_(strikes_.begin(), strikes_.end(), vols_.begin(),
-                         exerciseTime(), forwardValue_, alpha, beta, nu, rho,
-                         isAlphaFixed, isBetaFixed,
-                         isNuFixed, isRhoFixed, vegaWeighted,
-                         endCriteria, method) {
+      alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
+      isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed), 
+      isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
+      vegaWeighted_(vegaWeighted), endCriteria_(endCriteria), method_(method),
+      vols_(stdDevHandles.size()) {
         registerWith(forward_);
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             registerWith(stdDevHandles_[i]);
@@ -57,12 +56,21 @@ namespace QuantLib {
         forwardValue_ = 1-forward_->value()/100;
         for (Size i=0; i<stdDevHandles_.size(); ++i)
             vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot_;
-        sabrInterpolation_.update();
+        if (!sabrInterpolation_) {
+            boost::scoped_ptr<SABRInterpolation> tmp(new SABRInterpolation(
+                strikes_.begin(), strikes_.end(), vols_.begin(),
+                         exerciseTime(), forwardValue_, alpha_, beta_, nu_, rho_,
+                         isAlphaFixed_, isBetaFixed_,
+                         isNuFixed_, isRhoFixed_, vegaWeighted_,
+                         endCriteria_, method_));
+            swap(tmp, sabrInterpolation_);
+        }
+        sabrInterpolation_->update();
     }
 
     Real SabrInterpolatedSmileSection::varianceImpl(Real strike) const {
         calculate();
-        Real v = sabrInterpolation_(strike, true);
+        Real v = (*sabrInterpolation_)(strike, true);
         return v*v*exerciseTime();
     }
 

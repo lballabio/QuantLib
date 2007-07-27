@@ -28,7 +28,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/volatilities/smilesection.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
-
+#include <boost/scoped_ptr.hpp>
 namespace QuantLib {
     class Quote;
     class SabrInterpolatedSmileSection : public SmileSection,
@@ -68,53 +68,58 @@ namespace QuantLib {
         Real maxStrike () const;
         Real atmLevel() const;
       private:
+        const boost::shared_ptr<EndCriteria> endCriteria_;
+        const boost::shared_ptr<OptimizationMethod> method_;
         Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
         std::vector<Handle<Quote> > stdDevHandles_;
         const Handle<Quote> forward_;
         mutable Real forwardValue_;
+        bool isRhoFixed_, vegaWeighted_;
         mutable std::vector<Volatility> vols_;
-        mutable SABRInterpolation sabrInterpolation_;
+        mutable boost::scoped_ptr<SABRInterpolation> sabrInterpolation_;
+        Real alpha_, beta_, nu_, rho_;
+        bool isAlphaFixed_, isBetaFixed_, isNuFixed_;
     };
 
     inline Real SabrInterpolatedSmileSection::volatilityImpl(Rate strike) const {
         calculate();
-        return sabrInterpolation_(strike, true);
+        return (*sabrInterpolation_)(strike, true);
     }
 
     inline Real SabrInterpolatedSmileSection::alpha() const {
         calculate();
-        return sabrInterpolation_.alpha();
+        return sabrInterpolation_->alpha();
     }
 
     inline Real SabrInterpolatedSmileSection::beta() const {
         calculate();
-        return sabrInterpolation_.beta();
+        return sabrInterpolation_->beta();
     }
 
     inline Real SabrInterpolatedSmileSection::nu() const {
         calculate();
-        return sabrInterpolation_.nu();
+        return sabrInterpolation_->nu();
     }
 
     inline Real SabrInterpolatedSmileSection::rho() const {
         calculate();
-        return sabrInterpolation_.rho();
+        return sabrInterpolation_->rho();
     }
 
     inline Real SabrInterpolatedSmileSection::interpolationError() const {
         calculate();
-        return sabrInterpolation_.interpolationError();
+        return sabrInterpolation_->interpolationError();
     }
 
     inline Real SabrInterpolatedSmileSection::interpolationMaxError() const {
         calculate();
-        return sabrInterpolation_.interpolationMaxError();
+        return sabrInterpolation_->interpolationMaxError();
     }
 
     inline EndCriteria::Type SabrInterpolatedSmileSection::endCriteria() const {
         calculate();
-        return sabrInterpolation_.endCriteria();
+        return sabrInterpolation_->endCriteria();
     }
 
     inline Real SabrInterpolatedSmileSection::minStrike() const {
