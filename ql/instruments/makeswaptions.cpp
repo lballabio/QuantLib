@@ -46,7 +46,7 @@ namespace QuantLib {
 
         if (strike_ == Null<Rate>())
             strike_ = CashFlows::atmRate(underlyingSwap_->floatingLeg(),
-                                         **underlyingSwap_->termStructure());
+                                         **underlyingSwap_->discountCurve());
         underlyingSwap_ = MakeVanillaSwap(swapIndex_->tenor(), swapIndex_->iborIndex(), strike_)
             .withEffectiveDate(swapIndex_->valueDate(optionDate))
             .withFixedLegCalendar(swapIndex_->fixingCalendar())
@@ -57,13 +57,13 @@ namespace QuantLib {
 
     MakeSwaption::operator Swaption() const {
         create();
-        return Swaption(underlyingSwap_, exercise_, underlyingSwap_->termStructure(), engine_, delivery_);
+        return Swaption(underlyingSwap_, exercise_, underlyingSwap_->discountCurve(), engine_, delivery_);
     }
 
     MakeSwaption::operator boost::shared_ptr<Swaption>() const {
         create();
         return boost::shared_ptr<Swaption>(new
-            Swaption(underlyingSwap_, exercise_, underlyingSwap_->termStructure(), engine_, delivery_));
+            Swaption(underlyingSwap_, exercise_, underlyingSwap_->discountCurve(), engine_, delivery_));
     }
 
     MakeSwaption& MakeSwaption::withSwaptionConvention(BusinessDayConvention bdc) {

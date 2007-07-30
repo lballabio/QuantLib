@@ -364,4 +364,3 @@ namespace QuantLib {
     }
 
 }
-

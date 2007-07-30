@@ -44,11 +44,11 @@ namespace QuantLib {
         /*! The cash flows belonging to the first leg are paid;
             the ones belonging to the second leg are received.
         */
-        Swap(const Handle<YieldTermStructure>& termStructure,
+        Swap(const Handle<YieldTermStructure>& discountCurve,
              const Leg& firstLeg,
              const Leg& secondLeg);
         /*! Multi leg constructor. */
-        Swap(const Handle<YieldTermStructure>& termStructure,
+        Swap(const Handle<YieldTermStructure>& discountCurve,
              const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
         //! \name Instrument interface
@@ -75,8 +75,8 @@ namespace QuantLib {
             QL_REQUIRE(j<legs_.size(), "leg# " << j << " doesn't exist!");
             return legs_[j];
         }
-        const Handle<YieldTermStructure>& termStructure() const {
-            return termStructure_;
+        const Handle<YieldTermStructure>& discountCurve() const {
+            return discountCurve_;
         }
         //@}
       protected:
@@ -84,7 +84,7 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // data members
-        Handle<YieldTermStructure> termStructure_;
+        Handle<YieldTermStructure> discountCurve_;
         std::vector<Leg> legs_;
         std::vector<Real> payer_;
         mutable std::vector<Real> legNPV_;

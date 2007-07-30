@@ -93,18 +93,16 @@ namespace QuantLib {
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();
 
-        Date settlement = termStructure_->referenceDate();
-        DayCounter counter = termStructure_->dayCounter();
-        Size i;
+        Date settlement = discountCurve_->referenceDate();
+        DayCounter counter = discountCurve_->dayCounter();
 
-        const Leg& fixedCoupons =
-            fixedLeg();
+        const Leg& fixedCoupons = fixedLeg();
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
             std::vector<Time>(fixedCoupons.size());
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
-        for (i=0; i<fixedCoupons.size(); i++) {
+        for (Size i=0; i<fixedCoupons.size(); ++i) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
@@ -116,8 +114,7 @@ namespace QuantLib {
             arguments->fixedCoupons[i] = coupon->amount();
         }
 
-        const Leg& floatingCoupons =
-            floatingLeg();
+        const Leg& floatingCoupons = floatingLeg();
 
         arguments->floatingResetTimes = arguments->floatingPayTimes =
             arguments->floatingFixingTimes = arguments->floatingAccrualTimes =
@@ -125,10 +122,9 @@ namespace QuantLib {
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
 
-        for (i=0; i<floatingCoupons.size(); i++) {
+        for (Size i=0; i<floatingCoupons.size(); ++i) {
             boost::shared_ptr<IborCoupon> coupon =
-                boost::dynamic_pointer_cast<IborCoupon>(
-                                                          floatingCoupons[i]);
+                boost::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
 
             Date resetDate = coupon->accrualStartDate(); // already adjusted
             Time resetTime = counter.yearFraction(settlement, resetDate);

@@ -156,15 +156,15 @@ namespace QuantLib {
         // reset in case it's not set later
         arguments->currentFloatingCoupon = Null<Real>();
 
-        Date settlement = termStructure_->referenceDate();
-        DayCounter counter = termStructure_->dayCounter();
+        Date settlement = discountCurve_->referenceDate();
+        DayCounter counter = discountCurve_->dayCounter();
         const Leg& fixedCoupons = bondLeg();
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
             std::vector<Time>(fixedCoupons.size());
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
-        for (Size i=0; i<fixedCoupons.size(); i++) {
+        for (Size i=0; i<fixedCoupons.size(); ++i) {
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
@@ -184,7 +184,7 @@ namespace QuantLib {
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
 
-        for (Size i=0; i<floatingCoupons.size(); i++) {
+        for (Size i=0; i<floatingCoupons.size(); ++i) {
             boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                           floatingCoupons[i]);
@@ -238,13 +238,11 @@ namespace QuantLib {
             fairSpread_ = spread_ - NPV_/(legBPS_[1]/basisPoint);
 
             // handle when upfrontDate_ is in the past
-            if (upfrontDate_<termStructure_->referenceDate())
+            if (upfrontDate_<discountCurve_->referenceDate())
                 fairPrice_ = Null<Real>();
             else
-                fairPrice_= bondCleanPrice_ -
-                    NPV_/(nominal_/100.0)/termStructure_->discount(
-                                                            upfrontDate_);
-
+                fairPrice_= bondCleanPrice_ - NPV_/(nominal_/100.0)/
+                                discountCurve_->discount(upfrontDate_);
         }
     }
 
