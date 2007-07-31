@@ -87,7 +87,6 @@ namespace QuantLib {
           Volatility volatilityImpl(Time t, Rate r) const;
         //@}
       private:
-        mutable Date evaluationDate;
         void createMarketData() const;
         mutable CapMatrix marketDataCap_, calibCap_;
         DayCounter volatilityDayCounter_;
@@ -103,6 +102,7 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<SmileSection> > 
             smileSectionInterfaces_;
         const bool decoupleInterpolation_;
+        mutable Date evaluationDate_;
     };
 
     inline DayCounter CapsStripper::dayCounter() const {

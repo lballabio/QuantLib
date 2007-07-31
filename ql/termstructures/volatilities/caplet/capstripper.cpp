@@ -183,7 +183,8 @@ namespace QuantLib {
       vols_(vols),
       index_(index),
       smileSectionInterfaces_(smileSectionInterfaces),
-      decoupleInterpolation_(decoupleInterpolation) {
+      decoupleInterpolation_(decoupleInterpolation),
+      evaluationDate_(Settings::instance().evaluationDate()){
         enableExtrapolation(allowExtrapolation);
         QL_REQUIRE(vols.size()==tenors.size(),
                    "mismatch between tenors(" << tenors.size() <<
@@ -192,14 +193,13 @@ namespace QuantLib {
                    "mismatch between strikes(" << strikes.size() <<
                    ") and vol columns(" << vols[0].size() << ")");
         registerWith(Settings::instance().evaluationDate());
-        evaluationDate = Settings::instance().evaluationDate();
         createMarketData();
     }
 
     void CapsStripper::performCalculations () const {
-        if(evaluationDate != Settings::instance().evaluationDate()) {
+        if(evaluationDate_ != Settings::instance().evaluationDate()) {
             createMarketData();
-            evaluationDate = Settings::instance().evaluationDate();
+            evaluationDate_ = Settings::instance().evaluationDate();
         }
         Matrix& volatilityParameters =
             parametrizedCapletVolStructure_->volatilityParameters();
