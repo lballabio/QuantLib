@@ -1266,8 +1266,8 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
                new BlackScholesMertonProcess(spot, qTS, rTS, volTS));
 
     const boost::shared_ptr<HestonProcess> hestonProcess(
-                          new HestonProcess(rTS, qTS, spot, 0.0625, 
-                                            1.0, 0.0625, 0.01, 0.0));
+                          new HestonProcess(rTS, qTS, spot, 0.0825, 
+                                            1.0, 0.0625, 0.1, 0.0));
     const boost::shared_ptr<HestonModel> hestonModel(
                           new HestonModel(hestonProcess));
 
@@ -1350,7 +1350,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
 
     // cascade joint calibration
     boost::shared_ptr<PricingEngine> engine(
-                                 new AnalyticHestonEngine(hestonModel, 192));
+        new AnalyticHestonHullWhiteEngine(hestonModel, hullWhiteModel, 192));
 
     for (std::vector<boost::shared_ptr<CalibrationHelper> >::const_iterator
            iter = hestonOptions.begin(); iter != hestonOptions.end(); ++iter) {
@@ -1373,7 +1373,7 @@ void HybridHestonHullWhiteProcessTest::testPseudoJointCalibration() {
         hestonModel->calibrate(hestonOptions, lm, 
                                EndCriteria(400, 100, 1.0e-8, 1.0e-8, 1.0e-8));
 
-        // 2. Calculate NPVs under the full model
+         // 2. Calculate NPVs under the full model
         const std::vector<Real> npvs = mvo.NPVs();
 
         // 3. calculate vola implied vols
