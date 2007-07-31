@@ -35,7 +35,7 @@ namespace QuantLib {
     class SpreadedSmileSection;
     //! interest rate volatility smile section
     /*! This abstract class provides volatility smile section interface */
-    class SmileSection : public virtual Observable {
+    class SmileSection : public virtual Observable, public Observer {
       public:
         SmileSection(const Date& d,
                      const DayCounter& dc = Actual365Fixed(),
@@ -43,8 +43,9 @@ namespace QuantLib {
         SmileSection(Time exerciseTime,
                      const DayCounter& dc = Actual365Fixed());
         SmileSection() {}
+        virtual void update();
         virtual ~SmileSection() {}
-
+        
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
         virtual Real variance(Rate strike = Null<Rate>()) const;
@@ -53,14 +54,17 @@ namespace QuantLib {
         virtual const Date& exerciseDate() const { return exerciseDate_; }
         virtual Time exerciseTime() const { return exerciseTime_; }
         virtual const DayCounter& dayCounter() const { return dc_; }
+        void initializeExerciseTime() const;
         friend class SpreadedSmileSection;
       protected:
         virtual Real varianceImpl(Rate strike) const = 0;
         virtual Volatility volatilityImpl(Rate strike) const = 0;
       private:
+        bool isFloating_;
+        mutable Date referenceDate_;
         Date exerciseDate_;
         DayCounter dc_;
-        Time exerciseTime_;
+        mutable Time exerciseTime_;
     };
 
     inline Real SmileSection::variance(Rate strike) const {
@@ -123,8 +127,7 @@ namespace QuantLib {
         Real alpha_, beta_, nu_, rho_, forward_;
     };
 
-    class SpreadedSmileSection : public SmileSection,
-                                 public Observer {
+    class SpreadedSmileSection : public SmileSection {
       public:
         SpreadedSmileSection(const boost::shared_ptr<SmileSection>& underlyingSection,
                              const Handle<Quote>& spread)

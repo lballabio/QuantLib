@@ -55,6 +55,7 @@ namespace QuantLib {
                            const DayCounter& dc = Actual365Fixed()
                            );
         void performCalculations() const;
+        virtual void update();
         Real varianceImpl(Rate strike) const;
         Volatility volatilityImpl(Rate strike) const;
         Real alpha() const;
@@ -68,9 +69,9 @@ namespace QuantLib {
         Real maxStrike () const;
         Real atmLevel() const;
       private:
+        void createInterpolation() const;
         const boost::shared_ptr<EndCriteria> endCriteria_;
         const boost::shared_ptr<OptimizationMethod> method_;
-        Real exerciseTimeSquareRoot_;
         std::vector<Rate> strikes_;
         std::vector<Handle<Quote> > stdDevHandles_;
         const Handle<Quote> forward_;
@@ -80,6 +81,12 @@ namespace QuantLib {
         mutable boost::scoped_ptr<SABRInterpolation> sabrInterpolation_;
         Real alpha_, beta_, nu_, rho_;
         bool isAlphaFixed_, isBetaFixed_, isNuFixed_;
+        mutable Date evaluationDate_;
+    };
+
+    inline void SabrInterpolatedSmileSection::update() {
+        LazyObject::update();
+        SmileSection::update();
     };
 
     inline Real SabrInterpolatedSmileSection::volatilityImpl(Rate strike) const {

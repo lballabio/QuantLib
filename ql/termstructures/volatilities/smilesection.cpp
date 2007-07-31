@@ -24,22 +24,40 @@
 
 namespace QuantLib {
 
+    void SmileSection::update() {
+        if (!isFloating_) 
+            return;
+        referenceDate_ = Settings::instance().evaluationDate();
+        initializeExerciseTime();
+    }
+
+    void SmileSection::initializeExerciseTime() const {
+        if (!isFloating_)
+            return;
+
+        QL_REQUIRE(exerciseDate_>=referenceDate_,
+                   "expiry date (" << exerciseDate_ <<
+                   ") must be greater than reference date (" <<
+                   referenceDate_ << ")");
+        exerciseTime_ = dc_.yearFraction(referenceDate_, exerciseDate_);
+    }
+
     SmileSection::SmileSection(const Date& d,
                                const DayCounter& dc,
                                const Date& referenceDate)
     : exerciseDate_(d), dc_(dc) {
-        Date refDate = referenceDate!=Date() ? referenceDate :
-                       Settings::instance().evaluationDate();
-        QL_REQUIRE(d>=refDate,
-                   "expiry date (" << d <<
-                   ") must be greater than reference date (" <<
-                   refDate << ")");
-        exerciseTime_ = dc_.yearFraction(refDate, d);
+        isFloating_ = referenceDate==Date();
+        if (isFloating_) {
+            registerWith(Settings::instance().evaluationDate());
+            referenceDate_ = Settings::instance().evaluationDate();
+        } else
+            referenceDate_ = referenceDate;
+        initializeExerciseTime();
     }
 
     SmileSection::SmileSection(Time exerciseTime,
-                                                 const DayCounter& dc)
-    : dc_(dc), exerciseTime_(exerciseTime) {
+                               const DayCounter& dc)
+    : dc_(dc), exerciseTime_(exerciseTime),isFloating_(false) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");
