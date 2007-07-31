@@ -98,8 +98,8 @@ namespace QuantLib {
       vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
-            registerWith(stdDevHandles_[i]);
-        registerWith(atmLevel_);
+            LazyObject::registerWith(stdDevHandles_[i]);
+        LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
@@ -145,8 +145,8 @@ namespace QuantLib {
       stdDevHandles_(stdDevHandles), atmLevel_(atmLevel), vols_(stdDevHandles.size())
     {
         for (Size i=0; i<stdDevHandles_.size(); ++i)
-            registerWith(stdDevHandles_[i]);
-        registerWith(atmLevel_);
+            LazyObject::registerWith(stdDevHandles_[i]);
+        LazyObject::registerWith(atmLevel_);
         // check strikes!!!!!!!!!!!!!!!!!!!!
         interpolation_ = interpolator.interpolate(strikes_.begin(),
                                                   strikes_.end(),
