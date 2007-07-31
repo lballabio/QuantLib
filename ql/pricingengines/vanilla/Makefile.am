@@ -9,6 +9,7 @@ this_include_HEADERS = \
     analyticdividendeuropeanengine.hpp \
     analyticeuropeanengine.hpp \
     analytichestonengine.hpp \
+    analytichestonhullwhiteengine.hpp \
     baroneadesiwhaleyengine.hpp \
     batesengine.hpp \
     binomialengine.hpp \
@@ -42,6 +43,7 @@ libVanillaEngines_la_SOURCES = \
     analyticdividendeuropeanengine.cpp \
     analyticeuropeanengine.cpp \
     analytichestonengine.cpp \
+    analytichestonhullwhiteengine.cpp \
     baroneadesiwhaleyengine.cpp \
     batesengine.cpp \
     bjerksundstenslandengine.cpp \

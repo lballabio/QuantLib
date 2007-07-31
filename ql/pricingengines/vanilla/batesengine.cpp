@@ -26,7 +26,7 @@ namespace QuantLib {
                              Size integrationOrder)
     : AnalyticHestonEngine(model, integrationOrder) { }
 
-    std::complex<Real> BatesEngine::jumpDiffusionTerm(Real phi,
+    std::complex<Real> BatesEngine::addOnTerm(Real phi,
                                                       Time t, Size j) const {
         boost::shared_ptr<BatesModel> batesModel =
             boost::dynamic_pointer_cast<BatesModel>(model_);
@@ -48,11 +48,11 @@ namespace QuantLib {
         Size integrationOrder)
     : BatesEngine(model, integrationOrder) { }
 
-    std::complex<Real> BatesDetJumpEngine::jumpDiffusionTerm(
+    std::complex<Real> BatesDetJumpEngine::addOnTerm(
         Real phi, Time t, Size j) const {
 
         const std::complex<Real> l =
-            BatesEngine::jumpDiffusionTerm(phi, t, j);
+            BatesEngine::addOnTerm(phi, t, j);
 
         boost::shared_ptr<BatesDetJumpModel> batesDetJumpModel =
             boost::dynamic_pointer_cast<BatesDetJumpModel>(model_);
@@ -73,7 +73,7 @@ namespace QuantLib {
     : AnalyticHestonEngine(model, integrationOrder) { }
 
 
-    std::complex<Real> BatesDoubleExpEngine::jumpDiffusionTerm(
+    std::complex<Real> BatesDoubleExpEngine::addOnTerm(
         Real phi, Time t, Size j) const {
         boost::shared_ptr<BatesDoubleExpModel> batesDoubleExpModel =
             boost::dynamic_pointer_cast<BatesDoubleExpModel>(model_);
@@ -95,10 +95,10 @@ namespace QuantLib {
         Size integrationOrder)
     : BatesDoubleExpEngine(model, integrationOrder) { }
 
-    std::complex<Real> BatesDoubleExpDetJumpEngine::jumpDiffusionTerm(
+    std::complex<Real> BatesDoubleExpDetJumpEngine::addOnTerm(
         Real phi, Time t, Size j) const {
         const std::complex<Real> l =
-            BatesDoubleExpEngine::jumpDiffusionTerm(phi, t, j);
+            BatesDoubleExpEngine::addOnTerm(phi, t, j);
 
         boost::shared_ptr<BatesDoubleExpDetJumpModel> doubleExpDetJumpModel
             = boost::dynamic_pointer_cast<BatesDoubleExpDetJumpModel>(model_);

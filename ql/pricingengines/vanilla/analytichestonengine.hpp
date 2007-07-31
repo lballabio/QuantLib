@@ -1,3 +1,4 @@
+
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
@@ -63,8 +64,10 @@ namespace QuantLib {
         void calculate() const;
         // call back for extended stochastic volatility
         // plus jump diffusion engines like bates model
+
+      protected:
         virtual std::complex<Real>
-            jumpDiffusionTerm(Real phi, Time t, Size j) const;
+            addOnTerm(Real phi, Time t, Size j) const;
 
       private:
         GaussLaguerreIntegration gaussLaguerre;

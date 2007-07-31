@@ -108,7 +108,7 @@ namespace QuantLib {
                     Size integrationOrder = 64);
 
       protected:
-        std::complex<Real> jumpDiffusionTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
     };
 
 
@@ -118,7 +118,7 @@ namespace QuantLib {
                            Size integrationOrder = 64);
 
       protected:
-        std::complex<Real> jumpDiffusionTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
     };
 
 
@@ -129,7 +129,7 @@ namespace QuantLib {
             Size integrationOrder = 64);
 
       protected:
-        std::complex<Real> jumpDiffusionTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
     };
 
 
@@ -140,7 +140,7 @@ namespace QuantLib {
             Size integrationOrder = 64);
 
       protected:
-        std::complex<Real> jumpDiffusionTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
     };
 
 }

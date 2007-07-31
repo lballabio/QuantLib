@@ -130,7 +130,7 @@ namespace QuantLib {
         return std::exp(v0_*(t1+d)*(ex-1.0)/(sigma2_*(ex-p))
                         + (kappa_*theta_)/sigma2_*((t1+d)*term_-2.0*g)
                         + std::complex<Real>(0,phi*(dd_-sx_))
-                        + engine_->jumpDiffusionTerm(phi, term_, j_)
+                        + engine_->addOnTerm(phi, term_, j_)
                         ).imag()/phi;
     }
 
@@ -146,7 +146,7 @@ namespace QuantLib {
 
 
     std::complex<Real>
-    AnalyticHestonEngine::jumpDiffusionTerm(Real, Time, Size) const {
+    AnalyticHestonEngine::addOnTerm(Real, Time, Size) const {
         return std::complex<Real>(0,0);
     }
 

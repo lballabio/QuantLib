@@ -91,11 +91,21 @@ namespace QuantLib {
             process->blackVolatility()->blackVol(exercise->lastDate(),
                                                  payoff->strike());
         
-        const Real v = sigma*sigma/(a*a)
-            *(t + 2/a*std::exp(-a*t) - 1/(2*a)*std::exp(-2*a*t) - 3/(2*a));
-        const Real mu = 2*rho_*sigma*eta/a*(t-1/a*(1-std::exp(-a*t)));
+        Real varianceOffset;
+        if (a*t > std::pow(QL_EPSILON, 0.25)) {
+            const Real v = sigma*sigma/(a*a)
+                *(t + 2/a*std::exp(-a*t) - 1/(2*a)*std::exp(-2*a*t) - 3/(2*a));
+            const Real mu = 2*rho_*sigma*eta/a*(t-1/a*(1-std::exp(-a*t)));
+            
+            varianceOffset = v + mu;
+        }
+        else {
+            // low-a algebraic limit
+            const Real v = sigma*sigma*t*t*t*(1/3.0-0.25*a*t+7/60.0*a*a*t*t);
+            const Real mu = rho_*sigma*eta*t*t*(1-a*t/3.0+a*a*t*t/12.0);
 
-        const Real varianceOffset = v + mu;
+            varianceOffset = v + mu;
+        }
 
         Handle<BlackVolTermStructure> volTS(
              boost::shared_ptr<BlackVolTermStructure>(

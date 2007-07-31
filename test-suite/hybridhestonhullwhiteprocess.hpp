@@ -28,9 +28,11 @@
 class HybridHestonHullWhiteProcessTest {
   public:
     static void testBsmHullWhiteEngine();
+    static void testCompareBsmHWandHestonHW();
     static void testZeroBondPricing();
     static void testMcVanillaPricing();
     static void testMcPureHestonPricing();
+    static void testAnalyticHestonHullWhitePricing();
     static void testCallableEquityPricing();
     static void testPseudoJointCalibration();
     static boost::unit_test_framework::test_suite* suite();
