@@ -217,8 +217,12 @@ namespace QuantLib {
             ObjectiveFunctionWithFixedMeanReversion costFunction(this, fixedMeanReversion);
             Problem problem(costFunction, constraint,betasGuess);
             endCriteria_ = method->minimize(problem, *endCriteria);
-            result = problem.currentValue();
-            error_ = costFunction.value(result);
+            Array tmp = problem.currentValue();
+            result = Array(nBeta+1);
+            for(Size i=0;i<nBeta;i++)
+                result[i] = tmp[i];
+            result[nBeta] = fixedMeanReversion;
+            error_ = costFunction.value(tmp);
         }
         else {
             ParametersConstraint constraint(guess.size()-1);
