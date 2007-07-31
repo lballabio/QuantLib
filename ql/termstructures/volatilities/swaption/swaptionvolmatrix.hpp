@@ -85,7 +85,7 @@ namespace QuantLib {
                     const Matrix& volatilities,
                     const DayCounter& dayCounter = Actual365Fixed(),
                     BusinessDayConvention bdc = Following);
-        //! \deprecated alternative constructors instead
+        //! \deprecated use alternative constructors instead
         // fixed reference date and fixed market data, option dates
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& optionDates,
