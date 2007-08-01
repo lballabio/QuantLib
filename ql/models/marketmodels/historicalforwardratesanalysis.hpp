@@ -192,11 +192,20 @@ namespace QuantLib {
         } 
     }
 
-
-    //! %Historical correlation class
     class HistoricalForwardRatesAnalysis {
       public:
-        HistoricalForwardRatesAnalysis(
+        virtual const std::vector<Date>& skippedDates() const = 0;
+        virtual const std::vector<std::string>& skippedDatesErrorMessage() const = 0;
+        virtual const std::vector<Date>& failedDates() const = 0;
+        virtual const std::vector<std::string>& failedDatesErrorMessage() const = 0;
+        virtual const std::vector<Period>& fixingPeriods() const = 0;
+    };
+
+    //! %Historical correlation class
+    template<class Traits, class Interpolator>
+    class HistoricalForwardRatesAnalysisImpl : public HistoricalForwardRatesAnalysis {
+      public:
+        HistoricalForwardRatesAnalysisImpl(
                 const boost::shared_ptr<SequenceStatistics>& stats,
                 const Date& startDate,
                 const Date& endDate,
@@ -208,6 +217,7 @@ namespace QuantLib {
                 const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
                 const DayCounter& yieldCurveDayCounter,
                 Real yieldCurveAccuracy);
+        HistoricalForwardRatesAnalysisImpl(){};
         const std::vector<Date>& skippedDates() const;
         const std::vector<std::string>& skippedDatesErrorMessage() const;
         const std::vector<Date>& failedDates() const;
@@ -225,29 +235,33 @@ namespace QuantLib {
     };
 
     // inline
-
-    inline const std::vector<Period>&
-    HistoricalForwardRatesAnalysis::fixingPeriods() const {
+    template<class Traits, class Interpolator>
+    const std::vector<Period>& 
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::fixingPeriods() const {
         return fixingPeriods_;
     }
 
+    template<class Traits, class Interpolator>
     inline const std::vector<Date>&
-    HistoricalForwardRatesAnalysis::skippedDates() const {
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::skippedDates() const {
         return skippedDates_;
     }
 
+    template<class Traits, class Interpolator>
     inline const std::vector<std::string>&
-    HistoricalForwardRatesAnalysis::skippedDatesErrorMessage() const {
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::skippedDatesErrorMessage() const {
         return skippedDatesErrorMessage_;
     }
 
+    template<class Traits, class Interpolator>
     inline const std::vector<Date>&
-    HistoricalForwardRatesAnalysis::failedDates() const {
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::failedDates() const {
         return failedDates_;
     }
 
+    template<class Traits, class Interpolator>
     inline const std::vector<std::string>&
-    HistoricalForwardRatesAnalysis::failedDatesErrorMessage() const {
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::failedDatesErrorMessage() const {
         return failedDatesErrorMessage_;
     }
  
@@ -255,7 +269,30 @@ namespace QuantLib {
     //HistoricalForwardRatesAnalysis::stats() const {
     //    return stats_;
     //}
-
+    template<class Traits, class Interpolator>
+    HistoricalForwardRatesAnalysisImpl<Traits, Interpolator>::HistoricalForwardRatesAnalysisImpl(
+                const boost::shared_ptr<SequenceStatistics>& stats,
+                const Date& startDate,
+                const Date& endDate,
+                const Period& step,
+                const boost::shared_ptr<InterestRateIndex>& fwdIndex,
+                const Period& initialGap,
+                const Period& horizon,
+                const std::vector<boost::shared_ptr<IborIndex> >& iborIndexes,
+                const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+                const DayCounter& yieldCurveDayCounter,
+                Real yieldCurveAccuracy)
+    : stats_(stats) {
+        historicalForwardRatesAnalysis<Traits,
+                                       Interpolator>(
+                    *stats_,
+                    skippedDates_, skippedDatesErrorMessage_,
+                    failedDates_, failedDatesErrorMessage_, 
+                    fixingPeriods_, startDate, endDate, step, 
+                    fwdIndex, initialGap, horizon,
+                    iborIndexes, swapIndexes,
+                    yieldCurveDayCounter, yieldCurveAccuracy);
+      }
 }
 
 #endif
