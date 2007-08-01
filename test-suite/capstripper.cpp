@@ -50,7 +50,6 @@ boost::shared_ptr<IborIndex> xiborIndex;
 Natural fixingDays;
 BusinessDayConvention businessDayConvention;
 boost::shared_ptr<CapsStripper> capsStripper;
-std::vector<boost::shared_ptr<SmileSection> > smileSections;
 Matrix v;
 
 Real maxAbs(const Matrix& m){
@@ -88,6 +87,7 @@ void setFlatVolatilityTermStructure(Volatility flatVolatility){
 }
 
 void setMarketVolatilityTermStructure(){
+
     dayCounter = Actual360();
     strikes.resize(13);
     tenors.resize(16);
@@ -154,29 +154,33 @@ void setMarketVolatilityTermStructure(){
     tenors[14]= PeriodParser::parse("25Y");
     tenors[15]= PeriodParser::parse("30Y");
 
-    smileSections.resize(4);
-    std::vector<Rate> futureOptionStrikes(33);
-    std::vector<Volatility> volatilities(33);
-    Date computationDate = Settings::instance().evaluationDate();
-    Real dummyAtmLevel = .0;
-    futureOptionStrikes[0]=0.015;   futureOptionStrikes[1]=0.01625; futureOptionStrikes[2]=0.0175;  futureOptionStrikes[3]=0.01875; futureOptionStrikes[4]=0.02;    futureOptionStrikes[5]=0.02125; futureOptionStrikes[6]=0.0225;  futureOptionStrikes[7]=0.02375; futureOptionStrikes[8]=0.025;   futureOptionStrikes[9]=0.02625; futureOptionStrikes[10]=0.0275; futureOptionStrikes[11]=0.0287500000000001; futureOptionStrikes[12]=0.03;   futureOptionStrikes[13]=0.03125;    futureOptionStrikes[14]=0.0325; futureOptionStrikes[15]=0.0337499999999999; futureOptionStrikes[16]=0.035;  futureOptionStrikes[17]=0.03625;    futureOptionStrikes[18]=0.0375; futureOptionStrikes[19]=0.03875;    futureOptionStrikes[20]=0.04;   futureOptionStrikes[21]=0.04125;    futureOptionStrikes[22]=0.0425; futureOptionStrikes[23]=0.04375;    futureOptionStrikes[24]=0.045;  futureOptionStrikes[25]=0.04625;    futureOptionStrikes[26]=0.0475; futureOptionStrikes[27]=0.04875;    futureOptionStrikes[28]=0.05;   futureOptionStrikes[29]=0.05125;    futureOptionStrikes[30]=0.0525; futureOptionStrikes[31]=0.05375;    futureOptionStrikes[32]=0.055;
-    volatilities[0]=0.78;   volatilities[1]=0.71;   volatilities[2]=0.65;   volatilities[3]=0.59;   volatilities[4]=0.54;   volatilities[5]=0.49;   volatilities[6]=0.44;   volatilities[7]=0.40;   volatilities[8]=0.36;   volatilities[9]=0.32;   volatilities[10]=0.28;  volatilities[11]=0.24;  volatilities[12]=0.20;  volatilities[13]=0.17;  volatilities[14]=0.15;  volatilities[15]=0.12;  volatilities[16]=0.09;  volatilities[17]=0.06;  volatilities[18]=0.05;  volatilities[19]=0.02;  volatilities[20]=0.03;  volatilities[21]=0.12;  volatilities[22]=0.15;  volatilities[23]=0.17;  volatilities[24]=0.20;  volatilities[25]=0.22;  volatilities[26]=0.24;  volatilities[27]=0.26;  volatilities[28]=0.28;  volatilities[29]=0.30;  volatilities[30]=0.32;  volatilities[31]=0.34;  volatilities[32]=0.36;
-    smileSections[0] = boost::shared_ptr<InterpolatedSmileSection<> >
-        (new InterpolatedSmileSection<>(Date(computationDate + 15), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
-    volatilities[0]=0.53;   volatilities[1]=0.48;   volatilities[2]=0.44;   volatilities[3]=0.41;   volatilities[4]=0.37;   volatilities[5]=0.34;   volatilities[6]=0.31;   volatilities[7]=0.28;   volatilities[8]=0.25;   volatilities[9]=0.22;   volatilities[10]=0.20;  volatilities[11]=0.17;  volatilities[12]=0.15;  volatilities[13]=0.12;  volatilities[14]=0.10;  volatilities[15]=0.10;  volatilities[16]=0.09;  volatilities[17]=0.08;  volatilities[18]=0.08;  volatilities[19]=0.08;  volatilities[20]=0.07;  volatilities[21]=0.07;  volatilities[22]=0.10;  volatilities[23]=0.12;  volatilities[24]=0.12;  volatilities[25]=0.13;  volatilities[26]=0.15;  volatilities[27]=0.16;  volatilities[28]=0.18;  volatilities[29]=0.19;  volatilities[30]=0.20;  volatilities[31]=0.21;  volatilities[32]=0.23;
-    smileSections[1] = boost::shared_ptr<InterpolatedSmileSection<> >
-        (new InterpolatedSmileSection<>(Date(computationDate + 115), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
-    volatilities[0]=0.42;   volatilities[1]=0.39;   volatilities[2]=0.36;   volatilities[3]=0.33;   volatilities[4]=0.30;   volatilities[5]=0.27;   volatilities[6]=0.25;   volatilities[7]=0.22;   volatilities[8]=0.20;   volatilities[9]=0.18;   volatilities[10]=0.16;  volatilities[11]=0.14;  volatilities[12]=0.12;  volatilities[13]=0.12;  volatilities[14]=0.13;  volatilities[15]=0.12;  volatilities[16]=0.12;  volatilities[17]=0.11;  volatilities[18]=0.11;  volatilities[19]=0.11;  volatilities[20]=0.11;  volatilities[21]=0.10;  volatilities[22]=0.10;  volatilities[23]=0.10;  volatilities[24]=0.10;  volatilities[25]=0.11;  volatilities[26]=0.14;  volatilities[27]=0.13;  volatilities[28]=0.14;  volatilities[29]=0.15;  volatilities[30]=0.16;  volatilities[31]=0.17;  volatilities[32]=0.18;
-    smileSections[2] = boost::shared_ptr<InterpolatedSmileSection<> >
-        (new InterpolatedSmileSection<>(Date(computationDate + 195),  futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
-    volatilities[0]=0.36;   volatilities[1]=0.33;   volatilities[2]=0.30;   volatilities[3]=0.28;   volatilities[4]=0.25;   volatilities[5]=0.23;   volatilities[6]=0.21;   volatilities[7]=0.19;   volatilities[8]=0.17;   volatilities[9]=0.15;   volatilities[10]=0.16;  volatilities[11]=0.15;  volatilities[12]=0.15;  volatilities[13]=0.15;  volatilities[14]=0.14;  volatilities[15]=0.14;  volatilities[16]=0.14;  volatilities[17]=0.13;  volatilities[18]=0.13;  volatilities[19]=0.13;  volatilities[20]=0.13;  volatilities[21]=0.13;  volatilities[22]=0.12;  volatilities[23]=0.13;  volatilities[24]=0.12;  volatilities[25]=0.12;  volatilities[26]=0.13;  volatilities[27]=0.12;  volatilities[28]=0.13;  volatilities[29]=0.14;  volatilities[30]=0.14;  volatilities[31]=0.15;  volatilities[32]=0.16;
-    smileSections[3] = boost::shared_ptr<InterpolatedSmileSection<> >
-        (new InterpolatedSmileSection<>(Date(computationDate + 285), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
-
+   
 }
 
+    void initializeSmileSections (
+        std::vector<boost::shared_ptr<SmileSection> >& smileSections) {
+        smileSections.resize(4);
+        std::vector<Rate> futureOptionStrikes(33);
+        std::vector<Volatility> volatilities(33);
+        Date computationDate = Settings::instance().evaluationDate();
+        Real dummyAtmLevel = .0;
+        futureOptionStrikes[0]=0.015;   futureOptionStrikes[1]=0.01625; futureOptionStrikes[2]=0.0175;  futureOptionStrikes[3]=0.01875; futureOptionStrikes[4]=0.02;    futureOptionStrikes[5]=0.02125; futureOptionStrikes[6]=0.0225;  futureOptionStrikes[7]=0.02375; futureOptionStrikes[8]=0.025;   futureOptionStrikes[9]=0.02625; futureOptionStrikes[10]=0.0275; futureOptionStrikes[11]=0.0287500000000001; futureOptionStrikes[12]=0.03;   futureOptionStrikes[13]=0.03125;    futureOptionStrikes[14]=0.0325; futureOptionStrikes[15]=0.0337499999999999; futureOptionStrikes[16]=0.035;  futureOptionStrikes[17]=0.03625;    futureOptionStrikes[18]=0.0375; futureOptionStrikes[19]=0.03875;    futureOptionStrikes[20]=0.04;   futureOptionStrikes[21]=0.04125;    futureOptionStrikes[22]=0.0425; futureOptionStrikes[23]=0.04375;    futureOptionStrikes[24]=0.045;  futureOptionStrikes[25]=0.04625;    futureOptionStrikes[26]=0.0475; futureOptionStrikes[27]=0.04875;    futureOptionStrikes[28]=0.05;   futureOptionStrikes[29]=0.05125;    futureOptionStrikes[30]=0.0525; futureOptionStrikes[31]=0.05375;    futureOptionStrikes[32]=0.055;
+        volatilities[0]=0.78;   volatilities[1]=0.71;   volatilities[2]=0.65;   volatilities[3]=0.59;   volatilities[4]=0.54;   volatilities[5]=0.49;   volatilities[6]=0.44;   volatilities[7]=0.40;   volatilities[8]=0.36;   volatilities[9]=0.32;   volatilities[10]=0.28;  volatilities[11]=0.24;  volatilities[12]=0.20;  volatilities[13]=0.17;  volatilities[14]=0.15;  volatilities[15]=0.12;  volatilities[16]=0.09;  volatilities[17]=0.06;  volatilities[18]=0.05;  volatilities[19]=0.02;  volatilities[20]=0.03;  volatilities[21]=0.12;  volatilities[22]=0.15;  volatilities[23]=0.17;  volatilities[24]=0.20;  volatilities[25]=0.22;  volatilities[26]=0.24;  volatilities[27]=0.26;  volatilities[28]=0.28;  volatilities[29]=0.30;  volatilities[30]=0.32;  volatilities[31]=0.34;  volatilities[32]=0.36;
+        smileSections[0] = boost::shared_ptr<InterpolatedSmileSection<> >
+            (new InterpolatedSmileSection<>(Date(computationDate + 15), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
+        volatilities[0]=0.53;   volatilities[1]=0.48;   volatilities[2]=0.44;   volatilities[3]=0.41;   volatilities[4]=0.37;   volatilities[5]=0.34;   volatilities[6]=0.31;   volatilities[7]=0.28;   volatilities[8]=0.25;   volatilities[9]=0.22;   volatilities[10]=0.20;  volatilities[11]=0.17;  volatilities[12]=0.15;  volatilities[13]=0.12;  volatilities[14]=0.10;  volatilities[15]=0.10;  volatilities[16]=0.09;  volatilities[17]=0.08;  volatilities[18]=0.08;  volatilities[19]=0.08;  volatilities[20]=0.07;  volatilities[21]=0.07;  volatilities[22]=0.10;  volatilities[23]=0.12;  volatilities[24]=0.12;  volatilities[25]=0.13;  volatilities[26]=0.15;  volatilities[27]=0.16;  volatilities[28]=0.18;  volatilities[29]=0.19;  volatilities[30]=0.20;  volatilities[31]=0.21;  volatilities[32]=0.23;
+        smileSections[1] = boost::shared_ptr<InterpolatedSmileSection<> >
+            (new InterpolatedSmileSection<>(Date(computationDate + 115), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
+        volatilities[0]=0.42;   volatilities[1]=0.39;   volatilities[2]=0.36;   volatilities[3]=0.33;   volatilities[4]=0.30;   volatilities[5]=0.27;   volatilities[6]=0.25;   volatilities[7]=0.22;   volatilities[8]=0.20;   volatilities[9]=0.18;   volatilities[10]=0.16;  volatilities[11]=0.14;  volatilities[12]=0.12;  volatilities[13]=0.12;  volatilities[14]=0.13;  volatilities[15]=0.12;  volatilities[16]=0.12;  volatilities[17]=0.11;  volatilities[18]=0.11;  volatilities[19]=0.11;  volatilities[20]=0.11;  volatilities[21]=0.10;  volatilities[22]=0.10;  volatilities[23]=0.10;  volatilities[24]=0.10;  volatilities[25]=0.11;  volatilities[26]=0.14;  volatilities[27]=0.13;  volatilities[28]=0.14;  volatilities[29]=0.15;  volatilities[30]=0.16;  volatilities[31]=0.17;  volatilities[32]=0.18;
+        smileSections[2] = boost::shared_ptr<InterpolatedSmileSection<> >
+            (new InterpolatedSmileSection<>(Date(computationDate + 195),  futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
+        volatilities[0]=0.36;   volatilities[1]=0.33;   volatilities[2]=0.30;   volatilities[3]=0.28;   volatilities[4]=0.25;   volatilities[5]=0.23;   volatilities[6]=0.21;   volatilities[7]=0.19;   volatilities[8]=0.17;   volatilities[9]=0.15;   volatilities[10]=0.16;  volatilities[11]=0.15;  volatilities[12]=0.15;  volatilities[13]=0.15;  volatilities[14]=0.14;  volatilities[15]=0.14;  volatilities[16]=0.14;  volatilities[17]=0.13;  volatilities[18]=0.13;  volatilities[19]=0.13;  volatilities[20]=0.13;  volatilities[21]=0.13;  volatilities[22]=0.12;  volatilities[23]=0.13;  volatilities[24]=0.12;  volatilities[25]=0.12;  volatilities[26]=0.13;  volatilities[27]=0.12;  volatilities[28]=0.13;  volatilities[29]=0.14;  volatilities[30]=0.14;  volatilities[31]=0.15;  volatilities[32]=0.16;
+        smileSections[3] = boost::shared_ptr<InterpolatedSmileSection<> >
+            (new InterpolatedSmileSection<>(Date(computationDate + 285), futureOptionStrikes, volatilities, dummyAtmLevel, dayCounter));
+    }
 
-void setup(Real impliedVolatilityPrecision = 1e-5) {
+void setup(std::vector<boost::shared_ptr<SmileSection> >& smileSections,
+           Real impliedVolatilityPrecision = 1e-5) {
 
     calendar = TARGET();
     fixingDays = 2;
@@ -220,7 +224,8 @@ void CapsStripperTest::FlatVolatilityStripping() {
 
     Volatility flatVolatility = .18;
     setFlatVolatilityTermStructure(flatVolatility);
-    setup();
+    std::vector<boost::shared_ptr<SmileSection> > smileSections;
+    setup(smileSections);
     const CapMatrix& marketDataCap = capsStripper->marketDataCap();
     for (Size tenorIndex = 0; tenorIndex < tenors.size() ; tenorIndex++){
         Date tenorDate = marketDataCap[tenorIndex][0]->lastFixingDate();
@@ -257,9 +262,9 @@ void CapsStripperTest::highPrecisionTest(){
     Settings::instance().evaluationDate() = today;
 
     setMarketVolatilityTermStructure();
-    setup();
+    std::vector<boost::shared_ptr<SmileSection> > smileSections;
     Real impliedVolatilityPrecision = 1e-20;
-    setup(impliedVolatilityPrecision);
+    setup(smileSections, impliedVolatilityPrecision);
     static const Real tolerance = 1e-12;
     static const Real priceThreshold = 1e-6;
 
@@ -312,7 +317,8 @@ void CapsStripperTest::testSpreadedStripper() {
     Settings::instance().evaluationDate() = today;
 
     setMarketVolatilityTermStructure();
-    setup();
+    std::vector<boost::shared_ptr<SmileSection> > smileSections;
+    setup(smileSections);
 
     Handle <CapletVolatilityStructure> strippedVolatilityStructureHandle(capsStripper);
     boost::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
