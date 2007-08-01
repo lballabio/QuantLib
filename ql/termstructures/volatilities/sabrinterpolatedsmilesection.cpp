@@ -55,7 +55,7 @@ namespace QuantLib {
 
     void SabrInterpolatedSmileSection::createInterpolation() const {
          boost::scoped_ptr<SABRInterpolation> tmp(new SABRInterpolation(
-            strikes_.begin(), strikes_.end(), vols_.begin(),
+            actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
                      exerciseTime(), forwardValue_, alpha_, beta_, nu_, rho_,
                      isAlphaFixed_, isBetaFixed_,
                      isNuFixed_, isRhoFixed_, vegaWeighted_,
@@ -66,10 +66,15 @@ namespace QuantLib {
     void SabrInterpolatedSmileSection::performCalculations() const {
         forwardValue_ = 1-forward_->value()/100;
         Time exerciseTimeSquareRoot = std::sqrt(exerciseTime());
-        
-        for (Size i=0; i<stdDevHandles_.size(); ++i)
-            vols_[i] = stdDevHandles_[i]->value()/exerciseTimeSquareRoot;
-        
+        vols_.clear();
+        actualStrikes_.clear();
+        // we populate the volatilities, skipping the invalid ones
+        for (Size i=0; i<stdDevHandles_.size(); ++i) {
+            if (stdDevHandles_[i]->isValid()) {
+                vols_.push_back(stdDevHandles_[i]->value()/exerciseTimeSquareRoot);
+                actualStrikes_.push_back(strikes_[i]);
+            }
+        }
         if(evaluationDate_ != Settings::instance().evaluationDate()) {
             createInterpolation();
             evaluationDate_ = Settings::instance().evaluationDate();
