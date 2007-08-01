@@ -4587,6 +4587,12 @@
 					RelativePath=".\ql\pricingengines\vanilla\analytichestonengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\pricingengines\vanilla\analytichestonhullwhiteengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\pricingengines\vanilla\analytichestonhullwhiteengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\pricingengines\vanilla\baroneadesiwhaleyengine.cpp">
 					<FileConfiguration
 						Name="Debug CRTDLL|Win32">
