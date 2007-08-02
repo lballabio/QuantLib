@@ -34,7 +34,7 @@ namespace {
 
     class ImpliedVolHelper{
     public:
-        ImpliedVolHelper(boost::shared_ptr<CapFloor> cap,
+        ImpliedVolHelper(CapFloor& cap,
                          Real targetValue,
                          Real& volatilityParameter):
                          targetValue_(targetValue), cap_(cap),
@@ -42,22 +42,22 @@ namespace {
 
         Real operator()(Real x) const {
             volatilityParameter_ = x;
-            cap_->update();
-            return cap_->NPV() - targetValue_;
+            cap_.update();
+            return cap_.NPV() - targetValue_;
         };
     private:
         Real targetValue_;
-        boost::shared_ptr<CapFloor> cap_;
+        CapFloor& cap_;
         Real& volatilityParameter_;
     };
 
-    void fitVolatilityParameter(boost::shared_ptr<CapFloor> mkData,
-                                    Real& volatilityParameter,
-                                    Real targetValue,
-                                    Real accuracy = 1e-5,
-                                    Size maxEvaluations = 1000,
-                                    Volatility minVol = 1e-4,
-                                    Volatility maxVol = 4) {
+    void fitVolatilityParameter(CapFloor& mkData,
+                                Real& volatilityParameter,
+                                Real targetValue,
+                                Real accuracy = 1e-5,
+                                Size maxEvaluations = 1000,
+                                Volatility minVol = 1e-4,
+                                Volatility maxVol = 4) {
         ImpliedVolHelper f(mkData, targetValue, volatilityParameter);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
@@ -222,7 +222,7 @@ namespace QuantLib {
                     // change the calibCap_ type if necessary
                     if (requestedType!=calibCap_[i][j]->type())
                         changeCapFloorType(*calibCap_[i][j]);
-                    fitVolatilityParameter(calibCap_[i][j],
+                    fitVolatilityParameter(*calibCap_[i][j],
                         volatilityParameters[i][j],
                         capPrice, impliedVolatilityAccuracy_, maxEvaluations_);
                 }
