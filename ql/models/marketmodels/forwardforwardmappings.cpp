@@ -26,28 +26,27 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     Disposable<Matrix>
-        ForwardForwardMappings::ForwardForwardJacobian(const CurveState& cs, 
+        ForwardForwardMappings::ForwardForwardJacobian(const CurveState& cs,
         Size multiplier,
         Size offset)
         {
-       
+
         Size n = cs.numberOfRates();
-       
+
         QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
             "  forward forward mappings");
         Size k = (n-offset)/multiplier;
 
-        const std::vector<Rate>& f = cs.forwardRates();
         const std::vector<Time>& tau = cs.rateTaus();
 
         Matrix jacobian = Matrix(k, n, 0.0);
 
-        Size m=offset; 
+        Size m=offset;
         for (Size l=0; l < k; ++l)
             {
             Real df = cs.discountRatio(m,m+multiplier);
             Real bigTau = cs.rateTimes()[m+multiplier]
-            -  cs.rateTimes()[m]; 
+            -  cs.rateTimes()[m];
 
             for (Size r=0; r < multiplier; ++r, ++m)
                 {
@@ -75,7 +74,7 @@ namespace QuantLib {
             "  forward forward mappings");
         Size k = (n-offset)/multiplier;
 
-      
+
         QL_REQUIRE(shortDisplacements.size() == n , "shortDisplacements must be of size"
             " equal to number of rates");
 
@@ -86,11 +85,11 @@ namespace QuantLib {
 
         for (Size i=0; i < k ; ++i)
             {
-            Real tau = cs.rateTimes()[(i+1)*multiplier+offset] 
+            Real tau = cs.rateTimes()[(i+1)*multiplier+offset]
             -  cs.rateTimes()[i*multiplier+offset];
 
             Real longForward = (cs.discountRatio((i+1)*multiplier+offset,i*multiplier+offset)-1.0)
-                /tau;   
+                /tau;
             Real longForwardDisplaced = longForward+ longDisplacements[i];
             for (Size j=0; j < n; ++j)
                 {
@@ -100,9 +99,9 @@ namespace QuantLib {
                 }
 
             }
-              
+
         return jacobian;
-      
+
         }
 
     LMMCurveState
@@ -126,10 +125,10 @@ namespace QuantLib {
                times[i] = cs.rateTimes()[i*multiplier+offset];
                discRatios[i] = cs.discountRatio(0,i*multiplier+offset);
            }
-           
+
            LMMCurveState newState(times);
            newState.setOnDiscountRatios(discRatios);
            return newState;
-      
+
         }
 }

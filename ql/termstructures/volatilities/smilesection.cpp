@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     void SmileSection::update() {
-        if (!isFloating_) 
+        if (!isFloating_)
             return;
         referenceDate_ = Settings::instance().evaluationDate();
         initializeExerciseTime();
@@ -57,7 +57,7 @@ namespace QuantLib {
 
     SmileSection::SmileSection(Time exerciseTime,
                                const DayCounter& dc)
-    : dc_(dc), exerciseTime_(exerciseTime),isFloating_(false) {
+    : isFloating_(false), dc_(dc), exerciseTime_(exerciseTime) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");

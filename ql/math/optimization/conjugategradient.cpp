@@ -30,12 +30,12 @@ namespace QuantLib {
                                                   const EndCriteria& endCriteria) {
         // Initializations
         Real ftol = endCriteria.functionEpsilon();
-        Size maxStationaryStateIterations_ 
+        Size maxStationaryStateIterations_
             = endCriteria.maxStationaryStateIterations();
         EndCriteria::Type ecType = EndCriteria::None;       // reset end criteria
         P.reset();                                          // reset problem
         Array x_ = P.currentValue();                        // store the starting point
-        Size iterationNumber_=0, stationaryStateIterationNumber_=0;
+        Size iterationNumber_=0 /*, stationaryStateIterationNumber_=0 */;
         lineSearch_->searchDirection() = Array(x_.size());  // dimension line search
         bool done = false;
 
@@ -80,11 +80,11 @@ namespace QuantLib {
                 // Now compute accuracy and check end criteria
                 // Numerical Recipes exit strategy on fx (see NR in C++, p.423)
                 fnew = P.functionValue();
-                fdiff = 2.0*std::fabs(fnew-fold) / 
+                fdiff = 2.0*std::fabs(fnew-fold) /
                         (std::fabs(fnew) + std::fabs(fold) + QL_EPSILON);
-                if (fdiff < ftol || 
+                if (fdiff < ftol ||
                     endCriteria.checkMaxIterations(iterationNumber_, ecType)) {
-                    endCriteria.checkStationaryFunctionValue(0.0, 0.0, 
+                    endCriteria.checkStationaryFunctionValue(0.0, 0.0,
                         maxStationaryStateIterations_, ecType);
                     endCriteria.checkMaxIterations(iterationNumber_, ecType);
                     return ecType;

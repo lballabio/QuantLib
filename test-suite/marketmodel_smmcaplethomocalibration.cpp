@@ -420,7 +420,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
     Size numberOfRates = todaysForwards_.size();
 
     EvolutionDescription evolution(rateTimes_);
-    Size numberOfSteps = evolution.numberOfSteps();
+    // Size numberOfSteps = evolution.numberOfSteps();
 
     boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
         ExponentialForwardCorrelation(rateTimes_,
@@ -537,7 +537,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testFunction() {
    // for (Size i=0; i < newSwapMM.numberOfRates(); ++i)
      //      BOOST_MESSAGE("swap MM time dependent vols: "<< i << QL_FIXED <<
        //               std::setprecision(6) << Array(newSwapMM.timeDependentVolatility(i)));
-    
+
 
 
 

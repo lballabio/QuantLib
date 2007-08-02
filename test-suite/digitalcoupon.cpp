@@ -395,7 +395,6 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
         Date startDate = calendar_.advance(settlement_,(k+1)*Years);
         Date endDate = calendar_.advance(settlement_,(k+2)*Years);
         Rate nullstrike = Null<Rate>();
-        Rate cashRate = 0.01;
         Real gap = 1e-4;
         Date paymentDate = endDate;
 

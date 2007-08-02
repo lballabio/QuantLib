@@ -759,7 +759,7 @@ void AssetSwapTest::testMarketASWSpread() {
                        Date(17,February,2028),
                        ActualActual(ActualActual::ISMA), Following,
                        100.0, Date(17,February,1998), termStructure_));
-    Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
+    // Real zeroCpnBondPrice2 = zeroCpnBond2->cleanPrice();
     Real zeroCpnBondMktPrice2 = 35.160 ; // market price observed on 12th June 2007
     Real zeroCpnBondMktFullPrice2 = zeroCpnBondMktPrice2+zeroCpnBond2->accruedAmount();
     AssetSwap zeroCpnBondParAssetSwap2(payFixedRate,zeroCpnBond2,

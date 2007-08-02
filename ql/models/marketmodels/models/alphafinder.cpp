@@ -239,7 +239,6 @@ namespace
             Real y; // dummy
             q2.roots(a,y);
 
-            Real totalVar=0.0;
             Real varSoFar=0.0;
             for (Integer i =0; i < stepindex+1; ++i) {
                 ratetwovols[i] = ratetwohomogeneousvols[i] *

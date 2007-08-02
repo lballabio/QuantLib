@@ -33,15 +33,14 @@ namespace QuantLib {
                                Size period,
                                Size offset,
                                const std::vector<Spread>& newDisplacements)
-    : 
+    :
       numberOfFactors_(largeModel->numberOfFactors()),
           numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 1) ),
       numberOfSteps_(largeModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  1), 
+      pseudoRoots_(numberOfSteps_, Matrix((numberOfRates_-offset)/(period > 0 ? period :  1),
                                           numberOfFactors_)),
                                           displacements_(newDisplacements)
     {
-        Size n = largeModel->numberOfRates();
         QL_REQUIRE( period >0, "period must  be greater than zero in fwdperiodadapter");
         QL_REQUIRE(period > offset, "period must be greater than offset in fwdperiodadapter");
 
@@ -54,14 +53,14 @@ namespace QuantLib {
             displacements_.resize(numberOfRates_);
             std::fill(displacements_.begin(), displacements_.end(), dis);
         }
-    
+
         if (displacements_.size() ==0) // if not specified use average across rate
         {
             displacements_.reserve(numberOfRates_);
             Size m=0;
             Real sum=0.0;
             for (Size k=0; k < numberOfRates_; ++k)
-            {   
+            {
                 for (Size l=0; l < period; ++l, ++m)
                     sum+= largeDisplacements_[m];
 
@@ -69,7 +68,7 @@ namespace QuantLib {
             }
         }
         QL_REQUIRE( displacements_.size() == numberOfRates_,"newDisplacements should be empty,1, or number of new rates in fwdperiodadapter");
-   
+
         LMMCurveState largeCS(largeModel->evolution().rateTimes());
         largeCS.setOnForwardRates(largeModel->initialRates());
 
@@ -83,7 +82,7 @@ namespace QuantLib {
         Real finalReset = smallCS.rateTimes()[smallCS.numberOfRates()-1];
         std::vector<Time> oldEvolutionTimes(largeModel->evolution().evolutionTimes());
         std::vector<Time> newEvolutionTimes;
-        for (Size i =0; i < oldEvolutionTimes.size(), oldEvolutionTimes[i]<= finalReset; ++i)
+        for (Size i =0; i < oldEvolutionTimes.size() && oldEvolutionTimes[i]<= finalReset; ++i)
             newEvolutionTimes.push_back(oldEvolutionTimes[i]);
 
         evolution_=EvolutionDescription(smallCS.rateTimes(),
@@ -104,8 +103,8 @@ namespace QuantLib {
             QL_REQUIRE(setTimes.find(rateTimes[i]) != setTimes.end(),
                         "every new rate time except last must be an evolution time in fwdperiod adapter");
 
-     
-        Matrix YMatrix = 
+
+        Matrix YMatrix =
             ForwardForwardMappings::YMatrix( largeCS,
                                                  largeDisplacements_,
                                                   displacements_,
@@ -115,7 +114,7 @@ namespace QuantLib {
 
         const std::vector<Size>& alive =
             evolution_.firstAliveRate();
-        
+
         for (Size k = 0; k<numberOfSteps_; ++k) {
             pseudoRoots_[k]=YMatrix*largeModel->pseudoRoot(k);
             for (Size i=0; i<alive[k]; ++i)

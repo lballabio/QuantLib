@@ -415,7 +415,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     Size numberOfRates = todaysForwards_.size();
 
     EvolutionDescription evolution(rateTimes_);
-    Size numberOfSteps = evolution.numberOfSteps();
+    // Size numberOfSteps = evolution.numberOfSteps();
 
     boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
         ExponentialForwardCorrelation(rateTimes_,

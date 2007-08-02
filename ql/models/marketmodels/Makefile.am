@@ -31,7 +31,6 @@ libMarketModels_la_SOURCES = \
     discounter.cpp \
     evolutiondescription.cpp \
     forwardforwardmappings.cpp \
-    historicalforwardratesanalysis.cpp \
     marketmodel.cpp \
     marketmodeldifferences.cpp \
     proxygreekengine.cpp \

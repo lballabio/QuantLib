@@ -88,7 +88,7 @@ namespace QuantLib {
     inline void SabrInterpolatedSmileSection::update() {
         LazyObject::update();
         SmileSection::update();
-    };
+    }
 
     inline Real SabrInterpolatedSmileSection::volatilityImpl(Rate strike) const {
         calculate();
@@ -140,7 +140,7 @@ namespace QuantLib {
         return strikes_.back();
     }
 
-    inline Real SabrInterpolatedSmileSection::atmLevel() const { 
+    inline Real SabrInterpolatedSmileSection::atmLevel() const {
         calculate();
         return forwardValue_;
     }

@@ -85,8 +85,8 @@ void ShortRateModelTest::testCachedHullWhite() {
     }
 
     // Set up the optimization problem
-    Real simplexLambda = 0.1;
-    //Simplex optimizationMethod(simplexLambda);
+    // Real simplexLambda = 0.1;
+    // Simplex optimizationMethod(simplexLambda);
     LevenbergMarquardt optimizationMethod(1.0e-8,1.0e-8,1.0e-8);
     EndCriteria endCriteria(10000, 100, 1e-6, 1e-8, 1e-8);
 

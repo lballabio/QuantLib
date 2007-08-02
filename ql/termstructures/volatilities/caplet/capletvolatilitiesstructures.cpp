@@ -216,7 +216,7 @@ namespace QuantLib {
                 TermStructure::referenceDate(), tenorDate);
             //volatilities_[i].resize(strikes_.size(), .2);
             boost::shared_ptr<Interpolation> newInterpolation(
-                new LinearInterpolation(strikes_.begin(), 
+                new LinearInterpolation(strikes_.begin(),
                     strikes_.end(), volatilities_[i]));
             newInterpolation->update();
             strikeInterpolations_.push_back(newInterpolation);
@@ -241,15 +241,15 @@ namespace QuantLib {
         }
         strikeInterpolations_[i-1]->update();
         strikeInterpolations_[i]->update();
-        Volatility lowerVolatiliy = 
+        Volatility lowerVolatiliy =
             strikeInterpolations_[i-1]->operator()(strike);
-        Volatility higherVolatiliy = 
+        Volatility higherVolatiliy =
             strikeInterpolations_[i]->operator()(strike);
         return linearInterpolation(length, tenorTimes_[i-1], tenorTimes_[i],
                 lowerVolatiliy, higherVolatiliy);
     }
 
-    
+
 
     void DecInterpCapletVolStructure::setClosestTenors(
                                             Time time, Time& nextLowerTenor,
@@ -282,7 +282,7 @@ namespace QuantLib {
             volatilitiesFromCaps,
             const boost::shared_ptr<SmileSectionsVolStructure>&
                 shortTermCapletVolatilityStructure)
-                           :ParametrizedCapletVolStructure(referenceDate), 
+                           :ParametrizedCapletVolStructure(referenceDate),
                             dayCounter_(dayCounter),
                             volatilitiesFromCaps_(volatilitiesFromCaps),
                             shortTermCapletVolatilityStructure_
@@ -345,5 +345,6 @@ namespace QuantLib {
             return linearInterpolation(length, nextLowerTenor,
                 nextHigherTenor, volAtNextLowerTenor, volAtNextHigherTenor);
     }
-    
+
 }
+
