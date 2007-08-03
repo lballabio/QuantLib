@@ -74,8 +74,12 @@ namespace QuantLib {
                          const M& zData)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd),
               zData_(zData) {
-                QL_REQUIRE(xEnd_-xBegin_ >= 2 && yEnd_-yBegin_ >= 2,
-                           "not enough points to interpolate");
+                QL_REQUIRE(xEnd_-xBegin_ >= 2,
+                           "not enough x points to interpolate: at least 2 "
+                           "required, " << xEnd_-xBegin_ << " provided");
+                QL_REQUIRE(yEnd_-yBegin_ >= 2,
+                           "not enough y points to interpolate: at least 2 "
+                           "required, " << yEnd_-yBegin_ << " provided");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 for (I1 i=xBegin_, j=xBegin_+1; j!=xEnd_; i++, j++)
                     QL_REQUIRE(*j > *i, "unsorted x values");

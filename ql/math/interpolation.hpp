@@ -67,7 +67,8 @@ namespace QuantLib {
             templateImpl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
-                           "not enough points to interpolate");
+                           "not enough points to interpolate: at least 2 "
+                           "required, " << xEnd_-xBegin_ << " provided");
                 #if defined(QL_EXTRA_SAFETY_CHECKS)
                 for (I1 i=xBegin, j=xBegin+1; j!=xEnd; i++, j++)
                     QL_REQUIRE(*j > *i, "unsorted x values");
