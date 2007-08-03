@@ -64,6 +64,7 @@ namespace QuantLib {
               betaIsFixed_(false),
               nuIsFixed_(false),
               rhoIsFixed_(false),
+              weights_(std::vector<Real>()),
               error_(Null<Real>()),
               maxError_(Null<Real>()),
               SABREndCriteria_(EndCriteria::None)
@@ -93,6 +94,8 @@ namespace QuantLib {
             /*! Sabr parameters */
             Real alpha_, beta_, nu_, rho_;
             bool alphaIsFixed_, betaIsFixed_, nuIsFixed_, rhoIsFixed_;
+            std::vector<Real> weights_;
+            /*! Sabr interpolation results */
             Real error_, maxError_;
             EndCriteria::Type SABREndCriteria_;
         };
@@ -143,8 +146,8 @@ namespace QuantLib {
         Real rho()     const { return coeffs_->rho_; }
         Real interpolationError() const { return coeffs_->error_; }
         Real interpolationMaxError() const { return coeffs_->maxError_; }
-        //const std::vector<Real>& interpolationWeights() const {
-        //    return impl_->weights_; }
+        const std::vector<Real>& interpolationWeights() const {
+            return coeffs_->weights_; }
         EndCriteria::Type endCriteria(){ return coeffs_->SABREndCriteria_; }
 
       private:
@@ -264,13 +267,13 @@ namespace QuantLib {
             // optimization method used for fitting
             boost::shared_ptr<EndCriteria> endCriteria_;
             boost::shared_ptr<OptimizationMethod> optMethod_;
-            std::vector<Real> weights_;
             const Real& forward_;
             bool vegaWeighted_;
             boost::shared_ptr<ParametersTransformation> transformation_;
             NoConstraint constraint_;
 
-          public:
+          public:         
+
             SABRInterpolationImpl(
                 const I1& xBegin, const I1& xEnd,
                 const I2& yBegin,
@@ -289,7 +292,7 @@ namespace QuantLib {
                                     alphaIsFixed, betaIsFixed,
                                     nuIsFixed, rhoIsFixed),
               endCriteria_(endCriteria), optMethod_(optMethod),
-              weights_(xEnd-xBegin, 1.0/(xEnd-xBegin)), forward_(forward),
+              forward_(forward),
               vegaWeighted_(vegaWeighted)
             {
                 // if no optimization method or endCriteria is provided, we provide one
@@ -302,6 +305,7 @@ namespace QuantLib {
                     endCriteria_ = boost::shared_ptr<EndCriteria>(new
                         EndCriteria(60000, 100, 1e-8, 1e-8, 1e-8));
                 }
+                weights_ = std::vector<Real>(xEnd-xBegin, 1.0/(xEnd-xBegin));
             }
 
             void update() {
