@@ -313,7 +313,7 @@ void HybridHestonHullWhiteProcessTest::testZeroBondPricing() {
     std::vector<DiscountFactor> tmpOption(90);
     
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2);
+        const bool antithetic = i%2;
         sample_type path = (!antithetic) ? generator.next() 
                                          : generator.antithetic();
 
@@ -714,10 +714,10 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     Real antitheticPayoff=0;
     const Size nrTrails = 5000;
     for (Size i=0; i < nrTrails; ++i) {
-        const bool antithetic = (i%2);
+        const bool antithetic = i%2;
 
-        sample_type path = (!antithetic) ? generator.next() 
-                                         : generator.antithetic();
+        sample_type path = antithetic ? generator.antithetic() 
+                                      : generator.next();
 
         Real payoff=0;
         for (Size j=1; j <= maturity; ++j) {
