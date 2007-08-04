@@ -37,7 +37,7 @@
 
 #include <ql/methods/montecarlo/path.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
-#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 

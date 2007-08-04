@@ -26,7 +26,7 @@
 
 #include <ql/legacy/pricers/mcpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
 
 
 namespace QuantLib {

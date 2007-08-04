@@ -18,9 +18,32 @@
 */
 
 #include <ql/termstructures/volatilities/equity/localvolsurface.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
+
+
+    const Date& LocalVolSurface::referenceDate() const {
+        return blackTS_->referenceDate();
+    }
+
+    DayCounter LocalVolSurface::dayCounter() const {
+        return blackTS_->dayCounter();
+    }
+
+    Date LocalVolSurface::maxDate() const {
+        return blackTS_->maxDate();
+    }
+
+    Real LocalVolSurface::minStrike() const {
+        return blackTS_->minStrike();
+    }
+
+    Real LocalVolSurface::maxStrike() const {
+        return blackTS_->maxStrike();
+    }
 
     LocalVolSurface::LocalVolSurface(
                                  const Handle<BlackVolTermStructure>& blackTS,

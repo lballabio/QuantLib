@@ -24,7 +24,7 @@
 #ifndef quantlib_implied_vol_term_structure_hpp
 #define quantlib_implied_vol_term_structure_hpp
 
-#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -105,10 +105,10 @@ namespace QuantLib {
            to the reference date of the original curve */
         return originalTS_->blackForwardVariance(timeShift,
                                                  timeShift+t,
-                                                 strike, true);
+                                                 strike,
+                                                 true);
     }
 
 }
-
 
 #endif

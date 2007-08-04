@@ -24,11 +24,13 @@
 #ifndef quantlib_localvolsurface_hpp
 #define quantlib_localvolsurface_hpp
 
-#include <ql/termstructures/voltermstructure.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/quote.hpp>
+#include <ql/termstructures/localvoltermstructure.hpp>
 
 namespace QuantLib {
+
+    class BlackVolTermStructure;
+    class YieldTermStructure;
+    class Quote;
 
     //! Local volatility surface derived from a Black vol surface
     /*! For details about this implementation refer to
@@ -52,15 +54,11 @@ namespace QuantLib {
                         Real underlying);
         //! \name LocalVolTermStructure interface
         //@{
-        const Date& referenceDate() const {
-            return blackTS_->referenceDate();
-        }
-        DayCounter dayCounter() const {
-            return blackTS_->dayCounter();
-        }
-        Date maxDate() const { return blackTS_->maxDate(); }
-        Real minStrike() const { return blackTS_->minStrike(); }
-        Real maxStrike() const { return blackTS_->maxStrike(); }
+        const Date& referenceDate() const;
+        DayCounter dayCounter() const;
+        Date maxDate() const;
+        Real minStrike() const;
+        Real maxStrike() const;
         //@}
         //! \name Visitability
         //@{
@@ -75,6 +73,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

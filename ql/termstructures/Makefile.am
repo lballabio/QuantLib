@@ -6,14 +6,16 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+	blackvoltermstructure.hpp \
 	capvolstructures.hpp \
+	localvoltermstructure.hpp \
 	swaptionvolstructure.hpp \
-	voltermstructure.hpp \
 	yieldtermstructure.hpp
 
 libTermStructures_la_SOURCES = \
-    swaptionvolstructure.cpp \
-    voltermstructure.cpp
+    blackvoltermstructure.cpp \
+    localvoltermstructure.cpp \
+    swaptionvolstructure.cpp
 
 libTermStructures_la_LIBADD = \
     volatilities/libVolatilities.la \
@@ -32,4 +34,3 @@ all.hpp: Makefile.am
 	subdirs='$(SUBDIRS)'; for i in $$subdirs; do \
 		echo "#include <${subdir}/$$i/all.hpp>" >> $@; \
 	done
-

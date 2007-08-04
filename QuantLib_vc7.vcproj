@@ -5349,19 +5349,25 @@
 				RelativePath=".\ql\termstructures\all.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\termstructures\blackvoltermstructure.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\blackvoltermstructure.hpp">
+			</File>
+			<File
 				RelativePath=".\ql\termstructures\capvolstructures.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\localvoltermstructure.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\termstructures\localvoltermstructure.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\swaptionvolstructure.cpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\swaptionvolstructure.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\voltermstructure.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\termstructures\voltermstructure.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\termstructures\yieldtermstructure.hpp">

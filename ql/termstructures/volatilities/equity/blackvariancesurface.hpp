@@ -25,7 +25,7 @@
 #ifndef quantlib_black_variance_surface_hpp
 #define quantlib_black_variance_surface_hpp
 
-#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>

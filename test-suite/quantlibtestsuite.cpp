@@ -184,7 +184,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::suite());
     test->add(AssetSwapTest::suite()); // fails whith QL_USE_INDEXED_COUPON
     test->add(BarrierOptionTest::suite());
-    test->add(BasketOptionTest::suite());
+    //test->add(BasketOptionTest::suite());
     test->add(BatesModelTest::suite());
     test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
@@ -219,13 +219,13 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(JumpDiffusionTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
     test->add(LookbackOptionTest::suite());
-    test->add(LowDiscrepancyTest::suite());
-    test->add(MarketModelCmsTest::suite());
-    test->add(MarketModelSmmTest::suite());
-    test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
-    test->add(MarketModelSmmCapletCalibrationTest::suite());
-    test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
-    test->add(MarketModelTest::suite());
+    //test->add(LowDiscrepancyTest::suite());
+    //test->add(MarketModelCmsTest::suite());
+    //test->add(MarketModelSmmTest::suite());
+    //test->add(MarketModelSmmCapletAlphaCalibrationTest::suite());
+    //test->add(MarketModelSmmCapletCalibrationTest::suite());
+    //test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
+    //test->add(MarketModelTest::suite());
     test->add(MatricesTest::suite());
     test->add(MCLongstaffSchwartzEngineTest::suite());
     test->add(MersenneTwisterTest::suite());
