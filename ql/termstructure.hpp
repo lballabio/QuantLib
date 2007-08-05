@@ -99,9 +99,11 @@ namespace QuantLib {
         //! date/time conversion
         Time timeFromReference(const Date& date) const;
         //! date-range check
-        void checkRange(const Date&, bool extrapolate) const;
+        void checkRange(const Date&,
+                        bool extrapolate) const;
         //! time-range check
-        void checkRange(Time, bool extrapolate) const;
+        void checkRange(Time,
+                        bool extrapolate) const;
         bool moving_;
       private:
         mutable Date referenceDate_;
