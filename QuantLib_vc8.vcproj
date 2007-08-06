@@ -3898,10 +3898,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ql\utilities\strings.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ql\utilities\tracing.cpp"
 				>
 			</File>

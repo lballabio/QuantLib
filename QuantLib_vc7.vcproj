@@ -6408,10 +6408,7 @@
 				RelativePath=".\ql\utilities\observablevalue.hpp">
 			</File>
 			<File
-				RelativePath="ql\utilities\steppingiterator.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\utilities\strings.hpp">
+				RelativePath=".\ql\utilities\steppingiterator.hpp">
 			</File>
 			<File
 				RelativePath=".\ql\utilities\tracing.cpp">
