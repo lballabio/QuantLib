@@ -25,7 +25,7 @@
 #define quantlib_drift_term_structure_hpp
 
 #include <ql/termstructures/yieldcurves/zeroyieldstructure.hpp>
-#include <ql/termstructures/voltermstructure.hpp>
+#include <ql/termstructures/blackvoltermstructure.hpp>
 
 namespace QuantLib {
 
