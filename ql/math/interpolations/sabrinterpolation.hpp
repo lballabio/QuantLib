@@ -319,15 +319,17 @@ namespace QuantLib {
                 if (vegaWeighted_) {
                     std::vector<Real>::const_iterator x = this->xBegin_;
                     std::vector<Real>::const_iterator y = this->yBegin_;
-                    std::vector<Real>::iterator w = weights_.begin();
+                    //std::vector<Real>::iterator w = weights_.begin();
+                    weights_.clear();
                     Real weightsSum = 0.0;
-                    for ( ; x!=this->xEnd_; ++x, ++y, ++w) {
+                    for ( ; x!=this->xEnd_; ++x, ++y) {
                         Real stdDev = std::sqrt((*y)*(*y)*t_);
-                        *w = blackFormulaStdDevDerivative(*x, forward_, stdDev);
-                        weightsSum += *w;
+                        weights_.push_back(
+                            blackFormulaStdDevDerivative(*x, forward_, stdDev));
+                        weightsSum += weights_.back();
                     }
                     // weight normalization
-                    w = weights_.begin();
+                    std::vector<Real>::iterator w = weights_.begin();
                     for ( ; w!=weights_.end(); ++w)
                         *w /= weightsSum;
                 }

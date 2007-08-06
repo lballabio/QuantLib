@@ -82,6 +82,7 @@ namespace QuantLib {
         Real alpha_, beta_, nu_, rho_;
         bool isAlphaFixed_, isBetaFixed_, isNuFixed_;
         mutable Date evaluationDate_;
+        mutable std::vector<Rate> actualStrikes_;
     };
 
     inline void SabrInterpolatedSmileSection::update() {
