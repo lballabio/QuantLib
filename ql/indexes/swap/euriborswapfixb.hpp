@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,140 +26,126 @@
 #define quantlib_euriborswapfixb_hpp
 
 #include <ql/indexes/swapindex.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/time/calendars/target.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    //! %EuriborSwapFixB vs 3M index base class
-    /*! EuriborSwapFixB rate fixed by ISDA. The swap index is based
-        on the Euribor 3M and is fixed at 12:00AM FRANKFURT.
-        Reuters page ISDAFIX2 or EURSFIXA=.
+    //! %EuriborSwapFix index base class
+    /*! EuriborSwapFixB indexes fixed by ISDA at 12:00AM FRANKFURT.
+        Reuters page ISDAFIX2 or EURSFIXB=.
+
+        \warning The 1Y swap's floating leg is based on Euribor3M; the
+                 floating legs of longer swaps are based on Euribor6M
     */
-    class EuriborSwapFixBvs3M : public SwapIndex {
+    class EuriborSwapFixB : public SwapIndex {
       public:
-        EuriborSwapFixBvs3M(const Period& tenor,
-                            const Handle<YieldTermStructure>& h =
+        EuriborSwapFixB(const Period& tenor,
+                        const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
     };
 
-    //! %EuriborSwapFixB vs 6M index base class
-    /*! EuriborSwapFixB rate fixed by ISDA. The swap index is based
-        on the Euribor 6M and is fixed at 12:00AM FRANKFURT.
-        Reuters page ISDAFIX2 or EURSFIXB=.
-    */
-    class EuriborSwapFixBvs6M : public SwapIndex {
-      public:
-        EuriborSwapFixBvs6M(const Period& tenor,
-                            const Handle<YieldTermStructure>& h =
-                                      Handle<YieldTermStructure>());
-    };
-
-    //! 1-year %EuriborSwapFixBvs3M index
-    class EuriborSwapFixB1Y : public EuriborSwapFixBvs3M {
+    //! 1-year %EuriborSwapFixB index
+    class EuriborSwapFixB1Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB1Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs3M(1*Years, h) {}
+        : EuriborSwapFixB(1*Years, h) {}
     };
 
-    //! 2-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB2Y : public EuriborSwapFixBvs6M {
+    //! 2-year %EuriborSwapFixB index
+    class EuriborSwapFixB2Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB2Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(2*Years, h) {}
+        : EuriborSwapFixB(2*Years, h) {}
     };
 
-    //! 3-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB3Y : public EuriborSwapFixBvs6M {
+    //! 3-year %EuriborSwapFixB index
+    class EuriborSwapFixB3Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB3Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(3*Years, h) {}
+        : EuriborSwapFixB(3*Years, h) {}
     };
 
-    //! 4-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB4Y : public EuriborSwapFixBvs6M {
+    //! 4-year %EuriborSwapFixB index
+    class EuriborSwapFixB4Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB4Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(4*Years, h) {}
+        : EuriborSwapFixB(4*Years, h) {}
     };
 
-    //! 5-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB5Y : public EuriborSwapFixBvs6M {
+    //! 5-year %EuriborSwapFixB index
+    class EuriborSwapFixB5Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB5Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(5*Years, h) {}
+        : EuriborSwapFixB(5*Years, h) {}
     };
 
-    //! 6-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB6Y : public EuriborSwapFixBvs6M {
+    //! 6-year %EuriborSwapFixB index
+    class EuriborSwapFixB6Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB6Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(6*Years, h) {}
+        : EuriborSwapFixB(6*Years, h) {}
     };
 
-    //! 7-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB7Y : public EuriborSwapFixBvs6M {
+    //! 7-year %EuriborSwapFixB index
+    class EuriborSwapFixB7Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB7Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(7*Years, h) {}
+        : EuriborSwapFixB(7*Years, h) {}
     };
 
-    //! 8-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB8Y : public EuriborSwapFixBvs6M {
+    //! 8-year %EuriborSwapFixB index
+    class EuriborSwapFixB8Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB8Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(8*Years, h) {}
+        : EuriborSwapFixB(8*Years, h) {}
     };
 
-    //! 9-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB9Y : public EuriborSwapFixBvs6M {
+    //! 9-year %EuriborSwapFixB index
+    class EuriborSwapFixB9Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB9Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(9*Years, h) {}
+        : EuriborSwapFixB(9*Years, h) {}
     };
 
-    //! 10-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB10Y : public EuriborSwapFixBvs6M {
+    //! 10-year %EuriborSwapFixB index
+    class EuriborSwapFixB10Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB10Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(10*Years, h) {}
+        : EuriborSwapFixB(10*Years, h) {}
     };
 
-    //! 12-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB12Y : public EuriborSwapFixBvs6M {
+    //! 12-year %EuriborSwapFixB index
+    class EuriborSwapFixB12Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB12Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(12*Years, h) {}
+        : EuriborSwapFixB(12*Years, h) {}
     };
 
-    //! 15-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB15Y : public EuriborSwapFixBvs6M {
+    //! 15-year %EuriborSwapFixB index
+    class EuriborSwapFixB15Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB15Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(15*Years, h) {}
+        : EuriborSwapFixB(15*Years, h) {}
     };
 
-    //! 20-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB20Y : public EuriborSwapFixBvs6M {
+    //! 20-year %EuriborSwapFixB index
+    class EuriborSwapFixB20Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB20Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(20*Years, h) {}
+        : EuriborSwapFixB(20*Years, h) {}
     };
 
-    //! 25-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB25Y : public EuriborSwapFixBvs6M {
+    //! 25-year %EuriborSwapFixB index
+    class EuriborSwapFixB25Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB25Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(25*Years, h) {}
+        : EuriborSwapFixB(25*Years, h) {}
     };
 
-    //! 30-year %EuriborSwapFixBvs6M index
-    class EuriborSwapFixB30Y : public EuriborSwapFixBvs6M {
+    //! 30-year %EuriborSwapFixB index
+    class EuriborSwapFixB30Y : public EuriborSwapFixB {
       public:
         EuriborSwapFixB30Y(const Handle<YieldTermStructure>& h)
-        : EuriborSwapFixBvs6M(30*Years, h) {}
+        : EuriborSwapFixB(30*Years, h) {}
     };
 
 }

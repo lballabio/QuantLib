@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2007 Ferdinando Ametrano
  Copyright (C) 2007 Katiuscia Manzoni
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,11 +19,15 @@
 */
 
 #include <ql/indexes/swap/euriborswapfixb.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    EuriborSwapFixBvs3M::EuriborSwapFixBvs3M(const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
+    EuriborSwapFixB::EuriborSwapFixB(const Period& tenor,
+                                     const Handle<YieldTermStructure>& h)
     : SwapIndex("EuriborSwapFixB", // familyName
                 tenor,
                 2, // settlementDays
@@ -31,19 +36,8 @@ namespace QuantLib {
                 1*Years, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
-
-    EuriborSwapFixBvs6M::EuriborSwapFixBvs6M(const Period& tenor,
-                                         const Handle<YieldTermStructure>& h)
-    : SwapIndex("EuriborSwapFixB", // familyName
-                tenor,
-                2, // settlementDays
-                EURCurrency(),
-                TARGET(),
-                1*Years, // fixedLegTenor
-                ModifiedFollowing, // fixedLegConvention
-                Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new Euribor6M(h))) {}
-
+                tenor > 1*Years ?
+                    boost::shared_ptr<IborIndex>(new Euribor6M(h)) :
+                    boost::shared_ptr<IborIndex>(new Euribor3M(h))) {}
 
 }
