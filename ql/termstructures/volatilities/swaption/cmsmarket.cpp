@@ -25,6 +25,7 @@
 #include <ql/termstructures/volatilities/swaption/swaptionvolcube1.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/swap.hpp>
 
 namespace QuantLib {
     

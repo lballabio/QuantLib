@@ -25,6 +25,7 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/instruments/swap.hpp>
 
 namespace QuantLib {
 

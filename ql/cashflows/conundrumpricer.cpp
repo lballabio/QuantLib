@@ -33,6 +33,7 @@
 #include <ql/indexes/swapindex.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 
 #include <boost/bind.hpp>
 

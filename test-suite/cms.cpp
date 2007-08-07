@@ -33,6 +33,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/instruments/swap.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
