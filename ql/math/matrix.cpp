@@ -27,6 +27,10 @@
 #pragma warning(disable:4180)
 #endif
 #if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 3
+#define QL_MATRIX_BLAS
+#endif
+
+#if defined(QL_MATRIX_BLAS)
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/lu.hpp>
@@ -38,7 +42,7 @@
 namespace QuantLib {
 
     Disposable<Matrix> inverse(const Matrix& m) {
-        #if !defined(__GNUC__) || __GNUC__ > 3 || __GNUC_MINOR__ > 3
+        #if defined(QL_MATRIX_BLAS)
 
         QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
 
