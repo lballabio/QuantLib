@@ -56,26 +56,27 @@ namespace QuantLib {
     }
 
     Period PeriodParser::parseOnePeriod(const std::string& str) {
-        QL_REQUIRE(str.length()>1, "single period needs length of at least 2");
+        QL_REQUIRE(str.length()>1, "single period require a string of at "
+                   "least 2 characters");
 
         Size iPos = str.find_first_of("DdWwMmYy");
-        QL_REQUIRE(iPos==str.length()-1, "unknown '" << str << "' unit");
+        QL_REQUIRE(iPos==str.length()-1, "unknown '" <<
+                   str.substr(str.length()-1, str.length()) << "' unit");
+        TimeUnit units = Days;
+        char abbr = std::toupper(str[iPos]);
+        if      (abbr == 'D') units = Days;
+        else if (abbr == 'W') units = Weeks;
+        else if (abbr == 'M') units = Months;
+        else if (abbr == 'Y') units = Years;
 
         Size nPos = str.find_first_of("-+0123456789");
-        QL_REQUIRE(nPos<iPos, "no numbers of units provided");
-
-        TimeUnit units = Days;
+        QL_REQUIRE(nPos<iPos, "no numbers of " << units << " provided");
         Integer n;
         try {
-            char abbr = std::toupper(str[iPos]);
-            if (abbr == 'D')      units = Days;
-            else if (abbr == 'W') units = Weeks;
-            else if (abbr == 'M') units = Months;
-            else if (abbr == 'Y') units = Years;
             n = boost::lexical_cast<Integer>(str.substr(nPos,iPos));
         } catch (std::exception& e) {
-            QL_FAIL("unable to parse '" << str << "' as Period. Error:" <<
-                    e.what());
+            QL_FAIL("unable to parse the number of units of " << units <<
+                    " in '" << str << "'. Error:" << e.what());
         }
 
         return Period(n, units);
