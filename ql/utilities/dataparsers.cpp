@@ -38,13 +38,13 @@ namespace QuantLib {
         std::string reducedString = str;
 
         Size iPos, reducedStringDim = 100000, max_iter = 0;
-        while(reducedStringDim>0){
+        while (reducedStringDim>0) {
             iPos = reducedString.find_first_of("DdWwMmYy");
             Size subStringDim = iPos+1;
             reducedStringDim = reducedString.length()-subStringDim;
             subStrings.push_back(reducedString.substr(0, subStringDim));
             reducedString = reducedString.substr(iPos+1, reducedStringDim);
-            max_iter++;
+            ++max_iter;
             QL_REQUIRE(max_iter<str.length(), "unknown '" << str << "' unit");
         }
          
